@@ -169,7 +169,6 @@ namespace stage
         redTextColorShaker_         (sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
         turnStateToFinish_          (combat::TurnAction::Count),
         turnActionInfo_             (),
-        willClrShkEnemyWeaponText_  (false),
         fightResult_                (),
         titleTBoxTextRegionSPtr_    (),
         weaponTBoxTextRegionSPtr_   (),
@@ -970,11 +969,6 @@ namespace stage
             ((TurnPhase::ZoomAndSlideAnim == turnPhase_) || (TurnPhase::PostZoomPause == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
-        }
-
-        if (willClrShkEnemyWeaponText_)
-        {
-            weaponTBoxTextRegionSPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         //allow progress of the pause timer even if IsStatusMessageAnimating(), because they work together
@@ -2102,8 +2096,6 @@ namespace stage
 
         if (IsPlayerCharacterTurnValid())
         {
-            willClrShkEnemyWeaponText_ = false;
-
             titleSS << turnCreaturePtr_->Name() << "'s Turn";
 
             weaponHoldingSS << HOLDING_WEAPON_STR;
@@ -2202,8 +2194,6 @@ namespace stage
             }
             else if (TurnPhase::PerformReport == turnPhase_)
             {
-                willClrShkEnemyWeaponText_ = fightResult_.WasHit();
-
                 weaponHoldingSS.str(EMPTY_STR);
                 armorSS.str(EMPTY_STR);
                 enemyCondsSS.str(EMPTY_STR);

@@ -299,7 +299,6 @@ namespace stage
         sfml_util::ColorShaker redTextColorShaker_;
         combat::TurnAction::Enum turnStateToFinish_;
         combat::TurnActionInfo turnActionInfo_;
-        bool willClrShkEnemyWeaponText_;
         combat::FightResult fightResult_;
 
         //members displaying a player character's turn
