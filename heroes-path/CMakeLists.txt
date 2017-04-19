@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-project("main")
+project("heroes-path")
 
 set(BUILD_SHARED_LIBS STATIC)
 set(TARGET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
