@@ -750,7 +750,7 @@ namespace stage
                                               5  + sfml_util::rand::Int(8),
                                               15 + sfml_util::rand::Int(10),
                                               10 + sfml_util::rand::Int(8),
-                                              5  + sfml_util::rand::Int(8),
+                                              25 + sfml_util::rand::Int(8),
                                               10 + sfml_util::rand::Int(15));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "C"));

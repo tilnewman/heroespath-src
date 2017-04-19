@@ -279,7 +279,8 @@ namespace combat
         }
         else
         {
-            if ((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) > (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank())))
+            if (((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) > (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) && 
+                ((creatureDefendingPtrC->Race().Which() != creature::race::Pixie) || (sfml_util::rand::Bool())))
             {
                 wasHit = true;
                 hitType = HitType::Accuracy;
@@ -367,8 +368,26 @@ namespace combat
         //reduce damage based on the defending creature's armor
         damageFinal -= StatMinimum(creatureDefendingPtrC->ArmorRating());
 
-        if (damageFinal < 0)
+        if (damageFinal > 0)
+        {
+            //pixies are dealt less damage than other creatures because of their small size and speed
+            if (creatureDefendingPtrC->Race().Which() == creature::race::Pixie)
+            {
+                const stats::Health_t PIXIE_HEALTH_DIVISOR{ 5 };
+                if (damageFinal < (PIXIE_HEALTH_DIVISOR * 2))
+                {
+                    damageFinal = 1;
+                }
+                else
+                {
+                    damageFinal = static_cast<stats::Health_t>(static_cast<float>(damageFinal) / static_cast<float>(PIXIE_HEALTH_DIVISOR));
+                }
+            }
+        }
+        else
+        {
             damageFinal = 0;
+        }
 
         return damageFinal;
     }
