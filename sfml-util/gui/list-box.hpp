@@ -154,7 +154,9 @@ namespace gui
         inline bool Empty() const               { return list_.empty(); }
         inline std::size_t GetLimit() const     { return itemLimit_; }
 
-        void Add(const ListBoxItemSPtr_t & THING_SPTR);
+        void Add(const ListBoxItemSPtr_t & THING_SPTR,
+                 const bool                WILL_INC_CURRENT_SEL = false);
+
         bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
 
         inline bool RemoveSelected()            { return Remove(selectedSPtr_); }
@@ -185,6 +187,9 @@ namespace gui
                                               const float         POS_LEFT_ORIG,
                                               const float         POS_TOP,
                                               const bool          IS_SELECTED_ITEM);
+
+        bool MoveSelectionUp();
+        bool MoveSelectionDown();
 
     public:
         static const int NO_LIMIT_;

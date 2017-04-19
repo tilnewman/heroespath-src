@@ -1076,9 +1076,6 @@ namespace stage
                 combatDisplayPtrC_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPanPause");
-
-                //this is duplicated because...okay I don't know this was the only way to make it work for some reason -zTn 2017-4-19
-                AppendInitialStatus();
                 AppendInitialStatus();
             }
 
@@ -1268,11 +1265,7 @@ namespace stage
     {
         statusBoxTextInfo_.text = MSG_STR;
         sfml_util::gui::ListBoxItemSPtr_t entrySPtr(new sfml_util::gui::ListBoxItem("CombatStageStatusMsg", statusBoxTextInfo_));
-        statusBoxSPtr_->Add(entrySPtr);
-
-        //TODO -this isn't working, fix it somehow
-        if (statusBoxSPtr_->GetCount() > 1)
-            statusBoxSPtr_->SetSelectedIndex(statusBoxSPtr_->GetSelectedIndex() + 1, false);
+        statusBoxSPtr_->Add(entrySPtr, true);
 
         if (WILL_ANIM)
         {

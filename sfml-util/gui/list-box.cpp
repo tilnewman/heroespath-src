@@ -350,12 +350,18 @@ namespace gui
     }
 
 
-    void ListBox::Add(const ListBoxItemSPtr_t & THING_SPTR)
+    void ListBox::Add(const ListBoxItemSPtr_t & THING_SPTR,
+                      const bool                WILL_INC_CURRENT_SEL)
     {
         if ((NO_LIMIT_ == itemLimit_) || (list_.size() < static_cast<std::size_t>(itemLimit_)))
         {
-            SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
             list_.push_back(THING_SPTR);
+
+            if (WILL_INC_CURRENT_SEL)
+            {
+                MoveSelectionDown();
+            }
+
             SetupList();
         }
     }
@@ -435,60 +441,15 @@ namespace gui
 
         if (KEY_EVENT.code == sf::Keyboard::Up)
         {
-            float vertTracker(entityRegion_.height);
-            for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
-            {
-                typename ListBoxItemSLst_t::const_iterator tempItr(itr);
-                ++tempItr;
-                if ( * tempItr == selectedSPtr_)
-                {
-                    if (vertTracker >= entityRegion_.height)
-                        currentViewPos_ -= (*itr)->GetEntityRegion().height + betweenPad_;
-
-                    SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
-                    selectedSPtr_ = *itr;
-                    SetupList();
-                    CreateKeypressPackageAndCallHandler(KEY_EVENT);
-                    return true;
-                }
-                else
-                {
-                    if ((*itr)->GetEntityWillDraw())
-                        vertTracker -= (*itr)->GetEntityRegion().height + betweenPad_;
-                }
-            }
-
+            auto const WILL_RETURN_TRUE{ MoveSelectionUp() };
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return false;
+            return WILL_RETURN_TRUE;
         }
         else if (KEY_EVENT.code == sf::Keyboard::Down)
         {
-            float vertTracker(0.0f);
-            for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
-            {
-                if (itr != list_.begin())
-                {
-                    typename ListBoxItemSLst_t::const_iterator prevItr(itr);
-                    --prevItr;
-                    if ( * prevItr == selectedSPtr_)
-                    {
-                        if ((vertTracker + ((*itr)->GetEntityRegion().height + margin_)) > entityRegion_.height)
-                            currentViewPos_ += (*itr)->GetEntityRegion().height + betweenPad_;
-
-                        SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
-                        selectedSPtr_ = *itr;
-                        SetupList();
-                        CreateKeypressPackageAndCallHandler(KEY_EVENT);
-                        return true;
-                    }
-                }
-
-                if ((*itr)->GetEntityWillDraw())
-                    vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
-            }
-
+            auto const WILL_RETURN_TRUE{ MoveSelectionDown() };
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return false;
+            return WILL_RETURN_TRUE;
         }
 
         CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -774,6 +735,63 @@ namespace gui
         }
 
         listBoxItemSPtr->SetEntityPos(newPosLeft, POS_TOP);
+    }
+
+
+    bool ListBox::MoveSelectionUp()
+    {
+        float vertTracker(entityRegion_.height);
+        for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
+        {
+            typename ListBoxItemSLst_t::const_iterator tempItr(itr);
+            ++tempItr;
+            if (*tempItr == selectedSPtr_)
+            {
+                if (vertTracker >= entityRegion_.height)
+                    currentViewPos_ -= (*itr)->GetEntityRegion().height + betweenPad_;
+
+                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                selectedSPtr_ = *itr;
+                SetupList();
+                return true;
+            }
+            else
+            {
+                if ((*itr)->GetEntityWillDraw())
+                    vertTracker -= (*itr)->GetEntityRegion().height + betweenPad_;
+            }
+        }
+
+        return false;
+    }
+
+
+    bool ListBox::MoveSelectionDown()
+    {
+        float vertTracker(0.0f);
+        for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
+        {
+            if (itr != list_.begin())
+            {
+                typename ListBoxItemSLst_t::const_iterator prevItr(itr);
+                --prevItr;
+                if (*prevItr == selectedSPtr_)
+                {
+                    if ((vertTracker + ((*itr)->GetEntityRegion().height + margin_)) > entityRegion_.height)
+                        currentViewPos_ += (*itr)->GetEntityRegion().height + betweenPad_;
+
+                    SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                    selectedSPtr_ = *itr;
+                    SetupList();
+                    return true;
+                }
+            }
+
+            if ((*itr)->GetEntityWillDraw())
+                vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
+        }
+
+        return false;
     }
 
 }
