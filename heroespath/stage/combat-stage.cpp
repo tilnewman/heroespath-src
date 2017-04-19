@@ -2079,7 +2079,7 @@ namespace stage
 
     void CombatStage::SetupTurnBox()
     {
-        auto const EMPTY_STR(" ");
+        auto const EMPTY_STR(" ");//any short all-whitespace non-empty string will work here
         auto const CAN_TAKE_ACTION_STR(turnCreaturePtr_->CanTakeActionStr());
         auto const CURR_WEAPONS_STR(turnCreaturePtr_->WeaponsString());
 
@@ -2131,9 +2131,8 @@ namespace stage
 
             infoSS << ":  " << turnCreaturePtr_->ConditionList();
 
-            armorSS << "\nArmor Rating: " << turnCreaturePtr_->ArmorRating();
+            armorSS << "Armor Rating: " << turnCreaturePtr_->ArmorRating();
 
-            //any all-whitespace non-empty string will work here
             enemyActionSS.str(EMPTY_STR);
             enemyCondsSS.str(EMPTY_STR);
         }
@@ -2154,7 +2153,7 @@ namespace stage
                 weaponHoldingSS << "Cannot take " << creature::sex::HisHerIts(turnCreaturePtr_->Sex(), false, false) << " turn because " << turnCreaturePtr_->CanTakeActionStr(false) << "!\n";
             }
 
-            infoSS.str(EMPTY_STR);//any all-whitespace non-empty string will work here
+            infoSS.str(EMPTY_STR);//any short all-whitespace non-empty string will work here
 
             armorSS << "Armor:  ";
 
@@ -2190,9 +2189,9 @@ namespace stage
             {
                 if (fightResult_.Count() > 0)
                 {
-                    weaponHoldingSS.str(" ");
-                    armorSS.str(" ");
-                    enemyCondsSS.str(" ");
+                    weaponHoldingSS.str(EMPTY_STR);
+                    armorSS.str(EMPTY_STR);
+                    enemyCondsSS.str(EMPTY_STR);
 
                     isEnemyTurnPreambleShowing = true;
                     
@@ -2205,16 +2204,16 @@ namespace stage
                 }
                 else
                 {
-                    enemyActionSS.str(" ");
+                    enemyActionSS.str(EMPTY_STR);
                 }
             }
             else if (TurnPhase::PerformReport == turnPhase_)
             {
                 willClrShkEnemyWeaponText_ = fightResult_.WasHit();
 
-                weaponHoldingSS.str(" ");
-                armorSS.str(" ");
-                enemyCondsSS.str(" ");
+                weaponHoldingSS.str(EMPTY_STR);
+                armorSS.str(EMPTY_STR);
+                enemyCondsSS.str(EMPTY_STR);
                 enemyActionSS << combat::Text::ActionText(turnCreaturePtr_,
                                                           turnActionInfo_,
                                                           fightResult_,
@@ -2226,8 +2225,7 @@ namespace stage
             }
             else
             {
-                //any all-whitespace non-empty string will work here
-                enemyActionSS.str(" ");
+                enemyActionSS.str(EMPTY_STR);
             }
         }
 
