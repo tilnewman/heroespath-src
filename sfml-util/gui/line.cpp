@@ -1,0 +1,301 @@
+//
+// line.cpp
+//
+#include "line.hpp"
+#include "heroespath/assertlogandthrow.hpp"
+#include "gui-elements.hpp"
+
+
+namespace sfml_util
+{
+namespace gui
+{
+
+    Line::Line( const std::string & NAME,
+                const float         POS_LEFT,
+                const float         POS_TOP,
+                const std::size_t   LENGTH,
+                Orientation::Enum   ORIENTATION,
+                const Side::Enum    SIDE,
+                const bool          WILL_CAP_ENDS )
+    :
+        GuiEntity           (std::string(NAME).append("_Line"), POS_LEFT, POS_TOP),
+        length_             (LENGTH),
+        ORIENTATION_        (ORIENTATION),
+        SIDE_               (SIDE),
+        WILL_CAP_ENDS_      (WILL_CAP_ENDS),
+        pixelsOfMiddleToUse_(0),
+        middleCount_        (0),
+        middleSprite_       (),
+        endTopOrLeftSprite_ (),
+        endBotOrRightSprite_(),
+        finalSprite_        (),
+        offScreenTexture_   ()
+    {
+        Setup(POS_LEFT, POS_TOP, LENGTH);
+        SetWillAcceptFocus(false);
+    }
+
+
+    Line::Line( const std::string & NAME,
+                Orientation::Enum   ORIENTATION,
+                const Side::Enum    SIDE,
+                const bool          WILL_CAP_ENDS )
+    :
+        GuiEntity           (NAME, 0.0f, 0.0f),//position and length values not yet known, see Setup()
+        length_             (0),
+        ORIENTATION_        (ORIENTATION),
+        SIDE_               (SIDE),
+        WILL_CAP_ENDS_      (WILL_CAP_ENDS),
+        pixelsOfMiddleToUse_(0),
+        middleCount_        (0),
+        middleSprite_       (),
+        endTopOrLeftSprite_ (),
+        endBotOrRightSprite_(),
+        finalSprite_        (),
+        offScreenTexture_   ()
+    {
+        SetWillAcceptFocus(false);
+    }
+
+
+    void Line::Setup(const float   POS_LEFT,
+                     const float   POS_TOP,
+                     const std::size_t  LENGTH)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((LENGTH > 0), "sfml_util::gui::Line(\"" << entityName_ << "\")::Setup() was given a length of zero!");
+
+        length_ = LENGTH;
+        SetEntityPos(POS_LEFT, POS_TOP);
+
+        SetupBaseSprites();
+        SetupMiddleSprites();
+        SetupOffScreenTexture();
+    }
+
+
+    void Line::SetupBaseSprites()
+    {
+        const GuiElementsSPtr_t GE_SPTR{ GuiElements::Instance() };
+
+        //which spirtes to use, and the length calculations
+        if (ORIENTATION_ == Orientation::Horiz)
+        {
+            if (SIDE_ == Side::Top)
+                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallHorizontalTop());
+            else
+                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallHorizontalBot());
+
+            endTopOrLeftSprite_  = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndLeft());
+            endBotOrRightSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndRight());
+        }
+        else
+        {
+            if (SIDE_ == Side::Left)
+                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallVerticalLeft());
+            else
+                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallVerticalRight());
+
+            endTopOrLeftSprite_  = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndTop());
+            endBotOrRightSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndBot());
+        }
+    }
+
+
+    void Line::SetupMiddleSprites()
+    {
+        if (ORIENTATION_ == Orientation::Horiz)
+        {
+            const std::size_t END_CAPS_WIDTH((WILL_CAP_ENDS_) ? static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().width + endBotOrRightSprite_.getLocalBounds().width) : 0);
+            if (length_ <= END_CAPS_WIDTH)
+            {
+                //if less than the minimum, then the length will be END_CAPS_WIDTH
+                pixelsOfMiddleToUse_ = 0;
+                middleCount_ = 0;
+            }
+            else
+            {
+                const std::size_t LENGTH_BETWEEN_ENDS(length_ - END_CAPS_WIDTH);
+                const std::size_t MIDDLE_SPRITE_WIDTH(static_cast<std::size_t>(middleSprite_.getLocalBounds().width));
+                if (LENGTH_BETWEEN_ENDS < MIDDLE_SPRITE_WIDTH)
+                {
+                    middleCount_ = 0;
+                    pixelsOfMiddleToUse_ = LENGTH_BETWEEN_ENDS;
+                }
+                else
+                {
+                    middleCount_ = LENGTH_BETWEEN_ENDS / MIDDLE_SPRITE_WIDTH;
+                    pixelsOfMiddleToUse_ = LENGTH_BETWEEN_ENDS % MIDDLE_SPRITE_WIDTH;
+                }
+            }
+        }
+        else
+        {
+            const std::size_t END_CAPS_HEIGHT((WILL_CAP_ENDS_) ? static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().height + endBotOrRightSprite_.getLocalBounds().height) : 0);
+            if (length_ <= END_CAPS_HEIGHT)
+            {
+                //if less than the minimum, then the length will be END_CAPS_HEIGHT
+                pixelsOfMiddleToUse_ = 0;
+                middleCount_ = 0;
+            }
+            else
+            {
+                const std::size_t LENGTH_BETWEEN_ENDS(length_ - END_CAPS_HEIGHT);
+                const std::size_t MIDDLE_SPRITE_HEIGHT(static_cast<std::size_t>(middleSprite_.getLocalBounds().height));
+                if (LENGTH_BETWEEN_ENDS < MIDDLE_SPRITE_HEIGHT)
+                {
+                    middleCount_ = 0;
+                    pixelsOfMiddleToUse_ = LENGTH_BETWEEN_ENDS;
+                }
+                else
+                {
+                    middleCount_ = LENGTH_BETWEEN_ENDS / MIDDLE_SPRITE_HEIGHT;
+                    pixelsOfMiddleToUse_ = LENGTH_BETWEEN_ENDS % MIDDLE_SPRITE_HEIGHT;
+                }
+            }
+        }
+    }
+
+
+    void Line::SetupOffScreenTexture()
+    {
+        if (ORIENTATION_ == Orientation::Horiz)
+        {
+            //create
+            std::size_t createWidthToUse(length_);
+            if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
+                createWidthToUse = static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().width + endBotOrRightSprite_.getLocalBounds().width);
+
+            offScreenTexture_.create(createWidthToUse, static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().height));
+            offScreenTexture_.clear(sf::Color::Transparent);
+
+            float posX(0.0);
+
+            if (WILL_CAP_ENDS_)
+            {
+                endTopOrLeftSprite_.setPosition(0.0f, 0.0f);
+                offScreenTexture_.draw(endTopOrLeftSprite_);
+                posX += endTopOrLeftSprite_.getLocalBounds().width;
+            }
+
+            //draw as many middle segments as needed
+            const float INITIAL_POS_X(posX);
+            for (std::size_t i(0); i < middleCount_; ++i)
+            {
+                middleSprite_.setPosition(INITIAL_POS_X + (static_cast<float>(i) * middleSprite_.getLocalBounds().width), 0.0f);
+                offScreenTexture_.draw(middleSprite_);
+                posX += middleSprite_.getLocalBounds().width;
+            }
+
+            //draw as many middle pixels as needed
+            //const float ORIG_MIDDLE_LEN(middleSprite_.getLocalBounds().width);
+            if (pixelsOfMiddleToUse_ > 0)
+            {
+                const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
+                middleSprite_.setTextureRect( sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, pixelsOfMiddleToUse_, ORIG_RECT.height) );
+                middleSprite_.setPosition(posX, 0.0f);
+                offScreenTexture_.draw(middleSprite_);
+                posX += static_cast<float>(pixelsOfMiddleToUse_);
+            }
+
+            if (WILL_CAP_ENDS_)
+            {
+                endBotOrRightSprite_.setPosition(posX, 0.0f);
+                offScreenTexture_.draw(endBotOrRightSprite_);
+                posX += endBotOrRightSprite_.getLocalBounds().width;
+            }
+
+            sf::FloatRect r(GetEntityRegion());
+            r.width  = static_cast<float>(length_);
+            r.height = endTopOrLeftSprite_.getLocalBounds().height;
+            SetEntityRegion(r);
+        }
+        else
+        {
+            //create off-screen texture
+            std::size_t createHeightToUse(length_);
+            if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
+                createHeightToUse = static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().height + endBotOrRightSprite_.getLocalBounds().height);
+
+            offScreenTexture_.create(static_cast<std::size_t>(endTopOrLeftSprite_.getLocalBounds().width), createHeightToUse);
+            offScreenTexture_.clear(sf::Color::Transparent);
+
+            float posY(0.0);
+
+            if (WILL_CAP_ENDS_)
+            {
+                endTopOrLeftSprite_.setPosition(0.0f, 0.0f);
+                offScreenTexture_.draw(endTopOrLeftSprite_);
+                posY += endTopOrLeftSprite_.getLocalBounds().height;
+            }
+
+            //draw as many middle segments as needed
+            const float INITIAL_POS_Y(posY);
+            for (std::size_t i(0); i < middleCount_; ++i)
+            {
+                middleSprite_.setPosition(0.0f, INITIAL_POS_Y + (static_cast<float>(i) * middleSprite_.getLocalBounds().height));
+                offScreenTexture_.draw(middleSprite_);
+                posY += middleSprite_.getLocalBounds().height;
+            }
+
+            //draw as many middle pixels as needed
+            if (pixelsOfMiddleToUse_ > 0)
+            {
+                const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
+                middleSprite_.setTextureRect(sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, ORIG_RECT.width, pixelsOfMiddleToUse_));
+                middleSprite_.setPosition(0.0f, posY);
+                offScreenTexture_.draw(middleSprite_);
+                posY += static_cast<float>(pixelsOfMiddleToUse_);
+            }
+
+            if (WILL_CAP_ENDS_)
+            {
+                endBotOrRightSprite_.setPosition(0.0f, posY);
+                offScreenTexture_.draw(endBotOrRightSprite_);
+                posY += endBotOrRightSprite_.getLocalBounds().height;
+            }
+
+            sf::FloatRect r(GetEntityRegion());
+            r.width  = endTopOrLeftSprite_.getLocalBounds().width;
+            r.height = static_cast<float>(length_);
+            SetEntityRegion(r);
+        }
+
+        //finalize the off-screen texture and setup the final sprite used in the draw() calls
+        offScreenTexture_.display();
+        finalSprite_.setTexture(offScreenTexture_.getTexture());
+        finalSprite_.setPosition(GetEntityPos());
+    }
+
+
+    Line::~Line()
+    {}
+
+
+    void Line::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        target.draw(finalSprite_, states);
+    }
+
+
+    void Line::OnColorChange()
+    {
+        finalSprite_.setColor(GetEntityColorForeground());
+    }
+
+
+    void Line::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+    {
+        GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
+        finalSprite_.setPosition(POS_LEFT, POS_TOP);
+    }
+
+
+    void Line::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        GuiEntity::MoveEntityPos(HORIZ, VERT);
+        finalSprite_.move(HORIZ, VERT);
+    }
+
+}
+}

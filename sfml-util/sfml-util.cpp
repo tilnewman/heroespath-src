@@ -1,0 +1,321 @@
+//
+// sfml-util.cpp
+//
+#include "sfml-util.hpp"
+#include "sfml-util/platform.hpp"
+#include "sfml-util/display.hpp"
+
+#include <tuple>
+
+
+namespace sfml_util
+{
+
+    const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP)
+    {
+        if (sf::Color::Black == C)
+            return "Black";
+
+        if (sf::Color::White == C)
+            return "White";
+
+        if (sf::Color::Red == C)
+            return "Red";
+
+        if (sf::Color::Green == C)
+            return "Green";
+
+        if (sf::Color::Blue == C)
+            return "Blue";
+
+        if (sf::Color::Yellow == C)
+            return "Yellow";
+
+        if (sf::Color::Magenta == C)
+            return "Magenta";
+
+        if (sf::Color::Cyan == C)
+            return "Cyan";
+
+        std::ostringstream ss;
+        ss << ((WILL_WRAP) ? "(" : "")
+           << static_cast<int>(C.r)
+           << ", "
+           << static_cast<int>(C.g)
+           << ", "
+           << static_cast<int>(C.b);
+
+        if (C.a != 255)
+            ss << ", " << static_cast<int>(C.a);
+
+        ss << ((WILL_WRAP) ? ")" : "");
+
+        return ss.str();
+    }
+
+
+    const std::string KeyCodeToString(const sf::Keyboard::Key KEY)
+    {
+        switch (KEY)
+        {
+            case sf::Keyboard::A:        { return "A"; }
+            case sf::Keyboard::B:        { return "B"; }
+            case sf::Keyboard::C:        { return "C"; }
+            case sf::Keyboard::D:        { return "D"; }
+            case sf::Keyboard::E:        { return "E"; }
+            case sf::Keyboard::F:        { return "F"; }
+            case sf::Keyboard::G:        { return "G"; }
+            case sf::Keyboard::H:        { return "H"; }
+            case sf::Keyboard::I:        { return "I"; }
+            case sf::Keyboard::J:        { return "J"; }
+            case sf::Keyboard::K:        { return "K"; }
+            case sf::Keyboard::L:        { return "L"; }
+            case sf::Keyboard::M:        { return "M"; }
+            case sf::Keyboard::N:        { return "N"; }
+            case sf::Keyboard::O:        { return "O"; }
+            case sf::Keyboard::P:        { return "P"; }
+            case sf::Keyboard::Q:        { return "Q"; }
+            case sf::Keyboard::R:        { return "R"; }
+            case sf::Keyboard::S:        { return "S"; }
+            case sf::Keyboard::T:        { return "T"; }
+            case sf::Keyboard::U:        { return "U"; }
+            case sf::Keyboard::V:        { return "V"; }
+            case sf::Keyboard::W:        { return "W"; }
+            case sf::Keyboard::X:        { return "X"; }
+            case sf::Keyboard::Y:        { return "Y"; }
+            case sf::Keyboard::Z:        { return "Z"; }
+            case sf::Keyboard::Num0:     { return "Num0"; }
+            case sf::Keyboard::Num1:     { return "Num1"; }
+            case sf::Keyboard::Num2:     { return "Num2"; }
+            case sf::Keyboard::Num3:     { return "Num3"; }
+            case sf::Keyboard::Num4:     { return "Num4"; }
+            case sf::Keyboard::Num5:     { return "Num5"; }
+            case sf::Keyboard::Num6:     { return "Num6"; }
+            case sf::Keyboard::Num7:     { return "Num7"; }
+            case sf::Keyboard::Num8:     { return "Num8"; }
+            case sf::Keyboard::Num9:     { return "Num9"; }
+            case sf::Keyboard::Escape:   { return "Escape"; }
+            case sf::Keyboard::LControl: { return "LControl"; }
+            case sf::Keyboard::LShift:   { return "LShift"; }
+            case sf::Keyboard::LAlt:     { return "LAlt"; }
+            case sf::Keyboard::LSystem:  { return "LSystem:"; }
+            case sf::Keyboard::RControl: { return "RControl"; }
+            case sf::Keyboard::RShift:   { return "RShift"; }
+            case sf::Keyboard::RAlt:     { return "RAlt"; }
+            case sf::Keyboard::RSystem:  { return "RSystem"; }
+            case sf::Keyboard::Menu:     { return "Menu"; }
+            case sf::Keyboard::LBracket: { return "LBracket"; }
+            case sf::Keyboard::RBracket: { return "RBracket"; }
+            case sf::Keyboard::SemiColon:{ return "SemiColon"; }
+            case sf::Keyboard::Comma:    { return "Comma"; }
+            case sf::Keyboard::Period:   { return "Period"; }
+            case sf::Keyboard::Quote:    { return "Quote"; }
+            case sf::Keyboard::Slash:    { return "Slash"; }
+            case sf::Keyboard::BackSlash:{ return "BackSlash"; }
+            case sf::Keyboard::Tilde:    { return "Tilde"; }
+            case sf::Keyboard::Equal:    { return "Equal"; }
+            case sf::Keyboard::Dash:     { return "Dash"; }
+            case sf::Keyboard::Space:    { return "Space"; }
+            case sf::Keyboard::Return:   { return "Return"; }
+            case sf::Keyboard::BackSpace:{ return "BackSpace"; }
+            case sf::Keyboard::Tab:      { return "Tab"; }
+            case sf::Keyboard::PageUp:   { return "PageUp"; }
+            case sf::Keyboard::PageDown: { return "PageDown"; }
+            case sf::Keyboard::End:      { return "End"; }
+            case sf::Keyboard::Home:     { return "Home"; }
+            case sf::Keyboard::Insert:   { return "Insert"; }
+            case sf::Keyboard::Delete:   { return "Delete"; }
+            case sf::Keyboard::Add:      { return "Add"; }
+            case sf::Keyboard::Subtract: { return "Subtract"; }
+            case sf::Keyboard::Multiply: { return "Multiply"; }
+            case sf::Keyboard::Divide:   { return "Divide"; }
+            case sf::Keyboard::Left:     { return "Left"; }
+            case sf::Keyboard::Right:    { return "Right"; }
+            case sf::Keyboard::Up:       { return "Up"; }
+            case sf::Keyboard::Down:     { return "Down"; }
+            case sf::Keyboard::Numpad0:  { return "Numpad0"; }
+            case sf::Keyboard::Numpad1:  { return "Numpad1"; }
+            case sf::Keyboard::Numpad2:  { return "Numpad2"; }
+            case sf::Keyboard::Numpad3:  { return "Numpad3"; }
+            case sf::Keyboard::Numpad4:  { return "Numpad4"; }
+            case sf::Keyboard::Numpad5:  { return "Numpad5"; }
+            case sf::Keyboard::Numpad6:  { return "Numpad6"; }
+            case sf::Keyboard::Numpad7:  { return "Numpad7"; }
+            case sf::Keyboard::Numpad8:  { return "Numpad8"; }
+            case sf::Keyboard::Numpad9:  { return "Numpad9"; }
+            case sf::Keyboard::F1:       { return "F1"; }
+            case sf::Keyboard::F2:       { return "F2"; }
+            case sf::Keyboard::F3:       { return "F3"; }
+            case sf::Keyboard::F4:       { return "F4"; }
+            case sf::Keyboard::F5:       { return "F5"; }
+            case sf::Keyboard::F6:       { return "F6"; }
+            case sf::Keyboard::F7:       { return "F7"; }
+            case sf::Keyboard::F8:       { return "F8"; }
+            case sf::Keyboard::F9:       { return "F9"; }
+            case sf::Keyboard::F10:      { return "F10"; }
+            case sf::Keyboard::F11:      { return "F11"; }
+            case sf::Keyboard::F12:      { return "F12"; }
+            case sf::Keyboard::F13:      { return "F13"; }
+            case sf::Keyboard::F14:      { return "F14"; }
+            case sf::Keyboard::F15:      { return "F15"; }
+            case sf::Keyboard::Pause:    { return "Pause"; }
+            case sf::Keyboard::Unknown:
+            case sf::Keyboard::KeyCount:
+            default: { return "UnknownKeyCodeError"; }
+        }
+    }
+
+
+    void GetResolutionAreas(float & resAreaCurrent, float & resAreaMin, float & resAreaMax)
+    {
+        resAreaCurrent = (sfml_util::Display::Instance()->GetWinWidth() * sfml_util::Display::Instance()->GetWinHeight());
+        resAreaMin = (sfml_util::Display::Instance()->GetWinWidthMin() * sfml_util::Display::Instance()->GetWinHeightMin());
+        resAreaMax = (sfml_util::Display::Instance()->GetWinWidthMax() * sfml_util::Display::Instance()->GetWinHeightMax()) * 0.5f;
+    }
+
+
+    const std::string VideoModeToString(const sf::VideoMode & VM, const bool WILL_WRAP)
+    {
+        std::ostringstream ss;
+        ss << ((WILL_WRAP) ? "[" : "") << VM.width << "x" << VM.height << ":" << VM.bitsPerPixel << ((WILL_WRAP) ? "]" : "");
+        return ss.str();
+    }
+
+
+    void SetTextColor(sf::Text & text, const sf::Color & COLOR)
+    {
+#ifdef SFMLUTIL_PLATFORMDETECT__LINUX
+        text.setColor(COLOR);
+#else
+        text.setFillColor(COLOR);
+#endif
+    }
+
+
+    void FlipHoriz(sf::Texture & texture)
+    {
+        sf::Image tempImage(texture.copyToImage());
+        tempImage.flipHorizontally();
+        texture.loadFromImage(tempImage);
+    }
+
+
+    TextureSPtr_t FlipHorizCopy(const sf::Texture & TEXTURE)
+    {
+        sf::Image tempImage(TEXTURE.copyToImage());
+        tempImage.flipHorizontally();
+        TextureSPtr_t newTextureSPtr( new sf::Texture );
+        newTextureSPtr->loadFromImage(tempImage);
+        return newTextureSPtr;
+    }
+
+
+    void FlipVert(sf::Texture & texture)
+    {
+        sf::Image tempImage(texture.copyToImage());
+        tempImage.flipVertically();
+        texture.loadFromImage(tempImage);
+    }
+
+
+    TextureSPtr_t FlipVertCopy(const sf::Texture & TEXTURE)
+    {
+        sf::Image tempImage(TEXTURE.copyToImage());
+        tempImage.flipVertically();
+        TextureSPtr_t newTextureSPtr( new sf::Texture );
+        newTextureSPtr->loadFromImage(tempImage);
+        return newTextureSPtr;
+    }
+
+
+    void Invert(sf::Texture & texture, const bool WILL_INVERT_ALPHA)
+    {
+        sf::Image image(texture.copyToImage());
+
+        for (unsigned int y(0); y < image.getSize().y; ++y)
+        {
+            for (unsigned int x(0); x < image.getSize().x; ++x)
+            {
+                sf::Color color(image.getPixel(x, y));
+                color.r = 255 - color.r;
+                color.g = 255 - color.g;
+                color.b = 255 - color.b;
+
+                if (WILL_INVERT_ALPHA)
+                    color.a = 255 - color.a;
+
+                image.setPixel(x, y, color);
+            }
+        }
+
+        texture.loadFromImage(image);
+    }
+
+
+    void Mask(sf::Texture &     texture,
+              const sf::Color & COLOR_TO_MASK,
+              const sf::Uint8   NEW_ALPHA)
+    {
+        sf::Image image(texture.copyToImage());
+        image.createMaskFromColor(COLOR_TO_MASK, NEW_ALPHA);
+        texture.loadFromImage(image);
+    }
+
+
+    void SpriteToRenderTexture(sf::Sprite &             sprite,
+                               sf::RenderTexture &      renderTexture,
+                               const sf::RenderStates & RENDER_STATES,
+                               const bool               WILL_DISPLAY)
+    {
+        renderTexture.create(static_cast<unsigned int>(sprite.getGlobalBounds().width), static_cast<unsigned int>(sprite.getGlobalBounds().height));
+        const sf::Vector2f ORIG_POS(sprite.getPosition());
+        sprite.setPosition(0.0f, 0.0f);
+        renderTexture.draw(sprite, RENDER_STATES);
+
+        if (WILL_DISPLAY)
+            renderTexture.display();
+
+        sprite.setPosition(ORIG_POS);
+    }
+
+
+    void SpriteToImage(sf::Sprite & sprite, sf::Image & image, const sf::RenderStates & RENDER_STATES)
+    {
+        sf::RenderTexture renderTexture;
+        SpriteToRenderTexture(sprite, renderTexture, RENDER_STATES, true);
+        image = renderTexture.getTexture().copyToImage();
+    }
+
+
+    bool ColorLess(const sf::Color & L, const sf::Color & R)
+    {
+        const sf::Uint8 LR(L.r);
+        const sf::Uint8 LG(L.g);
+        const sf::Uint8 LB(L.b);
+        const sf::Uint8 LA(L.a);
+
+        const sf::Uint8 RR(R.r);
+        const sf::Uint8 RG(R.g);
+        const sf::Uint8 RB(R.b);
+        const sf::Uint8 RA(R.a);
+
+        return std::tie(LR, LG, LB, LA)
+               <
+               std::tie(RR, RG, RB, RA);
+    }
+
+
+    bool BlendModeLess(const sf::BlendMode & L, const sf::BlendMode & R)
+    {
+        const sf::BlendMode::Factor   L_ADF(L.alphaDstFactor);
+        const sf::BlendMode::Equation L_AEQ(L.alphaEquation);
+        const sf::BlendMode::Factor   L_ASF(L.alphaSrcFactor);
+
+        const sf::BlendMode::Factor   R_ADF(R.alphaDstFactor);
+        const sf::BlendMode::Equation R_AEQ(R.alphaEquation);
+        const sf::BlendMode::Factor   R_ASF(R.alphaSrcFactor);
+
+        return std::tie(L_ADF, L_AEQ, L_ASF) < std::tie(R_ADF, R_AEQ, R_ASF);
+    }
+
+}//end of namespace sfml_util

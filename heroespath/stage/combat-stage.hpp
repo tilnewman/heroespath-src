@@ -1,0 +1,345 @@
+#ifndef APPBASE_HEROESPATH_COMBATSTAGE_INCLUDED
+#define APPBASE_HEROESPATH_COMBATSTAGE_INCLUDED
+//
+// combat-stage.hpp
+//  A Stage class that enables combat.
+//
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/stage.hpp"
+#include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/color-shaker.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/sliderbar.hpp"
+
+#include "heroespath/i-popup-callback.hpp"
+#include "heroespath/horiz-symbol.hpp"
+#include "heroespath/combat/turn-action-enum.hpp"
+#include "heroespath/combat/turn-action-info.hpp"
+#include "heroespath/combat/fight-results.hpp"
+#include "heroespath/combat/combat-sound-effects.hpp"
+
+#include <memory>
+#include <vector>
+
+
+//forward declarations
+namespace sfml_util
+{
+namespace gui
+{
+    class Box;
+    using BoxSPtr_t = std::shared_ptr<Box>;
+}
+}
+
+namespace heroespath
+{
+namespace creature
+{
+    //forward declarations
+    class Creature;
+    using CreaturePtr_t   = Creature *;
+    using CreatureCPtr_t  = const Creature *;
+    using CreaturePtrC_t  = Creature * const;
+    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+}
+namespace combat
+{
+    //forward declarations
+    class CombatDisplay;
+    using CombatDisplayPtr_t   = CombatDisplay *;
+    using CombatDisplayCPtr_t  = const CombatDisplay *;
+    using CombatDisplayPtrC_t  = CombatDisplay * const;
+    using CombatDisplayCPtrC_t = const CombatDisplay * const;
+
+    class Encounter;
+    using EncounterSPtr_t = std::shared_ptr<Encounter>;
+}
+namespace stage
+{
+
+    //everything required to save the state of combat
+    class SavedCombatInfo
+    {
+    public:
+        SavedCombatInfo();
+
+        void PrepareForStageChange(const combat::CombatDisplayPtrC_t);
+        void Save(const combat::CombatDisplayPtrC_t);
+        void Restore(combat::CombatDisplayPtrC_t);
+
+        inline bool HasRestored() const             { return hasRestored_; }
+        inline bool CanTurnAdvance() const          { return canTurnAdvance_; }
+        inline void CanTurnAdvance(const bool B)    { canTurnAdvance_ = B; }
+
+    private:
+        void FlyingCreaturesSave(const combat::CombatDisplayPtrC_t);
+        void FlyingCreaturesRestore(combat::CombatDisplayPtrC_t);
+
+    private:
+        bool canTurnAdvance_;
+        bool hasRestored_;
+        creature::CreaturePVec_t creaturesFlyingPVec_;
+    };
+
+
+    //A Stage class that allows camping characters
+    class CombatStage
+    :
+        public sfml_util::Stage,
+        public heroespath::callback::IPopupHandler_t,
+        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
+        public sfml_util::gui::callback::IListBoxCallbackHandler,
+        public sfml_util::gui::callback::ISliderBarCallbackHandler_t
+    {
+        //prevent copy construction
+        CombatStage(const CombatStage &);
+
+        //prevent copy assignment
+        CombatStage & operator=(const CombatStage &);
+
+        //defines what stage of a creature's turn we are in
+        enum class TurnPhase
+        {
+            NotATurn = 0,
+            CenteringAnim,
+            PrePause,
+            DetermineAction,
+            ZoomAndSlideAnim,
+            PostZoomPause,
+            PerformAnim,
+            PerformReport,
+            PerformPause,
+            StatusAnim,
+            Count
+        };
+
+        //defines what type of action a creature is performing on his/her/it turn
+        enum class PerformType
+        {
+            None = 0,
+            Pause,
+            Attack,
+            ShootSling,
+            ShootArrow,
+            Advance,
+            Retreat,
+            Cast,
+            Roar,
+            Pounce,
+            Count
+        };
+
+        //defines what part of the initial zoom and pan
+        enum class PreTurnPhase
+        {
+            Start = 0,
+            PanToCenter,
+            PostPanPause,
+            ZoomOut,
+            PostZoomOutPause,
+            ZoomIn,
+            PostZoomInPause,
+            End,
+            Count
+        };
+
+    public:
+        CombatStage();
+        virtual ~CombatStage();
+
+        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
+        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
+        virtual bool HandleCallback(const heroespath::callback::PopupResponse &);
+
+        virtual void Setup();
+        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
+
+        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+
+        inline bool IsPaused() const                { return (pauseElapsedSec_ < pauseDurationSec_); }
+        inline bool IsAttackAnimating() const       { return (creatureAttackingCPtr_ != nullptr) && (creatureAttackedCPtr_ != nullptr); }
+
+        virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
+
+        bool IsPlayerCharacterTurnValid() const;
+        bool IsNonPlayerCharacterTurnValid() const;
+        
+    private:
+        void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
+        void AppendInitialStatus();
+        void SetIsPlayerActionAllowed(const bool);
+        void StartPause(const float DURATION_SEC, const std::string TITLE);
+        void EndPause();
+        void HandleEnemyTurnStep1_Decide();
+        PerformType HandleEnemyTurnStep2_Perform();
+        void HandleEnemyTurnStep3_Cleanup();
+        void StartTurn_Step1();//start centering anim
+        void StartTurn_Step2();//start pre-pause
+        void EndTurn();
+        void PositionSlideStartTasks();
+        bool HandleAttack();
+        bool HandleFight();
+        bool HandleCast();
+        bool HandleAdvance();
+        bool HandleRetreat();
+        bool HandleBlock();
+        bool HandleSkip();
+        bool HandleFly();
+        bool HandleLand();
+        bool HandleRoar();
+        bool HandlePounce(const bool IS_SKY_POUNCE);
+        bool HandleWeaponChange();
+        void AfterHandleTurnTasks();
+        void MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
+        void MoveTurnBoxButtonsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
+        void SetupTurnBoxButtons(const creature::CreaturePtrC_t);
+
+        void QuickSmallPopup(const std::string & PROMPT,
+                             const bool          IS_SOUNDEFFECT_NORMAL,
+                             const bool          WILL_PREPEND_NEWLINE);
+
+        void SetupTurnBox();
+        void StartAttackAnimation(creature::CreatureCPtrC_t CREATURE_ATTACKING, creature::CreatureCPtrC_t CREATURE_ATTACKED);
+        void StopAttackAnimation();
+        void StartInitialZoom();
+        void StartAttackAnimZoom();
+        void HandleAttackStage2();
+        void StartPerformAnim();
+
+        const std::string TurnPhaseToString(const TurnPhase);
+        const std::string PerformTypeToString(const PerformType);
+        const std::string PreTurnPhaseToString(const PreTurnPhase);
+        void UpdateTestingText();
+        inline void SetTurnPhase(const TurnPhase TP)        { turnPhase_ = TP; UpdateTestingText(); }
+        inline void SetPreTurnPhase(const PreTurnPhase PTP) { preTurnPhase_ = PTP; UpdateTestingText(); }
+
+    public:
+        static const float ZOOM_SLIDER_SPEED_;
+        static const float POST_PAN_PAUSE_SEC_;
+        static const float POST_ZOOMOUT_PAUSE_SEC_;
+        static const float POST_ZOOMIN_PAUSE_SEC_;
+        static const float CREATURE_TURN_DELAY_SEC_;
+        static const float PRE_TURN_DELAY_SEC_;
+        static const float POST_ZOOM_TURN_DELAY_SEC_;
+        static const float PERFORM_TURN_DELAY_SEC_;
+        static const float PERFORM_REPORT_DELAY_SEC_;
+        static const float POST_TURN_DELAY_SEC_;
+        static const float CENTERING_SLIDER_SPEED_;
+        static const float INITIAL_CENTERING_SLIDER_SPEED_;
+        static const float TEXT_COLOR_SHAKER_SPEED_;
+        static const float CREATURE_POS_SLIDER_SPEED_;
+        static const float STATUSMSG_ANIM_DURATION_SEC_;
+        //
+        static const sf::Color LISTBOX_BACKGROUND_COLOR_;
+        static const sf::Color LISTBOX_HIGHLIGHT_COLOR_;
+        static const sf::Color LISTBOX_HIGHLIGHT_ALT_COLOR_;
+        static const sf::Color LISTBOX_SELECTED_COLOR_;
+        static const sf::Color LISTBOX_NOTSELECTED_COLOR_;
+        static const sf::Color LISTBOX_LINE_COLOR_;
+
+    private:
+        //stores information about the state of combat when temporarily in another stage.  (inventory, Setup, etc.)
+        static SavedCombatInfo savedCombatInfo_;
+        //
+        const float SCREEN_WIDTH_;
+        const float SCREEN_HEIGHT_;
+        //
+        BottomSymbol                     bottomSymbol_;
+        sfml_util::gui::box::BoxSPtr_t   commandBoxSPtr_;
+        sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
+        sfml_util::gui::TextInfo         statusBoxTextInfo_;
+        sfml_util::gui::SliderBarSPtr_t  zoomSliderBarSPtr_;
+        sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
+        sf::FloatRect                    turnBoxRegion_;
+        bool                             isMouseHeldDownAndValid_;
+        bool                             isMouseDragging_;
+        sf::Vector2f                     mousePrevPosV_;
+        combat::EncounterSPtr_t          encounterSPtr_;
+        combat::CombatSoundEffects       combatSoundEffects_;
+        TurnPhase                        turnPhase_;
+        PreTurnPhase                     preTurnPhase_;
+        PerformType                      performType_;
+        std::size_t                      performReportEffectIndex_;
+        std::size_t                      performReportHitIndex_;
+
+        //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
+        combat::CombatDisplayPtrC_t combatDisplayPtrC_;
+
+        sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
+
+        //members that control the zooming in and out of the battlefield
+        bool isAttackAnimZoomOut_;
+        sfml_util::sliders::ZeroSliderOnce<float> zoomSlider_;
+
+        //members that control pausing the CombatStage
+        bool isPlayerActionAllowed_;
+        float pauseDurationSec_;
+        float pauseElapsedSec_;
+        bool isPauseCanceled_;
+
+        //memebers that slide the battlefield view around to center on a particular creature
+        bool isCentering_;
+        sfml_util::sliders::ZeroSliderOnce<float> centeringSlider_;
+
+        //members that deal with which creature's turn it is and the timing of taking turns
+        creature::CreaturePtr_t turnCreaturePtr_;
+        creature::CreaturePtr_t opponentCreature_;
+        sfml_util::ColorShaker goldTextColorShaker_;
+        sfml_util::ColorShaker redTextColorShaker_;
+        combat::TurnAction::Enum turnStateToFinish_;
+        combat::TurnActionInfo turnActionInfo_;
+        bool willClrShkEnemyWeaponText_;
+        combat::FightResult fightResult_;
+
+        //members displaying a player character's turn
+        sfml_util::gui::TextRegionSPtr_t titleTBoxTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t weaponTBoxTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t armorTBoxTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t infoTBoxTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t enemyActionTBoxRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t enemyCondsTBoxRegionSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t attackTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t fightTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t castTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t advanceTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t retreatTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t blockTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t skipTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t flyTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t landTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t roarTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSPtr_t pounceTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonSVec_t tBoxStdButtonSVec_;
+        sfml_util::gui::FourStateButtonSVec_t tBoxBeastButtonSVec_;
+
+        //members that control creature position sliding
+        bool isCreaturePosSliding_;
+        sfml_util::sliders::ZeroSliderOnce<float> creaturePosSlider_;
+
+        //members that manage the status message animations
+        float statusMsgAnimTimerSec_;
+        sfml_util::ColorShaker statusMsgAnimColorShaker_;
+
+        //members that manage the creature attack animation
+        creature::CreatureCPtr_t creatureAttackingCPtr_;
+        creature::CreatureCPtr_t creatureAttackedCPtr_;
+
+        //testing display members
+        sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;
+        std::string pauseTitle_;
+    };
+
+}
+}
+#endif //APPBASE_HEROESPATH_COMBATSTAGE_INCLUDED

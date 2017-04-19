@@ -1,0 +1,224 @@
+//
+// music-enum.cpp
+//
+#include "music-enum.hpp"
+#include <sstream>
+#include <exception>
+
+
+namespace sfml_util
+{
+
+    const std::string music::ToString(const music::Enum E)
+    {
+        switch (E)
+        {
+            case None:          { return "None"; }
+            case Theme:         { return "theme-violin"; }
+            case Wind:          { return "wind"; }
+            case Fire1:         { return "fire-1"; }
+            case Fire2:         { return "fire-2"; }
+            case CombatIntro:   { return "combatintro"; }
+            case PartyCreation: { return "party-creation-background"; }
+            case Credits1:      { return "credits-1"; }
+            case Credits2:      { return "credits-2"; }
+            case All:           { return "All"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string music::FileExt(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Theme:
+            case Wind:        { return ".flac"; }
+            case Fire1:
+            case Fire2:
+            case PartyCreation:
+            case Credits1:
+            case Credits2:
+            case CombatIntro: { return ".ogg"; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::FileExt(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::FileExt(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string music::Filename(const music::Enum E)
+    {
+        std::ostringstream ss;
+        ss << ToString(E) << FileExt(E);
+        return ss.str();
+    }
+
+
+    const std::string music::Directory(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Theme:         { return "hp-theme"; }
+            case Wind:          { return "luke-rustltd"; }
+            case Fire1:
+            case Fire2:         { return "fire"; }
+            case CombatIntro:   { return "combat-intro"; }
+            case PartyCreation:
+            case Credits1:      { return "marcelo-fernandez"; }
+            case Credits2:      { return "janne-hanhisuanto"; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::Directory(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::Directory(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    bool music::IsLooped(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Theme:
+            case Wind:
+            case Fire1:
+            case PartyCreation:
+            case Fire2:       { return true; }
+            case Credits1:
+            case Credits2:
+            case CombatIntro: { return false; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::IsLooped(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::IsLooped(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string music::ArtistName(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Wind:          { return "Luke @RUST LTD"; }
+            case Theme:
+            case Fire1:
+            case Fire2:         { return "(unknown)"; }
+            case CombatIntro:   { return "(various)"; }
+            case Credits2:      { return "Janne Hanhisuanto"; }
+            case Credits1:
+            case PartyCreation: { return "Marcelo Fernandez"; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::ArtistName(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::ArtistName(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string music::LicenseTitle(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Theme:         { return "(original work)"; }
+            case Wind:
+            case Fire1:
+            case Fire2:         { return "CC0-1.0(no copyright)"; }
+            case CombatIntro:   { return "(various)"; }
+            case Credits2:      { return "CC-BY-SA 3.0"; }
+            case Credits1:
+            case PartyCreation: { return "CC-BY 4.0"; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::LicenseTitle(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::LicenseTitle(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string music::SongName(const music::Enum E)
+    {
+        switch (E)
+        {
+            case Theme:         { return "Heroes' Path Theme"; }
+            case Wind:          { return "Wind"; }
+            case Fire1:         { return "Campfire1"; }
+            case Fire2:         { return "Campfire2"; }
+            case CombatIntro:   { return "(various)"; }
+            case PartyCreation: { return "Intro of Dragons"; }
+            case Credits1:      { return "PYC"; }
+            case Credits2:      { return "Radakan Menu"; }
+            case All:
+            case None:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::SongName(" << music::ToString(E) << ")_InvalidValueError.";
+                throw std::logic_error(ss.str());
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::music::SongName(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+}
