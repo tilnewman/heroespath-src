@@ -999,6 +999,9 @@ namespace combat
         //update health bar colors for all nodes
         for (auto & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             NEXT_COMBATNODE_SPTR->HealthChangeTasks();
+
+        //stop all creature image shaking
+        StopShaking(nullptr);
     }
 
 

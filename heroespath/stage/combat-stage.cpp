@@ -1283,9 +1283,6 @@ namespace stage
             statusMsgAnimTimerSec_ = 0.0f;
             combatDisplayPtrC_->SetIsStatusMessageAnimating(true);
         }
-
-        if (turnCreaturePtr_ != nullptr)
-            combatDisplayPtrC_->StopShaking(turnCreaturePtr_);
     }
 
 
@@ -1606,8 +1603,6 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
-        combatDisplayPtrC_->HandleEndOfTurnTasks();
-
         if (savedCombatInfo_.CanTurnAdvance())
         {
             encounterSPtr_->IncrementTurn();
@@ -1909,7 +1904,7 @@ namespace stage
     {
         SetTurnPhase(TurnPhase::NotATurn);
         savedCombatInfo_.CanTurnAdvance(true);
-        combatDisplayPtrC_->StopShaking(nullptr);
+        combatDisplayPtrC_->HandleEndOfTurnTasks();
         EndTurn();
         EndPause();
     }
