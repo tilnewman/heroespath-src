@@ -107,14 +107,14 @@ namespace stage
         enum class TurnPhase
         {
             NotATurn = 0,
-            CenteringAnim,
-            PrePause,
-            DetermineAction,
-            ZoomAndSlideAnim,
-            PostZoomPause,
-            PerformAnim,
+            CenterAndZoomIn,//center on turn creature
+            PostZoomInPause,
+            Determine,
+            CenterAndZoomOut,//center on turn creature and targets of whatever action the turn creature is taking (performType_)
+            PostZoomOutPause,
+            PerformAnim, //see enum PerformType for which anim is performed here and PerformAnimPhase for which phase that anim is in
             PerformReport,
-            PerformPause,
+            PostPerformPause,
             StatusAnim,
             Count
         };
@@ -135,6 +135,20 @@ namespace stage
             Count
         };
 
+        //definese what phase of the perform action animation is currently displaying
+        enum class PerformAnimPhase
+        {
+            NotAnimating = 0,
+            ProjectileShoot,
+            MoveToward,
+            PostMoveTowardPause,
+            Impact,
+            PostImpactPause,
+            MoveBack,
+            FinalPause,
+            Count
+        };
+
         //defines what part of the initial zoom and pan
         enum class PreTurnPhase
         {
@@ -143,8 +157,6 @@ namespace stage
             PostPanPause,
             ZoomOut,
             PostZoomOutPause,
-            ZoomIn,
-            PostZoomInPause,
             End,
             Count
         };
@@ -220,6 +232,7 @@ namespace stage
         const std::string TurnPhaseToString(const TurnPhase);
         const std::string PerformTypeToString(const PerformType);
         const std::string PreTurnPhaseToString(const PreTurnPhase);
+        const std::string PerformAnimPhaseToString(const PerformAnimPhase);
         void UpdateTestingText();
         inline void SetTurnPhase(const TurnPhase TP)        { turnPhase_ = TP; UpdateTestingText(); }
         inline void SetPreTurnPhase(const PreTurnPhase PTP) { preTurnPhase_ = PTP; UpdateTestingText(); }
@@ -270,8 +283,10 @@ namespace stage
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;
         PerformType                      performType_;
+        PerformAnimPhase                 perfromAnimPhase_;
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
+        float                            zoomSliderOrigPos_;
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
         combat::CombatDisplayPtrC_t combatDisplayPtrC_;
@@ -288,7 +303,7 @@ namespace stage
         float pauseElapsedSec_;
         bool isPauseCanceled_;
 
-        //memebers that slide the battlefield view around to center on a particular creature
+        //members that slide the battlefield view around to center on a particular creature
         bool isCentering_;
         sfml_util::sliders::ZeroSliderOnce<float> centeringSlider_;
 
@@ -333,6 +348,7 @@ namespace stage
         //members that manage the creature attack animation
         creature::CreatureCPtr_t creatureAttackingCPtr_;
         creature::CreatureCPtr_t creatureAttackedCPtr_;
+        creature::CreaturePVec_t creaturesToCenterPVec_;
 
         //testing display members
         sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;

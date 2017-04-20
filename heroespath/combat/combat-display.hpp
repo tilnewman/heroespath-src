@@ -126,6 +126,7 @@ namespace combat
         void CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC);
         void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
         void CenteringStartTargetCenterOfBatllefield();
+        void CenteringStart(const creature::CreaturePVec_t &);
         void CenteringUpdate(const float RATIO_COMPLETE);
         void CenteringStop();
         const sf::Vector2f CenteringTargetPos() const;
@@ -181,12 +182,9 @@ namespace combat
 
         inline void GetCombatNodes(CombatNodeSVec_t & combatNodesSVec) { combatTree_.GetCombatNodes(combatNodesSVec); }
 
-        //TODO
-        inline void ZoomAndSlide_Start() {}
-        inline bool ZoomAndSlide_Update(const float) { return true; }
-        inline void ZoomAndSlide_Stop() {}
-
         void HandleEndOfTurnTasks();
+
+        bool AreCreaturesVisible(const creature::CreaturePVec_t &);
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }

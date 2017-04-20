@@ -141,8 +141,10 @@ namespace stage
         turnPhase_                 (TurnPhase::NotATurn),
         preTurnPhase_              (PreTurnPhase::Start),
         performType_               (PerformType::None),
+        perfromAnimPhase_          (PerformAnimPhase::NotAnimating),
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
+        zoomSliderOrigPos_         (0),
         combatDisplayPtrC_         (new combat::CombatDisplay()),
         settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
                                                                         0.0f,
@@ -195,6 +197,7 @@ namespace stage
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         creatureAttackingCPtr_      (nullptr),
         creatureAttackedCPtr_       (nullptr),
+        creaturesToCenterPVec_      (),
         testingTextRegionSPtr_      (),
         pauseTitle_                 ("")
     {
@@ -214,7 +217,7 @@ namespace stage
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
-        if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::DetermineAction != turnPhase_))
+        if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::Determine != turnPhase_))
             return false;
 
         if (PACKAGE.PTR_ == attackTBoxButtonSPtr_.get())
@@ -432,7 +435,7 @@ namespace stage
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
         testingTextRegion.left += testingTextRegion.width + 65.0f;
-        testingTextRegion.top += (testingTextRegion.height - 35.0f);
+        testingTextRegion.top += (testingTextRegion.height - 500.0f);
         testingTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(0, 0, 0, 176));
@@ -960,13 +963,13 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PrePause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
         {
             titleTBoxTextRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() &&
-            ((TurnPhase::ZoomAndSlideAnim == turnPhase_) || (TurnPhase::PostZoomPause == turnPhase_)))
+            ((TurnPhase::CenterAndZoomOut == turnPhase_) || (TurnPhase::PostZoomOutPause == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
@@ -995,10 +998,14 @@ namespace stage
             return;
         }
 
-        if (TurnPhase::CenteringAnim == turnPhase_)
+        if (TurnPhase::CenterAndZoomIn == turnPhase_)
         {
-            combatDisplayPtrC_->CenteringUpdate( centeringSlider_.Update(ELAPSED_TIME_SEC) );
-
+            auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
+            
+            auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
+            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            
+            combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
             if (centeringSlider_.GetIsDone())
             {
                 StartTurn_Step2();
@@ -1045,13 +1052,22 @@ namespace stage
             return;
         }
 
-        if (TurnPhase::ZoomAndSlideAnim == turnPhase_)
+        if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
-            if (combatDisplayPtrC_->ZoomAndSlide_Update(ELAPSED_TIME_SEC))
+            auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
+            combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
+
+            if (combatDisplayPtrC_->AreCreaturesVisible(creaturesToCenterPVec_) == false)
             {
-                combatDisplayPtrC_->ZoomAndSlide_Stop();
-                SetTurnPhase(TurnPhase::PostZoomPause);
-                StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomPause");
+                auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way at the most
+                zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            }
+
+            if (centeringSlider_.GetIsDone())
+            {
+                combatDisplayPtrC_->CenteringStop();
+                SetTurnPhase(TurnPhase::PostZoomOutPause);
+                StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut");
             }
 
             return;
@@ -1069,7 +1085,7 @@ namespace stage
             {
                 combatDisplayPtrC_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
-                StartPause(POST_PAN_PAUSE_SEC_, "PostPanPause");
+                StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
                 AppendInitialStatus();
             }
 
@@ -1085,22 +1101,7 @@ namespace stage
             if (zoomSlider_.GetIsDone() || (IsAttackAnimating() && combatDisplayPtrC_->IsAttackedCreatureVisible()))
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
-                StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZoomOutPause");
-            }
-
-            return;
-        }
-
-        if (PreTurnPhase::ZoomIn == preTurnPhase_)
-        {
-            auto const SLIDER_POS(zoomSlider_.Update(ELAPSED_TIME_SEC));
-            auto const ZOOM_CURR_VAL(0.5f + (SLIDER_POS * 0.5f));//only zoomed out half way so only zoom back in half way
-            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
-
-            if (zoomSlider_.GetIsDone())
-            {
-                SetPreTurnPhase(PreTurnPhase::PostZoomInPause);
-                StartPause(POST_ZOOMIN_PAUSE_SEC_, "PostZoomInPause");
+                StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZoomOut");
             }
 
             return;
@@ -1124,7 +1125,7 @@ namespace stage
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         if ((IsPaused() == false) &&
-            (TurnPhase::DetermineAction == turnPhase_) &&
+            (TurnPhase::Determine == turnPhase_) &&
             (IsAttackAnimating() == false))
         {
             isMouseHeldDownAndValid_ = true;
@@ -1148,7 +1149,7 @@ namespace stage
 
         if (isPlayerActionAllowed_ &&
             (IsPaused() == false) &&
-            (TurnPhase::DetermineAction == turnPhase_))
+            (TurnPhase::Determine == turnPhase_))
         {
             creature::CreaturePtr_t creatureAtPosPtr(combatDisplayPtrC_->GetCreatureAtPos(MOUSE_POS_V).get());
 
@@ -1187,7 +1188,7 @@ namespace stage
             return true;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::DetermineAction == turnPhase_))
+        if (IsPlayerCharacterTurnValid() && (TurnPhase::Determine == turnPhase_))
         {
             if ((KE.code == sf::Keyboard::Return) || (KE.code == sf::Keyboard::A))
                 return HandleAttack();
@@ -1333,59 +1334,58 @@ namespace stage
          
             if (isAttackAnimZoomOut_)
             {
-                SetPreTurnPhase(PreTurnPhase::End);
                 isAttackAnimZoomOut_ = false;
                 combatDisplayPtrC_->StartAttackAnim();
             }
-            else
-            {
-                SetPreTurnPhase(PreTurnPhase::ZoomIn);
-                zoomSlider_.Reset(ZOOM_SLIDER_SPEED_);
-            }
-
-            return;
-        }
-
-        if (PreTurnPhase::PostZoomInPause == preTurnPhase_)
-        {
+            
             SetPreTurnPhase(PreTurnPhase::End);
-            isAttackAnimZoomOut_ = false;
             SetIsPlayerActionAllowed(false);
             combatDisplayPtrC_->SetSummaryViewAllowed();
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PrePause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
         {
-            SetTurnPhase(TurnPhase::DetermineAction);
+            SetTurnPhase(TurnPhase::Determine);
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostZoomPause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostZoomOutPause == turnPhase_))
         {
             SetTurnPhase(TurnPhase::PerformAnim);
             StartPerformAnim();
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PrePause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
         {
-            SetTurnPhase(TurnPhase::DetermineAction);
+            SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
 
-            //also do the perform step here so that the TurnBox can dispay the non-player creature's intent before showing the result
+            //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
             performType_ = HandleEnemyTurnStep2_Perform();
 
-            SetTurnPhase(TurnPhase::ZoomAndSlideAnim);
-            combatDisplayPtrC_->ZoomAndSlide_Start();
+            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+
+            //collect a list of all attacking and targeted creatures to center on the screen
+            creaturesToCenterPVec_.clear();
+            creaturesToCenterPVec_.push_back(turnCreaturePtr_);
+            auto const CREATURE_EFFECT_VEC{ fightResult_.Effects() };
+            for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECT_VEC)
+                creaturesToCenterPVec_.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+
+            combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
+
+            SetIsPlayerActionAllowed(false);
+            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);    
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomOutPause == turnPhase_))
         {
             //See above for call to HandleEnemyTurnStep2_Perform()
             SetTurnPhase(TurnPhase::PerformReport);
-            StartPause(PERFORM_REPORT_DELAY_SEC_, "PerformReportPre");
+            StartPause(PERFORM_REPORT_DELAY_SEC_, "PerformReport(Pre)");
             SetupTurnBox();
             return;
         }
@@ -1424,11 +1424,11 @@ namespace stage
                 return;
             }
             
-            StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReportTurn");
+            StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Post)");
             return;
         }
 
-        if (TurnPhase::PerformPause == turnPhase_)
+        if (TurnPhase::PostPerformPause == turnPhase_)
         {
             AfterHandleTurnTasks();
             return;
@@ -1549,7 +1549,9 @@ namespace stage
     //start centering anim
     void CombatStage::StartTurn_Step1()
     {
-        SetTurnPhase(TurnPhase::CenteringAnim);
+        SetTurnPhase(TurnPhase::CenterAndZoomIn);
+        zoomSliderOrigPos_ = zoomSliderBarSPtr_->GetCurrentValue();
+
         turnCreaturePtr_ = encounterSPtr_->CurrentTurnCreature();
 
         performReportEffectIndex_ = 0;
@@ -1575,15 +1577,15 @@ namespace stage
 
         SetupTurnBox();
 
-        //skip PrePause if a player turn
+        //skip PostZoomInPause if a player turn
         if (IS_PLAYER_TURN)
         {
-            SetTurnPhase(TurnPhase::DetermineAction);
+            SetTurnPhase(TurnPhase::Determine);
         }
         else
         {
-            SetTurnPhase(TurnPhase::PrePause);
-            StartPause(PRE_TURN_DELAY_SEC_, "PreTurn");
+            SetTurnPhase(TurnPhase::PostZoomInPause);
+            StartPause(PRE_TURN_DELAY_SEC_, "PostZoomIn");
         }
     }
 
@@ -1600,40 +1602,6 @@ namespace stage
         turnCreaturePtr_ = nullptr;
         MoveTurnBoxObjectsOffScreen(true);
         combatDisplayPtrC_->UpdateAllConditionText();
-
-        //TODO TEMP REMOVE
-        for (auto const & NEXT_CHARACTER_SPTR : encounterSPtr_->NonPlayerParty()->Characters())
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Str().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Str="  << NEXT_CHARACTER_SPTR->Stats().Str().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Acc().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Acc="  << NEXT_CHARACTER_SPTR->Stats().Acc().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Cha().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Cha="  << NEXT_CHARACTER_SPTR->Stats().Cha().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Lck().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Lck="  << NEXT_CHARACTER_SPTR->Stats().Lck().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Spd().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Spd="  << NEXT_CHARACTER_SPTR->Stats().Spd().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Int().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Int="  << NEXT_CHARACTER_SPTR->Stats().Int().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Str().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Str=" << NEXT_CHARACTER_SPTR->Stats().Str().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Acc().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Acc=" << NEXT_CHARACTER_SPTR->Stats().Acc().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Cha().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Cha=" << NEXT_CHARACTER_SPTR->Stats().Cha().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Lck().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Lck=" << NEXT_CHARACTER_SPTR->Stats().Lck().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Spd().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Spd=" << NEXT_CHARACTER_SPTR->Stats().Spd().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Int().Current() >= 0), "herospath::stage::CombatStage::EndTurn() NonPlayer " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Int=" << NEXT_CHARACTER_SPTR->Stats().Int().Current());
-        }
-
-        for (auto const & NEXT_CHARACTER_SPTR : player::Party().Characters())
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Str().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Str="  << NEXT_CHARACTER_SPTR->Stats().Str().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Acc().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Acc="  << NEXT_CHARACTER_SPTR->Stats().Acc().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Cha().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Cha="  << NEXT_CHARACTER_SPTR->Stats().Cha().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Lck().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Lck="  << NEXT_CHARACTER_SPTR->Stats().Lck().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Spd().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Spd="  << NEXT_CHARACTER_SPTR->Stats().Spd().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Int().Normal()  >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Normal Stat: Int="  << NEXT_CHARACTER_SPTR->Stats().Int().Normal());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Str().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Str=" << NEXT_CHARACTER_SPTR->Stats().Str().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Acc().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Acc=" << NEXT_CHARACTER_SPTR->Stats().Acc().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Cha().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Cha=" << NEXT_CHARACTER_SPTR->Stats().Cha().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Lck().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Lck=" << NEXT_CHARACTER_SPTR->Stats().Lck().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Spd().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Spd=" << NEXT_CHARACTER_SPTR->Stats().Spd().Current());
-            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CHARACTER_SPTR->Stats().Int().Current() >= 0), "herospath::stage::CombatStage::EndTurn() Player " << NEXT_CHARACTER_SPTR->Name() << " has invalid Current Stat: Int=" << NEXT_CHARACTER_SPTR->Stats().Int().Current());
-
-        }
     }
 
 
@@ -1664,8 +1632,9 @@ namespace stage
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
             performType_ = PerformType::Attack;
-            SetTurnPhase(TurnPhase::ZoomAndSlideAnim);
-            combatDisplayPtrC_->ZoomAndSlide_Start();
+
+            SetTurnPhase(TurnPhase::PostZoomOutPause);
+            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
             return true;
         }
     }
@@ -1685,8 +1654,9 @@ namespace stage
             //turnActionInfo_ =
 
             performType_ = PerformType::Attack;
-            SetTurnPhase(TurnPhase::ZoomAndSlideAnim);
-            combatDisplayPtrC_->ZoomAndSlide_Start();
+            
+            SetTurnPhase(TurnPhase::PostZoomOutPause);
+            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
             return true;
         }
     }
@@ -1706,8 +1676,9 @@ namespace stage
             //turnActionInfo_ =
 
             performType_ = PerformType::Cast;
-            SetTurnPhase(TurnPhase::ZoomAndSlideAnim);
-            combatDisplayPtrC_->ZoomAndSlide_Start();
+            
+            SetTurnPhase(TurnPhase::PostZoomOutPause);
+            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
             return true;
         }
     }
@@ -2167,9 +2138,9 @@ namespace stage
                 enemyCondsSS << ": " << CONDITION_LIST_STR;
             }
 
-            if ((TurnPhase::DetermineAction == turnPhase_) ||
-                (TurnPhase::ZoomAndSlideAnim == turnPhase_) ||
-                (TurnPhase::PostZoomPause == turnPhase_) ||
+            if ((TurnPhase::Determine == turnPhase_) ||
+                (TurnPhase::CenterAndZoomOut == turnPhase_) ||
+                (TurnPhase::PostZoomOutPause == turnPhase_) ||
                 (TurnPhase::PerformAnim == turnPhase_))
             {
                 if (fightResult_.Count() > 0)
@@ -2325,34 +2296,36 @@ namespace stage
             }
         }
 
-        SetTurnPhase(TurnPhase::PerformPause);
-        StartPause(PERFORM_TURN_DELAY_SEC_, "StartPerformAnim");
+        SetTurnPhase(TurnPhase::PostPerformPause);
+        std::ostringstream ss;
+        ss << "PostPerform(" << PerformTypeToString(performType_) << ")";
+        StartPause(PERFORM_TURN_DELAY_SEC_, ss.str());
     }
 
 
-    const std::string CombatStage::TurnPhaseToString(const TurnPhase TURN_PHASE)
+    const std::string CombatStage::TurnPhaseToString(const TurnPhase ENUM)
     {
-        switch (TURN_PHASE)
+        switch (ENUM)
         {
-            case TurnPhase::NotATurn:          { return "NotATurn"; }
-            case TurnPhase::CenteringAnim:     { return "CenteringAnim"; }
-            case TurnPhase::PrePause:          { return "PrePause"; }
-            case TurnPhase::DetermineAction:   { return "DetermineAction"; }
-            case TurnPhase::ZoomAndSlideAnim:  { return "ZoomAndSlideAnim"; }
-            case TurnPhase::PostZoomPause:     { return "PostZoomPause"; }
-            case TurnPhase::PerformAnim:       { return "PerformAnim"; }
-            case TurnPhase::PerformReport:     { return "PerformReport"; }
-            case TurnPhase::PerformPause:      { return "PerformPause"; }
-            case TurnPhase::StatusAnim:        { return "StatusAnim"; }
+            case TurnPhase::NotATurn:           { return "NotATurn"; }
+            case TurnPhase::CenterAndZoomIn:    { return "CenterAndZoomIn"; }
+            case TurnPhase::PostZoomInPause:    { return "PostZoomInPause"; }
+            case TurnPhase::Determine:          { return "Determine"; }
+            case TurnPhase::CenterAndZoomOut:   { return "CenterAndZoomOut"; }
+            case TurnPhase::PostZoomOutPause:   { return "PostZoomOutPause"; }
+            case TurnPhase::PerformAnim:        { return "PerformAnim"; }
+            case TurnPhase::PerformReport:      { return "PerformReport"; }
+            case TurnPhase::PostPerformPause:   { return "PostPerformPause"; }
+            case TurnPhase::StatusAnim:         { return "StatusAnim"; }
             case TurnPhase::Count:
-            default:                           { return ""; }
+            default:                            { return ""; }
         }
     }
 
 
-    const std::string CombatStage::PerformTypeToString(const PerformType PERFORM_TYPE)
+    const std::string CombatStage::PerformTypeToString(const PerformType ENUM)
     {
-        switch (PERFORM_TYPE)
+        switch (ENUM)
         {
             case PerformType::None:       { return "None"; }
             case PerformType::Pause:      { return "Pause"; }
@@ -2370,17 +2343,15 @@ namespace stage
     }
 
 
-    const std::string CombatStage::PreTurnPhaseToString(const PreTurnPhase PRE_TURN_PHASE)
+    const std::string CombatStage::PreTurnPhaseToString(const PreTurnPhase ENUM)
     {
-        switch (PRE_TURN_PHASE)
+        switch (ENUM)
         {
             case PreTurnPhase::Start:             { return "Start"; }
             case PreTurnPhase::PanToCenter:       { return "PanToCenter"; }
             case PreTurnPhase::PostPanPause:      { return "PostPanPause"; }
             case PreTurnPhase::ZoomOut:           { return "ZoomOut"; }
-            case PreTurnPhase::PostZoomOutPause:  { return "PostZoomOutPause"; }
-            case PreTurnPhase::ZoomIn:            { return "ZoomIn"; }
-            case PreTurnPhase::PostZoomInPause:   { return "PostZoomInPause"; }
+            case PreTurnPhase::PostZoomOutPause:  { return "PostZOutPause"; }
             case PreTurnPhase::End:               { return "End"; }
             case PreTurnPhase::Count:
             default:                              { return ""; }
@@ -2388,10 +2359,30 @@ namespace stage
     }
 
 
+    const std::string CombatStage::PerformAnimPhaseToString(const PerformAnimPhase ENUM)
+    {
+        switch (ENUM)
+        {
+            case PerformAnimPhase::NotAnimating:        { return "NotAnimating"; }
+            case PerformAnimPhase::ProjectileShoot:     { return "ProjShoot"; }
+            case PerformAnimPhase::MoveToward:          { return "MoveToward"; }
+            case PerformAnimPhase::PostMoveTowardPause: { return "PostTowardPause"; }
+            case PerformAnimPhase::Impact:              { return "Impact"; }
+            case PerformAnimPhase::PostImpactPause:     { return "PostImpactPause"; }
+            case PerformAnimPhase::MoveBack:            { return "MoveBack"; }
+            case PerformAnimPhase::FinalPause:          { return "FinalPause"; }
+            case PerformAnimPhase::Count:
+            default:                                    { return ""; }
+        }
+    }
+
+
     void CombatStage::UpdateTestingText()
     {
         std::ostringstream ss;
-        ss << "Phase=" << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_) : PreTurnPhaseToString(preTurnPhase_)) << ", Pause=" << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A" );
+        ss << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_) : PreTurnPhaseToString(preTurnPhase_))
+            << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A")
+            << ", " << PerformAnimPhaseToString(perfromAnimPhase_);
         testingTextRegionSPtr_->SetText(ss.str());
     }
 

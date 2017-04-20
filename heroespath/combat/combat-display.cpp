@@ -26,6 +26,7 @@
 #include "heroespath/state/game-state.hpp"
 
 #include <sstream>
+#include <numeric>
 
 
 namespace heroespath
@@ -730,6 +731,34 @@ namespace combat
     }
 
 
+    void CombatDisplay::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        std::vector<float> horizPosVec;
+        std::vector<float> vertPosVec;
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CENTER_ON_PVEC)
+        {
+            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+            {
+                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                {
+                    horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x);
+                    vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y);
+                }
+            }
+        }
+
+        auto const HORIZ_AVG_POS{ std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f) / static_cast<float>(horizPosVec.size()) };
+        auto const VERT_AVG_POS { std::accumulate(vertPosVec.begin(), vertPosVec.end(), 0.0f)   / static_cast<float>(vertPosVec.size()) };
+
+        CenteringStart(HORIZ_AVG_POS, VERT_AVG_POS);
+    }
+
+
     void CombatDisplay::CenteringUpdate(const float RATIO_COMPLETE)
     {
         auto const TARGET_POS_V(CenteringTargetPos());
@@ -1002,6 +1031,30 @@ namespace combat
 
         //stop all creature image shaking
         StopShaking(nullptr);
+    }
+
+
+    bool CombatDisplay::AreCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CHECK_PVEC)
+        {
+            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+            {
+                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                {
+                    if (NEXT_COMBATNODE_SPTR->GetEntityWillDraw() == false)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
 
