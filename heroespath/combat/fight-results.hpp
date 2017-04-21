@@ -194,6 +194,10 @@ namespace combat
 
         const creature::ConditionSVec_t Conditions(const bool WILL_UNIUQE) const;
 
+        bool GetHitInfo(HitInfo &         HitInfo_OutParam,
+                        const std::size_t EFFECT_INDEX = 0,
+                        const std::size_t HIT_INDEX = 0) const;
+
     private:
         CreatureEffectVec_t creatureEffectVec_;
     };

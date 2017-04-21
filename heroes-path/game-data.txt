@@ -57,6 +57,16 @@ media-images-gui-accents-ouroboros-white=image/misc/ouroboros-white.png
 media-images-gui-accents-ouroboros-black=image/misc/ouroboros-black.png
 media-images-campfire=image/misc/campfire.png
 media-images-candle=image/candle.png
+media-images-combat-dart=image/combat/dart.gif
+media-images-combat-arrow1=image/combat/arrow1.gif
+media-images-combat-arrow2=image/combat/arrow2.gif
+media-images-combat-arrow3=image/combat/arrow3.gif
+media-images-combat-arrow4=image/combat/arrow4.gif
+media-images-combat-stone1=image/combat/stone1.gif
+media-images-combat-stone2=image/combat/stone2.gif
+media-images-combat-stone3=image/combat/stone3.gif
+media-images-combat-stone4=image/combat/stone4.gif
+
 
 #Condition Descriptions
 heroespath-creature-condition-Good-desc=No ailments.

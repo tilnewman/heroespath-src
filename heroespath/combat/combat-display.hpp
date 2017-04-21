@@ -186,6 +186,14 @@ namespace combat
 
         bool AreCreaturesVisible(const creature::CreaturePVec_t &);
 
+        void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
+                                      creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+                                      const item::ItemSPtr_t &  WEAPON_SPTR,
+                                      const bool                WILL_HIT);
+
+        void ProjectileShootAnimUpdate(const float);
+        void ProjectileShootAnimStop();
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
 
@@ -284,6 +292,13 @@ namespace combat
         //members that manage creature dragging
         bool isCreatureDragAllowed_;
         bool isMouseHeldDownInCreature_;
+
+        //members controlling the projectile shoot animation
+        sfml_util::TextureSPtr_t projAnimTextureSPtr_;
+        sf::Sprite projAnimSprite_;
+        sf::Vector2f projAnimBeginPosV_;
+        sf::Vector2f projAnimEndPosV_;
+        bool projAnimWillSpin_;
     };
 
 

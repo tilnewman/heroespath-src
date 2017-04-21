@@ -490,10 +490,10 @@ namespace creature
             ss << "Not an equippable item.";
 
             if (CATEGORY & item::category::Useable)
-                ss << "  (Try using it instead.)";
+                ss << "  (Try using it instead)";
 
             if (CATEGORY & item::category::QuestItem)
-                ss << "  (Have patience.  This item will prove useful in time.)";
+                ss << "  (have patience, this item will prove useful in time)";
 
             return ss.str();
         }

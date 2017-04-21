@@ -374,5 +374,23 @@ namespace combat
         return conditionsSVec;
     }
 
+
+    bool FightResult::GetHitInfo(HitInfo &         HitInfo_OutParam,
+                                 const std::size_t EFFECT_INDEX,
+                                 const std::size_t HIT_INDEX) const
+    {
+        if (EFFECT_INDEX < creatureEffectVec_.size())
+        {
+            auto const HIT_INFO_VEC{ creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
+            if (HIT_INDEX < HIT_INFO_VEC.size())
+            {
+                HitInfo_OutParam = HIT_INFO_VEC[HIT_INDEX];
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
 }

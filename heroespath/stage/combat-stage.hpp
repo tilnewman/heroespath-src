@@ -108,10 +108,10 @@ namespace stage
         {
             NotATurn = 0,
             CenterAndZoomIn,//center on turn creature
-            PostZoomInPause,
+            PostCenterAndZoomInPause,
             Determine,
             CenterAndZoomOut,//center on turn creature and targets of whatever action the turn creature is taking (performType_)
-            PostZoomOutPause,
+            PostCenterAndZoomOutPause,
             PerformAnim, //see enum PerformType for which anim is performed here and PerformAnimPhase for which phase that anim is in
             PerformReport,
             PostPerformPause,
@@ -124,9 +124,10 @@ namespace stage
         {
             None = 0,
             Pause,
-            Attack,
+            MeleeWeapon,
             ShootSling,
             ShootArrow,
+            ShootBlowpipe,
             Advance,
             Retreat,
             Cast,
@@ -139,6 +140,7 @@ namespace stage
         enum class PerformAnimPhase
         {
             NotAnimating = 0,
+            AdvanceOrRetreat,
             ProjectileShoot,
             MoveToward,
             PostMoveTowardPause,
@@ -234,8 +236,12 @@ namespace stage
         const std::string PreTurnPhaseToString(const PreTurnPhase);
         const std::string PerformAnimPhaseToString(const PerformAnimPhase);
         void UpdateTestingText();
-        inline void SetTurnPhase(const TurnPhase TP)        { turnPhase_ = TP; UpdateTestingText(); }
-        inline void SetPreTurnPhase(const PreTurnPhase PTP) { preTurnPhase_ = PTP; UpdateTestingText(); }
+        inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
+        inline void SetPreTurnPhase(const PreTurnPhase PTP)         { preTurnPhase_ = PTP; UpdateTestingText(); }
+        inline void SetPerformAnimPhase(const PerformAnimPhase PAP) { performAnimPhase_ = PAP; UpdateTestingText(); }
+        
+        PerformType GetPerformTypeFromWeaponType(const item::ItemSPtr_t &) const;
+        PerformType GetPerformTypeFromFightResult(const combat::FightResult &) const;
 
     public:
         static const float ZOOM_SLIDER_SPEED_;
@@ -253,6 +259,7 @@ namespace stage
         static const float TEXT_COLOR_SHAKER_SPEED_;
         static const float CREATURE_POS_SLIDER_SPEED_;
         static const float STATUSMSG_ANIM_DURATION_SEC_;
+        static const float PROJECTILE_SHOOT_SLIDER_SPEED_;
         //
         static const sf::Color LISTBOX_BACKGROUND_COLOR_;
         static const sf::Color LISTBOX_HIGHLIGHT_COLOR_;
@@ -283,7 +290,7 @@ namespace stage
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;
         PerformType                      performType_;
-        PerformAnimPhase                 perfromAnimPhase_;
+        PerformAnimPhase                 performAnimPhase_;
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
@@ -353,6 +360,9 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;
         std::string pauseTitle_;
+
+        //members that handle perform animation
+        sfml_util::sliders::ZeroSliderOnce<float> performSlider_;
     };
 
 }

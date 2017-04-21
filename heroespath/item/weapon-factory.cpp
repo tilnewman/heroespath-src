@@ -506,7 +506,7 @@ namespace weapon
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, materialPri, MATERIAL_SEC),
                                      Make_Desc(DETAILS.description, materialPri, MATERIAL_SEC, "grip"),
-                                     static_cast<category::Enum>(category::Weapon | category::Equippable | DETAILS.handedness),
+                                     static_cast<category::Enum>(category::Weapon | category::TwoHanded | category::Equippable | DETAILS.handedness),
                                      misc_type::NotMisc,
                                      static_cast<weapon_type::Enum>(weapon_type::Projectile | weaponType),
                                      armor_type::NotArmor,

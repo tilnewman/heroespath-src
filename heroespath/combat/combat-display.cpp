@@ -139,7 +139,12 @@ namespace combat
         attackedCombatNodeSPtr_    (nullptr),
         attackingCreatureOrigPos_  (-1.0f, -1.0f), //any two negative values will work here
         isCreatureDragAllowed_     (false),
-        isMouseHeldDownInCreature_ (false)
+        isMouseHeldDownInCreature_ (false),
+        projAnimTextureSPtr_       (),
+        projAnimSprite_            (),
+        projAnimBeginPosV_         (0.0f, 0.0f),
+        projAnimEndPosV_           (0.0f, 0.0f),
+        projAnimWillSpin_          (false)
     {}
 
 
@@ -215,6 +220,14 @@ namespace combat
         target.draw( * boxSPtr_, states);
         Stage::Draw(target, states);
         summaryView_.Draw(target, states);
+
+        if (projAnimTextureSPtr_.get() != nullptr)
+        {
+            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
+            states.blendMode = sf::BlendAdd;
+            target.draw(projAnimSprite_, states);
+            states.blendMode = ORIG_BLEND_MODE;
+        }
     }
 
 
@@ -1055,6 +1068,127 @@ namespace combat
         }
 
         return true;
+    }
+
+
+    void CombatDisplay::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
+                                                 creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+                                                 const item::ItemSPtr_t &  WEAPON_SPTR,
+                                                 const bool                WILL_HIT)
+    {
+        projAnimWillSpin_ = false;
+
+        //establish the game data file path key to the projectile image
+        const std::string PATH_KEY_BASE_STR{"media-images-combat-"};
+        std::string pathKey{ PATH_KEY_BASE_STR + "dart" };
+        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Bow)
+        {
+            std::ostringstream ss;
+            ss << PATH_KEY_BASE_STR << "arrow" << sfml_util::rand::Int(1, 3);
+            pathKey = ss.str();
+        }
+        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
+        {
+            projAnimWillSpin_ = true;
+
+            std::ostringstream ss;
+            ss << PATH_KEY_BASE_STR << "stone" << sfml_util::rand::Int(1, 4);
+            pathKey = ss.str();
+        }
+        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow)
+        {
+            pathKey = PATH_KEY_BASE_STR + "arrow4";
+        }
+
+        //load the projectile image
+        sfml_util::LoadImageOrTextureSPtr(projAnimTextureSPtr_, heroespath::GameDataFile::Instance()->GetMediaPath(pathKey));
+
+        //establish the creature positions
+        sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
+        sf::Vector2f creatureDefendingCenterPosV{0.0f, 0.0f};
+        CombatNodeSVec_t combatNodeSVec;
+        combatNodeSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodeSVec);
+        for (auto const & NEXT_COMBANODE_SPTR : combatNodeSVec)
+        {
+            if (NEXT_COMBANODE_SPTR->Creature().get() == CREATURE_ATTACKING_CPTRC)
+            {
+                creatureAttackingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
+                creatureAttackingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
+            }
+            else if (NEXT_COMBANODE_SPTR->Creature().get() == CREATURE_DEFENDING_CPTRC)
+            {
+                creatureDefendingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
+                creatureDefendingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
+            }
+        }
+
+        auto const IS_MOVING_RIGHT{ creatureAttackingCenterPosV.x < creatureDefendingCenterPosV.x };
+        if (IS_MOVING_RIGHT == false)
+        {
+            sfml_util::FlipHoriz( * projAnimTextureSPtr_);
+        }
+        
+        //
+        projAnimSprite_.setTexture( * projAnimTextureSPtr_, true);
+
+        //
+        projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
+
+        //scale the sprite down to a reasonable size
+        projAnimSprite_.setOrigin(0.0f, 0.0f);
+        auto scale{ sfml_util::MapByRes(0.05f, 0.75f) };//this is the scale for Sling projectiles (stones)
+        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) || (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow))
+        {
+            scale = sfml_util::MapByRes(0.3f, 2.0f);
+        }
+        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe)
+        {
+            scale = sfml_util::MapByRes(0.15f, 2.0f);
+        }
+        projAnimSprite_.setScale(scale, scale);
+
+        projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f, projAnimSprite_.getLocalBounds().height * 0.5f);
+        //TODO SET ROTATION
+        
+        projAnimBeginPosV_ = creatureAttackingCenterPosV;
+        
+        if (WILL_HIT)
+        {
+            projAnimEndPosV_ = creatureDefendingCenterPosV;
+        }
+        else
+        {
+            auto const SPRITE_HEIGHT{ projAnimSprite_.getGlobalBounds().height };
+            projAnimEndPosV_.y = ((creatureAttackingCenterPosV.y < creatureDefendingCenterPosV.y) ? (sfml_util::Display::Instance()->GetWinHeight() + SPRITE_HEIGHT + 1.0f) : ((-1.0f * SPRITE_HEIGHT) - 1.0f));
+            
+            auto const HORIZ_OVER_VERT_DIFF{ (creatureDefendingCenterPosV.x - creatureAttackingCenterPosV.x) / (creatureDefendingCenterPosV.y - creatureAttackingCenterPosV.y) };
+            projAnimEndPosV_.x = std::abs(projAnimEndPosV_.y - creatureAttackingCenterPosV.y) * std::abs(HORIZ_OVER_VERT_DIFF);
+            
+            if (creatureAttackingCenterPosV.x < creatureDefendingCenterPosV.x)
+            {
+                projAnimEndPosV_.x = projAnimBeginPosV_.x - std::abs(projAnimEndPosV_.x - projAnimBeginPosV_.x);
+            }
+        }
+    }
+
+
+    void CombatDisplay::ProjectileShootAnimUpdate(const float SLIDER_POS)
+    {
+        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
+        auto const SPRITE_POS_VERT { projAnimBeginPosV_.y + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
+        projAnimSprite_.setPosition(SPRITE_POS_HORIZ, SPRITE_POS_VERT);
+
+        if (projAnimWillSpin_)
+        {
+            projAnimSprite_.rotate(2.0f);
+        }
+    }
+
+
+    void CombatDisplay::ProjectileShootAnimStop()
+    {
+        projAnimTextureSPtr_.reset();
     }
 
 

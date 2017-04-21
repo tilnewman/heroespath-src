@@ -110,6 +110,7 @@ namespace stage
     const float CombatStage::TEXT_COLOR_SHAKER_SPEED_       (35.0f);
     const float CombatStage::CREATURE_POS_SLIDER_SPEED_     (4.0f);
     const float CombatStage::STATUSMSG_ANIM_DURATION_SEC_   (2.0f);
+    const float CombatStage::PROJECTILE_SHOOT_SLIDER_SPEED_ (4.0f);
     //
     const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   ((sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)));
     const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    ((sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20));
@@ -141,7 +142,7 @@ namespace stage
         turnPhase_                 (TurnPhase::NotATurn),
         preTurnPhase_              (PreTurnPhase::Start),
         performType_               (PerformType::None),
-        perfromAnimPhase_          (PerformAnimPhase::NotAnimating),
+        performAnimPhase_          (PerformAnimPhase::NotAnimating),
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
         zoomSliderOrigPos_         (0),
@@ -199,7 +200,8 @@ namespace stage
         creatureAttackedCPtr_       (nullptr),
         creaturesToCenterPVec_      (),
         testingTextRegionSPtr_      (),
-        pauseTitle_                 ("")
+        pauseTitle_                 (""),
+        performSlider_              ()
     {
         savedCombatInfo_.CanTurnAdvance(false);
     }
@@ -963,13 +965,13 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             titleTBoxTextRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() &&
-            ((TurnPhase::CenterAndZoomOut == turnPhase_) || (TurnPhase::PostZoomOutPause == turnPhase_)))
+            ((TurnPhase::CenterAndZoomOut == turnPhase_) || (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
@@ -983,6 +985,20 @@ namespace stage
                 isPauseCanceled_ = false;
                 EndPause();
             }
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) && (PerformAnimPhase::ProjectileShoot == performAnimPhase_))
+        {
+            combatDisplayPtrC_->ProjectileShootAnimUpdate( performSlider_.Update(ELAPSED_TIME_SEC) );
+            if (performSlider_.GetIsDone())
+            {
+                combatDisplayPtrC_->ProjectileShootAnimStop();
+                SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
+                SetTurnPhase(TurnPhase::PerformReport);
+                SetupTurnBox();
+                StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Pre)");
+            }
+            return;
         }
 
         //handle creature turns in order of speed stat by starting the centering anim
@@ -1066,7 +1082,7 @@ namespace stage
             if (centeringSlider_.GetIsDone())
             {
                 combatDisplayPtrC_->CenteringStop();
-                SetTurnPhase(TurnPhase::PostZoomOutPause);
+                SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
                 StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut");
             }
 
@@ -1330,8 +1346,6 @@ namespace stage
 
         if (PreTurnPhase::PostZoomOutPause == preTurnPhase_)
         {
-            SetIsPlayerActionAllowed(false);
-         
             if (isAttackAnimZoomOut_)
             {
                 isAttackAnimZoomOut_ = false;
@@ -1344,20 +1358,20 @@ namespace stage
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             SetTurnPhase(TurnPhase::Determine);
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostZoomOutPause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             SetTurnPhase(TurnPhase::PerformAnim);
             StartPerformAnim();
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomInPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
@@ -1381,11 +1395,11 @@ namespace stage
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostZoomOutPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             //See above for call to HandleEnemyTurnStep2_Perform()
-            SetTurnPhase(TurnPhase::PerformReport);
-            StartPause(PERFORM_REPORT_DELAY_SEC_, "PerformReport(Pre)");
+            SetTurnPhase(TurnPhase::PerformAnim);
+            StartPerformAnim();
             SetupTurnBox();
             return;
         }
@@ -1476,7 +1490,7 @@ namespace stage
                 fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, turnActionInfo_.Target());
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                return PerformType::Attack;
+                return GetPerformTypeFromFightResult(fightResult_);
             }
 
             case combat::TurnAction::Block:
@@ -1584,7 +1598,7 @@ namespace stage
         }
         else
         {
-            SetTurnPhase(TurnPhase::PostZoomInPause);
+            SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
             StartPause(PRE_TURN_DELAY_SEC_, "PostZoomIn");
         }
     }
@@ -1630,11 +1644,9 @@ namespace stage
             opponentCreature_ = combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayPtrC_);
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature_, nullptr);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-
-            performType_ = PerformType::Attack;
-
-            SetTurnPhase(TurnPhase::PostZoomOutPause);
-            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
+            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature_);
+            performType_ = GetPerformTypeFromFightResult(fightResult_);
+            StartPerformAnim();
             return true;
         }
     }
@@ -1650,13 +1662,9 @@ namespace stage
         }
         else
         {
-            //can't set turnActionInfo_ yet because the player must select which non_player creature to fight first
-            //turnActionInfo_ =
-
-            performType_ = PerformType::Attack;
-            
-            SetTurnPhase(TurnPhase::PostZoomOutPause);
-            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
+            //can't set turnActionInfo_ or fightResult_ or performType_ yet because the player must select which non_player creature to fight first
+            //so skip to end of turn until implemented with StartPerformAnim()
+            StartPerformAnim();
             return true;
         }
     }
@@ -1672,13 +1680,11 @@ namespace stage
         }
         else
         {
-            //can't set turnActionInfo_ yet because the player must select which spell to cast and which creature to cast it on
-            //turnActionInfo_ =
-
             performType_ = PerformType::Cast;
-            
-            SetTurnPhase(TurnPhase::PostZoomOutPause);
-            StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut"); 
+
+            //can't set turnActionInfo_ yet because the player must select which spell to cast and which creature to cast it on
+            //so skip to end of turn with StartPerformAnim()
+            StartPerformAnim();
             return true;
         }
     }
@@ -1696,10 +1702,7 @@ namespace stage
         {
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Advance);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-
             performType_ = PerformType::Advance;
-
-            //no need for ZoomAndSlide
             StartPerformAnim();
             return true;
         }
@@ -1718,8 +1721,6 @@ namespace stage
         {
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Retreat);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-
-            //no need for ZoomAndSlide
             StartPerformAnim();
             return true;
         }
@@ -1738,8 +1739,9 @@ namespace stage
         {
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Block);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            
+            //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
-            //no need for ZoomAndSlide or PerformAnim
             return true;
         }
     }
@@ -1752,8 +1754,9 @@ namespace stage
 
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Nothing);
         encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        
+        //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
         AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
-        //no need for ZoomAndSlide or PerformAnim
         return true;
     }
 
@@ -1773,8 +1776,9 @@ namespace stage
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, true);
 
             combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, true);
+            
+            //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
-            //no need for ZoomAndSlide or PerformAnim
             return true;
         }
     }
@@ -1795,8 +1799,9 @@ namespace stage
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, false);
 
             combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, false);
+            
+            //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-            //no need for ZoomAndSlide or PerformAnim
             return true;
         }
     }
@@ -1814,12 +1819,12 @@ namespace stage
         {
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Roar);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-
+            fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayPtrC_);
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+            performType_ = PerformType::Roar;
 
-            //TODO replace with actual Roar action
-            AfterHandleTurnTasks();
-
+            //not implemented yet so skip to end of turn with AppendStatusMessage()
+            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
             return true;
         }
     }
@@ -1838,11 +1843,8 @@ namespace stage
             turnActionInfo_ = combat::TurnActionInfo(((IS_SKY_POUNCE) ? combat::TurnAction::SkyPounce : combat::TurnAction::LandPounce));
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
-            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-
-            //TODO replace with actual Pounce action
-            AfterHandleTurnTasks();
-
+            //not implemented yet so skip to end of turn with AppendStatusMessage()
+            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
             return true;
         }
     }
@@ -2140,7 +2142,7 @@ namespace stage
 
             if ((TurnPhase::Determine == turnPhase_) ||
                 (TurnPhase::CenterAndZoomOut == turnPhase_) ||
-                (TurnPhase::PostZoomOutPause == turnPhase_) ||
+                (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
                 (TurnPhase::PerformAnim == turnPhase_))
             {
                 if (fightResult_.Count() > 0)
@@ -2183,7 +2185,7 @@ namespace stage
             }
         }
 
-        auto const VERT_POS_SHIFT(12.0f);
+        auto const VERT_POS_SHIFT(sfml_util::MapByRes(0.0f, 16.0f));
         titleTBoxTextRegionSPtr_->SetText(titleSS.str());
         titleTBoxTextRegionSPtr_->SetEntityPos(turnBoxRegion_.left,
                                                (turnBoxRegion_.top + (titleTBoxTextRegionSPtr_->GetEntityRegion().height * 0.5f)) - VERT_POS_SHIFT);
@@ -2261,6 +2263,8 @@ namespace stage
 
     void CombatStage::StartPerformAnim()
     {
+        SetTurnPhase(TurnPhase::PerformAnim);
+
         switch (performType_)
         {
             case PerformType::Advance:
@@ -2268,7 +2272,7 @@ namespace stage
                 combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
                 PositionSlideStartTasks();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                performType_ = PerformType::None;
+                SetPerformAnimPhase(PerformAnimPhase::AdvanceOrRetreat);
                 break;
             }
 
@@ -2277,14 +2281,46 @@ namespace stage
                 combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
                 PositionSlideStartTasks();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                performType_ = PerformType::None;
+                SetPerformAnimPhase(PerformAnimPhase::AdvanceOrRetreat);
                 break;
             }
 
             case PerformType::Pause:
-            case PerformType::Attack:
+
+            case PerformType::MeleeWeapon:
+            {
+                SetPerformAnimPhase(PerformAnimPhase::MoveToward);
+                break;
+            }
+
             case PerformType::ShootSling:
             case PerformType::ShootArrow:
+            case PerformType::ShootBlowpipe:
+            {
+                //Note:  There should only be one CreatureEffect and one HitInfoVec when attacking with a projectile
+                combat::HitInfo hitInfo;
+                if (fightResult_.GetHitInfo(hitInfo))
+                {
+                    //at this point we are guaranteed fightResult_ contains at least one CreatureEffect and one HitInfo
+                    auto const WEAPON_SPTR{ hitInfo.Weapon() };
+                    if (WEAPON_SPTR.get() != nullptr)
+                    {
+                        combatDisplayPtrC_->ProjectileShootAnimStart(turnCreaturePtr_,
+                                                                     fightResult_.Effects()[0].GetCreature(),
+                                                                     WEAPON_SPTR,
+                                                                     fightResult_.WasHit());
+
+                        performSlider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
+                        SetPerformAnimPhase(PerformAnimPhase::ProjectileShoot);
+                        break;
+                    }
+                }
+                    
+                SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
+                SetTurnPhase(TurnPhase::PostPerformPause);
+                break;
+            }
+
             case PerformType::Cast:
             case PerformType::Roar:
             case PerformType::Pounce:
@@ -2296,10 +2332,10 @@ namespace stage
             }
         }
 
-        SetTurnPhase(TurnPhase::PostPerformPause);
+        
         std::ostringstream ss;
         ss << "PostPerform(" << PerformTypeToString(performType_) << ")";
-        StartPause(PERFORM_TURN_DELAY_SEC_, ss.str());
+        
     }
 
 
@@ -2307,18 +2343,18 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnPhase::NotATurn:           { return "NotATurn"; }
-            case TurnPhase::CenterAndZoomIn:    { return "CenterAndZoomIn"; }
-            case TurnPhase::PostZoomInPause:    { return "PostZoomInPause"; }
-            case TurnPhase::Determine:          { return "Determine"; }
-            case TurnPhase::CenterAndZoomOut:   { return "CenterAndZoomOut"; }
-            case TurnPhase::PostZoomOutPause:   { return "PostZoomOutPause"; }
-            case TurnPhase::PerformAnim:        { return "PerformAnim"; }
-            case TurnPhase::PerformReport:      { return "PerformReport"; }
-            case TurnPhase::PostPerformPause:   { return "PostPerformPause"; }
-            case TurnPhase::StatusAnim:         { return "StatusAnim"; }
+            case TurnPhase::NotATurn:                   { return "NotATurn"; }
+            case TurnPhase::CenterAndZoomIn:            { return "CenterAndZoomIn"; }
+            case TurnPhase::PostCenterAndZoomInPause:   { return "PostZoomInPause"; }
+            case TurnPhase::Determine:                  { return "Determine"; }
+            case TurnPhase::CenterAndZoomOut:           { return "CenterAndZoomOut"; }
+            case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZoomOutPause"; }
+            case TurnPhase::PerformAnim:                { return "PerformAnim"; }
+            case TurnPhase::PerformReport:              { return "PerformReport"; }
+            case TurnPhase::PostPerformPause:           { return "PostPerformPause"; }
+            case TurnPhase::StatusAnim:                 { return "StatusAnim"; }
             case TurnPhase::Count:
-            default:                            { return ""; }
+            default:                                    { return ""; }
         }
     }
 
@@ -2327,18 +2363,19 @@ namespace stage
     {
         switch (ENUM)
         {
-            case PerformType::None:       { return "None"; }
-            case PerformType::Pause:      { return "Pause"; }
-            case PerformType::Attack:     { return "Attack"; }
-            case PerformType::ShootSling: { return "ShootSling"; }
-            case PerformType::ShootArrow: { return "ShootArrow"; }
-            case PerformType::Advance:    { return "Advance"; }
-            case PerformType::Retreat:    { return "Retreat"; }
-            case PerformType::Cast:       { return "Cast"; }
-            case PerformType::Roar:       { return "Roar"; }
-            case PerformType::Pounce:     { return "Pounce"; }
+            case PerformType::None:             { return "None"; }
+            case PerformType::Pause:            { return "Pause"; }
+            case PerformType::MeleeWeapon:      { return "MeleeWeapon"; }
+            case PerformType::ShootSling:       { return "ShootSling"; }
+            case PerformType::ShootArrow:       { return "ShootArrow"; }
+            case PerformType::ShootBlowpipe:    { return "ShootBlowpipe"; }
+            case PerformType::Advance:          { return "Advance"; }
+            case PerformType::Retreat:          { return "Retreat"; }
+            case PerformType::Cast:             { return "Cast"; }
+            case PerformType::Roar:             { return "Roar"; }
+            case PerformType::Pounce:           { return "Pounce"; }
             case PerformType::Count:
-            default:                      { return ""; }
+            default:                            { return ""; }
         }
     }
 
@@ -2364,6 +2401,7 @@ namespace stage
         switch (ENUM)
         {
             case PerformAnimPhase::NotAnimating:        { return "NotAnimating"; }
+            case PerformAnimPhase::AdvanceOrRetreat:    { return "AdvanceOrRetreat"; }
             case PerformAnimPhase::ProjectileShoot:     { return "ProjShoot"; }
             case PerformAnimPhase::MoveToward:          { return "MoveToward"; }
             case PerformAnimPhase::PostMoveTowardPause: { return "PostTowardPause"; }
@@ -2382,8 +2420,47 @@ namespace stage
         std::ostringstream ss;
         ss << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_) : PreTurnPhaseToString(preTurnPhase_))
             << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A")
-            << ", " << PerformAnimPhaseToString(perfromAnimPhase_);
+            << ", " << PerformAnimPhaseToString(performAnimPhase_);
         testingTextRegionSPtr_->SetText(ss.str());
+    }
+
+
+    CombatStage::PerformType CombatStage::GetPerformTypeFromWeaponType(const item::ItemSPtr_t & WEAPON_SPTR) const
+    {
+        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
+        {
+            return PerformType::ShootSling;
+        }
+        else if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) ||
+                 (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow))
+        {
+            return PerformType::ShootArrow;
+        }
+        else if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe))
+        {
+            return PerformType::ShootBlowpipe;
+        }
+        else
+        {
+            return PerformType::MeleeWeapon;
+        }
+    }
+
+
+    CombatStage::PerformType CombatStage::GetPerformTypeFromFightResult(const combat::FightResult & FIGHT_RESULT) const
+    {
+        //Note: It is not yet possible for an attack to target multiple creatures
+        combat::HitInfo hitInfo;
+        if (FIGHT_RESULT.GetHitInfo(hitInfo))
+        {
+            auto const WEAPON_SPTR{ hitInfo.Weapon() };
+            if (WEAPON_SPTR.get() != nullptr)
+            {
+                return GetPerformTypeFromWeaponType(WEAPON_SPTR);
+            }
+        }
+        
+        return PerformType::None;
     }
 
 }
