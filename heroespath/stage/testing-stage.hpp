@@ -55,6 +55,8 @@ namespace stage
                                           const stats::StatSet & ACTUAL,
                                           const stats::StatSet & EXPECTED);
 
+        bool TestImageSet();
+
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
 

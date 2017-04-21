@@ -8,6 +8,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/loaders.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
@@ -18,6 +19,7 @@
 
 #include "heroespath/log-macros.hpp"
 #include "heroespath/loop-manager.hpp"
+#include "heroespath/game-data-file.hpp"
 #include "heroespath/creature/titles.hpp"
 #include "heroespath/creature/conditions.hpp"
 #include "heroespath/creature/creature.hpp"
@@ -26,6 +28,8 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
+#include <vector>
+#include <string>
 
 
 namespace heroespath
@@ -78,7 +82,25 @@ namespace stage
 
                 sf::Sprite sprite;
                 sprite.setTexture( * NEXT_TEXTURE_SPTR);
-                posLeft -= (sprite.getLocalBounds().width + 5.0f);
+
+                //reduce size if any dimmension is greater than 256
+                auto const MAX_DIMMENSION{ 256.0f };
+                auto newHorizScale{ 1.0f };
+                if (sprite.getGlobalBounds().width > MAX_DIMMENSION)
+                {
+                    newHorizScale = MAX_DIMMENSION / sprite.getGlobalBounds().width;
+                    sprite.setScale(newHorizScale, newHorizScale);
+                }
+                if (sprite.getGlobalBounds().height > MAX_DIMMENSION)
+                {
+                    auto const NEW_VERT_SCALE{ MAX_DIMMENSION / sprite.getGlobalBounds().height };
+                    if (NEW_VERT_SCALE < newHorizScale)
+                    {
+                        sprite.setScale(NEW_VERT_SCALE, NEW_VERT_SCALE);
+                    }
+                }
+
+                posLeft -= (sprite.getGlobalBounds().width + 5.0f);
                 sprite.setPosition(posLeft, IMAGE_POS_TOP);
                 target.draw(sprite, states);
                 ++imageDrawCount;
@@ -228,6 +250,13 @@ namespace stage
         {
             PerformStatsTests();
             hasTestingCompleted_Stats = true;
+            return;
+        }
+
+        static auto hasTestingCompleted_ImageSet{ false };
+        if (false == hasTestingCompleted_ImageSet)
+        {
+            hasTestingCompleted_ImageSet = TestImageSet();
             return;
         }
 
@@ -446,6 +475,73 @@ namespace stage
             ss << "PASS";
             LoopManager::Instance()->TestingStrAppend(ss.str());
         }
+    }
+
+
+    bool TestingStage::TestImageSet()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            LoopManager::Instance()->TestingStrAppend("heroespath::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+        }
+
+        static std::vector<std::string> imagePathKeyVec = 
+        {
+            "media-images-gui-elements",
+            "media-images-title-paper",
+            "media-images-title-blacksymbol",
+            "media-images-backgrounds-tile-darkknot",
+            "media-images-backgrounds-tile-runes",
+            "media-images-backgrounds-tile-wood",
+            "media-images-backgrounds-tile-darkpaper",
+            "media-images-backgrounds-paper-2",
+            "media-images-logos-sfml",
+            "media-images-logos-tiled",
+            "media-images-logos-terrain",
+            "media-images-logos-sound",
+            "media-images-logos-avalontrees",
+            "media-images-logos-renderedtrees",
+            "media-images-logos-manaworldtrees",
+            "media-images-logos-darkwoodpaper",
+            "media-images-logos-openfontlicense",
+            "media-images-gui-accents-symbol1",
+            "media-images-gui-accents-symbol1-inv",
+            "media-images-gui-accents-symbol2",
+            "media-images-gui-accents-symbol2-inv",
+            "media-images-gui-accents-symbol3",
+            "media-images-gui-accents-ouroboros-white",
+            "media-images-gui-accents-ouroboros-black",
+            "media-images-campfire",
+            "media-images-combat-dart",
+            "media-images-combat-arrow1",
+            "media-images-combat-arrow2",
+            "media-images-combat-arrow3",
+            "media-images-combat-arrow4",
+            "media-images-combat-stone1",
+            "media-images-combat-stone2",
+            "media-images-combat-stone3",
+            "media-images-combat-stone4"
+        };
+
+        static std::size_t imageIndex{ 0 };
+        if (imageIndex < imagePathKeyVec.size())
+        {
+            std::ostringstream ss;
+            ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
+            LoopManager::Instance()->TestingStrAppend(ss.str());
+
+            sfml_util::TextureSPtr_t textureSPtr;
+            sfml_util::LoadImageOrTextureSPtr(textureSPtr, GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
+            TestingImageSet(textureSPtr);
+
+            ++imageIndex;
+            return false;
+        }
+
+        LoopManager::Instance()->TestingStrAppend("heroespath::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+        return true;
     }
 
 }
