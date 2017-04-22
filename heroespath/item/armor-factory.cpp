@@ -500,7 +500,7 @@ namespace armor
         ArmorInfo armorInfo(armor_type::Skin);
 
         ArmorDetails details;
-        details.armor_rating = item::material::ArmorRatingBonusPri(MATERIAL) + static_cast<stats::Armor_t>(CREATURE_RANK);
+        details.armor_rating = static_cast<stats::Armor_t>(item::material::ArmorRatingBonusPri(MATERIAL)) + static_cast<stats::Armor_t>(CREATURE_RANK);
         details.complexity = non_player::ownership::complexity_type::Simple;
         details.name = material::ToReadableString(MATERIAL) + " skin";
         details.price = 0;

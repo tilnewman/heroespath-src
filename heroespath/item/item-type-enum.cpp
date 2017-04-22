@@ -195,13 +195,13 @@ namespace item
             case Hide       : { return 3; }
             case SoftLeather: { return 4; }
             case HardLeather: { return 5; }
-            case Plant      : { return 7; }
-            case Claw       : { return 8; }
+            case Plant      : { return 6; }
+            case Claw       : { return 7; }
+            case Scale      : { return 8; }
             case Horn       : { return 9; }
             case Bone       : { return 10; }
             case Tooth      : { return 12; }
             case Wood       : { return 15; }
-            case Scale      : { return 25; }
             case Tin        : { return 30; }
             case Bronze     : { return 31; }
             case Iron       : { return 33; }
@@ -211,12 +211,12 @@ namespace item
             case Platinum   : { return 55; }
             case Stone      : { return 75; }
             case Obsidian   : { return 80; }
-            case Amethyst   : { return 85; }
-            case Emerald    : { return 85; }
+            case Amethyst   : { return 83; }
+            case Emerald    : { return 87; }
             case Pearl      : { return 90; }
-            case Ruby       : { return 90; }
-            case Lapis      : { return 90; }
-            case Sapphire   : { return 90; }
+            case Ruby       : { return 92; }
+            case Lapis      : { return 94; }
+            case Sapphire   : { return 96; }
             case Diamond    : { return 100; }
             case Count:
             default:
