@@ -46,6 +46,7 @@ namespace combat
         sfml_util::TextureSPtr_t texture_sptr;
         sfml_util::gui::TextRegionSPtr_t name_text_region_sptr;
         sfml_util::gui::TextRegionSPtr_t desc_text_region_sptr;
+        sfml_util::gui::TextRegionSPtr_t info_text_region_sptr;
         item::ItemSPtr_t item_sptr;
     };
 

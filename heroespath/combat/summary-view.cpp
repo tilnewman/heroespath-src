@@ -179,6 +179,7 @@ namespace combat
                 target.draw(NEXT_ITEM_WITH_TEXT.sprite, statesBlendMode);
                 NEXT_ITEM_WITH_TEXT.name_text_region_sptr->draw(target, states);
                 NEXT_ITEM_WITH_TEXT.desc_text_region_sptr->draw(target, states);
+                NEXT_ITEM_WITH_TEXT.info_text_region_sptr->draw(target, states);
             }
 
             combatNodeSPtr_->draw(target, states);
@@ -417,8 +418,7 @@ namespace combat
                                                0.0f);
 
             nextItemText.name_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_sptr->Name(), ITEM_NAME_TEXT_INFO, ITEM_NAME_RECT));
-            nextItemText.name_text_region_sptr->MoveEntityPos(0.0f, (nextItemText.sprite.getGlobalBounds().height - (nextItemText.name_text_region_sptr->GetEntityRegion().height * ITEM_TEXT_VERT_POS_MULT)));
-
+            
             const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(nextItemText.item_sptr->Desc(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
                                                                sfml_util::FontManager::Instance()->Size_Small(),
@@ -426,18 +426,61 @@ namespace combat
                                                                sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_DESC_RECT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
-                                               ITEM_IMAGE_POS_TOP_START + itemListHeight + nextItemText.name_text_region_sptr->GetEntityRegion().height,
+                                               ITEM_NAME_RECT.top + nextItemText.name_text_region_sptr->GetEntityRegion().height,
                                                0.0f,
                                                0.0f);
 
             nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_sptr->Name(), ITEM_DESC_TEXT_INFO, ITEM_DESC_RECT));
-            nextItemText.desc_text_region_sptr->MoveEntityPos(0.0f, (nextItemText.sprite.getGlobalBounds().height - (nextItemText.name_text_region_sptr->GetEntityRegion().height * ITEM_TEXT_VERT_POS_MULT)));
+            
+            std::ostringstream infoSS;
+            if (nextItemText.item_sptr->IsMagical())
+            {
+                infoSS << "(Magical)";
+            }
+            if (nextItemText.item_sptr->Category() & item::category::QuestItem)
+            {
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "(Quest Item)";
+            }
+            if (nextItemText.item_sptr->IsWeapon())
+            {
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Damage: " << nextItemText.item_sptr->DamageMin() << "-" << nextItemText.item_sptr->DamageMax();
+            }
+            else if (nextItemText.item_sptr->IsArmor())
+            {
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: " << nextItemText.item_sptr->ArmorRating();
+            }
+            if (infoSS.str().empty())
+            {
+                infoSS << " ";
+            }
+            const sfml_util::gui::TextInfo INFO_TEXT_INFO(infoSS.str(),
+                                                          sfml_util::FontManager::Instance()->Font_Default1(),
+                                                          sfml_util::FontManager::Instance()->Size_Small(),
+                                                          sfml_util::FontManager::Color_Light(),
+                                                          sfml_util::Justified::Left);
 
+            const sf::FloatRect INFO_RECT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
+                                          ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height,
+                                          0.0f,
+                                          0.0f);
+
+            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_sptr->Name(), INFO_TEXT_INFO, INFO_RECT) );
+            
             const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_ + nextItemText.desc_text_region_sptr->GetEntityRegion().width);
             if (longestItemHorizExtent < CURR_ITEM_HORIZ_EXTENT)
                 longestItemHorizExtent = CURR_ITEM_HORIZ_EXTENT;
 
-            itemListHeight += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
+            const float CURR_ITEM_VERT_TEXT_EXTENT{ ((infoSS.str() == " ") ? (ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight) : (INFO_RECT.top + nextItemText.info_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight)) };
+
+            if (CURR_ITEM_VERT_TEXT_EXTENT < nextItemText.sprite.getGlobalBounds().height)
+            {
+                itemListHeight += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
+            }
+            else
+            {
+                itemListHeight += CURR_ITEM_VERT_TEXT_EXTENT + IMAGE_BETWEEN_PAD_;
+                nextItemText.sprite.move(0.0f, (CURR_ITEM_VERT_TEXT_EXTENT - nextItemText.sprite.getGlobalBounds().height) * 0.5f);
+            }
         }
 
         //establish enemy details display extents
