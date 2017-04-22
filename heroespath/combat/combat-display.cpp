@@ -1167,6 +1167,12 @@ namespace combat
         {
             projAnimSprite_.rotate(2.0f);
         }
+
+        if ((battlefieldRect_.contains(projAnimSprite_.getGlobalBounds().left, projAnimSprite_.getGlobalBounds().top) == false) ||
+            (battlefieldRect_.contains(projAnimSprite_.getGlobalBounds().left + projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().top + projAnimSprite_.getGlobalBounds().height) == false))
+        {
+            ProjectileShootAnimStop();
+        }
     }
 
 
@@ -1178,7 +1184,7 @@ namespace combat
 
     void CombatDisplay::SetBlockingPosOfType(const bool                 IS_PLAYER,
                                              const creature::role::Enum ROLE,
-                                             const int        BLOCKING_POS)
+                                             const int                  BLOCKING_POS)
     {
         CombatTree::IdVec_t idVec;
         combatTree_.GetNodeIds(idVec, ROLE);
