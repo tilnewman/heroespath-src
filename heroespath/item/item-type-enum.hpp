@@ -224,11 +224,11 @@ namespace item
             Shirt       = 1 << 5,//includes torso coverings, i.e. plate/mail/scale/etc.
             Bracer      = 1 << 6,//forearm covering
             Aventail    = 1 << 7,//neck covering attached to the bottom of a helm
-            Covering    = 1 << 8 //vest/robe/cloak
+            Covering    = 1 << 8,//vest/robe/cloak
+            Skin        = 1 << 9 //hide or scales for beast creatures
         };
 
         static const std::string ToString(const armor_type::Enum E, const bool WILL_WRAP);
-        static std::size_t EquipLimit(const armor_type::Enum E);
     };
 
 }

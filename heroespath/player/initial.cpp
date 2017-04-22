@@ -219,6 +219,9 @@ namespace player
             (characterPtrC->Role().Which() == creature::role::Sylavin) ||
             (characterPtrC->Role().Which() == creature::role::Firebrand))
         {
+            auto const SKIN_ITEM_SPTR{ item::armor::ArmorFactory::Instance()->Make_Skin(((characterPtrC->Role().Which() == creature::role::Wolfen) ? item::material::Hide : item::material::Scale), 1, false) };
+            characterPtrC->ItemAdd(SKIN_ITEM_SPTR);
+            characterPtrC->ItemEquip(SKIN_ITEM_SPTR);
             return;
         }
 

@@ -556,12 +556,31 @@ namespace creature
             if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHorns() == true))
                 resultSS << race_.Name() << "'s can't wear helms becaus they have horns." << SEP;
 
-            const std::size_t ARMOR_TYPE_EQUIP_LIMIT(item::armor_type::EquipLimit(ARMOR_TYPE));
-            if (ARMOR_TYPE_EQUIP_LIMIT == inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE))
+            if ((ARMOR_TYPE & item::armor_type::Aventail) && (item::Algorithms::FindByArmorType(inventory_.ItemsEquipped(), item::armor_type::Helm).empty()))
+                resultSS << "Can't wear an aventail without first wearing a helm." << SEP;
+            
+            std::size_t armorEquipLimit{ 1 };
+
+            if ((ARMOR_TYPE & item::armor_type::Bracer) || (ARMOR_TYPE & item::armor_type::Gauntlets))
+                armorEquipLimit = Body().NumArms() / 2;
+
+            if (ARMOR_TYPE & item::armor_type::Sheild)
+                armorEquipLimit = Body().NumArms();
+
+            if ((ARMOR_TYPE & item::armor_type::Boots) || (ARMOR_TYPE & item::armor_type::Pants))
+                armorEquipLimit = Body().NumLegs() / 2;
+
+            if (ARMOR_TYPE & item::armor_type::Helm)
+                armorEquipLimit = Body().NumHeads();
+
+            if (ARMOR_TYPE & item::armor_type::Aventail)
+                armorEquipLimit = inventory_.CountItemOfArmorTypeEquipped(item::armor_type::Helm);
+
+            if (armorEquipLimit == inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE))
             {
                 const std::string ARMOR_TYPE_STR( item::armor_type::ToString(ARMOR_TYPE, false) );
                 std::ostringstream ss;
-                ss << "Can't equip more than " << ARMOR_TYPE_EQUIP_LIMIT;
+                ss << "Can't equip more than " << armorEquipLimit;
                 if (boost::algorithm::iends_with(ARMOR_TYPE_STR, "s"))
                     ss << " pairs";
                 ss << " of " << ARMOR_TYPE_STR << "." << SEP;
@@ -614,10 +633,10 @@ namespace creature
         if ((CATEGORY & item::category::BodyPart) == 0)
         {
             if (race_.Which() == race::Dragon)
-                return "Dragons can only equip body parts, such as horns, claws, or bite.";
+                return "Dragons can only equip body parts, such as skin, horns, claws, or bite.";
 
             if (race_.Which() == race::Wolfen)
-                return "Wolfens can only equip body parts, such as claws, or bite.";
+                return "Wolfens can only equip body parts, such as skin, claws, or bite.";
         }
 
         if ((item::misc_type::IsMusicalInstrument(MISC_TYPE)) && (ROLE != role::Bard))

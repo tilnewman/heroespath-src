@@ -159,9 +159,9 @@ namespace item
     const std::string material::ToReadableString(const item::material::Enum E)
     {
         if (E == material::SoftLeather)
-            return "Soft Leather";
+            return "Soft-Leather";
         else if (E == material::HardLeather)
-            return "Hard Leather";
+            return "Hard-Leather";
         else
             return ToString(E);
     }
@@ -177,11 +177,31 @@ namespace item
     {
         switch (MATERIAL_PRI)
         {
-            case Cloth      : { return 1; }
-            case SoftLeather: { return 2; }
+            case Nothing    :
+            case Ether      :
+            case Gas        :
+            case Blood      :
+            case Water      :
+            case Dirt       :
+            case Acid       :
+            case Paper      :
+            case Glass      :
+            case Feathers   :
+            case Fur        :
+            case Hair       : { return 0; }
+            case Flesh      : { return 1; }
+            case Rope       :
+            case Cloth      : { return 2; }
+            case Hide       : { return 3; }
+            case SoftLeather: { return 4; }
             case HardLeather: { return 5; }
+            case Plant      : { return 7; }
+            case Claw       : { return 8; }
+            case Horn       : { return 9; }
             case Bone       : { return 10; }
+            case Tooth      : { return 12; }
             case Wood       : { return 15; }
+            case Scale      : { return 25; }
             case Tin        : { return 30; }
             case Bronze     : { return 31; }
             case Iron       : { return 33; }
@@ -198,27 +218,6 @@ namespace item
             case Lapis      : { return 90; }
             case Sapphire   : { return 90; }
             case Diamond    : { return 100; }
-            //
-            case Claw       : { break; }
-            case Horn       : { break; }
-            case Tooth      : { return 10; }
-            case Ether      : { break; }
-            case Glass      : { break; }
-            case Gas        : { break; }
-            case Blood      : { break; }
-            case Paper      : { break; }
-            case Rope       : { break; }
-            case Plant      : { break; }
-            case Flesh      : { break; }
-            case Hide       : { return 3; }
-            case Feathers   : { break; }
-            case Fur        : { break; }
-            case Hair       : { break; }
-            case Scale      : { return 25; }
-            case Water      : { break; }
-            case Dirt       : { break; }
-            case Acid       : { break; }
-            case Nothing    : { return 0; }
             case Count:
             default:
             {
@@ -227,14 +226,12 @@ namespace item
                 throw std::range_error(ss.str());
             }
         }
-
-        return 0;
     }
 
 
     stats::Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
-        return ArmorRatingBonusPri(MATERIAL_SEC) / 10;
+        return static_cast<stats::Armor_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) / static_cast<float>(10));
     }
 
 
@@ -698,6 +695,7 @@ namespace item
         if (E & armor_type::Shirt)       ss << ((ss.str().empty()) ? "" : "/") << "shirt";
         if (E & armor_type::Bracer)      ss << ((ss.str().empty()) ? "" : "/") << "bracer";
         if (E & armor_type::Aventail)    ss << ((ss.str().empty()) ? "" : "/") << "aventail";
+        if (E & armor_type::Skin)        ss << ((ss.str().empty()) ? "" : "/") << "skin";
 
         if ((ss.str().empty()) || (ss.str() == "("))
             ss << "not armor";
@@ -706,22 +704,6 @@ namespace item
             ss << ")";
 
         return ss.str();
-    }
-
-
-    std::size_t armor_type::EquipLimit(const armor_type::Enum E)
-    {
-        if (E == armor_type::NotArmor)
-        {
-            return 0;
-        }
-        else
-        {
-            if ((E == armor_type::Sheild) || (E == armor_type::Bracer))
-                return 2;
-            else
-                return 1;
-        }
     }
 
 }

@@ -1,6 +1,6 @@
 system-startup-stage=Combat
 system-revision=alpha 0.1
-system-will-execute-tests=false
+system-will-execute-tests=no
 
 #graphics settings
 system-window-sync=true

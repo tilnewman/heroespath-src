@@ -6,6 +6,7 @@
 //
 #include "heroespath/item/item-factory-base.hpp"
 #include "heroespath/item/armor-types.hpp"
+#include "stats/types.hpp"
 
 #include <memory>
 #include <string>
@@ -78,7 +79,7 @@ namespace armor
                                       const material::Enum  MATERIAL_SEC = material::Nothing,
                                       const bool            IS_PIXIE_ITEM = false);
 
-        //primary material should always be metal
+        //primary material should always be metalf
         static ItemSPtr_t Make_Aventail(const base_type::Enum TYPE,
                                         const material::Enum  MATERIAL_PRI,
                                         const material::Enum  MATERIAL_SEC = material::Nothing);
@@ -88,6 +89,10 @@ namespace armor
                                      const material::Enum   MATERIAL_PRI,
                                      const material::Enum   MATERIAL_SEC = material::Nothing,
                                      const bool             IS_PIXIE_ITEM = false);
+
+        static ItemSPtr_t Make_Skin(const material::Enum MATERIAL,
+                                    const stats::Rank_t  CREATURE_RANK,
+                                    const bool           IS_PIXIE_ITEM);
 
     private:
         static ArmorFactorySPtr_t instance_;

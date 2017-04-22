@@ -34,6 +34,7 @@
 #include "heroespath/creature/titles.hpp"
 #include "heroespath/creature/algorithms.hpp"
 #include "heroespath/item/weapon-factory.hpp"
+#include "heroespath/item/armor-factory.hpp"
 #include "heroespath/item/algorithms.hpp"
 #include "heroespath/combat/combat-text.hpp"
 
@@ -589,12 +590,12 @@ namespace stage
         {
             const stats::StatSet FIREBRAND_STATS(20 + sfml_util::rand::Int(10),
                                                  15 + sfml_util::rand::Int(10),
-                                                 0  + sfml_util::rand::Int(6),
-                                                 5  + sfml_util::rand::Int(10),
-                                                 0  + sfml_util::rand::Int(10),
+                                                 0 + sfml_util::rand::Int(6),
+                                                 5 + sfml_util::rand::Int(10),
+                                                 0 + sfml_util::rand::Int(10),
                                                  10 + sfml_util::rand::Int(8));
 
-            const std::string FIREBRAND_NAME( boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "F") );
+            const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "F"));
 
             auto firebrandSPtr = std::make_shared<player::Character>(FIREBRAND_NAME,
                                                                      creature::sex::Male,

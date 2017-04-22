@@ -95,22 +95,22 @@ namespace armor
         ssDesc << ".";
 
         return ItemSPtr_t( new Item(ssName.str(),
-                                     ssDesc.str(),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::OneHanded),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Sheild,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo) );
+                                    ssDesc.str(),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::OneHanded),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Sheild,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo) );
     }
 
 
@@ -144,22 +144,22 @@ namespace armor
             exclusiveRole = creature::role::Knight;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, materialPri, materialSec),
-                                     Make_Desc(DETAILS.description, materialPri, materialSec),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Helm,
-                                     materialPri,
-                                     materialSec,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo) );
+                                    Make_Desc(DETAILS.description, materialPri, materialSec),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Helm,
+                                    materialPri,
+                                    materialSec,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo) );
     }
 
 
@@ -191,24 +191,24 @@ namespace armor
             exclusiveRole = creature::role::Knight;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Gauntlets,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo,
-                                     item::IEnchantmentSVec_t(),
-                                     IS_PIXIE_ITEM) );
+                                    Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Gauntlets,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
     }
 
 
@@ -241,24 +241,24 @@ namespace armor
             armorCategory = category::Wearable;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Pants,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo,
-                                     item::IEnchantmentSVec_t(),
-                                     IS_PIXIE_ITEM) );
+                                    Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Pants,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
     }
 
 
@@ -295,24 +295,24 @@ namespace armor
             armorCategory = category::Wearable;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Boots,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     imageFilename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo,
-                                     item::IEnchantmentSVec_t(),
-                                     IS_PIXIE_ITEM) );
+                                    Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Boots,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    imageFilename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
     }
 
 
@@ -345,24 +345,24 @@ namespace armor
             armorCategory = category::Wearable;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Shirt,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo,
-                                     item::IEnchantmentSVec_t(),
-                                     IS_PIXIE_ITEM) );
+                                    Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Shirt,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
     }
 
 
@@ -390,24 +390,24 @@ namespace armor
             exclusiveRole = creature::role::Knight;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Bracer,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo,
-                                     item::IEnchantmentSVec_t(),
-                                     IS_PIXIE_ITEM) );
+                                    Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Bracer,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
     }
 
 
@@ -434,22 +434,22 @@ namespace armor
             exclusiveRole = creature::role::Knight;
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
-                                     Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
-                                     misc_type::NotMisc,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::Aventail,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     armorRating,
-                                     exclusiveRole,
-                                     weapon::WeaponInfo(),
-                                     armorInfo) );
+                                    Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Aventail,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    exclusiveRole,
+                                    weapon::WeaponInfo(),
+                                    armorInfo) );
     }
 
 
@@ -472,19 +472,71 @@ namespace armor
         AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
 
         return ItemSPtr_t( new Item(Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+                                    static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable),
+                                    misc_type::NotMisc,
+                                    weapon_type::NotAWeapon,
+                                    armor_type::Covering,
+                                    MATERIAL_PRI,
+                                    MATERIAL_SEC,
+                                    DETAILS.image_filename,
+                                    price,
+                                    weight,
+                                    0,
+                                    0,
+                                    armorRating,
+                                    creature::role::Count,
+                                    weapon::WeaponInfo(),
+                                    armorInfo,
+                                    item::IEnchantmentSVec_t(),
+                                    IS_PIXIE_ITEM) );
+    }
+
+
+    ItemSPtr_t ArmorFactory::Make_Skin(const material::Enum MATERIAL,
+                                       const stats::Rank_t  CREATURE_RANK,
+                                       const bool           IS_PIXIE_ITEM)
+    {
+        ArmorInfo armorInfo(armor_type::Skin);
+
+        ArmorDetails details;
+        details.armor_rating = item::material::ArmorRatingBonusPri(MATERIAL) + static_cast<stats::Armor_t>(CREATURE_RANK);
+        details.complexity = non_player::ownership::complexity_type::Simple;
+        details.name = material::ToReadableString(MATERIAL) + " skin";
+        details.price = 0;
+        details.weight = static_cast<item::Weight_t>(100.0f * material::WeightMult(MATERIAL, material::Nothing));
+ 
+        if (MATERIAL == material::Hide)
+        {
+            details.image_filename = "hide";
+        }
+        else if (MATERIAL == material::Scale)
+        {
+            details.image_filename = "scale";
+        }
+        else //TODO other material images
+        {
+            details.image_filename = "no-image";
+        }
+        
+        std::ostringstream ss;
+        ss << "Skin made of " << material::ToReadableString(MATERIAL) << ".  The Armor Rating increases with Rank.";
+        details.description = ss.str();
+
+        return ItemSPtr_t( new Item( details.name,
+                                     details.description,
+                                     static_cast<category::Enum>(category::Armor | category::Equippable | category::Wearable | category::BodyPart),
                                      misc_type::NotMisc,
                                      weapon_type::NotAWeapon,
-                                     armor_type::Covering,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     DETAILS.image_filename,
-                                     price,
-                                     weight,
+                                     armor_type::Skin,
+                                     MATERIAL,
+                                     material::Nothing,
+                                     details.image_filename,
+                                     details.price,
+                                     details.weight,
                                      0,
                                      0,
-                                     armorRating,
+                                     details.armor_rating,
                                      creature::role::Count,
                                      weapon::WeaponInfo(),
                                      armorInfo,
