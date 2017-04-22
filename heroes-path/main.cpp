@@ -31,7 +31,7 @@
 
 int main()
 {
-    std::cout << "SFML GUI Test Starting..." << std::endl;
+    std::cout << "Starting Heroes Path..." << std::endl;
 
     heroespath::LoggerSPtr_t logSPtr(heroespath::Logger::Instance());
 
@@ -135,6 +135,6 @@ int main()
         return EXIT_FAILURE;
     }
 
-    std::cout << "SFML GUI Test Stopped." << std::endl;
+    std::cout << "...Stopping Heroes Path." << std::endl;
     return EXIT_SUCCESS;
 }
