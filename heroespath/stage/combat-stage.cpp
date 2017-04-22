@@ -1143,9 +1143,14 @@ namespace stage
 
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if ((IsPaused() == false) &&
-            (TurnPhase::Determine == turnPhase_) &&
-            (IsAttackAnimating() == false))
+        //cancel summary view if visible or even just starting
+        if (combatDisplayPtrC_->GetIsSummaryViewInProgress())
+        {
+            combatDisplayPtrC_->CancelSummaryViewAndStartTransitionBack();
+        }
+        else if ((IsPaused() == false) &&
+                 (TurnPhase::Determine == turnPhase_) &&
+                 (IsAttackAnimating() == false))
         {
             isMouseHeldDownAndValid_ = true;
             Stage::UpdateMouseDown(MOUSE_POS_V);
