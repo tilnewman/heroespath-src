@@ -46,24 +46,25 @@ namespace combat
                            const sfml_util::FontSPtr_t &    FONT_SPTR,
                            const unsigned int               FONT_CHAR_SIZE)
     :
-        GuiEntity          (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_       (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
-        condTextObj_       ("", * FONT_SPTR, FONT_CHAR_SIZE),
-        blockingPos_       (0),
-        type_              (NodeType::Position),
-        healthLineColor_   (),//this initializer doesn't matter, see constructor body below
-        healthLineColorRed_(),// "
-        textureSPtr_       (sfml_util::gui::CreatureImageManager::Instance()->GetImage(CREATURE_SPTR->ImageFilename(), CREATURE_SPTR->IsPlayerCharacter())),
-        sprite_            (),
-        creatureImageColor_(),
-        isSummaryView_     (false),
-        isMoving_          (false),
-        creatureSPtr_      (CREATURE_SPTR),
-        wingSprite_        (),
-        isFlying_          (false),
-        wingFlapSlider_    (WING_IMAGE_ANIM_SPEED_),
-        imagePosV_         (0.0f, 0.0f),
-        imagePosOffsetV_   (0.0f, 0.0f)
+        GuiEntity           (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
+        nameTextObj_        (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
+        condTextObj_        ("", * FONT_SPTR, FONT_CHAR_SIZE),
+        blockingPos_        (0),
+        type_               (NodeType::Position),
+        healthLineColor_    (),//this initializer doesn't matter, see constructor body below
+        healthLineColorRed_ (),// "
+        healthLineColorTick_(),// "
+        textureSPtr_        (sfml_util::gui::CreatureImageManager::Instance()->GetImage(CREATURE_SPTR->ImageFilename(), CREATURE_SPTR->IsPlayerCharacter())),
+        sprite_             (),
+        creatureImageColor_ (),
+        isSummaryView_      (false),
+        isMoving_           (false),
+        creatureSPtr_       (CREATURE_SPTR),
+        wingSprite_         (),
+        isFlying_           (false),
+        wingFlapSlider_     (WING_IMAGE_ANIM_SPEED_),
+        imagePosV_          (0.0f, 0.0f),
+        imagePosOffsetV_    (0.0f, 0.0f)
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -173,15 +174,14 @@ namespace combat
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 1))
             };
-            const sf::Color TICK_COLOR(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
             lines[0].color = healthLineColor_;
             lines[1].color = healthLineColor_;
             lines[2].color = healthLineColor_;
             lines[3].color = healthLineColorRed_;
-            lines[4].color = TICK_COLOR;
-            lines[5].color = TICK_COLOR;
-            lines[6].color = TICK_COLOR;
-            lines[7].color = TICK_COLOR;
+            lines[4].color = healthLineColorTick_;
+            lines[5].color = healthLineColorTick_;
+            lines[6].color = healthLineColorTick_;
+            lines[7].color = healthLineColorTick_;
             target.draw(lines, 8, sf::Lines, states);
         }
     }
@@ -227,7 +227,7 @@ namespace combat
                 sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
                 sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
                 healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
-
+                healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
                 sprite_.setColor(creatureImageColor_ + sf::Color(0, 0, 0, CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_));
             }
             else
@@ -236,6 +236,7 @@ namespace combat
                 sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
                 sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_);
                 healthLineColor_ = HealthColor();
+                healthLineColorTick_ = HealthColorTick();
                 sprite_.setColor(creatureImageColor_);
             }
         }
@@ -252,6 +253,7 @@ namespace combat
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
         healthLineColorRed_ = AdjustColorForToneDown(HealthColorRed(), TONE_DOWN_VAL);
+        healthLineColorTick_ = AdjustColorForToneDown(HealthColorTick(), TONE_DOWN_VAL);
     }
 
 
@@ -318,6 +320,7 @@ namespace combat
     {
         healthLineColor_ = HealthColor();
         healthLineColorRed_ = HealthColorRed();
+        healthLineColorTick_ = HealthColorTick();
     }
 
 
@@ -331,6 +334,12 @@ namespace combat
 
 
     const sf::Color CombatNode::HealthColorRed() const
+    {
+        return sf::Color(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
+    }
+
+
+    const sf::Color CombatNode::HealthColorTick() const
     {
         return sf::Color(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
     }

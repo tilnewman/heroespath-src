@@ -80,6 +80,7 @@ namespace combat
         virtual void OnClick(const sf::Vector2f &) {}
         const sf::Color HealthColor() const;
         const sf::Color HealthColorRed() const;
+        const sf::Color HealthColorTick() const;
         const sf::Color AdjustColorForToneDown(const sf::Color & ORIG_COLOR,
                                                const float       TONE_DOWN_VAL) const;
 
@@ -112,6 +113,7 @@ namespace combat
         NodeType::Enum           type_;
         sf::Color                healthLineColor_;
         sf::Color                healthLineColorRed_;
+        sf::Color                healthLineColorTick_;
         sfml_util::TextureSPtr_t textureSPtr_;
         sf::Sprite               sprite_;
         sf::Color                creatureImageColor_;
