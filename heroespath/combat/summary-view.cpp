@@ -268,7 +268,7 @@ namespace combat
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
         const float IMAGE_WIDTH(combatNodeSPtr->GetEntityRegion().width);
-        const float IMAGE_HEIGHT(sfml_util::gui::CreatureImageManager::DimmensionMax());
+        const float IMAGE_HEIGHT(combatNodeSPtr->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
 
         const float BETWEEN_TEXT_SPACER(0.0f);
         const float TOP_TEXT_SPACER(sfml_util::MapByRes(10.0f, 25.0f));

@@ -127,7 +127,11 @@ namespace combat
         if (sprite_.getGlobalBounds().width > entityRegion_.width)
         {
             const float SCALE_HORIZ(entityRegion_.width / sprite_.getLocalBounds().width);
-            sprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+
+            if (SCALE_HORIZ < SCALE_VERT)
+            {
+                sprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            }
         }
 
         //scale wing image
