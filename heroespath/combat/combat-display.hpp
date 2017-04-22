@@ -184,6 +184,8 @@ namespace combat
 
         void HandleEndOfTurnTasks();
 
+        void UpdateHealthBars();
+
         bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
         void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,

@@ -1013,16 +1013,21 @@ namespace combat
 
     void CombatDisplay::HandleEndOfTurnTasks()
     {
+        UpdateHealthBars();
+
+        //stop all creature image shaking
+        StopShaking(nullptr);
+    }
+
+
+    void CombatDisplay::UpdateHealthBars()
+    {
         CombatNodeSVec_t combatNodesSVec;
         combatNodesSVec.reserve(combatTree_.VertexCount());
         combatTree_.GetCombatNodes(combatNodesSVec);
 
-        //update health bar colors for all nodes
         for (auto & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             NEXT_COMBATNODE_SPTR->HealthChangeTasks();
-
-        //stop all creature image shaking
-        StopShaking(nullptr);
     }
 
 

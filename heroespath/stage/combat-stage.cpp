@@ -1426,6 +1426,7 @@ namespace stage
                     }
                 }
                 
+                combatDisplayPtrC_->UpdateHealthBars();
                 SetupTurnBox();
             }
             else
