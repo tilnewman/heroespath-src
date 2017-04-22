@@ -110,6 +110,8 @@ namespace combat
     
         //requires FIGHT_RESULT is not empty
         static const std::string FirstTargetNamePhrase(const FightResult & FIGHT_RESULT);
+    
+        static const std::string InitialCombatStatusMessagePrefix();
     };
 
 }

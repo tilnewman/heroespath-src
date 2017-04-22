@@ -29,6 +29,7 @@
 #include "heroespath/combat/turn-decider.hpp"
 #include "heroespath/combat/combat-node.hpp"
 #include "heroespath/combat/fight.hpp"
+#include "heroespath/combat/combat-text.hpp"
 #include "heroespath/creature/name-info.hpp"
 #include "heroespath/creature/conditions.hpp"
 #include "heroespath/creature/titles.hpp"
@@ -1293,18 +1294,9 @@ namespace stage
 
 
     void CombatStage::AppendInitialStatus()
-    {
+    {   
         std::ostringstream ss;
-        switch (sfml_util::rand::Int(0, 4))
-        {
-            case 1:  { ss << "You face "; break; }
-            case 2:  { ss << "Before you rage "; break; }
-            case 3:  { ss << "Before you stand "; break; }
-            case 4:  { ss << "Attacking you are "; break; }
-            case 0:
-            default: { ss << "You encounter "; break; }
-        }
-        ss << encounterSPtr_->NonPlayerParty()->Summary() << "!";
+        ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << encounterSPtr_->NonPlayerParty()->Summary() << "!";
         AppendStatusMessage(ss.str(), true);
     }
 

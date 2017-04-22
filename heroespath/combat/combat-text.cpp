@@ -755,5 +755,19 @@ namespace combat
         return ss.str();
     }
 
+
+    const std::string Text::InitialCombatStatusMessagePrefix()
+    {
+        switch (sfml_util::rand::Int(4))
+        {
+            case 0:  { return "You face"; }
+            case 1:  { return "Before you rage"; }
+            case 2:  { return "Before you stand"; }
+            case 3:  { return "Attacking you are"; }
+            case 4:
+            default: { return "You encounter"; }
+        }
+    }
+
 }
 }
