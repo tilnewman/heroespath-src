@@ -746,29 +746,8 @@ namespace combat
 
     void CombatDisplay::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
     {
-        CombatNodeSVec_t combatNodesSVec;
-        combatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesSVec);
-
-        std::vector<float> horizPosVec;
-        std::vector<float> vertPosVec;
-
-        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CENTER_ON_PVEC)
-        {
-            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            {
-                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
-                {
-                    horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x);
-                    vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y);
-                }
-            }
-        }
-
-        auto const HORIZ_AVG_POS{ std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f) / static_cast<float>(horizPosVec.size()) };
-        auto const VERT_AVG_POS { std::accumulate(vertPosVec.begin(), vertPosVec.end(), 0.0f)   / static_cast<float>(vertPosVec.size()) };
-
-        CenteringStart(HORIZ_AVG_POS, VERT_AVG_POS);
+        auto const CENTER_POS_V{ FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+        CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
     }
 
 
@@ -1047,7 +1026,7 @@ namespace combat
     }
 
 
-    bool CombatDisplay::AreCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
+    bool CombatDisplay::AreAllCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
     {
         CombatNodeSVec_t combatNodesSVec;
         combatNodesSVec.reserve(combatTree_.VertexCount());
@@ -1144,7 +1123,7 @@ namespace combat
         }
         else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe)
         {
-            scale = sfml_util::MapByRes(0.15f, 2.0f);
+            scale = sfml_util::MapByRes(0.05f, 1.0f);
         }
         projAnimSprite_.setScale(scale, scale);
 
@@ -1433,6 +1412,80 @@ namespace combat
 
             UpdateWhichNodesWillDraw();
         }
+    }
+
+
+    bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
+    {
+        CombatNodeSVec_t allCombatNodesSVec;
+        allCombatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(allCombatNodesSVec);
+
+        CombatNodeSVec_t relevantCombatNodesSVec;
+        allCombatNodesSVec.reserve(CREATURES_PVEC.size());
+        for (auto const & NEXT_CREATURE_PTR : CREATURES_PVEC)
+        {
+            for (auto const & NEXT_COMBATNODE_SPTR : allCombatNodesSVec)
+            {
+                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                {
+                    relevantCombatNodesSVec.push_back(NEXT_COMBATNODE_SPTR);
+                    break;
+                }
+            }
+        }
+
+        auto horizPosDiffMax{ 0.0f };
+        auto vertPosDiffMax{ 0.0f };
+
+        for (auto const & OUTER_COMBATNODE_SPTR : relevantCombatNodesSVec)
+        {
+            for (auto const & INNER_COMBATNODE_SPTR : relevantCombatNodesSVec)
+            {
+                if (OUTER_COMBATNODE_SPTR != INNER_COMBATNODE_SPTR)
+                {
+                    auto HORIZ_DIFF{ std::abs(OUTER_COMBATNODE_SPTR->GetEntityPos().x - INNER_COMBATNODE_SPTR->GetEntityPos().x) };
+                    if (HORIZ_DIFF > horizPosDiffMax)
+                        horizPosDiffMax = HORIZ_DIFF;
+
+                    auto VERT_DIFF{ std::abs(OUTER_COMBATNODE_SPTR->GetEntityPos().y - INNER_COMBATNODE_SPTR->GetEntityPos().y) };
+                    if (VERT_DIFF > vertPosDiffMax)
+                        vertPosDiffMax = VERT_DIFF;
+                }
+            }
+        }
+
+        auto const TOLERANCE{ sfml_util::MapByRes(256.0f, 512.0f) };
+        return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  - TOLERANCE)) &&
+                (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() - TOLERANCE)));
+    }
+
+
+    const sf::Vector2f CombatDisplay::FindCenterOfCreatures(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC) const
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        std::vector<float> horizPosVec;
+        std::vector<float> vertPosVec;
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CENTER_ON_PVEC)
+        {
+            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+            {
+                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                {
+                    horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x + (NEXT_COMBATNODE_SPTR->GetEntityRegion().width * 0.5f));
+                    vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y + (NEXT_COMBATNODE_SPTR->GetEntityRegion().height * 0.5f));
+                }
+            }
+        }
+
+        auto const HORIZ_AVG_POS{ std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f) / static_cast<float>(horizPosVec.size()) };
+        auto const VERT_AVG_POS{ std::accumulate(vertPosVec.begin(), vertPosVec.end(), 0.0f) / static_cast<float>(vertPosVec.size()) };
+
+        return sf::Vector2f(HORIZ_AVG_POS, VERT_AVG_POS);
     }
 
 }

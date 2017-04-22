@@ -392,5 +392,14 @@ namespace combat
         return false;
     }
 
+
+    std::size_t FightResult::EffectedCreatures(creature::CreaturePVec_t & CreaturePVec_OutParam) const
+    {
+        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
+            CreaturePVec_OutParam.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+
+        return creatureEffectVec_.size();
+    }
+
 }
 }

@@ -26,7 +26,8 @@ namespace creature
     using ConditionSVec_t = std::vector<ConditionSPtr_t>;
 
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t  = Creature *;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace item
 {
@@ -197,6 +198,8 @@ namespace combat
         bool GetHitInfo(HitInfo &         HitInfo_OutParam,
                         const std::size_t EFFECT_INDEX = 0,
                         const std::size_t HIT_INDEX = 0) const;
+
+        std::size_t EffectedCreatures(creature::CreaturePVec_t &) const;
 
     private:
         CreatureEffectVec_t creatureEffectVec_;

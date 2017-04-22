@@ -343,7 +343,6 @@ namespace combat
 
         if (WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe)
         {
-            if (WILL_APPEND_ING) strVec.push_back("puffing"); else strVec.push_back("puffs");
             if (WILL_APPEND_ING) strVec.push_back("darting"); else strVec.push_back("darts");
         }
 

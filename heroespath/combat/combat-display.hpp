@@ -184,7 +184,7 @@ namespace combat
 
         void HandleEndOfTurnTasks();
 
-        bool AreCreaturesVisible(const creature::CreaturePVec_t &);
+        bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
         void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
                                       creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
@@ -193,6 +193,10 @@ namespace combat
 
         void ProjectileShootAnimUpdate(const float);
         void ProjectileShootAnimStop();
+
+        bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
+
+        const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t & ) const;
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }

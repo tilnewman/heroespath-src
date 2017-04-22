@@ -26,6 +26,8 @@ namespace creature
 
     struct Algorithms
     {
+        static const CreaturePVec_t MakeIntoVector(const CreaturePtr_t);
+
         static std::size_t Players(CreaturePVec_t &, const bool LIVING_ONLY = false);
         static const CreaturePVec_t Players(const bool LIVING_ONLY = false);
 

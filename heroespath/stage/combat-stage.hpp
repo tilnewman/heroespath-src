@@ -98,10 +98,10 @@ namespace stage
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
         //prevent copy construction
-        CombatStage(const CombatStage &);
+        CombatStage(const CombatStage &) =delete;
 
         //prevent copy assignment
-        CombatStage & operator=(const CombatStage &);
+        CombatStage & operator=(const CombatStage &) =delete;
 
         //defines what stage of a creature's turn we are in
         enum class TurnPhase
@@ -197,7 +197,6 @@ namespace stage
         void EndPause();
         void HandleEnemyTurnStep1_Decide();
         PerformType HandleEnemyTurnStep2_Perform();
-        void HandleEnemyTurnStep3_Cleanup();
         void StartTurn_Step1();//start centering anim
         void StartTurn_Step2();//start pre-pause
         void EndTurn();
@@ -226,7 +225,6 @@ namespace stage
         void SetupTurnBox();
         void StartAttackAnimation(creature::CreatureCPtrC_t CREATURE_ATTACKING, creature::CreatureCPtrC_t CREATURE_ATTACKED);
         void StopAttackAnimation();
-        void StartInitialZoom();
         void StartAttackAnimZoom();
         void HandleAttackStage2();
         void StartPerformAnim();
@@ -294,6 +292,7 @@ namespace stage
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
+        bool                             willCenterZoomOut_;
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
         combat::CombatDisplayPtrC_t combatDisplayPtrC_;

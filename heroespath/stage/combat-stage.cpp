@@ -147,6 +147,7 @@ namespace stage
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
         zoomSliderOrigPos_         (0),
+        willCenterZoomOut_         (false),
         combatDisplayPtrC_         (new combat::CombatDisplay()),
         settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
                                                                         0.0f,
@@ -1074,7 +1075,7 @@ namespace stage
             auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
             combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
 
-            if (combatDisplayPtrC_->AreCreaturesVisible(creaturesToCenterPVec_) == false)
+            if (willCenterZoomOut_ && (combatDisplayPtrC_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
             {
                 auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way at the most
                 zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
@@ -1380,19 +1381,18 @@ namespace stage
             //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
             performType_ = HandleEnemyTurnStep2_Perform();
 
+            SetIsPlayerActionAllowed(false);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
-
-            //collect a list of all attacking and targeted creatures to center on the screen
+            
+            //collect a list of all attacking and targeted creatures to have centered on the screen
             creaturesToCenterPVec_.clear();
             creaturesToCenterPVec_.push_back(turnCreaturePtr_);
-            auto const CREATURE_EFFECT_VEC{ fightResult_.Effects() };
-            for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECT_VEC)
-                creaturesToCenterPVec_.push_back(NEXT_CREATURE_EFFECT.GetCreature());
-
+            fightResult_.EffectedCreatures(creaturesToCenterPVec_);
             combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
 
-            SetIsPlayerActionAllowed(false);
-            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);    
+            willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
+
+            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
             return;
         }
 

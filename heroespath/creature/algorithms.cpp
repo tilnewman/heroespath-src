@@ -22,6 +22,12 @@ namespace heroespath
 namespace creature
 {
 
+    const CreaturePVec_t Algorithms::MakeIntoVector(const CreaturePtr_t CREATURE_PTR)
+    {
+        return CreaturePVec_t{ CREATURE_PTR };
+    }
+
+
     std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam, const bool LIVING_ONLY)
     {
         const player::CharacterSVec_t PLAYERS_SVEC(Game::Instance()->State()->Party()->Characters());
