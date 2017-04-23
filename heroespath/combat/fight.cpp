@@ -279,7 +279,20 @@ namespace combat
         }
         else
         {
-            if (((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) > (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) &&
+            auto attackingAccuracyToUse{ ATTACKING_ACCURACY_RAND + static_cast<stats::Stat_t>(creatureAttackingPtrC->Rank()) };
+
+            //If the attacking creature is an archer who is using a projectile weapon to attack with,
+            //then add a 20% accuracy bonus plus half the attacker's Rank.
+            if ((creatureAttackingPtrC->Role().Which() == creature::role::Archer) &&
+                (WEAPON_SPTR->WeaponType() & item::weapon_type::Projectile))
+            {
+                attackingAccuracyToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACKING_ACCURACY) * 0.2f);
+                attackingAccuracyToUse += static_cast<stats::Stat_t>(static_cast<float>(creatureAttackingPtrC->Rank()) / 2.0f);
+            }
+
+            auto defendingSpeedToUse{ DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()) };
+
+            if ((attackingAccuracyToUse > defendingSpeedToUse) &&
                 ((creatureDefendingPtrC->Race().Which() != creature::race::Pixie) || (sfml_util::rand::Bool())))
             {
                 wasHit = true;
