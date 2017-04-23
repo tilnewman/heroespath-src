@@ -558,7 +558,7 @@ namespace creature
 
             if ((ARMOR_TYPE & item::armor_type::Aventail) && (item::Algorithms::FindByArmorType(inventory_.ItemsEquipped(), item::armor_type::Helm).empty()))
                 resultSS << "Can't wear an aventail without first wearing a helm." << SEP;
-            
+
             std::size_t armorEquipLimit{ 1 };
 
             if ((ARMOR_TYPE & item::armor_type::Bracer) || (ARMOR_TYPE & item::armor_type::Gauntlets))

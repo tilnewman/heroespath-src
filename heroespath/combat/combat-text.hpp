@@ -75,42 +75,42 @@ namespace combat
 
         static const std::string WeaponActionVerb(const item::ItemSPtr_t & WEAPON_SPTR,
                                                   const bool               WILL_APPEND_ING = false);
-        
+
         static const std::string HitDescription(const HitInfo & HIT_INFO);
-        
+
         static const std::string DodgeDescription(const HitInfo & HIT_INFO);
-        
+
         static const std::string AttackDescriptionStatusVersion(const FightResult & FIGHT_RESULT);
-    
+
         static const std::string AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT);
 
         static const std::string AttackDescriptionFullVersion(const FightResult & FIGHT_RESULT,
                                                               const std::size_t   EFFECT_INDEX,
                                                               const std::size_t   HIT_INDEX);
-    
-        static const std::string CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO, 
+
+        static const std::string CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO,
                                                               const FightResult &    FIGHT_RESULT);
 
-        static const std::string CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO, 
+        static const std::string CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO,
                                                                 const FightResult &    FIGHT_RESULT);
 
         static const std::string CastDescriptionFullVersion(const TurnActionInfo & TURN_ACTION_INFO,
                                                             const FightResult &    FIGHT_RESULT);
-    
+
         static const std::string WeaponActionVerbList(const FightResult & FIGHT_RESULT,
                                                       const bool          WILL_SKIP_MISSES);
-    
+
         static const std::string CountPhrase(const std::size_t);
 
         static const std::string ConditionNameList(const creature::ConditionSVec_t & CONDITIONS_SVEC,
                                                    const bool                        WILL_EXCLUDE_DEAD,
                                                    const std::size_t                 NUM_TO_LIST);
-        
+
         static const std::string AttackConditionsSummaryList(const FightResult & FIGHT_RESULT);
-    
+
         //requires FIGHT_RESULT is not empty
         static const std::string FirstTargetNamePhrase(const FightResult & FIGHT_RESULT);
-    
+
         static const std::string InitialCombatStatusMessagePrefix();
     };
 

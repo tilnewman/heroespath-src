@@ -79,14 +79,14 @@ namespace stats
         //no bounds checking or actual value adjustment is performed by these functions
         void ResetCurrentToNormal();
         void ResetCurrentAndActualToNormal();
-        
+
         //these functions are meant to only be used in testing
         //these functions use the NEW_..._SET current values to reset values to
         //no bounds checking or actual value adjustment is performed by these functions
         void ResetCurrent(const StatSet & NEW_CURRENT_SET);
         void ResetNormal(const StatSet & NEW_NORMAL_SET);
         void ResetActual(const StatSet & NEW_ACTUAL_SET);
-        
+
         //actual values are adjusted by this function
         void ModifyCurrentToNormal();
 

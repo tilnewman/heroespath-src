@@ -83,7 +83,7 @@ namespace combat
                                                bool &                   isCriticalHit_OutParam);
 
         static bool IsConditionContained(const creature::condition::Enum E, const HitInfoVec_t & HIT_INFO_VEC);
-    
+
         template<typename T>
         static T StatMinimum(const T VAL)
         {

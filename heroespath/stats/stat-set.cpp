@@ -48,7 +48,7 @@ namespace stats
         statVec_[stat::Speed]           = Stat(stat::Speed, SPD_VAL);
         statVec_[stat::Intelligence]    = Stat(stat::Intelligence, INT_VAL);
     }
-    
+
 
     StatSet::StatSet(const Stat & STR,
                      const Stat & ACC,

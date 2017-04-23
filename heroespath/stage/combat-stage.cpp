@@ -1020,10 +1020,10 @@ namespace stage
         if (TurnPhase::CenterAndZoomIn == turnPhase_)
         {
             auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
-            
+
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
-            
+
             combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
             if (centeringSlider_.GetIsDone())
             {
@@ -1116,7 +1116,7 @@ namespace stage
             auto const SLIDER_POS{ zoomSlider_.Update(ELAPSED_TIME_SEC) };
             auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
-            
+
             if (zoomSlider_.GetIsDone() || (IsAttackAnimating() && combatDisplayPtrC_->IsAttackedCreatureVisible()))
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
@@ -1299,7 +1299,7 @@ namespace stage
 
 
     void CombatStage::AppendInitialStatus()
-    {   
+    {
         std::ostringstream ss;
         ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << encounterSPtr_->NonPlayerParty()->Summary() << "!";
         AppendStatusMessage(ss.str(), true);
@@ -1350,7 +1350,7 @@ namespace stage
                 isAttackAnimZoomOut_ = false;
                 combatDisplayPtrC_->StartAttackAnim();
             }
-            
+
             SetPreTurnPhase(PreTurnPhase::End);
             SetIsPlayerActionAllowed(false);
             combatDisplayPtrC_->SetSummaryViewAllowed();
@@ -1380,7 +1380,7 @@ namespace stage
 
             SetIsPlayerActionAllowed(false);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
-            
+
             //collect a list of all attacking and targeted creatures to have centered on the screen
             creaturesToCenterPVec_.clear();
             creaturesToCenterPVec_.push_back(turnCreaturePtr_);
@@ -1425,7 +1425,7 @@ namespace stage
                         return;
                     }
                 }
-                
+
                 combatDisplayPtrC_->UpdateHealthBars();
                 SetupTurnBox();
             }
@@ -1436,7 +1436,7 @@ namespace stage
                 AfterHandleTurnTasks();
                 return;
             }
-            
+
             StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Post)");
             return;
         }
@@ -1738,7 +1738,7 @@ namespace stage
         {
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Block);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            
+
             //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
             return true;
@@ -1753,7 +1753,7 @@ namespace stage
 
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Nothing);
         encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-        
+
         //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
         AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
         return true;
@@ -1775,7 +1775,7 @@ namespace stage
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, true);
 
             combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, true);
-            
+
             //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
             return true;
@@ -1798,7 +1798,7 @@ namespace stage
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, false);
 
             combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, false);
-            
+
             //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
             return true;
@@ -2102,7 +2102,7 @@ namespace stage
 
             //turn box weapon text (or text that indicates that a creature cannot take their turn)
             if (CAN_TAKE_ACTION_STR.empty())
-            {   
+            {
                 weaponHoldingSS << HOLDING_WEAPON_STR;
             }
             else
@@ -2151,7 +2151,7 @@ namespace stage
                     enemyCondsSS.str(EMPTY_STR);
 
                     isEnemyTurnPreambleShowing = true;
-                    
+
                     enemyActionSS << combat::Text::ActionText(turnCreaturePtr_,
                                                               turnActionInfo_,
                                                               fightResult_,
@@ -2314,7 +2314,7 @@ namespace stage
                         break;
                     }
                 }
-                    
+
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::PostPerformPause);
                 break;
@@ -2331,10 +2331,10 @@ namespace stage
             }
         }
 
-        
+
         std::ostringstream ss;
         ss << "PostPerform(" << PerformTypeToString(performType_) << ")";
-        
+
     }
 
 
@@ -2458,7 +2458,7 @@ namespace stage
                 return GetPerformTypeFromWeaponType(WEAPON_SPTR);
             }
         }
-        
+
         return PerformType::None;
     }
 

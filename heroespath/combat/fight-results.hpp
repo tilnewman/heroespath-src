@@ -142,7 +142,7 @@ namespace combat
 
         bool GetWasHit() const;
         stats::Health_t GetDamageTotal() const;
-        
+
         const creature::ConditionSVec_t  GetHitConditions() const;
         inline creature::ConditionSVec_t GetNonHitConditions() const{ return conditionsSVec_; }
         const creature::ConditionSVec_t  GetAllConditions() const;
@@ -183,7 +183,7 @@ namespace combat
 
         inline CreatureEffectVec_t Effects() const  { return creatureEffectVec_; }
         inline std::size_t Count() const            { return creatureEffectVec_.size(); }
-        
+
         CreatureEffect FirstEffect() const;
         creature::CreaturePtr_t FirstCreature() const;
 

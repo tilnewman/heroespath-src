@@ -37,11 +37,11 @@ namespace stats
         inline Stat_t Normal() const                                { return normal_; }
         inline Stat_t Current() const                               { return current_; }
         inline Stat_t Actual() const                                { return actual_; }
-        
+
         inline bool IsActual() const                                { return (current_ == actual_); }
         inline bool IsNormal() const                                { return (current_ == normal_); }
         inline bool IsActualAndNormal() const                       { return (IsActual() && IsNormal()); }
-        
+
         //returns true if normal_ was prevented from going below zero
         bool ModifyNormal(const Stat_t MODIFIER);
         inline bool ModifyNormal(const Stat MODIFIER)               { return ModifyNormal(MODIFIER.Current()); }
@@ -72,7 +72,7 @@ namespace stats
         inline bool IsEqualNormal(const Stat & RHS) const           { return (normal_ == RHS.normal_); }
         inline bool IsEqualCurrent(const Stat & RHS) const          { return (current_ == RHS.current_); }
         inline bool IsEqualAllValues(const Stat & RHS) const        { return (IsEqualActual(RHS) && IsEqualNormal(RHS) && IsEqualCurrent(RHS)); }
-        
+
         void Invert();
 
         inline bool ForceValidNormal()                              { return ModifyNormal(0); }

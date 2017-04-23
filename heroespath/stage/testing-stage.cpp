@@ -352,14 +352,14 @@ namespace stage
         actualSet = STAT_SET_MOD1;
         actualSet.Invert();
         TestStatSetsCurrentAndNormal("Mod1 Set Invert()", actualSet, STAT_SET_MOD1_INV);
-        
+
         actualSet = STAT_SET_MOD1;
         actualSet.ForceValidNormal();
         stats::StatSet expectedSet(STAT_SET_MOD1);
         const stats::StatSet STAT_SET_MOD1_VALID(0, 0, 2, 0, 4, 0);
         expectedSet.ResetNormal(STAT_SET_MOD1_VALID);
         TestStatSetsCurrentAndNormal("Mod1 Set ForceValidNormal()", actualSet, expectedSet);
-        
+
         actualSet = STAT_SET_MOD1;
         actualSet.ForceValidCurrent();
         expectedSet = STAT_SET_MOD1;
@@ -386,7 +386,7 @@ namespace stage
         actualSet.ModifyCurrent(STAT_SET_MOD1.CreateInvertCopy());
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV Current (should be back to Base)", actualSet, expectedSet);
-        
+
         actualSet = STAT_SET_BASE;
         for (int i(0); i < 10; ++i)
             actualSet.ModifyCurrent(STAT_SET_MOD1);
@@ -444,7 +444,7 @@ namespace stage
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Current() != EXPECTED.GetCopy(NEXT_ENUM).Current())
                 isMismatchCurrent = true;
-            
+
             if (ACTUAL.GetCopy(NEXT_ENUM).Normal() != EXPECTED.GetCopy(NEXT_ENUM).Normal())
                 isMismatchNormal = true;
         }
@@ -487,7 +487,7 @@ namespace stage
             LoopManager::Instance()->TestingStrAppend("heroespath::stage::TestingStage::TestImageSet() ALL Tests Passed.");
         }
 
-        static std::vector<std::string> imagePathKeyVec = 
+        static std::vector<std::string> imagePathKeyVec =
         {
             "media-images-gui-elements",
             "media-images-title-paper",

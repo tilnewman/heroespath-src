@@ -279,7 +279,7 @@ namespace combat
         }
         else
         {
-            if (((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) > (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) && 
+            if (((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) > (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) &&
                 ((creatureDefendingPtrC->Race().Which() != creature::race::Pixie) || (sfml_util::rand::Bool())))
             {
                 wasHit = true;
@@ -346,7 +346,7 @@ namespace combat
         isPowerHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
                                (STRENGTH_RAND == STRENGTH_RAND_MAX) &&
                                ((STRENGTH >= STAT_FLOOR) || (sfml_util::rand::Int(STAT_FLOOR / 2) == 0)));//low str can mean greater chance of power hit so compensate here
-        
+
         //there is a rare chance of a critical hit for players
         auto const ACCURACY{ creatureAttackingPtrC->Stats().Acc().Current() };
         auto const ACCURACY_RAND_MIN{ StatMinimum(ACCURACY) };
@@ -356,7 +356,7 @@ namespace combat
         isCriticalHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
                                   (ACCURACY_RAND == ACCURACY_RAND_MAX) &&
                                   ((ACCURACY >= STAT_FLOOR) || (sfml_util::rand::Int(STAT_FLOOR / 2) == 0)));//low acc can mean greater chance of critical hit so compensate here
-        
+
         stats::Health_t damageFinal{ DAMAGE_BASE };
 
         if (isPowerHit_OutParam)

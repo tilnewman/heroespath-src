@@ -110,13 +110,13 @@ namespace condition
         const ConditionEnumVec_t ENUM_VEC{ ENUM };
         return Exclude(CONDITIONS_SVEC, ENUM_VEC);
     }
-    
-    
+
+
     const ConditionSVec_t Algorithms::Exclude(const ConditionSVec_t &    CONDITIONS_SVEC,
                                               const ConditionEnumVec_t & ENUM_VEC)
     {
         ConditionSVec_t excludedConditionsSVec;
-    
+
         if (CONDITIONS_SVEC.empty() == false)
         {
             std::copy_if(CONDITIONS_SVEC.begin(),
@@ -127,15 +127,15 @@ namespace condition
                              for(auto const NEXT_ENUM : ENUM_VEC)
                                  if (CSPTR->Which() == NEXT_ENUM)
                                      return false;
-    
+
                              return true;
                          });
         }
-    
+
         return excludedConditionsSVec;
     }
 
-    
+
     void Algorithms::SortBySeverity(ConditionSVec_t & conditionsSVec,
                                                      const bool        SORT_DESCENDING)
     {

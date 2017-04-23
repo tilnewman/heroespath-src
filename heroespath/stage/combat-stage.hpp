@@ -188,7 +188,7 @@ namespace stage
 
         bool IsPlayerCharacterTurnValid() const;
         bool IsNonPlayerCharacterTurnValid() const;
-        
+
     private:
         void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
         void AppendInitialStatus();
@@ -237,7 +237,7 @@ namespace stage
         inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
         inline void SetPreTurnPhase(const PreTurnPhase PTP)         { preTurnPhase_ = PTP; UpdateTestingText(); }
         inline void SetPerformAnimPhase(const PerformAnimPhase PAP) { performAnimPhase_ = PAP; UpdateTestingText(); }
-        
+
         PerformType GetPerformTypeFromWeaponType(const item::ItemSPtr_t &) const;
         PerformType GetPerformTypeFromFightResult(const combat::FightResult &) const;
 

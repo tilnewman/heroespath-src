@@ -43,7 +43,7 @@ namespace condition
     const std::string ToString(const condition::Enum E);
     const std::string Desc(const condition::Enum E);
 
-    
+
     struct Severity
     {
         static const std::size_t ALL;

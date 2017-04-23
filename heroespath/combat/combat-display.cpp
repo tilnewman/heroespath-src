@@ -1112,7 +1112,7 @@ namespace combat
         {
             sfml_util::FlipHoriz( * projAnimTextureSPtr_);
         }
-        
+
         //
         projAnimSprite_.setTexture( * projAnimTextureSPtr_, true);
 
@@ -1134,9 +1134,9 @@ namespace combat
 
         projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f, projAnimSprite_.getLocalBounds().height * 0.5f);
         //TODO SET ROTATION
-        
+
         projAnimBeginPosV_ = creatureAttackingCenterPosV;
-        
+
         if (WILL_HIT)
         {
             projAnimEndPosV_ = creatureDefendingCenterPosV;
@@ -1146,15 +1146,15 @@ namespace combat
             //use linear relations to find the edge-of-screen miss point, first assuming the vertical position is the vertical screen edge...
             auto const SPRITE_HEIGHT{ projAnimSprite_.getGlobalBounds().height };
             projAnimEndPosV_.y = ((creatureAttackingCenterPosV.y < creatureDefendingCenterPosV.y) ? (SCREEN_HEIGHT_ + SPRITE_HEIGHT + 1.0f) : ((-1.0f * SPRITE_HEIGHT) - 1.0f));
-            
+
             auto const AV_HORIZ_OVER_VERT{ (std::max(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x) - std::min(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x)) /
                                            (std::max(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y) - std::min(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y)) };
 
             auto const AV_VERTICAL_EXTENT{ ((creatureDefendingCenterPosV.y > creatureAttackingCenterPosV.y) ? (SCREEN_HEIGHT_ - creatureAttackingCenterPosV.y) : creatureAttackingCenterPosV.y) };
-            
+
             auto const AV_HORIZ_EXTENT{ AV_HORIZ_OVER_VERT * AV_VERTICAL_EXTENT };
 
-            if (creatureDefendingCenterPosV.x > creatureAttackingCenterPosV.x) 
+            if (creatureDefendingCenterPosV.x > creatureAttackingCenterPosV.x)
             {
                 projAnimEndPosV_.x = creatureAttackingCenterPosV.x + AV_HORIZ_EXTENT;
             }
@@ -1168,12 +1168,12 @@ namespace combat
             {
                 auto const SPRITE_WIDTH{ projAnimSprite_.getGlobalBounds().width };
                 projAnimEndPosV_.x = ((creatureAttackingCenterPosV.x < creatureDefendingCenterPosV.x) ? (SCREEN_WIDTH_ + SPRITE_WIDTH + 1.0f) :(0.0f - SPRITE_WIDTH - 1.0f));
-            
+
                 auto const AH_VERT_OVER_HORIZ{ (std::max(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y) - std::min(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y)) /
                                                (std::max(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x) - std::min(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x)) };
 
                 auto const AH_HORIZ_EXTENT{ ((creatureDefendingCenterPosV.x > creatureAttackingCenterPosV.x) ? (SCREEN_WIDTH_ - creatureAttackingCenterPosV.x) : creatureAttackingCenterPosV.x) };
-               
+
                 auto const AH_VERT_EXTENT{ AH_VERT_OVER_HORIZ * AH_HORIZ_EXTENT };
 
                 if (creatureDefendingCenterPosV.y > creatureAttackingCenterPosV.y)

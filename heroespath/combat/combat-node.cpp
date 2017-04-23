@@ -214,7 +214,7 @@ namespace combat
         imagePosV_.x += HORIZ;
         imagePosV_.y += VERT;
         UpdateImagePosition();
-        
+
         wingSprite_.move(HORIZ, VERT);
     }
 

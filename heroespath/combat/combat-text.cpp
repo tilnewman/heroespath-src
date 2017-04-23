@@ -439,7 +439,7 @@ namespace combat
     {
         auto const CREATURES_FOUGHT_COUNT{ FIGHT_RESULT.Count() };
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_FOUGHT_COUNT != 0), "heroespath::combat::Text::AttackDescriptionStatusVersion() was given an empty FIGHT_RESULT.");
-        
+
         std::ostringstream ss;
         if (CREATURES_FOUGHT_COUNT == 1)
         {
@@ -449,7 +449,7 @@ namespace combat
             if (HIT_COUNT > 0)
             {
                 ss << "hitting " << CountPhrase(HIT_COUNT) << " ";
-                    
+
                 if (FIGHT_RESULT.FirstEffect().WasKill())
                 {
                     ss << "killing " << creature::sex::HimHerIt(FIGHT_RESULT.FirstCreature()->Sex(), false);
@@ -467,14 +467,14 @@ namespace combat
             }
         }
         else
-        {   
+        {
             ss << WeaponActionVerbList(FIGHT_RESULT, false) << " " << CREATURES_FOUGHT_COUNT << " creatures";
 
             auto const HIT_COUNT{ FIGHT_RESULT.HitCount() };
             if (HIT_COUNT > 0)
             {
                 ss << "hitting " << CountPhrase(HIT_COUNT) << " ";
-                    
+
                 std::size_t killCount{ 0 };
                 auto const CREATURE_EFFECTS_VEC{ FIGHT_RESULT.Effects() };
                 for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
@@ -506,7 +506,7 @@ namespace combat
     const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Count() != 0), "heroespath::combat::Text::AttackDescriptionPreambleVersion() was given an empty FIGHT_RESULT.");
-        
+
         std::ostringstream ss;
         ss << WeaponActionVerbList(FIGHT_RESULT, false) << " " << FirstTargetNamePhrase(FIGHT_RESULT) << "...";
         return ss.str();
@@ -518,16 +518,16 @@ namespace combat
                                                          const std::size_t   HIT_INDEX)
     {
         auto const CREATURE_EFFECTS_VEC{ FIGHT_RESULT.Effects() };
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.empty() == false),      "heroespath::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") was given an empty FIGHT_RESULT.");
         M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX < CREATURE_EFFECTS_VEC.size()), "heroespath::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") effect_index was out of bounds with FIGHT_RESULT.Effects().size()="  << CREATURE_EFFECTS_VEC.size() << ".");
-        
+
         auto const CREATURE_EFFECT{ CREATURE_EFFECTS_VEC.at(EFFECT_INDEX) };
         auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((HIT_INFO_VEC.empty() == false),   "heroespath::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") was given an empty HIT_INFO_VEC.");
         M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFO_VEC.size()), "heroespath::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") hit_index was out of bounds with FIGHT_RESULT.Effects()[effect_index].GetCount()=" << HIT_INFO_VEC.size() << ".");
-        
+
         auto const HIT_INFO{ HIT_INFO_VEC.at(HIT_INDEX) };
 
         std::ostringstream ss;
@@ -584,7 +584,7 @@ namespace combat
 
         return ss.str();
     }
-    
+
 
     const std::string Text::CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
@@ -644,7 +644,7 @@ namespace combat
     }
 
 
-    const std::string Text::CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO, 
+    const std::string Text::CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO,
                                                          const FightResult &)
     {
         std::ostringstream ss;
@@ -741,7 +741,7 @@ namespace combat
     const std::string Text::FirstTargetNamePhrase(const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
-        
+
         auto const CREATURE_PTR{ FIGHT_RESULT.FirstCreature() };
         if (CREATURE_PTR->IsPlayerCharacter())
         {

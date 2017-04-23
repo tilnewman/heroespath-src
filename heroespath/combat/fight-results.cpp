@@ -101,7 +101,7 @@ namespace combat
         {
             conditionsSVec_.erase(std::remove(conditionsSVec_.begin(), conditionsSVec_.end(), NEXT_CONDITION_TO_REMOVE_SPTR), conditionsSVec_.end());
         }
-        
+
         return WILL_REMOVE_A_CONDITION;
     }
 
@@ -239,7 +239,7 @@ namespace combat
         for (auto & nextHitInfo : hitInfoVec_)
             if (nextHitInfo.RemoveCondition(E))
                 wasCondRemoved = true;
-        
+
         creature::ConditionSVec_t condsToRemoveSVec;
 
         for (auto const & NEXT_CONDITION_SPTR : conditionsSVec_)

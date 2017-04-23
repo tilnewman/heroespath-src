@@ -161,7 +161,7 @@ namespace combat
             nameTextRegionSPtr_->draw(target, states);
             healthTextRegionSPtr_->draw(target, states);
             condTextRegionSPtr_->draw(target, states);
-            
+
             if (combatNodeSPtr_->Creature()->IsPlayerCharacter())
             {
                 armorTextRegionSPtr_->draw(target, states);
@@ -418,7 +418,7 @@ namespace combat
                                                0.0f);
 
             nextItemText.name_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_sptr->Name(), ITEM_NAME_TEXT_INFO, ITEM_NAME_RECT));
-            
+
             const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(nextItemText.item_sptr->Desc(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
                                                                sfml_util::FontManager::Instance()->Size_Small(),
@@ -431,7 +431,7 @@ namespace combat
                                                0.0f);
 
             nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_sptr->Name(), ITEM_DESC_TEXT_INFO, ITEM_DESC_RECT));
-            
+
             std::ostringstream infoSS;
             if (nextItemText.item_sptr->IsMagical())
             {
@@ -465,7 +465,7 @@ namespace combat
                                           0.0f);
 
             nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_sptr->Name(), INFO_TEXT_INFO, INFO_RECT) );
-            
+
             const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_ + nextItemText.desc_text_region_sptr->GetEntityRegion().width);
             if (longestItemHorizExtent < CURR_ITEM_HORIZ_EXTENT)
                 longestItemHorizExtent = CURR_ITEM_HORIZ_EXTENT;

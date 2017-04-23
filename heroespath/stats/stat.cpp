@@ -49,7 +49,7 @@ namespace stats
         {
             current_ = actual_;
         }
-        
+
         if (current_ < 0)
         {
             current_ = 0;

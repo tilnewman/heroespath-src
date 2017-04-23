@@ -505,7 +505,7 @@ namespace armor
         details.name = material::ToReadableString(MATERIAL) + " skin";
         details.price = 0;
         details.weight = static_cast<item::Weight_t>(100.0f * material::WeightMult(MATERIAL, material::Nothing));
- 
+
         if (MATERIAL == material::Hide)
         {
             details.image_filename = "hide";
@@ -518,7 +518,7 @@ namespace armor
         {
             details.image_filename = "no-image";
         }
-        
+
         std::ostringstream ss;
         ss << "Skin made of " << material::ToReadableString(MATERIAL) << ".  The Armor Rating increases with Rank.";
         details.description = ss.str();
