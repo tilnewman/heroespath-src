@@ -1364,6 +1364,7 @@ namespace stage
         {
             SetTurnPhase(TurnPhase::PerformAnim);
             StartPerformAnim();
+            SetupTurnBox();
             return;
         }
 
@@ -1657,7 +1658,13 @@ namespace stage
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature);
             performType_ = GetPerformTypeFromFightResult(fightResult_);
-            StartPerformAnim();
+
+            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+            creaturesToCenterPVec_ = creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature };
+            combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
+            willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
+            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+
             return true;
         }
     }
