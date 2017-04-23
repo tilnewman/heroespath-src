@@ -1133,8 +1133,7 @@ namespace combat
         projAnimSprite_.setScale(scale, scale);
 
         projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f, projAnimSprite_.getLocalBounds().height * 0.5f);
-        //TODO SET ROTATION
-
+        
         projAnimBeginPosV_ = creatureAttackingCenterPosV;
 
         if (WILL_HIT)
@@ -1186,6 +1185,11 @@ namespace combat
                 }
             }
         }
+
+        //TODO SET ROTATION based on target
+        projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
+        projAnimSprite_.setRotation(0.0f);
+        projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
 
 
@@ -1197,7 +1201,9 @@ namespace combat
 
         if (projAnimWillSpin_)
         {
+            projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
             projAnimSprite_.rotate(2.0f);
+            projAnimSprite_.setOrigin(0.0f, 0.0f);
         }
 
         if ((battlefieldRect_.contains(projAnimSprite_.getGlobalBounds().left, projAnimSprite_.getGlobalBounds().top) == false) ||
