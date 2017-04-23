@@ -669,14 +669,17 @@ namespace creature
 
         if (ROLE == role::Bard)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) > 0)
+            if (WEAPON_TYPE & item::weapon_type::Axe)
                 return "Bards cannot use axes.";
         }
 
         if (ROLE == role::Thief)
         {
-            if (((CATEGORY & item::category::TwoHanded) > 0) && (CATEGORY & item::category::Weapon) > 0)
-                return "Thieves cannot use two-handed weapons.";
+            if ((CATEGORY & item::category::TwoHanded) &&
+                (CATEGORY & item::category::Weapon) &&
+                ((WEAPON_TYPE & item::weapon_type::Sling) == 0) &&
+                ((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0))
+                return "Thieves cannot use two-handed weapons except for Slings and Blowpipes.";
 
             if (((WEAPON_TYPE & item::weapon_type::Axe) > 0) ||
                 ((WEAPON_TYPE & item::weapon_type::Sword) > 0) ||

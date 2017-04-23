@@ -171,7 +171,6 @@ namespace stage
         isPauseCanceled_            (false),
         centeringSlider_            (CENTERING_SLIDER_SPEED_),
         turnCreaturePtr_            (nullptr),
-        opponentCreature_           (nullptr),
         goldTextColorShaker_        (sfml_util::FontManager::Color_Orange(), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_),
         redTextColorShaker_         (sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
         turnStateToFinish_          (combat::TurnAction::Count),
@@ -557,7 +556,7 @@ namespace stage
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
         player::PartySPtr_t partySPtr(new player::Party());
-        /*
+        
         {
             const stats::StatSet KNIGHT_STATS(20 + sfml_util::rand::Int(10),
                                               15 + sfml_util::rand::Int(6),
@@ -567,30 +566,17 @@ namespace stage
                                               0  + sfml_util::rand::Int(8));
 
             const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "K") );
-            auto knightSPtr( new player::Character(KNIGHT_NAME,
-                                                   creature::sex::Male,
-                                                   creature::BodyType::Make_Humanoid(),
-                                                   creature::race::Human,
-                                                   creature::role::Knight,
-                                                   KNIGHT_STATS));
+            auto knightSPtr( std::make_shared<player::Character>(KNIGHT_NAME,
+                                                                 creature::sex::Male,
+                                                                 creature::BodyType::Make_Humanoid(),
+                                                                 creature::race::Human,
+                                                                 creature::role::Knight,
+                                                                 KNIGHT_STATS) );
 
             player::Initial::Setup(knightSPtr.get());
-
-            creature::ConditionSPtr_t iConditionDazedSPtr( new heroespath::creature::condition::Cond_Dazed("Um...from somewhere, or somehow, whichever makes sense") );
-            knightSPtr->ConditionAdd(iConditionDazedSPtr);
-            creature::ConditionSPtr_t iConditionTrippedSPtr( new heroespath::creature::condition::Cond_Tripped("Um...by some creature") );
-            knightSPtr->ConditionAdd(iConditionTrippedSPtr);
-
-            creature::TitleSPtr_t titleKnightOfTheRoseSPtr( new creature::title::Title_KnightOfTheRose() );
-            knightSPtr->TitleAdd(titleKnightOfTheRoseSPtr);
-
-            knightSPtr->CoinsAdj(100);
-            knightSPtr->GemsAdj(3);
-            knightSPtr->MeteorShardsAdj(3);
             partySPtr->Add(knightSPtr);
         }
-        */
-
+        /*
         {
             const stats::StatSet FIREBRAND_STATS(20 + sfml_util::rand::Int(10),
                                                  15 + sfml_util::rand::Int(10),
@@ -618,19 +604,9 @@ namespace stage
             firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
 
             player::Initial::Setup(firebrandSPtr.get());
-
-            /* TODO TEMP FIX
-            firebrandSPtr->TitleAdd(creature::title::TitleWarehouse::NIMBLEFOOT_SPTR);
-            creature::IConditionSPtr_t iConditionDazedSPtr( new heroespath::creature::condition::Cond_Dazed("Um...from somewhere, or somehow, whichever makes sense") );
-            firebrandSPtr->ConditionAdd(iConditionDazedSPtr);
-            creature::IConditionSPtr_t iConditionTrippedSPtr( new heroespath::creature::condition::Cond_Tripped("Um...by some creature") );
-            firebrandSPtr->ConditionAdd(iConditionTrippedSPtr);
-            */
-
             partySPtr->Add(firebrandSPtr);
         }
-
-        /*
+        */
         {
             const stats::StatSet ARCHER_STATS(15 + sfml_util::rand::Int(10),
                                               20 + sfml_util::rand::Int(10),
@@ -648,15 +624,9 @@ namespace stage
                                                                      ARCHER_STATS));
 
             player::Initial::Setup(archerSPtr.get());
-
-            archerSPtr->CoinsAdj(100);
-            archerSPtr->GemsAdj(3);
-            archerSPtr->MeteorShardsAdj(3);
-
             partySPtr->Add(archerSPtr);
         }
-        */
-
+        /*
         {
             const stats::StatSet WOLFEN_STATS(20 + sfml_util::rand::Int(10),
                                               20 + sfml_util::rand::Int(10),
@@ -676,8 +646,7 @@ namespace stage
             player::Initial::Setup(wolfenSPtr.get());
             partySPtr->Add(wolfenSPtr);
         }
-
-        /*
+        */
         {
             const stats::StatSet BARD_STATS(10 + sfml_util::rand::Int(6),
                                             10 + sfml_util::rand::Int(6),
@@ -695,15 +664,9 @@ namespace stage
                                                                    BARD_STATS));
 
             player::Initial::Setup(bardSPtr.get());
-
-            bardSPtr->CoinsAdj(100);
-            bardSPtr->GemsAdj(3);
-            bardSPtr->MeteorShardsAdj(3);
-
             partySPtr->Add(bardSPtr);
         }
-        */
-
+        /*
         {
             const stats::StatSet BEASTMASTER_STATS(10 + sfml_util::rand::Int(6),
                                                    10 + sfml_util::rand::Int(6),
@@ -721,14 +684,9 @@ namespace stage
                                                                  BEASTMASTER_STATS));
 
             player::Initial::Setup(bmSPtr.get());
-
-            bmSPtr->CoinsAdj(100);
-            bmSPtr->GemsAdj(100);
-            bmSPtr->MeteorShardsAdj(100);
-
             partySPtr->Add(bmSPtr);
         }
-
+        */
         {
             const stats::StatSet THEIF_STATS(5  + sfml_util::rand::Int(10),
                                              5  + sfml_util::rand::Int(10),
@@ -746,11 +704,6 @@ namespace stage
                                                                     THEIF_STATS));
 
             player::Initial::Setup(thiefSPtr.get());
-
-            thiefSPtr->CoinsAdj(100);
-            thiefSPtr->GemsAdj(4);
-            thiefSPtr->MeteorShardsAdj(4);
-
             partySPtr->Add(thiefSPtr);
         }
 
@@ -771,21 +724,15 @@ namespace stage
                                                                      CLERIC_STATS));
 
             player::Initial::Setup(clericSPtr.get());
-
-            clericSPtr->CoinsAdj(100);
-            clericSPtr->GemsAdj(100);
-            clericSPtr->MeteorShardsAdj(100);
-
             partySPtr->Add(clericSPtr);
         }
 
-        /*
         {
             const stats::StatSet SORCERER_STATS(0  + sfml_util::rand::Int(8),
                                                 0  + sfml_util::rand::Int(8),
                                                 5  + sfml_util::rand::Int(8),
                                                 10 + sfml_util::rand::Int(6),
-                                                10 + sfml_util::rand::Int(6),
+                                                50 + sfml_util::rand::Int(6),
                                                 20 + sfml_util::rand::Int(10));
 
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
@@ -797,20 +744,15 @@ namespace stage
                                                                        SORCERER_STATS));
 
             player::Initial::Setup(sorcererSPtr.get());
-
-            sorcererSPtr->CoinsAdj(100);
-            sorcererSPtr->GemsAdj(6);
-            sorcererSPtr->MeteorShardsAdj(6);
-
             partySPtr->Add(sorcererSPtr);
         }
-        */
+        /*
         {
             const stats::StatSet SYLAVIN_STATS(20 + sfml_util::rand::Int(8),
                                                20 + sfml_util::rand::Int(8),
                                                5  + sfml_util::rand::Int(8),
                                                5  + sfml_util::rand::Int(6),
-                                               50  + sfml_util::rand::Int(6),
+                                               50 + sfml_util::rand::Int(6),
                                                10 + sfml_util::rand::Int(10));
 
             const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
@@ -822,10 +764,9 @@ namespace stage
                                                                       SYLAVIN_STATS));
 
             player::Initial::Setup(sylavinSPtr.get());
-
             partySPtr->Add(sylavinSPtr);
         }
-
+        */
         if (savedCombatInfo_.HasRestored() == false)
         {
             //TEMP TODO REMOVE create new game and player party object
@@ -864,10 +805,59 @@ namespace stage
 
                 auto const PROJ_WEAPON_SPTR{ heroespath::item::weapon::WeaponFactory::Instance()->Make_Projectile(projWeaponEnum, item::material::Nothing) };
                 auto const ITEM_ADD_STR{ nextCharacterSPtr->ItemAdd(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "\t ********** Unable to ItemAdd() because : \"" << ITEM_ADD_STR << "\"");
+                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "\t ********** Unable to ItemAdd() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_ADD_STR << "\"");
                 auto const ITEM_EQUIP_STR{ nextCharacterSPtr->ItemEquip(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "\t ********** Unable to ItemEquip() because : \"" << ITEM_EQUIP_STR << "\"");
+                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "\t ********** Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
 
+                nextCharacterSPtr->SetCurrentWeaponsToBest();
+            }
+
+            //TODO TEMP REMOVE -test projectile animations by forcing all player characters to have projectile weapons
+            for (auto & nextCharacterSPtr : heroespath::Game::Instance()->State()->Party()->Characters())
+            {
+                if ((nextCharacterSPtr->Role().Which() == creature::role::Cleric) ||
+                    (nextCharacterSPtr->Role().Which() == creature::role::Sorcerer))
+                {
+                    continue;
+                }
+
+                for (auto const & NEXT_ITEM_SPTR : nextCharacterSPtr->Inventory().ItemsEquipped())
+                {
+                    if (NEXT_ITEM_SPTR->IsWeapon() && (NEXT_ITEM_SPTR->IsBodypart() == false))
+                    {
+                        nextCharacterSPtr->ItemUnEquip(NEXT_ITEM_SPTR);
+                        nextCharacterSPtr->ItemRemove(NEXT_ITEM_SPTR);
+                    }
+                }
+
+                if (nextCharacterSPtr->IsBeast())
+                {
+                    continue;
+                }
+
+                auto projWeaponType{ item::weapon::projectile_type::Blowpipe };
+                if (nextCharacterSPtr->Role().Which() == creature::role::Thief)
+                {
+                    projWeaponType = item::weapon::projectile_type::Sling;
+                }
+                else
+                {
+                    if (sfml_util::rand::Bool())
+                    {
+                        projWeaponType = item::weapon::projectile_type::Longbow;
+                    }
+                    else
+                    {
+                        projWeaponType = item::weapon::projectile_type::Crossbow;
+                    }
+                }
+
+                auto const PROJ_WEAPON_SPTR{ heroespath::item::weapon::WeaponFactory::Instance()->Make_Projectile(projWeaponType, item::material::Nothing) };
+                auto const ITEM_ADD_STR{ nextCharacterSPtr->ItemAdd(PROJ_WEAPON_SPTR) };
+                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "\t ********** Unable to ItemAdd() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_ADD_STR << "\"");
+                auto const ITEM_EQUIP_STR{ nextCharacterSPtr->ItemEquip(PROJ_WEAPON_SPTR) };
+                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "\t ********** Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
+                
                 nextCharacterSPtr->SetCurrentWeaponsToBest();
             }
         }
@@ -1662,10 +1652,10 @@ namespace stage
         }
         else
         {
-            opponentCreature_ = combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayPtrC_);
-            turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature_, nullptr);
+            auto opponentCreature{ combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayPtrC_) };
+            turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature, nullptr);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature_);
+            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature);
             performType_ = GetPerformTypeFromFightResult(fightResult_);
             StartPerformAnim();
             return true;

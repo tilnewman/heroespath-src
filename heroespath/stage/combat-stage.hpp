@@ -315,7 +315,6 @@ namespace stage
 
         //members that deal with which creature's turn it is and the timing of taking turns
         creature::CreaturePtr_t turnCreaturePtr_;
-        creature::CreaturePtr_t opponentCreature_;
         sfml_util::ColorShaker goldTextColorShaker_;
         sfml_util::ColorShaker redTextColorShaker_;
         combat::TurnAction::Enum turnStateToFinish_;
