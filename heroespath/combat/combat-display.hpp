@@ -200,6 +200,8 @@ namespace combat
 
         const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t & ) const;
 
+        void SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
 

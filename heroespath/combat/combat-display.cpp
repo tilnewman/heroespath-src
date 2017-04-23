@@ -1531,5 +1531,17 @@ namespace combat
         return sf::Vector2f(HORIZ_AVG_POS, VERT_AVG_POS);
     }
 
+
+    void CombatDisplay::SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT)
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+            if (NEXT_COMBATNODE_SPTR->Creature().get() == CREATURE_CPTRC)
+                NEXT_COMBATNODE_SPTR->SetHighlight(WILL_HIGHLIGHT, false);
+    }
+
 }
 }

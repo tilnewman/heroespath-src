@@ -64,7 +64,9 @@ namespace combat
         isFlying_           (false),
         wingFlapSlider_     (WING_IMAGE_ANIM_SPEED_),
         imagePosV_          (0.0f, 0.0f),
-        imagePosOffsetV_    (0.0f, 0.0f)
+        imagePosOffsetV_    (0.0f, 0.0f),
+        soundsTickOnSPtr_   (sfml_util::SoundManager::Instance()->StaticSounds_TickOn()),
+        soundsTickOffSPtr_  (sfml_util::SoundManager::Instance()->StaticSounds_TickOff())
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -224,25 +226,7 @@ namespace combat
         const bool DID_MOUSE_STATE_CHANGE( GuiEntity::UpdateMousePos(MOUSE_POS_V) );
         if (DID_MOUSE_STATE_CHANGE)
         {
-            const sf::Color NAME_COLOR((creatureSPtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
-            if (sfml_util::MouseState::Over == entityMouseState_)
-            {
-                sfml_util::SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
-                sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
-                sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
-                healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
-                healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
-                sprite_.setColor(creatureImageColor_ + sf::Color(0, 0, 0, CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_));
-            }
-            else
-            {
-                sfml_util::SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
-                sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
-                sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_);
-                healthLineColor_ = HealthColor();
-                healthLineColorTick_ = HealthColorTick();
-                sprite_.setColor(creatureImageColor_);
-            }
+            SetHighlight((sfml_util::MouseState::Over == entityMouseState_), true);
         }
 
         return DID_MOUSE_STATE_CHANGE;
@@ -409,6 +393,39 @@ namespace combat
     void CombatNode::UpdateImagePosition()
     {
         sprite_.setPosition(imagePosV_ + imagePosOffsetV_);
+    }
+
+
+    void CombatNode::SetHighlight(const bool WILL_HIGHLIGHT, const bool WILL_PLAY_SOUND_EFFECT)
+    {
+        const sf::Color NAME_COLOR((creatureSPtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+
+        if (WILL_HIGHLIGHT)
+        {
+            if (WILL_PLAY_SOUND_EFFECT)
+            {
+                soundsTickOnSPtr_->PlayRandom();
+            }
+
+            sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
+            sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
+            healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
+            healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
+            sprite_.setColor(creatureImageColor_ + sf::Color(0, 0, 0, CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_));
+        }
+        else
+        {
+            if (WILL_PLAY_SOUND_EFFECT)
+            {
+                soundsTickOffSPtr_->PlayRandom();
+            }
+
+            sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
+            sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_);
+            healthLineColor_ = HealthColor();
+            healthLineColorTick_ = HealthColorTick();
+            sprite_.setColor(creatureImageColor_);
+        }
     }
 
 }
