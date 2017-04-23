@@ -30,6 +30,7 @@
 #include "heroespath/combat/combat-node.hpp"
 #include "heroespath/combat/fight.hpp"
 #include "heroespath/combat/combat-text.hpp"
+#include "heroespath/combat/turn-action-enum.hpp"
 #include "heroespath/creature/name-info.hpp"
 #include "heroespath/creature/conditions.hpp"
 #include "heroespath/creature/titles.hpp"
@@ -176,6 +177,7 @@ namespace stage
         turnStateToFinish_          (combat::TurnAction::Count),
         turnActionInfo_             (),
         fightResult_                (),
+        willRedColorShakeWeaponText_(false),
         titleTBoxTextRegionSPtr_    (),
         weaponTBoxTextRegionSPtr_   (),
         armorTBoxTextRegionSPtr_    (),
@@ -968,6 +970,11 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
 
+        if (willRedColorShakeWeaponText_)
+        {
+            weaponTBoxTextRegionSPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
+        }
+
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             titleTBoxTextRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
@@ -1375,21 +1382,29 @@ namespace stage
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
 
-            //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
-            performType_ = HandleEnemyTurnStep2_Perform();
+            if (turnActionInfo_.Action() == combat::TurnAction::Nothing)
+            {
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, false, true), true);
+            }
+            else
+            {
+                //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
+                performType_ = HandleEnemyTurnStep2_Perform();
 
-            SetIsPlayerActionAllowed(false);
-            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+                SetIsPlayerActionAllowed(false);
+                SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
-            //collect a list of all attacking and targeted creatures to have centered on the screen
-            creaturesToCenterPVec_.clear();
-            creaturesToCenterPVec_.push_back(turnCreaturePtr_);
-            fightResult_.EffectedCreatures(creaturesToCenterPVec_);
-            combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
+                //collect a list of all attacking and targeted creatures to have centered on the screen
+                creaturesToCenterPVec_.clear();
+                creaturesToCenterPVec_.push_back(turnCreaturePtr_);
+                fightResult_.EffectedCreatures(creaturesToCenterPVec_);
+                combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
 
-            willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
+                willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
 
-            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+                centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+            }
+
             return;
         }
 
@@ -1598,7 +1613,14 @@ namespace stage
         else
         {
             SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
-            StartPause(PRE_TURN_DELAY_SEC_, "PostZoomIn");
+
+            auto pauseToUse{ PRE_TURN_DELAY_SEC_ };
+            if (turnCreaturePtr_->CanTakeAction() == false)
+            {
+                pauseToUse *= 3.0f;
+            }
+
+            StartPause(pauseToUse, "PostZoomIn");
         }
     }
 
@@ -2068,6 +2090,8 @@ namespace stage
 
         if (IsPlayerCharacterTurnValid())
         {
+            willRedColorShakeWeaponText_ = false;
+
             titleSS << turnCreaturePtr_->Name() << "'s Turn";
 
             weaponHoldingSS << HOLDING_WEAPON_STR;
@@ -2103,10 +2127,12 @@ namespace stage
             //turn box weapon text (or text that indicates that a creature cannot take their turn)
             if (CAN_TAKE_ACTION_STR.empty())
             {
+                willRedColorShakeWeaponText_ = false;
                 weaponHoldingSS << HOLDING_WEAPON_STR;
             }
             else
             {
+                willRedColorShakeWeaponText_ = true;
                 weaponHoldingSS << "Cannot take " << creature::sex::HisHerIts(turnCreaturePtr_->Sex(), false, false) << " turn because " << turnCreaturePtr_->CanTakeActionStr(false) << "!\n";
             }
 

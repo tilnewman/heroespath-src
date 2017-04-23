@@ -321,6 +321,7 @@ namespace stage
         combat::TurnAction::Enum turnStateToFinish_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;
+        bool willRedColorShakeWeaponText_;
 
         //members displaying a player character's turn
         sfml_util::gui::TextRegionSPtr_t titleTBoxTextRegionSPtr_;
