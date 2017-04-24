@@ -57,9 +57,9 @@ namespace combat
                                            CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
 
     private:
-        static const creature::CreaturePtrC_t FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                                    const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                                    CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
+        static creature::CreaturePtrC_t FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
+                                                              const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                                              CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
 
         static creature::CreaturePVec_t FindSelectedTargets(const TurnInfo & TURN_INFO);
 
@@ -98,11 +98,11 @@ namespace combat
                                                 const spell::SpellTypeVec_t    SPELL_TYPES_VEC);
 
 
-        static const spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                 const spell::SpellType::Enum   SPELL_TYPE);
+        static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                           const spell::SpellType::Enum   SPELL_TYPE);
 
-        static const spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                 const spell::SpellTypeVec_t    SPELL_TYPES_VEC);
+        static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                           const spell::SpellTypeVec_t    SPELL_TYPES_VEC);
 
         static const TurnActionInfo DecideIfFlying(const TurnInfo &               TURN_INFO,
                                                    const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC);

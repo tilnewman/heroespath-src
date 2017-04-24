@@ -146,11 +146,8 @@ namespace gui
             throw std::range_error(ss.str());
         }
 
-        auto const RAND_ACCENT_NUM { sfml_util::rand::Int(0, sfml_util::PopupAccent::Count - 1) };
-        auto const RAND_ACCENT_ENUM{ static_cast<sfml_util::PopupAccent::Enum>(RAND_ACCENT_NUM) };
-
         std::ostringstream accentTextureSS;
-        accentTextureSS << RAND_ACCENT_NUM + 1 << ".png";
+        accentTextureSS << sfml_util::rand::Int(1, sfml_util::PopupAccent::Count) << ".png";
 
         TextureSPtr_t tempTextureSPtr;
         LoadAccent(accentTextureSS.str(), tempTextureSPtr);

@@ -151,7 +151,7 @@ namespace gui
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"fists\"");
             heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
             heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
-            ++hasTestedFists;
+            hasTestedFists = true;
             return false;
         }
 

@@ -159,9 +159,9 @@ namespace combat
     }
 
 
-    const creature::CreaturePtrC_t TurnDecider::FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                                      const creature::CreaturePtrC_t CREATURE_CPTRC,
-                                                                      CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+    creature::CreaturePtrC_t TurnDecider::FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
+                                                                const creature::CreaturePtrC_t CREATURE_CPTRC,
+                                                                CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
         //pick (select) favorite targets by type
         const creature::CreaturePVec_t SELECT_TARGETS_PVEC { FindSelectedTargets(TURN_INFO) };
@@ -682,16 +682,16 @@ namespace combat
     }
 
 
-    const spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                   const spell::SpellType::Enum   SPELL_TYPE)
+    spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                             const spell::SpellType::Enum   SPELL_TYPE)
     {
         const spell::SpellTypeVec_t SPELL_TYPE_VEC{ SPELL_TYPE };
         return PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPE_VEC);
     }
 
 
-    const spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                   const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
+    spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                             const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
     {
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->Spells() };
 

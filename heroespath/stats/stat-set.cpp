@@ -97,7 +97,6 @@ namespace stats
 
         for (int i(0); i < stat::Count; ++i)
         {
-            auto const NEXT_ENUM{ static_cast<stat::Enum>(i) };
             auto const NEXT_STAT{ statVec_[i] };
 
             if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Normal() != INVALID_STAT_VAL))))
@@ -143,7 +142,6 @@ namespace stats
 
         for (int i(0); i < stat::Count; ++i)
         {
-            auto const NEXT_ENUM{ static_cast<stat::Enum>(i) };
             auto const NEXT_STAT{ statVec_[i] };
 
             if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Current() != INVALID_STAT_VAL))))

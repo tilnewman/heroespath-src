@@ -6,7 +6,7 @@
 //
 #include "heroespath/item/item-factory-base.hpp"
 #include "heroespath/item/armor-types.hpp"
-#include "stats/types.hpp"
+#include "heroespath/stats/types.hpp"
 
 #include <memory>
 #include <string>

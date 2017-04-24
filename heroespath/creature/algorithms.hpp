@@ -47,7 +47,7 @@ namespace creature
         static const CreaturePVec_t Exclude(const CreaturePVec_t & SOURCE_PVEC, CreaturePtr_t creatureToExcludePtr);
         static const CreaturePVec_t Exclude(const CreaturePVec_t & SOURCE_PVEC, const CreaturePVec_t & TO_EXCLUDE_PVEC);
 
-        static const CreaturePtrC_t SelectRandom(const CreaturePVec_t &);
+        static CreaturePtrC_t SelectRandom(const CreaturePVec_t &);
         static void Shuffle(CreaturePVec_t &);
 
         static void SortByLowestHealthNormal(CreaturePVec_t &);
