@@ -1068,7 +1068,7 @@ namespace combat
                                                  const item::ItemSPtr_t &  WEAPON_SPTR,
                                                  const bool                WILL_HIT)
     {
-        projAnimWillSpin_ = false;
+        projAnimWillSpin_ = ! WILL_HIT;
 
         //establish the game data file path key to the projectile image
         const std::string PATH_KEY_BASE_STR{"media-images-combat-"};
@@ -1081,8 +1081,6 @@ namespace combat
         }
         else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
         {
-            projAnimWillSpin_ = true;
-
             std::ostringstream ss;
             ss << PATH_KEY_BASE_STR << "stone" << sfml_util::rand::Int(1, 4);
             pathKey = ss.str();
