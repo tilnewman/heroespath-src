@@ -179,6 +179,5 @@ namespace combat
         M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "heroespath::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in a nullptr turnCreaturePtr_.");
     }
 
-
 }
 }

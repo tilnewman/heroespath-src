@@ -194,8 +194,6 @@ namespace combat
 
         void GetCombatNodes(CombatNodeSVec_t & combatNodesSVec) const;
 
-        void UpdateAllConditionText();
-
         int GetBlockingDistanceBetween(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t) const;
 
         int GetClosestBlockingDistanceByType(creature::CreatureCPtrC_t, const bool WILL_FIND_PLAYERS) const;

@@ -380,7 +380,7 @@ namespace combat
 
         if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
         {
-            if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
+            if (WILL_APPEND_ING) strVec.push_back("slinging"); else strVec.push_back("slings");
         }
 
         if (WEAPON_SPTR->WeaponType() & item::weapon_type::Whip)
@@ -749,7 +749,7 @@ namespace combat
         }
         else
         {
-            ss << "a " << CREATURE_PTR->Race().Name() << " " << CREATURE_PTR->Role().Name();
+            ss << " at a " << CREATURE_PTR->Race().Name() << " " << CREATURE_PTR->Role().Name();
         }
 
         return ss.str();

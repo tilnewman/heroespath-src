@@ -114,7 +114,7 @@ namespace combat
         prevScrollPosVert_         (0.0f),
         prevScrollPosHoriz_        (0.0f),
         summaryView_               (),
-        isSummaryViewAllowed_      (false),
+        isUserActionAllowed_       (false),
         battlefieldWidth_          (0.0f),
         battlefieldHeight_         (0.0f),
         blockingPosMin_            (BLOCKING_POS_INVALID_),
@@ -122,7 +122,6 @@ namespace combat
         zoomLevel_                 (1.0f),
         initialZoomHorizDiff_      (-1.0f),//any value less than zero will work here
         isMouseHeldDownInBF_       (false),
-        isPlayerActionAllowed_     (true),
         isPlayerTurn_              (false),
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),
@@ -264,7 +263,7 @@ namespace combat
     {
         Stage::UpdateMousePos(MOUSE_POS_V);
 
-        if ((IsCentering() == false) && isSummaryViewAllowed_ && isMouseHeldDownInBF_)
+        if (isUserActionAllowed_ && isMouseHeldDownInBF_)
         {
             MoveBattlefieldVert((prevMousePos_.y - MOUSE_POS_V.y) * BATTLEFIELD_DRAG_SPEED_);
             MoveBattlefieldHoriz((prevMousePos_.x - MOUSE_POS_V.x) * BATTLEFIELD_DRAG_SPEED_);
@@ -276,10 +275,10 @@ namespace combat
 
     void CombatDisplay::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        Stage::UpdateMouseDown(MOUSE_POS_V);
-
-        if (IsCentering() == false)
+        if (isUserActionAllowed_)
         {
+            Stage::UpdateMouseDown(MOUSE_POS_V);
+
             auto const COMBAT_NODE_CLICKED_ON_SPTR{ combatTree_.GetNode(MOUSE_POS_V.x, MOUSE_POS_V.y) };
             if (COMBAT_NODE_CLICKED_ON_SPTR.get() == nullptr)
             {
@@ -298,9 +297,16 @@ namespace combat
 
     sfml_util::gui::IGuiEntitySPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        isMouseHeldDownInBF_ = false;
-        isMouseHeldDownInCreature_ = false;
-        return Stage::UpdateMouseUp(MOUSE_POS_V);
+        if (isUserActionAllowed_)
+        {
+            isMouseHeldDownInBF_ = false;
+            isMouseHeldDownInCreature_ = false;
+            return Stage::UpdateMouseUp(MOUSE_POS_V);
+        }
+        else
+        {
+            return sfml_util::gui::IGuiEntitySPtr_t();
+        }
     }
 
 
@@ -310,7 +316,6 @@ namespace combat
         if (combatNodeSPtr.get() != nullptr)
         {
             shakeInfoMap_[combatNodeSPtr.get()].Reset();
-            isPlayerActionAllowed_ = false;
         }
     }
 
@@ -330,9 +335,6 @@ namespace combat
 
         for(auto const & NEXT_COMBATNODE_SPTR : combatNodesToEraseVec)
             shakeInfoMap_.erase(NEXT_COMBATNODE_SPTR);
-
-        if (shakeInfoMap_.empty())
-            isPlayerActionAllowed_ = true;
     }
 
 
@@ -623,7 +625,7 @@ namespace combat
 
     void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
     {
-        if (false == isSummaryViewAllowed_)
+        if (false == isUserActionAllowed_)
             return;
 
         CombatNodeSPtr_t combatNodeSPtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
@@ -723,14 +725,12 @@ namespace combat
 
     void CombatDisplay::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        isPlayerActionAllowed_ = false;
         centeringCombatNodeSPtr_ = combatTree_.GetNode(CREATURE_CPTRC);
     }
 
 
     void CombatDisplay::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
     {
-        isPlayerActionAllowed_ = false;
         centeringCombatNodeSPtr_.reset();
         centeringToX_ = TARGET_POS_X;
         centeringToY_ = TARGET_POS_Y;
@@ -767,7 +767,6 @@ namespace combat
 
     void CombatDisplay::CenteringStop()
     {
-        isPlayerActionAllowed_ = true;
         centeringCombatNodeSPtr_.reset();
     }
 
@@ -1013,14 +1012,14 @@ namespace combat
 
     void CombatDisplay::HandleEndOfTurnTasks()
     {
-        UpdateHealthBars();
+        UpdateHealthTasks();
 
         //stop all creature image shaking
         StopShaking(nullptr);
     }
 
 
-    void CombatDisplay::UpdateHealthBars()
+    void CombatDisplay::UpdateHealthTasks()
     {
         CombatNodeSVec_t combatNodesSVec;
         combatNodesSVec.reserve(combatTree_.VertexCount());
@@ -1121,7 +1120,7 @@ namespace combat
 
         //scale the sprite down to a reasonable size
         projAnimSprite_.setOrigin(0.0f, 0.0f);
-        auto scale{ sfml_util::MapByRes(0.05f, 0.75f) };//this is the scale for Sling projectiles (stones)
+        auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };//this is the scale for Sling projectiles (stones)
         if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) || (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow))
         {
             scale = sfml_util::MapByRes(0.3f, 2.0f);
@@ -1202,7 +1201,7 @@ namespace combat
         if (projAnimWillSpin_)
         {
             projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
-            projAnimSprite_.rotate(2.0f);
+            projAnimSprite_.rotate(3.0f);
             projAnimSprite_.setOrigin(0.0f, 0.0f);
         }
 

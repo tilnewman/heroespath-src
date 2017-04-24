@@ -706,13 +706,6 @@ namespace combat
     }
 
 
-    void CombatTree::UpdateAllConditionText()
-    {
-        for (auto & nextVertex : vertexList_)
-            nextVertex.second->UpdateConditionText();
-    }
-
-
     int CombatTree::GetBlockingDistanceBetween(creature::CreatureCPtrC_t CREATURE_A_CPTRC, creature::CreatureCPtrC_t CREATURE_B_CPTRC) const
     {
         return GetNode(CREATURE_B_CPTRC)->GetBlockingPos() - GetNode(CREATURE_A_CPTRC)->GetBlockingPos();

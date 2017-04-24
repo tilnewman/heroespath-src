@@ -164,31 +164,35 @@ namespace combat
             target.draw(condTextObj_, states);
 
             //draw health lines
-            auto const HEALTH_POS_TOP           {nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f)};
-            auto const HEALTH_LINE_LEN_MARGIN   {0.25f * entityRegion_.width};
-            auto const HEALTH_LINE_POS_LEFT     {entityRegion_.left + HEALTH_LINE_LEN_MARGIN};
-            auto const HEALTH_LINE_LEN          {entityRegion_.width - (HEALTH_LINE_LEN_MARGIN * 2.0f)};
+            auto const HEALTH_POS_TOP           { nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+            auto const HEALTH_LINE_LEN_MARGIN   { 0.25f * entityRegion_.width };
+            auto const HEALTH_LINE_POS_LEFT     { entityRegion_.left + HEALTH_LINE_LEN_MARGIN };
+            auto const HEALTH_LINE_LEN          { entityRegion_.width - (HEALTH_LINE_LEN_MARGIN * 2.0f) };
             auto const HEALTH_LINE_TICK_HEIGHT  { 4.0f };
             sf::Vertex lines[] =
             {
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * Creature()->HealthRatio()), HEALTH_POS_TOP)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 1)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + 1)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * Creature()->HealthRatio()), HEALTH_POS_TOP + 1)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 2)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + 2)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 1)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 2)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 1))
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 2))
             };
             lines[0].color = healthLineColor_;
             lines[1].color = healthLineColor_;
             lines[2].color = healthLineColor_;
-            lines[3].color = healthLineColorRed_;
-            lines[4].color = healthLineColorTick_;
-            lines[5].color = healthLineColorTick_;
+            lines[3].color = healthLineColor_;
+            lines[4].color = healthLineColor_;
+            lines[5].color = healthLineColorRed_;
             lines[6].color = healthLineColorTick_;
             lines[7].color = healthLineColorTick_;
-            target.draw(lines, 8, sf::Lines, states);
+            lines[8].color = healthLineColorTick_;
+            lines[9].color = healthLineColorTick_;
+            target.draw(lines, 10, sf::Lines, states);
         }
     }
 
@@ -306,6 +310,7 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
+        UpdateConditionText();
         healthLineColor_ = HealthColor();
         healthLineColorRed_ = HealthColorRed();
         healthLineColorTick_ = HealthColorTick();

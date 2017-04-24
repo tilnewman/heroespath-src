@@ -107,17 +107,12 @@ namespace combat
         //value must be [0.0f, 1.0f], the constrained final zoom value is returned
         float SetZoomLevel(const float);
 
-        inline void SetSummaryViewAllowed()             { isSummaryViewAllowed_ = true; }
-
         //returns false if no nodes will be drawn
         bool UpdateWhichNodesWillDraw();
 
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
-
-        inline bool IsPlayerActionAllowed() const       { return isPlayerActionAllowed_; }
-        inline void IsPlayerActionAllowed(const bool B) { isPlayerActionAllowed_ = B; }
 
         void StartShaking(creature::CreatureCPtrC_t);
         void StopShaking(creature::CreatureCPtrC_t);
@@ -130,8 +125,7 @@ namespace combat
         void CenteringUpdate(const float RATIO_COMPLETE);
         void CenteringStop();
         const sf::Vector2f CenteringTargetPos() const;
-        inline bool IsCentering() const { return (centeringCombatNodeSPtr_.get() != nullptr); }
-
+        
         std::size_t FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
@@ -141,13 +135,9 @@ namespace combat
         //returns explanation of why not or an empty string if can
         const std::string CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
 
-        inline void PositionSlideStart()                        { IsPlayerActionAllowed(false); }
         void PositionSlideUpdate(const float RATIO);
-        inline void PositionSlideStop()                         { IsPlayerActionAllowed(true); }
-
+        
         creature::CreatureSPtr_t GetCreatureAtPos(const sf::Vector2f &);
-
-        inline void UpdateAllConditionText()                    { combatTree_.UpdateAllConditionText(); }
 
         void StartAttackAnim();
         void StopAttackAnim();
@@ -184,7 +174,7 @@ namespace combat
 
         void HandleEndOfTurnTasks();
 
-        void UpdateHealthBars();
+        void UpdateHealthTasks();
 
         bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
@@ -201,6 +191,8 @@ namespace combat
         const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t & ) const;
 
         void SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
+
+        inline void SetUserActionAllowed(const bool IS_ALLOWED) { isUserActionAllowed_ = IS_ALLOWED; }
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
@@ -261,7 +253,7 @@ namespace combat
         float                           prevScrollPosVert_;
         float                           prevScrollPosHoriz_;
         SummaryView                     summaryView_;
-        bool                            isSummaryViewAllowed_;
+        bool                            isUserActionAllowed_;
         float                           battlefieldWidth_;
         float                           battlefieldHeight_;
         int                             blockingPosMin_;
@@ -270,7 +262,6 @@ namespace combat
         float                           initialZoomHorizDiff_;
         bool                            isMouseHeldDownInBF_;
         sf::Vector2f                    prevMousePos_;
-        bool                            isPlayerActionAllowed_;
         bool                            isPlayerTurn_;
         bool                            isStatusMessageAnim_;
         bool                            isSummaryViewInProgress_;

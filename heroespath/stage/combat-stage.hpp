@@ -103,6 +103,18 @@ namespace stage
         //prevent copy assignment
         CombatStage & operator=(const CombatStage &) =delete;
 
+        //defines what phase of the initial zoom and pan currently in
+        enum class PreTurnPhase
+        {
+            Start = 0,
+            PanToCenter,
+            PostPanPause,
+            ZoomOut,
+            PostZoomOutPause,
+            End,
+            Count
+        };
+
         //defines what stage of a creature's turn we are in
         enum class TurnPhase
         {
@@ -151,18 +163,6 @@ namespace stage
             Count
         };
 
-        //defines what part of the initial zoom and pan
-        enum class PreTurnPhase
-        {
-            Start = 0,
-            PanToCenter,
-            PostPanPause,
-            ZoomOut,
-            PostZoomOutPause,
-            End,
-            Count
-        };
-
     public:
         CombatStage();
         virtual ~CombatStage();
@@ -182,17 +182,15 @@ namespace stage
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         inline bool IsPaused() const                { return (pauseElapsedSec_ < pauseDurationSec_); }
-        inline bool IsAttackAnimating() const       { return (creatureAttackingCPtr_ != nullptr) && (creatureAttackedCPtr_ != nullptr); }
-
+        
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
         bool IsPlayerCharacterTurnValid() const;
         bool IsNonPlayerCharacterTurnValid() const;
 
     private:
-        void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
         void AppendInitialStatus();
-        void SetIsPlayerActionAllowed(const bool);
+        void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
         void StartPause(const float DURATION_SEC, const std::string TITLE);
         void EndPause();
         void HandleEnemyTurnStep1_Decide();
@@ -213,7 +211,7 @@ namespace stage
         bool HandleRoar();
         bool HandlePounce(const bool IS_SKY_POUNCE);
         bool HandleWeaponChange();
-        void AfterHandleTurnTasks();
+        void HandleAfterTurnTasks();
         void MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
         void MoveTurnBoxButtonsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
         void SetupTurnBoxButtons(const creature::CreaturePtrC_t);
@@ -223,9 +221,6 @@ namespace stage
                              const bool          WILL_PREPEND_NEWLINE);
 
         void SetupTurnBox();
-        void StartAttackAnimation(creature::CreatureCPtrC_t CREATURE_ATTACKING, creature::CreatureCPtrC_t CREATURE_ATTACKED);
-        void StopAttackAnimation();
-        void StartAttackAnimZoom();
         void HandleAttackStage2();
         void StartPerformAnim();
 
@@ -240,6 +235,8 @@ namespace stage
 
         PerformType GetPerformTypeFromWeaponType(const item::ItemSPtr_t &) const;
         PerformType GetPerformTypeFromFightResult(const combat::FightResult &) const;
+
+        void SetUserActionAllowed(const bool IS_ALLOWED);
 
     public:
         static const float ZOOM_SLIDER_SPEED_;
@@ -293,6 +290,7 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willCenterZoomOut_;
+        bool                             willClrShkInitStatusMsg_;
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
         combat::CombatDisplayPtrC_t combatDisplayPtrC_;
@@ -300,11 +298,9 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 
         //members that control the zooming in and out of the battlefield
-        bool isAttackAnimZoomOut_;
         sfml_util::sliders::ZeroSliderOnce<float> zoomSlider_;
 
         //members that control pausing the CombatStage
-        bool isPlayerActionAllowed_;
         float pauseDurationSec_;
         float pauseElapsedSec_;
         bool isPauseCanceled_;
@@ -352,8 +348,6 @@ namespace stage
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
 
         //members that manage the creature attack animation
-        creature::CreatureCPtr_t creatureAttackingCPtr_;
-        creature::CreatureCPtr_t creatureAttackedCPtr_;
         creature::CreaturePVec_t creaturesToCenterPVec_;
 
         //testing display members
