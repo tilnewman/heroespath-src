@@ -125,7 +125,7 @@ namespace combat
         void CenteringUpdate(const float RATIO_COMPLETE);
         void CenteringStop();
         const sf::Vector2f CenteringTargetPos() const;
-        
+
         std::size_t FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
@@ -136,7 +136,7 @@ namespace combat
         const std::string CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
 
         void PositionSlideUpdate(const float RATIO);
-        
+
         creature::CreatureSPtr_t GetCreatureAtPos(const sf::Vector2f &);
 
         void StartAttackAnim();

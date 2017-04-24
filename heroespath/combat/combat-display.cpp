@@ -1132,7 +1132,7 @@ namespace combat
         projAnimSprite_.setScale(scale, scale);
 
         projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f, projAnimSprite_.getLocalBounds().height * 0.5f);
-        
+
         projAnimBeginPosV_ = creatureAttackingCenterPosV;
 
         if (WILL_HIT)

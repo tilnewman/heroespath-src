@@ -553,7 +553,7 @@ namespace stage
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
         player::PartySPtr_t partySPtr(new player::Party());
-        
+
         {
             const stats::StatSet KNIGHT_STATS(20 + sfml_util::rand::Int(10),
                                               15 + sfml_util::rand::Int(6),
@@ -856,7 +856,7 @@ namespace stage
                 M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "Unable to ItemAdd() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_ADD_STR << "\"");
                 auto const ITEM_EQUIP_STR{ nextCharacterSPtr->ItemEquip(PROJ_WEAPON_SPTR) };
                 M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
-                
+
                 nextCharacterSPtr->SetCurrentWeaponsToBest();
             }
         }
@@ -1270,7 +1270,7 @@ namespace stage
     {
         std::ostringstream ss;
         ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << encounterSPtr_->NonPlayerParty()->Summary() << "!";
-        
+
         statusBoxTextInfo_.text = ss.str();
         statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
 
@@ -1561,7 +1561,7 @@ namespace stage
     {
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
         combatDisplayPtrC_->SetIsPlayerTurn(IS_PLAYER_TURN);
-        
+
         combatDisplayPtrC_->CenteringStop();
         combatDisplayPtrC_->StartShaking(turnCreaturePtr_);
 

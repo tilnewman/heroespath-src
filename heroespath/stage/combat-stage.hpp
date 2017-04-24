@@ -182,7 +182,7 @@ namespace stage
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         inline bool IsPaused() const                { return (pauseElapsedSec_ < pauseDurationSec_); }
-        
+
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
         bool IsPlayerCharacterTurnValid() const;
