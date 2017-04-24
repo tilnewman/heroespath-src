@@ -62,7 +62,7 @@ namespace gui
 
         inline const sfml_util::GradientInfo GradientInfo() const { return bgInfo_.gradient_info; }
 
-        inline const BackgroundInfo BackgroundInfo() const { return bgInfo_; }
+        inline const BackgroundInfo BgInfo() const { return bgInfo_; }
 
         inline float ImageScale() const { return sprite_.getScale().x; }
 
