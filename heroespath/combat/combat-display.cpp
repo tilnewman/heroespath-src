@@ -338,7 +338,7 @@ namespace combat
         for (auto & nextShakeInfoPair : shakeInfoMap_)
         {
             //if given a nullptr then stop all shaking
-            if ((CREATURE_CPTRC == nullptr) || (nextShakeInfoPair.first->Creature().get() == CREATURE_CPTRC))
+            if ((CREATURE_CPTRC == nullptr) || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
             {
                 nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
                 combatNodesToEraseVec.push_back(nextShakeInfoPair.first);
@@ -654,7 +654,7 @@ namespace combat
             {
                 if (nextShakeInfoPair.first == combatNodeSPtr.get())
                 {
-                    creatureThatWasShakingCPtr_ = nextShakeInfoPair.first->Creature().get();
+                    creatureThatWasShakingCPtr_ = nextShakeInfoPair.first->Creature();
                     StopShaking(creatureThatWasShakingCPtr_);
                     break;
                 }
@@ -848,12 +848,11 @@ namespace combat
         for (auto const & NEXT_COMBATNODE_SPTR : nodeSVec)
         {
             if ((NEXT_COMBATNODE_SPTR.get() != nullptr) &&
-                (NEXT_COMBATNODE_SPTR->Creature().get() != nullptr) &&
-                (NEXT_COMBATNODE_SPTR->Creature().get() != CREATURE_CPTRC) &&
+                (NEXT_COMBATNODE_SPTR->Creature() != CREATURE_CPTRC) &&
                 (NEXT_COMBATNODE_SPTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature().get());
+                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature());
             }
         }
 
@@ -875,12 +874,11 @@ namespace combat
             const CombatNodeSPtr_t NEXT_COMBATNODE_SPTR(combatTree_.GetNode(NEXT_NODE_ID));
 
             if ((NEXT_COMBATNODE_SPTR.get() != nullptr) &&
-                (NEXT_COMBATNODE_SPTR->Creature().get() != nullptr) &&
-                (NEXT_COMBATNODE_SPTR->Creature().get() != CREATURE_CPTRC) &&
+                (NEXT_COMBATNODE_SPTR->Creature() != CREATURE_CPTRC) &&
                 (NEXT_COMBATNODE_SPTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature().get());
+                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature());
             }
         }
 
@@ -897,11 +895,10 @@ namespace combat
         for (auto const & NEXT_COMBATNODE_SPTR : nodesSVec)
         {
             if ((NEXT_COMBATNODE_SPTR.get() != nullptr) &&
-                (NEXT_COMBATNODE_SPTR->Creature().get() != nullptr) &&
                 (NEXT_COMBATNODE_SPTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature().get());
+                pVec_OutParam.push_back(NEXT_COMBATNODE_SPTR->Creature());
             }
         }
 
@@ -945,7 +942,7 @@ namespace combat
             if ((NEXT_VERT_PAIR.second->GetBlockingPos() == BLOCKING_POS_NEW) &&
                 (NEXT_VERT_PAIR.second->Creature()->IsPlayerCharacter() != CREATURE_CPTRC->IsPlayerCharacter()))
             {
-                if (Encounter::Instance()->GetTurnInfoCopy(NEXT_VERT_PAIR.second->Creature().get()).GetTurnActionInfo().Action() == TurnAction::Block)
+                if (Encounter::Instance()->GetTurnInfoCopy(NEXT_VERT_PAIR.second->Creature()).GetTurnActionInfo().Action() == TurnAction::Block)
                     return "Cannot " + ADVANCE_OR_RETREAT_STR + " because there is a creature blocking.";
                 else
                     ++oppositePartyCreatureCount;
@@ -974,14 +971,14 @@ namespace combat
     }
 
 
-    creature::CreatureSPtr_t CombatDisplay::GetCreatureAtPos(const sf::Vector2f & POS_V)
+    creature::CreaturePtr_t CombatDisplay::GetCreatureAtPos(const sf::Vector2f & POS_V)
     {
         CombatNodeSPtr_t combatNodeSPtr(combatTree_.GetNode(POS_V.x, POS_V.y));
 
         if (combatNodeSPtr.get() != nullptr)
             return combatNodeSPtr->Creature();
         else
-            return creature::CreatureSPtr_t();
+            return nullptr;
     }
 
 
@@ -1052,7 +1049,7 @@ namespace combat
         {
             for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             {
-                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
                 {
                     if (NEXT_COMBATNODE_SPTR->GetEntityWillDraw() == false)
                     {
@@ -1106,12 +1103,12 @@ namespace combat
         combatTree_.GetCombatNodes(combatNodeSVec);
         for (auto const & NEXT_COMBANODE_SPTR : combatNodeSVec)
         {
-            if (NEXT_COMBANODE_SPTR->Creature().get() == CREATURE_ATTACKING_CPTRC)
+            if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
             {
                 creatureAttackingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
                 creatureAttackingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
             }
-            else if (NEXT_COMBANODE_SPTR->Creature().get() == CREATURE_DEFENDING_CPTRC)
+            else if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_DEFENDING_CPTRC)
             {
                 creatureDefendingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
                 creatureDefendingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
@@ -1477,7 +1474,7 @@ namespace combat
         {
             for (auto const & NEXT_COMBATNODE_SPTR : allCombatNodesSVec)
             {
-                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
                 {
                     relevantCombatNodesSVec.push_back(NEXT_COMBATNODE_SPTR);
                     break;
@@ -1524,7 +1521,7 @@ namespace combat
         {
             for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             {
-                if (NEXT_COMBATNODE_SPTR->Creature().get() == NEXT_CREATURE_PTR)
+                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
                 {
                     horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x + (NEXT_COMBATNODE_SPTR->GetEntityRegion().width * 0.5f));
                     vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y + (NEXT_COMBATNODE_SPTR->GetEntityRegion().height * 0.5f));
@@ -1546,7 +1543,7 @@ namespace combat
         combatTree_.GetCombatNodes(combatNodesSVec);
 
         for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            if (NEXT_COMBATNODE_SPTR->Creature().get() == CREATURE_CPTRC)
+            if (NEXT_COMBATNODE_SPTR->Creature() == CREATURE_CPTRC)
                 NEXT_COMBATNODE_SPTR->SetHighlight(WILL_HIGHLIGHT, false);
     }
 

@@ -87,7 +87,7 @@ namespace stage
 
         for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             if (NEXT_COMBATNODE_SPTR->GetIsFlying())
-                creaturesFlyingPVec_.push_back(NEXT_COMBATNODE_SPTR->Creature().get());
+                creaturesFlyingPVec_.push_back(NEXT_COMBATNODE_SPTR->Creature());
     }
 
 
@@ -1162,7 +1162,7 @@ namespace stage
 
         if (TurnPhase::Determine == turnPhase_)
         {
-            creature::CreaturePtr_t creatureAtPosPtr(combatDisplayPtrC_->GetCreatureAtPos(MOUSE_POS_V).get());
+            creature::CreaturePtr_t creatureAtPosPtr(combatDisplayPtrC_->GetCreatureAtPos(MOUSE_POS_V));
 
             if ((false == isMouseDragging_) &&
                 (creatureAtPosPtr != nullptr) &&

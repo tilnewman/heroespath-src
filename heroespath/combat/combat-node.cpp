@@ -46,27 +46,28 @@ namespace combat
                            const sfml_util::FontSPtr_t &    FONT_SPTR,
                            const unsigned int               FONT_CHAR_SIZE)
     :
-        GuiEntity           (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_        (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
-        condTextObj_        ("", * FONT_SPTR, FONT_CHAR_SIZE),
-        blockingPos_        (0),
-        type_               (NodeType::Position),
-        healthLineColor_    (),//this initializer doesn't matter, see constructor body below
-        healthLineColorRed_ (),// "
-        healthLineColorTick_(),// "
-        textureSPtr_        (sfml_util::gui::CreatureImageManager::Instance()->GetImage(CREATURE_SPTR->ImageFilename(), CREATURE_SPTR->IsPlayerCharacter())),
-        sprite_             (),
-        creatureImageColor_ (),
-        isSummaryView_      (false),
-        isMoving_           (false),
-        creatureSPtr_       (CREATURE_SPTR),
-        wingSprite_         (),
-        isFlying_           (false),
-        wingFlapSlider_     (WING_IMAGE_ANIM_SPEED_),
-        imagePosV_          (0.0f, 0.0f),
-        imagePosOffsetV_    (0.0f, 0.0f),
-        soundsTickOnSPtr_   (sfml_util::SoundManager::Instance()->StaticSounds_TickOn()),
-        soundsTickOffSPtr_  (sfml_util::SoundManager::Instance()->StaticSounds_TickOff())
+        GuiEntity            (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
+        nameTextObj_         (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
+        condTextObj_         ("", * FONT_SPTR, FONT_CHAR_SIZE),
+        blockingPos_         (0),
+        type_                (NodeType::Position),
+        healthLineColor_     (),//this initializer doesn't matter, see constructor body below
+        healthLineColorRed_  (),// "
+        healthLineColorTick_ (),// "
+        textureSPtr_         (sfml_util::gui::CreatureImageManager::Instance()->GetImage(CREATURE_SPTR->ImageFilename(), CREATURE_SPTR->IsPlayerCharacter())),
+        sprite_              (),
+        creatureImageColor_  (),
+        isSummaryView_       (false),
+        isMoving_            (false),
+        creaturePtr_         (CREATURE_SPTR.get()),
+        healthRatioDisplayed_(0.0f),
+        wingSprite_          (),
+        isFlying_            (false),
+        wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
+        imagePosV_           (0.0f, 0.0f),
+        imagePosOffsetV_     (0.0f, 0.0f),
+        soundsTickOnSPtr_    (sfml_util::SoundManager::Instance()->StaticSounds_TickOn()),
+        soundsTickOffSPtr_   (sfml_util::SoundManager::Instance()->StaticSounds_TickOff())
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -87,7 +88,7 @@ namespace combat
 
         //wing image
         if (wingTextureSPtr_.get() == nullptr)
-            wingTextureSPtr_ = sfml_util::gui::CombatImageManager::Instance()->Get(sfml_util::gui::CombatImageType::Wing, ! creatureSPtr_->IsPlayerCharacter());
+            wingTextureSPtr_ = sfml_util::gui::CombatImageManager::Instance()->Get(sfml_util::gui::CombatImageType::Wing, ! creaturePtr_->IsPlayerCharacter());
 
         //um...This was the only way I could get it to work...zTn 2017-4-6
         SetIsFlying(true);
@@ -102,10 +103,10 @@ namespace combat
     const std::string CombatNode::ToString() const
     {
         std::ostringstream ss;
-        ss << "CombatNode " << ((creatureSPtr_->IsPlayerCharacter()) ? "Player " : "NonPlayer ") << creatureSPtr_->Race().Name() << " " << creatureSPtr_->Role().Name();
+        ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ? "Player " : "NonPlayer ") << creaturePtr_->Race().Name() << " " << creaturePtr_->Role().Name();
 
-        if (creatureSPtr_->IsPlayerCharacter())
-            ss << " \"" << creatureSPtr_->Name() << "\"";
+        if (creaturePtr_->IsPlayerCharacter())
+            ss << " \"" << creaturePtr_->Name() << "\"";
 
         ss << " node_type=" << NodeType::ToString(type_) << " blocking_pos=" << blockingPos_;
 
@@ -172,9 +173,9 @@ namespace combat
             sf::Vertex lines[] =
             {
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * Creature()->HealthRatio()), HEALTH_POS_TOP)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * healthRatioDisplayed_), HEALTH_POS_TOP)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 1)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * Creature()->HealthRatio()), HEALTH_POS_TOP + 1)),
+                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * healthRatioDisplayed_), HEALTH_POS_TOP + 1)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 2)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + 2)),
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
@@ -239,7 +240,7 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        const sf::Color NAME_COLOR((creatureSPtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NAME_COLOR, TONE_DOWN_VAL));
         sfml_util::SetTextColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
 
@@ -251,7 +252,7 @@ namespace combat
 
     void CombatNode::UpdateConditionText()
     {
-        condTextObj_.setString(creatureSPtr_->ConditionList(3, creature::condition::Severity::BENEFITIAL));
+        condTextObj_.setString(creaturePtr_->ConditionList(3, creature::condition::Severity::BENEFITIAL));
         SetTextPositions();
     }
 
@@ -287,7 +288,7 @@ namespace combat
     {
         //Skip check of isFlying_ since calculation is faster than branching,
         //and because there is already a isFlying_ check on the draw function.
-        if (creatureSPtr_->IsPlayerCharacter())
+        if (creaturePtr_->IsPlayerCharacter())
         {
             wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
         }
@@ -310,6 +311,7 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
+        healthRatioDisplayed_ = creaturePtr_->HealthRatio();
         UpdateConditionText();
         healthLineColor_ = HealthColor();
         healthLineColorRed_ = HealthColorRed();
@@ -384,7 +386,7 @@ namespace combat
         auto const WING_SCALE{ (entityRegion_.height / wingSprite_.getLocalBounds().height) * WING_IMAGE_SCALE_ };
         wingSprite_.setScale(WING_SCALE, WING_SCALE);
 
-        if (creatureSPtr_->IsPlayerCharacter())
+        if (creaturePtr_->IsPlayerCharacter())
         {
             wingSprite_.setOrigin(wingSprite_.getLocalBounds().width, wingSprite_.getLocalBounds().height);
         }
@@ -403,7 +405,7 @@ namespace combat
 
     void CombatNode::SetHighlight(const bool WILL_HIGHLIGHT, const bool WILL_PLAY_SOUND_EFFECT)
     {
-        const sf::Color NAME_COLOR((creatureSPtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
 
         if (WILL_HIGHLIGHT)
         {

@@ -137,7 +137,7 @@ namespace combat
 
         void PositionSlideUpdate(const float RATIO);
 
-        creature::CreatureSPtr_t GetCreatureAtPos(const sf::Vector2f &);
+        creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
 
         void StartAttackAnim();
         void StopAttackAnim();

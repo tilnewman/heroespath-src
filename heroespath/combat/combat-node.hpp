@@ -46,7 +46,7 @@ namespace combat
 
         void ResetRegionAndTextSize(const sf::FloatRect & REGION, const unsigned int NAME_CHAR_SIZE);
 
-        inline creature::CreatureSPtr_t Creature() const    { return creatureSPtr_; }
+        inline creature::CreaturePtr_t Creature() const     { return creaturePtr_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -127,7 +127,8 @@ namespace combat
         sf::Color                creatureImageColor_;
         bool                     isSummaryView_;
         bool                     isMoving_;
-        creature::CreatureSPtr_t creatureSPtr_;
+        creature::CreaturePtr_t  creaturePtr_;
+        float                    healthRatioDisplayed_;
 
         //members that control the flapping wing animation
         static sfml_util::TextureSPtr_t       wingTextureSPtr_;
