@@ -71,7 +71,7 @@ namespace stage
         {
             std::size_t imageDrawCount{ 0 };
             auto posLeft{ SCREEN_WIDTH_ };
-            for (std::size_t i(textureSVec_.size() - 1); i >= 0; --i)
+            for (std::size_t i(textureSVec_.size() - 1); i < textureSVec_.size(); --i)
             {
                 if (i >= textureSVec_.size())
                     break;
@@ -109,7 +109,6 @@ namespace stage
                     break;
             }
 
-
             while (textureSVec_.size() > imageDrawCount)
             {
                 textureSVec_.erase(textureSVec_.begin());
@@ -124,7 +123,7 @@ namespace stage
             auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0 + TEXT_HEIGHT };
             auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
 
-            for (std::size_t i(testingBlurbsVec_.size() - 1); i >= 0; --i)
+            for (std::size_t i(testingBlurbsVec_.size() - 1); i < testingBlurbsVec_.size(); --i)
             {
                 if (i >= testingBlurbsVec_.size())
                     break;

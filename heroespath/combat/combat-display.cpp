@@ -1372,7 +1372,7 @@ namespace combat
                       distanceSortedPVec.end(),
                       [COMBAT_TREE_CPTRC, CREATURE_CPTRC]
                       (const creature::CreaturePtr_t A_PTR, const creature::CreaturePtr_t B_PTR)
-                      { return std::abs((COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(A_PTR, CREATURE_CPTRC)) < std::abs(COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(B_PTR, CREATURE_CPTRC))); });
+                      { return (COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(A_PTR, CREATURE_CPTRC)) < std::abs(COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(B_PTR, CREATURE_CPTRC)); });
 
             auto const MIN_BLOCKING_DISTANCE{ std::abs(combatTree_.GetBlockingDistanceBetween( * distanceSortedPVec.begin(), CREATURE_CPTRC)) };
 

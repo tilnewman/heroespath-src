@@ -399,7 +399,6 @@ namespace combat
         //set the item list image alpha values and positions, populate itemWithTextVec_ with text, and find the total width and height of the list
         float longestItemHorizExtent(0.0f);
         float itemListHeight(0.0f);
-        const float ITEM_TEXT_VERT_POS_MULT( sfml_util::MapByRes(2.5f, 4.0f) );
         for (auto & nextItemText : itemWithTextVec_)
         {
             nextItemText.sprite.setColor(sf::Color(255, 255, 255, IMAGE_COLOR_ALPHA_));

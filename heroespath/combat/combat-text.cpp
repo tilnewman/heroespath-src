@@ -416,6 +416,7 @@ namespace combat
             case combat::HitType::AmazingLuck:      { return "with amazing luck"; }
             case combat::HitType::Count:
             case combat::HitType::Accuracy:
+            case combat::HitType::Spell:
             default:                                { return ""; }
         }
     }
