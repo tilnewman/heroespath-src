@@ -990,6 +990,7 @@ namespace stage
             combatDisplayPtrC_->ProjectileShootAnimUpdate( performSlider_.Update(ELAPSED_TIME_SEC) );
             if (performSlider_.GetIsDone())
             {
+                combatDisplayPtrC_->UpdateHealthTasks();
                 combatDisplayPtrC_->ProjectileShootAnimStop();
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::PerformReport);
@@ -1407,8 +1408,9 @@ namespace stage
                     }
                 }
 
-                combatDisplayPtrC_->UpdateHealthTasks();
                 SetupTurnBox();
+                StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Post)");
+                return;
             }
             else
             {
@@ -1417,9 +1419,6 @@ namespace stage
                 HandleAfterTurnTasks();
                 return;
             }
-
-            StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Post)");
-            return;
         }
 
         if (TurnPhase::PostPerformPause == turnPhase_)
@@ -2114,6 +2113,7 @@ namespace stage
             {
                 if (fightResult_.Count() > 0)
                 {
+                    MoveTurnBoxButtonsOffScreen(true);
                     infoSS.str(EMPTY_STR);
                     weaponHoldingSS.str(EMPTY_STR);
                     armorSS.str(EMPTY_STR);
@@ -2135,6 +2135,7 @@ namespace stage
             }
             else if ((TurnPhase::PerformReport == turnPhase_) || (TurnPhase::PostPerformPause == turnPhase_))
             {
+                MoveTurnBoxButtonsOffScreen(true);
                 infoSS.str(EMPTY_STR);
                 weaponHoldingSS.str(EMPTY_STR);
                 armorSS.str(EMPTY_STR);

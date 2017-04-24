@@ -1413,7 +1413,6 @@ namespace combat
         if (UpdateWhichNodesWillDraw())
         {
             prevScrollPosVert_ = offScreenPosY_;
-
             centeringToY_ -= AMOUNT;
         }
         else
