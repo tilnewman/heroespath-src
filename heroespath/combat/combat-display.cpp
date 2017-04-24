@@ -28,6 +28,18 @@
 #include <sstream>
 #include <numeric>
 
+//prevent boost warnings that can be ignored
+#include "sfml-util/platform.hpp"
+#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
+#pragma GCC diagnostic ignored "-Wundef"
+#endif
+
+#include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
+
+#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
+#pragma GCC diagnostic warning "-Wundef"
+#endif
+
 
 namespace heroespath
 {
@@ -1106,16 +1118,7 @@ namespace combat
             }
         }
 
-        auto const IS_MOVING_RIGHT{ creatureAttackingCenterPosV.x < creatureDefendingCenterPosV.x };
-        if (IS_MOVING_RIGHT == false)
-        {
-            sfml_util::FlipHoriz( * projAnimTextureSPtr_);
-        }
-
-        //
         projAnimSprite_.setTexture( * projAnimTextureSPtr_, true);
-
-        //
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
 
         //scale the sprite down to a reasonable size
@@ -1187,7 +1190,7 @@ namespace combat
 
         //TODO SET ROTATION based on target
         projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
-        projAnimSprite_.setRotation(0.0f);
+        projAnimSprite_.setRotation( GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_) );
         projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
 
@@ -1546,6 +1549,36 @@ namespace combat
         for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             if (NEXT_COMBATNODE_SPTR->Creature().get() == CREATURE_CPTRC)
                 NEXT_COMBATNODE_SPTR->SetHighlight(WILL_HIGHLIGHT, false);
+    }
+
+
+    float CombatDisplay::GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V) const
+    {
+        auto const ANGLE_RADIANS{ std::atan((std::max(BEGIN_POS_V.y, END_POS_V.y) - std::min(BEGIN_POS_V.y, END_POS_V.y)) / (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
+        auto const ANGLE_DEGREES{ (ANGLE_RADIANS * 180.0f) / boost::math::constants::pi<float>() };
+
+        if (BEGIN_POS_V.x < END_POS_V.x)
+        {
+            if (BEGIN_POS_V.y > END_POS_V.y)
+            {
+                return ANGLE_DEGREES * -1.0f; //QI
+            }
+            else
+            {
+                return ANGLE_DEGREES; //QIV
+            }
+        }
+        else
+        {
+            if (BEGIN_POS_V.y > END_POS_V.y)
+            {
+                return (180.0f - ANGLE_DEGREES) * -1.0f; //QII
+            }
+            else
+            {
+                return (180.0f + ANGLE_DEGREES) * -1.0f; //QIII
+            }
+        }
     }
 
 }
