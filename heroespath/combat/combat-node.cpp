@@ -50,7 +50,6 @@ namespace combat
         nameTextObj_         (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
         condTextObj_         ("", * FONT_SPTR, FONT_CHAR_SIZE),
         blockingPos_         (0),
-        type_                (NodeType::Position),
         healthLineColor_     (),//this initializer doesn't matter, see constructor body below
         healthLineColorRed_  (),// "
         healthLineColorTick_ (),// "
@@ -109,7 +108,7 @@ namespace combat
         if (creaturePtr_->IsPlayerCharacter())
             ss << " \"" << creaturePtr_->Name() << "\"";
 
-        ss << " node_type=" << NodeType::ToString(type_) << " blocking_pos=" << blockingPos_;
+        ss << " blocking_pos=" << blockingPos_;
 
         return ss.str();
     }

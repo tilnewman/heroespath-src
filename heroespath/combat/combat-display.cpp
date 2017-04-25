@@ -478,7 +478,6 @@ namespace combat
                 const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
                 const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
-                combatTree_.GetNode(NEXT_NODE_ID)->SetType(NodeType::Position);
                 combatTree_.ConnectAllAtPosition(NEXT_POSITION, combat::EdgeType::ShoulderToShoulder);
             }
         }
@@ -492,7 +491,6 @@ namespace combat
             {
                 const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
-                combatTree_.GetNode(NEXT_NODE_ID)->SetType(NodeType::Position);
             }
         }
         combatTree_.ConnectAllAtPosition(DISABLED_CREATURES_POSITION, combat::EdgeType::ShoulderToShoulder);

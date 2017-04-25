@@ -8,7 +8,6 @@
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/sliders.hpp"
 
-#include "heroespath/combat/node-type.hpp"
 #include "heroespath/creature/creature.hpp"
 
 #include <string>
@@ -55,9 +54,6 @@ namespace combat
         inline creature::CreaturePtr_t Creature() const     { return creaturePtr_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-
-        inline NodeType::Enum GetType() const               { return type_; }
-        inline void SetType(const NodeType::Enum NEW_TYPE)  { type_ = NEW_TYPE; }
 
         inline int GetBlockingPos() const                   { return blockingPos_; }
         inline void SetBlockingPos(const int NEW_POS)       { blockingPos_ = NEW_POS; }
@@ -128,7 +124,6 @@ namespace combat
         sf::Text                 nameTextObj_;
         sf::Text                 condTextObj_;
         int                      blockingPos_;
-        NodeType::Enum           type_;
         sf::Color                healthLineColor_;
         sf::Color                healthLineColorRed_;
         sf::Color                healthLineColorTick_;

@@ -160,23 +160,6 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::VertexCountByNodeType(const NodeType::Enum TYPE) const
-    {
-        if (TYPE == NodeType::All)
-        {
-            return vertexList_.size();
-        }
-        else
-        {
-            std::size_t count(0);
-            for(auto const & NEXT_VERTEX : vertexList_)
-                if (NEXT_VERTEX.second->GetType() == TYPE)
-                    ++count;
-            return count;
-        }
-    }
-
-
     std::size_t CombatTree::VertexCountByBlockingPos(const int BLOCKING_POS) const
     {
         std::size_t count(0);
@@ -188,14 +171,11 @@ namespace combat
     }
 
 
-    const CombatTree::VertexVec_t CombatTree::Vertexes(const NodeType::Enum TYPE) const
+    const CombatTree::VertexVec_t CombatTree::Vertexes() const
     {
-        CombatTree::VertexVec_t v;
-        for(auto const & NEXT_VERTEX : vertexList_)
-            if ((TYPE == NodeType::All) || (NEXT_VERTEX.second->GetType() == TYPE))
-                v.push_back(NEXT_VERTEX);
-
-        return v;
+        CombatTree::VertexVec_t vVec;
+        std::copy(vertexList_.begin(), vertexList_.end(), back_inserter(vVec));
+        return vVec;
     }
 
 
@@ -223,7 +203,7 @@ namespace combat
 
     void CombatTree::AddVertex(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
-        if (DoesVertexExist(ID, NODE_SPTR->GetType()))
+        if (DoesVertexExist(ID))
         {
             std::ostringstream ss;
             ss << "CombatTree::AddVertex(id=" << ID << ", node=" << NODE_SPTR->ToString() << ") -but that ID already exists.";
@@ -385,10 +365,10 @@ namespace combat
     }
 
 
-    bool CombatTree::DoesVertexExist(const Id_t ID, const NodeType::Enum TYPE) const
+    bool CombatTree::DoesVertexExist(const Id_t ID) const
     {
         for(auto const & NEXT_VERTEX : vertexList_)
-            if (((TYPE == NodeType::All) || (NEXT_VERTEX.second->GetType() == TYPE)) && (NEXT_VERTEX.first == ID))
+            if (NEXT_VERTEX.first == ID)
                 return true;
 
         return false;
@@ -481,30 +461,18 @@ namespace combat
     }
 
 
-    bool CombatTree::FindAdjacentByNodeType(const Id_t           ID,
-                                            IdVec_t &            idVec_OutParam,
-                                            const NodeType::Enum TYPE) const
+    bool CombatTree::FindAdjacent(const Id_t ID,
+                                  IdVec_t &  idVec_OutParam) const
     {
         auto const ORIG_SIZE(idVec_OutParam.size());
 
         for(auto const & NEXT_EDGE : edgeList_)
         {
-            if (TYPE == NodeType::All)
-            {
-                if (std::get<0>(NEXT_EDGE) == ID)
-                    idVec_OutParam.push_back( std::get<1>(NEXT_EDGE) );
-                else
-                    if (std::get<1>(NEXT_EDGE) == ID)
-                        idVec_OutParam.push_back( std::get<0>(NEXT_EDGE) );
-            }
+            if (std::get<0>(NEXT_EDGE) == ID)
+                idVec_OutParam.push_back( std::get<1>(NEXT_EDGE) );
             else
-            {
-                if ((std::get<0>(NEXT_EDGE) == ID) && (GetNode(std::get<1>(NEXT_EDGE))->GetType() == TYPE))
-                    idVec_OutParam.push_back( std::get<1>(NEXT_EDGE) );
-                else
-                    if ((std::get<1>(NEXT_EDGE) == ID) && (GetNode(std::get<0>(NEXT_EDGE))->GetType() == TYPE))
-                        idVec_OutParam.push_back( std::get<0>(NEXT_EDGE) );
-            }
+                if (std::get<1>(NEXT_EDGE) == ID)
+                    idVec_OutParam.push_back( std::get<0>(NEXT_EDGE) );
         }
 
         auto const FINAL_SIZE(idVec_OutParam.size());
@@ -514,12 +482,10 @@ namespace combat
 
 
     std::size_t CombatTree::CountAdjacent(const Id_t           ID,
-                                     const EdgeType::Enum EDGE_TYPE,
-                                     const NodeType::Enum VERTEX_TYPE) const
+                                          const EdgeType::Enum EDGE_TYPE) const
     {
         CombatTree::IdVec_t v;
         FindAdjacentByEdgeType(ID, v, EDGE_TYPE);
-        FindAdjacentByNodeType(ID, v, VERTEX_TYPE);
         return v.size();
     }
 

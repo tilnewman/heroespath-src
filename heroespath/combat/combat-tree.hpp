@@ -9,7 +9,6 @@
 //
 #include "heroespath/creature/race-enum.hpp"
 #include "heroespath/creature/role-enum.hpp"
-#include "heroespath/combat/node-type.hpp"
 
 #include <list>
 #include <tuple>
@@ -118,10 +117,9 @@ namespace combat
         CombatNodeSPtr_t GetNode(const float POS_X, const float POS_Y) const;
 
         inline std::size_t VertexCount() const { return vertexList_.size(); }
-        std::size_t VertexCountByNodeType(const NodeType::Enum TYPE = NodeType::All) const;
         std::size_t VertexCountByBlockingPos(const int BLOCKING_POS) const;
 
-        const VertexVec_t Vertexes(const NodeType::Enum TYPE = NodeType::All) const;
+        const VertexVec_t Vertexes() const;
 
         const std::string VertexesString(const bool WILL_WRAP = true) const;
 
@@ -156,7 +154,7 @@ namespace combat
                                  const bool   IS_DRY_RUN = false);
 
         //verticies may exist without edges
-        bool DoesVertexExist(const Id_t ID, const NodeType::Enum TYPE = NodeType::All) const;
+        bool DoesVertexExist(const Id_t ID) const;
 
         //order independant matching
         bool DoesEdgeExist(const Id_t           ID1,
@@ -174,17 +172,14 @@ namespace combat
                                     IdVec_t &            idVec_OutParam,
                                     const EdgeType::Enum TYPE = EdgeType::All) const;
 
-        bool FindAdjacentByNodeType(const Id_t             ID,
-                                      IdVec_t &            idVec_OutParam,
-                                      const NodeType::Enum TYPE = NodeType::All) const;
+        bool FindAdjacent(const Id_t  ID,
+                          IdVec_t & idVec_OutParam) const;
 
         std::size_t CountAdjacent(const Id_t           ID,
-                                  const EdgeType::Enum EDGE_TYPE = EdgeType::All,
-                                  const NodeType::Enum VERTEX_TYPE = NodeType::All) const;
+                                  const EdgeType::Enum EDGE_TYPE = EdgeType::All) const;
 
         inline bool AreAnyAdjacent(const Id_t           ID,
-                                   const EdgeType::Enum EDGE_TYPE = EdgeType::All,
-                                   const NodeType::Enum VERTEX_TYPE = NodeType::All) const { return (CountAdjacent(ID, EDGE_TYPE, VERTEX_TYPE) > 0); }
+                                   const EdgeType::Enum EDGE_TYPE = EdgeType::All) const { return (CountAdjacent(ID, EDGE_TYPE) > 0); }
 
         inline bool IsVertexLeaf(const Id_t ID) const { return (CountAdjacent(ID) == 1); }
 
