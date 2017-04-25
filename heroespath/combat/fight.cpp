@@ -379,7 +379,14 @@ namespace combat
             damageFinal += DAMAGE_BASE;
 
         //reduce damage based on the defending creature's armor
-        damageFinal -= StatMinimum(creatureDefendingPtrC->ArmorRating());
+        if (creatureDefendingPtrC->ArmorRating() >= (damageFinal * 2))
+        {
+            damageFinal = 0;
+        }
+        else
+        {
+            damageFinal = static_cast<stats::Health_t>( static_cast<float>(damageFinal) * (static_cast<float>(damageFinal) / (static_cast<float>(creatureDefendingPtrC->ArmorRating()) * 2.0f)));
+        }
 
         if (damageFinal > 0)
         {
