@@ -35,6 +35,16 @@ namespace sfml_util
     }
 
 
+    //assumes 'facing right'
+    float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V,
+                            const sf::Vector2f & END_POS_V);
+
+
+    const sf::Vector2f ProjectToScreenEdge(const sf::Vector2f & FIRST_POS_V,
+                                           const sf::Vector2f & SECOND_POS_V,
+                                           const sf::Vector2f & PROJECTED_IMAGE_SIZE);
+
+
     template<typename Before_t, typename After_t>
     sf::Vector2<After_t> ConvertVector(const sf::Vector2<Before_t> & V)
     {

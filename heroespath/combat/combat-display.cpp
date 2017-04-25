@@ -28,18 +28,6 @@
 #include <sstream>
 #include <numeric>
 
-//prevent boost warnings that can be ignored
-#include "sfml-util/platform.hpp"
-#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
-#pragma GCC diagnostic ignored "-Wundef"
-#endif
-
-#include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
-
-#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
-#pragma GCC diagnostic warning "-Wundef"
-#endif
-
 
 namespace heroespath
 {
@@ -1156,52 +1144,13 @@ namespace combat
         }
         else
         {
-            //use linear relations to find the edge-of-screen miss point, first assuming the vertical position is the vertical screen edge...
-            auto const SPRITE_HEIGHT{ projAnimSprite_.getGlobalBounds().height };
-            projAnimEndPosV_.y = ((creatureAttackingCenterPosV.y < creatureDefendingCenterPosV.y) ? (SCREEN_HEIGHT_ + SPRITE_HEIGHT + 1.0f) : ((-1.0f * SPRITE_HEIGHT) - 1.0f));
-
-            auto const AV_HORIZ_OVER_VERT{ (std::max(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x) - std::min(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x)) /
-                                           (std::max(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y) - std::min(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y)) };
-
-            auto const AV_VERTICAL_EXTENT{ ((creatureDefendingCenterPosV.y > creatureAttackingCenterPosV.y) ? (SCREEN_HEIGHT_ - creatureAttackingCenterPosV.y) : creatureAttackingCenterPosV.y) };
-
-            auto const AV_HORIZ_EXTENT{ AV_HORIZ_OVER_VERT * AV_VERTICAL_EXTENT };
-
-            if (creatureDefendingCenterPosV.x > creatureAttackingCenterPosV.x)
-            {
-                projAnimEndPosV_.x = creatureAttackingCenterPosV.x + AV_HORIZ_EXTENT;
-            }
-            else
-            {
-                projAnimEndPosV_.x = creatureAttackingCenterPosV.x - AV_HORIZ_EXTENT;
-            }
-
-            //...but if that is too far, then assume the horizontal screen edge
-            if (std::abs(projAnimEndPosV_.x - projAnimBeginPosV_.x) > SCREEN_WIDTH_)
-            {
-                auto const SPRITE_WIDTH{ projAnimSprite_.getGlobalBounds().width };
-                projAnimEndPosV_.x = ((creatureAttackingCenterPosV.x < creatureDefendingCenterPosV.x) ? (SCREEN_WIDTH_ + SPRITE_WIDTH + 1.0f) :(0.0f - SPRITE_WIDTH - 1.0f));
-
-                auto const AH_VERT_OVER_HORIZ{ (std::max(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y) - std::min(creatureAttackingCenterPosV.y, creatureDefendingCenterPosV.y)) /
-                                               (std::max(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x) - std::min(creatureAttackingCenterPosV.x, creatureDefendingCenterPosV.x)) };
-
-                auto const AH_HORIZ_EXTENT{ ((creatureDefendingCenterPosV.x > creatureAttackingCenterPosV.x) ? (SCREEN_WIDTH_ - creatureAttackingCenterPosV.x) : creatureAttackingCenterPosV.x) };
-
-                auto const AH_VERT_EXTENT{ AH_VERT_OVER_HORIZ * AH_HORIZ_EXTENT };
-
-                if (creatureDefendingCenterPosV.y > creatureAttackingCenterPosV.y)
-                {
-                    projAnimEndPosV_.y = creatureAttackingCenterPosV.y + AH_VERT_EXTENT;
-                }
-                else
-                {
-                    projAnimEndPosV_.y = creatureAttackingCenterPosV.y - AH_VERT_EXTENT;
-                }
-            }
+            projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(creatureAttackingCenterPosV,
+                                                              creatureDefendingCenterPosV,
+                                                              sf::Vector2f(projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().height));
         }
 
         projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
-        projAnimSprite_.setRotation( GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_) );
+        projAnimSprite_.setRotation( sfml_util::GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_) );
         projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
 
@@ -1603,36 +1552,6 @@ namespace combat
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
         PositionCombatTreeCells(true);
-    }
-
-
-    float CombatDisplay::GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V) const
-    {
-        auto const ANGLE_RADIANS{ std::atan((std::max(BEGIN_POS_V.y, END_POS_V.y) - std::min(BEGIN_POS_V.y, END_POS_V.y)) / (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
-        auto const ANGLE_DEGREES{ (ANGLE_RADIANS * 180.0f) / boost::math::constants::pi<float>() };
-
-        if (BEGIN_POS_V.x < END_POS_V.x)
-        {
-            if (BEGIN_POS_V.y > END_POS_V.y)
-            {
-                return ANGLE_DEGREES * -1.0f; //QI
-            }
-            else
-            {
-                return ANGLE_DEGREES; //QIV
-            }
-        }
-        else
-        {
-            if (BEGIN_POS_V.y > END_POS_V.y)
-            {
-                return (180.0f - ANGLE_DEGREES) * -1.0f; //QII
-            }
-            else
-            {
-                return (180.0f + ANGLE_DEGREES) * -1.0f; //QIII
-            }
-        }
     }
 
 }

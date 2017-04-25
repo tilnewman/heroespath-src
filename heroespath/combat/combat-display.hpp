@@ -219,8 +219,6 @@ namespace combat
         void MoveBattlefieldVert(const float AMOUNT);
         void MoveBattlefieldHoriz(const float AMOUNT);
 
-        float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V) const;
-
     public:
         static const float       BATTLEFIELD_MARGIN_;
         static BlockingMap_t     blockingMap_;
