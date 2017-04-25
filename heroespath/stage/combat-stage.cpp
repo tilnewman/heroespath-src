@@ -1215,6 +1215,21 @@ namespace stage
             return true;
         }
 
+        //this interrupts a status animation in progress...
+        if (willClrShkInitStatusMsg_)
+        {
+            willClrShkInitStatusMsg_ = false;
+            return true;
+        }
+
+        //...and so does this
+        if (TurnPhase::StatusAnim == turnPhase_)
+        {
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            return true;
+        }
+
         if (IsPlayerCharacterTurnValid() && (TurnPhase::Determine == turnPhase_))
         {
             if ((KE.code == sf::Keyboard::Return) || (KE.code == sf::Keyboard::A))
