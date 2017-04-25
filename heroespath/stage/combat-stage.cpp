@@ -31,6 +31,7 @@
 #include "heroespath/combat/fight.hpp"
 #include "heroespath/combat/combat-text.hpp"
 #include "heroespath/combat/turn-action-enum.hpp"
+#include "heroespath/combat/combat-anim.hpp"
 #include "heroespath/creature/name-info.hpp"
 #include "heroespath/creature/conditions.hpp"
 #include "heroespath/creature/titles.hpp"
@@ -163,7 +164,8 @@ namespace stage
         willCenterZoomOut_         (false),
         willClrShkInitStatusMsg_   (false),
         slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
-        combatDisplayPtrC_         (new combat::CombatDisplay()),
+        combatDisplayPtr_          (new combat::CombatDisplay()),
+        combatAnimPtr_             (combat::CombatAnim::Instance()),
         settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
                                                                         0.0f,
                                                                         0.0f,
@@ -271,7 +273,7 @@ namespace stage
 
         if (PACKAGE.PTR_ == settingsButtonSPtr_.get())
         {
-            savedCombatInfo_.PrepareForStageChange(combatDisplayPtrC_);
+            savedCombatInfo_.PrepareForStageChange(combatDisplayPtr_);
             heroespath::LoopManager::Instance()->Goto_Settings();
             return true;
         }
@@ -282,9 +284,9 @@ namespace stage
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((PACKAGE.PTR_ == zoomSliderBarSPtr_.get()) && (combatDisplayPtrC_ != nullptr))
+        if ((PACKAGE.PTR_ == zoomSliderBarSPtr_.get()) && (combatDisplayPtr_ != nullptr))
         {
-            combatDisplayPtrC_->SetZoomLevel(PACKAGE.PTR_->GetCurrentValue());
+            combatDisplayPtr_->SetZoomLevel(PACKAGE.PTR_->GetCurrentValue());
             return true;
         }
         else
@@ -869,11 +871,14 @@ namespace stage
         }
 
         //combat display
-        combatDisplayPtrC_->StageRegionSet(COMBAT_REGION);
-        combatDisplayPtrC_->Setup();
+        combatDisplayPtr_->StageRegionSet(COMBAT_REGION);
+        combatDisplayPtr_->Setup();
+
+        //combat animations
+        combat::CombatAnim::GiveCombatDisplay(combatDisplayPtr_);
 
         //give control of the CombatDisplay object lifetime to the Loop class
-        sfml_util::IStageSPtr_t combatDisplayStageSPtr(combatDisplayPtrC_);
+        sfml_util::IStageSPtr_t combatDisplayStageSPtr(combatDisplayPtr_);
         LoopManager::Instance()->AddStage(combatDisplayStageSPtr);
 
         if (savedCombatInfo_.HasRestored() == false)
@@ -882,14 +887,14 @@ namespace stage
             //while this doesn't technically make them fly, the call to savedCombatInfo_.Restore() will actually set them flying
             {
                 combat::CombatNodeSVec_t combatNodesSVec;
-                combatDisplayPtrC_->GetCombatNodes(combatNodesSVec);
+                combatDisplayPtr_->GetCombatNodes(combatNodesSVec);
 
                 for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
                     if ((creature::race::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Race().Which())) ||
                         (creature::role::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Role().Which())))
                         NEXT_COMBATNODE_SPTR->IsFlying(true);
 
-                savedCombatInfo_.Save(combatDisplayPtrC_);
+                savedCombatInfo_.Save(combatDisplayPtr_);
             }
         }
 
@@ -919,7 +924,7 @@ namespace stage
         EntityAdd(zoomSliderBarSPtr_);
 
         MoveTurnBoxObjectsOffScreen(true);
-        savedCombatInfo_.Restore(combatDisplayPtrC_);
+        savedCombatInfo_.Restore(combatDisplayPtr_);
         SetUserActionAllowed(false);
     }
 
@@ -954,6 +959,8 @@ namespace stage
             roarTBoxButtonSPtr_->draw(target, states);
             pounceTBoxButtonSPtr_->draw(target, states);
         }
+
+        combatAnimPtr_->Draw(target, states);
 
         DrawHoverText(target, states);
 
@@ -994,11 +1001,11 @@ namespace stage
 
         if (TurnPhase::DeathAnim == turnPhase_)
         {
-            combatDisplayPtrC_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
                 SetTurnPhase(TurnPhase::PostDeathAnimSlide);
-                combatDisplayPtrC_->DeathAnimStop();
+                combatAnimPtr_->DeathAnimStop();
                 PositionSlideStartTasks();
             }
             return;
@@ -1006,11 +1013,11 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) && (PerformAnimPhase::ProjectileShoot == performAnimPhase_))
         {
-            combatDisplayPtrC_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
+            combatAnimPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
             if (slider_.GetIsDone())
             {
-                combatDisplayPtrC_->UpdateHealthTasks();
-                combatDisplayPtrC_->ProjectileShootAnimStop();
+                combatDisplayPtr_->UpdateHealthTasks();
+                combatAnimPtr_->ProjectileShootAnimStop();
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetupTurnBox();
                 SetTurnPhase(TurnPhase::PerformReport);
@@ -1037,7 +1044,7 @@ namespace stage
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
-            combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
+            combatDisplayPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
             {
                 StartTurn_Step2();
@@ -1050,7 +1057,7 @@ namespace stage
               (TurnPhase::PerformAnim == turnPhase_) &&
               ((PerformType::Advance == performType_) || (PerformType::Retreat == performType_))) )
         {
-            combatDisplayPtrC_->PositionSlideUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatDisplayPtr_->PositionSlideUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
                 SetTurnPhase(TurnPhase::PostTurnPause);
@@ -1067,7 +1074,7 @@ namespace stage
             if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_PAUSE_SEC_)
             {
                 statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
-                combatDisplayPtrC_->SetIsStatusMessageAnimating(false);
+                combatDisplayPtr_->SetIsStatusMessageAnimating(false);
 
                 if (willClrShkInitStatusMsg_)
                 {
@@ -1085,9 +1092,9 @@ namespace stage
         if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
-            combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
+            combatDisplayPtr_->CenteringUpdate(SLIDER_POS);
 
-            if (willCenterZoomOut_ && (combatDisplayPtrC_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
+            if (willCenterZoomOut_ && (combatDisplayPtr_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
             {
                 auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way at the most
                 zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
@@ -1095,7 +1102,7 @@ namespace stage
 
             if (slider_.GetIsDone())
             {
-                combatDisplayPtrC_->CenteringStop();
+                combatDisplayPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
                 StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
             }
@@ -1109,10 +1116,10 @@ namespace stage
             if (sliderPosAdj > 1.0f)
                 sliderPosAdj = 1.0f;
 
-            combatDisplayPtrC_->CenteringUpdate(sliderPosAdj);
+            combatDisplayPtr_->CenteringUpdate(sliderPosAdj);
             if (slider_.GetIsDone())
             {
-                combatDisplayPtrC_->CenteringStop();
+                combatDisplayPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
                 AppendInitialStatus();
@@ -1135,14 +1142,14 @@ namespace stage
         }
 
         if ((zoomSliderBarSPtr_.get() != nullptr) &&
-            (combatDisplayPtrC_ != nullptr) &&
+            (combatDisplayPtr_ != nullptr) &&
             (heroespath::LoopManager::Instance()->IsFading() == false) &&
             (TurnPhase::NotATurn == turnPhase_) &&
             (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
             slider_.Reset(INITIAL_CENTERING_SLIDER_SPEED_);
-            combatDisplayPtrC_->CenteringStartTargetCenterOfBatllefield();
+            combatDisplayPtr_->CenteringStartTargetCenterOfBatllefield();
             return;
         }
     }
@@ -1151,9 +1158,9 @@ namespace stage
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         //cancel summary view if visible or even just starting
-        if (combatDisplayPtrC_->GetIsSummaryViewInProgress())
+        if (combatDisplayPtr_->GetIsSummaryViewInProgress())
         {
-            combatDisplayPtrC_->CancelSummaryViewAndStartTransitionBack();
+            combatDisplayPtr_->CancelSummaryViewAndStartTransitionBack();
         }
         else if (TurnPhase::Determine == turnPhase_)
         {
@@ -1178,13 +1185,13 @@ namespace stage
 
         if (TurnPhase::Determine == turnPhase_)
         {
-            creature::CreaturePtr_t creatureAtPosPtr(combatDisplayPtrC_->GetCreatureAtPos(MOUSE_POS_V));
+            creature::CreaturePtr_t creatureAtPosPtr(combatDisplayPtr_->GetCreatureAtPos(MOUSE_POS_V));
 
             if ((false == isMouseDragging_) &&
                 (creatureAtPosPtr != nullptr) &&
                 creatureAtPosPtr->IsPlayerCharacter())
             {
-                savedCombatInfo_.PrepareForStageChange(combatDisplayPtrC_);
+                savedCombatInfo_.PrepareForStageChange(combatDisplayPtr_);
                 heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
             }
 
@@ -1202,9 +1209,9 @@ namespace stage
     bool CombatStage::KeyRelease(const sf::Event::KeyEvent & KE)
     {
         //cancel summary view if visible or even just starting
-        if (combatDisplayPtrC_->GetIsSummaryViewInProgress())
+        if (combatDisplayPtr_->GetIsSummaryViewInProgress())
         {
-            combatDisplayPtrC_->CancelSummaryViewAndStartTransitionBack();
+            combatDisplayPtr_->CancelSummaryViewAndStartTransitionBack();
             return true;
         }
 
@@ -1257,7 +1264,7 @@ namespace stage
             {
                 if ((turnCreaturePtr_ != nullptr) && turnCreaturePtr_->IsPlayerCharacter())
                 {
-                    savedCombatInfo_.PrepareForStageChange(combatDisplayPtrC_);
+                    savedCombatInfo_.PrepareForStageChange(combatDisplayPtr_);
                     heroespath::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_);
                 }
             }
@@ -1310,7 +1317,7 @@ namespace stage
         statusMsgAnimColorShaker_.Reset();
         statusMsgAnimColorShaker_.Start();
         statusMsgAnimTimerSec_ = 0.0f;
-        combatDisplayPtrC_->SetIsStatusMessageAnimating(true);
+        combatDisplayPtr_->SetIsStatusMessageAnimating(true);
 
         willClrShkInitStatusMsg_ = true;
     }
@@ -1328,7 +1335,7 @@ namespace stage
             statusMsgAnimColorShaker_.Reset();
             statusMsgAnimColorShaker_.Start();
             statusMsgAnimTimerSec_ = 0.0f;
-            combatDisplayPtrC_->SetIsStatusMessageAnimating(true);
+            combatDisplayPtr_->SetIsStatusMessageAnimating(true);
         }
     }
 
@@ -1400,9 +1407,9 @@ namespace stage
                 creaturesToCenterPVec_.clear();
                 creaturesToCenterPVec_.push_back(turnCreaturePtr_);
                 fightResult_.EffectedCreatures(creaturesToCenterPVec_);
-                combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
+                combatDisplayPtr_->CenteringStart(creaturesToCenterPVec_);
 
-                willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
+                willCenterZoomOut_ = combatDisplayPtr_->IsZoomOutRequired(creaturesToCenterPVec_);
 
                 slider_.Reset(CENTERING_SLIDER_SPEED_);
             }
@@ -1466,7 +1473,7 @@ namespace stage
             else
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
-                combatDisplayPtrC_->DeathAnimStart(killedCreaturesPVec);
+                combatAnimPtr_->DeathAnimStart(killedCreaturesPVec);
                 slider_.Reset(DEATH_ANIM_SLIDER_SPEED_);
                 //TODO SOUNDEFFECT play creature death sound effect here
             }
@@ -1490,7 +1497,7 @@ namespace stage
 
     void CombatStage::HandleEnemyTurnStep1_Decide()
     {
-        turnActionInfo_ = combat::TurnDecider::Decide(turnCreaturePtr_, combatDisplayPtrC_);
+        turnActionInfo_ = combat::TurnDecider::Decide(turnCreaturePtr_, combatDisplayPtr_);
         encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         SetupTurnBox();
     }
@@ -1502,7 +1509,7 @@ namespace stage
         {
             case combat::TurnAction::Advance:
             {
-                combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
+                combatDisplayPtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
                 PositionSlideStartTasks();
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
@@ -1512,7 +1519,7 @@ namespace stage
 
             case combat::TurnAction::Retreat:
             {
-                combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
+                combatDisplayPtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
                 PositionSlideStartTasks();
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
@@ -1540,7 +1547,7 @@ namespace stage
             case combat::TurnAction::Land:
             {
                 fightResult_ = combat::FightResult();
-                combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, false);
+                combatDisplayPtr_->HandleFlyingChange(turnCreaturePtr_, false);
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 return PerformType::Pause;
@@ -1567,7 +1574,7 @@ namespace stage
 
             case combat::TurnAction::Roar:
             {
-                fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayPtrC_);
+                fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayPtr_);
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
 
@@ -1607,7 +1614,7 @@ namespace stage
         performReportHitIndex_ = 0;
 
         slider_.Reset(CENTERING_SLIDER_SPEED_);
-        combatDisplayPtrC_->CenteringStart(turnCreaturePtr_);
+        combatDisplayPtr_->CenteringStart(turnCreaturePtr_);
     }
 
 
@@ -1615,10 +1622,10 @@ namespace stage
     void CombatStage::StartTurn_Step2()
     {
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
-        combatDisplayPtrC_->SetIsPlayerTurn(IS_PLAYER_TURN);
+        combatDisplayPtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
-        combatDisplayPtrC_->CenteringStop();
-        combatDisplayPtrC_->StartShaking(turnCreaturePtr_);
+        combatDisplayPtr_->CenteringStop();
+        combatDisplayPtr_->StartShaking(turnCreaturePtr_);
 
         goldTextColorShaker_.Reset();
 
@@ -1667,7 +1674,7 @@ namespace stage
     void CombatStage::PositionSlideStartTasks()
     {
         if (turnCreaturePtr_ != nullptr)
-            combatDisplayPtrC_->StopShaking(turnCreaturePtr_);
+            combatDisplayPtr_->StopShaking(turnCreaturePtr_);
 
         slider_.Reset(CREATURE_POS_SLIDER_SPEED_);
     }
@@ -1675,7 +1682,7 @@ namespace stage
 
     bool CombatStage::HandleAttack()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1685,7 +1692,7 @@ namespace stage
         {
             SetUserActionAllowed(false);
 
-            auto opponentCreature{ combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayPtrC_) };
+            auto opponentCreature{ combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayPtr_) };
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature, nullptr);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature);
@@ -1693,8 +1700,8 @@ namespace stage
 
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             creaturesToCenterPVec_ = creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature };
-            combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
-            willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
+            combatDisplayPtr_->CenteringStart(creaturesToCenterPVec_);
+            willCenterZoomOut_ = combatDisplayPtr_->IsZoomOutRequired(creaturesToCenterPVec_);
             slider_.Reset(CENTERING_SLIDER_SPEED_);
 
             SetupTurnBox();
@@ -1705,7 +1712,7 @@ namespace stage
 
     bool CombatStage::HandleFight()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1725,7 +1732,7 @@ namespace stage
 
     bool CombatStage::HandleCast()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_, combatDisplayPtrC_)  );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_, combatDisplayPtr_)  );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1747,7 +1754,7 @@ namespace stage
 
     bool CombatStage::HandleAdvance()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAdvanceStr(turnCreaturePtr_, combatDisplayPtrC_)  );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAdvanceStr(turnCreaturePtr_, combatDisplayPtr_)  );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1768,7 +1775,7 @@ namespace stage
 
     bool CombatStage::HandleRetreat()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextRetreatStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextRetreatStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1788,7 +1795,7 @@ namespace stage
 
     bool CombatStage::HandleBlock()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextBlockStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextBlockStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1826,7 +1833,7 @@ namespace stage
 
     bool CombatStage::HandleFly()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFlyStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFlyStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1840,7 +1847,7 @@ namespace stage
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, true);
 
-            combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, true);
+            combatDisplayPtr_->HandleFlyingChange(turnCreaturePtr_, true);
 
             //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
@@ -1851,7 +1858,7 @@ namespace stage
 
     bool CombatStage::HandleLand()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextLandStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextLandStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1865,7 +1872,7 @@ namespace stage
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             encounterSPtr_->SetIsFlying(turnCreaturePtr_, false);
 
-            combatDisplayPtrC_->HandleFlyingChange(turnCreaturePtr_, false);
+            combatDisplayPtr_->HandleFlyingChange(turnCreaturePtr_, false);
 
             //no need for performType_, ZoomAndSlide, or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
@@ -1876,7 +1883,7 @@ namespace stage
 
     bool CombatStage::HandleRoar()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextRoarStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextRoarStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1888,7 +1895,7 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Roar);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayPtrC_);
+            fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayPtr_);
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
             performType_ = PerformType::Roar;
 
@@ -1901,7 +1908,7 @@ namespace stage
 
     bool CombatStage::HandlePounce(const bool IS_SKY_POUNCE)
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextPounceStr(turnCreaturePtr_, combatDisplayPtrC_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextPounceStr(turnCreaturePtr_, combatDisplayPtr_) );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1935,7 +1942,7 @@ namespace stage
     {
         SetTurnPhase(TurnPhase::NotATurn);
         savedCombatInfo_.CanTurnAdvance(true);
-        combatDisplayPtrC_->HandleEndOfTurnTasks();
+        combatDisplayPtr_->HandleEndOfTurnTasks();
         EndTurn();
         EndPause();
     }
@@ -1980,7 +1987,7 @@ namespace stage
             tBoxStdButtonSVec_.clear();
 
             {
-                const std::string MOT_ATTACK_STR(combat::Text::MouseOverTextAttackStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_ATTACK_STR(combat::Text::MouseOverTextAttackStr(CREATURE_CPTRC, combatDisplayPtr_));
                 attackTBoxButtonSPtr_->SetIsDisabled(MOT_ATTACK_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
                 attackTBoxButtonSPtr_->SetMouseHoverText(MOT_ATTACK_STR);
 
@@ -1989,7 +1996,7 @@ namespace stage
             }
 
             {
-                const std::string MOT_FIGHT_STR(combat::Text::MouseOverTextFightStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_FIGHT_STR(combat::Text::MouseOverTextFightStr(CREATURE_CPTRC, combatDisplayPtr_));
                 fightTBoxButtonSPtr_->SetIsDisabled(MOT_FIGHT_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
                 fightTBoxButtonSPtr_->SetMouseHoverText(MOT_FIGHT_STR);
 
@@ -1998,7 +2005,7 @@ namespace stage
             }
 
             {
-                const std::string MOT_CAST_STR(combat::Text::MouseOverTextCastStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_CAST_STR(combat::Text::MouseOverTextCastStr(CREATURE_CPTRC, combatDisplayPtr_));
                 castTBoxButtonSPtr_->SetIsDisabled(MOT_CAST_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
                 castTBoxButtonSPtr_->SetMouseHoverText(MOT_CAST_STR);
 
@@ -2007,25 +2014,25 @@ namespace stage
             }
 
             {
-                const std::string MOT_ADVANCE_STR(combat::Text::MouseOverTextAdvanceStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_ADVANCE_STR(combat::Text::MouseOverTextAdvanceStr(CREATURE_CPTRC, combatDisplayPtr_));
                 advanceTBoxButtonSPtr_->SetIsDisabled(MOT_ADVANCE_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
                 advanceTBoxButtonSPtr_->SetMouseHoverText(MOT_ADVANCE_STR);
             }
 
             {
-                const std::string MOT_RETREAT_STR(combat::Text::MouseOverTextRetreatStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_RETREAT_STR(combat::Text::MouseOverTextRetreatStr(CREATURE_CPTRC, combatDisplayPtr_));
                 retreatTBoxButtonSPtr_->SetIsDisabled(MOT_RETREAT_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
                 retreatTBoxButtonSPtr_->SetMouseHoverText(MOT_RETREAT_STR);
             }
 
             {
-                const std::string MOT_BLOCK_STR(combat::Text::MouseOverTextBlockStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_BLOCK_STR(combat::Text::MouseOverTextBlockStr(CREATURE_CPTRC, combatDisplayPtr_));
                 blockTBoxButtonSPtr_->SetIsDisabled(MOT_BLOCK_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
                 blockTBoxButtonSPtr_->SetMouseHoverText(MOT_BLOCK_STR);
             }
 
             {
-                const std::string MOT_FLY_STR(combat::Text::MouseOverTextFlyStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_FLY_STR(combat::Text::MouseOverTextFlyStr(CREATURE_CPTRC, combatDisplayPtr_));
                 flyTBoxButtonSPtr_->SetIsDisabled(MOT_FLY_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
                 flyTBoxButtonSPtr_->SetMouseHoverText(MOT_FLY_STR);
 
@@ -2034,7 +2041,7 @@ namespace stage
             }
 
             {
-                const std::string MOT_LAND_STR(combat::Text::MouseOverTextLandStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_LAND_STR(combat::Text::MouseOverTextLandStr(CREATURE_CPTRC, combatDisplayPtr_));
                 landTBoxButtonSPtr_->SetIsDisabled(MOT_LAND_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
                 landTBoxButtonSPtr_->SetMouseHoverText(MOT_LAND_STR);
 
@@ -2043,7 +2050,7 @@ namespace stage
             }
 
             {
-                const std::string MOT_ROAR_STR(combat::Text::MouseOverTextRoarStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_ROAR_STR(combat::Text::MouseOverTextRoarStr(CREATURE_CPTRC, combatDisplayPtr_));
                 roarTBoxButtonSPtr_->SetIsDisabled(MOT_ROAR_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
                 roarTBoxButtonSPtr_->SetMouseHoverText(MOT_ROAR_STR);
 
@@ -2052,7 +2059,7 @@ namespace stage
             }
 
             {
-                const std::string MOT_POUNCE_STR(combat::Text::MouseOverTextPounceStr(CREATURE_CPTRC, combatDisplayPtrC_));
+                const std::string MOT_POUNCE_STR(combat::Text::MouseOverTextPounceStr(CREATURE_CPTRC, combatDisplayPtr_));
                 pounceTBoxButtonSPtr_->SetIsDisabled(MOT_POUNCE_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
                 pounceTBoxButtonSPtr_->SetMouseHoverText(MOT_POUNCE_STR);
 
@@ -2330,7 +2337,7 @@ namespace stage
         {
             case PerformType::Advance:
             {
-                combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
+                combatDisplayPtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
                 PositionSlideStartTasks();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 SetPerformAnimPhase(PerformAnimPhase::AdvanceOrRetreat);
@@ -2339,7 +2346,7 @@ namespace stage
 
             case PerformType::Retreat:
             {
-                combatDisplayPtrC_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
+                combatDisplayPtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
                 PositionSlideStartTasks();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 SetPerformAnimPhase(PerformAnimPhase::AdvanceOrRetreat);
@@ -2366,10 +2373,10 @@ namespace stage
                     auto const WEAPON_SPTR{ hitInfo.Weapon() };
                     if (WEAPON_SPTR.get() != nullptr)
                     {
-                        combatDisplayPtrC_->ProjectileShootAnimStart(turnCreaturePtr_,
-                                                                     fightResult_.Effects()[0].GetCreature(),
-                                                                     WEAPON_SPTR,
-                                                                     fightResult_.WasHit());
+                        combatAnimPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
+                                                                 fightResult_.Effects()[0].GetCreature(),
+                                                                 WEAPON_SPTR,
+                                                                 fightResult_.WasHit());
 
                         slider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetPerformAnimPhase(PerformAnimPhase::ProjectileShoot);
@@ -2530,7 +2537,7 @@ namespace stage
 
     void CombatStage::SetUserActionAllowed(const bool IS_ALLOWED)
     {
-        combatDisplayPtrC_->SetUserActionAllowed(IS_ALLOWED);
+        combatDisplayPtr_->SetUserActionAllowed(IS_ALLOWED);
     }
 
 }

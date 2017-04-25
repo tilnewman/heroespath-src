@@ -178,14 +178,6 @@ namespace combat
 
         bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
-        void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-                                      creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                      const item::ItemSPtr_t &  WEAPON_SPTR,
-                                      const bool                WILL_HIT);
-
-        void ProjectileShootAnimUpdate(const float);
-        void ProjectileShootAnimStop();
-
         bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
 
         const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t & ) const;
@@ -194,12 +186,14 @@ namespace combat
 
         inline void SetUserActionAllowed(const bool IS_ALLOWED) { isUserActionAllowed_ = IS_ALLOWED; }
 
-        void DeathAnimStart(const creature::CreaturePVec_t &);
-        void DeathAnimUpdate(const float SLIDER_POS);
-        void DeathAnimStop();
-
         const CombatNodeSPtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
         const CombatNodeSVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+
+        inline CombatTree & CombatTree()                        { return combatTree_; }
+
+        void PositionCombatTreeCells(const bool WILL_DELAY);
+
+        inline const sf::FloatRect BattlefieldRect()            { return battlefieldRect_; }
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
@@ -208,8 +202,6 @@ namespace combat
 
         void InitialPlayerPartyCombatTreeSetup();
         void InitialNonPlayerPartyCombatTreeSetup();
-
-        void PositionCombatTreeCells(const bool WILL_DELAY);
 
         void CreatureToneDown(const float TONE_DOWN_VAL);
 
@@ -298,16 +290,6 @@ namespace combat
         //members that manage creature dragging
         bool isCreatureDragAllowed_;
         bool isMouseHeldDownInCreature_;
-
-        //members controlling the projectile shoot animation
-        sfml_util::TextureSPtr_t projAnimTextureSPtr_;
-        sf::Sprite projAnimSprite_;
-        sf::Vector2f projAnimBeginPosV_;
-        sf::Vector2f projAnimEndPosV_;
-        bool projAnimWillSpin_;
-
-        //members controlling the death animation
-        CombatNodeSVec_t deadAnimNodesSVec_;
     };
 
 

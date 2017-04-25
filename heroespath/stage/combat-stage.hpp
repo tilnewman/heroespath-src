@@ -59,6 +59,9 @@ namespace combat
 
     class Encounter;
     using EncounterSPtr_t = std::shared_ptr<Encounter>;
+
+    class CombatAnim;
+    using CombatAnimPtr_t = CombatAnim *;
 }
 namespace stage
 {
@@ -184,7 +187,7 @@ namespace stage
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
-        inline bool IsPaused() const                { return (pauseElapsedSec_ < pauseDurationSec_); }
+        inline bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
@@ -311,7 +314,8 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
-        combat::CombatDisplayPtrC_t combatDisplayPtrC_;
+        combat::CombatDisplayPtr_t combatDisplayPtr_;
+        combat::CombatAnimPtr_t    combatAnimPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 
