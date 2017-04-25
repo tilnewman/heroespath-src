@@ -1039,31 +1039,19 @@ namespace combat
         combatNodesSVec.reserve(combatTree_.VertexCount());
         combatTree_.GetCombatNodes(combatNodesSVec);
 
-        for (auto & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            NEXT_COMBATNODE_SPTR->HealthChangeTasks();
+        for (auto & nextCombatNodeSPtr : combatNodesSVec)
+            nextCombatNodeSPtr->HealthChangeTasks();
     }
 
 
     bool CombatDisplay::AreAllCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
     {
-        CombatNodeSVec_t combatNodesSVec;
-        combatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesSVec);
+        auto const COMBATNODES_SVEC{ GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
 
-        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CHECK_PVEC)
-        {
-            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            {
-                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
-                {
-                    if (NEXT_COMBATNODE_SPTR->GetEntityWillDraw() == false)
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
+        for (auto const & NEXT_COMBATNODE_SPTR : COMBATNODES_SVEC)
+            if (NEXT_COMBATNODE_SPTR->GetEntityWillDraw() == false)
+                return false;
+   
         return true;
     }
 
@@ -1427,30 +1415,13 @@ namespace combat
 
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
-        CombatNodeSVec_t allCombatNodesSVec;
-        allCombatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(allCombatNodesSVec);
-
-        CombatNodeSVec_t relevantCombatNodesSVec;
-        allCombatNodesSVec.reserve(CREATURES_PVEC.size());
-        for (auto const & NEXT_CREATURE_PTR : CREATURES_PVEC)
-        {
-            for (auto const & NEXT_COMBATNODE_SPTR : allCombatNodesSVec)
-            {
-                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
-                {
-                    relevantCombatNodesSVec.push_back(NEXT_COMBATNODE_SPTR);
-                    break;
-                }
-            }
-        }
-
         auto horizPosDiffMax{ 0.0f };
         auto vertPosDiffMax{ 0.0f };
 
-        for (auto const & OUTER_COMBATNODE_SPTR : relevantCombatNodesSVec)
+        auto combatNodesSVec{ GetCombatNodesForCreatures(CREATURES_PVEC) };
+        for (auto const & OUTER_COMBATNODE_SPTR : combatNodesSVec)
         {
-            for (auto const & INNER_COMBATNODE_SPTR : relevantCombatNodesSVec)
+            for (auto const & INNER_COMBATNODE_SPTR : combatNodesSVec)
             {
                 if (OUTER_COMBATNODE_SPTR != INNER_COMBATNODE_SPTR)
                 {
@@ -1473,23 +1444,14 @@ namespace combat
 
     const sf::Vector2f CombatDisplay::FindCenterOfCreatures(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC) const
     {
-        CombatNodeSVec_t combatNodesSVec;
-        combatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesSVec);
-
         std::vector<float> horizPosVec;
         std::vector<float> vertPosVec;
 
-        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_CENTER_ON_PVEC)
+        auto combatNodesSVec{ GetCombatNodesForCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
         {
-            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            {
-                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
-                {
-                    horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x + (NEXT_COMBATNODE_SPTR->GetEntityRegion().width * 0.5f));
-                    vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y + (NEXT_COMBATNODE_SPTR->GetEntityRegion().height * 0.5f));
-                }
-            }
+            horizPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().x + (NEXT_COMBATNODE_SPTR->GetEntityRegion().width * 0.5f));
+            vertPosVec.push_back(NEXT_COMBATNODE_SPTR->GetEntityPos().y + (NEXT_COMBATNODE_SPTR->GetEntityRegion().height * 0.5f));
         }
 
         auto const HORIZ_AVG_POS{ std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f) / static_cast<float>(horizPosVec.size()) };
@@ -1501,32 +1463,17 @@ namespace combat
 
     void CombatDisplay::SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT)
     {
-        CombatNodeSVec_t combatNodesSVec;
-        combatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesSVec);
-
-        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            if (NEXT_COMBATNODE_SPTR->Creature() == CREATURE_CPTRC)
-                NEXT_COMBATNODE_SPTR->SetHighlight(WILL_HIGHLIGHT, false);
+        GetCombatNodeForCreature(CREATURE_CPTRC)->SetHighlight(WILL_HIGHLIGHT, false);
     }
 
 
     void CombatDisplay::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        CombatNodeSVec_t combatNodesSVec;
-        combatNodesSVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesSVec);
-
-        for (auto const NEXT_KILLEDCREATURE_PTR : KILLED_CREATURES_PVEC)
+        auto combatNodesSVec{ GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+        for (auto & nextCombatNodeSPtr : combatNodesSVec)
         {
-            for (auto & nextCombatNodeSPtr : combatNodesSVec)
-            {
-                if (nextCombatNodeSPtr->Creature() == NEXT_KILLEDCREATURE_PTR)
-                {
-                    nextCombatNodeSPtr->SetDead(true);
-                    deadAnimNodesSVec_.push_back(nextCombatNodeSPtr);
-                }
-            }
+            nextCombatNodeSPtr->SetDead(true);
+            deadAnimNodesSVec_.push_back(nextCombatNodeSPtr);
         }
     }
 
@@ -1552,6 +1499,29 @@ namespace combat
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
         PositionCombatTreeCells(true);
+    }
+
+
+    const CombatNodeSPtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    {
+        return combatTree_.GetNode(combatTree_.GetNodeId(CREATURE_CPTRC));
+    }
+
+
+    const CombatNodeSVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        CombatNodeSVec_t creatureCombatNodesSVec;
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_PVEC)
+            for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+                if (NEXT_COMBATNODE_SPTR->Creature() == NEXT_CREATURE_PTR)
+                    creatureCombatNodesSVec.push_back(NEXT_COMBATNODE_SPTR);
+        
+        return creatureCombatNodesSVec;
     }
 
 }

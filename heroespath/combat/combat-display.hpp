@@ -198,6 +198,9 @@ namespace combat
         void DeathAnimUpdate(const float SLIDER_POS);
         void DeathAnimStop();
 
+        const CombatNodeSPtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
+        const CombatNodeSVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
 
