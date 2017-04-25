@@ -194,6 +194,10 @@ namespace combat
 
         inline void SetUserActionAllowed(const bool IS_ALLOWED) { isUserActionAllowed_ = IS_ALLOWED; }
 
+        void DeathAnimStart(const creature::CreaturePVec_t &);
+        void DeathAnimUpdate(const float SLIDER_POS);
+        void DeathAnimStop();
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
 
@@ -300,6 +304,9 @@ namespace combat
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;
         bool projAnimWillSpin_;
+
+        //members controlling the death animation
+        CombatNodeSVec_t deadAnimNodesSVec_;
     };
 
 

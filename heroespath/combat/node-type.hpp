@@ -16,7 +16,6 @@ namespace combat
         enum Enum
         {
             Position = 0,
-            Obstruction,
             Count,
             All = Count
         };

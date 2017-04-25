@@ -65,9 +65,12 @@ namespace condition
     class Cond_Dazed : public Condition
     {
     public:
-        Cond_Dazed() : Condition(condition::Dazed, false, stats::StatSet(0, -10, 0, 0, -10, -10)) {}
+        Cond_Dazed() : Condition(condition::Dazed), inverseModifyStatSet_() {}
         virtual ~Cond_Dazed() {}
+        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(1.5f, 3.0f, 1.0f, 1.0f, 3.0f, 1.5f); }
+        virtual void Undo(CreaturePtrC_t creaturePtrC) { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); }
     private:
+        stats::StatSet inverseModifyStatSet_;
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int) { ar & boost::serialization::base_object<Condition>(*this); }
@@ -77,7 +80,7 @@ namespace condition
     class Cond_Unconscious : public Condition
     {
     public:
-        Cond_Unconscious() : Condition(condition::Unconscious, false, stats::StatSet()) {}
+        Cond_Unconscious() : Condition(condition::Unconscious) {}
         virtual ~Cond_Unconscious() {}
     private:
         friend class boost::serialization::access;

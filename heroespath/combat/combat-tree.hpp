@@ -20,10 +20,9 @@
 
 namespace heroespath
 {
-
-//forward declaration
 namespace creature
 {
+    //forward declarations
     class Creature;
     using CreatureCPtrC_t = const Creature * const;
 }
@@ -37,18 +36,37 @@ namespace combat
     using CombatNodeSVec_t = std::vector<CombatNodeSPtr_t>;
 
 
+    //Note: For player-characters (facing right), 'Forward' is moving to
+    //      the right on the battlefield (increasing blocking pos), and
+    //      'Backward' is moving to the left (decreasing blocking pos).
+    //      Non-player-characters have the inverse concept of forward and
+    //      backward.
+    //using BlockingPos_t = int;
+
+
     struct EdgeType
     {
         enum Enum
         {
+            //This is the left/right or horizontal or blocking position
+            //connection between nodes or creatures on the battlefield.
+            //Every node connects to every other that is directly left
+            //or right of it.  Put another way, every creature that is
+            //separated by one blocking position is connected.
             Blocking = 0,
-            Obstruction,
+
+            //This is the up/down or vertical connection between nodes or
+            //creatures  on the battlefield.  Every creature stacked vertically
+            //has this edge type link to every other creature that is stacked
+            //vertically.  Put another way, every creature that shares a
+            //blocking position is linked shoulder-to-shoulder.
             ShoulderToShoulder,
+
             Count,
             All = Count
         };
 
-        static const std::string ToString(const EdgeType::Enum);
+        static const std::string ToString(const Enum);
     };
 
 

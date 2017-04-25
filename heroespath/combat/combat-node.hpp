@@ -44,7 +44,13 @@ namespace combat
 
         const std::string ToString() const;
 
-        void ResetRegionAndTextSize(const sf::FloatRect & REGION, const unsigned int NAME_CHAR_SIZE);
+        //NEW_REGION replaces the postion and rect of the entity, also re-scales images
+        void SetRegion(const sf::FloatRect & NEW_REGION);
+
+        //same as other SetRegion(), except this takes a float from 0.0f (%) to 1.0f (%)
+        void SetRegion(const float NEW_RATIO);
+
+        void SetCharacterSize(const unsigned int);
 
         inline creature::CreaturePtr_t Creature() const     { return creaturePtr_; }
 
@@ -71,8 +77,8 @@ namespace combat
 
         void UpdateConditionText();
 
-        inline bool GetIsFlying() const                     { return isFlying_; }
-        void SetIsFlying(const bool);
+        inline bool IsFlying() const                        { return isFlying_; }
+        void IsFlying(const bool);
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -83,6 +89,10 @@ namespace combat
         void HealthChangeTasks();
 
         void SetHighlight(const bool WILL_HIGHLIGHT, const bool WILL_PLAY_SOUND_EFFECT);
+
+        void SetDead(const bool IS_DEAD)                    { isDead_ = IS_DEAD; }
+
+        void SetRotationDegrees(const float DEGREES);
 
     protected:
         virtual void OnClick(const sf::Vector2f &) {}
@@ -128,7 +138,18 @@ namespace combat
         bool                     isSummaryView_;
         bool                     isMoving_;
         creature::CreaturePtr_t  creaturePtr_;
+
+        //The health displayed is not the actual creature health but this
+        //cached value, so that changes in health appear when they are
+        //reported and not when they actually occur.
         float                    healthRatioDisplayed_;
+        
+        //The changes in drawing when a creature dies (stop anim wing, stop
+        //drawing conditions and health, etc.) does not occur when the
+        //creature actually dies, but when the dead animations start,
+        //so this cached value keeps track instead of the actual creature
+        //status.
+        bool                     isDead_;
 
         //members that control the flapping wing animation
         static sfml_util::TextureSPtr_t       wingTextureSPtr_;

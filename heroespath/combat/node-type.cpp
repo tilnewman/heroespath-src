@@ -16,8 +16,7 @@ namespace combat
     {
         switch(E)
         {
-            case NodeType::Position:      { return "Position"; }
-            case NodeType::Obstruction:   { return "Obstruction"; }
+            case NodeType::Position: { return "Position"; }
             case NodeType::All:
             default:
             {

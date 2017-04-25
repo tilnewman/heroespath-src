@@ -128,6 +128,9 @@ namespace stage
             PerformReport,
             PostPerformPause,
             StatusAnim,
+            DeathAnim,
+            PostDeathAnimSlide,
+            PostTurnPause,
             Count
         };
 
@@ -193,6 +196,7 @@ namespace stage
         void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
         void StartPause(const float DURATION_SEC, const std::string TITLE);
         void EndPause();
+        void HandlePerformReportPhaseOverTasks();
         void HandleEnemyTurnStep1_Decide();
         PerformType HandleEnemyTurnStep2_Perform();
         void StartTurn_Step1();//start centering anim
@@ -239,22 +243,33 @@ namespace stage
         void SetUserActionAllowed(const bool IS_ALLOWED);
 
     public:
-        static const float ZOOM_SLIDER_SPEED_;
+        static const float PAUSE_LONG_SEC_;
+        static const float PAUSE_MEDIUM_SEC_;
+        static const float PAUSE_SHORT_SEC_;
+        static const float PAUSE_ZERO_SEC_;
         static const float POST_PAN_PAUSE_SEC_;
         static const float POST_ZOOMOUT_PAUSE_SEC_;
         static const float POST_ZOOMIN_PAUSE_SEC_;
-        static const float CREATURE_TURN_DELAY_SEC_;
-        static const float PRE_TURN_DELAY_SEC_;
-        static const float POST_ZOOM_TURN_DELAY_SEC_;
-        static const float PERFORM_TURN_DELAY_SEC_;
-        static const float PERFORM_REPORT_DELAY_SEC_;
-        static const float POST_TURN_DELAY_SEC_;
+        static const float CREATURE_TURN_PAUSE_SEC_;
+        static const float PRE_TURN_PAUSE_SEC_;
+        static const float POST_ZOOM_TURN_PAUSE_SEC_;
+        static const float PERFORM_PRE_REPORT_PAUSE_SEC_;
+        static const float PERFORM_REPORT_PAUSE_SEC_;
+        static const float POST_PERFORM_REPORT_PAUSE_SEC_;
+        static const float POST_TURN_PAUSE_SEC_;
+        static const float STATUSMSG_ANIM_PAUSE_SEC_;
+        //
+        static const float SLIDER_SPEED_SLOWEST_;
+        static const float SLIDER_SPEED_SLOW_;
+        static const float SLIDER_SPEED_NORMAL_;
+        static const float SLIDER_SPEED_FAST_;
+        static const float ZOOM_SLIDER_SPEED_;
         static const float CENTERING_SLIDER_SPEED_;
         static const float INITIAL_CENTERING_SLIDER_SPEED_;
         static const float TEXT_COLOR_SHAKER_SPEED_;
         static const float CREATURE_POS_SLIDER_SPEED_;
-        static const float STATUSMSG_ANIM_DURATION_SEC_;
         static const float PROJECTILE_SHOOT_SLIDER_SPEED_;
+        static const float DEATH_ANIM_SLIDER_SPEED_;
         //
         static const sf::Color LISTBOX_BACKGROUND_COLOR_;
         static const sf::Color LISTBOX_HIGHLIGHT_COLOR_;
@@ -292,13 +307,13 @@ namespace stage
         bool                             willCenterZoomOut_;
         bool                             willClrShkInitStatusMsg_;
 
+        //A slider member that is used for various slider tasks
+        sfml_util::sliders::ZeroSliderOnce<float> slider_;
+
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
         combat::CombatDisplayPtrC_t combatDisplayPtrC_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
-
-        //members that control the zooming in and out of the battlefield
-        sfml_util::sliders::ZeroSliderOnce<float> zoomSlider_;
 
         //members that control pausing the CombatStage
         float pauseDurationSec_;
@@ -307,7 +322,6 @@ namespace stage
 
         //members that slide the battlefield view around to center on a particular creature
         bool isCentering_;
-        sfml_util::sliders::ZeroSliderOnce<float> centeringSlider_;
 
         //members that deal with which creature's turn it is and the timing of taking turns
         creature::CreaturePtr_t turnCreaturePtr_;
@@ -339,10 +353,6 @@ namespace stage
         sfml_util::gui::FourStateButtonSVec_t tBoxStdButtonSVec_;
         sfml_util::gui::FourStateButtonSVec_t tBoxBeastButtonSVec_;
 
-        //members that control creature position sliding
-        bool isCreaturePosSliding_;
-        sfml_util::sliders::ZeroSliderOnce<float> creaturePosSlider_;
-
         //members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
@@ -353,9 +363,6 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;
         std::string pauseTitle_;
-
-        //members that handle perform animation
-        sfml_util::sliders::ZeroSliderOnce<float> performSlider_;
     };
 
 }

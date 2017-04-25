@@ -16,13 +16,12 @@ namespace heroespath
 namespace combat
 {
 
-    const std::string EdgeType::ToString(const EdgeType::Enum E)
+    const std::string EdgeType::ToString(const Enum E)
     {
         switch(E)
         {
             case EdgeType::Blocking:            { return "Blocking"; }
-            case EdgeType::Obstruction:         { return "Obstruction"; }
-            case EdgeType::ShoulderToShoulder:  { return "ShoulderToShoulder"; }
+            case EdgeType::ShoulderToShoulder:  { return "Shoulder-To-Shoulder"; }
             case EdgeType::All:
             default:
             {

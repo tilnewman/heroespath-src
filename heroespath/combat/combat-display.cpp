@@ -145,7 +145,7 @@ namespace combat
         nodePosTrackerMap_         (),
         isAttackAnimating_         (false),
         isAttackAnimMovingTo_      (true),
-        creatureMoveSlider_          (),
+        creatureMoveSlider_        (),
         attackingCombatNodeSPtr_   (nullptr),
         attackedCombatNodeSPtr_    (nullptr),
         attackingCreatureOrigPos_  (-1.0f, -1.0f), //any two negative values will work here
@@ -155,7 +155,8 @@ namespace combat
         projAnimSprite_            (),
         projAnimBeginPosV_         (0.0f, 0.0f),
         projAnimEndPosV_           (0.0f, 0.0f),
-        projAnimWillSpin_          (false)
+        projAnimWillSpin_          (false),
+        deadAnimNodesSVec_         ()
     {}
 
 
@@ -628,9 +629,14 @@ namespace combat
             const sf::FloatRect RECT(POS_LEFT, POS_TOP, CELL_WIDTH_ZOOM_ADJ, CELL_HEIGHT_ZOOM_ADJ);
 
             if (WILL_DELAY)
+            {
                 nodePosTrackerMap_[NEXT_VERTEX.second] = NodePosTracker(NEXT_VERTEX.second, POS_LEFT, POS_TOP);
+            }
             else
-                NEXT_VERTEX.second->ResetRegionAndTextSize(RECT, nameCharSizeCurr_);
+            {
+                NEXT_VERTEX.second->SetRegion(RECT);
+                NEXT_VERTEX.second->SetCharacterSize(nameCharSizeCurr_);
+            }
         }
     }
 
@@ -976,24 +982,35 @@ namespace combat
         CombatNodeSPtr_t combatNodeSPtr(combatTree_.GetNode(POS_V.x, POS_V.y));
 
         if (combatNodeSPtr.get() != nullptr)
+        {
             return combatNodeSPtr->Creature();
+        }
         else
+        {
             return nullptr;
+        }
     }
 
 
     void CombatDisplay::MoveCreatureBlockingPosition(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_MOVE_FORWARD)
     {
-        const CombatTree::Id_t CREATURE_NODE_ID(combatTree_.GetNodeId(CREATURE_CPTRC));
+        auto const CREATURE_NODE_ID{ combatTree_.GetNodeId(CREATURE_CPTRC) };
+        auto combatNodeSPtr{ combatTree_.GetNode(CREATURE_NODE_ID) };
+        auto blockingPos{ combatNodeSPtr->GetBlockingPos() };
 
-        CombatNodeSPtr_t combatNodeSPtr(combatTree_.GetNode(CREATURE_NODE_ID));
-
-        //increment or decrement depending on whether a player character or not, and advancing or not
-        int blockingPos(combatNodeSPtr->GetBlockingPos());
+        //Note: For player-characters (facing right), 'Forward' is moving to
+        //      the right on the battlefield (increasing blocking pos), and
+        //      'Backward' is moving to the left (decreasing blocking pos).
+        //      Non-player-characters have the inverse concept of forward and
+        //      backward.
         if (CREATURE_CPTRC->IsPlayerCharacter() == WILL_MOVE_FORWARD)
+        {
             ++blockingPos;
+        }
         else
+        {
             --blockingPos;
+        }
 
         combatNodeSPtr->SetBlockingPos(blockingPos);
 
@@ -1015,7 +1032,7 @@ namespace combat
 
     void CombatDisplay::HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING)
     {
-        combatTree_.GetNode(CREATURE_CPTRC)->SetIsFlying(IS_FLYING);
+        combatTree_.GetNode(CREATURE_CPTRC)->IsFlying(IS_FLYING);
     }
 
 
@@ -1183,7 +1200,6 @@ namespace combat
             }
         }
 
-        //TODO SET ROTATION based on target
         projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
         projAnimSprite_.setRotation( GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_) );
         projAnimSprite_.setOrigin(0.0f, 0.0f);
@@ -1543,6 +1559,50 @@ namespace combat
         for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
             if (NEXT_COMBATNODE_SPTR->Creature() == CREATURE_CPTRC)
                 NEXT_COMBATNODE_SPTR->SetHighlight(WILL_HIGHLIGHT, false);
+    }
+
+
+    void CombatDisplay::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
+    {
+        CombatNodeSVec_t combatNodesSVec;
+        combatNodesSVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesSVec);
+
+        for (auto const NEXT_KILLEDCREATURE_PTR : KILLED_CREATURES_PVEC)
+        {
+            for (auto & nextCombatNodeSPtr : combatNodesSVec)
+            {
+                if (nextCombatNodeSPtr->Creature() == NEXT_KILLEDCREATURE_PTR)
+                {
+                    nextCombatNodeSPtr->SetDead(true);
+                    deadAnimNodesSVec_.push_back(nextCombatNodeSPtr);
+                }
+            }
+        }
+    }
+
+
+    void CombatDisplay::DeathAnimUpdate(const float SLIDER_POS)
+    {
+        for (auto & nextCombatNodeSPtr : deadAnimNodesSVec_)
+        {
+            nextCombatNodeSPtr->SetRotationDegrees((4.0f * 360.0f) * SLIDER_POS);
+            nextCombatNodeSPtr->SetRegion(1.0f - SLIDER_POS);
+        }
+    }
+
+
+    void CombatDisplay::DeathAnimStop()
+    {
+        //remove nodes from combat tree and prepare for sliding animation
+        for (auto const & NEXT_COMBATNODE_SPTR : deadAnimNodesSVec_)
+        {
+            auto const NEXT_NODE_ID{ combatTree_.GetNodeId(NEXT_COMBATNODE_SPTR) };
+            combatTree_.RemoveVertex(NEXT_NODE_ID, true);
+        }
+
+        //re-position CombatNodes/Creatures on the battlefield in the slow animated way
+        PositionCombatTreeCells(true);
     }
 
 

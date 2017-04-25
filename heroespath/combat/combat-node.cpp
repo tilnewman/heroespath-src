@@ -61,6 +61,7 @@ namespace combat
         isMoving_            (false),
         creaturePtr_         (CREATURE_SPTR.get()),
         healthRatioDisplayed_(0.0f),
+        isDead_              (false),
         wingSprite_          (),
         isFlying_            (false),
         wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
@@ -91,8 +92,8 @@ namespace combat
             wingTextureSPtr_ = sfml_util::gui::CombatImageManager::Instance()->Get(sfml_util::gui::CombatImageType::Wing, ! creaturePtr_->IsPlayerCharacter());
 
         //um...This was the only way I could get it to work...zTn 2017-4-6
-        SetIsFlying(true);
-        SetIsFlying(false);
+        IsFlying(true);
+        IsFlying(false);
     }
 
 
@@ -114,19 +115,14 @@ namespace combat
     }
 
 
-    void CombatNode::ResetRegionAndTextSize(const sf::FloatRect & REGION, const unsigned int NAME_CHAR_SIZE)
+    void CombatNode::SetRegion(const sf::FloatRect & NEW_REGION)
     {
-        entityRegion_ = REGION;
-        nameTextObj_.setCharacterSize(NAME_CHAR_SIZE);
-        condTextObj_.setCharacterSize(NAME_CHAR_SIZE);
+        entityRegion_ = NEW_REGION;
+        SetEntityPos(NEW_REGION.left, NEW_REGION.top);//see local override
 
-        SetEntityPos(REGION.left, REGION.top);//see local override
-
-        //scale
-        //start by setting the scale to whatever will match the desired vertical size, which is stored in entityRegion_
         const float SCALE_VERT(entityRegion_.height / sprite_.getLocalBounds().height);
         sprite_.setScale(SCALE_VERT, SCALE_VERT);
-        //...then reduce the scale if the width of the resulting sprite is too large, which will be unlikely given that the majority of creature images are tall not wide
+
         if (sprite_.getGlobalBounds().width > entityRegion_.width)
         {
             const float SCALE_HORIZ(entityRegion_.width / sprite_.getLocalBounds().width);
@@ -137,8 +133,27 @@ namespace combat
             }
         }
 
-        //scale wing image
+        //re-scale wing image
         SetWingImageScaleAndOrigin();
+    }
+
+
+    void CombatNode::SetRegion(const float NEW_RATIO)
+    {
+        auto const ORIG_RECT{ GetEntityRegion() };
+        auto newRect{ ORIG_RECT };
+        newRect.width *= NEW_RATIO;
+        newRect.left += (ORIG_RECT.width - newRect.width) * 0.5f;
+        newRect.height *= NEW_RATIO;
+        newRect.top += (ORIG_RECT.height - newRect.height) * 0.5f;
+        SetRegion(newRect);
+    }
+
+
+    void CombatNode::SetCharacterSize(const unsigned int NEW_CHARACTER_SIZE)
+    {
+        nameTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
+        condTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
     }
 
 
@@ -156,10 +171,14 @@ namespace combat
         target.draw(sprite_, states);
         states.blendMode = ORIG_BLEND_MODE;
 
-        if (isFlying_)
+        if (isFlying_ && (false == isDead_))
+        {
             target.draw(wingSprite_, states);
+        }
 
-        if ((false == isMoving_) && (false == isSummaryView_))
+        if ((false == isMoving_) &&
+            (false == isSummaryView_) &&
+            (false == isDead_))
         {
             target.draw(nameTextObj_, states);
             target.draw(condTextObj_, states);
@@ -266,12 +285,11 @@ namespace combat
     }
 
 
-    void CombatNode::SetIsFlying(const bool IS_FLYING)
+    void CombatNode::IsFlying(const bool IS_FLYING)
     {
         if (IS_FLYING)
         {
-            wingSprite_.setTexture( * wingTextureSPtr_);
-            wingSprite_.setTextureRect( sf::IntRect(0, 0, wingTextureSPtr_->getSize().x, wingTextureSPtr_->getSize().y) );
+            wingSprite_.setTexture( * wingTextureSPtr_, true);
             wingSprite_.setColor(sf::Color(255, 255, 255, WING_IMAGE_ALPHA_));
             wingSprite_.setRotation(0.0f);
             SetWingImageScaleAndOrigin();
@@ -286,15 +304,16 @@ namespace combat
 
     bool CombatNode::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        //Skip check of isFlying_ since calculation is faster than branching,
-        //and because there is already a isFlying_ check on the draw function.
-        if (creaturePtr_->IsPlayerCharacter())
+        if (isFlying_)
         {
-            wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
-        }
-        else
-        {
-            wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
+            if (creaturePtr_->IsPlayerCharacter())
+            {
+                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
+            }
+            else
+            {
+                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
+            }
         }
 
         return true;
@@ -433,6 +452,14 @@ namespace combat
             healthLineColorTick_ = HealthColorTick();
             sprite_.setColor(creatureImageColor_);
         }
+    }
+
+
+    void CombatNode::SetRotationDegrees(const float DEGREES)
+    {
+        sprite_.setOrigin(sprite_.getGlobalBounds().width * 0.5f, sprite_.getGlobalBounds().height * 0.5f);
+        sprite_.setRotation(DEGREES);
+        sprite_.setOrigin(0.0f, 0.0f);
     }
 
 }

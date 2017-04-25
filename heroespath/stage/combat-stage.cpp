@@ -86,7 +86,7 @@ namespace stage
         COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesSVec);
 
         for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            if (NEXT_COMBATNODE_SPTR->GetIsFlying())
+            if (NEXT_COMBATNODE_SPTR->IsFlying())
                 creaturesFlyingPVec_.push_back(NEXT_COMBATNODE_SPTR->Creature());
     }
 
@@ -98,29 +98,40 @@ namespace stage
     }
 
 
-    const float CombatStage::ZOOM_SLIDER_SPEED_             (3.0f);
-    const float CombatStage::POST_PAN_PAUSE_SEC_            (1.5f);
-    const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_        (1.5f);
-    const float CombatStage::POST_ZOOMIN_PAUSE_SEC_         (1.0f);
-    const float CombatStage::CREATURE_TURN_DELAY_SEC_       (6.0f);
-    const float CombatStage::PRE_TURN_DELAY_SEC_            (2.0f);
-    const float CombatStage::POST_TURN_DELAY_SEC_           (4.0f);
-    const float CombatStage::PERFORM_TURN_DELAY_SEC_        (3.0f);
-    const float CombatStage::PERFORM_REPORT_DELAY_SEC_      (6.0f);
-    const float CombatStage::POST_ZOOM_TURN_DELAY_SEC_      (3.0f);
-    const float CombatStage::CENTERING_SLIDER_SPEED_        (4.0f);
-    const float CombatStage::INITIAL_CENTERING_SLIDER_SPEED_(1.0f);
-    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_       (35.0f);
-    const float CombatStage::CREATURE_POS_SLIDER_SPEED_     (4.0f);
-    const float CombatStage::STATUSMSG_ANIM_DURATION_SEC_   (2.0f);
-    const float CombatStage::PROJECTILE_SHOOT_SLIDER_SPEED_ (4.0f);
+    const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
+    const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
+    const float CombatStage::PAUSE_SHORT_SEC_               { 1.5f };
+    const float CombatStage::PAUSE_ZERO_SEC_                { 0.1f };
+    const float CombatStage::POST_PAN_PAUSE_SEC_            { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_        { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_ZOOMIN_PAUSE_SEC_         { PAUSE_SHORT_SEC_ };
+    const float CombatStage::CREATURE_TURN_PAUSE_SEC_       { PAUSE_LONG_SEC_ };
+    const float CombatStage::PRE_TURN_PAUSE_SEC_            { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_TURN_PAUSE_SEC_           { PAUSE_ZERO_SEC_ };
+    const float CombatStage::PERFORM_PRE_REPORT_PAUSE_SEC_  { PAUSE_ZERO_SEC_ };
+    const float CombatStage::PERFORM_REPORT_PAUSE_SEC_      { PAUSE_LONG_SEC_ };
+    const float CombatStage::POST_PERFORM_REPORT_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
+    const float CombatStage::POST_ZOOM_TURN_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
+    const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_      { PAUSE_SHORT_SEC_ };
     //
-    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   ((sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)));
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    ((sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20));
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_((sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40));
-    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_     (sf::Color::White);
-    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_  (sf::Color(150, 150, 150));
-    const sf::Color CombatStage::LISTBOX_LINE_COLOR_         (sf::Color(255, 255, 255, 25));
+    const float CombatStage::SLIDER_SPEED_SLOWEST_          { 1.0f };
+    const float CombatStage::SLIDER_SPEED_SLOW_             { 2.0f };
+    const float CombatStage::SLIDER_SPEED_NORMAL_           { 4.0f };
+    const float CombatStage::SLIDER_SPEED_FAST_             { 35.0f };
+    const float CombatStage::ZOOM_SLIDER_SPEED_             { SLIDER_SPEED_SLOW_ };
+    const float CombatStage::CENTERING_SLIDER_SPEED_        { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::INITIAL_CENTERING_SLIDER_SPEED_{ SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_       { SLIDER_SPEED_FAST_ };
+    const float CombatStage::CREATURE_POS_SLIDER_SPEED_     { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::PROJECTILE_SHOOT_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::DEATH_ANIM_SLIDER_SPEED_       { SLIDER_SPEED_SLOWEST_ };
+    //
+    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_{ (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40) };
+    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_     { sf::Color::White };
+    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_  { sf::Color(150, 150, 150) };
+    const sf::Color CombatStage::LISTBOX_LINE_COLOR_         { sf::Color(255, 255, 255, 25) };
     //
     SavedCombatInfo CombatStage::savedCombatInfo_;
 
@@ -151,6 +162,7 @@ namespace stage
         zoomSliderOrigPos_         (0),
         willCenterZoomOut_         (false),
         willClrShkInitStatusMsg_   (false),
+        slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayPtrC_         (new combat::CombatDisplay()),
         settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
                                                                         0.0f,
@@ -164,11 +176,9 @@ namespace stage
                                                                         false,
                                                                         sfml_util::MapByRes(0.6f, 2.0f),
                                                                         false)),
-        zoomSlider_                 (ZOOM_SLIDER_SPEED_),
         pauseDurationSec_           (0.0f),
         pauseElapsedSec_            (pauseDurationSec_ + 1.0f),//anything greater than pauseTimeDurationSecs_ will work here
         isPauseCanceled_            (false),
-        centeringSlider_            (CENTERING_SLIDER_SPEED_),
         turnCreaturePtr_            (nullptr),
         goldTextColorShaker_        (sfml_util::FontManager::Color_Orange(), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_),
         redTextColorShaker_         (sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
@@ -195,14 +205,11 @@ namespace stage
         pounceTBoxButtonSPtr_       (),
         tBoxStdButtonSVec_          (),
         tBoxBeastButtonSVec_        (),
-        isCreaturePosSliding_       (false),
-        creaturePosSlider_          (CREATURE_POS_SLIDER_SPEED_),
-        statusMsgAnimTimerSec_      (STATUSMSG_ANIM_DURATION_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_DURATION_SEC_ will work here
+        statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         creaturesToCenterPVec_      (),
         testingTextRegionSPtr_      (),
-        pauseTitle_                 (""),
-        performSlider_              ()
+        pauseTitle_                 ("")
     {
         savedCombatInfo_.CanTurnAdvance(false);
     }
@@ -880,7 +887,7 @@ namespace stage
                 for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
                     if ((creature::race::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Race().Which())) ||
                         (creature::role::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Role().Which())))
-                        NEXT_COMBATNODE_SPTR->SetIsFlying(true);
+                        NEXT_COMBATNODE_SPTR->IsFlying(true);
 
                 savedCombatInfo_.Save(combatDisplayPtrC_);
             }
@@ -924,7 +931,7 @@ namespace stage
         Stage::Draw(target, states);
         statusBoxSPtr_->draw(target, states);
 
-        if ((TurnPhase::NotATurn != turnPhase_) && (TurnPhase::StatusAnim != turnPhase_))
+        if ((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause))
         {
             turnBoxSPtr_->draw(target, states);
 
@@ -985,17 +992,29 @@ namespace stage
             }
         }
 
+        if (TurnPhase::DeathAnim == turnPhase_)
+        {
+            combatDisplayPtrC_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
+            {
+                SetTurnPhase(TurnPhase::PostDeathAnimSlide);
+                combatDisplayPtrC_->DeathAnimStop();
+                PositionSlideStartTasks();
+            }
+            return;
+        }
+
         if ((TurnPhase::PerformAnim == turnPhase_) && (PerformAnimPhase::ProjectileShoot == performAnimPhase_))
         {
-            combatDisplayPtrC_->ProjectileShootAnimUpdate( performSlider_.Update(ELAPSED_TIME_SEC) );
-            if (performSlider_.GetIsDone())
+            combatDisplayPtrC_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
+            if (slider_.GetIsDone())
             {
                 combatDisplayPtrC_->UpdateHealthTasks();
                 combatDisplayPtrC_->ProjectileShootAnimStop();
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
-                SetTurnPhase(TurnPhase::PerformReport);
                 SetupTurnBox();
-                StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Pre)");
+                SetTurnPhase(TurnPhase::PerformReport);
+                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport");
             }
             return;
         }
@@ -1004,7 +1023,6 @@ namespace stage
         if ((encounterSPtr_->HasStarted()) &&
             (IsPaused() == false) &&
             (turnCreaturePtr_ == nullptr) &&
-            (false == isCreaturePosSliding_) &&
             (TurnPhase::NotATurn == turnPhase_) &&
             (PreTurnPhase::End == preTurnPhase_))
         {
@@ -1014,29 +1032,30 @@ namespace stage
 
         if (TurnPhase::CenterAndZoomIn == turnPhase_)
         {
-            auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
             combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
-            if (centeringSlider_.GetIsDone())
+            if (slider_.GetIsDone())
             {
                 StartTurn_Step2();
             }
-
             return;
         }
 
-        if (isCreaturePosSliding_)
+        if ( (TurnPhase::PostDeathAnimSlide == turnPhase_) ||
+             ((PerformAnimPhase::AdvanceOrRetreat == performAnimPhase_) &&
+              (TurnPhase::PerformAnim == turnPhase_) &&
+              ((PerformType::Advance == performType_) || (PerformType::Retreat == performType_))) )
         {
-            combatDisplayPtrC_->PositionSlideUpdate(creaturePosSlider_.Update(ELAPSED_TIME_SEC));
-            if (creaturePosSlider_.GetIsDone())
+            combatDisplayPtrC_->PositionSlideUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
             {
-                isCreaturePosSliding_ = false;
-                HandleAfterTurnTasks();
+                SetTurnPhase(TurnPhase::PostTurnPause);
+                StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
             }
-
             return;
         }
 
@@ -1045,7 +1064,7 @@ namespace stage
             statusMsgAnimTimerSec_ += ELAPSED_TIME_SEC;
             statusBoxSPtr_->SetHighlightColor( statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC) );
 
-            if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_DURATION_SEC_)
+            if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_PAUSE_SEC_)
             {
                 statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
                 combatDisplayPtrC_->SetIsStatusMessageAnimating(false);
@@ -1056,16 +1075,16 @@ namespace stage
                 }
                 else
                 {
-                    HandleAfterTurnTasks();
+                    SetTurnPhase(TurnPhase::PostTurnPause);
+                    StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
                 }
             }
-
             return;
         }
 
         if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
-            auto const SLIDER_POS{ centeringSlider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
             combatDisplayPtrC_->CenteringUpdate(SLIDER_POS);
 
             if (willCenterZoomOut_ && (combatDisplayPtrC_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
@@ -1074,47 +1093,44 @@ namespace stage
                 zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
             }
 
-            if (centeringSlider_.GetIsDone())
+            if (slider_.GetIsDone())
             {
                 combatDisplayPtrC_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
-                StartPause(POST_ZOOM_TURN_DELAY_SEC_, "PostZoomOut");
+                StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
             }
-
             return;
         }
 
         if (PreTurnPhase::PanToCenter == preTurnPhase_)
         {
             //the initial pan seems to take extra time getting started so speed it up here
-            auto sliderPosAdj{ 0.25f + centeringSlider_.Update(ELAPSED_TIME_SEC) };
+            auto sliderPosAdj{ 0.25f + slider_.Update(ELAPSED_TIME_SEC) };
             if (sliderPosAdj > 1.0f)
                 sliderPosAdj = 1.0f;
 
             combatDisplayPtrC_->CenteringUpdate(sliderPosAdj);
-            if (centeringSlider_.GetIsDone())
+            if (slider_.GetIsDone())
             {
                 combatDisplayPtrC_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
                 AppendInitialStatus();
             }
-
             return;
         }
 
         if (PreTurnPhase::ZoomOut == preTurnPhase_)
         {
-            auto const SLIDER_POS{ zoomSlider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
             auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
-            if (zoomSlider_.GetIsDone())
+            if (slider_.GetIsDone())
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
                 StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut (after ZOut)");
             }
-
             return;
         }
 
@@ -1125,7 +1141,7 @@ namespace stage
             (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
-            centeringSlider_.Reset(INITIAL_CENTERING_SLIDER_SPEED_);
+            slider_.Reset(INITIAL_CENTERING_SLIDER_SPEED_);
             combatDisplayPtrC_->CenteringStartTargetCenterOfBatllefield();
             return;
         }
@@ -1317,10 +1333,16 @@ namespace stage
 
         pauseElapsedSec_ = pauseDurationSec_ + 1.0f;//anything greater than pauseDurationSec_ will work here
 
+        if (TurnPhase::PostTurnPause == turnPhase_)
+        {
+            HandleAfterTurnTasks();
+            return;
+        }
+
         if (PreTurnPhase::PostPanPause == preTurnPhase_)
         {
             SetPreTurnPhase(PreTurnPhase::ZoomOut);
-            zoomSlider_.Reset(ZOOM_SLIDER_SPEED_);
+            slider_.Reset(ZOOM_SLIDER_SPEED_);
             return;
         }
 
@@ -1339,9 +1361,7 @@ namespace stage
 
         if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
-            SetTurnPhase(TurnPhase::PerformAnim);
             StartPerformAnim();
-            SetupTurnBox();
             return;
         }
 
@@ -1369,16 +1389,14 @@ namespace stage
 
                 willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
 
-                centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+                slider_.Reset(CENTERING_SLIDER_SPEED_);
             }
-
             return;
         }
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             //See above for call to HandleEnemyTurnStep2_Perform()
-            SetTurnPhase(TurnPhase::PerformAnim);
             StartPerformAnim();
             SetupTurnBox();
             return;
@@ -1401,34 +1419,57 @@ namespace stage
 
                     if (performReportEffectIndex_ >= CREATURE_EFFECTS_VEC.size())
                     {
-                        performReportHitIndex_ = 0;
-                        performReportEffectIndex_ = 0;
-                        HandleAfterTurnTasks();
+                        HandlePerformReportPhaseOverTasks();
                         return;
                     }
                 }
 
                 SetupTurnBox();
-                StartPause(PERFORM_TURN_DELAY_SEC_, "PerformReport(Post)");
+                StartPause(PERFORM_REPORT_PAUSE_SEC_, "PerformReport");
                 return;
             }
             else
             {
-                performReportHitIndex_ = 0;
-                performReportEffectIndex_ = 0;
-                HandleAfterTurnTasks();
+                HandlePerformReportPhaseOverTasks();
                 return;
             }
         }
 
         if (TurnPhase::PostPerformPause == turnPhase_)
         {
-            HandleAfterTurnTasks();
+            creature::CreaturePVec_t killedCreaturesPVec;
+            auto const CREATURE_EFFECTS{ fightResult_.Effects() };
+            for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+                if (NEXT_CREATURE_EFFECT.WasKill())
+                    killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+
+            if (killedCreaturesPVec.empty())
+            {
+                SetTurnPhase(TurnPhase::PostTurnPause);
+                StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            }
+            else
+            {
+                SetTurnPhase(TurnPhase::DeathAnim);
+                combatDisplayPtrC_->DeathAnimStart(killedCreaturesPVec);
+                slider_.Reset(DEATH_ANIM_SLIDER_SPEED_);
+                //TODO SOUNDEFFECT play creature death sound effect here
+            }
             return;
         }
 
         if (combat::TurnAction::Attack == turnStateToFinish_)
             turnStateToFinish_ = combat::TurnAction::Count;
+    }
+
+
+    void CombatStage::HandlePerformReportPhaseOverTasks()
+    {   
+        performReportHitIndex_ = 0;
+        performReportEffectIndex_ = 0;
+        SetTurnPhase(TurnPhase::PostPerformPause);
+        StartPause(POST_PERFORM_REPORT_PAUSE_SEC_, "PostPerformReport");
+        SetupTurnBox();
     }
 
 
@@ -1550,7 +1591,7 @@ namespace stage
         performReportEffectIndex_ = 0;
         performReportHitIndex_ = 0;
 
-        centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+        slider_.Reset(CENTERING_SLIDER_SPEED_);
         combatDisplayPtrC_->CenteringStart(turnCreaturePtr_);
     }
 
@@ -1566,18 +1607,17 @@ namespace stage
 
         goldTextColorShaker_.Reset();
 
-        SetupTurnBox();
-
         //skip PostZoomInPause if a player turn
         if (IS_PLAYER_TURN)
         {
             SetTurnPhase(TurnPhase::Determine);
+            SetupTurnBox();
         }
         else
         {
             SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
 
-            auto pauseToUse{ PRE_TURN_DELAY_SEC_ };
+            auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
             if (turnCreaturePtr_->CanTakeAction() == false)
             {
                 pauseToUse *= 3.0f;
@@ -1596,20 +1636,25 @@ namespace stage
             savedCombatInfo_.CanTurnAdvance(false);
         }
 
+        //reset turn states
+        performReportHitIndex_ = 0;
+        performReportEffectIndex_ = 0;
         turnActionInfo_ = combat::TurnActionInfo();
+        fightResult_ = combat::FightResult();
+        performType_ = PerformType::None;
+        creaturesToCenterPVec_.clear();
         turnCreaturePtr_ = nullptr;
+
         MoveTurnBoxObjectsOffScreen(true);
     }
 
 
     void CombatStage::PositionSlideStartTasks()
     {
-        isCreaturePosSliding_ = true;
-
         if (turnCreaturePtr_ != nullptr)
             combatDisplayPtrC_->StopShaking(turnCreaturePtr_);
 
-        creaturePosSlider_.Reset(CREATURE_POS_SLIDER_SPEED_);
+        slider_.Reset(CREATURE_POS_SLIDER_SPEED_);
     }
 
 
@@ -1635,7 +1680,7 @@ namespace stage
             creaturesToCenterPVec_ = creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature };
             combatDisplayPtrC_->CenteringStart(creaturesToCenterPVec_);
             willCenterZoomOut_ = combatDisplayPtrC_->IsZoomOutRequired(creaturesToCenterPVec_);
-            centeringSlider_.Reset(CENTERING_SLIDER_SPEED_);
+            slider_.Reset(CENTERING_SLIDER_SPEED_);
 
             SetupTurnBox();
             return true;
@@ -2106,53 +2151,6 @@ namespace stage
 
             preambleSS.str(EMPTY_STR);
             enemyCondsSS.str(EMPTY_STR);
-
-            if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
-                (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
-                (TurnPhase::PerformAnim == turnPhase_))
-            {
-                if (fightResult_.Count() > 0)
-                {
-                    MoveTurnBoxButtonsOffScreen(true);
-                    infoSS.str(EMPTY_STR);
-                    weaponHoldingSS.str(EMPTY_STR);
-                    armorSS.str(EMPTY_STR);
-                    enemyCondsSS.str(EMPTY_STR);
-
-                    isPreambleShowing = true;
-
-                    preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                         turnActionInfo_,
-                                                         fightResult_,
-                                                         false,
-                                                         false,
-                                                         true);
-                }
-                else
-                {
-                    preambleSS.str(EMPTY_STR);
-                }
-            }
-            else if ((TurnPhase::PerformReport == turnPhase_) || (TurnPhase::PostPerformPause == turnPhase_))
-            {
-                MoveTurnBoxButtonsOffScreen(true);
-                infoSS.str(EMPTY_STR);
-                weaponHoldingSS.str(EMPTY_STR);
-                armorSS.str(EMPTY_STR);
-                enemyCondsSS.str(EMPTY_STR);
-                preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                       turnActionInfo_,
-                                                       fightResult_,
-                                                       false,
-                                                       false,
-                                                       false,
-                                                       performReportEffectIndex_,
-                                                       performReportHitIndex_);
-            }
-            else
-            {
-                preambleSS.str(EMPTY_STR);
-            }
         }
         else if (IsNonPlayerCharacterTurnValid())
         {
@@ -2205,50 +2203,58 @@ namespace stage
 
                 enemyCondsSS << ": " << CONDITION_LIST_STR;
             }
+        }
 
-            if ((TurnPhase::Determine == turnPhase_) ||
-                (TurnPhase::CenterAndZoomOut == turnPhase_) ||
-                (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
-                (TurnPhase::PerformAnim == turnPhase_))
+        auto willDrawTurnBoxButtons{ true };
+
+        if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
+            (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
+            (TurnPhase::PerformAnim == turnPhase_))
+        {
+            willDrawTurnBoxButtons = false;
+
+            if (fightResult_.Count() > 0)
             {
-                if (fightResult_.Count() > 0)
-                {
-                    weaponHoldingSS.str(EMPTY_STR);
-                    armorSS.str(EMPTY_STR);
-                    enemyCondsSS.str(EMPTY_STR);
-
-                    isPreambleShowing = true;
-
-                    preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                           turnActionInfo_,
-                                                           fightResult_,
-                                                           false,
-                                                           false,
-                                                           true);
-                }
-                else
-                {
-                    preambleSS.str(EMPTY_STR);
-                }
-            }
-            else if (TurnPhase::PerformReport == turnPhase_)
-            {
+                infoSS.str(EMPTY_STR);
                 weaponHoldingSS.str(EMPTY_STR);
                 armorSS.str(EMPTY_STR);
                 enemyCondsSS.str(EMPTY_STR);
+
+                isPreambleShowing = true;
+
                 preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                       turnActionInfo_,
-                                                       fightResult_,
-                                                       IsPlayerCharacterTurnValid(),
-                                                       false,
-                                                       false,
-                                                       performReportEffectIndex_,
-                                                       performReportHitIndex_);
+                                                        turnActionInfo_,
+                                                        fightResult_,
+                                                        false,
+                                                        false,
+                                                        true);
             }
             else
             {
                 preambleSS.str(EMPTY_STR);
             }
+        }
+        else if ((TurnPhase::PerformReport == turnPhase_) ||
+                 (TurnPhase::PostPerformPause == turnPhase_))
+        {
+            willDrawTurnBoxButtons = false;
+
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
+            preambleSS << combat::Text::ActionText(turnCreaturePtr_,
+                                                    turnActionInfo_,
+                                                    fightResult_,
+                                                    false,
+                                                    false,
+                                                    false,
+                                                    performReportEffectIndex_,
+                                                    performReportHitIndex_);
+        }
+        else
+        {
+            preambleSS.str(EMPTY_STR);
         }
 
         auto const VERT_POS_SHIFT(sfml_util::MapByRes(0.0f, 16.0f));
@@ -2278,7 +2284,7 @@ namespace stage
 
         enemyActionTBoxRegionSPtr_->SetText(preambleSS.str());
 
-        if (isPreambleShowing || (TurnPhase::PerformReport == turnPhase_))
+        if (isPreambleShowing || ((TurnPhase::PerformReport == turnPhase_) || (TurnPhase::PostPerformPause == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionSPtr_->GetEntityPos().y);
         }
@@ -2290,7 +2296,14 @@ namespace stage
         infoTBoxTextRegionSPtr_->SetText(infoSS.str());
         infoTBoxTextRegionSPtr_->SetEntityPos(turnBoxRegion_.left, turnBoxRegion_.top);
 
-        SetupTurnBoxButtons(turnCreaturePtr_);
+        if (willDrawTurnBoxButtons)
+        {
+            SetupTurnBoxButtons(turnCreaturePtr_);
+        }
+        else
+        {
+            MoveTurnBoxButtonsOffScreen(true);
+        }
     }
 
 
@@ -2343,7 +2356,7 @@ namespace stage
                                                                      WEAPON_SPTR,
                                                                      fightResult_.WasHit());
 
-                        performSlider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
+                        slider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetPerformAnimPhase(PerformAnimPhase::ProjectileShoot);
                         break;
                     }
@@ -2386,6 +2399,9 @@ namespace stage
             case TurnPhase::PerformReport:              { return "PerformReport"; }
             case TurnPhase::PostPerformPause:           { return "PostPerformPause"; }
             case TurnPhase::StatusAnim:                 { return "StatusAnim"; }
+            case TurnPhase::DeathAnim:                  { return "DeathAnim"; }
+            case TurnPhase::PostDeathAnimSlide:         { return "PostDeathAnimSlide"; }
+            case TurnPhase::PostTurnPause:              { return "PostTurnPause"; }
             case TurnPhase::Count:
             default:                                    { return ""; }
         }
