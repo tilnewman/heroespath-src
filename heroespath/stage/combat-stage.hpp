@@ -245,6 +245,9 @@ namespace stage
 
         void SetUserActionAllowed(const bool IS_ALLOWED);
 
+        void HandleKilledCreatures();
+        void HandleApplyDamageTasks();
+
     public:
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;

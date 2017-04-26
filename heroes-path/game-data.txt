@@ -64,7 +64,7 @@ media-images-combat-stone1=image/combat/stone1.gif
 media-images-combat-stone2=image/combat/stone2.gif
 media-images-combat-stone3=image/combat/stone3.gif
 media-images-combat-stone4=image/combat/stone4.gif
-
+media-images-combat-crossbones=image/combat/crossbones.gif
 
 #Condition Descriptions
 heroespath-creature-condition-Good-desc=No ailments.

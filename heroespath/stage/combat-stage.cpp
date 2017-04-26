@@ -77,6 +77,12 @@ namespace stage
     {
         hasRestored_ = true;
         FlyingCreaturesRestore(combatDisplayPtr);
+
+        //restore health/condition
+        combat::CombatNodeSVec_t combatNodesSVec;
+        combatDisplayPtr->GetCombatNodes(combatNodesSVec);
+        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
+            NEXT_COMBATNODE_SPTR->HealthChangeTasks();
     }
 
 
@@ -1016,12 +1022,13 @@ namespace stage
             combatAnimPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
             if (slider_.GetIsDone())
             {
-                combatDisplayPtr_->UpdateHealthTasks();
+                HandleApplyDamageTasks();
                 combatAnimPtr_->ProjectileShootAnimStop();
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetupTurnBox();
                 SetTurnPhase(TurnPhase::PerformReport);
                 StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport");
+                //TODO SOUNDEFFECT play projectile hit/miss sound effect here
             }
             return;
         }
@@ -1459,13 +1466,13 @@ namespace stage
 
         if (TurnPhase::PostPerformPause == turnPhase_)
         {
-            creature::CreaturePVec_t killedCreaturesPVec;
+            creature::CreaturePVec_t killedNonPlayerCreaturesPVec;
             auto const CREATURE_EFFECTS{ fightResult_.Effects() };
             for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
-                if (NEXT_CREATURE_EFFECT.WasKill())
-                    killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                if ((NEXT_CREATURE_EFFECT.WasKill()) && (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
+                    killedNonPlayerCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
 
-            if (killedCreaturesPVec.empty())
+            if (killedNonPlayerCreaturesPVec.empty())
             {
                 SetTurnPhase(TurnPhase::PostTurnPause);
                 StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
@@ -1473,7 +1480,7 @@ namespace stage
             else
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
-                combatAnimPtr_->DeathAnimStart(killedCreaturesPVec);
+                combatAnimPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
                 slider_.Reset(DEATH_ANIM_SLIDER_SPEED_);
                 //TODO SOUNDEFFECT play creature death sound effect here
             }
@@ -1941,8 +1948,9 @@ namespace stage
     void CombatStage::HandleAfterTurnTasks()
     {
         SetTurnPhase(TurnPhase::NotATurn);
-        savedCombatInfo_.CanTurnAdvance(true);
+        HandleKilledCreatures();
         combatDisplayPtr_->HandleEndOfTurnTasks();
+        savedCombatInfo_.CanTurnAdvance(true);
         EndTurn();
         EndPause();
     }
@@ -2538,6 +2546,53 @@ namespace stage
     void CombatStage::SetUserActionAllowed(const bool IS_ALLOWED)
     {
         combatDisplayPtr_->SetUserActionAllowed(IS_ALLOWED);
+    }
+
+
+    void CombatStage::HandleKilledCreatures()
+    {
+        //create a vec of all creatures killed this turn
+        creature::CreaturePVec_t killedCreaturesPVec;
+        auto const CREATURE_EFFECTS{ fightResult_.Effects() };
+        for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+            if (NEXT_CREATURE_EFFECT.WasKill())
+                killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+
+        for (auto nextKilledCreaturePtr : killedCreaturesPVec)
+        {
+            //handle other misc killed tasks
+            if (nextKilledCreaturePtr->IsPlayerCharacter() == false)
+            {
+                encounterSPtr_->HandleKilledCreature(nextKilledCreaturePtr);
+            }
+        }
+    }
+
+
+    void CombatStage::HandleApplyDamageTasks()
+    {
+        //create a vec of all creatures killed this turn
+        creature::CreaturePVec_t killedCreaturesPVec;
+        auto const CREATURE_EFFECTS{ fightResult_.Effects() };
+        for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+            if (NEXT_CREATURE_EFFECT.WasKill())
+                killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+
+        //remove all conditions except for stone and dead from the killed creature
+        for (auto nextKilledCreaturePtr : killedCreaturesPVec)
+        {
+            auto const CONDITIONS_SVEC{ nextKilledCreaturePtr->Conditions() };
+            for (auto const & NEXT_CONDITION_SPTR : CONDITIONS_SVEC)
+            {
+                if ((NEXT_CONDITION_SPTR->Which() != creature::condition::Stone) &&
+                    (NEXT_CONDITION_SPTR->Which() != creature::condition::Dead))
+                {
+                    nextKilledCreaturePtr->ConditionRemove(NEXT_CONDITION_SPTR);
+                }
+            }
+        }
+
+        combatDisplayPtr_->UpdateHealthTasks();
     }
 
 }

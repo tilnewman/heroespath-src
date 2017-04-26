@@ -131,12 +131,6 @@ namespace combat
         centeringToX_              (-1.0f),//any negative will work here
         centeringToY_              (-1.0f),// "
         nodePosTrackerMap_         (),
-        isAttackAnimating_         (false),
-        isAttackAnimMovingTo_      (true),
-        creatureMoveSlider_        (),
-        attackingCombatNodeSPtr_   (nullptr),
-        attackedCombatNodeSPtr_    (nullptr),
-        attackingCreatureOrigPos_  (-1.0f, -1.0f), //any two negative values will work here
         isCreatureDragAllowed_     (false),
         isMouseHeldDownInCreature_ (false)
     {}
@@ -158,6 +152,7 @@ namespace combat
                 combatTree_.AddVertex(COMBAT_NODE_SPTR);
             }
 
+            //TODO if not setting up for the first time, load the blocking positions from a saved location
             InitialPlayerPartyCombatTreeSetup();
         }
 
@@ -170,6 +165,7 @@ namespace combat
                 combatTree_.AddVertex(COMBAT_NODE_SPTR);
             }
 
+            //TODO if not setting up for the first time, load the blocking positions from a saved location
             InitialNonPlayerPartyCombatTreeSetup();
         }
 
@@ -1057,109 +1053,6 @@ namespace combat
     }
 
 
-    void CombatDisplay::StartAttackAnim()
-    {
-        isAttackAnimating_ = true;
-    }
-
-
-    void CombatDisplay::StopAttackAnim()
-    {
-        isAttackAnimating_ = false;
-        attackingCombatNodeSPtr_.reset();
-        attackedCombatNodeSPtr_.reset();
-        attackingCreatureOrigPos_.x = -1.0f;//any negative value will work here
-        attackingCreatureOrigPos_.y = -1.0f;// "
-    }
-
-
-    void CombatDisplay::SetupAttackAnim(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-                                        creature::CreatureCPtrC_t CREATURE_ATTACKED_CPTRC)
-    {
-        if ((CREATURE_ATTACKING_CPTRC != nullptr) && (CREATURE_ATTACKED_CPTRC != nullptr))
-        {
-            attackingCombatNodeSPtr_ = combatTree_.GetNode(CREATURE_ATTACKING_CPTRC);
-            attackedCombatNodeSPtr_ = combatTree_.GetNode(CREATURE_ATTACKED_CPTRC);
-
-            creatureMoveSlider_.Reset(CREATURE_MOVE_SLIDER_SPEED_);
-            attackingCreatureOrigPos_ = attackingCombatNodeSPtr_->GetEntityPos();
-
-            if ((attackingCombatNodeSPtr_.get() == nullptr) || (attackedCombatNodeSPtr_.get() == nullptr))
-            {
-                attackingCombatNodeSPtr_.reset();
-                attackedCombatNodeSPtr_.reset();
-            }
-        }
-    }
-
-
-    bool CombatDisplay::UpdateAttackAnim(const float ELAPSED_TIME_SECONDS)
-    {
-        if ((attackingCombatNodeSPtr_.get() == nullptr) || (attackedCombatNodeSPtr_.get() == nullptr))
-            return false;
-
-        auto const RATIO(creatureMoveSlider_.Update(ELAPSED_TIME_SECONDS));
-
-        sf::Vector2f posFromV(0.0f, 0.0f);
-        sf::Vector2f posToV(0.0f, 0.0f);
-
-        if (isAttackAnimMovingTo_)
-        {
-            posFromV = attackingCreatureOrigPos_;
-            posToV = attackedCombatNodeSPtr_->GetEntityPos();
-            posToV.x -= attackedCombatNodeSPtr_->GetEntityRegion().width + 10.0f;
-        }
-        else
-        {
-            posFromV = attackedCombatNodeSPtr_->GetEntityPos();
-            posFromV.x -= attackedCombatNodeSPtr_->GetEntityRegion().width + 10.0f;
-            posToV = attackingCreatureOrigPos_;
-        }
-
-        auto const DIFF_HORIZ(posToV.x - posFromV.x);
-        auto const DIFF_VERT(posToV.y - posFromV.y);
-
-        attackingCombatNodeSPtr_->SetEntityPos(posFromV.x + (DIFF_HORIZ * RATIO), posFromV.y + (DIFF_VERT * RATIO));
-
-        UpdateWhichNodesWillDraw();
-
-        if (isAttackAnimMovingTo_ && creatureMoveSlider_.GetIsDone())
-        {
-            isAttackAnimMovingTo_ = false;
-            creatureMoveSlider_.Reset(CREATURE_MOVE_SLIDER_SPEED_);
-        }
-
-        //TODO fix this return so it only returns true if the attack anim slider.GetIsDone()
-        return (false == isAttackAnimMovingTo_) && creatureMoveSlider_.GetIsDone();
-    }
-
-
-    bool CombatDisplay::IsAttackingCreatureVisible() const
-    {
-        if (attackingCombatNodeSPtr_.get() == nullptr)
-        {
-            return false;
-        }
-        else
-        {
-            return attackingCombatNodeSPtr_->GetEntityWillDraw();
-        }
-    }
-
-
-    bool CombatDisplay::IsAttackedCreatureVisible() const
-    {
-        if (attackedCombatNodeSPtr_.get() == nullptr)
-        {
-            return false;
-        }
-        else
-        {
-            return attackedCombatNodeSPtr_->GetEntityWillDraw();
-        }
-    }
-
-
     bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
         if (CREATURE_CPTRC == nullptr)
@@ -1307,8 +1200,8 @@ namespace combat
         }
 
         auto const TOLERANCE{ sfml_util::MapByRes(256.0f, 512.0f) };
-        return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  - TOLERANCE)) &&
-                (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() - TOLERANCE)));
+        return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  + TOLERANCE)) &&
+                (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() + TOLERANCE)));
     }
 
 

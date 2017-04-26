@@ -33,13 +33,14 @@ namespace combat
     const sf::Color CombatNode::CREATURE_IMAGE_COLOR_PLAYER_         (sf::Color(255, 243, 201, CREATURE_IMAGE_COLOR_ALPHA_));//slightly orange
     const sf::Color CombatNode::CREATURE_IMAGE_COLOR_NONPLAYER_      (sf::Color(255, 235, 235, CREATURE_IMAGE_COLOR_ALPHA_));//slightly red
     const float     CombatNode::TONED_DOWN_MULT_                     (0.64f);
-    const sf::Uint8 CombatNode::WING_IMAGE_ALPHA_                    (46);
+    const sf::Uint8 CombatNode::DECAL_IMAGE_ALPHA_                   (46);
     const float     CombatNode::WING_IMAGE_SCALE_                    (0.65f);
     const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_             (0.333f);
     const float     CombatNode::WING_IMAGE_ANIM_SPEED_               (4.0f);
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_             (-90.0f);
     //
-    sfml_util::TextureSPtr_t CombatNode::wingTextureSPtr_(nullptr);
+    sfml_util::TextureSPtr_t CombatNode::crossBonesTextureSPtr_ { nullptr };
+    sfml_util::TextureSPtr_t CombatNode::wingTextureSPtr_       { nullptr };
 
 
     CombatNode::CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
@@ -59,6 +60,8 @@ namespace combat
         isSummaryView_       (false),
         isMoving_            (false),
         creaturePtr_         (CREATURE_SPTR.get()),
+        crossBonesSprite_    (),
+        willShowCrossBones_  (false),
         healthRatioDisplayed_(0.0f),
         isDead_              (false),
         wingSprite_          (),
@@ -118,21 +121,8 @@ namespace combat
     {
         entityRegion_ = NEW_REGION;
         SetEntityPos(NEW_REGION.left, NEW_REGION.top);//see local override
-
-        const float SCALE_VERT(entityRegion_.height / sprite_.getLocalBounds().height);
-        sprite_.setScale(SCALE_VERT, SCALE_VERT);
-
-        if (sprite_.getGlobalBounds().width > entityRegion_.width)
-        {
-            const float SCALE_HORIZ(entityRegion_.width / sprite_.getLocalBounds().width);
-
-            if (SCALE_HORIZ < SCALE_VERT)
-            {
-                sprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-            }
-        }
-
-        //re-scale wing image
+        SetImageScale();
+        SetCrossBonesImageScale();
         SetWingImageScaleAndOrigin();
     }
 
@@ -165,21 +155,33 @@ namespace combat
         //sfml_util::DrawRectangle(target, states, sf::FloatRect(entityRegion_));
 
         //creature outline
-        const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
-        states.blendMode = sf::BlendAdd;
-        target.draw(sprite_, states);
-        states.blendMode = ORIG_BLEND_MODE;
+        {
+            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
+            states.blendMode = sf::BlendAdd;
+            target.draw(sprite_, states);
+            states.blendMode = ORIG_BLEND_MODE;
+        }
 
         if (isFlying_ && (false == isDead_))
         {
             target.draw(wingSprite_, states);
         }
 
-        if ((false == isMoving_) &&
-            (false == isSummaryView_) &&
-            (false == isDead_))
+        if (willShowCrossBones_)
         {
-            target.draw(nameTextObj_, states);
+            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
+            states.blendMode = sf::BlendAdd;
+            target.draw(crossBonesSprite_, states);
+            states.blendMode = ORIG_BLEND_MODE;
+        }
+
+        if ((false == isMoving_) && (false == isSummaryView_))
+        {
+            if (false == isDead_)
+            {
+                target.draw(nameTextObj_, states);
+            }
+
             target.draw(condTextObj_, states);
 
             //draw health lines
@@ -224,9 +226,13 @@ namespace combat
 
         imagePosV_.x = (entityRegion_.left + (entityRegion_.width  * 0.5f)) - (sprite_.getGlobalBounds().width  * 0.5f);
         imagePosV_.y = (entityRegion_.top  + (entityRegion_.height * 0.5f)) - (sprite_.getGlobalBounds().height * 0.5f);
+        
         UpdateImagePosition();
-
         SetWingImagePosition();
+
+        auto const CROSSBONES_IMAGE_POS_LEFT{ (entityRegion_.left + (entityRegion_.width  * 0.5f)) - (crossBonesSprite_.getGlobalBounds().width  * 0.5f) };
+        auto const CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top  + (entityRegion_.height * 0.5f)) - (crossBonesSprite_.getGlobalBounds().height * 0.5f) };
+        crossBonesSprite_.setPosition(CROSSBONES_IMAGE_POS_LEFT, CROSSBONES_IMAGE_POS_TOP);
     }
 
 
@@ -241,6 +247,7 @@ namespace combat
         UpdateImagePosition();
 
         wingSprite_.move(HORIZ, VERT);
+        crossBonesSprite_.move(HORIZ, VERT);
     }
 
 
@@ -289,7 +296,7 @@ namespace combat
         if (IS_FLYING)
         {
             wingSprite_.setTexture( * wingTextureSPtr_, true);
-            wingSprite_.setColor(sf::Color(255, 255, 255, WING_IMAGE_ALPHA_));
+            wingSprite_.setColor(sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_));
             wingSprite_.setRotation(0.0f);
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
@@ -329,6 +336,12 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
+        willShowCrossBones_ = (creaturePtr_->IsPlayerCharacter() && creaturePtr_->IsDead());
+        if (willShowCrossBones_)
+        {
+            SetupSkullAndCrossBones();
+        }
+
         healthRatioDisplayed_ = creaturePtr_->HealthRatio();
         UpdateConditionText();
         healthLineColor_ = HealthColor();
@@ -364,7 +377,6 @@ namespace combat
         newColor.r = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.r) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
         newColor.g = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.g) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
         newColor.b = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.b) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
-        //newColor.a = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.a) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
         return newColor;
     }
 
@@ -459,6 +471,53 @@ namespace combat
         sprite_.setOrigin(sprite_.getGlobalBounds().width * 0.5f, sprite_.getGlobalBounds().height * 0.5f);
         sprite_.setRotation(DEGREES);
         sprite_.setOrigin(0.0f, 0.0f);
+    }
+
+
+    void CombatNode::SetupSkullAndCrossBones()
+    {
+        if (crossBonesTextureSPtr_.get() == nullptr)
+        {
+            sfml_util::LoadImageOrTextureSPtr(crossBonesTextureSPtr_, GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
+        }
+
+        crossBonesSprite_.setTexture( * crossBonesTextureSPtr_, true);
+        crossBonesSprite_.setColor( sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_) );
+        SetCrossBonesImageScale();
+    }
+
+
+    void CombatNode::SetImageScale()
+    {
+        const float SCALE_VERT(entityRegion_.height / sprite_.getLocalBounds().height);
+        sprite_.setScale(SCALE_VERT, SCALE_VERT);
+
+        if (sprite_.getGlobalBounds().width > entityRegion_.width)
+        {
+            const float SCALE_HORIZ(entityRegion_.width / sprite_.getLocalBounds().width);
+
+            if (SCALE_HORIZ < SCALE_VERT)
+            {
+                sprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            }
+        }
+    }
+
+
+    void CombatNode::SetCrossBonesImageScale()
+    {
+        const float SCALE_VERT(entityRegion_.height / crossBonesSprite_.getLocalBounds().height);
+        crossBonesSprite_.setScale(SCALE_VERT, SCALE_VERT);
+
+        if (crossBonesSprite_.getGlobalBounds().width > entityRegion_.width)
+        {
+            const float SCALE_HORIZ(entityRegion_.width / crossBonesSprite_.getLocalBounds().width);
+
+            if (SCALE_HORIZ < SCALE_VERT)
+            {
+                crossBonesSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            }
+        }
     }
 
 }

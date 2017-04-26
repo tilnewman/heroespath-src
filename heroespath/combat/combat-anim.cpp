@@ -203,17 +203,18 @@ namespace combat
 
     void CombatAnim::DeathAnimStop()
     {
-        //remove nodes from combat tree and prepare for sliding animation
+        //remove non-player nodes from combat tree and prepare for sliding animation
         for (auto const & NEXT_COMBATNODE_SPTR : deadAnimNodesSVec_)
         {
             auto const NEXT_NODE_ID{ combatDisplayPtr_->CombatTree().GetNodeId(NEXT_COMBATNODE_SPTR) };
             combatDisplayPtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
+            combatDisplayPtr_->RemoveCombatNodeFromStage(NEXT_COMBATNODE_SPTR);
         }
+        deadAnimNodesSVec_.clear();
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
         combatDisplayPtr_->PositionCombatTreeCells(true);
     }
-
 
 }
 }

@@ -90,6 +90,7 @@ namespace sfml_util
 
         //returns false if the entity to remove was not found
         virtual bool EntityRemove(const gui::IGuiEntitySPtr_t &);
+        virtual bool EntityRemovePtr(gui::IGuiEntity *);
 
         inline virtual const gui::IGuiEntitySSet_t EntitySetCopy() { return entitySSet_; }
 

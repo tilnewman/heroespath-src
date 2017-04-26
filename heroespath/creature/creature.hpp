@@ -148,7 +148,7 @@ namespace creature
         //for each Condition, Condition::Undo() is called before removing
         std::size_t ConditionRemoveAll();
 
-        inline const ConditionSVec_t Conditions() const                     { return conditionsSVec_; }
+        inline const ConditionSVec_t Conditions() const                 { return conditionsSVec_; }
 
         bool HasCondition(const condition::Enum E) const;
         bool HasConditionNotAThreatTemp() const;
@@ -158,8 +158,8 @@ namespace creature
 
         bool HasMagicalCondition() const;
 
-        inline bool IsDead() const                                          { return HasCondition(condition::Dead); }
-        inline bool IsAlive() const                                         { return ! IsDead(); }
+        inline bool IsDead() const                                      { return HasCondition(condition::Dead); }
+        inline bool IsAlive() const                                     { return ! IsDead(); }
 
         //returns most severe first
         //a count of zero means 'list all'
@@ -168,15 +168,15 @@ namespace creature
                                                 const bool        WILL_WRAP         = false,
                                                 const bool        WILL_AND          = false);
 
-        inline virtual bool CanTakeAction() const                           { return CanTakeActionStr().empty(); }
+        inline virtual bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
         virtual const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        inline  const item::Inventory Inventory() const                     { return inventory_; }
+        inline  const item::Inventory Inventory() const                 { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
-        inline virtual bool CoinsAdj(const item::Coin_t A)                  { return inventory_.CoinsAdj(A); }
-        inline virtual bool MeteorShardsAdj(const item::Meteor_t A)         { return inventory_.MeteorShardsAdj(A); }
-        inline virtual bool GemsAdj(const item::Gem_t A)                    { return inventory_.GemsAdj(A); }
+        inline virtual bool CoinsAdj(const item::Coin_t A)              { return inventory_.CoinsAdj(A); }
+        inline virtual bool MeteorShardsAdj(const item::Meteor_t A)     { return inventory_.MeteorShardsAdj(A); }
+        inline virtual bool GemsAdj(const item::Gem_t A)                { return inventory_.GemsAdj(A); }
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.

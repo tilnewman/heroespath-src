@@ -521,7 +521,8 @@ namespace stage
             "media-images-combat-stone1",
             "media-images-combat-stone2",
             "media-images-combat-stone3",
-            "media-images-combat-stone4"
+            "media-images-combat-stone4",
+            "media-images-combat-crossbones"
         };
 
         static std::size_t imageIndex{ 0 };

@@ -72,14 +72,13 @@ namespace combat
         inline void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)                     { turnInfoMap_[P].SetIsFlying(B); }
         inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI) { turnInfoMap_[P].SetTurnActionInfo(TAI); }
 
-        void RemoveDeadCreature(creature::CreatureCPtrC_t);
+        void HandleKilledCreature(creature::CreatureCPtrC_t);
         void IncrementTurn();
         void StartTasks();
         void EndTasks();
 
     private:
         void GenerateFirstEncounter();
-        const creature::CreaturePVec_t PopulateAllCreaturesVec();
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
 
@@ -87,6 +86,7 @@ namespace combat
         static EncounterSPtr_t instance_;
         //
         non_player::PartySPtr_t  enemyPartySPtr_;
+        non_player::PartySPtr_t  deadEnemyPartySPtr_;
         std::size_t              roundCounter_;
         bool                     hasStarted_;
         creature::CreaturePVec_t turnOverPVec_;

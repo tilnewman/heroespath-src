@@ -62,6 +62,7 @@ namespace combat
         void ProjectileShootAnimUpdate(const float SLIDER_POS);
         void ProjectileShootAnimStop();
 
+        //The death animation is only for non-player characters
         void DeathAnimStart(const creature::CreaturePVec_t &);
         void DeathAnimUpdate(const float SLIDER_POS);
         void DeathAnimStop();

@@ -103,6 +103,9 @@ namespace combat
         void SetWingImagePosition();
         void SetWingImageScaleAndOrigin();
         void UpdateImagePosition();
+        void SetupSkullAndCrossBones();
+        void SetImageScale();
+        void SetCrossBonesImageScale();
 
     protected:
         static const sf::Uint8 HIGHLIGHT_ADJ_VALUE_;
@@ -115,7 +118,7 @@ namespace combat
         static const sf::Color CREATURE_IMAGE_COLOR_PLAYER_;
         static const sf::Color CREATURE_IMAGE_COLOR_NONPLAYER_;
         static const float     TONED_DOWN_MULT_;
-        static const sf::Uint8 WING_IMAGE_ALPHA_;
+        static const sf::Uint8 DECAL_IMAGE_ALPHA_;
         static const float     WING_IMAGE_SCALE_;
         static const float     WING_IMAGE_HORIZ_OFFSET_;
         static const float     WING_IMAGE_ANIM_SPEED_;
@@ -134,17 +137,22 @@ namespace combat
         bool                     isMoving_;
         creature::CreaturePtr_t  creaturePtr_;
 
+        //members that control the display of skull and crossbones
+        static sfml_util::TextureSPtr_t crossBonesTextureSPtr_;
+        sf::Sprite crossBonesSprite_;
+        bool willShowCrossBones_;
+
         //The health displayed is not the actual creature health but this
         //cached value, so that changes in health appear when they are
         //reported and not when they actually occur.
-        float                    healthRatioDisplayed_;
+        float healthRatioDisplayed_;
         
         //The changes in drawing when a creature dies (stop anim wing, stop
         //drawing conditions and health, etc.) does not occur when the
         //creature actually dies, but when the dead animations start,
         //so this cached value keeps track instead of the actual creature
         //status.
-        bool                     isDead_;
+        bool isDead_;
 
         //members that control the flapping wing animation
         static sfml_util::TextureSPtr_t       wingTextureSPtr_;

@@ -33,13 +33,14 @@ namespace combat
 
     Encounter::Encounter()
     :
-        enemyPartySPtr_  (),
-        roundCounter_    (0),
-        hasStarted_      (false),
-        turnOverPVec_    (),
-        turnIndex_       (0),
-        turnInfoMap_     (),
-        turnCreaturePtr_ ()
+        enemyPartySPtr_    (),
+        deadEnemyPartySPtr_(std::make_shared<non_player::Party>()),
+        roundCounter_      (0),
+        hasStarted_        (false),
+        turnOverPVec_      (),
+        turnIndex_         (0),
+        turnInfoMap_       (),
+        turnCreaturePtr_   ()
     {}
 
 
@@ -101,14 +102,20 @@ namespace combat
     }
 
 
-    void Encounter::RemoveDeadCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void Encounter::HandleKilledCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        //make sure no TurnInfo objects refer to a creature that is not there
+        //make sure no TurnInfo objects refer to a killed creature
         for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
             nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
 
-        //TODO don't remove just mark or move because after the encounter loot will need to be collected from the dead
-        enemyPartySPtr_->Remove(enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC));
+        //no need to remove from turnOverPVec_
+
+        //no need to null out turnCreaturePtr_
+
+        //move from the enemyParty to the deadEnemyParty for later loot collection
+        auto const KILLED_NONPLAYER_CHARACTER_SPTR{ enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+        enemyPartySPtr_->Remove(KILLED_NONPLAYER_CHARACTER_SPTR);
+        deadEnemyPartySPtr_->Add(KILLED_NONPLAYER_CHARACTER_SPTR);
     }
 
 
@@ -127,15 +134,6 @@ namespace combat
     void Encounter::GenerateFirstEncounter()
     {
         combat::Encounter::Instance()->Setup_First();
-    }
-
-
-    const creature::CreaturePVec_t Encounter::PopulateAllCreaturesVec()
-    {
-        creature::CreaturePVec_t tempPVec;
-        creature::Algorithms::Append(tempPVec, creature::Algorithms::Players());
-        creature::Algorithms::Append(tempPVec, creature::Algorithms::NonPlayers());
-        return tempPVec;
     }
 
 
@@ -158,14 +156,16 @@ namespace combat
 
     void Encounter::SortAndSetTurnCreature()
     {
-        const creature::CreaturePVec_t ALL_CREATURES_PVEC( PopulateAllCreaturesVec() );
+        creature::CreaturePVec_t allLivingCreaturesPVec;
+        creature::Algorithms::Append(allLivingCreaturesPVec, creature::Algorithms::Players(true));
+        creature::Algorithms::Append(allLivingCreaturesPVec, creature::Algorithms::NonPlayers(true));
 
-        if (turnOverPVec_.size() == ALL_CREATURES_PVEC.size())
+        if (turnOverPVec_.size() >= allLivingCreaturesPVec.size())
         {
             turnOverPVec_.clear();
         }
 
-        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(creature::Algorithms::Exclude(ALL_CREATURES_PVEC, turnOverPVec_));
+        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(creature::Algorithms::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
         M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false), "heroespath::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 

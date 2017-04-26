@@ -26,6 +26,8 @@ namespace gui
 {
     class Box;
     using BoxSPtr_t = std::shared_ptr<Box>;
+
+    class IGuiEntity;
 }
 }
 namespace heroespath
@@ -139,12 +141,6 @@ namespace combat
 
         creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
 
-        void StartAttackAnim();
-        void StopAttackAnim();
-        void SetupAttackAnim(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t);
-        bool UpdateAttackAnim(const float ELAPSED_TIME_SEC);
-        bool IsAttackingCreatureVisible() const;
-        bool IsAttackedCreatureVisible() const;
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
 
         inline void SetIsPlayerTurn(const bool B)               { isPlayerTurn_ = B; }
@@ -194,6 +190,8 @@ namespace combat
         void PositionCombatTreeCells(const bool WILL_DELAY);
 
         inline const sf::FloatRect BattlefieldRect()            { return battlefieldRect_; }
+
+        inline bool RemoveCombatNodeFromStage(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemovePtr((sfml_util::gui::IGuiEntity *)COMBAT_NODE_SPTR.get()); }
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
@@ -278,14 +276,6 @@ namespace combat
         //members that allow on battlefield creature images to slide
         //(animate) into new positions rather than instantly moving.
         NodePosTrackerMap_t nodePosTrackerMap_;
-
-        //members that manage the creature attack animation
-        bool isAttackAnimating_;
-        bool isAttackAnimMovingTo_;
-        sfml_util::sliders::ZeroSliderOnce<float> creatureMoveSlider_;
-        CombatNodeSPtr_t attackingCombatNodeSPtr_;
-        CombatNodeSPtr_t attackedCombatNodeSPtr_;
-        sf::Vector2f attackingCreatureOrigPos_;
 
         //members that manage creature dragging
         bool isCreatureDragAllowed_;
