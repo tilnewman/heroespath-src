@@ -125,6 +125,7 @@ namespace combat
         isPlayerTurn_              (false),
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),
+        combatNodeToGuiEntityMap_  (),
         creatureThatWasShakingCPtr_(nullptr),
         shakeInfoMap_              (),
         centeringCombatNodeSPtr_   (),
@@ -149,6 +150,7 @@ namespace combat
             {
                 const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR( new combat::CombatNode(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_) );
                 EntityAdd(COMBAT_NODE_SPTR);
+                combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
                 combatTree_.AddVertex(COMBAT_NODE_SPTR);
             }
 
@@ -162,6 +164,7 @@ namespace combat
             {
                 const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR( new combat::CombatNode(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_) );
                 EntityAdd(COMBAT_NODE_SPTR);
+                combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
                 combatTree_.AddVertex(COMBAT_NODE_SPTR);
             }
 
@@ -614,7 +617,7 @@ namespace combat
         if (false == isUserActionAllowed_)
             return;
 
-        CombatNodeSPtr_t combatNodeSPtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
+        auto combatNodeSPtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
 
         if (IS_MOUSE_HOVERING &&
             (combatNodeSPtr.get() != nullptr) &&

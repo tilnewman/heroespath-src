@@ -1233,6 +1233,7 @@ namespace stage
         if (willClrShkInitStatusMsg_)
         {
             willClrShkInitStatusMsg_ = false;
+            combatDisplayPtr_->SetIsStatusMessageAnimating(false);
             return true;
         }
 
@@ -1241,6 +1242,7 @@ namespace stage
         {
             SetTurnPhase(TurnPhase::PostTurnPause);
             StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            combatDisplayPtr_->SetIsStatusMessageAnimating(false);
             return true;
         }
 
@@ -1640,6 +1642,7 @@ namespace stage
         if (IS_PLAYER_TURN)
         {
             SetTurnPhase(TurnPhase::Determine);
+            SetUserActionAllowed(true);
             SetupTurnBox();
         }
         else

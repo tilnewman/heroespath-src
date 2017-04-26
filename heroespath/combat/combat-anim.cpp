@@ -208,7 +208,7 @@ namespace combat
         {
             auto const NEXT_NODE_ID{ combatDisplayPtr_->CombatTree().GetNodeId(NEXT_COMBATNODE_SPTR) };
             combatDisplayPtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
-            combatDisplayPtr_->RemoveCombatNodeFromStage(NEXT_COMBATNODE_SPTR);
+            combatDisplayPtr_->RemoveCombatNode(NEXT_COMBATNODE_SPTR);
         }
         deadAnimNodesSVec_.clear();
 

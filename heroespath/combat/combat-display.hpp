@@ -88,6 +88,9 @@ namespace combat
     using BlockingMap_t = std::map<creature::UniqueTraits_t, int>;
 
 
+    using CombatNodeToIGuiEntityMap_t = std::map<CombatNodeSPtr_t, sfml_util::gui::IGuiEntitySPtr_t>;
+
+
     //Handles drawing the combat tree
     class CombatDisplay : public sfml_util::Stage
     {
@@ -191,7 +194,7 @@ namespace combat
 
         inline const sf::FloatRect BattlefieldRect()            { return battlefieldRect_; }
 
-        inline bool RemoveCombatNodeFromStage(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemovePtr((sfml_util::gui::IGuiEntity *)COMBAT_NODE_SPTR.get()); }
+        inline bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]); combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR); }
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
@@ -262,6 +265,7 @@ namespace combat
         bool                            isPlayerTurn_;
         bool                            isStatusMessageAnim_;
         bool                            isSummaryViewInProgress_;
+        CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
 
         //members to shake a creature image on the battlefield
         creature::CreatureCPtr_t creatureThatWasShakingCPtr_;//remembers which creature to shake while in summary view

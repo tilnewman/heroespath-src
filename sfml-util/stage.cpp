@@ -228,41 +228,6 @@ namespace sfml_util
         return wereAnyRemoved;
     }
 
-    
-    bool Stage::EntityRemovePtr(gui::IGuiEntity * ptr)
-    {
-        bool wereAnyRemoved(false);
-        const std::size_t ORIG_NUM_ENTITYS(entitySSet_.size());
-
-        if (entityWithFocusSPtr_.get() == ptr)
-        {
-            wereAnyRemoved = true;
-            entityWithFocusSPtr_.reset();
-        }
-
-        sfml_util::gui::IGuiEntitySPtr_t foundSPtr{ nullptr };
-        for (auto const & NEXT_IGUIENTITY_SPTR : entitySSet_)
-        {
-            if (NEXT_IGUIENTITY_SPTR.get() == ptr)
-            {
-                foundSPtr = NEXT_IGUIENTITY_SPTR;
-                break;
-            }
-        }
-
-        if (foundSPtr.get() != nullptr)
-        {
-            entitySSet_.erase(foundSPtr);
-        }
-
-        const std::size_t NEW_NUM_ENTITYS(entitySSet_.size());
-
-        if (false == wereAnyRemoved)
-            wereAnyRemoved = ! (ORIG_NUM_ENTITYS == NEW_NUM_ENTITYS);
-
-        return wereAnyRemoved;
-    }
-
 
     void Stage::SetMouseHover(const sf::Vector2f & MOUSE_POS_V, const bool IS_MOUSE_HOVERING)
     {
