@@ -33,7 +33,7 @@ namespace appbase
                 case Warn:      { return "Warning"; }
                 case Error:     { return "Error";   }
                 case Fatal:     { return "Fatal";   }
-                case None:      //intentional fall-through
+                case None:
                 case Count:
                 default:        { return "None";    }
             }
