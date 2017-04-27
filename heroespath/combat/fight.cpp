@@ -200,12 +200,12 @@ namespace combat
 
         //determine if attacking creature's accuracy overcomes the defending creature's speed to see if there was a hit
         auto const ATTACKING_ACCURACY{ creatureAttackingPtrC->Stats().Acc().Current() };
-        auto const ATTACKING_ACCURACY_RAND_MIN{ StatMinimum(ATTACKING_ACCURACY) };
+        auto const ATTACKING_ACCURACY_RAND_MIN{ StatReduced(ATTACKING_ACCURACY) };
         auto const ATTACKING_ACCURACY_RAND_MAX{ ATTACKING_ACCURACY };
         auto const ATTACKING_ACCURACY_RAND{ sfml_util::rand::Int(ATTACKING_ACCURACY_RAND_MIN, ATTACKING_ACCURACY_RAND_MAX) };
 
         auto const DEFENDING_SPEED{ creatureDefendingPtrC->Stats().Spd().Current() };
-        auto const DEFENDING_SPEED_RAND_MIN{ StatMinimum(DEFENDING_SPEED) };
+        auto const DEFENDING_SPEED_RAND_MIN{ StatReduced(DEFENDING_SPEED) };
         auto const DEFENDING_SPEED_RAND_MAX{ DEFENDING_SPEED };
         auto const DEFENDING_SPEED_RAND{ sfml_util::rand::Int(DEFENDING_SPEED_RAND_MIN, DEFENDING_SPEED_RAND_MAX) };
 
@@ -243,12 +243,12 @@ namespace combat
                 //In this case both the rand "rolls" and the stat values are equal,
                 //so determine if the attack hit or miss based on luck
                 auto const ATTACKING_LUCK{ creatureAttackingPtrC->Stats().Lck().Current() };
-                auto const ATTACKING_LUCK_RAND_MIN{ StatMinimum(ATTACKING_LUCK) };
+                auto const ATTACKING_LUCK_RAND_MIN{ StatReduced(ATTACKING_LUCK) };
                 auto const ATTACKING_LUCK_RAND_MAX{ ATTACKING_LUCK };
                 auto const ATTACKING_LUCK_RAND{ sfml_util::rand::Int(ATTACKING_LUCK_RAND_MIN, ATTACKING_LUCK_RAND_MAX) };
 
                 auto const DEFENDING_LUCK{ creatureDefendingPtrC->Stats().Lck().Current() };
-                auto const DEFENDING_LUCK_RAND_MIN{ StatMinimum(DEFENDING_LUCK) };
+                auto const DEFENDING_LUCK_RAND_MIN{ StatReduced(DEFENDING_LUCK) };
                 auto const DEFENDING_LUCK_RAND_MAX{ DEFENDING_LUCK };
                 auto const DEFENDING_LUCK_RAND{ sfml_util::rand::Int(DEFENDING_LUCK_RAND_MIN, DEFENDING_LUCK_RAND_MAX) };
 
@@ -336,24 +336,24 @@ namespace combat
                                                bool &                   isPowerHit_OutParam,
                                                bool &                   isCriticalHit_OutParam)
     {
-        const stats::Health_t DAMAGE_WEAPON{ sfml_util::rand::Int(WEAPON_SPTR->DamageMin(), WEAPON_SPTR->DamageMax()) };
+        const stats::Health_t DAMAGE_FROM_WEAPON{ sfml_util::rand::Int(WEAPON_SPTR->DamageMin(), WEAPON_SPTR->DamageMax()) };
 
         //add extra damage based on rank
         auto const RANK_DIVISOR{ 3 };
-        const stats::Health_t DAMAGE_RANK{ static_cast<stats::Health_t>(creatureAttackingPtrC->Rank()) / RANK_DIVISOR };
+        const stats::Health_t DAMAGE_FROM_RANK{ static_cast<stats::Health_t>(creatureAttackingPtrC->Rank()) / RANK_DIVISOR };
 
         //add extra damage based on the attacking creature's strength
         auto const STAT_FLOOR{ 10 };
-        auto adjStr{creatureAttackingPtrC->Stats().Str().Current() - STAT_FLOOR };
-        if (adjStr < 0)
-            adjStr = 0;
-        const stats::Health_t DAMAGE_STR{ StatMinimum(adjStr) };
+        auto strAdj{creatureAttackingPtrC->Stats().Str().Current() - STAT_FLOOR };
+        if (strAdj < 0)
+            strAdj = 0;
+        const stats::Health_t DAMAGE_FROM_STRENGTH{ StatReduced(strAdj) };
 
-        const stats::Health_t DAMAGE_BASE{ DAMAGE_WEAPON + DAMAGE_RANK + DAMAGE_STR };
+        const stats::Health_t DAMAGE_BASE{ DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + DAMAGE_FROM_STRENGTH };
 
         //there is a rare chance of a power hit for players
         auto const STRENGTH{ creatureAttackingPtrC->Stats().Str().Current() };
-        auto const STRENGTH_RAND_MIN{ StatMinimum(STRENGTH) };
+        auto const STRENGTH_RAND_MIN{ StatReduced(STRENGTH) };
         auto const STRENGTH_RAND_MAX{ STRENGTH };
         auto const STRENGTH_RAND{ sfml_util::rand::Int(STRENGTH_RAND_MIN, STRENGTH_RAND_MAX) };
 
@@ -363,7 +363,7 @@ namespace combat
 
         //there is a rare chance of a critical hit for players
         auto const ACCURACY{ creatureAttackingPtrC->Stats().Acc().Current() };
-        auto const ACCURACY_RAND_MIN{ StatMinimum(ACCURACY) };
+        auto const ACCURACY_RAND_MIN{ StatReduced(ACCURACY) };
         auto const ACCURACY_RAND_MAX{ ACCURACY };
         auto const ACCURACY_RAND{ sfml_util::rand::Int(ACCURACY_RAND_MIN, ACCURACY_RAND_MAX) };
 
@@ -380,13 +380,17 @@ namespace combat
             damageFinal += DAMAGE_BASE;
 
         //reduce damage based on the defending creature's armor
-        if (creatureDefendingPtrC->ArmorRating() >= (damageFinal * 2))
+        if (creatureDefendingPtrC->ArmorRating() >= (damageFinal * 4))
         {
             damageFinal = 0;
         }
+        else if (damageFinal > creatureDefendingPtrC->ArmorRating())
+        {
+            damageFinal -= creatureDefendingPtrC->ArmorRating();
+        }
         else
         {
-            damageFinal = static_cast<stats::Health_t>( static_cast<float>(damageFinal) * (static_cast<float>(damageFinal) / (static_cast<float>(creatureDefendingPtrC->ArmorRating()) * 2.0f)));
+            damageFinal = static_cast<stats::Health_t>( static_cast<float>(damageFinal) * (static_cast<float>(damageFinal) / static_cast<float>(creatureDefendingPtrC->ArmorRating())));
         }
 
         if (damageFinal > 0)
@@ -430,12 +434,12 @@ namespace combat
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
         auto const POUNCER_SPEED{ creaturePouncingPtrC->Stats().Spd().Current() };
-        auto const POUNCER_SPEED_RAND_MIN{ StatMinimum(POUNCER_SPEED) };
+        auto const POUNCER_SPEED_RAND_MIN{ StatReduced(POUNCER_SPEED) };
         auto const POUNCER_SPEED_RAND_MAX{ POUNCER_SPEED };
         auto const POUNCER_SPEED_RAND{ sfml_util::rand::Int(POUNCER_SPEED_RAND_MIN, POUNCER_SPEED_RAND_MAX) };
 
         auto const POUNCER_ACCURACY{ creaturePouncingPtrC->Stats().Acc().Current() };
-        auto const POUNCER_ACCURACY_RAND_MIN{ StatMinimum(POUNCER_ACCURACY) };
+        auto const POUNCER_ACCURACY_RAND_MIN{ StatReduced(POUNCER_ACCURACY) };
         auto const POUNCER_ACCURACY_RAND_MAX{ POUNCER_ACCURACY };
         auto const POUNCER_ACCURACY_RAND{ sfml_util::rand::Int(POUNCER_ACCURACY_RAND_MIN, POUNCER_ACCURACY_RAND_MAX) };
 
@@ -455,7 +459,7 @@ namespace combat
         else
         {
             auto const DEFENDER_SPEED{ creatureDefendingPtrC->Stats().Spd().Current() };
-            auto const DEFENDER_SPEED_RAND_MIN{ StatMinimum(DEFENDER_SPEED) };
+            auto const DEFENDER_SPEED_RAND_MIN{ StatReduced(DEFENDER_SPEED) };
             auto const DEFENDER_SPEED_RAND_MAX{ DEFENDER_SPEED };
             auto const DEFENDER_SPEED_RAND{ sfml_util::rand::Int(DEFENDER_SPEED_RAND_MIN, DEFENDER_SPEED_RAND_MAX) };
 
@@ -493,7 +497,7 @@ namespace combat
         auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::FindByAlive(creature::Algorithms::PlayersByType( ! creatureRoaringPtrC->IsPlayerCharacter() )) };
 
         auto const ROARER_STRENGTH{ creatureRoaringPtrC->Stats().Str().Current() };
-        auto const ROARER_STRENGTH_RAND_MIN{ StatMinimum(ROARER_STRENGTH) };
+        auto const ROARER_STRENGTH_RAND_MIN{ StatReduced(ROARER_STRENGTH) };
         auto const ROARER_STRENGTH_RAND_MAX{ ROARER_STRENGTH };
 
         auto const ROARER_LUCK{ creatureRoaringPtrC->Stats().Lck().Current() };
@@ -525,7 +529,7 @@ namespace combat
             auto const DISATANCE_OFFSET{ nextBlockingDisatnce * 5 };
 
             auto const DEFENDER_INTELLIGENCE{ creatureRoaringPtrC->Stats().Int().Current() };
-            auto const DEFENDER_INTELLIGENCE_RAND_MIN{ StatMinimum(DEFENDER_INTELLIGENCE) };
+            auto const DEFENDER_INTELLIGENCE_RAND_MIN{ StatReduced(DEFENDER_INTELLIGENCE) };
             auto const DEFENDER_INTELLIGENCE_RAND_MAX{ DEFENDER_INTELLIGENCE };
 
             auto const DEFENDER_LUCK{ creatureRoaringPtrC->Stats().Lck().Current() };

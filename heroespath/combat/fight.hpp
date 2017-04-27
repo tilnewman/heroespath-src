@@ -85,7 +85,7 @@ namespace combat
         static bool IsConditionContained(const creature::condition::Enum E, const HitInfoVec_t & HIT_INFO_VEC);
 
         template<typename T>
-        static T StatMinimum(const T VAL)
+        static T StatReduced(const T VAL)
         {
             return static_cast<T>( (static_cast<float>(VAL) * STAT_MIN_MULTIPLIER_) / STAT_MIN_DIVISOR_);
         }
