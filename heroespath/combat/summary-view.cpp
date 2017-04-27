@@ -148,6 +148,7 @@ namespace combat
             combatNodePtr_->IsSummaryView(false);
             combatNodePtr_->IsMoving(false);
         }
+        ReleaseCombatNodePointer();
     }
 
 
