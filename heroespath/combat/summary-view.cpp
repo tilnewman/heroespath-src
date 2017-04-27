@@ -46,7 +46,7 @@ namespace combat
         movingDir_           (sfml_util::Moving::Still),
         itemWithTextVec_     (),
         bgQuads_             (sf::Quads, 4),
-        combatNodeSPtr_      (),
+        combatNodePtr_       (),
         nameTextRegionSPtr_  (),
         healthTextRegionSPtr_(),
         descTextRegionSPtr_  (),
@@ -65,20 +65,20 @@ namespace combat
         if ((sfml_util::Moving::Still == movingDir_) && (false == isTransToComplete_))
             return;
 
-        if (combatNodeSPtr_.get() != nullptr)
+        if (combatNodePtr_ != nullptr)
         {
             slider_.Speed(SLIDER_SPEED_ * 2.0f);
             slider_.StartMovingAway();
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
-            combatNodeSPtr_->IsSummaryView(false);
-            combatNodeSPtr_->IsMoving(true);
+            combatNodePtr_->IsSummaryView(false);
+            combatNodePtr_->IsMoving(true);
         }
     }
 
 
-    void SummaryView::StartTransitionTo(CombatNodeSPtr_t &   combatNodeSPtr,
+    void SummaryView::StartTransitionTo(CombatNodePtr_t       combatNodePtr,
                                         const sf::Vector2f &  DEST_POS_V,
                                         const sf::FloatRect & ENEMYDISPLAY_RECT)
     {
@@ -88,15 +88,15 @@ namespace combat
             return;
         }
 
-        combatNodeSPtr_ = combatNodeSPtr;
-        slider_.Setup(combatNodeSPtr, combatNodeSPtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
+        combatNodePtr_ = combatNodePtr;
+        slider_.Setup(combatNodePtr, combatNodePtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
         slider_.StartMovingToward();
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
         movingDir_ = sfml_util::Moving::Toward;
         isTransToComplete_ = false;
         isTransBackComplete_ = false;
-        combatNodeSPtr->IsMoving(true);
+        combatNodePtr->IsMoving(true);
     }
 
 
@@ -129,10 +129,10 @@ namespace combat
         isTransToComplete_ = true;
         isTransBackComplete_ = false;
         movingDir_ = sfml_util::Moving::Still;
-        if (combatNodeSPtr_.get() != nullptr)
+        if (combatNodePtr_ != nullptr)
         {
-            combatNodeSPtr_->IsSummaryView(true);
-            combatNodeSPtr_->IsMoving(false);
+            combatNodePtr_->IsSummaryView(true);
+            combatNodePtr_->IsMoving(false);
         }
     }
 
@@ -143,10 +143,10 @@ namespace combat
         isTransBackComplete_ = true;
         movingDir_ = sfml_util::Moving::Still;
         itemWithTextVec_.clear();
-        if (combatNodeSPtr_.get() != nullptr)
+        if (combatNodePtr_ != nullptr)
         {
-            combatNodeSPtr_->IsSummaryView(false);
-            combatNodeSPtr_->IsMoving(false);
+            combatNodePtr_->IsSummaryView(false);
+            combatNodePtr_->IsMoving(false);
         }
     }
 
@@ -156,13 +156,13 @@ namespace combat
         //always draw the background since it needs to be drawn during transitions and is an inexpensive vertex array operation
         target.draw(bgQuads_, states);
 
-        if (isTransToComplete_)
+        if (isTransToComplete_ && (combatNodePtr_ != nullptr))
         {
             nameTextRegionSPtr_->draw(target, states);
             healthTextRegionSPtr_->draw(target, states);
             condTextRegionSPtr_->draw(target, states);
 
-            if (combatNodeSPtr_->Creature()->IsPlayerCharacter())
+            if (combatNodePtr_->Creature()->IsPlayerCharacter())
             {
                 armorTextRegionSPtr_->draw(target, states);
             }
@@ -182,7 +182,7 @@ namespace combat
                 NEXT_ITEM_WITH_TEXT.info_text_region_sptr->draw(target, states);
             }
 
-            combatNodeSPtr_->draw(target, states);
+            combatNodePtr_->draw(target, states);
         }
     }
 
@@ -206,18 +206,18 @@ namespace combat
     }
 
 
-    void SummaryView::SetupAndStartTransition(CombatNodeSPtr_t & combatNodeSPtr, const sf::FloatRect & COMBAT_REGION)
+    void SummaryView::SetupAndStartTransition(CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
     {
         itemWithTextVec_.clear();
 
         std::ostringstream ss;
-        if (combatNodeSPtr->Creature()->Name() != combatNodeSPtr->Creature()->Race().Name())
-            ss << combatNodeSPtr->Creature()->Name() << "\n";
+        if (combatNodePtr->Creature()->Name() != combatNodePtr->Creature()->Race().Name())
+            ss << combatNodePtr->Creature()->Name() << "\n";
 
-        ss << combatNodeSPtr->Creature()->Race().Name();
+        ss << combatNodePtr->Creature()->Race().Name();
 
-        if (combatNodeSPtr->Creature()->Role().Which() != creature::role::Wolfen)
-            ss << ", " + combatNodeSPtr->Creature()->Role().Name();
+        if (combatNodePtr->Creature()->Role().Which() != creature::role::Wolfen)
+            ss << ", " + combatNodePtr->Creature()->Role().Name();
 
         const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(ss.str(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
@@ -228,13 +228,13 @@ namespace combat
 
         std::ostringstream healthSS;
         healthSS << "Health: ";
-        if (combatNodeSPtr->Creature()->IsPlayerCharacter())
+        if (combatNodePtr->Creature()->IsPlayerCharacter())
         {
-            healthSS << combatNodeSPtr->Creature()->HealthCurrent() << "/" << combatNodeSPtr->Creature()->HealthNormal();
+            healthSS << combatNodePtr->Creature()->HealthCurrent() << "/" << combatNodePtr->Creature()->HealthNormal();
         }
         else
         {
-            healthSS << combatNodeSPtr->Creature()->HealthPercentStr();
+            healthSS << combatNodePtr->Creature()->HealthPercentStr();
         }
         const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(healthSS.str(),
                                                                  sfml_util::FontManager::Instance()->Font_Default1(),
@@ -243,14 +243,14 @@ namespace combat
         healthTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect()) );
 
         std::ostringstream armorRatingSS;
-        armorRatingSS << "Armor Rating: " << combatNodeSPtr->Creature()->ArmorRating();
+        armorRatingSS << "Armor Rating: " << combatNodePtr->Creature()->ArmorRating();
         const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(armorRatingSS.str(),
                                                                       sfml_util::FontManager::Instance()->Font_Default1(),
                                                                       sfml_util::FontManager::Instance()->Size_Small(),
                                                                       sfml_util::FontManager::Color_Light());
         armorTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect()) );
 
-        const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(combatNodeSPtr->Creature()->Body().ToString(),
+        const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(combatNodePtr->Creature()->Body().ToString(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
                                                                sfml_util::FontManager::Instance()->Size_Small(),
                                                                sfml_util::FontManager::Color_Light(),
@@ -259,7 +259,7 @@ namespace combat
         descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect()) );
 
         std::ostringstream condSS;
-        condSS << "Condition:  " << combatNodeSPtr->Creature()->ConditionList();
+        condSS << "Condition:  " << combatNodePtr->Creature()->ConditionList();
         const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(condSS.str(),
                                                                      sfml_util::FontManager::Instance()->Font_Default1(),
                                                                      sfml_util::FontManager::Instance()->Size_Small(),
@@ -268,14 +268,14 @@ namespace combat
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
-        const float IMAGE_WIDTH(combatNodeSPtr->GetEntityRegion().width);
-        const float IMAGE_HEIGHT(combatNodeSPtr->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
+        const float IMAGE_WIDTH(combatNodePtr->GetEntityRegion().width);
+        const float IMAGE_HEIGHT(combatNodePtr->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
 
         const float BETWEEN_TEXT_SPACER(0.0f);
         const float TOP_TEXT_SPACER(sfml_util::MapByRes(10.0f, 25.0f));
         const float CREATURE_TEXT_POS_LEFT(IMAGE_POS_LEFT + IMAGE_WIDTH + IMAGE_EDGE_PAD_);
 
-        if (combatNodeSPtr->Creature()->IsPlayerCharacter())
+        if (combatNodePtr->Creature()->IsPlayerCharacter())
         {
             nameTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, IMAGE_POS_TOP + TOP_TEXT_SPACER);
             healthTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, nameTextRegionSPtr_->GetEntityRegion().top + nameTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
@@ -300,20 +300,20 @@ namespace combat
         //first weapons
         item::ItemSVec_t weaponItemsToDisplay;
         item::ItemSVec_t weaponItemsToIgnore;
-        for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
             if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart() == false))
                 weaponItemsToDisplay.push_back(NEXT_ITEM_SPTR);
 
         //only list bodypart weapons if there are not any others equipped
         if (weaponItemsToDisplay.empty())
         {
-            for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+            for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
                 if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart()))
                     weaponItemsToDisplay.push_back(NEXT_ITEM_SPTR);
         }
         else
         {
-            for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+            for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
                 if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart()))
                     weaponItemsToIgnore.push_back(NEXT_ITEM_SPTR);
         }
@@ -322,17 +322,17 @@ namespace combat
             itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
 
         //then armor
-        for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
             if (NEXT_ITEM_SPTR->IsArmor())
                 itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
 
         //then misc
-        for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
             if (NEXT_ITEM_SPTR->MiscType() != item::misc_type::NotMisc)
                 itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
 
         //then everything else (clothes, etc)
-        for (auto const & NEXT_ITEM_SPTR : combatNodeSPtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
         {
             const ItemWithTextVecCIter_t IWTV_CITER(std::find_if(itemWithTextVec_.begin(),
                                                                  itemWithTextVec_.end(),
@@ -491,7 +491,7 @@ namespace combat
         //final setup call
         const sf::Vector2f IMAGE_DEST_POS_V(IMAGE_POS_LEFT, IMAGE_POS_TOP);
         const sf::FloatRect SUMMARYVIEW_DISPLAY_REGION(COMBAT_REGION.left, COMBAT_REGION.top, (enemyDetailsDisplayExtentHoriz - COMBAT_REGION.left) + IMAGE_BETWEEN_PAD_, (enemyDetailsDisplayExtentVert - COMBAT_REGION.top) + IMAGE_BETWEEN_PAD_);
-        StartTransitionTo(combatNodeSPtr, IMAGE_DEST_POS_V, SUMMARYVIEW_DISPLAY_REGION);
+        StartTransitionTo(combatNodePtr, IMAGE_DEST_POS_V, SUMMARYVIEW_DISPLAY_REGION);
     }
 
 }

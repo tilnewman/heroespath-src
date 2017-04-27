@@ -79,22 +79,22 @@ namespace stage
         FlyingCreaturesRestore(combatDisplayPtr);
 
         //restore health/condition
-        combat::CombatNodeSVec_t combatNodesSVec;
-        combatDisplayPtr->GetCombatNodes(combatNodesSVec);
-        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            NEXT_COMBATNODE_SPTR->HealthChangeTasks();
+        combat::CombatNodePVec_t combatNodesPVec;
+        combatDisplayPtr->GetCombatNodes(combatNodesPVec);
+        for (auto const nextCombatNodePtrC : combatNodesPVec)
+            nextCombatNodePtrC->HealthChangeTasks();
     }
 
 
     void SavedCombatInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         creaturesFlyingPVec_.clear();
-        combat::CombatNodeSVec_t combatNodesSVec;
-        COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesSVec);
+        combat::CombatNodePVec_t combatNodesPVec;
+        COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);
 
-        for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-            if (NEXT_COMBATNODE_SPTR->IsFlying())
-                creaturesFlyingPVec_.push_back(NEXT_COMBATNODE_SPTR->Creature());
+        for (auto const nextCombatNodeCPtr : combatNodesPVec)
+            if (nextCombatNodeCPtr->IsFlying())
+                creaturesFlyingPVec_.push_back(nextCombatNodeCPtr->Creature());
     }
 
 
@@ -892,13 +892,13 @@ namespace stage
             //set Pixie creatures to initially flying
             //while this doesn't technically make them fly, the call to savedCombatInfo_.Restore() will actually set them flying
             {
-                combat::CombatNodeSVec_t combatNodesSVec;
-                combatDisplayPtr_->GetCombatNodes(combatNodesSVec);
+                combat::CombatNodePVec_t combatNodesPVec;
+                combatDisplayPtr_->GetCombatNodes(combatNodesPVec);
 
-                for (auto const & NEXT_COMBATNODE_SPTR : combatNodesSVec)
-                    if ((creature::race::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Race().Which())) ||
-                        (creature::role::WillInitiallyFly(NEXT_COMBATNODE_SPTR->Creature()->Role().Which())))
-                        NEXT_COMBATNODE_SPTR->IsFlying(true);
+                for (auto const nextComabtNodeCPtr : combatNodesPVec)
+                    if ((creature::race::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Race().Which())) ||
+                        (creature::role::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Role().Which())))
+                        nextComabtNodeCPtr->IsFlying(true);
 
                 savedCombatInfo_.Save(combatDisplayPtr_);
             }

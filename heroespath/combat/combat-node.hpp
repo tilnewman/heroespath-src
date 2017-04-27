@@ -173,9 +173,9 @@ namespace combat
     using CombatNodeCPtr_t  = const CombatNode *;
     using CombatNodePtrC_t  = CombatNode * const;
     using CombatNodeCPtrC_t = const CombatNode * const;
+    using CombatNodeSPtr_t  = std::shared_ptr<CombatNode>;
 
-    using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
-    using CombatNodeSVec_t = std::vector<CombatNodeSPtr_t>;
+    using CombatNodeSVec_t  = std::vector<CombatNodePtr_t>;
 
 }
 }

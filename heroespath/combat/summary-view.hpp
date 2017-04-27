@@ -34,10 +34,10 @@ namespace combat
 
     //forward declarations
     class CombatNode;
-    using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
+    using CombatNodePtr_t = CombatNode *;
 
 
-    //wraps an image with text for temporary display on the screen
+    //wraps an image with text for display on the screen
     struct ItemWithText
     {
         ItemWithText(const item::ItemSPtr_t & ITEM_SPTR = item::ItemSPtr_t());
@@ -68,7 +68,7 @@ namespace combat
         SummaryView();
 
         void StartTransitionBack();
-        void StartTransitionTo(CombatNodeSPtr_t &    combatNodeSPtr,
+        void StartTransitionTo(CombatNodePtr_t       combatNodePtr,
                                const sf::Vector2f &  DEST_POS_V,
                                const sf::FloatRect & ENEMYDISPLAY_RECT);
 
@@ -84,7 +84,7 @@ namespace combat
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        void SetupAndStartTransition(CombatNodeSPtr_t & combatNodeSPtr, const sf::FloatRect & COMABT_REGION);
+        void SetupAndStartTransition(CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMABT_REGION);
 
         inline float GetTransitionStatus() const                { return slider_.CurrentAverage(); }
 
@@ -94,13 +94,14 @@ namespace combat
         inline sfml_util::Moving::Enum MovingDir() const        { return movingDir_; }
         inline void MovingDir(const sfml_util::Moving::Enum E)  { movingDir_ = E; }
 
-        inline CombatNodeSPtr_t CombatNodeSPtr()                { return combatNodeSPtr_; }
+        inline CombatNodePtr_t CombatNodePtr()                  { return combatNodePtr_; }
 
         inline sfml_util::gui::TextRegionSPtr_t DescTextRegion(){ return descTextRegionSPtr_; }
 
         inline bool WillPreventNextTransition() const           { return preventNextTrans_; }
         inline void WillPreventNextTransition(const bool B)     { preventNextTrans_ = B; }
 
+        inline void ReleaseCombatNodePointer()                  { combatNodePtr_ = nullptr; slider_.ReleasePointer(); }
     public:
         static const float BACKGROUND_COLOR_ALPHA_;
         static const float SLIDER_SPEED_;
@@ -117,7 +118,7 @@ namespace combat
         sfml_util::Moving::Enum          movingDir_;
         ItemWithTextVec_t                itemWithTextVec_;
         sf::VertexArray                  bgQuads_;
-        CombatNodeSPtr_t                 combatNodeSPtr_;
+        CombatNodePtr_t                  combatNodePtr_;
         sfml_util::gui::TextRegionSPtr_t nameTextRegionSPtr_;
         sfml_util::gui::TextRegionSPtr_t healthTextRegionSPtr_;
         sfml_util::gui::TextRegionSPtr_t descTextRegionSPtr_;

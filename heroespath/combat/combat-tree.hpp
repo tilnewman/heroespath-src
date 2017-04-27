@@ -31,8 +31,9 @@ namespace combat
 
     //forward declarations
     class CombatNode;
+    using CombatNodePtr_t  = CombatNode *;
     using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
-    using CombatNodeSVec_t = std::vector<CombatNodeSPtr_t>;
+    using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
 
     //Note: For player-characters (facing right), 'Forward' is moving to
@@ -105,16 +106,22 @@ namespace combat
         Id_t NextAvailableId() const;
 
         //these functions throw logic_error if the vertex does not exist
-        CombatNodeSPtr_t GetNode(const Id_t ID) const;
-        CombatNodeSPtr_t GetNode(creature::CreatureCPtrC_t) const;
+        CombatNodePtr_t GetNode(const Id_t ID) const;
+        CombatNodeSPtr_t GetNodeSPtr(const Id_t ID) const;
+
+        CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
+        CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
+        
         void SetNode(const Id_t ID, const CombatNodeSPtr_t NODE_SPTR);
-        Id_t GetNodeId(const CombatNodeSPtr_t &) const;
+        
+        Id_t GetNodeId(const CombatNodePtr_t) const;
         Id_t GetNodeId(creature::CreatureCPtrC_t) const;
+        
         std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
         std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::race::Enum RACE);
 
         //returns nullptr if there is no node at the position given
-        CombatNodeSPtr_t GetNode(const float POS_X, const float POS_Y) const;
+        CombatNodePtr_t GetNode(const float POS_X, const float POS_Y) const;
 
         inline std::size_t VertexCount() const { return vertexList_.size(); }
         std::size_t VertexCountByBlockingPos(const int BLOCKING_POS) const;
@@ -202,10 +209,10 @@ namespace combat
 
         std::size_t GetNodeIDsAtBlockingPos(IdVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
         std::size_t GetNodeIDsAllAroundBlockingPos(IdVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
-        std::size_t GetNodesAtBlockingPos(CombatNodeSVec_t & NodeSVec_OutParam, const int BLOCKING_POS) const;
-        std::size_t GetNodesAllAroundBlockingPos(CombatNodeSVec_t & NodeSVec_OutParam, const int BLOCKING_POS) const;
+        std::size_t GetNodesAtBlockingPos(CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
+        std::size_t GetNodesAllAroundBlockingPos(CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
 
-        void GetCombatNodes(CombatNodeSVec_t & combatNodesSVec) const;
+        void GetCombatNodes(CombatNodePVec_t & combatNodesPVec) const;
 
         int GetBlockingDistanceBetween(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t) const;
 

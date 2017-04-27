@@ -39,7 +39,7 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
-    using CombatNodeSVec_t = std::vector<CombatNodeSPtr_t>;
+    using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
 
     //Assists with delayed position shifting of creature images on the battlefield,
@@ -49,9 +49,9 @@ namespace combat
     {
         NodePosTracker();
 
-        NodePosTracker(const CombatNodeSPtr_t & COMBAT_NODE_SPTR,
-                       const float              TARGET_POS_LEFT,
-                       const float              TARGET_POS_TOP);
+        NodePosTracker(const CombatNodePtr_t COMBAT_NODE_PTR,
+                       const float           TARGET_POS_LEFT,
+                       const float           TARGET_POS_TOP);
 
         float posHorizOrig;
         float posVertOrig;
@@ -59,7 +59,7 @@ namespace combat
         float vertDiff;
     };
 
-    using NodePosTrackerMap_t = std::map<CombatNodeSPtr_t, NodePosTracker>;
+    using NodePosTrackerMap_t = std::map<CombatNodePtr_t, NodePosTracker>;
 
 
     //All the info required to shake a creature image on the battlefield.
@@ -169,7 +169,7 @@ namespace combat
 
         void HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING);
 
-        inline void GetCombatNodes(CombatNodeSVec_t & combatNodesSVec) { combatTree_.GetCombatNodes(combatNodesSVec); }
+        inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec) { combatTree_.GetCombatNodes(combatNodesPVec); }
 
         void HandleEndOfTurnTasks();
 
@@ -185,8 +185,8 @@ namespace combat
 
         inline void SetUserActionAllowed(const bool IS_ALLOWED) { isUserActionAllowed_ = IS_ALLOWED; }
 
-        const CombatNodeSPtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
-        const CombatNodeSVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+        const CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
+        const CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
         inline CombatTree & CombatTree()                        { return combatTree_; }
 
@@ -206,7 +206,7 @@ namespace combat
 
         void CreatureToneDown(const float TONE_DOWN_VAL);
 
-        const std::string GetNodeTitle(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
+        const std::string GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR);
 
         void SetBlockingPosOfType(const bool                 IS_PLAYER,
                                   const creature::role::Enum ROLE,
@@ -272,7 +272,7 @@ namespace combat
         SakeInfoMap_t            shakeInfoMap_;
 
         //centering members
-        combat::CombatNodeSPtr_t centeringCombatNodeSPtr_;
+        combat::CombatNodePtr_t centeringCombatNodePtr_;
         float centeringToX_;
         float centeringToY_;
 

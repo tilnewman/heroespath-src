@@ -30,7 +30,7 @@ namespace combat
         projAnimBeginPosV_  (0.0f, 0.0f),
         projAnimEndPosV_    (0.0f, 0.0f),
         projAnimWillSpin_   (false),
-        deadAnimNodesSVec_  ()
+        deadAnimNodesPVec_  ()
     {}
 
 
@@ -100,9 +100,9 @@ namespace combat
         //establish the creature positions
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
         sf::Vector2f creatureDefendingCenterPosV{0.0f, 0.0f};
-        CombatNodeSVec_t combatNodeSVec;
-        combatDisplayPtr_->CombatTree().GetCombatNodes(combatNodeSVec);
-        for (auto const & NEXT_COMBANODE_SPTR : combatNodeSVec)
+        CombatNodePVec_t combatNodePVec;
+        combatDisplayPtr_->CombatTree().GetCombatNodes(combatNodePVec);
+        for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
         {
             if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
             {
@@ -182,21 +182,21 @@ namespace combat
 
     void CombatAnim::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        auto combatNodesSVec{ combatDisplayPtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
-        for (auto & nextCombatNodeSPtr : combatNodesSVec)
+        auto combatNodesPVec{ combatDisplayPtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+        for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
-            nextCombatNodeSPtr->SetDead(true);
-            deadAnimNodesSVec_.push_back(nextCombatNodeSPtr);
+            nextCombatNodePtrC->SetDead(true);
+            deadAnimNodesPVec_.push_back(nextCombatNodePtrC);
         }
     }
 
 
     void CombatAnim::DeathAnimUpdate(const float SLIDER_POS)
     {
-        for (auto & nextCombatNodeSPtr : deadAnimNodesSVec_)
+        for (auto const nextCombatNodePtrC : deadAnimNodesPVec_)
         {
-            nextCombatNodeSPtr->SetRotationDegrees((4.0f * 360.0f) * SLIDER_POS);
-            nextCombatNodeSPtr->SetRegion(1.0f - SLIDER_POS);
+            nextCombatNodePtrC->SetRotationDegrees((4.0f * 360.0f) * SLIDER_POS);
+            nextCombatNodePtrC->SetRegion(1.0f - SLIDER_POS);
         }
     }
 
@@ -204,13 +204,14 @@ namespace combat
     void CombatAnim::DeathAnimStop()
     {
         //remove non-player nodes from combat tree and prepare for sliding animation
-        for (auto const & NEXT_COMBATNODE_SPTR : deadAnimNodesSVec_)
+        for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
         {
-            auto const NEXT_NODE_ID{ combatDisplayPtr_->CombatTree().GetNodeId(NEXT_COMBATNODE_SPTR) };
+            auto const NEXT_NODE_ID{ combatDisplayPtr_->CombatTree().GetNodeId(nextCombatNodeCPtr) };
+            auto const NEXT_NODE_SPTR{ combatDisplayPtr_->CombatTree().GetNodeSPtr(NEXT_NODE_ID) };
             combatDisplayPtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
-            combatDisplayPtr_->RemoveCombatNode(NEXT_COMBATNODE_SPTR);
+            combatDisplayPtr_->RemoveCombatNode(NEXT_NODE_SPTR);
         }
-        deadAnimNodesSVec_.clear();
+        deadAnimNodesPVec_.clear();
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
         combatDisplayPtr_->PositionCombatTreeCells(true);

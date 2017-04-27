@@ -83,9 +83,10 @@ namespace gui
         virtual void OnDoubleClick(const sf::Vector2f &) = 0;
     };
 
-    using IGuiEntitySPtr_t = std::shared_ptr<IGuiEntity>;
-    using IGuiEntitySVec_t = std::vector<IGuiEntitySPtr_t>;
-    using IGuiEntitySSet_t = std::set<IGuiEntitySPtr_t>;
+    using IGuiEntityPtr_t   = IGuiEntity *;
+    using IGuiEntitySPtr_t  = std::shared_ptr<IGuiEntity>;
+    using IGuiEntitySVec_t  = std::vector<IGuiEntitySPtr_t>;
+    using IGuiEntitySSet_t  = std::set<IGuiEntitySPtr_t>;
     using IGuiEntitySList_t = std::list<IGuiEntitySPtr_t>;
 
 }

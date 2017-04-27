@@ -162,7 +162,10 @@ namespace combat
             states.blendMode = ORIG_BLEND_MODE;
         }
 
-        if (isFlying_ && (false == isDead_))
+        if (isFlying_ &&
+            (false == isDead_) &&
+            (false == isMoving_) &&
+            (false == isSummaryView_))
         {
             target.draw(wingSprite_, states);
         }

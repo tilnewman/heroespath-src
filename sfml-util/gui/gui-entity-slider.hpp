@@ -14,32 +14,33 @@ namespace gui
 
     //forward declarations
     class IGuiEntity;
-    using IGuiEntitySPtr_t = std::shared_ptr<IGuiEntity>;
+    using IGuiEntityPtr_t = IGuiEntity *;
 
 
     //responsible for moving a gui entity back and forth between two points using the slider method
     class GuiEntitySlider : public sliders::PosSlider
     {
-        //prevent copy construction
-        GuiEntitySlider(const GuiEntitySlider &);
-
     public:
-        GuiEntitySlider(IGuiEntitySPtr_t     guiEntitySPtr    = IGuiEntitySPtr_t(nullptr),
-                        const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
-                        const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
-                        const float          SLIDER_SPEED     = 1.0f);
+        GuiEntitySlider(IGuiEntityPtr_t      guiEntityPtr = nullptr,
+                        const sf::Vector2f & FROM_POS_V   = sf::Vector2f(0.0f, 0.0f),
+                        const sf::Vector2f & TO_POS_V     = sf::Vector2f(0.0f, 0.0f),
+                        const float          SLIDER_SPEED = 1.0f);
 
-        void Setup(IGuiEntitySPtr_t     guiEntitySPtr    = IGuiEntitySPtr_t(nullptr),
-                   const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
-                   const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
-                   const float          SLIDER_SPEED     = 1.0f);
+        virtual ~GuiEntitySlider();
+
+        void Setup(IGuiEntityPtr_t      guiEntityPtr  = nullptr,
+                   const sf::Vector2f & FROM_POS_V    = sf::Vector2f(0.0f, 0.0f),
+                   const sf::Vector2f & TO_POS_V      = sf::Vector2f(0.0f, 0.0f),
+                   const float          SLIDER_SPEED  = 1.0f);
 
         virtual void Reset(const bool WILL_RESET_POSITION);
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
+        inline void ReleasePointer() { guiEntityPtr_ = nullptr; }
+
     private:
-        IGuiEntitySPtr_t guiEntitySPtr_;
+        IGuiEntityPtr_t guiEntityPtr_;
     };
 
 }

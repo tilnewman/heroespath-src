@@ -30,8 +30,8 @@ namespace combat
     using CombatDisplayPtr_t = CombatDisplay *;
 
     class CombatNode;
-    using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
-    using CombatNodeSVec_t = std::vector<CombatNodeSPtr_t>;
+    using CombatNodePtr_t  = CombatNode *;
+    using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
 
     //Responsible for displaying combat related animations.
@@ -79,7 +79,7 @@ namespace combat
         bool projAnimWillSpin_;
 
         //members supporting the death animation
-        CombatNodeSVec_t deadAnimNodesSVec_;
+        CombatNodePVec_t deadAnimNodesPVec_;
     };
 
     using CombatAnimPtr_t = CombatAnim *;

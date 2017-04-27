@@ -16,15 +16,12 @@ namespace sliders
     //responsible for moving a position vector back and forth between two points using the slider method
     class PosSlider
     {
-        //prevent copy construction
-        PosSlider(const PosSlider &);
-
     public:
-	virtual ~PosSlider();
-
         PosSlider(const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
                   const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
                   const float          SLIDER_SPEED     = 1.0f);
+
+        virtual ~PosSlider();
 
         void Setup(const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
                    const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
