@@ -87,7 +87,8 @@ namespace combat
             {
                 willKill = true;
             }
-            else if ((creatureDefendingPtrC->IsPlayerCharacter() == false) && (TOTAL_DAMAGE > (creatureDefendingPtrC->HealthNormal() * 2)))
+            else if ((creatureDefendingPtrC->IsPlayerCharacter() == false) &&
+                     ((TOTAL_DAMAGE > (creatureDefendingPtrC->HealthNormal() * 2) || (creatureDefendingPtrC->HealthCurrent() <= 0))))
             {
                 willKill = true;
             }
@@ -117,7 +118,7 @@ namespace combat
 
                 if (IS_ALREADY_UNCONSCIOUS == false)
                 {
-                    if (creatureDefendingPtrC->HealthCurrent() < 0)
+                    if (creatureDefendingPtrC->IsPlayerCharacter() && (creatureDefendingPtrC->HealthCurrent() <= 0))
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
                         const creature::ConditionSPtr_t CONDITION_UNCON_SPTR{ creature::condition::ConditionFactory::Make(creature::condition::Unconscious) };
