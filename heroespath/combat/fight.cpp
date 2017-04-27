@@ -88,7 +88,7 @@ namespace combat
                 willKill = true;
             }
             else if ((creatureDefendingPtrC->IsPlayerCharacter() == false) &&
-                     ((TOTAL_DAMAGE > (creatureDefendingPtrC->HealthNormal() * 2) || (creatureDefendingPtrC->HealthCurrent() <= 0))))
+                     ((TOTAL_DAMAGE > (creatureDefendingPtrC->HealthNormal() * 2) || (TOTAL_DAMAGE > creatureDefendingPtrC->HealthCurrent()))))
             {
                 willKill = true;
             }
@@ -96,6 +96,7 @@ namespace combat
             if (willKill)
             {
                 creatureDefendingPtrC->HealthCurrentSet(0);
+
                 const creature::ConditionSPtr_t CONDITION_DEAD_SPTRC{ creature::condition::ConditionFactory::Make(creature::condition::Dead) };
                 creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_SPTRC);
                 conditionsAddedSVec.push_back(CONDITION_DEAD_SPTRC);
@@ -112,6 +113,10 @@ namespace combat
             else
             {
                 creatureDefendingPtrC->HealthCurrentAdj(TOTAL_DAMAGE * -1);
+                if (creatureDefendingPtrC->HealthCurrent() < 0)
+                {
+                    creatureDefendingPtrC->HealthCurrentSet(0);
+                }
 
                 auto const IS_ALREADY_DAZED{ creatureDefendingPtrC->HasCondition(creature::condition::Dazed) ||
                                              IsConditionContained(creature::condition::Dazed, hitInfoVec) };
@@ -121,6 +126,7 @@ namespace combat
                     if (creatureDefendingPtrC->IsPlayerCharacter() && (creatureDefendingPtrC->HealthCurrent() <= 0))
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
+
                         const creature::ConditionSPtr_t CONDITION_UNCON_SPTR{ creature::condition::ConditionFactory::Make(creature::condition::Unconscious) };
                         creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_SPTR);
                         conditionsAddedSVec.push_back(CONDITION_UNCON_SPTR);
