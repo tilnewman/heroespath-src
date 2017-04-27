@@ -420,9 +420,6 @@ namespace combat
 
         if (willRemoveNullShakeInfo)
             shakeInfoMap_.erase(nullptr);
-
-        //TODO This call is suspicious and probably a mistake
-        combatTree_.UpdateTimeOfAllCombatNodes(ELAPSED_TIME_SECONDS);
     }
 
 

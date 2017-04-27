@@ -218,8 +218,6 @@ namespace combat
 
         int GetClosestBlockingDistanceByType(creature::CreatureCPtrC_t, const bool WILL_FIND_PLAYERS) const;
 
-        void UpdateTimeOfAllCombatNodes(const float ELAPSED_TIME_SECONDS);
-
     private:
         EdgeList_t   edgeList_;
         VertexList_t vertexList_;

@@ -728,12 +728,5 @@ namespace combat
         }
     }
 
-
-    void CombatTree::UpdateTimeOfAllCombatNodes(const float ELAPSED_TIME_SECONDS)
-    {
-        for (auto & nextVertex : vertexList_)
-            nextVertex.second->UpdateTime(ELAPSED_TIME_SECONDS);
-    }
-
 }
 }
