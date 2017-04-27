@@ -1028,7 +1028,6 @@ namespace stage
                 SetupTurnBox();
                 SetTurnPhase(TurnPhase::PerformReport);
                 StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport");
-                //TODO SOUNDEFFECT play projectile hit/miss sound effect here
             }
             return;
         }
@@ -1455,6 +1454,7 @@ namespace stage
                     }
                 }
 
+                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
                 SetupTurnBox();
                 StartPause(PERFORM_REPORT_PAUSE_SEC_, "PerformReport");
                 return;
@@ -2384,6 +2384,7 @@ namespace stage
                     auto const WEAPON_SPTR{ hitInfo.Weapon() };
                     if (WEAPON_SPTR.get() != nullptr)
                     {
+                        combatSoundEffects_.PlayShoot(WEAPON_SPTR);
                         combatAnimPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
                                                                  fightResult_.Effects()[0].GetCreature(),
                                                                  WEAPON_SPTR,
@@ -2411,10 +2412,8 @@ namespace stage
             }
         }
 
-
         std::ostringstream ss;
         ss << "PostPerform(" << PerformTypeToString(performType_) << ")";
-
     }
 
 

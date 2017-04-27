@@ -36,9 +36,8 @@ namespace combat
         CombatSoundEffects();
         virtual ~CombatSoundEffects();
 
-        void PlayProjectileShoot(const item::ItemSPtr_t &);
-        void Play(const FightResult &);
-        void Play(const HitInfo &);
+        void PlayShoot(const item::ItemSPtr_t &);
+        void PlayHitOrMiss(const HitInfo &);
 
     private:
         sfml_util::StaticSoundsSPtr_t blowpipeShootSoundsSPtr_;
