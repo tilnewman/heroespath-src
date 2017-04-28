@@ -67,7 +67,7 @@ namespace condition
     public:
         Cond_Dazed() : Condition(condition::Dazed), inverseModifyStatSet_() {}
         virtual ~Cond_Dazed() {}
-        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(1.5f, 3.0f, 1.0f, 1.0f, 3.0f, 1.5f); }
+        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(2.0f, 3.0f, 1.0f, 1.0f, 3.0f, 2.0f); }
         virtual void Undo(CreaturePtrC_t creaturePtrC) { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); }
     private:
         stats::StatSet inverseModifyStatSet_;

@@ -405,22 +405,27 @@ namespace stage
                                                              creature::race::Wolfen,
                                                              creature::role::Wolfen,
                                                              STAT_SET_BASE) );
-
+        
         playerSPtr->Stats() = STAT_SET_BASE;
-        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Dead));
         expectedSet = STAT_SET_BASE;
-        expectedSet.ResetCurrent(STAT_SET_ZEROS);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dead", playerSPtr->Stats(), expectedSet);
+        TestStatSetsCurrentAndNormal("Creature Base Set", playerSPtr->Stats(), expectedSet);
 
         playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Dazed));
-        TestStatSetsCurrentAndNormal("Creature Base Set Dead AND Dazed (still current is all zeros)", playerSPtr->Stats(), expectedSet);
-
-        playerSPtr->ConditionRemove(creature::condition::Dead);
         expectedSet = STAT_SET_BASE;
-        const stats::StatSet STAT_SET_BASE_DAZED(12, 2, 12, 12, 2, 2);
+        const stats::StatSet STAT_SET_BASE_DAZED(6, 4, 12, 12, 4, 6);
         expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed", playerSPtr->Stats(), expectedSet);
 
+        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Dead));
+        expectedSet = STAT_SET_BASE;
+        expectedSet.ResetCurrent(STAT_SET_ZEROS);
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed AND Dead", playerSPtr->Stats(), expectedSet);
+
+        playerSPtr->ConditionRemove(creature::condition::Dead);
+        expectedSet = STAT_SET_BASE;
+        expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed (Dead removed)", playerSPtr->Stats(), expectedSet);
+        
         playerSPtr->ConditionRemove(creature::condition::Dazed);
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set No Conditions (should be back to Base)", playerSPtr->Stats(), expectedSet);

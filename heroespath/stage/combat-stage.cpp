@@ -1061,8 +1061,8 @@ namespace stage
         }
 
         if ( (TurnPhase::PostDeathAnimSlide == turnPhase_) ||
-             ((PerformAnimPhase::AdvanceOrRetreat == performAnimPhase_) &&
-              (TurnPhase::PerformAnim == turnPhase_) &&
+             ((TurnPhase::PerformAnim == turnPhase_) &&
+              (PerformAnimPhase::AdvanceOrRetreat == performAnimPhase_) &&
               ((PerformType::Advance == performType_) || (PerformType::Retreat == performType_))) )
         {
             combatAnimationPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
@@ -1405,7 +1405,9 @@ namespace stage
 
             if (turnActionInfo_.Action() == combat::TurnAction::Nothing)
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                SetTurnPhase(TurnPhase::PostTurnPause);
+                StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
             }
             else
             {
@@ -1596,7 +1598,7 @@ namespace stage
 
             case combat::TurnAction::ChangeWeapon:
             case combat::TurnAction::Nothing:
-            case combat::TurnAction::Count://handle Count gracefully because it is sometimes returned
+            case combat::TurnAction::Count://handle Count gracefully because it is sometimes required
             {
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
@@ -2388,9 +2390,9 @@ namespace stage
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_SPTR);
                         combatAnimationPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
-                                                                 fightResult_.Effects()[0].GetCreature(),
-                                                                 WEAPON_SPTR,
-                                                                 fightResult_.WasHit());
+                                                                      fightResult_.Effects()[0].GetCreature(),
+                                                                      WEAPON_SPTR,
+                                                                      fightResult_.WasHit());
 
                         slider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetPerformAnimPhase(PerformAnimPhase::ProjectileShoot);
@@ -2398,6 +2400,7 @@ namespace stage
                     }
                 }
 
+                M_HP_LOG("\t ********** StartPerformAnim(performType_=" << PerformTypeToString(performType_) << ") landed in the Shoot... 'no-hit-info' case.");
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::PostPerformPause);
                 break;
@@ -2414,9 +2417,6 @@ namespace stage
                 break;
             }
         }
-
-        std::ostringstream ss;
-        ss << "PostPerform(" << PerformTypeToString(performType_) << ")";
     }
 
 
@@ -2429,7 +2429,7 @@ namespace stage
             case TurnPhase::PostCenterAndZoomInPause:   { return "PostZInPause"; }
             case TurnPhase::Determine:                  { return "Determine"; }
             case TurnPhase::CenterAndZoomOut:           { return "CenterAndZoomOut"; }
-            case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZutPause"; }
+            case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZOutPause"; }
             case TurnPhase::PerformAnim:                { return "PerformAnim"; }
             case TurnPhase::PerformReport:              { return "PerformReport"; }
             case TurnPhase::PostPerformPause:           { return "PostPerformPause"; }

@@ -35,8 +35,8 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Shield(const shield_type::Enum SHIELD_TYPE,
-                                          const material::Enum    MATERIAL_PRI,
-                                          const material::Enum    MATERIAL_SEC)
+                                         const material::Enum    MATERIAL_PRI,
+                                         const material::Enum    MATERIAL_SEC)
     {
         ArmorInfo armorInfo(armor_type::Sheild);
         armorInfo.shield = SHIELD_TYPE;
@@ -115,8 +115,8 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Helm(const helm_type::Enum HELM_TYPE,
-                                        const material::Enum  MATERIAL_PRI,
-                                        const material::Enum  MATERIAL_SEC)
+                                       const material::Enum  MATERIAL_PRI,
+                                       const material::Enum  MATERIAL_SEC)
     {
         ArmorInfo armorInfo(armor_type::Helm);
         armorInfo.helm = HELM_TYPE;
@@ -164,9 +164,9 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Gauntlets(const base_type::Enum TYPE,
-                                             const material::Enum  MATERIAL_PRI,
-                                             const material::Enum  MATERIAL_SEC,
-                                             const bool            IS_PIXIE_ITEM)
+                                            const material::Enum  MATERIAL_PRI,
+                                            const material::Enum  MATERIAL_SEC,
+                                            const bool            IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Gauntlets);
         armorInfo.is_gauntlets = true;
@@ -213,8 +213,8 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Pants(const base_type::Enum TYPE,
-                                         const material::Enum  MATERIAL_SEC,
-                                         const bool            IS_PIXIE_ITEM)
+                                        const material::Enum  MATERIAL_SEC,
+                                        const bool            IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Pants);
         armorInfo.is_pants = true;
@@ -263,9 +263,9 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Boots(const base_type::Enum TYPE,
-                                         const material::Enum  MATERIAL_PRI,
-                                         const material::Enum  MATERIAL_SEC,
-                                         const bool            IS_PIXIE_ITEM)
+                                        const material::Enum  MATERIAL_PRI,
+                                        const material::Enum  MATERIAL_SEC,
+                                        const bool            IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Boots);
         armorInfo.is_boots = true;
@@ -317,8 +317,8 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Shirt(const base_type::Enum TYPE,
-                                         const material::Enum  MATERIAL_SEC,
-                                         const bool            IS_PIXIE_ITEM)
+                                        const material::Enum  MATERIAL_SEC,
+                                        const bool            IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Shirt);
         armorInfo.is_shirt = true;
@@ -367,9 +367,9 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Bracer(const base_type::Enum TYPE,
-                                          const material::Enum  MATERIAL_PRI,
-                                          const material::Enum  MATERIAL_SEC,
-                                          const bool            IS_PIXIE_ITEM)
+                                         const material::Enum  MATERIAL_PRI,
+                                         const material::Enum  MATERIAL_SEC,
+                                         const bool            IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Bracer);
         armorInfo.is_bracer = true;
@@ -412,8 +412,8 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Aventail(const base_type::Enum TYPE,
-                                            const material::Enum  MATERIAL_PRI,
-                                            const material::Enum  MATERIAL_SEC)
+                                           const material::Enum  MATERIAL_PRI,
+                                           const material::Enum  MATERIAL_SEC)
     {
         ArmorInfo armorInfo(armor_type::Aventail);
         armorInfo.is_aventail = true;
@@ -454,9 +454,9 @@ namespace armor
 
 
     ItemSPtr_t ArmorFactory::Make_Cover(const cover_type::Enum COVER_TYPE,
-                                         const material::Enum   MATERIAL_PRI,
-                                         const material::Enum   MATERIAL_SEC,
-                                         const bool             IS_PIXIE_ITEM)
+                                        const material::Enum   MATERIAL_PRI,
+                                        const material::Enum   MATERIAL_SEC,
+                                        const bool             IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Covering);
         armorInfo.cover = COVER_TYPE;

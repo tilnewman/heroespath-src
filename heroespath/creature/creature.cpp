@@ -596,8 +596,23 @@ namespace creature
                     if (alraedyHasVestEquipped)
                         resultSS << ss.str() << "  " << "(Already has a vest equipped)" << SEP;
                 }
+                else if ((ITEM_SPTR->Armor_Info().cover != item::armor::cover_type::Vest) && (ARMOR_TYPE & item::armor_type::Covering))
+                {
+                    auto alreadyHasNonVestCovering{ false };
+                    for (auto const & NEXT_ITEM_SPTR : inventory_.ItemsEquipped())
+                        if ((NEXT_ITEM_SPTR->ArmorType() & item::armor_type::Covering) &&
+                            (NEXT_ITEM_SPTR->Armor_Info().cover != item::armor::cover_type::Vest))
+                            alreadyHasNonVestCovering = true;
+
+                    if (alreadyHasNonVestCovering)
+                    {
+                        resultSS << ss.str() << SEP;
+                    }
+                }
                 else
+                {
                     resultSS << ss.str() << SEP;
+                }
             }
         }
 

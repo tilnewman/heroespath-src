@@ -10,6 +10,7 @@
 #include "heroespath/log-macros.hpp"
 #include "heroespath/assertlogandthrow.hpp"
 #include "heroespath/loop-manager.hpp"
+#include "heroespath/non-player/ownership-profile.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -393,6 +394,73 @@ namespace gui
             randIndex = 0;
             ++miscIndex;
             return false;
+        }
+
+        //test item ToString() functions
+        {
+            static unsigned int categoryIndex{ 0 };
+            if (categoryIndex <= heroespath::item::category::Edible)
+            {
+                auto const STR{ heroespath::item::category::ToString(static_cast<heroespath::item::category::Enum>(categoryIndex), false) };
+                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager category::ToString(\"" + STR + "\") Test.");
+                if (0 == categoryIndex)
+                {
+                    categoryIndex = 1;
+                }
+                else
+                {
+                    categoryIndex = categoryIndex << 1;
+                }
+                return false;
+            }
+
+            static unsigned int weaponTypeIndex{ 0 };
+            if (weaponTypeIndex <= heroespath::item::weapon_type::Breath)
+            {
+                auto const STR{ heroespath::item::weapon_type::ToString(static_cast<heroespath::item::weapon_type::Enum>(weaponTypeIndex), false) };
+                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
+                if (0 == weaponTypeIndex)
+                {
+                    weaponTypeIndex = 1;
+                }
+                else
+                {
+                    weaponTypeIndex = weaponTypeIndex << 1;
+                }
+                return false;
+            }
+
+            static unsigned int armorTypeIndex{ 0 };
+            if (armorTypeIndex <= heroespath::item::armor_type::Skin)
+            {
+                auto const STR{ heroespath::item::armor_type::ToString(static_cast<heroespath::item::armor_type::Enum>(armorTypeIndex), false) };
+                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
+                if (0 == armorTypeIndex)
+                {
+                    armorTypeIndex = 1;
+                }
+                else
+                {
+                    armorTypeIndex = armorTypeIndex << 1;
+                }
+                return false;
+            }
+
+            static unsigned int collecterTypeIndex{ 0 };
+            if (collecterTypeIndex <= heroespath::non_player::ownership::collector_type::Hoarder)
+            {
+                auto const STR{ heroespath::non_player::ownership::collector_type::ToString(static_cast<heroespath::non_player::ownership::collector_type::Enum>(collecterTypeIndex)) };
+                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager non_player::ownership::collector_type::ToString(\"" + STR + "\") Test.");
+                if (0 == collecterTypeIndex)
+                {
+                    collecterTypeIndex = 1;
+                }
+                else
+                {
+                    collecterTypeIndex = collecterTypeIndex << 1;
+                }
+                return false;
+            }
         }
 
         heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  ALL TESTS PASSED.");

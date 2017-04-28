@@ -15,30 +15,43 @@ namespace item
     {
         std::ostringstream ss;
 
-        if (E & category::Magical)   ss << "magical";
-        if (E & category::Weapon)    ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
-        if (E & category::Armor)     ss << ((ss.str().empty()) ? "" : ", ") << "armor";
-        if (E & category::Useable)   ss << ((ss.str().empty()) ? "" : ", ") << "useable";
-        if (E & category::Equippable)ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
-        if (E & category::BodyPart)  ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
-        if (E & category::Wearable)  ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
-        if (E & category::OneHanded) ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
-        if (E & category::TwoHanded) ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
-        if (E & category::QuestItem) ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
-        if (E & category::Edible)    ss << ((ss.str().empty()) ? "" : ", ") << "edible";
-
-        if ((E & category::EnchantsOnlyWhenEquipped) && (E & category::EnchantsWhenHeld))
-            ss << ((ss.str().empty()) ? "" : " and ") << "works an enchantment when held or equipped";
+        if (E == category::Broken)
+        {
+            ss << "broken/useless";
+        }
         else
         {
-            if (E & category::EnchantsWhenHeld)
-                ss << ((ss.str().empty()) ? "" : " and ") << "enchants when held";
-            else if (E & category::EnchantsOnlyWhenEquipped)
-                ss << ((ss.str().empty()) ? "" : " and ") << "enchants when equipped";
+            if (E & category::Magical)   ss << "magical";
+            if (E & category::Weapon)    ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
+            if (E & category::Armor)     ss << ((ss.str().empty()) ? "" : ", ") << "armor";
+            if (E & category::Useable)   ss << ((ss.str().empty()) ? "" : ", ") << "useable";
+            if (E & category::Equippable)ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
+            if (E & category::BodyPart)  ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
+            if (E & category::Wearable)  ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
+            if (E & category::OneHanded) ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
+            if (E & category::TwoHanded) ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
+            if (E & category::QuestItem) ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
+            if (E & category::Edible)    ss << ((ss.str().empty()) ? "" : ", ") << "edible";
+
+            if ((E & category::EnchantsOnlyWhenEquipped) && (E & category::EnchantsWhenHeld))
+            {
+                ss << ((ss.str().empty()) ? "" : " and ") << "works an enchantment when held or equipped";
+            }
+            else
+            {
+                if (E & category::EnchantsWhenHeld)
+                    ss << ((ss.str().empty()) ? "" : " and ") << "enchants when held";
+                else if (E & category::EnchantsOnlyWhenEquipped)
+                    ss << ((ss.str().empty()) ? "" : " and ") << "enchants when equipped";
+            }
         }
 
         if (ss.str().empty())
-            ss << "broken/useless";
+        {
+            std::ostringstream ssErr;
+            ssErr << "heroespath::item::category::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
 
         if (WILL_WRAP)
             return "(" + ss.str() + ")";
@@ -622,29 +635,41 @@ namespace item
         if (WILL_WRAP)
             ss << "(";
 
-        if (E & weapon_type::Bladed)      ss << "bladed";
-        if (E & weapon_type::Melee)       ss << ((ss.str().empty()) ? "" : "/") << "melee";
-        if (E & weapon_type::Projectile)  ss << ((ss.str().empty()) ? "" : "/") << "projectile";
-        if (E & weapon_type::Pointed)     ss << ((ss.str().empty()) ? "" : "/") << "pointed";
-        if (E & weapon_type::Claws)       ss << ((ss.str().empty()) ? "" : "/") << "claws";
-        if (E & weapon_type::Bite)        ss << ((ss.str().empty()) ? "" : "/") << "bite";
-        if (E & weapon_type::Sword)       ss << ((ss.str().empty()) ? "" : "/") << "sword";
-        if (E & weapon_type::Axe)         ss << ((ss.str().empty()) ? "" : "/") << "axe";
-        if (E & weapon_type::Whip)        ss << ((ss.str().empty()) ? "" : "/") << "whip";
-        if (E & weapon_type::Blowpipe)    ss << ((ss.str().empty()) ? "" : "/") << "blowpipe";
-        if (E & weapon_type::Bow)         ss << ((ss.str().empty()) ? "" : "/") << "bow";
-        if (E & weapon_type::Crossbow)    ss << ((ss.str().empty()) ? "" : "/") << "crossbow";
-        if (E & weapon_type::Knife)       ss << ((ss.str().empty()) ? "" : "/") << "knife";
-        if (E & weapon_type::Club)        ss << ((ss.str().empty()) ? "" : "/") << "club";
-        if (E & weapon_type::Staff)       ss << ((ss.str().empty()) ? "" : "/") << "staff";
-        if (E & weapon_type::Sling)       ss << ((ss.str().empty()) ? "" : "/") << "sling";
-        if (E & weapon_type::BladedStaff) ss << ((ss.str().empty()) ? "" : "/") << "bladed staff";
-        if (E & weapon_type::Fists)       ss << ((ss.str().empty()) ? "" : "/") << "fists";
-        if (E & weapon_type::Tendrils)    ss << ((ss.str().empty()) ? "" : "/") << "tendrils";
-        if (E & weapon_type::Breath)      ss << ((ss.str().empty()) ? "" : "/") << "breath";
+        if (E == weapon_type::NotAWeapon)
+        {
+            ss << "not a weapon";
+        }
+        else
+        {
+            if (E & weapon_type::Bladed)      ss << "bladed";
+            if (E & weapon_type::Melee)       ss << ((ss.str().empty()) ? "" : "/") << "melee";
+            if (E & weapon_type::Projectile)  ss << ((ss.str().empty()) ? "" : "/") << "projectile";
+            if (E & weapon_type::Pointed)     ss << ((ss.str().empty()) ? "" : "/") << "pointed";
+            if (E & weapon_type::Claws)       ss << ((ss.str().empty()) ? "" : "/") << "claws";
+            if (E & weapon_type::Bite)        ss << ((ss.str().empty()) ? "" : "/") << "bite";
+            if (E & weapon_type::Sword)       ss << ((ss.str().empty()) ? "" : "/") << "sword";
+            if (E & weapon_type::Axe)         ss << ((ss.str().empty()) ? "" : "/") << "axe";
+            if (E & weapon_type::Whip)        ss << ((ss.str().empty()) ? "" : "/") << "whip";
+            if (E & weapon_type::Blowpipe)    ss << ((ss.str().empty()) ? "" : "/") << "blowpipe";
+            if (E & weapon_type::Bow)         ss << ((ss.str().empty()) ? "" : "/") << "bow";
+            if (E & weapon_type::Crossbow)    ss << ((ss.str().empty()) ? "" : "/") << "crossbow";
+            if (E & weapon_type::Spear)       ss << ((ss.str().empty()) ? "" : "/") << "spear";
+            if (E & weapon_type::Knife)       ss << ((ss.str().empty()) ? "" : "/") << "knife";
+            if (E & weapon_type::Club)        ss << ((ss.str().empty()) ? "" : "/") << "club";
+            if (E & weapon_type::Staff)       ss << ((ss.str().empty()) ? "" : "/") << "staff";
+            if (E & weapon_type::Sling)       ss << ((ss.str().empty()) ? "" : "/") << "sling";
+            if (E & weapon_type::BladedStaff) ss << ((ss.str().empty()) ? "" : "/") << "bladed staff";
+            if (E & weapon_type::Fists)       ss << ((ss.str().empty()) ? "" : "/") << "fists";
+            if (E & weapon_type::Tendrils)    ss << ((ss.str().empty()) ? "" : "/") << "tendrils";
+            if (E & weapon_type::Breath)      ss << ((ss.str().empty()) ? "" : "/") << "breath";
+        }
 
         if ((ss.str().empty()) || (ss.str() == "("))
-            ss << "not a weapon";
+        {
+            std::ostringstream ssErr;
+            ssErr << "heroespath::item::weapon_type::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
 
         if (WILL_WRAP)
             ss << ")";
@@ -676,7 +701,9 @@ namespace item
         else if (S == "Tendrils")   return Tendrils;
         else if (S == "Breath")     return Breath;
         else
+        {
             return NotAWeapon;
+        }
     }
 
 
@@ -687,18 +714,30 @@ namespace item
         if (WILL_WRAP)
             ss << "(";
 
-        if (E & armor_type::Sheild)      ss << "sheild";
-        if (E & armor_type::Helm)        ss << ((ss.str().empty()) ? "" : "/") << "helm";
-        if (E & armor_type::Gauntlets)   ss << ((ss.str().empty()) ? "" : "/") << "gauntlets";
-        if (E & armor_type::Pants)       ss << ((ss.str().empty()) ? "" : "/") << "pants";
-        if (E & armor_type::Boots)       ss << ((ss.str().empty()) ? "" : "/") << "boots";
-        if (E & armor_type::Shirt)       ss << ((ss.str().empty()) ? "" : "/") << "shirt";
-        if (E & armor_type::Bracer)      ss << ((ss.str().empty()) ? "" : "/") << "bracer";
-        if (E & armor_type::Aventail)    ss << ((ss.str().empty()) ? "" : "/") << "aventail";
-        if (E & armor_type::Skin)        ss << ((ss.str().empty()) ? "" : "/") << "skin";
+        if (E == armor_type::NotArmor)
+        {
+            ss << "not armor";
+        }
+        else
+        {
+            if (E & armor_type::Sheild)      ss << "sheild";
+            if (E & armor_type::Helm)        ss << ((ss.str().empty()) ? "" : "/") << "helm";
+            if (E & armor_type::Gauntlets)   ss << ((ss.str().empty()) ? "" : "/") << "gauntlets";
+            if (E & armor_type::Pants)       ss << ((ss.str().empty()) ? "" : "/") << "pants";
+            if (E & armor_type::Boots)       ss << ((ss.str().empty()) ? "" : "/") << "boots";
+            if (E & armor_type::Shirt)       ss << ((ss.str().empty()) ? "" : "/") << "shirt";
+            if (E & armor_type::Bracer)      ss << ((ss.str().empty()) ? "" : "/") << "bracer";
+            if (E & armor_type::Aventail)    ss << ((ss.str().empty()) ? "" : "/") << "aventail";
+            if (E & armor_type::Skin)        ss << ((ss.str().empty()) ? "" : "/") << "skin";
+            if (E & armor_type::Covering)    ss << ((ss.str().empty()) ? "" : "/") << "covering";
+        }
 
         if ((ss.str().empty()) || (ss.str() == "("))
-            ss << "not armor";
+        {
+            std::ostringstream ssErr;
+            ssErr << "heroespath::item::armor_type::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
 
         if (WILL_WRAP)
             ss << ")";

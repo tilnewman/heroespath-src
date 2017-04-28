@@ -108,13 +108,24 @@ namespace ownership
     {
         std::ostringstream ss;
 
-        if (E & Minimalist) ss << ((ss.str().empty()) ? "" : "/") << "Minimalist";
-        if (E & Practical)  ss << ((ss.str().empty()) ? "" : "/") << "Practical";
-        if (E & Collector)  ss << ((ss.str().empty()) ? "" : "/") << "Collector";
-        if (E & Hoarder)    ss << ((ss.str().empty()) ? "" : "/") << "Hoarder";
+        if (E == collector_type::NoPreference)
+        {
+            ss << "No Preference";
+        }
+        else
+        {
+            if (E & Minimalist) ss << "Minimalist";
+            if (E & Practical)  ss << ((ss.str().empty()) ? "" : "/") << "Practical";
+            if (E & Collector)  ss << ((ss.str().empty()) ? "" : "/") << "Collector";
+            if (E & Hoarder)    ss << ((ss.str().empty()) ? "" : "/") << "Hoarder";
+        }
 
         if (ss.str().empty())
-            ss << "No Preference";
+        {
+            std::ostringstream ssErr;
+            ssErr << "heroespath::non_player::ownership::collector_type::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
 
         return ss.str();
     }
