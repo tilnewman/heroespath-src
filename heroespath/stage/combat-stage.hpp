@@ -317,8 +317,10 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
-        combat::CombatDisplayPtr_t combatDisplayPtr_;
-        combat::CombatAnimPtr_t    combatAnimPtr_;
+        combat::CombatDisplayPtr_t combatDisplayStagePtr_;
+        
+        //this member controls combat related animations
+        combat::CombatAnimPtr_t combatAnimationPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 

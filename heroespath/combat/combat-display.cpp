@@ -607,16 +607,19 @@ namespace combat
     }
 
 
-    void CombatDisplay::MoveBattlefieldVert(const float AMOUNT)
+    void CombatDisplay::MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND)
     {
         //keep track of all original values in case undo is required
         auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
 
-        offScreenPosY_ += AMOUNT;
-        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
-                                                                                         offScreenPosY_,
-                                                                                         offScreenSprite_.getLocalBounds().width,
-                                                                                         offScreenSprite_.getLocalBounds().height)));
+        if (WILL_MOVE_BACKGROUND)
+        {
+            offScreenPosY_ += AMOUNT;
+            offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
+                                                                                             offScreenPosY_,
+                                                                                             offScreenSprite_.getLocalBounds().width,
+                                                                                             offScreenSprite_.getLocalBounds().height)));
+        }
 
         //move the creature nodes
         CombatNodePVec_t combatNodePVec;
@@ -626,13 +629,22 @@ namespace combat
 
         if (UpdateWhichNodesWillDraw())
         {
-            prevScrollPosVert_ = offScreenPosY_;
+            if (WILL_MOVE_BACKGROUND)
+            {
+                prevScrollPosVert_ = offScreenPosY_;
+            }
+
             centeringToPosV_ = sf::Vector2f(centeringToPosV_.x, centeringToPosV_.y - AMOUNT);
         }
         else
         {
             //if no creature/combat nodes are drawn to the screen anymore, then move back
-            offScreenPosY_ = prevScrollPosVert_;
+
+            if (WILL_MOVE_BACKGROUND)
+            {
+                offScreenPosY_ = prevScrollPosVert_;
+            }
+
             offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
 
             for (auto const nextCombatNodePtrC : combatNodePVec)
@@ -643,16 +655,19 @@ namespace combat
     }
 
 
-    void CombatDisplay::MoveBattlefieldHoriz(const float AMOUNT)
+    void CombatDisplay::MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND)
     {
         //keep track of all original values in case undo is required
         auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
 
-        offScreenPosX_ += AMOUNT;
-        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
-                                                                                         offScreenPosY_,
-                                                                                         offScreenSprite_.getLocalBounds().width,
-                                                                                         offScreenSprite_.getLocalBounds().height)));
+        if (WILL_MOVE_BACKGROUND)
+        {
+            offScreenPosX_ += AMOUNT;
+            offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
+                                                                                             offScreenPosY_,
+                                                                                             offScreenSprite_.getLocalBounds().width,
+                                                                                             offScreenSprite_.getLocalBounds().height)));
+        }
 
         //move the creature nodes
         CombatNodePVec_t combatNodePVec;
@@ -662,12 +677,20 @@ namespace combat
 
         if (UpdateWhichNodesWillDraw())
         {
-            prevScrollPosHoriz_ = offScreenPosX_;
+            if (WILL_MOVE_BACKGROUND)
+            {
+                prevScrollPosHoriz_ = offScreenPosX_;
+            }
+
             centeringToPosV_ = sf::Vector2f(centeringToPosV_.x - AMOUNT, centeringToPosV_.y);
         }
         else
         {
-            offScreenPosX_ = prevScrollPosHoriz_;
+            if (WILL_MOVE_BACKGROUND)
+            {
+                offScreenPosX_ = prevScrollPosHoriz_;
+            }
+
             offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
 
             for (auto const nextCombatNodePtrC : combatNodePVec)
@@ -937,17 +960,6 @@ namespace combat
         }
 
         return "";
-    }
-
-
-    void CombatDisplay::PositionSlideUpdate(const float RATIO)
-    {
-        for (auto const & NEXT_NODEPOSTRACK_PAIR : nodePosTrackerMap_)
-        {
-            const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * RATIO));
-            const float NEW_POS_VERT(NEXT_NODEPOSTRACK_PAIR.second.posVertOrig + (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * RATIO));
-            NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
-        }
     }
 
 

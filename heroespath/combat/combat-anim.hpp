@@ -67,13 +67,21 @@ namespace combat
         void DeathAnimUpdate(const float SLIDER_POS);
         void DeathAnimStop();
 
-        //The Centering Animation slides all creatures into the center of the battlefield
-        void CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        //The Centering Animation slides all creatures into the center of the
+        //battlefield.
+        void CenteringStart(creature::CreatureCPtrC_t);
         void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
         void CenteringStartTargetCenterOfBatllefield();
         void CenteringStart(const creature::CreaturePVec_t &);
-        void CenteringUpdate(const float RATIO_COMPLETE);
+        void CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
         void CenteringStop();
+
+        //The Reposition Animation slides all creatures around after a blocking
+        //position change, which has the effecting of looking like the battlefield
+        //camera is moving.
+        void RepositionAnimStart(creature::CreaturePtr_t);
+        void RepositionAnimUpdate(const float SLIDER_POS);
+        void RepositionAnimStop();
 
     private:
         static CombatAnim * instance_;
@@ -83,18 +91,21 @@ namespace combat
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
 
-        //members supporting the projectile shoot animation
+        //members supporting the Projectile Shoot Animation
         sfml_util::TextureSPtr_t projAnimTextureSPtr_;
         sf::Sprite projAnimSprite_;
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;
         bool projAnimWillSpin_;
 
-        //members supporting the death animation
+        //members supporting the Death Animation
         CombatNodePVec_t deadAnimNodesPVec_;
 
-        //members supporting the centering animation
+        //members supporting the Centering Animation
         combat::CombatNodePtr_t centeringAnimCombatNodePtr_;
+
+        //member supporting the Reposition Animation
+        creature::CreaturePtr_t repositionAnimCreaturePtr_;
     };
 
     using CombatAnimPtr_t = CombatAnim *;

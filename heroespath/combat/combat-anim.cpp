@@ -35,7 +35,8 @@ namespace combat
         projAnimEndPosV_            (0.0f, 0.0f),
         projAnimWillSpin_           (false),
         deadAnimNodesPVec_          (),
-        centeringAnimCombatNodePtr_ (nullptr)
+        centeringAnimCombatNodePtr_ (nullptr),
+        repositionAnimCreaturePtr_  (nullptr)
     {}
 
 
@@ -223,7 +224,6 @@ namespace combat
     }
 
 
-
     void CombatAnim::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         centeringAnimCombatNodePtr_ = combatDisplayPtr_->CombatTree().GetNode(CREATURE_CPTRC);
@@ -251,7 +251,7 @@ namespace combat
     }
 
 
-    void CombatAnim::CenteringUpdate(const float RATIO_COMPLETE)
+    void CombatAnim::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
     {
         sf::Vector2f targetPosV{ 0.0f, 0.0f };
         if (centeringAnimCombatNodePtr_ == nullptr)
@@ -267,17 +267,49 @@ namespace combat
 
         auto const DIFF_X((combatDisplayPtr_->BattlefieldRect().left + (combatDisplayPtr_->BattlefieldRect().width * 0.5f)) - targetPosV.x);
         auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayPtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * RATIO_COMPLETE);
+        combatDisplayPtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
 
         auto const DIFF_Y((combatDisplayPtr_->BattlefieldRect().top + (combatDisplayPtr_->BattlefieldRect().height * 0.5f)) - targetPosV.y);
         auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayPtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * RATIO_COMPLETE);
+        combatDisplayPtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
     }
 
 
     void CombatAnim::CenteringStop()
     {
         centeringAnimCombatNodePtr_ = nullptr;
+    }
+
+
+    void CombatAnim::RepositionAnimStart(creature::CreaturePtr_t creaturePtr)
+    {
+        repositionAnimCreaturePtr_ = creaturePtr;
+        CenteringStartTargetCenterOfBatllefield();
+    }
+
+
+    void CombatAnim::RepositionAnimUpdate(const float SLIDER_POS)
+    {
+        auto nodePositionTrackerMap{ combatDisplayPtr_->NodePositionTrackerMap() };
+        for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
+        {
+            const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
+            const float NEW_POS_VERT(NEXT_NODEPOSTRACK_PAIR.second.posVertOrig + (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
+            NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
+        }
+
+        creature::CreaturePVec_t creaturePVec{ repositionAnimCreaturePtr_ };
+        CenteringStart(creaturePVec);
+        CenteringUpdate(10.0f, false); //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
+
+        combatDisplayPtr_->UpdateWhichNodesWillDraw();
+    }
+
+
+    void CombatAnim::RepositionAnimStop()
+    {
+        CenteringStop();
+        repositionAnimCreaturePtr_ = nullptr;
     }
 
 }

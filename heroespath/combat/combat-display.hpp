@@ -133,16 +133,14 @@ namespace combat
         //returns explanation of why not or an empty string if can
         const std::string CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
 
-        void PositionSlideUpdate(const float RATIO);
-
         creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
 
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
 
-        inline void SetIsPlayerTurn(const bool B)               { isPlayerTurn_ = B; }
+        inline void SetIsPlayerTurn(const bool B)                               { isPlayerTurn_ = B; }
 
-        inline bool IsCreatureDraggingAllowed() const           { return isCreatureDragAllowed_; }
-        inline void IsCreatureDraggingAllowed(const bool B)     { isCreatureDragAllowed_ = B; }
+        inline bool IsCreatureDraggingAllowed() const                           { return isCreatureDragAllowed_; }
+        inline void IsCreatureDraggingAllowed(const bool B)                     { isCreatureDragAllowed_ = B; }
 
         inline int GetBlockingDistanceBetween(const creature::CreaturePtrC_t & A_CPTRC, const creature::CreaturePtrC_t & B_CPTRC) const { return combatTree_.GetBlockingDistanceBetween(A_CPTRC, B_CPTRC); }
 
@@ -155,14 +153,14 @@ namespace combat
 
         void CancelSummaryViewAndStartTransitionBack();
 
-        inline bool GetIsStatusMessageAnimating() const         { return isStatusMessageAnim_; }
-        inline void SetIsStatusMessageAnimating(const bool B)   { isStatusMessageAnim_ = B; }
+        inline bool GetIsStatusMessageAnimating() const                         { return isStatusMessageAnim_; }
+        inline void SetIsStatusMessageAnimating(const bool B)                   { isStatusMessageAnim_ = B; }
 
-        inline bool GetIsSummaryViewInProgress() const          { return isSummaryViewInProgress_; }
+        inline bool GetIsSummaryViewInProgress() const                          { return isSummaryViewInProgress_; }
 
         void HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING);
 
-        inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec) { combatTree_.GetCombatNodes(combatNodesPVec); }
+        inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)          { combatTree_.GetCombatNodes(combatNodesPVec); }
 
         void HandleEndOfTurnTasks();
 
@@ -176,27 +174,29 @@ namespace combat
 
         void SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
 
-        inline void SetUserActionAllowed(const bool IS_ALLOWED) { isUserActionAllowed_ = IS_ALLOWED; }
+        inline void SetUserActionAllowed(const bool IS_ALLOWED)                 { isUserActionAllowed_ = IS_ALLOWED; }
 
         const CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
         const CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
-        inline CombatTree & CombatTree()                        { return combatTree_; }
+        inline CombatTree & CombatTree()                                        { return combatTree_; }
 
         void PositionCombatTreeCells(const bool WILL_DELAY);
 
-        inline const sf::FloatRect BattlefieldRect()            { return battlefieldRect_; }
+        inline const sf::FloatRect BattlefieldRect()                            { return battlefieldRect_; }
 
         inline bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]); combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR); }
 
-        void MoveBattlefieldVert(const float AMOUNT);
-        void MoveBattlefieldHoriz(const float AMOUNT);
+        void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
+        void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
 
-        inline const sf::Vector2f CenteringPosV()               { return centeringToPosV_; }
-        inline void CenteringPosV(const sf::Vector2f & V)       { centeringToPosV_ = V; }
+        inline const sf::Vector2f CenteringPosV()                               { return centeringToPosV_; }
+        inline void CenteringPosV(const sf::Vector2f & V)                       { centeringToPosV_ = V; }
+
+        inline NodePosTrackerMap_t NodePositionTrackerMap()                     { return nodePosTrackerMap_; }
 
     protected:
-        inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
+        inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
