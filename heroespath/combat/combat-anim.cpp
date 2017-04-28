@@ -5,6 +5,7 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/display.hpp"
 
 #include "heroespath/combat/combat-display.hpp"
 #include "heroespath/combat/combat-text.hpp"
@@ -25,12 +26,16 @@ namespace combat
 
     CombatAnim::CombatAnim()
     :
-        projAnimTextureSPtr_(),
-        projAnimSprite_     (),
-        projAnimBeginPosV_  (0.0f, 0.0f),
-        projAnimEndPosV_    (0.0f, 0.0f),
-        projAnimWillSpin_   (false),
-        deadAnimNodesPVec_  ()
+        SCREEN_WIDTH_               (sfml_util::Display::Instance()->GetWinWidth()),
+        SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
+        BATTLEFIELD_CENTERING_SPEED_(sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
+        projAnimTextureSPtr_        (),
+        projAnimSprite_             (),
+        projAnimBeginPosV_          (0.0f, 0.0f),
+        projAnimEndPosV_            (0.0f, 0.0f),
+        projAnimWillSpin_           (false),
+        deadAnimNodesPVec_          (),
+        centeringAnimCombatNodePtr_ (nullptr)
     {}
 
 
@@ -215,6 +220,64 @@ namespace combat
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
         combatDisplayPtr_->PositionCombatTreeCells(true);
+    }
+
+
+
+    void CombatAnim::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    {
+        centeringAnimCombatNodePtr_ = combatDisplayPtr_->CombatTree().GetNode(CREATURE_CPTRC);
+    }
+
+
+    void CombatAnim::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
+    {
+        centeringAnimCombatNodePtr_ = nullptr;
+        combatDisplayPtr_->CenteringPosV( sf::Vector2f(TARGET_POS_X, TARGET_POS_Y) );
+    }
+
+
+    void CombatAnim::CenteringStartTargetCenterOfBatllefield()
+    {
+        auto const BATTLEFIELD_CENTER_V{ combatDisplayPtr_->GetCenterOfAllNodes() };
+        CenteringStart(BATTLEFIELD_CENTER_V.x, BATTLEFIELD_CENTER_V.y);
+    }
+
+
+    void CombatAnim::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
+    {
+        auto const CENTER_POS_V{ combatDisplayPtr_->FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+        CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
+    }
+
+
+    void CombatAnim::CenteringUpdate(const float RATIO_COMPLETE)
+    {
+        sf::Vector2f targetPosV{ 0.0f, 0.0f };
+        if (centeringAnimCombatNodePtr_ == nullptr)
+        {
+            targetPosV = combatDisplayPtr_->CenteringPosV();
+        }
+        else
+        {
+            auto const TARGET_POS_X(centeringAnimCombatNodePtr_->GetEntityPos().x + (centeringAnimCombatNodePtr_->GetEntityRegion().width  * 0.5f));
+            auto const TARGET_POS_Y(centeringAnimCombatNodePtr_->GetEntityPos().y + (centeringAnimCombatNodePtr_->GetEntityRegion().height * 0.5f));
+            targetPosV = sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
+        }
+
+        auto const DIFF_X((combatDisplayPtr_->BattlefieldRect().left + (combatDisplayPtr_->BattlefieldRect().width * 0.5f)) - targetPosV.x);
+        auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
+        combatDisplayPtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * RATIO_COMPLETE);
+
+        auto const DIFF_Y((combatDisplayPtr_->BattlefieldRect().top + (combatDisplayPtr_->BattlefieldRect().height * 0.5f)) - targetPosV.y);
+        auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
+        combatDisplayPtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * RATIO_COMPLETE);
+    }
+
+
+    void CombatAnim::CenteringStop()
+    {
+        centeringAnimCombatNodePtr_ = nullptr;
     }
 
 }

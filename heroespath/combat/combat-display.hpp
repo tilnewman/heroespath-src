@@ -123,14 +123,7 @@ namespace combat
         void StopShaking(creature::CreatureCPtrC_t);
 
         const sf::Vector2f GetCenterOfAllNodes() const;
-        void CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC);
-        void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
-        void CenteringStartTargetCenterOfBatllefield();
-        void CenteringStart(const creature::CreaturePVec_t &);
-        void CenteringUpdate(const float RATIO_COMPLETE);
-        void CenteringStop();
-        const sf::Vector2f CenteringTargetPos() const;
-
+        
         std::size_t FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
@@ -196,6 +189,12 @@ namespace combat
 
         inline bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]); combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR); }
 
+        void MoveBattlefieldVert(const float AMOUNT);
+        void MoveBattlefieldHoriz(const float AMOUNT);
+
+        inline const sf::Vector2f CenteringPosV()               { return centeringToPosV_; }
+        inline void CenteringPosV(const sf::Vector2f & V)       { centeringToPosV_ = V; }
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)    { isSummaryViewInProgress_ = B; }
 
@@ -212,8 +211,6 @@ namespace combat
                                   const creature::role::Enum ROLE,
                                   const int                  BLOCKING_POS);
 
-        void MoveBattlefieldVert(const float AMOUNT);
-        void MoveBattlefieldHoriz(const float AMOUNT);
 
     public:
         static const float       BATTLEFIELD_MARGIN_;
@@ -239,7 +236,6 @@ namespace combat
         const unsigned int              NAME_CHAR_SIZE_ORIG_;
         const float                     SCREEN_WIDTH_;
         const float                     SCREEN_HEIGHT_;
-        const float                     BATTLEFIELD_CENTERING_SPEED_;
         //
         unsigned int                    nameCharSizeCurr_;
         sf::FloatRect                   battlefieldRect_;
@@ -271,11 +267,6 @@ namespace combat
         creature::CreatureCPtr_t creatureThatWasShakingCPtr_;//remembers which creature to shake while in summary view
         SakeInfoMap_t            shakeInfoMap_;
 
-        //centering members
-        combat::CombatNodePtr_t centeringCombatNodePtr_;
-        float centeringToX_;
-        float centeringToY_;
-
         //members to manage node position shifting, put another way,
         //members that allow on battlefield creature images to slide
         //(animate) into new positions rather than instantly moving.
@@ -284,6 +275,9 @@ namespace combat
         //members that manage creature dragging
         bool isCreatureDragAllowed_;
         bool isMouseHeldDownInCreature_;
+
+        //members that support moving the battlefield and centering
+        sf::Vector2f centeringToPosV_;
     };
 
 

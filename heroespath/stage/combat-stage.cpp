@@ -571,7 +571,7 @@ namespace stage
 
         {
             const stats::StatSet KNIGHT_STATS(20 + sfml_util::rand::Int(10),
-                                              15 + sfml_util::rand::Int(6),
+                                              15 + sfml_util::rand::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                               0  + sfml_util::rand::Int(6),
                                               5  + sfml_util::rand::Int(10),
                                               15 + sfml_util::rand::Int(10),
@@ -621,7 +621,7 @@ namespace stage
         */
         {
             const stats::StatSet ARCHER_STATS(15 + sfml_util::rand::Int(10),
-                                              20 + sfml_util::rand::Int(10),
+                                              20 + sfml_util::rand::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                               5  + sfml_util::rand::Int(6),
                                               10 + sfml_util::rand::Int(10),
                                               10 + sfml_util::rand::Int(8),
@@ -661,7 +661,7 @@ namespace stage
         */
         {
             const stats::StatSet BARD_STATS(10 + sfml_util::rand::Int(6),
-                                            10 + sfml_util::rand::Int(6),
+                                            10 + sfml_util::rand::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                             10 + sfml_util::rand::Int(6),
                                             10 + sfml_util::rand::Int(6),
                                             10 + sfml_util::rand::Int(6),
@@ -701,7 +701,7 @@ namespace stage
         */
         {
             const stats::StatSet THEIF_STATS(5  + sfml_util::rand::Int(10),
-                                             5  + sfml_util::rand::Int(10),
+                                             5  + sfml_util::rand::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                              5  + sfml_util::rand::Int(10),
                                              15 + sfml_util::rand::Int(15),
                                              15 + sfml_util::rand::Int(10),
@@ -721,7 +721,7 @@ namespace stage
 
         {
             const stats::StatSet CLERIC_STATS(5  + sfml_util::rand::Int(8),
-                                              5  + sfml_util::rand::Int(8),
+                                              5  + sfml_util::rand::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                               15 + sfml_util::rand::Int(10),
                                               10 + sfml_util::rand::Int(8),
                                               25 + sfml_util::rand::Int(8),
@@ -741,7 +741,7 @@ namespace stage
 
         {
             const stats::StatSet SORCERER_STATS(0  + sfml_util::rand::Int(8),
-                                                0  + sfml_util::rand::Int(8),
+                                                0  + sfml_util::rand::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
                                                 5  + sfml_util::rand::Int(8),
                                                 10 + sfml_util::rand::Int(6),
                                                 50 + sfml_util::rand::Int(6),
@@ -792,7 +792,7 @@ namespace stage
             encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Stone));
 
             //TODO TEMP REMOVE -test projectile animations by forcing all enemy creatures to have projectile weapons
-            auto projIndex{ 0 };
+            /*auto projIndex{ 0 };
             for (auto & nextCharacterSPtr : encounterSPtr_->NonPlayerParty()->Characters())
             {
                 for (auto const & NEXT_ITEM_SPTR : nextCharacterSPtr->Inventory().ItemsEquipped())
@@ -824,9 +824,11 @@ namespace stage
                 M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
 
                 nextCharacterSPtr->SetCurrentWeaponsToBest();
-            }
 
-            //TODO TEMP REMOVE -test projectile animations by forcing all player characters to have projectile weapons
+                nextCharacterSPtr->Stats().Get(stats::stat::Accuracy).ModifyCurrent(100);
+            }*/
+
+            /*//TODO TEMP REMOVE -test projectile animations by forcing all player characters to have projectile weapons
             for (auto & nextCharacterSPtr : heroespath::Game::Instance()->State()->Party()->Characters())
             {
                 if ((nextCharacterSPtr->Role().Which() == creature::role::Cleric) ||
@@ -873,7 +875,7 @@ namespace stage
                 M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
 
                 nextCharacterSPtr->SetCurrentWeaponsToBest();
-            }
+            }*/
         }
 
         //combat display
@@ -1050,7 +1052,7 @@ namespace stage
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
-            combatDisplayPtr_->CenteringUpdate(SLIDER_POS);
+            combatAnimPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
             {
                 StartTurn_Step2();
@@ -1098,7 +1100,7 @@ namespace stage
         if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
-            combatDisplayPtr_->CenteringUpdate(SLIDER_POS);
+            combatAnimPtr_->CenteringUpdate(SLIDER_POS);
 
             if (willCenterZoomOut_ && (combatDisplayPtr_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
             {
@@ -1108,7 +1110,7 @@ namespace stage
 
             if (slider_.GetIsDone())
             {
-                combatDisplayPtr_->CenteringStop();
+                combatAnimPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
                 StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
             }
@@ -1122,10 +1124,10 @@ namespace stage
             if (sliderPosAdj > 1.0f)
                 sliderPosAdj = 1.0f;
 
-            combatDisplayPtr_->CenteringUpdate(sliderPosAdj);
+            combatAnimPtr_->CenteringUpdate(sliderPosAdj);
             if (slider_.GetIsDone())
             {
-                combatDisplayPtr_->CenteringStop();
+                combatAnimPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
                 AppendInitialStatus();
@@ -1155,7 +1157,7 @@ namespace stage
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
             slider_.Reset(INITIAL_CENTERING_SLIDER_SPEED_);
-            combatDisplayPtr_->CenteringStartTargetCenterOfBatllefield();
+            combatAnimPtr_->CenteringStartTargetCenterOfBatllefield();
             return;
         }
     }
@@ -1415,7 +1417,7 @@ namespace stage
                 creaturesToCenterPVec_.clear();
                 creaturesToCenterPVec_.push_back(turnCreaturePtr_);
                 fightResult_.EffectedCreatures(creaturesToCenterPVec_);
-                combatDisplayPtr_->CenteringStart(creaturesToCenterPVec_);
+                combatAnimPtr_->CenteringStart(creaturesToCenterPVec_);
 
                 willCenterZoomOut_ = combatDisplayPtr_->IsZoomOutRequired(creaturesToCenterPVec_);
 
@@ -1623,7 +1625,7 @@ namespace stage
         performReportHitIndex_ = 0;
 
         slider_.Reset(CENTERING_SLIDER_SPEED_);
-        combatDisplayPtr_->CenteringStart(turnCreaturePtr_);
+        combatAnimPtr_->CenteringStart(turnCreaturePtr_);
     }
 
 
@@ -1633,7 +1635,7 @@ namespace stage
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
         combatDisplayPtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
-        combatDisplayPtr_->CenteringStop();
+        combatAnimPtr_->CenteringStop();
         combatDisplayPtr_->StartShaking(turnCreaturePtr_);
 
         goldTextColorShaker_.Reset();
@@ -1710,7 +1712,7 @@ namespace stage
 
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             creaturesToCenterPVec_ = creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature };
-            combatDisplayPtr_->CenteringStart(creaturesToCenterPVec_);
+            combatAnimPtr_->CenteringStart(creaturesToCenterPVec_);
             willCenterZoomOut_ = combatDisplayPtr_->IsZoomOutRequired(creaturesToCenterPVec_);
             slider_.Reset(CENTERING_SLIDER_SPEED_);
 
@@ -1797,6 +1799,7 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Retreat);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            performType_ = PerformType::Retreat;
             StartPerformAnim();
             return true;
         }
@@ -2364,8 +2367,6 @@ namespace stage
                 break;
             }
 
-            case PerformType::Pause:
-
             case PerformType::MeleeWeapon:
             {
                 SetPerformAnimPhase(PerformAnimPhase::MoveToward);
@@ -2401,6 +2402,7 @@ namespace stage
                 break;
             }
 
+            case PerformType::Pause:
             case PerformType::Cast:
             case PerformType::Roar:
             case PerformType::Pounce:

@@ -101,7 +101,6 @@ namespace combat
         NAME_CHAR_SIZE_ORIG_             (sfml_util::FontManager::Instance()->Size_Smallish()),
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
-        BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
         nameCharSizeCurr_          (NAME_CHAR_SIZE_ORIG_),
         battlefieldRect_           (),
         boxSPtr_                   (),
@@ -128,12 +127,10 @@ namespace combat
         combatNodeToGuiEntityMap_  (),
         creatureThatWasShakingCPtr_(nullptr),
         shakeInfoMap_              (),
-        centeringCombatNodePtr_   (),
-        centeringToX_              (-1.0f),//any negative will work here
-        centeringToY_              (-1.0f),// "
         nodePosTrackerMap_         (),
         isCreatureDragAllowed_     (false),
-        isMouseHeldDownInCreature_ (false)
+        isMouseHeldDownInCreature_ (false),
+        centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
 
 
@@ -610,6 +607,77 @@ namespace combat
     }
 
 
+    void CombatDisplay::MoveBattlefieldVert(const float AMOUNT)
+    {
+        //keep track of all original values in case undo is required
+        auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
+
+        offScreenPosY_ += AMOUNT;
+        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
+                                                                                         offScreenPosY_,
+                                                                                         offScreenSprite_.getLocalBounds().width,
+                                                                                         offScreenSprite_.getLocalBounds().height)));
+
+        //move the creature nodes
+        CombatNodePVec_t combatNodePVec;
+        combatTree_.GetCombatNodes(combatNodePVec);
+        for (auto const nextCombatNodePtrC : combatNodePVec)
+            nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT * -1.0f);
+
+        if (UpdateWhichNodesWillDraw())
+        {
+            prevScrollPosVert_ = offScreenPosY_;
+            centeringToPosV_ = sf::Vector2f(centeringToPosV_.x, centeringToPosV_.y - AMOUNT);
+        }
+        else
+        {
+            //if no creature/combat nodes are drawn to the screen anymore, then move back
+            offScreenPosY_ = prevScrollPosVert_;
+            offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
+
+            for (auto const nextCombatNodePtrC : combatNodePVec)
+                nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT);
+
+            UpdateWhichNodesWillDraw();
+        }
+    }
+
+
+    void CombatDisplay::MoveBattlefieldHoriz(const float AMOUNT)
+    {
+        //keep track of all original values in case undo is required
+        auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
+
+        offScreenPosX_ += AMOUNT;
+        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(offScreenPosX_,
+                                                                                         offScreenPosY_,
+                                                                                         offScreenSprite_.getLocalBounds().width,
+                                                                                         offScreenSprite_.getLocalBounds().height)));
+
+        //move the creature nodes
+        CombatNodePVec_t combatNodePVec;
+        combatTree_.GetCombatNodes(combatNodePVec);
+        for (auto const nextCombatNodePtrC : combatNodePVec)
+            nextCombatNodePtrC->MoveEntityPos(AMOUNT * -1.0f, 0.0f);
+
+        if (UpdateWhichNodesWillDraw())
+        {
+            prevScrollPosHoriz_ = offScreenPosX_;
+            centeringToPosV_ = sf::Vector2f(centeringToPosV_.x - AMOUNT, centeringToPosV_.y);
+        }
+        else
+        {
+            offScreenPosX_ = prevScrollPosHoriz_;
+            offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
+
+            for (auto const nextCombatNodePtrC : combatNodePVec)
+                nextCombatNodePtrC->MoveEntityPos(AMOUNT, 0.0f);
+
+            UpdateWhichNodesWillDraw();
+        }
+    }
+
+
     void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
     {
         if (false == isUserActionAllowed_)
@@ -707,69 +775,6 @@ namespace combat
             return COMBAT_NODE_PTR->Creature()->Name();
         else
             return COMBAT_NODE_PTR->Creature()->Name() + " " + COMBAT_NODE_PTR->Creature()->Role().Name();
-    }
-
-
-    void CombatDisplay::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
-    {
-        centeringCombatNodePtr_ = combatTree_.GetNode(CREATURE_CPTRC);
-    }
-
-
-    void CombatDisplay::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
-    {
-        centeringCombatNodePtr_ = nullptr;
-        centeringToX_ = TARGET_POS_X;
-        centeringToY_ = TARGET_POS_Y;
-    }
-
-
-    void CombatDisplay::CenteringStartTargetCenterOfBatllefield()
-    {
-        auto const BATTLEFIELD_CENTER_V{ GetCenterOfAllNodes() };
-        CenteringStart(BATTLEFIELD_CENTER_V.x, BATTLEFIELD_CENTER_V.y);
-    }
-
-
-    void CombatDisplay::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
-    {
-        auto const CENTER_POS_V{ FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
-        CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
-    }
-
-
-    void CombatDisplay::CenteringUpdate(const float RATIO_COMPLETE)
-    {
-        auto const TARGET_POS_V(CenteringTargetPos());
-
-        auto const DIFF_X((battlefieldRect_.left + (battlefieldRect_.width * 0.5f)) - TARGET_POS_V.x);
-        auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
-        MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * RATIO_COMPLETE);
-
-        auto const DIFF_Y((battlefieldRect_.top + (battlefieldRect_.height * 0.5f)) - TARGET_POS_V.y);
-        auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
-        MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * RATIO_COMPLETE);
-    }
-
-
-    void CombatDisplay::CenteringStop()
-    {
-        centeringCombatNodePtr_ = nullptr;
-    }
-
-
-    const sf::Vector2f CombatDisplay::CenteringTargetPos() const
-    {
-        if (centeringCombatNodePtr_ == nullptr)
-        {
-            return sf::Vector2f(centeringToX_, centeringToY_);
-        }
-        else
-        {
-            auto const TARGET_POS_X(centeringCombatNodePtr_->GetEntityPos().x + (centeringCombatNodePtr_->GetEntityRegion().width  * 0.5f));
-            auto const TARGET_POS_Y(centeringCombatNodePtr_->GetEntityPos().y + (centeringCombatNodePtr_->GetEntityRegion().height * 0.5f));
-            return sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
-        }
     }
 
 
@@ -1100,79 +1105,6 @@ namespace combat
             M_ASSERT_OR_LOGANDTHROW_SS((closestCreaturesPVec.empty() == false), "heroespath::combat::CombatDisplay::GetClosest(" << CREATURE_CPTRC->Name() << ", among_size=" << AMONG_PVEC.size() << ") reached an invalid state where there were no closest creatures when there should be at least one of the " << AMONG_PVEC.size() << " total possible.");
 
             return closestCreaturesPVec;
-        }
-    }
-
-
-
-    void CombatDisplay::MoveBattlefieldVert(const float AMOUNT)
-    {
-        //keep track of all original values in case undo is required
-        auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
-
-        offScreenPosY_ += AMOUNT;
-        offScreenSprite_.setTextureRect( sfml_util::ConvertRect<float, int>( sf::FloatRect(offScreenPosX_,
-                                                                                           offScreenPosY_,
-                                                                                           offScreenSprite_.getLocalBounds().width,
-                                                                                           offScreenSprite_.getLocalBounds().height)) );
-
-        //move the creature nodes
-        CombatNodePVec_t combatNodePVec;
-        combatTree_.GetCombatNodes(combatNodePVec);
-        for (auto const nextCombatNodePtrC : combatNodePVec)
-            nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT * -1.0f);
-
-        if (UpdateWhichNodesWillDraw())
-        {
-            prevScrollPosVert_ = offScreenPosY_;
-            centeringToY_ -= AMOUNT;
-        }
-        else
-        {
-            //if no creature/combat nodes are drawn to the screen anymore, then move back
-            offScreenPosY_ = prevScrollPosVert_;
-            offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
-
-            for (auto const nextCombatNodePtrC : combatNodePVec)
-                nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT);
-
-            UpdateWhichNodesWillDraw();
-        }
-    }
-
-
-    void CombatDisplay::MoveBattlefieldHoriz(const float AMOUNT)
-    {
-        //keep track of all original values in case undo is required
-        auto const ORIG_OFFSCREEN_SPRITE_RECT(offScreenSprite_.getTextureRect());
-
-        offScreenPosX_ += AMOUNT;
-        offScreenSprite_.setTextureRect( sfml_util::ConvertRect<float, int>( sf::FloatRect(offScreenPosX_,
-                                                                                           offScreenPosY_,
-                                                                                           offScreenSprite_.getLocalBounds().width,
-                                                                                           offScreenSprite_.getLocalBounds().height)) );
-
-        //move the creature nodes
-        CombatNodePVec_t combatNodePVec;
-        combatTree_.GetCombatNodes(combatNodePVec);
-        for (auto const nextCombatNodePtrC : combatNodePVec)
-            nextCombatNodePtrC->MoveEntityPos(AMOUNT * -1.0f, 0.0f);
-
-        if (UpdateWhichNodesWillDraw())
-        {
-            prevScrollPosHoriz_ = offScreenPosX_;
-
-            centeringToX_ -= AMOUNT;
-        }
-        else
-        {
-            offScreenPosX_ = prevScrollPosHoriz_;
-            offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
-
-            for (auto const nextCombatNodePtrC : combatNodePVec)
-                nextCombatNodePtrC->MoveEntityPos(AMOUNT, 0.0f);
-
-            UpdateWhichNodesWillDraw();
         }
     }
 

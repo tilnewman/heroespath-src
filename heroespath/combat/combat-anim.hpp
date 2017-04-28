@@ -62,14 +62,26 @@ namespace combat
         void ProjectileShootAnimUpdate(const float SLIDER_POS);
         void ProjectileShootAnimStop();
 
-        //The death animation is only for non-player characters
+        //The Death Animation is only for non-player characters
         void DeathAnimStart(const creature::CreaturePVec_t &);
         void DeathAnimUpdate(const float SLIDER_POS);
         void DeathAnimStop();
 
+        //The Centering Animation slides all creatures into the center of the battlefield
+        void CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
+        void CenteringStartTargetCenterOfBatllefield();
+        void CenteringStart(const creature::CreaturePVec_t &);
+        void CenteringUpdate(const float RATIO_COMPLETE);
+        void CenteringStop();
+
     private:
         static CombatAnim * instance_;
         static CombatDisplayPtr_t combatDisplayPtr_;
+
+        const float SCREEN_WIDTH_;
+        const float SCREEN_HEIGHT_;
+        const float BATTLEFIELD_CENTERING_SPEED_;
 
         //members supporting the projectile shoot animation
         sfml_util::TextureSPtr_t projAnimTextureSPtr_;
@@ -80,6 +92,9 @@ namespace combat
 
         //members supporting the death animation
         CombatNodePVec_t deadAnimNodesPVec_;
+
+        //members supporting the centering animation
+        combat::CombatNodePtr_t centeringAnimCombatNodePtr_;
     };
 
     using CombatAnimPtr_t = CombatAnim *;
