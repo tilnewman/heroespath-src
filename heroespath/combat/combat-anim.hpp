@@ -73,7 +73,10 @@ namespace combat
         void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
         void CenteringStartTargetCenterOfBatllefield();
         void CenteringStart(const creature::CreaturePVec_t &);
-        void CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
+
+        //returns true if CombatStage should zoom out, or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
+        bool CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
+        
         void CenteringStop();
 
         //The Reposition Animation slides all creatures around after a blocking
@@ -85,7 +88,7 @@ namespace combat
 
     private:
         static CombatAnim * instance_;
-        static CombatDisplayPtr_t combatDisplayPtr_;
+        static CombatDisplayPtr_t combatDisplayStagePtr_;
 
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
@@ -103,6 +106,8 @@ namespace combat
 
         //members supporting the Centering Animation
         combat::CombatNodePtr_t centeringAnimCombatNodePtr_;
+        creature::CreaturePVec_t centeringAnimCreaturesPVec_;
+        bool centeringAnimWillZoomOut_;
 
         //member supporting the Reposition Animation
         creature::CreaturePtr_t repositionAnimCreaturePtr_;

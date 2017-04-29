@@ -139,9 +139,6 @@ namespace combat
 
         inline void SetIsPlayerTurn(const bool B)                               { isPlayerTurn_ = B; }
 
-        inline bool IsCreatureDraggingAllowed() const                           { return isCreatureDragAllowed_; }
-        inline void IsCreatureDraggingAllowed(const bool B)                     { isCreatureDragAllowed_ = B; }
-
         inline int GetBlockingDistanceBetween(const creature::CreaturePtrC_t & A_CPTRC, const creature::CreaturePtrC_t & B_CPTRC) const { return combatTree_.GetBlockingDistanceBetween(A_CPTRC, B_CPTRC); }
 
         inline int GetClosestBlockingDistanceByType(const creature::CreaturePtrC_t & CPTRC, const bool WILL_FIND_PLAYERS) const { return combatTree_.GetClosestBlockingDistanceByType(CPTRC, WILL_FIND_PLAYERS); }
@@ -271,10 +268,6 @@ namespace combat
         //members that allow on battlefield creature images to slide
         //(animate) into new positions rather than instantly moving.
         NodePosTrackerMap_t nodePosTrackerMap_;
-
-        //members that manage creature dragging
-        bool isCreatureDragAllowed_;
-        bool isMouseHeldDownInCreature_;
 
         //members that support moving the battlefield and centering
         sf::Vector2f centeringToPosV_;

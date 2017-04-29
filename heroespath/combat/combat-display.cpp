@@ -128,8 +128,6 @@ namespace combat
         creatureThatWasShakingCPtr_(nullptr),
         shakeInfoMap_              (),
         nodePosTrackerMap_         (),
-        isCreatureDragAllowed_     (false),
-        isMouseHeldDownInCreature_ (false),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
 
@@ -268,10 +266,6 @@ namespace combat
                 if (battlefieldRect_.contains(MOUSE_POS_V))
                     isMouseHeldDownInBF_ = true;
             }
-            else if (COMBAT_NODE_CLICKED_ON_PTR->Creature()->IsPlayerCharacter())
-            {
-                isMouseHeldDownInCreature_ = true;
-            }
         }
 
         prevMousePos_ = MOUSE_POS_V;
@@ -283,7 +277,6 @@ namespace combat
         if (isUserActionAllowed_)
         {
             isMouseHeldDownInBF_ = false;
-            isMouseHeldDownInCreature_ = false;
             return Stage::UpdateMouseUp(MOUSE_POS_V);
         }
         else

@@ -148,16 +148,12 @@ namespace stage
         Stage                      ("Combat"),
         SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
-        bottomSymbol_              (),
         commandBoxSPtr_            (),
         statusBoxSPtr_             (),
         statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Instance()->Color_Orange(), sfml_util::Justified::Left),
         zoomSliderBarSPtr_         (),
         turnBoxSPtr_               (),
         turnBoxRegion_             (),
-        isMouseHeldDownAndValid_   (false),
-        isMouseDragging_           (false),
-        mousePrevPosV_             (0.0f, 0.0f),
         encounterSPtr_             (combat::Encounter::Instance()),
         combatSoundEffects_        (),
         turnPhase_                 (TurnPhase::NotATurn),
@@ -166,8 +162,7 @@ namespace stage
         performAnimPhase_          (PerformAnimPhase::NotAnimating),
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
-        zoomSliderOrigPos_         (0),
-        willCenterZoomOut_         (false),
+        zoomSliderOrigPos_         (0.0f),
         willClrShkInitStatusMsg_   (false),
         slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayStagePtr_     (new combat::CombatDisplay()),
@@ -190,7 +185,6 @@ namespace stage
         turnCreaturePtr_            (nullptr),
         goldTextColorShaker_        (sfml_util::FontManager::Color_Orange(), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_),
         redTextColorShaker_         (sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
-        turnStateToFinish_          (combat::TurnAction::Count),
         turnActionInfo_             (),
         fightResult_                (),
         willRedColorShakeWeaponText_(false),
@@ -215,7 +209,6 @@ namespace stage
         tBoxBeastButtonSVec_        (),
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
-        creaturesToCenterPVec_      (),
         testingTextRegionSPtr_      (),
         pauseTitle_                 ("")
     {
@@ -364,15 +357,6 @@ namespace stage
         const sfml_util::gui::box::Info COMMAND_REGION_BOXINFO(true, COMMAND_REGION, sfml_util::gui::ColorSet(), COMMAND_BACKGROUNDINFO);
         commandBoxSPtr_.reset( new sfml_util::gui::box::Box("CombatStage'sCommand", COMMAND_REGION_BOXINFO) );
 
-        //command region background symbol
-        bottomSymbol_.Setup(1.0f,
-                            false,
-                            SCREEN_WIDTH_,
-                            SCREEN_HEIGHT_,
-                            COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH + COMMAND_REGION_HORIZ_SPACER,
-                            (COMMAND_REGION_TOP + (COMMAND_REGION_HEIGHT * 0.5f)) - (BottomSymbol::DEFAULT_VERT_POS_OFFSET_ * 0.5f),
-                            sf::Color(255, 255, 255, 255));
-
         //turn box
         turnBoxRegion_ = sf::FloatRect(STATUS_REGION_LEFT,
                                        STATUS_REGION_TOP,
@@ -452,8 +436,8 @@ namespace stage
                                                          sfml_util::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
-        testingTextRegion.left += testingTextRegion.width + 65.0f;
-        testingTextRegion.top += (testingTextRegion.height - 500.0f);
+        testingTextRegion.left += testingTextRegion.width - 50.0f;
+        testingTextRegion.top += (testingTextRegion.height - 400.0f);
         testingTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(0, 0, 0, 176));
@@ -939,7 +923,6 @@ namespace stage
 
     void CombatStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        bottomSymbol_.Draw(target, states);
         target.draw( * commandBoxSPtr_, states);
         Stage::Draw(target, states);
         statusBoxSPtr_->draw(target, states);
@@ -969,9 +952,7 @@ namespace stage
         }
 
         combatAnimationPtr_->Draw(target, states);
-
         DrawHoverText(target, states);
-
         testingTextRegionSPtr_->draw(target, states);
     }
 
@@ -1029,12 +1010,12 @@ namespace stage
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetupTurnBox();
                 SetTurnPhase(TurnPhase::PerformReport);
-                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport");
+                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostProjAnim)");
             }
             return;
         }
 
-        //handle creature turns in order of speed stat by starting the centering anim
+        //handle creature turn start hook, catches the start of a new turn
         if ((encounterSPtr_->HasStarted()) &&
             (IsPaused() == false) &&
             (turnCreaturePtr_ == nullptr) &&
@@ -1101,9 +1082,8 @@ namespace stage
         if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
-            combatAnimationPtr_->CenteringUpdate(SLIDER_POS);
 
-            if (willCenterZoomOut_ && (combatDisplayStagePtr_->AreAllCreaturesVisible(creaturesToCenterPVec_) == false))
+            if (combatAnimationPtr_->CenteringUpdate(SLIDER_POS))
             {
                 auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way at the most
                 zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
@@ -1145,11 +1125,12 @@ namespace stage
             if (slider_.GetIsDone())
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
-                StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut (after ZOut)");
+                StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut");
             }
             return;
         }
 
+        //initial hook for taking action before the first turn (pre-turn logic)
         if ((zoomSliderBarSPtr_.get() != nullptr) &&
             (combatDisplayStagePtr_ != nullptr) &&
             (heroespath::LoopManager::Instance()->IsFading() == false) &&
@@ -1173,43 +1154,32 @@ namespace stage
         }
         else if (TurnPhase::Determine == turnPhase_)
         {
-            isMouseHeldDownAndValid_ = true;
             Stage::UpdateMouseDown(MOUSE_POS_V);
         }
     }
 
 
-    void CombatStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
-    {
-        if (isMouseHeldDownAndValid_ && (mousePrevPosV_ != MOUSE_POS_V))
-            isMouseDragging_ = true;
-
-        mousePrevPosV_ = MOUSE_POS_V;
-    }
+    void CombatStage::UpdateMousePos(const sf::Vector2f &)
+    {}
 
 
     sfml_util::gui::IGuiEntitySPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        isMouseHeldDownAndValid_ = false;
-
         if (TurnPhase::Determine == turnPhase_)
         {
             creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
-            if ((false == isMouseDragging_) &&
-                (creatureAtPosPtr != nullptr) &&
+            if ((creatureAtPosPtr != nullptr) &&
                 creatureAtPosPtr->IsPlayerCharacter())
             {
                 savedCombatInfo_.PrepareForStageChange(combatDisplayStagePtr_);
                 heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
             }
 
-            isMouseDragging_ = false;
             return Stage::UpdateMouseUp(MOUSE_POS_V);
         }
         else
         {
-            isMouseDragging_ = false;
             return sfml_util::gui::IGuiEntitySPtr_t();
         }
     }
@@ -1366,12 +1336,6 @@ namespace stage
 
         pauseElapsedSec_ = pauseDurationSec_ + 1.0f;//anything greater than pauseDurationSec_ will work here
 
-        if (TurnPhase::PostTurnPause == turnPhase_)
-        {
-            HandleAfterTurnTasks();
-            return;
-        }
-
         if (PreTurnPhase::PostPanPause == preTurnPhase_)
         {
             SetPreTurnPhase(PreTurnPhase::ZoomOut);
@@ -1412,18 +1376,14 @@ namespace stage
             else
             {
                 //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
-                performType_ = HandleEnemyTurnStep2_Perform();
+                SetPerformType( HandleEnemyTurnStep2_Perform() );
 
                 SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
                 //collect a list of all attacking and targeted creatures to have centered on the screen
-                creaturesToCenterPVec_.clear();
-                creaturesToCenterPVec_.push_back(turnCreaturePtr_);
-                fightResult_.EffectedCreatures(creaturesToCenterPVec_);
-                combatAnimationPtr_->CenteringStart(creaturesToCenterPVec_);
-
-                willCenterZoomOut_ = combatDisplayStagePtr_->IsZoomOutRequired(creaturesToCenterPVec_);
-
+                creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
+                fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
+                combatAnimationPtr_->CenteringStart(allEffectedCreaturesPVec);
                 slider_.Reset(CENTERING_SLIDER_SPEED_);
             }
             return;
@@ -1431,6 +1391,8 @@ namespace stage
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
+            M_HP_LOG("\t ********** EndPause(performType_=" << PerformTypeToString(performType_) << ")");
+
             //See above for call to HandleEnemyTurnStep2_Perform()
             StartPerformAnim();
             SetupTurnBox();
@@ -1494,8 +1456,11 @@ namespace stage
             return;
         }
 
-        if (combat::TurnAction::Attack == turnStateToFinish_)
-            turnStateToFinish_ = combat::TurnAction::Count;
+        if (TurnPhase::PostTurnPause == turnPhase_)
+        {
+            HandleAfterTurnTasks();
+            return;
+        }
     }
 
 
@@ -1519,6 +1484,8 @@ namespace stage
 
     CombatStage::PerformType CombatStage::HandleEnemyTurnStep2_Perform()
     {
+        M_HP_LOG("\t ********** HandleEnemyTurnStep2_Perform(turnActionInfo_=" << turnActionInfo_.Action() << ")");
+
         switch (turnActionInfo_.Action())
         {
             case combat::TurnAction::Advance:
@@ -1554,7 +1521,7 @@ namespace stage
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                return PerformType::Pause;
+                return PerformType::PauseAndReport;
             }
 
             case combat::TurnAction::Fly:
@@ -1564,7 +1531,7 @@ namespace stage
                 combatDisplayStagePtr_->HandleFlyingChange(turnCreaturePtr_, false);
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                return PerformType::Pause;
+                return PerformType::PauseAndReport;
             }
 
             case combat::TurnAction::Cast:
@@ -1583,7 +1550,7 @@ namespace stage
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
 
                 //TODO if fightResult_ says the pounce was a success then return the PerformType::Pounce
-                return PerformType::Pause;
+                return PerformType::PauseAndReport;
             }
 
             case combat::TurnAction::Roar:
@@ -1593,7 +1560,7 @@ namespace stage
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
 
                 //TODO if fightResult_ says the roar happened then return PerformType::Roar
-                return PerformType::Pause;
+                return PerformType::PauseAndReport;
             }
 
             case combat::TurnAction::ChangeWeapon:
@@ -1603,7 +1570,7 @@ namespace stage
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                return PerformType::Pause;
+                return PerformType::PauseAndReport;
             }
 
             default:
@@ -1619,16 +1586,13 @@ namespace stage
     //start centering anim
     void CombatStage::StartTurn_Step1()
     {
-        SetTurnPhase(TurnPhase::CenterAndZoomIn);
         zoomSliderOrigPos_ = zoomSliderBarSPtr_->GetCurrentValue();
 
         turnCreaturePtr_ = encounterSPtr_->CurrentTurnCreature();
 
-        performReportEffectIndex_ = 0;
-        performReportHitIndex_ = 0;
-
-        slider_.Reset(CENTERING_SLIDER_SPEED_);
+        SetTurnPhase(TurnPhase::CenterAndZoomIn);
         combatAnimationPtr_->CenteringStart(turnCreaturePtr_);
+        slider_.Reset(CENTERING_SLIDER_SPEED_);
     }
 
 
@@ -1673,13 +1637,18 @@ namespace stage
             savedCombatInfo_.CanTurnAdvance(false);
         }
 
-        //reset turn states
         performReportHitIndex_ = 0;
         performReportEffectIndex_ = 0;
+
         turnActionInfo_ = combat::TurnActionInfo();
+
         fightResult_ = combat::FightResult();
-        performType_ = PerformType::None;
-        creaturesToCenterPVec_.clear();
+
+        SetPreTurnPhase(PreTurnPhase::End);
+        SetTurnPhase(TurnPhase::NotATurn);
+        SetPerformType(PerformType::None);
+        SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
+
         turnCreaturePtr_ = nullptr;
 
         MoveTurnBoxObjectsOffScreen(true);
@@ -1711,12 +1680,11 @@ namespace stage
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature, nullptr);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature);
-            performType_ = GetPerformTypeFromFightResult(fightResult_);
+            SetPerformType(GetPerformTypeFromFightResult(fightResult_));
 
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
-            creaturesToCenterPVec_ = creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature };
-            combatAnimationPtr_->CenteringStart(creaturesToCenterPVec_);
-            willCenterZoomOut_ = combatDisplayStagePtr_->IsZoomOutRequired(creaturesToCenterPVec_);
+
+            combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature });
             slider_.Reset(CENTERING_SLIDER_SPEED_);
 
             SetupTurnBox();
@@ -1757,7 +1725,7 @@ namespace stage
         {
             SetUserActionAllowed(false);
 
-            performType_ = PerformType::Cast;
+            SetPerformType(PerformType::Cast);
 
             //can't set turnActionInfo_ yet because the player must select which spell to cast and which creature to cast it on
             //so skip to end of turn with StartPerformAnim()
@@ -1781,7 +1749,7 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Advance);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            performType_ = PerformType::Advance;
+            SetPerformType(PerformType::Advance);
             StartPerformAnim();
             return true;
         }
@@ -1802,7 +1770,7 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Retreat);
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            performType_ = PerformType::Retreat;
+            SetPerformType(PerformType::Retreat);
             StartPerformAnim();
             return true;
         }
@@ -1913,7 +1881,7 @@ namespace stage
             encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-            performType_ = PerformType::Roar;
+            SetPerformType(PerformType::Roar);
 
             //not implemented yet so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
@@ -1956,7 +1924,6 @@ namespace stage
 
     void CombatStage::HandleAfterTurnTasks()
     {
-        SetTurnPhase(TurnPhase::NotATurn);
         HandleKilledCreatures();
         combatDisplayStagePtr_->HandleEndOfTurnTasks();
         savedCombatInfo_.CanTurnAdvance(true);
@@ -2349,6 +2316,7 @@ namespace stage
     void CombatStage::StartPerformAnim()
     {
         SetTurnPhase(TurnPhase::PerformAnim);
+        M_HP_LOG("\t ********** StartPerformAnim(performType_=" << PerformTypeToString(performType_) << ")");
 
         switch (performType_)
         {
@@ -2372,6 +2340,7 @@ namespace stage
 
             case PerformType::MeleeWeapon:
             {
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 SetPerformAnimPhase(PerformAnimPhase::MoveToward);
                 break;
             }
@@ -2400,13 +2369,21 @@ namespace stage
                     }
                 }
 
-                M_HP_LOG("\t ********** StartPerformAnim(performType_=" << PerformTypeToString(performType_) << ") landed in the Shoot... 'no-hit-info' case.");
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::PostPerformPause);
                 break;
             }
 
-            case PerformType::Pause:
+            case PerformType::PauseAndReport:
+            {
+                M_HP_LOG("\t ++++++++++ heroespath::stage::ComabtStsage::StartPerformAnim(performType_=PauseAndReport) um...the new case...");
+                SetTurnPhase(TurnPhase::PerformReport);
+                SetPerformType(PerformType::None);
+                SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
+                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PauseAndReport)");
+                break;
+            }
+
             case PerformType::Cast:
             case PerformType::Roar:
             case PerformType::Pounce:
@@ -2448,7 +2425,7 @@ namespace stage
         switch (ENUM)
         {
             case PerformType::None:             { return "None"; }
-            case PerformType::Pause:            { return "Pause"; }
+            case PerformType::PauseAndReport:   { return "PauseAndReport"; }
             case PerformType::MeleeWeapon:      { return "MeleeWeapon"; }
             case PerformType::ShootSling:       { return "ShootSling"; }
             case PerformType::ShootArrow:       { return "ShootArrow"; }
@@ -2504,6 +2481,7 @@ namespace stage
         std::ostringstream ss;
         ss << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_) : PreTurnPhaseToString(preTurnPhase_))
             << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A")
+            << ", " << PerformTypeToString(performType_)
             << ", " << PerformAnimPhaseToString(performAnimPhase_);
         testingTextRegionSPtr_->SetText(ss.str());
     }

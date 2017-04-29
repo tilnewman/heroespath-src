@@ -141,7 +141,7 @@ namespace stage
         enum class PerformType
         {
             None = 0,
-            Pause,
+            PauseAndReport,
             MeleeWeapon,
             ShootSling,
             ShootArrow,
@@ -239,6 +239,7 @@ namespace stage
         inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
         inline void SetPreTurnPhase(const PreTurnPhase PTP)         { preTurnPhase_ = PTP; UpdateTestingText(); }
         inline void SetPerformAnimPhase(const PerformAnimPhase PAP) { performAnimPhase_ = PAP; UpdateTestingText(); }
+        inline void SetPerformType(const PerformType PT)            { performType_ = PT; UpdateTestingText(); }
 
         PerformType GetPerformTypeFromWeaponType(const item::ItemSPtr_t &) const;
         PerformType GetPerformTypeFromFightResult(const combat::FightResult &) const;
@@ -291,16 +292,12 @@ namespace stage
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         //
-        BottomSymbol                     bottomSymbol_;
         sfml_util::gui::box::BoxSPtr_t   commandBoxSPtr_;
         sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
         sfml_util::gui::TextInfo         statusBoxTextInfo_;
         sfml_util::gui::SliderBarSPtr_t  zoomSliderBarSPtr_;
         sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
         sf::FloatRect                    turnBoxRegion_;
-        bool                             isMouseHeldDownAndValid_;
-        bool                             isMouseDragging_;
-        sf::Vector2f                     mousePrevPosV_;
         combat::EncounterSPtr_t          encounterSPtr_;
         combat::CombatSoundEffects       combatSoundEffects_;
         TurnPhase                        turnPhase_;
@@ -310,7 +307,6 @@ namespace stage
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
-        bool                             willCenterZoomOut_;
         bool                             willClrShkInitStatusMsg_;
 
         //A slider member that is used for various slider tasks
@@ -336,7 +332,6 @@ namespace stage
         creature::CreaturePtr_t turnCreaturePtr_;
         sfml_util::ColorShaker goldTextColorShaker_;
         sfml_util::ColorShaker redTextColorShaker_;
-        combat::TurnAction::Enum turnStateToFinish_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;
         bool willRedColorShakeWeaponText_;
@@ -365,9 +360,6 @@ namespace stage
         //members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
-
-        //members that manage the creature attack animation
-        creature::CreaturePVec_t creaturesToCenterPVec_;
 
         //testing display members
         sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;

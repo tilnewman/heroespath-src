@@ -21,7 +21,7 @@ namespace combat
 {
 
     CombatAnim *        CombatAnim::instance_{ nullptr };
-    CombatDisplayPtr_t  CombatAnim::combatDisplayPtr_{ nullptr };
+    CombatDisplayPtr_t  CombatAnim::combatDisplayStagePtr_{ nullptr };
 
 
     CombatAnim::CombatAnim()
@@ -36,6 +36,8 @@ namespace combat
         projAnimWillSpin_           (false),
         deadAnimNodesPVec_          (),
         centeringAnimCombatNodePtr_ (nullptr),
+        centeringAnimCreaturesPVec_ (),
+        centeringAnimWillZoomOut_   (false),
         repositionAnimCreaturePtr_  (nullptr)
     {}
 
@@ -46,7 +48,7 @@ namespace combat
 
     void CombatAnim::GiveCombatDisplay(CombatDisplayPtr_t combatDisplayPtr)
     {
-        combatDisplayPtr_ = combatDisplayPtr;
+        combatDisplayStagePtr_ = combatDisplayPtr;
     }
 
 
@@ -107,7 +109,7 @@ namespace combat
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
         sf::Vector2f creatureDefendingCenterPosV{0.0f, 0.0f};
         CombatNodePVec_t combatNodePVec;
-        combatDisplayPtr_->CombatTree().GetCombatNodes(combatNodePVec);
+        combatDisplayStagePtr_->CombatTree().GetCombatNodes(combatNodePVec);
         for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
         {
             if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
@@ -172,8 +174,8 @@ namespace combat
             projAnimSprite_.setOrigin(0.0f, 0.0f);
         }
 
-        if ((combatDisplayPtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left, projAnimSprite_.getGlobalBounds().top) == false) ||
-            (combatDisplayPtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left + projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().top + projAnimSprite_.getGlobalBounds().height) == false))
+        if ((combatDisplayStagePtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left, projAnimSprite_.getGlobalBounds().top) == false) ||
+            (combatDisplayStagePtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left + projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().top + projAnimSprite_.getGlobalBounds().height) == false))
         {
             ProjectileShootAnimStop();
         }
@@ -188,7 +190,7 @@ namespace combat
 
     void CombatAnim::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        auto combatNodesPVec{ combatDisplayPtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+        auto combatNodesPVec{ combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
             nextCombatNodePtrC->SetDead(true);
@@ -212,51 +214,55 @@ namespace combat
         //remove non-player nodes from combat tree and prepare for sliding animation
         for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
         {
-            auto const NEXT_NODE_ID{ combatDisplayPtr_->CombatTree().GetNodeId(nextCombatNodeCPtr) };
-            auto const NEXT_NODE_SPTR{ combatDisplayPtr_->CombatTree().GetNodeSPtr(NEXT_NODE_ID) };
-            combatDisplayPtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
-            combatDisplayPtr_->RemoveCombatNode(NEXT_NODE_SPTR);
+            auto const NEXT_NODE_ID{ combatDisplayStagePtr_->CombatTree().GetNodeId(nextCombatNodeCPtr) };
+            auto const NEXT_NODE_SPTR{ combatDisplayStagePtr_->CombatTree().GetNodeSPtr(NEXT_NODE_ID) };
+            combatDisplayStagePtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
+            combatDisplayStagePtr_->RemoveCombatNode(NEXT_NODE_SPTR);
         }
         deadAnimNodesPVec_.clear();
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
-        combatDisplayPtr_->PositionCombatTreeCells(true);
+        combatDisplayStagePtr_->PositionCombatTreeCells(true);
     }
 
 
     void CombatAnim::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        centeringAnimCombatNodePtr_ = combatDisplayPtr_->CombatTree().GetNode(CREATURE_CPTRC);
+        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTree().GetNode(CREATURE_CPTRC);
+        centeringAnimCreaturesPVec_.clear();
+        centeringAnimWillZoomOut_ = false;
     }
 
 
     void CombatAnim::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
     {
         centeringAnimCombatNodePtr_ = nullptr;
-        combatDisplayPtr_->CenteringPosV( sf::Vector2f(TARGET_POS_X, TARGET_POS_Y) );
+        combatDisplayStagePtr_->CenteringPosV( sf::Vector2f(TARGET_POS_X, TARGET_POS_Y) );
     }
 
 
     void CombatAnim::CenteringStartTargetCenterOfBatllefield()
     {
-        auto const BATTLEFIELD_CENTER_V{ combatDisplayPtr_->GetCenterOfAllNodes() };
+        auto const BATTLEFIELD_CENTER_V{ combatDisplayStagePtr_->GetCenterOfAllNodes() };
         CenteringStart(BATTLEFIELD_CENTER_V.x, BATTLEFIELD_CENTER_V.y);
     }
 
 
     void CombatAnim::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
     {
-        auto const CENTER_POS_V{ combatDisplayPtr_->FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+        centeringAnimCreaturesPVec_ = CREATURES_TO_CENTER_ON_PVEC;
+        auto const CENTER_POS_V{ combatDisplayStagePtr_->FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
         CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
+        centeringAnimWillZoomOut_ = combatDisplayStagePtr_->IsZoomOutRequired(centeringAnimCreaturesPVec_);
     }
 
 
-    void CombatAnim::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
+    bool CombatAnim::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
     {
         sf::Vector2f targetPosV{ 0.0f, 0.0f };
         if (centeringAnimCombatNodePtr_ == nullptr)
         {
-            targetPosV = combatDisplayPtr_->CenteringPosV();
+            targetPosV = combatDisplayStagePtr_->CenteringPosV();
         }
         else
         {
@@ -265,19 +271,30 @@ namespace combat
             targetPosV = sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
         }
 
-        auto const DIFF_X((combatDisplayPtr_->BattlefieldRect().left + (combatDisplayPtr_->BattlefieldRect().width * 0.5f)) - targetPosV.x);
+        auto const DIFF_X((combatDisplayStagePtr_->BattlefieldRect().left + (combatDisplayStagePtr_->BattlefieldRect().width * 0.5f)) - targetPosV.x);
         auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayPtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
 
-        auto const DIFF_Y((combatDisplayPtr_->BattlefieldRect().top + (combatDisplayPtr_->BattlefieldRect().height * 0.5f)) - targetPosV.y);
+        auto const DIFF_Y((combatDisplayStagePtr_->BattlefieldRect().top + (combatDisplayStagePtr_->BattlefieldRect().height * 0.5f)) - targetPosV.y);
         auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayPtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
+
+        if (centeringAnimCombatNodePtr_ == nullptr)
+        {
+            return (centeringAnimWillZoomOut_ && (combatDisplayStagePtr_->AreAllCreaturesVisible(centeringAnimCreaturesPVec_) == false));
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
     void CombatAnim::CenteringStop()
     {
         centeringAnimCombatNodePtr_ = nullptr;
+        centeringAnimCreaturesPVec_.clear();
+        centeringAnimWillZoomOut_ = false;
     }
 
 
@@ -290,7 +307,7 @@ namespace combat
 
     void CombatAnim::RepositionAnimUpdate(const float SLIDER_POS)
     {
-        auto nodePositionTrackerMap{ combatDisplayPtr_->NodePositionTrackerMap() };
+        auto nodePositionTrackerMap{ combatDisplayStagePtr_->NodePositionTrackerMap() };
         for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
         {
             const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
@@ -302,7 +319,7 @@ namespace combat
         CenteringStart(creaturePVec);
         CenteringUpdate(10.0f, false); //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
 
-        combatDisplayPtr_->UpdateWhichNodesWillDraw();
+        combatDisplayStagePtr_->UpdateWhichNodesWillDraw();
     }
 
 
