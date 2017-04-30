@@ -55,22 +55,22 @@ namespace combat
 
 
     //Responsible for displaying combat related animations.
-    class CombatAnim
+    class CombatAnimation
     {
         //prevent copy construction
-        CombatAnim(const CombatAnim &) =delete;
+        CombatAnimation(const CombatAnimation &) =delete;
 
         //prevent copy assignment
-        CombatAnim operator=(const CombatAnim &) =delete;
+        CombatAnimation operator=(const CombatAnimation &) =delete;
 
         //prevent non-singleton construction
-        CombatAnim();
+        CombatAnimation();
 
     public:
-        virtual ~CombatAnim();
+        virtual ~CombatAnimation();
 
         static void GiveCombatDisplay(CombatDisplayPtr_t);
-        static CombatAnim * const Instance();
+        static CombatAnimation * const Instance();
 
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 
@@ -142,7 +142,7 @@ namespace combat
         void ShakeAnimRestart();
 
     private:
-        static CombatAnim * instance_;
+        static CombatAnimation * instance_;
         static CombatDisplayPtr_t combatDisplayStagePtr_;
 
         const float SCREEN_WIDTH_;
@@ -179,7 +179,7 @@ namespace combat
         SakeInfoMap_t            shakeAnimInfoMap_;
     };
 
-    using CombatAnimPtr_t = CombatAnim *;
+    using CombatAnimationPtr_t = CombatAnimation *;
 
 }
 }

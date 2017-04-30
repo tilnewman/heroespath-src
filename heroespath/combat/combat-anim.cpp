@@ -34,7 +34,7 @@ namespace combat
 
     void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
-        auto const SHAKE_DISTANCE{ CombatAnim::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+        auto const SHAKE_DISTANCE{ CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
 
         slider.Reset(0.0f,
                      SHAKE_DISTANCE,
@@ -47,11 +47,11 @@ namespace combat
     }
 
 
-    CombatAnim *        CombatAnim::instance_{ nullptr };
-    CombatDisplayPtr_t  CombatAnim::combatDisplayStagePtr_{ nullptr };
+    CombatAnimation *        CombatAnimation::instance_{ nullptr };
+    CombatDisplayPtr_t  CombatAnimation::combatDisplayStagePtr_{ nullptr };
 
 
-    CombatAnim::CombatAnim()
+    CombatAnimation::CombatAnimation()
     :
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
@@ -76,28 +76,28 @@ namespace combat
     {}
 
 
-    CombatAnim::~CombatAnim()
+    CombatAnimation::~CombatAnimation()
     {}
 
 
-    void CombatAnim::GiveCombatDisplay(CombatDisplayPtr_t combatDisplayPtr)
+    void CombatAnimation::GiveCombatDisplay(CombatDisplayPtr_t combatDisplayPtr)
     {
         combatDisplayStagePtr_ = combatDisplayPtr;
     }
 
 
-    CombatAnim * const CombatAnim::Instance()
+    CombatAnimation * const CombatAnimation::Instance()
     {
         if (nullptr == instance_)
         {
-            instance_ = new CombatAnim();
+            instance_ = new CombatAnimation();
         }
 
         return instance_;
     }
 
 
-    void CombatAnim::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CombatAnimation::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
         if (projAnimTextureSPtr_.get() != nullptr)
         {
@@ -109,7 +109,7 @@ namespace combat
     }
 
 
-    void CombatAnim::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    void CombatAnimation::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         bool willRemoveNullShakeInfo(false);
         for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
@@ -148,7 +148,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
+    void CombatAnimation::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
                                               creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
                                               const item::ItemSPtr_t &  WEAPON_SPTR,
                                               const bool                WILL_HIT)
@@ -234,7 +234,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ProjectileShootAnimUpdate(const float SLIDER_POS)
+    void CombatAnimation::ProjectileShootAnimUpdate(const float SLIDER_POS)
     {
         auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
         auto const SPRITE_POS_VERT { projAnimBeginPosV_.y + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
@@ -255,13 +255,13 @@ namespace combat
     }
 
 
-    void CombatAnim::ProjectileShootAnimStop()
+    void CombatAnimation::ProjectileShootAnimStop()
     {
         projAnimTextureSPtr_.reset();
     }
 
 
-    void CombatAnim::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
+    void CombatAnimation::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
         auto combatNodesPVec{ combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
         for (auto const nextCombatNodePtrC : combatNodesPVec)
@@ -272,7 +272,7 @@ namespace combat
     }
 
 
-    void CombatAnim::DeathAnimUpdate(const float SLIDER_POS)
+    void CombatAnimation::DeathAnimUpdate(const float SLIDER_POS)
     {
         for (auto const nextCombatNodePtrC : deadAnimNodesPVec_)
         {
@@ -282,7 +282,7 @@ namespace combat
     }
 
 
-    void CombatAnim::DeathAnimStop()
+    void CombatAnimation::DeathAnimStop()
     {
         //remove non-player nodes from combat tree and prepare for sliding animation
         for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
@@ -299,7 +299,7 @@ namespace combat
     }
 
 
-    void CombatAnim::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void CombatAnimation::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTree().GetNode(CREATURE_CPTRC);
         centeringAnimCreaturesPVec_.clear();
@@ -307,21 +307,21 @@ namespace combat
     }
 
 
-    void CombatAnim::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
+    void CombatAnimation::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
     {
         centeringAnimCombatNodePtr_ = nullptr;
         combatDisplayStagePtr_->CenteringPosV( sf::Vector2f(TARGET_POS_X, TARGET_POS_Y) );
     }
 
 
-    void CombatAnim::CenteringStartTargetCenterOfBatllefield()
+    void CombatAnimation::CenteringStartTargetCenterOfBatllefield()
     {
         auto const BATTLEFIELD_CENTER_V{ combatDisplayStagePtr_->GetCenterOfAllNodes() };
         CenteringStart(BATTLEFIELD_CENTER_V.x, BATTLEFIELD_CENTER_V.y);
     }
 
 
-    void CombatAnim::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
+    void CombatAnimation::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
     {
         centeringAnimCreaturesPVec_ = CREATURES_TO_CENTER_ON_PVEC;
         auto const CENTER_POS_V{ combatDisplayStagePtr_->FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
@@ -330,7 +330,7 @@ namespace combat
     }
 
 
-    bool CombatAnim::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
+    bool CombatAnimation::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
     {
         sf::Vector2f targetPosV{ 0.0f, 0.0f };
         if (centeringAnimCombatNodePtr_ == nullptr)
@@ -363,7 +363,7 @@ namespace combat
     }
 
 
-    void CombatAnim::CenteringStop()
+    void CombatAnimation::CenteringStop()
     {
         centeringAnimCombatNodePtr_ = nullptr;
         centeringAnimCreaturesPVec_.clear();
@@ -371,14 +371,14 @@ namespace combat
     }
 
 
-    void CombatAnim::RepositionAnimStart(creature::CreaturePtr_t creaturePtr)
+    void CombatAnimation::RepositionAnimStart(creature::CreaturePtr_t creaturePtr)
     {
         repositionAnimCreaturePtr_ = creaturePtr;
         CenteringStartTargetCenterOfBatllefield();
     }
 
 
-    void CombatAnim::RepositionAnimUpdate(const float SLIDER_POS)
+    void CombatAnimation::RepositionAnimUpdate(const float SLIDER_POS)
     {
         auto nodePositionTrackerMap{ combatDisplayStagePtr_->NodePositionTrackerMap() };
         for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
@@ -396,14 +396,14 @@ namespace combat
     }
 
 
-    void CombatAnim::RepositionAnimStop()
+    void CombatAnimation::RepositionAnimStop()
     {
         CenteringStop();
         repositionAnimCreaturePtr_ = nullptr;
     }
 
 
-    void CombatAnim::MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
+    void CombatAnimation::MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
                                               creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC)
     {
         meleeMoveAnimMovingCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_MOVING_CPTRC);
@@ -423,7 +423,7 @@ namespace combat
     }
 
 
-    void CombatAnim::MeleeMoveTowardAnimUpdate(const float SLIDER_POS)
+    void CombatAnimation::MeleeMoveTowardAnimUpdate(const float SLIDER_POS)
     {
         auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
         auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
@@ -431,11 +431,11 @@ namespace combat
     }
 
 
-    void CombatAnim::MeleeMoveTowardAnimStop()
+    void CombatAnimation::MeleeMoveTowardAnimStop()
     {}
 
 
-    void CombatAnim::MeleeMoveBackAnimStart()
+    void CombatAnimation::MeleeMoveBackAnimStart()
     {
         auto const TEMP_TARGET_POS_V{ meleeMoveAnimTargetPosV_ };
         meleeMoveAnimTargetPosV_ = meleeMoveAnimOrigPosV_;
@@ -443,7 +443,7 @@ namespace combat
     }
 
 
-    void CombatAnim::MeleeMoveBackAnimUpdate(const float SLIDER_POS)
+    void CombatAnimation::MeleeMoveBackAnimUpdate(const float SLIDER_POS)
     {
         auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
         auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
@@ -451,7 +451,7 @@ namespace combat
     }
 
 
-    void CombatAnim::MeleeMoveBackAnimStop()
+    void CombatAnimation::MeleeMoveBackAnimStop()
     {
         meleeMoveAnimOrigPosV_ = sf::Vector2f(0.0f, 0.0f);
         meleeMoveAnimTargetPosV_ = sf::Vector2f(0.0f, 0.0f);
@@ -459,7 +459,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ImpactAnimStart(const float CREATURE_SHAKE_SLIDER_SPEED)
+    void CombatAnimation::ImpactAnimStart(const float CREATURE_SHAKE_SLIDER_SPEED)
     {
         if ((meleeMoveAnimMovingCombatNodePtr_ != nullptr) &&
             (meleeMoveAnimTargetCombatNodePtr_ != nullptr))
@@ -475,18 +475,18 @@ namespace combat
     }
 
 
-    void CombatAnim::ImpactAnimUpdate(const float)
+    void CombatAnimation::ImpactAnimUpdate(const float)
     {}
 
 
-    void CombatAnim::ImpactAnimStop()
+    void CombatAnimation::ImpactAnimStop()
     {
         //stop ALL creature shaking
         ShakeAnimStop(nullptr);
     }
 
 
-    float CombatAnim::ShakeAnimDistance(const bool WILL_DOUBLE)
+    float CombatAnimation::ShakeAnimDistance(const bool WILL_DOUBLE)
     {
         auto distance{ sfml_util::MapByRes(16.0f, 48.0f) };
 
@@ -499,7 +499,7 @@ namespace combat
     }
 
     
-    void CombatAnim::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
+    void CombatAnimation::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
                                     const float               SLIDER_SPEED,
                                     const bool                WILL_DOUBLE_SHAKE_DISTANCE)
     {
@@ -512,7 +512,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ShakeAnimStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void CombatAnimation::ShakeAnimStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         CombatNodePVec_t combatNodesToErasePVec;
         for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
@@ -532,7 +532,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void CombatAnimation::ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
         {
@@ -546,7 +546,7 @@ namespace combat
     }
 
 
-    void CombatAnim::ShakeAnimRestart()
+    void CombatAnimation::ShakeAnimRestart()
     {
         ShakeAnimStart(shakeAnimCreatureWasCPtr_, shakeAnimCreatureWasSpeed_, false);
         shakeAnimCreatureWasCPtr_ = nullptr;

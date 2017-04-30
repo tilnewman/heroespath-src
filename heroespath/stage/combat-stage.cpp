@@ -173,7 +173,7 @@ namespace stage
         willClrShkInitStatusMsg_   (false),
         slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayStagePtr_     (new combat::CombatDisplay()),
-        combatAnimationPtr_        (combat::CombatAnim::Instance()),
+        combatAnimationPtr_        (combat::CombatAnimation::Instance()),
         settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
                                                                         0.0f,
                                                                         0.0f,
@@ -872,7 +872,7 @@ namespace stage
         combatDisplayStagePtr_->Setup();
 
         //combat animations
-        combat::CombatAnim::GiveCombatDisplay(combatDisplayStagePtr_);
+        combat::CombatAnimation::GiveCombatDisplay(combatDisplayStagePtr_);
 
         //give control of the CombatDisplay object lifetime to the Loop class
         sfml_util::IStageSPtr_t combatDisplayStageSPtr(combatDisplayStagePtr_);

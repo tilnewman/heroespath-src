@@ -320,10 +320,10 @@ namespace combat
         {
             CreatureToneDown(1.0f - summaryView_.GetTransitionStatus());
 
-            if ((CombatAnim::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
+            if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
                 (summaryView_.GetTransitionStatus() > 0.99))
             {
-                CombatAnim::Instance()->ShakeAnimRestart();
+                CombatAnimation::Instance()->ShakeAnimRestart();
                 SetIsSummaryViewInProgress(false);
             }
         }
@@ -626,7 +626,7 @@ namespace combat
             (false == GetIsStatusMessageAnimating()))
         {
             //stop shaking a creature image if mouse-over will start transitioning to summary view
-            CombatAnim::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
+            CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
 
             summaryView_.SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
@@ -929,7 +929,7 @@ namespace combat
         UpdateHealthTasks();
 
         //stop all creature image shaking
-        CombatAnim::Instance()->ShakeAnimStop(nullptr);
+        CombatAnimation::Instance()->ShakeAnimStop(nullptr);
     }
 
 

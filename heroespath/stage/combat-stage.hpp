@@ -60,8 +60,8 @@ namespace combat
     class Encounter;
     using EncounterSPtr_t = std::shared_ptr<Encounter>;
 
-    class CombatAnim;
-    using CombatAnimPtr_t = CombatAnim *;
+    class CombatAnimation;
+    using CombatAnimationPtr_t = CombatAnimation *;
 }
 namespace stage
 {
@@ -323,7 +323,7 @@ namespace stage
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
         
         //this member controls combat related animations
-        combat::CombatAnimPtr_t combatAnimationPtr_;
+        combat::CombatAnimationPtr_t combatAnimationPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 
