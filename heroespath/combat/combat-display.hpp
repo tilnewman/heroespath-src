@@ -71,13 +71,11 @@ namespace combat
         static const float DURATION_SEC;
         static const float DELAY_SEC;
 
-        const float SHAKE_DISTANCE;
-
         sfml_util::Shaker<float> shaker;
         float                    delay_timer_sec;
         float                    duration_timer_sec;
 
-        void Reset();
+        void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
     };
 
     using SakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeInfo>;
@@ -104,6 +102,8 @@ namespace combat
         CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());
         virtual ~CombatDisplay();
 
+        static float GetCreatureShakeDistance(const bool WILL_DOUBLE);
+
         virtual void Setup();
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 
@@ -119,7 +119,10 @@ namespace combat
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
-        void StartShaking(creature::CreatureCPtrC_t);
+        void StartShaking(creature::CreatureCPtrC_t CREATURE_CPTRC,
+                          const float               SLIDER_SPEED,
+                          const bool                WILL_DOUBLE_SHAKE_DISTANCE);
+
         void StopShaking(creature::CreatureCPtrC_t);
 
         const sf::Vector2f GetCenterOfAllNodes() const;
@@ -261,7 +264,8 @@ namespace combat
         CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
 
         //members to shake a creature image on the battlefield
-        creature::CreatureCPtr_t creatureThatWasShakingCPtr_;//remembers which creature to shake while in summary view
+        creature::CreatureCPtr_t creatureThatWasShakingCPtr_;
+        float                    creatureThatWasShakingSpd_;
         SakeInfoMap_t            shakeInfoMap_;
 
         //members to manage node position shifting, put another way,

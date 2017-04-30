@@ -86,6 +86,24 @@ namespace combat
         void RepositionAnimUpdate(const float SLIDER_POS);
         void RepositionAnimStop();
 
+        //The Melee Move Toward Animation moves a creature toward their target during
+        //melee attacks.
+        void MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
+                                      creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC);
+
+        void MeleeMoveTowardAnimUpdate(const float SLIDER_POS);
+        void MeleeMoveTowardAnimStop();
+
+        //The Melee Move Back Animation moves a creature back to original position
+        //before the Move Toward Animation.
+        void MeleeMoveBackAnimStart();
+        void MeleeMoveBackAnimUpdate(const float SLIDER_POS);
+        void MeleeMoveBackAnimStop();
+
+        void ImpactAnimStart(const float CREATURE_SHAKE_SLIDER_SPEED);
+        void ImpactAnimUpdate(const float SLIDER_POS);
+        void ImpactAnimStop();
+
     private:
         static CombatAnim * instance_;
         static CombatDisplayPtr_t combatDisplayStagePtr_;
@@ -111,6 +129,12 @@ namespace combat
 
         //member supporting the Reposition Animation
         creature::CreaturePtr_t repositionAnimCreaturePtr_;
+
+        //members supporting the Melee Move Animations
+        sf::Vector2f meleeMoveAnimOrigPosV_;
+        sf::Vector2f meleeMoveAnimTargetPosV_;
+        CombatNodePtr_t meleeMoveAnimMovingCombatNodePtr_;
+        CombatNodePtr_t meleeMoveAnimTargetCombatNodePtr_;
     };
 
     using CombatAnimPtr_t = CombatAnim *;

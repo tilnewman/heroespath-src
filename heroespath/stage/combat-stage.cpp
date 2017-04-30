@@ -120,18 +120,25 @@ namespace stage
     const float CombatStage::POST_PERFORM_REPORT_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
     const float CombatStage::POST_ZOOM_TURN_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
     const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_      { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_    { PAUSE_ZERO_SEC_ };
     //
-    const float CombatStage::SLIDER_SPEED_SLOWEST_          { 1.0f };
-    const float CombatStage::SLIDER_SPEED_SLOW_             { 2.0f };
-    const float CombatStage::SLIDER_SPEED_NORMAL_           { 4.0f };
-    const float CombatStage::SLIDER_SPEED_FAST_             { 35.0f };
-    const float CombatStage::ZOOM_SLIDER_SPEED_             { SLIDER_SPEED_SLOW_ };
-    const float CombatStage::CENTERING_SLIDER_SPEED_        { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::INITIAL_CENTERING_SLIDER_SPEED_{ SLIDER_SPEED_SLOWEST_ };
-    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_       { SLIDER_SPEED_FAST_ };
-    const float CombatStage::CREATURE_POS_SLIDER_SPEED_     { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::PROJECTILE_SHOOT_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::DEATH_ANIM_SLIDER_SPEED_       { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::SLIDER_SPEED_SLOWEST_                  { 1.0f };
+    const float CombatStage::SLIDER_SPEED_SLOW_                     { SLIDER_SPEED_SLOWEST_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_NORMAL_                   { SLIDER_SPEED_SLOW_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FAST_                     { SLIDER_SPEED_NORMAL_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FASTEST_                  { SLIDER_SPEED_NORMAL_ * 10.0f };
+    const float CombatStage::ZOOM_SLIDER_SPEED_                     { SLIDER_SPEED_SLOW_ };
+    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_               { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_CENTERING_SLIDER_SPEED_           { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_INITIAL_CENTERING_SLIDER_SPEED_   { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_CREATURE_POS_SLIDER_SPEED_        { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_    { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_DEATH_SLIDER_SPEED_               { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_MELEE_MOVE_SLIDER_SPEED_          { SLIDER_SPEED_FAST_ };
+    const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_              { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_      { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_        { SLIDER_SPEED_FASTEST_ * 3.0f };
     //
     const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) };
     const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20) };
@@ -765,8 +772,6 @@ namespace stage
         */
         if (savedCombatInfo_.HasRestored() == false)
         {
-            M_HP_LOG("heroespath::CombatStage::Setup()  TEMP Initial Combat Setup (should only happen once)");
-
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partySPtr);
 
@@ -1000,29 +1005,62 @@ namespace stage
             return;
         }
 
-        if ((TurnPhase::PerformAnim == turnPhase_) && (PerformAnimPhase::ProjectileShoot == performAnimPhase_))
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::ProjectileShoot == performAnimPhase_))
         {
             combatAnimationPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
             if (slider_.GetIsDone())
             {
                 HandleApplyDamageTasks();
                 combatAnimationPtr_->ProjectileShootAnimStop();
+                SetTurnPhase(TurnPhase::PerformReport);
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
                 SetupTurnBox();
-                SetTurnPhase(TurnPhase::PerformReport);
                 StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostProjAnim)");
             }
             return;
         }
 
-        //handle creature turn start hook, catches the start of a new turn
-        if ((encounterSPtr_->HasStarted()) &&
-            (IsPaused() == false) &&
-            (turnCreaturePtr_ == nullptr) &&
-            (TurnPhase::NotATurn == turnPhase_) &&
-            (PreTurnPhase::End == preTurnPhase_))
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::Impact == performAnimPhase_))
         {
-            StartTurn_Step1();
+            combatAnimationPtr_->ImpactAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
+            {
+                combatAnimationPtr_->ImpactAnimStop();
+                HandleApplyDamageTasks();
+                SetPerformAnimPhase(PerformAnimPhase::PostImpactPause);
+                StartPause(POST_IMPACT_ANIM_PAUSE_SEC_, "PostImpact");
+                SetupTurnBox();
+            }
+            return;
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::MoveToward == performAnimPhase_))
+        {
+            combatAnimationPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
+            {
+                combatAnimationPtr_->MeleeMoveTowardAnimStop();
+                SetPerformAnimPhase(PerformAnimPhase::PostMoveTowardPause);
+                StartPause(POST_MELEEMOVE_ANIM_PAUSE_SEC_, "PostMoveToward");
+                SetupTurnBox();
+            }
+            return;
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::MoveBack == performAnimPhase_))
+        {
+            combatAnimationPtr_->MeleeMoveBackAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
+            {
+                combatAnimationPtr_->MeleeMoveBackAnimStop();
+                SetPerformAnimPhase(PerformAnimPhase::FinalPause);
+                StartPause(POST_MELEEMOVE_ANIM_PAUSE_SEC_, "Final");
+                SetupTurnBox();
+            }
             return;
         }
 
@@ -1130,6 +1168,17 @@ namespace stage
             return;
         }
 
+        //handle creature turn start hook, catches the start of a new turn
+        if ((encounterSPtr_->HasStarted()) &&
+            (IsPaused() == false) &&
+            (turnCreaturePtr_ == nullptr) &&
+            (TurnPhase::NotATurn == turnPhase_) &&
+            (PreTurnPhase::End == preTurnPhase_))
+        {
+            StartTurn_Step1();
+            return;
+        }
+
         //initial hook for taking action before the first turn (pre-turn logic)
         if ((zoomSliderBarSPtr_.get() != nullptr) &&
             (combatDisplayStagePtr_ != nullptr) &&
@@ -1138,7 +1187,7 @@ namespace stage
             (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
-            slider_.Reset(INITIAL_CENTERING_SLIDER_SPEED_);
+            slider_.Reset(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
             combatAnimationPtr_->CenteringStartTargetCenterOfBatllefield();
             return;
         }
@@ -1336,6 +1385,36 @@ namespace stage
 
         pauseElapsedSec_ = pauseDurationSec_ + 1.0f;//anything greater than pauseDurationSec_ will work here
 
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::FinalPause == performAnimPhase_))
+        {
+            SetPerformAnimPhase(PerformAnimPhase::NotAnimating);
+            SetTurnPhase(TurnPhase::PerformReport);
+            StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostPerformAnim)");
+            SetupTurnBox();
+            return;
+        }
+        
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::PostImpactPause == performAnimPhase_))
+        {
+            SetPerformAnimPhase(PerformAnimPhase::MoveBack);
+            SetupTurnBox();
+            combatAnimationPtr_->MeleeMoveBackAnimStart();
+            slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+            return;
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (PerformAnimPhase::PostMoveTowardPause == performAnimPhase_))
+        {
+            SetPerformAnimPhase(PerformAnimPhase::Impact);
+            SetupTurnBox();
+            combatAnimationPtr_->ImpactAnimStart(ANIM_IMPACT_SHAKE_SLIDER_SPEED_);
+            slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
+            return;
+        }
+
         if (PreTurnPhase::PostPanPause == preTurnPhase_)
         {
             SetPreTurnPhase(PreTurnPhase::ZoomOut);
@@ -1384,15 +1463,13 @@ namespace stage
                 creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
                 combatAnimationPtr_->CenteringStart(allEffectedCreaturesPVec);
-                slider_.Reset(CENTERING_SLIDER_SPEED_);
+                slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             }
             return;
         }
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
-            M_HP_LOG("\t ********** EndPause(performType_=" << PerformTypeToString(performType_) << ")");
-
             //See above for call to HandleEnemyTurnStep2_Perform()
             StartPerformAnim();
             SetupTurnBox();
@@ -1450,7 +1527,7 @@ namespace stage
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
                 combatAnimationPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
-                slider_.Reset(DEATH_ANIM_SLIDER_SPEED_);
+                slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
                 //TODO SOUNDEFFECT play creature death sound effect here
             }
             return;
@@ -1484,27 +1561,19 @@ namespace stage
 
     CombatStage::PerformType CombatStage::HandleEnemyTurnStep2_Perform()
     {
-        M_HP_LOG("\t ********** HandleEnemyTurnStep2_Perform(turnActionInfo_=" << turnActionInfo_.Action() << ")");
-
         switch (turnActionInfo_.Action())
         {
             case combat::TurnAction::Advance:
             {
-                combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
-                PositionSlideStartTasks();
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 return PerformType::Advance;
             }
 
             case combat::TurnAction::Retreat:
             {
-                combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
-                PositionSlideStartTasks();
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 return PerformType::Retreat;
             }
 
@@ -1512,7 +1581,6 @@ namespace stage
             {
                 fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, turnActionInfo_.Target());
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 return GetPerformTypeFromFightResult(fightResult_);
             }
 
@@ -1592,7 +1660,7 @@ namespace stage
 
         SetTurnPhase(TurnPhase::CenterAndZoomIn);
         combatAnimationPtr_->CenteringStart(turnCreaturePtr_);
-        slider_.Reset(CENTERING_SLIDER_SPEED_);
+        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
     }
 
 
@@ -1603,7 +1671,7 @@ namespace stage
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
         combatAnimationPtr_->CenteringStop();
-        combatDisplayStagePtr_->StartShaking(turnCreaturePtr_);
+        combatDisplayStagePtr_->StartShaking(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
 
         goldTextColorShaker_.Reset();
 
@@ -1660,7 +1728,7 @@ namespace stage
         M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "heroespath::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
         combatAnimationPtr_->RepositionAnimStart(turnCreaturePtr_);
         combatDisplayStagePtr_->StopShaking(turnCreaturePtr_);
-        slider_.Reset(CREATURE_POS_SLIDER_SPEED_);
+        slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
 
@@ -1685,7 +1753,7 @@ namespace stage
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
             combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature });
-            slider_.Reset(CENTERING_SLIDER_SPEED_);
+            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
 
             SetupTurnBox();
             return true;
@@ -2215,7 +2283,8 @@ namespace stage
 
         if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
             (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
-            (TurnPhase::PerformAnim == turnPhase_))
+            ((TurnPhase::PerformAnim == turnPhase_) &&
+             (performAnimPhase_ < PerformAnimPhase::Impact)))
         {
             willDrawTurnBoxButtons = false;
 
@@ -2241,7 +2310,9 @@ namespace stage
             }
         }
         else if ((TurnPhase::PerformReport == turnPhase_) ||
-                 (TurnPhase::PostPerformPause == turnPhase_))
+                 (TurnPhase::PostPerformPause == turnPhase_) ||
+                 ((TurnPhase::PerformAnim == turnPhase_) && 
+                  (performAnimPhase_ >= PerformAnimPhase::Impact)))
         {
             willDrawTurnBoxButtons = false;
 
@@ -2290,7 +2361,10 @@ namespace stage
 
         enemyActionTBoxRegionSPtr_->SetText(preambleSS.str());
 
-        if (isPreambleShowing || ((TurnPhase::PerformReport == turnPhase_) || (TurnPhase::PostPerformPause == turnPhase_)))
+        if (isPreambleShowing ||
+            ((TurnPhase::PerformReport == turnPhase_) ||
+            (TurnPhase::PostPerformPause == turnPhase_) ||
+            (TurnPhase::PerformAnim == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionSPtr_->GetEntityPos().y);
         }
@@ -2316,8 +2390,7 @@ namespace stage
     void CombatStage::StartPerformAnim()
     {
         SetTurnPhase(TurnPhase::PerformAnim);
-        M_HP_LOG("\t ********** StartPerformAnim(performType_=" << PerformTypeToString(performType_) << ")");
-
+        
         switch (performType_)
         {
             case PerformType::Advance:
@@ -2342,6 +2415,11 @@ namespace stage
             {
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 SetPerformAnimPhase(PerformAnimPhase::MoveToward);
+                
+                auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+                M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.size() == 1), "heroespath::stage::CombatStage::StartPerformAnim(performType_=MeleeWeapon) found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size() << " instead of 1.");
+                combatAnimationPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_, CREATURE_EFFECTS_VEC[0].GetCreature());
+                slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
             }
 
@@ -2363,7 +2441,7 @@ namespace stage
                                                                       WEAPON_SPTR,
                                                                       fightResult_.WasHit());
 
-                        slider_.Reset(PROJECTILE_SHOOT_SLIDER_SPEED_);
+                        slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetPerformAnimPhase(PerformAnimPhase::ProjectileShoot);
                         break;
                     }
@@ -2376,7 +2454,6 @@ namespace stage
 
             case PerformType::PauseAndReport:
             {
-                M_HP_LOG("\t ++++++++++ heroespath::stage::ComabtStsage::StartPerformAnim(performType_=PauseAndReport) um...the new case...");
                 SetTurnPhase(TurnPhase::PerformReport);
                 SetPerformType(PerformType::None);
                 SetPerformAnimPhase(PerformAnimPhase::NotAnimating);

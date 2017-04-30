@@ -60,16 +60,22 @@ namespace combat
 
     ShakeInfo::ShakeInfo()
     :
-        SHAKE_DISTANCE    (sfml_util::MapByRes(16.0f, 48.0f)),
         shaker            (),
         delay_timer_sec   (DELAY_SEC + 1.0f),   //anything larger than DELAY_SEC_ will work here
         duration_timer_sec(DURATION_SEC + 1.0f)//anything larger than DURATION_SEC_ will work here
     {}
 
-
-    void ShakeInfo::Reset()
+    
+    void ShakeInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
-        shaker.Reset(0.0f, SHAKE_DISTANCE, 45.0f, (SHAKE_DISTANCE * 0.5f), sfml_util::rand::Bool());
+        auto const SHAKE_DISTANCE{ CombatDisplay::GetCreatureShakeDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+
+        shaker.Reset(0.0f,
+                     SHAKE_DISTANCE,
+                     SLIDER_SPEED,
+                     (SHAKE_DISTANCE * 0.5f),
+                     sfml_util::rand::Bool());
+
         duration_timer_sec = 0.0f;
         delay_timer_sec = ShakeInfo::DELAY_SEC + 1.0f;//anything larger than DELAY_SEC_ will work here
     }
@@ -126,6 +132,7 @@ namespace combat
         isSummaryViewInProgress_   (false),
         combatNodeToGuiEntityMap_  (),
         creatureThatWasShakingCPtr_(nullptr),
+        creatureThatWasShakingSpd_ (0.0f),
         shakeInfoMap_              (),
         nodePosTrackerMap_         (),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
@@ -134,6 +141,19 @@ namespace combat
 
     CombatDisplay::~CombatDisplay()
     {}
+
+
+    float CombatDisplay::GetCreatureShakeDistance(const bool WILL_DOUBLE)
+    {
+        auto distance{ sfml_util::MapByRes(16.0f, 48.0f) };
+
+        if (WILL_DOUBLE)
+        {
+            distance *= 2.0f;
+        }
+
+        return distance;
+    }
 
 
     void CombatDisplay::Setup()
@@ -286,12 +306,15 @@ namespace combat
     }
 
 
-    void CombatDisplay::StartShaking(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void CombatDisplay::StartShaking(creature::CreatureCPtrC_t CREATURE_CPTRC,
+                                     const float               SLIDER_SPEED,
+                                     const bool                WILL_DOUBLE_SHAKE_DISTANCE)
     {
         auto combatNodePtr(combatTree_.GetNode(CREATURE_CPTRC));
         if (combatNodePtr != nullptr)
         {
-            shakeInfoMap_[combatNodePtr].Reset();
+            shakeInfoMap_[combatNodePtr].Reset(SLIDER_SPEED, WILL_DOUBLE_SHAKE_DISTANCE);
+            creatureThatWasShakingSpd_ = SLIDER_SPEED;
         }
     }
 
@@ -372,8 +395,9 @@ namespace combat
 
             if ((creatureThatWasShakingCPtr_ != nullptr) && (summaryView_.GetTransitionStatus() > 0.99))
             {
-                StartShaking(creatureThatWasShakingCPtr_);
+                StartShaking(creatureThatWasShakingCPtr_, creatureThatWasShakingSpd_, false);
                 creatureThatWasShakingCPtr_ = nullptr;
+                creatureThatWasShakingSpd_ = 0.0f;
                 SetIsSummaryViewInProgress(false);
             }
         }
@@ -390,7 +414,7 @@ namespace combat
             if (nextShakeInfoPair.second.duration_timer_sec < ShakeInfo::DURATION_SEC)
             {
                 nextShakeInfoPair.second.duration_timer_sec += ELAPSED_TIME_SECONDS;
-                nextShakeInfoPair.first->SetImagePosOffset(nextShakeInfoPair.second.shaker.Update(ELAPSED_TIME_SECONDS), 0.0f);
+                nextShakeInfoPair.first->SetImagePosOffset((GetCreatureShakeDistance(false) * -0.5f) + nextShakeInfoPair.second.shaker.Update(ELAPSED_TIME_SECONDS), 0.0f);
 
                 if (nextShakeInfoPair.second.duration_timer_sec > ShakeInfo::DURATION_SEC)
                 {

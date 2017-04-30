@@ -265,18 +265,25 @@ namespace stage
         static const float POST_PERFORM_REPORT_PAUSE_SEC_;
         static const float POST_TURN_PAUSE_SEC_;
         static const float STATUSMSG_ANIM_PAUSE_SEC_;
+        static const float POST_MELEEMOVE_ANIM_PAUSE_SEC_;
+        static const float POST_IMPACT_ANIM_PAUSE_SEC_;
         //
         static const float SLIDER_SPEED_SLOWEST_;
         static const float SLIDER_SPEED_SLOW_;
         static const float SLIDER_SPEED_NORMAL_;
         static const float SLIDER_SPEED_FAST_;
+        static const float SLIDER_SPEED_FASTEST_;
         static const float ZOOM_SLIDER_SPEED_;
-        static const float CENTERING_SLIDER_SPEED_;
-        static const float INITIAL_CENTERING_SLIDER_SPEED_;
         static const float TEXT_COLOR_SHAKER_SPEED_;
-        static const float CREATURE_POS_SLIDER_SPEED_;
-        static const float PROJECTILE_SHOOT_SLIDER_SPEED_;
-        static const float DEATH_ANIM_SLIDER_SPEED_;
+        static const float ANIM_CENTERING_SLIDER_SPEED_;
+        static const float ANIM_INITIAL_CENTERING_SLIDER_SPEED_;
+        static const float ANIM_CREATURE_POS_SLIDER_SPEED_;
+        static const float ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_;
+        static const float ANIM_DEATH_SLIDER_SPEED_;
+        static const float ANIM_MELEE_MOVE_SLIDER_SPEED_;
+        static const float ANIM_IMPACT_SLIDER_SPEED_;
+        static const float ANIM_CREATURE_SHAKE_SLIDER_SPEED_;
+        static const float ANIM_IMPACT_SHAKE_SLIDER_SPEED_;
         //
         static const sf::Color LISTBOX_BACKGROUND_COLOR_;
         static const sf::Color LISTBOX_HIGHLIGHT_COLOR_;
