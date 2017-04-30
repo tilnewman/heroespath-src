@@ -134,6 +134,9 @@ namespace combat
                        const creature::ConditionSVec_t & CONDITIONS_SVEC = creature::ConditionSVec_t(),
                        const bool                        WAS_POUNCED     = false);
 
+        CreatureEffect(const CreatureEffect &);
+        CreatureEffect operator=(const CreatureEffect &);
+
         inline std::size_t               GetCount() const           { return hitInfoVec_.size(); }
         inline HitInfoVec_t              GetHitInfoVec() const      { return hitInfoVec_; }
         inline spell::SpellPtr_t         GetSpell() const           { return spellPtr_; }

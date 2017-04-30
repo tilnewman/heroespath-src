@@ -44,6 +44,9 @@ namespace stage
     class CharacterStage;
     class MenuButton : public sfml_util::gui::FourStateButton
     {
+        MenuButton(const MenuButton &) =delete;
+        MenuButton operator=(const MenuButton &) =delete;
+
     public:
         MenuButton(const std::string & NAME,
                    const std::string & IMAGE_FILENAME_UP,

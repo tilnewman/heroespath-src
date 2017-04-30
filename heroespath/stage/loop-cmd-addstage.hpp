@@ -140,6 +140,9 @@ namespace stage
 
     class LoopCmd_AddStage_Inventory : public sfml_util::LoopCmd
     {
+        LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) =delete;
+        LoopCmd_AddStage_Inventory operator=(const LoopCmd_AddStage_Inventory &) =delete;
+
     public:
         LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t & loopSPtr, creature::CreaturePtr_t creaturePtr);
         virtual ~LoopCmd_AddStage_Inventory();

@@ -164,6 +164,36 @@ namespace combat
     {}
 
 
+    CreatureEffect::CreatureEffect(const CreatureEffect & CE)
+    :
+        hitInfoVec_    (CE.hitInfoVec_),
+
+        //The lifetimes of these two objects are not managed by this class.
+        //These pointers were originally provided from an owning
+        //std::shared_ptr, which is not effected by the copies made here.
+        //So copying these pointers is safe.
+        spellPtr_      (CE.spellPtr_),
+        creaturePtr_   (CE.creaturePtr_),
+
+        conditionsSVec_(CE.conditionsSVec_),
+        wasPounced_    (CE.wasPounced_)
+    {}
+
+
+    CreatureEffect CreatureEffect::operator=(const CreatureEffect & CE)
+    {
+        if (& CE == this)
+        {
+            return * this;
+        }
+        else
+        {
+            //see comments in copy constructor body
+            return CreatureEffect(CE);
+        }
+    }
+
+
     bool CreatureEffect::GetWasHit() const
     {
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
