@@ -33,14 +33,12 @@ namespace callback
 
         PtrWrapper operator=(const PtrWrapper & PW)
         {
-            if (& PW == this)
+            if (& PW != this)
             {
-                return * this;
+                PTR_ = PW.PTR_;
             }
-            else
-            {
-                return PtrWrapper(PW);
-            }
+
+            return * this;
         }
 
         virtual ~PtrWrapper() {}

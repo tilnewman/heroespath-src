@@ -26,6 +26,7 @@ namespace combat
         texture_sptr         (),
         name_text_region_sptr(),
         desc_text_region_sptr(),
+        info_text_region_sptr(),
         item_sptr            (ITEM_SPTR)
     {}
 
