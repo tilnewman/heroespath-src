@@ -101,6 +101,7 @@ namespace combat
         zoomLevel_                 (1.0f),
         initialZoomHorizDiff_      (-1.0f),//any value less than zero will work here
         isMouseHeldDownInBF_       (false),
+        prevMousePos_              (0.0f, 0.0f),
         isPlayerTurn_              (false),
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),

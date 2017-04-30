@@ -191,7 +191,7 @@ namespace combat
             wasPounced_ = CE.wasPounced_;
         }
 
-        return * this;
+        return *this;
     }
 
 
