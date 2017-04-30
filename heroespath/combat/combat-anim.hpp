@@ -70,7 +70,7 @@ namespace combat
         virtual ~CombatAnimation();
 
         static void GiveCombatDisplay(CombatDisplayPtr_t);
-        static CombatAnimation * const Instance();
+        static CombatAnimation * Instance();
 
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 

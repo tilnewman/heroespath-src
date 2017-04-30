@@ -57,9 +57,9 @@ namespace combat
                                            CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
 
     private:
-        static creature::CreaturePtrC_t FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                              const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                              CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
+        static creature::CreaturePtr_t FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
+                                                             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+                                                             CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
 
         static creature::CreaturePVec_t FindSelectedTargets(const TurnInfo & TURN_INFO);
 

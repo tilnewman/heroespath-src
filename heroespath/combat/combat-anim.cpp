@@ -86,7 +86,7 @@ namespace combat
     }
 
 
-    CombatAnimation * const CombatAnimation::Instance()
+    CombatAnimation * CombatAnimation::Instance()
     {
         if (nullptr == instance_)
         {

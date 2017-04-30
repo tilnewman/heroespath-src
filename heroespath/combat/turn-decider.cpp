@@ -159,9 +159,9 @@ namespace combat
     }
 
 
-    creature::CreaturePtrC_t TurnDecider::FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                                const creature::CreaturePtrC_t CREATURE_CPTRC,
-                                                                CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+    creature::CreaturePtr_t TurnDecider::FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
+                                                               const creature::CreaturePtrC_t CREATURE_CPTRC,
+                                                               CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
         //pick (select) favorite targets by type
         const creature::CreaturePVec_t SELECT_TARGETS_PVEC { FindSelectedTargets(TURN_INFO) };
