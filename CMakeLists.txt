@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-project("AppBase")
+project("Heroes Path")
 
+message(STATUS "${PROJECT_NAME} building with ${CMAKE_CXX_COMPILER_ID} on ${CMAKE_SYSTEM}")
 
 set(CUSTOM_BUILD_FLAGS "")
 
@@ -19,14 +20,12 @@ endif()
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
 message(STATUS "${PROJECT_NAME} will use build flags: \"" ${CUSTOM_BUILD_FLAGS} "\"")
 
-
 set(CUSTOM_PROJECT_BOOST_VER "1.61.0")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
 set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
 FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem random serialization)
-message(STATUS "${PROJECT_NAME} will use boost version: " ${Boost_VERSION})
-
+message(STATUS "Using boost version: " ${Boost_VERSION})
 
 include_directories(${include_directories} . ${Boost_INCLUDE_DIRS})
 link_directories(${link_directories} ${Boost_LIBRARY_DIRS})
