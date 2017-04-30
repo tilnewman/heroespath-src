@@ -27,7 +27,7 @@ namespace creature
     }
 
 
-    TitleCPtrC_t Achievement::GetCurrentTitle() const
+    TitlePtr_t Achievement::GetCurrentTitle() const
     {
         TitlePtr_t titlePtr{ nullptr };
 
@@ -40,13 +40,13 @@ namespace creature
         }
 
         if (titlePtr->AchievementCount() > count_)
-            return TitleCPtrC_t{ nullptr };
+            return nullptr;
         else
             return titlePtr;
     }
 
 
-    TitleCPtrC_t Achievement::GetNextTitle() const
+    TitlePtr_t Achievement::GetNextTitle() const
     {
         TitlePtr_t titlePtr(nullptr);
 
@@ -83,7 +83,7 @@ namespace creature
     }
 
 
-    TitleCPtrC_t Achievement::Increment(const CreatureSPtr_t & CREATURE_SPTR)
+    TitlePtr_t Achievement::Increment(const CreatureSPtr_t & CREATURE_SPTR)
     {
         ++count_;
 
@@ -92,7 +92,7 @@ namespace creature
                 if (NEXT_TITLE_COUNT_PAIR.second->IsRoleInList(CREATURE_SPTR->Role().Which()))
                     return NEXT_TITLE_COUNT_PAIR.second;
 
-        return TitleCPtrC_t{ nullptr };
+        return nullptr;
     }
 
 }

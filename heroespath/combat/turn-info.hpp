@@ -46,31 +46,31 @@ namespace combat
         inline strategy::Info GetStrategyInfo() const                           { return strategyInfo_; }
         inline void SetStrategyInfo(const strategy::Info & SI)                  { strategyInfo_ = SI; }
 
-        inline creature::CreaturePtrC_t GetFirstAttackedByCreature() const      { return firstAttackedByCreaturePtr_; }
+        inline creature::CreaturePtr_t GetFirstAttackedByCreature() const       { return firstAttackedByCreaturePtr_; }
         inline void SetFirstAttackedByCreature(creature::CreaturePtr_t P )      { firstAttackedByCreaturePtr_ = P; }
 
-        inline creature::CreaturePtrC_t GetLastAttackedByCreature() const       { return lastAttackedByCreaturePtr_; }
+        inline creature::CreaturePtr_t GetLastAttackedByCreature() const        { return lastAttackedByCreaturePtr_; }
         inline void SetLastAttackedByCreature(creature::CreaturePtr_t P)        { lastAttackedByCreaturePtr_ = P; }
 
-        inline creature::CreaturePtrC_t GetFirstHitByCreature() const           { return firstHitByCreaturePtr_; }
+        inline creature::CreaturePtr_t GetFirstHitByCreature() const            { return firstHitByCreaturePtr_; }
         inline void SetFirstHitByCreature(creature::CreaturePtr_t SPTR)         { firstHitByCreaturePtr_ = SPTR; }
 
-        inline creature::CreaturePtrC_t GetLastHitByCreature() const            { return lastHitByCreaturePtr_; }
+        inline creature::CreaturePtr_t GetLastHitByCreature() const             { return lastHitByCreaturePtr_; }
         inline void SetLastHitByCreature(creature::CreaturePtr_t SPTR)          { lastHitByCreaturePtr_ = SPTR; }
 
-        inline creature::CreaturePtrC_t GetFirstToMakeMusicCreature() const     { return firstToMakeMusicPtr_; }
+        inline creature::CreaturePtr_t GetFirstToMakeMusicCreature() const      { return firstToMakeMusicPtr_; }
         inline void SetFirstToMakeMusicCreature(creature::CreaturePtr_t SPTR)   { firstToMakeMusicPtr_ = SPTR; }
 
-        inline creature::CreaturePtrC_t GetLastToMakeMusicCreature() const      { return lastToMakeMusicPtr_; }
+        inline creature::CreaturePtr_t GetLastToMakeMusicCreature() const       { return lastToMakeMusicPtr_; }
         inline void SetLastToMakeMusicCreature(creature::CreaturePtr_t SPTR)    { lastToMakeMusicPtr_ = SPTR; }
 
         inline bool IsFirstAttackedByAlsoFirstHitByCreature() const             { return firstAttackedByCreaturePtr_ == firstHitByCreaturePtr_; }
         inline bool IsLastAttackedByAlsoLastHitByCreature() const               { return lastAttackedByCreaturePtr_ == lastHitByCreaturePtr_; }
 
-        inline creature::CreaturePtrC_t GetFirstToCastCreature() const          { return firstToCastPtr_; }
+        inline creature::CreaturePtr_t GetFirstToCastCreature() const           { return firstToCastPtr_; }
         inline void SetFirstToCastCreature(creature::CreaturePtr_t SPTR)        { firstToCastPtr_ = SPTR; }
 
-        inline creature::CreaturePtrC_t GetLastToCastCreature() const           { return lastToCastPtr_; }
+        inline creature::CreaturePtr_t GetLastToCastCreature() const            { return lastToCastPtr_; }
         inline void SetLastToCastCreature(creature::CreaturePtr_t SPTR)         { lastToCastPtr_ = SPTR; }
 
         inline const DamageCreaturePair_t GetMostDamageCreature() const         { return mostDamagePair_; }

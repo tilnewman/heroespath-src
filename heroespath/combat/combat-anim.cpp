@@ -182,7 +182,7 @@ namespace combat
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
         sf::Vector2f creatureDefendingCenterPosV{0.0f, 0.0f};
         CombatNodePVec_t combatNodePVec;
-        combatDisplayStagePtr_->CombatTree().GetCombatNodes(combatNodePVec);
+        combatDisplayStagePtr_->CombatTreeObj().GetCombatNodes(combatNodePVec);
         for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
         {
             if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
@@ -287,9 +287,9 @@ namespace combat
         //remove non-player nodes from combat tree and prepare for sliding animation
         for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
         {
-            auto const NEXT_NODE_ID{ combatDisplayStagePtr_->CombatTree().GetNodeId(nextCombatNodeCPtr) };
-            auto const NEXT_NODE_SPTR{ combatDisplayStagePtr_->CombatTree().GetNodeSPtr(NEXT_NODE_ID) };
-            combatDisplayStagePtr_->CombatTree().RemoveVertex(NEXT_NODE_ID, true);
+            auto const NEXT_NODE_ID{ combatDisplayStagePtr_->CombatTreeObj().GetNodeId(nextCombatNodeCPtr) };
+            auto const NEXT_NODE_SPTR{ combatDisplayStagePtr_->CombatTreeObj().GetNodeSPtr(NEXT_NODE_ID) };
+            combatDisplayStagePtr_->CombatTreeObj().RemoveVertex(NEXT_NODE_ID, true);
             combatDisplayStagePtr_->RemoveCombatNode(NEXT_NODE_SPTR);
         }
         deadAnimNodesPVec_.clear();
@@ -301,7 +301,7 @@ namespace combat
 
     void CombatAnimation::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTree().GetNode(CREATURE_CPTRC);
+        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTreeObj().GetNode(CREATURE_CPTRC);
         centeringAnimCreaturesPVec_.clear();
         centeringAnimWillZoomOut_ = false;
     }

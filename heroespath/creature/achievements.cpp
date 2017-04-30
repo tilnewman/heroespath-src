@@ -56,7 +56,7 @@ namespace creature
     }
 
 
-    TitleCPtrC_t Achievements::Increment(const AchievementType::Enum E, const CreatureSPtr_t & CREATURE_SPTR)
+    TitlePtr_t Achievements::Increment(const AchievementType::Enum E, const CreatureSPtr_t & CREATURE_SPTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_SPTR.get() != nullptr), "heroespath::creature::Achievements::Increment(which_enum=" << E << ", creature_sptr=" << CREATURE_SPTR.get() << ") was given a CREATURE_SPTR that was null.");
 
@@ -74,12 +74,12 @@ namespace creature
     }
 
 
-    TitleCPtrC_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
+    TitlePtr_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
     {
         const AchievementMapCIter_t CITER(map_.find(E));
         if (CITER == map_.end())
         {
-            return TitlePtr_t(nullptr);
+            return nullptr;
         }
         else
         {
@@ -88,12 +88,12 @@ namespace creature
     }
 
 
-    TitleCPtrC_t Achievements::GetNextTitle(const AchievementType::Enum E) const
+    TitlePtr_t Achievements::GetNextTitle(const AchievementType::Enum E) const
     {
         const AchievementMapCIter_t CITER(map_.find(E));
         if (CITER == map_.end())
         {
-            return TitlePtr_t(nullptr);
+            return nullptr;
         }
         else
         {

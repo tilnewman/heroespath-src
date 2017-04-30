@@ -42,9 +42,9 @@ namespace creature
         inline const std::string Name() const                   { return AchievementType::Name(which_); }
         inline const TitleCountMap_t TitleCountMapCopy() const  { return titleCountMap_; }
 
-        TitleCPtrC_t GetCurrentTitle() const;
+        TitlePtr_t GetCurrentTitle() const;
 
-        TitleCPtrC_t GetNextTitle() const;
+        TitlePtr_t GetNextTitle() const;
 
         const std::string ToString() const;
 
@@ -53,7 +53,7 @@ namespace creature
         //Note:  This function does not new up a unique Title object and return it.
         //       All creatures share the same copy of all Title objects.
         //       So this function returns a shared_ptr to the Title object in titlesSVec_.
-        TitleCPtrC_t Increment(const CreatureSPtr_t &);
+        TitlePtr_t Increment(const CreatureSPtr_t &);
 
         friend bool operator<(const Achievement & L, const Achievement & R);
         friend bool operator==(const Achievement & L, const Achievement & R);

@@ -1077,13 +1077,13 @@ namespace combat
     }
 
 
-    const CombatNodePtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    CombatNodePtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
         return combatTree_.GetNode(combatTree_.GetNodeId(CREATURE_CPTRC));
     }
 
 
-    const CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
+    CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
         CombatNodePVec_t combatNodesPVec;
         combatNodesPVec.reserve(combatTree_.VertexCount());

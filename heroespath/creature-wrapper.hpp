@@ -52,7 +52,7 @@ namespace heroespath
     using CreatureWrapperVec_t = std::vector<CreatureWrapper>;
 
     inline bool operator< (const CreatureWrapper & L, const CreatureWrapper & R) { return (L.creatureSPtr_ < R.creatureSPtr_); }
-    inline bool operator==(const CreatureWrapper & L, const CreatureWrapper & R) { return (L.creatureSPtr_ == R.creatureSPtr_); };
+    inline bool operator==(const CreatureWrapper & L, const CreatureWrapper & R) { return (L.creatureSPtr_ == R.creatureSPtr_); }
     inline bool operator!=(const CreatureWrapper & L, const CreatureWrapper & R) { return ! (L == R); }
 
 }

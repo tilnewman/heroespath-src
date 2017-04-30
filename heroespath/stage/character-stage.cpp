@@ -253,7 +253,7 @@ namespace stage
             const std::string           NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
             const creature::sex::Enum   SEX_ENUM(static_cast<creature::sex::Enum>(sexRadioButtonSPtr_->GetSelectedNumber() + 1));
             const creature::race::Enum  RACE_ENUM(static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()));
-            const creature::role::Enum  ROLE_ENUM(static_cast<creature::role::Enum>(((RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : roleRadioButtonSPtr_->GetSelectedNumber())));
+            const creature::role::Enum  ROLE_ENUM(((RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
             //setup the final StatSet for the character
             stats::StatSet statSetFinal(statSetBase_);
@@ -355,7 +355,7 @@ sfml_util::PopupImage::Large));
             const std::string CHARACTER_NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
             const bool IS_MALE(sexRadioButtonSPtr_->GetSelectedNumber() == 0);
             const creature::race::Enum RACE(static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()));
-            const creature::role::Enum ROLE(static_cast<creature::role::Enum>(((RACE == creature::race::Wolfen) ? creature::role::Wolfen : roleRadioButtonSPtr_->GetSelectedNumber())));
+            const creature::role::Enum ROLE(((RACE == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
             //setup the final StatSet for the character
             stats::StatSet statSetFinal;
@@ -480,7 +480,7 @@ sfml_util::PopupImage::Large));
         //establish character details
         const creature::sex::Enum SEX((sexRadioButtonSPtr_->GetSelectedNumber() == 0) ? creature::sex::Male : creature::sex::Female);
         const creature::race::Enum RACE(static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()));
-        const creature::role::Enum ROLE(static_cast<creature::role::Enum>(((RACE == creature::race::Wolfen) ? creature::role::Wolfen : roleRadioButtonSPtr_->GetSelectedNumber())));
+        const creature::role::Enum ROLE(((RACE == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
         //get all image filenames possible for the character
         std::vector<std::string> characterImageFilenamesVec;
@@ -980,7 +980,7 @@ sfml_util::PopupImage::Regular));
 
     void CharacterStage::SetupRoleDescriptionBox()
     {
-        const creature::role::Enum ROLE_ENUM( static_cast<creature::role::Enum>(((raceRadioButtonSPtr_->GetSelectedNumber() == creature::race::Wolfen) ? creature::role::Wolfen: roleRadioButtonSPtr_->GetSelectedNumber())));
+        const creature::role::Enum ROLE_ENUM( ((static_cast<creature::role::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
         const std::string ROLE_DESC( creature::role::Desc(ROLE_ENUM) );
 
         const sf::FloatRect REGION(roleRadioButtonSPtr_->GetEntityRegion().left + roleRadioButtonSPtr_->GetEntityRegion().width + 15.0f,
@@ -1235,7 +1235,7 @@ sfml_util::PopupImage::Regular));
 
         sf::Color reccStrongColor(255, 200, 181);
 
-        const creature::role::Enum WHICH_ROLE(static_cast<creature::role::Enum>(((raceRadioButtonSPtr_->GetSelectedNumber() == creature::race::Wolfen) ? creature::role::Wolfen : roleRadioButtonSPtr_->GetSelectedNumber())));
+        const creature::role::Enum WHICH_ROLE( ((static_cast<creature::role::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
         const stats::Stat_t STAT_VALUE(fixedStatsSVec_[WHICH_STAT]->Value());
 
@@ -1901,7 +1901,7 @@ sfml_util::PopupImage::Regular));
             }
         }
 
-        const creature::role::Enum ROLE_ENUM( static_cast<creature::role::Enum>(((raceRadioButtonSPtr_->GetSelectedNumber() == creature::race::Wolfen) ? creature::role::Wolfen : roleRadioButtonSPtr_->GetSelectedNumber())) );
+        const creature::role::Enum ROLE_ENUM( ((static_cast<creature::role::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) );
         const std::string ROLE_NAME_ABBR( creature::role::Abbr(ROLE_ENUM));
 
         statSetRole_ = creature::StatModifierByRole(ROLE_ENUM);

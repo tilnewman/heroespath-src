@@ -191,7 +191,7 @@ namespace creature
     }
 
 
-    CreaturePtrC_t Algorithms::SelectRandom(const CreaturePVec_t & CREATURE_PVEC)
+    CreaturePtr_t Algorithms::SelectRandom(const CreaturePVec_t & CREATURE_PVEC)
     {
         if (CREATURE_PVEC.empty())
         {

@@ -100,6 +100,7 @@ namespace creature
         }
     };
 
+
     using TitlePtr_t   = Title *;
     using TitlePtrC_t  = Title * const;
     using TitleCPtrC_t = const Title * const;
@@ -107,6 +108,7 @@ namespace creature
 
     using TitleUPtr_t = std::unique_ptr<Title>;
     using TitleUVec_t = std::vector<TitleUPtr_t>;
+
 
     bool operator<(const Title & L, const Title & R);
 

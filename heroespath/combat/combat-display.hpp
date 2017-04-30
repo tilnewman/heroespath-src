@@ -149,10 +149,10 @@ namespace combat
 
         inline void SetUserActionAllowed(const bool IS_ALLOWED)                 { isUserActionAllowed_ = IS_ALLOWED; }
 
-        const CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
-        const CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+        CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
+        CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
-        inline CombatTree & CombatTree()                                        { return combatTree_; }
+        inline CombatTree & CombatTreeObj()                                     { return combatTree_; }
 
         void PositionCombatTreeCells(const bool WILL_DELAY);
 

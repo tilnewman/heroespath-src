@@ -570,7 +570,6 @@ namespace heroespath
         if (currentStagePtr_ != nullptr)
             currentStagePtr_->HandleResolutionChange();
 
-        sfml_util::PopupButtons::Enum popupType(sfml_util::PopupButtons::YesNo);
         heroespath::Popup::Enum whichPopup(heroespath::Popup::ResolutionChange);
 
         sfml_util::gui::TextInfo textInfo("Keep this setting?",
@@ -600,7 +599,6 @@ namespace heroespath
             case sfml_util::DisplayChangeResult::Count:
             default:
             {
-                popupType = sfml_util::PopupButtons::Okay;
                 whichPopup = heroespath::Popup::Generic;
                 textInfo.text = "Unable to set that video mode.";
                 break;
