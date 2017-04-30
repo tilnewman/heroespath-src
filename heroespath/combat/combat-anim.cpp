@@ -20,6 +20,33 @@ namespace heroespath
 namespace combat
 {
 
+    const float ShakeAnimInfo::PAUSE_DURATION_SEC(1.0f);
+    const float ShakeAnimInfo::SHAKE_DURATION_SEC(0.65f);
+    
+
+    ShakeAnimInfo::ShakeAnimInfo()
+    :
+        slider(),
+        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f), //anything larger than PAUSE_DURATION_SEC will work here
+        shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f) //anything larger than SHAKE_DURATION_SEC will work here
+    {}
+
+
+    void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
+    {
+        auto const SHAKE_DISTANCE{ CombatAnim::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+
+        slider.Reset(0.0f,
+                     SHAKE_DISTANCE,
+                     SLIDER_SPEED,
+                     (SHAKE_DISTANCE * 0.5f),
+                     sfml_util::rand::Bool());
+
+        pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;//anything larger than PAUSE_DURATION_SEC will work here
+        shake_duration_timer_sec = 0.0f;
+    }
+
+
     CombatAnim *        CombatAnim::instance_{ nullptr };
     CombatDisplayPtr_t  CombatAnim::combatDisplayStagePtr_{ nullptr };
 
@@ -42,7 +69,10 @@ namespace combat
         meleeMoveAnimOrigPosV_           (0.0f, 0.0f),
         meleeMoveAnimTargetPosV_         (0.0f, 0.0f),
         meleeMoveAnimMovingCombatNodePtr_(nullptr),
-        meleeMoveAnimTargetCombatNodePtr_(nullptr)
+        meleeMoveAnimTargetCombatNodePtr_(nullptr),
+        shakeAnimCreatureWasCPtr_        (nullptr),
+        shakeAnimCreatureWasSpeed_       (0.0f),
+        shakeAnimInfoMap_                ()
     {}
 
 
@@ -75,6 +105,45 @@ namespace combat
             states.blendMode = sf::BlendAdd;
             target.draw(projAnimSprite_, states);
             states.blendMode = ORIG_BLEND_MODE;
+        }
+    }
+
+
+    void CombatAnim::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        bool willRemoveNullShakeInfo(false);
+        for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
+        {
+            if (nextShakeInfoPair.first == nullptr)
+            {
+                willRemoveNullShakeInfo = true;
+                continue;
+            }
+
+            if (nextShakeInfoPair.second.shake_duration_timer_sec < ShakeAnimInfo::SHAKE_DURATION_SEC)
+            {
+                nextShakeInfoPair.second.shake_duration_timer_sec += ELAPSED_TIME_SECONDS;
+                nextShakeInfoPair.first->SetImagePosOffset((ShakeAnimDistance(false) * -0.5f) + nextShakeInfoPair.second.slider.Update(ELAPSED_TIME_SECONDS), 0.0f);
+
+                if (nextShakeInfoPair.second.shake_duration_timer_sec > ShakeAnimInfo::SHAKE_DURATION_SEC)
+                {
+                    nextShakeInfoPair.second.pause_duration_timer_sec = 0.0f;
+                    nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
+                }
+            }
+
+            if (nextShakeInfoPair.second.pause_duration_timer_sec < ShakeAnimInfo::PAUSE_DURATION_SEC)
+            {
+                nextShakeInfoPair.second.pause_duration_timer_sec += ELAPSED_TIME_SECONDS;
+
+                if (nextShakeInfoPair.second.pause_duration_timer_sec > ShakeAnimInfo::PAUSE_DURATION_SEC)
+                    nextShakeInfoPair.second.shake_duration_timer_sec = 0.0f;
+            }
+        }
+
+        if (willRemoveNullShakeInfo)
+        {
+            shakeAnimInfoMap_.erase(nullptr);
         }
     }
 
@@ -395,13 +464,13 @@ namespace combat
         if ((meleeMoveAnimMovingCombatNodePtr_ != nullptr) &&
             (meleeMoveAnimTargetCombatNodePtr_ != nullptr))
         {
-            combatDisplayStagePtr_->StartShaking(meleeMoveAnimMovingCombatNodePtr_->Creature(),
-                                                 CREATURE_SHAKE_SLIDER_SPEED,
-                                                 true);
+            ShakeAnimStart(meleeMoveAnimMovingCombatNodePtr_->Creature(),
+                           CREATURE_SHAKE_SLIDER_SPEED,
+                           true);
 
-            combatDisplayStagePtr_->StartShaking(meleeMoveAnimTargetCombatNodePtr_->Creature(),
-                                                 CREATURE_SHAKE_SLIDER_SPEED,
-                                                 true);
+            ShakeAnimStart(meleeMoveAnimTargetCombatNodePtr_->Creature(),
+                           CREATURE_SHAKE_SLIDER_SPEED,
+                           true);
         }
     }
 
@@ -413,7 +482,74 @@ namespace combat
     void CombatAnim::ImpactAnimStop()
     {
         //stop ALL creature shaking
-        combatDisplayStagePtr_->StopShaking(nullptr);
+        ShakeAnimStop(nullptr);
+    }
+
+
+    float CombatAnim::ShakeAnimDistance(const bool WILL_DOUBLE)
+    {
+        auto distance{ sfml_util::MapByRes(16.0f, 48.0f) };
+
+        if (WILL_DOUBLE)
+        {
+            distance *= 2.0f;
+        }
+
+        return distance;
+    }
+
+    
+    void CombatAnim::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
+                                    const float               SLIDER_SPEED,
+                                    const bool                WILL_DOUBLE_SHAKE_DISTANCE)
+    {
+        auto combatNodePtr{ combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC) };
+        if (combatNodePtr != nullptr)
+        {
+            shakeAnimInfoMap_[combatNodePtr].Reset(SLIDER_SPEED, WILL_DOUBLE_SHAKE_DISTANCE);
+            shakeAnimCreatureWasSpeed_ = SLIDER_SPEED;
+        }
+    }
+
+
+    void CombatAnim::ShakeAnimStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    {
+        CombatNodePVec_t combatNodesToErasePVec;
+        for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
+        {
+            //if given a nullptr then stop all shaking
+            if ((CREATURE_CPTRC == nullptr) || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
+            {
+                nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
+                combatNodesToErasePVec.push_back(nextShakeInfoPair.first);
+            }
+        }
+
+        for (auto const NEXT_COMBATNODE_PTR : combatNodesToErasePVec)
+        {
+            shakeAnimInfoMap_.erase(NEXT_COMBATNODE_PTR);
+        }
+    }
+
+
+    void CombatAnim::ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    {
+        for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
+        {
+            if (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC)
+            {
+                shakeAnimCreatureWasCPtr_ = nextShakeInfoPair.first->Creature();
+                ShakeAnimStop(shakeAnimCreatureWasCPtr_);
+                break;
+            }
+        }
+    }
+
+
+    void CombatAnim::ShakeAnimRestart()
+    {
+        ShakeAnimStart(shakeAnimCreatureWasCPtr_, shakeAnimCreatureWasSpeed_, false);
+        shakeAnimCreatureWasCPtr_ = nullptr;
     }
 
 }

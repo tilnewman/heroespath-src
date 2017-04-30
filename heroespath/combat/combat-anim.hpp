@@ -4,6 +4,7 @@
 // combat-anim.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/shaker.hpp"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t   = Creature *;
+    using CreatureCPtr_t  = const Creature *;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t  = std::vector<CreaturePtr_t>;
 }
@@ -32,6 +34,24 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
+
+
+    //All the info required to shake a creature image on the battlefield.
+    struct ShakeAnimInfo
+    {
+        ShakeAnimInfo();
+
+        static const float PAUSE_DURATION_SEC;
+        static const float SHAKE_DURATION_SEC;
+        
+        sfml_util::Shaker<float> slider;
+        float                    pause_duration_timer_sec;
+        float                    shake_duration_timer_sec;
+
+        void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
+    };
+
+    using SakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeAnimInfo>;
 
 
     //Responsible for displaying combat related animations.
@@ -53,6 +73,8 @@ namespace combat
         static CombatAnim * const Instance();
 
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
+
+        void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
                                       creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
@@ -104,6 +126,21 @@ namespace combat
         void ImpactAnimUpdate(const float SLIDER_POS);
         void ImpactAnimStop();
 
+        //The Shake Animation wiggles a creature on the battlefield back and forth.
+        static float ShakeAnimDistance(const bool WILL_DOUBLE);
+
+        void ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
+                            const float               SLIDER_SPEED,
+                            const bool                WILL_DOUBLE_SHAKE_DISTANCE);
+
+        //if a nullptr is given then all creatures will stop shaking
+        void ShakeAnimStop(creature::CreatureCPtrC_t);
+
+        inline creature::CreatureCPtr_t ShakeAnimCreatureCPtr() { return shakeAnimCreatureWasCPtr_; }
+
+        void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        void ShakeAnimRestart();
+
     private:
         static CombatAnim * instance_;
         static CombatDisplayPtr_t combatDisplayStagePtr_;
@@ -135,6 +172,11 @@ namespace combat
         sf::Vector2f meleeMoveAnimTargetPosV_;
         CombatNodePtr_t meleeMoveAnimMovingCombatNodePtr_;
         CombatNodePtr_t meleeMoveAnimTargetCombatNodePtr_;
+
+        //members to shake a creature image on the battlefield
+        creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
+        float                    shakeAnimCreatureWasSpeed_;
+        SakeInfoMap_t            shakeAnimInfoMap_;
     };
 
     using CombatAnimPtr_t = CombatAnim *;

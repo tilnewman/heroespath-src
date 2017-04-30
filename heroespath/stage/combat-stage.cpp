@@ -966,6 +966,8 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
 
+        combatAnimationPtr_->UpdateTime(ELAPSED_TIME_SEC);
+
         if (willRedColorShakeWeaponText_)
         {
             weaponTBoxTextRegionSPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
@@ -1671,7 +1673,7 @@ namespace stage
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
         combatAnimationPtr_->CenteringStop();
-        combatDisplayStagePtr_->StartShaking(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
+        combatAnimationPtr_->ShakeAnimStart(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
 
         goldTextColorShaker_.Reset();
 
@@ -1727,7 +1729,7 @@ namespace stage
     {
         M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "heroespath::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
         combatAnimationPtr_->RepositionAnimStart(turnCreaturePtr_);
-        combatDisplayStagePtr_->StopShaking(turnCreaturePtr_);
+        combatAnimationPtr_->ShakeAnimStop(turnCreaturePtr_);
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 

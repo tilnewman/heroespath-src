@@ -62,25 +62,6 @@ namespace combat
     using NodePosTrackerMap_t = std::map<CombatNodePtr_t, NodePosTracker>;
 
 
-    //All the info required to shake a creature image on the battlefield.
-    //Allows for shaking more than one creature at once.
-    struct ShakeInfo
-    {
-        ShakeInfo();
-
-        static const float DURATION_SEC;
-        static const float DELAY_SEC;
-
-        sfml_util::Shaker<float> shaker;
-        float                    delay_timer_sec;
-        float                    duration_timer_sec;
-
-        void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
-    };
-
-    using SakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeInfo>;
-
-
     //this type maps an individual creature to a specific blocking position
     //used by players/users to save a blocking pattern they prefer
     using BlockingMap_t = std::map<creature::UniqueTraits_t, int>;
@@ -102,8 +83,6 @@ namespace combat
         CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());
         virtual ~CombatDisplay();
 
-        static float GetCreatureShakeDistance(const bool WILL_DOUBLE);
-
         virtual void Setup();
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 
@@ -118,12 +97,6 @@ namespace combat
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
-
-        void StartShaking(creature::CreatureCPtrC_t CREATURE_CPTRC,
-                          const float               SLIDER_SPEED,
-                          const bool                WILL_DOUBLE_SHAKE_DISTANCE);
-
-        void StopShaking(creature::CreatureCPtrC_t);
 
         const sf::Vector2f GetCenterOfAllNodes() const;
         
@@ -262,11 +235,6 @@ namespace combat
         bool                            isStatusMessageAnim_;
         bool                            isSummaryViewInProgress_;
         CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
-
-        //members to shake a creature image on the battlefield
-        creature::CreatureCPtr_t creatureThatWasShakingCPtr_;
-        float                    creatureThatWasShakingSpd_;
-        SakeInfoMap_t            shakeInfoMap_;
 
         //members to manage node position shifting, put another way,
         //members that allow on battlefield creature images to slide

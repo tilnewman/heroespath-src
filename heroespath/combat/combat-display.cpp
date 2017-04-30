@@ -21,6 +21,7 @@
 #include "heroespath/non-player/character.hpp"
 #include "heroespath/combat/encounter.hpp"
 #include "heroespath/combat/combat-node.hpp"
+#include "heroespath/combat/combat-anim.hpp"
 #include "heroespath/creature/algorithms.hpp"
 #include "heroespath/creature/name-info.hpp"
 #include "heroespath/state/game-state.hpp"
@@ -52,33 +53,6 @@ namespace combat
         horizDiff     (TARGET_POS_LEFT - COMBAT_NODE_PTR->GetEntityPos().x),
         vertDiff      (TARGET_POS_TOP - COMBAT_NODE_PTR->GetEntityPos().y)
     {}
-
-
-    const float ShakeInfo::DURATION_SEC(0.65f);
-    const float ShakeInfo::DELAY_SEC   (1.0f);
-
-
-    ShakeInfo::ShakeInfo()
-    :
-        shaker            (),
-        delay_timer_sec   (DELAY_SEC + 1.0f),   //anything larger than DELAY_SEC_ will work here
-        duration_timer_sec(DURATION_SEC + 1.0f)//anything larger than DURATION_SEC_ will work here
-    {}
-
-    
-    void ShakeInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
-    {
-        auto const SHAKE_DISTANCE{ CombatDisplay::GetCreatureShakeDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
-
-        shaker.Reset(0.0f,
-                     SHAKE_DISTANCE,
-                     SLIDER_SPEED,
-                     (SHAKE_DISTANCE * 0.5f),
-                     sfml_util::rand::Bool());
-
-        duration_timer_sec = 0.0f;
-        delay_timer_sec = ShakeInfo::DELAY_SEC + 1.0f;//anything larger than DELAY_SEC_ will work here
-    }
 
 
     const float       CombatDisplay::BATTLEFIELD_MARGIN_                    (0.0f);
@@ -131,9 +105,6 @@ namespace combat
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),
         combatNodeToGuiEntityMap_  (),
-        creatureThatWasShakingCPtr_(nullptr),
-        creatureThatWasShakingSpd_ (0.0f),
-        shakeInfoMap_              (),
         nodePosTrackerMap_         (),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
@@ -141,19 +112,6 @@ namespace combat
 
     CombatDisplay::~CombatDisplay()
     {}
-
-
-    float CombatDisplay::GetCreatureShakeDistance(const bool WILL_DOUBLE)
-    {
-        auto distance{ sfml_util::MapByRes(16.0f, 48.0f) };
-
-        if (WILL_DOUBLE)
-        {
-            distance *= 2.0f;
-        }
-
-        return distance;
-    }
 
 
     void CombatDisplay::Setup()
@@ -306,37 +264,6 @@ namespace combat
     }
 
 
-    void CombatDisplay::StartShaking(creature::CreatureCPtrC_t CREATURE_CPTRC,
-                                     const float               SLIDER_SPEED,
-                                     const bool                WILL_DOUBLE_SHAKE_DISTANCE)
-    {
-        auto combatNodePtr(combatTree_.GetNode(CREATURE_CPTRC));
-        if (combatNodePtr != nullptr)
-        {
-            shakeInfoMap_[combatNodePtr].Reset(SLIDER_SPEED, WILL_DOUBLE_SHAKE_DISTANCE);
-            creatureThatWasShakingSpd_ = SLIDER_SPEED;
-        }
-    }
-
-
-    void CombatDisplay::StopShaking(creature::CreatureCPtrC_t CREATURE_CPTRC)
-    {
-        CombatNodePVec_t combatNodesToErasePVec;
-        for (auto & nextShakeInfoPair : shakeInfoMap_)
-        {
-            //if given a nullptr then stop all shaking
-            if ((CREATURE_CPTRC == nullptr) || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
-            {
-                nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
-                combatNodesToErasePVec.push_back(nextShakeInfoPair.first);
-            }
-        }
-
-        for(auto const NEXT_COMBATNODE_PTR : combatNodesToErasePVec)
-            shakeInfoMap_.erase(NEXT_COMBATNODE_PTR);
-    }
-
-
     const sf::Vector2f CombatDisplay::GetCenterOfAllNodes() const
     {
         CombatNodePVec_t combatNodesPVec;
@@ -393,47 +320,13 @@ namespace combat
         {
             CreatureToneDown(1.0f - summaryView_.GetTransitionStatus());
 
-            if ((creatureThatWasShakingCPtr_ != nullptr) && (summaryView_.GetTransitionStatus() > 0.99))
+            if ((CombatAnim::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
+                (summaryView_.GetTransitionStatus() > 0.99))
             {
-                StartShaking(creatureThatWasShakingCPtr_, creatureThatWasShakingSpd_, false);
-                creatureThatWasShakingCPtr_ = nullptr;
-                creatureThatWasShakingSpd_ = 0.0f;
+                CombatAnim::Instance()->ShakeAnimRestart();
                 SetIsSummaryViewInProgress(false);
             }
         }
-
-        bool willRemoveNullShakeInfo(false);
-        for(auto & nextShakeInfoPair : shakeInfoMap_)
-        {
-            if (nextShakeInfoPair.first == nullptr)
-            {
-                willRemoveNullShakeInfo = true;
-                continue;
-            }
-
-            if (nextShakeInfoPair.second.duration_timer_sec < ShakeInfo::DURATION_SEC)
-            {
-                nextShakeInfoPair.second.duration_timer_sec += ELAPSED_TIME_SECONDS;
-                nextShakeInfoPair.first->SetImagePosOffset((GetCreatureShakeDistance(false) * -0.5f) + nextShakeInfoPair.second.shaker.Update(ELAPSED_TIME_SECONDS), 0.0f);
-
-                if (nextShakeInfoPair.second.duration_timer_sec > ShakeInfo::DURATION_SEC)
-                {
-                    nextShakeInfoPair.second.delay_timer_sec = 0.0f;
-                    nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
-                }
-            }
-
-            if (nextShakeInfoPair.second.delay_timer_sec < ShakeInfo::DELAY_SEC)
-            {
-                nextShakeInfoPair.second.delay_timer_sec += ELAPSED_TIME_SECONDS;
-
-                if (nextShakeInfoPair.second.delay_timer_sec > ShakeInfo::DELAY_SEC)
-                    nextShakeInfoPair.second.duration_timer_sec = 0.0f;
-            }
-        }
-
-        if (willRemoveNullShakeInfo)
-            shakeInfoMap_.erase(nullptr);
     }
 
 
@@ -733,15 +626,7 @@ namespace combat
             (false == GetIsStatusMessageAnimating()))
         {
             //stop shaking a creature image if mouse-over will start transitioning to summary view
-            for (auto & nextShakeInfoPair : shakeInfoMap_)
-            {
-                if (nextShakeInfoPair.first == combatNodePtr)
-                {
-                    creatureThatWasShakingCPtr_ = nextShakeInfoPair.first->Creature();
-                    StopShaking(creatureThatWasShakingCPtr_);
-                    break;
-                }
-            }
+            CombatAnim::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
 
             summaryView_.SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
@@ -1044,7 +929,7 @@ namespace combat
         UpdateHealthTasks();
 
         //stop all creature image shaking
-        StopShaking(nullptr);
+        CombatAnim::Instance()->ShakeAnimStop(nullptr);
     }
 
 
