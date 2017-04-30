@@ -180,18 +180,20 @@ namespace combat
     {}
 
 
-    CreatureEffect CreatureEffect::operator=(const CreatureEffect & CE)
+    CreatureEffect & CreatureEffect::operator=(const CreatureEffect & CE)
     {
         if (& CE != this)
         {
             hitInfoVec_ = CE.hitInfoVec_;
-            spellPtr_ = CE.spellPtr_;
-            creaturePtr_ = CE.creaturePtr_;
             conditionsSVec_ = CE.conditionsSVec_;
             wasPounced_ = CE.wasPounced_;
+
+            //see copy constructor comment regarding these pointers
+            spellPtr_ = CE.spellPtr_;
+            creaturePtr_ = CE.creaturePtr_;
         }
 
-        return *this;
+        return * this;
     }
 
 

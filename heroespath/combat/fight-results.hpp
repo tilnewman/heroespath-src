@@ -135,7 +135,7 @@ namespace combat
                        const bool                        WAS_POUNCED     = false);
 
         CreatureEffect(const CreatureEffect &);
-        CreatureEffect operator=(const CreatureEffect &);
+        CreatureEffect & operator=(const CreatureEffect &);
 
         inline std::size_t               GetCount() const           { return hitInfoVec_.size(); }
         inline HitInfoVec_t              GetHitInfoVec() const      { return hitInfoVec_; }

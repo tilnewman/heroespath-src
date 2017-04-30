@@ -31,7 +31,7 @@ namespace callback
             M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr), "sfml_util::callback::PtrWrapper(PtrWrapper) copy-constructor was given a null PACKAGE_PTR.");
         }
 
-        PtrWrapper operator=(const PtrWrapper & PW)
+        PtrWrapper & operator=(const PtrWrapper & PW)
         {
             if (& PW != this)
             {

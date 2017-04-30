@@ -21,7 +21,7 @@ namespace gui
     class GuiEntitySlider : public sliders::PosSlider
     {
         GuiEntitySlider(const GuiEntitySlider &) =delete;
-        GuiEntitySlider operator=(const GuiEntitySlider &) =delete;
+        GuiEntitySlider & operator=(const GuiEntitySlider &) =delete;
 
     public:
         GuiEntitySlider(IGuiEntityPtr_t      guiEntityPtr = nullptr,

@@ -54,7 +54,7 @@ namespace gui
     class ListBoxItem : public sfml_util::gui::TextRegion
     {
         ListBoxItem(const ListBoxItem &) =delete;
-        ListBoxItem operator=(const ListBoxItem &) =delete;
+        ListBoxItem & operator=(const ListBoxItem &) =delete;
 
     public:
         ListBoxItem(const std::string & NAME);

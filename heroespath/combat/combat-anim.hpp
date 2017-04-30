@@ -61,7 +61,7 @@ namespace combat
         CombatAnimation(const CombatAnimation &) =delete;
 
         //prevent copy assignment
-        CombatAnimation operator=(const CombatAnimation &) =delete;
+        CombatAnimation & operator=(const CombatAnimation &) =delete;
 
         //prevent non-singleton construction
         CombatAnimation();
