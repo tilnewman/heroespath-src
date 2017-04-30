@@ -165,6 +165,7 @@ namespace stage
         isDetailViewDoneFading_ (false),
         isAchievementDisplaying_(false),
         hasMouseMoved_          (false),
+        isWaitingOnPopup_       (false),
         detailViewTimerSec_     (0.0f),
         detailViewSliderRatio_  (0.0f),
         mousePosV_              (0.0f, 0.0f),

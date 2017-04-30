@@ -60,13 +60,13 @@ namespace map
 
         inline bool OwnsId(const std::size_t ID) { return ((ID >= first_id) && (ID < (first_id + tile_count))); }
 
-        std::string   name;
-        std::string   path_rel; //path string relative to the .tmx map path
-        boost::filesystem::path     path_obj;
-        std::size_t   first_id;
-        std::size_t   tile_count;
-        std::size_t   column_count;
-        TextureSPtr_t texture_sptr;
+        std::string             name;
+        std::string             path_rel; //path string relative to the .tmx map path
+        boost::filesystem::path path_obj;
+        std::size_t             first_id;
+        std::size_t             tile_count;
+        std::size_t             column_count;
+        TextureSPtr_t           texture_sptr;
     };
 
     bool operator==(const TilesImage & L, const TilesImage & R);
@@ -104,6 +104,13 @@ namespace map
     //collision detection quad
     struct Quad
     {
+        Quad()
+        :
+            coll_rects_vec(),
+            quad_rects_vec(),
+            child_quads_vec()
+        {}
+
         FloatRectVec_t coll_rects_vec;
         FloatRectVec_t quad_rects_vec;
         std::vector<Quad> child_quads_vec;

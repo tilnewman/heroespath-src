@@ -332,9 +332,6 @@ namespace stage
         float pauseElapsedSec_;
         bool isPauseCanceled_;
 
-        //members that slide the battlefield view around to center on a particular creature
-        bool isCentering_;
-
         //members that deal with which creature's turn it is and the timing of taking turns
         creature::CreaturePtr_t turnCreaturePtr_;
         sfml_util::ColorShaker goldTextColorShaker_;

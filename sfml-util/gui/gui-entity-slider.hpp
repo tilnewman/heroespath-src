@@ -20,6 +20,8 @@ namespace gui
     //responsible for moving a gui entity back and forth between two points using the slider method
     class GuiEntitySlider : public sliders::PosSlider
     {
+        GuiEntitySlider operator=(const GuiEntitySlider &) =delete;
+
     public:
         GuiEntitySlider(IGuiEntityPtr_t      guiEntityPtr = nullptr,
                         const sf::Vector2f & FROM_POS_V   = sf::Vector2f(0.0f, 0.0f),

@@ -41,7 +41,7 @@ namespace creature
                   const stats::StatSet & STATS_MODIFIER = stats::StatSet(),
                   const stats::StatSet & STATS_TO_SET   = stats::StatSet::INVALID_STATSET_);
 
-        ~Condition();
+        virtual ~Condition();
 
         inline virtual const std::string Name() const                   { return condition::Name(type_); }
         inline virtual condition::Enum Which() const                    { return type_; }

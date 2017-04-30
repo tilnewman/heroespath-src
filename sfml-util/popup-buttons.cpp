@@ -76,7 +76,8 @@ namespace sfml_util
 
     PopupButton_Select::PopupButton_Select(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP)
     :
-        TextButton("PopupButton_Select", POS_LEFT, POS_TOP, gui::MouseTextInfo::Make_PopupButtonSet("Select", POPUP_INFO))
+        TextButton("PopupButton_Select", POS_LEFT, POS_TOP, gui::MouseTextInfo::Make_PopupButtonSet("Select", POPUP_INFO)),
+        selection_(-1)//any negative number will work here
     {}
 
     void PopupButton_Select::OnClick(const sf::Vector2f &)

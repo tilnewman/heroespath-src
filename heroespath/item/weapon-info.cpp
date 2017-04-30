@@ -24,6 +24,7 @@ namespace weapon
         is_claws        (false),
         is_fists        (false),
         is_staff        (false),
+        is_knife        (false),
         is_dagger       (false),
         is_tendrils     (false),
         is_quarterstaff (false),

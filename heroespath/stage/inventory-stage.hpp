@@ -223,7 +223,6 @@ namespace stage
         const float                 DETAILVIEW_POS_TOP_;
 
         sfml_util::gui::TextInfo    listBoxItemTextInfo_;
-        float                       listboxHeight_;
         creature::CreaturePtr_t     creaturePtr_;
         BottomSymbol                bottomSymbol_;
         sfml_util::TextureSPtr_t    paperBgTextureSPtr_;
