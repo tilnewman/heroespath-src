@@ -154,6 +154,13 @@ namespace combat
             return TurnActionInfo(TurnAction::ChangeWeapon);
         }
 
+        //okay, so we are reaching this point much more often than anticipated, so try and default to attacking
+        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
+            (playersInAttackRangePVec.empty() == false))
+        {
+            return TurnActionInfo(TurnAction::Attack, playersInAttackRangePVec.at(sfml_util::rand::Int(playersInAttackRangePVec.size() - 1)));
+        }
+
         //At this point nothing was chosen to be done, so block instead
         return TurnActionInfo(TurnAction::Block);
     }
