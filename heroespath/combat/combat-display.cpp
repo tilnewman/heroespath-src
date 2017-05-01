@@ -826,6 +826,44 @@ namespace combat
     }
 
 
+    const creature::CreaturePVec_t CombatDisplay::FindClosestAmongOfType(const creature::CreaturePtrC_t   CREATURE_OF_ORIGIN_CPTRC,
+                                                                         const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
+                                                                         const bool                       WILL_FIND_PLAYERS) const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_OF_ORIGIN_CPTRC != nullptr), "heroespath::comabt::FindClosestAmongOfType() was given a CREATURE_OF_ORIGIN_CPTRC that was nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_TO_FIND_AMONG_PVEC.empty() == false), "heroespath::combat::FindClosestAmongOfType(creature_of_origin_name=\"" << CREATURE_OF_ORIGIN_CPTRC->Name() << "\") was given a CREATURES_TO_FIND_AMONG_PVEC that was empty.");
+
+        auto const BLOCKING_POS_ORIGIN{ FindBlockingPos(CREATURE_OF_ORIGIN_CPTRC) };
+
+        auto closestBlockingDistanceABS{ combatTree_.GetBlockingDistanceMax() + 1 };
+        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
+        {
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
+            if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+                (NEXT_BLOCKING_DISTANCE_ABS < closestBlockingDistanceABS))
+            {
+                closestBlockingDistanceABS = NEXT_BLOCKING_DISTANCE_ABS;
+            }
+        }
+
+        creature::CreaturePVec_t closestCreaturesPVec;
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
+        {
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
+            if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+                (NEXT_BLOCKING_DISTANCE_ABS == closestBlockingDistanceABS))
+            {
+                closestCreaturesPVec.push_back(NEXT_CREATURE_PTR);
+            }
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS((closestCreaturesPVec.empty() == false), "heroespath::combat::FindClosestAmongOfType(creature_of_origin_name=\"" << CREATURE_OF_ORIGIN_CPTRC->Name() << "\", creatures_to_find_among_pvec_size=" << CREATURES_TO_FIND_AMONG_PVEC.size() << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was unable to find a closest creature among those given.");
+
+        return closestCreaturesPVec;
+    }
+
+
     const std::string CombatDisplay::CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const
     {
         const int BLOCKING_POS(combatTree_.GetNode(CREATURE_CPTRC)->GetBlockingPos());

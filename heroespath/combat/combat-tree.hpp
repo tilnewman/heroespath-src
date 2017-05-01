@@ -199,6 +199,7 @@ namespace combat
 
         int GetBlockingPosMin() const;
         int GetBlockingPosMax() const;
+        int GetBlockingDistanceMax() const;
         inline float GetBlockingPosMid() const          { return (static_cast<float>(GetBlockingPosMax()) + static_cast<float>(GetBlockingPosMin())) / 2.0f; }
         inline float GetBlockingPosMidPercent() const   { return (50.0f + (GetBlockingPosMid() * 10.0f)); }
         inline float GetBlockingPosMidRatio() const     { return (GetBlockingPosMidPercent() / 100.0f); }
@@ -217,6 +218,8 @@ namespace combat
         int GetBlockingDistanceBetween(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t) const;
 
         int GetClosestBlockingDistanceByType(creature::CreatureCPtrC_t, const bool WILL_FIND_PLAYERS) const;
+
+        const CombatNodePVec_t FindNodesClosestOfType(const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
 
     private:
         EdgeList_t   edgeList_;

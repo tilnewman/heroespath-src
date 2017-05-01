@@ -121,6 +121,9 @@ namespace combat
 
         const creature::CreaturePVec_t GetClosestByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         const creature::CreaturePVec_t GetClosest(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const;
+        const creature::CreaturePVec_t FindClosestAmongOfType(const creature::CreaturePtrC_t   CREATURE_OF_ORIGIN_CPTRC,
+                                                              const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
+                                                              const bool                       WILL_FIND_PLAYERS) const;
 
         void MoveCreatureBlockingPosition(creature::CreatureCPtrC_t, const bool WILL_MOVE_FORWARD);
 

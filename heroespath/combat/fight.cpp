@@ -24,7 +24,7 @@ namespace combat
     const float FightClub::STAT_MIN_DIVISOR_    (5.0f);
     const float FightClub::STAT_MIN_MULTIPLIER_ (2.0f);
 
-
+    
     const FightResult FightClub::Fight(creature::CreaturePtrC_t creatureAttackingPtrC,
                                        creature::CreaturePtrC_t creatureDefendingPtrC,
                                        const bool               WILL_FORCE_HIT)
@@ -586,7 +586,8 @@ namespace combat
     }
 
 
-    creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(creature::CreaturePtrC_t creatureAttackingtrC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+    creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(creature::CreaturePtrC_t creatureAttackingtrC,
+                                                                     CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
     {
         creature::CreaturePVec_t attackableNonPlayerCreaturesPVec;
         COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(attackableNonPlayerCreaturesPVec, creatureAttackingtrC, false);
@@ -612,16 +613,16 @@ namespace combat
         {
             if (LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_NOTPERMDISABLED_CREATURES_PVEC.empty())
             {
-                return utilz::Vector::SelectRandom(LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_CREATURES_PVEC);
+                return utilz::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(creatureAttackingtrC, LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_CREATURES_PVEC, false));
             }
             else
             {
-                return utilz::Vector::SelectRandom(LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_NOTPERMDISABLED_CREATURES_PVEC);
+                return utilz::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(creatureAttackingtrC, LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_NOTPERMDISABLED_CREATURES_PVEC, false));
             }
         }
         else
         {
-            return utilz::Vector::SelectRandom(LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_NOTPERMDISABLED_TEMPDISABLED_CREATURES_PVEC);
+            return utilz::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(creatureAttackingtrC, LIVING_ATTACKABLE_LOWESTHEALTHRATIO_NONPLAYER_NOTPERMDISABLED_TEMPDISABLED_CREATURES_PVEC, false));
         }
     }
 

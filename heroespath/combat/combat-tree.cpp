@@ -595,6 +595,12 @@ namespace combat
     }
 
 
+    int CombatTree::GetBlockingDistanceMax() const
+    {
+        return std::abs(GetBlockingPosMin()) + std::abs(GetBlockingPosMax());
+    }
+
+
     std::size_t CombatTree::GetNodeIDsAtBlockingPos(IdVec_t & IdVec_OutParam, const int BLOCKING_POS) const
     {
         std::size_t count(0);
@@ -702,7 +708,7 @@ namespace combat
     int CombatTree::GetClosestBlockingDistanceByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
         CombatNodeSPtr_t closestNodeSPtr{ nullptr };
-        auto closestBlockingDistanceABS{ (std::abs(GetBlockingPosMin()) + std::abs(GetBlockingPosMax())) * 2 };
+        auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
 
         for (auto const & NEXT_VERTEX : vertexList_)
         {
@@ -726,6 +732,40 @@ namespace combat
         {
             return GetBlockingDistanceBetween(CREATURE_CPTRC, closestNodeSPtr->Creature());
         }
+    }
+
+
+    const CombatNodePVec_t CombatTree::FindNodesClosestOfType(const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const
+    {
+        auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
+
+        //find closest distance
+        for (auto const & NEXT_VERTEX : vertexList_)
+        {
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(NEXT_VERTEX.second->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
+            if ((NEXT_VERTEX.second->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+                (NEXT_BLOCKING_DISTANCE_ABS < closestBlockingDistanceABS))
+            {
+                closestBlockingDistanceABS = NEXT_BLOCKING_DISTANCE_ABS;
+            }
+        }
+
+        CombatNodePVec_t closestCombatNodesPVec;
+
+        //find all nodes with that closest distance
+        for (auto const & NEXT_VERTEX : vertexList_)
+        {
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(NEXT_VERTEX.second->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
+            if ((NEXT_VERTEX.second->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+                (NEXT_BLOCKING_DISTANCE_ABS == closestBlockingDistanceABS))
+            {
+                closestCombatNodesPVec.push_back(NEXT_VERTEX.second.get());
+            }
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS((closestCombatNodesPVec.empty() == false), "heroespath::combat::CombatTree::FindNodesClosestOfType(orig_blocking_pos=" << ORIGIN_BLOCKING_POS << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ")  unbale to find any CombatNodes closest.  This should never happen.");
+
+        return closestCombatNodesPVec;
     }
 
 }
