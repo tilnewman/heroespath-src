@@ -8,7 +8,7 @@
 #include "heroespath/combat/strategy-enums.hpp"
 #include "heroespath/combat/strategy-info.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <string>
 #include <map>
@@ -68,7 +68,7 @@ namespace strategy
             T e{ T::None }; //None is always zero
             for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
             {
-                if (sfml_util::rand::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
+                if (utilz::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
                 {
                     if (NEXT_ENUMCHANCE_PAIR.first == T::None)
                     {
@@ -101,7 +101,7 @@ namespace strategy
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                     total += NEXT_ENUMCHANCE_PAIR.second;
 
-                auto const RAND{ sfml_util::rand::Float(0.0f, total) };
+                auto const RAND{ utilz::random::Float(0.0f, total) };
 
                 auto subtotal{ 0.0f };
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)

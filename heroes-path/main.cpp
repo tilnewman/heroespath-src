@@ -10,7 +10,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/random.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -28,6 +27,8 @@
 #include "heroespath/game.hpp"
 #include "heroespath/creature/titles.hpp"
 
+#include "utilz/random.hpp"
+
 
 int main()
 {
@@ -42,7 +43,7 @@ int main()
             throw std::runtime_error("This system (platform) is not supported.");
 
         //seed the random number generator
-        sfml_util::rand::MersenneTwister::Seed();
+        utilz::random::MersenneTwister::Seed();
 
         //keep an instance of various singleton classes here to prevent thrashing
         sfml_util::DisplaySPtr_t displaySPtr(sfml_util::Display::Instance());

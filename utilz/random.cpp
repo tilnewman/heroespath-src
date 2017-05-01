@@ -4,9 +4,9 @@
 #include "random.hpp"
 
 
-namespace sfml_util
+namespace utilz
 {
-namespace rand
+namespace random
 {
 
     std::mt19937 MersenneTwister::engine;
@@ -20,7 +20,7 @@ namespace rand
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "sfml_util::rand::Int(min=" << THE_MIN << ", max=" << THE_MAX << ")  The min was not less than the max.");
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "utilz::random::Int(min=" << THE_MIN << ", max=" << THE_MAX << ")  The min was not less than the max.");
 
             //uniform_int_distribution is [x,y] (inclusive to the max value) so no increment is needed
             std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);

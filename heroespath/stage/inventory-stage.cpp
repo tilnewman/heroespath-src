@@ -4,7 +4,7 @@
 #include "inventory-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -21,7 +21,7 @@
 #include "heroespath/ouroboros.hpp"
 #include "heroespath/game.hpp"
 #include "heroespath/game-data-file.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/loop-manager.hpp"
 #include "heroespath/item/enchantment.hpp"
 #include "heroespath/state/game-state.hpp"

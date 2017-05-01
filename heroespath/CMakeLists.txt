@@ -19,6 +19,7 @@ target_link_libraries(${PROJECT_NAME}
                       sfml-util
 			          sfml-util-gui
                       StringUtil
+                      Utilz
 			          ${Boost_LIBRARIES})
 
 add_subdirectory(stats)

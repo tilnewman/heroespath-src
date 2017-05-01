@@ -7,7 +7,7 @@
 
 #include "heroespath/creature/role.hpp"
 #include "heroespath/creature/title.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 #include "heroespath/loop-manager.hpp"
 

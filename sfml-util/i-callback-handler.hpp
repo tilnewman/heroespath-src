@@ -4,7 +4,7 @@
 // i-callback-handler.hpp
 //  Pure virtual interface for all callback handler objects
 //
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include <string>
 
 

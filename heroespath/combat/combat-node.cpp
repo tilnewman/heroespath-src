@@ -7,7 +7,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/loaders.hpp"

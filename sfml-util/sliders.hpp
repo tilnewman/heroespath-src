@@ -3,8 +3,8 @@
 //
 // sliders.hpp
 //
-#include "sfml-util/random.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/random.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 //prevent boost warnings that can be ignored
 #include "sfml-util/platform.hpp"
@@ -424,8 +424,8 @@ namespace sliders
     }
 
     private:
-        Value_t RandRange()  const { return static_cast<Value_t>(sfml_util::rand::Double(min_, max_)); }
-        Speed_t RandSpeed()  const { return static_cast<Speed_t>(sfml_util::rand::Double(spdMin_, spdMax_)); }
+        Value_t RandRange()  const { return static_cast<Value_t>(utilz::random::Double(min_, max_)); }
+        Speed_t RandSpeed()  const { return static_cast<Speed_t>(utilz::random::Double(spdMin_, spdMax_)); }
 
     private:
         Value_t min_;

@@ -3,7 +3,7 @@
 //
 #include "strategy-chances.hpp"
 
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 
 #include <tuple>
 
@@ -219,7 +219,7 @@ namespace strategy
         else if (cretainOrHigherFreqTypeVec.size() > 1)
         {
             //if there are multipe FrequencyTypes that are certain or higher then choose randomly amoung them
-            auto const RAND( sfml_util::rand::Float(0.0f, cretainOrHigherChanceTotal) );
+            auto const RAND( utilz::random::Float(0.0f, cretainOrHigherChanceTotal) );
             auto subtotal{ 0.0f };
             for (auto const & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)
             {
@@ -237,7 +237,7 @@ namespace strategy
             //if there are no FrequencyTypes with certain or higher chance,
             //then random select from any with a non-zero chance...
             auto subtotal{ 0.0f };
-            auto const RAND{ sfml_util::rand::Float(0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
+            auto const RAND{ utilz::random::Float(0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
 
             for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
             {
@@ -294,7 +294,7 @@ namespace strategy
                 total += NEXT_COUNTCHANCE_PAIR.second;
             }
 
-            auto const RAND{ sfml_util::rand::Float(0.0f, total) };
+            auto const RAND{ utilz::random::Float(0.0f, total) };
 
             auto subtotal{ 0.0f };
             for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)

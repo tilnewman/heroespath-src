@@ -13,7 +13,7 @@
 #include "heroespath/location/location.hpp"
 #include "heroespath/player/party.hpp"
 #include "heroespath/player/character.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 
 #include <boost/filesystem.hpp>

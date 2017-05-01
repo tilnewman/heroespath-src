@@ -4,7 +4,7 @@
 #include "loop-cmd-addstage.hpp"
 
 #include "heroespath/stage/inventory-stage.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace heroespath

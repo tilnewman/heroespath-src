@@ -6,7 +6,7 @@
 #include "heroespath/creature/creature.hpp"
 #include "heroespath/player/character.hpp"
 #include "heroespath/non-player/character.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace heroespath

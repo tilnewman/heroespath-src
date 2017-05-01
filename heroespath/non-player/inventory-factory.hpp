@@ -114,7 +114,7 @@ namespace ownership
             if (sfml_util::IsRealClose(chanceTotal, 0.0f))
                 return std::make_pair(T::Count, 0.0f);
 
-            const float RAND( sfml_util::rand::Float(0.0f, chanceTotal) );
+            const float RAND( utilz::random::Float(0.0f, chanceTotal) );
 
             //random selection of one of the items
             float chanceCumulative(0.0f);

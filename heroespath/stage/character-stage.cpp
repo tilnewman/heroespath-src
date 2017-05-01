@@ -4,7 +4,7 @@
 #include "character-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -40,7 +40,7 @@
 #include "heroespath/log-macros.hpp"
 #include "heroespath/creature/name-info.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <sstream>
 
@@ -192,9 +192,9 @@ namespace stage
         intDescTextRegionSPtr_  (),
         attrDescTextRegion_     (),
         sbInsTextRegionSPtr_    (),
-        sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(sfml_util::rand::Int(150, 255))),
+        sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
         nInsTextRegionSPtr_     (),
-        nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(sfml_util::rand::Int(150, 255))),
+        nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
         windSoundEffectsSPtr_   (),
         bottomSymbol_           (),
         selectedImageIndex_     (0)
@@ -2170,12 +2170,12 @@ sfml_util::PopupImage::Regular));
         {
             //reset timer to random value
             animStatsTimeCounterSec_ = 0.0f;
-            animStatsDelayPerSec_ = sfml_util::rand::Float(0.05f, 0.25f);
+            animStatsDelayPerSec_ = utilz::random::Float(0.05f, 0.25f);
 
             sfml_util::gui::TextInfo textInfo(" ", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 40, sf::Color::White, sfml_util::Justified::Left);
-            const stats::Stat_t NEXT_VAL(sfml_util::rand::Int(stats::INITIAL_STAT_MIN + 1, stats::INITIAL_STAT_MAX));
+            const stats::Stat_t NEXT_VAL(utilz::random::Int(stats::INITIAL_STAT_MIN + 1, stats::INITIAL_STAT_MAX));
 
-            int numToUse(sfml_util::rand::Int(1, 6));
+            int numToUse(utilz::random::Int(1, 6));
             if (initialRollCounter_ <= 6)
                 numToUse = initialRollCounter_++;
 

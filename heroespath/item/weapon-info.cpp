@@ -3,7 +3,7 @@
 //
 #include "weapon-info.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>

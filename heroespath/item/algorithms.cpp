@@ -2,7 +2,7 @@
 // algorithms.cpp
 //
 #include "algorithms.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "heroespath/item/item.hpp"
 
 

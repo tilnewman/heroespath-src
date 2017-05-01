@@ -6,7 +6,7 @@
 #include "sfml-util/boost-string-includes.hpp"
 
 #include "heroespath/game-data-file.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include "stringutil/stringhelp.hpp"
 

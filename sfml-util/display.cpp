@@ -6,7 +6,7 @@
 #include "sfml-util/sfml-util.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>

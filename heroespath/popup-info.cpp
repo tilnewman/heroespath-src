@@ -5,7 +5,7 @@
 
 #include "sfml-util/sfml-util.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/i-popup-callback.hpp"
 
 #include <sstream>

@@ -3,10 +3,10 @@
 //
 #include "creature.hpp"
 
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/spell/spell-base.hpp"
 #include "heroespath/item/enchantment.hpp"
 #include "heroespath/item/algorithms.hpp"

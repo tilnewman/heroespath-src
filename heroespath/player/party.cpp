@@ -4,7 +4,7 @@
 #include "party.hpp"
 
 #include "heroespath/player/character.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>

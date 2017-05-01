@@ -9,7 +9,7 @@
 #include "sfml-util/gui/box-info.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util

@@ -16,10 +16,10 @@
 #include "heroespath/combat/party-factory.hpp"
 #include "heroespath/state/game-state.hpp"
 #include "heroespath/state/world-state.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/creature/algorithms.hpp"
 
-#include "utilz/vector-operations.hpp"
+#include "utilz/vector.hpp"
 
 #include <sstream>
 #include <exception>
@@ -159,15 +159,15 @@ namespace combat
     void Encounter::SortAndSetTurnCreature()
     {
         creature::CreaturePVec_t allLivingCreaturesPVec;
-        utilz::VectorOps::Append(creature::Algorithms::Players(true), allLivingCreaturesPVec);
-        utilz::VectorOps::Append(creature::Algorithms::NonPlayers(true), allLivingCreaturesPVec);
+        utilz::Vector::Append(creature::Algorithms::Players(true), allLivingCreaturesPVec);
+        utilz::Vector::Append(creature::Algorithms::NonPlayers(true), allLivingCreaturesPVec);
 
         if (turnOverPVec_.size() >= allLivingCreaturesPVec.size())
         {
             turnOverPVec_.clear();
         }
 
-        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(utilz::VectorOps::Exclude(allLivingCreaturesPVec, turnOverPVec_));
+        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(utilz::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
         M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false), "heroespath::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 

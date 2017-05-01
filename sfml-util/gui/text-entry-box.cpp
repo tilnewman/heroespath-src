@@ -8,7 +8,7 @@
 #include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 
 

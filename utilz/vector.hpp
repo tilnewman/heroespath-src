@@ -1,9 +1,12 @@
-#ifndef VECTOROPERATIONS_HPP_INCLUDED
-#define VECTOROPERATIONS_HPP_INCLUDED
+#ifndef UTILZ_VECTOROPERATIONS_HPP_INCLUDED
+#define UTILZ_VECTOROPERATIONS_HPP_INCLUDED
 //
-// vector-operations.hpp
+// vector.hpp
 //  A set of helper functions for working with vectors
 //
+#include "utilz/random.hpp"
+#include "utilz/assertlogandthrow.hpp"
+
 #include <vector>
 #include <algorithm>
 
@@ -12,7 +15,7 @@ namespace utilz
 {
 
     //simple wrapper for vector helper functions
-    struct VectorOps
+    struct Vector
     {
         //appends A into B, stable unless WILL_UNIQUE
         template<typename T>
@@ -87,7 +90,38 @@ namespace utilz
 
             return finalVec;
         }
+
+
+        template<typename T>
+        static bool ShuffleVec(std::vector<T> & v)
+        {
+            if (v.size() > 1)
+            {
+                std::shuffle(v.begin(), v.end(), MersenneTwister::engine);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        template<typename T>
+        static T SelectRandom(const std::vector<T> & V)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false), "utilz::Vector::SelectRandom() was given an empty vector.");
+            if (V.size() == 1)
+            {
+                return V[0];
+            }
+            else
+            {
+                return V[utilz::random::Int(V.size() - 1)];
+            }
+        }
     };
+
 }
 
-#endif //VECTOROPERATIONS_HPP_INCLUDED
+#endif //UTILZ_VECTOROPERATIONS_HPP_INCLUDED

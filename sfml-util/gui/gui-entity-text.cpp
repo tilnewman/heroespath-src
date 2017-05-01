@@ -8,7 +8,7 @@
 #include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util

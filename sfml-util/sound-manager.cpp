@@ -6,11 +6,11 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/static-sounds.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/music-info.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/loop-manager.hpp"
 
 #include "stringutil/stringhelp.hpp"
@@ -561,7 +561,7 @@ namespace sfml_util
 
     void SoundManager::MusicAcquire_CombatIntro(MusicInfo & musicInfo, MusicSPtr_t & musicSPtr)
     {
-        const std::size_t INDEX(sfml_util::rand::Int(0, combatIntroMusicInfoVec_.size() - 1));
+        const std::size_t INDEX(utilz::random::Int(0, combatIntroMusicInfoVec_.size() - 1));
         MusicAcquire_CombatIntro(musicInfo, musicSPtr, INDEX);
     }
 

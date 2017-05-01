@@ -9,7 +9,7 @@
 #include "heroespath/item/weapon-factory.hpp"
 #include "heroespath/item/weapon-details.hpp"
 #include "heroespath/item/armor-details.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 #include "heroespath/stats/types.hpp"
 #include "heroespath/non-player/character.hpp"
@@ -262,7 +262,7 @@ namespace ownership
         if (sfml_util::IsRealClose(chanceCombined, 0.0f))
             return;
 
-        const float RAND(sfml_util::rand::Float(0.0f, chanceCombined));
+        const float RAND(utilz::random::Float(0.0f, chanceCombined));
 
         //Need to select WEAPON_SET.count weapons in WEAPON_SET.chanceMap, so
         //make a mapping of count to chance that has been selected already or not.
@@ -1064,7 +1064,7 @@ namespace ownership
 
         //final determination of which material will be secondary
         const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND(sfml_util::rand::Float(0.0f, std::max(1.0f, SUBTOTAL)));
+        const float RAND(utilz::random::Float(0.0f, std::max(1.0f, SUBTOTAL)));
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {
@@ -1167,7 +1167,7 @@ namespace ownership
 
         //final determination of which material will be secondary
         const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND( sfml_util::rand::Float(0.0f, std::max(1.0f, SUBTOTAL)) );
+        const float RAND( utilz::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) );
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {

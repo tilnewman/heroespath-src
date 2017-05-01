@@ -9,8 +9,6 @@
 #include "heroespath/creature/race-enum.hpp"
 #include "heroespath/creature/role-enum.hpp"
 
-#include "sfml-util/real-utils.hpp"
-
 #include "stringutil/stringhelp.hpp"
 
 #include <memory>

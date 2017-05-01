@@ -5,10 +5,10 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/loop-manager.hpp"
 
 #include <boost/filesystem.hpp>
@@ -258,7 +258,7 @@ namespace gui
 
         if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
         {
-            return filenameVec[sfml_util::rand::Int(0, filenameVec.size() - 1)];
+            return filenameVec[utilz::random::Int(0, filenameVec.size() - 1)];
         }
         else
             return filenameVec[0];

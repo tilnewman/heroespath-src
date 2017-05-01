@@ -7,7 +7,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-audio.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 

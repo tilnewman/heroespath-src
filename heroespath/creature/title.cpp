@@ -3,7 +3,7 @@
 //
 #include "title.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/creature/creature.hpp"
 #include "heroespath/creature/title.hpp"
 #include "heroespath/creature/role.hpp"

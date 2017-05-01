@@ -5,7 +5,7 @@
 //  Tile drawing utility functions
 //
 #include "sfml-graphics.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 
 namespace sfml_util
@@ -94,7 +94,7 @@ namespace sfml_util
         }
 
         if (WILL_RANDOM_ORDER)
-            sfml_util::rand::ShuffleVec(spriteSVec);
+            utilz::random::ShuffleVec(spriteSVec);
 
         const std::size_t SPRITE_COUNT(spriteSVec.size());
 
@@ -121,7 +121,7 @@ namespace sfml_util
                     spriteVecIndex = 0;
 
                     if (WILL_RANDOM_ORDER)
-                        sfml_util::rand::ShuffleVec(spriteSVec);
+                        utilz::random::ShuffleVec(spriteSVec);
                 }
             }
         }

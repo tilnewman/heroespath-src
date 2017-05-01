@@ -11,7 +11,7 @@
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>

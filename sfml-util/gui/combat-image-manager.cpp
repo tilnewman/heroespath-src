@@ -8,7 +8,7 @@
 #include "sfml-util/loaders.hpp"
 
 #include "heroespath/loop-manager.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 

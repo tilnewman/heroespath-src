@@ -3,7 +3,7 @@
 //
 #include "popup-manager.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -147,12 +147,12 @@ namespace gui
         }
 
         std::ostringstream accentTextureSS;
-        accentTextureSS << sfml_util::rand::Int(1, sfml_util::PopupAccent::Count) << ".png";
+        accentTextureSS << utilz::random::Int(1, sfml_util::PopupAccent::Count) << ".png";
 
         TextureSPtr_t tempTextureSPtr;
         LoadAccent(accentTextureSS.str(), tempTextureSPtr);
 
-        if (sfml_util::rand::Bool())
+        if (utilz::random::Bool())
         {
             accentTextureSPtr = sfml_util::FlipHorizCopy( * tempTextureSPtr);
         }

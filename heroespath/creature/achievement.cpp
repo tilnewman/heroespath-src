@@ -5,7 +5,7 @@
 
 #include "heroespath/creature/creature.hpp"
 #include "heroespath/creature/titles.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
 

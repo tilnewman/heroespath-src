@@ -8,10 +8,10 @@
 #include "heroespath/item/armor-factory.hpp"
 #include "heroespath/item/misc-item-factory.hpp"
 #include "heroespath/item/types.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
@@ -53,7 +53,7 @@ namespace chance
 
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::IsRealClose(chanceSubTotal, 0.0f) == false), "heroespath::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
 
-        const float RAND( sfml_util::rand::Float(0.0f, chanceSubTotal) );
+        const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );
 
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR : MAP)
@@ -90,7 +90,7 @@ namespace chance
 
         static inline ItemChances NoChance() { return ItemChances(); }
 
-        inline bool IsEquipped() const { return (sfml_util::rand::Float() < chance_equipped); }
+        inline bool IsEquipped() const { return (utilz::random::Float() < chance_equipped); }
 
         std::size_t CountOwned() const;
 
@@ -165,7 +165,7 @@ namespace chance
         if (sfml_util::IsRealClose(chanceSubTotal, 0.0f))
             return std::make_pair(MAP.begin()->first, 0);
 
-        const float RAND( sfml_util::rand::Float(0.0f, chanceSubTotal) );
+        const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );
 
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
@@ -345,7 +345,7 @@ namespace chance
                                   const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),
                                   const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
 
-        inline item::Coin_t RandomCoins() const { return ((coins_max > coins_min) ? sfml_util::rand::Int(coins_min, coins_max) : coins_min); }
+        inline item::Coin_t RandomCoins() const { return ((coins_max > coins_min) ? utilz::random::Int(coins_min, coins_max) : coins_min); }
 
         item::Coin_t coins_min;
         item::Coin_t coins_max;

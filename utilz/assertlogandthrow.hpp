@@ -1,13 +1,14 @@
-#ifndef HEROESPATH_ASSERTORLOGANDTHROW_HPP
-#define HEROESPATH_ASSERTORLOGANDTHROW_HPP
+#ifndef UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#define UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED
 //
 // assertlogandthrow.hpp
 //
+#include "common/logmacros.hpp"
+#include "heroespath/logger.hpp"
+
 #include <exception>
 #include <iostream>
 #include <sstream>
-#include "common/logmacros.hpp"
-#include "heroespath/logger.hpp"
 
 
 //these defines will disable these macros
@@ -80,4 +81,4 @@
 
 #endif //#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_ASSERTORTHROW)
 
-#endif //HEROESPATH_ASSERTORLOGANDTHROW_HPP
+#endif //UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED

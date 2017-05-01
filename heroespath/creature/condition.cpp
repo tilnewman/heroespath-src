@@ -3,7 +3,7 @@
 //
 #include "condition.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/creature/creature.hpp"
 
 #include <sstream>

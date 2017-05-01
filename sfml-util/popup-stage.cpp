@@ -18,7 +18,7 @@
 #include "heroespath/log-macros.hpp"
 #include "heroespath/creature/name-info.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <sstream>
 #include <random>

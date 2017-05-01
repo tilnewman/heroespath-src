@@ -2,7 +2,7 @@
 // line.cpp
 //
 #include "line.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "gui-elements.hpp"
 
 

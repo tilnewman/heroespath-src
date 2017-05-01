@@ -7,7 +7,7 @@
 #include "sfml-util/loaders.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>

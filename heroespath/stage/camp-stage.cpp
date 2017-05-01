@@ -4,7 +4,6 @@
 #include "camp-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/real-utils.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
@@ -25,7 +24,8 @@
 #include "heroespath/player/character.hpp"
 #include "heroespath/player/party.hpp"
 
-#include "utilz/vector-operations.hpp"
+#include "utilz/vector.hpp"
+#include "utilz/real.hpp"
 
 
 namespace heroespath
@@ -224,7 +224,7 @@ namespace stage
         auto const PLAYERS_PVEC( creature::Algorithms::Players() );
         auto humansAndGnomesPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Human) );
         auto const GNOMES_PVEC( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Gnome) );
-        utilz::VectorOps::Append(GNOMES_PVEC, humansAndGnomesPVec);
+        utilz::Vector::Append(GNOMES_PVEC, humansAndGnomesPVec);
 
         if (humansAndGnomesPVec.empty() == false)
             ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
@@ -233,7 +233,7 @@ namespace stage
 
         auto pixiesAndBeastmastersPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie) );
         auto const BEASTMASTERS_PVEC( creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Beastmaster) );
-        utilz::VectorOps::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
+        utilz::Vector::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
 
         if (pixiesAndBeastmastersPVec.empty() == false)
             ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
@@ -326,7 +326,7 @@ namespace stage
             << creature::sex::HimHerIt(charToUsePtr->Sex(), false) << ", but ";
 
         auto const BEAST_PVEC(creature::Algorithms::FindByBeast(PLAYERS_PVEC));
-        auto const NONLOAD_NONBEAST_PVEC( utilz::VectorOps::Exclude(NOTBEASTS_PVEC, charToUsePtr) );
+        auto const NONLOAD_NONBEAST_PVEC( utilz::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) );
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {

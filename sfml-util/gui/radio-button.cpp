@@ -8,7 +8,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/log-macros.hpp"
 
 #include <sstream>

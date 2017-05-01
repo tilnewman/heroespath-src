@@ -3,7 +3,7 @@
 //
 #include "static-sounds.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 
@@ -103,7 +103,7 @@ namespace sfml_util
         }
         else
         {
-            PlayAt(sfml_util::rand::Int(sptrVec_.size() - 1));
+            PlayAt(utilz::random::Int(sptrVec_.size() - 1));
         }
     }
 

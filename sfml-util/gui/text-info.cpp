@@ -3,11 +3,11 @@
 //
 #include "text-info.hpp"
 
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/platform.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <tuple>
 

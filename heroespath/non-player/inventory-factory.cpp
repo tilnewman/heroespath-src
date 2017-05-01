@@ -9,7 +9,7 @@
 #include "heroespath/log-macros.hpp"
 #include "heroespath/non-player/character.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <iterator>//for back_inserter
 #include <exception>
@@ -205,7 +205,7 @@ namespace ownership
         //random select weapon
         item::weapon_type::Enum randomSelectedWeaponType(typeKindChanceMap.begin()->first);
         float chanceCumulative(0.0f);
-        const float RAND_WEAPON_TYPE_CHANCE( sfml_util::rand::Float() );
+        const float RAND_WEAPON_TYPE_CHANCE( utilz::random::Float() );
         for (auto const & NEXT_TYPEKIND_PAIR : typeKindChanceMap)
         {
             chanceCumulative += NEXT_TYPEKIND_PAIR.second.second;
@@ -222,7 +222,7 @@ namespace ownership
             case item::weapon_type::Knife:
             {
                 //determine which size the knife/dagger will be
-                const float RAND(sfml_util::rand::Float());
+                const float RAND(utilz::random::Float());
                 sfml_util::Size::Enum knifeSize(sfml_util::Size::Large);
                 //
                 chance::SizeChanceMap_t::const_iterator CITER_SMALL(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small));
@@ -238,7 +238,7 @@ namespace ownership
                             knifeSize = sfml_util::Size::Medium;
                 }
 
-                const bool IS_DAGGER(sfml_util::rand::Float() < WEAPON_CHANCES.knife.is_dagger);
+                const bool IS_DAGGER(utilz::random::Float() < WEAPON_CHANCES.knife.is_dagger);
 
                 itemsSPtrVecPair.first.push_back( item::weapon::WeaponFactory::Instance()->Make_Knife(IS_DAGGER,
                                                                                                       knifeSize,
@@ -249,7 +249,7 @@ namespace ownership
             }
             case item::weapon_type::Staff:
             {
-                const bool IS_QUARTERSTAFF(sfml_util::rand::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
+                const bool IS_QUARTERSTAFF(utilz::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
                 itemsSPtrVecPair.first.push_back( item::weapon::WeaponFactory::Instance()->Make_Staff(IS_QUARTERSTAFF,
                                                                                                       WEAPON_CHANCES.staff.RandomMaterialPri(),
                                                                                                       WEAPON_CHANCES.staff.RandomMaterialSec()) );
@@ -465,7 +465,7 @@ namespace ownership
     item::Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
     {
         if (CHANCES.coins_min < CHANCES.coins_max)
-            return sfml_util::rand::Int(CHANCES.coins_min, CHANCES.coins_max);
+            return utilz::random::Int(CHANCES.coins_min, CHANCES.coins_max);
         else
             return CHANCES.coins_min;
     }

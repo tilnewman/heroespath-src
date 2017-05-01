@@ -6,7 +6,7 @@
 //
 #include "sfml-util/sliders.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <string>

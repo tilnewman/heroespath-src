@@ -7,7 +7,7 @@
 #include "heroespath/item/item.hpp"
 #include "heroespath/game-data-file.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -77,7 +77,7 @@ namespace ownership
         }
 
         float cumulative(0.0f);
-        const float RAND(sfml_util::rand::Float());
+        const float RAND(utilz::random::Float());
         for (auto const & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
         {
             if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
@@ -204,16 +204,16 @@ namespace ownership
 
         //determine
         collector_type::Enum collectorType(NoPreference);
-        if (sfml_util::rand::Float() < chancePractical)
+        if (utilz::random::Float() < chancePractical)
             collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
 
-        if (sfml_util::rand::Float() < chanceCollector)
+        if (utilz::random::Float() < chanceCollector)
             collectorType = static_cast<collector_type::Enum>(collectorType | Collector);
 
-        if (sfml_util::rand::Float() < chanceMinimalist)
+        if (utilz::random::Float() < chanceMinimalist)
             collectorType = static_cast<collector_type::Enum>(collectorType | Minimalist);
 
-        if ((sfml_util::rand::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
+        if ((utilz::random::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
             collectorType = static_cast<collector_type::Enum>(collectorType | Hoarder);
 
         return collectorType;
@@ -289,7 +289,7 @@ namespace ownership
         }
 
         //determine
-        const float RAND(sfml_util::rand::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
+        const float RAND(utilz::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
 
         if (RAND < chanceMagical)
             return Magical;

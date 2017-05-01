@@ -7,7 +7,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util

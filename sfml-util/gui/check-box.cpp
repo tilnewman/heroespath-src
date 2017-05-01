@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util

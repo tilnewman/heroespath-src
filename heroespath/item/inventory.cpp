@@ -4,7 +4,7 @@
 #include "inventory.hpp"
 
 #include "heroespath/item/item.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <tuple>
 #include <sstream>

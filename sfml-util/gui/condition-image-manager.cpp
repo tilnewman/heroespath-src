@@ -7,7 +7,7 @@
 #include "sfml-util/boost-string-includes.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/loop-manager.hpp"
 
 #include <boost/filesystem.hpp>

@@ -139,7 +139,7 @@ namespace chance
 
         for (auto const & NEXT_CHANCE_PAIR : cover_map)
             if (NEXT_CHANCE_PAIR.second.IsOwned())
-                coverChanceMap[NEXT_CHANCE_PAIR.first] = sfml_util::rand::Float();
+                coverChanceMap[NEXT_CHANCE_PAIR.first] = utilz::random::Float();
 
         if (coverChanceMap.size() == 1)
         {

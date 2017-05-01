@@ -3,9 +3,9 @@
 //
 #include "crossbox.hpp"
 
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util

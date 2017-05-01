@@ -12,7 +12,7 @@
 #include "heroespath/player/character.hpp"
 #include "heroespath/state/game-state.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 #include <sstream>
 

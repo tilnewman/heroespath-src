@@ -13,5 +13,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         HeroesPath-Player
                         HeroesPath-NonPlayer
                         HeroesPath-Location
-				 HeroesPath-Spell
+				        HeroesPath-Spell
+                        Utilz
                         ${Boost_LIBRARIES} )

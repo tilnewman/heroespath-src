@@ -7,9 +7,9 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-window.hpp"
 #include "sfml-util/handy-types.hpp"
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <string>
 #include <vector>

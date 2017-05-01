@@ -4,7 +4,7 @@
 #include "party-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/real-utils.hpp"
+#include "utilz/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
@@ -58,7 +58,7 @@ namespace stage
         insTextRegionSPtr_    (),
         warningTextInfo_      (),
         warningTextRegionSPtr_(),
-        warningTextSlider_    (150, 255, 4.0f, static_cast<sf::Uint8>(sfml_util::rand::Int(150, 255))),
+        warningTextSlider_    (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
         ouroborosSPtr_        (),
         bottomSymbol_         (),
         willDisplayCharacterCountWarningText_(false),

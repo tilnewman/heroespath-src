@@ -3,7 +3,7 @@
 //
 #include "party-factory.hpp"
 
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 
 #include "heroespath/stats/stat-set.hpp"
@@ -49,15 +49,15 @@ namespace combat
 
     non_player::CharacterSPtr_t PartyFactory::MakeCreature_GoblinGrunt() const
     {
-        const stats::StatSet GOBLIN_STATS( 7 + sfml_util::rand::Int(5),  //str
-                                           5 + sfml_util::rand::Int(7),  //acc
-                                           5 + sfml_util::rand::Int(7),  //cha
-                                           5 + sfml_util::rand::Int(7),  //lck
-                                           5 + sfml_util::rand::Int(7),  //spd
-                                           3 + sfml_util::rand::Int(5) );//int
+        const stats::StatSet GOBLIN_STATS( 7 + utilz::random::Int(5),  //str
+                                           5 + utilz::random::Int(7),  //acc
+                                           5 + utilz::random::Int(7),  //cha
+                                           5 + utilz::random::Int(7),  //lck
+                                           5 + utilz::random::Int(7),  //spd
+                                           3 + utilz::random::Int(5) );//int
 
-        const stats::Health_t GOBLIN_HEALTH(7 + sfml_util::rand::Int(5));
-        const creature::sex::Enum GOBLIN_SEX((sfml_util::rand::Int(100) < 75) ? creature::sex::Male : creature::sex::Female);
+        const stats::Health_t GOBLIN_HEALTH(7 + utilz::random::Int(5));
+        const creature::sex::Enum GOBLIN_SEX((utilz::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female);
 
         non_player::CharacterSPtr_t goblinGruntSPtr( new non_player::Character(creature::race::Name(creature::race::Goblin),
                                                                                GOBLIN_SEX,

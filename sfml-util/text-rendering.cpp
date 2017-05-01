@@ -9,7 +9,7 @@
 #include "sfml-util/gui/sliderbar.hpp"
 
 #include "heroespath/log-macros.hpp"
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <cctype>//for isDigit()
 

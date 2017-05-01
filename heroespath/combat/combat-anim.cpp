@@ -40,7 +40,7 @@ namespace combat
                      SHAKE_DISTANCE,
                      SLIDER_SPEED,
                      (SHAKE_DISTANCE * 0.5f),
-                     sfml_util::rand::Bool());
+                     utilz::random::Bool());
 
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;//anything larger than PAUSE_DURATION_SEC will work here
         shake_duration_timer_sec = 0.0f;
@@ -161,13 +161,13 @@ namespace combat
         if (WEAPON_SPTR->WeaponType() & item::weapon_type::Bow)
         {
             std::ostringstream ss;
-            ss << PATH_KEY_BASE_STR << "arrow" << sfml_util::rand::Int(1, 3);
+            ss << PATH_KEY_BASE_STR << "arrow" << utilz::random::Int(1, 3);
             pathKey = ss.str();
         }
         else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
         {
             std::ostringstream ss;
-            ss << PATH_KEY_BASE_STR << "stone" << sfml_util::rand::Int(1, 4);
+            ss << PATH_KEY_BASE_STR << "stone" << utilz::random::Int(1, 4);
             pathKey = ss.str();
         }
         else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow)

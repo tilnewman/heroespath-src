@@ -4,11 +4,11 @@
 #include "background-image.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 
-#include "heroespath/assertlogandthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "heroespath/game-data-file.hpp"
 
 
@@ -95,11 +95,11 @@ namespace gui
 
         const float WIDTH_DIFF(bgInfo_.textureSPtr->getSize().x - bgInfo_.region.width);
         if (WIDTH_DIFF > 10.0f)
-            textRectLeftToUse = sfml_util::rand::Float(0.0f, WIDTH_DIFF);
+            textRectLeftToUse = utilz::random::Float(0.0f, WIDTH_DIFF);
 
         const float HEIGHT_DIFF(bgInfo_.textureSPtr->getSize().y - bgInfo_.region.height);
         if (HEIGHT_DIFF > 10.0f)
-            textRectTopToUse = sfml_util::rand::Float(0.0f, HEIGHT_DIFF);
+            textRectTopToUse = utilz::random::Float(0.0f, HEIGHT_DIFF);
 
         const float SCALE_MULT(1.0f / IMAGE_SCALE);
         const sf::FloatRect TEXTURE_RECT(textRectLeftToUse, textRectTopToUse, bgInfo_.region.width * SCALE_MULT, bgInfo_.region.height * SCALE_MULT);

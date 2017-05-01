@@ -2,7 +2,7 @@
 // music-set.cpp
 //
 #include "music-set.hpp"
-#include "sfml-util/random.hpp"
+#include "utilz/random.hpp"
 
 
 namespace sfml_util
@@ -83,7 +83,7 @@ namespace sfml_util
                 if (NUM_POSSIBLE_SONGS == 1)
                     return possibleVec[0];
                 else
-                    return possibleVec[sfml_util::rand::Int(0, NUM_POSSIBLE_SONGS - 1)];
+                    return possibleVec[utilz::random::Int(0, NUM_POSSIBLE_SONGS - 1)];
             }
             else
             {

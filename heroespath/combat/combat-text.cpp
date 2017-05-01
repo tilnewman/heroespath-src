@@ -253,9 +253,9 @@ namespace combat
             case combat::TurnAction::LandPounce:
             {
                 std::vector<std::string> strVec{ "surges", "charages", "leaps", "rushes", "springs" };
-                ss << strVec.at(sfml_util::rand::Int(strVec.size() - 1));
+                ss << strVec.at(utilz::random::Int(strVec.size() - 1));
 
-                if (sfml_util::rand::Bool())
+                if (utilz::random::Bool())
                 {
                     ss << " forward";
                 }
@@ -403,7 +403,7 @@ namespace combat
 
         std::unique(strVec.begin(), strVec.end());
 
-        return strVec.at(sfml_util::rand::Int(strVec.size() - 1));
+        return strVec.at(utilz::random::Int(strVec.size() - 1));
     }
 
 
@@ -759,7 +759,7 @@ namespace combat
 
     const std::string Text::InitialCombatStatusMessagePrefix()
     {
-        switch (sfml_util::rand::Int(4))
+        switch (utilz::random::Int(4))
         {
             case 0:  { return "You face"; }
             case 1:  { return "Before you rage"; }
