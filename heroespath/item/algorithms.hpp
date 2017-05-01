@@ -25,31 +25,6 @@ namespace item
 
     struct Algorithms
     {
-        static void Shuffle(ItemSVec_t &);
-        static ItemSPtr_t SelectRandom(const ItemSVec_t &);
-
-        //stable unless WILL_UNIQUE
-        static void Append(ItemSVec_t & a,
-                           const ItemSVec_t & B,
-                           const bool WILL_UNIQUE = false);
-
-        //stable unless WILL_UNIQUE
-        static const ItemSVec_t AppendCopy(const ItemSVec_t & A,
-                                           const ItemSVec_t & B,
-                                           const bool WILL_UNIQUE = false);
-
-        static void Exclude(ItemSVec_t &       srcSVec,
-                            const ItemSPtr_t & TO_EXCLUDE_SPTR);
-
-        static void Exclude(ItemSVec_t &       srcSVec,
-                            const ItemSVec_t & TO_EXCLUDE_SVEC);
-
-        static const ItemSVec_t ExcludeCopy(const ItemSVec_t & SRC_SVEC,
-                                            const ItemSPtr_t & TO_EXCLUDE_SPTR);
-
-        static const ItemSVec_t ExcludeCopy(const ItemSVec_t & SRC_SVEC,
-                                            const ItemSVec_t & TO_EXCLUDE_SVEC);
-
         static const std::string Names(const ItemSVec_t &,
                                        const bool         WILL_WRAP = false,
                                        const bool         WILL_APPEND_AND = false);

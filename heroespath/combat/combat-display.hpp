@@ -158,7 +158,7 @@ namespace combat
 
         inline const sf::FloatRect BattlefieldRect()                            { return battlefieldRect_; }
 
-        inline bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR) { return EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]); combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR); }
+        bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
 
         void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
         void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);

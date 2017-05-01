@@ -19,6 +19,8 @@
 #include "heroespath/assertlogandthrow.hpp"
 #include "heroespath/creature/algorithms.hpp"
 
+#include "utilz/vector-operations.hpp"
+
 #include <sstream>
 #include <exception>
 
@@ -157,15 +159,15 @@ namespace combat
     void Encounter::SortAndSetTurnCreature()
     {
         creature::CreaturePVec_t allLivingCreaturesPVec;
-        creature::Algorithms::Append(allLivingCreaturesPVec, creature::Algorithms::Players(true));
-        creature::Algorithms::Append(allLivingCreaturesPVec, creature::Algorithms::NonPlayers(true));
+        utilz::VectorOps::Append(creature::Algorithms::Players(true), allLivingCreaturesPVec);
+        utilz::VectorOps::Append(creature::Algorithms::NonPlayers(true), allLivingCreaturesPVec);
 
         if (turnOverPVec_.size() >= allLivingCreaturesPVec.size())
         {
             turnOverPVec_.clear();
         }
 
-        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(creature::Algorithms::Exclude(allLivingCreaturesPVec, turnOverPVec_));
+        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(utilz::VectorOps::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
         M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false), "heroespath::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 

@@ -13,6 +13,8 @@
 #include "heroespath/spell/spell-type-enum.hpp"
 #include "heroespath/spell/spell-base.hpp"
 
+#include "utilz/vector-operations.hpp"
+
 #include <vector>
 #include <tuple>
 
@@ -154,11 +156,12 @@ namespace combat
             return TurnActionInfo(TurnAction::ChangeWeapon);
         }
 
-        //okay, so we are reaching this point much more often than anticipated, so try and default to attacking
+        //Okay, so we are reaching this end point in the logic tree much more
+        //often than anticipated, so try and attacking here if possible.
         if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
             (playersInAttackRangePVec.empty() == false))
         {
-            return TurnActionInfo(TurnAction::Attack, playersInAttackRangePVec.at(sfml_util::rand::Int(playersInAttackRangePVec.size() - 1)));
+            return TurnActionInfo(TurnAction::Attack, sfml_util::rand::SelectRandom(playersInAttackRangePVec));
         }
 
         //At this point nothing was chosen to be done, so block instead
@@ -194,28 +197,28 @@ namespace combat
                 {
                     if (CLOSEST_PLAYERS_STILL_A_THREAT_PVEC.empty())
                     {
-                        return creature::Algorithms::SelectRandom(CLOSEST_PLAYERS_PVEC);
+                        return sfml_util::rand::SelectRandom(CLOSEST_PLAYERS_PVEC);
                     }
                     else
                     {
-                        return creature::Algorithms::SelectRandom(CLOSEST_PLAYERS_STILL_A_THREAT_PVEC);
+                        return sfml_util::rand::SelectRandom(CLOSEST_PLAYERS_STILL_A_THREAT_PVEC);
                     }
                 }
                 else
                 {
-                    return creature::Algorithms::SelectRandom(CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH);
+                    return sfml_util::rand::SelectRandom(CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH);
                 }
             }
             else
             {
                 //select the closest of the select targets at random
-                return creature::Algorithms::SelectRandom( COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
+                return sfml_util::rand::SelectRandom( COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
             }
         }
         else
         {
             //select the closest of the refined targets at random
-            return creature::Algorithms::SelectRandom(COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, REFINED_TARGETS_PVEC));
+            return sfml_util::rand::SelectRandom(COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, REFINED_TARGETS_PVEC));
         }
     }
 
@@ -235,66 +238,66 @@ namespace combat
 
         //add target selections by race
         if (SELECT_TYPE_ENUM & strategy::SelectType::Dragon)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Dragon));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Dragon), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Gnome)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Gnome));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Gnome), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Human)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Human));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Human), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Pixie)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Pixie));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Pixie), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Wolfen)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Wolfen));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC, creature::race::Wolfen), selectedPlayersPVec);
 
         //add target selections by role
         if (SELECT_TYPE_ENUM & strategy::SelectType::Archer)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Archer));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Archer), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Bard)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Bard));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Bard), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Beastmaster)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Beastmaster));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Beastmaster), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Cleric)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Cleric));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Cleric), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::FireBrand)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Firebrand));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Firebrand), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Knight)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Knight));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Knight), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Sorcerer)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Sorcerer));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Sorcerer), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Sylavin)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Sylavin));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Sylavin), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Theif)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Thief));
+            utilz::VectorOps::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Thief), selectedPlayersPVec);
 
         //add target selections by misc types
         if (SELECT_TYPE_ENUM & strategy::SelectType::Beast)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC));
+            utilz::VectorOps::Append(creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::NotBeast)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC, false));
+            utilz::VectorOps::Append(creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC, false), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::CanFly)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByCanFly(SELECTABLE_PLAYERS_PVEC));
+            utilz::VectorOps::Append(creature::Algorithms::FindByCanFly(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::CantFly)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByCanFly(SELECTABLE_PLAYERS_PVEC, false));
+            utilz::VectorOps::Append(creature::Algorithms::FindByCanFly(SELECTABLE_PLAYERS_PVEC, false), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Caster)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindBySpellCaster(SELECTABLE_PLAYERS_PVEC));
+            utilz::VectorOps::Append(creature::Algorithms::FindBySpellCaster(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Projectile)
-            creature::Algorithms::Append(selectedPlayersPVec, creature::Algorithms::FindByProjectileWeapons(SELECTABLE_PLAYERS_PVEC));
+            utilz::VectorOps::Append(creature::Algorithms::FindByProjectileWeapons(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (selectedPlayersPVec.size() > 1)
             std::unique(selectedPlayersPVec.begin(), selectedPlayersPVec.end());
@@ -506,7 +509,7 @@ namespace combat
                     //heal fellow if one is injured enough
                     if (FELLOWS_WITH_LOWEST_HEALTH_PVEC.at(0)->HealthRatio() < 0.25f)
                     {
-                        return DecideSpell(CREATURE_DECIDING_CPTRC, creature::Algorithms::SelectRandom(FELLOWS_WITH_LOWEST_HEALTH_PVEC), { spell::SpellType::Heal });
+                        return DecideSpell(CREATURE_DECIDING_CPTRC, sfml_util::rand::SelectRandom(FELLOWS_WITH_LOWEST_HEALTH_PVEC), { spell::SpellType::Heal });
                     }
                     else
                     {
@@ -614,7 +617,7 @@ namespace combat
                     }
                     else
                     {
-                        creatureToActOn = creature::Algorithms::SelectRandom(PLAYERS_IN_MELEE_RANGE_PVEC);
+                        creatureToActOn = sfml_util::rand::SelectRandom(PLAYERS_IN_MELEE_RANGE_PVEC);
                     }
                 }
 
@@ -645,7 +648,7 @@ namespace combat
             return TurnActionInfo();
         }
 
-        auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR{ creature::Algorithms::SelectRandom(creature::Algorithms::FindLowestHealthRatio(creature::Algorithms::NonPlayers(true))) };
+        auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR{ sfml_util::rand::SelectRandom(creature::Algorithms::FindLowestHealthRatio(creature::Algorithms::NonPlayers(true))) };
         auto const CAN_CAST_HEAL_SPELLS{ (RAND_FELLOW_WITH_LOWEST_HEALTH_PTR->HealthRatio() < 1.0f) };
 
         spell::SpellPVec_t finalSpellPVec;

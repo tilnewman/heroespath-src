@@ -41,15 +41,6 @@ namespace creature
 
         static const CreaturePVec_t FindByAlive(const CreaturePVec_t &, const bool WILL_FIND_ALIVE = true);
 
-        //appends B into A, stable unless WILL_MAKE_UNIQUE==true
-        static void Append(CreaturePVec_t & a_PVec, const CreaturePVec_t & B_PVec, const bool WILL_MAKE_UNIQUE = false);
-
-        static const CreaturePVec_t Exclude(const CreaturePVec_t & SOURCE_PVEC, CreaturePtr_t creatureToExcludePtr);
-        static const CreaturePVec_t Exclude(const CreaturePVec_t & SOURCE_PVEC, const CreaturePVec_t & TO_EXCLUDE_PVEC);
-
-        static CreaturePtr_t SelectRandom(const CreaturePVec_t &);
-        static void Shuffle(CreaturePVec_t &);
-
         static void SortByLowestHealthNormal(CreaturePVec_t &);
         static const CreaturePVec_t FindLowestHealthNormal(const CreaturePVec_t &);
 

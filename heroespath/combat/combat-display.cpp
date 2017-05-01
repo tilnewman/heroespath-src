@@ -518,6 +518,14 @@ namespace combat
     }
 
 
+    bool CombatDisplay::RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR)
+    {
+        auto const REMOVE_RESULT{ EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]) };
+        combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR);
+        return REMOVE_RESULT;
+    }
+
+
     void CombatDisplay::MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND)
     {
         //keep track of all original values in case undo is required
@@ -744,7 +752,7 @@ namespace combat
 
     std::size_t CombatDisplay::FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
-        const CombatNodePtr_t COMBAT_NODE_PTR(combatTree_.GetNode(CREATURE_CPTRC));
+        auto const COMBAT_NODE_PTR(combatTree_.GetNode(CREATURE_CPTRC));
         M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesThatCanBeAttackedOfType(creature_name=" << CREATURE_CPTRC->Name() << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was unable to find that creature node in the combatTree_.");
 
         CombatNodePVec_t nodePVec;
