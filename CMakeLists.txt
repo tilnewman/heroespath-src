@@ -5,11 +5,11 @@ message(STATUS "System Detected: ${CMAKE_SYSTEM}")
 
 set(CUSTOM_BUILD_FLAGS "")
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
+if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
     message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
     
-    file (READ build-flag-msvc.txt CUSTOM_BUILD_FLAGS)
+    file (READ build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
 
     set(BOOST_INCLUDEDIR "C:/local/boost_1_61_0")
     set(BOOST_LIBRARYDIR "C:/local/boost_1_61_0/lib32-msvc-14.0")
@@ -26,7 +26,7 @@ endif()
 
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
 
-message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with build flagss: \"" ${CUSTOM_BUILD_FLAGS} "\"")
+message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with build flags: ${CUSTOM_BUILD_FLAGS}")
 
 set(CUSTOM_PROJECT_BOOST_VER "1.61.0")
 set(Boost_USE_STATIC_LIBS ON)
@@ -44,3 +44,4 @@ add_subdirectory(stringutil)
 add_subdirectory(sfml-util)
 add_subdirectory(heroes-path)
 add_subdirectory(heroespath)
+add_subdirectory(utilz)
