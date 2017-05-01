@@ -1,0 +1,1 @@
+-DNDEBUG -O4 -std=c++14 -lstdc++ -pedantic -Wall -Wextra -Wshadow -Wfloat-equal -Wundef -Wswitch-default -Wswitch-enum -Wunreachable-code -Weffc++ -Wunused-parameter -Wfatal-errors -Wstrict-null-sentinel

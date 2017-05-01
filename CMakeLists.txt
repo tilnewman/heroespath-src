@@ -1,24 +1,32 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 project("Heroes Path")
 
-message(STATUS "${PROJECT_NAME} building with ${CMAKE_CXX_COMPILER_ID} on ${CMAKE_SYSTEM}")
+message(STATUS "System Detected: ${CMAKE_SYSTEM}")
 
 set(CUSTOM_BUILD_FLAGS "")
 
-set(SFML_PATH "C:/Program Files/SFML-2.4.1")
-message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
+if(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
+    set(SFML_PATH "C:/Program Files/SFML-2.4.1")
+    message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
+    
+    file (READ build-flag-msvc.txt CUSTOM_BUILD_FLAGS)
 
-if(WIN32)    
-    set(CUSTOM_BUILD_FLAGS "/W4 /MP")
     set(BOOST_INCLUDEDIR "C:/local/boost_1_61_0")
     set(BOOST_LIBRARYDIR "C:/local/boost_1_61_0/lib32-msvc-14.0")
     set(BOOST_ROOT "C:/local/boost_1_61_0/boost")
-else()
-    file (READ common/gcc-build-flags.txt CUSTOM_BUILD_FLAGS)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+    file (READ build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+    file (READ build-flags-clang.txt CUSTOM_BUILD_FLAGS)
 endif()
 
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
-message(STATUS "${PROJECT_NAME} will use build flags: \"" ${CUSTOM_BUILD_FLAGS} "\"")
+
+message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with build flagss: \"" ${CUSTOM_BUILD_FLAGS} "\"")
 
 set(CUSTOM_PROJECT_BOOST_VER "1.61.0")
 set(Boost_USE_STATIC_LIBS ON)
