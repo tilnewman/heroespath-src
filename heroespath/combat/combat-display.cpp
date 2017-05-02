@@ -118,34 +118,26 @@ namespace combat
     void CombatDisplay::Setup()
     {
         //create CombatNodes and add them into the combateTree_
+        const player::CharacterSVec_t PLAYER_CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
+        for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
         {
-            const player::CharacterSVec_t PLAYER_CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
-            for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
-            {
-                const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR( std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_) );
-                EntityAdd(COMBAT_NODE_SPTR);
-                combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
-                combatTree_.AddVertex(COMBAT_NODE_SPTR);
-            }
-
-            //TODO if not setting up for the first time, load the blocking positions from a saved location
-            InitialPlayerPartyCombatTreeSetup();
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_));
+            EntityAdd(COMBAT_NODE_SPTR);
+            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
+            combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
-
+        InitialPlayerPartyCombatTreeSetup();
+        //
+        const non_player::CharacterSVec_t NONPLAYER_CHAR_SVEC(Encounter::Instance()->NonPlayerParty()->Characters());
+        for (auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
         {
-            const non_player::CharacterSVec_t NONPLAYER_CHAR_SVEC( Encounter::Instance()->NonPlayerParty()->Characters() );
-            for(auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
-            {
-                const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR( std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_) );
-                EntityAdd(COMBAT_NODE_SPTR);
-                combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
-                combatTree_.AddVertex(COMBAT_NODE_SPTR);
-            }
-
-            //TODO if not setting up for the first time, load the blocking positions from a saved location
-            InitialNonPlayerPartyCombatTreeSetup();
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_));
+            EntityAdd(COMBAT_NODE_SPTR);
+            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
+            combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
-
+        InitialNonPlayerPartyCombatTreeSetup();
+     
         //establish primary drawing area as battlefieldRect_
         //StageRegionSet() must have already been called
         battlefieldRect_ = sf::FloatRect(StageRegionLeft(), StageRegionTop(), StageRegionWidth() - BATTLEFIELD_MARGIN_, StageRegionHeight() - BATTLEFIELD_MARGIN_);

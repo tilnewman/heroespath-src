@@ -84,6 +84,7 @@ namespace combat
         virtual ~CombatDisplay();
 
         virtual void Setup();
+
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 
         virtual void SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING);
@@ -171,13 +172,13 @@ namespace combat
 
         inline NodePosTrackerMap_t NodePositionTrackerMap()                     { return nodePosTrackerMap_; }
 
+        void InitialPlayerPartyCombatTreeSetup();
+        void InitialNonPlayerPartyCombatTreeSetup();
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-
-        void InitialPlayerPartyCombatTreeSetup();
-        void InitialNonPlayerPartyCombatTreeSetup();
 
         void CreatureToneDown(const float TONE_DOWN_VAL);
 

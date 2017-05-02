@@ -52,59 +52,6 @@ namespace heroespath
 namespace stage
 {
 
-    SavedCombatInfo::SavedCombatInfo()
-    :
-        canTurnAdvance_       (false),
-        hasRestored_          (false),
-        creaturesFlyingPVec_  ()
-    {}
-
-
-    void SavedCombatInfo::PrepareForStageChange(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
-    {
-        CanTurnAdvance(false);
-        Save(COMBAT_DISPLAY_CPTRC);
-    }
-
-
-    void SavedCombatInfo::Save(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
-    {
-        FlyingCreaturesSave(COMBAT_DISPLAY_CPTRC);
-    }
-
-
-    void SavedCombatInfo::Restore(combat::CombatDisplayPtrC_t combatDisplayPtr)
-    {
-        hasRestored_ = true;
-        FlyingCreaturesRestore(combatDisplayPtr);
-
-        //restore health/condition
-        combat::CombatNodePVec_t combatNodesPVec;
-        combatDisplayPtr->GetCombatNodes(combatNodesPVec);
-        for (auto const nextCombatNodePtrC : combatNodesPVec)
-            nextCombatNodePtrC->HealthChangeTasks();
-    }
-
-
-    void SavedCombatInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
-    {
-        creaturesFlyingPVec_.clear();
-        combat::CombatNodePVec_t combatNodesPVec;
-        COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);
-
-        for (auto const nextCombatNodeCPtr : combatNodesPVec)
-            if (nextCombatNodeCPtr->IsFlying())
-                creaturesFlyingPVec_.push_back(nextCombatNodeCPtr->Creature());
-    }
-
-
-    void SavedCombatInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtr)
-    {
-        for (auto const nextFlyingCreaturePtr : creaturesFlyingPVec_)
-            combatDisplayPtr->HandleFlyingChange(nextFlyingCreaturePtr, true);
-    }
-
-
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
     const float CombatStage::PAUSE_SHORT_SEC_               { 1.5f };
@@ -147,7 +94,7 @@ namespace stage
     const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_  { sf::Color(150, 150, 150) };
     const sf::Color CombatStage::LISTBOX_LINE_COLOR_         { sf::Color(255, 255, 255, 25) };
     //
-    SavedCombatInfo CombatStage::savedCombatInfo_;
+    combat::RestoreInfo CombatStage::restoreInfo_;
 
 
     CombatStage::CombatStage()
@@ -171,6 +118,8 @@ namespace stage
         performReportHitIndex_     (0),
         zoomSliderOrigPos_         (0.0f),
         willClrShkInitStatusMsg_   (false),
+        isMouseHeldDown_           (false),
+        isMouseHeldDownAndMoving_  (false),
         slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayStagePtr_     (new combat::CombatDisplay()),
         combatAnimationPtr_        (combat::CombatAnimation::Instance()),
@@ -219,7 +168,7 @@ namespace stage
         testingTextRegionSPtr_      (),
         pauseTitle_                 ("")
     {
-        savedCombatInfo_.CanTurnAdvance(false);
+        restoreInfo_.CanTurnAdvance(false);
     }
 
 
@@ -279,7 +228,7 @@ namespace stage
 
         if (PACKAGE.PTR_ == settingsButtonSPtr_.get())
         {
-            savedCombatInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+            restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
             heroespath::LoopManager::Instance()->Goto_Settings();
             return true;
         }
@@ -770,7 +719,7 @@ namespace stage
             partySPtr->Add(sylavinSPtr);
         }
         */
-        if (savedCombatInfo_.HasRestored() == false)
+        if (restoreInfo_.HasRestored() == false)
         {
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partySPtr);
@@ -878,10 +827,10 @@ namespace stage
         sfml_util::IStageSPtr_t combatDisplayStageSPtr(combatDisplayStagePtr_);
         LoopManager::Instance()->AddStage(combatDisplayStageSPtr);
 
-        if (savedCombatInfo_.HasRestored() == false)
+        if (restoreInfo_.HasRestored() == false)
         {
             //set Pixie creatures to initially flying
-            //while this doesn't technically make them fly, the call to savedCombatInfo_.Restore() will actually set them flying
+            //while this doesn't technically make them fly, the call to restoreInfo_.Restore() will actually set them flying
             {
                 combat::CombatNodePVec_t combatNodesPVec;
                 combatDisplayStagePtr_->GetCombatNodes(combatNodesPVec);
@@ -891,7 +840,7 @@ namespace stage
                         (creature::role::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Role().Which())))
                         nextComabtNodeCPtr->IsFlying(true);
 
-                savedCombatInfo_.Save(combatDisplayStagePtr_);
+                restoreInfo_.Save(combatDisplayStagePtr_);
             }
         }
 
@@ -921,7 +870,7 @@ namespace stage
         EntityAdd(zoomSliderBarSPtr_);
 
         MoveTurnBoxObjectsOffScreen(true);
-        savedCombatInfo_.Restore(combatDisplayStagePtr_);
+        restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
     }
 
@@ -1198,6 +1147,8 @@ namespace stage
 
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
+        isMouseHeldDown_ = true;
+
         //cancel summary view if visible or even just starting
         if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
         {
@@ -1211,22 +1162,36 @@ namespace stage
 
 
     void CombatStage::UpdateMousePos(const sf::Vector2f &)
-    {}
+    {
+        if (isMouseHeldDown_)
+        {
+            isMouseHeldDownAndMoving_ = true;
+        }
+        else
+        {
+            isMouseHeldDownAndMoving_ = false;
+        }
+    }
 
 
     sfml_util::gui::IGuiEntitySPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
+        auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
+        isMouseHeldDown_ = false;
+        isMouseHeldDownAndMoving_ = false;
+
         if (TurnPhase::Determine == turnPhase_)
         {
             creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
             if ((creatureAtPosPtr != nullptr) &&
-                creatureAtPosPtr->IsPlayerCharacter())
+                creatureAtPosPtr->IsPlayerCharacter() &&
+                (WAS_MOUSE_HELD_DOWN_AND_MOVING == false))
             {
-                savedCombatInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+                restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
                 heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
             }
-
+            
             return Stage::UpdateMouseUp(MOUSE_POS_V);
         }
         else
@@ -1296,7 +1261,7 @@ namespace stage
             {
                 if ((turnCreaturePtr_ != nullptr) && turnCreaturePtr_->IsPlayerCharacter())
                 {
-                    savedCombatInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+                    restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
                     heroespath::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_);
                 }
             }
@@ -1701,10 +1666,10 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
-        if (savedCombatInfo_.CanTurnAdvance())
+        if (restoreInfo_.CanTurnAdvance())
         {
             encounterSPtr_->IncrementTurn();
-            savedCombatInfo_.CanTurnAdvance(false);
+            restoreInfo_.CanTurnAdvance(false);
         }
 
         performReportHitIndex_ = 0;
@@ -1996,7 +1961,7 @@ namespace stage
     {
         HandleKilledCreatures();
         combatDisplayStagePtr_->HandleEndOfTurnTasks();
-        savedCombatInfo_.CanTurnAdvance(true);
+        restoreInfo_.CanTurnAdvance(true);
         EndTurn();
         EndPause();
     }

@@ -21,6 +21,7 @@
 #include "heroespath/combat/turn-action-info.hpp"
 #include "heroespath/combat/fight-results.hpp"
 #include "heroespath/combat/combat-sound-effects.hpp"
+#include "heroespath/combat/combat-restore-info.hpp"
 
 #include <memory>
 #include <vector>
@@ -65,31 +66,6 @@ namespace combat
 }
 namespace stage
 {
-
-    //everything required to save the state of combat
-    class SavedCombatInfo
-    {
-    public:
-        SavedCombatInfo();
-
-        void PrepareForStageChange(const combat::CombatDisplayPtrC_t);
-        void Save(const combat::CombatDisplayPtrC_t);
-        void Restore(combat::CombatDisplayPtrC_t);
-
-        inline bool HasRestored() const             { return hasRestored_; }
-        inline bool CanTurnAdvance() const          { return canTurnAdvance_; }
-        inline void CanTurnAdvance(const bool B)    { canTurnAdvance_ = B; }
-
-    private:
-        void FlyingCreaturesSave(const combat::CombatDisplayPtrC_t);
-        void FlyingCreaturesRestore(combat::CombatDisplayPtrC_t);
-
-    private:
-        bool canTurnAdvance_;
-        bool hasRestored_;
-        creature::CreaturePVec_t creaturesFlyingPVec_;
-    };
-
 
     //A Stage class that allows camping characters
     class CombatStage
@@ -294,7 +270,7 @@ namespace stage
 
     private:
         //stores information about the state of combat when temporarily in another stage.  (inventory, Setup, etc.)
-        static SavedCombatInfo savedCombatInfo_;
+        static combat::RestoreInfo restoreInfo_;
         //
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
@@ -315,6 +291,8 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willClrShkInitStatusMsg_;
+        bool                             isMouseHeldDown_;
+        bool                             isMouseHeldDownAndMoving_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;

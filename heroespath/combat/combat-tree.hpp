@@ -221,6 +221,8 @@ namespace combat
 
         const CombatNodePVec_t FindNodesClosestOfType(const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
 
+        void ResetAllEdges();
+
     private:
         EdgeList_t   edgeList_;
         VertexList_t vertexList_;

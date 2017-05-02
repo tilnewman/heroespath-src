@@ -768,5 +768,14 @@ namespace combat
         return closestCombatNodesPVec;
     }
 
+
+    void CombatTree::ResetAllEdges()
+    {
+        edgeList_.clear();
+
+        for (auto const & NEXT_VERTEX : vertexList_)
+            ConnectAllAtPosition(NEXT_VERTEX.second->GetBlockingPos(), combat::EdgeType::ShoulderToShoulder);
+    }
+
 }
 }
