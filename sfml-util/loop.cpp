@@ -15,6 +15,7 @@
 #include "heroespath/i-popup-callback.hpp"
 
 #include <boost/filesystem.hpp>
+#include <iomanip>
 
 
 namespace sfml_util
@@ -171,7 +172,7 @@ namespace sfml_util
 
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
             const float STANDARD_DEVIATION(sfml_util::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
-            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION);
+            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION << ":  ");
         }
         else
             willLogFrameRate_ = true;
@@ -180,13 +181,17 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessOneSecondTasks()
+    bool Loop::ProcessOneSecondTasks()
     {
+        auto willProcessOneSecondTasks{ false };
+
         if (false == continueFading_)
             oneSecondTimerSec_ += elapsedTimeSec_;
 
         if (oneSecondTimerSec_ > 1.0f)
         {
+            willProcessOneSecondTasks = true;
+
             oneSecondTimerSec_ = 0.0f;
 
             LogFrameRate();
@@ -209,6 +214,8 @@ namespace sfml_util
             else
                 mousePosV_ = MOUSE_POS_NEW_V;
         }
+
+        return willProcessOneSecondTasks;
     }
 
 
@@ -587,9 +594,9 @@ namespace sfml_util
         //reset exit variables
         willExit_ = false;
         fatalExitEvent_ = false;
-        mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition(*winSPtr_));
+        mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winSPtr_));
         sfml_util::SoundManagerSPtr_t soundManagerSPtr(sfml_util::SoundManager::Instance());
-        frameRateVec_.resize(4096);
+        frameRateVec_.resize(256);
 
         //consume pre-events
         ConsumeEvents();
@@ -603,6 +610,10 @@ namespace sfml_util
             clock_.restart();
 
             frameRateVec_[frameRateSampleCount_++] = (1.0f / elapsedTimeSec_);
+            if (frameRateSampleCount_ >= frameRateVec_.size())
+            {
+                frameRateVec_.resize(frameRateSampleCount_ * 2);
+            }
 
             soundManagerSPtr->UpdateTime(elapsedTimeSec_);
 

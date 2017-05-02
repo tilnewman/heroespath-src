@@ -92,7 +92,7 @@ namespace sfml_util
 
     protected:
         virtual void LogFrameRate();
-        virtual void ProcessOneSecondTasks();
+        virtual bool ProcessOneSecondTasks();
         virtual void ProcessMouseHover();
         virtual void ProcessFader();
         virtual void ProcessPopup();
