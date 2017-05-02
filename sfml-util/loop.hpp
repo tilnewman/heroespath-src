@@ -143,6 +143,7 @@ namespace sfml_util
         heroespath::callback::IPopupHandler_t * popupCallbackPtr_;
         heroespath::LoopState::Enum state_;
         std::vector<float>    frameRateVec_;
+        std::size_t           frameRateSampleCount_;
         bool                  willLogFrameRate_;
     };
 

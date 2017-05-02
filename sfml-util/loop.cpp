@@ -56,6 +56,7 @@ namespace sfml_util
         popupCallbackPtr_    (),
         state_               (heroespath::LoopState::Intro),
         frameRateVec_        (),
+        frameRateSampleCount_(0),
         willLogFrameRate_    (false)
     {}
 
@@ -145,20 +146,37 @@ namespace sfml_util
 
     void Loop::LogFrameRate()
     {
-        if (willLogFrameRate_)
+        if (willLogFrameRate_ && (frameRateSampleCount_ > 0))
         {
-            const std::size_t SAMPLE_COUNT(frameRateVec_.size());
-            float average(0.0f);
-            const float STANDARD_DEVIATION(sfml_util::StandardDeviation(frameRateVec_, average));
+            //find min, max, and average framerate
+            auto min{ frameRateVec_[0] };
+            auto max{ 0.0f };
+            auto sum{ 0.0f };
+            for (std::size_t i(0); i < frameRateSampleCount_; ++i)
+            {
+                auto const NEXT_FRAMERATE{ frameRateVec_[i] };
 
-            std::ostringstream ss;
-            ss << "Frame rate is " << average << ".  (p=" << SAMPLE_COUNT << ", s=" << STANDARD_DEVIATION << ")";
-            M_HP_LOG(ss.str());
+                sum += NEXT_FRAMERATE;
+
+                if (NEXT_FRAMERATE < min)
+                {
+                    min = NEXT_FRAMERATE;
+                }
+                
+                if (NEXT_FRAMERATE > max)
+                {
+                    max = NEXT_FRAMERATE;
+                }
+            }
+
+            auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
+            const float STANDARD_DEVIATION(sfml_util::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
+            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION);
         }
         else
             willLogFrameRate_ = true;
 
-        frameRateVec_.clear();
+        frameRateSampleCount_ = 0;
     }
 
 
@@ -571,7 +589,7 @@ namespace sfml_util
         fatalExitEvent_ = false;
         mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition(*winSPtr_));
         sfml_util::SoundManagerSPtr_t soundManagerSPtr(sfml_util::SoundManager::Instance());
-        frameRateVec_.reserve(2048);
+        frameRateVec_.resize(4096);
 
         //consume pre-events
         ConsumeEvents();
@@ -584,7 +602,7 @@ namespace sfml_util
             elapsedTimeSec_ = clock_.getElapsedTime().asSeconds();
             clock_.restart();
 
-            frameRateVec_.push_back(1.0f / elapsedTimeSec_);
+            frameRateVec_[frameRateSampleCount_++] = (1.0f / elapsedTimeSec_);
 
             soundManagerSPtr->UpdateTime(elapsedTimeSec_);
 
