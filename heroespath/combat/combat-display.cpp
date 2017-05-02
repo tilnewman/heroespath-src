@@ -182,6 +182,77 @@ namespace combat
     }
 
 
+    void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
+    {
+        if (false == isUserActionAllowed_)
+            return;
+
+        auto combatNodePtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
+
+        if (IS_MOUSE_HOVERING &&
+            (combatNodePtr != nullptr) &&
+            (combatNodePtr->GetEntityWillDraw() == true) &&
+            (false == isMouseHeldDownInBF_) &&
+            isPlayerTurn_ &&
+            (false == GetIsStatusMessageAnimating()))
+        {
+            //stop shaking a creature image if mouse-over will start transitioning to summary view
+            CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
+
+            summaryView_.SetupAndStartTransition(combatNodePtr, battlefieldRect_);
+            SetIsSummaryViewInProgress(true);
+        }
+        else
+        {
+            CancelSummaryViewAndStartTransitionBack();
+        }
+
+        Stage::SetMouseHover(MOUSE_POS, IS_MOUSE_HOVERING);
+    }
+
+
+    float CombatDisplay::SetZoomLevel(const float ZOOM_LEVEL)
+    {
+        const float ORIG_ZOOM_LEVEL(zoomLevel_);
+        zoomLevel_ = ZOOM_LEVEL;
+
+        //prevent zoom level from going too low
+        const float MIN_ZOOM_LEVEL(0.1f);
+        if (zoomLevel_ < MIN_ZOOM_LEVEL)
+            zoomLevel_ = MIN_ZOOM_LEVEL;
+
+        nameCharSizeCurr_ = static_cast<unsigned int>(static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ZOOM_LEVEL);
+
+        auto const BATTLEFIELD_CENTER_BEFORE_V{ GetCenterOfAllNodes() };
+        PositionCombatTreeCells(false);
+        auto const BATTLEFIELD_CENTER_AFTER_V{ GetCenterOfAllNodes() };
+
+        auto const HORIZ_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.x - BATTLEFIELD_CENTER_AFTER_V.x };
+        auto const VERT_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.y - BATTLEFIELD_CENTER_AFTER_V.y };
+
+        //move nodes to keep the battlefield centered
+        //if ((HORIZ_DIFF < 100.0f) && (VERT_DIFF < 100.0f))
+        {
+            CombatNodePVec_t combatNodesPVec;
+            combatNodesPVec.reserve(combatTree_.VertexCount());
+            combatTree_.GetCombatNodes(combatNodesPVec);
+            for (auto const NEXT_COMBATNODE_PTR : combatNodesPVec)
+                NEXT_COMBATNODE_PTR->MoveEntityPos(HORIZ_DIFF, VERT_DIFF);
+        }
+
+        //if all creatures are already visible then prevent further zoom out
+        if (battlefieldHeight_ < battlefieldRect_.height)
+        {
+            zoomLevel_ = ORIG_ZOOM_LEVEL;
+            nameCharSizeCurr_ = static_cast<unsigned int>(static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ORIG_ZOOM_LEVEL);
+            PositionCombatTreeCells(false);
+        }
+
+        UpdateWhichNodesWillDraw();
+        return zoomLevel_;
+    }
+
+
     bool CombatDisplay::UpdateWhichNodesWillDraw()
     {
         bool isAnyNodeDrawn(false);
@@ -296,124 +367,6 @@ namespace combat
         }
 
         return sf::Vector2f(posHorizMin + ((posHorizMax - posHorizMin) * 0.5f), posVertMin + ((posVertMax - posVertMin) * 0.5f));
-    }
-
-
-    void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
-    {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
-
-        summaryView_.UpdateTime(ELAPSED_TIME_SECONDS);
-
-        if (summaryView_.MovingDir() == sfml_util::Moving::Toward)
-        {
-            CreatureToneDown(summaryView_.GetTransitionStatus());
-        }
-        else if (summaryView_.MovingDir() == sfml_util::Moving::Away)
-        {
-            CreatureToneDown(1.0f - summaryView_.GetTransitionStatus());
-
-            if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
-                (summaryView_.GetTransitionStatus() > 0.99))
-            {
-                CombatAnimation::Instance()->ShakeAnimRestart();
-                SetIsSummaryViewInProgress(false);
-            }
-        }
-    }
-
-
-    void CombatDisplay::InitialPlayerPartyCombatTreeSetup()
-    {
-        int position(-1);
-
-        //apply the player's preferred blocking pattern if one is saved
-        if (blockingMap_.empty())
-        {
-            //place Knights/Arhers/Beasts/Beastmasters first in the blocking order
-            SetBlockingPosOfType(true, creature::role::Knight, position);
-            SetBlockingPosOfType(true, creature::role::Archer, position);
-            SetBlockingPosOfType(true, creature::role::Wolfen, position);
-            SetBlockingPosOfType(true, creature::role::Sylavin, position);
-            SetBlockingPosOfType(true, creature::role::Firebrand, position);
-            SetBlockingPosOfType(true, creature::role::Beastmaster, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-            //place thieves/bards are next in the blocking order
-            position -= 1;
-            SetBlockingPosOfType(true, creature::role::Thief, position);
-            SetBlockingPosOfType(true, creature::role::Bard, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-            //place sorcerers and clerics next in the blocking order
-            position -= 1;
-            SetBlockingPosOfType(true, creature::role::Sorcerer, position);
-            SetBlockingPosOfType(true, creature::role::Cleric, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-        }
-        else
-        {
-            //place player characters in the blocking order saved in blockingMap_
-            const player::CharacterSVec_t CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
-            for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
-            {
-                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_SPTR->UniqueTraits());
-                const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
-                combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
-                combatTree_.ConnectAllAtPosition(NEXT_POSITION, combat::EdgeType::ShoulderToShoulder);
-            }
-        }
-
-        //whatever blocking order pattern, leave the disabled characters farthest behind
-        const int DISABLED_CREATURES_POSITION(position - 1);
-        const player::CharacterSVec_t CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
-        {
-            if (NEXT_CHARACTER_SPTR->CanTakeAction() == false)
-            {
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
-                combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
-            }
-        }
-        combatTree_.ConnectAllAtPosition(DISABLED_CREATURES_POSITION, combat::EdgeType::ShoulderToShoulder);
-    }
-
-
-    void CombatDisplay::InitialNonPlayerPartyCombatTreeSetup()
-    {
-        int position(1);
-
-        //place ignorant roles first in the blocking order
-        SetBlockingPosOfType(false, creature::role::Drunk, position);
-        SetBlockingPosOfType(false, creature::role::Grunt, position);
-        SetBlockingPosOfType(false, creature::role::Mugger, position);
-        SetBlockingPosOfType(false, creature::role::Firebrand, position);
-        SetBlockingPosOfType(false, creature::role::Sylavin, position);
-        SetBlockingPosOfType(false, creature::role::Wolfen, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Archer, position);
-        SetBlockingPosOfType(false, creature::role::Knight, position);
-        SetBlockingPosOfType(false, creature::role::Beastmaster, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Bard, position);
-        SetBlockingPosOfType(false, creature::role::Thief, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Captain, position);
-        SetBlockingPosOfType(false, creature::role::Chieftain, position);
-        SetBlockingPosOfType(false, creature::role::Sorcerer, position);
-        SetBlockingPosOfType(false, creature::role::Cleric, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Warlord, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
     }
 
 
@@ -612,98 +565,6 @@ namespace combat
     }
 
 
-    void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
-    {
-        if (false == isUserActionAllowed_)
-            return;
-
-        auto combatNodePtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
-
-        if (IS_MOUSE_HOVERING &&
-            (combatNodePtr != nullptr) &&
-            (combatNodePtr->GetEntityWillDraw() == true) &&
-            (false == isMouseHeldDownInBF_) &&
-            isPlayerTurn_ &&
-            (false == GetIsStatusMessageAnimating()))
-        {
-            //stop shaking a creature image if mouse-over will start transitioning to summary view
-            CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
-
-            summaryView_.SetupAndStartTransition(combatNodePtr, battlefieldRect_);
-            SetIsSummaryViewInProgress(true);
-        }
-        else
-        {
-            CancelSummaryViewAndStartTransitionBack();
-        }
-
-        Stage::SetMouseHover(MOUSE_POS, IS_MOUSE_HOVERING);
-    }
-
-
-    float CombatDisplay::SetZoomLevel(const float ZOOM_LEVEL)
-    {
-        const float ORIG_ZOOM_LEVEL(zoomLevel_);
-        zoomLevel_ = ZOOM_LEVEL;
-
-        //prevent zoom level from going too low
-        const float MIN_ZOOM_LEVEL(0.1f);
-        if (zoomLevel_ < MIN_ZOOM_LEVEL)
-            zoomLevel_ = MIN_ZOOM_LEVEL;
-
-        nameCharSizeCurr_ = static_cast<unsigned int>(static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ZOOM_LEVEL);
-
-        auto const BATTLEFIELD_CENTER_BEFORE_V{ GetCenterOfAllNodes() };
-        PositionCombatTreeCells(false);
-        auto const BATTLEFIELD_CENTER_AFTER_V{ GetCenterOfAllNodes() };
-
-        auto const HORIZ_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.x - BATTLEFIELD_CENTER_AFTER_V.x };
-        auto const VERT_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.y - BATTLEFIELD_CENTER_AFTER_V.y };
-
-        //move nodes to keep the battlefield centered
-        //if ((HORIZ_DIFF < 100.0f) && (VERT_DIFF < 100.0f))
-        {
-            CombatNodePVec_t combatNodesPVec;
-            combatNodesPVec.reserve(combatTree_.VertexCount());
-            combatTree_.GetCombatNodes(combatNodesPVec);
-            for (auto const NEXT_COMBATNODE_PTR : combatNodesPVec)
-                NEXT_COMBATNODE_PTR->MoveEntityPos(HORIZ_DIFF, VERT_DIFF);
-        }
-
-        //if all creatures are already visible then prevent further zoom out
-        if (battlefieldHeight_ < battlefieldRect_.height)
-        {
-            zoomLevel_ = ORIG_ZOOM_LEVEL;
-            nameCharSizeCurr_ = static_cast<unsigned int>(static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ORIG_ZOOM_LEVEL);
-            PositionCombatTreeCells(false);
-        }
-
-        UpdateWhichNodesWillDraw();
-        return zoomLevel_;
-    }
-
-
-    void CombatDisplay::CreatureToneDown(const float TONE_DOWN_VAL)
-    {
-        CombatNodePVec_t combatNodesPVec;
-        combatNodesPVec.reserve(combatTree_.VertexCount());
-        combatTree_.GetCombatNodes(combatNodesPVec);
-
-        for (auto const nextCombatNodePtrC : combatNodesPVec)
-            if ((summaryView_.CombatNodePtr() != nullptr) && (summaryView_.CombatNodePtr() != nextCombatNodePtrC))
-                nextCombatNodePtrC->SetToneDown(TONE_DOWN_VAL);
-    }
-
-
-    const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
-    {
-        if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
-            return COMBAT_NODE_PTR->Creature()->Name();
-        else
-            return COMBAT_NODE_PTR->Creature()->Name() + " " + COMBAT_NODE_PTR->Creature()->Role().Name();
-    }
-
-
     std::size_t CombatDisplay::FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
         if (CREATURE_CPTRC == nullptr)
@@ -856,6 +717,29 @@ namespace combat
     }
 
 
+    CombatNodePtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    {
+        return combatTree_.GetNode(combatTree_.GetNodeId(CREATURE_CPTRC));
+    }
+
+
+    CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
+    {
+        CombatNodePVec_t combatNodesPVec;
+        combatNodesPVec.reserve(combatTree_.VertexCount());
+        combatTree_.GetCombatNodes(combatNodesPVec);
+
+        CombatNodePVec_t creatureCombatNodesPVec;
+
+        for (auto const NEXT_CREATURE_PTR : CREATURES_PVEC)
+            for (auto const nextCombatNodePtrC : combatNodesPVec)
+                if (nextCombatNodePtrC->Creature() == NEXT_CREATURE_PTR)
+                    creatureCombatNodesPVec.push_back(nextCombatNodePtrC);
+
+        return creatureCombatNodesPVec;
+    }
+
+
     const std::string CombatDisplay::CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const
     {
         const int BLOCKING_POS(combatTree_.GetNode(CREATURE_CPTRC)->GetBlockingPos());
@@ -995,23 +879,6 @@ namespace combat
     }
 
 
-    void CombatDisplay::SetBlockingPosOfType(const bool                 IS_PLAYER,
-                                             const creature::role::Enum ROLE,
-                                             const int                  BLOCKING_POS)
-    {
-        CombatTree::IdVec_t idVec;
-        combatTree_.GetNodeIds(idVec, ROLE);
-
-        for (auto const NEXT_NODE_ID : idVec)
-        {
-            CombatNodePtr_t nextCombatNodePtr(combatTree_.GetNode(NEXT_NODE_ID));
-
-            if (nextCombatNodePtr->Creature()->IsPlayerCharacter() == IS_PLAYER)
-                nextCombatNodePtr->SetBlockingPos(BLOCKING_POS);
-        }
-    }
-
-
     bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
         if (CREATURE_CPTRC == nullptr)
@@ -1116,26 +983,161 @@ namespace combat
     }
 
 
-    CombatNodePtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+
+    void CombatDisplay::InitialPlayerPartyCombatTreeSetup()
     {
-        return combatTree_.GetNode(combatTree_.GetNodeId(CREATURE_CPTRC));
+        int position(-1);
+
+        //apply the player's preferred blocking pattern if one is saved
+        if (blockingMap_.empty())
+        {
+            //place Knights/Arhers/Beasts/Beastmasters first in the blocking order
+            SetBlockingPosOfType(true, creature::role::Knight, position);
+            SetBlockingPosOfType(true, creature::role::Archer, position);
+            SetBlockingPosOfType(true, creature::role::Wolfen, position);
+            SetBlockingPosOfType(true, creature::role::Sylavin, position);
+            SetBlockingPosOfType(true, creature::role::Firebrand, position);
+            SetBlockingPosOfType(true, creature::role::Beastmaster, position);
+            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+            //place thieves/bards are next in the blocking order
+            position -= 1;
+            SetBlockingPosOfType(true, creature::role::Thief, position);
+            SetBlockingPosOfType(true, creature::role::Bard, position);
+            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+            //place sorcerers and clerics next in the blocking order
+            position -= 1;
+            SetBlockingPosOfType(true, creature::role::Sorcerer, position);
+            SetBlockingPosOfType(true, creature::role::Cleric, position);
+            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+        }
+        else
+        {
+            //place player characters in the blocking order saved in blockingMap_
+            const player::CharacterSVec_t CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
+            for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+            {
+                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_SPTR->UniqueTraits());
+                const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
+                combatTree_.ConnectAllAtPosition(NEXT_POSITION, combat::EdgeType::ShoulderToShoulder);
+            }
+        }
+
+        //whatever blocking order pattern, leave the disabled characters farthest behind
+        const int DISABLED_CREATURES_POSITION(position - 1);
+        const player::CharacterSVec_t CHAR_SVEC(heroespath::Game::Instance()->State()->Party()->Characters());
+        for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+        {
+            if (NEXT_CHARACTER_SPTR->CanTakeAction() == false)
+            {
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
+            }
+        }
+
+        combatTree_.ConnectAllAtPosition(DISABLED_CREATURES_POSITION, combat::EdgeType::ShoulderToShoulder);
     }
 
 
-    CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
+    void CombatDisplay::InitialNonPlayerPartyCombatTreeSetup()
+    {
+        int position(1);
+
+        //place ignorant roles first in the blocking order
+        SetBlockingPosOfType(false, creature::role::Drunk, position);
+        SetBlockingPosOfType(false, creature::role::Grunt, position);
+        SetBlockingPosOfType(false, creature::role::Mugger, position);
+        SetBlockingPosOfType(false, creature::role::Firebrand, position);
+        SetBlockingPosOfType(false, creature::role::Sylavin, position);
+        SetBlockingPosOfType(false, creature::role::Wolfen, position);
+        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+        position += 1;
+        SetBlockingPosOfType(false, creature::role::Archer, position);
+        SetBlockingPosOfType(false, creature::role::Knight, position);
+        SetBlockingPosOfType(false, creature::role::Beastmaster, position);
+        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+        position += 1;
+        SetBlockingPosOfType(false, creature::role::Bard, position);
+        SetBlockingPosOfType(false, creature::role::Thief, position);
+        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+        position += 1;
+        SetBlockingPosOfType(false, creature::role::Captain, position);
+        SetBlockingPosOfType(false, creature::role::Chieftain, position);
+        SetBlockingPosOfType(false, creature::role::Sorcerer, position);
+        SetBlockingPosOfType(false, creature::role::Cleric, position);
+        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+        position += 1;
+        SetBlockingPosOfType(false, creature::role::Warlord, position);
+        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+    }
+
+
+    void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+
+        summaryView_.UpdateTime(ELAPSED_TIME_SECONDS);
+
+        if (summaryView_.MovingDir() == sfml_util::Moving::Toward)
+        {
+            CreatureToneDown(summaryView_.GetTransitionStatus());
+        }
+        else if (summaryView_.MovingDir() == sfml_util::Moving::Away)
+        {
+            CreatureToneDown(1.0f - summaryView_.GetTransitionStatus());
+
+            if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
+                (summaryView_.GetTransitionStatus() > 0.99))
+            {
+                CombatAnimation::Instance()->ShakeAnimRestart();
+                SetIsSummaryViewInProgress(false);
+            }
+        }
+    }
+
+
+    void CombatDisplay::CreatureToneDown(const float TONE_DOWN_VAL)
     {
         CombatNodePVec_t combatNodesPVec;
         combatNodesPVec.reserve(combatTree_.VertexCount());
         combatTree_.GetCombatNodes(combatNodesPVec);
 
-        CombatNodePVec_t creatureCombatNodesPVec;
+        for (auto const nextCombatNodePtrC : combatNodesPVec)
+            if ((summaryView_.CombatNodePtr() != nullptr) && (summaryView_.CombatNodePtr() != nextCombatNodePtrC))
+                nextCombatNodePtrC->SetToneDown(TONE_DOWN_VAL);
+    }
 
-        for (auto const NEXT_CREATURE_PTR : CREATURES_PVEC)
-            for (auto const nextCombatNodePtrC : combatNodesPVec)
-                if (nextCombatNodePtrC->Creature() == NEXT_CREATURE_PTR)
-                    creatureCombatNodesPVec.push_back(nextCombatNodePtrC);
-        
-        return creatureCombatNodesPVec;
+
+    const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
+    {
+        if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
+            return COMBAT_NODE_PTR->Creature()->Name();
+        else
+            return COMBAT_NODE_PTR->Creature()->Name() + " " + COMBAT_NODE_PTR->Creature()->Role().Name();
+    }
+
+
+    void CombatDisplay::SetBlockingPosOfType(const bool                 IS_PLAYER,
+                                             const creature::role::Enum ROLE,
+                                             const int                  BLOCKING_POS)
+    {
+        CombatTree::IdVec_t idVec;
+        combatTree_.GetNodeIds(idVec, ROLE);
+
+        for (auto const NEXT_NODE_ID : idVec)
+        {
+            CombatNodePtr_t nextCombatNodePtr(combatTree_.GetNode(NEXT_NODE_ID));
+
+            if (nextCombatNodePtr->Creature()->IsPlayerCharacter() == IS_PLAYER)
+                nextCombatNodePtr->SetBlockingPos(BLOCKING_POS);
+        }
     }
 
 }

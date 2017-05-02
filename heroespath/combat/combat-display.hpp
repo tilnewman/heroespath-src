@@ -101,18 +101,57 @@ namespace combat
 
         const sf::Vector2f GetCenterOfAllNodes() const;
         
+        void PositionCombatTreeCells(const bool WILL_DELAY);
+
+        bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
+
+        void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
+        void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
+
         std::size_t FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAtBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, const int BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
         int FindBlockingPos(const creature::CreaturePtrC_t CREATURE_CPTRC) const;
 
+        const creature::CreaturePVec_t FindClosestAmongOfType(const creature::CreaturePtrC_t   CREATURE_OF_ORIGIN_CPTRC,
+                                                              const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
+                                                              const bool                       WILL_FIND_PLAYERS) const;
+
+        CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
+        CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+
         //returns explanation of why not or an empty string if can
         const std::string CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
 
         creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
 
+        void MoveCreatureBlockingPosition(creature::CreatureCPtrC_t, const bool WILL_MOVE_FORWARD);
+
+        void CancelSummaryViewAndStartTransitionBack();
+
+        void HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING);
+
+        void HandleEndOfTurnTasks();
+
+        void UpdateHealthTasks();
+        
+        bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
+
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
+
+        const creature::CreaturePVec_t GetClosestByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
+        const creature::CreaturePVec_t GetClosest(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const;
+        
+        bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
+
+        const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t &) const;
+
+        void SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
+
+        void InitialPlayerPartyCombatTreeSetup();
+
+        void InitialNonPlayerPartyCombatTreeSetup();
 
         inline void SetIsPlayerTurn(const bool B)                               { isPlayerTurn_ = B; }
 
@@ -120,60 +159,24 @@ namespace combat
 
         inline int GetClosestBlockingDistanceByType(const creature::CreaturePtrC_t & CPTRC, const bool WILL_FIND_PLAYERS) const { return combatTree_.GetClosestBlockingDistanceByType(CPTRC, WILL_FIND_PLAYERS); }
 
-        const creature::CreaturePVec_t GetClosestByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
-        const creature::CreaturePVec_t GetClosest(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const;
-        const creature::CreaturePVec_t FindClosestAmongOfType(const creature::CreaturePtrC_t   CREATURE_OF_ORIGIN_CPTRC,
-                                                              const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
-                                                              const bool                       WILL_FIND_PLAYERS) const;
-
-        void MoveCreatureBlockingPosition(creature::CreatureCPtrC_t, const bool WILL_MOVE_FORWARD);
-
-        void CancelSummaryViewAndStartTransitionBack();
-
         inline bool GetIsStatusMessageAnimating() const                         { return isStatusMessageAnim_; }
+        
         inline void SetIsStatusMessageAnimating(const bool B)                   { isStatusMessageAnim_ = B; }
 
         inline bool GetIsSummaryViewInProgress() const                          { return isSummaryViewInProgress_; }
 
-        void HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING);
-
         inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)          { combatTree_.GetCombatNodes(combatNodesPVec); }
-
-        void HandleEndOfTurnTasks();
-
-        void UpdateHealthTasks();
-
-        bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
-
-        bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
-
-        const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t & ) const;
-
-        void SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
 
         inline void SetUserActionAllowed(const bool IS_ALLOWED)                 { isUserActionAllowed_ = IS_ALLOWED; }
 
-        CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
-        CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
-
         inline CombatTree & CombatTreeObj()                                     { return combatTree_; }
 
-        void PositionCombatTreeCells(const bool WILL_DELAY);
-
         inline const sf::FloatRect BattlefieldRect()                            { return battlefieldRect_; }
-
-        bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
-
-        void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
-        void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
 
         inline const sf::Vector2f CenteringPosV()                               { return centeringToPosV_; }
         inline void CenteringPosV(const sf::Vector2f & V)                       { centeringToPosV_ = V; }
 
         inline NodePosTrackerMap_t NodePositionTrackerMap()                     { return nodePosTrackerMap_; }
-
-        void InitialPlayerPartyCombatTreeSetup();
-        void InitialNonPlayerPartyCombatTreeSetup();
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
@@ -187,7 +190,6 @@ namespace combat
         void SetBlockingPosOfType(const bool                 IS_PLAYER,
                                   const creature::role::Enum ROLE,
                                   const int                  BLOCKING_POS);
-
 
     public:
         static const float       BATTLEFIELD_MARGIN_;
