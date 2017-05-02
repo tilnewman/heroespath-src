@@ -446,7 +446,7 @@ namespace combat
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Damage: " << nextItemText.item_sptr->DamageMin() << "-" << nextItemText.item_sptr->DamageMax();
             }
-            else if (nextItemText.item_sptr->IsArmor())
+            else if (nextItemText.item_sptr->IsArmor() || (nextItemText.item_sptr->ArmorRating() > 0))
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: " << nextItemText.item_sptr->ArmorRating();
             }

@@ -74,7 +74,7 @@ namespace player
             characterPtrC->ItemAdd(pantsSPtr);
             characterPtrC->ItemEquip(pantsSPtr);
 
-            ItemSPtr_t helmSPtr(armor::ArmorFactory::Make_Helm(armor::helm_type::Great, material::Tin, material::Nothing));
+            ItemSPtr_t helmSPtr(armor::ArmorFactory::Make_Helm(armor::helm_type::Great, material::HardLeather, material::Nothing));
             characterPtrC->ItemAdd(helmSPtr);
             characterPtrC->ItemEquip(helmSPtr);
 

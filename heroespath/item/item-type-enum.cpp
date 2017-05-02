@@ -214,23 +214,23 @@ namespace item
             case Horn       : { return 9; }
             case Bone       : { return 10; }
             case Tooth      : { return 12; }
-            case Wood       : { return 15; }
-            case Tin        : { return 30; }
-            case Bronze     : { return 31; }
-            case Iron       : { return 33; }
-            case Steel      : { return 37; }
-            case Silver     : { return 40; }
-            case Gold       : { return 45; }
-            case Platinum   : { return 55; }
-            case Stone      : { return 75; }
-            case Obsidian   : { return 80; }
-            case Amethyst   : { return 83; }
-            case Emerald    : { return 87; }
-            case Pearl      : { return 90; }
-            case Ruby       : { return 92; }
-            case Lapis      : { return 94; }
-            case Sapphire   : { return 96; }
-            case Diamond    : { return 100; }
+            case Wood       : { return 13; }
+            case Tin        : { return 20; }
+            case Bronze     : { return 21; }
+            case Iron       : { return 22; }
+            case Steel      : { return 23; }
+            case Silver     : { return 24; }
+            case Gold       : { return 30; }
+            case Platinum   : { return 40; }
+            case Stone      : { return 18; }
+            case Obsidian   : { return 20; }
+            case Amethyst   : { return 22; }
+            case Emerald    : { return 24; }
+            case Pearl      : { return 26; }
+            case Ruby       : { return 28; }
+            case Lapis      : { return 20; }
+            case Sapphire   : { return 30; }
+            case Diamond    : { return 50; }
             case Count:
             default:
             {
