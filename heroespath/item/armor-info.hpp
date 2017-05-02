@@ -4,7 +4,7 @@
 // armor-info.hpp
 //  Code that completely describes a singl piece of armor.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/item/item-type-enum.hpp"
 #include "heroespath/item/armor-types.hpp"

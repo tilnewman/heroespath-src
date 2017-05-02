@@ -7,7 +7,7 @@
 #include <sstream>
 
 
-namespace sfml_util
+namespace utilz
 {
 
     const std::string platform_type::ToString(const platform_type::Enum E)
@@ -23,7 +23,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Platform::ToString(" << E << ")_InvalidValueError.";
+                ss << "utilz::Platform::ToString(" << E << ")_InvalidValueError.";
                 throw std::runtime_error(ss.str());
             }
         }

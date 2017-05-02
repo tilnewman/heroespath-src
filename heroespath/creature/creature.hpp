@@ -5,7 +5,7 @@
 //  A base class for all creatures
 //
 #include "sfml-util/date-time.hpp"
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/creature/condition-enum.hpp"
 #include "heroespath/item/types.hpp"

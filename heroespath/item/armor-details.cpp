@@ -3,7 +3,7 @@
 //
 #include "armor-details.hpp"
 
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include "heroespath/game-data-file.hpp"
 #include "utilz/assertlogandthrow.hpp"

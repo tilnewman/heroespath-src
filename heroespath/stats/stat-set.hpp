@@ -4,7 +4,7 @@
 // stat-set.hpp
 //  The collection for of stats for all creatures
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/stats/stat.hpp"
 

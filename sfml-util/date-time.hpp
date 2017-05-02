@@ -4,7 +4,7 @@
 // date-time.hpp
 //  Simple wrapper structs for holding date and time.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include <SFML/System/Time.hpp>
 

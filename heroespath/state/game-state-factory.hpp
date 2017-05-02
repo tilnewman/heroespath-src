@@ -4,7 +4,7 @@
 // game-state-factory.hpp
 //  Code that marshals GameState objects on and off disk, and creates new states.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include <set>
 #include <string>

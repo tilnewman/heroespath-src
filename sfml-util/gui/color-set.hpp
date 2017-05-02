@@ -5,7 +5,7 @@
 //  Simple struct encapsulating a GuiEntity's color scheme.
 //
 //suppress warnings that are safe to ignore in boost
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif

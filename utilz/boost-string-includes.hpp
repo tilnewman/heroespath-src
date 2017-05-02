@@ -1,11 +1,11 @@
-#ifndef SFMLUTIL_BOOSTSTRINGINCLUDES_HPP_INCLUDED
-#define SFMLUTIL_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#ifndef UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#define UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED
 //
 // boost-string-includes.hpp
 //
 
 //suppress warnings that are safe to ignore in boost
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -19,4 +19,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //SFMLUTIL_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#endif //UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED

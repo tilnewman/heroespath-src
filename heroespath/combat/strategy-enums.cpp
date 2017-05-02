@@ -3,7 +3,7 @@
 //
 #include "strategy-enums.hpp"
 
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include <sstream>
 #include <exception>

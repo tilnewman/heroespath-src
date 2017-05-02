@@ -4,7 +4,7 @@
 // body-type.hpp
 //  Code that defines the body type of all creatures.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/creature/race-enum.hpp"
 #include "heroespath/creature/role-enum.hpp"

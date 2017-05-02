@@ -4,7 +4,7 @@
 // character.hpp (non-player)
 //  A character NOT under the control of the user.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/spell/spell-base.hpp"
 #include "heroespath/creature/sex-enum.hpp"

@@ -4,7 +4,7 @@
 // conditions.hpp
 //  Instances and base classes of specific Conditions.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/creature/condition.hpp"
 #include "heroespath/creature/creature.hpp"

@@ -1,5 +1,5 @@
-#ifndef SFMLUTIL_PLATFORM_INCLUDED
-#define SFMLUTIL_PLATFORM_INCLUDED
+#ifndef UTILZ_PLATFORM_INCLUDED
+#define UTILZ_PLATFORM_INCLUDED
 //
 // platform.hpp
 //  Code that detects the platform and stores it.
@@ -35,7 +35,7 @@
 #endif
 
 
-namespace sfml_util
+namespace utilz
 {
 
     //types required by the singleton implementation
@@ -97,4 +97,4 @@ namespace sfml_util
     };
 
 }
-#endif //SFMLUTIL_PLATFORM_INCLUDED
+#endif //UTILZ_PLATFORM_INCLUDED

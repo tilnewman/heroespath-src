@@ -10,7 +10,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 #include <boost/serialization/export.hpp>
 
 #include "heroespath/creature/condition.hpp"

@@ -4,7 +4,7 @@
 // achievement.hpp
 //  A class that manages all the information about a particular creature Achievement.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/creature/achievement-enum.hpp"
 #include "heroespath/creature/title.hpp"

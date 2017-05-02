@@ -4,7 +4,7 @@
 // title.hpp
 //  Code that places a Creature under a permenant condition.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/stats/stat-set.hpp"
 #include "heroespath/creature/role-enum.hpp"

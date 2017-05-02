@@ -5,7 +5,7 @@
 #include "configbase/configbase.hpp"
 #include "common/logmacros.hpp"
 
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #include "sfml-util/loop.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -38,8 +38,8 @@ int main()
 
     try
     {
-        sfml_util::Platform::Instance()->DetectAndLog();
-        if (sfml_util::Platform::Instance()->IsSupported() == false)
+        utilz::Platform::Instance()->DetectAndLog();
+        if (utilz::Platform::Instance()->IsSupported() == false)
             throw std::runtime_error("This system (platform) is not supported.");
 
         //seed the random number generator

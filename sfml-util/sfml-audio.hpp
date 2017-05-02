@@ -5,7 +5,7 @@
 //
 
 //prevent warnings that can be ignored in SFML
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"

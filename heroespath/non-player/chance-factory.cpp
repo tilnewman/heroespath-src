@@ -3,7 +3,7 @@
 //
 #include "chance-factory.hpp"
 
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include "heroespath/item/item.hpp"
 #include "heroespath/item/weapon-factory.hpp"

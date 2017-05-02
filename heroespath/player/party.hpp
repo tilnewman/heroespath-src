@@ -4,7 +4,7 @@
 // party.hpp
 //  A collection of characters under control of the user.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>

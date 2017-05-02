@@ -3,7 +3,7 @@
 //
 #include "misc-item-factory.hpp"
 
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 
 #include "heroespath/item/item.hpp"

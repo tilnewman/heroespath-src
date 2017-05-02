@@ -2,13 +2,13 @@
 // sfml-util.cpp
 //
 #include "sfml-util.hpp"
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #include "sfml-util/display.hpp"
 
 #include <tuple>
 
 //prevent boost warnings that can be ignored
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #endif

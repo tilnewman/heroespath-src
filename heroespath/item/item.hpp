@@ -4,7 +4,7 @@
 // item.hpp
 //  A base class for all items.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/stats/types.hpp"
 #include "heroespath/item/types.hpp"

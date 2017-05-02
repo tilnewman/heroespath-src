@@ -5,7 +5,7 @@
 //  Code that places a Creature under a temporary condition.
 //  Examples would be poisoned, unconcious, etc.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/creature/condition-enum.hpp"
 #include "heroespath/stats/stat-set.hpp"

@@ -4,7 +4,7 @@
 // location.hpp
 //  A base class for all location objects.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/location/i-location.hpp"
 #include "heroespath/location/map-enum.hpp"

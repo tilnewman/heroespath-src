@@ -7,7 +7,7 @@
 #include "utilz/assertlogandthrow.hpp"
 
 //prevent boost warnings that can be ignored
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #endif

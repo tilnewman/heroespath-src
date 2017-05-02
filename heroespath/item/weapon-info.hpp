@@ -5,7 +5,7 @@
 //  Describes a specific or general weapon.
 //
 #include "sfml-util/size-enum.hpp"
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/item/weapon-types.hpp"
 #include "heroespath/item/item-type-enum.hpp"

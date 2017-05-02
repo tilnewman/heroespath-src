@@ -5,7 +5,7 @@
 
 #include "utilz/real.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
 

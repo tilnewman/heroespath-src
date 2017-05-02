@@ -4,7 +4,7 @@
 #include "condition-image-manager.hpp"
 
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include "heroespath/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"

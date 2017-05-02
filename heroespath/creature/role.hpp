@@ -4,7 +4,7 @@
 // role.hpp
 //  The Role class for all creatures.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/stats/types.hpp"
 #include "heroespath/stats/stat-set.hpp"

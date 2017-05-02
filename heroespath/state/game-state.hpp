@@ -4,7 +4,7 @@
 // game-state.hpp
 //  A class that represents a game in play.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 #include "sfml-util/date-time.hpp"
 
 #include <memory>

@@ -4,7 +4,7 @@
 // enchantment.hpp
 //  Code that encapsulates a magical enchantment on an item.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/item/i-enchantment.hpp"
 

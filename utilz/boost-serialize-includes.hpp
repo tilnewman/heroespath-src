@@ -1,11 +1,11 @@
-#ifndef APPBASE_COMMON_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
-#define APPBASE_COMMON_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#ifndef UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#define UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
 //
 // boost-serialize-includes.hpp
 //
 
 //suppress warnings that are safe to ignore in boost
-#include "sfml-util/platform.hpp"
+#include "utilz/platform.hpp"
 #ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
@@ -21,4 +21,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //APPBASE_COMMON_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#endif //UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED

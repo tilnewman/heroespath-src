@@ -4,7 +4,7 @@
 // i-enchantment.hpp
 //  Pure virtual interface for all Enchantment types.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>

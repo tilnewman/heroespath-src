@@ -3,7 +3,7 @@
 //
 // strategy-chances.hpp
 //
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include "heroespath/combat/strategy-enums.hpp"
 #include "heroespath/combat/strategy-info.hpp"

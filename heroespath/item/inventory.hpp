@@ -4,7 +4,7 @@
 // inventory.hpp
 //  A class that encapsolates a collection of Items.
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/item/types.hpp"
 #include "heroespath/item/item-type-enum.hpp"

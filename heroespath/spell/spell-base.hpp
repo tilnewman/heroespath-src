@@ -3,7 +3,7 @@
 //
 // spell-base.hpp
 //
-#include "sfml-util/boost-serialize-includes.hpp"
+#include "utilz/boost-serialize-includes.hpp"
 
 #include "heroespath/stats/types.hpp"
 #include "heroespath/spell/spell-enum.hpp"

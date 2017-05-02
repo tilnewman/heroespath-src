@@ -3,7 +3,7 @@
 //
 #include "party.hpp"
 
-#include "sfml-util/boost-string-includes.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include "heroespath/non-player/character.hpp"
 
