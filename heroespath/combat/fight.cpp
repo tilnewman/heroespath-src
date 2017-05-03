@@ -501,7 +501,7 @@ namespace combat
     const FightResult FightClub::Roar(creature::CreaturePtrC_t creatureRoaringPtrC,
                                       CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
     {
-        auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::FindByAlive(creature::Algorithms::PlayersByType( ! creatureRoaringPtrC->IsPlayerCharacter() )) };
+        auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType( ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
 
         auto const ROARER_STRENGTH{ creatureRoaringPtrC->Stats().Str().Current() };
         auto const ROARER_STRENGTH_RAND_MIN{ StatReduced(ROARER_STRENGTH) };

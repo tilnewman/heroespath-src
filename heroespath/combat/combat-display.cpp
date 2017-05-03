@@ -93,7 +93,8 @@ namespace combat
         prevScrollPosVert_         (0.0f),
         prevScrollPosHoriz_        (0.0f),
         summaryView_               (),
-        isUserActionAllowed_       (false),
+        isSummaryViewAllowed_      (false),
+        isScrollAllowed_           (false),
         battlefieldWidth_          (0.0f),
         battlefieldHeight_         (0.0f),
         blockingPosMin_            (BLOCKING_POS_INVALID_),
@@ -184,7 +185,7 @@ namespace combat
 
     void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
     {
-        if (false == isUserActionAllowed_)
+        if (false == isSummaryViewAllowed_)
             return;
 
         auto combatNodePtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
@@ -286,7 +287,7 @@ namespace combat
     {
         Stage::UpdateMousePos(MOUSE_POS_V);
 
-        if (isUserActionAllowed_ && isMouseHeldDownInBF_)
+        if (isScrollAllowed_ && isMouseHeldDownInBF_)
         {
             MoveBattlefieldVert((prevMousePos_.y - MOUSE_POS_V.y) * BATTLEFIELD_DRAG_SPEED_);
             MoveBattlefieldHoriz((prevMousePos_.x - MOUSE_POS_V.x) * BATTLEFIELD_DRAG_SPEED_);
@@ -298,7 +299,7 @@ namespace combat
 
     void CombatDisplay::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (isUserActionAllowed_)
+        if (isScrollAllowed_)
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
 
@@ -316,7 +317,7 @@ namespace combat
 
     sfml_util::gui::IGuiEntitySPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (isUserActionAllowed_)
+        if (isScrollAllowed_)
         {
             isMouseHeldDownInBF_ = false;
             return Stage::UpdateMouseUp(MOUSE_POS_V);
@@ -565,6 +566,47 @@ namespace combat
     }
 
 
+    const creature::CreaturePVec_t CombatDisplay::FindClosestLivingByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
+    {
+        return FindClosestLiving(CREATURE_CPTRC, creature::Algorithms::PlayersByType(WILL_FIND_PLAYERS, true));
+    }
+
+
+    const creature::CreaturePVec_t CombatDisplay::FindClosestLiving(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),   "heroespath::combat::CombatDisplay::FindClosestLiving(nullptr, among_size=" << AMONG_PVEC.size() << ") was given a null CREATURE_CPTRC.");
+        M_ASSERT_OR_LOGANDTHROW_SS((AMONG_PVEC.empty() == false), "heroespath::combat::CombatDisplay::FindClosestLiving(" << CREATURE_CPTRC->Name() << ", among_size=" << AMONG_PVEC.size() << ") was given an empty AMONG_PVEC.");
+
+        if (AMONG_PVEC.size() == 1)
+        {
+            return AMONG_PVEC;
+        }
+        else
+        {
+            auto distanceSortedPVec{ creature::Algorithms::FindByAlive(AMONG_PVEC) };
+            const combat::CombatTree * const COMBAT_TREE_CPTRC{ & combatTree_ };
+
+            std::sort(distanceSortedPVec.begin(),
+                      distanceSortedPVec.end(),
+                      [COMBAT_TREE_CPTRC, CREATURE_CPTRC]
+                      (const creature::CreaturePtr_t A_PTR, const creature::CreaturePtr_t B_PTR)
+                      { return (COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(A_PTR, CREATURE_CPTRC)) < std::abs(COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(B_PTR, CREATURE_CPTRC)); });
+
+            auto const MIN_BLOCKING_DISTANCE{ std::abs(combatTree_.GetBlockingDistanceBetween( * distanceSortedPVec.begin(), CREATURE_CPTRC)) };
+
+            creature::CreaturePVec_t closestCreaturesPVec;
+
+            for (auto const NEXT_CREATURE_PTR : distanceSortedPVec)
+                if (std::abs(combatTree_.GetBlockingDistanceBetween(NEXT_CREATURE_PTR, CREATURE_CPTRC)) == MIN_BLOCKING_DISTANCE)
+                    closestCreaturesPVec.push_back(NEXT_CREATURE_PTR);
+
+            M_ASSERT_OR_LOGANDTHROW_SS((closestCreaturesPVec.empty() == false), "heroespath::combat::CombatDisplay::FindClosestLiving(" << CREATURE_CPTRC->Name() << ", among_size=" << AMONG_PVEC.size() << ") reached an invalid state where there were no closest creatures when there should be at least one of the " << AMONG_PVEC.size() << " total possible.");
+
+            return closestCreaturesPVec;
+        }
+    }
+
+
     std::size_t CombatDisplay::FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
         if (CREATURE_CPTRC == nullptr)
@@ -576,7 +618,7 @@ namespace combat
         if (CREATURE_CPTRC->IsHoldingProjectileWeapon())
         {
             auto const ORIG_SIZE{ pVec_OutParam.size() };
-            creature::Algorithms::PlayersByType(pVec_OutParam, WILL_FIND_PLAYERS);
+            creature::Algorithms::PlayersByType(pVec_OutParam, WILL_FIND_PLAYERS, true);
             auto const FINAL_SIZE{ pVec_OutParam.size() };
             return FINAL_SIZE - ORIG_SIZE;
         }
@@ -714,6 +756,20 @@ namespace combat
         M_ASSERT_OR_LOGANDTHROW_SS((closestCreaturesPVec.empty() == false), "heroespath::combat::FindClosestAmongOfType(creature_of_origin_name=\"" << CREATURE_OF_ORIGIN_CPTRC->Name() << "\", creatures_to_find_among_pvec_size=" << CREATURES_TO_FIND_AMONG_PVEC.size() << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was unable to find a closest creature among those given.");
 
         return closestCreaturesPVec;
+    }
+
+
+    bool CombatDisplay::IsCreatureAPossibleFightTarget(const creature::CreaturePtrC_t CREATURE_FIGHTING_CPTRC,
+                                                       const creature::CreaturePtrC_t CREATURE_TARGETED_CPTRC) const
+    {
+        creature::CreaturePVec_t creaturesThatCanBeAttackedPVec;
+        FindCreaturesThatCanBeAttackedOfType(creaturesThatCanBeAttackedPVec, CREATURE_FIGHTING_CPTRC, false);
+
+        for (auto const NEXT_CREATURE_PTR : creaturesThatCanBeAttackedPVec)
+            if (NEXT_CREATURE_PTR == CREATURE_TARGETED_CPTRC)
+                return true;
+
+        return false;
     }
 
 
@@ -886,48 +942,7 @@ namespace combat
         else
             return combatTree_.GetNode(CREATURE_CPTRC)->GetEntityWillDraw();
     }
-
-
-    const creature::CreaturePVec_t CombatDisplay::GetClosestByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
-    {
-        return GetClosest(CREATURE_CPTRC, creature::Algorithms::PlayersByType(WILL_FIND_PLAYERS));
-    }
-
-
-    const creature::CreaturePVec_t CombatDisplay::GetClosest(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),   "heroespath::combat::CombatDisplay::GetClosest(nullptr, among_size=" << AMONG_PVEC.size() << ") was given a null CREATURE_CPTRC.");
-        M_ASSERT_OR_LOGANDTHROW_SS((AMONG_PVEC.empty() == false), "heroespath::combat::CombatDisplay::GetClosest(" << CREATURE_CPTRC->Name() << ", among_size=" << AMONG_PVEC.size() << ") was given an empty AMONG_PVEC.");
-
-        if (AMONG_PVEC.size() == 1)
-        {
-            return AMONG_PVEC;
-        }
-        else
-        {
-            auto distanceSortedPVec{ AMONG_PVEC };
-            const combat::CombatTree * const COMBAT_TREE_CPTRC{ & combatTree_ };
-
-            std::sort(distanceSortedPVec.begin(),
-                      distanceSortedPVec.end(),
-                      [COMBAT_TREE_CPTRC, CREATURE_CPTRC]
-                      (const creature::CreaturePtr_t A_PTR, const creature::CreaturePtr_t B_PTR)
-                      { return (COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(A_PTR, CREATURE_CPTRC)) < std::abs(COMBAT_TREE_CPTRC->GetBlockingDistanceBetween(B_PTR, CREATURE_CPTRC)); });
-
-            auto const MIN_BLOCKING_DISTANCE{ std::abs(combatTree_.GetBlockingDistanceBetween( * distanceSortedPVec.begin(), CREATURE_CPTRC)) };
-
-            creature::CreaturePVec_t closestCreaturesPVec;
-
-            for (auto const NEXT_CREATURE_PTR : distanceSortedPVec)
-                if (std::abs(combatTree_.GetBlockingDistanceBetween(NEXT_CREATURE_PTR, CREATURE_CPTRC)) == MIN_BLOCKING_DISTANCE)
-                    closestCreaturesPVec.push_back(NEXT_CREATURE_PTR);
-
-            M_ASSERT_OR_LOGANDTHROW_SS((closestCreaturesPVec.empty() == false), "heroespath::combat::CombatDisplay::GetClosest(" << CREATURE_CPTRC->Name() << ", among_size=" << AMONG_PVEC.size() << ") reached an invalid state where there were no closest creatures when there should be at least one of the " << AMONG_PVEC.size() << " total possible.");
-
-            return closestCreaturesPVec;
-        }
-    }
-
+    
 
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {

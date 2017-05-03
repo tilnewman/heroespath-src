@@ -1154,7 +1154,7 @@ namespace stage
         {
             combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
         }
-        else if (TurnPhase::Determine == turnPhase_)
+        else if ((TurnPhase::Determine == turnPhase_) || (TurnPhase::TargetSelect == turnPhase_))
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
         }
@@ -1180,24 +1180,38 @@ namespace stage
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
 
-        if (TurnPhase::Determine == turnPhase_)
-        {
-            creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
+        creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
-            if ((creatureAtPosPtr != nullptr) &&
-                creatureAtPosPtr->IsPlayerCharacter() &&
-                (WAS_MOUSE_HELD_DOWN_AND_MOVING == false))
+        if ((creatureAtPosPtr != nullptr) &&
+            (WAS_MOUSE_HELD_DOWN_AND_MOVING == false))
+        {
+            if ((TurnPhase::Determine == turnPhase_) &&
+                (creatureAtPosPtr->IsPlayerCharacter()))
             {
                 restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
                 heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
             }
-            
-            return Stage::UpdateMouseUp(MOUSE_POS_V);
+            else if (TurnPhase::TargetSelect == turnPhase_)
+            {
+                if (creatureAtPosPtr->IsPlayerCharacter())
+                {
+                    QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", true, true);
+                }
+                else
+                {
+                    if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
+                    {
+                        HandleAttackTasks(creatureAtPosPtr);
+                    }
+                    else
+                    {
+                        QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", true, true);
+                    }
+                }
+            }
         }
-        else
-        {
-            return sfml_util::gui::IGuiEntitySPtr_t();
-        }
+
+        return Stage::UpdateMouseUp(MOUSE_POS_V);
     }
 
 
@@ -1730,20 +1744,7 @@ namespace stage
         }
         else
         {
-            SetUserActionAllowed(false);
-
-            auto opponentCreature{ combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayStagePtr_) };
-            turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, opponentCreature, nullptr);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, opponentCreature);
-            SetPerformType(GetPerformTypeFromFightResult(fightResult_));
-
-            SetTurnPhase(TurnPhase::CenterAndZoomOut);
-
-            combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, opponentCreature });
-            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
-
-            SetupTurnBox();
+            HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayStagePtr_) );
             return true;
         }
     }
@@ -1759,11 +1760,11 @@ namespace stage
         }
         else
         {
-            SetUserActionAllowed(false);
-
             //can't set turnActionInfo_ or fightResult_ or performType_ yet because the player must select which non_player creature to fight first
-            //so skip to end of turn until implemented with StartPerformAnim()
-            StartPerformAnim();
+            combatDisplayStagePtr_->SetSummaryViewAllowed(false);
+            combatDisplayStagePtr_->SetScrollingAllowed(true);
+            SetTurnPhase(TurnPhase::TargetSelect);
+            SetupTurnBox();
             return true;
         }
     }
@@ -2317,6 +2318,17 @@ namespace stage
                                                     performReportEffectIndex_,
                                                     performReportHitIndex_);
         }
+        else if (TurnPhase::TargetSelect == turnPhase_)
+        {
+            willDrawTurnBoxButtons = false;
+
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
+
+            preambleSS << "Click to select who to fight...";
+        }
         else
         {
             preambleSS.str(EMPTY_STR);
@@ -2352,7 +2364,8 @@ namespace stage
         if (isPreambleShowing ||
             ((TurnPhase::PerformReport == turnPhase_) ||
             (TurnPhase::PostPerformPause == turnPhase_) ||
-            (TurnPhase::PerformAnim == turnPhase_)))
+            (TurnPhase::PerformAnim == turnPhase_) ||
+            (TurnPhase::TargetSelect == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionSPtr_->GetEntityPos().y);
         }
@@ -2470,6 +2483,7 @@ namespace stage
             case TurnPhase::CenterAndZoomIn:            { return "CenterAndZoomIn"; }
             case TurnPhase::PostCenterAndZoomInPause:   { return "PostZInPause"; }
             case TurnPhase::Determine:                  { return "Determine"; }
+            case TurnPhase::TargetSelect:               { return "TargetSelect"; }
             case TurnPhase::CenterAndZoomOut:           { return "CenterAndZoomOut"; }
             case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZOutPause"; }
             case TurnPhase::PerformAnim:                { return "PerformAnim"; }
@@ -2593,7 +2607,8 @@ namespace stage
 
     void CombatStage::SetUserActionAllowed(const bool IS_ALLOWED)
     {
-        combatDisplayStagePtr_->SetUserActionAllowed(IS_ALLOWED);
+        combatDisplayStagePtr_->SetSummaryViewAllowed(IS_ALLOWED);
+        combatDisplayStagePtr_->SetScrollingAllowed(IS_ALLOWED);
     }
 
 
@@ -2641,6 +2656,24 @@ namespace stage
         }
 
         combatDisplayStagePtr_->UpdateHealthTasks();
+    }
+
+
+    void CombatStage::HandleAttackTasks(creature::CreaturePtr_t creatureToAttackPtr)
+    {
+        SetUserActionAllowed(false);
+
+        turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr, nullptr);
+        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
+        SetPerformType(GetPerformTypeFromFightResult(fightResult_));
+
+        SetTurnPhase(TurnPhase::CenterAndZoomOut);
+
+        combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, creatureToAttackPtr });
+        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+
+        SetupTurnBox();
     }
 
 }

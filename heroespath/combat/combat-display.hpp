@@ -108,6 +108,9 @@ namespace combat
         void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
         void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
 
+        const creature::CreaturePVec_t FindClosestLivingByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
+        const creature::CreaturePVec_t FindClosestLiving(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const;
+
         std::size_t FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
         std::size_t FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
@@ -117,6 +120,9 @@ namespace combat
         const creature::CreaturePVec_t FindClosestAmongOfType(const creature::CreaturePtrC_t   CREATURE_OF_ORIGIN_CPTRC,
                                                               const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
                                                               const bool                       WILL_FIND_PLAYERS) const;
+
+        bool IsCreatureAPossibleFightTarget(const creature::CreaturePtrC_t CREATURE_FIGHTING_CPTRC,
+                                            const creature::CreaturePtrC_t CREATURE_TARGETED_CPTRC) const;
 
         CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
         CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
@@ -140,9 +146,6 @@ namespace combat
 
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
 
-        const creature::CreaturePVec_t GetClosestByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
-        const creature::CreaturePVec_t GetClosest(creature::CreatureCPtrC_t CREATURE_CPTRC, const creature::CreaturePVec_t & AMONG_PVEC) const;
-        
         bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
 
         const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t &) const;
@@ -167,7 +170,9 @@ namespace combat
 
         inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)          { combatTree_.GetCombatNodes(combatNodesPVec); }
 
-        inline void SetUserActionAllowed(const bool IS_ALLOWED)                 { isUserActionAllowed_ = IS_ALLOWED; }
+        inline void SetSummaryViewAllowed(const bool IS_SUMMARYVIEW_ALLOWED)    { isSummaryViewAllowed_ = IS_SUMMARYVIEW_ALLOWED; }
+
+        inline void SetScrollingAllowed(const bool IS_SCROLLING_ALLOWED)        { isScrollAllowed_ = IS_SCROLLING_ALLOWED; }
 
         inline CombatTree & CombatTreeObj()                                     { return combatTree_; }
 
@@ -228,7 +233,8 @@ namespace combat
         float                           prevScrollPosVert_;
         float                           prevScrollPosHoriz_;
         SummaryView                     summaryView_;
-        bool                            isUserActionAllowed_;
+        bool                            isSummaryViewAllowed_;
+        bool                            isScrollAllowed_;
         float                           battlefieldWidth_;
         float                           battlefieldHeight_;
         int                             blockingPosMin_;

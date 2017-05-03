@@ -101,6 +101,7 @@ namespace stage
             CenterAndZoomIn,//center on turn creature
             PostCenterAndZoomInPause,
             Determine,
+            TargetSelect,
             CenterAndZoomOut,//center on turn creature and targets of whatever action the turn creature is taking (performType_)
             PostCenterAndZoomOutPause,
             PerformAnim, //see enum PerformType for which anim is performed here and PerformAnimPhase for which phase that anim is in
@@ -224,6 +225,8 @@ namespace stage
 
         void HandleKilledCreatures();
         void HandleApplyDamageTasks();
+
+        void HandleAttackTasks(creature::CreaturePtr_t creatureToAttackPtr);
 
     public:
         static const float PAUSE_LONG_SEC_;

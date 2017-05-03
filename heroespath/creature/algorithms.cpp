@@ -70,28 +70,28 @@ namespace creature
     }
 
 
-    std::size_t Algorithms::PlayersByType(CreaturePVec_t & pVec_OutParam, const bool WILL_FIND_PLAYERS)
+    std::size_t Algorithms::PlayersByType(CreaturePVec_t & pVec_OutParam, const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY)
     {
         if (WILL_FIND_PLAYERS)
         {
-            return Players(pVec_OutParam);
+            return Players(pVec_OutParam, LIVING_ONLY);
         }
         else
         {
-            return NonPlayers(pVec_OutParam);
+            return NonPlayers(pVec_OutParam, LIVING_ONLY);
         }
     }
 
 
-    const CreaturePVec_t Algorithms::PlayersByType(const bool WILL_FIND_PLAYERS)
+    const CreaturePVec_t Algorithms::PlayersByType(const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY)
     {
         if (WILL_FIND_PLAYERS)
         {
-            return Players();
+            return Players(LIVING_ONLY);
         }
         else
         {
-            return NonPlayers();
+            return NonPlayers(LIVING_ONLY);
         }
     }
 

@@ -34,8 +34,8 @@ namespace creature
         static std::size_t NonPlayers(CreaturePVec_t &, const bool LIVING_ONLY = false);
         static const CreaturePVec_t NonPlayers(const bool LIVING_ONLY = false);
 
-        static std::size_t PlayersByType(CreaturePVec_t &, const bool WILL_FIND_PLAYERS);
-        static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS);
+        static std::size_t PlayersByType(CreaturePVec_t &, const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY);
+        static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY);
 
         static const std::string Names(const CreaturePVec_t &, const bool WILL_WRAP = false, const bool WILL_APPEND_AND = false);
 

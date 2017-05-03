@@ -183,7 +183,7 @@ namespace combat
             if (SELECT_TARGETS_PVEC.empty())
             {
                 //if no refined or select targets, then choose the closest player, avoiding those permenantly not a threat, at random
-                auto const CLOSEST_PLAYERS_PVEC{ COMBAT_DISPLAY_CPTRC->GetClosestByType(CREATURE_CPTRC, true) };
+                auto const CLOSEST_PLAYERS_PVEC{ COMBAT_DISPLAY_CPTRC->FindClosestLivingByType(CREATURE_CPTRC, true) };
 
                 if (CLOSEST_PLAYERS_PVEC.size() == 1)
                     return * CLOSEST_PLAYERS_PVEC.begin();
@@ -211,13 +211,13 @@ namespace combat
             else
             {
                 //select the closest of the select targets at random
-                return utilz::Vector::SelectRandom( COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
+                return utilz::Vector::SelectRandom( COMBAT_DISPLAY_CPTRC->FindClosestLiving(CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
             }
         }
         else
         {
             //select the closest of the refined targets at random
-            return utilz::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->GetClosest(CREATURE_CPTRC, REFINED_TARGETS_PVEC));
+            return utilz::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(CREATURE_CPTRC, REFINED_TARGETS_PVEC));
         }
     }
 
