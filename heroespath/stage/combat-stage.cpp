@@ -1236,7 +1236,28 @@ namespace stage
 
         if (IsPlayerCharacterTurnValid() && (TurnPhase::Determine == turnPhase_))
         {
-            if ((KE.code == sf::Keyboard::Return) || (KE.code == sf::Keyboard::A))
+            if (KE.code == sf::Keyboard::Return)
+            {
+                auto const MOUSEOVER_ATTACK_STR(combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayStagePtr_));
+                if (MOUSEOVER_ATTACK_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
+                {
+                    return HandleAttack();
+                }
+                else
+                {
+                    auto const MOUSEOVER_STR(combat::Text::MouseOverTextBlockStr(turnCreaturePtr_, combatDisplayStagePtr_));
+                    if (MOUSEOVER_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
+                    {
+                        return HandleBlock();
+                    }
+                    else
+                    {
+                        return HandleSkip();
+                    }
+                }
+            }
+
+            if (KE.code == sf::Keyboard::A)
                 return HandleAttack();
 
             if (KE.code == sf::Keyboard::F)
