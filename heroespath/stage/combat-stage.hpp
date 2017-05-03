@@ -230,6 +230,8 @@ namespace stage
 
         void HandleAttackTasks(creature::CreaturePtr_t creatureToAttackPtr);
 
+        bool HandleMiscCancelTasks();
+
     public:
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;

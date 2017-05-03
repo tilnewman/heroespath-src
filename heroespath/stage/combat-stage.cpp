@@ -1184,30 +1184,37 @@ namespace stage
 
         creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
-        if ((creatureAtPosPtr != nullptr) &&
-            (WAS_MOUSE_HELD_DOWN_AND_MOVING == false))
+        if (WAS_MOUSE_HELD_DOWN_AND_MOVING == false)
         {
-            if ((TurnPhase::Determine == turnPhase_) &&
-                (creatureAtPosPtr->IsPlayerCharacter()))
+            if (creatureAtPosPtr == nullptr)
             {
-                restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+                HandleMiscCancelTasks();
             }
-            else if (TurnPhase::TargetSelect == turnPhase_)
+            else
             {
-                if (creatureAtPosPtr->IsPlayerCharacter())
+                if ((TurnPhase::Determine == turnPhase_) &&
+                    creatureAtPosPtr->IsPlayerCharacter() &&
+                    (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
                 {
-                    QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", true, true);
+                    restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+                    heroespath::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
                 }
-                else
+                else if (TurnPhase::TargetSelect == turnPhase_)
                 {
-                    if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
+                    if (creatureAtPosPtr->IsPlayerCharacter())
                     {
-                        HandleAttackTasks(creatureAtPosPtr);
+                        QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", false, true);
                     }
                     else
                     {
-                        QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", true, true);
+                        if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
+                        {
+                            HandleAttackTasks(creatureAtPosPtr);
+                        }
+                        else
+                        {
+                            QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", false, true);
+                        }
                     }
                 }
             }
@@ -1219,34 +1226,17 @@ namespace stage
 
     bool CombatStage::KeyRelease(const sf::Event::KeyEvent & KE)
     {
-        //cancel summary view if visible or even just starting
-        if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
+        if (HandleMiscCancelTasks())
         {
-            combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
             return true;
         }
 
-        //cancel pause if paused
-        if (IsPaused())
+        //esc can cancel fight target selection phase
+        if ((TurnPhase::TargetSelect == turnPhase_) && ((KE.code == sf::Keyboard::Escape) || (KE.code == sf::Keyboard::X)))
         {
-            isPauseCanceled_ = true;
-            return true;
-        }
-
-        //this interrupts a status animation in progress...
-        if (willClrShkInitStatusMsg_)
-        {
-            willClrShkInitStatusMsg_ = false;
-            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
-            return true;
-        }
-
-        //...and so does this
-        if (TurnPhase::StatusAnim == turnPhase_)
-        {
-            SetTurnPhase(TurnPhase::PostTurnPause);
-            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
-            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+            SetTurnPhase(TurnPhase::Determine);
+            SetUserActionAllowed(true);
+            SetupTurnBox();
             return true;
         }
 
@@ -2690,6 +2680,43 @@ namespace stage
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
 
         SetupTurnBox();
+    }
+
+
+    bool CombatStage::HandleMiscCancelTasks()
+    {
+        //cancel summary view if visible or even just starting
+        if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
+        {
+            combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
+            return true;
+        }
+
+        //cancel pause if paused
+        if (IsPaused())
+        {
+            isPauseCanceled_ = true;
+            return true;
+        }
+
+        //this interrupts a status animation in progress...
+        if (willClrShkInitStatusMsg_)
+        {
+            willClrShkInitStatusMsg_ = false;
+            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+            return true;
+        }
+
+        //...and so does this
+        if (TurnPhase::StatusAnim == turnPhase_)
+        {
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+            return true;
+        }
+
+        return false;
     }
 
 }

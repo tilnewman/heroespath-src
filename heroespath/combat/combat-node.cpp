@@ -356,8 +356,8 @@ namespace combat
     const sf::Color CombatNode::HealthColor() const
     {
         sf::Color c(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
-        c.g = static_cast<sf::Uint8>(static_cast<float>(c.g) * Creature()->HealthRatio());
-        c.b = static_cast<sf::Uint8>(static_cast<float>(c.b) * Creature()->HealthRatio());
+        c.g = static_cast<sf::Uint8>(static_cast<float>(c.g) * healthRatioDisplayed_);
+        c.b = static_cast<sf::Uint8>(static_cast<float>(c.b) * healthRatioDisplayed_);
         return c;
     }
 
