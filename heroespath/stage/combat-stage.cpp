@@ -881,7 +881,8 @@ namespace stage
         Stage::Draw(target, states);
         statusBoxSPtr_->draw(target, states);
 
-        if ((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause))
+        if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
+            (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
             turnBoxSPtr_->draw(target, states);
 
@@ -1083,6 +1084,7 @@ namespace stage
                 combatAnimationPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
                 StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
+                SetupTurnBox();
             }
             return;
         }
@@ -1704,6 +1706,7 @@ namespace stage
             }
 
             StartPause(pauseToUse, "PostZoomIn");
+            SetupTurnBox();
         }
     }
 
@@ -2281,12 +2284,13 @@ namespace stage
 
         if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
             (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
-            ((TurnPhase::PerformAnim == turnPhase_) &&
-             (animPhase_ < AnimPhase::Impact)))
+            ((TurnPhase::PostCenterAndZoomInPause == turnPhase_) && IsNonPlayerCharacterTurnValid()) ||
+            ((TurnPhase::PerformAnim == turnPhase_) && (animPhase_ < AnimPhase::Impact)))
         {
             willDrawTurnBoxButtons = false;
 
-            if (fightResult_.Count() > 0)
+            if ((fightResult_.Count() > 0) ||
+                ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::AdvanceOrRetreat == animPhase_)))
             {
                 infoSS.str(EMPTY_STR);
                 weaponHoldingSS.str(EMPTY_STR);
@@ -2296,11 +2300,11 @@ namespace stage
                 isPreambleShowing = true;
 
                 preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                        turnActionInfo_,
-                                                        fightResult_,
-                                                        false,
-                                                        false,
-                                                        true);
+                                                       turnActionInfo_,
+                                                       fightResult_,
+                                                       false,
+                                                       false,
+                                                       true);
             }
             else
             {
@@ -2309,8 +2313,7 @@ namespace stage
         }
         else if ((TurnPhase::PerformReport == turnPhase_) ||
                  (TurnPhase::PostPerformPause == turnPhase_) ||
-                 ((TurnPhase::PerformAnim == turnPhase_) && 
-                  (animPhase_ >= AnimPhase::Impact)))
+                 ((TurnPhase::PerformAnim == turnPhase_) &&  (animPhase_ >= AnimPhase::Impact)))
         {
             willDrawTurnBoxButtons = false;
 
@@ -2318,6 +2321,9 @@ namespace stage
             weaponHoldingSS.str(EMPTY_STR);
             armorSS.str(EMPTY_STR);
             enemyCondsSS.str(EMPTY_STR);
+
+            isPreambleShowing = true;
+
             preambleSS << combat::Text::ActionText(turnCreaturePtr_,
                                                     turnActionInfo_,
                                                     fightResult_,
@@ -2335,6 +2341,8 @@ namespace stage
             weaponHoldingSS.str(EMPTY_STR);
             armorSS.str(EMPTY_STR);
             enemyCondsSS.str(EMPTY_STR);
+
+            isPreambleShowing = true;
 
             preambleSS << "Click to select who to fight...";
         }
@@ -2372,9 +2380,8 @@ namespace stage
 
         if (isPreambleShowing ||
             ((TurnPhase::PerformReport == turnPhase_) ||
-            (TurnPhase::PostPerformPause == turnPhase_) ||
-            (TurnPhase::PerformAnim == turnPhase_) ||
-            (TurnPhase::TargetSelect == turnPhase_)))
+             (TurnPhase::PostPerformPause == turnPhase_) ||
+             (TurnPhase::PerformAnim == turnPhase_)))
         {
             enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionSPtr_->GetEntityPos().y);
         }
