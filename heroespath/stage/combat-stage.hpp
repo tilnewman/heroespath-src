@@ -115,7 +115,7 @@ namespace stage
         };
 
         //defines what type of action a creature is performing on his/her/it turn
-        enum class PerformType
+        enum class TurnActionPhase
         {
             None = 0,
             PauseAndReport,
@@ -132,7 +132,7 @@ namespace stage
         };
 
         //definese what phase of the perform action animation is currently displaying
-        enum class PerformAnimPhase
+        enum class AnimPhase
         {
             NotAnimating = 0,
             AdvanceOrRetreat,
@@ -178,7 +178,7 @@ namespace stage
         void EndPause();
         void HandlePerformReportPhaseOverTasks();
         void HandleEnemyTurnStep1_Decide();
-        PerformType HandleEnemyTurnStep2_Perform();
+        TurnActionPhase HandleEnemyTurnStep2_Perform();
         void StartTurn_Step1();//start centering anim
         void StartTurn_Step2();//start pre-pause
         void EndTurn();
@@ -209,17 +209,19 @@ namespace stage
         void StartPerformAnim();
 
         const std::string TurnPhaseToString(const TurnPhase);
-        const std::string PerformTypeToString(const PerformType);
+        const std::string TurnActionPhaseToString(const TurnActionPhase);
         const std::string PreTurnPhaseToString(const PreTurnPhase);
-        const std::string PerformAnimPhaseToString(const PerformAnimPhase);
+        const std::string AnimPhaseToString(const AnimPhase);
+
         void UpdateTestingText();
+
         inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
         inline void SetPreTurnPhase(const PreTurnPhase PTP)         { preTurnPhase_ = PTP; UpdateTestingText(); }
-        inline void SetPerformAnimPhase(const PerformAnimPhase PAP) { performAnimPhase_ = PAP; UpdateTestingText(); }
-        inline void SetPerformType(const PerformType PT)            { performType_ = PT; UpdateTestingText(); }
+        inline void SetAnimPhase(const AnimPhase AP)                { animPhase_ = AP; UpdateTestingText(); }
+        inline void SetTurnActionPhase(const TurnActionPhase TAP)   { turnActionPhase_ = TAP; UpdateTestingText(); }
 
-        PerformType GetPerformTypeFromWeaponType(const item::ItemSPtr_t &) const;
-        PerformType GetPerformTypeFromFightResult(const combat::FightResult &) const;
+        TurnActionPhase GetTurnActionPhaseFromWeaponType(const item::ItemSPtr_t &) const;
+        TurnActionPhase GetTurnActionPhaseFromFightResult(const combat::FightResult &) const;
 
         void SetUserActionAllowed(const bool IS_ALLOWED);
 
@@ -288,8 +290,8 @@ namespace stage
         combat::CombatSoundEffects       combatSoundEffects_;
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;
-        PerformType                      performType_;
-        PerformAnimPhase                 performAnimPhase_;
+        TurnActionPhase                  turnActionPhase_;
+        AnimPhase                        animPhase_;
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
