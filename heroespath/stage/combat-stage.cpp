@@ -1102,7 +1102,6 @@ namespace stage
                 combatAnimationPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
-                AppendInitialStatus();
             }
             return;
         }
@@ -1117,6 +1116,7 @@ namespace stage
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
                 StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut");
+                AppendInitialStatus();
             }
             return;
         }
