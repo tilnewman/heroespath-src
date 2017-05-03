@@ -923,6 +923,15 @@ namespace combat
     }
 
 
+    bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    {
+        if (CREATURE_CPTRC == nullptr)
+            return false;
+        else
+            return combatTree_.GetNode(CREATURE_CPTRC)->GetEntityWillDraw();
+    }
+
+
     bool CombatDisplay::AreAllCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
     {
         auto const COMBATNODES_PVEC{ GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
@@ -934,16 +943,7 @@ namespace combat
         return true;
     }
 
-
-    bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
-    {
-        if (CREATURE_CPTRC == nullptr)
-            return false;
-        else
-            return combatTree_.GetNode(CREATURE_CPTRC)->GetEntityWillDraw();
-    }
     
-
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
         auto horizPosDiffMax{ 0.0f };

@@ -1458,14 +1458,23 @@ namespace stage
             {
                 //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
                 SetTurnActionPhase( HandleEnemyTurnStep2_Perform() );
-
-                SetTurnPhase(TurnPhase::CenterAndZoomOut);
-
-                //collect a list of all attacking and targeted creatures to have centered on the screen
+                
+                //collect a list of all attacking and targeted creatures that need to be centered on the screen
                 creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
-                combatAnimationPtr_->CenteringStart(allEffectedCreaturesPVec);
-                slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+
+                if (combatDisplayStagePtr_->AreAllCreaturesVisible(allEffectedCreaturesPVec))
+                {
+                    SetTurnPhase(TurnPhase::PerformAnim);
+                    StartPerformAnim();
+                    SetupTurnBox();
+                }
+                else
+                {
+                    SetTurnPhase(TurnPhase::CenterAndZoomOut);
+                    combatAnimationPtr_->CenteringStart(allEffectedCreaturesPVec);
+                    slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+                }
             }
             return;
         }

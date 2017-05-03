@@ -141,10 +141,10 @@ namespace combat
         void HandleEndOfTurnTasks();
 
         void UpdateHealthTasks();
-        
-        bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
+        
+        bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
         bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
 
