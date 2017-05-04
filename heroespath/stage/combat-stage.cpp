@@ -2784,34 +2784,15 @@ namespace stage
 
     const std::string CombatStage::RemoveSingleTurnTemporaryConditions()
     {
-        if ((turnCreaturePtr_->HasCondition(creature::condition::Dazed)) ||
-            (turnCreaturePtr_->HasCondition(creature::condition::Unconscious)))
+        if (turnCreaturePtr_->HasCondition(creature::condition::Unconscious))
         {
-            std::ostringstream ss;
-            const std::string PRE_STR{ "wakes from being " };
-        
-            if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
-            {
-                ss << PRE_STR << "dazed";
-                turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
-            }
+            return "";
+        }
 
-            if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
-            {
-                if (ss.str().empty())
-                {
-                    ss << PRE_STR;
-                }
-                else
-                {
-                    ss << " and";
-                }
-
-                ss << " unconscious";
-                turnCreaturePtr_->ConditionRemove(creature::condition::Unconscious);
-            }
-
-            return ss.str();
+        if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
+        {
+            turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
+            return "wakes from being dazed";
         }
 
         if (turnCreaturePtr_->HasCondition(creature::condition::Tripped))
