@@ -1394,7 +1394,7 @@ namespace stage
             SetupTurnBox();
             return;
         }
-        
+
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::PostImpactPause == animPhase_))
         {
@@ -1469,7 +1469,7 @@ namespace stage
                 SetupTurnBox();
                 return;
             }
-            
+
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
 
@@ -1483,7 +1483,7 @@ namespace stage
             {
                 //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
                 SetTurnActionPhase( HandleEnemyTurnStep2_Perform() );
-                
+
                 //collect a list of all attacking and targeted creatures that need to be centered on the screen
                 creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
@@ -1578,7 +1578,7 @@ namespace stage
 
 
     void CombatStage::HandlePerformReportPhaseOverTasks()
-    {   
+    {
         performReportHitIndex_ = 0;
         performReportEffectIndex_ = 0;
         SetTurnPhase(TurnPhase::PostPerformPause);
@@ -2462,7 +2462,7 @@ namespace stage
     void CombatStage::StartPerformAnim()
     {
         SetTurnPhase(TurnPhase::PerformAnim);
-        
+
         switch (turnActionPhase_)
         {
             case TurnActionPhase::Advance:
@@ -2487,7 +2487,7 @@ namespace stage
             {
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 SetAnimPhase(AnimPhase::MoveToward);
-                
+
                 auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
                 M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.size() == 1), "heroespath::stage::CombatStage::StartPerformAnim(turnActionPhase_=MeleeWeapon) found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size() << " instead of 1.");
                 combatAnimationPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_, CREATURE_EFFECTS_VEC[0].GetCreature());

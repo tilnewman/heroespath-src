@@ -24,7 +24,7 @@ namespace combat
     const float FightClub::STAT_MIN_DIVISOR_    (5.0f);
     const float FightClub::STAT_MIN_MULTIPLIER_ (2.0f);
 
-    
+
     const FightResult FightClub::Fight(creature::CreaturePtrC_t creatureAttackingPtrC,
                                        creature::CreaturePtrC_t creatureDefendingPtrC,
                                        const bool               WILL_FORCE_HIT)

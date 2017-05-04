@@ -213,7 +213,7 @@ namespace stage
         const std::string TurnActionPhaseToString(const TurnActionPhase);
         const std::string PreTurnPhaseToString(const PreTurnPhase);
         const std::string AnimPhaseToString(const AnimPhase);
-                                 
+
         void UpdateTestingText();
 
         inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
@@ -311,7 +311,7 @@ namespace stage
 
         //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
-        
+
         //this member controls combat related animations
         combat::CombatAnimationPtr_t combatAnimationPtr_;
 

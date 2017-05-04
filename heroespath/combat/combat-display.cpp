@@ -138,7 +138,7 @@ namespace combat
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
         InitialNonPlayerPartyCombatTreeSetup();
-     
+
         //establish primary drawing area as battlefieldRect_
         //StageRegionSet() must have already been called
         battlefieldRect_ = sf::FloatRect(StageRegionLeft(), StageRegionTop(), StageRegionWidth() - BATTLEFIELD_MARGIN_, StageRegionHeight() - BATTLEFIELD_MARGIN_);
@@ -967,11 +967,11 @@ namespace combat
         for (auto const nextCombatNodeCPtr : COMBATNODES_PVEC)
             if (nextCombatNodeCPtr->GetEntityWillDraw() == false)
                 return false;
-   
+
         return true;
     }
 
-    
+
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_PVEC.empty() == false), "heroespath::combat::CombatDisplay::IsZoomOutRequired() was given a CREATURES_PVEC that was empty.");

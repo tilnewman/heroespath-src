@@ -100,7 +100,7 @@ namespace combat
         virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         const sf::Vector2f GetCenterOfAllNodes() const;
-        
+
         void PositionCombatTreeCells(const bool WILL_DELAY);
 
         bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
@@ -143,7 +143,7 @@ namespace combat
         void UpdateHealthTasks();
 
         bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
-        
+
         bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
         bool IsZoomOutRequired(const creature::CreaturePVec_t &) const;
@@ -163,7 +163,7 @@ namespace combat
         inline int GetClosestBlockingDistanceByType(const creature::CreaturePtrC_t & CPTRC, const bool WILL_FIND_PLAYERS) const { return combatTree_.GetClosestBlockingDistanceByType(CPTRC, WILL_FIND_PLAYERS); }
 
         inline bool GetIsStatusMessageAnimating() const                         { return isStatusMessageAnim_; }
-        
+
         inline void SetIsStatusMessageAnimating(const bool B)                   { isStatusMessageAnim_ = B; }
 
         inline bool GetIsSummaryViewInProgress() const                          { return isSummaryViewInProgress_; }

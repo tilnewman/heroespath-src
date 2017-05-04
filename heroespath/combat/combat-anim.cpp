@@ -22,7 +22,7 @@ namespace combat
 
     const float ShakeAnimInfo::PAUSE_DURATION_SEC(1.0f);
     const float ShakeAnimInfo::SHAKE_DURATION_SEC(0.65f);
-    
+
 
     ShakeAnimInfo::ShakeAnimInfo()
     :
@@ -495,7 +495,7 @@ namespace combat
         return distance;
     }
 
-    
+
     void CombatAnimation::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
                                     const float               SLIDER_SPEED,
                                     const bool                WILL_DOUBLE_SHAKE_DISTANCE)

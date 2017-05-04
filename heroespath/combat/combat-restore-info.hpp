@@ -25,7 +25,7 @@ namespace combat
     class CombatDisplay;
     using CombatDisplayPtr_t = CombatDisplay *;
     using CombatDisplayPtrC_t = CombatDisplay * const;
-    
+
 
     using CreatureBlockingPosMap_t = std::map<creature::CreaturePtr_t, int>;
 

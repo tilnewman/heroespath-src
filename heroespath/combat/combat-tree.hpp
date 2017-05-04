@@ -111,12 +111,12 @@ namespace combat
 
         CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
         CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
-        
+
         void SetNode(const Id_t ID, const CombatNodeSPtr_t NODE_SPTR);
-        
+
         Id_t GetNodeId(const CombatNodePtr_t) const;
         Id_t GetNodeId(creature::CreatureCPtrC_t) const;
-        
+
         std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
         std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::race::Enum RACE);
 

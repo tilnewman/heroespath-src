@@ -148,7 +148,7 @@ namespace combat
         //cached value, so that changes in health appear when they are
         //reported and not when they actually occur.
         float healthRatioDisplayed_;
-        
+
         //The changes in drawing when a creature dies (stop anim wing, stop
         //drawing conditions and health, etc.) does not occur when the
         //creature actually dies, but when the dead animations start,

@@ -163,7 +163,7 @@ namespace sfml_util
                 {
                     min = NEXT_FRAMERATE;
                 }
-                
+
                 if (NEXT_FRAMERATE > max)
                 {
                     max = NEXT_FRAMERATE;

@@ -227,7 +227,7 @@ namespace combat
 
         imagePosV_.x = (entityRegion_.left + (entityRegion_.width  * 0.5f)) - (sprite_.getGlobalBounds().width  * 0.5f);
         imagePosV_.y = (entityRegion_.top  + (entityRegion_.height * 0.5f)) - (sprite_.getGlobalBounds().height * 0.5f);
-        
+
         UpdateImagePosition();
         SetWingImagePosition();
 

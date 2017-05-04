@@ -405,7 +405,7 @@ namespace stage
                                                              creature::race::Wolfen,
                                                              creature::role::Wolfen,
                                                              STAT_SET_BASE) );
-        
+
         playerSPtr->Stats() = STAT_SET_BASE;
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set", playerSPtr->Stats(), expectedSet);
@@ -425,7 +425,7 @@ namespace stage
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed (Dead removed)", playerSPtr->Stats(), expectedSet);
-        
+
         playerSPtr->ConditionRemove(creature::condition::Dazed);
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set No Conditions (should be back to Base)", playerSPtr->Stats(), expectedSet);

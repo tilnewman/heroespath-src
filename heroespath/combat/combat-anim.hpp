@@ -43,7 +43,7 @@ namespace combat
 
         static const float PAUSE_DURATION_SEC;
         static const float SHAKE_DURATION_SEC;
-        
+
         sfml_util::Shaker<float> slider;
         float                    pause_duration_timer_sec;
         float                    shake_duration_timer_sec;
@@ -98,7 +98,7 @@ namespace combat
 
         //returns true if CombatStage should zoom out, or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
         bool CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
-        
+
         void CenteringStop();
 
         //The Reposition Animation slides all creatures around after a blocking
