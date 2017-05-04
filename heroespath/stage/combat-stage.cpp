@@ -69,6 +69,7 @@ namespace stage
     const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_      { PAUSE_SHORT_SEC_ };
     const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
     const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_    { PAUSE_ZERO_SEC_ };
+    const float CombatStage::CONDITION_WAKE_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
     //
     const float CombatStage::SLIDER_SPEED_SLOWEST_                  { 1.0f };
     const float CombatStage::SLIDER_SPEED_SLOW_                     { SLIDER_SPEED_SLOWEST_ * 2.0f };
@@ -120,6 +121,7 @@ namespace stage
         willClrShkInitStatusMsg_   (false),
         isMouseHeldDown_           (false),
         isMouseHeldDownAndMoving_  (false),
+        tempConditionsWakeStr_     (""),
         slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayStagePtr_     (new combat::CombatDisplay()),
         combatAnimationPtr_        (combat::CombatAnimation::Instance()),
@@ -1422,10 +1424,28 @@ namespace stage
             return;
         }
 
+        if (TurnPhase::ConditionWakePause == turnPhase_)
+        {
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            return;
+        }
+
         if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            SetTurnPhase(TurnPhase::Determine);
-            SetUserActionAllowed(true);
+            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
+            if (tempConditionsWakeStr_.empty())
+            {
+                SetTurnPhase(TurnPhase::Determine);
+                SetUserActionAllowed(true);
+            }
+            else
+            {
+                SetTurnPhase(TurnPhase::ConditionWakePause);
+                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
+            }
+
+            SetupTurnBox();
             return;
         }
 
@@ -1437,6 +1457,15 @@ namespace stage
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
+            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
+            if (tempConditionsWakeStr_.empty() == false)
+            {
+                SetTurnPhase(TurnPhase::ConditionWakePause);
+                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
+                SetupTurnBox();
+                return;
+            }
+            
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
 
@@ -1681,8 +1710,18 @@ namespace stage
         //skip PostZoomInPause if a player turn
         if (IS_PLAYER_TURN)
         {
-            SetTurnPhase(TurnPhase::Determine);
-            SetUserActionAllowed(true);
+            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
+            if (tempConditionsWakeStr_.empty())
+            {
+                SetTurnPhase(TurnPhase::Determine);
+                SetUserActionAllowed(true);
+            }
+            else
+            {
+                SetTurnPhase(TurnPhase::ConditionWakePause);
+                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
+            }
+
             SetupTurnBox();
         }
         else
@@ -2336,6 +2375,28 @@ namespace stage
 
             preambleSS << "Click to select who to fight...";
         }
+        else if (TurnPhase::ConditionWakePause == turnPhase_)
+        {
+            willDrawTurnBoxButtons = false;
+
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
+
+            isPreambleShowing = true;
+
+            if (IsPlayerCharacterTurnValid())
+            {
+                preambleSS << turnCreaturePtr_->Name();
+            }
+            else
+            {
+                preambleSS << creature::sex::HeSheIt(turnCreaturePtr_->Sex(), true);
+            }
+
+            preambleSS << " " << tempConditionsWakeStr_ << ".";
+        }
         else
         {
             preambleSS.str(EMPTY_STR);
@@ -2490,6 +2551,7 @@ namespace stage
             case TurnPhase::PostCenterAndZoomInPause:   { return "PostZInPause"; }
             case TurnPhase::Determine:                  { return "Determine"; }
             case TurnPhase::TargetSelect:               { return "TargetSelect"; }
+            case TurnPhase::ConditionWakePause:         { return "ConditionWakePause"; }
             case TurnPhase::CenterAndZoomOut:           { return "CenterAndZoomOut"; }
             case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZOutPause"; }
             case TurnPhase::PerformAnim:                { return "PerformAnim"; }
@@ -2717,6 +2779,55 @@ namespace stage
         }
 
         return false;
+    }
+
+
+    const std::string CombatStage::RemoveSingleTurnTemporaryConditions()
+    {
+        if ((turnCreaturePtr_->HasCondition(creature::condition::Dazed)) ||
+            (turnCreaturePtr_->HasCondition(creature::condition::Unconscious)))
+        {
+            std::ostringstream ss;
+            const std::string PRE_STR{ "wakes from being " };
+        
+            if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
+            {
+                ss << PRE_STR << "dazed";
+                turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
+            }
+
+            if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
+            {
+                if (ss.str().empty())
+                {
+                    ss << PRE_STR;
+                }
+                else
+                {
+                    ss << " and";
+                }
+
+                ss << " unconscious";
+                turnCreaturePtr_->ConditionRemove(creature::condition::Unconscious);
+            }
+
+            return ss.str();
+        }
+
+        if (turnCreaturePtr_->HasCondition(creature::condition::Tripped))
+        {
+            turnCreaturePtr_->ConditionRemove(creature::condition::Tripped);
+            return "gets up after being tripped";
+        }
+
+        if ((turnCreaturePtr_->HasCondition(creature::condition::Frightened)) &&
+            (utilz::random::Int(100) < 20))
+        {
+            turnCreaturePtr_->ConditionRemove(creature::condition::Frightened);
+            return "recovers from being frightened";
+        }
+
+        return "";
     }
 
 }

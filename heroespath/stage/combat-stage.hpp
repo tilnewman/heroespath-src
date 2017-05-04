@@ -102,6 +102,7 @@ namespace stage
             PostCenterAndZoomInPause,
             Determine,
             TargetSelect,
+            ConditionWakePause,
             CenterAndZoomOut,//center on turn creature and targets of whatever action the turn creature is taking (performType_)
             PostCenterAndZoomOutPause,
             PerformAnim, //see enum PerformType for which anim is performed here and PerformAnimPhase for which phase that anim is in
@@ -212,7 +213,7 @@ namespace stage
         const std::string TurnActionPhaseToString(const TurnActionPhase);
         const std::string PreTurnPhaseToString(const PreTurnPhase);
         const std::string AnimPhaseToString(const AnimPhase);
-
+                                 
         void UpdateTestingText();
 
         inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
@@ -232,6 +233,8 @@ namespace stage
 
         bool HandleMiscCancelTasks();
 
+        const std::string RemoveSingleTurnTemporaryConditions();
+
     public:
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
@@ -250,6 +253,7 @@ namespace stage
         static const float STATUSMSG_ANIM_PAUSE_SEC_;
         static const float POST_MELEEMOVE_ANIM_PAUSE_SEC_;
         static const float POST_IMPACT_ANIM_PAUSE_SEC_;
+        static const float CONDITION_WAKE_PAUSE_SEC_;
         //
         static const float SLIDER_SPEED_SLOWEST_;
         static const float SLIDER_SPEED_SLOW_;
@@ -300,6 +304,7 @@ namespace stage
         bool                             willClrShkInitStatusMsg_;
         bool                             isMouseHeldDown_;
         bool                             isMouseHeldDownAndMoving_;
+        std::string                      tempConditionsWakeStr_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
