@@ -967,7 +967,7 @@ namespace combat
             }
         }
 
-        auto const TOLERANCE{ sfml_util::MapByRes(256.0f, 512.0f) };
+        auto const TOLERANCE{ sfml_util::MapByRes(300.0f, 600.0f) };
         return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  + TOLERANCE)) &&
                 (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() + TOLERANCE)));
     }

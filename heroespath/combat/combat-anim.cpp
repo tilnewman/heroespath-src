@@ -275,10 +275,7 @@ namespace combat
     void CombatAnimation::DeathAnimUpdate(const float SLIDER_POS)
     {
         for (auto const nextCombatNodePtrC : deadAnimNodesPVec_)
-        {
-            nextCombatNodePtrC->SetRotationDegrees((4.0f * 360.0f) * SLIDER_POS);
-            nextCombatNodePtrC->SetRegion(1.0f - SLIDER_POS);
-        }
+            nextCombatNodePtrC->UpdateDeathAnim(SLIDER_POS);
     }
 
 

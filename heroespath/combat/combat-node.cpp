@@ -178,13 +178,11 @@ namespace combat
             states.blendMode = ORIG_BLEND_MODE;
         }
 
-        if ((false == isMoving_) && (false == isSummaryView_))
+        if ((false == isMoving_) &&
+            (false == isSummaryView_) &&
+            (false == isDead_))
         {
-            if (false == isDead_)
-            {
-                target.draw(nameTextObj_, states);
-            }
-
+            target.draw(nameTextObj_, states);
             target.draw(condTextObj_, states);
 
             //draw health lines
@@ -521,6 +519,14 @@ namespace combat
                 crossBonesSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
             }
         }
+    }
+
+
+    void CombatNode::UpdateDeathAnim(const float SLIDER_POS)
+    {
+        SetRotationDegrees((12.0f * 360.0f) * SLIDER_POS);
+        SetRegion(1.0f - SLIDER_POS);
+        MoveEntityPos((GetEntityRegion().width * SLIDER_POS) * SLIDER_POS, (GetEntityRegion().height * SLIDER_POS) * SLIDER_POS);
     }
 
 }

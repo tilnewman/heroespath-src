@@ -90,6 +90,8 @@ namespace combat
 
         void SetRotationDegrees(const float DEGREES);
 
+        void UpdateDeathAnim(const float SLIDER_POS);
+
     protected:
         virtual void OnClick(const sf::Vector2f &) {}
         const sf::Color HealthColor() const;
