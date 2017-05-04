@@ -243,7 +243,9 @@ namespace stage
     {
         if ((PACKAGE.PTR_ == zoomSliderBarSPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
         {
-            combatDisplayStagePtr_->SetZoomLevel(PACKAGE.PTR_->GetCurrentValue());
+            //only zoom out half the distance that the slider actually shows
+            auto const HALF_ZOOM_DIFFERENCE{ 1.0f - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
+            combatDisplayStagePtr_->SetZoomLevel(HALF_ZOOM_DIFFERENCE);
             return true;
         }
         else
@@ -1077,7 +1079,7 @@ namespace stage
 
             if (combatAnimationPtr_->CenteringUpdate(SLIDER_POS))
             {
-                auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way at the most
+                auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
                 zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
             }
 
@@ -1111,7 +1113,7 @@ namespace stage
         if (PreTurnPhase::ZoomOut == preTurnPhase_)
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
-            auto const ZOOM_CURR_VAL(1.0f - (SLIDER_POS * 0.5f));//only zoom out half way
+            auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
             zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
             if (slider_.GetIsDone())
