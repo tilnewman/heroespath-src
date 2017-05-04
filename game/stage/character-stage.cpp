@@ -717,7 +717,7 @@ sfml_util::PopupImage::Regular));
         SetupRaceDescriptionBox();
         SetupRoleDescriptionBox();
         SetupAttrDescriptionBox();
-
+        
         //name label
         {
             const sf::FloatRect REGION((SCREEN_WIDTH_ * 0.5f) - 150.0f, mainMenuTitle_.LowerPosition() - 20.0f, 0.0f, 0.0f);
@@ -736,7 +736,7 @@ sfml_util::PopupImage::Regular));
 
             EntityAdd(nInsTextRegionSPtr_);
         }
-
+        
         //name text entry box
         {
             const float WIDTH(creature::NameInfo::Instance()->TextEntryBoxWidth());
@@ -755,7 +755,7 @@ sfml_util::PopupImage::Regular));
                                                                           BOX_INFO) );
             EntityAdd(nameTextEntryBoxSPtr_);
         }
-
+        
         //sex selection RadioButtonSet
         {
             sfml_util::gui::TextInfo sexRadioButtonSetTextInfo(" ",
@@ -789,7 +789,7 @@ sfml_util::PopupImage::Regular));
 
             EntityAdd(sexRadioButtonSPtr_);
         }
-
+        
         //spacebar instruction text
         {
             sfml_util::gui::TextInfo insTextInfo("(click the box below then hold the spacebar to change attributes)\n(drag numbers up and down to customize)                ",
@@ -808,7 +808,7 @@ sfml_util::PopupImage::Regular));
                                                sexRadioButtonSPtr_->GetEntityRegion().top + sexRadioButtonSPtr_->GetEntityRegion().height + sfml_util::MapByRes(30.0f, 90.0f));
             EntityAdd(sbInsTextRegionSPtr_);
         }
-
+        
         //Stat BackgroundBox
         const float STATBOX_POS_TOP(sbInsTextRegionSPtr_->GetEntityRegion().top + sbInsTextRegionSPtr_->GetEntityRegion().height + 8.0f);
         {
@@ -830,50 +830,51 @@ sfml_util::PopupImage::Regular));
             statsBoxSPtr_.reset( new sfml_util::gui::box::Box("CharacterStageStats", boxInfo) );
             EntityAdd(statsBoxSPtr_);
         }
-
+        
         //Stat Labels
+        
         sfml_util::gui::TextInfo statTextInfo(statSetBase_.Str().Name(),
                                               sfml_util::FontManager::Instance()->Font_Typical(),
                                               38,
                                               LIGHT_TEXT_COLOR_,
                                               sfml_util::Justified::Left);
-
+        
         {
             const float STATS_TEXT_VERT_OFFSET(-13.0f);
             const float STATS_LINE_VERT_OFFSET(-7.0f);
 
             sf::FloatRect rect(STATS_POS_LEFT_, STATBOX_POS_TOP, 0.0f, 0.0f);
             strLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             statTextInfo.text = statSetBase_.Acc().Name();
             rect.top += strLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine1PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             accLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             statTextInfo.text = statSetBase_.Cha().Name();
             rect.top += accLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine2PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             chaLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             statTextInfo.text = statSetBase_.Lck().Name();
             rect.top += chaLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine3PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             lckLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             statTextInfo.text = statSetBase_.Spd().Name();
             rect.top += lckLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine4PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             spdLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             statTextInfo.text = statSetBase_.Int().Name();
             rect.top += spdLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine5PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             intLabelTextRegion_.Setup(statTextInfo, rect);
-
+            
             rect.top += intLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine6PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
         }
-
+        
         //stat numbers placement
         {
             //establish positions and offsets
@@ -892,20 +893,20 @@ sfml_util::PopupImage::Regular));
 
             statsLineVertPosDiff_ = statsIntPosTop_ - statsSpdPosTop_;
         }
-
+        
         //fill the fixed stats vector with dummy values initially...
         const std::size_t NUM_STATS(stats::stat::Count);
         for (std::size_t i(0); i < NUM_STATS; ++i)
             fixedStatsSVec_.push_back( AnimNumSPtr_t() );
 
         //...then assign valid AnimNumSPtr_t objects with a value of zero
-        fixedStatsSVec_[stats::stat::Strength].reset(       new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Strength,     statsFirstNumPosLeft_, statsStrPosTop_, statsFirstNumPosLeft_, statsStrPosTop_, statTextInfo) );
-        fixedStatsSVec_[stats::stat::Accuracy].reset(       new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Accuracy,     statsFirstNumPosLeft_, statsAccPosTop_, statsFirstNumPosLeft_, statsAccPosTop_, statTextInfo) );
-        fixedStatsSVec_[stats::stat::Charm].reset(          new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Charm,        statsFirstNumPosLeft_, statsChaPosTop_, statsFirstNumPosLeft_, statsChaPosTop_, statTextInfo) );
-        fixedStatsSVec_[stats::stat::Luck].reset(           new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Luck,         statsFirstNumPosLeft_, statsLckPosTop_, statsFirstNumPosLeft_, statsLckPosTop_, statTextInfo) );
-        fixedStatsSVec_[stats::stat::Speed].reset(          new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Speed,        statsFirstNumPosLeft_, statsSpdPosTop_, statsFirstNumPosLeft_, statsSpdPosTop_, statTextInfo) );
-        fixedStatsSVec_[stats::stat::Intelligence].reset(   new AnimNum(stats::INITIAL_STAT_MIN - 1, stats::stat::Intelligence, statsFirstNumPosLeft_, statsIntPosTop_, statsFirstNumPosLeft_, statsIntPosTop_, statTextInfo) );
-
+        fixedStatsSVec_[stats::stat::Strength]      = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Strength,     statsFirstNumPosLeft_, statsStrPosTop_, statsFirstNumPosLeft_, statsStrPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::stat::Accuracy]      = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Accuracy,     statsFirstNumPosLeft_, statsAccPosTop_, statsFirstNumPosLeft_, statsAccPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::stat::Charm]         = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Charm,        statsFirstNumPosLeft_, statsChaPosTop_, statsFirstNumPosLeft_, statsChaPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::stat::Luck]          = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Luck,         statsFirstNumPosLeft_, statsLckPosTop_, statsFirstNumPosLeft_, statsLckPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::stat::Speed]         = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Speed,        statsFirstNumPosLeft_, statsSpdPosTop_, statsFirstNumPosLeft_, statsSpdPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::stat::Intelligence]  = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Intelligence, statsFirstNumPosLeft_, statsIntPosTop_, statsFirstNumPosLeft_, statsIntPosTop_, statTextInfo);
+        
         //smoke animation
         //Note:  Keep this last to be added to the enitySVec_ in this function
         const float ANIM_SCALE(sfml_util::MapByRes(1.0f, 3.0f));
@@ -917,12 +918,12 @@ sfml_util::PopupImage::Regular));
                                                                   ANIM_SCALE,
                                                                   ANIM_SCALE));
         EntityAdd(smokeAnimSPtr_);
-
+        
         //setup initial config of radio buttons
         AdjustRoleRadioButtonsForRace(static_cast<game::creature::race::Enum>(0));
-
+        
         SetupRoleDescriptionBox();
-
+        
         //prep sound effects
         sfml_util::SoundEffectEnumVec_t soundEffectsEnumVec = { sfml_util::sound_effect::WindGust1, sfml_util::sound_effect::WindGust2, sfml_util::sound_effect::WindGust3 };
         windSoundEffectsSPtr_.reset( new sfml_util::StaticSounds(soundEffectsEnumVec, sfml_util::StaticSounds::INVALID_VOLUME_, true) );
@@ -1243,52 +1244,54 @@ sfml_util::PopupImage::Regular));
         sss << "Your current " << stats::stat::ToString(WHICH_STAT) << " is only " << STAT_VALUE << ".";
         const std::string IS_ONLY_STR(sss.str());
 
+        const game::stats::Stat_t STAT_VALUE_LOW      { 10 };
+        const game::stats::Stat_t STAT_VALUE_MED      { 15 };
+        const game::stats::Stat_t STAT_VALUE_HIGH     { 20 };
+        const game::stats::Stat_t STAT_VALUE_HIGHEST  { 25 };
+
         std::ostringstream ss;
         if (WHICH_ROLE == creature::role::Archer)
         {
             if (WHICH_STAT == stats::stat::Accuracy)
             {
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << "Archers need Accuracy the most, and your current Accuracy is only " << STAT_VALUE << ".  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 19)
-                    {
-                        ss << "Archers need Accuracy the most, and your current Accuracy is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << "Archers need Accuracy the most, and your current Accuracy is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Strength)
             {
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << "An Archer is primarily a fighter, so the Strength attribute is important.  Your current Strength is only " << STAT_VALUE << ".  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 19)
-                    {
-                        ss << "An Archer is primarily a fighter, so the Strength attribute is important.  Your current Strength is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << "An Archer is primarily a fighter, so the Strength attribute is important.  Your current Strength is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Speed)
             {
-                if (STAT_VALUE < 10)
+                if (STAT_VALUE < STAT_VALUE_LOW)
                 {
                     ss << "An Archer is primarily a fighter, so the Speed attribute is important for dodging attacks.  Your current Speed is only " << STAT_VALUE << ".  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 15)
-                    {
-                        ss << "An Archer is primarily a fighter, so the Speed attribute is important for dodging attacks.  Your current Speed is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_MED)
+                {
+                    ss << "An Archer is primarily a fighter, so the Speed attribute is important for dodging attacks.  Your current Speed is only " << STAT_VALUE << ".  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if (WHICH_ROLE == creature::role::Bard)
@@ -1297,41 +1300,39 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("Charm is important to Bards for magical song.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 24)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGHEST)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Intelligence)
             {
                 const std::string REASON_STR("Inteflligence is important to Bards for magical song.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 24)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGHEST)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Strength)
             {
                 const std::string REASON_STR("Strength is sometimes important to Bards if you want them to also be good fighters.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
                     textInfo.color = reccStrongColor;
@@ -1344,24 +1345,23 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("A Beastmaster's primary attribute is Intelligence, for the magical bond they have to their animals.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Strength)
             {
                 const std::string REASON_STR("Strength is often important to Beastmasters because they can be good fighters.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
                     textInfo.color = reccStrongColor;
@@ -1374,34 +1374,32 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("A Cleric's primary attribute is Charm so they can heal and be good diplomats.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Intelligence)
             {
                 const std::string REASON_STR("A Cleric is a kind of spell caster, so Intelligence is very important.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if ((WHICH_ROLE == creature::role::Firebrand) || (WHICH_ROLE == creature::role::Sylavin))
@@ -1410,34 +1408,32 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("Dragons may be magical creatures, but make no mistake, they are fighters.  Strength is important to all types of Dragons.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Intelligence)
             {
                 const std::string REASON_STR("Dragons are magical creatures so Intelligence is important.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if (WHICH_ROLE == creature::role::Knight)
@@ -1446,47 +1442,44 @@ sfml_util::PopupImage::Regular));
 
             if (WHICH_STAT == stats::stat::Strength)
             {
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Speed)
             {
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Accuracy)
             {
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if (WHICH_ROLE == creature::role::Sorcerer)
@@ -1495,34 +1488,32 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("A Sorcerer is first and foremost a spell caster, so Intelligence is very important.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Speed)
             {
                 const std::string REASON_STR("Sorcerers are typically physically weaker than the other adventurers.  Speed will be important for dodging attacks.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if (WHICH_ROLE == creature::role::Thief)
@@ -1531,34 +1522,32 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("Thieves are typically physically weaker than the other adventurers.  Speed will be important for dodging attacks and for having fast fingers.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Luck)
             {
                 const std::string REASON_STR("Thieves need Luck more than any other attribute.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else if (WHICH_ROLE == creature::role::Wolfen)
@@ -1567,51 +1556,48 @@ sfml_util::PopupImage::Regular));
             {
                 const std::string REASON_STR("Wolfens are not in your party of adventurers for their looks, they are there to defense.  Strength for fighting is most important.");
 
-                if (STAT_VALUE < 20)
+                if (STAT_VALUE < STAT_VALUE_HIGH)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 25)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < 25)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Accuracy)
             {
                 const std::string REASON_STR("A Wolfen's strong jaws are useless if they can't bite anything with them.  Accuracy is important.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
 
             if (WHICH_STAT == stats::stat::Speed)
             {
                 const std::string REASON_STR("Wolfen's are fast for a reason, they need to avoid being hit with attacks.  Speed will be of primary importance for those on the front line of a fight.");
 
-                if (STAT_VALUE < 15)
+                if (STAT_VALUE < STAT_VALUE_MED)
                 {
                     ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_STRONG_STR;
                     textInfo.color = reccStrongColor;
                 }
-                else
-                    if (STAT_VALUE < 20)
-                    {
-                        ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
-                        textInfo.color = reccNormalColor;
-                    }
+                else if (STAT_VALUE < STAT_VALUE_HIGH)
+                {
+                    ss << REASON_STR << "  " << IS_ONLY_STR << "  " << RECC_NORMAL_STR;
+                    textInfo.color = reccNormalColor;
+                }
             }
         }
         else
@@ -2173,7 +2159,7 @@ sfml_util::PopupImage::Regular));
             animStatsDelayPerSec_ = utilz::random::Float(0.05f, 0.25f);
 
             sfml_util::gui::TextInfo textInfo(" ", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 40, sf::Color::White, sfml_util::Justified::Left);
-            const stats::Stat_t NEXT_VAL(utilz::random::Int(stats::INITIAL_STAT_MIN + 1, stats::INITIAL_STAT_MAX));
+            const stats::Stat_t NEXT_VAL(utilz::random::Int(stats::Stat::VAL_MIN_ + 1, stats::Stat::VAL_MAX_INITIAL_));
 
             int numToUse(utilz::random::Int(1, 6));
             if (initialRollCounter_ <= 6)

@@ -92,7 +92,7 @@ namespace condition
     class Cond_Stone : public Condition
     {
     public:
-        Cond_Stone() : Condition(condition::Stone, true, stats::StatSet(), stats::StatSet(stats::INVALID_STAT_VAL, 0, 0, stats::INVALID_STAT_VAL, 0, 0)) {}
+        Cond_Stone() : Condition(condition::Stone, true, stats::StatSet(), stats::StatSet(stats::Stat::VAL_INVALID_, 0, 0, stats::Stat::VAL_INVALID_, 0, 0)) {}
         virtual ~Cond_Stone() {}
     private:
         friend class boost::serialization::access;

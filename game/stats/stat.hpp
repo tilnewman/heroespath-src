@@ -24,8 +24,8 @@ namespace stats
     class Stat
     {
     public:
-        Stat(const stat::Enum WHICH = stat::Count,
-             const Stat_t     VALUE = 0);
+        Stat(const stat::Enum WHICH = static_cast<stat::Enum>(0),
+             const Stat_t     VALUE = VAL_MIN_);
 
         virtual ~Stat();
 
@@ -81,6 +81,13 @@ namespace stats
 
         friend bool operator==(const Stat & L, const Stat & R);
         friend bool operator<(const Stat & L, const Stat & R);
+        
+        static const int X_;
+
+    public:
+        static const Stat_t VAL_MIN_;
+        static const Stat_t VAL_MAX_INITIAL_;
+        static const Stat_t VAL_INVALID_;
 
     protected:
         Stat_t normal_;

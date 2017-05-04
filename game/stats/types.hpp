@@ -15,10 +15,6 @@ namespace stats
     //The base numerical type for all Stat objects.  Should be signed.
     using Stat_t = int;
 
-    static const Stat_t INITIAL_STAT_MIN(0);
-    static const Stat_t INITIAL_STAT_MAX(20);
-    static const Stat_t INVALID_STAT_VAL(-1);
-
     //The numerical type for experience points.  Should be unsigned.
     using Exp_t = unsigned int;
 

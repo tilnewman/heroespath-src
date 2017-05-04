@@ -23,7 +23,7 @@ namespace stage
     :
         value_       (VALUE),
         whichStat_   (WHICH_STAT),
-        ignoreMe_    (VALUE < stats::INITIAL_STAT_MIN),
+        ignoreMe_    (VALUE < stats::Stat::VAL_MIN_),
         colorVal_    (100),
         startLeft_   (START_LEFT),
         startTop_    (START_TOP),

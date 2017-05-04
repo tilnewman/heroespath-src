@@ -15,12 +15,12 @@ namespace game
 namespace stats
 {
 
-    const StatSet StatSet::INVALID_STATSET_{ INVALID_STAT_VAL,
-                                             INVALID_STAT_VAL,
-                                             INVALID_STAT_VAL,
-                                             INVALID_STAT_VAL,
-                                             INVALID_STAT_VAL,
-                                             INVALID_STAT_VAL };
+    const StatSet StatSet::INVALID_STATSET_{ Stat(stat::Strength, Stat::VAL_INVALID_),
+                                             Stat(stat::Accuracy, Stat::VAL_INVALID_),
+                                             Stat(stat::Charm, Stat::VAL_INVALID_), 
+                                             Stat(stat::Luck, Stat::VAL_INVALID_), 
+                                             Stat(stat::Speed, Stat::VAL_INVALID_), 
+                                             Stat(stat::Intelligence, Stat::VAL_INVALID_) };
 
 
     StatSet::StatSet()
@@ -28,6 +28,12 @@ namespace stats
         statVec_()
     {
         statVec_.resize(stat::Count);
+        statVec_[stat::Strength]        = Stat(stat::Strength, Stat::VAL_MIN_);
+        statVec_[stat::Accuracy]        = Stat(stat::Accuracy, Stat::VAL_MIN_);
+        statVec_[stat::Charm]           = Stat(stat::Charm, Stat::VAL_MIN_);
+        statVec_[stat::Luck]            = Stat(stat::Luck, Stat::VAL_MIN_);
+        statVec_[stat::Speed]           = Stat(stat::Speed, Stat::VAL_MIN_);
+        statVec_[stat::Intelligence]    = Stat(stat::Intelligence, Stat::VAL_MIN_);
     }
 
 
@@ -99,7 +105,7 @@ namespace stats
         {
             auto const NEXT_STAT{ statVec_[i] };
 
-            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Normal() != INVALID_STAT_VAL))))
+            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Normal() != Stat::VAL_INVALID_))))
             {
                 if (0 == i)
                 {
@@ -144,7 +150,7 @@ namespace stats
         {
             auto const NEXT_STAT{ statVec_[i] };
 
-            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Current() != INVALID_STAT_VAL))))
+            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Current() != Stat::VAL_INVALID_))))
             {
                 if (0 == i)
                 {
@@ -319,7 +325,7 @@ namespace stats
         for (auto & nextStat : statVec_)
         {
             auto const NEXT_TARGET_VALUE{ SET.GetCopy(nextStat.Which()).Current() };
-            if (NEXT_TARGET_VALUE != INVALID_STAT_VAL)
+            if (NEXT_TARGET_VALUE != Stat::VAL_INVALID_)
             {
                 auto const NEXT_CURRENT_VALUE{ nextStat.Current() };
                 nextStat.ModifyCurrent(NEXT_TARGET_VALUE - NEXT_CURRENT_VALUE);
