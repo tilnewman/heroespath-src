@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_LOOP_INCLUDED
-#define APPBASE_SFMLUTIL_LOOP_INCLUDED
+#ifndef SFMLUTIL_LOOP_INCLUDED
+#define SFMLUTIL_LOOP_INCLUDED
 //
 // loop.hpp
 //  Code to manage an event/draw loop.
@@ -8,7 +8,7 @@
 #include "sfml-util/iloop.hpp"
 #include "sfml-util/fade.hpp"
 
-#include "heroespath/loop-state-enum.hpp"
+#include "game/loop-state-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -62,8 +62,8 @@ namespace sfml_util
 
         inline virtual void SetMouseVisibility(const bool IS_VISIBLE)   { winSPtr_->setMouseCursorVisible(IS_VISIBLE); }
 
-        inline virtual void SetState(const heroespath::LoopState::Enum E)   { state_ = E; }
-        inline virtual heroespath::LoopState::Enum  GetState() const        { return state_; }
+        inline virtual void SetState(const game::LoopState::Enum E)   { state_ = E; }
+        inline virtual game::LoopState::Enum  GetState() const        { return state_; }
 
         virtual void ConsumeEvents();
 
@@ -79,8 +79,8 @@ namespace sfml_util
         inline virtual bool GetIgnoreKeystrokes() const             { return willIgnoreKeystrokes_; }
         inline virtual void SetIgnoreKeystrokes(const bool B)       { willIgnoreKeystrokes_ = B; }
 
-        virtual void AssignPopupCallbackHandlerInfo(heroespath::callback::IPopupHandler_t * const HANDLER_PTR,
-                                                    const heroespath::PopupInfo &                 POPUP_INFO);
+        virtual void AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
+                                                    const game::PopupInfo &                 POPUP_INFO);
 
         virtual void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -133,15 +133,15 @@ namespace sfml_util
         gui::IGuiEntitySPtr_t entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        heroespath::PopupInfo popupInfo_;
+        game::PopupInfo popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;
         sf::Vector2f          mousePosV_;
         bool                  isMouseHovering_;
         bool                  takeScreenshot_;
-        heroespath::callback::IPopupHandler_t * popupCallbackPtr_;
-        heroespath::LoopState::Enum state_;
+        game::callback::IPopupHandler_t * popupCallbackPtr_;
+        game::LoopState::Enum state_;
         std::vector<float>    frameRateVec_;
         std::size_t           frameRateSampleCount_;
         bool                  willLogFrameRate_;
@@ -151,4 +151,4 @@ namespace sfml_util
     using LoopSVec_t = std::vector<LoopSPtr_t>;
 
 }
-#endif //APPBASE_SFMLUTIL_LOOP_INCLUDED
+#endif //SFMLUTIL_LOOP_INCLUDED

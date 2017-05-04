@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GRADIENT_INCLUDED
-#define APPBASE_SFMLUTIL_GRADIENT_INCLUDED
+#ifndef SFMLUTIL_GRADIENT_INCLUDED
+#define SFMLUTIL_GRADIENT_INCLUDED
 //
 // gradient.hpp
 //  Gradient drawing helper code.
@@ -46,4 +46,4 @@ namespace sfml_util
     using GradientRectSVec_t = std::vector<GradientRectSPtr_t>;
 
 }
-#endif //APPBASE_SFMLUTIL_GRADIENT_INCLUDED
+#endif //SFMLUTIL_GRADIENT_INCLUDED

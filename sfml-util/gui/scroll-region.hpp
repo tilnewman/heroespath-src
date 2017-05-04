@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_SCROLLREGION_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_SCROLLREGION_INCLUDED
+#ifndef SFMLUTIL_GUI_SCROLLREGION_INCLUDED
+#define SFMLUTIL_GUI_SCROLLREGION_INCLUDED
 //
 // scroll-region.hpp
 //  A class that allows scrolling through a vertical list of images
@@ -83,4 +83,4 @@ namespace gui
     using ScrollRegionSPtr_t = std::shared_ptr<ScrollRegion>;
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_SCROLLREGION_INCLUDED
+#endif //SFMLUTIL_GUI_SCROLLREGION_INCLUDED

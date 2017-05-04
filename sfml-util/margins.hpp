@@ -1,5 +1,5 @@
-#ifndef APPBASE_HEROESPATH_MARGINS_INCLUDED
-#define APPBASE_HEROESPATH_MARGINS_INCLUDED
+#ifndef GAME_MARGINS_INCLUDED
+#define GAME_MARGINS_INCLUDED
 //
 // margins.hpp
 //  Margins code
@@ -31,4 +31,4 @@ namespace sfml_util
     };
 
 }
-#endif //APPBASE_HEROESPATH_MARGINS_INCLUDED
+#endif //GAME_MARGINS_INCLUDED

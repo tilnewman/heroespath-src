@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_TWOSTATEENTITY_INCLUDED
-#define APPBASE_SFMLUTIL_TWOSTATEENTITY_INCLUDED
+#ifndef SFMLUTIL_TWOSTATEENTITY_INCLUDED
+#define SFMLUTIL_TWOSTATEENTITY_INCLUDED
 //
 // two-state-entity.hpp
 //  Code that combines a GuiImage and GuiText into an object that can be in one of two states.
@@ -86,4 +86,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_TWOSTATEENTITY_INCLUDED
+#endif //SFMLUTIL_TWOSTATEENTITY_INCLUDED

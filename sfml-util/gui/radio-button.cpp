@@ -9,7 +9,7 @@
 #include "sfml-util/static-sounds.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 
 #include <sstream>
 

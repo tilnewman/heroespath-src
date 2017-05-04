@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_ILOOP_INCLUDED
-#define APPBASE_SFMLUTIL_ILOOP_INCLUDED
+#ifndef SFMLUTIL_ILOOP_INCLUDED
+#define SFMLUTIL_ILOOP_INCLUDED
 //
 // iloop.hpp
 //  Interface class to the event/draw loop.
@@ -8,8 +8,8 @@
 #include "sfml-util/sfml-window.hpp"
 #include "sfml-util/music-enum.hpp"
 
-#include "heroespath/i-popup-callback.hpp"
-#include "heroespath/loop-state-enum.hpp"
+#include "game/i-popup-callback.hpp"
+#include "game/loop-state-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -49,8 +49,8 @@ namespace sfml_util
 
         virtual void SetMouseVisibility(const bool IS_VISIBLE) = 0;
 
-        virtual void SetState(const heroespath::LoopState::Enum) = 0;
-        virtual heroespath::LoopState::Enum  GetState() const = 0;
+        virtual void SetState(const game::LoopState::Enum) = 0;
+        virtual game::LoopState::Enum  GetState() const = 0;
 
         virtual void ConsumeEvents() = 0;
 
@@ -65,8 +65,8 @@ namespace sfml_util
         virtual bool GetIgnoreKeystrokes() const = 0;
         virtual void SetIgnoreKeystrokes(const bool WILL_IGNORE_KEYSTROKES) = 0;
 
-        virtual void AssignPopupCallbackHandlerInfo(heroespath::callback::IPopupHandler_t * const HANDLER_PTR,
-                                                    const heroespath::PopupInfo &                 POPUP_INFO) = 0;
+        virtual void AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
+                                                    const game::PopupInfo &                 POPUP_INFO) = 0;
 
         virtual void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V) = 0;
 
@@ -96,4 +96,4 @@ namespace sfml_util
     using ILoopSPtr_t = std::shared_ptr<ILoop>;
 
 }
-#endif //APPBASE_SFMLUTIL_ILOOP_INCLUDED
+#endif //SFMLUTIL_ILOOP_INCLUDED

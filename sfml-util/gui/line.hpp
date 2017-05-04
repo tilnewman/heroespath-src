@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_LINE_INCLUDED
-#define APPBASE_SFMLUTIL_LINE_INCLUDED
+#ifndef SFMLUTIL_LINE_INCLUDED
+#define SFMLUTIL_LINE_INCLUDED
 //
 // line.hpp
 //  Line drawing utility class
@@ -85,4 +85,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_LINE_INCLUDED
+#endif //SFMLUTIL_LINE_INCLUDED

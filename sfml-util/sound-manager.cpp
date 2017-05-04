@@ -9,9 +9,9 @@
 #include "utilz/random.hpp"
 #include "sfml-util/music-info.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"
-#include "heroespath/loop-manager.hpp"
+#include "game/loop-manager.hpp"
 
 #include "stringutil/stringhelp.hpp"
 
@@ -605,7 +605,7 @@ namespace sfml_util
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::SoundManager::Test() Starting Tests...");
+            game::LoopManager::Instance()->TestingStrAppend("sfml_util::SoundManager::Test() Starting Tests...");
         }
 
         static auto counter{ 0 };
@@ -632,7 +632,7 @@ namespace sfml_util
 
                 if (counter < MUSIC_COUNT_MAX)
                 {
-                    heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str() + " Delay...");
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str() + " Delay...");
                     ++counter;
                     return false;
                 }
@@ -642,7 +642,7 @@ namespace sfml_util
                     MusicStop(NEXT_ENUM);
                     playOrStop = !playOrStop;
                     ++musicIndex;
-                    heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str());
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str());
                     return false;
                 }
             }
@@ -673,7 +673,7 @@ namespace sfml_util
 
                 if (counter < MUSIC_COUNT_MAX)
                 {
-                    heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager Combat Music Test #" + ss.str() + " Delay...");
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager Combat Music Test #" + ss.str() + " Delay...");
                     ++counter;
                     return false;
                 }
@@ -684,7 +684,7 @@ namespace sfml_util
                     playOrStop = !playOrStop;
                     ++combatMusicIndex;
                     musicSPtr.reset();
-                    heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str());
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager Music Test #" + ss.str());
                     return false;
                 }
             }
@@ -695,7 +695,7 @@ namespace sfml_util
             static auto hasSFXPromptedStart{ false };
             if (false == hasSFXPromptedStart)
             {
-                heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests starting...");
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests starting...");
                 hasSFXPromptedStart = true;
             }
 
@@ -704,7 +704,7 @@ namespace sfml_util
             {
                 auto const ENUM{ static_cast<sound_effect::Enum>(sfxIndex) };
                 auto const ENUM_STR{ sound_effect::ToString(ENUM) };
-                heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
 
                 SoundSPtr_t soundSPtr{ SoundEffectAcquire(ENUM) };
                 M_ASSERT_OR_LOGANDTHROW_SS((soundSPtr.get() != nullptr), "sfml_util::SoundManager::Test()  SFX Testing block found SoundEffectAcquire(\"" << ENUM_STR << "\") returned a nullptr.");
@@ -722,7 +722,7 @@ namespace sfml_util
             static auto hasSFXPromptedEnd{ false };
             if (false == hasSFXPromptedEnd)
             {
-                heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
                 hasSFXPromptedEnd = true;
             }
         }
@@ -732,7 +732,7 @@ namespace sfml_util
             static auto hasStaticSFXPromptedStart{ false };
             if (false == hasStaticSFXPromptedStart)
             {
-                heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests starting...");
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests starting...");
                 hasStaticSFXPromptedStart = true;
             }
 
@@ -756,7 +756,7 @@ namespace sfml_util
 
                     std::ostringstream ss;
                     ss << staticSfxIndex;
-                    heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tested Set #" + ss.str());
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tested Set #" + ss.str());
 
                     staticSfxInnerIndex = 0;
                     ++staticSfxIndex;
@@ -768,12 +768,12 @@ namespace sfml_util
             static auto hasStaticSFXPromptedEnd{ false };
             if (false == hasStaticSFXPromptedEnd)
             {
-                heroespath::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests finished.  All Passed.");
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests finished.  All Passed.");
                 hasStaticSFXPromptedEnd = true;
             }
         }
 
-        heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::SoundManager::Test() ALL TESTS PASSED");
+        game::LoopManager::Instance()->TestingStrAppend("sfml_util::SoundManager::Test() ALL TESTS PASSED");
         return true;
     }
 

@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_MUSIC_OPERATOR_INCLUDED
-#define APPBASE_SFMLUTIL_MUSIC_OPERATOR_INCLUDED
+#ifndef SFMLUTIL_MUSIC_OPERATOR_INCLUDED
+#define SFMLUTIL_MUSIC_OPERATOR_INCLUDED
 //
 // music-operator.hpp
 //  Code that performs all needed operations on a piece of music.
@@ -110,4 +110,4 @@ namespace sfml_util
     inline bool operator!=(const MusicOperator & L, const MusicOperator & R) { return ! (L == R); }
 
 }
-#endif //APPBASE_SFMLUTIL_MUSIC_OPERATOR_INCLUDED
+#endif //SFMLUTIL_MUSIC_OPERATOR_INCLUDED

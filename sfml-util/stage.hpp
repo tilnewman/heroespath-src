@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_STAGE_INCLUDED
-#define APPBASE_SFMLUTIL_STAGE_INCLUDED
+#ifndef SFMLUTIL_STAGE_INCLUDED
+#define SFMLUTIL_STAGE_INCLUDED
 //
 // stage.hpp
 //  Helper classes and functions for managing GuiEntity's in a collection on screen.
@@ -116,4 +116,4 @@ namespace sfml_util
     using StageSVec_t = std::vector<StageSPtr_t>;
 
 }
-#endif //APPBASE_SFMLUTIL_STAGE_INCLUDED
+#endif //SFMLUTIL_STAGE_INCLUDED

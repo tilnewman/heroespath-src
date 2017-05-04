@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.7)
 project("Heroes Path")
 
 message(STATUS "System Detected: ${CMAKE_SYSTEM}")
@@ -41,6 +42,6 @@ add_subdirectory(configbase)
 add_subdirectory(logbase)
 add_subdirectory(stringutil)
 add_subdirectory(sfml-util)
-add_subdirectory(heroes-path)
-add_subdirectory(heroespath)
+add_subdirectory(HeroesPath)
+add_subdirectory(game)
 add_subdirectory(utilz)

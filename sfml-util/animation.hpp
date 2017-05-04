@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_ANIMATION_INCLUDED
-#define APPBASE_SFMLUTIL_ANIMATION_INCLUDED
+#ifndef SFMLUTIL_ANIMATION_INCLUDED
+#define SFMLUTIL_ANIMATION_INCLUDED
 //
 // animation.hpp
 //  Code to handle animations on screen.
@@ -139,4 +139,4 @@ namespace sfml_util
     using MultiTextureAnimationSVec_t = std::vector<MultiTextureAnimationSPtr_t>;
 
 }
-#endif //APPBASE_SFMLUTIL_ANIMATION_INCLUDED
+#endif //SFMLUTIL_ANIMATION_INCLUDED

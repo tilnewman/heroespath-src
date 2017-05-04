@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_DISPLAY_INCLUDED
-#define APPBASE_SFMLUTIL_DISPLAY_INCLUDED
+#ifndef SFMLUTIL_DISPLAY_INCLUDED
+#define SFMLUTIL_DISPLAY_INCLUDED
 //
 // display.hpp
 //  Code that manages the display.
@@ -126,4 +126,4 @@ namespace sfml_util
     };
 
 }
-#endif //APPBASE_SFMLUTIL_DISPLAY_INCLUDED
+#endif //SFMLUTIL_DISPLAY_INCLUDED

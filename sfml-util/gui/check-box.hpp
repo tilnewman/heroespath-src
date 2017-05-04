@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_CHECKBOX_INCLUDED
-#define APPBASE_SFMLUTIL_CHECKBOX_INCLUDED
+#ifndef SFMLUTIL_CHECKBOX_INCLUDED
+#define SFMLUTIL_CHECKBOX_INCLUDED
 //
 // check-box.hpp
 //  Check box drawing and handling code.
@@ -168,4 +168,4 @@ namespace gui
     using CheckBoxSetSVec_t = std::vector<CheckBoxSetSPtr_t>;
 }
 }
-#endif //APPBASE_SFMLUTIL_CHECKBOX_INCLUDED
+#endif //SFMLUTIL_CHECKBOX_INCLUDED

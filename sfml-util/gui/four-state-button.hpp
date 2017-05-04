@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
+#ifndef SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
+#define SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
 //
 // four-state-button.hpp
 //  Drawing and handling code for a button type that has four visual and four text states.
@@ -147,4 +147,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
+#endif //SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED

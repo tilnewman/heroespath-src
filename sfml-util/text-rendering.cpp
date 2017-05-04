@@ -8,7 +8,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include <cctype>//for isDigit()

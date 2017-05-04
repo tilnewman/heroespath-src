@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_POPUPMANAGER_INCLUDED
-#define APPBASE_SFMLUTIL_POPUPMANAGER_INCLUDED
+#ifndef SFMLUTIL_POPUPMANAGER_INCLUDED
+#define SFMLUTIL_POPUPMANAGER_INCLUDED
 //
 // popup-manager.hpp
 //  Code to load and store popup window textures.
@@ -9,8 +9,8 @@
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-#include "heroespath/i-popup-callback.hpp"
-#include "heroespath/popup-info.hpp"
+#include "game/i-popup-callback.hpp"
+#include "game/popup-info.hpp"
 
 #include <string>
 #include <vector>
@@ -75,7 +75,7 @@ namespace box
         //Returns a sprite for a randomly selected popup window accent that is
         //positioned, scaled, and colored for drawing to the paper popup window.
         //throws std::range_error on an unknown enum value
-        const sf::Sprite AccentSprite(const heroespath::PopupInfo &, TextureSPtr_t &) const;
+        const sf::Sprite AccentSprite(const game::PopupInfo &, TextureSPtr_t &) const;
 
         //throws range_error on an unknown enum value
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
@@ -94,17 +94,17 @@ namespace box
 
         //create popup window info objects
         //use this function to make popup windows with the typical paper image backgrounds
-        const heroespath::PopupInfo CreatePopupInfo(const std::string &           POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string &           POPUP_NAME,
                                                     const std::string &           PROMPT_TEXT,
                                                     const PopupButtons::Enum      BUTTONS      = PopupButtons::Okay,
                                                     const PopupImage::Enum        IMAGE        = PopupImage::Banner,
                                                     const Justified::Enum         JUSTIFIED    = Justified::Center,
                                                     const sound_effect::Enum      SOUND_EFFECT = sound_effect::PromptGeneric,
-                                                    const heroespath::Popup::Enum WHICH_POPUP  = heroespath::Popup::Generic,
+                                                    const game::Popup::Enum WHICH_POPUP  = game::Popup::Generic,
                                                     const unsigned int            FONT_SIZE    = FontManager::Instance()->Size_Normal());
 
         //use this function to create popup windows with a simple box and custom background color
-        const heroespath::PopupInfo CreatePopupInfo(const std::string &      POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string &      POPUP_NAME,
                                                     const std::string &      PROMPT_TEXT,
                                                     const sf::Color &        TEXT_COLOR,
                                                     const gui::box::Info &   BOX_INFO,
@@ -114,26 +114,26 @@ namespace box
                                                     const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Smallish());
 
         //use this function to create image select popup windows
-        const heroespath::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                                     const std::string &              PROMPT_TEXT,
                                                     const sfml_util::TextureSVec_t & IMAGES_SVEC,
                                                     const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
                                                     const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal());
 
         //use this function to create the number selection popup window
-        const heroespath::PopupInfo CreatePopupInfo(const std::string & POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string & POPUP_NAME,
                                                     const std::string & PROMPT_TEXT,
                                                     const std::size_t   THE_MIN,
                                                     const std::size_t   THE_MAX,
                                                     const unsigned int  FONT_SIZE = FontManager::Instance()->Size_Normal());
 
         //use this function to make character selection popup windows
-        const heroespath::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                                     const std::string &              PROMPT_TEXT,
                                                     const std::vector<std::size_t> & INVALID_PLAYER_NUM_VEC,
                                                     const unsigned int               FONT_SIZE = FontManager::Instance()->Size_Large());
 
-        const heroespath::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
+        const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                                     const std::string &              PROMPT_TEXT,
                                                     const sfml_util::TextureSPtr_t & FROM_IMAGE,
                                                     const sfml_util::TextureSPtr_t & TO_IMAGE,
@@ -144,7 +144,7 @@ namespace box
         //throws range error upon unknown enum value
         TextureSPtr_t Texture(const PopupImage::Enum) const;
 
-        sfml_util::PopupStageSPtr_t CreatePopupStage(const heroespath::PopupInfo &);
+        sfml_util::PopupStageSPtr_t CreatePopupStage(const game::PopupInfo &);
 
     private:
         void LoadPopup(const std::string & POPUP_FILE_NAME,
@@ -173,4 +173,4 @@ namespace box
 
 }
 }
-#endif //APPBASE_SFMLUTIL_POPUPMANAGER_INCLUDED
+#endif //SFMLUTIL_POPUPMANAGER_INCLUDED

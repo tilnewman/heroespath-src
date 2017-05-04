@@ -16,10 +16,10 @@
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 
-#include "heroespath/log-macros.hpp"
-#include "heroespath/creature/title.hpp"
-#include "heroespath/player/character.hpp"
-#include "heroespath/creature/condition.hpp"
+#include "game/log-macros.hpp"
+#include "game/creature/title.hpp"
+#include "game/player/character.hpp"
+#include "game/creature/condition.hpp"
 
 
 namespace sfml_util

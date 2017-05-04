@@ -1,5 +1,5 @@
-#ifndef SFMLUTIL_SFML_UTIL_INCLUDED
-#define SFMLUTIL_SFML_UTIL_INCLUDED
+#ifndef SFMLUTIL_SFMLUTIL_INCLUDED
+#define SFMLUTIL_SFMLUTIL_INCLUDED
 //
 // sfml-util.hpp
 //
@@ -332,4 +332,4 @@ namespace sfml_util
 
 }//end of namespace sfml_util
 
-#endif //SFMLUTIL_SFML_UTIL_INCLUDED
+#endif //SFMLUTIL_SFMLUTIL_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_SOUNDMANAGER_INCLUDED
-#define APPBASE_SFMLUTIL_SOUNDMANAGER_INCLUDED
+#ifndef SFMLUTIL_SOUNDMANAGER_INCLUDED
+#define SFMLUTIL_SOUNDMANAGER_INCLUDED
 //
 // sound-manager.hpp
 //  Aound managing class that handles both sf::Sound and sf::Music instances.
@@ -205,4 +205,4 @@ namespace sfml_util
     using SoundManagerSPtr_t = std::shared_ptr<SoundManager>;
 
 }
-#endif //APPBASE_SFMLUTIL_SOUNDMANAGER_INCLUDED
+#endif //SFMLUTIL_SOUNDMANAGER_INCLUDED

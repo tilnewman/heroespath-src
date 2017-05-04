@@ -11,8 +11,8 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
-#include "heroespath/log-macros.hpp"
-#include "heroespath/loop-manager.hpp"
+#include "game/log-macros.hpp"
+#include "game/loop-manager.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -72,7 +72,7 @@ namespace gui
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::PopupManager::Test() Starting Tests...");
+            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::PopupManager::Test() Starting Tests...");
         }
 
         static auto onFlipped{ false };
@@ -89,14 +89,14 @@ namespace gui
             {
                 onFlipped = ! onFlipped;
                 TextureSPtr_t textureFippedSPtr(sfml_util::FlipHorizCopy( * textureSPtr));
-                heroespath::LoopManager::Instance()->TestingImageSet(textureFippedSPtr);
-                heroespath::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
+                game::LoopManager::Instance()->TestingImageSet(textureFippedSPtr);
+                game::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
             }
             else
             {
                 onFlipped = ! onFlipped;
-                heroespath::LoopManager::Instance()->TestingImageSet(textureSPtr);
-                heroespath::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
+                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
+                game::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
                 return false;
             }
 
@@ -104,7 +104,7 @@ namespace gui
             return false;
         }
 
-        heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -136,7 +136,7 @@ namespace gui
     }
 
 
-    const sf::Sprite PopupManager::AccentSprite(const heroespath::PopupInfo & POPUP_INFO, TextureSPtr_t & accentTextureSPtr) const
+    const sf::Sprite PopupManager::AccentSprite(const game::PopupInfo & POPUP_INFO, TextureSPtr_t & accentTextureSPtr) const
     {
         //check if given popup image is valid
         if (false == sfml_util::PopupImage::IsValid(POPUP_INFO.Image()))
@@ -226,16 +226,16 @@ namespace gui
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string &           POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &           POPUP_NAME,
                                                               const std::string &           PROMPT_TEXT,
                                                               const PopupButtons::Enum      BUTTONS,
                                                               const PopupImage::Enum        IMAGE,
                                                               const Justified::Enum         JUSTIFIED,
                                                               const sound_effect::Enum      SOUND_EFFECT,
-                                                              const heroespath::Popup::Enum WHICH_POPUP,
+                                                              const game::Popup::Enum WHICH_POPUP,
                                                               const unsigned int            FONT_SIZE)
     {
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
                                      BUTTONS,
                                      IMAGE,
@@ -245,7 +245,7 @@ namespace gui
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string &      POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &      POPUP_NAME,
                                                               const std::string &      PROMPT_TEXT,
                                                               const sf::Color &        TEXT_COLOR,
                                                               const gui::box::Info &   BOX_INFO,
@@ -256,24 +256,24 @@ namespace gui
     {
         sfml_util::gui::TextInfo ti(TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE));
         ti.color = TEXT_COLOR;
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      ti,
                                      BUTTONS,
                                      BOX_INFO,
                                      0.25f,
                                      0.5f,
-                                     heroespath::Popup::Generic,
+                                     game::Popup::Generic,
                                      SOUND_EFFECT);
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
                                                               const std::string &              PROMPT_TEXT,
                                                               const sfml_util::TextureSVec_t & IMAGES_SVEC,
                                                               const sound_effect::Enum         SOUND_EFFECT,
                                                               const unsigned int               FONT_SIZE)
     {
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
                                      IMAGES_SVEC,
                                      BACKGROUND_IMAGE_SCALE_DEFAULT_,
@@ -281,13 +281,13 @@ namespace gui
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string & POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string & POPUP_NAME,
                                                               const std::string & PROMPT_TEXT,
                                                               const std::size_t   THE_MIN,
                                                               const std::size_t   THE_MAX,
                                                               const unsigned int  FONT_SIZE)
     {
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
                                      THE_MIN,
                                      THE_MAX,
@@ -295,17 +295,17 @@ namespace gui
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string &         POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &         POPUP_NAME,
                                                               const std::string &         PROMPT_TEXT,
                                                               const std::vector<std::size_t> & INVALID_CHAR_NUM_VEC,
                                                               const unsigned int          FONT_SIZE)
     {
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
                                      sfml_util::PopupButtons::Cancel,
                                      sfml_util::PopupImage::Regular,
                                      GetScaleForImage(PopupImage::Regular),
-                                     heroespath::Popup::CharacterSelection,
+                                     game::Popup::CharacterSelection,
                                      sfml_util::sound_effect::PromptQuestion,
                                      sfml_util::PopupButtonColor::Dark,
                                      true,
@@ -313,7 +313,7 @@ namespace gui
     }
 
 
-    const heroespath::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
                                                               const std::string &              PROMPT_TEXT,
                                                               const sfml_util::TextureSPtr_t & FROM_IMAGE,
                                                               const sfml_util::TextureSPtr_t & TO_IMAGE,
@@ -325,12 +325,12 @@ namespace gui
         textureSVec.push_back(FROM_IMAGE);
         textureSVec.push_back(TO_IMAGE);
 
-        return heroespath::PopupInfo(POPUP_NAME,
+        return game::PopupInfo(POPUP_NAME,
                                      TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
                                      BUTTONS,
                                      PopupImage::Regular,
                                      GetScaleForImage(PopupImage::Regular),
-                                     heroespath::Popup::ImageFade,
+                                     game::Popup::ImageFade,
                                      SOUND_EFFECT,
                                      sfml_util::PopupButtonColor::Dark,
                                      true,
@@ -361,7 +361,7 @@ namespace gui
     }
 
 
-    sfml_util::PopupStageSPtr_t PopupManager::CreatePopupStage(const heroespath::PopupInfo & POPUP_INFO)
+    sfml_util::PopupStageSPtr_t PopupManager::CreatePopupStage(const game::PopupInfo & POPUP_INFO)
     {
         if (POPUP_INFO.Image() == sfml_util::PopupImage::Custom)
         {
@@ -379,7 +379,7 @@ namespace gui
             //re-construct the info objects based on the REGION
             sfml_util::gui::box::Info newBoxInfo(POPUP_INFO.BoxInfo());
             newBoxInfo.SetBoxAndBackgroundRegion(REGION);
-            const heroespath::PopupInfo NEW_POPUP_INFO(POPUP_INFO.Name(),
+            const game::PopupInfo NEW_POPUP_INFO(POPUP_INFO.Name(),
                                                        POPUP_INFO.TextInfo(),
                                                        POPUP_INFO.Buttons(),
                                                        newBoxInfo,

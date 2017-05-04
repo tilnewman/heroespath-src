@@ -6,7 +6,7 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 
 #include "common/assertorthrow.hpp"
 

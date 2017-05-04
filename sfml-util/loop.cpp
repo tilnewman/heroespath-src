@@ -10,9 +10,9 @@
 #include "sfml-util/static-sounds.hpp"
 #include "sfml-util/date-time.hpp"
 
-#include "heroespath/log-macros.hpp"
-#include "heroespath/loop-manager.hpp"
-#include "heroespath/i-popup-callback.hpp"
+#include "game/log-macros.hpp"
+#include "game/loop-manager.hpp"
+#include "game/i-popup-callback.hpp"
 
 #include <boost/filesystem.hpp>
 #include <iomanip>
@@ -55,7 +55,7 @@ namespace sfml_util
         isMouseHovering_     (false),
         takeScreenshot_      (false),
         popupCallbackPtr_    (),
-        state_               (heroespath::LoopState::Intro),
+        state_               (game::LoopState::Intro),
         frameRateVec_        (),
         frameRateSampleCount_(0),
         willLogFrameRate_    (false)
@@ -97,8 +97,8 @@ namespace sfml_util
     }
 
 
-    void Loop::AssignPopupCallbackHandlerInfo(heroespath::callback::IPopupHandler_t * const HANDLER_PTR,
-                                              const heroespath::PopupInfo &                 POPUP_INFO)
+    void Loop::AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
+                                              const game::PopupInfo &                 POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
         popupCallbackPtr_ = HANDLER_PTR;
@@ -264,7 +264,7 @@ namespace sfml_util
 
         if (continueFading_)
         {
-            heroespath::LoopManager::Instance()->HandleTransitionBeforeFade();
+            game::LoopManager::Instance()->HandleTransitionBeforeFade();
 
             continueFading_ = ! fader_.Update(elapsedTimeSec_);
 
@@ -383,7 +383,7 @@ namespace sfml_util
         {
             M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
-            heroespath::LoopManager::Instance()->Goto_Exit();
+            game::LoopManager::Instance()->Goto_Exit();
         }
         else
         {
@@ -482,8 +482,8 @@ namespace sfml_util
         if (popupCallbackPtr_ == nullptr)
             return;
 
-        const sfml_util::Response::Enum POPUP_RESPONSE_ENUM(heroespath::LoopManager::Instance()->GetPopupResponse());
-        const std::size_t POPUP_SELECTION(heroespath::LoopManager::Instance()->GetPopupSelection());
+        const sfml_util::Response::Enum POPUP_RESPONSE_ENUM(game::LoopManager::Instance()->GetPopupResponse());
+        const std::size_t POPUP_SELECTION(game::LoopManager::Instance()->GetPopupSelection());
 
         if (POPUP_RESPONSE_ENUM != sfml_util::Response::None)
         {
@@ -492,11 +492,11 @@ namespace sfml_util
                             << "\" with selection=" << POPUP_SELECTION << " to popup "
                             << popupInfo_.ToStringShort(true) << ".");
 
-            const heroespath::callback::PopupResponse POPUP_RESPONSE_OBJ(popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
+            const game::callback::PopupResponse POPUP_RESPONSE_OBJ(popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
             const bool WILL_RESET_CALLBACKHANDLER( popupCallbackPtr_->HandleCallback(POPUP_RESPONSE_OBJ) );
 
-            heroespath::LoopManager::Instance()->ClearPopupResponse();
+            game::LoopManager::Instance()->ClearPopupResponse();
 
             if (WILL_RESET_CALLBACKHANDLER)
                 popupCallbackPtr_ = nullptr;

@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_DATETIME_INCLUDED
-#define APPBASE_SFMLUTIL_DATETIME_INCLUDED
+#ifndef SFMLUTIL_DATETIME_INCLUDED
+#define SFMLUTIL_DATETIME_INCLUDED
 //
 // date-time.hpp
 //  Simple wrapper structs for holding date and time.
@@ -152,4 +152,4 @@ namespace sfml_util
     }
 
 }
-#endif //APPBASE_SFMLUTIL_DATETIME_INCLUDED
+#endif //SFMLUTIL_DATETIME_INCLUDED

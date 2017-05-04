@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
-#define APPBASE_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
+#ifndef SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
+#define SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
 //
 // loop-cmd-popup.hpp
 //  Code that adds a popup Stage to a Loop object.
@@ -21,14 +21,14 @@ namespace sfml_util
     {
     public:
         LoopCmd_AddStage_Popup(sfml_util::ILoopSPtr_t &      iLoopSPtr,
-                               const heroespath::PopupInfo & POPUP_INFO);
+                               const game::PopupInfo & POPUP_INFO);
 
         virtual ~LoopCmd_AddStage_Popup();
 
         virtual bool Execute();
 
     private:
-        const heroespath::PopupInfo POPUP_INFO_;
+        const game::PopupInfo POPUP_INFO_;
     };
 
     using LoopCmd_AddStage_PopupSPtr_t = std::shared_ptr<LoopCmd_AddStage_Popup>;
@@ -46,4 +46,4 @@ namespace sfml_util
     using LoopCmd_RemoveStage_PopupSPtr_t = std::shared_ptr<LoopCmd_RemoveStage_Popup>;
 
 }
-#endif //APPBASE_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
+#endif //SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED

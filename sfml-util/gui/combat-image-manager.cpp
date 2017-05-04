@@ -7,7 +7,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include "heroespath/loop-manager.hpp"
+#include "game/loop-manager.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
@@ -45,7 +45,7 @@ namespace gui
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  Starting Tests...");
+            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  Starting Tests...");
         }
 
         static auto willFlip{ true };
@@ -62,13 +62,13 @@ namespace gui
             if (willFlip)
             {
                 sfml_util::FlipHoriz( * textureSPtr);
-                heroespath::LoopManager::Instance()->TestingImageSet(textureSPtr);
-                heroespath::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
+                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
+                game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
             }
             else
             {
-                heroespath::LoopManager::Instance()->TestingImageSet(textureSPtr);
-                heroespath::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
+                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
+                game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
                 return false;
             }
 
@@ -76,7 +76,7 @@ namespace gui
             return false;
         }
 
-        heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
 

@@ -4,7 +4,7 @@
 #include "gui-elements.hpp"
 #include "common/assertorthrow.hpp"
 #include "sfml-util/loaders.hpp"
-#include "heroespath/game-data-file.hpp"
+#include "game/game-data-file.hpp"
 
 
 namespace sfml_util
@@ -88,9 +88,9 @@ namespace gui
         lineSmallTBotSpriteRect_	        (sf::IntRect(114, 223, 26, 19)),
         lineSmallTRightSpriteRect_	        (sf::IntRect(141, 223, 19, 26))
     {
-        sfml_util::LoadImageOrTextureSPtr(elementsTextureSPtr_, heroespath::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
-        sfml_util::LoadImageOrTextureSPtr(woodBgTextureSPtr_, heroespath::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
-        sfml_util::LoadImageOrTextureSPtr(darkKnotBgTextureSPtr_, heroespath::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
+        sfml_util::LoadImageOrTextureSPtr(elementsTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
+        sfml_util::LoadImageOrTextureSPtr(woodBgTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::LoadImageOrTextureSPtr(darkKnotBgTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
     }
 
 

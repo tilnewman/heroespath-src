@@ -7,10 +7,10 @@
 #include "utilz/random.hpp"
 #include "utilz/boost-string-includes.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"
-#include "heroespath/loop-manager.hpp"
-#include "heroespath/non-player/ownership-profile.hpp"
+#include "game/loop-manager.hpp"
+#include "game/non-player/ownership-profile.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -51,7 +51,7 @@ namespace gui
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  Starting tests...");
+            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  Starting tests...");
         }
 
         ItemImageManagerSPtr_t iimSPtr{ ItemImageManager::Instance() };
@@ -60,16 +60,16 @@ namespace gui
 
         //test weapon items
         static auto axeIndex{ 0 };
-        if (axeIndex < static_cast<int>(heroespath::item::weapon::axe_type::Count))
+        if (axeIndex < static_cast<int>(game::item::weapon::axe_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::weapon::axe_type::Enum>(axeIndex) };
-            auto const STR { boost::algorithm::to_lower_copy(heroespath::item::weapon::axe_type::ToString(ENUM)) };
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Axe, STR);
+            auto const ENUM{ static_cast<game::item::weapon::axe_type::Enum>(axeIndex) };
+            auto const STR { boost::algorithm::to_lower_copy(game::item::weapon::axe_type::ToString(ENUM)) };
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Axe, STR);
             wi.axe = ENUM;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++axeIndex;
             return false;
         }
@@ -77,27 +77,27 @@ namespace gui
         static auto hasTestedBite{ false };
         if (false == hasTestedBite)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Bite, "bite");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Bite, "bite");
             wi.is_bite = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"bite\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBite = true;
             return false;
         }
 
         static auto bladedStaffIndex{ 0 };
-        if (bladedStaffIndex < static_cast<int>(heroespath::item::weapon::bladedstaff_type::Count))
+        if (bladedStaffIndex < static_cast<int>(game::item::weapon::bladedstaff_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::weapon::bladedstaff_type::Enum>(bladedStaffIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(heroespath::item::weapon::bladedstaff_type::ToString(ENUM)) };
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::BladedStaff, STR);
+            auto const ENUM{ static_cast<game::item::weapon::bladedstaff_type::Enum>(bladedStaffIndex) };
+            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::bladedstaff_type::ToString(ENUM)) };
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::BladedStaff, STR);
             wi.bladedstaff = ENUM;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bladedStaffIndex;
             return false;
         }
@@ -105,12 +105,12 @@ namespace gui
         static auto hasTestedBreath{ false };
         if (false == hasTestedBreath)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Breath, "breath");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Breath, "breath");
             wi.is_breath = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"breath\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBreath = true;
             return false;
         }
@@ -118,27 +118,27 @@ namespace gui
         static auto hasTestedClaws{ false };
         if (false == hasTestedClaws)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Claws, "claws");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Claws, "claws");
             wi.is_claws = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"claws\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedClaws = true;
             return false;
         }
 
         static auto clubIndex{ 0 };
-        if (clubIndex < static_cast<int>(heroespath::item::weapon::club_type::Count))
+        if (clubIndex < static_cast<int>(game::item::weapon::club_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::weapon::club_type::Enum>(clubIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(heroespath::item::weapon::club_type::ToString(ENUM)) };
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Club, STR);
+            auto const ENUM{ static_cast<game::item::weapon::club_type::Enum>(clubIndex) };
+            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::club_type::ToString(ENUM)) };
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Club, STR);
             wi.club = ENUM;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++clubIndex;
             return false;
         }
@@ -146,12 +146,12 @@ namespace gui
         static auto hasTestedFists{ false };
         if (false == hasTestedFists)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Fists, "fists");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Fists, "fists");
             wi.is_fists = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"fists\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedFists = true;
             return false;
         }
@@ -159,12 +159,12 @@ namespace gui
         static auto hasTestedKnife{ false };
         if (false == hasTestedKnife)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Knife, "knife");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "knife");
             wi.is_knife = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"knife\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedKnife = true;
             return false;
         }
@@ -172,27 +172,27 @@ namespace gui
         static auto hasTestedDagger{ false };
         if (false == hasTestedDagger)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Knife, "dagger");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "dagger");
             wi.is_dagger = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"dagger\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedDagger = true;
             return false;
         }
 
         static auto projIndex{ 0 };
-        if (projIndex < static_cast<int>(heroespath::item::weapon::projectile_type::Count))
+        if (projIndex < static_cast<int>(game::item::weapon::projectile_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::weapon::projectile_type::Enum>(projIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(heroespath::item::weapon::projectile_type::ToString(ENUM)) };
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Projectile, STR);
+            auto const ENUM{ static_cast<game::item::weapon::projectile_type::Enum>(projIndex) };
+            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::projectile_type::ToString(ENUM)) };
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Projectile, STR);
             wi.projectile = ENUM;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++projIndex;
             return false;
         }
@@ -200,12 +200,12 @@ namespace gui
         static auto hasTestedStaff{ false };
         if (false == hasTestedStaff)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Staff, "staff");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "staff");
             wi.is_staff = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"staff\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedStaff = true;
             return false;
         }
@@ -213,27 +213,27 @@ namespace gui
         static auto hasTestedQStaff{ false };
         if (false == hasTestedQStaff)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Staff, "quarterstaff");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "quarterstaff");
             wi.is_quarterstaff = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"quarterstaff\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedQStaff = true;
             return false;
         }
 
         static auto swordIndex{ 0 };
-        if (swordIndex < static_cast<int>(heroespath::item::weapon::sword_type::Count))
+        if (swordIndex < static_cast<int>(game::item::weapon::sword_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::weapon::sword_type::Enum>(swordIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(heroespath::item::weapon::sword_type::ToString(ENUM)) };
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Sword, STR);
+            auto const ENUM{ static_cast<game::item::weapon::sword_type::Enum>(swordIndex) };
+            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::sword_type::ToString(ENUM)) };
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Sword, STR);
             wi.sword = ENUM;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++swordIndex;
             return false;
         }
@@ -241,122 +241,122 @@ namespace gui
         static auto hasTestedTendrils{ false };
         if (false == hasTestedTendrils)
         {
-            heroespath::item::weapon::WeaponInfo wi(heroespath::item::weapon_type::Tendrils, "tendrils");
+            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Tendrils, "tendrils");
             wi.is_tendrils = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(wi, false, false)) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"tendrils\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedTendrils = true;
             return false;
         }
 
         //test armor items
         static auto aventailIndex{ 0 };
-        if (aventailIndex < static_cast<int>(heroespath::item::armor::base_type::Count))
+        if (aventailIndex < static_cast<int>(game::item::armor::base_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Aventail);
-            ai.base = static_cast<heroespath::item::armor::base_type::Enum>(aventailIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Aventail);
+            ai.base = static_cast<game::item::armor::base_type::Enum>(aventailIndex);
             ai.is_aventail = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() aventail \"" << heroespath::item::armor::base_type::ToString(ai.base) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() aventail \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++aventailIndex;
             return false;
         }
 
         static auto bootsIndex{ 0 };
-        if (bootsIndex < static_cast<int>(heroespath::item::armor::base_type::Count))
+        if (bootsIndex < static_cast<int>(game::item::armor::base_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Boots);
-            ai.base = static_cast<heroespath::item::armor::base_type::Enum>(bootsIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Boots);
+            ai.base = static_cast<game::item::armor::base_type::Enum>(bootsIndex);
             ai.is_boots = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() boots \"" << heroespath::item::armor::base_type::ToString(ai.base) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() boots \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bootsIndex;
             return false;
         }
 
         static auto bracerIndex{ 0 };
-        if (bracerIndex < static_cast<int>(heroespath::item::armor::base_type::Count))
+        if (bracerIndex < static_cast<int>(game::item::armor::base_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Bracer);
-            ai.base = static_cast<heroespath::item::armor::base_type::Enum>(bracerIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Bracer);
+            ai.base = static_cast<game::item::armor::base_type::Enum>(bracerIndex);
             ai.is_bracer = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() bracer \"" << heroespath::item::armor::base_type::ToString(ai.base) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() bracer \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bracerIndex;
             return false;
         }
 
         static auto coverIndex{ 0 };
-        if (coverIndex < static_cast<int>(heroespath::item::armor::cover_type::Count))
+        if (coverIndex < static_cast<int>(game::item::armor::cover_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Covering);
-            ai.cover = static_cast<heroespath::item::armor::cover_type::Enum>(coverIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Covering);
+            ai.cover = static_cast<game::item::armor::cover_type::Enum>(coverIndex);
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() cover \"" << heroespath::item::armor::cover_type::ToString(ai.cover) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() cover \"" << game::item::armor::cover_type::ToString(ai.cover) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++coverIndex;
             return false;
         }
 
         static auto helmIndex{ 0 };
-        if (helmIndex < static_cast<int>(heroespath::item::armor::helm_type::Count))
+        if (helmIndex < static_cast<int>(game::item::armor::helm_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Helm);
-            ai.helm = static_cast<heroespath::item::armor::helm_type::Enum>(helmIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Helm);
+            ai.helm = static_cast<game::item::armor::helm_type::Enum>(helmIndex);
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() helm \"" << heroespath::item::armor::helm_type::ToString(ai.helm) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() helm \"" << game::item::armor::helm_type::ToString(ai.helm) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++helmIndex;
             return false;
         }
 
         static auto pantIndex{ 0 };
-        if (pantIndex < static_cast<int>(heroespath::item::armor::base_type::Count))
+        if (pantIndex < static_cast<int>(game::item::armor::base_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Pants);
-            ai.base = static_cast<heroespath::item::armor::base_type::Enum>(pantIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Pants);
+            ai.base = static_cast<game::item::armor::base_type::Enum>(pantIndex);
             ai.is_pants = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() pants \"" << heroespath::item::armor::base_type::ToString(ai.base) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() pants \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++pantIndex;
             return false;
         }
 
         static auto shieldIndex{ 0 };
-        if (shieldIndex < static_cast<int>(heroespath::item::armor::shield_type::Count))
+        if (shieldIndex < static_cast<int>(game::item::armor::shield_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Sheild);
-            ai.shield = static_cast<heroespath::item::armor::shield_type::Enum>(shieldIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Sheild);
+            ai.shield = static_cast<game::item::armor::shield_type::Enum>(shieldIndex);
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shield \"" << heroespath::item::armor::shield_type::ToString(ai.shield) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shield \"" << game::item::armor::shield_type::ToString(ai.shield) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shieldIndex;
             return false;
         }
 
         static auto shirtIndex{ 0 };
-        if (shirtIndex < static_cast<int>(heroespath::item::armor::base_type::Count))
+        if (shirtIndex < static_cast<int>(game::item::armor::base_type::Count))
         {
-            heroespath::item::armor::ArmorInfo ai(heroespath::item::armor_type::Shirt);
-            ai.base = static_cast<heroespath::item::armor::base_type::Enum>(shirtIndex);
+            game::item::armor::ArmorInfo ai(game::item::armor_type::Shirt);
+            ai.base = static_cast<game::item::armor::base_type::Enum>(shirtIndex);
             ai.is_shirt = true;
             auto const TEXTURE_SPTR{ iimSPtr->Load(iimSPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shirt \"" << heroespath::item::armor::base_type::ToString(ai.base) << "\"");
-            heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
-            heroespath::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shirt \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
+            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shirtIndex;
             return false;
         }
@@ -365,27 +365,27 @@ namespace gui
         auto const RAND_REPEAT_COUNT{ 100 };
         static auto miscIndex{ 1 };
         static auto randIndex{ 0 };
-        if (miscIndex < static_cast<int>(heroespath::item::misc_type::Count))
+        if (miscIndex < static_cast<int>(game::item::misc_type::Count))
         {
-            auto const ENUM{ static_cast<heroespath::item::misc_type::Enum>(miscIndex) };
+            auto const ENUM{ static_cast<game::item::misc_type::Enum>(miscIndex) };
             auto const FILENAME_NONRAND{ iimSPtr->GetImageFilename(ENUM, false, false) };
-            M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_NONRAND.empty() == false), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << heroespath::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
+            M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_NONRAND.empty() == false), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
             auto const TEXTURE_BASE_SPTR{ iimSPtr->Load(FILENAME_NONRAND) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_BASE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << heroespath::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_BASE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
 
             if (randIndex < RAND_REPEAT_COUNT)
             {
                 auto const FILENAME_RAND{ iimSPtr->GetImageFilename(ENUM, false, true) };
-                M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_RAND.empty() == false),     "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << heroespath::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
+                M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_RAND.empty() == false),     "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
                 auto const TEXTURE_RAND_SPTR{ iimSPtr->Load(FILENAME_RAND) };
-                M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_RAND_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << heroespath::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
-                heroespath::LoopManager::Instance()->TestingImageSet(TEXTURE_RAND_SPTR);
+                M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_RAND_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
+                game::LoopManager::Instance()->TestingImageSet(TEXTURE_RAND_SPTR);
 
-                auto const ENUM_STR{ heroespath::item::misc_type::ToString(ENUM) };
+                auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
 
                 std::ostringstream ss;
                 ss << "ItemImageManager Rand Test of " << ENUM_STR << "#";
-                heroespath::LoopManager::Instance()->TestingStrIncrement(ss.str());
+                game::LoopManager::Instance()->TestingStrIncrement(ss.str());
 
                 ++randIndex;
                 return false;
@@ -399,10 +399,10 @@ namespace gui
         //test item ToString() functions
         {
             static unsigned int categoryIndex{ 0 };
-            if (categoryIndex <= heroespath::item::category::Edible)
+            if (categoryIndex <= game::item::category::Edible)
             {
-                auto const STR{ heroespath::item::category::ToString(static_cast<heroespath::item::category::Enum>(categoryIndex), false) };
-                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager category::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::category::ToString(static_cast<game::item::category::Enum>(categoryIndex), false) };
+                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager category::ToString(\"" + STR + "\") Test.");
                 if (0 == categoryIndex)
                 {
                     categoryIndex = 1;
@@ -415,10 +415,10 @@ namespace gui
             }
 
             static unsigned int weaponTypeIndex{ 0 };
-            if (weaponTypeIndex <= heroespath::item::weapon_type::Breath)
+            if (weaponTypeIndex <= game::item::weapon_type::Breath)
             {
-                auto const STR{ heroespath::item::weapon_type::ToString(static_cast<heroespath::item::weapon_type::Enum>(weaponTypeIndex), false) };
-                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::weapon_type::ToString(static_cast<game::item::weapon_type::Enum>(weaponTypeIndex), false) };
+                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
                 if (0 == weaponTypeIndex)
                 {
                     weaponTypeIndex = 1;
@@ -431,10 +431,10 @@ namespace gui
             }
 
             static unsigned int armorTypeIndex{ 0 };
-            if (armorTypeIndex <= heroespath::item::armor_type::Skin)
+            if (armorTypeIndex <= game::item::armor_type::Skin)
             {
-                auto const STR{ heroespath::item::armor_type::ToString(static_cast<heroespath::item::armor_type::Enum>(armorTypeIndex), false) };
-                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::armor_type::ToString(static_cast<game::item::armor_type::Enum>(armorTypeIndex), false) };
+                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
                 if (0 == armorTypeIndex)
                 {
                     armorTypeIndex = 1;
@@ -447,10 +447,10 @@ namespace gui
             }
 
             static unsigned int collecterTypeIndex{ 0 };
-            if (collecterTypeIndex <= heroespath::non_player::ownership::collector_type::Hoarder)
+            if (collecterTypeIndex <= game::non_player::ownership::collector_type::Hoarder)
             {
-                auto const STR{ heroespath::non_player::ownership::collector_type::ToString(static_cast<heroespath::non_player::ownership::collector_type::Enum>(collecterTypeIndex)) };
-                heroespath::LoopManager::Instance()->TestingStrIncrement("ItemImageManager non_player::ownership::collector_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::non_player::ownership::collector_type::ToString(static_cast<game::non_player::ownership::collector_type::Enum>(collecterTypeIndex)) };
+                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager non_player::ownership::collector_type::ToString(\"" + STR + "\") Test.");
                 if (0 == collecterTypeIndex)
                 {
                     collecterTypeIndex = 1;
@@ -463,7 +463,7 @@ namespace gui
             }
         }
 
-        heroespath::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -485,15 +485,15 @@ namespace gui
     }
 
 
-    TextureSPtr_t ItemImageManager::Load(const heroespath::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
+    TextureSPtr_t ItemImageManager::Load(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
     {
         return Load( GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE) );
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const heroespath::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE) const
+    const std::string ItemImageManager::GetImageFilename(const game::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE) const
     {
-        using namespace heroespath::item;
+        using namespace game::item;
 
         if (ITEM_SPTR->IsWeapon() && (ITEM_SPTR->Weapon_Info().type != weapon_type::NotAWeapon))
         {
@@ -516,9 +516,9 @@ namespace gui
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const heroespath::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED, const bool) const
+    const std::string ItemImageManager::GetImageFilename(const game::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED, const bool) const
     {
-        using namespace heroespath::item;
+        using namespace game::item;
 
         if ((WEAPON_INFO.type & weapon_type::Sword) != 0)
             return weapon::sword_type::ToString(WEAPON_INFO.sword) + EXT_;
@@ -576,9 +576,9 @@ namespace gui
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const heroespath::item::armor::ArmorInfo & ARMOR_INFO, const bool, const bool) const
+    const std::string ItemImageManager::GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool, const bool) const
     {
-        using namespace heroespath::item;
+        using namespace game::item;
 
         if ((ARMOR_INFO.type & armor_type::Aventail) != 0)
             return "aventail" + EXT_;
@@ -618,14 +618,14 @@ namespace gui
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const heroespath::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
+    const std::string ItemImageManager::GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
     {
         switch (ITEM_ENUM)
         {
-            case heroespath::item::misc_type::Charm:
-            case heroespath::item::misc_type::Amulet:
-            case heroespath::item::misc_type::Pendant:
-            case heroespath::item::misc_type::Medallion:
+            case game::item::misc_type::Charm:
+            case game::item::misc_type::Amulet:
+            case game::item::misc_type::Pendant:
+            case game::item::misc_type::Medallion:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -636,11 +636,11 @@ namespace gui
                 else
                     return "amulet-20" + EXT_;
             }
-            case heroespath::item::misc_type::Necklas:
+            case game::item::misc_type::Necklas:
             {
                 return "necklas-1" + EXT_;
             }
-            case heroespath::item::misc_type::Bag:
+            case game::item::misc_type::Bag:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -651,8 +651,8 @@ namespace gui
                 else
                     return "bag-2" + EXT_;
             }
-            case heroespath::item::misc_type::Tome:
-            case heroespath::item::misc_type::Book:
+            case game::item::misc_type::Tome:
+            case game::item::misc_type::Book:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -663,19 +663,19 @@ namespace gui
                 else
                     return "book-2" + EXT_;
             }
-            case heroespath::item::misc_type::Cape:
+            case game::item::misc_type::Cape:
             {
                 return "cape" + EXT_;
             }
-            case heroespath::item::misc_type::Cloak:
+            case game::item::misc_type::Cloak:
             {
                 return "cloak" + EXT_;
             }
-            case heroespath::item::misc_type::Robe:
+            case game::item::misc_type::Robe:
             {
                 return "robe" + EXT_;
             }
-            case heroespath::item::misc_type::Crown:
+            case game::item::misc_type::Crown:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -686,7 +686,7 @@ namespace gui
                 else
                     return "crown-5" + EXT_;
             }
-            case heroespath::item::misc_type::Doll:
+            case game::item::misc_type::Doll:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -697,8 +697,8 @@ namespace gui
                 else
                     return "doll-1" + EXT_;
             }
-            case heroespath::item::misc_type::Drink:
-            case heroespath::item::misc_type::Potion:
+            case game::item::misc_type::Drink:
+            case game::item::misc_type::Potion:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -708,7 +708,7 @@ namespace gui
                 }
                     return "potion-13" + EXT_;
             }
-            case heroespath::item::misc_type::Goblet:
+            case game::item::misc_type::Goblet:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -719,7 +719,7 @@ namespace gui
                 else
                     return "goblet-5" + EXT_;
             }
-            case heroespath::item::misc_type::Herbs:
+            case game::item::misc_type::Herbs:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -729,7 +729,7 @@ namespace gui
                 }
                     return "herb-26" + EXT_;
             }
-            case heroespath::item::misc_type::Hourglass:
+            case game::item::misc_type::Hourglass:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -740,7 +740,7 @@ namespace gui
                 else
                     return "hourglass-1" + EXT_;
             }
-            case heroespath::item::misc_type::Key:
+            case game::item::misc_type::Key:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -751,7 +751,7 @@ namespace gui
                 else
                     return "key-2" + EXT_;
             }
-            case heroespath::item::misc_type::Lantern:
+            case game::item::misc_type::Lantern:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -762,7 +762,7 @@ namespace gui
                 else
                     return "lantern-10" + EXT_;
             }
-            case heroespath::item::misc_type::Torch:
+            case game::item::misc_type::Torch:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -772,7 +772,7 @@ namespace gui
                 }
                     return "torch-1" + EXT_;
             }
-            case heroespath::item::misc_type::Lockbox:
+            case game::item::misc_type::Lockbox:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -783,7 +783,7 @@ namespace gui
                 else
                     return "lockbox-2" + EXT_;
             }
-            case heroespath::item::misc_type::Chest:
+            case game::item::misc_type::Chest:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -794,11 +794,11 @@ namespace gui
                 else
                     return "chest-4" + EXT_;
             }
-            case heroespath::item::misc_type::LockPicks:
+            case game::item::misc_type::LockPicks:
             {
                 return "lockpicks" + EXT_;
             }
-            case heroespath::item::misc_type::Mask:
+            case game::item::misc_type::Mask:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -809,7 +809,7 @@ namespace gui
                 else
                     return "mask-3" + EXT_;
             }
-            case heroespath::item::misc_type::Mirror:
+            case game::item::misc_type::Mirror:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -820,23 +820,23 @@ namespace gui
                 else
                     return "mirror-7" + EXT_;
             }
-            case heroespath::item::misc_type::Lute:
+            case game::item::misc_type::Lute:
             {
                 return "lute" + EXT_;
             }
-            case heroespath::item::misc_type::Panflute:
+            case game::item::misc_type::Panflute:
             {
                 return "panflute" + EXT_;
             }
-            case heroespath::item::misc_type::Flute:
+            case game::item::misc_type::Flute:
             {
                 return "flute" + EXT_;
             }
-            case heroespath::item::misc_type::Sitar:
+            case game::item::misc_type::Sitar:
             {
                 return "sitar" + EXT_;
             }
-            case heroespath::item::misc_type::Scroll:
+            case game::item::misc_type::Scroll:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -847,7 +847,7 @@ namespace gui
                 else
                     return "scroll-6" + EXT_;
             }
-            case heroespath::item::misc_type::Orb:
+            case game::item::misc_type::Orb:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -858,7 +858,7 @@ namespace gui
                 else
                     return "orb-4" + EXT_;
             }
-            case heroespath::item::misc_type::Ring:
+            case game::item::misc_type::Ring:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -877,7 +877,7 @@ namespace gui
                         return "ring-plain-2" + EXT_;
                 }
             }
-            case heroespath::item::misc_type::Skull:
+            case game::item::misc_type::Skull:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -888,7 +888,7 @@ namespace gui
                 else
                     return "skull-3" + EXT_;
             }
-            case heroespath::item::misc_type::Shard:
+            case game::item::misc_type::Shard:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -899,7 +899,7 @@ namespace gui
                 else
                     return "shard-1" + EXT_;
             }
-            case heroespath::item::misc_type::Salve:
+            case game::item::misc_type::Salve:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -910,7 +910,7 @@ namespace gui
                 else
                     return "mortar-3" + EXT_;
             }
-            case heroespath::item::misc_type::Wand:
+            case game::item::misc_type::Wand:
             {
                 if (WILL_RANDOMIZE)
                 {
@@ -921,8 +921,8 @@ namespace gui
                 else
                     return "wand-7" + EXT_;
             }
-            case heroespath::item::misc_type::NotMisc:
-            case heroespath::item::misc_type::Count:
+            case game::item::misc_type::NotMisc:
+            case game::item::misc_type::Count:
             default:
             {
                 std::ostringstream ss;

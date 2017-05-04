@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_BOX_INCLUDED
-#define APPBASE_SFMLUTIL_BOX_INCLUDED
+#ifndef SFMLUTIL_BOX_INCLUDED
+#define SFMLUTIL_BOX_INCLUDED
 //
 // box.hpp
 //  Box drawing utility class
@@ -75,4 +75,4 @@ namespace box
 }
 }
 }
-#endif //APPBASE_SFMLUTIL_BOX_INCLUDED
+#endif //SFMLUTIL_BOX_INCLUDED

@@ -8,7 +8,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 

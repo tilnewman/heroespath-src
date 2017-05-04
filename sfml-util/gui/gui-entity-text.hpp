@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUITEXT_INCLUDED
-#define APPBASE_SFMLUTIL_GUITEXT_INCLUDED
+#ifndef SFMLUTIL_GUITEXT_INCLUDED
+#define SFMLUTIL_GUITEXT_INCLUDED
 //
 // gui-entity-text.hpp
 //  Code for handling a piece of text that can be in one of three states.
@@ -108,4 +108,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUITEXT_INCLUDED
+#endif //SFMLUTIL_GUITEXT_INCLUDED

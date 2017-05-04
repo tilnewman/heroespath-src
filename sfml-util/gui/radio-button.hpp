@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_RADIOBUTTON_INCLUDED
-#define APPBASE_SFMLUTIL_RADIOBUTTON_INCLUDED
+#ifndef SFMLUTIL_RADIOBUTTON_INCLUDED
+#define SFMLUTIL_RADIOBUTTON_INCLUDED
 //
 // radio-button.hpp
 //  Radio button drawing and handling code.
@@ -234,4 +234,4 @@ namespace gui
     using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
 }
 }
-#endif //APPBASE_SFMLUTIL_RADIOBUTTON_INCLUDED
+#endif //SFMLUTIL_RADIOBUTTON_INCLUDED

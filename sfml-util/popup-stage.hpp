@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_POPUPSTAGE_INCLUDED
-#define APPBASE_SFMLUTIL_POPUPSTAGE_INCLUDED
+#ifndef SFMLUTIL_POPUPSTAGE_INCLUDED
+#define SFMLUTIL_POPUPSTAGE_INCLUDED
 //
 // popup-stage.hpp
 //  This class encapsulates a popup window stage on screen.
@@ -15,7 +15,7 @@
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 
-#include "heroespath/popup-info.hpp"
+#include "game/popup-info.hpp"
 
 #include <memory>
 #include <queue>
@@ -43,14 +43,14 @@ namespace sfml_util
         public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
     public:
-        PopupStage(const heroespath::PopupInfo & POPUP_INFO,
+        PopupStage(const game::PopupInfo & POPUP_INFO,
                    const sf::FloatRect &         REGION,
                    const sf::FloatRect &         INNER_REGION,
                    const TextureSPtr_t &         TEXTURE_SPTR,
                    const sf::Sprite &            ACCENT_SPRITE,
                    const TextureSPtr_t &         ACCENT_TEXTURE_SPTR);
 
-        PopupStage(const heroespath::PopupInfo & POPUP_INFO,
+        PopupStage(const game::PopupInfo & POPUP_INFO,
                    const sf::FloatRect &         REGION,
                    const sf::FloatRect &         INNER_REGION,
                    const sf::Sprite &            ACCENT_SPRITE,
@@ -82,7 +82,7 @@ namespace sfml_util
         static const int            NUMBER_SELECT_INVALID_;
         static const float          BEFORE_FADE_STARTS_DELAY_SEC_;
         //
-        const heroespath::PopupInfo POPUP_INFO_;
+        const game::PopupInfo POPUP_INFO_;
         sf::Sprite                  backgroundSprite_;
         TextureSPtr_t               backgroundTexture_;
         sf::FloatRect               innerRegion_;
@@ -138,4 +138,4 @@ namespace sfml_util
     using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
 
 }
-#endif //APPBASE_SFMLUTIL_POPUPSTAGE_INCLUDED
+#endif //SFMLUTIL_POPUPSTAGE_INCLUDED

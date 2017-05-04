@@ -9,7 +9,7 @@
 #include "sfml-util/display.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
-#include "heroespath/game-data-file.hpp"
+#include "game/game-data-file.hpp"
 
 
 namespace sfml_util
@@ -50,7 +50,7 @@ namespace gui
 
         gradient_.Setup(FULLSCREEN_RECT, GRADIENT_INFO);
 
-        bgInfo_ = sfml_util::gui::BackgroundInfo(heroespath::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+        bgInfo_ = sfml_util::gui::BackgroundInfo(game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
                                                                                                     FULLSCREEN_RECT,
                                                                                                     sf::Color::White,
                                                                                                     GRADIENT_INFO);

@@ -5,8 +5,8 @@
 
 #include "sfml-util/loaders.hpp"
 
-#include "heroespath/log-macros.hpp"
-#include "heroespath/creature/title.hpp"
+#include "game/log-macros.hpp"
+#include "game/creature/title.hpp"
 
 #include <boost/filesystem.hpp>
 #include <sstream>
@@ -54,7 +54,7 @@ namespace gui
     }
 
 
-    const TextureSPtr_t TitleImageManager::Get(heroespath::creature::TitlePtr_t TITLE_PTR) const
+    const TextureSPtr_t TitleImageManager::Get(game::creature::TitlePtr_t TITLE_PTR) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ( bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(TITLE_PTR->ImageFilename())) );

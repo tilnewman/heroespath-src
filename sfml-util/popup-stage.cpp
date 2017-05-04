@@ -14,9 +14,9 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 
-#include "heroespath/loop-manager.hpp"
-#include "heroespath/log-macros.hpp"
-#include "heroespath/creature/name-info.hpp"
+#include "game/loop-manager.hpp"
+#include "game/log-macros.hpp"
+#include "game/creature/name-info.hpp"
 
 #include "utilz/random.hpp"
 
@@ -32,7 +32,7 @@ namespace sfml_util
     const float PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_(2.0f);
 
 
-    PopupStage::PopupStage(const heroespath::PopupInfo & POPUP_INFO,
+    PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &         REGION,
                            const sf::FloatRect &         INNER_REGION,
                            const TextureSPtr_t &         TEXTURE_SPTR,
@@ -47,7 +47,7 @@ namespace sfml_util
         textRegionSPtr_        (),
         textRegion_            (),
         elapsedTimeCounter_    (0.0f),
-        secondCounter_         (((POPUP_INFO.Type() == heroespath::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
+        secondCounter_         (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
         box_                   ("PopupWindow's", gui::box::Info()),
         gradient_              (),
         accentSprite_          (ACCENT_SPRITE),
@@ -84,7 +84,7 @@ namespace sfml_util
     {}
 
 
-    PopupStage::PopupStage(const heroespath::PopupInfo & POPUP_INFO,
+    PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &         REGION,
                            const sf::FloatRect &         INNER_REGION,
                            const sf::Sprite &            ACCENT_SPRITE,
@@ -98,7 +98,7 @@ namespace sfml_util
         textRegionSPtr_        (),
         textRegion_            (),
         elapsedTimeCounter_    (0.0f),
-        secondCounter_         (((POPUP_INFO.Type() == heroespath::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
+        secondCounter_         (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
         box_                   ("PopupWindow's", POPUP_INFO.BoxInfo()),
         gradient_              (),
         accentSprite_          (ACCENT_SPRITE),
@@ -141,7 +141,7 @@ namespace sfml_util
 
     bool PopupStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageSelection)
+        if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
             if (isImageProcAllowed_)
             {
@@ -156,7 +156,7 @@ namespace sfml_util
 
             return true;
         }
-        else if ((POPUP_INFO_.Type() == heroespath::Popup::NumberSelection))
+        else if ((POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
             const std::size_t CURR_VAL(POPUP_INFO_.NumberSelMin() + static_cast<std::size_t>(CURR_RATIO * static_cast<float>(POPUP_INFO_.NumberSelMax() - POPUP_INFO_.NumberSelMin())));
@@ -191,7 +191,7 @@ namespace sfml_util
 
     bool PopupStage::HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &)
     {
-        if (POPUP_INFO_.Type() == heroespath::Popup::NumberSelection)
+        if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
         {
             const int NUM(GetSelectNumber());
             selectPopupButtonSPtr_->SetSelection(NUM);
@@ -227,7 +227,7 @@ namespace sfml_util
         backgroundSprite_.setPosition(StageRegionLeft(), StageRegionTop());
 
         //add and position buttons
-        const sfml_util::gui::MouseTextInfo TEMP_MOUSE_TEXT_INFO(sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(heroespath::creature::NameInfo::Instance()->LargestLetterString(), POPUP_INFO_));
+        const sfml_util::gui::MouseTextInfo TEMP_MOUSE_TEXT_INFO(sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(game::creature::NameInfo::Instance()->LargestLetterString(), POPUP_INFO_));
         const sf::Text TEMP_TEXT_OBJ(TEMP_MOUSE_TEXT_INFO.up.text, * TEMP_MOUSE_TEXT_INFO.up.fontSPtr, TEMP_MOUSE_TEXT_INFO.up.charSize);
         const float POPUPBUTTON_TEXT_HEIGHT(TEMP_TEXT_OBJ.getGlobalBounds().height);
         const float POPUPBUTTON_TEXT_BOTTOM_MARGIN(sfml_util::MapByRes(30.0f, 90.0f));
@@ -349,13 +349,13 @@ namespace sfml_util
         const float SLIDERBAR_LENGTH(textRegion_.width * 0.75f);
         const float SLIDERBAR_POS_LEFT(textRegion_.left + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
         sliderbarPosTop_ = (BUTTON_POS_TOP - (POPUPBUTTON_TEXT_HEIGHT * 3.0f));
-        if ((POPUP_INFO_.Type() == heroespath::Popup::ImageSelection) || (POPUP_INFO_.Type() == heroespath::Popup::NumberSelection))
+        if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) || (POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
             sliderbarSPtr_.reset(new sfml_util::gui::SliderBar("PopupStage's", SLIDERBAR_POS_LEFT, sliderbarPosTop_, SLIDERBAR_LENGTH, sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
             EntityAdd(sliderbarSPtr_);
         }
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::NumberSelection)
+        if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
         {
             const sfml_util::gui::TextInfo INFO_TEXT_INFO(" ",
                                                           FontManager::Instance()->Font_Default1(),
@@ -408,7 +408,7 @@ namespace sfml_util
             textEntryBoxSPtr_->SetHasFocus(true);
         }
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageSelection)
+        if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
             imagesRect_ = textRegion_;
             imagesRect_.top = textRegionSPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);//added is a pad so the text does not touch the images
@@ -434,7 +434,7 @@ namespace sfml_util
             }
         }
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageFade)
+        if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             const float IMAGE_PAD(10.0f);
             const float IMAGE_REGION_TOP(textRegionSPtr_->GetEntityRegion().top + textRegionSPtr_->GetEntityRegion().height + IMAGE_PAD);
@@ -486,7 +486,7 @@ namespace sfml_util
 
         textRegionSPtr_->draw(target, states);
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageSelection)
+        if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
             target.draw(imageSpriteCurr_, states);
 
@@ -496,7 +496,7 @@ namespace sfml_util
             if (willShowImageCount_ && (imageNumTextRegionSPtr_.get() != nullptr))
                 imageNumTextRegionSPtr_->draw(target, states);
         }
-        else if (POPUP_INFO_.Type() == heroespath::Popup::ImageFade)
+        else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             target.draw(imageSpritePrev_, states);
             target.draw(imageSpriteCurr_, states);
@@ -531,7 +531,7 @@ namespace sfml_util
             }
             else
             {
-                heroespath::LoopManager::Instance()->PopupWaitEnd(sfml_util::Response::No);
+                game::LoopManager::Instance()->PopupWaitEnd(sfml_util::Response::No);
             }
         }
 
@@ -604,7 +604,7 @@ namespace sfml_util
             }
         }
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageFade)
+        if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             if (beforeFadeTimerSec_ < BEFORE_FADE_STARTS_DELAY_SEC_)
             {
@@ -632,47 +632,47 @@ namespace sfml_util
 
     bool PopupStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (POPUP_INFO_.Type() == heroespath::Popup::ImageFade)
+        if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             beforeFadeTimerSec_ = BEFORE_FADE_STARTS_DELAY_SEC_;
             fadeAlpha_ = 256.0f;//anything greater than 255.0f will work here
         }
 
-        if ((POPUP_INFO_.Type() == heroespath::Popup::ContentSelectionWithItem) || (POPUP_INFO_.Type() == heroespath::Popup::ContentSelectionWithoutItem))
+        if ((POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem) || (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithoutItem))
         {
-            if ((KEY_EVENT.code == sf::Keyboard::I) && (POPUP_INFO_.Type() == heroespath::Popup::ContentSelectionWithItem))
+            if ((KEY_EVENT.code == sf::Keyboard::I) && (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, heroespath::PopupInfo::ContentNum_Item());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Item());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::C)
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, heroespath::PopupInfo::ContentNum_Coins());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Coins());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::G)
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, heroespath::PopupInfo::ContentNum_Gems());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Gems());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::M)
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, heroespath::PopupInfo::ContentNum_MeteorShards());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_MeteorShards());
                 return true;
             }
         }
 
-        if ((POPUP_INFO_.Type() == heroespath::Popup::NumberSelection) &&
+        if ((POPUP_INFO_.Type() == game::Popup::NumberSelection) &&
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
             if (ProcessSelectNumber())
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, GetSelectNumber());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, GetSelectNumber());
                 return true;
             }
             else
@@ -729,7 +729,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
                 return true;
             }
         }
@@ -741,7 +741,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
                 return true;
             }
         }
@@ -749,7 +749,7 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
             SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-            heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
             return true;
         }
 
@@ -757,18 +757,18 @@ namespace sfml_util
             ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
             SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-            heroespath::LoopManager::Instance()->PopupWaitEnd(Response::No);
+            game::LoopManager::Instance()->PopupWaitEnd(Response::No);
             return true;
         }
 
         if (POPUP_INFO_.Buttons() & Response::Cancel)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
-                ((KEY_EVENT.code == sf::Keyboard::C) && ((POPUP_INFO_.Type() != heroespath::Popup::ContentSelectionWithItem) && (POPUP_INFO_.Type() != heroespath::Popup::ContentSelectionWithoutItem))) ||
+                ((KEY_EVENT.code == sf::Keyboard::C) && ((POPUP_INFO_.Type() != game::Popup::ContentSelectionWithItem) && (POPUP_INFO_.Type() != game::Popup::ContentSelectionWithoutItem))) ||
                 ((KEY_EVENT.code == sf::Keyboard::Return) && (POPUP_INFO_.Buttons() == sfml_util::PopupButtons::Cancel)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
                 return true;
             }
         }
@@ -777,46 +777,46 @@ namespace sfml_util
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
             SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-            heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
             return true;
         }
 
-        if (POPUP_INFO_.Type() == heroespath::Popup::CharacterSelection)
+        if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Num1) && (POPUP_INFO_.IsNumberValid(0)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (POPUP_INFO_.IsNumberValid(1)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (POPUP_INFO_.IsNumberValid(2)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (POPUP_INFO_.IsNumberValid(3)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (POPUP_INFO_.IsNumberValid(4)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (POPUP_INFO_.IsNumberValid(5)))
             {
                 SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                heroespath::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
                 return true;
             }
         }

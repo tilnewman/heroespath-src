@@ -2,7 +2,7 @@
 // cmd-queue.cpp
 //
 #include "cmd-queue.hpp"
-#include "heroespath/i-popup-callback.hpp"
+#include "game/i-popup-callback.hpp"
 
 
 namespace sfml_util

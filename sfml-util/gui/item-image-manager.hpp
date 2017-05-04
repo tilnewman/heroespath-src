@@ -1,14 +1,14 @@
-#ifndef APPBASE_SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
+#define SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
 //
 // item-image-manager.hpp
 //  Code that manages loading and lifetime of item images.
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "heroespath/item/weapon-info.hpp"
-#include "heroespath/item/armor-info.hpp"
-#include "heroespath/item/item.hpp"
+#include "game/item/weapon-info.hpp"
+#include "game/item/armor-info.hpp"
+#include "game/item/item.hpp"
 
 #include <memory>
 #include <string>
@@ -46,13 +46,13 @@ namespace gui
         static inline float GetMaxDimmension() { return 256.0f; }
 
         TextureSPtr_t Load(const std::string & IMAGE_FILE_NAME) const;
-        inline TextureSPtr_t Load(const heroespath::item::ItemSPtr_t & ITEM_SPTR) const { return Load(ITEM_SPTR->ImageFilename() + EXT_); }
-        TextureSPtr_t Load(const heroespath::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        inline TextureSPtr_t Load(const game::item::ItemSPtr_t & ITEM_SPTR) const { return Load(ITEM_SPTR->ImageFilename() + EXT_); }
+        TextureSPtr_t Load(const game::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
-        const std::string GetImageFilename(const heroespath::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const heroespath::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const heroespath::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const heroespath::item::armor::ArmorInfo & ARMOR_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        const std::string GetImageFilename(const game::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE = true) const;
+        const std::string GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        const std::string GetImageFilename(const game::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        const std::string GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
     private:
         static std::string imagesDirectoryPath_;
@@ -62,4 +62,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED

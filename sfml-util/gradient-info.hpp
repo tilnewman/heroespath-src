@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GRADIENTINFO_INCLUDED
-#define APPBASE_SFMLUTIL_GRADIENTINFO_INCLUDED
+#ifndef SFMLUTIL_GRADIENTINFO_INCLUDED
+#define SFMLUTIL_GRADIENTINFO_INCLUDED
 //
 // gradient-info.hpp
 //  Gradient drawing helper struct.
@@ -34,4 +34,4 @@ namespace sfml_util
     bool operator!=(const GradientInfo & L, const GradientInfo & R);
 
 }
-#endif //APPBASE_SFMLUTIL_GRADIENTINFO_INCLUDED
+#endif //SFMLUTIL_GRADIENTINFO_INCLUDED

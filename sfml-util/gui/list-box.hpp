@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_LISTBOX_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_LISTBOX_INCLUDED
+#ifndef SFMLUTIL_GUI_LISTBOX_INCLUDED
+#define SFMLUTIL_GUI_LISTBOX_INCLUDED
 //
 // list-box.hpp
 //  A class that manages a list of some template GuiEntity types wrapped in a box
@@ -216,4 +216,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_LISTBOX_INCLUDED
+#endif //SFMLUTIL_GUI_LISTBOX_INCLUDED

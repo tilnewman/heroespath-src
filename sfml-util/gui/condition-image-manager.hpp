@@ -5,7 +5,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "heroespath/creature/condition-enum.hpp"
+#include "game/creature/condition-enum.hpp"
 
 #include <boost/filesystem/path.hpp>
 
@@ -43,11 +43,11 @@ namespace gui
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
 
-        sfml_util::TextureSPtr_t Get(const heroespath::creature::condition::Enum) const;
+        sfml_util::TextureSPtr_t Get(const game::creature::condition::Enum) const;
 
     private:
-        const std::string MakeFilename(const heroespath::creature::condition::Enum) const;
-        const boost::filesystem::path MakeFilepath(const heroespath::creature::condition::Enum) const;
+        const std::string MakeFilename(const game::creature::condition::Enum) const;
+        const boost::filesystem::path MakeFilepath(const game::creature::condition::Enum) const;
 
     private:
         static ConditionImageManagerSPtr_t instance_;

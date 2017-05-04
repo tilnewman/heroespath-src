@@ -7,7 +7,7 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 
 #include <exception>
 #include <sstream>

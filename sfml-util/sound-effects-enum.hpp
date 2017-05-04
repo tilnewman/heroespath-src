@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
-#define APPBASE_SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
+#ifndef SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
+#define SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
 //
 // sound-effects-enum.hpp
 //  An enum defining the various sound effects
@@ -183,4 +183,4 @@ namespace sfml_util
     using SoundEffectEnumVec_t = std::vector<sound_effect::Enum>;
 
 }
-#endif //APPBASE_SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
+#endif //SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED

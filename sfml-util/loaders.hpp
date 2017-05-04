@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_LOADERS_INCLUDED
-#define APPBASE_SFMLUTIL_LOADERS_INCLUDED
+#ifndef SFMLUTIL_LOADERS_INCLUDED
+#define SFMLUTIL_LOADERS_INCLUDED
 //
 // loaders.hpp
 //  Functions that help load assests and media.
@@ -105,4 +105,4 @@ namespace sfml_util
     void LoadSoundBufferSPtr(SoundBufferSPtr_t & soundBufferSPtr, const std::string & PATH_STR);
 
 }
-#endif //APPBASE_SFMLUTIL_LOADERS_INCLUDED
+#endif //SFMLUTIL_LOADERS_INCLUDED

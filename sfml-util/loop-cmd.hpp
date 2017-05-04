@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_LOOPCOMMAND_INCLUDED
-#define APPBASE_SFMLUTIL_LOOPCOMMAND_INCLUDED
+#ifndef SFMLUTIL_LOOPCOMMAND_INCLUDED
+#define SFMLUTIL_LOOPCOMMAND_INCLUDED
 //
 // loop-cmd.hpp
 //  Code that encapsulates a command that performs some action on a Loop object.
@@ -9,7 +9,7 @@
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "heroespath/loop-state-enum.hpp"
+#include "game/loop-state-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -86,7 +86,7 @@ namespace sfml_util
     class LoopCmd_StateChange : public LoopCmd
     {
     public:
-        LoopCmd_StateChange(ILoopSPtr_t & iLoopSPtr, const heroespath::LoopState::Enum STATE_NUM)
+        LoopCmd_StateChange(ILoopSPtr_t & iLoopSPtr, const game::LoopState::Enum STATE_NUM)
         :
             LoopCmd("LoopStateChange", iLoopSPtr),
             STATE_ (STATE_NUM)
@@ -104,12 +104,12 @@ namespace sfml_util
         virtual const std::string GetName() const
         {
             std::ostringstream ss;
-            ss << NAME_ << " new_state=" << heroespath::LoopState::ToString(STATE_);
+            ss << NAME_ << " new_state=" << game::LoopState::ToString(STATE_);
             return ss.str();
         }
 
     private:
-        const heroespath::LoopState::Enum STATE_;
+        const game::LoopState::Enum STATE_;
     };
 
 
@@ -575,4 +575,4 @@ namespace sfml_util
     using LoopCmdSVec_t = std::vector<LoopCmdSPtr_t>;
 
 }
-#endif //APPBASE_SFMLUTIL_LOOPCOMMAND_INCLUDED
+#endif //SFMLUTIL_LOOPCOMMAND_INCLUDED

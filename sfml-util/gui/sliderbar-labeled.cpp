@@ -2,7 +2,7 @@
 // sliderbar-labeled.cpp
 //
 #include "sliderbar-labeled.hpp"
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include <sstream>
 

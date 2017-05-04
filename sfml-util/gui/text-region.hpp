@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_TEXTREGION_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_TEXTREGION_INCLUDED
+#ifndef SFMLUTIL_GUI_TEXTREGION_INCLUDED
+#define SFMLUTIL_GUI_TEXTREGION_INCLUDED
 //
 // text-region.hpp
 //  A class that encapsulates text drawn to a bounded region that may need a scrollbar.
@@ -128,4 +128,4 @@ namespace gui
     using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_TEXTREGION_INCLUDED
+#endif //SFMLUTIL_GUI_TEXTREGION_INCLUDED

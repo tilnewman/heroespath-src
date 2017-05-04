@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_CMDQUEUE_INCLUDED
-#define APPBASE_SFMLUTIL_CMDQUEUE_INCLUDED
+#ifndef SFMLUTIL_CMDQUEUE_INCLUDED
+#define SFMLUTIL_CMDQUEUE_INCLUDED
 //
 // cmd-queue.hpp
 //  Code that manages a queue of Loop commands.
@@ -38,4 +38,4 @@ namespace sfml_util
     using CommandQueueSPtr_t = std::shared_ptr<CommandQueue>;
 
 }
-#endif //APPBASE_SFMLUTIL_CMDQUEUE_INCLUDED
+#endif //SFMLUTIL_CMDQUEUE_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED
+#ifndef SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED
+#define SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED
 //
 // text-entry-box.hpp
 //  Code for a box that users can type a single line of text into, with a blinking cursor, etc.
@@ -92,4 +92,4 @@ namespace gui
     using TextEntryBoxSPtr_t = std::shared_ptr<TextEntryBox>;
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED
+#endif //SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED

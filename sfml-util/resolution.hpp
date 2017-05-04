@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_RESOLUTION_INCLUDED
-#define APPBASE_SFMLUTIL_RESOLUTION_INCLUDED
+#ifndef SFMLUTIL_RESOLUTION_INCLUDED
+#define SFMLUTIL_RESOLUTION_INCLUDED
 //
 // resolution.hpp
 //  A class that contains all the info about a screen resolution.
@@ -46,4 +46,4 @@ namespace sfml_util
 
 }
 
-#endif //APPBASE_SFMLUTIL_RESOLUTION_INCLUDED
+#endif //SFMLUTIL_RESOLUTION_INCLUDED

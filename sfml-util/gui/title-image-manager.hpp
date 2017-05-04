@@ -1,19 +1,19 @@
-#ifndef APPBASE_SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
+#define SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
 //
 // title-image-manager.hpp
 //  Code that manages loading and lifetime of title images.
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "heroespath/creature/titles.hpp"
+#include "game/creature/titles.hpp"
 
 #include <boost/filesystem/path.hpp>
 
 #include <string>
 
 
-namespace heroespath
+namespace game
 {
 namespace creature
 {
@@ -52,10 +52,10 @@ namespace gui
         inline static float DimmensionMax()                     { return 256.0f; }
         inline static const std::string FileNameExt()           { return ".gif"; }
 
-        const TextureSPtr_t Get(heroespath::creature::TitlePtr_t TITLE_PTR) const;
+        const TextureSPtr_t Get(game::creature::TitlePtr_t TITLE_PTR) const;
 
         //this function will throw if the given enum is invalid
-        inline const TextureSPtr_t Get(const heroespath::creature::title::Enum E) const { return Get(heroespath::creature::title::TitleWarehouse::Get(E)); }
+        inline const TextureSPtr_t Get(const game::creature::title::Enum E) const { return Get(game::creature::title::TitleWarehouse::Get(E)); }
 
     private:
         static std::string imagesDirectoryPath_;
@@ -66,4 +66,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED

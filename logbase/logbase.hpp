@@ -1,5 +1,5 @@
-#ifndef APPBASE_LOGBASE_HPP
-#define APPBASE_LOGBASE_HPP
+#ifndef LOGBASE_HPP
+#define LOGBASE_HPP
 //
 // logbase.hpp
 //
@@ -173,4 +173,4 @@ namespace logbase
 }//end of namespace appbase
 
 
-#endif //APPBASE_LOGBASE_HPP
+#endif //LOGBASE_HPP

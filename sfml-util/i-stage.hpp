@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_ISTAGE_INCLUDED
-#define APPBASE_SFMLUTIL_ISTAGE_INCLUDED
+#ifndef SFMLUTIL_ISTAGE_INCLUDED
+#define SFMLUTIL_ISTAGE_INCLUDED
 //
 // i-stage.hpp
 //  Interface for all Stage objects.
@@ -72,4 +72,4 @@ namespace sfml_util
 
 }
 
-#endif //APPBASE_SFMLUTIL_ISTAGE_INCLUDED
+#endif //SFMLUTIL_ISTAGE_INCLUDED

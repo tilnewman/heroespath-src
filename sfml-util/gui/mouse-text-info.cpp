@@ -5,7 +5,7 @@
 
 #include "sfml-util/font-manager.hpp"
 
-#include "heroespath/popup-info.hpp"
+#include "game/popup-info.hpp"
 
 #include <tuple>
 
@@ -67,7 +67,7 @@ namespace gui
     {}
 
 
-    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(const std::string & NAME, const heroespath::PopupInfo & POPUP_INFO)
+    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(const std::string & NAME, const game::PopupInfo & POPUP_INFO)
     {
         return MouseTextInfo(NAME,
                              FontManager::Instance()->Font_PopupButton(),

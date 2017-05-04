@@ -6,7 +6,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/gui/box.hpp"
 
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 
 
 namespace sfml_util

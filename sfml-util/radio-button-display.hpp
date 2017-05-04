@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
-#define APPBASE_SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
+#ifndef SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
+#define SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
 //
 // radio-button-display.hpp
 //  A specific RadioButtonSet for changing the display resolution.
@@ -8,7 +8,7 @@
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 
-#include "heroespath/i-popup-callback.hpp"
+#include "game/i-popup-callback.hpp"
 
 #include <memory>
 
@@ -19,7 +19,7 @@ namespace gui_demo
     //Represents a RadioButtonSet that changes the display
     class RadioButtonSet_DisplayChange
     :
-        public heroespath::callback::IPopupHandler_t,
+        public game::callback::IPopupHandler_t,
         public sfml_util::gui::RadioButtonSet
     {
         //prevent copy construction
@@ -38,7 +38,7 @@ namespace gui_demo
 
         inline virtual const std::string HandlerName() const { return GetEntityName(); }
 
-        virtual bool HandleCallback(const heroespath::callback::PopupResponse &);
+        virtual bool HandleCallback(const game::callback::PopupResponse &);
 
     protected:
         //if not found, resolutionVec_.size() is returned
@@ -56,4 +56,4 @@ namespace gui_demo
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
 }
-#endif //APPBASE_SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
+#endif //SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED

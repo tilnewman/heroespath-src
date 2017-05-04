@@ -1,16 +1,16 @@
-#ifndef APPBASE_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
+#define SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
 //
 // creature-image-manager.hpp
 //  Code that manages loading and lifetime of creature images.
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "heroespath/creature/role-enum.hpp"
-#include "heroespath/creature/race-enum.hpp"
-#include "heroespath/creature/sex-enum.hpp"
-#include "heroespath/creature/wolfen-class-enum.hpp"
-#include "heroespath/creature/dragon-class-enum.hpp"
+#include "game/creature/role-enum.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/sex-enum.hpp"
+#include "game/creature/wolfen-class-enum.hpp"
+#include "game/creature/dragon-class-enum.hpp"
 
 #include <memory>
 #include <map>
@@ -50,30 +50,30 @@ namespace gui
 
         inline static float DimmensionMax() { return 256.0f; }
 
-        const std::string GetFilename(const heroespath::creature::race::Enum         RACE,
-                                      const heroespath::creature::role::Enum         ROLE,
-                                      const heroespath::creature::sex::Enum          SEX,
+        const std::string GetFilename(const game::creature::race::Enum         RACE,
+                                      const game::creature::role::Enum         ROLE,
+                                      const game::creature::sex::Enum          SEX,
                                       const bool                                     WILL_PICK_RANDOM = true,
-                                      const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS     = heroespath::creature::wolfen_class::Pup,
-                                      const heroespath::creature::dragon_class::Enum DRAGON_CLASS     = heroespath::creature::dragon_class::Hatchling) const;
+                                      const game::creature::wolfen_class::Enum WOLFEN_CLASS     = game::creature::wolfen_class::Pup,
+                                      const game::creature::dragon_class::Enum DRAGON_CLASS     = game::creature::dragon_class::Hatchling) const;
 
-        const TextureSPtr_t GetImage(const heroespath::creature::race::Enum         RACE,
-                                     const heroespath::creature::role::Enum         ROLE,
-                                     const heroespath::creature::sex::Enum          SEX              = heroespath::creature::sex::Male,
+        const TextureSPtr_t GetImage(const game::creature::race::Enum         RACE,
+                                     const game::creature::role::Enum         ROLE,
+                                     const game::creature::sex::Enum          SEX              = game::creature::sex::Male,
                                      const bool                                     WILL_PICK_RANDOM = true,
                                      const bool                                     WILL_FACE_RIGHT  = false,
-                                     const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS     = heroespath::creature::wolfen_class::Pup,
-                                     const heroespath::creature::dragon_class::Enum DRAGON_CLASS     = heroespath::creature::dragon_class::Hatchling) const;
+                                     const game::creature::wolfen_class::Enum WOLFEN_CLASS     = game::creature::wolfen_class::Pup,
+                                     const game::creature::dragon_class::Enum DRAGON_CLASS     = game::creature::dragon_class::Hatchling) const;
 
         const TextureSPtr_t GetImage(const std::string & FILENAME,
                                      const bool          WILL_FACE_RIGHT = false) const;
 
         void GetFilenames(std::vector<std::string> &                     outputVec,
-                          const heroespath::creature::race::Enum         RACE,
-                          const heroespath::creature::role::Enum         ROLE,
-                          const heroespath::creature::sex::Enum          SEX,
-                          const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS = heroespath::creature::wolfen_class::Pup,
-                          const heroespath::creature::dragon_class::Enum DRAGON_CLASS = heroespath::creature::dragon_class::Hatchling) const;
+                          const game::creature::race::Enum         RACE,
+                          const game::creature::role::Enum         ROLE,
+                          const game::creature::sex::Enum          SEX,
+                          const game::creature::wolfen_class::Enum WOLFEN_CLASS = game::creature::wolfen_class::Pup,
+                          const game::creature::dragon_class::Enum DRAGON_CLASS = game::creature::dragon_class::Hatchling) const;
 
     private:
         //assumes there is no matching entry in textureMap_
@@ -87,4 +87,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED

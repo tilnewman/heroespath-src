@@ -1,5 +1,5 @@
-#ifndef APPBASE_STRINGHELP_HPP_INCLUDED
-#define APPBASE_STRINGHELP_HPP_INCLUDED
+#ifndef STRINGHELP_HPP_INCLUDED
+#define STRINGHELP_HPP_INCLUDED
 //
 // stringhelp.hpp
 //
@@ -407,4 +407,4 @@ namespace stringhelp
 }//end of namespace stringhelp
 }//end of namespace appbase
 
-#endif //APPBASE_STRINGHELP_HPP_INCLUDED
+#endif //STRINGHELP_HPP_INCLUDED

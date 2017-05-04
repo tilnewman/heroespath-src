@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_TEXTBUTTON_INCLUDED
-#define APPBASE_SFMLUTIL_TEXTBUTTON_INCLUDED
+#ifndef SFMLUTIL_TEXTBUTTON_INCLUDED
+#define SFMLUTIL_TEXTBUTTON_INCLUDED
 //
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
@@ -58,4 +58,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_TEXTBUTTON_INCLUDED
+#endif //SFMLUTIL_TEXTBUTTON_INCLUDED

@@ -5,7 +5,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "heroespath/spell/spell-enum.hpp"
+#include "game/spell/spell-enum.hpp"
 
 #include <boost/filesystem/path.hpp>
 
@@ -43,11 +43,11 @@ namespace gui
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
 
-        sfml_util::TextureSPtr_t Get(const heroespath::spell::Spells::Enum) const;
+        sfml_util::TextureSPtr_t Get(const game::spell::Spells::Enum) const;
 
     private:
-        const std::string MakeFilename(const heroespath::spell::Spells::Enum) const;
-        const boost::filesystem::path MakeFilepath(const heroespath::spell::Spells::Enum) const;
+        const std::string MakeFilename(const game::spell::Spells::Enum) const;
+        const boost::filesystem::path MakeFilepath(const game::spell::Spells::Enum) const;
     private:
         static SpellImageManagerSPtr_t instance_;
         static std::string spellImagesDirectory_;

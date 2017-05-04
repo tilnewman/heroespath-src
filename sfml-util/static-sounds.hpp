@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_STATICSOUNDS_INCLUDED
-#define APPBASE_SFMLUTIL_STATICSOUNDS_INCLUDED
+#ifndef SFMLUTIL_STATICSOUNDS_INCLUDED
+#define SFMLUTIL_STATICSOUNDS_INCLUDED
 //
 // static-sounds.hpp
 //  Simple wrapper of sound effects
@@ -73,4 +73,4 @@ namespace sfml_util
     using StaticSoundsSPtr_t = std::shared_ptr<StaticSounds>;
 
 }
-#endif //APPBASE_SFMLUTIL_STATICSOUNDS_INCLUDED
+#endif //SFMLUTIL_STATICSOUNDS_INCLUDED

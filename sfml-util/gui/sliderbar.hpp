@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_SLIDERBAR_INCLUDED
-#define APPBASE_SFMLUTIL_SLIDERBAR_INCLUDED
+#ifndef SFMLUTIL_SLIDERBAR_INCLUDED
+#define SFMLUTIL_SLIDERBAR_INCLUDED
 //
 // sliderbar.hpp
 //  Code that draws a sliderbar with buttons at either end and a carrot in the center that can be dragged.
@@ -94,4 +94,4 @@ namespace gui
 }
 }
 
-#endif //APPBASE_SFMLUTIL_SLIDERBAR_INCLUDED
+#endif //SFMLUTIL_SLIDERBAR_INCLUDED

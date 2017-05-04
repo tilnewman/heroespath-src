@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_COLORSET_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_COLORSET_INCLUDED
+#ifndef SFMLUTIL_GUI_COLORSET_INCLUDED
+#define SFMLUTIL_GUI_COLORSET_INCLUDED
 //
 // color-set.hpp
 //  Simple struct encapsulating a GuiEntity's color scheme.
@@ -79,4 +79,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_COLORSET_INCLUDED
+#endif //SFMLUTIL_GUI_COLORSET_INCLUDED

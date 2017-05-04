@@ -2,7 +2,7 @@
 // platform.cpp
 //
 #include "platform.hpp"
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 #include <exception>
 #include <sstream>
 

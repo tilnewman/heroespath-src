@@ -1,11 +1,11 @@
-#ifndef APPBASE_SFMLUTIL_POPUPBUTTONS_INCLUDED
-#define APPBASE_SFMLUTIL_POPUPBUTTONS_INCLUDED
+#ifndef SFMLUTIL_POPUPBUTTONS_INCLUDED
+#define SFMLUTIL_POPUPBUTTONS_INCLUDED
 //
 // popup-buttons.hpp
 //  Popup buttons types.
 //
 #include "sfml-util/gui/text-button.hpp"
-#include "heroespath/popup-info.hpp"
+#include "game/popup-info.hpp"
 #include <memory>
 
 
@@ -15,7 +15,7 @@ namespace sfml_util
     class PopupButton_Yes : public gui::TextButton
     {
     public:
-        PopupButton_Yes(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_Yes(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_Yes() {}
     protected:
         virtual void OnClick(const sf::Vector2f &);
@@ -27,7 +27,7 @@ namespace sfml_util
     class PopupButton_No : public gui::TextButton
     {
     public:
-        PopupButton_No(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_No(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_No() {}
     protected:
         virtual void OnClick(const sf::Vector2f &);
@@ -39,7 +39,7 @@ namespace sfml_util
     class PopupButton_Cancel : public gui::TextButton
     {
     public:
-        PopupButton_Cancel(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_Cancel(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_Cancel() {}
         virtual void OnClick(const sf::Vector2f &);
     };
@@ -50,7 +50,7 @@ namespace sfml_util
     class PopupButton_Continue : public gui::TextButton
     {
     public:
-        PopupButton_Continue(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_Continue(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_Continue() {}
         virtual void OnClick(const sf::Vector2f &);
     };
@@ -61,7 +61,7 @@ namespace sfml_util
     class PopupButton_Okay : public gui::TextButton
     {
     public:
-        PopupButton_Okay(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_Okay(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_Okay() {}
         virtual void OnClick(const sf::Vector2f &);
     };
@@ -72,7 +72,7 @@ namespace sfml_util
     class PopupButton_Select : public gui::TextButton
     {
     public:
-        PopupButton_Select(const heroespath::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
+        PopupButton_Select(const game::PopupInfo & POPUP_INFO, const float POS_LEFT, const float POS_TOP);
         virtual ~PopupButton_Select() {}
         virtual void OnClick(const sf::Vector2f &);
         void SetSelection(const int SELECTION)  { selection_ = SELECTION; }
@@ -84,4 +84,4 @@ namespace sfml_util
     using PopupButton_SelectSPtr_t = std::shared_ptr<PopupButton_Select>;
 
 }
-#endif //APPBASE_SFMLUTIL_POPUPBUTTONS_INCLUDED
+#endif //SFMLUTIL_POPUPBUTTONS_INCLUDED

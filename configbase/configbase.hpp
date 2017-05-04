@@ -1,5 +1,5 @@
-#ifndef APPBASE_CONFIGBASE_HPP
-#define APPBASE_CONFIGBASE_HPP
+#ifndef CONFIGBASE_HPP
+#define CONFIGBASE_HPP
 //
 // configbase.hpp
 //
@@ -160,4 +160,4 @@ namespace appbase
 }//end of namespace appbase
 
 
-#endif //APPBASE_CONFIGBASE_HPP
+#endif //CONFIGBASE_HPP

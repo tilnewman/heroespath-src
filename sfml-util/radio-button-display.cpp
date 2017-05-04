@@ -9,8 +9,8 @@
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
-#include "heroespath/log-macros.hpp"
-#include "heroespath/loop-manager.hpp"
+#include "game/log-macros.hpp"
+#include "game/loop-manager.hpp"
 
 
 namespace gui_demo
@@ -65,14 +65,14 @@ namespace gui_demo
     {}
 
 
-    bool RadioButtonSet_DisplayChange::HandleCallback(const heroespath::callback::PopupResponse & POPUP)
+    bool RadioButtonSet_DisplayChange::HandleCallback(const game::callback::PopupResponse & POPUP)
     {
         M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << sfml_util::Response::ToString(POPUP.Response()) << "\")");
 
         if (POPUP.Response() == sfml_util::Response::No)
         {
             M_HP_LOG(GetEntityName() << " User rejected the new resolution.  Changing back to the previous res.");
-            heroespath::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
+            game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
         }
 
         ChangeCurrentSelection(FindCurrentResolutionSelection());
@@ -87,7 +87,7 @@ namespace gui_demo
     void RadioButtonSet_DisplayChange::OnClick(const sf::Vector2f &)
     {
         prevResolution_ = sfml_util::Display::GetCurrentResolution();
-        heroespath::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, resolutionVec_[currentSelection_], sfml_util::Display::Instance()->AntialiasLevel());
+        game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, resolutionVec_[currentSelection_], sfml_util::Display::Instance()->AntialiasLevel());
 
         M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::OnClick() was called when the ownerStagePtr_ was null.");
         ownerStagePtr_->HandleResolutionChange();

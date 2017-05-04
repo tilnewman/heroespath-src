@@ -3,12 +3,12 @@
 //
 #include "list-box-item.hpp"
 
-#include "heroespath/player/character.hpp"
-#include "heroespath/state/game-state.hpp"
-#include "heroespath/item/item.hpp"
-#include "heroespath/creature/condition.hpp"
-#include "heroespath/creature/title.hpp"
-#include "heroespath/spell/spell-base.hpp"
+#include "game/player/character.hpp"
+#include "game/state/game-state.hpp"
+#include "game/item/item.hpp"
+#include "game/creature/condition.hpp"
+#include "game/creature/title.hpp"
+#include "game/spell/spell-base.hpp"
 
 #include <tuple>
 
@@ -45,7 +45,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                         NAME,
                              const sfml_util::gui::TextInfo &            TEXT_INFO,
-                             const heroespath::player::CharacterSPtr_t & CHARACTER_SPTR)
+                             const game::player::CharacterSPtr_t & CHARACTER_SPTR)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemPlayerCharacter"), TEXT_INFO, sf::FloatRect()),
             character_sptr(CHARACTER_SPTR),
@@ -59,7 +59,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                        NAME,
                              const sfml_util::gui::TextInfo &           TEXT_INFO,
-                             const heroespath::state::GameStateSPtr_t & GAMESTATE_SPTR)
+                             const game::state::GameStateSPtr_t & GAMESTATE_SPTR)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -73,7 +73,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                           NAME,
                              const sfml_util::gui::TextInfo &              TEXT_INFO,
-                             const heroespath::creature::ConditionSPtr_t & CONDITION_CPTRC_PARAM)
+                             const game::creature::ConditionSPtr_t & CONDITION_CPTRC_PARAM)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -87,7 +87,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                  NAME,
                              const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const heroespath::item::ItemSPtr_t & IITEM_SPTR)
+                             const game::item::ItemSPtr_t & IITEM_SPTR)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -101,7 +101,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                     NAME,
                              const sfml_util::gui::TextInfo &        TEXT_INFO,
-                             const heroespath::creature::TitlePtrC_t TITLE_CPTRC_PARAM)
+                             const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -115,7 +115,7 @@ namespace gui
 
     ListBoxItem::ListBoxItem(const std::string &                  NAME,
                              const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const heroespath::spell::SpellPtrC_t SPELL_CPTRC_PARAM)
+                             const game::spell::SpellPtrC_t SPELL_CPTRC_PARAM)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),

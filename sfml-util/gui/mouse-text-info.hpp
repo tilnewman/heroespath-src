@@ -1,5 +1,5 @@
-#ifndef APPBASE_SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
-#define APPBASE_SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
+#ifndef SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
+#define SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
 //
 // mouse-text-info.hpp
 //  A handy wrapper struct that holds three colors relating to mouse position.
@@ -12,7 +12,7 @@
 #include <memory>
 
 
-namespace heroespath
+namespace game
 {
     class PopupInfo;
 }
@@ -45,7 +45,7 @@ namespace gui
                       const sf::Color &   COLOR_OVER = sf::Color::White);
 
         //MouseTextInfo generating helper functions
-        static const MouseTextInfo Make_PopupButtonSet(const std::string & NAME, const heroespath::PopupInfo &);
+        static const MouseTextInfo Make_PopupButtonSet(const std::string & NAME, const game::PopupInfo &);
 
         TextInfo up;
         TextInfo down;
@@ -70,4 +70,4 @@ namespace gui
 
 }
 }
-#endif //APPBASE_SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
+#endif //SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED

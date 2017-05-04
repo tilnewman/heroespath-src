@@ -8,14 +8,14 @@
 #include "sfml-util/popup-stage.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 
-#include "heroespath/i-popup-callback.hpp"
+#include "game/i-popup-callback.hpp"
 
 
 namespace sfml_util
 {
 
     LoopCmd_AddStage_Popup::LoopCmd_AddStage_Popup(sfml_util::ILoopSPtr_t &      iloopSPtr,
-                                                   const heroespath::PopupInfo & POPUP_INFO)
+                                                   const game::PopupInfo & POPUP_INFO)
     :
         LoopCmd    ("AddStage_\"Popup\"", iloopSPtr),
         POPUP_INFO_(POPUP_INFO)

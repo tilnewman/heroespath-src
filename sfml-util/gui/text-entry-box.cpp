@@ -9,7 +9,7 @@
 #include "sfml-util/gui/text-region.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
-#include "heroespath/log-macros.hpp"
+#include "game/log-macros.hpp"
 
 
 namespace sfml_util
