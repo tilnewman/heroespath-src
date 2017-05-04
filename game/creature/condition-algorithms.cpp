@@ -22,7 +22,8 @@ namespace condition
                                         const bool              WILL_WRAP,
                                         const std::size_t       MAX_TO_LIST,
                                         const std::size_t       MIN_SEVERITY,
-                                        const bool              WILL_AND)
+                                        const bool              WILL_AND,
+                                        const bool              WILL_ELLIPSIS)
     {
         auto const CONDITION_COUNT{ CONDITIONS_SVEC.size() };
         if (CONDITION_COUNT == 0)
@@ -52,6 +53,11 @@ namespace condition
 
                     if ((MAX_TO_LIST != 0) && (++count >= MAX_TO_LIST))
                     {
+                        if (WILL_ELLIPSIS && (i < (CONDITION_COUNT - 1)))
+                        {
+                            ss << "...";
+                        }
+
                         break;
                     }
                 }

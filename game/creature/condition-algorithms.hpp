@@ -30,7 +30,8 @@ namespace condition
                                        const bool              WILL_WRAP             = false,
                                        const std::size_t       MAX_TO_LIST           = 0, //zero means 'all'
                                        const std::size_t       MIN_SEVERITY          = 0,
-                                       const bool              WILL_AND              = false);
+                                       const bool              WILL_AND              = false,
+                                       const bool              WILL_ELLIPSIS         = false);
 
         //stable unless WILL_UNIQUE == true
         static void Append(const ConditionSVec_t & CONDITIONS_TO_ADD_SVEC,

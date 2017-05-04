@@ -278,7 +278,7 @@ namespace combat
 
     void CombatNode::UpdateConditionText()
     {
-        condTextObj_.setString(creaturePtr_->ConditionList(3, creature::condition::Severity::BENEFITIAL));
+        condTextObj_.setString(creaturePtr_->ConditionList(3, creature::condition::Severity::BENEFITIAL, false, false, true));
         SetTextPositions();
     }
 

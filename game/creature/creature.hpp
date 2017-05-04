@@ -166,7 +166,8 @@ namespace creature
         virtual const std::string ConditionList(const std::size_t MAX_TO_LIST_COUNT = 0,
                                                 const size_t      SEVERITY_AT_LEAST = 0,
                                                 const bool        WILL_WRAP         = false,
-                                                const bool        WILL_AND          = false);
+                                                const bool        WILL_AND          = false,
+                                                const bool        WILL_ELLIPSIS     = false);
 
         inline virtual bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
         virtual const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;

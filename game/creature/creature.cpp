@@ -310,14 +310,16 @@ namespace creature
     const std::string Creature::ConditionList(const std::size_t MAX_TO_LIST_COUNT,
                                               const size_t      SEVERITY_AT_LEAST,
                                               const bool        WILL_WRAP,
-                                              const bool        WILL_AND)
+                                              const bool        WILL_AND,
+                                              const bool        WILL_ELLIPSIS)
     {
         return condition::Algorithms::Names(condition::Algorithms::SortBySeverityCopy(conditionsSVec_),
                                             ", ",
                                             WILL_WRAP,
                                             MAX_TO_LIST_COUNT,
                                             SEVERITY_AT_LEAST,
-                                            WILL_AND);
+                                            WILL_AND,
+                                            WILL_ELLIPSIS);
     }
 
 
