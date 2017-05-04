@@ -1,4 +1,4 @@
-system-startup-stage=Combat
+system-startup-stage=CharacterCreation
 system-revision=alpha 0.1
 system-will-execute-tests=no
 
@@ -65,6 +65,25 @@ media-images-combat-stone2=image/combat/stone2.gif
 media-images-combat-stone3=image/combat/stone3.gif
 media-images-combat-stone4=image/combat/stone4.gif
 media-images-combat-crossbones=image/combat/crossbones.gif
+
+#Race Stat Modifiers
+heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0
+heroespath-creature-race-stat-modifiers-Gnome=   -6,  0,  -6,  6,  6,  0
+heroespath-creature-race-stat-modifiers-Pixie=  -20,  0,   4,  4, 36,  6
+heroespath-creature-race-stat-modifiers-Wolfen=  12,  2, -12,  0, 12, -4
+heroespath-creature-race-stat-modifiers-Dragon=  12,  0, -20,  0,  4,  4
+
+#Role Stat Modifiers
+heroespath-creature-role-stat-modifiers-Archer=      0,  2,  0,  0,  0, -2
+heroespath-creature-role-stat-modifiers-Bard=        2,  0,  2,  0, -6,  2
+heroespath-creature-role-stat-modifiers-Beastmaster= 2,  0, -2,  0,  0,  0
+heroespath-creature-role-stat-modifiers-Cleric=      0,  0,  2,  0, -2,  0
+heroespath-creature-role-stat-modifiers-Firebrand=   0,  0, -2,  0,  0,  2
+heroespath-creature-role-stat-modifiers-Knight=      2,  2,  0,  0,  0, -4
+heroespath-creature-role-stat-modifiers-Sorcerer=   -2,  0,  0,  0,  0,  2
+heroespath-creature-role-stat-modifiers-Sylavin=     2,  0, -4,  0,  0,  2
+heroespath-creature-role-stat-modifiers-Thief=       0,  0, -4,  4,  2, -2
+heroespath-creature-role-stat-modifiers-Wolfen=      0,  0,  0,  0,  0,  0
 
 #Condition Descriptions
 heroespath-creature-condition-Good-desc=No ailments.

@@ -4,8 +4,11 @@
 // role-stats.hpp
 //  Specific creature role stat modifiers.
 //
-#include "game/creature/role-enum.hpp"
 #include "game/stats/stat-set.hpp"
+#include "game/creature/role-enum.hpp"
+
+#include <map>
+#include <string>
 
 
 namespace game
@@ -13,8 +16,20 @@ namespace game
 namespace creature
 {
 
-    const stats::StatSet StatModifierByRole(const role::Enum);
+    using RoleStatSetMap_t = std::map<role::Enum, stats::StatSet>;
+
+
+    //Responsible for role related stat modifiers, for loading them from the
+    //game data file and for providing access to them.
+    struct RoleStatModifier
+    {
+        static const stats::StatSet Get(const role::Enum);
+
+    private:
+        static RoleStatSetMap_t roleStatSetMap_;
+    };
 
 }
 }
+
 #endif //GAME_CREATURE_ROLESTATS_INCLUDED

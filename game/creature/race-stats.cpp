@@ -3,51 +3,34 @@
 //
 #include "race-stats.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/creature/stat-modifier-loader.hpp"
+
 
 namespace game
 {
 namespace creature
 {
 
-    const stats::StatSet StatModifierByRace(const creature::race::Enum RACE)
+    RaceStatSetMap_t RaceStatModifier::raceStatSetMap_;
+
+
+    const stats::StatSet RaceStatModifier::Get(const creature::race::Enum ENUM)
     {
-        if (RACE == race::Human)
-            return stats::StatSet(  2,//str
-                                    2,//acc
-                                    2,//cha
-                                   -6,//lck
-                                    0,//spd
-                                    0);//int
-        else if (RACE == race::Gnome)
-            return stats::StatSet( -6,//str
-                                    0,//acc
-                                   -6,//cha
-                                    6,//lck
-                                    6,//spd
-                                    0);//int
-        else if (RACE == race::Pixie)
-            return stats::StatSet(-20,//str
-                                    0,//acc
-                                    4,//cha
-                                    4,//lck
-                                    6,//spd
-                                    6);//int
-        else if (RACE == race::Wolfen)
-            return stats::StatSet( 12,//str
-                                    2,//acc
-                                  -12,//cha
-                                    0,//lck
-                                    2,//spd
-                                   -4);//int
-        else if (RACE == race::Dragon)
-            return stats::StatSet( 12,//str
-                                    0,//acc
-                                  -20,//cha
-                                    0,//lck
-                                    4,//spd
-                                    4);//int
-        else
-            return stats::StatSet(0, 0, 0, 0, 0, 0);
+        if (raceStatSetMap_.empty())
+        {
+            for (int i(0); i < race::Count_PlayerRaces; ++i)
+            {
+                auto const NEXT_ENUM{ static_cast<race::Enum>(i) };
+                auto const NEXT_ENUM_STR{ race::ToString(NEXT_ENUM) };
+                auto const NEXT_KEY_STR{ "heroespath-creature-race-stat-modifiers-" + NEXT_ENUM_STR };
+                std::string nextStatSetStr{ "" };
+                game::GameDataFile::Instance()->GetStr(nextStatSetStr, NEXT_KEY_STR);
+                raceStatSetMap_[NEXT_ENUM] = StatModifierLoader::ConvertStringToStatSet(nextStatSetStr);
+            }
+        }
+
+        return raceStatSetMap_[ENUM];
     }
 
 }

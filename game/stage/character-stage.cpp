@@ -1858,7 +1858,7 @@ sfml_util::PopupImage::Regular));
 
         const creature::race::Enum RACE( static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) );
 
-        statSetRace_ = creature::StatModifierByRace(RACE);
+        statSetRace_ = creature::RaceStatModifier::Get(RACE);
 
         const float HORIZ_OFFSET(sfml_util::MapByRes(90.0f, 150.0f));
         const float VERT_OFFSET(5.0f);
@@ -1890,7 +1890,7 @@ sfml_util::PopupImage::Regular));
         const creature::role::Enum ROLE_ENUM( ((static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) );
         const std::string ROLE_NAME_ABBR( creature::role::Abbr(ROLE_ENUM));
 
-        statSetRole_ = creature::StatModifierByRole(ROLE_ENUM);
+        statSetRole_ = creature::RoleStatModifier::Get(ROLE_ENUM);
 
         for (std::size_t i(0); i<stats::stat::Count; ++i)
         {

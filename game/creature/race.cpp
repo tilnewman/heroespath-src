@@ -2,6 +2,7 @@
 // race.hpp
 //
 #include "race.hpp"
+
 #include "game/creature/race-stats.hpp"
 
 
@@ -13,7 +14,7 @@ namespace creature
     Race::Race(const race::Enum RACE_ENUM)
     :
         race_         (RACE_ENUM),
-        statModifiers_( StatModifierByRace(RACE_ENUM) )
+        statModifiers_(RaceStatModifier::Get(RACE_ENUM) )
     {}
 
 

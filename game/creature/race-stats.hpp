@@ -6,7 +6,8 @@
 //
 #include "game/stats/stat-set.hpp"
 #include "game/creature/race-enum.hpp"
-#include "game/creature/role-enum.hpp"
+
+#include <map>
 #include <string>
 
 
@@ -15,8 +16,20 @@ namespace game
 namespace creature
 {
 
-    const stats::StatSet StatModifierByRace(const creature::race::Enum);
+    using RaceStatSetMap_t = std::map<race::Enum, stats::StatSet>;
+
+
+    //Responsible for reading race related stat modifiers from the game data
+    //file and then providing access to them.
+    struct RaceStatModifier
+    {
+        static const stats::StatSet Get(const creature::race::Enum);
+
+    private:
+        static RaceStatSetMap_t raceStatSetMap_;
+    };
 
 }
 }
+
 #endif //GAME_CREATURE_RACESTATS_INCLUDED

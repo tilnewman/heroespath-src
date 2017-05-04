@@ -21,7 +21,7 @@ namespace creature
     Role::Role(const role::Enum ROLE)
     :
         role_         (ROLE),
-        statModifiers_( StatModifierByRole(ROLE) )
+        statModifiers_(RoleStatModifier::Get(ROLE) )
     {}
 
 

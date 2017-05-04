@@ -3,86 +3,34 @@
 //
 #include "role-stats.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/creature/stat-modifier-loader.hpp"
+
 
 namespace game
 {
 namespace creature
 {
 
-    const stats::StatSet StatModifierByRole(const role::Enum ROLE)
+    RoleStatSetMap_t RoleStatModifier::roleStatSetMap_;
+
+
+    const stats::StatSet RoleStatModifier::Get(const role::Enum ENUM)
     {
-        if (ROLE == role::Archer)
-            return stats::StatSet(   0, //str
-                                     2, //acc
-                                     0, //cha
-                                     0, //lck
-                                     0, //spd
-                                    -2);//int
-        else if (ROLE == role::Bard)
-            return stats::StatSet(   2, //str
-                                     0, //acc
-                                     2, //cha
-                                     0, //lck
-                                    -6, //spd
-                                     2);//int
-        else if (ROLE == role::Beastmaster)
-            return stats::StatSet (  2, //str
-                                     0, //acc
-                                    -2, //cha
-                                     0, //lck
-                                     0, //spd
-                                     0);//int
-        else if (ROLE == role::Cleric)
-            return stats::StatSet(   0, //str
-                                     0, //acc
-                                     2, //cha
-                                     0, //lck
-                                    -2, //spd
-                                     0);//int
-        else if (ROLE == role::Firebrand)
-            return stats::StatSet(   0, //str
-                                     0, //acc
-                                    -2, //cha
-                                     0, //lck
-                                     0, //spd
-                                     2);//int
-        else if (ROLE == role::Knight)
-            return stats::StatSet(   2, //str
-                                     2, //acc
-                                     0, //cha
-                                     0, //lck
-                                     0, //spd
-                                     -4);//int
-        else if (ROLE == role::Sorcerer)
-            return stats::StatSet(  -2, //str
-                                     0, //acc
-                                     0, //cha
-                                     0, //lck
-                                     0, //spd
-                                     2);//int
-        else if (ROLE == role::Sylavin)
-            return stats::StatSet(   2, //str
-                                     0, //acc
-                                    -4, //cha
-                                     0, //lck
-                                     0, //spd
-                                     2);//int
-        else if (ROLE == role::Thief)
-            return stats::StatSet(   0, //str
-                                     0, //acc
-                                    -4, //cha
-                                     4, //lck
-                                     2, //spd
-                                    -2);//int
-        else if (ROLE == role::Wolfen)
-            return stats::StatSet(   0, //str
-                                     0, //acc
-                                     0, //cha
-                                     0, //lck
-                                     0, //spd
-                                     0);//int
-        else
-            return stats::StatSet(0, 0, 0, 0, 0, 0);
+        if (roleStatSetMap_.empty())
+        {
+            for (int i(0); i < role::PlayerRoleCount; ++i)
+            {
+                auto const NEXT_ENUM{ static_cast<role::Enum>(i) };
+                auto const NEXT_ENUM_STR{ role::ToString(NEXT_ENUM) };
+                auto const NEXT_KEY_STR{ "heroespath-creature-role-stat-modifiers-" + NEXT_ENUM_STR };
+                std::string nextStatSetStr{ "" };
+                game::GameDataFile::Instance()->GetStr(nextStatSetStr, NEXT_KEY_STR);
+                roleStatSetMap_[NEXT_ENUM] = StatModifierLoader::ConvertStringToStatSet(nextStatSetStr);
+            }
+        }
+
+        return roleStatSetMap_[ENUM];
     }
 
 }
