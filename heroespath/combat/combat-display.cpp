@@ -232,7 +232,6 @@ namespace combat
         auto const VERT_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.y - BATTLEFIELD_CENTER_AFTER_V.y };
 
         //move nodes to keep the battlefield centered
-        //if ((HORIZ_DIFF < 100.0f) && (VERT_DIFF < 100.0f))
         {
             CombatNodePVec_t combatNodesPVec;
             combatNodesPVec.reserve(combatTree_.VertexCount());
@@ -466,6 +465,7 @@ namespace combat
 
     bool CombatDisplay::RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_SPTR.get() != nullptr), "heroespath::combat::CombatDisplay::RemoveCombatNode(nullptr) was given a COMBAT_NODE_SPTR that was null.");
         auto const REMOVE_RESULT{ EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]) };
         combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR);
         return REMOVE_RESULT;
@@ -568,6 +568,7 @@ namespace combat
 
     const creature::CreaturePVec_t CombatDisplay::FindClosestLivingByType(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::FindClosestLivingByType(nullptr, will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was given a CREATURE_CPTRC that was null.");
         return FindClosestLiving(CREATURE_CPTRC, creature::Algorithms::PlayersByType(WILL_FIND_PLAYERS, true));
     }
 
@@ -609,8 +610,7 @@ namespace combat
 
     std::size_t CombatDisplay::FindCreaturesThatCanBeAttackedOfType(creature::CreaturePVec_t & pVec_OutParam, const creature::CreaturePtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
-        if (CREATURE_CPTRC == nullptr)
-            return 0;
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesThatCanBeAttackedOfType(pVec_OutParam, nullptr, will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was given a CREATURE_CPTRC that was null.");
 
         if (CREATURE_CPTRC->HasWeaponsHeld() == false)
             return 0;
@@ -647,6 +647,8 @@ namespace combat
 
     std::size_t CombatDisplay::FindCreaturesAllRoundOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesAllRoundOfType(pVec_OutParam, nullptr, will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was given a CREATURE_CPTRC that was null.");
+
         auto const COMBAT_NODE_PTR(combatTree_.GetNode(CREATURE_CPTRC));
         M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesThatCanBeAttackedOfType(creature_name=" << CREATURE_CPTRC->Name() << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was unable to find that creature node in the combatTree_.");
 
@@ -671,6 +673,8 @@ namespace combat
 
     std::size_t CombatDisplay::FindCreaturesInSameBlockingPosOfType(creature::CreaturePVec_t & pVec_OutParam, creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesInSameBlockingPosOfType(pVec_OutParam, nullptr, will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was given a CREATURE_CPTRC that was null.");
+
         const CombatNodePtr_t COMBAT_NODE_PTR(combatTree_.GetNode(CREATURE_CPTRC));
         M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "heroespath::combat::CombatDisplay::FindCreaturesInSameBlockingPosOfType(creature_name=" << CREATURE_CPTRC->Name() << ", will_find_players=" << std::boolalpha << WILL_FIND_PLAYERS << ") was unable to find that creature node in the combatTree_.");
 
@@ -717,6 +721,7 @@ namespace combat
 
     int CombatDisplay::FindBlockingPos(const creature::CreaturePtrC_t CREATURE_CPTRC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::FindBlockingPos(nullptr) was given a CREATURE_CPTRC that was null.");
         return combatTree_.GetNode(CREATURE_CPTRC)->GetBlockingPos();
     }
 
@@ -762,6 +767,9 @@ namespace combat
     bool CombatDisplay::IsCreatureAPossibleFightTarget(const creature::CreaturePtrC_t CREATURE_FIGHTING_CPTRC,
                                                        const creature::CreaturePtrC_t CREATURE_TARGETED_CPTRC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_FIGHTING_CPTRC != nullptr), "heroespath::combat::CombatDisplay::IsCreatureAPossibleFightTarget() was given a CREATURE_FIGHTING_CPTRC that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_TARGETED_CPTRC != nullptr), "heroespath::combat::CombatDisplay::IsCreatureAPossibleFightTarget() was given a CREATURE_TARGETED_CPTRC that was null.");
+
         creature::CreaturePVec_t creaturesThatCanBeAttackedPVec;
         FindCreaturesThatCanBeAttackedOfType(creaturesThatCanBeAttackedPVec, CREATURE_FIGHTING_CPTRC, false);
 
@@ -775,22 +783,33 @@ namespace combat
 
     CombatNodePtr_t CombatDisplay::GetCombatNodeForCreature(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::GetCombatNodeForCreature() was given a CREATURE_CPTRC that was null.");
         return combatTree_.GetNode(combatTree_.GetNodeId(CREATURE_CPTRC));
     }
 
 
     CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_PVEC.empty() == false), "heroespath::combat::GetCombatNodesForCreatures() was given a CREATURES_PVEC that was empty.");
+
         CombatNodePVec_t combatNodesPVec;
         combatNodesPVec.reserve(combatTree_.VertexCount());
         combatTree_.GetCombatNodes(combatNodesPVec);
 
         CombatNodePVec_t creatureCombatNodesPVec;
 
+        std::size_t creaturePtrCounter{ 0 };
         for (auto const NEXT_CREATURE_PTR : CREATURES_PVEC)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS((NEXT_CREATURE_PTR != nullptr), "heroespath::combat::CombatDisplay::GetCombatNodesForCreatures(CREATURES_PVEC.size()=" << CREATURES_PVEC.size() << ") vector at index=" << creaturePtrCounter << " was null.");
+            ++creaturePtrCounter;
+
             for (auto const nextCombatNodePtrC : combatNodesPVec)
                 if (nextCombatNodePtrC->Creature() == NEXT_CREATURE_PTR)
                     creatureCombatNodesPVec.push_back(nextCombatNodePtrC);
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS((creatureCombatNodesPVec.size() == CREATURES_PVEC.size()), "heroespath::combat::CombatDisplay::GetCombatNodesForCreatures(CREATURES_PVEC.size()=" << CREATURES_PVEC.size() << ") was not able to find CombatNodePtr_ts for every CreaturePtr_t.");
 
         return creatureCombatNodesPVec;
     }
@@ -798,6 +817,8 @@ namespace combat
 
     const std::string CombatDisplay::CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::CanAdvanceOrRetreat(nullptr, trying_to_advance=" << std::boolalpha << TRYING_TO_ADVANCE << ") was given a CREATURE_CPTRC that was null.");
+
         const int BLOCKING_POS(combatTree_.GetNode(CREATURE_CPTRC)->GetBlockingPos());
         const bool ATTEMPTING_BLOCKING_POS_INCREMENT(CREATURE_CPTRC->IsPlayerCharacter() == TRYING_TO_ADVANCE);
         const std::string ADVANCE_OR_RETREAT_STR((TRYING_TO_ADVANCE) ? "advance" : "retreat");
@@ -861,6 +882,8 @@ namespace combat
 
     void CombatDisplay::MoveCreatureBlockingPosition(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_MOVE_FORWARD)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::MoveCreatureBlockingPosition(nullptr, will_move_forward=" << std::boolalpha << WILL_MOVE_FORWARD << ") was given a CREATURE_CPTRC that was null.");
+
         auto const CREATURE_NODE_ID{ combatTree_.GetNodeId(CREATURE_CPTRC) };
         auto combatNodeSPtr{ combatTree_.GetNodeSPtr(CREATURE_NODE_ID) };
         auto blockingPos{ combatNodeSPtr->GetBlockingPos() };
@@ -899,6 +922,7 @@ namespace combat
 
     void CombatDisplay::HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::HandleFlyingChange(nullptr, is_flying=" << std::boolalpha << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
         combatTree_.GetNode(CREATURE_CPTRC)->IsFlying(IS_FLYING);
     }
 
@@ -925,6 +949,8 @@ namespace combat
 
     bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::IsCreatureVisible(nullptr) was given a CREATURE_CPTRC that was null.");
+
         if (CREATURE_CPTRC == nullptr)
             return false;
         else
@@ -934,6 +960,8 @@ namespace combat
 
     bool CombatDisplay::AreAllCreaturesVisible(const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_TO_CHECK_PVEC.empty() == false), "heroespath::combat::CombatDisplay::AreAllCreaturesVisible() was given a CREATURES_TO_CHECK_PVEC that was empty.");
+
         auto const COMBATNODES_PVEC{ GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
 
         for (auto const nextCombatNodeCPtr : COMBATNODES_PVEC)
@@ -946,6 +974,8 @@ namespace combat
     
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_PVEC.empty() == false), "heroespath::combat::CombatDisplay::IsZoomOutRequired() was given a CREATURES_PVEC that was empty.");
+
         auto horizPosDiffMax{ 0.0f };
         auto vertPosDiffMax{ 0.0f };
 
@@ -975,6 +1005,8 @@ namespace combat
 
     const sf::Vector2f CombatDisplay::FindCenterOfCreatures(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURES_TO_CENTER_ON_PVEC.empty() == false), "heroespath::combat::CombatDisplay::FindCenterOfCreatures() was given a CREATURES_TO_CENTER_ON_PVEC that was empty.");
+
         std::vector<float> horizPosVec;
         std::vector<float> vertPosVec;
 
@@ -994,9 +1026,9 @@ namespace combat
 
     void CombatDisplay::SetCreatureHighlight(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "heroespath::combat::CombatDisplay::SetCreatureHighlight(nullptr) was given a CREATURE_CPTRC that was null.");
         GetCombatNodeForCreature(CREATURE_CPTRC)->SetHighlight(WILL_HIGHLIGHT, false);
     }
-
 
 
     void CombatDisplay::InitialPlayerPartyCombatTreeSetup()
@@ -1132,6 +1164,8 @@ namespace combat
 
     const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "heroespath::combat::CombatDisplay::GetNodeTitle(nullptr) was given a COMBAT_NODE_PTR that was null.");
+
         if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
             return COMBAT_NODE_PTR->Creature()->Name();
         else

@@ -1167,7 +1167,7 @@ namespace stage
     }
 
 
-    void CombatStage::UpdateMousePos(const sf::Vector2f &)
+    void CombatStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isMouseHeldDown_)
         {
@@ -1177,6 +1177,8 @@ namespace stage
         {
             isMouseHeldDownAndMoving_ = false;
         }
+
+        Stage::UpdateMousePos(MOUSE_POS_V);
     }
 
 
