@@ -24,7 +24,7 @@ namespace creature
         const stats::Stat_t ERROR_VALUE{ -123456789 };
 
         stats::StatSet statSet;
-        for (int i(0); i < statValuesStrVec.size(); ++i)
+        for (std::size_t i(0); i < statValuesStrVec.size(); ++i)
         {
             stats::Stat_t nextValue{ ERROR_VALUE };
             try
