@@ -42,19 +42,29 @@ namespace sfml_util
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
+
+        //defines what is happening on the spellbook popup
+        enum class SpellbookState
+        {
+            Waiting = 0,
+            FadingOut,
+            FadeingIn,
+            Count
+        };
+
     public:
         PopupStage(const game::PopupInfo & POPUP_INFO,
-                   const sf::FloatRect &         REGION,
-                   const sf::FloatRect &         INNER_REGION,
-                   const TextureSPtr_t &         TEXTURE_SPTR,
-                   const sf::Sprite &            ACCENT_SPRITE,
-                   const TextureSPtr_t &         ACCENT_TEXTURE_SPTR);
+                   const sf::FloatRect &   REGION,
+                   const sf::FloatRect &   INNER_REGION,
+                   const TextureSPtr_t &   TEXTURE_SPTR,
+                   const sf::Sprite &      ACCENT_SPRITE,
+                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR);
 
         PopupStage(const game::PopupInfo & POPUP_INFO,
-                   const sf::FloatRect &         REGION,
-                   const sf::FloatRect &         INNER_REGION,
-                   const sf::Sprite &            ACCENT_SPRITE,
-                   const TextureSPtr_t &         ACCENT_TEXTURE_SPTR);
+                   const sf::FloatRect &   REGION,
+                   const sf::FloatRect &   INNER_REGION,
+                   const sf::Sprite &      ACCENT_SPRITE,
+                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR);
 
         virtual ~PopupStage();
 
@@ -77,25 +87,28 @@ namespace sfml_util
         //returns true of the select number is valid
         bool ProcessSelectNumber();
 
+    public:
+        static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:
-        static const float          IMAGE_SLIDER_SPEED_;
-        static const int            NUMBER_SELECT_INVALID_;
-        static const float          BEFORE_FADE_STARTS_DELAY_SEC_;
+        static const float IMAGE_SLIDER_SPEED_;
+        static const int   NUMBER_SELECT_INVALID_;
+        static const float BEFORE_FADE_STARTS_DELAY_SEC_;
         //
-        const game::PopupInfo POPUP_INFO_;
-        sf::Sprite                  backgroundSprite_;
-        TextureSPtr_t               backgroundTexture_;
-        sf::FloatRect               innerRegion_;
-        gui::TextRegionSPtr_t       textRegionSPtr_;
-        sf::FloatRect               textRegion_;
-        float                       elapsedTimeCounter_;
-        std::size_t                 secondCounter_;
-        gui::box::Box               box_;
-        GradientRect                gradient_;
-        sf::Sprite                  accentSprite_;
-        TextureSPtr_t               accentTextureSPtr_;
-        PopupButton_SelectSPtr_t    selectPopupButtonSPtr_;
+        const game::PopupInfo    POPUP_INFO_;
+        sf::Sprite               backgroundSprite_;
+        TextureSPtr_t            backgroundTextureSPtr_;
+        sf::FloatRect            innerRegion_;
+        gui::TextRegionSPtr_t    textRegionSPtr_;
+        sf::FloatRect            textRegion_;
+        float                    elapsedTimeCounter_;
+        std::size_t              secondCounter_;
+        gui::box::Box            box_;
+        GradientRect             gradient_;
+        sf::Sprite               accentSprite_;
+        TextureSPtr_t            accentTextureSPtr_;
+        PopupButton_SelectSPtr_t selectPopupButtonSPtr_;
 
+        //members supporting the image select sliderbar
         gui::SliderBarSPtr_t sliderbarSPtr_;
         float sliderbarPosTop_;
         bool willSliderbarUpdate_;
@@ -105,7 +118,7 @@ namespace sfml_util
         gui::TextRegionSPtr_t   infoTextRegionSPtr_;
         gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
 
-        //members needed to animate selection images
+        //members needed to animate image select
         bool                  isImageProcAllowed_;
         bool                  isInitialAnimation_;
         bool                  willShowImageCount_;
@@ -132,6 +145,9 @@ namespace sfml_util
         //POPUP_INFO_.Images() holds the two sfml_util::TextureSPtr_ts of the two fading images
         float beforeFadeTimerSec_;
         float fadeAlpha_;
+
+        //members supporting the spellbook popup
+        SpellbookState spellbookState_;
     };
 
 

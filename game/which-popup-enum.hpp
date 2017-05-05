@@ -22,6 +22,7 @@ namespace game
             ContentSelectionWithoutItem,
             CharacterSelection,
             NumberSelection,
+            Spellbook,
             Count
         };
 

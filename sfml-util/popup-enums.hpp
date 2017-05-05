@@ -54,6 +54,7 @@ namespace sfml_util
             Large,
             LargeSidebar,
             Custom,
+            Spellbook,
             Count
         };
 

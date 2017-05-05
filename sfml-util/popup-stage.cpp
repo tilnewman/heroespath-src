@@ -27,9 +27,10 @@
 namespace sfml_util
 {
 
-    const float PopupStage::IMAGE_SLIDER_SPEED_          (4.0f);
-    const int   PopupStage::NUMBER_SELECT_INVALID_       (-1);//any negative number will work here
-    const float PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_(2.0f);
+    const float PopupStage::IMAGE_SLIDER_SPEED_                     { 4.0f };
+    const int   PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
+    const float PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
+    const float PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.75f };
 
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
@@ -42,7 +43,7 @@ namespace sfml_util
         Stage                  (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
         POPUP_INFO_            (POPUP_INFO),
         backgroundSprite_      ( * TEXTURE_SPTR),
-        backgroundTexture_     (TEXTURE_SPTR),
+        backgroundTextureSPtr_ (TEXTURE_SPTR),
         innerRegion_           (INNER_REGION),
         textRegionSPtr_        (),
         textRegion_            (),
@@ -80,7 +81,8 @@ namespace sfml_util
         imageMoveQueue_        (),
         imageSlider_           (IMAGE_SLIDER_SPEED_),
         beforeFadeTimerSec_    (0.0f),
-        fadeAlpha_             (0.0f)
+        fadeAlpha_             (0.0f),
+        spellbookState_        (SpellbookState::FadeingIn)
     {}
 
 
@@ -93,7 +95,7 @@ namespace sfml_util
         Stage                  (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
         POPUP_INFO_            (POPUP_INFO),
         backgroundSprite_      (),
-        backgroundTexture_     (),
+        backgroundTextureSPtr_     (),
         innerRegion_           (INNER_REGION),
         textRegionSPtr_        (),
         textRegion_            (),
@@ -214,14 +216,30 @@ namespace sfml_util
         //darken the box gold bars a bit
         box_.SetEntityColors(sfml_util::gui::ColorSet(sf::Color(200,200,200)));
 
-        backgroundSprite_.setScale(POPUP_INFO_.ImageScale(), POPUP_INFO_.ImageScale());
+        if (POPUP_INFO_.Image() == sfml_util::PopupImage::Spellbook)
+        {
+            auto const BACKGROUND_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
+            auto const BACKGROUND_HEIGHT{ (static_cast<float>(backgroundTextureSPtr_->getSize().y) * BACKGROUND_WIDTH) / static_cast<float>(backgroundTextureSPtr_->getSize().x) };
 
-        //set the stage region to fit the newly sized background paper/whatever image
-        const float BACKGROUND_WIDTH(backgroundSprite_.getGlobalBounds().width);
-        const float BACKGROUND_HEIGHT(backgroundSprite_.getGlobalBounds().height);
-        const float BACKGROUND_POS_LEFT((sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (BACKGROUND_WIDTH * 0.5f));
-        const float BACKGROUND_POS_TOP((sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (BACKGROUND_HEIGHT * 0.5f));
-        StageRegionSet( sf::FloatRect(BACKGROUND_POS_LEFT, BACKGROUND_POS_TOP, BACKGROUND_WIDTH, BACKGROUND_HEIGHT) );
+            sf::FloatRect r;
+            r.left = ((sfml_util::Display::Instance()->GetWinWidth() - BACKGROUND_WIDTH) * 0.5f);
+            r.top = ((sfml_util::Display::Instance()->GetWinHeight() - BACKGROUND_HEIGHT) * 0.5f);
+            r.width = BACKGROUND_WIDTH;
+            r.height = BACKGROUND_HEIGHT;
+
+            StageRegionSet( r );
+        }
+        else
+        {
+            backgroundSprite_.setScale(POPUP_INFO_.ImageScale(), POPUP_INFO_.ImageScale());
+
+            //set the stage region to fit the newly sized background paper/whatever image
+            const float BACKGROUND_WIDTH(backgroundSprite_.getGlobalBounds().width);
+            const float BACKGROUND_HEIGHT(backgroundSprite_.getGlobalBounds().height);
+            const float BACKGROUND_POS_LEFT((sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (BACKGROUND_WIDTH * 0.5f));
+            const float BACKGROUND_POS_TOP((sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (BACKGROUND_HEIGHT * 0.5f));
+            StageRegionSet(sf::FloatRect(BACKGROUND_POS_LEFT, BACKGROUND_POS_TOP, BACKGROUND_WIDTH, BACKGROUND_HEIGHT));
+        }
 
         //positions can now accurately be based on StageRegion
         backgroundSprite_.setPosition(StageRegionLeft(), StageRegionTop());
@@ -287,6 +305,7 @@ namespace sfml_util
         }
 
         //establish text region
+        //Note:  Spellbook popup has two regions, one for each page, so textRegion_ is not used on the Spellbook popup stage.
         textRegion_.left   = StageRegionLeft() + innerRegion_.left;
         textRegion_.top    = StageRegionTop() + innerRegion_.top;
         textRegion_.width  = innerRegion_.width;
@@ -296,6 +315,7 @@ namespace sfml_util
         textRegionRect.height = 0.0f;
 
         //setup and render actual text
+        //Note:  Spellbook popup has no 'typical' central text, so only " " is rendered here.
         textRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
                                                               POPUP_INFO_.TextInfo(),
                                                               textRegionRect,
@@ -322,24 +342,22 @@ namespace sfml_util
         //establish the accent sprite position and size
         if (POPUP_INFO_.WillAddRandImage())
         {
-            //lower the scale if needed
-            if (textRegion_.width < accentSprite_.getGlobalBounds().width)
+            //scale the accent image
+            auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+            const float SCALE_VERT((textRegion_.height * SIZE_RATIO) / accentSprite_.getLocalBounds().height);
+            accentSprite_.setScale(SCALE_VERT, SCALE_VERT);
+
+            if (accentSprite_.getGlobalBounds().width > (textRegion_.width * SIZE_RATIO))
             {
-                const float NEW_SCALE(textRegion_.width / accentSprite_.getLocalBounds().width);
-                accentSprite_.setScale(NEW_SCALE, NEW_SCALE);
-            }
-            else if ((accentSprite_.getGlobalBounds().width * 2.0f) < textRegion_.width)
-            {
-                accentSprite_.setScale(1.75f, 1.75f);
+                const float SCALE_HORIZ((textRegion_.width * SIZE_RATIO) / accentSprite_.getLocalBounds().width);
+
+                if (SCALE_HORIZ < SCALE_VERT)
+                {
+                    accentSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                }
             }
 
-            if (textRegion_.height < accentSprite_.getGlobalBounds().height)
-            {
-                const float NEW_SCALE(textRegion_.height / accentSprite_.getLocalBounds().height);
-                accentSprite_.setScale(NEW_SCALE, NEW_SCALE);
-            }
-
-            //always center accent sprite image
+            //always center the accent sprite image
             const float ACCENT_POS_LEFT((StageRegionLeft() + (StageRegionWidth() * 0.5f)) - (accentSprite_.getGlobalBounds().width * 0.5f));
             const float ACCENT_POS_TOP((StageRegionTop() + (StageRegionHeight() * 0.5f)) - (accentSprite_.getGlobalBounds().height * 0.5f));
             accentSprite_.setPosition(ACCENT_POS_LEFT, ACCENT_POS_TOP);
@@ -351,7 +369,12 @@ namespace sfml_util
         sliderbarPosTop_ = (BUTTON_POS_TOP - (POPUPBUTTON_TEXT_HEIGHT * 3.0f));
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) || (POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
-            sliderbarSPtr_.reset(new sfml_util::gui::SliderBar("PopupStage's", SLIDERBAR_POS_LEFT, sliderbarPosTop_, SLIDERBAR_LENGTH, sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
+            sliderbarSPtr_ = std::make_shared<sfml_util::gui::SliderBar>("PopupStage's",
+                                                                         SLIDERBAR_POS_LEFT,
+                                                                         sliderbarPosTop_,
+                                                                         SLIDERBAR_LENGTH,
+                                                                         sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
+                                                                         this);
             EntityAdd(sliderbarSPtr_);
         }
 
@@ -407,8 +430,7 @@ namespace sfml_util
             SetFocus(textEntryBoxSPtr_);
             textEntryBoxSPtr_->SetHasFocus(true);
         }
-
-        if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
+        else if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
             imagesRect_ = textRegion_;
             imagesRect_.top = textRegionSPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);//added is a pad so the text does not touch the images
@@ -433,8 +455,7 @@ namespace sfml_util
                 EntityRemove(sliderbarSPtr_);
             }
         }
-
-        if (POPUP_INFO_.Type() == game::Popup::ImageFade)
+        else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             const float IMAGE_PAD(10.0f);
             const float IMAGE_REGION_TOP(textRegionSPtr_->GetEntityRegion().top + textRegionSPtr_->GetEntityRegion().height + IMAGE_PAD);
@@ -467,6 +488,10 @@ namespace sfml_util
                                          (IMAGE_REGION_TOP + (IMAGE_REGION_HEIGHT * 0.5f)) - (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
 
             imageSpriteCurr_.setColor(sf::Color(255, 255, 255, 0));
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+
         }
     }
 

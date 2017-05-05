@@ -77,6 +77,7 @@ namespace sfml_util
             case Large:             { return "Large"; }
             case LargeSidebar:      { return "LargeSidebar"; }
             case Custom:            { return "Custom"; }
+            case Spellbook:         { return "Spellbook"; }
             case Count:
             default:
             {
@@ -97,7 +98,8 @@ namespace sfml_util
             case RegularSidebar:
             case Large:
             case LargeSidebar:
-            case Custom: { return true; }
+            case Custom:
+            case Spellbook: { return true; }
             case Count:
             default: { return false; }
         }

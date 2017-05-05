@@ -66,11 +66,13 @@ namespace box
         static inline float SpeedMult_Fade() { return 500.0f; }
 
         //inner rects that content can appear within
-        static inline sf::IntRect Rect_Banner()         { return sf::IntRect(78,  32, 338, 184); }
-        static inline sf::IntRect Rect_Regular()        { return sf::IntRect(32,  32, 431, 268); }
-        static inline sf::IntRect Rect_RegularSidebar() { return sf::IntRect(115, 32, 347, 268); }
-        static inline sf::IntRect Rect_Large()          { return sf::IntRect(47,  47, 407, 403); }
-        static inline sf::IntRect Rect_LargeSidebar()   { return sf::IntRect(85,  47, 360, 403); }
+        static inline sf::IntRect Rect_Banner()         { return sf::IntRect( 78,  32, 338, 184); }
+        static inline sf::IntRect Rect_Regular()        { return sf::IntRect( 32,  32, 431, 268); }
+        static inline sf::IntRect Rect_RegularSidebar() { return sf::IntRect( 115, 32, 347, 268); }
+        static inline sf::IntRect Rect_Large()          { return sf::IntRect( 47,  47, 407, 403); }
+        static inline sf::IntRect Rect_LargeSidebar()   { return sf::IntRect( 85,  47, 360, 403); }
+        static inline sf::IntRect Rect_Spellbook_Page1(){ return sf::IntRect(128, 120, 648, 982); }
+        static inline sf::IntRect Rect_Spellbook_Page2(){ return sf::IntRect(982, 120, 648, 982); }
 
         //Returns a sprite for a randomly selected popup window accent that is
         //positioned, scaled, and colored for drawing to the paper popup window.
@@ -86,6 +88,7 @@ namespace box
         inline TextureSPtr_t Texture_RegularSidebar() const { return popupRegularSidebarTextureSPtr_; }
         inline TextureSPtr_t Texture_Large() const          { return popupLargeTextureSPtr_; }
         inline TextureSPtr_t Texture_LargeSidebar() const   { return popupLargeSidebarTextueSPtr_; }
+        inline TextureSPtr_t Texture_Spellbook() const      { return popupSpellbookTextureSPtr_; }
 
         //TextInfo creation helper functions
         const sfml_util::gui::TextInfo TextInfoDefault(const std::string &              TEXT,
@@ -95,51 +98,55 @@ namespace box
         //create popup window info objects
         //use this function to make popup windows with the typical paper image backgrounds
         const game::PopupInfo CreatePopupInfo(const std::string &           POPUP_NAME,
-                                                    const std::string &           PROMPT_TEXT,
-                                                    const PopupButtons::Enum      BUTTONS      = PopupButtons::Okay,
-                                                    const PopupImage::Enum        IMAGE        = PopupImage::Banner,
-                                                    const Justified::Enum         JUSTIFIED    = Justified::Center,
-                                                    const sound_effect::Enum      SOUND_EFFECT = sound_effect::PromptGeneric,
-                                                    const game::Popup::Enum WHICH_POPUP  = game::Popup::Generic,
-                                                    const unsigned int            FONT_SIZE    = FontManager::Instance()->Size_Normal());
+                                              const std::string &           PROMPT_TEXT,
+                                              const PopupButtons::Enum      BUTTONS      = PopupButtons::Okay,
+                                              const PopupImage::Enum        IMAGE        = PopupImage::Banner,
+                                              const Justified::Enum         JUSTIFIED    = Justified::Center,
+                                              const sound_effect::Enum      SOUND_EFFECT = sound_effect::PromptGeneric,
+                                              const game::Popup::Enum WHICH_POPUP  = game::Popup::Generic,
+                                              const unsigned int            FONT_SIZE    = FontManager::Instance()->Size_Normal());
 
         //use this function to create popup windows with a simple box and custom background color
         const game::PopupInfo CreatePopupInfo(const std::string &      POPUP_NAME,
-                                                    const std::string &      PROMPT_TEXT,
-                                                    const sf::Color &        TEXT_COLOR,
-                                                    const gui::box::Info &   BOX_INFO,
-                                                    const PopupButtons::Enum BUTTONS      = sfml_util::PopupButtons::Okay,
-                                                    const Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
-                                                    const sound_effect::Enum SOUND_EFFECT = sound_effect::PromptGeneric,
-                                                    const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Smallish());
+                                              const std::string &      PROMPT_TEXT,
+                                              const sf::Color &        TEXT_COLOR,
+                                              const gui::box::Info &   BOX_INFO,
+                                              const PopupButtons::Enum BUTTONS      = sfml_util::PopupButtons::Okay,
+                                              const Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
+                                              const sound_effect::Enum SOUND_EFFECT = sound_effect::PromptGeneric,
+                                              const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Smallish());
 
         //use this function to create image select popup windows
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
-                                                    const std::string &              PROMPT_TEXT,
-                                                    const sfml_util::TextureSVec_t & IMAGES_SVEC,
-                                                    const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
-                                                    const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal());
+                                              const std::string &              PROMPT_TEXT,
+                                              const sfml_util::TextureSVec_t & IMAGES_SVEC,
+                                              const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
+                                              const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal());
 
         //use this function to create the number selection popup window
         const game::PopupInfo CreatePopupInfo(const std::string & POPUP_NAME,
-                                                    const std::string & PROMPT_TEXT,
-                                                    const std::size_t   THE_MIN,
-                                                    const std::size_t   THE_MAX,
-                                                    const unsigned int  FONT_SIZE = FontManager::Instance()->Size_Normal());
+                                              const std::string & PROMPT_TEXT,
+                                              const std::size_t   THE_MIN,
+                                              const std::size_t   THE_MAX,
+                                              const unsigned int  FONT_SIZE = FontManager::Instance()->Size_Normal());
 
         //use this function to make character selection popup windows
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
-                                                    const std::string &              PROMPT_TEXT,
-                                                    const std::vector<std::size_t> & INVALID_PLAYER_NUM_VEC,
-                                                    const unsigned int               FONT_SIZE = FontManager::Instance()->Size_Large());
+                                              const std::string &              PROMPT_TEXT,
+                                              const std::vector<std::size_t> & INVALID_PLAYER_NUM_VEC,
+                                              const unsigned int               FONT_SIZE = FontManager::Instance()->Size_Large());
 
+        //use this function to make image fade/transition popup windows
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
-                                                    const std::string &              PROMPT_TEXT,
-                                                    const sfml_util::TextureSPtr_t & FROM_IMAGE,
-                                                    const sfml_util::TextureSPtr_t & TO_IMAGE,
-                                                    const PopupButtons::Enum         BUTTONS      = PopupButtons::Okay,
-                                                    const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal(),
-                                                    const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric);
+                                              const std::string &              PROMPT_TEXT,
+                                              const sfml_util::TextureSPtr_t & FROM_IMAGE,
+                                              const sfml_util::TextureSPtr_t & TO_IMAGE,
+                                              const PopupButtons::Enum         BUTTONS      = PopupButtons::Okay,
+                                              const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal(),
+                                              const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric);
+
+        //use this function to make the spellbook popup window
+        const game::PopupInfo CreateSpellbookPopupInfo(const std::string & POPUP_NAME);
 
         //throws range error upon unknown enum value
         TextureSPtr_t Texture(const PopupImage::Enum) const;
@@ -169,6 +176,7 @@ namespace box
         TextureSPtr_t popupRegularSidebarTextureSPtr_;
         TextureSPtr_t popupLargeTextureSPtr_;
         TextureSPtr_t popupLargeSidebarTextueSPtr_;
+        TextureSPtr_t popupSpellbookTextureSPtr_;
     };
 
 }

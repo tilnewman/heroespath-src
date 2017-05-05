@@ -29,7 +29,7 @@ namespace game
                   const sfml_util::PopupButtons::Enum     BUTTONS              = sfml_util::PopupButtons::Okay,
                   const sfml_util::PopupImage::Enum       IMAGE                = sfml_util::PopupImage::Banner,
                   const float                             IMAGE_SCALE          = 1.0f,
-                  const game::Popup::Enum           TYPE                 = game::Popup::Generic,
+                  const game::Popup::Enum                 TYPE                 = game::Popup::Generic,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT         = sfml_util::sound_effect::PromptGeneric,
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR         = sfml_util::PopupButtonColor::Dark,
                   const bool                              WILL_ADD_RAND_IMAGE  = true,
@@ -44,7 +44,7 @@ namespace game
                   const sfml_util::gui::box::Info &       BOX_INFO,
                   const float                             MAX_SIZE_RATIO_X    = 0.25f,
                   const float                             MAX_SIZE_RATIO_Y    = 0.5f,
-                  const game::Popup::Enum           TYPE                = game::Popup::Generic,
+                  const game::Popup::Enum                 TYPE                = game::Popup::Generic,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT        = sfml_util::sound_effect::PromptGeneric,
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR        = sfml_util::PopupButtonColor::Light,
                   const bool                              WILL_ADD_RAND_IMAGE = true);
@@ -70,7 +70,7 @@ namespace game
         inline sfml_util::PopupButtons::Enum     Buttons() const            { return buttons_; }
         inline sfml_util::PopupImage::Enum       Image() const              { return image_; }
         inline const sfml_util::gui::TextInfo    TextInfo() const           { return textInfo_; }
-        inline game::Popup::Enum           Type() const               { return type_; }
+        inline game::Popup::Enum                 Type() const               { return type_; }
         inline sfml_util::sound_effect::Enum     SoundEffect() const        { return soundEffect_; }
         inline const sfml_util::gui::box::Info   BoxInfo() const            { return boxInfo_; }
         inline float                             SizeX() const              { return ratioX_; }
@@ -106,7 +106,7 @@ namespace game
         sfml_util::gui::TextInfo          textInfo_;
         sfml_util::PopupButtons::Enum     buttons_;
         sfml_util::PopupImage::Enum       image_;
-        game::Popup::Enum           type_;
+        game::Popup::Enum                 type_;
         sfml_util::sound_effect::Enum     soundEffect_;
         sfml_util::gui::box::Info         boxInfo_;
         float                             ratioX_;
@@ -117,7 +117,7 @@ namespace game
         sfml_util::TextureSVec_t          textureSVec_;
         std::size_t                       numberMin_;
         std::size_t                       numberMax_;
-        std::vector<std::size_t>               numberInvalidVec_;
+        std::vector<std::size_t>          numberInvalidVec_;
         float                             imageFadeSpeed_;
     };
 

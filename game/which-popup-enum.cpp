@@ -21,6 +21,7 @@ namespace game
             case ContentSelectionWithoutItem:   { return "ContentSelectionWithoutItem"; }
             case CharacterSelection:            { return "CharacterSelection"; }
             case NumberSelection:               { return "NumberSelection"; }
+            case Spellbook:                     { return "Spellbook"; }
             case Count:
             default:
             {
