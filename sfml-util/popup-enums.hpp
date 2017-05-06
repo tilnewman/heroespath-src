@@ -62,45 +62,6 @@ namespace sfml_util
         static bool IsValid(const PopupImage::Enum);
     };
 
-
-    struct PopupAccent
-    {
-        enum Enum
-        {
-            Crest = 0,
-            Root1,
-            Root2,
-            Root3,
-            Root4,
-            Design1,
-            Design2,
-            Design3,
-            Design4,
-            Plant1,
-            Plant2,
-            Plant3,
-            Plant4,
-            Figure1,
-            Figure2,
-            Figure3,
-            Figure4,
-            Figure5,
-            Figure6,
-            Figure7,
-            Figure8,
-            Figure9,
-            Figure10,
-            Figure11,
-            Figure12,
-            Figure13,
-            Count
-        };
-
-        static const std::string ToString(const PopupAccent::Enum);
-        static bool IsValid(const PopupAccent::Enum);
-        static bool MustCenter(const PopupAccent::Enum);
-    };
-
 }
 
 #endif //SFMLUTIL_POPUP_ENUMS_HPP_INCLUDE

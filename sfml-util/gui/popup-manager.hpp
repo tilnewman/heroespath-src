@@ -12,6 +12,9 @@
 #include "game/i-popup-callback.hpp"
 #include "game/popup-info.hpp"
 
+#include <boost/filesystem.hpp>
+
+#include <map>
 #include <string>
 #include <vector>
 #include <memory>
@@ -24,15 +27,19 @@ namespace sfml_util
 
 namespace gui
 {
-namespace box
-{
-    class Info;
-}
+    //forward declarations
+    namespace box
+    {
+        class Info;
+    }
 
 
     //types required by the singleton implementation
     class PopupManager;
     using PopupManagerSPtr_t = std::shared_ptr<PopupManager>;
+
+
+    using PathVec_t = std::vector<boost::filesystem::path>;
 
 
     //A class that loads, stores, and distributes fonts by style.
@@ -162,6 +169,8 @@ namespace box
 
         float GetScaleForImage(const PopupImage::Enum E) const;
 
+        void LoadAccentImagePaths();
+
     private:
         static std::string windowTextureDirectoryPath_;
         static std::string accentTextureDirectoryPath_;
@@ -177,6 +186,8 @@ namespace box
         TextureSPtr_t popupLargeTextureSPtr_;
         TextureSPtr_t popupLargeSidebarTextueSPtr_;
         TextureSPtr_t popupSpellbookTextureSPtr_;
+        //
+        PathVec_t accentPathsVec_;
     };
 
 }

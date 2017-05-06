@@ -14,8 +14,6 @@
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
 
-#include <boost/filesystem.hpp>
-
 #include <sstream>
 #include <exception>
 
@@ -27,7 +25,7 @@ namespace gui
 
     std::string         PopupManager::windowTextureDirectoryPath_("");
     std::string         PopupManager::accentTextureDirectoryPath_("");
-    const sf::Uint8     PopupManager::ACCENT_IMAGE_ALPHA_(40);
+    const sf::Uint8     PopupManager::ACCENT_IMAGE_ALPHA_(32);
     PopupManagerSPtr_t  PopupManager::instanceSPtr_(nullptr);
     sf::Color           PopupManager::fontColor_(sf::Color(64, 64, 64, 255));//set to match FontManager::Color_GrayDarker() before being set in the constructor
 
@@ -40,7 +38,8 @@ namespace gui
         popupRegularSidebarTextureSPtr_ (),
         popupLargeTextureSPtr_          (),
         popupLargeSidebarTextueSPtr_    (),
-        popupSpellbookTextureSPtr_      ()
+        popupSpellbookTextureSPtr_      (),
+        accentPathsVec_                 ()
     {
         fontColor_ = sfml_util::FontManager::Instance()->Color_GrayDarker();
     }
@@ -76,35 +75,6 @@ namespace gui
             game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::PopupManager::Test() Starting Tests...");
         }
 
-        static auto onFlipped{ false };
-        static std::size_t accentIndex{ 0 };
-        if (accentIndex < static_cast<std::size_t>(sfml_util::PopupAccent::Count))
-        {
-            std::ostringstream ss;
-            ss << accentIndex + 1 << ".png";
-
-            TextureSPtr_t textureSPtr;
-            LoadAccent(ss.str(), textureSPtr);
-
-            if (onFlipped)
-            {
-                onFlipped = ! onFlipped;
-                TextureSPtr_t textureFippedSPtr(sfml_util::FlipHorizCopy( * textureSPtr));
-                game::LoopManager::Instance()->TestingImageSet(textureFippedSPtr);
-                game::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
-            }
-            else
-            {
-                onFlipped = ! onFlipped;
-                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
-                game::LoopManager::Instance()->TestingStrAppend("PopupManager Tested Accent Image " + ss.str());
-                return false;
-            }
-
-            ++accentIndex;
-            return false;
-        }
-
         game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
@@ -117,6 +87,8 @@ namespace gui
         LoadPopup("paper-large.png", popupLargeTextureSPtr_);
         LoadPopup("paper-large-bar.png", popupLargeSidebarTextueSPtr_);
         LoadPopup("spellbook.png", popupSpellbookTextureSPtr_);
+
+        LoadAccentImagePaths();
     }
 
 
@@ -125,15 +97,6 @@ namespace gui
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) / bfs::path(WINDOW_FILE_NAME)));
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
-    }
-
-
-    void PopupManager::LoadAccent(const std::string & ACCENT_FILE_NAME,
-                                  TextureSPtr_t &     textureSPtr) const
-    {
-        namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(accentTextureDirectoryPath_) / bfs::path(ACCENT_FILE_NAME)));
         sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
     }
 
@@ -148,11 +111,8 @@ namespace gui
             throw std::range_error(ss.str());
         }
 
-        std::ostringstream accentTextureSS;
-        accentTextureSS << utilz::random::Int(1, sfml_util::PopupAccent::Count) << ".png";
-
         TextureSPtr_t tempTextureSPtr;
-        LoadAccent(accentTextureSS.str(), tempTextureSPtr);
+        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(utilz::random::Int(accentPathsVec_.size() - 1)).string());
 
         if (utilz::random::Bool())
         {
@@ -502,6 +462,30 @@ namespace gui
         else
         {
             return BACKGROUND_IMAGE_SCALE_DEFAULT_;
+        }
+    }
+
+
+    void PopupManager::LoadAccentImagePaths()
+    {
+        namespace bfs = boost::filesystem;
+
+        const bfs::path   DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
+        const std::string DIR_OBJ_STR(DIR_OBJ.string());
+
+        M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)), "sfml_util::gui::PopupManager::LoadAssets() accents dir path not found \"" << DIR_OBJ.string() << "\".");
+        M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)), "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \"" << DIR_OBJ.string() << "\".");
+
+        //create a vector of paths to saved games
+        bfs::directory_iterator end_itr; // default construction yields past-the-end
+        for (bfs::directory_iterator itr(DIR_OBJ); itr != end_itr; ++itr)
+        {
+            if ((bfs::is_regular_file(itr->path())) &&
+                (boost::algorithm::starts_with(itr->path().leaf().string(), "accent-")) &&
+                (boost::algorithm::ends_with(itr->path().leaf().string(), ".png")))
+            {
+                accentPathsVec_.push_back(itr->path());
+            }
         }
     }
 
