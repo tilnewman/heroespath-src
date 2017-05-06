@@ -23,7 +23,7 @@ namespace game
 namespace combat
 {
 
-    const spell::SpellTypeVec_t TurnDecider::COMBAT_SPELLS_VEC_     { spell::SpellType::Attack, spell::SpellType::EnchantCreatureHelpful, spell::SpellType::EnchantCreatureHarmful, spell::SpellType::MiscCombat };
+    const spell::SpellTypeVec_t TurnDecider::COMBAT_SPELLS_VEC_     { spell::SpellType::Attack, spell::SpellType::EnchantCreatureHelpful, spell::SpellType::EnchantCreatureHarmful };
     const spell::SpellTypeVec_t TurnDecider::AFFLICTION_SPELLS_VEC_ { spell::SpellType::Attack, spell::SpellType::EnchantCreatureHarmful };
     const spell::SpellTypeVec_t TurnDecider::BENEFICIAL_SPELLS_VEC_ { spell::SpellType::Heal, spell::SpellType::EnchantCreatureHelpful };
 
@@ -640,7 +640,7 @@ namespace combat
                      back_inserter(combatSpellsPVec),
                      [] (const spell::SpellPtr_t S_PTR) { return ((S_PTR->Type() != spell::SpellType::EnchantItemHelpful) &&
                                                                   (S_PTR->Type() != spell::SpellType::EnchantItemHarmful) &&
-                                                                  (S_PTR->Type() != spell::SpellType::MiscNonCombat)); });
+                                                                  (S_PTR->Class() & spell::SpellClass::Combat)); });
 
         if (combatSpellsPVec.empty())
         {
@@ -716,7 +716,8 @@ namespace combat
                      (const spell::SpellPtr_t S_PTR)
                      {
                         for (auto const NEXT_SPELL_TYPE : SPELL_TYPES_VEC)
-                            if (NEXT_SPELL_TYPE == S_PTR->Type())
+                            if ((S_PTR->Class() & spell::SpellClass::Combat) &&
+                                (NEXT_SPELL_TYPE == S_PTR->Type()))
                                 return true;
 
                         return false;

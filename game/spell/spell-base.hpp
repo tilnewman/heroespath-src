@@ -31,21 +31,25 @@ namespace spell
     class Spell
     {
     public:
-        Spell(const Spells::Enum    WHICH,
-              const SpellType::Enum TYPE,
-              const stats::Rank_t   RANK);
+        Spell(const Spells::Enum     WHICH,
+              const SpellType::Enum  TYPE,
+              const SpellClass::Enum CLASS,
+              const stats::Mana_t    MANA_COST,
+              const stats::Rank_t    RANK);
 
         virtual ~Spell();
 
-        inline virtual const std::string Name() const   { return Spells::Name(which_); }
-        inline virtual const std::string Desc() const   { return Spells::Desc(which_); }
-        inline virtual Spells::Enum Which() const       { return which_; }
-        inline virtual SpellType::Enum Type() const     { return type_; }
+        inline const std::string Name() const   { return Spells::Name(which_); }
+        inline const std::string Desc() const   { return Spells::Desc(which_); }
+        inline Spells::Enum Which() const       { return which_; }
+        inline SpellType::Enum Type() const     { return type_; }
+        inline SpellClass::Enum Class() const   { return class_; }
+        inline stats::Mana_t ManaCost() const   { return manaCost_; }
+        inline stats::Rank_t Rank() const       { return rank_; }
 
         virtual const std::string ToString() const;
         virtual const std::string LongDesc() const;
 
-        virtual stats::Rank_t Rank() const = 0;
         virtual const std::string ActionPhrase() const = 0;
 
         virtual void Cast(creature::CreatureSPtr_t & TARGET_CREATURE_SPTR) = 0;
@@ -57,6 +61,8 @@ namespace spell
         Spells::Enum which_;
         stats::Rank_t rank_;
         SpellType::Enum type_;
+        SpellClass::Enum class_;
+        stats::Mana_t manaCost_;
 
     private:
         friend class boost::serialization::access;
@@ -66,6 +72,8 @@ namespace spell
             ar & which_;
             ar & rank_;
             ar & type_;
+            ar & class_;
+            ar & manaCost_;
         }
     };
 
@@ -78,12 +86,16 @@ namespace spell
 
     inline bool operator<(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_) < std::tie(R.which_, R.rank_, R.type_);
+        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_)
+                <
+               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_);
     }
 
     inline bool operator==(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_) == std::tie(R.which_, R.rank_, R.type_);
+        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_)
+                ==
+               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_);
     }
 
     inline bool operator!=(const Spell & L, const Spell & R)

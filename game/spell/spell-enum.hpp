@@ -16,6 +16,16 @@ namespace spell
         enum Enum
         {
             Sparks = 0,
+            Bandage,
+            Sleep,
+            Awaken,
+            Trip,
+            Lift,
+            Daze,
+            Frighten,
+            ClearMind,
+            Poison,
+            Antidote,//cures poison
             Count
         };
 

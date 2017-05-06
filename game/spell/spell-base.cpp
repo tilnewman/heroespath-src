@@ -10,13 +10,17 @@ namespace game
 namespace spell
 {
 
-    Spell::Spell(const Spells::Enum    WHICH,
-                 const SpellType::Enum TYPE,
-                 const stats::Rank_t   RANK)
+    Spell::Spell(const Spells::Enum     WHICH,
+                 const SpellType::Enum  TYPE,
+                 const SpellClass::Enum CLASS,
+                 const stats::Mana_t    MANA_COST,
+                 const stats::Rank_t    RANK)
     :
-        which_(WHICH),
-        rank_ (RANK),
-        type_ (TYPE)
+        which_   (WHICH),
+        rank_    (RANK),
+        type_    (TYPE),
+        class_   (CLASS),
+        manaCost_(MANA_COST)
     {}
 
 
@@ -33,7 +37,11 @@ namespace spell
     const std::string Spell::LongDesc() const
     {
         std::ostringstream ss;
-        ss << Spells::Desc(which_) << ", a " << SpellType::ToString(type_) << " spell requiring rank " << rank_ << ".";
+        ss << Spells::Desc(which_) << ", a " << SpellType::Name(type_)
+           << " " << SpellClass::ToString(class_, true)
+           << " that costs " << manaCost_
+           << " and requires a rank of " << rank_
+           << ".";
         return ss.str();
     }
 

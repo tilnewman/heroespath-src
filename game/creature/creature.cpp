@@ -38,7 +38,8 @@ namespace creature
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
-                       const spell::SpellPVec_t &  SPELL_PVEC)
+                       const spell::SpellPVec_t &  SPELL_PVEC,
+                       const stats::Mana_t         MANA)
     :
         name_           (NAME),
         imageFilename_  (IMAGE_FILENAME),
@@ -58,7 +59,9 @@ namespace creature
         dateTimeCreated_(DATE_TIME),
         spellsPVec_     (SPELL_PVEC),
         achievements_   (),
-        currWeaponsSVec_()
+        currWeaponsSVec_(),
+        manaCurrent_    (MANA),
+        manaNormal_     (MANA)
     {
         //set the default condition if not already there
         if (conditionsSVec_.empty())
@@ -1012,6 +1015,29 @@ namespace creature
     }
 
 
+    void Creature::ManaCurrentAdj(const stats::Mana_t ADJ)
+    {
+        manaCurrent_ += ADJ;
+        if (manaCurrent_ < 0)
+        {
+            manaCurrent_ = 0;
+        }
+        else if (manaCurrent_ > manaNormal_)
+        {
+            manaCurrent_ = manaNormal_;
+        }
+    }
+
+
+    void Creature::ManaNormalAdj(const stats::Mana_t ADJ)
+    {
+        manaNormal_ += ADJ;
+        if (manaNormal_ < 0)
+        {
+            manaNormal_ = 0;
+        }
+    }
+
 
     item::Weight_t Creature::WeightCanCarry() const
     {
@@ -1114,7 +1140,9 @@ namespace creature
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
                         L.spellsPVec_,
-                        L.achievements_)
+                        L.achievements_,
+                        L.manaCurrent_,
+                        L.manaNormal_)
                 ==
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1132,7 +1160,9 @@ namespace creature
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
                          R.spellsPVec_,
-                         R.achievements_);
+                         R.achievements_,
+                         R.manaCurrent_,
+                         R.manaNormal_);
     }
 
 
@@ -1160,7 +1190,9 @@ namespace creature
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
                         L.spellsPVec_,
-                        L.achievements_)
+                        L.achievements_,
+                        L.manaCurrent_,
+                        L.manaNormal_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1178,7 +1210,9 @@ namespace creature
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
                          R.spellsPVec_,
-                         R.achievements_);
+                         R.achievements_,
+                         R.manaCurrent_,
+                         R.manaNormal_);
     }
 
 }

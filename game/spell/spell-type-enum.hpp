@@ -12,6 +12,23 @@ namespace game
 namespace spell
 {
 
+    struct SpellClass
+    {
+        enum Enum : unsigned int
+        {
+            Combat          = 1 << 0,
+            Exploring       = 1 << 1,
+            Conversation    = 1 << 2,
+            Quest           = 1 << 3,
+            PlayerOnly      = 1 << 4,
+            NonPlayerOnly   = 1 << 5
+        };
+
+        static const std::string ToString(const Enum, const bool WILL_WRAP);
+        static Enum FromString(const std::string &);
+    };
+
+
     struct SpellType
     {
         enum Enum
@@ -22,12 +39,12 @@ namespace spell
             EnchantItemHarmful,
             EnchantCreatureHelpful,
             EnchantCreatureHarmful,
-            MiscCombat,
-            MiscNonCombat, //a misc spell that makes no sense to cast during combat, such as creating a light etc.
+            Misc,
             Count
         };
 
         static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
     };
 
     using SpellTypeVec_t = std::vector<SpellType::Enum>;

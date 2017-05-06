@@ -76,7 +76,8 @@ namespace non_player
                   const item::Inventory &            INVENTORY       = item::Inventory(),
                   const sfml_util::DateTime &        DATE_TIME       = sfml_util::DateTime(),
                   const std::string &                IMAGE_FILENAME  = "",
-                  const spell::SpellPVec_t &         SPELLS_PVEC     = spell::SpellPVec_t());
+                  const spell::SpellPVec_t &         SPELLS_PVEC     = spell::SpellPVec_t(),
+                  const stats::Mana_t                MANA            = 0);
 
         virtual ~Character();
 
@@ -99,9 +100,13 @@ namespace non_player
 
     bool operator==(const Character & L, const Character & R);
 
-    inline bool operator!=(const Character & L, const Character & R) { return ! (L == R); }
+    inline bool operator!=(const Character & L, const Character & R)
+    {
+        return ! (L == R);
+    }
 
     bool operator<(const Character & L, const Character & R);
 }
 }
+
 #endif //GAME_NONPLAYER_CHARACTER_INCLUDED

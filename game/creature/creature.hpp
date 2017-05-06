@@ -59,10 +59,10 @@ namespace creature
     class Creature
     {
         //prevent copy construction
-        Creature(const Creature &);
+        Creature(const Creature &) =delete;
 
         //prevent copy assignment
-        Creature & operator=(const Creature &);
+        Creature & operator=(const Creature &) =delete;
 
     public:
         //Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
@@ -80,7 +80,8 @@ namespace creature
                  const item::Inventory &     INVENTORY       = item::Inventory(),
                  const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                  const std::string &         IMAGE_FILENAME  = "",
-                 const spell::SpellPVec_t &  SPELL_PVEC      = spell::SpellPVec_t());
+                 const spell::SpellPVec_t &  SPELL_PVEC      = spell::SpellPVec_t(),
+                 const stats::Mana_t         MANA            = 0);
 
         virtual ~Creature();
 
@@ -235,6 +236,13 @@ namespace creature
         stats::Stat_t DivideAndGetInverseModifier(const stats::stat::Enum STAT_ENUM,
                                                   const float             DIVIDE_BY);
 
+        inline stats::Mana_t ManaCurrent() const            { return manaCurrent_; }
+        inline void ManaCurrentSet(const stats::Mana_t M)   { manaCurrent_ = M; }
+        void ManaCurrentAdj(const stats::Mana_t ADJ);
+
+        inline stats::Mana_t ManaNormal() const             { return manaNormal_; }
+        inline void ManaNormalSet(const stats::Mana_t M)    { manaNormal_ = M; }
+        void ManaNormalAdj(const stats::Mana_t ADJ);
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
@@ -266,6 +274,8 @@ namespace creature
         spell::SpellPVec_t  spellsPVec_;
         Achievements        achievements_;
         item::ItemSVec_t    currWeaponsSVec_;
+        stats::Mana_t       manaCurrent_;
+        stats::Mana_t       manaNormal_;
 
     private:
         friend class boost::serialization::access;
@@ -290,6 +300,8 @@ namespace creature
             ar & dateTimeCreated_;
             ar & spellsPVec_;
             ar & achievements_;
+            ar & manaCurrent_;
+            ar & manaNormal_;
         }
     };
 

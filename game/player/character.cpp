@@ -34,7 +34,8 @@ namespace player
                          const item::Inventory &            INVENTORY,
                          const sfml_util::DateTime &        DATE_TIME,
                          const std::string &                IMAGE_FILENAME,
-                         const spell::SpellPVec_t &         SPELLS_PVEC)
+                         const spell::SpellPVec_t &         SPELLS_PVEC,
+                         const stats::Mana_t                MANA)
     :
         Creature(NAME,
                  SEX,
@@ -50,7 +51,8 @@ namespace player
                  INVENTORY,
                  DATE_TIME,
                  IMAGE_FILENAME,
-                 SPELLS_PVEC)
+                 SPELLS_PVEC,
+                 MANA)
     {}
 
 
@@ -76,7 +78,9 @@ namespace player
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
                         L.spellsPVec_,
-                        L.achievements_)
+                        L.achievements_,
+                        L.manaCurrent_,
+                        L.manaNormal_)
                 ==
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -94,7 +98,9 @@ namespace player
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
                          R.spellsPVec_,
-                         R.achievements_);
+                         R.achievements_,
+                         R.manaCurrent_,
+                         R.manaNormal_);
     }
 
 
@@ -116,7 +122,9 @@ namespace player
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
                         L.spellsPVec_,
-                        L.achievements_)
+                        L.achievements_,
+                        L.manaCurrent_,
+                        L.manaNormal_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -134,7 +142,9 @@ namespace player
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
                          R.spellsPVec_,
-                         R.achievements_);
+                         R.achievements_,
+                         R.manaCurrent_,
+                         R.manaNormal_);
     }
 
 }

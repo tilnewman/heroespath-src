@@ -12,20 +12,23 @@ namespace game
 namespace stats
 {
 
-    //The base numerical type for all Stat objects.  Should be signed.
+    //The base numerical type for all Stat objects.  Must be signed.
     using Stat_t = int;
 
-    //The numerical type for experience points.  Should be unsigned.
+    //for experience points, must be unsigned
     using Exp_t = unsigned int;
 
-    //The numerical type for Rank.  Should be unsigned.
+    //for Rank, must be unsigned
     using Rank_t = std::size_t;
 
-    //The numerical type for Creature Health.  Should be signed.
+    //for Creature Health, must be signed
     using Health_t = int;
 
-    //The numerical type of the armor rating.  Shoulde be signed.
+    //for Armor Rating, must be signed
     using Armor_t = int;
+
+    //for mana (spell points), must be signed
+    using Mana_t = int;
 
 }
 }
