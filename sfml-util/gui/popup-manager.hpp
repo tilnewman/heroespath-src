@@ -20,6 +20,15 @@
 #include <memory>
 
 
+namespace game
+{
+namespace creature
+{
+    class Creature;
+    using CreaturePtr = Creature *;
+}
+}
+
 namespace sfml_util
 {
     class PopupStage;
@@ -153,7 +162,9 @@ namespace gui
                                               const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric);
 
         //use this function to make the spellbook popup window
-        const game::PopupInfo CreateSpellbookPopupInfo(const std::string & POPUP_NAME);
+        const game::PopupInfo CreateSpellbookPopupInfo(const std::string &                 POPUP_NAME,
+                                                       const game::creature::CreaturePtr_t CREATURE_CPTR,
+                                                       const std::size_t                   INITIAL_SELECTION);
 
         //throws range error upon unknown enum value
         TextureSPtr_t Texture(const PopupImage::Enum) const;

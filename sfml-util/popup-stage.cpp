@@ -13,10 +13,12 @@
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
 
 #include "game/loop-manager.hpp"
 #include "game/log-macros.hpp"
 #include "game/creature/name-info.hpp"
+#include "game/creature/creature.hpp"
 
 #include "utilz/random.hpp"
 
@@ -82,7 +84,9 @@ namespace sfml_util
         imageSlider_           (IMAGE_SLIDER_SPEED_),
         beforeFadeTimerSec_    (0.0f),
         fadeAlpha_             (0.0f),
-        spellbookState_        (SpellbookState::FadeingIn)
+        spellbookState_        (SpellbookState::FadeingIn),
+        playerTextureSPtr_     (),
+        playerSprite_          ()
     {}
 
 
@@ -133,7 +137,10 @@ namespace sfml_util
         imageMoveQueue_        (),
         imageSlider_           (IMAGE_SLIDER_SPEED_),
         beforeFadeTimerSec_    (0.0f),
-        fadeAlpha_             (0.0f)
+        fadeAlpha_             (0.0f),
+        spellbookState_        (SpellbookState::FadeingIn),
+        playerTextureSPtr_     (),
+        playerSprite_          ()
     {}
 
 
@@ -491,7 +498,7 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
-
+            playerTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
         }
     }
 
@@ -525,6 +532,10 @@ namespace sfml_util
         {
             target.draw(imageSpritePrev_, states);
             target.draw(imageSpriteCurr_, states);
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            target.draw(playerSprite_, states);
         }
 
         Stage::Draw(target, states);

@@ -8,6 +8,7 @@
 #include "game/stats/types.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/spell/spell-type-enum.hpp"
+#include "game/target-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -35,7 +36,8 @@ namespace spell
               const SpellType::Enum  TYPE,
               const SpellClass::Enum CLASS,
               const stats::Mana_t    MANA_COST,
-              const stats::Rank_t    RANK);
+              const stats::Rank_t    RANK,
+              const TargetType::Enum TARGET_TYPE);
 
         virtual ~Spell();
 
@@ -53,6 +55,7 @@ namespace spell
         inline SpellClass::Enum Class() const       { return class_; }
         inline stats::Mana_t ManaCost() const       { return manaCost_; }
         inline stats::Rank_t Rank() const           { return rank_; }
+        inline TargetType::Enum TargetType() const  { return targetType_; }
 
         virtual const std::string ActionPhrase() const = 0;
 
@@ -67,6 +70,7 @@ namespace spell
         SpellType::Enum type_;
         SpellClass::Enum class_;
         stats::Mana_t manaCost_;
+        TargetType::Enum targetType_;
 
     private:
         friend class boost::serialization::access;
@@ -78,6 +82,7 @@ namespace spell
             ar & type_;
             ar & class_;
             ar & manaCost_;
+            ar & targetType_;
         }
     };
 
@@ -90,16 +95,16 @@ namespace spell
 
     inline bool operator<(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_)
+        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_, L.targetType_)
                 <
-               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_);
+               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_, R.targetType_);
     }
 
     inline bool operator==(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_)
+        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_, L.targetType_)
                 ==
-               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_);
+               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_, R.targetType_);
     }
 
     inline bool operator!=(const Spell & L, const Spell & R)

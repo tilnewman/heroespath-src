@@ -148,6 +148,8 @@ namespace sfml_util
 
         //members supporting the spellbook popup
         SpellbookState spellbookState_;
+        TextureSPtr_t playerTextureSPtr_;
+        sf::Sprite playerSprite_;
     };
 
 

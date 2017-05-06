@@ -236,6 +236,8 @@ namespace stage
         const std::string RemoveSingleTurnTemporaryConditions();
 
     public:
+        static const std::string POPUP_NAME_SPELLBOOK_;
+        //
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
         static const float PAUSE_SHORT_SEC_;

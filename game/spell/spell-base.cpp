@@ -17,13 +17,15 @@ namespace spell
                  const SpellType::Enum  TYPE,
                  const SpellClass::Enum CLASS,
                  const stats::Mana_t    MANA_COST,
-                 const stats::Rank_t    RANK)
+                 const stats::Rank_t    RANK,
+                 const TargetType::Enum TARGET_TYPE)
     :
-        which_   (WHICH),
-        rank_    (RANK),
-        type_    (TYPE),
-        class_   (CLASS),
-        manaCost_(MANA_COST)
+        which_     (WHICH),
+        rank_      (RANK),
+        type_      (TYPE),
+        class_     (CLASS),
+        manaCost_  (MANA_COST),
+        targetType_(TARGET_TYPE)
     {}
 
 
@@ -45,6 +47,7 @@ namespace spell
         ss  << "A " << utilz::String::DecorateNumber(rank_) << " rank"
             << " " << SpellType::Name(type_) << " spell"
             << " " << SpellClass::ToString(class_, true)
+            << " targeting " << TargetType::Name(targetType_)
             << " that costs " << manaCost_ << " mana.";
 
         return ss.str();

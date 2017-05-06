@@ -302,7 +302,9 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(const std::string & POPUP_NAME)
+    const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(const std::string &                 POPUP_NAME,
+                                                                 const game::creature::CreaturePtr_t CREATURE_CPTR,
+                                                                 const std::size_t                   INITIAL_SELECTION)
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ", sfml_util::Justified::Center, sfml_util::FontManager::Instance()->Size_Large()),
@@ -312,7 +314,12 @@ namespace gui
                                game::Popup::Spellbook,
                                sfml_util::sound_effect::None,
                                sfml_util::PopupButtonColor::Dark,
-                               false);
+                               false,
+                               std::vector<std::size_t>(),
+                               sfml_util::TextureSVec_t(),
+                               game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+                               CREATURE_CPTR,
+                               INITIAL_SELECTION);
     }
 
 

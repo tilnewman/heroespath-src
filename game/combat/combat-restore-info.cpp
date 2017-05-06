@@ -14,10 +14,11 @@ namespace combat
 
     RestoreInfo::RestoreInfo()
     :
-        canTurnAdvance_        (false),
-        hasRestored_           (false),
-        creaturesFlyingPVec_   (),
-        creatureBlockingPosMap_()
+        canTurnAdvance_             (false),
+        hasRestored_                (false),
+        creaturesFlyingPVec_        (),
+        creatureBlockingPosMap_     (),
+        creatureLastCastSpellNumMap_()
     {}
 
 

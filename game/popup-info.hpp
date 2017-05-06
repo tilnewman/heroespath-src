@@ -19,6 +19,12 @@
 namespace game
 {
 
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
+
     //encapsulates all the info about a popup window except for screen position
     class PopupInfo
     {
@@ -33,9 +39,11 @@ namespace game
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT         = sfml_util::sound_effect::PromptGeneric,
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR         = sfml_util::PopupButtonColor::Dark,
                   const bool                              WILL_ADD_RAND_IMAGE  = true,
-                  const std::vector<std::size_t> &             INVALID_NUM_VEC      = std::vector<std::size_t>(),
+                  const std::vector<std::size_t> &        INVALID_NUM_VEC      = std::vector<std::size_t>(),
                   const sfml_util::TextureSVec_t &        IMAGES_VEC           = sfml_util::TextureSVec_t(),
-                  const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_);
+                  const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_,
+                  const creature::CreaturePtr_t           CREATURE_CPTR        = nullptr,
+                  const std::size_t                       INITIAL_SELECTION    = 0);
 
         //use this constructor for boxed popups with no background image
         PopupInfo(const std::string &                     NAME,
@@ -83,6 +91,8 @@ namespace game
         inline std::size_t                       NumberSelMax() const       { return numberMax_; }
         inline const std::vector<std::size_t>    NumberSelInvVec() const    { return numberInvalidVec_; }
         inline float                             ImageFadeSpeed() const     { return imageFadeSpeed_; }
+        inline creature::CreaturePtr_t           CreaturePtr() const        { return creatureCPtr_; }
+        inline std::size_t                       InitialSelection() const   { return initialSelection_; }
 
         inline static std::size_t ContentNum_Item()          { return 0; }
         inline static std::size_t ContentNum_Coins()         { return 1; }
@@ -119,11 +129,17 @@ namespace game
         std::size_t                       numberMax_;
         std::vector<std::size_t>          numberInvalidVec_;
         float                             imageFadeSpeed_;
+        creature::CreaturePtr_t           creatureCPtr_;
+        std::size_t                       initialSelection_;
     };
+
 
     bool operator==(const PopupInfo & L, const PopupInfo & R);
 
-    inline bool operator!=(const PopupInfo & L, const PopupInfo & R)  { return ! (L == R); }
+    inline bool operator!=(const PopupInfo & L, const PopupInfo & R)
+    {
+        return ! (L == R);
+    }
 
 }
 #endif //GAME_POPUPINFO_INCLUDED

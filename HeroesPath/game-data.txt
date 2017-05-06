@@ -1,4 +1,4 @@
-system-startup-stage=CharacterCreation
+system-startup-stage=Combat
 system-revision=alpha 0.1
 system-will-execute-tests=no
 

@@ -6,7 +6,9 @@
 #include "sfml-util/sfml-util.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
+
 #include "game/i-popup-callback.hpp"
+#include "game/creature/creature.hpp"
 
 #include <sstream>
 
@@ -22,13 +24,15 @@ namespace game
                          const sfml_util::PopupButtons::Enum     BUTTONS,
                          const sfml_util::PopupImage::Enum       IMAGE,
                          const float                             IMAGE_SCALE,
-                         const game::Popup::Enum           TYPE,
+                         const game::Popup::Enum                 TYPE,
                          const sfml_util::sound_effect::Enum     SOUND_EFFECT,
                          const sfml_util::PopupButtonColor::Enum BUTTON_COLOR,
                          const bool                              WILL_ADD_RAND_IMAGE,
-                         const std::vector<std::size_t> &             INVALID_CHAR_NUM_VEC,
+                         const std::vector<std::size_t> &        INVALID_CHAR_NUM_VEC,
                          const sfml_util::TextureSVec_t &        IMAGES_VEC,
-                         const float                             IMAGE_FADE_SPEED)
+                         const float                             IMAGE_FADE_SPEED,
+                         const creature::CreaturePtr_t           CREATURE_CPTR,
+                         const std::size_t                       INITIAL_SELECTION)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
@@ -46,11 +50,18 @@ namespace game
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(INVALID_CHAR_NUM_VEC),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED)
+        imageFadeSpeed_  (IMAGE_FADE_SPEED),
+        creatureCPtr_    (CREATURE_CPTR),
+        initialSelection_(INITIAL_SELECTION)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupButtons::IsValid(BUTTONS)), "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given a BUTTONS value of " << BUTTONS << ", which is invalid.");
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),           "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupImage::IsValid(IMAGE)),     "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
+        
+        if ((game::Popup::Spellbook == type_) && (creatureCPtr_ == nullptr))
+        {
+            throw std::runtime_error("game::PopupInfo(type=Spellbook) constructor found spellbook popup with a creaturePtr that was null.");
+        }
 
         if ((imageFadeSpeed_ > 0.0f) && (textureSVec_.empty()))
         {
@@ -70,7 +81,7 @@ namespace game
                          const sfml_util::gui::box::Info &       BOX_INFO,
                          const float                             MAX_SIZE_RATIO_X,
                          const float                             MAX_SIZE_RATIO_Y,
-                         const game::Popup::Enum           TYPE,
+                         const game::Popup::Enum                 TYPE,
                          const sfml_util::sound_effect::Enum     SOUND_EFFECT,
                          const sfml_util::PopupButtonColor::Enum BUTTON_COLOR,
                          const bool                              WILL_ADD_RAND_IMAGE)
@@ -208,6 +219,12 @@ namespace game
         if (imageFadeSpeed_ > 0.0f)
             ss << ", fade_speed=" << imageFadeSpeed_;
 
+        if (creatureCPtr_ != nullptr)
+            ss << ", creature=" << creatureCPtr_->Name();
+
+        if (initialSelection_ != 0)
+            ss << ", initial_selection=" << initialSelection_;
+
         if ((textInfo_.text.size() > 20) && (WILL_SHORTEN))
             ss << ", \"" << std::string(textInfo_.text.substr(0, 19).append("...")) << "\"";
         else
@@ -250,7 +267,9 @@ namespace game
                 (L.numberMin_ == R.numberMin_) &&
                 (L.numberMax_ == R.numberMax_) &&
                 (L.numberInvalidVec_ == R.numberInvalidVec_) &&
-                (sfml_util::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)));
+                (sfml_util::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)),
+                (L.creatureCPtr_ == R.creatureCPtr_),
+                (L.initialSelection_ == R.initialSelection_));
     }
 
 }

@@ -52,6 +52,8 @@ namespace game
 namespace stage
 {
 
+    const std::string CombatStage::POPUP_NAME_SPELLBOOK_    { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    //
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
     const float CombatStage::PAUSE_SHORT_SEC_               { 1.5f };
@@ -253,8 +255,23 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCallback(const game::callback::PopupResponse &)
+    bool CombatStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
     {
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
+        {
+            if ((POPUP_RESPONSE.Response() == sfml_util::Response::Okay) ||
+                (POPUP_RESPONSE.Response() == sfml_util::Response::Select) ||
+                (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+            {
+                restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         return false;
     }
 
@@ -1826,12 +1843,9 @@ namespace stage
         else
         {
             SetUserActionAllowed(false);
-
             SetTurnActionPhase(TurnActionPhase::Cast);
-
-            //can't set turnActionInfo_ yet because the player must select which spell to cast and which creature to cast it on
-            //so skip to end of turn with StartPerformAnim()
-            StartPerformAnim();
+            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(POPUP_NAME_SPELLBOOK_, turnCreaturePtr_, restoreInfo_.LastCastSpellNum(turnCreaturePtr_)) };
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             return true;
         }
     }
