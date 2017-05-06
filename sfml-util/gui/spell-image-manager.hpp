@@ -27,10 +27,10 @@ namespace gui
     class SpellImageManager
     {
         //prevent copy construction
-        SpellImageManager(const SpellImageManager &);
+        SpellImageManager(const SpellImageManager &) =delete;
 
         //prevent copy assignment
-        SpellImageManager & operator=(const SpellImageManager &);
+        SpellImageManager & operator=(const SpellImageManager &) =delete;
 
         //prevent non-singleton construction
         SpellImageManager();
