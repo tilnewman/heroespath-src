@@ -2793,20 +2793,21 @@ namespace stage
             return "";
         }
 
-        if (turnCreaturePtr_->HasCondition(creature::condition::Dazed))
-        {
-            turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
-            return "wakes from being dazed";
-        }
-
         if (turnCreaturePtr_->HasCondition(creature::condition::Tripped))
         {
             turnCreaturePtr_->ConditionRemove(creature::condition::Tripped);
             return "gets up after being tripped";
         }
 
+        if ((turnCreaturePtr_->HasCondition(creature::condition::Dazed)) &&
+            (utilz::random::Int(100) < 75))
+        {
+            turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
+            return "wakes from being dazed";
+        }
+
         if ((turnCreaturePtr_->HasCondition(creature::condition::Frightened)) &&
-            (utilz::random::Int(100) < 20))
+            (utilz::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
         {
             turnCreaturePtr_->ConditionRemove(creature::condition::Frightened);
             return "recovers from being frightened";
