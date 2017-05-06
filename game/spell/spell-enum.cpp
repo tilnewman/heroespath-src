@@ -18,7 +18,17 @@ namespace spell
     {
         switch (E)
         {
-            case Sparks: { return "Sparks"; }
+            case Sparks:    { return "Sparks"; }
+            case Bandage:   { return "Bandage"; }
+            case Sleep:     { return "Sleep"; }
+            case Awaken:    { return "Awaken"; }
+            case Trip:      { return "Trip"; }
+            case Lift:      { return "Lift"; }
+            case Daze:      { return "Daze"; }
+            case Frighten:  { return "Frighten"; }
+            case ClearMind: { return "ClearMind"; }
+            case Poison:    { return "Poison"; }
+            case Antidote:  { return "Antidote"; }
             case Count:
             default:
             {
@@ -34,7 +44,17 @@ namespace spell
     {
         switch (E)
         {
-            case Sparks: { return "Sparks"; }
+            case Sparks:    { return "Sparks"; }
+            case Bandage:   { return "Bandage"; }
+            case Sleep:     { return "Sleep"; }
+            case Awaken:    { return "Awaken"; }
+            case Trip:      { return "Trip"; }
+            case Lift:      { return "Lift"; }
+            case Daze:      { return "Daze"; }
+            case Frighten:  { return "Frighten"; }
+            case ClearMind: { return "Clear Mind"; }
+            case Poison:    { return "Poison"; }
+            case Antidote:  { return "Antidote"; }
             case Count:
             default:
             {
@@ -46,10 +66,18 @@ namespace spell
     }
 
 
-    const std::string Spells::Desc(const Spells::Enum E)
+    const std::string Spells::ShortDesc(const Spells::Enum E)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-spell-" << ToString(E) << "-desc";
+        keySS << "heroespath-spell-" << ToString(E) << "-short-desc";
+        return GameDataFile::Instance()->GetCopyStr(keySS.str());
+    }
+
+
+    const std::string Spells::ExtraDesc(const Spells::Enum E)
+    {
+        std::ostringstream keySS;
+        keySS << "heroespath-spell-" << ToString(E) << "-extra-desc";
         return GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
 

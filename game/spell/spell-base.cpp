@@ -2,6 +2,9 @@
 // spell-base.cpp
 //
 #include "spell-base.hpp"
+
+#include "utilz/strings.hpp"
+
 #include <sstream>
 
 
@@ -30,18 +33,28 @@ namespace spell
 
     const std::string Spell::ToString() const
     {
-        return Spells::Name(which_);
+        std::ostringstream ss;
+        ss  << Name() << "  -" << DescDetails();
+        return ss.str();
     }
 
 
-    const std::string Spell::LongDesc() const
+    const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss << Spells::Desc(which_) << ", a " << SpellType::Name(type_)
-           << " " << SpellClass::ToString(class_, true)
-           << " that costs " << manaCost_
-           << " and requires a rank of " << rank_
-           << ".";
+        ss  << "A " << utilz::String::DecorateNumber(rank_) << " rank"
+            << " " << SpellType::Name(type_) << " spell"
+            << " " << SpellClass::ToString(class_, true)
+            << " that costs " << manaCost_ << " mana.";
+
+        return ss.str();
+    }
+
+
+    const std::string Spell::DescComplete() const
+    {
+        std::ostringstream ss;
+        ss << Desc() << "  " << DescExtra() << " " << DescDetails();
         return ss.str();
     }
 

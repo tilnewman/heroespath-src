@@ -24,7 +24,7 @@
 #include "game/player/character.hpp"
 #include "game/player/party.hpp"
 
-#include "utilz/vector.hpp"
+#include "utilz/vectors.hpp"
 #include "utilz/real.hpp"
 
 

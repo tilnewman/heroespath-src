@@ -1,7 +1,7 @@
 #ifndef UTILZ_VECTOROPERATIONS_HPP_INCLUDED
 #define UTILZ_VECTOROPERATIONS_HPP_INCLUDED
 //
-// vector.hpp
+// vectors.hpp
 //  A set of helper functions for working with vectors
 //
 #include "utilz/random.hpp"

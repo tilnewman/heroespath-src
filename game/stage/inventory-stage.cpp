@@ -2108,7 +2108,7 @@ namespace stage
             }
             else if (LISTBOX_ITEM_SPTR->SPELL_PTRC != nullptr)
             {
-                ss << LISTBOX_ITEM_SPTR->SPELL_PTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->SPELL_PTRC->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->SPELL_PTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->SPELL_PTRC->DescComplete();
             }
 
             if (ss.str().empty() == false)

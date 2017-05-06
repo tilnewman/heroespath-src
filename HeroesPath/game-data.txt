@@ -96,8 +96,31 @@ heroespath-creature-condition-Stone-desc=Turned to stone.
 heroespath-creature-condition-Dead-desc=Dead, and beyond the skill of most healers.
 heroespath-creature-condition-Frightened-desc=Physically fine, but terrified.
 
-#Spell Descriptions
-heroespath-spell-Sparks-desc=Creates a blast of sparks that does minimal damage.
+#Spell Short Descriptions
+heroespath-spell-Sparks-short-desc=     Sprays a single enemy with a shower of molten sparks causing minimal damage.
+heroespath-spell-Bandage-short-desc=    Wraps a single character’s worst wounds in magical bandages causing a minor increase of health.
+heroespath-spell-Sleep-short-desc=      Puts a single enemy into a natural sleep.
+heroespath-spell-Awaken-short-desc=     Revives a single character from unconsciousness or sleep.
+heroespath-spell-Trip-short-desc=       Knocks a single enemy off of their feet and rolls them onto their back, reducing their stats and forcing them to waste a turn getting back up. 
+heroespath-spell-Lift-short-desc=       Returns a single tripped character to their feet without having to waste a turn getting up.
+heroespath-spell-Daze-short-desc=       Causes a single enemy to become dazed, reducing their stats, for one or more turns.
+heroespath-spell-Frighten-short-desc=   Scares a single enemy, reducing their stats.
+heroespath-spell-ClearMind-short-desc=  Removes the Dazed and or Frightened condition from a single character.
+heroespath-spell-Poison-short-desc=     Poisons a single enemy, causing a reduction of stats and the loss of a small amount of health each turn.
+heroespath-spell-Antidote-short-desc=   Cures the poisoned condition from a single character.
+
+#Spell Extra Descriptions
+heroespath-spell-Sparks-extra-desc=     This is the first attack spell that any magic user learns.  It only effects one enemy.  This spell is quickly replaced by learning better attack spells, but everyone has to start somewhere.
+heroespath-spell-Bandage-extra-desc=    This is the first healing spell that any magic user learns.  Only effects one character.  Once a better healing spell is learned, there is little reason to ever use this spell again.
+heroespath-spell-Sleep-extra-desc=      Creatures in a natural sleep will be woken up if hit by attacks, damaging spells, or if a beast roars.
+heroespath-spell-Awaken-extra-desc=     Only affects one character.  This can be used to wake a character from either a natural or magical sleep.
+heroespath-spell-Trip-extra-desc=       Only affects one enemy.  Some creatures take more than one turn to get up once flipped onto their back.
+heroespath-spell-Lift-extra-desc=       Some creatures take more than one turn to get back on their feet, so this spell is more useful to some races than others.
+heroespath-spell-Daze-extra-desc=       It can take multiple turns to wake from being dazed naturally without intervening.
+heroespath-spell-Frighten-extra-desc=   It can take multiple turns to recover from being scared.
+heroespath-spell-ClearMind-extra-desc=  It can take multiple turns for a creature to recover from being Dazed or Frightened without intervening.
+heroespath-spell-Poison-extra-desc=     Some creatures can poison your characters just by attacking them during combat, such as poisonous snakes and Sylavin dragons.
+heroespath-spell-Antidote-extra-desc=   This spell works whether the poisoning was natural or magical.
 
 #Player Role Descriptions
 heroespath-creature-role-Beastmaster-desc=Beastmasters allow you to include animals, such as Wolfens and Dragons, in your party.  They may be rough around the edges, but a Beastmaster's spiritual link with animals is useful in many ways.  They can also be good fighters in the melee.  As they progress in rank, Beastmaster gain magical abilities that interact with the animals both in, and out, of your party.  This is why intelligence is the primary attribute a Beastmaster is concerned with, followed closely by strength.  Secondary attributes to consider would be accuracy and speed.

@@ -39,16 +39,20 @@ namespace spell
 
         virtual ~Spell();
 
-        inline const std::string Name() const   { return Spells::Name(which_); }
-        inline const std::string Desc() const   { return Spells::Desc(which_); }
-        inline Spells::Enum Which() const       { return which_; }
-        inline SpellType::Enum Type() const     { return type_; }
-        inline SpellClass::Enum Class() const   { return class_; }
-        inline stats::Mana_t ManaCost() const   { return manaCost_; }
-        inline stats::Rank_t Rank() const       { return rank_; }
+        inline const std::string Name() const       { return Spells::Name(which_); }
+        
+        const std::string ToString() const;
 
-        virtual const std::string ToString() const;
-        virtual const std::string LongDesc() const;
+        inline const std::string Desc() const       { return Spells::ShortDesc(which_); }
+        inline const std::string DescExtra() const  { return Spells::ExtraDesc(which_); }
+        const std::string DescDetails() const;
+        const std::string DescComplete() const;
+
+        inline Spells::Enum Which() const           { return which_; }
+        inline SpellType::Enum Type() const         { return type_; }
+        inline SpellClass::Enum Class() const       { return class_; }
+        inline stats::Mana_t ManaCost() const       { return manaCost_; }
+        inline stats::Rank_t Rank() const           { return rank_; }
 
         virtual const std::string ActionPhrase() const = 0;
 

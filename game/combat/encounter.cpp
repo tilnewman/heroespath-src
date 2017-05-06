@@ -19,7 +19,7 @@
 #include "utilz/assertlogandthrow.hpp"
 #include "game/creature/algorithms.hpp"
 
-#include "utilz/vector.hpp"
+#include "utilz/vectors.hpp"
 
 #include <sstream>
 #include <exception>

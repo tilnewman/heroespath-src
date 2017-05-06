@@ -4,7 +4,7 @@
 #include "fight.hpp"
 
 #include "utilz/random.hpp"
-#include "utilz/vector.hpp"
+#include "utilz/vectors.hpp"
 
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"

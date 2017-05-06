@@ -166,7 +166,7 @@ namespace appbase
         }
         else
         {
-            val = ITER->second;
+            val = boost::algorithm::trim_copy(ITER->second);
         }
     }
 
@@ -250,7 +250,7 @@ namespace appbase
 
         if (errStr.empty())
         {
-            data_[NEXT_KEY] = nextValue;
+            data_[NEXT_KEY] = boost::algorithm::trim_copy(nextValue);
             return true;
         }
         else

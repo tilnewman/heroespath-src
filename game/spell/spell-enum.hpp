@@ -29,9 +29,13 @@ namespace spell
             Count
         };
 
-        static const std::string ToString(const Spells::Enum E);//straight name without spaces
-        static const std::string Name(const Spells::Enum E);//humanreadable with spaces
-        static const std::string Desc(const Spells::Enum E);
+        //straight name without spaces
+        static const std::string ToString(const Spells::Enum);
+
+        //human readable with spaces
+        static const std::string Name(const Spells::Enum);
+        static const std::string ShortDesc(const Spells::Enum);
+        static const std::string ExtraDesc(const Spells::Enum);
     };
 
 }
