@@ -17,8 +17,8 @@ namespace spell
     //forward declarations
     class Spell;
     using SpellPtr_t  = Spell *;
-    using SpellUPtr_t = std::unique_ptr<Spell>;
-    using SpellUVec_t = std::vector<SpellUPtr_t>;
+    using SpellSPtr_t = std::shared_ptr<Spell>;
+    using SpellSVec_t = std::vector<SpellSPtr_t>;
 
 
     //Responsible for pre-game-start creation and testing of all spells, and
@@ -30,7 +30,7 @@ namespace spell
         static SpellPtr_t Get(const Spells::Enum);
 
     private:
-        static SpellUVec_t spellsUVec_;
+        static SpellSVec_t spellsSVec_;
     };
 
 }

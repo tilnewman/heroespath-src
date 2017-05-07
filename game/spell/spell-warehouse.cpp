@@ -16,26 +16,26 @@ namespace game
 namespace spell
 {
 
-    SpellUVec_t Warehouse::spellsUVec_;
+    SpellSVec_t Warehouse::spellsSVec_;
 
 
     void Warehouse::Setup()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty()), "game::spell::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS((spellsSVec_.empty()), "game::spell::Warehouse::Setup() was called twice.");
 
-        spellsUVec_.resize(Spells::Count);
+        spellsSVec_.resize(Spells::Count);
 
-        spellsUVec_[Spells::Antidote]   = std::make_unique<Antidote>();
-        spellsUVec_[Spells::Awaken]     = std::make_unique<Awaken>();
-        spellsUVec_[Spells::Bandage]    = std::make_unique<Bandage>();
-        spellsUVec_[Spells::ClearMind]  = std::make_unique<ClearMind>();
-        spellsUVec_[Spells::Daze]       = std::make_unique<Daze>();
-        spellsUVec_[Spells::Frighten]   = std::make_unique<Frighten>();
-        spellsUVec_[Spells::Lift]       = std::make_unique<Lift>();
-        spellsUVec_[Spells::Poison]     = std::make_unique<Poison>();
-        spellsUVec_[Spells::Sleep]      = std::make_unique<Sleep>();
-        spellsUVec_[Spells::Sparks]     = std::make_unique<Sparks>();
-        spellsUVec_[Spells::Trip]       = std::make_unique<Trip>();
+        spellsSVec_[Spells::Antidote]   = std::make_shared<Antidote>();
+        spellsSVec_[Spells::Awaken]     = std::make_shared<Awaken>();
+        spellsSVec_[Spells::Bandage]    = std::make_shared<Bandage>();
+        spellsSVec_[Spells::ClearMind]  = std::make_shared<ClearMind>();
+        spellsSVec_[Spells::Daze]       = std::make_shared<Daze>();
+        spellsSVec_[Spells::Frighten]   = std::make_shared<Frighten>();
+        spellsSVec_[Spells::Lift]       = std::make_shared<Lift>();
+        spellsSVec_[Spells::Poison]     = std::make_shared<Poison>();
+        spellsSVec_[Spells::Sleep]      = std::make_shared<Sleep>();
+        spellsSVec_[Spells::Sparks]     = std::make_shared<Sparks>();
+        spellsSVec_[Spells::Trip]       = std::make_shared<Trip>();
     }
 
 
@@ -60,7 +60,7 @@ namespace spell
             M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),              "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Mana cost.");
             M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank() != 0),                  "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Rank.");
             ++spellIndex;
-            LoopManager::Instance()->TestingStrIncrement("Spell Test #");
+            LoopManager::Instance()->TestingStrIncrement("Spell Test \"" + spellPtr->Name() + "\"");
             return false;
         }
 
@@ -71,9 +71,9 @@ namespace spell
 
     SpellPtr_t Warehouse::Get(const Spells::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsUVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
-        SpellPtr_t spellPtr{ spellsUVec_[E].get() };
+        M_ASSERT_OR_LOGANDTHROW_SS((spellsSVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsSVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsSVec_, probably from a bug in Setup().");
+        SpellPtr_t spellPtr{ spellsSVec_.at(E).get() };
         return spellPtr;
     }
 

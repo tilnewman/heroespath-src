@@ -130,8 +130,8 @@ namespace spell
     using SpellPVecIter_t  = SpellPVec_t::iterator;
     using SpellPVecCIter_t = SpellPVec_t::const_iterator;
 
-    using SpellUPtr_t = std::unique_ptr<Spell>;
-    using SpellUVec_t = std::vector<SpellUPtr_t>;
+    using SpellSPtr_t = std::shared_ptr<Spell>;
+    using SpellSVec_t = std::vector<SpellSPtr_t>;
 
 
     inline bool operator<(const Spell & L, const Spell & R)
