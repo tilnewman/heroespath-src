@@ -407,6 +407,7 @@ namespace stage
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
+        /*
         auto playerSPtr( std::make_shared<player::Character>("StatsTestingCreatureName",
                                                              creature::sex::Female,
                                                              creature::BodyType::Make_Wolfen(),
@@ -437,7 +438,7 @@ namespace stage
         playerSPtr->ConditionRemove(creature::condition::Dazed);
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set No Conditions (should be back to Base)", playerSPtr->Stats(), expectedSet);
-
+        */
         LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::PerformStatsTests()  All Tests PASSED.");
     }
 
