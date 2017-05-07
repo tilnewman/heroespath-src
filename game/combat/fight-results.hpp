@@ -93,10 +93,10 @@ namespace combat
 
         inline const creature::ConditionSVec_t Conditions() const { return conditionsSVec_; }
 
-        bool ContainsCondition(const creature::condition::Enum) const;
-        bool RemoveCondition(const creature::condition::Enum);
+        bool ContainsCondition(const creature::Conditions::Enum) const;
+        bool RemoveCondition(const creature::Conditions::Enum);
 
-        inline bool WasKill() const                 { return ContainsCondition(creature::condition::Dead); }
+        inline bool WasKill() const                 { return ContainsCondition(creature::Conditions::Dead); }
 
         friend bool operator<(const HitInfo & L, const HitInfo & R);
         friend bool operator==(const HitInfo & L, const HitInfo & R);
@@ -149,10 +149,10 @@ namespace combat
         const creature::ConditionSVec_t  GetHitConditions() const;
         inline creature::ConditionSVec_t GetNonHitConditions() const{ return conditionsSVec_; }
         const creature::ConditionSVec_t  GetAllConditions() const;
-        bool                             ContainsCondition(const creature::condition::Enum) const;
-        bool                             RemoveCondition(const creature::condition::Enum);
+        bool                             ContainsCondition(const creature::Conditions::Enum) const;
+        bool                             RemoveCondition(const creature::Conditions::Enum);
 
-        inline bool WasKill() const { return ContainsCondition(creature::condition::Dead); }
+        inline bool WasKill() const { return ContainsCondition(creature::Conditions::Dead); }
 
         friend bool operator<(const CreatureEffect & L, const CreatureEffect & R);
         friend bool operator==(const CreatureEffect & L, const CreatureEffect & R);

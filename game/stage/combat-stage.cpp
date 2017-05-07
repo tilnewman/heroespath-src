@@ -748,7 +748,7 @@ namespace stage
             encounterSPtr_->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Stone));
+            encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Stone));
 
             //TODO TEMP REMOVE -test projectile animations by forcing all enemy creatures to have projectile weapons
             /*auto projIndex{ 0 };
@@ -2309,7 +2309,7 @@ namespace stage
                 armorSS << ARMOR_STR;
             }
 
-            if (turnCreaturePtr_->HasCondition(creature::condition::Good))
+            if (turnCreaturePtr_->HasCondition(creature::Conditions::Good))
             {
                 enemyCondsSS << " ";
             }
@@ -2733,8 +2733,8 @@ namespace stage
             auto const CONDITIONS_SVEC{ nextKilledCreaturePtr->Conditions() };
             for (auto const & NEXT_CONDITION_SPTR : CONDITIONS_SVEC)
             {
-                if ((NEXT_CONDITION_SPTR->Which() != creature::condition::Stone) &&
-                    (NEXT_CONDITION_SPTR->Which() != creature::condition::Dead))
+                if ((NEXT_CONDITION_SPTR->Which() != creature::Conditions::Stone) &&
+                    (NEXT_CONDITION_SPTR->Which() != creature::Conditions::Dead))
                 {
                     nextKilledCreaturePtr->ConditionRemove(NEXT_CONDITION_SPTR);
                 }
@@ -2802,28 +2802,28 @@ namespace stage
 
     const std::string CombatStage::RemoveSingleTurnTemporaryConditions()
     {
-        if (turnCreaturePtr_->HasCondition(creature::condition::Unconscious))
+        if (turnCreaturePtr_->HasCondition(creature::Conditions::Unconscious))
         {
             return "";
         }
 
-        if (turnCreaturePtr_->HasCondition(creature::condition::Tripped))
+        if (turnCreaturePtr_->HasCondition(creature::Conditions::Tripped))
         {
-            turnCreaturePtr_->ConditionRemove(creature::condition::Tripped);
+            turnCreaturePtr_->ConditionRemove(creature::Conditions::Tripped);
             return "gets up after being tripped";
         }
 
-        if ((turnCreaturePtr_->HasCondition(creature::condition::Dazed)) &&
+        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Dazed)) &&
             (utilz::random::Int(100) < 75))
         {
-            turnCreaturePtr_->ConditionRemove(creature::condition::Dazed);
+            turnCreaturePtr_->ConditionRemove(creature::Conditions::Dazed);
             return "wakes from being dazed";
         }
 
-        if ((turnCreaturePtr_->HasCondition(creature::condition::Frightened)) &&
+        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Frightened)) &&
             (utilz::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
         {
-            turnCreaturePtr_->ConditionRemove(creature::condition::Frightened);
+            turnCreaturePtr_->ConditionRemove(creature::Conditions::Frightened);
             return "recovers from being frightened";
         }
 

@@ -36,32 +36,32 @@ namespace creature
         Condition & operator=(const Condition &);
 
     public:
-        Condition(const condition::Enum  TYPE           = condition::Good,
-                  const bool             IS_MAGICAL     = false,
-                  const stats::StatSet & STATS_MODIFIER = stats::StatSet(),
-                  const stats::StatSet & STATS_TO_SET   = stats::StatSet::INVALID_STATSET_);
+        Condition(const Conditions::Enum  TYPE           = Conditions::Good,
+                  const bool              IS_MAGICAL     = false,
+                  const stats::StatSet &  STATS_MODIFIER = stats::StatSet(),
+                  const stats::StatSet &  STATS_TO_SET   = stats::StatSet::INVALID_STATSET_);
 
         virtual ~Condition();
 
-        inline const std::string Name() const                   { return condition::Name(type_); }
-        inline condition::Enum Which() const                    { return type_; }
-        inline const std::string Desc() const                   { return condition::Desc(type_); }
+        inline const std::string Name() const                   { return Conditions::Name(type_); }
+        inline Conditions::Enum Which() const                   { return type_; }
+        inline const std::string Desc() const                   { return Conditions::Desc(type_); }
         const std::string ToString() const;
         const std::string LongDesc() const;
         inline const stats::StatSet StatsToModifyCopy() const   { return statsToModify_; }
         inline const stats::StatSet StatsToSetCopy() const      { return statsToSet_; }
-        inline std::size_t Severity() const                     { return condition::Severity::ByCondition(type_); }
+        inline std::size_t Severity() const                     { return condition::Severity::Get(type_); }
         inline bool IsMagical() const                           { return isMagical_; }
 
-        virtual const condition::ConditionEnumVec_t InitialChange(CreaturePtrC_t);
-        virtual const condition::ConditionEnumVec_t PerTurnChange(CreaturePtrC_t);
-        virtual const condition::ConditionEnumVec_t FinalUndo(CreaturePtrC_t);
+        virtual const ConditionEnumVec_t InitialChange(CreaturePtrC_t);
+        virtual const ConditionEnumVec_t PerTurnChange(CreaturePtrC_t);
+        virtual const ConditionEnumVec_t FinalUndo(CreaturePtrC_t);
 
         friend bool operator<(const Condition & L, const Condition & R);
         friend bool operator==(const Condition & L, const Condition & R);
 
     private:
-        condition::Enum type_;
+        Conditions::Enum type_;
         bool            isMagical_;
         stats::StatSet  statsToModify_;
         stats::StatSet  statsToSet_;

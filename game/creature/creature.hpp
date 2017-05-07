@@ -146,7 +146,7 @@ namespace creature
         //if there are multiple that match CND_PTR, all are removed
         //ensures the 'Good' condition is in the vector if left empty
         //calls Condition::Undo() on this creature before removing
-        bool ConditionRemove(const condition::Enum);
+        bool ConditionRemove(const Conditions::Enum);
 
         bool ConditionRemove(const ConditionSPtr_t &);
 
@@ -156,7 +156,7 @@ namespace creature
 
         inline const ConditionSVec_t Conditions() const                 { return conditionsSVec_; }
 
-        bool HasCondition(const condition::Enum E) const;
+        bool HasCondition(const Conditions::Enum) const;
         bool HasConditionNotAThreatTemp() const;
         bool HasConditionNotAThreatPerm() const;
 
@@ -164,7 +164,7 @@ namespace creature
 
         bool HasMagicalCondition() const;
 
-        inline bool IsDead() const                                      { return HasCondition(condition::Dead); }
+        inline bool IsDead() const                                      { return HasCondition(Conditions::Dead); }
         inline bool IsAlive() const                                     { return ! IsDead(); }
 
         //returns most severe first

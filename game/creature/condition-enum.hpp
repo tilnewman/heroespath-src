@@ -12,8 +12,6 @@ namespace game
 {
 namespace creature
 {
-namespace condition
-{
 
     //Note:  Must be in order of increasing severity.
     //
@@ -27,28 +25,34 @@ namespace condition
     //  interactions in fight.cpp
     //  testing code in conditions.cpp ConditionFactory::Test()
     //
-    enum Enum
+    struct Conditions
     {
-        Good = 0,
-        Frightened,
-        Dazed,
-        Tripped,
-        AsleepNatural,
-        Poisoned,
-        AsleepMagical,
-        Unconscious,
-        Stone,
-        Dead,
-        Count
+        enum Enum
+        {
+            Good = 0,
+            Frightened,
+            Dazed,
+            Tripped,
+            AsleepNatural,
+            Poisoned,
+            AsleepMagical,
+            Unconscious,
+            Stone,
+            Dead,
+            Count
+        };
+
+        static const std::string Name(const Enum);
+        static const std::string ToString(const Enum);
+        static const std::string Desc(const Enum);
+
     };
 
-    using ConditionEnumVec_t = std::vector<Enum>;
+    using ConditionEnumVec_t = std::vector<Conditions::Enum>;
 
 
-    const std::string Name(const condition::Enum E);
-    const std::string ToString(const condition::Enum E);
-    const std::string Desc(const condition::Enum E);
-
+namespace condition
+{
 
     struct Severity
     {
@@ -57,8 +61,8 @@ namespace condition
         static const std::size_t LEAST_HARMFUL;
         static const std::size_t MOST_HARMFUL;
 
-        //larger return values are worse
-        static std::size_t ByCondition(const condition::Enum E);
+        //larger return values are more harmful
+        static std::size_t Get(const Conditions::Enum);
     };
 
 }

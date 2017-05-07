@@ -224,7 +224,7 @@ namespace creature
     }
 
 
-    bool Creature::ConditionRemove(const condition::Enum ENUM)
+    bool Creature::ConditionRemove(const Conditions::Enum ENUM)
     {
         ConditionSVec_t conditionsToRemoveSVec;
         for (auto const NEXT_CONDITION_SPTR : conditionsSVec_)
@@ -281,7 +281,7 @@ namespace creature
     }
 
 
-    bool Creature::HasCondition(const condition::Enum E) const
+    bool Creature::HasCondition(const Conditions::Enum E) const
     {
         for (auto const & NEXT_CONDITION : conditionsSVec_)
             if (NEXT_CONDITION->Which() == E)
@@ -293,17 +293,17 @@ namespace creature
 
     bool Creature::HasConditionNotAThreatTemp() const
     {
-        return (HasCondition(condition::Dazed) ||
-                HasCondition(condition::Tripped) ||
-                HasCondition(condition::Unconscious) ||
-                HasCondition(condition::AsleepNatural) ||
-                HasCondition(condition::AsleepMagical));
+        return (HasCondition(Conditions::Dazed) ||
+                HasCondition(Conditions::Tripped) ||
+                HasCondition(Conditions::Unconscious) ||
+                HasCondition(Conditions::AsleepNatural) ||
+                HasCondition(Conditions::AsleepMagical));
     }
 
 
     bool Creature::HasConditionNotAThreatPerm() const
     {
-        return (HasCondition(condition::Dead) || HasCondition(condition::Stone));
+        return (HasCondition(Conditions::Dead) || HasCondition(Conditions::Stone));
     }
 
 
@@ -361,25 +361,25 @@ namespace creature
         const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot act because " : "");
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
-        if (HasCondition(condition::Dead))
+        if (HasCondition(Conditions::Dead))
             return RESPONSE_PREFIX + "dead" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::Stone))
+        if (HasCondition(Conditions::Stone))
             return RESPONSE_PREFIX + "turned to stone" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::Unconscious))
+        if (HasCondition(Conditions::Unconscious))
             return RESPONSE_PREFIX + "unconscious" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::Dazed))
+        if (HasCondition(Conditions::Dazed))
             return RESPONSE_PREFIX + "dazed" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::Tripped))
+        if (HasCondition(Conditions::Tripped))
             return RESPONSE_PREFIX + "tripped" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::AsleepNatural))
+        if (HasCondition(Conditions::AsleepNatural))
             return RESPONSE_PREFIX + "asleep" + RESPONSE_POSTFIX;
 
-        if (HasCondition(condition::AsleepMagical))
+        if (HasCondition(Conditions::AsleepMagical))
             return RESPONSE_PREFIX + "under magical sleep" + RESPONSE_POSTFIX;
 
         return "";

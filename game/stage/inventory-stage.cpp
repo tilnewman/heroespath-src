@@ -1671,7 +1671,7 @@ namespace stage
             {
                 if (((ViewType::Titles == view_) && (CREATURE_CPTRC->Titles().empty())) ||
                     ((ViewType::Spells == view_) && (CREATURE_CPTRC->Spells().empty())) ||
-                    ((ViewType::Conditions == view_) && (CREATURE_CPTRC->HasCondition(creature::condition::Good))))
+                    ((ViewType::Conditions == view_) && (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
                 {
                     isViewForcedToItems_ = true;
                 }

@@ -79,7 +79,7 @@ namespace combat
     {}
 
 
-    bool HitInfo::ContainsCondition(const creature::condition::Enum E) const
+    bool HitInfo::ContainsCondition(const creature::Conditions::Enum E) const
     {
         for (auto const NEXT_CONDITION_PTR : conditionsSVec_)
             if (NEXT_CONDITION_PTR->Which() == E)
@@ -89,7 +89,7 @@ namespace combat
     }
 
 
-    bool HitInfo::RemoveCondition(const creature::condition::Enum E)
+    bool HitInfo::RemoveCondition(const creature::Conditions::Enum E)
     {
         creature::ConditionSVec_t condsToRemoveSVec;
 
@@ -255,7 +255,7 @@ namespace combat
     }
 
 
-    bool CreatureEffect::ContainsCondition(const creature::condition::Enum E) const
+    bool CreatureEffect::ContainsCondition(const creature::Conditions::Enum E) const
     {
         const auto CONDITIONS_PVEC{ GetAllConditions() };
 
@@ -267,7 +267,7 @@ namespace combat
     }
 
 
-    bool CreatureEffect::RemoveCondition(const creature::condition::Enum E)
+    bool CreatureEffect::RemoveCondition(const creature::Conditions::Enum E)
     {
         auto wasCondRemoved{ false };
 

@@ -419,23 +419,23 @@ namespace stage
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set", playerSPtr->Stats(), expectedSet);
 
-        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Dazed));
+        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Dazed));
         expectedSet = STAT_SET_BASE;
         const stats::StatSet STAT_SET_BASE_DAZED(6, 4, 12, 12, 4, 6);
         expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed", playerSPtr->Stats(), expectedSet);
 
-        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::condition::Dead));
+        playerSPtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Dead));
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed AND Dead", playerSPtr->Stats(), expectedSet);
 
-        playerSPtr->ConditionRemove(creature::condition::Dead);
+        playerSPtr->ConditionRemove(creature::Conditions::Dead);
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed (Dead removed)", playerSPtr->Stats(), expectedSet);
 
-        playerSPtr->ConditionRemove(creature::condition::Dazed);
+        playerSPtr->ConditionRemove(creature::Conditions::Dazed);
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set No Conditions (should be back to Base)", playerSPtr->Stats(), expectedSet);
         */

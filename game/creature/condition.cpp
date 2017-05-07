@@ -15,7 +15,7 @@ namespace game
 namespace creature
 {
 
-    Condition::Condition(const condition::Enum  TYPE,
+    Condition::Condition(const Conditions::Enum  TYPE,
                          const bool             IS_MAGICAL,
                          const stats::StatSet & STATS_TO_MODIFY,
                          const stats::StatSet & STATS_TO_SET)
@@ -35,14 +35,14 @@ namespace creature
     const std::string Condition::ToString() const
     {
         std::ostringstream ss;
-        ss << condition::Name(type_);
+        ss << Conditions::Name(type_);
 
         if (isMagical_)
         {
             ss << " (magical)";
         }
 
-        ss  << ".  " << condition::Desc(type_);
+        ss  << ".  " << Conditions::Desc(type_);
 
         const std::string STATS_STR(statsToModify_.ToStringNormal(true, true, true));
         if (STATS_STR.empty() == false)
@@ -62,9 +62,9 @@ namespace creature
     const std::string Condition::LongDesc() const
     {
         std::ostringstream ss;
-        ss << condition::Desc(type_);
+        ss << Conditions::Desc(type_);
 
-        if (condition::Good != type_)
+        if (Conditions::Good != type_)
         {
             if (isMagical_)
             {
@@ -124,33 +124,33 @@ namespace creature
     }
 
 
-    const condition::ConditionEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
+    const ConditionEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Change(creaturePtr==nullptr)  type=\"" << condition::Name(type_) << "\", was given a null creaturePtr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Change(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
 
         //Conditions are temporary so they effect the current stat value only, not the normal
         creaturePtrC->Stats().ModifyCurrent(statsToModify_);
         statsToSetUndo_ = creaturePtrC->Stats().ModifyCurrentToValid(statsToSet_);
 
-        return condition::ConditionEnumVec_t();
+        return ConditionEnumVec_t();
     }
 
 
-    const condition::ConditionEnumVec_t Condition::PerTurnChange(CreaturePtrC_t)
+    const ConditionEnumVec_t Condition::PerTurnChange(CreaturePtrC_t)
     {
-        return condition::ConditionEnumVec_t();
+        return ConditionEnumVec_t();
     }
 
 
-    const condition::ConditionEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
+    const ConditionEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Undo(creaturePtr==nullptr)  type=\"" << condition::Name(type_) << "\", was given a null creaturePtr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Undo(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
 
         //Conditions are temporary so they effect the current stat value only, not the normal
         creaturePtrC->Stats().ModifyCurrent(statsToModify_.CreateInvertCopy());
         creaturePtrC->Stats().ModifyCurrent(statsToSetUndo_);
 
-        return condition::ConditionEnumVec_t();
+        return ConditionEnumVec_t();
     }
 
 }

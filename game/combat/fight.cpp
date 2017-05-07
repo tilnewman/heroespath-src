@@ -74,15 +74,15 @@ namespace combat
     {
         creature::ConditionSVec_t conditionsAddedSVec;
 
-        auto const IS_ALREADY_KILLED{ creatureDefendingPtrC->HasCondition(creature::condition::Dead) ||
-                                      IsConditionContained(creature::condition::Dead, hitInfoVec) };
+        auto const IS_ALREADY_KILLED{ creatureDefendingPtrC->HasCondition(creature::Conditions::Dead) ||
+                                      IsConditionContained(creature::Conditions::Dead, hitInfoVec) };
 
         if (IS_ALREADY_KILLED == false)
         {
             auto willKill{ false };
 
-            auto const IS_ALREADY_UNCONSCIOUS{ creatureDefendingPtrC->HasCondition(creature::condition::Unconscious) ||
-                                               IsConditionContained(creature::condition::Unconscious, hitInfoVec) };
+            auto const IS_ALREADY_UNCONSCIOUS{ creatureDefendingPtrC->HasCondition(creature::Conditions::Unconscious) ||
+                                               IsConditionContained(creature::Conditions::Unconscious, hitInfoVec) };
 
             if ((IS_ALREADY_UNCONSCIOUS) && (TOTAL_DAMAGE > 0))
             {
@@ -98,17 +98,17 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(0);
 
-                const creature::ConditionSPtr_t CONDITION_DEAD_SPTRC{ creature::condition::ConditionFactory::Make(creature::condition::Dead) };
+                const creature::ConditionSPtr_t CONDITION_DEAD_SPTRC{ creature::condition::ConditionFactory::Make(creature::Conditions::Dead) };
                 creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_SPTRC);
                 conditionsAddedSVec.push_back(CONDITION_DEAD_SPTRC);
 
                 //remove the unconscious condition if already there
                 if (IS_ALREADY_UNCONSCIOUS)
                 {
-                    creatureDefendingPtrC->ConditionRemove(creature::condition::Unconscious);
+                    creatureDefendingPtrC->ConditionRemove(creature::Conditions::Unconscious);
 
                     for (auto & nextHitInfo : hitInfoVec)
-                        nextHitInfo.RemoveCondition(creature::condition::Unconscious);
+                        nextHitInfo.RemoveCondition(creature::Conditions::Unconscious);
                 }
             }
             else
@@ -119,8 +119,8 @@ namespace combat
                     creatureDefendingPtrC->HealthCurrentSet(0);
                 }
 
-                auto const IS_ALREADY_DAZED{ creatureDefendingPtrC->HasCondition(creature::condition::Dazed) ||
-                                             IsConditionContained(creature::condition::Dazed, hitInfoVec) };
+                auto const IS_ALREADY_DAZED{ creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed) ||
+                                             IsConditionContained(creature::Conditions::Dazed, hitInfoVec) };
 
                 if (IS_ALREADY_UNCONSCIOUS == false)
                 {
@@ -128,17 +128,17 @@ namespace combat
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
 
-                        const creature::ConditionSPtr_t CONDITION_UNCON_SPTR{ creature::condition::ConditionFactory::Make(creature::condition::Unconscious) };
+                        const creature::ConditionSPtr_t CONDITION_UNCON_SPTR{ creature::condition::ConditionFactory::Make(creature::Conditions::Unconscious) };
                         creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_SPTR);
                         conditionsAddedSVec.push_back(CONDITION_UNCON_SPTR);
 
                         //remove the dazed condition if already there
                         if (IS_ALREADY_DAZED)
                         {
-                            creatureDefendingPtrC->ConditionRemove(creature::condition::Dazed);
+                            creatureDefendingPtrC->ConditionRemove(creature::Conditions::Dazed);
 
                             for (auto & nextHitInfo : hitInfoVec)
-                                nextHitInfo.RemoveCondition(creature::condition::Dazed);
+                                nextHitInfo.RemoveCondition(creature::Conditions::Dazed);
                         }
                     }
                     else
@@ -151,7 +151,7 @@ namespace combat
 
                             if (TOTAL_DAMAGE >= halfHealthNormal)
                             {
-                                const creature::ConditionSPtr_t CONDITION_DAZED_SPTR{ creature::condition::ConditionFactory::Make(creature::condition::Dazed) };
+                                const creature::ConditionSPtr_t CONDITION_DAZED_SPTR{ creature::condition::ConditionFactory::Make(creature::Conditions::Dazed) };
                                 creatureDefendingPtrC->ConditionAdd(CONDITION_DAZED_SPTR);
                                 conditionsAddedSVec.push_back(CONDITION_DAZED_SPTR);
                             }
@@ -184,7 +184,7 @@ namespace combat
 
                 hitInfoVec.push_back(NEXT_HIT_INFO);
 
-                if (NEXT_HIT_INFO.ContainsCondition(creature::condition::Dead) || creatureDefendingPtrC->HasCondition(creature::condition::Dead))
+                if (NEXT_HIT_INFO.ContainsCondition(creature::Conditions::Dead) || creatureDefendingPtrC->HasCondition(creature::Conditions::Dead))
                 {
                     break;
                 }
@@ -481,9 +481,9 @@ namespace combat
         if (didPounce)
         {
             creature::ConditionSVec_t nonHitConditionsSVec;
-            if (creatureDefendingPtrC->HasCondition(creature::condition::Tripped) == false)
+            if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped) == false)
             {
-                auto const CONDITION_TRIPPED{ creature::condition::ConditionFactory::Make(creature::condition::Tripped) };
+                auto const CONDITION_TRIPPED{ creature::condition::ConditionFactory::Make(creature::Conditions::Tripped) };
                 creatureDefendingPtrC->ConditionAdd(CONDITION_TRIPPED);
                 nonHitConditionsSVec.push_back(CONDITION_TRIPPED);
             }
@@ -523,7 +523,7 @@ namespace combat
         //The farther away each defending creature is the better chance of resisting he/she/it has.
         for (auto const NEXT_DEFENDING_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
         {
-            if (NEXT_DEFENDING_CREATURE_PTR->HasCondition(creature::condition::Frightened))
+            if (NEXT_DEFENDING_CREATURE_PTR->HasCondition(creature::Conditions::Frightened))
                 continue;
 
             auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(creatureRoaringPtrC, NEXT_DEFENDING_CREATURE_PTR)) };
@@ -571,7 +571,7 @@ namespace combat
 
             if (didFrighten)
             {
-                auto const CONDITION_SVEC{ creature::condition::ConditionFactory::Make(creature::condition::Frightened) };
+                auto const CONDITION_SVEC{ creature::condition::ConditionFactory::Make(creature::Conditions::Frightened) };
 
                 NEXT_DEFENDING_CREATURE_PTR->ConditionAdd(CONDITION_SVEC);
 
@@ -627,7 +627,7 @@ namespace combat
     }
 
 
-    bool FightClub::IsConditionContained(const creature::condition::Enum E, const HitInfoVec_t & HIT_INFO_VEC)
+    bool FightClub::IsConditionContained(const creature::Conditions::Enum E, const HitInfoVec_t & HIT_INFO_VEC)
     {
         for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
             if (NEXT_HIT_INFO.ContainsCondition(E))

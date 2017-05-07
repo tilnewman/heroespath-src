@@ -686,7 +686,7 @@ namespace combat
         std::ostringstream ss;
 
         const std::size_t NUM_CONDITIONS_TO_LIST{ 3 };
-        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::condition::ConditionFactory::Make(creature::condition::Dead)) };
+        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::condition::ConditionFactory::Make(creature::Conditions::Dead)) };
         auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
         if (NUM_CONDITIONS != 0)
         {

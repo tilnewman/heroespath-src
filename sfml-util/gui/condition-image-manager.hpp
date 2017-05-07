@@ -43,11 +43,11 @@ namespace gui
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
 
-        sfml_util::TextureSPtr_t Get(const game::creature::condition::Enum) const;
+        sfml_util::TextureSPtr_t Get(const game::creature::Conditions::Enum) const;
 
     private:
-        const std::string MakeFilename(const game::creature::condition::Enum) const;
-        const boost::filesystem::path MakeFilepath(const game::creature::condition::Enum) const;
+        const std::string MakeFilename(const game::creature::Conditions::Enum) const;
+        const boost::filesystem::path MakeFilepath(const game::creature::Conditions::Enum) const;
 
     private:
         static ConditionImageManagerSPtr_t instance_;

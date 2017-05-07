@@ -318,7 +318,7 @@ namespace combat
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
-                         [] (const creature::CreaturePtr_t CCPTR) { return CCPTR->HasCondition(creature::condition::Unconscious); });
+                         [] (const creature::CreaturePtr_t CCPTR) { return CCPTR->HasCondition(creature::Conditions::Unconscious); });
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Bloodthirsty)
         {
