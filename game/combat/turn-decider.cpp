@@ -631,7 +631,7 @@ namespace combat
     const TurnActionInfo TurnDecider::ForcePickSpellToCast(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                                            const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC)
     {
-        auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->Spells() };
+        auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 
         spell::SpellPVec_t combatSpellsPVec;
 
@@ -702,7 +702,7 @@ namespace combat
     spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                              const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
     {
-        auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->Spells() };
+        auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 
         if (ALL_SPELLS_PVEC.empty())
             return nullptr;

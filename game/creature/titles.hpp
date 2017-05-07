@@ -16,16 +16,13 @@ namespace creature
     //forward declarations
     class Title;
     using TitlePtr_t = Title *;
-    using TitleCPtr_t = const Title *;
-    using TitlePtrC_t = Title * const;
-    using TItleCPtrC_t = const Title * const;
-    using TitleUPtr_t = std::unique_ptr<Title>;
-    using TitleUVec_t = std::vector<TitleUPtr_t>;
+    using TitleSPtr_t = std::shared_ptr<Title>;
+    using TitleSVec_t = std::vector<TitleSPtr_t>;
 
 namespace title
 {
 
-    class TitleWarehouse
+    class Warehouse
     {
     public:
         static void Setup();
@@ -33,7 +30,7 @@ namespace title
         static bool Test();
 
     private:
-        static TitleUVec_t titleUPtrVec_;
+        static TitleSVec_t titleSVec_;
     };
 }
 }

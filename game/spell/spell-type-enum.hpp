@@ -20,8 +20,7 @@ namespace spell
             Exploring       = 1 << 1,
             Conversation    = 1 << 2,
             Quest           = 1 << 3,
-            PlayerOnly      = 1 << 4,
-            NonPlayerOnly   = 1 << 5
+            Inventory       = 1 << 4
         };
 
         static const std::string ToString(const Enum, const bool WILL_WRAP);
@@ -35,8 +34,10 @@ namespace spell
         {
             Attack = 0,
             Heal,
+            EffectItem,
             EnchantItemHelpful,
             EnchantItemHarmful,
+            EffectCreature,
             EnchantCreatureHelpful,
             EnchantCreatureHarmful,
             Misc,

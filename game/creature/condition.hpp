@@ -43,18 +43,19 @@ namespace creature
 
         virtual ~Condition();
 
-        inline virtual const std::string Name() const                   { return condition::Name(type_); }
-        inline virtual condition::Enum Which() const                    { return type_; }
-        inline virtual const std::string Desc() const                   { return condition::Desc(type_); }
-        virtual const std::string ToString() const;
-        virtual const std::string LongDesc() const;
-        inline virtual const stats::StatSet StatsToModifyCopy() const   { return statsToModify_; }
-        inline virtual const stats::StatSet StatsToSetCopy() const      { return statsToSet_; }
-        inline virtual std::size_t Severity() const                     { return condition::Severity::ByCondition(type_); }
-        inline virtual bool IsMagical() const                           { return isMagical_; }
+        inline const std::string Name() const                   { return condition::Name(type_); }
+        inline condition::Enum Which() const                    { return type_; }
+        inline const std::string Desc() const                   { return condition::Desc(type_); }
+        const std::string ToString() const;
+        const std::string LongDesc() const;
+        inline const stats::StatSet StatsToModifyCopy() const   { return statsToModify_; }
+        inline const stats::StatSet StatsToSetCopy() const      { return statsToSet_; }
+        inline std::size_t Severity() const                     { return condition::Severity::ByCondition(type_); }
+        inline bool IsMagical() const                           { return isMagical_; }
 
-        virtual void Change(CreaturePtrC_t);
-        virtual void Undo(CreaturePtrC_t);
+        virtual const condition::ConditionEnumVec_t InitialChange(CreaturePtrC_t);
+        virtual const condition::ConditionEnumVec_t PerTurnChange(CreaturePtrC_t);
+        virtual const condition::ConditionEnumVec_t FinalUndo(CreaturePtrC_t);
 
         friend bool operator<(const Condition & L, const Condition & R);
         friend bool operator==(const Condition & L, const Condition & R);

@@ -19,20 +19,15 @@ namespace creature
 
         const std::string ToString(const condition::Enum E)
         {
-            return Name(E);
-        }
-
-
-        const std::string Name(const condition::Enum E)
-        {
             switch (E)
             {
                 case Good:          { return "Good"; }
                 case Frightened:    { return "Frightened"; }
                 case Dazed:         { return "Dazed"; }
                 case Tripped:       { return "Tripped"; }
-                //case Diseased:      { return "Diseased"; }
-                //case Poisoned:      { return "Poisoned"; }
+                case AsleepNatural: { return "AsleepNatural"; }
+                case Poisoned:      { return "Poisoned"; }
+                case AsleepMagical: { return "AsleepMagical"; }
                 case Unconscious:   { return "Unconscious"; }
                 case Stone:         { return "Stone"; }
                 case Dead:          { return "Dead"; }
@@ -40,9 +35,26 @@ namespace creature
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "game::creature::condition::Enum::Name(" << E << ")_InvalidValueError.";
+                    ss << "game::creature::condition::Enum::ToString(" << E << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
+            }
+        }
+
+
+        const std::string Name(const condition::Enum E)
+        {
+            if (E == AsleepNatural)
+            {
+                return "Asleep";
+            }
+            else if (E == AsleepMagical)
+            {
+                return "Magical Sleep";
+            }
+            else
+            {
+                return ToString(E);
             }
         }
 
@@ -65,12 +77,15 @@ namespace creature
         {
             switch (E)
             {
-                case Good:          { return ALL; } //keep the 'Good' condition at a different number from 'Benefitial'
+                //Note:  Keep the 'Good' condition at a different number from 'Benefitial'
+                case Good:          { return ALL; }
+
                 case Frightened:    { return LEAST_HARMFUL; }
                 case Dazed:         { return 10; }
                 case Tripped:       { return 20; }
-                //case Diseased:      { return 40; }
-                //case Poisoned:      { return 30; }
+                case AsleepNatural: { return 30; }
+                case Poisoned:      { return 40; }
+                case AsleepMagical: { return 50; }
                 case Unconscious:   { return 80; }
                 case Stone:         { return 90; }
                 case Dead:          { return MOST_HARMFUL; }

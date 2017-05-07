@@ -25,6 +25,7 @@ namespace game
 
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
+        static const std::string ActionPhrase(const Enum);
     };
 
 }

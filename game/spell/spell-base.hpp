@@ -3,8 +3,6 @@
 //
 // spell-base.hpp
 //
-#include "utilz/boost-serialize-includes.hpp"
-
 #include "game/stats/types.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/spell/spell-type-enum.hpp"
@@ -13,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <memory>
 
 
 namespace game
@@ -22,7 +21,13 @@ namespace game
 namespace creature
 {
     class Creature;
-    using CreatureSPtr_t = std::shared_ptr<Creature>;
+    using CreaturePtr_t = Creature *;
+}
+
+namespace item
+{
+    class Item;
+    using ItemSPtr_t = std::shared_ptr<Item>;
 }
 
 namespace spell
@@ -57,12 +62,58 @@ namespace spell
         inline stats::Rank_t Rank() const           { return rank_; }
         inline TargetType::Enum TargetType() const  { return targetType_; }
 
-        virtual const std::string ActionPhrase() const = 0;
-
-        virtual void Cast(creature::CreatureSPtr_t & TARGET_CREATURE_SPTR) = 0;
-
+        //Returns a short sentance describing what the spell did.
+        //For the following functions the first CreaturePtr_t is the caster and the second is the target.
+        virtual const std::string ActionPhrase(creature::CreaturePtr_t,
+                                               creature::CreaturePtr_t) const
+        {
+            return "TODO";
+        }
+        
+        //Allows the spell to change the target creature.
+        virtual const std::string EffectCreature(creature::CreaturePtr_t,
+                                                 creature::CreaturePtr_t) const
+        {
+            return Spell::EFFECT_STR_NOTHING_TO_DO_;
+        }
+        
+        //Allows the spell to change the target item.
+        virtual const std::string EffectItem(creature::CreaturePtr_t,
+                                             item::ItemSPtr_t &) const
+        {
+            return Spell::EFFECT_STR_NOTHING_TO_DO_;
+        }
+        
+        //Returns the amount of health that the spell either gives or takes away.
+        virtual stats::Health_t Health(creature::CreaturePtr_t,
+                                       creature::CreaturePtr_t) const
+        {
+            return 0;
+        }
+        
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
+
+    protected:
+        int GenerateValue(const int FLOOR,
+                          const int THE_RAND_MAX,
+                          const int RANK         = 0,
+                          const int RANK_MAX     = 0) const;
+
+        inline stats::Health_t GenerateHealthValue(const int FLOOR,
+                                                   const int THE_RAND_MAX,
+                                                   const int RANK         = 0,
+                                                   const int RANK_MAX     = 0) const
+        {
+            return static_cast<stats::Health_t>( GenerateValue(FLOOR,
+                                                               THE_RAND_MAX,
+                                                               RANK,
+                                                               RANK_MAX) );
+        }
+
+    public:
+        static const std::string EFFECT_STR_SUCCESS_;
+        static const std::string EFFECT_STR_NOTHING_TO_DO_;
 
     protected:
         Spells::Enum which_;
@@ -71,19 +122,6 @@ namespace spell
         SpellClass::Enum class_;
         stats::Mana_t manaCost_;
         TargetType::Enum targetType_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & which_;
-            ar & rank_;
-            ar & type_;
-            ar & class_;
-            ar & manaCost_;
-            ar & targetType_;
-        }
     };
 
 
@@ -91,6 +129,9 @@ namespace spell
     using SpellPVec_t      = std::vector<SpellPtr_t>;
     using SpellPVecIter_t  = SpellPVec_t::iterator;
     using SpellPVecCIter_t = SpellPVec_t::const_iterator;
+
+    using SpellUPtr_t = std::unique_ptr<Spell>;
+    using SpellUVec_t = std::vector<SpellUPtr_t>;
 
 
     inline bool operator<(const Spell & L, const Spell & R)

@@ -37,8 +37,8 @@ namespace condition
     public:
         Cond_Frightened() : Condition(condition::Frightened), inverseModifyStatSet_() {}
         virtual ~Cond_Frightened() {}
-        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(1.0f, 2.0f, 1.0f, 1.0f, 2.0f); }
-        virtual void Undo(CreaturePtrC_t creaturePtrC)   { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); }
+        virtual const condition::ConditionEnumVec_t Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(1.0f, 2.0f, 1.0f, 1.0f, 2.0f); return condition::ConditionEnumVec_t(); }
+        virtual const condition::ConditionEnumVec_t Undo(CreaturePtrC_t creaturePtrC)   { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_);  return condition::ConditionEnumVec_t(); }
     private:
         stats::StatSet inverseModifyStatSet_;
         friend class boost::serialization::access;
@@ -52,8 +52,8 @@ namespace condition
     public:
         Cond_Tripped() : Condition(condition::Tripped), inverseModifyStatSet_() {}
         virtual ~Cond_Tripped() {}
-        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(4.0f, 4.0f, 1.0f, 1.0f, 4.0f); }
-        virtual void Undo(CreaturePtrC_t creaturePtrC)   { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); }
+        virtual const condition::ConditionEnumVec_t Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(4.0f, 4.0f, 1.0f, 1.0f, 4.0f); return condition::ConditionEnumVec_t(); }
+        virtual const condition::ConditionEnumVec_t Undo(CreaturePtrC_t creaturePtrC)   { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); return condition::ConditionEnumVec_t(); }
     private:
         stats::StatSet inverseModifyStatSet_;
         friend class boost::serialization::access;
@@ -67,8 +67,8 @@ namespace condition
     public:
         Cond_Dazed() : Condition(condition::Dazed), inverseModifyStatSet_() {}
         virtual ~Cond_Dazed() {}
-        virtual void Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(2.0f, 3.0f, 1.0f, 1.0f, 3.0f, 2.0f); }
-        virtual void Undo(CreaturePtrC_t creaturePtrC) { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); }
+        virtual const condition::ConditionEnumVec_t Change(CreaturePtrC_t creaturePtrC) { inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(2.0f, 3.0f, 1.0f, 1.0f, 3.0f, 2.0f); return condition::ConditionEnumVec_t(); }
+        virtual const condition::ConditionEnumVec_t Undo(CreaturePtrC_t creaturePtrC) { creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_); return condition::ConditionEnumVec_t(); }
     private:
         stats::StatSet inverseModifyStatSet_;
         friend class boost::serialization::access;
@@ -106,6 +106,43 @@ namespace condition
     public:
         Cond_Dead() : Condition(condition::Dead, false, stats::StatSet(), stats::StatSet(0, 0, 0, 0, 0, 0)) {}
         virtual ~Cond_Dead() {}
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int) { ar & boost::serialization::base_object<Condition>(*this); }
+    };
+
+
+    class Cond_AsleepNatural : public Condition
+    {
+    public:
+        Cond_AsleepNatural() : Condition(condition::AsleepNatural, false, stats::StatSet(), stats::StatSet(0, 0, stats::Stat::VAL_INVALID_, stats::Stat::VAL_INVALID_, 0, stats::Stat::VAL_INVALID_)) {}
+        virtual ~Cond_AsleepNatural() {}
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int) { ar & boost::serialization::base_object<Condition>(*this); }
+    };
+
+
+    class Cond_AsleepMagical : public Condition
+    {
+    public:
+        Cond_AsleepMagical() : Condition(condition::AsleepMagical, false, stats::StatSet(), stats::StatSet(0, 0, stats::Stat::VAL_INVALID_, stats::Stat::VAL_INVALID_, 0, stats::Stat::VAL_INVALID_)) {}
+        virtual ~Cond_AsleepMagical() {}
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int) { ar & boost::serialization::base_object<Condition>(*this); }
+    };
+
+
+    class Cond_Poisoned : public Condition
+    {
+    public:
+        Cond_Poisoned() : Condition(condition::Poisoned, false, stats::StatSet(), stats::StatSet()) {}
+        virtual const condition::ConditionEnumVec_t PerTurnChange(CreaturePtrC_t creaturePtrC);
+        virtual ~Cond_Poisoned() {}
     private:
         friend class boost::serialization::access;
         template<typename Archive>

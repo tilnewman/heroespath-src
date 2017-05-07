@@ -5,6 +5,8 @@
 
 #include "utilz/strings.hpp"
 
+#include "utilz/random.hpp"
+
 #include <sstream>
 
 
@@ -12,6 +14,10 @@ namespace game
 {
 namespace spell
 {
+
+    const std::string Spell::EFFECT_STR_SUCCESS_        { "" };
+    const std::string Spell::EFFECT_STR_NOTHING_TO_DO_  { "Nothing to do." };
+
 
     Spell::Spell(const Spells::Enum     WHICH,
                  const SpellType::Enum  TYPE,
@@ -59,6 +65,27 @@ namespace spell
         std::ostringstream ss;
         ss << Desc() << "  " << DescExtra() << " " << DescDetails();
         return ss.str();
+    }
+
+    int Spell::GenerateValue(const int FLOOR,
+                             const int THE_RAND_MAX, 
+                             const int RANK,
+                             const int RANK_MAX) const
+    {
+        int x{ FLOOR };
+
+        if (RANK_MAX == 0)
+        {
+            x += RANK;
+        }
+        else
+        {
+            x += std::min(RANK, RANK_MAX);
+        }
+
+        x += utilz::random::Int(THE_RAND_MAX);
+
+        return x;
     }
 
 }

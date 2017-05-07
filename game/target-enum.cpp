@@ -3,6 +3,8 @@
 //
 #include "target-enum.hpp"
 
+#include "utilz/random.hpp"
+
 #include <sstream>
 
 
@@ -50,6 +52,28 @@ namespace game
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    const std::string TargetType::ActionPhrase(const Enum E)
+    {
+        auto const PREAMBLE{ ((utilz::random::Bool()) ? "at " : "upon ") };
+
+        std::ostringstream ss;
+        switch (E)
+        {
+            case SingleEnemy:       { ss << "a single enemy"; break; }
+            case AllEnemies:        { ss << "all enemies"; break; }
+            case SingleCharacter:   { ss << "a single character"; break; }
+            case AllCharacters:     { ss << "all characters"; break; }
+            case Item:              { ss << "an item"; break; }
+            case QuestSpecific:
+            case None:
+            case Count:
+            default:                { return ""; }
+        }
+
+        return PREAMBLE + ss.str();
     }
 
 }

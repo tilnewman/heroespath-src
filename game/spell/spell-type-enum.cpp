@@ -22,8 +22,7 @@ namespace spell
         if (E & SpellClass::Exploring)       ss << ((ss.str().empty()) ? "" : ", ") << "Exploring";
         if (E & SpellClass::Conversation)    ss << ((ss.str().empty()) ? "" : ", ") << "Conversation";
         if (E & SpellClass::Quest)           ss << ((ss.str().empty()) ? "" : ", ") << "Quest";
-        if (E & SpellClass::PlayerOnly)      ss << ((ss.str().empty()) ? "" : ", ") << "PlayerOnly";
-        if (E & SpellClass::NonPlayerOnly)   ss << ((ss.str().empty()) ? "" : ", ") << "NonPlayerOnly";
+        if (E & SpellClass::Inventory)       ss << ((ss.str().empty()) ? "" : ", ") << "Inventory";
 
         if (ss.str().empty())
         {
@@ -48,8 +47,7 @@ namespace spell
         if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::Exploring, false))))      x = x & SpellClass::Exploring;
         if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::Conversation, false))))   x = x & SpellClass::Conversation;
         if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::Quest, false))))          x = x & SpellClass::Quest;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::PlayerOnly, false))))     x = x & SpellClass::PlayerOnly;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::NonPlayerOnly, false))))  x = x & SpellClass::NonPlayerOnly;
+        if (boost::contains(lowerCaseStr, boost::to_lower_copy(SpellClass::ToString(SpellClass::Inventory, false))))      x = x & SpellClass::Inventory;
 
         if (0 == x)
         {
@@ -68,8 +66,10 @@ namespace spell
         {
             case Attack:                    { return "Attack"; }
             case Heal:                      { return "Heal"; }
+            case EffectItem:                { return "EffectItem"; }
             case EnchantItemHelpful:        { return "EnchantItemHelpful"; }
             case EnchantItemHarmful:        { return "EnchantItemHarmful"; }
+            case EffectCreature:            { return "EffectCreature"; }
             case EnchantCreatureHelpful:    { return "EnchantCreatureHelpful"; }
             case EnchantCreatureHarmful:    { return "EnchantCreatureHarmful"; }
             case Misc:                      { return "Misc"; }
@@ -90,8 +90,10 @@ namespace spell
         {
             case Attack:                    { return "attack"; }
             case Heal:                      { return "heal"; }
+            case EffectItem:                { return "effect item"; }
             case EnchantItemHelpful:        { return "helpful enchant item"; }
             case EnchantItemHarmful:        { return "harmful enchant item"; }
+            case EffectCreature:            { return "effect creature"; }
             case EnchantCreatureHelpful:    { return "helpful enchant creature"; }
             case EnchantCreatureHarmful:    { return "harmful enchant creature"; }
             case Misc:                      { return "miscellaneous"; }

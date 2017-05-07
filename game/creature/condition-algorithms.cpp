@@ -82,68 +82,8 @@ namespace condition
     }
 
 
-    void Algorithms::Append(const ConditionSVec_t & CONDITIONS_TO_ADD_SVEC,
-                            ConditionSVec_t &       conditionsToAddToSVec,
-                            const bool              WILL_UNIQUE)
-    {
-        if (CONDITIONS_TO_ADD_SVEC.empty() == false)
-        {
-            std::copy(CONDITIONS_TO_ADD_SVEC.begin(),
-                      CONDITIONS_TO_ADD_SVEC.end(),
-                      back_inserter(conditionsToAddToSVec));
-
-            if (WILL_UNIQUE)
-            {
-                std::unique(conditionsToAddToSVec.begin(), conditionsToAddToSVec.end());
-            }
-        }
-    }
-
-
-    const ConditionSVec_t Algorithms::AppendCopy(const ConditionSVec_t & CONDITIONS_A_SVEC,
-                                                 const ConditionSVec_t & CONDITIONS_B_SVEC,
-                                                 const bool              WILL_UNIQUE)
-    {
-        auto conditionsSVec{ CONDITIONS_B_SVEC };
-        Append(CONDITIONS_A_SVEC, conditionsSVec, WILL_UNIQUE);
-        return conditionsSVec;
-    }
-
-
-    const ConditionSVec_t Algorithms::Exclude(const ConditionSVec_t & CONDITIONS_SVEC,
-                                              const condition::Enum   ENUM)
-    {
-        const ConditionEnumVec_t ENUM_VEC{ ENUM };
-        return Exclude(CONDITIONS_SVEC, ENUM_VEC);
-    }
-
-
-    const ConditionSVec_t Algorithms::Exclude(const ConditionSVec_t &    CONDITIONS_SVEC,
-                                              const ConditionEnumVec_t & ENUM_VEC)
-    {
-        ConditionSVec_t excludedConditionsSVec;
-
-        if (CONDITIONS_SVEC.empty() == false)
-        {
-            std::copy_if(CONDITIONS_SVEC.begin(),
-                         CONDITIONS_SVEC.end(),
-                         back_inserter(excludedConditionsSVec),
-                         [&ENUM_VEC] (const ConditionSPtr_t & CSPTR)
-                         {
-                             for(auto const NEXT_ENUM : ENUM_VEC)
-                                 if (CSPTR->Which() == NEXT_ENUM)
-                                     return false;
-
-                             return true;
-                         });
-        }
-
-        return excludedConditionsSVec;
-    }
-
-
     void Algorithms::SortBySeverity(ConditionSVec_t & conditionsSVec,
-                                                     const bool        SORT_DESCENDING)
+                                    const bool        SORT_DESCENDING)
     {
         if (conditionsSVec.size() > 1)
         {

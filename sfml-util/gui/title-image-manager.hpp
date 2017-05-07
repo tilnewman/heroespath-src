@@ -55,7 +55,7 @@ namespace gui
         const TextureSPtr_t Get(game::creature::TitlePtr_t TITLE_PTR) const;
 
         //this function will throw if the given enum is invalid
-        inline const TextureSPtr_t Get(const game::creature::title::Enum E) const { return Get(game::creature::title::TitleWarehouse::Get(E)); }
+        inline const TextureSPtr_t Get(const game::creature::title::Enum E) const { return Get(game::creature::title::Warehouse::Get(E)); }
 
     private:
         static std::string imagesDirectoryPath_;

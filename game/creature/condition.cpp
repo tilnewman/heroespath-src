@@ -124,23 +124,33 @@ namespace creature
     }
 
 
-    void Condition::Change(CreaturePtrC_t creaturePtrC)
+    const condition::ConditionEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Change(creaturePtr==nullptr)  type=\"" << condition::Name(type_) << "\", was given a null creaturePtr.");
 
         //Conditions are temporary so they effect the current stat value only, not the normal
         creaturePtrC->Stats().ModifyCurrent(statsToModify_);
         statsToSetUndo_ = creaturePtrC->Stats().ModifyCurrentToValid(statsToSet_);
+
+        return condition::ConditionEnumVec_t();
     }
 
 
-    void Condition::Undo(CreaturePtrC_t creaturePtrC)
+    const condition::ConditionEnumVec_t Condition::PerTurnChange(CreaturePtrC_t)
+    {
+        return condition::ConditionEnumVec_t();
+    }
+
+
+    const condition::ConditionEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Undo(creaturePtr==nullptr)  type=\"" << condition::Name(type_) << "\", was given a null creaturePtr.");
 
         //Conditions are temporary so they effect the current stat value only, not the normal
         creaturePtrC->Stats().ModifyCurrent(statsToModify_.CreateInvertCopy());
         creaturePtrC->Stats().ModifyCurrent(statsToSetUndo_);
+
+        return condition::ConditionEnumVec_t();
     }
 
 }

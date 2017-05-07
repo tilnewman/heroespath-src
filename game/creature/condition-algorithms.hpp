@@ -33,22 +33,6 @@ namespace condition
                                        const bool              WILL_AND              = false,
                                        const bool              WILL_ELLIPSIS         = false);
 
-        //stable unless WILL_UNIQUE == true
-        static void Append(const ConditionSVec_t & CONDITIONS_TO_ADD_SVEC,
-                           ConditionSVec_t &       conditionsToAddToSVec,
-                           const bool              WILL_UNIQUE = false);
-
-        //stable unless WILL_UNIQUE == true
-        static const ConditionSVec_t AppendCopy(const ConditionSVec_t & CONDITIONS_A_SVEC,
-                                                const ConditionSVec_t & CONDITIONS_B_SVEC,
-                                                const bool              WILL_UNIQUE = false);
-
-        static const ConditionSVec_t Exclude(const ConditionSVec_t & CONDITIONS_SVEC,
-                                             const condition::Enum   ENUM);
-
-        static const ConditionSVec_t Exclude(const ConditionSVec_t &    CONDITIONS_SVEC,
-                                             const ConditionEnumVec_t & ENUM_VEC);
-
         static void SortBySeverity(ConditionSVec_t & conditionsSVec,
                                    const bool        SORT_DESCENDING = false);
 

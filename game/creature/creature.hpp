@@ -20,6 +20,7 @@
 #include "game/creature/dragon-class-enum.hpp"
 #include "game/creature/wolfen-class-enum.hpp"
 #include "game/creature/achievements.hpp"
+#include "game/spell/spell-enum.hpp"
 #include "game/spell/spell-type-enum.hpp"
 
 #include <memory>
@@ -30,13 +31,15 @@
 
 namespace game
 {
+
+//forward declarations
 namespace spell
 {
-    //forward declarations
     class Spell;
     using SpellPtr_t  = Spell *;
     using SpellPVec_t = std::vector<SpellPtr_t>;
 }
+
 namespace creature
 {
 
@@ -80,9 +83,9 @@ namespace creature
                  const item::Inventory &     INVENTORY       = item::Inventory(),
                  const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                  const std::string &         IMAGE_FILENAME  = "",
-                 const spell::SpellPVec_t &  SPELL_PVEC      = spell::SpellPVec_t(),
+                 const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
                  const stats::Mana_t         MANA            = 0);
-
+        
         virtual ~Creature();
 
         inline virtual const BodyType Body() const              { return bodyType_; }
@@ -91,6 +94,8 @@ namespace creature
 
         inline virtual const std::string Name() const           { return name_; }
         inline virtual void SetName(const std::string & N)      { name_ = N; }
+
+        const std::string NameOrRaceAndClass(const bool IS_FIRST_LETTER_CAPS = true) const;
 
         virtual const std::string DisplayableNameRaceRole() const;
 
@@ -216,8 +221,10 @@ namespace creature
         virtual const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
         virtual bool CanCastSpellByType(const spell::SpellType::Enum) const;
 
-        inline virtual spell::SpellPVec_t Spells()                          { return spellsPVec_; }
+        inline spell::SpellVec_t Spells() const                             { return spellsVec_; }
 
+        const spell::SpellPVec_t SpellsPVec() const;
+        
         item::Weight_t WeightCanCarry() const;
 
         inline const Achievements AchievementsCopy() const                  { return achievements_; }
@@ -271,7 +278,7 @@ namespace creature
         TitlePVec_t         titlesPtrVec_;
         item::Inventory     inventory_;
         sfml_util::DateTime dateTimeCreated_;
-        spell::SpellPVec_t  spellsPVec_;
+        spell::SpellVec_t   spellsVec_;
         Achievements        achievements_;
         item::ItemSVec_t    currWeaponsSVec_;
         stats::Mana_t       manaCurrent_;
@@ -298,7 +305,7 @@ namespace creature
             ar & titlesPtrVec_;
             ar & inventory_;
             ar & dateTimeCreated_;
-            ar & spellsPVec_;
+            ar & spellsVec_;
             ar & achievements_;
             ar & manaCurrent_;
             ar & manaNormal_;

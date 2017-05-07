@@ -26,6 +26,7 @@
 #include "game/settings-file.hpp"
 #include "game/game.hpp"
 #include "game/creature/titles.hpp"
+#include "game/spell/spell-warehouse.hpp"
 
 #include "utilz/random.hpp"
 
@@ -72,8 +73,9 @@ int main()
         sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFileSPtr->GetMediaPath("media-images-conditions-dir") );
         sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFileSPtr->GetMediaPath("media-images-combat-dir") );
 
-        //initialize manager classes
-        game::creature::title::TitleWarehouse::Setup();
+        //setup manager classes
+        game::creature::title::Warehouse::Setup();
+        game::spell::Warehouse::Setup();
 
         //keep an instance of various singleton classes here to prevent thrashing
         //TODO reduce game asset loading here and move below, see "load game assets"
@@ -87,7 +89,7 @@ int main()
         sfml_util::gui::SpellImageManagerSPtr_t     spellImageManagerSPtr    ( sfml_util::gui::SpellImageManager::Instance() );
         sfml_util::gui::ConditionImageManagerSPtr_t conditionImageManagerSPtr( sfml_util::gui::ConditionImageManager::Instance() );
         sfml_util::gui::CombatImageManagerSPtr_t    combatImageManagerSPtr   ( sfml_util::gui::CombatImageManager::Instance() );
-        game::GameSPtr_t                      gameSPtr                 ( game::Game::Instance() );
+        game::GameSPtr_t                            gameSPtr                 ( game::Game::Instance() );
 
         try
         {

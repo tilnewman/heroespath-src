@@ -7,7 +7,7 @@
 
 #include "game/log-macros.hpp"
 #include "utilz/assertlogandthrow.hpp"
-#include "game/spell/spell-base.hpp"
+#include "game/spell/spell-warehouse.hpp"
 #include "game/item/enchantment.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/creature/conditions.hpp"
@@ -38,7 +38,7 @@ namespace creature
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
-                       const spell::SpellPVec_t &  SPELL_PVEC,
+                       const spell::SpellVec_t &   SPELL_VEC,
                        const stats::Mana_t         MANA)
     :
         name_           (NAME),
@@ -57,7 +57,7 @@ namespace creature
         titlesPtrVec_   (TITLE_PVEC),
         inventory_      (INVENTORY),
         dateTimeCreated_(DATE_TIME),
-        spellsPVec_     (SPELL_PVEC),
+        spellsVec_      (SPELL_VEC),
         achievements_   (),
         currWeaponsSVec_(),
         manaCurrent_    (MANA),
@@ -71,6 +71,34 @@ namespace creature
 
     Creature::~Creature()
     {}
+
+
+    const std::string Creature::NameOrRaceAndClass(const bool IS_FIRST_LETTER_CAPS) const
+    {
+        std::ostringstream ss;
+        if (IsPlayerCharacter())
+        {
+            ss << Name();
+        }
+        else
+        {
+            ss << Race().Name();
+
+            if (Role().Which() != role::Wolfen)
+            {
+                ss << " " << Role().Name();
+            }
+        }
+
+        if (IS_FIRST_LETTER_CAPS)
+        {
+            return ss.str();
+        }
+        else
+        {
+            return boost::algorithm::to_lower_copy(ss.str());
+        }
+    }
 
 
     const std::string Creature::DisplayableNameRaceRole() const
@@ -186,7 +214,7 @@ namespace creature
 
                 //make the change to the creature
                 if (ALLOW_CHANGES)
-                    CND_SPTR->Change(this);
+                    CND_SPTR->InitialChange(this);
 
                 return true;
             }
@@ -207,7 +235,7 @@ namespace creature
         for (auto const NEXT_CONDITION_TO_REMOVE_SPTR : conditionsToRemoveSVec)
         {
             wasAnyConditionRemoved = true;
-            NEXT_CONDITION_TO_REMOVE_SPTR->Undo(this);
+            NEXT_CONDITION_TO_REMOVE_SPTR->FinalUndo(this);
             conditionsSVec_.erase(std::find(conditionsSVec_.begin(), conditionsSVec_.end(), NEXT_CONDITION_TO_REMOVE_SPTR));
         }
 
@@ -228,7 +256,7 @@ namespace creature
         }
         else
         {
-            CONDITION_SPTR->Undo(this);
+            CONDITION_SPTR->FinalUndo(this);
             conditionsSVec_.erase(COND_FOUND_ITER);
 
             if (conditionsSVec_.size() == 0)
@@ -245,7 +273,7 @@ namespace creature
 
         //undo the changes made by the conditions that will be removed
         for(auto const & NEXT_COND_SPTR : conditionsSVec_)
-            NEXT_COND_SPTR->Undo(this);
+            NEXT_COND_SPTR->FinalUndo(this);
 
         conditionsSVec_.clear();
         ConditionAdd(condition::ConditionFactory::GOOD_SPTR);
@@ -267,7 +295,9 @@ namespace creature
     {
         return (HasCondition(condition::Dazed) ||
                 HasCondition(condition::Tripped) ||
-                HasCondition(condition::Unconscious));
+                HasCondition(condition::Unconscious) ||
+                HasCondition(condition::AsleepNatural) ||
+                HasCondition(condition::AsleepMagical));
     }
 
 
@@ -345,6 +375,12 @@ namespace creature
 
         if (HasCondition(condition::Tripped))
             return RESPONSE_PREFIX + "tripped" + RESPONSE_POSTFIX;
+
+        if (HasCondition(condition::AsleepNatural))
+            return RESPONSE_PREFIX + "asleep" + RESPONSE_POSTFIX;
+
+        if (HasCondition(condition::AsleepMagical))
+            return RESPONSE_PREFIX + "under magical sleep" + RESPONSE_POSTFIX;
 
         return "";
     }
@@ -938,7 +974,7 @@ namespace creature
         if (CAN_TAKE_ACTION_STR.empty() == false)
             return RESPONSE_PREFIX + CAN_TAKE_ACTION_STR + RESPONSE_POSTFIX;
 
-        if (spellsPVec_.empty())
+        if (spellsVec_.empty())
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells" + RESPONSE_POSTFIX;
 
         return "";
@@ -947,11 +983,22 @@ namespace creature
 
     bool Creature::CanCastSpellByType(const spell::SpellType::Enum E) const
     {
-        for (auto const NEXT_SPELL_PTR : spellsPVec_)
-            if (NEXT_SPELL_PTR->Type() == E)
+        for (auto const NEXT_SPELL_ENUM : spellsVec_)
+            if (NEXT_SPELL_ENUM == E)
                 return true;
 
         return false;
+    }
+
+
+    const spell::SpellPVec_t Creature::SpellsPVec() const
+    {
+        spell::SpellPVec_t spellsPVec;
+
+        for (auto const NEXT_SPELL_TYPE : spellsVec_)
+            spellsPVec.push_back( spell::Warehouse::Get(NEXT_SPELL_TYPE) );
+
+        return spellsPVec;
     }
 
 
@@ -1139,7 +1186,7 @@ namespace creature
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
-                        L.spellsPVec_,
+                        L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
                         L.manaNormal_)
@@ -1159,7 +1206,7 @@ namespace creature
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
-                         R.spellsPVec_,
+                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_);
@@ -1189,7 +1236,7 @@ namespace creature
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
-                        L.spellsPVec_,
+                        L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
                         L.manaNormal_)
@@ -1209,7 +1256,7 @@ namespace creature
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
-                         R.spellsPVec_,
+                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_);

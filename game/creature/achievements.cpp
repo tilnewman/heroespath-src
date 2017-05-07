@@ -110,7 +110,7 @@ namespace creature
 
         for (int t(TITLE_FIRST); t < TITLE_LAST; ++t)
         {
-            const TitlePtr_t NEXT_TITLE_SPTR(title::TitleWarehouse::Get(static_cast<title::Enum>(t)));
+            const TitlePtr_t NEXT_TITLE_SPTR(title::Warehouse::Get(static_cast<title::Enum>(t)));
             titleCountMap.insert( std::make_pair(NEXT_TITLE_SPTR->AchievementCount(), NEXT_TITLE_SPTR) );
         }
 

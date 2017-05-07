@@ -15,12 +15,17 @@ namespace creature
 namespace condition
 {
 
-    //needs to be in order of increasing severity
+    //Note:  Must be in order of increasing severity.
     //
-    //NOTE:  Keep in sync with:
-    //  game::creature::Algorithms::DiscardWithConditionsMeaningNotAThreat()
-    //  game::creature::CanTakeActionStr()
+    //Note:  Keep in sync with:
+    //  conditions in conditions.hpp
+    //  creature::HasConditionNotAThreatPerm() and HasConditionNotAThreatTemp()
+    //  creature::CanTakeActionStr()
     //  party-serialize-includes.hpp
+    //  CombatStage::RemoveSingleTurnTemporaryConditions()
+    //  descriptions in the game data file
+    //  interactions in fight.cpp
+    //  testing code in conditions.cpp ConditionFactory::Test()
     //
     enum Enum
     {
@@ -28,8 +33,9 @@ namespace condition
         Frightened,
         Dazed,
         Tripped,
-        //Diseased,
-        //Poisoned,
+        AsleepNatural,
+        Poisoned,
+        AsleepMagical,
         Unconscious,
         Stone,
         Dead,

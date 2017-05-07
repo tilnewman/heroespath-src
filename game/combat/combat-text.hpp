@@ -95,7 +95,9 @@ namespace combat
                                                                 const FightResult &    FIGHT_RESULT);
 
         static const std::string CastDescriptionFullVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                            const FightResult &    FIGHT_RESULT);
+                                                            const FightResult &    FIGHT_RESULT,
+                                                            const std::size_t      EFFECT_INDEX,
+                                                            const std::size_t      HIT_INDEX);
 
         static const std::string WeaponActionVerbList(const FightResult & FIGHT_RESULT,
                                                       const bool          WILL_SKIP_MISSES);

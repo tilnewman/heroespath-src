@@ -34,7 +34,7 @@ namespace non_player
                          const item::Inventory &            INVENTORY,
                          const sfml_util::DateTime &        DATE_TIME,
                          const std::string &                IMAGE_FILENAME,
-                         const spell::SpellPVec_t &         SPELLS_PVEC,
+                         const spell::SpellVec_t &          SPELLS_VEC,
                          const stats::Mana_t                MANA)
     :
         Creature(NAME,
@@ -51,7 +51,7 @@ namespace non_player
                  INVENTORY,
                  DATE_TIME,
                  IMAGE_FILENAME,
-                 SPELLS_PVEC,
+                 SPELLS_VEC,
                  MANA)
     {}
 
@@ -77,7 +77,7 @@ namespace non_player
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
-                        L.spellsPVec_,
+                        L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
                         L.manaNormal_)
@@ -97,7 +97,7 @@ namespace non_player
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
-                         R.spellsPVec_,
+                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_);
@@ -121,7 +121,7 @@ namespace non_player
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
                         L.conditionsSVec_,
-                        L.spellsPVec_,
+                        L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
                         L.manaNormal_)
@@ -141,7 +141,7 @@ namespace non_player
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
                          R.conditionsSVec_,
-                         R.spellsPVec_,
+                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_);

@@ -24,6 +24,7 @@
 #include "game/creature/conditions.hpp"
 #include "game/creature/creature.hpp"
 #include "game/player/character.hpp"
+#include "game/spell/spell-warehouse.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -252,6 +253,13 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_Spells{ false };
+        if (false == hasTestingCompleted_Spells)
+        {
+            hasTestingCompleted_Spells = game::spell::Warehouse::Test();
+            return;
+        }
+
         static auto hasTestingCompleted_ImageSet{ false };
         if (false == hasTestingCompleted_ImageSet)
         {
@@ -269,7 +277,7 @@ namespace stage
         static auto hasTestingCompleted_Title{ false };
         if (false == hasTestingCompleted_Title)
         {
-            hasTestingCompleted_Title = creature::title::TitleWarehouse::Test();
+            hasTestingCompleted_Title = creature::title::Warehouse::Test();
             return;
         }
 

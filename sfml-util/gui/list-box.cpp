@@ -20,6 +20,7 @@
 #include "game/creature/title.hpp"
 #include "game/player/character.hpp"
 #include "game/creature/condition.hpp"
+#include "game/spell/spells.hpp"
 
 
 namespace sfml_util

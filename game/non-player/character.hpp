@@ -6,7 +6,7 @@
 //
 #include "utilz/boost-serialize-includes.hpp"
 
-#include "game/spell/spell-base.hpp"
+#include "game/spell/spell-enum.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/creature.hpp"
 #include "game/item/types.hpp"
@@ -76,7 +76,7 @@ namespace non_player
                   const item::Inventory &            INVENTORY       = item::Inventory(),
                   const sfml_util::DateTime &        DATE_TIME       = sfml_util::DateTime(),
                   const std::string &                IMAGE_FILENAME  = "",
-                  const spell::SpellPVec_t &         SPELLS_PVEC     = spell::SpellPVec_t(),
+                  const spell::SpellVec_t &          SPELLS_VEC      = spell::SpellVec_t(),
                   const stats::Mana_t                MANA            = 0);
 
         virtual ~Character();

@@ -21,7 +21,6 @@
 #include "game/ouroboros.hpp"
 #include "game/game.hpp"
 #include "game/game-data-file.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
 #include "game/item/enchantment.hpp"
 #include "game/state/game-state.hpp"
@@ -31,6 +30,9 @@
 #include "game/non-player/character.hpp"
 #include "game/creature/condition.hpp"
 #include "game/creature/creature.hpp"
+#include "game/spell/spell-base.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace game
@@ -1904,7 +1906,7 @@ namespace stage
 
             case ViewType::Spells:
             {
-                for (auto const & NEXT_SPELL_PTR : creaturePtr_->Spells())
+                for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
                     const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
@@ -1919,7 +1921,7 @@ namespace stage
             case ViewType::Count:
             default:
             {
-                for (auto const & NEXT_TITLE_PTR : creaturePtr_->Titles())
+                for (auto const NEXT_TITLE_PTR : creaturePtr_->Titles())
                 {
                     listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
                     const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",

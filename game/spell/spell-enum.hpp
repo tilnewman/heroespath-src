@@ -4,6 +4,7 @@
 // spell-enum.hpp
 //
 #include <string>
+#include <vector>
 
 
 namespace game
@@ -37,6 +38,8 @@ namespace spell
         static const std::string ShortDesc(const Spells::Enum);
         static const std::string ExtraDesc(const Spells::Enum);
     };
+
+    using SpellVec_t = std::vector<Spells::Enum>;
 
 }
 }

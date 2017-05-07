@@ -4,13 +4,15 @@
 #include "combat-text.hpp"
 
 #include "game/creature/creature.hpp"
-#include "game/creature/condition.hpp"
+#include "game/creature/conditions.hpp"
 #include "game/creature/condition-algorithms.hpp"
 #include "game/combat/combat-display.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/item/item.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
+
+#include "utilz/vectors.hpp"
 
 
 namespace game
@@ -223,7 +225,7 @@ namespace combat
                 }
                 else
                 {
-                    ss << CastDescriptionFullVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                    ss << CastDescriptionFullVersion(TURN_ACTION_INFO, FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
                 }
             }
 
@@ -500,6 +502,7 @@ namespace combat
             }
         }
 
+        ss << ".";
         return ss.str();
     }
 
@@ -591,73 +594,33 @@ namespace combat
     {
         std::ostringstream ss;
 
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TURN_ACTION_INFO.Spell()->ActionPhrase();
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType());
 
-        if (FIGHT_RESULT.Count() == 1)
+        if ((TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllCharacters) ||
+            (TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllEnemies))
         {
-            auto const CREATURE_EFFECT{ FIGHT_RESULT.FirstEffect() };
-
-            ss << " causing ";
-
-            if (CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false)
-            {
-                ss << " the ";
-            }
-
-            ss << CREATURE_EFFECT.GetCreature()->Name() << " ";
-
-            auto const DAMAGE_TOTAL{ CREATURE_EFFECT.GetDamageTotal() };
-            if (DAMAGE_TOTAL > 0)
-            {
-                ss << DAMAGE_TOTAL << " damage";
-            }
-
-            auto const CONDITIONS_SVEC{ CREATURE_EFFECT.GetAllConditions() };
-            if (CONDITIONS_SVEC.empty() == false)
-            {
-                if (DAMAGE_TOTAL == 0)
-                {
-                    ss << " to become ";
-                }
-                else
-                {
-                    ss << " and to become ";
-                }
-
-                std::vector<std::string> strVec;
-                for (auto const & NEXT_CONDITION_SPTR : CONDITIONS_SVEC)
-                    strVec.push_back(NEXT_CONDITION_SPTR->Name());
-
-                ss << boost::algorithm::join(strVec, ", ");
-            }
-        }
-        else
-        {
-            ss << " effecting " << FIGHT_RESULT.Count() << " creatures";
-
-            if (FIGHT_RESULT.DamageTotal() > 0)
-            {
-                ss << " and causing " << FIGHT_RESULT.DamageTotal() << " total damage";
-            }
+            ss << " effecting " << FIGHT_RESULT.Count();
         }
 
+        ss << ".";
         return ss.str();
     }
 
 
     const std::string Text::CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                         const FightResult &)
+                                                           const FightResult &)
     {
         std::ostringstream ss;
-
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TURN_ACTION_INFO.Spell()->ActionPhrase();
-
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType()) << "...";
         return ss.str();
     }
 
 
 
-    const std::string Text::CastDescriptionFullVersion(const TurnActionInfo &, const FightResult &)
+    const std::string Text::CastDescriptionFullVersion(const TurnActionInfo &,
+                                                       const FightResult &,
+                                                       const std::size_t,
+                                                       const std::size_t)
     {
         std::ostringstream ss;
 
@@ -723,7 +686,7 @@ namespace combat
         std::ostringstream ss;
 
         const std::size_t NUM_CONDITIONS_TO_LIST{ 3 };
-        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ creature::condition::Algorithms::Exclude(FIGHT_RESULT.Conditions(true), creature::condition::Dead) };
+        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::condition::ConditionFactory::Make(creature::condition::Dead)) };
         auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
         if (NUM_CONDITIONS != 0)
         {
@@ -746,11 +709,11 @@ namespace combat
         auto const CREATURE_PTR{ FIGHT_RESULT.FirstCreature() };
         if (CREATURE_PTR->IsPlayerCharacter())
         {
-            ss << "at " << CREATURE_PTR->Name();
+            ss << "at " << CREATURE_PTR->NameOrRaceAndClass();
         }
         else
         {
-            ss << " at a " << CREATURE_PTR->Race().Name() << " " << CREATURE_PTR->Role().Name();
+            ss << "at a " << CREATURE_PTR->NameOrRaceAndClass();
         }
 
         return ss.str();

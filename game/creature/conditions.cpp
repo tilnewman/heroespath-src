@@ -3,8 +3,10 @@
 //
 #include "conditions.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
+#include "utilz/random.hpp"
 
 #include <sstream>
 #include <exception>
@@ -18,6 +20,24 @@ namespace condition
 {
 
     const ConditionSPtr_t ConditionFactory::GOOD_SPTR{ std::make_shared<Cond_Good>() };
+
+
+    const condition::ConditionEnumVec_t Cond_Poisoned::PerTurnChange(CreaturePtrC_t creaturePtrC)
+    {
+        const stats::Health_t DAMAGE_BASE{ utilz::random::Int(2, 6) };
+        auto const DAMAGE_FROM_HEALTH_NORMAL{ static_cast<stats::Health_t>(static_cast<float>(creaturePtrC->HealthNormal()) * 0.1f) };
+        creaturePtrC->HealthCurrentAdj(-1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL));
+
+        if (creaturePtrC->HealthCurrent() <= 0)
+        {
+            creaturePtrC->ConditionAdd(condition::ConditionFactory::Make(condition::Dead));
+            return condition::ConditionEnumVec_t(1, condition::Dead );
+        }
+        else
+        {
+            return condition::ConditionEnumVec_t();
+        }
+    }
 
 
     ConditionSPtr_t ConditionFactory::Make(const condition::Enum E)

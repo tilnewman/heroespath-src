@@ -86,15 +86,16 @@ heroespath-creature-role-stat-modifiers-Thief=       0,  0, -4,  4,  2, -2
 heroespath-creature-role-stat-modifiers-Wolfen=      0,  0,  0,  0,  0,  0
 
 #Condition Descriptions
-heroespath-creature-condition-Good-desc=No ailments.
-heroespath-creature-condition-Unconscious-desc=Alive, but unresponsive, and vulnerable to attack.
-heroespath-creature-condition-Dazed-desc=Temporarily unable to act, and vulnerable to attack.
-heroespath-creature-condition-Poisoned-desc=Poison has infected the bloodstream draining health over time and preventing healing.
-heroespath-creature-condition-Diseased-desc=Ill with a disease that drains health over time and prevents healing.
-heroespath-creature-condition-Tripped-desc=Knocked down and vulnerable to attack.  Must spend a turn getting back up.
-heroespath-creature-condition-Stone-desc=Turned to stone.
-heroespath-creature-condition-Dead-desc=Dead, and beyond the skill of most healers.
-heroespath-creature-condition-Frightened-desc=Physically fine, but terrified.
+heroespath-creature-condition-Good-desc=            No ailments.
+heroespath-creature-condition-Unconscious-desc=     Alive, but unresponsive, and vulnerable to attack.
+heroespath-creature-condition-Dazed-desc=           Temporarily unable to act, and vulnerable to attack.
+heroespath-creature-condition-Poisoned-desc=        Poison has infected the bloodstream draining health over time.
+heroespath-creature-condition-Tripped-desc=         Knocked down and vulnerable to attack.  Must spend a turn getting back up.
+heroespath-creature-condition-Stone-desc=           Turned to stone.
+heroespath-creature-condition-Dead-desc=            Dead, and beyond the skill of most healers.
+heroespath-creature-condition-Frightened-desc=      Physically fine, but terrified.
+heroespath-creature-condition-AsleepNatural-desc=   In a calm natural sleep that can be interrupted by being hit or even when hearing a beast roar.
+heroespath-creature-condition-AsleepMagical-desc=   In a deep magical sleep that cannot be interrupted by hearing beast roars or even by being hit.
 
 #Spell Short Descriptions
 heroespath-spell-Sparks-short-desc=     Sprays a single enemy with a shower of molten sparks causing minimal damage.
