@@ -1920,7 +1920,7 @@ namespace stage
             case ViewType::Count:
             default:
             {
-                for (auto const NEXT_TITLE_PTR : creaturePtr_->Titles())
+                for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
                     const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",

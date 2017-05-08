@@ -14,7 +14,7 @@
 #include "game/creature/role.hpp"
 #include "game/creature/race.hpp"
 #include "game/creature/rank.hpp"
-#include "game/creature/title.hpp"
+#include "game/creature/title-enum.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/creature/dragon-class-enum.hpp"
@@ -79,7 +79,7 @@ namespace creature
                  const stats::Rank_t         RANK            = 1,
                  const stats::Exp_t          EXPERIENCE      = 0,
                  const ConditionEnumVec_t &  CONDITIONS_VEC  = ConditionEnumVec_t(),
-                 const TitlePVec_t &         TITLES_PVEC     = TitlePVec_t(),
+                 const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
                  const item::Inventory &     INVENTORY       = item::Inventory(),
                  const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                  const std::string &         IMAGE_FILENAME  = "",
@@ -125,8 +125,9 @@ namespace creature
 
         inline virtual const creature::Role Role() const        { return role_; }
 
-        virtual void TitleAdd(const TitlePtr_t titlePtr, const bool ALLOW_CHANGES = true);
-        inline virtual const TitlePVec_t Titles() const         { return titlesPtrVec_; }
+        void TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES = true);
+        inline const TitleEnumVec_t Titles() const              { return titlesVec_; }
+        const TitlePVec_t TitlesPVec() const;
 
         inline virtual stats::Health_t HealthCurrent() const            { return healthCurrent_; }
         inline virtual stats::Health_t HealthNormal() const             { return healthNormal_; }
@@ -274,7 +275,7 @@ namespace creature
         stats::Rank_t       rank_;
         stats::Exp_t        experience_;
         ConditionEnumVec_t  conditionsVec_;
-        TitlePVec_t         titlesPtrVec_;
+        TitleEnumVec_t      titlesVec_;
         item::Inventory     inventory_;
         sfml_util::DateTime dateTimeCreated_;
         spell::SpellVec_t   spellsVec_;
@@ -301,7 +302,7 @@ namespace creature
             ar & rank_;
             ar & experience_;
             ar & conditionsVec_;
-            ar & titlesPtrVec_;
+            ar & titlesVec_;
             ar & inventory_;
             ar & dateTimeCreated_;
             ar & spellsVec_;

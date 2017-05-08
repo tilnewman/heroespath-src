@@ -26,12 +26,13 @@ namespace title
     {
     public:
         static void Setup();
-        static TitlePtr_t Get(const title::Enum);
         static bool Test();
-
+        static TitlePtr_t Get(const Titles::Enum);
+        
     private:
         static TitleSVec_t titleSVec_;
     };
+
 }
 }
 }

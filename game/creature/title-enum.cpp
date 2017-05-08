@@ -14,7 +14,7 @@ namespace game
 namespace creature
 {
 
-    const std::string title::ToString(const title::Enum E)
+    const std::string Titles::ToString(const Titles::Enum E)
     {
         switch (E)
         {
@@ -197,14 +197,14 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "game::creature::title::Enum::ToString(" << E << ")_InvalidValueError.";
+                ss << "game::creature::Titles::Enum::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    const std::string title::Name(const title::Enum E)
+    const std::string Titles::Name(const Titles::Enum E)
     {
         switch (E)
         {
@@ -387,14 +387,14 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "game::creature::title::Enum::Name(" << E << ")_InvalidValueError.";
+                ss << "game::creature::Titles::Enum::Name(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    const std::string title::Desc(const title::Enum E)
+    const std::string Titles::Desc(const Titles::Enum E)
     {
         std::ostringstream keySS;
         keySS << "heroespath-creature-title-" << ToString(E) << "-desc";

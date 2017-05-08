@@ -13,6 +13,7 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
+#include "game/creature/titles.hpp"
 
 
 namespace game
@@ -34,7 +35,7 @@ namespace creature
                        const stats::Rank_t         RANK,
                        const stats::Exp_t          EXPERIENCE,
                        const ConditionEnumVec_t &  CONDITIONS_VEC,
-                       const TitlePVec_t &         TITLE_PVEC,
+                       const TitleEnumVec_t &      TITLE_VEC,
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
@@ -54,7 +55,7 @@ namespace creature
         rank_           (RANK),
         experience_     (EXPERIENCE),
         conditionsVec_  (CONDITIONS_VEC),
-        titlesPtrVec_   (TITLE_PVEC),
+        titlesVec_      (TITLE_VEC),
         inventory_      (INVENTORY),
         dateTimeCreated_(DATE_TIME),
         spellsVec_      (SPELL_VEC),
@@ -138,14 +139,25 @@ namespace creature
     }
 
 
-    void Creature::TitleAdd(const TitlePtr_t titlePtr, const bool ALLOW_CHANGES)
+    void Creature::TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((titlePtr != nullptr), "Creature::TitleAdd() was given a null titlePtr.");
-
         if (ALLOW_CHANGES)
-            titlePtr->Change(this);
+        {
+            title::Warehouse::Get(E)->Change(this);
+        }
 
-        titlesPtrVec_.push_back(titlePtr);
+        titlesVec_.push_back(E);
+    }
+
+
+    const TitlePVec_t Creature::TitlesPVec() const
+    {
+        TitlePVec_t titlePVec;
+
+        for (auto const NEXT_TITLE_ENUM : titlesVec_)
+            titlePVec.push_back( title::Warehouse::Get(NEXT_TITLE_ENUM) );
+
+        return titlePVec;
     }
 
 
@@ -937,8 +949,8 @@ namespace creature
             ss << condition::Warehouse::Get(NEXT_CONDITION_ENUM)->Name() << ",";
 
         ss << ", titles=";
-        for (auto const & NEXT_TITLE_SPTR : titlesPtrVec_)
-            ss << NEXT_TITLE_SPTR->Name() << ",";
+        for (auto const NEXT_TITLE_ENUM : titlesVec_)
+            ss << title::Warehouse::Get(NEXT_TITLE_ENUM)->Name() << ",";
 
         ss << ", inventory=" << inventory_.ToString();
 
@@ -1098,7 +1110,7 @@ namespace creature
                         L.rank_,
                         L.experience_,
                         L.dateTimeCreated_,
-                        L.titlesPtrVec_,
+                        L.titlesVec_,
                         L.conditionsVec_,
                         L.spellsVec_,
                         L.achievements_,
@@ -1118,7 +1130,7 @@ namespace creature
                          R.rank_,
                          R.experience_,
                          R.dateTimeCreated_,
-                         R.titlesPtrVec_,
+                         R.titlesVec_,
                          R.conditionsVec_,
                          R.spellsVec_,
                          R.achievements_,
@@ -1148,7 +1160,7 @@ namespace creature
                         L.rank_,
                         L.experience_,
                         L.dateTimeCreated_,
-                        L.titlesPtrVec_,
+                        L.titlesVec_,
                         L.conditionsVec_,
                         L.spellsVec_,
                         L.achievements_,
@@ -1168,7 +1180,7 @@ namespace creature
                          R.rank_,
                          R.experience_,
                          R.dateTimeCreated_,
-                         R.titlesPtrVec_,
+                         R.titlesVec_,
                          R.conditionsVec_,
                          R.spellsVec_,
                          R.achievements_,

@@ -4,6 +4,7 @@
 // achievement-enum.hpp
 //
 #include <string>
+#include <vector>
 
 
 namespace game
@@ -38,9 +39,11 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const AchievementType::Enum E);
-        static const std::string Name(const AchievementType::Enum E);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
     };
+
+    using AchievementTypeVec_t = std::vector<AchievementType::Enum>;
 
 }
 }

@@ -34,10 +34,10 @@ namespace gui
     class TitleImageManager
     {
         //prevent copy construction
-        TitleImageManager(const TitleImageManager &);
+        TitleImageManager(const TitleImageManager &) =delete;
 
         //prevent copy assignment
-        TitleImageManager & operator=(const TitleImageManager &);
+        TitleImageManager & operator=(const TitleImageManager &) =delete;
 
         //prevent non-singleton construction
         TitleImageManager();
@@ -55,7 +55,7 @@ namespace gui
         const TextureSPtr_t Get(game::creature::TitlePtr_t TITLE_PTR) const;
 
         //this function will throw if the given enum is invalid
-        inline const TextureSPtr_t Get(const game::creature::title::Enum E) const { return Get(game::creature::title::Warehouse::Get(E)); }
+        inline const TextureSPtr_t Get(const game::creature::Titles::Enum E) const { return Get(game::creature::title::Warehouse::Get(E)); }
 
     private:
         static std::string imagesDirectoryPath_;

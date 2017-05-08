@@ -16,9 +16,6 @@
 #include "game/item/item.hpp"
 BOOST_CLASS_EXPORT(game::item::Item)
 
-#include "game/creature/title.hpp"
-BOOST_CLASS_EXPORT(game::creature::Title)
-
 #include "game/creature/creature.hpp"
 BOOST_CLASS_EXPORT(game::creature::Creature)
 

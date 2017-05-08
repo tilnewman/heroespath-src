@@ -7,7 +7,7 @@
 #include "utilz/boost-serialize-includes.hpp"
 
 #include "game/creature/achievement.hpp"
-#include "game/creature/title.hpp"
+#include "game/creature/title-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -21,7 +21,7 @@ namespace creature
 
     //forward declarations
     class Creature;
-    using CreatureSPtr_t = std::shared_ptr<Creature>;
+    using CreaturePtr_t = Creature *;
 
 
     //Responsible for managing all the title/achievement statistics for a creature
@@ -32,7 +32,7 @@ namespace creature
 
         //these functions will throw on invalid enum or if a valid enum was not found in the map
         const Achievement AchievementCopy(const AchievementType::Enum E) const;
-        TitlePtr_t Increment(const AchievementType::Enum E, const CreatureSPtr_t &);
+        TitlePtr_t Increment(const AchievementType::Enum E, const CreaturePtr_t);
         TitlePtr_t GetCurrentTitle(const AchievementType::Enum E) const;
         TitlePtr_t GetNextTitle(const AchievementType::Enum E) const;
 
@@ -41,8 +41,8 @@ namespace creature
 
     private:
         void AchievementMapInsertPair(const AchievementType::Enum ACHV_TYPE,
-                                      const title::Enum           TITLE_FIRST,
-                                      const title::Enum           TITLE_LAST);
+                                      const Titles::Enum          TITLE_FIRST,
+                                      const Titles::Enum          TITLE_LAST);
 
     private:
         AchievementMap_t map_;

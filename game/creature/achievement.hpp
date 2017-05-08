@@ -24,10 +24,12 @@ namespace creature
 
     //forward declarations
     class Creature;
-    using CreatureSPtr_t = std::shared_ptr<Creature>;
+    using CreaturePtr_t = Creature *;
 
 
-    using TitleCountMap_t = std::map<std::size_t, TitlePtr_t>;
+    //Note:  Must store TItles::Enums and not TitlePtr_ts here because
+    //       Achievements are serialized, and Titles cannot be serialized.
+    using TitleCountMap_t = std::map<std::size_t, Titles::Enum>;
 
 
     //responsible for storing all the information about an achievement
@@ -42,18 +44,15 @@ namespace creature
         inline const std::string Name() const                   { return AchievementType::Name(which_); }
         inline const TitleCountMap_t TitleCountMapCopy() const  { return titleCountMap_; }
 
+        //These functions return pointers instead of enums because they
+        //need a way for them to return nothing.
         TitlePtr_t GetCurrentTitle() const;
-
         TitlePtr_t GetNextTitle() const;
+        TitlePtr_t Increment(const CreaturePtr_t);
 
         const std::string ToString() const;
 
         bool IsRoleInList(const role::Enum) const;
-
-        //Note:  This function does not new up a unique Title object and return it.
-        //       All creatures share the same copy of all Title objects.
-        //       So this function returns a shared_ptr to the Title object in titlesSVec_.
-        TitlePtr_t Increment(const CreatureSPtr_t &);
 
         friend bool operator<(const Achievement & L, const Achievement & R);
         friend bool operator==(const Achievement & L, const Achievement & R);

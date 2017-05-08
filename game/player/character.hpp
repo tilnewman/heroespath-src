@@ -9,6 +9,7 @@
 #include "game/spell/spell-enum.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/creature.hpp"
+#include "game/creature/title-enum.hpp"
 #include "game/item/types.hpp"
 #include "game/stats/types.hpp"
 
@@ -35,10 +36,6 @@ namespace creature
     class Race;
     class Role;
     class BodyType;
-
-    class Title;
-    using TitlePtr_t  = Title *;
-    using TitlePVec_t = std::vector<TitlePtr_t>;
 }
 
 namespace stats
@@ -68,7 +65,7 @@ namespace player
                   const stats::Rank_t                  RANK           = 1,
                   const stats::Exp_t                   EXPERIENCE     = 0,
                   const creature::ConditionEnumVec_t & CONDITIONS_VEC = creature::ConditionEnumVec_t(),
-                  const creature::TitlePVec_t &        TITLES_PVEC    = creature::TitlePVec_t(),
+                  const creature::TitleEnumVec_t &     TITLES_VEC     = creature::TitleEnumVec_t(),
                   const item::Inventory &              INVENTORY      = item::Inventory(),
                   const sfml_util::DateTime &          DATE_TIME      = sfml_util::DateTime(),
                   const std::string &                  IMAGE_FILENAME = "",

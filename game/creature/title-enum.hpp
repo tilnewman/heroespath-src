@@ -5,6 +5,7 @@
 //  An enumeration defining each type of Title.
 //
 #include <string>
+#include <vector>
 
 
 namespace game
@@ -12,7 +13,7 @@ namespace game
 namespace creature
 {
 
-    namespace title
+    namespace Titles
     {
         enum Enum
         {
@@ -194,10 +195,12 @@ namespace creature
             Count
         };
 
-        const std::string ToString(const title::Enum E);//straight name with no spaces that matches the enum
-        const std::string Name(const title::Enum E);//human readable
-        const std::string Desc(const title::Enum E);//pulled from the game data file
+        const std::string ToString(const Enum);//straight name with no spaces that matches the enum
+        const std::string Name(const Enum);//human readable
+        const std::string Desc(const Enum);//pulled from the game data file
     }
+
+    using TitleEnumVec_t = std::vector<Titles::Enum>;
 
 }
 }

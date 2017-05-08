@@ -20,25 +20,25 @@ namespace creature
     :
         map_()
     {
-        AchievementMapInsertPair(AchievementType::DodgedStanding, title::Dodger, title::MeleeShadow);
-        AchievementMapInsertPair(AchievementType::DodgedFlying, title::SkyDodger, title::SkyShadow);
-        AchievementMapInsertPair(AchievementType::BackstabsHits, title::Sneak, title::Assassin);
-        AchievementMapInsertPair(AchievementType::BattlesSurvived, title::KnightOfTheClashingBlade, title::KnightOfEtan);
-        AchievementMapInsertPair(AchievementType::HealthGiven, title::Mender, title::ClericOfTheCovenant);
-        AchievementMapInsertPair(AchievementType::HealthTraded, title::HandsOfCharity, title::OrderOfTheBleedingPalm);
-        AchievementMapInsertPair(AchievementType::BeastRoars, title::HowlingStray, title::RagingHorror);
-        AchievementMapInsertPair(AchievementType::LocksPicked, title::Prowler, title::LockBane);
-        AchievementMapInsertPair(AchievementType::SongsPlayed, title::Versifier, title::Virtuoso);
-        AchievementMapInsertPair(AchievementType::SpiritsLifted, title::BardOfTheTrippingToes, title::BardOfTheAracneAria);
-        AchievementMapInsertPair(AchievementType::ProjectileHits, title::Targeter, title::EnchantedAim);
-        AchievementMapInsertPair(AchievementType::SpellsCast, title::Magus, title::Warlock);
-        AchievementMapInsertPair(AchievementType::EnemiesFaced, title::Undaunted, title::Fearless);
-        AchievementMapInsertPair(AchievementType::MoonHowls, title::PawOfTheLunarPup, title::PawOfTheCrescentLegion);
-        AchievementMapInsertPair(AchievementType::PackActions, title::PackFollower, title::PackElder);
-        AchievementMapInsertPair(AchievementType::TurnsInFlight, title::WindGlider, title::FeatherDancer);
-        AchievementMapInsertPair(AchievementType::BeastMindLinks, title::CritterClairvoyant, title::MammalianMaster);
-        AchievementMapInsertPair(AchievementType::MeleeHits, title::Brawler, title::OrderOfTheSteadyBlade);
-        AchievementMapInsertPair(AchievementType::FlyingAttackHits, title::DragonOfTheUnblinkingEye, title::DragonOfTheNightmareSky);
+        AchievementMapInsertPair(AchievementType::DodgedStanding,   Titles::Dodger,                     Titles::MeleeShadow);
+        AchievementMapInsertPair(AchievementType::DodgedFlying,     Titles::SkyDodger,                  Titles::SkyShadow);
+        AchievementMapInsertPair(AchievementType::BackstabsHits,    Titles::Sneak,                      Titles::Assassin);
+        AchievementMapInsertPair(AchievementType::BattlesSurvived,  Titles::KnightOfTheClashingBlade,   Titles::KnightOfEtan);
+        AchievementMapInsertPair(AchievementType::HealthGiven,      Titles::Mender,                     Titles::ClericOfTheCovenant);
+        AchievementMapInsertPair(AchievementType::HealthTraded,     Titles::HandsOfCharity,             Titles::OrderOfTheBleedingPalm);
+        AchievementMapInsertPair(AchievementType::BeastRoars,       Titles::HowlingStray,               Titles::RagingHorror);
+        AchievementMapInsertPair(AchievementType::LocksPicked,      Titles::Prowler,                    Titles::LockBane);
+        AchievementMapInsertPair(AchievementType::SongsPlayed,      Titles::Versifier,                  Titles::Virtuoso);
+        AchievementMapInsertPair(AchievementType::SpiritsLifted,    Titles::BardOfTheTrippingToes,      Titles::BardOfTheAracneAria);
+        AchievementMapInsertPair(AchievementType::ProjectileHits,   Titles::Targeter,                   Titles::EnchantedAim);
+        AchievementMapInsertPair(AchievementType::SpellsCast,       Titles::Magus,                      Titles::Warlock);
+        AchievementMapInsertPair(AchievementType::EnemiesFaced,     Titles::Undaunted,                  Titles::Fearless);
+        AchievementMapInsertPair(AchievementType::MoonHowls,        Titles::PawOfTheLunarPup,           Titles::PawOfTheCrescentLegion);
+        AchievementMapInsertPair(AchievementType::PackActions,      Titles::PackFollower,               Titles::PackElder);
+        AchievementMapInsertPair(AchievementType::TurnsInFlight,    Titles::WindGlider,                 Titles::FeatherDancer);
+        AchievementMapInsertPair(AchievementType::BeastMindLinks,   Titles::CritterClairvoyant,         Titles::MammalianMaster);
+        AchievementMapInsertPair(AchievementType::MeleeHits,        Titles::Brawler,                    Titles::OrderOfTheSteadyBlade);
+        AchievementMapInsertPair(AchievementType::FlyingAttackHits, Titles::DragonOfTheUnblinkingEye,   Titles::DragonOfTheNightmareSky);
     }
 
 
@@ -56,20 +56,20 @@ namespace creature
     }
 
 
-    TitlePtr_t Achievements::Increment(const AchievementType::Enum E, const CreatureSPtr_t & CREATURE_SPTR)
+    TitlePtr_t Achievements::Increment(const AchievementType::Enum E, const CreaturePtr_t CREATURE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_SPTR.get() != nullptr), "game::creature::Achievements::Increment(which_enum=" << E << ", creature_sptr=" << CREATURE_SPTR.get() << ") was given a CREATURE_SPTR that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr), "game::creature::Achievements::Increment(which_enum=" << E << ", creature_ptr=" << CREATURE_PTR << ") was given a CREATURE_PTR that was null.");
 
         const AchievementMapIter_t ITER(map_.find(E));
         if (ITER == map_.end())
         {
             std::ostringstream ss;
-            ss << "game::creature::Achievements::Increment(which_enum=" << E << ", creature_name=" << CREATURE_SPTR->Name() << ") was given an invalid AchievementType::Enum.";
+            ss << "game::creature::Achievements::Increment(which_enum=" << E << ", creature_name=" << CREATURE_PTR->Name() << ") was given an invalid AchievementType::Enum.";
             throw std::runtime_error(ss.str());
         }
         else
         {
-            return ITER->second.Increment(CREATURE_SPTR);
+            return ITER->second.Increment(CREATURE_PTR);
         }
     }
 
@@ -103,15 +103,16 @@ namespace creature
 
 
     void Achievements::AchievementMapInsertPair(const AchievementType::Enum ACHV_TYPE,
-                                                const title::Enum           TITLE_FIRST,
-                                                const title::Enum           TITLE_LAST)
+                                                const Titles::Enum          TITLE_FIRST,
+                                                const Titles::Enum          TITLE_LAST)
     {
         TitleCountMap_t titleCountMap;
 
-        for (int t(TITLE_FIRST); t < TITLE_LAST; ++t)
+        for (int t(TITLE_FIRST); t <= TITLE_LAST; ++t)
         {
-            const TitlePtr_t NEXT_TITLE_SPTR(title::Warehouse::Get(static_cast<title::Enum>(t)));
-            titleCountMap.insert( std::make_pair(NEXT_TITLE_SPTR->AchievementCount(), NEXT_TITLE_SPTR) );
+            auto const NEXT_ENUM{ static_cast<Titles::Enum>(t) };
+            auto const NEXT_TITLE_PTR(title::Warehouse::Get(NEXT_ENUM));
+            titleCountMap.insert( std::make_pair(NEXT_TITLE_PTR->AchievementCount(), NEXT_ENUM) );
         }
 
         map_.insert(std::make_pair(ACHV_TYPE, Achievement(ACHV_TYPE, titleCountMap)));

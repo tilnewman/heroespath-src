@@ -4,8 +4,6 @@
 // title.hpp
 //  Code that places a Creature under a permenant condition.
 //
-#include "utilz/boost-serialize-includes.hpp"
-
 #include "game/stats/stat-set.hpp"
 #include "game/creature/role-enum.hpp"
 #include "game/creature/title-enum.hpp"
@@ -28,13 +26,13 @@ namespace creature
     class Title
     {
         //prevent copy construction
-        Title(const Title &);
+        Title(const Title &) =delete;
 
         //prevent copy assignment
-        Title & operator=(const Title &);
+        Title & operator=(const Title &) =delete;
 
     public:
-        explicit Title(const title::Enum           TITLE             = title::Count,
+        explicit Title(const Titles::Enum          TITLE             = Titles::Count,
                        const AchievementType::Enum ACHIEVEMENT_TYPE  = AchievementType::None,
                        const std::size_t           ACHIEVEMENT_INDEX = 0, //0 is invalid, valid indexs always start at one
                        const std::size_t           ACHIEVEMENT_COUNT = 0,
@@ -46,9 +44,9 @@ namespace creature
 
         virtual ~Title();
 
-        inline virtual const std::string Name() const                   { return title::Name(title_); }
-        inline virtual const std::string Desc() const                   { return title::Desc(title_); }
-        inline virtual title::Enum Which() const                        { return title_; }
+        inline virtual const std::string Name() const                   { return Titles::Name(title_); }
+        inline virtual const std::string Desc() const                   { return Titles::Desc(title_); }
+        inline virtual Titles::Enum Which() const                       { return title_; }
         inline virtual const stats::StatSet StatBonus() const           { return statBonus_; }
         inline virtual AchievementType::Enum GetAchievementType() const { return achievementType_; }
         inline virtual std::size_t AchievementCount() const             { return achievementCount_; }
@@ -71,7 +69,7 @@ namespace creature
         friend bool operator==(const Title & L, const Title & R);
 
     protected:
-        title::Enum           title_;
+        Titles::Enum          title_;
         AchievementType::Enum achievementType_;
         std::size_t           achievementCount_;
         std::size_t           achievementIndex_;
@@ -81,23 +79,6 @@ namespace creature
         stats::StatSet        statBonus_;
         std::string           fileName_;
         stats::Health_t       healthBonus_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & title_;
-            ar & achievementType_;
-            ar & achievementCount_;
-            ar & achievementIndex_;
-            ar & rolesVec_;
-            ar & rankBonus_;
-            ar & expBonus_;
-            ar & statBonus_;
-            ar & fileName_;
-            ar & healthBonus_;
-        }
     };
 
 

@@ -274,7 +274,7 @@ namespace stage
                                                                             1,
                                                                             0,
                                                                             game::creature::ConditionEnumVec_t(),
-                                                                            game::creature::TitlePVec_t(),
+                                                                            game::creature::TitleEnumVec_t(),
                                                                             game::item::Inventory(),
                                                                             sfml_util::DateTime::CurrentDateTime(),
                                                                             characterImageFilenamesVec[selectedImageIndex_]) );

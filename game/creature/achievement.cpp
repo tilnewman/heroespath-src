@@ -5,6 +5,7 @@
 
 #include "game/creature/creature.hpp"
 #include "game/creature/titles.hpp"
+
 #include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
@@ -33,29 +34,45 @@ namespace creature
 
         if (titleCountMap_.empty() == false)
         {
-            titlePtr = titleCountMap_.begin()->second;
+            titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
-                if ((NEXT_COUNTTITLE_PAIR.second->AchievementCount() < count_) && (NEXT_COUNTTITLE_PAIR.second->AchievementCount() >= titlePtr->AchievementCount()))
-                    titlePtr = NEXT_COUNTTITLE_PAIR.second;
+            {
+                auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+                if ((NEXT_TITLE_PTR->AchievementCount() < count_) &&
+                    (NEXT_TITLE_PTR->AchievementCount() >= titlePtr->AchievementCount()))
+                {
+                    titlePtr = NEXT_TITLE_PTR;
+                }
+            }
         }
 
-        if (titlePtr->AchievementCount() > count_)
+        if ((nullptr != titlePtr) && (titlePtr->AchievementCount() > count_))
+        {
             return nullptr;
+        }
         else
+        {
             return titlePtr;
+        }
     }
 
 
     TitlePtr_t Achievement::GetNextTitle() const
     {
-        TitlePtr_t titlePtr(nullptr);
+        TitlePtr_t titlePtr{ nullptr };
 
         if (titleCountMap_.empty() == false)
         {
-            titlePtr = titleCountMap_.begin()->second;
+            titlePtr = title::Warehouse::Get( titleCountMap_.begin()->second );
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
-                if ((NEXT_COUNTTITLE_PAIR.second->AchievementCount() > count_) && (NEXT_COUNTTITLE_PAIR.second->AchievementCount() <= titlePtr->AchievementCount()))
-                    titlePtr = NEXT_COUNTTITLE_PAIR.second;
+            {
+                auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+                if ((NEXT_TITLE_PTR->AchievementCount() > count_) &&
+                    (NEXT_TITLE_PTR->AchievementCount() <= titlePtr->AchievementCount()))
+                {
+                    titlePtr = NEXT_TITLE_PTR;
+                }
+            }
         }
 
         return titlePtr;
@@ -71,7 +88,7 @@ namespace creature
 
         const std::string SEP_STR(", ");
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
-            ss << NEXT_TITLE_COUNT_PAIR.second->Name() << " at count " << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
+            ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count " << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
 
         return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
     }
@@ -79,18 +96,23 @@ namespace creature
 
     bool Achievement::IsRoleInList(const role::Enum E) const
     {
-        return titleCountMap_.begin()->second->IsRoleInList(E);
+        return title::Warehouse::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
     }
 
 
-    TitlePtr_t Achievement::Increment(const CreatureSPtr_t & CREATURE_SPTR)
+    TitlePtr_t Achievement::Increment(const CreaturePtr_t CREATURE_PTR)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr), "game::creature::Achievement::Increment() was given a null CREATURE_PTR.");
+
         ++count_;
 
-        for(auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
-            if (NEXT_TITLE_COUNT_PAIR.second->AchievementCount() == count_)
-                if (NEXT_TITLE_COUNT_PAIR.second->IsRoleInList(CREATURE_SPTR->Role().Which()))
-                    return NEXT_TITLE_COUNT_PAIR.second;
+        for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
+        {
+            auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_TITLE_COUNT_PAIR.second) };
+            if (NEXT_TITLE_PTR->AchievementCount() == count_)
+                if (NEXT_TITLE_PTR->IsRoleInList(CREATURE_PTR->Role().Which()))
+                    return NEXT_TITLE_PTR;
+        }
 
         return nullptr;
     }
