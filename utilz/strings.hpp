@@ -9,7 +9,7 @@
 
 namespace utilz
 {
-    
+
     struct String
     {
 

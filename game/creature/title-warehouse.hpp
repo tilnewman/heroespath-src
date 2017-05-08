@@ -28,7 +28,7 @@ namespace title
         static void Setup();
         static bool Test();
         static TitlePtr_t Get(const Titles::Enum);
-        
+
     private:
         static TitleSVec_t titleSVec_;
     };

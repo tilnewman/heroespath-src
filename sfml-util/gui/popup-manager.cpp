@@ -404,7 +404,7 @@ namespace gui
             //define the outer limits of the stage
             auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
             auto const SPELLBOOK_HEIGHT{ (static_cast<float>(textureSPtr->getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(textureSPtr->getSize().x) };
-            
+
             sf::FloatRect rect;
             rect.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
             rect.top = ((sfml_util::Display::Instance()->GetWinHeight() - SPELLBOOK_HEIGHT) * 0.5f);
@@ -432,7 +432,7 @@ namespace gui
             //define the outer limits of the stage
             const float TEXTURE_WIDTH (static_cast<float>(textureSPtr->getSize().x));
             const float TEXTURE_HEIGHT(static_cast<float>(textureSPtr->getSize().y));
-            
+
             sf::FloatRect rect;
             rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (TEXTURE_WIDTH * 0.5f);
             rect.top = (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (TEXTURE_HEIGHT * 0.5f);

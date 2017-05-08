@@ -17,9 +17,9 @@ namespace stats
 
     const StatSet StatSet::INVALID_STATSET_{ Stat(stat::Strength, Stat::VAL_INVALID_),
                                              Stat(stat::Accuracy, Stat::VAL_INVALID_),
-                                             Stat(stat::Charm, Stat::VAL_INVALID_), 
-                                             Stat(stat::Luck, Stat::VAL_INVALID_), 
-                                             Stat(stat::Speed, Stat::VAL_INVALID_), 
+                                             Stat(stat::Charm, Stat::VAL_INVALID_),
+                                             Stat(stat::Luck, Stat::VAL_INVALID_),
+                                             Stat(stat::Speed, Stat::VAL_INVALID_),
                                              Stat(stat::Intelligence, Stat::VAL_INVALID_) };
 
 

@@ -85,7 +85,7 @@ namespace creature
                  const std::string &         IMAGE_FILENAME  = "",
                  const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
                  const stats::Mana_t         MANA            = 0);
-        
+
         virtual ~Creature();
 
         inline const BodyType Body() const                      { return bodyType_; }
@@ -226,7 +226,7 @@ namespace creature
         inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
-        
+
         item::Weight_t WeightCanCarry() const;
 
         inline const Achievements AchievementsCopy() const      { return achievements_; }

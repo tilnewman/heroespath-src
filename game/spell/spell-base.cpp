@@ -68,7 +68,7 @@ namespace spell
     }
 
     int Spell::GenerateValue(const int FLOOR,
-                             const int THE_RAND_MAX, 
+                             const int THE_RAND_MAX,
                              const int RANK,
                              const int RANK_MAX) const
     {

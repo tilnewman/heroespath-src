@@ -47,7 +47,7 @@ namespace spell
         virtual ~Spell();
 
         inline const std::string Name() const       { return Spells::Name(which_); }
-        
+
         const std::string ToString() const;
 
         inline const std::string Desc() const       { return Spells::ShortDesc(which_); }
@@ -69,28 +69,28 @@ namespace spell
         {
             return "TODO";
         }
-        
+
         //Allows the spell to change the target creature.
         virtual const std::string EffectCreature(creature::CreaturePtr_t,
                                                  creature::CreaturePtr_t) const
         {
             return Spell::EFFECT_STR_NOTHING_TO_DO_;
         }
-        
+
         //Allows the spell to change the target item.
         virtual const std::string EffectItem(creature::CreaturePtr_t,
                                              item::ItemSPtr_t &) const
         {
             return Spell::EFFECT_STR_NOTHING_TO_DO_;
         }
-        
+
         //Returns the amount of health that the spell either gives or takes away.
         virtual stats::Health_t Health(creature::CreaturePtr_t,
                                        creature::CreaturePtr_t) const
         {
             return 0;
         }
-        
+
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
 

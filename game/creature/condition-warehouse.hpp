@@ -26,7 +26,7 @@ namespace condition
         static void Setup();
         static bool Test();
         static ConditionPtr_t Get(const Conditions::Enum);
-        
+
     private:
         static ConditionSVec_t conditionsSVec_;
     };

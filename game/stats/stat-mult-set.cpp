@@ -50,7 +50,7 @@ namespace stats
         }
     }
 
-    
+
     void StatMultSet::Invert()
     {
         if (utilz::IsRealZero(str_)) str_ = 1.0f; else str_ = 1.0f / str_;

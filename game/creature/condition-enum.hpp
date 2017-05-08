@@ -50,7 +50,7 @@ namespace creature
     using ConditionEnumVec_t      = std::vector<Conditions::Enum>;
     using ConditionEnumVecIter_t  = ConditionEnumVec_t::iterator;
     using ConditionEnumVecCIter_t = ConditionEnumVec_t::const_iterator;
-    
+
 namespace condition
 {
 

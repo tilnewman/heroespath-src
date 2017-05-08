@@ -81,7 +81,7 @@ namespace stats
 
         friend bool operator==(const Stat & L, const Stat & R);
         friend bool operator<(const Stat & L, const Stat & R);
-        
+
         static const int X_;
 
     public:

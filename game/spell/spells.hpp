@@ -49,7 +49,7 @@ namespace spell
         virtual const std::string EffectCreature(creature::CreaturePtr_t castingCreaturePtr, creature::CreaturePtr_t effectedCreaturePtr) const;
     };
 
-    
+
     class Awaken : public Spell
     {
     public:
