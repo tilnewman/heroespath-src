@@ -15,9 +15,9 @@ namespace game
 namespace item
 {
 
-    Inventory::Inventory(const Coin_t      COINS,
-                         const Meteor_t    METEOR_SHARDS,
-                         const Gem_t       GEMS,
+    Inventory::Inventory(const Coin_t     COINS,
+                         const Meteor_t   METEOR_SHARDS,
+                         const Gem_t      GEMS,
                          const ItemSVec_t ITEMS_SVEC,
                          const ItemSVec_t EQUIPPED_ITEMS_SVEC)
     :

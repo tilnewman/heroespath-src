@@ -22,7 +22,6 @@
 #include "game/game.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "game/item/enchantment.hpp"
 #include "game/state/game-state.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
@@ -2573,14 +2572,6 @@ namespace stage
             ss << "Armor Bonus:  " << IITEM_SPTR->ArmorRating();
 
         ss << "\n\n";
-
-        const item::IEnchantmentSVec_t ENCHANTMENTS_SVEC(IITEM_SPTR->Enchantments());
-        if (ENCHANTMENTS_SVEC.empty() == false)
-        {
-            ss << "Enchantments:\n\n";
-            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
-                ss << NEXT_ENCHANTMENT_SPTR->Name() << "\n" << NEXT_ENCHANTMENT_SPTR->Desc() << "\n\n";
-        }
 
         const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
                                                  sfml_util::FontManager::Instance()->Font_Default1(),

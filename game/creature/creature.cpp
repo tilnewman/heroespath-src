@@ -4,11 +4,10 @@
 #include "creature.hpp"
 
 #include "utilz/real.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/spell/spell-warehouse.hpp"
-#include "game/item/enchantment.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition.hpp"
@@ -381,7 +380,6 @@ namespace creature
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Creature::ItemAdd(nullptr) was given a null ITEM_SPTR.");
 
-        //verify allowed
         const std::string IS_ALLOWED_STR( ItemIsAddAllowed(ITEM_SPTR) );
         if (IS_ALLOWED_STR != ITEM_ACTION_SUCCESS_STR_)
         {
@@ -389,21 +387,7 @@ namespace creature
             return IS_ALLOWED_STR;
         }
 
-        //add to inventory
         inventory_.ItemAdd(ITEM_SPTR);
-
-        //apply enchantment conditions if needed
-        if (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)
-        {
-            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
-            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
-            {
-                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
-                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
-                    ConditionAdd(NEXT_CONDITION_ENUM);
-            }
-        }
-
         return ITEM_ACTION_SUCCESS_STR_;
     }
 
@@ -441,20 +425,7 @@ namespace creature
     void Creature::ItemRemove(const item::ItemSPtr_t & ITEM_SPTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Creature::ItemRemove(nullptr) was given a null ITEM_SPTR.");
-
         inventory_.ItemRemove(ITEM_SPTR);
-
-        //remove enchantment conditions
-        if (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)
-        {
-            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
-            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
-            {
-                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
-                for (auto const NEXT_CONDITINO_ENUM : CONDITIONS_VEC)
-                    ConditionRemove(NEXT_CONDITINO_ENUM);
-            }
-        }
     }
 
 
@@ -462,7 +433,6 @@ namespace creature
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Creature::ItemEquip(nullptr) was given a null ITEM_SPTR.");
 
-        //verify allowed
         const std::string IS_ALLOWED_STR( ItemIsEquipAllowed(ITEM_SPTR) );
         if (IS_ALLOWED_STR != ITEM_ACTION_SUCCESS_STR_)
         {
@@ -470,24 +440,8 @@ namespace creature
             return IS_ALLOWED_STR;
         }
 
-        //equip
         inventory_.ItemEquip(ITEM_SPTR);
-
-        //apply enchantment conditions if needed
-        if ((ITEM_SPTR->Category() & item::category::EnchantsOnlyWhenEquipped) &&
-            ( ! (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld) ))
-        {
-            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
-            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
-            {
-                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
-                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
-                    ConditionAdd(NEXT_CONDITION_ENUM);
-            }
-        }
-
         SetCurrentWeaponsToBest();
-
         return ITEM_ACTION_SUCCESS_STR_;
     }
 
@@ -738,22 +692,7 @@ namespace creature
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
 
         inventory_.ItemUnEquip(ITEM_SPTR);
-
-        //remove enchantment conditions if needed
-        if ((ITEM_SPTR->Category() & item::category::EnchantsOnlyWhenEquipped) &&
-            ( ! (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)))
-        {
-            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
-            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
-            {
-                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
-                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
-                    ConditionRemove(NEXT_CONDITION_ENUM);
-            }
-        }
-
         SetCurrentWeaponsToBestIfInvalidated();
-
         return ITEM_ACTION_SUCCESS_STR_;
     }
 

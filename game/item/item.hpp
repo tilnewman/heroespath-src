@@ -23,12 +23,6 @@ namespace game
 namespace item
 {
 
-    //forward declarations
-    class IEnchantment;
-    using IEnchantmentSPtr_t = std::shared_ptr<IEnchantment>;
-    using IEnchantmentSVec_t = std::vector<IEnchantmentSPtr_t>;
-
-
     //A base class for all items.
     class Item
     {
@@ -56,7 +50,6 @@ namespace item
              const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
              const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
              const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
-             const IEnchantmentSVec_t & ENCHANTMENTS_SVEC  = IEnchantmentSVec_t(),
              const bool                 IS_PIXIE_ITEM      = false);
 
         virtual ~Item();
@@ -108,8 +101,6 @@ namespace item
         inline stats::Health_t DamageMax() const                { return damageMax_; }
         inline stats::Armor_t  ArmorRating() const              { return armorRating_; }
 
-        inline virtual const IEnchantmentSVec_t Enchantments() const  { return enchantmentsSVec_; }
-
         inline virtual creature::role::Enum ExclusiveRole() const       { return exclusiveToRole_; }
 
         inline bool IsJeweled() const                           { return material::IsJewel(materialSec_); }
@@ -128,8 +119,7 @@ namespace item
         Weight_t             weight_;
         stats::Health_t      damageMin_;
         stats::Health_t      damageMax_;
-        stats::Armor_t       armorRating_;
-        IEnchantmentSVec_t   enchantmentsSVec_;
+        stats::Armor_t       armorRating_;\
         creature::role::Enum exclusiveToRole_;
         armor_type::Enum     armorType_;
         weapon_type::Enum    weaponType_;
@@ -154,7 +144,6 @@ namespace item
             ar & damageMin_;
             ar & damageMax_;
             ar & armorRating_;
-            ar & enchantmentsSVec_;
             ar & exclusiveToRole_;
             ar & armorType_;
             ar & weaponType_;

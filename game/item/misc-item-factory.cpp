@@ -70,7 +70,6 @@ namespace misc
                                      creature::role::Count,
                                      weapon::WeaponInfo(),
                                      armor::ArmorInfo(),
-                                     IEnchantmentSVec_t(),
                                      IS_PIXIE_ITEM) );
     }
 
@@ -102,7 +101,6 @@ namespace misc
                                      creature::role::Count,
                                      weapon::WeaponInfo(),
                                      armor::ArmorInfo(),
-                                     IEnchantmentSVec_t(),
                                      IS_PIXIE_ITEM) );
     }
 
@@ -192,7 +190,6 @@ namespace misc
                                     creature::role::Bard,
                                     weapon::WeaponInfo(),
                                     armor::ArmorInfo(),
-                                    IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM));
     }
 

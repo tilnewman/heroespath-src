@@ -275,7 +275,6 @@ namespace weapon
                                       creature::role::Count,
                                       weaponInfo,
                                       armor::ArmorInfo(),
-                                      IEnchantmentSVec_t(),
                                       IS_PIXIE_ITEM) );
     }
 
@@ -557,7 +556,6 @@ namespace weapon
                                      creature::role::Count,
                                      weaponInfo,
                                      armor::ArmorInfo(),
-                                     IEnchantmentSVec_t(),
                                      IS_PIXIE_ITEM) );
     }
 

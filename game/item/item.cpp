@@ -3,8 +3,6 @@
 //
 #include "item.hpp"
 
-#include "game/item/i-enchantment.hpp"
-
 #include <tuple>
 
 
@@ -30,7 +28,6 @@ namespace item
                const creature::role::Enum EXCLUSIVE_TO_ROLE,
                const weapon::WeaponInfo & WEAPON_INFO,
                const armor::ArmorInfo &   ARMOR_INFO,
-               const IEnchantmentSVec_t & ENCHANTMENTS_SVEC,
                const bool                 IS_PIXIE_ITEM)
     :
         name_            (NAME),
@@ -40,7 +37,6 @@ namespace item
         damageMin_       (DAMAGE_MIN),
         damageMax_       (DAMAGE_MAX),
         armorRating_     (ARMOR_RATING),
-        enchantmentsSVec_(ENCHANTMENTS_SVEC),
         exclusiveToRole_ (EXCLUSIVE_TO_ROLE),
         armorType_       (ARMOR_TYPE),
         weaponType_      (WEAPON_TYPE),
@@ -53,10 +49,6 @@ namespace item
         armorInfo_       (ARMOR_INFO),
         isPixie_         (false)//see constructor
     {
-        //apply enchantments to the item
-        for (auto const & NEXT_ENCHANTMENT : enchantmentsSVec_)
-            NEXT_ENCHANTMENT->ChangeItem(this);
-
         if (IS_PIXIE_ITEM)
             IsPixie(true, true);
     }
@@ -97,7 +89,6 @@ namespace item
                         L.damageMin_,
                         L.damageMax_,
                         L.armorRating_,
-                        L.enchantmentsSVec_,
                         L.exclusiveToRole_,
                         L.armorType_,
                         L.weaponType_,
@@ -117,7 +108,6 @@ namespace item
                         R.damageMin_,
                         R.damageMax_,
                         R.armorRating_,
-                        R.enchantmentsSVec_,
                         R.exclusiveToRole_,
                         R.armorType_,
                         R.weaponType_,
@@ -141,7 +131,6 @@ namespace item
                         L.damageMin_,
                         L.damageMax_,
                         L.armorRating_,
-                        L.enchantmentsSVec_,
                         L.exclusiveToRole_,
                         L.armorType_,
                         L.weaponType_,
@@ -161,7 +150,6 @@ namespace item
                         R.damageMin_,
                         R.damageMax_,
                         R.armorRating_,
-                        R.enchantmentsSVec_,
                         R.exclusiveToRole_,
                         R.armorType_,
                         R.weaponType_,

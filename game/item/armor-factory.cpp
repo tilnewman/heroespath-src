@@ -207,7 +207,6 @@ namespace armor
                                     exclusiveRole,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -257,7 +256,6 @@ namespace armor
                                     exclusiveRole,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -311,7 +309,6 @@ namespace armor
                                     exclusiveRole,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -361,7 +358,6 @@ namespace armor
                                     exclusiveRole,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -406,7 +402,6 @@ namespace armor
                                     exclusiveRole,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -488,7 +483,6 @@ namespace armor
                                     creature::role::Count,
                                     weapon::WeaponInfo(),
                                     armorInfo,
-                                    item::IEnchantmentSVec_t(),
                                     IS_PIXIE_ITEM) );
     }
 
@@ -540,7 +534,6 @@ namespace armor
                                      creature::role::Count,
                                      weapon::WeaponInfo(),
                                      armorInfo,
-                                     item::IEnchantmentSVec_t(),
                                      IS_PIXIE_ITEM) );
     }
 

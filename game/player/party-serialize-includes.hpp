@@ -13,9 +13,6 @@
 #include "utilz/boost-serialize-includes.hpp"
 #include <boost/serialization/export.hpp>
 
-#include "game/item/enchantment.hpp"
-BOOST_CLASS_EXPORT(game::item::Enchantment)
-
 #include "game/item/item.hpp"
 BOOST_CLASS_EXPORT(game::item::Item)
 
