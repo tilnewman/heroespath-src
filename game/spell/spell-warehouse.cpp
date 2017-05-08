@@ -73,8 +73,7 @@ namespace spell
     {
         M_ASSERT_OR_LOGANDTHROW_SS((spellsSVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
         M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsSVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsSVec_, probably from a bug in Setup().");
-        SpellPtr_t spellPtr{ spellsSVec_.at(E).get() };
-        return spellPtr;
+        return spellsSVec_.at(E).get();
     }
 
 }

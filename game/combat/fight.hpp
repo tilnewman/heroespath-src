@@ -45,9 +45,9 @@ namespace combat
                                        creature::CreaturePtrC_t creatureDefendingPtrC,
                                        const bool               WILL_FORCE_HIT = false);
 
-        static const creature::ConditionSVec_t HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                            HitInfoVec_t &           hitInfoVec,
-                                                            const stats::Health_t    TOTAL_DAMAGE);
+        static const creature::ConditionEnumVec_t HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
+                                                               HitInfoVec_t &           hitInfoVec,
+                                                               const stats::Health_t    TOTAL_DAMAGE);
 
         static const FightResult Cast(spell::SpellCPtrC_t       SPELL_CPTRC,
                                       creature::CreaturePtrC_t  creatureCastingPtrC,

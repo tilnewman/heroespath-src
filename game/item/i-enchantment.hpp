@@ -5,6 +5,7 @@
 //  Pure virtual interface for all Enchantment types.
 //
 #include "utilz/boost-serialize-includes.hpp"
+#include "game/creature/condition-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -13,12 +14,6 @@
 
 namespace game
 {
-namespace creature
-{
-    class Condition;
-    using ConditionSPtr_t = std::shared_ptr<Condition>;
-    using ConditionSVec_t = std::vector<ConditionSPtr_t>;
-}
 namespace item
 {
 
@@ -34,7 +29,7 @@ namespace item
         virtual const std::string Name() const = 0;
         virtual const std::string Desc() const = 0;
         virtual void ChangeItem(Item * const itemPtr) = 0;
-        virtual const creature::ConditionSVec_t Conditions() const = 0;
+        virtual const creature::ConditionEnumVec_t Conditions() const = 0;
 
     private:
         friend class boost::serialization::access;

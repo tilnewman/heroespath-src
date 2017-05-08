@@ -5,6 +5,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/creature/condition.hpp"
+#include "game/creature/condition-warehouse.hpp"
 
 #include <sstream>
 #include <algorithm>
@@ -17,15 +18,15 @@ namespace creature
 namespace condition
 {
 
-    const std::string Algorithms::Names(const ConditionSVec_t & CONDITIONS_SVEC,
-                                        const std::string       SEPARATOR,
-                                        const bool              WILL_WRAP,
-                                        const std::size_t       MAX_TO_LIST,
-                                        const std::size_t       MIN_SEVERITY,
-                                        const bool              WILL_AND,
-                                        const bool              WILL_ELLIPSIS)
+    const std::string Algorithms::Names(const ConditionEnumVec_t & CONDITIONS_VEC,
+                                        const std::string          SEPARATOR,
+                                        const bool                 WILL_WRAP,
+                                        const std::size_t          MAX_TO_LIST,
+                                        const std::size_t          MIN_SEVERITY,
+                                        const bool                 WILL_AND,
+                                        const bool                 WILL_ELLIPSIS)
     {
-        auto const CONDITION_COUNT{ CONDITIONS_SVEC.size() };
+        auto const CONDITION_COUNT{ CONDITIONS_VEC.size() };
         if (CONDITION_COUNT == 0)
         {
             return "";
@@ -37,7 +38,8 @@ namespace condition
 
             for (std::size_t i(0); i<CONDITION_COUNT; ++i)
             {
-                if ((MIN_SEVERITY == 0) || (CONDITIONS_SVEC[i]->Severity() >= MIN_SEVERITY))
+                auto const CONDITION_PTR{ condition::Warehouse::Get(CONDITIONS_VEC[i]) };
+                if ((MIN_SEVERITY == 0) || (CONDITION_PTR->Severity() >= MIN_SEVERITY))
                 {
                     if (i != 0)
                     {
@@ -49,7 +51,7 @@ namespace condition
                         ss << "and ";
                     }
 
-                    ss << CONDITIONS_SVEC[i]->Name();
+                    ss << CONDITION_PTR->Name();
 
                     if ((MAX_TO_LIST != 0) && (++count >= MAX_TO_LIST))
                     {
@@ -82,26 +84,26 @@ namespace condition
     }
 
 
-    void Algorithms::SortBySeverity(ConditionSVec_t & conditionsSVec,
-                                    const bool        SORT_DESCENDING)
+    void Algorithms::SortBySeverity(ConditionEnumVec_t & conditionsVec,
+                                    const bool           SORT_DESCENDING)
     {
-        if (conditionsSVec.size() > 1)
+        if (conditionsVec.size() > 1)
         {
-            std::sort(conditionsSVec.begin(),
-                      conditionsSVec.end(),
+            std::sort(conditionsVec.begin(),
+                      conditionsVec.end(),
                       [SORT_DESCENDING]
-                      (const ConditionSPtr_t & A, const ConditionSPtr_t & B)
-                      { if (SORT_DESCENDING) return (A->Severity() > B->Severity()); else return (A->Severity() < B->Severity()); });
+                      (const Conditions::Enum A, const Conditions::Enum B)
+                      { if (SORT_DESCENDING) return (condition::Severity::Get(A) > condition::Severity::Get(B)); else return (condition::Severity::Get(A) < condition::Severity::Get(B)); });
         }
     }
 
 
-    const ConditionSVec_t Algorithms::SortBySeverityCopy(const ConditionSVec_t & CONDITIONS_SVEC,
-                                                         const bool              SORT_DESCENDING)
+    const ConditionEnumVec_t Algorithms::SortBySeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
+                                                            const bool                 SORT_DESCENDING)
     {
-        auto sortedConditionsSVec{ CONDITIONS_SVEC };
-        SortBySeverity(sortedConditionsSVec, SORT_DESCENDING);
-        return sortedConditionsSVec;
+        auto sortedConditionsVec{ CONDITIONS_VEC };
+        SortBySeverity(sortedConditionsVec, SORT_DESCENDING);
+        return sortedConditionsVec;
     }
 
 }

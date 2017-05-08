@@ -104,9 +104,9 @@ namespace combat
 
         static const std::string CountPhrase(const std::size_t);
 
-        static const std::string ConditionNameList(const creature::ConditionSVec_t & CONDITIONS_SVEC,
-                                                   const bool                        WILL_EXCLUDE_DEAD,
-                                                   const std::size_t                 NUM_TO_LIST);
+        static const std::string ConditionNameList(const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                                                   const bool                           WILL_EXCLUDE_DEAD,
+                                                   const std::size_t                    NUM_TO_LIST);
 
         static const std::string AttackConditionsSummaryList(const FightResult & FIGHT_RESULT);
 

@@ -45,8 +45,8 @@ namespace creature
 
     //forward declarations
     class Condition;
-    using ConditionSPtr_t = std::shared_ptr<Condition>;
-    using ConditionSVec_t = std::vector<ConditionSPtr_t>;
+    using ConditionPtr_t  = Condition *;
+    using ConditionPVec_t = std::vector<ConditionPtr_t>;
 
 
     //unique ID for all creatures
@@ -78,7 +78,7 @@ namespace creature
                  const stats::Health_t       HEALTH          = 0,
                  const stats::Rank_t         RANK            = 1,
                  const stats::Exp_t          EXPERIENCE      = 0,
-                 const ConditionSVec_t &     CONDITIONS_SVEC = ConditionSVec_t(),
+                 const ConditionEnumVec_t &  CONDITIONS_VEC  = ConditionEnumVec_t(),
                  const TitlePVec_t &         TITLES_PVEC     = TitlePVec_t(),
                  const item::Inventory &     INVENTORY       = item::Inventory(),
                  const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
@@ -140,7 +140,7 @@ namespace creature
         //returns true only if the condition was actually added, and not a duplicate, etc.
         //prevents duplicate conditions
         //calls Condition::Change() on this creature after adding
-        bool ConditionAdd(const ConditionSPtr_t, const bool ALLOW_CHANGES = true);
+        bool ConditionAdd(const Conditions::Enum, const bool ALLOW_CHANGES = true);
 
         //returns true if a condition was removed
         //if there are multiple that match CND_PTR, all are removed
@@ -148,13 +148,12 @@ namespace creature
         //calls Condition::Undo() on this creature before removing
         bool ConditionRemove(const Conditions::Enum);
 
-        bool ConditionRemove(const ConditionSPtr_t &);
-
         //leaves the 'Good' condition behind in the vector, so it is never really empty
         //for each Condition, Condition::Undo() is called before removing
         std::size_t ConditionRemoveAll();
 
-        inline const ConditionSVec_t Conditions() const                 { return conditionsSVec_; }
+        inline const ConditionEnumVec_t Conditions() const              { return conditionsVec_; }
+        const ConditionPVec_t ConditionsPVec() const;
 
         bool HasCondition(const Conditions::Enum) const;
         bool HasConditionNotAThreatTemp() const;
@@ -274,7 +273,7 @@ namespace creature
         stats::Health_t     healthNormal_;
         stats::Rank_t       rank_;
         stats::Exp_t        experience_;
-        ConditionSVec_t     conditionsSVec_;
+        ConditionEnumVec_t  conditionsVec_;
         TitlePVec_t         titlesPtrVec_;
         item::Inventory     inventory_;
         sfml_util::DateTime dateTimeCreated_;
@@ -301,7 +300,7 @@ namespace creature
             ar & healthNormal_;
             ar & rank_;
             ar & experience_;
-            ar & conditionsSVec_;
+            ar & conditionsVec_;
             ar & titlesPtrVec_;
             ar & inventory_;
             ar & dateTimeCreated_;

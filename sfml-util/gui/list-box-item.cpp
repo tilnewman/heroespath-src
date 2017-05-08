@@ -24,9 +24,9 @@ namespace gui
             character_sptr(),
             gamestate_sptr(),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
@@ -37,9 +37,9 @@ namespace gui
             character_sptr(),
             gamestate_sptr(),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
@@ -51,9 +51,9 @@ namespace gui
             character_sptr(CHARACTER_SPTR),
             gamestate_sptr(),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
@@ -65,65 +65,65 @@ namespace gui
             character_sptr(),
             gamestate_sptr(GAMESTATE_SPTR),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
-    {}
-
-
-    ListBoxItem::ListBoxItem(const std::string &                           NAME,
-                             const sfml_util::gui::TextInfo &              TEXT_INFO,
-                             const game::creature::ConditionSPtr_t & CONDITION_CPTRC_PARAM)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
-            gamestate_sptr(),
-            iitem_sptr    (),
-            cond_sptr     (CONDITION_CPTRC_PARAM),
-            TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
     ListBoxItem::ListBoxItem(const std::string &                  NAME,
                              const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const game::item::ItemSPtr_t & IITEM_SPTR)
+                             const game::creature::ConditionPtr_t CONDITION_CPTRC_PARAM)
+    :
+            TextRegion    (std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect()),
+            character_sptr(),
+            gamestate_sptr(),
+            iitem_sptr    (),
+            COND_CPTRC    (CONDITION_CPTRC_PARAM),
+            TITLE_CPTRC   (nullptr),
+            SPELL_CPTRC   (nullptr)
+    {}
+
+
+    ListBoxItem::ListBoxItem(const std::string &              NAME,
+                             const sfml_util::gui::TextInfo & TEXT_INFO,
+                             const game::item::ItemSPtr_t &   IITEM_SPTR)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
             gamestate_sptr(),
             iitem_sptr    (IITEM_SPTR),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                     NAME,
-                             const sfml_util::gui::TextInfo &        TEXT_INFO,
+    ListBoxItem::ListBoxItem(const std::string &               NAME,
+                             const sfml_util::gui::TextInfo &  TEXT_INFO,
                              const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
             gamestate_sptr(),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (TITLE_CPTRC_PARAM),
-            SPELL_PTRC    (nullptr)
+            SPELL_CPTRC   (nullptr)
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                  NAME,
-                             const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const game::spell::SpellPtrC_t SPELL_CPTRC_PARAM)
+    ListBoxItem::ListBoxItem(const std::string &              NAME,
+                             const sfml_util::gui::TextInfo & TEXT_INFO,
+                             const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
             gamestate_sptr(),
             iitem_sptr    (),
-            cond_sptr     (),
+            COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_PTRC    (SPELL_CPTRC_PARAM)
+            SPELL_CPTRC   (SPELL_CPTRC_PARAM)
     {}
 
 
@@ -132,16 +132,16 @@ namespace gui
         return std::tie(L.character_sptr,
                         L.gamestate_sptr,
                         L.iitem_sptr,
-                        L.cond_sptr,
+                        L.COND_CPTRC,
                         L.TITLE_CPTRC,
-                        L.SPELL_PTRC)
+                        L.SPELL_CPTRC)
                ==
                std::tie(R.character_sptr,
                         R.gamestate_sptr,
                         R.iitem_sptr,
-                        R.cond_sptr,
+                        R.COND_CPTRC,
                         R.TITLE_CPTRC,
-                        R.SPELL_PTRC);
+                        R.SPELL_CPTRC);
     }
 
 
@@ -150,16 +150,16 @@ namespace gui
         return std::tie(L.character_sptr,
                         L.gamestate_sptr,
                         L.iitem_sptr,
-                        L.cond_sptr,
+                        L.COND_CPTRC,
                         L.TITLE_CPTRC,
-                        L.SPELL_PTRC)
+                        L.SPELL_CPTRC)
                <
                std::tie(R.character_sptr,
                         R.gamestate_sptr,
                         R.iitem_sptr,
-                        R.cond_sptr,
+                        R.COND_CPTRC,
                         R.TITLE_CPTRC,
-                        R.SPELL_PTRC);
+                        R.SPELL_CPTRC);
     }
 
 }

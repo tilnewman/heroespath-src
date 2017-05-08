@@ -16,15 +16,28 @@ namespace creature
 {
 
     Condition::Condition(const Conditions::Enum  TYPE,
-                         const bool             IS_MAGICAL,
-                         const stats::StatSet & STATS_TO_MODIFY,
-                         const stats::StatSet & STATS_TO_SET)
+                         const bool              IS_MAGICAL,
+                         const stats::StatSet &  STATS_TO_MODIFY,
+                         const stats::StatSet &  STATS_TO_SET,
+                         const float             STR_DIVIDER,
+                         const float             ACC_DIVIDER,
+                         const float             CHA_DIVIDER,
+                         const float             LCK_DIVIDER,
+                         const float             SPD_DIVIDER,
+                         const float             INT_DIVIDER)
     :
         type_          (TYPE),
         isMagical_     (IS_MAGICAL),
         statsToModify_ (STATS_TO_MODIFY),
         statsToSet_    (STATS_TO_SET),
-        statsToSetUndo_()
+        statsToSetUndo_(),
+        strDivider_    (STR_DIVIDER),
+        accDivider_    (ACC_DIVIDER),
+        chaDivider_    (CHA_DIVIDER),
+        lckDivider_    (LCK_DIVIDER),
+        spdDivider_    (SPD_DIVIDER),
+        intDivider_    (INT_DIVIDER),
+        inverseModifyStatSet_()
     {}
 
 
@@ -98,13 +111,25 @@ namespace creature
                         L.isMagical_,
                         L.statsToModify_,
                         L.statsToSet_,
-                        L.statsToSetUndo_)
+                        L.statsToSetUndo_,
+                        L.strDivider_,
+                        L.accDivider_,
+                        L.chaDivider_,
+                        L.lckDivider_,
+                        L.spdDivider_,
+                        L.intDivider_)
                <
                std::tie(R.type_,
                         R.isMagical_,
                         R.statsToModify_,
                         R.statsToSet_,
-                        R.statsToSetUndo_);
+                        R.statsToSetUndo_,
+                        R.strDivider_,
+                        R.accDivider_,
+                        R.chaDivider_,
+                        R.lckDivider_,
+                        R.spdDivider_,
+                        R.intDivider_);
     }
 
 
@@ -114,13 +139,25 @@ namespace creature
                         L.isMagical_,
                         L.statsToModify_,
                         L.statsToSet_,
-                        L.statsToSetUndo_)
+                        L.statsToSetUndo_,
+                        L.strDivider_,
+                        L.accDivider_,
+                        L.chaDivider_,
+                        L.lckDivider_,
+                        L.spdDivider_,
+                        L.intDivider_)
                ==
                std::tie(R.type_,
                         R.isMagical_,
                         R.statsToModify_,
                         R.statsToSet_,
-                        R.statsToSetUndo_);
+                        R.statsToSetUndo_,
+                        R.strDivider_,
+                        R.accDivider_,
+                        R.chaDivider_,
+                        R.lckDivider_,
+                        R.spdDivider_,
+                        R.intDivider_);
     }
 
 
@@ -131,7 +168,7 @@ namespace creature
         //Conditions are temporary so they effect the current stat value only, not the normal
         creaturePtrC->Stats().ModifyCurrent(statsToModify_);
         statsToSetUndo_ = creaturePtrC->Stats().ModifyCurrentToValid(statsToSet_);
-
+        inverseModifyStatSet_ = creaturePtrC->DivideStatsAndCreateInverseModifyStatSet(strDivider_, accDivider_, chaDivider_, lckDivider_, spdDivider_, intDivider_);
         return ConditionEnumVec_t();
     }
 
@@ -147,8 +184,9 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::Undo(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
 
         //Conditions are temporary so they effect the current stat value only, not the normal
-        creaturePtrC->Stats().ModifyCurrent(statsToModify_.CreateInvertCopy());
+        creaturePtrC->Stats().ModifyCurrent(inverseModifyStatSet_);
         creaturePtrC->Stats().ModifyCurrent(statsToSetUndo_);
+        creaturePtrC->Stats().ModifyCurrent(statsToModify_.CreateInvertCopy());
 
         return ConditionEnumVec_t();
     }

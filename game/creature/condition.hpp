@@ -5,8 +5,6 @@
 //  Code that places a Creature under a temporary condition.
 //  Examples would be poisoned, unconcious, etc.
 //
-#include "utilz/boost-serialize-includes.hpp"
-
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/stat-set.hpp"
 
@@ -39,7 +37,13 @@ namespace creature
         Condition(const Conditions::Enum  TYPE           = Conditions::Good,
                   const bool              IS_MAGICAL     = false,
                   const stats::StatSet &  STATS_MODIFIER = stats::StatSet(),
-                  const stats::StatSet &  STATS_TO_SET   = stats::StatSet::INVALID_STATSET_);
+                  const stats::StatSet &  STATS_TO_SET   = stats::StatSet::INVALID_STATSET_,
+                  const float             STR_DIVIDER    = 1.0f,
+                  const float             ACC_DIVIDER    = 1.0f,
+                  const float             CHA_DIVIDER    = 1.0f,
+                  const float             LCK_DIVIDER    = 1.0f,
+                  const float             SPD_DIVIDER    = 1.0f,
+                  const float             INT_DIVIDER    = 1.0f);
 
         virtual ~Condition();
 
@@ -66,31 +70,31 @@ namespace creature
         stats::StatSet  statsToModify_;
         stats::StatSet  statsToSet_;
         stats::StatSet  statsToSetUndo_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & type_;
-            ar & isMagical_;
-            ar & statsToModify_;
-            ar & statsToSet_;
-            ar & statsToSetUndo_;
-        }
+        float           strDivider_;
+        float           accDivider_;
+        float           chaDivider_;
+        float           lckDivider_;
+        float           spdDivider_;
+        float           intDivider_;
+        stats::StatSet  inverseModifyStatSet_;
     };
 
-    using ConditionSPtr_t = std::shared_ptr<Condition>;
 
-    using ConditionSVec_t      = std::vector<ConditionSPtr_t>;
-    using ConditionSVecIter_t  = ConditionSVec_t::iterator;
-    using ConditionSVecCIter_t = ConditionSVec_t::const_iterator;
+    using ConditionPtr_t = Condition *;
+    using ConditionPVec_t = std::vector<ConditionPtr_t>;
+
+    using ConditionSPtr_t = std::shared_ptr<Condition>;
+    using ConditionSVec_t = std::vector<ConditionSPtr_t>;
+
 
     bool operator<(const Condition & L, const Condition & R);
 
     bool operator==(const Condition & L, const Condition & R);
 
-    inline bool operator!=(const Condition & L, const Condition & R) { return ! (L == R); }
+    inline bool operator!=(const Condition & L, const Condition & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

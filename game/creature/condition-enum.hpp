@@ -19,7 +19,6 @@ namespace creature
     //  conditions in conditions.hpp
     //  creature::HasConditionNotAThreatPerm() and HasConditionNotAThreatTemp()
     //  creature::CanTakeActionStr()
-    //  party-serialize-includes.hpp
     //  CombatStage::RemoveSingleTurnTemporaryConditions()
     //  descriptions in the game data file
     //  interactions in fight.cpp
@@ -48,9 +47,10 @@ namespace creature
 
     };
 
-    using ConditionEnumVec_t = std::vector<Conditions::Enum>;
-
-
+    using ConditionEnumVec_t      = std::vector<Conditions::Enum>;
+    using ConditionEnumVecIter_t  = ConditionEnumVec_t::iterator;
+    using ConditionEnumVecCIter_t = ConditionEnumVec_t::const_iterator;
+    
 namespace condition
 {
 

@@ -13,18 +13,6 @@
 #include "utilz/boost-serialize-includes.hpp"
 #include <boost/serialization/export.hpp>
 
-#include "game/creature/condition.hpp"
-BOOST_CLASS_EXPORT(game::creature::Condition)
-
-#include "game/creature/conditions.hpp"
-//Note:  Keep this list in sync with condition-enum.hpp and conditions.hpp
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Good)
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Tripped)
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Dazed)
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Unconscious)
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Stone)
-BOOST_CLASS_EXPORT(game::creature::condition::Cond_Dead)
-
 #include "game/item/enchantment.hpp"
 BOOST_CLASS_EXPORT(game::item::Enchantment)
 

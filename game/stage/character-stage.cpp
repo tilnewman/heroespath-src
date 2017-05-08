@@ -273,7 +273,7 @@ namespace stage
                                                                             0,
                                                                             1,
                                                                             0,
-                                                                            game::creature::ConditionSVec_t(),
+                                                                            game::creature::ConditionEnumVec_t(),
                                                                             game::creature::TitlePVec_t(),
                                                                             game::item::Inventory(),
                                                                             sfml_util::DateTime::CurrentDateTime(),

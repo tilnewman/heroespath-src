@@ -26,9 +26,9 @@ namespace item
     class Enchantment : public IEnchantment
     {
     public:
-        Enchantment(const std::string &               NAME            = "no_name_error",
-                    const std::string &               DESC            = "no-desc_error",
-                    const creature::ConditionSVec_t & CONDITIONS_SVEC = creature::ConditionSVec_t());
+        Enchantment(const std::string &                  NAME           = "no_name_error",
+                    const std::string &                  DESC           = "no-desc_error",
+                    const creature::ConditionEnumVec_t & CONDITIONS_VEC = creature::ConditionEnumVec_t());
 
         virtual ~Enchantment();
 
@@ -37,14 +37,14 @@ namespace item
 
         virtual void ChangeItem(Item * const itemPtr) = 0;
 
-        inline virtual const creature::ConditionSVec_t Conditions() const { return conditionsSVec_; }
+        inline virtual const creature::ConditionEnumVec_t Conditions() const { return conditionsVec_; }
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
 
     protected:
         std::string name_;
         std::string desc_;
-        creature::ConditionSVec_t conditionsSVec_;
+        creature::ConditionEnumVec_t conditionsVec_;
 
     private:
         friend class boost::serialization::access;
@@ -54,7 +54,7 @@ namespace item
             ar & boost::serialization::base_object<IEnchantment>(*this);
             ar & name_;
             ar & desc_;
-            ar & conditionsSVec_;
+            ar & conditionsVec_;
         }
     };
 

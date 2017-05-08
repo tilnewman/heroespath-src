@@ -691,13 +691,13 @@ namespace gui
         {
             textureSPtr = sfml_util::gui::CreatureImageManager::Instance()->GetImage(listBoxItemSPtr->character_sptr->ImageFilename(), true);
         }
-        else if (listBoxItemSPtr->SPELL_PTRC != nullptr)
+        else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
         {
-            textureSPtr = sfml_util::gui::SpellImageManager::Instance()->Get(listBoxItemSPtr->SPELL_PTRC->Which());
+            textureSPtr = sfml_util::gui::SpellImageManager::Instance()->Get(listBoxItemSPtr->SPELL_CPTRC->Which());
         }
-        else if (listBoxItemSPtr->cond_sptr.get() != nullptr)
+        else if (listBoxItemSPtr->COND_CPTRC != nullptr)
         {
-            textureSPtr = sfml_util::gui::ConditionImageManager::Instance()->Get(listBoxItemSPtr->cond_sptr->Which());
+            textureSPtr = sfml_util::gui::ConditionImageManager::Instance()->Get(listBoxItemSPtr->COND_CPTRC->Which());
         }
 
         if (textureSPtr.get() != nullptr)

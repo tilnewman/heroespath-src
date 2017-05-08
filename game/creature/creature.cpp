@@ -12,6 +12,7 @@
 #include "game/item/algorithms.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition.hpp"
+#include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
 
 
@@ -33,7 +34,7 @@ namespace creature
                        const stats::Health_t       HEALTH,
                        const stats::Rank_t         RANK,
                        const stats::Exp_t          EXPERIENCE,
-                       const ConditionSVec_t &     CONDITIONS_SVEC,
+                       const ConditionEnumVec_t &  CONDITIONS_VEC,
                        const TitlePVec_t &         TITLE_PVEC,
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
@@ -53,7 +54,7 @@ namespace creature
         healthNormal_   (HEALTH),
         rank_           (RANK),
         experience_     (EXPERIENCE),
-        conditionsSVec_ (CONDITIONS_SVEC),
+        conditionsVec_  (CONDITIONS_VEC),
         titlesPtrVec_   (TITLE_PVEC),
         inventory_      (INVENTORY),
         dateTimeCreated_(DATE_TIME),
@@ -64,8 +65,8 @@ namespace creature
         manaNormal_     (MANA)
     {
         //set the default condition if not already there
-        if (conditionsSVec_.empty())
-            ConditionAdd(condition::ConditionFactory::GOOD_SPTR);
+        if (conditionsVec_.empty())
+            ConditionAdd(Conditions::Good);
     }
 
 
@@ -177,30 +178,28 @@ namespace creature
     }
 
 
-    bool Creature::ConditionAdd(const ConditionSPtr_t CND_SPTR, const bool ALLOW_CHANGES)
+    bool Creature::ConditionAdd(const Conditions::Enum E, const bool ALLOW_CHANGES)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CND_SPTR.get() != nullptr), "Creature::ConditionAdd() was given a null CND_SPTR.");
-
-        const ConditionSVecCIter_t COND_GOOD_ITER( std::find(conditionsSVec_.begin(),
-                                                             conditionsSVec_.end(),
-                                                             condition::ConditionFactory::GOOD_SPTR) );
+        const ConditionEnumVecCIter_t COND_GOOD_ITER( std::find(conditionsVec_.begin(),
+                                                                conditionsVec_.end(),
+                                                                Conditions::Good) );
 
         bool willAdd(false);
-        if (COND_GOOD_ITER == conditionsSVec_.end())
+        if (COND_GOOD_ITER == conditionsVec_.end())
         {
             willAdd = true;
         }
         else
         {
             //prevent multiple 'Good' conditions
-            if (CND_SPTR == condition::ConditionFactory::GOOD_SPTR)
+            if (E == Conditions::Good)
             {
                 return false;
             }
             else
             {
                 //remove (all) the 'Good' conditions before adding the 'not so good' condition
-                conditionsSVec_.erase(std::remove(conditionsSVec_.begin(), conditionsSVec_.end(), condition::ConditionFactory::GOOD_SPTR), conditionsSVec_.end());
+                conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good), conditionsVec_.end());
                 willAdd = true;
             }
         }
@@ -208,13 +207,15 @@ namespace creature
         if (willAdd)
         {
             //verify the condition is not already in the list
-            if (conditionsSVec_.end() == std::find(conditionsSVec_.begin(), conditionsSVec_.end(), CND_SPTR))
+            if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), E))
             {
-                conditionsSVec_.push_back(CND_SPTR);
+                conditionsVec_.push_back(E);
 
                 //make the change to the creature
                 if (ALLOW_CHANGES)
-                    CND_SPTR->InitialChange(this);
+                {
+                    condition::Warehouse::Get(E)->InitialChange(this);
+                }
 
                 return true;
             }
@@ -224,67 +225,57 @@ namespace creature
     }
 
 
-    bool Creature::ConditionRemove(const Conditions::Enum ENUM)
+    bool Creature::ConditionRemove(const Conditions::Enum E)
     {
-        ConditionSVec_t conditionsToRemoveSVec;
-        for (auto const NEXT_CONDITION_SPTR : conditionsSVec_)
-            if (NEXT_CONDITION_SPTR->Which() == ENUM)
-                conditionsToRemoveSVec.push_back(NEXT_CONDITION_SPTR);
+        ConditionEnumVec_t conditionsToRemoveVec;
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (NEXT_CONDITION_ENUM == E)
+                conditionsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
 
         auto wasAnyConditionRemoved{ false };
-        for (auto const NEXT_CONDITION_TO_REMOVE_SPTR : conditionsToRemoveSVec)
+        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
         {
             wasAnyConditionRemoved = true;
-            NEXT_CONDITION_TO_REMOVE_SPTR->FinalUndo(this);
-            conditionsSVec_.erase(std::find(conditionsSVec_.begin(), conditionsSVec_.end(), NEXT_CONDITION_TO_REMOVE_SPTR));
+            condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalUndo(this);
+            conditionsVec_.erase(std::find(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM));
         }
 
-        if (conditionsSVec_.size() == 0)
-            ConditionAdd(condition::ConditionFactory::GOOD_SPTR);
+        if (conditionsVec_.size() == 0)
+            ConditionAdd(Conditions::Good);
 
         return wasAnyConditionRemoved;
     }
 
 
-    bool Creature::ConditionRemove(const ConditionSPtr_t & CONDITION_SPTR)
+    std::size_t Creature::ConditionRemoveAll()
     {
-        ConditionSVecCIter_t COND_FOUND_ITER{ std::find(conditionsSVec_.begin(), conditionsSVec_.end(), CONDITION_SPTR) };
+        const std::size_t ORIG_COND_COUNT(conditionsVec_.size());
 
-        if (COND_FOUND_ITER == conditionsSVec_.end())
-        {
-            return false;
-        }
-        else
-        {
-            CONDITION_SPTR->FinalUndo(this);
-            conditionsSVec_.erase(COND_FOUND_ITER);
+        //undo the changes made by the conditions that will be removed
+        for(auto const NEXT_COND_ENUM : conditionsVec_)
+            condition::Warehouse::Get(NEXT_COND_ENUM)->FinalUndo(this);
 
-            if (conditionsSVec_.size() == 0)
-                ConditionAdd(condition::ConditionFactory::GOOD_SPTR);
-
-            return true;
-        }
+        conditionsVec_.clear();
+        ConditionAdd(Conditions::Good);
+        return ORIG_COND_COUNT;
     }
 
 
-    std::size_t Creature::ConditionRemoveAll()
+    const ConditionPVec_t Creature::ConditionsPVec() const
     {
-        const std::size_t ORIG_COND_COUNT(conditionsSVec_.size());
+        ConditionPVec_t conditionPVec;
 
-        //undo the changes made by the conditions that will be removed
-        for(auto const & NEXT_COND_SPTR : conditionsSVec_)
-            NEXT_COND_SPTR->FinalUndo(this);
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            conditionPVec.push_back( condition::Warehouse::Get(NEXT_CONDITION_ENUM) );
 
-        conditionsSVec_.clear();
-        ConditionAdd(condition::ConditionFactory::GOOD_SPTR);
-        return ORIG_COND_COUNT;
+        return conditionPVec;
     }
 
 
     bool Creature::HasCondition(const Conditions::Enum E) const
     {
-        for (auto const & NEXT_CONDITION : conditionsSVec_)
-            if (NEXT_CONDITION->Which() == E)
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (NEXT_CONDITION_ENUM == E)
                 return true;
 
         return false;
@@ -309,31 +300,31 @@ namespace creature
 
     std::size_t Creature::GetWorstConditionSeverity() const
     {
-        if (conditionsSVec_.empty())
+        if (conditionsVec_.empty())
         {
             return 0;
         }
-        else if (conditionsSVec_.size() == 1)
+        else if (conditionsVec_.size() == 1)
         {
-            return conditionsSVec_[0]->Severity();
+            return condition::Severity::Get(conditionsVec_[0]);
         }
         else
         {
-            ConditionSVec_t tempCondSVec(conditionsSVec_);
+            ConditionEnumVec_t tempCondVec(conditionsVec_);
 
-            std::sort(tempCondSVec.begin(),
-                      tempCondSVec.end(),
-                      [] (const ConditionSPtr_t A, const ConditionSPtr_t B) { return A->Severity() > B->Severity(); });
+            std::sort(tempCondVec.begin(),
+                      tempCondVec.end(),
+                      [] (const Conditions::Enum A, const Conditions::Enum B) { return condition::Severity::Get(A) > condition::Severity::Get(B); });
 
-            return tempCondSVec[0]->Severity();
+            return condition::Severity::Get(tempCondVec[0]);
         }
     }
 
 
     bool Creature::HasMagicalCondition() const
     {
-        for (auto const & NEXT_CONDITION_SPTR : conditionsSVec_)
-            if (NEXT_CONDITION_SPTR->IsMagical())
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (condition::Warehouse::Get(NEXT_CONDITION_ENUM)->IsMagical())
                 return true;
 
         return false;
@@ -346,7 +337,7 @@ namespace creature
                                               const bool        WILL_AND,
                                               const bool        WILL_ELLIPSIS)
     {
-        return condition::Algorithms::Names(condition::Algorithms::SortBySeverityCopy(conditionsSVec_),
+        return condition::Algorithms::Names(condition::Algorithms::SortBySeverityCopy(conditionsVec_),
                                             ", ",
                                             WILL_WRAP,
                                             MAX_TO_LIST_COUNT,
@@ -404,16 +395,12 @@ namespace creature
         //apply enchantment conditions if needed
         if (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)
         {
-            const std::size_t NUM_ITEM_ENCHANTMENTS(ITEM_SPTR->Enchantments().size());
-            for (std::size_t e(0); e < NUM_ITEM_ENCHANTMENTS; ++e)
+            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
+            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
             {
-                const item::IEnchantmentSPtr_t NEXT_ENCHANTMENT_SPTR(ITEM_SPTR->Enchantments()[e]);
-                const std::size_t NUM_CONDITIONS(NEXT_ENCHANTMENT_SPTR->Conditions().size());
-                for (std::size_t c(0); c < NUM_CONDITIONS; ++c)
-                {
-                    const creature::ConditionSPtr_t NEXT_CONDITION_SPTR(NEXT_ENCHANTMENT_SPTR->Conditions()[c]);
-                    ConditionAdd(NEXT_CONDITION_SPTR);
-                }
+                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
+                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
+                    ConditionAdd(NEXT_CONDITION_ENUM);
             }
         }
 
@@ -460,16 +447,12 @@ namespace creature
         //remove enchantment conditions
         if (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)
         {
-            const std::size_t NUM_ITEM_ENCHANTMENTS(ITEM_SPTR->Enchantments().size());
-            for (std::size_t e(0); e < NUM_ITEM_ENCHANTMENTS; ++e)
+            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
+            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
             {
-                const item::IEnchantmentSPtr_t NEXT_ENCHANTMENT_SPTR(ITEM_SPTR->Enchantments()[e]);
-                const std::size_t NUM_CONDITIONS(NEXT_ENCHANTMENT_SPTR->Conditions().size());
-                for (std::size_t c(0); c < NUM_CONDITIONS; ++c)
-                {
-                    const creature::ConditionSPtr_t NEXT_CONDITION_SPTR(NEXT_ENCHANTMENT_SPTR->Conditions()[c]);
-                    ConditionRemove(NEXT_CONDITION_SPTR);
-                }
+                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
+                for (auto const NEXT_CONDITINO_ENUM : CONDITIONS_VEC)
+                    ConditionRemove(NEXT_CONDITINO_ENUM);
             }
         }
     }
@@ -494,16 +477,12 @@ namespace creature
         if ((ITEM_SPTR->Category() & item::category::EnchantsOnlyWhenEquipped) &&
             ( ! (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld) ))
         {
-            const std::size_t NUM_ITEM_ENCHANTMENTS(ITEM_SPTR->Enchantments().size());
-            for (std::size_t e(0); e < NUM_ITEM_ENCHANTMENTS; ++e)
+            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
+            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
             {
-                const item::IEnchantmentSPtr_t NEXT_ENCHANTMENT_SPTR(ITEM_SPTR->Enchantments()[e]);
-                const std::size_t NUM_CONDITIONS(NEXT_ENCHANTMENT_SPTR->Conditions().size());
-                for (std::size_t c(0); c < NUM_CONDITIONS; ++c)
-                {
-                    const creature::ConditionSPtr_t NEXT_CONDITION_SPTR(NEXT_ENCHANTMENT_SPTR->Conditions()[c]);
-                    ConditionAdd(NEXT_CONDITION_SPTR);
-                }
+                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
+                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
+                    ConditionAdd(NEXT_CONDITION_ENUM);
             }
         }
 
@@ -764,16 +743,12 @@ namespace creature
         if ((ITEM_SPTR->Category() & item::category::EnchantsOnlyWhenEquipped) &&
             ( ! (ITEM_SPTR->Category() & item::category::EnchantsWhenHeld)))
         {
-            const std::size_t NUM_ITEM_ENCHANTMENTS(ITEM_SPTR->Enchantments().size());
-            for (std::size_t e(0); e < NUM_ITEM_ENCHANTMENTS; ++e)
+            auto const ENCHANTMENTS_SVEC{ ITEM_SPTR->Enchantments() };
+            for (auto const & NEXT_ENCHANTMENT_SPTR : ENCHANTMENTS_SVEC)
             {
-                const item::IEnchantmentSPtr_t NEXT_ENCHANTMENT_SPTR(ITEM_SPTR->Enchantments()[e]);
-                const std::size_t NUM_CONDITIONS(NEXT_ENCHANTMENT_SPTR->Conditions().size());
-                for (std::size_t c(0); c < NUM_CONDITIONS; ++c)
-                {
-                    const creature::ConditionSPtr_t NEXT_CONDITION_SPTR(NEXT_ENCHANTMENT_SPTR->Conditions()[c]);
-                    ConditionRemove(NEXT_CONDITION_SPTR);
-                }
+                auto const CONDITIONS_VEC{ NEXT_ENCHANTMENT_SPTR->Conditions() };
+                for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
+                    ConditionRemove(NEXT_CONDITION_ENUM);
             }
         }
 
@@ -1019,8 +994,8 @@ namespace creature
             << ", serial#" << serialNumber_;
 
         ss << ", conds=";
-        for (auto const & NEXT_COND_SPTR: conditionsSVec_)
-            ss << NEXT_COND_SPTR->Name() << ",";
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            ss << condition::Warehouse::Get(NEXT_CONDITION_ENUM)->Name() << ",";
 
         ss << ", titles=";
         for (auto const & NEXT_TITLE_SPTR : titlesPtrVec_)
@@ -1185,7 +1160,7 @@ namespace creature
                         L.experience_,
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
-                        L.conditionsSVec_,
+                        L.conditionsVec_,
                         L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
@@ -1205,7 +1180,7 @@ namespace creature
                          R.experience_,
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
-                         R.conditionsSVec_,
+                         R.conditionsVec_,
                          R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
@@ -1235,7 +1210,7 @@ namespace creature
                         L.experience_,
                         L.dateTimeCreated_,
                         L.titlesPtrVec_,
-                        L.conditionsSVec_,
+                        L.conditionsVec_,
                         L.spellsVec_,
                         L.achievements_,
                         L.manaCurrent_,
@@ -1255,7 +1230,7 @@ namespace creature
                          R.experience_,
                          R.dateTimeCreated_,
                          R.titlesPtrVec_,
-                         R.conditionsSVec_,
+                         R.conditionsVec_,
                          R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,

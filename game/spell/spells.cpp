@@ -57,7 +57,7 @@ namespace spell
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::AsleepNatural));
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::AsleepNatural);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
@@ -95,7 +95,7 @@ namespace spell
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Tripped));
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::Tripped);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
@@ -123,7 +123,7 @@ namespace spell
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Dazed));
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::Dazed);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
@@ -137,7 +137,7 @@ namespace spell
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Frightened));
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::Frightened);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
@@ -170,7 +170,7 @@ namespace spell
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Poisoned));
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }

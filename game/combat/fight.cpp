@@ -68,11 +68,11 @@ namespace combat
     }
 
 
-    const creature::ConditionSVec_t FightClub::HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                            HitInfoVec_t &           hitInfoVec,
-                                                            const stats::Health_t    TOTAL_DAMAGE)
+    const creature::ConditionEnumVec_t FightClub::HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
+                                                               HitInfoVec_t &           hitInfoVec,
+                                                               const stats::Health_t    TOTAL_DAMAGE)
     {
-        creature::ConditionSVec_t conditionsAddedSVec;
+        creature::ConditionEnumVec_t conditionsAddedVec;
 
         auto const IS_ALREADY_KILLED{ creatureDefendingPtrC->HasCondition(creature::Conditions::Dead) ||
                                       IsConditionContained(creature::Conditions::Dead, hitInfoVec) };
@@ -98,9 +98,9 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(0);
 
-                const creature::ConditionSPtr_t CONDITION_DEAD_SPTRC{ creature::condition::ConditionFactory::Make(creature::Conditions::Dead) };
-                creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_SPTRC);
-                conditionsAddedSVec.push_back(CONDITION_DEAD_SPTRC);
+                const creature::Conditions::Enum CONDITION_DEAD_ENUM{ creature::Conditions::Dead };
+                creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_ENUM);
+                conditionsAddedVec.push_back(CONDITION_DEAD_ENUM);
 
                 //remove the unconscious condition if already there
                 if (IS_ALREADY_UNCONSCIOUS)
@@ -128,9 +128,9 @@ namespace combat
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
 
-                        const creature::ConditionSPtr_t CONDITION_UNCON_SPTR{ creature::condition::ConditionFactory::Make(creature::Conditions::Unconscious) };
-                        creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_SPTR);
-                        conditionsAddedSVec.push_back(CONDITION_UNCON_SPTR);
+                        const creature::Conditions::Enum CONDITION_UNCON_ENUM{ creature::Conditions::Unconscious };
+                        creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_ENUM);
+                        conditionsAddedVec.push_back(CONDITION_UNCON_ENUM);
 
                         //remove the dazed condition if already there
                         if (IS_ALREADY_DAZED)
@@ -151,9 +151,9 @@ namespace combat
 
                             if (TOTAL_DAMAGE >= halfHealthNormal)
                             {
-                                const creature::ConditionSPtr_t CONDITION_DAZED_SPTR{ creature::condition::ConditionFactory::Make(creature::Conditions::Dazed) };
-                                creatureDefendingPtrC->ConditionAdd(CONDITION_DAZED_SPTR);
-                                conditionsAddedSVec.push_back(CONDITION_DAZED_SPTR);
+                                const creature::Conditions::Enum CONDITION_DAZED_ENUM{ creature::Conditions::Dazed };
+                                creatureDefendingPtrC->ConditionAdd(CONDITION_DAZED_ENUM);
+                                conditionsAddedVec.push_back(CONDITION_DAZED_ENUM);
                             }
                         }
                     }
@@ -161,7 +161,7 @@ namespace combat
             }
         }
 
-        return conditionsAddedSVec;
+        return conditionsAddedVec;
     }
 
 
@@ -326,14 +326,14 @@ namespace combat
         stats::Health_t damage{ 0 };
         auto isPowerHit{ false };
         auto isCriticalHit{ false };
-        creature::ConditionSVec_t conditionsSVec;
+        creature::ConditionEnumVec_t conditionsVec;
         if (wasHit)
         {
             damage = DetermineDamage(WEAPON_SPTR, creatureAttackingPtrC, creatureDefendingPtrC, isPowerHit, isCriticalHit);
-            conditionsSVec = HandleDamage(creatureDefendingPtrC, hitInfoVec, damage);
+            conditionsVec = HandleDamage(creatureDefendingPtrC, hitInfoVec, damage);
         }
 
-        return HitInfo(WEAPON_SPTR, hitType, dodgeType, damage, isCriticalHit, isPowerHit, conditionsSVec, Text::WeaponActionVerb(WEAPON_SPTR, false));
+        return HitInfo(WEAPON_SPTR, hitType, dodgeType, damage, isCriticalHit, isPowerHit, conditionsVec, Text::WeaponActionVerb(WEAPON_SPTR, false));
     }
 
 
@@ -480,16 +480,16 @@ namespace combat
 
         if (didPounce)
         {
-            creature::ConditionSVec_t nonHitConditionsSVec;
+            creature::ConditionEnumVec_t nonHitConditionsVec;
             if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped) == false)
             {
-                auto const CONDITION_TRIPPED{ creature::condition::ConditionFactory::Make(creature::Conditions::Tripped) };
+                auto const CONDITION_TRIPPED{ creature::Conditions::Tripped };
                 creatureDefendingPtrC->ConditionAdd(CONDITION_TRIPPED);
-                nonHitConditionsSVec.push_back(CONDITION_TRIPPED);
+                nonHitConditionsVec.push_back(CONDITION_TRIPPED);
             }
 
             auto const HIT_INFO_VEC{ Fight(creaturePouncingPtrC, creatureDefendingPtrC, false).FirstEffect().GetHitInfoVec() };
-            return FightResult( CreatureEffect(creatureDefendingPtrC, HIT_INFO_VEC, nullptr, nonHitConditionsSVec, true) );
+            return FightResult( CreatureEffect(creatureDefendingPtrC, HIT_INFO_VEC, nullptr, nonHitConditionsVec, true) );
         }
         else
         {
@@ -571,14 +571,14 @@ namespace combat
 
             if (didFrighten)
             {
-                auto const CONDITION_SVEC{ creature::condition::ConditionFactory::Make(creature::Conditions::Frightened) };
+                auto const CONDITION_VEC{ creature::Conditions::Frightened };
 
-                NEXT_DEFENDING_CREATURE_PTR->ConditionAdd(CONDITION_SVEC);
+                NEXT_DEFENDING_CREATURE_PTR->ConditionAdd(CONDITION_VEC);
 
-                creature::ConditionSVec_t nonHitConditionsSVec;
-                nonHitConditionsSVec.push_back(CONDITION_SVEC);
+                creature::ConditionEnumVec_t nonHitConditionsVec;
+                nonHitConditionsVec.push_back(CONDITION_VEC);
 
-                creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFENDING_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsSVec) );
+                creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFENDING_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsVec) );
             }
         }
 

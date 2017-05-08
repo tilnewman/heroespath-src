@@ -568,8 +568,8 @@ namespace combat
                 ss << "but does no damage";
             }
 
-            auto const CONDITIONS_SVEC{ HIT_INFO.Conditions() };
-            if (CONDITIONS_SVEC.empty() == false)
+            auto const CONDITIONS_VEC{ HIT_INFO.Conditions() };
+            if (CONDITIONS_VEC.empty() == false)
             {
                 if (HIT_INFO.WasKill())
                 {
@@ -577,7 +577,7 @@ namespace combat
                 }
                 else
                 {
-                    ss << " and causes " << creature::condition::Algorithms::Names(CONDITIONS_SVEC, ", ", false, 0, 0, true);
+                    ss << " and causes " << creature::condition::Algorithms::Names(CONDITIONS_VEC, ", ", false, 0, 0, true);
                 }
             }
         }
@@ -686,7 +686,7 @@ namespace combat
         std::ostringstream ss;
 
         const std::size_t NUM_CONDITIONS_TO_LIST{ 3 };
-        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::condition::ConditionFactory::Make(creature::Conditions::Dead)) };
+        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::Conditions::Dead) };
         auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
         if (NUM_CONDITIONS != 0)
         {

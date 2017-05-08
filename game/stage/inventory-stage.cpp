@@ -1880,12 +1880,12 @@ namespace stage
         {
             case ViewType::Conditions:
             {
-                for (auto const & NEXT_CONDITION_SPTR : creaturePtr_->Conditions())
+                for (auto const & NEXT_CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
-                    listBoxItemTextInfo_.text = NEXT_CONDITION_SPTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_CONDITION_SPTR->Name() + "_ConditionsListBoxEntry",
+                    listBoxItemTextInfo_.text = NEXT_CONDITION_PTR->Name();
+                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
                                                                                                               listBoxItemTextInfo_,
-                                                                                                              NEXT_CONDITION_SPTR) );
+                                                                                                              NEXT_CONDITION_PTR) );
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -2100,17 +2100,17 @@ namespace stage
         {
             std::ostringstream ss;
 
-            if (LISTBOX_ITEM_SPTR->cond_sptr.get() != nullptr)
+            if (LISTBOX_ITEM_SPTR->COND_CPTRC != nullptr)
             {
-                ss << LISTBOX_ITEM_SPTR->cond_sptr->Name() << "\n\n" << LISTBOX_ITEM_SPTR->cond_sptr->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->COND_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->COND_CPTRC->LongDesc();
             }
             else if (LISTBOX_ITEM_SPTR->TITLE_CPTRC != nullptr)
             {
                 ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
             }
-            else if (LISTBOX_ITEM_SPTR->SPELL_PTRC != nullptr)
+            else if (LISTBOX_ITEM_SPTR->SPELL_CPTRC != nullptr)
             {
-                ss << LISTBOX_ITEM_SPTR->SPELL_PTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->SPELL_PTRC->DescComplete();
+                ss << LISTBOX_ITEM_SPTR->SPELL_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->SPELL_CPTRC->DescComplete();
             }
 
             if (ss.str().empty() == false)

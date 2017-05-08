@@ -59,30 +59,30 @@ namespace combat
     }
 
 
-    HitInfo::HitInfo(const item::ItemSPtr_t &          ITEM_SPTR,
-                     const HitType::Enum               HIT_TYPE,
-                     const DodgeType::Enum             DODGE_TYPE,
-                     const stats::Health_t             DAMAGE,
-                     const bool                        IS_CRITICAL_HIT,
-                     const bool                        IS_POWER_HIT,
-                     const creature::ConditionSVec_t & CONDITIONS_SVEC,
-                     const std::string &               ACTION_VERB)
+    HitInfo::HitInfo(const item::ItemSPtr_t &             ITEM_SPTR,
+                     const HitType::Enum                  HIT_TYPE,
+                     const DodgeType::Enum                DODGE_TYPE,
+                     const stats::Health_t                DAMAGE,
+                     const bool                           IS_CRITICAL_HIT,
+                     const bool                           IS_POWER_HIT,
+                     const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                     const std::string &                  ACTION_VERB)
     :
-        hitType_       (HIT_TYPE),
-        dodgeType_     (DODGE_TYPE),
-        weaponSPtr_    (ITEM_SPTR),
-        damage_        (DAMAGE),
-        isCritical_    (IS_CRITICAL_HIT),
-        isPower_       (IS_POWER_HIT),
-        conditionsSVec_(CONDITIONS_SVEC),
-        actionVerb_    (ACTION_VERB)
+        hitType_      (HIT_TYPE),
+        dodgeType_    (DODGE_TYPE),
+        weaponSPtr_   (ITEM_SPTR),
+        damage_       (DAMAGE),
+        isCritical_   (IS_CRITICAL_HIT),
+        isPower_      (IS_POWER_HIT),
+        conditionsVec_(CONDITIONS_VEC),
+        actionVerb_   (ACTION_VERB)
     {}
 
 
     bool HitInfo::ContainsCondition(const creature::Conditions::Enum E) const
     {
-        for (auto const NEXT_CONDITION_PTR : conditionsSVec_)
-            if (NEXT_CONDITION_PTR->Which() == E)
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (NEXT_CONDITION_ENUM == E)
                 return true;
 
         return false;
@@ -91,17 +91,17 @@ namespace combat
 
     bool HitInfo::RemoveCondition(const creature::Conditions::Enum E)
     {
-        creature::ConditionSVec_t condsToRemoveSVec;
+        creature::ConditionEnumVec_t condsToRemoveVec;
 
-        for (auto const & NEXT_CONDITION_SPTR : conditionsSVec_)
-            if (NEXT_CONDITION_SPTR->Which() == E)
-                condsToRemoveSVec.push_back(NEXT_CONDITION_SPTR);
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (NEXT_CONDITION_ENUM == E)
+                condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
 
-        auto const WILL_REMOVE_A_CONDITION{ ! condsToRemoveSVec.empty() };
+        auto const WILL_REMOVE_A_CONDITION{ ! condsToRemoveVec.empty() };
 
-        for (auto const & NEXT_CONDITION_TO_REMOVE_SPTR : condsToRemoveSVec)
+        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            conditionsSVec_.erase(std::remove(conditionsSVec_.begin(), conditionsSVec_.end(), NEXT_CONDITION_TO_REMOVE_SPTR), conditionsSVec_.end());
+            condsToRemoveVec.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return WILL_REMOVE_A_CONDITION;
@@ -116,7 +116,7 @@ namespace combat
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
-                        L.conditionsSVec_,
+                        L.conditionsVec_,
                         L.actionVerb_)
                <
                std::tie(R.hitType_,
@@ -125,7 +125,7 @@ namespace combat
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,
-                        R.conditionsSVec_,
+                        R.conditionsVec_,
                         R.actionVerb_);
     }
 
@@ -138,7 +138,7 @@ namespace combat
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
-                        L.conditionsSVec_,
+                        L.conditionsVec_,
                         L.actionVerb_)
                ==
                std::tie(R.hitType_,
@@ -147,38 +147,38 @@ namespace combat
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,
-                        R.conditionsSVec_,
+                        R.conditionsVec_,
                         R.actionVerb_);
     }
 
 
-    CreatureEffect::CreatureEffect(const creature::CreaturePtr_t     CREATURE_PTR,
-                                   const HitInfoVec_t &              HIT_INFO_VEC,
-                                   const spell::SpellPtr_t           SPELL_PTR,
-                                   const creature::ConditionSVec_t & CONDITIONS_SVEC,
-                                   const bool                        WAS_POUNCED)
+    CreatureEffect::CreatureEffect(const creature::CreaturePtr_t        CREATURE_PTR,
+                                   const HitInfoVec_t &                 HIT_INFO_VEC,
+                                   const spell::SpellPtr_t              SPELL_PTR,
+                                   const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                                   const bool                           WAS_POUNCED)
     :
-        hitInfoVec_    (HIT_INFO_VEC),
-        spellPtr_      (SPELL_PTR),
-        creaturePtr_   (CREATURE_PTR),
-        conditionsSVec_(CONDITIONS_SVEC),
-        wasPounced_    (WAS_POUNCED)
+        hitInfoVec_   (HIT_INFO_VEC),
+        spellPtr_     (SPELL_PTR),
+        creaturePtr_  (CREATURE_PTR),
+        conditionsVec_(CONDITIONS_VEC),
+        wasPounced_   (WAS_POUNCED)
     {}
 
 
     CreatureEffect::CreatureEffect(const CreatureEffect & CE)
     :
-        hitInfoVec_    (CE.hitInfoVec_),
+        hitInfoVec_   (CE.hitInfoVec_),
 
         //The lifetimes of these two objects are not managed by this class.
         //These pointers were originally provided from an owning
         //std::shared_ptr, which is not effected by the copies made here.
         //So copying these pointers is safe.
-        spellPtr_      (CE.spellPtr_),
-        creaturePtr_   (CE.creaturePtr_),
+        spellPtr_     (CE.spellPtr_),
+        creaturePtr_  (CE.creaturePtr_),
 
-        conditionsSVec_(CE.conditionsSVec_),
-        wasPounced_    (CE.wasPounced_)
+        conditionsVec_(CE.conditionsVec_),
+        wasPounced_   (CE.wasPounced_)
     {}
 
 
@@ -187,7 +187,7 @@ namespace combat
         if (& CE != this)
         {
             hitInfoVec_ = CE.hitInfoVec_;
-            conditionsSVec_ = CE.conditionsSVec_;
+            conditionsVec_ = CE.conditionsVec_;
             wasPounced_ = CE.wasPounced_;
 
             //see copy constructor comment regarding these pointers
@@ -220,47 +220,47 @@ namespace combat
     }
 
 
-    const creature::ConditionSVec_t CreatureEffect::GetHitConditions() const
+    const creature::ConditionEnumVec_t CreatureEffect::GetHitConditions() const
     {
-        creature::ConditionSVec_t conditionsSVec;
+        creature::ConditionEnumVec_t conditionsVec;
 
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
         {
-            const auto NEXT_CONDITION_SVEC{ NEXT_HIT_INFO.Conditions() };
-            for (auto const & NEXT_CONDITION_SPTR : NEXT_CONDITION_SVEC)
+            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.Conditions() };
+            for (auto const NEXT_CONDITION_ENUM : NEXT_CONDITION_VEC)
             {
-                conditionsSVec.push_back(NEXT_CONDITION_SPTR);
+                conditionsVec.push_back(NEXT_CONDITION_ENUM);
             }
         }
 
-        return conditionsSVec;
+        return conditionsVec;
     }
 
 
-    const creature::ConditionSVec_t CreatureEffect::GetAllConditions() const
+    const creature::ConditionEnumVec_t CreatureEffect::GetAllConditions() const
     {
-        creature::ConditionSVec_t allConditionsSVec;
+        creature::ConditionEnumVec_t allConditionsVec;
 
-        auto const HIT_CONDITIONS_SVEC{ GetHitConditions() };
+        auto const HIT_CONDITIONS_VEC{ GetHitConditions() };
 
-        if (HIT_CONDITIONS_SVEC.empty() == false)
-            std::copy(HIT_CONDITIONS_SVEC.begin(), HIT_CONDITIONS_SVEC.end(), back_inserter(allConditionsSVec));
+        if (HIT_CONDITIONS_VEC.empty() == false)
+            std::copy(HIT_CONDITIONS_VEC.begin(), HIT_CONDITIONS_VEC.end(), back_inserter(allConditionsVec));
 
-        auto const NON_HIT_CONDITIONS_SVEC{ GetNonHitConditions() };
+        auto const NON_HIT_CONDITIONS_VEC{ GetNonHitConditions() };
 
-        if (NON_HIT_CONDITIONS_SVEC.empty() == false)
-            std::copy(NON_HIT_CONDITIONS_SVEC.begin(), NON_HIT_CONDITIONS_SVEC.end(), back_inserter(allConditionsSVec));
+        if (NON_HIT_CONDITIONS_VEC.empty() == false)
+            std::copy(NON_HIT_CONDITIONS_VEC.begin(), NON_HIT_CONDITIONS_VEC.end(), back_inserter(allConditionsVec));
 
-        return allConditionsSVec;
+        return allConditionsVec;
     }
 
 
     bool CreatureEffect::ContainsCondition(const creature::Conditions::Enum E) const
     {
-        const auto CONDITIONS_PVEC{ GetAllConditions() };
+        const auto CONDITIONS_VEC{ GetAllConditions() };
 
-        for (auto const NEXT_CONDITION_PTR : CONDITIONS_PVEC)
-            if (NEXT_CONDITION_PTR->Which() == E)
+        for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
+            if (NEXT_CONDITION_ENUM == E)
                 return true;
 
         return false;
@@ -275,20 +275,20 @@ namespace combat
             if (nextHitInfo.RemoveCondition(E))
                 wasCondRemoved = true;
 
-        creature::ConditionSVec_t condsToRemoveSVec;
+        creature::ConditionEnumVec_t condsToRemoveVec;
 
-        for (auto const & NEXT_CONDITION_SPTR : conditionsSVec_)
-            if (NEXT_CONDITION_SPTR->Which() == E)
-                condsToRemoveSVec.push_back(NEXT_CONDITION_SPTR);
+        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+            if (NEXT_CONDITION_ENUM == E)
+                condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
 
-        if (condsToRemoveSVec.empty() == false)
+        if (condsToRemoveVec.empty() == false)
         {
             wasCondRemoved = true;
         }
 
-        for (auto const & NEXT_CONDITION_TO_REMOVE_SPTR : condsToRemoveSVec)
+        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            conditionsSVec_.erase(std::remove(conditionsSVec_.begin(), conditionsSVec_.end(), NEXT_CONDITION_TO_REMOVE_SPTR), conditionsSVec_.end());
+            conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return wasCondRemoved;
@@ -297,17 +297,17 @@ namespace combat
 
     bool operator<(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsSVec_, L.wasPounced_)
+        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsVec_, L.wasPounced_)
                <
-               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsSVec_, R.wasPounced_);
+               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsVec_, R.wasPounced_);
     }
 
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsSVec_, L.wasPounced_)
+        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsVec_, L.wasPounced_)
                ==
-               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsSVec_, R.wasPounced_);
+               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsVec_, R.wasPounced_);
     }
 
 
@@ -392,21 +392,21 @@ namespace combat
     }
 
 
-    const creature::ConditionSVec_t FightResult::Conditions(const bool WILL_UNIUQE) const
+    const creature::ConditionEnumVec_t FightResult::Conditions(const bool WILL_UNIUQE) const
     {
-        creature::ConditionSVec_t conditionsSVec;
+        creature::ConditionEnumVec_t conditionsVec;
 
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
-            utilz::Vector::Append(NEXT_CREATURE_EFFECT.GetAllConditions(), conditionsSVec);
+            utilz::Vector::Append(NEXT_CREATURE_EFFECT.GetAllConditions(), conditionsVec);
         }
 
         if (WILL_UNIUQE)
         {
-            std::unique(conditionsSVec.begin(), conditionsSVec.end());
+            std::unique(conditionsVec.begin(), conditionsVec.end());
         }
 
-        return conditionsSVec;
+        return conditionsVec;
     }
 
 

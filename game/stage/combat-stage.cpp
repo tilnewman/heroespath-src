@@ -748,7 +748,7 @@ namespace stage
             encounterSPtr_->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::condition::ConditionFactory::Make(creature::Conditions::Stone));
+            encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
 
             //TODO TEMP REMOVE -test projectile animations by forcing all enemy creatures to have projectile weapons
             /*auto projIndex{ 0 };
@@ -2730,13 +2730,13 @@ namespace stage
         //remove all conditions except for stone and dead from the killed creature
         for (auto nextKilledCreaturePtr : killedCreaturesPVec)
         {
-            auto const CONDITIONS_SVEC{ nextKilledCreaturePtr->Conditions() };
-            for (auto const & NEXT_CONDITION_SPTR : CONDITIONS_SVEC)
+            auto const CONDITIONS_VEC{ nextKilledCreaturePtr->Conditions() };
+            for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
             {
-                if ((NEXT_CONDITION_SPTR->Which() != creature::Conditions::Stone) &&
-                    (NEXT_CONDITION_SPTR->Which() != creature::Conditions::Dead))
+                if ((NEXT_CONDITION_ENUM != creature::Conditions::Stone) &&
+                    (NEXT_CONDITION_ENUM != creature::Conditions::Dead))
                 {
-                    nextKilledCreaturePtr->ConditionRemove(NEXT_CONDITION_SPTR);
+                    nextKilledCreaturePtr->ConditionRemove(NEXT_CONDITION_ENUM);
                 }
             }
         }
