@@ -5,9 +5,6 @@
 //
 #include "game/stats/stat-enum.hpp"
 
-#include "utilz/real.hpp"
-
-#include <tuple>
 #include <string>
 
 
@@ -34,6 +31,8 @@ namespace stats
         inline float Spd() const { return spd_; }
         inline float Int() const { return int_; }
 
+        float Get(const stat::Enum) const;
+
         void Invert();
 
         const std::string ToString(const bool WILL_WRAP = false) const;
@@ -51,27 +50,16 @@ namespace stats
     };
 
 
-    inline bool operator==(const StatMultSet & L, const StatMultSet & R)
-    {
-        return (utilz::IsRealClose(L.str_, R.str_),
-                utilz::IsRealClose(L.acc_, R.acc_),
-                utilz::IsRealClose(L.cha_, R.cha_),
-                utilz::IsRealClose(L.lck_, R.lck_),
-                utilz::IsRealClose(L.spd_, R.spd_),
-                utilz::IsRealClose(L.int_, R.int_));
-    }
+    bool operator==(const StatMultSet & L, const StatMultSet & R);
+
 
     inline bool operator!=(const StatMultSet & L, const StatMultSet & R)
     {
         return ! (L == R);
     }
 
-    inline bool operator<(const StatMultSet & L, const StatMultSet & R)
-    {
-        return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
-                <
-               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
-    }
+
+    bool operator<(const StatMultSet & L, const StatMultSet & R);
 
 }
 }

@@ -3,6 +3,9 @@
 //
 #include "stat-mult-set.hpp"
 
+#include "utilz/real.hpp"
+
+#include <tuple>
 #include <sstream>
 
 
@@ -25,6 +28,27 @@ namespace stats
         spd_(SPD),
         int_(INT)
     {}
+
+
+    float StatMultSet::Get(const stat::Enum E) const
+    {
+        switch (E)
+        {
+            case stat::Strength:     { return str_; }
+            case stat::Accuracy:     { return acc_; }
+            case stat::Charm:        { return cha_; }
+            case stat::Luck:         { return lck_; }
+            case stat::Speed:        { return spd_; }
+            case stat::Intelligence: { return int_; }
+            case stat::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::stats::StatMultSet::Get(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
 
     
     void StatMultSet::Invert()
@@ -57,6 +81,25 @@ namespace stats
         {
             return ss.str();
         }
+    }
+
+
+    bool operator==(const StatMultSet & L, const StatMultSet & R)
+    {
+        return (utilz::IsRealClose(L.str_, R.str_),
+                utilz::IsRealClose(L.acc_, R.acc_),
+                utilz::IsRealClose(L.cha_, R.cha_),
+                utilz::IsRealClose(L.lck_, R.lck_),
+                utilz::IsRealClose(L.spd_, R.spd_),
+                utilz::IsRealClose(L.int_, R.int_));
+    }
+
+
+    bool operator<(const StatMultSet & L, const StatMultSet & R)
+    {
+        return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
+                <
+               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
 
 }

@@ -67,6 +67,8 @@ namespace creature
         //set the default condition if not already there
         if (conditionsVec_.empty())
             ConditionAdd(Conditions::Good);
+
+        ReCalculateStats();
     }
 
 
@@ -119,6 +121,17 @@ namespace creature
             ss << " " << ROLE_STR;
 
         return ss.str();
+    }
+
+
+    void Creature::ReCalculateStats()
+    {
+        stats_.ResetCurrentAndActualToNormal();
+
+        auto const CONDITIONS_PVEC{ ConditionsPVec() };
+
+        for (auto const NEXT_COND_PTR : CONDITIONS_PVEC)
+            stats_.ModifyCurrentAndActual(NEXT_COND_PTR->StatMult());
     }
 
 
@@ -226,6 +239,7 @@ namespace creature
                 if (ALLOW_CHANGES)
                 {
                     condition::Warehouse::Get(E)->InitialChange(this);
+                    ReCalculateStats();
                 }
 
                 return true;
@@ -254,6 +268,8 @@ namespace creature
         if (conditionsVec_.size() == 0)
             ConditionAdd(Conditions::Good);
 
+        ReCalculateStats();
+
         return wasAnyConditionRemoved;
     }
 
@@ -268,6 +284,7 @@ namespace creature
 
         conditionsVec_.clear();
         ConditionAdd(Conditions::Good);
+        ReCalculateStats();
         return ORIG_COND_COUNT;
     }
 

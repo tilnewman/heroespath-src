@@ -307,6 +307,13 @@ namespace stats
     }
 
 
+    void StatSet::ModifyCurrentAndActual(const StatMultSet & STAT_MULT_SET)
+    {
+        for (auto & nextStat : statVec_)
+            nextStat.ResetCurrentAndActual( static_cast<stats::Stat_t>(static_cast<float>(nextStat.Current()) * STAT_MULT_SET.Get(nextStat.Which())) );
+    }
+
+
     void StatSet::ModifyCurrentToNormal()
     {
         for (auto & nextStat : statVec_)

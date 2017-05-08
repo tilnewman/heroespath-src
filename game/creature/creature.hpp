@@ -88,55 +88,57 @@ namespace creature
         
         virtual ~Creature();
 
-        inline virtual const BodyType Body() const              { return bodyType_; }
+        inline const BodyType Body() const                      { return bodyType_; }
 
-        inline virtual bool IsPlayerCharacter() const           { return false; }
+        inline bool IsPlayerCharacter() const                   { return false; }
 
-        inline virtual const std::string Name() const           { return name_; }
-        inline virtual void SetName(const std::string & N)      { name_ = N; }
+        inline const std::string Name() const                   { return name_; }
+        inline void SetName(const std::string & N)              { name_ = N; }
 
         const std::string NameOrRaceAndClass(const bool IS_FIRST_LETTER_CAPS = true) const;
 
-        virtual const std::string DisplayableNameRaceRole() const;
+        const std::string DisplayableNameRaceRole() const;
 
-        inline virtual const std::string ImageFilename() const  { return imageFilename_; };
-        virtual void ImageFilename(const std::string & S)       { imageFilename_ = S; };
+        inline const std::string ImageFilename() const          { return imageFilename_; };
+        void ImageFilename(const std::string & S)               { imageFilename_ = S; };
 
-        inline virtual sex::Enum Sex() const                    { return sex_; }
-        inline virtual const std::string SexName() const        { return creature::sex::ToString(sex_); }
+        inline sex::Enum Sex() const                            { return sex_; }
+        inline const std::string SexName() const                { return creature::sex::ToString(sex_); }
 
-        inline virtual const creature::Race Race() const        { return race_; }
+        inline const creature::Race Race() const                { return race_; }
 
-        inline virtual bool IsPixie() const                     { return (race_.Which() == race::Pixie); }
-        inline virtual bool IsBeast() const                     { return ((race::HasTorso(race_.Which()) == false) || (Body().IsHumanoid() == false)); }
+        inline bool IsPixie() const                             { return (race_.Which() == race::Pixie); }
+        inline bool IsBeast() const                             { return ((race::HasTorso(race_.Which()) == false) || (Body().IsHumanoid() == false)); }
 
-        inline virtual stats::StatSet & Stats()                 { return stats_; }
+        inline stats::StatSet & Stats()                         { return stats_; }
 
-        inline virtual dragon_class::Enum DragonClass() const   { return dragon_class::ClassFromRank( Rank() ); }
-        inline virtual wolfen_class::Enum WolfenClass() const   { return wolfen_class::ClassFromRank( Rank() ); }
+        void ReCalculateStats();
 
-        inline virtual std::size_t Rank() const                 { return rank_; }
-        inline virtual rank_class::Enum RankClass() const       { return rank_class::FromRank(rank_); }
-        virtual const std::string RankClassName() const;
+        inline dragon_class::Enum DragonClass() const           { return dragon_class::ClassFromRank( Rank() ); }
+        inline wolfen_class::Enum WolfenClass() const           { return wolfen_class::ClassFromRank( Rank() ); }
 
-        inline virtual void IncreaseRank(const stats::Rank_t R) { rank_ += R; }
-        inline virtual stats::Exp_t Exp() const                 { return experience_; }
-        inline virtual void IncreaseExp(const stats::Exp_t E)   { experience_ += E; }
+        inline std::size_t Rank() const                         { return rank_; }
+        inline rank_class::Enum RankClass() const               { return rank_class::FromRank(rank_); }
+        const std::string RankClassName() const;
 
-        inline virtual const creature::Role Role() const        { return role_; }
+        inline void IncreaseRank(const stats::Rank_t R)         { rank_ += R; }
+        inline stats::Exp_t Exp() const                         { return experience_; }
+        inline void IncreaseExp(const stats::Exp_t E)           { experience_ += E; }
+
+        inline const creature::Role Role() const                { return role_; }
 
         void TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES = true);
         inline const TitleEnumVec_t Titles() const              { return titlesVec_; }
         const TitlePVec_t TitlesPVec() const;
 
-        inline virtual stats::Health_t HealthCurrent() const            { return healthCurrent_; }
-        inline virtual stats::Health_t HealthNormal() const             { return healthNormal_; }
-        inline virtual void HealthCurrentAdj(const stats::Health_t C)   { healthCurrent_ += C; }
-        inline virtual void HealthNormalAdj(const stats::Health_t C)    { healthNormal_ += C; }
-        inline virtual void HealthCurrentSet(const stats::Health_t H)   { healthCurrent_ = H; }
-        inline virtual void HealthNormalSet(const stats::Health_t H)    { healthNormal_ = H; }
-        inline virtual float HealthRatio() const                        { return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_); }
-        virtual const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
+        inline stats::Health_t HealthCurrent() const            { return healthCurrent_; }
+        inline stats::Health_t HealthNormal() const             { return healthNormal_; }
+        inline void HealthCurrentAdj(const stats::Health_t C)   { healthCurrent_ += C; }
+        inline void HealthNormalAdj(const stats::Health_t C)    { healthNormal_ += C; }
+        inline void HealthCurrentSet(const stats::Health_t H)   { healthCurrent_ = H; }
+        inline void HealthNormalSet(const stats::Health_t H)    { healthNormal_ = H; }
+        inline float HealthRatio() const                        { return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_); }
+        const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
 
         //returns true only if the condition was actually added, and not a duplicate, etc.
         //prevents duplicate conditions
@@ -153,7 +155,7 @@ namespace creature
         //for each Condition, Condition::Undo() is called before removing
         std::size_t ConditionRemoveAll();
 
-        inline const ConditionEnumVec_t Conditions() const              { return conditionsVec_; }
+        inline const ConditionEnumVec_t Conditions() const      { return conditionsVec_; }
         const ConditionPVec_t ConditionsPVec() const;
 
         bool HasCondition(const Conditions::Enum) const;
@@ -164,81 +166,81 @@ namespace creature
 
         bool HasMagicalCondition() const;
 
-        inline bool IsDead() const                                      { return HasCondition(Conditions::Dead); }
-        inline bool IsAlive() const                                     { return ! IsDead(); }
+        inline bool IsDead() const                              { return HasCondition(Conditions::Dead); }
+        inline bool IsAlive() const                             { return ! IsDead(); }
 
         //returns most severe first
         //a count of zero means 'list all'
-        virtual const std::string ConditionList(const std::size_t MAX_TO_LIST_COUNT = 0,
-                                                const size_t      SEVERITY_AT_LEAST = 0,
-                                                const bool        WILL_WRAP         = false,
-                                                const bool        WILL_AND          = false,
-                                                const bool        WILL_ELLIPSIS     = false);
+        const std::string ConditionList(const std::size_t MAX_TO_LIST_COUNT = 0,
+                                        const size_t      SEVERITY_AT_LEAST = 0,
+                                        const bool        WILL_WRAP         = false,
+                                        const bool        WILL_AND          = false,
+                                        const bool        WILL_ELLIPSIS     = false);
 
-        inline virtual bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
-        virtual const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
+        inline bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
+        const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        inline  const item::Inventory Inventory() const                 { return inventory_; }
+        inline  const item::Inventory Inventory() const         { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
-        inline virtual bool CoinsAdj(const item::Coin_t A)              { return inventory_.CoinsAdj(A); }
-        inline virtual bool MeteorShardsAdj(const item::Meteor_t A)     { return inventory_.MeteorShardsAdj(A); }
-        inline virtual bool GemsAdj(const item::Gem_t A)                { return inventory_.GemsAdj(A); }
+        inline bool CoinsAdj(const item::Coin_t A)              { return inventory_.CoinsAdj(A); }
+        inline bool MeteorShardsAdj(const item::Meteor_t A)     { return inventory_.MeteorShardsAdj(A); }
+        inline bool GemsAdj(const item::Gem_t A)                { return inventory_.GemsAdj(A); }
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.
-        virtual const std::string ItemAdd(const item::ItemSPtr_t & ITEM_SPTR);
-        virtual const std::string ItemIsAddAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
-        virtual const std::string ItemEquip(const item::ItemSPtr_t & ITEM_SPTR);
-        virtual const std::string ItemIsEquipAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
-        virtual const std::string ItemIsEquipAllowedByRole(const item::ItemSPtr_t & ITEM_SPTR) const;
+        const std::string ItemAdd(const item::ItemSPtr_t & ITEM_SPTR);
+        const std::string ItemIsAddAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
+        const std::string ItemEquip(const item::ItemSPtr_t & ITEM_SPTR);
+        const std::string ItemIsEquipAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
+        const std::string ItemIsEquipAllowedByRole(const item::ItemSPtr_t & ITEM_SPTR) const;
 
         //This function will not remove an equipped item.  Unequip first.
-        virtual void ItemRemove(const item::ItemSPtr_t & ITEM_SPTR);
+        void ItemRemove(const item::ItemSPtr_t & ITEM_SPTR);
 
-        virtual const std::string ItemUnEquip(const item::ItemSPtr_t & ITEM_SPTR);
-        virtual const std::string IsItemUnqeuipAllowed(const item::ItemSPtr_t & ITEM_SPTR);
+        const std::string ItemUnEquip(const item::ItemSPtr_t & ITEM_SPTR);
+        const std::string IsItemUnqeuipAllowed(const item::ItemSPtr_t & ITEM_SPTR);
 
-        virtual const item::ItemSVec_t CurrentWeaponsInc();
-        virtual void SetCurrentWeaponsToBest();
-        virtual void SetCurrentWeaponsToBestIfInvalidated();
-        virtual const item::ItemSVec_t CurrentWeaponsCopy() const   { return currWeaponsSVec_; }
-        virtual std::size_t WeaponsCount() const;
-        inline virtual bool HasWeapons() const                      { return WeaponsCount() > 0; }
-        inline virtual bool HasWeaponsHeld() const                  { return CurrentWeaponsCopy().empty() == false; }
-        virtual bool IsHoldingProjectileWeapon() const;
+        const item::ItemSVec_t CurrentWeaponsInc();
+        void SetCurrentWeaponsToBest();
+        void SetCurrentWeaponsToBestIfInvalidated();
+        const item::ItemSVec_t CurrentWeaponsCopy() const       { return currWeaponsSVec_; }
+        std::size_t WeaponsCount() const;
+        inline bool HasWeapons() const                          { return WeaponsCount() > 0; }
+        inline bool HasWeaponsHeld() const                      { return CurrentWeaponsCopy().empty() == false; }
+        bool IsHoldingProjectileWeapon() const;
 
-        virtual const std::string WeaponsString() const;
-        virtual const std::string ArmorString() const;
+        const std::string WeaponsString() const;
+        const std::string ArmorString() const;
 
-        virtual stats::Armor_t ArmorRating() const;
+        stats::Armor_t ArmorRating() const;
 
-        inline virtual const sfml_util::DateTime DateTimeCreated() const    { return dateTimeCreated_; }
+        inline const sfml_util::DateTime DateTimeCreated() const{ return dateTimeCreated_; }
 
-        inline virtual const UniqueTraits_t UniqueTraits() const            { return UniqueTraits_t( std::make_tuple(Name(), Role().Which(), DateTimeCreated(), serialNumber_) ); }
+        inline const UniqueTraits_t UniqueTraits() const        { return UniqueTraits_t( std::make_tuple(Name(), Role().Which(), DateTimeCreated(), serialNumber_) ); }
 
-        inline virtual bool CanCastSpells() const                           { return CanCastSpellsStr().empty(); }
-        virtual const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
-        virtual bool CanCastSpellByType(const spell::SpellType::Enum) const;
+        inline bool CanCastSpells() const                       { return CanCastSpellsStr().empty(); }
+        const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
+        bool CanCastSpellByType(const spell::SpellType::Enum) const;
 
-        inline spell::SpellVec_t Spells() const                             { return spellsVec_; }
+        inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
         
         item::Weight_t WeightCanCarry() const;
 
-        inline const Achievements AchievementsCopy() const                  { return achievements_; }
+        inline const Achievements AchievementsCopy() const      { return achievements_; }
 
-        inline bool CanFly() const                                          { return (race::CanFly(race_.Which()) && role::CanFly(role_.Which())); }
+        inline bool CanFly() const                              { return (race::CanFly(race_.Which()) && role::CanFly(role_.Which())); }
 
-        virtual const std::string ToString() const;
+        const std::string ToString() const;
 
-        inline stats::Mana_t ManaCurrent() const            { return manaCurrent_; }
-        inline void ManaCurrentSet(const stats::Mana_t M)   { manaCurrent_ = M; }
+        inline stats::Mana_t ManaCurrent() const                { return manaCurrent_; }
+        inline void ManaCurrentSet(const stats::Mana_t M)       { manaCurrent_ = M; }
         void ManaCurrentAdj(const stats::Mana_t ADJ);
 
-        inline stats::Mana_t ManaNormal() const             { return manaNormal_; }
-        inline void ManaNormalSet(const stats::Mana_t M)    { manaNormal_ = M; }
+        inline stats::Mana_t ManaNormal() const                 { return manaNormal_; }
+        inline void ManaNormalSet(const stats::Mana_t M)        { manaNormal_ = M; }
         void ManaNormalAdj(const stats::Mana_t ADJ);
 
         friend bool operator==(const Creature & L, const Creature & R);

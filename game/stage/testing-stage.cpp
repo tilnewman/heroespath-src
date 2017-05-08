@@ -317,17 +317,17 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_SoundManager{ false };
-        if (false == hasTestingCompleted_SoundManager)
-        {
-            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
-            return;
-        }
-
         static auto hasTestingCompleted_CreatureImageManager{ false };
         if (false == hasTestingCompleted_CreatureImageManager)
         {
             hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_SoundManager{ false };
+        if (false == hasTestingCompleted_SoundManager)
+        {
+            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
             return;
         }
 
@@ -408,38 +408,50 @@ namespace stage
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
-        /*
+        const stats::StatSet STAT_SET_CHAR_BASE{ 1000, 1000, 1000, 1000, 1000, 1000 };
         auto playerSPtr( std::make_shared<player::Character>("StatsTestingCreatureName",
                                                              creature::sex::Female,
                                                              creature::BodyType::Make_Wolfen(),
                                                              creature::race::Wolfen,
                                                              creature::role::Wolfen,
-                                                             STAT_SET_BASE) );
+                                                             STAT_SET_CHAR_BASE) );
 
-        playerSPtr->Stats() = STAT_SET_BASE;
-        expectedSet = STAT_SET_BASE;
+        playerSPtr->Stats() = STAT_SET_CHAR_BASE;
+        expectedSet = STAT_SET_CHAR_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set", playerSPtr->Stats(), expectedSet);
 
+        playerSPtr->ConditionAdd(creature::Conditions::Frightened);
+        expectedSet = STAT_SET_CHAR_BASE;
+        const stats::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 1000, 1000, 500, 1000);
+        expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED);
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened", playerSPtr->Stats(), expectedSet);
+
         playerSPtr->ConditionAdd(creature::Conditions::Dazed);
-        expectedSet = STAT_SET_BASE;
-        const stats::StatSet STAT_SET_BASE_DAZED(6, 4, 12, 12, 4, 6);
-        expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dazed", playerSPtr->Stats(), expectedSet);
+        expectedSet = STAT_SET_CHAR_BASE;
+        const stats::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 1000, 1000, 166, 500);
+        expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED_AND_DAZED);
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed", playerSPtr->Stats(), expectedSet);
 
         playerSPtr->ConditionAdd(creature::Conditions::Dead);
-        expectedSet = STAT_SET_BASE;
+        expectedSet = STAT_SET_CHAR_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dazed AND Dead", playerSPtr->Stats(), expectedSet);
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed and Dead", playerSPtr->Stats(), expectedSet);
+
+        playerSPtr->ConditionRemove(creature::Conditions::Frightened);
+        expectedSet = STAT_SET_CHAR_BASE;
+        expectedSet.ResetCurrent(STAT_SET_ZEROS);
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed and Dead", playerSPtr->Stats(), expectedSet);
 
         playerSPtr->ConditionRemove(creature::Conditions::Dead);
-        expectedSet = STAT_SET_BASE;
-        expectedSet.ResetCurrent(STAT_SET_BASE_DAZED);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dazed (Dead removed)", playerSPtr->Stats(), expectedSet);
+        expectedSet = STAT_SET_CHAR_BASE;
+        const stats::StatSet STAT_SET_CHAR_DAZED(500, 333, 1000, 1000, 333, 500);
+        expectedSet.ResetCurrent(STAT_SET_CHAR_DAZED);
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed", playerSPtr->Stats(), expectedSet);
 
         playerSPtr->ConditionRemove(creature::Conditions::Dazed);
-        expectedSet = STAT_SET_BASE;
-        TestStatSetsCurrentAndNormal("Creature Base Set No Conditions (should be back to Base)", playerSPtr->Stats(), expectedSet);
-        */
+        expectedSet = STAT_SET_CHAR_BASE;
+        TestStatSetsCurrentAndNormal("Creature Base Set (back to char base)", playerSPtr->Stats(), expectedSet);
+
         LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::PerformStatsTests()  All Tests PASSED.");
     }
 

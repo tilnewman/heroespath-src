@@ -7,6 +7,7 @@
 #include "utilz/boost-serialize-includes.hpp"
 
 #include "game/stats/stat.hpp"
+#include "game/stats/stat-mult-set.hpp"
 
 #include <tuple>
 
@@ -86,6 +87,9 @@ namespace stats
         void ResetCurrent(const StatSet & NEW_CURRENT_SET);
         void ResetNormal(const StatSet & NEW_NORMAL_SET);
         void ResetActual(const StatSet & NEW_ACTUAL_SET);
+
+        //operates on Current NOT Actual
+        void ModifyCurrentAndActual(const StatMultSet &);
 
         //actual values are adjusted by this function
         void ModifyCurrentToNormal();
