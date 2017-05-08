@@ -6,7 +6,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 
 #include <boost/filesystem/path.hpp>
 

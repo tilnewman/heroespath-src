@@ -4,7 +4,7 @@
 #include "achievement.hpp"
 
 #include "game/creature/creature.hpp"
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
 

@@ -1,7 +1,7 @@
-#ifndef GAME_CREATURE_TITLE_TITLES_HPP_INCLUDED
-#define GAME_CREATURE_TITLE_TITLES_HPP_INCLUDED
+#ifndef GAME_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#define GAME_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
 //
-// titles.hpp
+// title-warehouse.hpp
 //
 #include "game/creature/title-enum.hpp"
 
@@ -37,4 +37,4 @@ namespace title
 }
 }
 
-#endif //GAME_CREATURE_TITLE_TITLES_HPP_INCLUDED
+#endif //GAME_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED

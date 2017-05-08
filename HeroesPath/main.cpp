@@ -25,7 +25,7 @@
 #include "game/game-data-file.hpp"
 #include "game/settings-file.hpp"
 #include "game/game.hpp"
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 #include "game/spell/spell-warehouse.hpp"
 
 #include "utilz/random.hpp"

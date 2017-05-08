@@ -1,13 +1,12 @@
 //
-// titles.cpp
+// title-warehouse.cpp
 //
-#include "titles.hpp"
+#include "title-warehouse.hpp"
 
 #include "sfml-util/gui/title-image-manager.hpp"
 
 #include "game/creature/role.hpp"
 #include "game/creature/title.hpp"
-#include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
 
 #include "utilz/assertlogandthrow.hpp"

@@ -34,7 +34,7 @@
 #include "game/combat/combat-anim.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/conditions.hpp"
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"

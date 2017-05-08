@@ -13,7 +13,7 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 
 
 namespace game

@@ -20,7 +20,7 @@
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
 #include "game/game-data-file.hpp"
-#include "game/creature/titles.hpp"
+#include "game/creature/title-warehouse.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/creature.hpp"
