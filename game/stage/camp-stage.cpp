@@ -71,9 +71,9 @@ namespace stage
         {
             const float CURRENT_VOLUME(musicOperatorSPtr->Volume());
             const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
-            if (sfml_util::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
+            if (utilz::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
             {
-                if (sfml_util::IsRealClose(INTENDED_VOLUME, 0.0f))
+                if (utilz::IsRealClose(INTENDED_VOLUME, 0.0f))
                     musicOperatorSPtr->VolumeFadeOut();
                 else
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));

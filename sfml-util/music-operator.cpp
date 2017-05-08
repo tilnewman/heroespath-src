@@ -138,7 +138,7 @@ namespace sfml_util
                 fadeOutMult_ = 0.0f;
 
                 //did we just fade out completely?
-                if (killAfterFadeOut_ && ((NEW_VOL < 0.0f) || sfml_util::IsRealClose(targetVolume_, 0.0f)))
+                if (killAfterFadeOut_ && ((NEW_VOL < 0.0f) || utilz::IsRealClose(targetVolume_, 0.0f)))
                     return music_update_status::FadedOutKill;
                 else
                     return music_update_status::FadedOut;

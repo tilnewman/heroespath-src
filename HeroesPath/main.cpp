@@ -26,6 +26,7 @@
 #include "game/settings-file.hpp"
 #include "game/game.hpp"
 #include "game/creature/title-warehouse.hpp"
+#include "game/creature/condition-warehouse.hpp"
 #include "game/spell/spell-warehouse.hpp"
 
 #include "utilz/random.hpp"
@@ -75,6 +76,7 @@ int main()
 
         //setup manager classes
         game::creature::title::Warehouse::Setup();
+        game::creature::condition::Warehouse::Setup();
         game::spell::Warehouse::Setup();
 
         //keep an instance of various singleton classes here to prevent thrashing

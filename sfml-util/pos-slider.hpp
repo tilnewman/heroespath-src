@@ -69,7 +69,7 @@ namespace sliders
         //the location the entity is moving to
         sf::Vector2f toPosV_;
 
-        //used to prevent repeated calls to sfml_util::IsRealClose()
+        //used to prevent repeated calls to utilz::IsRealClose()
         bool isFinishedMovingHoriz_;
         bool isFinishedMovingVert_;
 

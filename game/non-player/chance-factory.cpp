@@ -259,7 +259,7 @@ namespace ownership
         for (auto const & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
             chanceCombined += NEXT_WEAPONINFO_CHANCE_PAIR.second;
 
-        if (sfml_util::IsRealClose(chanceCombined, 0.0f))
+        if (utilz::IsRealClose(chanceCombined, 0.0f))
             return;
 
         const float RAND(utilz::random::Float(0.0f, chanceCombined));
@@ -611,7 +611,7 @@ namespace ownership
             {
                 armorChanceVal = -1.0f;
             }
-            M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::IsRealClose(-1.0f, armorChanceVal) == false), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CREATURE_SPTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\"" << ARMOR_CHANCE_STR << "\" which was unable to be parsed into a valid (!= -1) float.  (" << armorChanceVal << ")");
+            M_ASSERT_OR_LOGANDTHROW_SS((utilz::IsRealClose(-1.0f, armorChanceVal) == false), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CREATURE_SPTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\"" << ARMOR_CHANCE_STR << "\" which was unable to be parsed into a valid (!= -1) float.  (" << armorChanceVal << ")");
 
             using namespace item::armor;
 
@@ -1210,7 +1210,7 @@ namespace ownership
             {
                 const float NEXT_VALUE_FLOAT(GameDataFile::Instance()->GetCopyFloat(PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX));
 
-                if (false == sfml_util::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
+                if (false == utilz::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                 {
                     const float NEXT_CHANCE(1.0f / NEXT_VALUE_FLOAT);
                     materialChanceMap[NEXT_MATERIAL] = NEXT_CHANCE;

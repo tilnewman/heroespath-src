@@ -268,41 +268,6 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_SoundManager{ false };
-        if (false == hasTestingCompleted_SoundManager)
-        {
-            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_Title{ false };
-        if (false == hasTestingCompleted_Title)
-        {
-            hasTestingCompleted_Title = creature::title::Warehouse::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemImageManager{ false };
-        if (false == hasTestingCompleted_ItemImageManager)
-        {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_CreatureImageManager { false };
-        if (false == hasTestingCompleted_CreatureImageManager)
-        {
-            hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_SpellImageManager{ false };
-        if (false == hasTestingCompleted_SpellImageManager)
-        {
-            hasTestingCompleted_SpellImageManager = sfml_util::gui::SpellImageManager::Instance()->Test();
-            return;
-        }
-
         static auto hasTestingCompleted_Condition{ false };
         if (false == hasTestingCompleted_Condition)
         {
@@ -317,6 +282,20 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_Title{ false };
+        if (false == hasTestingCompleted_Title)
+        {
+            hasTestingCompleted_Title = creature::title::Warehouse::Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_SpellImageManager{ false };
+        if (false == hasTestingCompleted_SpellImageManager)
+        {
+            hasTestingCompleted_SpellImageManager = sfml_util::gui::SpellImageManager::Instance()->Test();
+            return;
+        }
+
         static auto hasTestingCompleted_PopupManager{ false };
         if (false == hasTestingCompleted_PopupManager)
         {
@@ -328,6 +307,27 @@ namespace stage
         if (false == hasTestingCompleted_CombatImageManager)
         {
             hasTestingCompleted_CombatImageManager = sfml_util::gui::CombatImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_ItemImageManager{ false };
+        if (false == hasTestingCompleted_ItemImageManager)
+        {
+            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_SoundManager{ false };
+        if (false == hasTestingCompleted_SoundManager)
+        {
+            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_CreatureImageManager{ false };
+        if (false == hasTestingCompleted_CreatureImageManager)
+        {
+            hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
             return;
         }
 

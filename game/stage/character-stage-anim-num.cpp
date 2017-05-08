@@ -133,7 +133,7 @@ namespace stage
 
     bool AnimNum::UpdateTimer(const float ELAPSED_TIME_SEC)
     {
-        if (sfml_util::IsRealClose(prevPosX_, textObj_.getPosition().x))
+        if (utilz::IsRealClose(prevPosX_, textObj_.getPosition().x))
             timerSec_ += ELAPSED_TIME_SEC;
         else
             timerSec_ = 0.0f;
@@ -148,14 +148,14 @@ namespace stage
     {
         return ((L.colorVal_ == R.colorVal_) &&
                 (L.color_ == R.color_) &&
-                (sfml_util::IsRealClose(L.distanceX_, R.distanceX_)) &&
-                (sfml_util::IsRealClose(L.distanceY_, R.distanceY_)) &&
-                (sfml_util::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
+                (utilz::IsRealClose(L.distanceX_, R.distanceX_)) &&
+                (utilz::IsRealClose(L.distanceY_, R.distanceY_)) &&
+                (utilz::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
                 (L.ignoreMe_ == R.ignoreMe_) &&
                 (L.isDoneFading_ == R.isDoneFading_) &&
                 (L.isDoneMoving_ == R.isDoneMoving_) &&
-                (sfml_util::IsRealClose(L.startLeft_, R.startLeft_)) &&
-                (sfml_util::IsRealClose(L.startTop_, R.startTop_)) &&
+                (utilz::IsRealClose(L.startLeft_, R.startLeft_)) &&
+                (utilz::IsRealClose(L.startTop_, R.startTop_)) &&
                 (L.textInfo_ == R.textInfo_) &&
                 (L.textObj_.getPosition() == R.textObj_.getPosition()) &&
                 (L.value_ == R.value_) &&

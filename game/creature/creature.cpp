@@ -166,7 +166,7 @@ namespace creature
         std::ostringstream ss;
 
         const float HEALTH_RATIO(HealthRatio());
-        if (sfml_util::IsRealClose(HEALTH_RATIO, 0.0f))
+        if (utilz::IsRealClose(HEALTH_RATIO, 0.0f))
         {
             ss << "0";
         }
@@ -955,36 +955,6 @@ namespace creature
         ss << ", inventory=" << inventory_.ToString();
 
         return ss.str();
-    }
-
-
-    const stats::StatSet Creature::DivideStatsAndCreateInverseModifyStatSet(const float   STR_DIVISOR,
-                                                                            const float   ACC_DIVISOR,
-                                                                            const float   CHA_DIVISOR,
-                                                                            const float   LCK_DIVISOR,
-                                                                            const float   SPD_DIVISOR,
-                                                                            const float   INT_DIVISOR)
-    {
-        stats::StatSet inverseModifyStatSet;
-        inverseModifyStatSet.Get(stats::stat::Strength).ResetAll(DivideAndGetInverseModifier(stats::stat::Strength, STR_DIVISOR));
-        inverseModifyStatSet.Get(stats::stat::Accuracy).ResetAll(DivideAndGetInverseModifier(stats::stat::Accuracy, ACC_DIVISOR));
-        inverseModifyStatSet.Get(stats::stat::Charm).ResetAll(DivideAndGetInverseModifier(stats::stat::Charm, CHA_DIVISOR));
-        inverseModifyStatSet.Get(stats::stat::Luck).ResetAll(DivideAndGetInverseModifier(stats::stat::Luck, LCK_DIVISOR));
-        inverseModifyStatSet.Get(stats::stat::Speed).ResetAll(DivideAndGetInverseModifier(stats::stat::Speed, SPD_DIVISOR));
-        inverseModifyStatSet.Get(stats::stat::Intelligence).ResetAll(DivideAndGetInverseModifier(stats::stat::Intelligence, INT_DIVISOR));
-        return inverseModifyStatSet;
-    }
-
-
-    stats::Stat_t Creature::DivideAndGetInverseModifier(const stats::stat::Enum STAT_ENUM,
-                                                        const float             DIVISOR)
-    {
-        const float CURRENT{ static_cast<float>(stats_.Get(STAT_ENUM).Current()) };
-        const float TARGET{ CURRENT / DIVISOR };
-        const stats::Stat_t MODIFIER{ static_cast<stats::Stat_t>(TARGET - CURRENT) };
-        stats_.Get(STAT_ENUM).ModifyCurrent(MODIFIER);
-        const stats::Stat_t INVERSE_MODIFIER{ static_cast<stats::Stat_t>(CURRENT - TARGET) };
-        return INVERSE_MODIFIER;
     }
 
 

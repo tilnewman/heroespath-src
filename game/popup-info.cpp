@@ -259,15 +259,15 @@ namespace game
                 (L.type_ == R.type_) &&
                 (L.soundEffect_ == R.soundEffect_) &&
                 (L.boxInfo_ == R.boxInfo_) &&
-                (sfml_util::IsRealClose(L.ratioX_, R.ratioX_)) &&
-                (sfml_util::IsRealClose(L.ratioY_, R.ratioY_)) &&
+                (utilz::IsRealClose(L.ratioX_, R.ratioX_)) &&
+                (utilz::IsRealClose(L.ratioY_, R.ratioY_)) &&
                 (L.willAddRandImage_ == R.willAddRandImage_) &&
-                (sfml_util::IsRealClose(L.imageScale_, R.imageScale_)) &&
+                (utilz::IsRealClose(L.imageScale_, R.imageScale_)) &&
                 (L.textureSVec_ == R.textureSVec_) &&
                 (L.numberMin_ == R.numberMin_) &&
                 (L.numberMax_ == R.numberMax_) &&
                 (L.numberInvalidVec_ == R.numberInvalidVec_) &&
-                (sfml_util::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)),
+                (utilz::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)),
                 (L.creatureCPtr_ == R.creatureCPtr_),
                 (L.initialSelection_ == R.initialSelection_));
     }

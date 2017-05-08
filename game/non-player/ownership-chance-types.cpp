@@ -104,7 +104,7 @@ namespace chance
         std::size_t i(0);
         while(i<MAX_ITERATIONS)
         {
-            if (sfml_util::IsRealClose<float>(num_owned_map[++i], 0.0f))
+            if (utilz::IsRealClose(num_owned_map[++i], 0.0f))
             {
                 num_owned_map[i] = 1.0f;
                 break;

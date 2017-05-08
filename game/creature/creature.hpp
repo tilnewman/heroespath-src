@@ -233,16 +233,6 @@ namespace creature
 
         virtual const std::string ToString() const;
 
-        const stats::StatSet DivideStatsAndCreateInverseModifyStatSet(const float   STR_DIVISOR = 1.0f,
-                                                                      const float   ACC_DIVISOR = 1.0f,
-                                                                      const float   CHA_DIVISOR = 1.0f,
-                                                                      const float   LCK_DIVISOR = 1.0f,
-                                                                      const float   SPD_DIVISOR = 1.0f,
-                                                                      const float   INT_DIVISOR = 1.0f);
-
-        stats::Stat_t DivideAndGetInverseModifier(const stats::stat::Enum STAT_ENUM,
-                                                  const float             DIVIDE_BY);
-
         inline stats::Mana_t ManaCurrent() const            { return manaCurrent_; }
         inline void ManaCurrentSet(const stats::Mana_t M)   { manaCurrent_ = M; }
         void ManaCurrentAdj(const stats::Mana_t ADJ);

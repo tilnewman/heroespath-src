@@ -111,7 +111,7 @@ namespace ownership
             }
 
             //if zero, then there was no chance of an item of this type
-            if (sfml_util::IsRealClose(chanceTotal, 0.0f))
+            if (utilz::IsRealClose(chanceTotal, 0.0f))
                 return std::make_pair(T::Count, 0.0f);
 
             const float RAND( utilz::random::Float(0.0f, chanceTotal) );

@@ -204,7 +204,7 @@ namespace strategy
         for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
         {
             totalOfAllFreqTypes += NEXT_FREQCHANCE_PAIR.second;
-            if ((NEXT_FREQCHANCE_PAIR.second > 1.0f) || sfml_util::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
+            if ((NEXT_FREQCHANCE_PAIR.second > 1.0f) || utilz::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
             {
                 cretainOrHigherChanceTotal += NEXT_FREQCHANCE_PAIR.second;
                 cretainOrHigherFreqTypeVec.push_back(NEXT_FREQCHANCE_PAIR);
@@ -232,7 +232,7 @@ namespace strategy
         }
         else
         {
-            auto const DO_CHANCES_TOTAL_ONE_OR_LESS{ ((totalOfAllFreqTypes < 1.0f) || sfml_util::IsRealOne(totalOfAllFreqTypes)) };
+            auto const DO_CHANCES_TOTAL_ONE_OR_LESS{ ((totalOfAllFreqTypes < 1.0f) || utilz::IsRealOne(totalOfAllFreqTypes)) };
 
             //if there are no FrequencyTypes with certain or higher chance,
             //then random select from any with a non-zero chance...
@@ -279,7 +279,7 @@ namespace strategy
             auto total{ 0.0f };
             for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
             {
-                if (sfml_util::IsRealOne(NEXT_COUNTCHANCE_PAIR.second))
+                if (utilz::IsRealOne(NEXT_COUNTCHANCE_PAIR.second))
                 {
                     if (alreadyFoundChanceOfOne)
                     {

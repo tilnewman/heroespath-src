@@ -224,7 +224,7 @@ namespace creature
         std::copy_if(tempPVec.begin(),
                      tempPVec.end(),
                      back_inserter(lowestHealthRatioVec),
-                     [LOWEST_HEALTH_RATIO] (CreatureCPtrC_t CPTRC) { return sfml_util::IsRealClose(CPTRC->HealthRatio(), LOWEST_HEALTH_RATIO); } );
+                     [LOWEST_HEALTH_RATIO] (CreatureCPtrC_t CPTRC) { return utilz::IsRealClose(CPTRC->HealthRatio(), LOWEST_HEALTH_RATIO); } );
 
         return lowestHealthRatioVec;
     }

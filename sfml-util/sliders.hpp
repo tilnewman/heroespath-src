@@ -55,7 +55,7 @@ namespace sliders
                     const T    INITIAL_VAL        = T(0),
                     const bool WILL_START_FORWARD = true)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(SPEED, T(0))), "ZeroSlider::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, T(0))), "ZeroSlider::Reset() given speed of zero.");
             M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= T(0)) && (INITIAL_VAL <= T(1))), "ZeroSlider::Reset() given initial value of " << INITIAL_VAL << ", which is not [0.0, 1.0].");
 
             const T DIRECTION((WILL_START_FORWARD) ? T(1) : T(-1));
@@ -113,7 +113,7 @@ namespace sliders
                     const Value_t INITIAL_VAL        = Value_t(0),
                     const bool    WILL_START_FORWARD = true)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(SPEED, Math_t(0))), "Slider::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, Math_t(0))), "Slider::Reset() given speed of zero.");
             M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= THE_MIN) && (INITIAL_VAL <= THE_MAX)), "Slider::Reset() given initial value of " << INITIAL_VAL << ", which is not within the min and max given: [" << THE_MIN << "," << THE_MAX << "].");
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider::Reset() was given a min=" << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
@@ -162,7 +162,7 @@ namespace sliders
         void Reset( const T SPEED       = T(1),
                     const T INITIAL_VAL = T(0))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(SPEED, T(0))), "ZeroSliderOnce::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, T(0))), "ZeroSliderOnce::Reset() given speed of zero.");
             M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= T(0)) && (INITIAL_VAL <= T(1))), "ZeroSliderOnce::Reset() given initial value of " << INITIAL_VAL << ", which is not within [0,1].");
 
             age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL_VAL));
@@ -178,7 +178,7 @@ namespace sliders
                 age_ += ADJUSTMENT * spd_;
                 const T NEW_VAL(static_cast<T>(0.5f + (sin(std::fmod(age_, TWO_PI_)) * 0.5f)));
 
-                if ((val_ < NEW_VAL) || (sfml_util::IsRealClose(val_, NEW_VAL)))
+                if ((val_ < NEW_VAL) || (utilz::IsRealClose(val_, NEW_VAL)))
                     val_ = NEW_VAL;
                 else
                     willContinue_ = false;
@@ -232,7 +232,7 @@ namespace sliders
                     const Value_t END   = Value_t(1),
                     const Math_t  SPEED = Math_t (1))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(SPEED, Math_t(0))), "SliderOnce::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, Math_t(0))), "SliderOnce::Reset() given speed of zero.");
             M_ASSERT_OR_LOGANDTHROW_SS((BEGIN <= END), "SliderOnce::Reset() was given a begin=" << BEGIN << " that is not less than the end=" << END << ".");
 
             begin_ = BEGIN;
@@ -277,7 +277,7 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(speed_, Speed_t(0))), "Slider2::Constructor given SPEED of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(speed_, Speed_t(0))), "Slider2::Constructor given SPEED of zero.");
             Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX);
         }
 
@@ -387,7 +387,7 @@ namespace sliders
                 const Value_t INITIAL_VAL,
                 const Value_t TARGET)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == sfml_util::IsRealClose(SPEED_MAX, Speed_t(0))), "Drifter::Reset() given speed_max of zero.");
+        M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED_MAX, Speed_t(0))), "Drifter::Reset() given speed_max of zero.");
         M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= THE_MIN) && (INITIAL_VAL <= THE_MAX)), "Drifter::Reset() given initial value of " << INITIAL_VAL << ", which is not within the min and max given: [" << THE_MIN << "," << THE_MAX << "].");
         M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Drifter::Reset() was given a min=" << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 

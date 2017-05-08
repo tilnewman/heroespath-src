@@ -38,7 +38,7 @@ namespace random
     template<typename T>
     T Real(const T THE_MIN, const T THE_MAX)
     {
-        if (sfml_util::IsRealClose(THE_MIN, THE_MAX))
+        if (utilz::IsRealClose(THE_MIN, THE_MAX))
         {
             return THE_MIN;
         }

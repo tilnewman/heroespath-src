@@ -51,7 +51,7 @@ namespace chance
         for (auto const & NEXT_MAP_PAIR : MAP)
             chanceSubTotal += NEXT_MAP_PAIR.second;
 
-        M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::IsRealClose(chanceSubTotal, 0.0f) == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
+        M_ASSERT_OR_LOGANDTHROW_SS((utilz::IsRealClose(chanceSubTotal, 0.0f) == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
 
         const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );
 
@@ -162,7 +162,7 @@ namespace chance
                 if (NEXT_MAP_PAIR_INNER.first > 0)
                     chanceSubTotal += NEXT_MAP_PAIR_INNER.second;
 
-        if (sfml_util::IsRealClose(chanceSubTotal, 0.0f))
+        if (utilz::IsRealClose(chanceSubTotal, 0.0f))
             return std::make_pair(MAP.begin()->first, 0);
 
         const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );

@@ -104,7 +104,7 @@ namespace box
     {
         return ((L.color_set == R.color_set) &&
                 (L.gold_bars == R.gold_bars) &&
-                (sfml_util::IsRealClose(L.line_thickness, R.line_thickness) ) &&
+                (utilz::IsRealClose(L.line_thickness, R.line_thickness) ) &&
                 (L.region == R.region) &&
                 (L.will_grow == R.will_grow) &&
                 (L.frame_lines == R.frame_lines) &&

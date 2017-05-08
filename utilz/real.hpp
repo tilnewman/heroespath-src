@@ -1,5 +1,5 @@
-#ifndef SFMLUTIL_REALUTILS_HPP_INCLUDED
-#define SFMLUTIL_REALUTILS_HPP_INCLUDED
+#ifndef UTILZ_REALUTILS_HPP_INCLUDED
+#define UTILZ_REALUTILS_HPP_INCLUDED
 //
 // real-utils.hpp
 //
@@ -7,7 +7,7 @@
 #include <limits> //for epsilon
 
 
-namespace sfml_util
+namespace utilz
 {
 
     template<typename T>
@@ -28,4 +28,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_REALUTILS_HPP_INCLUDED
+#endif //UTILZ_REALUTILS_HPP_INCLUDED

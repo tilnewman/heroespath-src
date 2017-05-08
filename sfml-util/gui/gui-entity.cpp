@@ -232,25 +232,25 @@ namespace gui
     {
         if (L.entityRegion_ != R.entityRegion_)
         {
-            if (sfml_util::IsRealClose(L.entityRegion_.left, R.entityRegion_.left) == false)
+            if (utilz::IsRealClose(L.entityRegion_.left, R.entityRegion_.left) == false)
                 return (L.entityRegion_.left < R.entityRegion_.left);
 
-            if (sfml_util::IsRealClose(L.entityRegion_.top, R.entityRegion_.top) == false)
+            if (utilz::IsRealClose(L.entityRegion_.top, R.entityRegion_.top) == false)
                 return (L.entityRegion_.top< R.entityRegion_.top);
 
-            if (sfml_util::IsRealClose(L.entityRegion_.width, R.entityRegion_.width) == false)
+            if (utilz::IsRealClose(L.entityRegion_.width, R.entityRegion_.width) == false)
                 return (L.entityRegion_.width< R.entityRegion_.width);
 
-            if (sfml_util::IsRealClose(L.entityRegion_.height, R.entityRegion_.height) == false)
+            if (utilz::IsRealClose(L.entityRegion_.height, R.entityRegion_.height) == false)
                 return (L.entityRegion_.height < R.entityRegion_.height);
         }
 
         if (L.entityPrevPos_ != R.entityPrevPos_)
         {
-            if (sfml_util::IsRealClose(L.entityPrevPos_.x, R.entityPrevPos_.x) == false)
+            if (utilz::IsRealClose(L.entityPrevPos_.x, R.entityPrevPos_.x) == false)
                 return L.entityPrevPos_.x < R.entityPrevPos_.x;
 
-            if (sfml_util::IsRealClose(L.entityPrevPos_.y, R.entityPrevPos_.y) == false)
+            if (utilz::IsRealClose(L.entityPrevPos_.y, R.entityPrevPos_.y) == false)
                 return L.entityPrevPos_.y < R.entityPrevPos_.y;
         }
 

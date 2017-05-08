@@ -85,7 +85,7 @@ namespace gui
 
     bool operator==(const TextInfo & L, const TextInfo R)
     {
-        if (sfml_util::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        if (utilz::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
             return false;
 
         return std::tie(L.text,
