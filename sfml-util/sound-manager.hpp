@@ -58,10 +58,10 @@ namespace sfml_util
     class SoundManager
     {
         //prevent copy construction
-        SoundManager(const SoundManager &);
+        SoundManager(const SoundManager &) =delete;
 
         //prevent copy assignment
-        SoundManager & operator=(const SoundManager &);
+        SoundManager & operator=(const SoundManager &) =delete;
 
         //prevent non-singleton construction
         SoundManager();

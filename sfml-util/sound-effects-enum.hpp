@@ -166,6 +166,7 @@ namespace sfml_util
             MaterialHitWood,
             MaterialHitMisc,
             ClawTear,
+            Magic1,
             Count,
             None,
             Random

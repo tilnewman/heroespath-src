@@ -168,6 +168,7 @@ namespace sfml_util
             case MaterialHitWood:   { return "material-hit-wood"; }
             case MaterialHitMisc:   { return "material-hit-misc"; }
             case ClawTear:          { return "claw-tear";  }
+            case Magic1:            { return "magic1"; }
             case Count:
             case None:
             case Random:
@@ -350,6 +351,7 @@ namespace sfml_util
             case MaterialHitWood:
             case MaterialHitMisc:       { return "sound-effects/combat/material-hit"; }
             case ClawTear:              { return "sound-effects/combat/claw-tear"; }
+            case Magic1:                { return "sound-effects/misc"; }
             case Count:
             case None:
             case Random:

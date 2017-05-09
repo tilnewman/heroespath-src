@@ -483,7 +483,7 @@ namespace sfml_util
         if (bufferSPtr.get() == nullptr)
             LoadSound(sound_effect::Filename(E), sound_effect::Directory(E), bufferSPtr);
 
-        SoundSPtr_t soundSPtr(new sf::Sound(*bufferSPtr));
+        SoundSPtr_t soundSPtr(new sf::Sound( * bufferSPtr));
         soundSPtr->setVolume(SoundEffectVolume());
         return soundSPtr;
     }
@@ -496,8 +496,8 @@ namespace sfml_util
 
 
     void SoundManager::OpenMusic(const std::string & MUSIC_FILE_NAME,
-        const std::string & MUSIC_DIR_NAME,
-        MusicSPtr_t &       musicSPtr) const
+                                 const std::string & MUSIC_DIR_NAME,
+                                 MusicSPtr_t &       musicSPtr) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME) / bfs::path(MUSIC_FILE_NAME)));
@@ -506,8 +506,8 @@ namespace sfml_util
 
 
     void SoundManager::LoadSound(const std::string & SOUND_FILE_NAME,
-        const std::string & SOUND_DIR_NAME,
-        SoundBufferSPtr_t & soundBufferSPtr) const
+                                 const std::string & SOUND_DIR_NAME,
+                                 SoundBufferSPtr_t & soundBufferSPtr) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(soundsDirectoryPath_) / bfs::path(SOUND_DIR_NAME) / bfs::path(SOUND_FILE_NAME)));

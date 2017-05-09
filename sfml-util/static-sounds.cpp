@@ -166,7 +166,9 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sptrVec_.size()), "sfml_util::StaticSounds::ReleaseAt(" << INDEX << ") was given an index out of range.");
 
         if (sptrVec_[INDEX].get() != nullptr)
+        {
             sptrVec_[INDEX].reset();
+        }
     }
 
 
