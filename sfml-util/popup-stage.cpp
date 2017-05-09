@@ -19,6 +19,7 @@
 #include "game/log-macros.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/creature.hpp"
+#include "game/spell/spell-base.hpp"
 
 #include "utilz/random.hpp"
 
@@ -42,54 +43,63 @@ namespace sfml_util
                            const TextureSPtr_t &   ACCENT_TEXTURE_SPTR,
                            const TextureSPtr_t &   TEXTURE_SPTR)
     :
-        Stage                  (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
-        POPUP_INFO_            (POPUP_INFO),
-        backgroundSprite_      (),
-        backgroundTextureSPtr_ (),
-        INNER_REGION_          (INNER_REGION),
-        textRegionSPtr_        (),
-        textRegion_            (),
-        elapsedTimeCounter_    (0.0f),
-        secondCounter_         (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
-        box_                   ("PopupWindow's", gui::box::Info()),
-        gradient_              (),
-        accentSprite_          (ACCENT_SPRITE),
-        accentTextureSPtr_     (ACCENT_TEXTURE_SPTR),
-        selectPopupButtonSPtr_ (),
-        sliderbarSPtr_         (),
-        sliderbarPosTop_       (0.0f),
-        willSliderbarUpdate_   (true),
-        willTextBoxUpdate_     (true),
-        infoTextRegionSPtr_    (),
-        textEntryBoxSPtr_      (),
-        isImageProcAllowed_    (false),
-        isInitialAnimation_    (true),
-        willShowImageCount_    (false),
-        imageSpriteCurr_       (),
-        imageSpritePrev_       (),
-        areImagesMoving_       (false),
-        areImagesMovingLeft_   (false),
-        imagesRect_            (),
-        imageWrnTextRegionSPtr_(),
-        imageNumTextRegionSPtr_(),
-        imageIndex_            (0),
-        imageIndexLastSoundOn_ (0),
-        imageIndexLastSoundOff_(0),
-        imageCurrTargetScale_  (1.0f),
-        imagePrevStartScale_   (1.0f),
-        imagePrevStartPosX_    (0.0f),
-        imageCurrTravelDist_   (0.0f),
-        imagePrevTravelDist_   (0.0f),
-        imageMoveQueue_        (),
-        imageSlider_           (IMAGE_SLIDER_SPEED_),
-        beforeFadeTimerSec_    (0.0f),
-        fadeAlpha_             (0.0f),
-        spellbookState_        (SpellbookState::FadeingIn),
-        playerTextureSPtr_     (),
-        playerSprite_          (),
-        pageRectLeft_          (),
-        pageRectRight_         (),
-        deatilsTextRegionUPtr_ ()
+        Stage                      (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
+        POPUP_INFO_                (POPUP_INFO),
+        backgroundSprite_          (),
+        backgroundTextureSPtr_     (),
+        INNER_REGION_              (INNER_REGION),
+        textRegionSPtr_            (),
+        textRegion_                (),
+        elapsedTimeCounter_        (0.0f),
+        secondCounter_             (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
+        box_                       ("PopupWindow's", gui::box::Info()),
+        gradient_                  (),
+        accentSprite_              (ACCENT_SPRITE),
+        accentTextureSPtr_         (ACCENT_TEXTURE_SPTR),
+        selectPopupButtonSPtr_     (),
+        sliderbarSPtr_             (),
+        sliderbarPosTop_           (0.0f),
+        willSliderbarUpdate_       (true),
+        willTextBoxUpdate_         (true),
+        infoTextRegionSPtr_        (),
+        textEntryBoxSPtr_          (),
+        isImageProcAllowed_        (false),
+        isInitialAnimation_        (true),
+        willShowImageCount_        (false),
+        imageSpriteCurr_           (),
+        imageSpritePrev_           (),
+        areImagesMoving_           (false),
+        areImagesMovingLeft_       (false),
+        imagesRect_                (),
+        imageWrnTextRegionSPtr_    (),
+        imageNumTextRegionSPtr_    (),
+        imageIndex_                (0),
+        imageIndexLastSoundOn_     (0),
+        imageIndexLastSoundOff_    (0),
+        imageCurrTargetScale_      (1.0f),
+        imagePrevStartScale_       (1.0f),
+        imagePrevStartPosX_        (0.0f),
+        imageCurrTravelDist_       (0.0f),
+        imagePrevTravelDist_       (0.0f),
+        imageMoveQueue_            (),
+        imageSlider_               (IMAGE_SLIDER_SPEED_),
+        beforeFadeTimerSec_        (0.0f),
+        fadeAlpha_                 (0.0f),
+        spellbookState_            (SpellbookState::FadeingIn),
+        playerTextureSPtr_         (),
+        playerSprite_              (),
+        pageRectLeft_              (),
+        pageRectRight_             (),
+        deatilsTextRegionUPtr_     (),
+        listBoxLabelTextRegionUPtr_(),
+        spellListBoxSPtr_          (),
+        LISTBOX_IMAGE_COLOR_       (sf::Color(255, 255, 255, 190)),
+        LISTBOX_LINE_COLOR_        (sfml_util::FontManager::Instance()->Color_GrayDark()),
+        LISTBOX_COLOR_FG_          (LISTBOX_LINE_COLOR_),
+        LISTBOX_COLOR_BG_          (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 220)),
+        LISTBOX_COLORSET_          (LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
+        LISTBOX_BG_INFO_           (LISTBOX_COLOR_BG_),
+        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left)
     {
         if (TEXTURE_SPTR.get() != nullptr)
         {
@@ -168,6 +178,31 @@ namespace sfml_util
         }
         else
             return false;
+    }
+
+
+    bool PopupStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    {
+        if (PACKAGE.package.PTR_ != nullptr)
+        {
+            if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click) ||
+                (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange) ||
+                (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
+                (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+            {
+                //TODO handle change in right page spell description
+                //PACKAGE.package.PTR_->GetSelected()
+                return true;
+            }
+            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            {
+                //TODO handle spell cast decision
+                //PACKAGE.package.PTR_->GetSelected()
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -502,7 +537,7 @@ namespace sfml_util
                << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
                << "\n";
 
-            const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(ss.str(),
+            const sfml_util::gui::TextInfo DETAILS_TEXTINFO(ss.str(),
                                                              sfml_util::FontManager::Instance()->Font_Default1(),
                                                              sfml_util::FontManager::Instance()->Size_Small(),
                                                              sfml_util::FontManager::Color_GrayDarker(),
@@ -513,7 +548,82 @@ namespace sfml_util
                                                    0.0f,
                                                    0.0f };
 
-            deatilsTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowDetails", DETAILS_TEXT_INFO, DETAILS_TEXT_RECT);
+            deatilsTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowDetails",
+                                                                       DETAILS_TEXTINFO,
+                                                                       DETAILS_TEXT_RECT);
+
+            //spell listbox label
+            const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO("Spells",
+                                                                  sfml_util::FontManager::Instance()->Font_Default1(),
+                                                                  sfml_util::FontManager::Instance()->Size_Largeish(),
+                                                                  sfml_util::FontManager::Color_GrayDarker(),
+                                                                  sfml_util::Justified::Left);
+
+            const sf::FloatRect LISTBOX_LABEL_TEXTRECT{ pageRectLeft_.left + sfml_util::MapByRes(10.0f, 40.0f),
+                                                        playerSprite_.getGlobalBounds().top + playerSprite_.getGlobalBounds().height + sfml_util::MapByRes(20.0f, 80.0f),
+                                                        0.0f,
+                                                        0.0f };
+
+            listBoxLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellListLabel",
+                                                                            LISTBOX_LABEL_TEXTINFO,
+                                                                            LISTBOX_LABEL_TEXTRECT);
+        
+
+            //spell listbox
+            auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
+            auto const LISTBOX_RECT_LEFT  { pageRectLeft_.left + LISTBOX_MARGIN };
+            auto const LISTBOX_RECT_TOP   { listBoxLabelTextRegionUPtr_->GetEntityRegion().top + listBoxLabelTextRegionUPtr_->GetEntityRegion().height + LISTBOX_MARGIN };
+            auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
+            auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height) - LISTBOX_RECT_TOP) - (LISTBOX_MARGIN * 2.0f) };
+            
+            const sf::FloatRect LISTBOX_RECT(LISTBOX_RECT_LEFT,
+                                             LISTBOX_RECT_TOP,
+                                             LISTBOX_RECT_WIDTH,
+                                             LISTBOX_RECT_HEIGHT);
+
+            const sfml_util::gui::box::Info LISTBOX_BOX_INFO(1,
+                                                             true,
+                                                             LISTBOX_RECT,
+                                                             LISTBOX_COLORSET_,
+                                                             LISTBOX_BG_INFO_);
+
+            sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
+            auto const SPELL_PVEC{ cPtr->SpellsPVec() };
+            for (auto const NEXT_SPELL_PTR : SPELL_PVEC)
+            {
+                listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
+                auto const LISTBOXITEM_SPTR( std::make_shared<gui::ListBoxItem>(NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
+                                                                                listBoxItemTextInfo_,
+                                                                                NEXT_SPELL_PTR) );
+                listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+            }
+
+            spellListBoxSPtr_ = std::make_shared<gui::ListBox>("PopupStage'sSpellListBox",
+                                                               LISTBOX_RECT,
+                                                               listBoxItemsSList,
+                                                               this,
+                                                               10.0f,
+                                                               6.0f,
+                                                               LISTBOX_BOX_INFO,
+                                                               LISTBOX_LINE_COLOR_,
+                                                               sfml_util::gui::ListBox::NO_LIMIT_,
+                                                               this);
+
+            EntityAdd(spellListBoxSPtr_);
+            spellListBoxSPtr_->SetSelectedIndex(0);
+            spellListBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
+
+            //Force spell listbox to take focus so that user up/down
+            //keystrokes work without having to click on the listbox.
+            SetFocus(spellListBoxSPtr_);
+
+            //Force spell listbox selection up and down to force
+            //colors to correct.
+            sf::Event::KeyEvent keyEvent;
+            keyEvent.code = sf::Keyboard::Down;
+            spellListBoxSPtr_->KeyRelease(keyEvent);
+            keyEvent.code = sf::Keyboard::Up;
+            spellListBoxSPtr_->KeyRelease(keyEvent);
         }
     }
 
@@ -552,6 +662,7 @@ namespace sfml_util
         {
             target.draw(playerSprite_, states);
             deatilsTextRegionUPtr_->draw(target, states);
+            listBoxLabelTextRegionUPtr_->draw(target, states);
         }
 
         Stage::Draw(target, states);

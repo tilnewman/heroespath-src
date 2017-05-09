@@ -14,6 +14,9 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
+#include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
 
 #include "game/popup-info.hpp"
 
@@ -41,7 +44,8 @@ namespace sfml_util
     :
         public Stage,
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
-        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
+        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t,
+        public sfml_util::gui::callback::IListBoxCallbackHandler
     {
 
         //prevent copy construction
@@ -72,6 +76,7 @@ namespace sfml_util
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &);
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
@@ -154,6 +159,15 @@ namespace sfml_util
         sf::FloatRect           pageRectLeft_;
         sf::FloatRect           pageRectRight_;
         gui::TextRegionUPtr_t   deatilsTextRegionUPtr_;
+        gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
+        gui::ListBoxSPtr_t      spellListBoxSPtr_;
+        const sf::Color         LISTBOX_IMAGE_COLOR_;
+        const sf::Color         LISTBOX_LINE_COLOR_;
+        const sf::Color         LISTBOX_COLOR_FG_;
+        const sf::Color         LISTBOX_COLOR_BG_;
+        const gui::ColorSet     LISTBOX_COLORSET_;
+        gui::BackgroundInfo     LISTBOX_BG_INFO_;
+        gui::TextInfo           listBoxItemTextInfo_;
     };
 
     using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
