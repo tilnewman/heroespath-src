@@ -308,11 +308,11 @@ namespace gui
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ", sfml_util::Justified::Center, sfml_util::FontManager::Instance()->Size_Large()),
-                               sfml_util::PopupButtons::None,
+                               sfml_util::PopupButtons::Okay,
                                PopupImage::Spellbook,
                                1.0f,
                                game::Popup::Spellbook,
-                               sfml_util::sound_effect::None,
+                               sfml_util::sound_effect::TickOn1,//TODO TEMP REPLCE with book/page-turn sound effect
                                sfml_util::PopupButtonColor::Dark,
                                false,
                                std::vector<std::size_t>(),
@@ -411,17 +411,18 @@ namespace gui
             rect.width = SPELLBOOK_WIDTH;
             rect.height = SPELLBOOK_HEIGHT;
 
-            //Spellbook popup's do not use accent sprites or the inner rect
+            //Spellbook popup's do not use accent sprites
             sf::Sprite accentSprite;
             sfml_util::TextureSPtr_t accentTextureSPtr;
+
             auto const INNER_RECT{ rect };
 
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         textureSPtr,
                                                                          accentSprite,
-                                                                         accentTextureSPtr) );
+                                                                         accentTextureSPtr,
+                                                                         textureSPtr) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
@@ -451,9 +452,9 @@ namespace gui
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         textureSPtr,
                                                                          accentSprite,
-                                                                         accentTextureSPtr) );
+                                                                         accentTextureSPtr,
+                                                                         textureSPtr) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }

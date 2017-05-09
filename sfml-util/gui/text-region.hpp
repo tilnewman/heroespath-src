@@ -40,10 +40,10 @@ namespace gui
         public callback::ISliderBarCallbackHandler_t
     {
         //prevent copy construction
-        TextRegion(const TextRegion &);
+        TextRegion(const TextRegion &) =delete;
 
         //prevent copy assignment
-        TextRegion & operator=(const TextRegion &);
+        TextRegion & operator=(const TextRegion &) =delete;
 
     public:
         //if using this constructor, Setup() must be called before any other function
@@ -109,6 +109,7 @@ namespace gui
 
     public:
         static const unsigned int DEFAULT_NO_RESIZE_;
+
     protected:
         box::Info                 boxInfo_;
         box::BoxSPtr_t            boxSPtr_;
@@ -124,8 +125,10 @@ namespace gui
         bool                      allowScrollbarOrig_;
     };
 
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
     using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
     using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
+
 }
 }
 #endif //SFMLUTIL_GUI_TEXTREGION_INCLUDED

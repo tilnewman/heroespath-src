@@ -32,21 +32,21 @@ namespace sfml_util
     const float PopupStage::IMAGE_SLIDER_SPEED_                     { 4.0f };
     const int   PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
     const float PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
-    const float PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.75f };
+    const float PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
 
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
-                           const sf::FloatRect &         REGION,
-                           const sf::FloatRect &         INNER_REGION,
-                           const TextureSPtr_t &         TEXTURE_SPTR,
-                           const sf::Sprite &            ACCENT_SPRITE,
-                           const TextureSPtr_t &         ACCENT_TEXTURE_SPTR)
+                           const sf::FloatRect &   REGION,
+                           const sf::FloatRect &   INNER_REGION,
+                           const sf::Sprite &      ACCENT_SPRITE,
+                           const TextureSPtr_t &   ACCENT_TEXTURE_SPTR,
+                           const TextureSPtr_t &   TEXTURE_SPTR)
     :
         Stage                  (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
         POPUP_INFO_            (POPUP_INFO),
-        backgroundSprite_      ( * TEXTURE_SPTR),
-        backgroundTextureSPtr_ (TEXTURE_SPTR),
-        innerRegion_           (INNER_REGION),
+        backgroundSprite_      (),
+        backgroundTextureSPtr_ (),
+        INNER_REGION_          (INNER_REGION),
         textRegionSPtr_        (),
         textRegion_            (),
         elapsedTimeCounter_    (0.0f),
@@ -86,62 +86,18 @@ namespace sfml_util
         fadeAlpha_             (0.0f),
         spellbookState_        (SpellbookState::FadeingIn),
         playerTextureSPtr_     (),
-        playerSprite_          ()
-    {}
-
-
-    PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
-                           const sf::FloatRect &         REGION,
-                           const sf::FloatRect &         INNER_REGION,
-                           const sf::Sprite &            ACCENT_SPRITE,
-                           const TextureSPtr_t &         ACCENT_TEXTURE_SPTR)
-    :
-        Stage                  (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
-        POPUP_INFO_            (POPUP_INFO),
-        backgroundSprite_      (),
-        backgroundTextureSPtr_     (),
-        innerRegion_           (INNER_REGION),
-        textRegionSPtr_        (),
-        textRegion_            (),
-        elapsedTimeCounter_    (0.0f),
-        secondCounter_         (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
-        box_                   ("PopupWindow's", POPUP_INFO.BoxInfo()),
-        gradient_              (),
-        accentSprite_          (ACCENT_SPRITE),
-        accentTextureSPtr_     (ACCENT_TEXTURE_SPTR),
-        selectPopupButtonSPtr_ (),
-        sliderbarSPtr_         (),
-        sliderbarPosTop_       (0.0f),
-        willSliderbarUpdate_   (true),
-        willTextBoxUpdate_     (true),
-        infoTextRegionSPtr_    (),
-        textEntryBoxSPtr_      (),
-        isImageProcAllowed_    (false),
-        isInitialAnimation_    (true),
-        willShowImageCount_    (false),
-        imageSpriteCurr_       (),
-        imageSpritePrev_       (),
-        areImagesMoving_       (false),
-        areImagesMovingLeft_   (false),
-        imagesRect_            (),
-        imageWrnTextRegionSPtr_(),
-        imageNumTextRegionSPtr_(),
-        imageIndex_            (0),
-        imageIndexLastSoundOn_ (0),
-        imageIndexLastSoundOff_(0),
-        imageCurrTargetScale_  (1.0f),
-        imagePrevStartScale_   (1.0f),
-        imagePrevStartPosX_    (0.0f),
-        imageCurrTravelDist_   (0.0f),
-        imagePrevTravelDist_   (0.0f),
-        imageMoveQueue_        (),
-        imageSlider_           (IMAGE_SLIDER_SPEED_),
-        beforeFadeTimerSec_    (0.0f),
-        fadeAlpha_             (0.0f),
-        spellbookState_        (SpellbookState::FadeingIn),
-        playerTextureSPtr_     (),
-        playerSprite_          ()
-    {}
+        playerSprite_          (),
+        pageRectLeft_          (),
+        pageRectRight_         (),
+        deatilsTextRegionUPtr_ ()
+    {
+        if (TEXTURE_SPTR.get() != nullptr)
+        {
+            backgroundTextureSPtr_ = TEXTURE_SPTR;
+            backgroundTextureSPtr_->setSmooth(true);
+            backgroundSprite_.setTexture( * backgroundTextureSPtr_);
+        }
+    }
 
 
     PopupStage::~PopupStage()
@@ -225,16 +181,9 @@ namespace sfml_util
 
         if (POPUP_INFO_.Image() == sfml_util::PopupImage::Spellbook)
         {
-            auto const BACKGROUND_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
-            auto const BACKGROUND_HEIGHT{ (static_cast<float>(backgroundTextureSPtr_->getSize().y) * BACKGROUND_WIDTH) / static_cast<float>(backgroundTextureSPtr_->getSize().x) };
-
-            sf::FloatRect r;
-            r.left = ((sfml_util::Display::Instance()->GetWinWidth() - BACKGROUND_WIDTH) * 0.5f);
-            r.top = ((sfml_util::Display::Instance()->GetWinHeight() - BACKGROUND_HEIGHT) * 0.5f);
-            r.width = BACKGROUND_WIDTH;
-            r.height = BACKGROUND_HEIGHT;
-
-            StageRegionSet( r );
+            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTextureSPtr_->getSize().x));
+            backgroundSprite_.setScale(SCALE, SCALE);
+            StageRegionSet( INNER_REGION_ );
         }
         else
         {
@@ -258,29 +207,29 @@ namespace sfml_util
         const float POPUPBUTTON_TEXT_BOTTOM_MARGIN(sfml_util::MapByRes(30.0f, 90.0f));
         const float POPUPBUTTON_TEXT_BOTTOM_MARGIN_EXTRA_FOR_CUSTOM((POPUP_INFO_.Image() == sfml_util::PopupImage::Custom) ? 25.0f : 0.0f);
         const float BUTTON_VERT_OFFSET(POPUPBUTTON_TEXT_HEIGHT + POPUPBUTTON_TEXT_BOTTOM_MARGIN + POPUPBUTTON_TEXT_BOTTOM_MARGIN_EXTRA_FOR_CUSTOM);
-        const float BUTTON_POS_TOP((StageRegionTop() + innerRegion_.top + innerRegion_.height) - BUTTON_VERT_OFFSET);
+        const float BUTTON_POS_TOP((StageRegionTop() + INNER_REGION_.top + INNER_REGION_.height) - BUTTON_VERT_OFFSET);
 
         if (POPUP_INFO_.Buttons() & Response::Yes)
         {
-            sfml_util::PopupButton_YesSPtr_t buttonYesSPtr(new sfml_util::PopupButton_Yes(POPUP_INFO_, StageRegionLeft() + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f, BUTTON_POS_TOP));
+            sfml_util::PopupButton_YesSPtr_t buttonYesSPtr(new sfml_util::PopupButton_Yes(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width / 4.0f) - 50.0f, BUTTON_POS_TOP));
             EntityAdd(buttonYesSPtr);
         }
 
         if (POPUP_INFO_.Buttons() & Response::No)
         {
-            sfml_util::PopupButton_NoSPtr_t buttonNoSPtr(new sfml_util::PopupButton_No(POPUP_INFO_, StageRegionLeft() + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f)) - 40.0f, BUTTON_POS_TOP));
+            sfml_util::PopupButton_NoSPtr_t buttonNoSPtr(new sfml_util::PopupButton_No(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (2.0f * (INNER_REGION_.width / 4.0f)) - 40.0f, BUTTON_POS_TOP));
             EntityAdd(buttonNoSPtr);
         }
 
         if (POPUP_INFO_.Buttons() & Response::Cancel)
         {
-            sfml_util::PopupButton_CancelSPtr_t buttonCancelSPtr(new sfml_util::PopupButton_Cancel(POPUP_INFO_, (StageRegionLeft() + innerRegion_.left + innerRegion_.width) - (innerRegion_.width / 3.0f) - 0.0f, BUTTON_POS_TOP));
+            sfml_util::PopupButton_CancelSPtr_t buttonCancelSPtr(new sfml_util::PopupButton_Cancel(POPUP_INFO_, (StageRegionLeft() + INNER_REGION_.left + INNER_REGION_.width) - (INNER_REGION_.width / 3.0f) - 0.0f, BUTTON_POS_TOP));
             EntityAdd(buttonCancelSPtr);
         }
 
         if (POPUP_INFO_.Buttons() & Response::Continue)
         {
-            const float MIDDLE(StageRegionLeft() + innerRegion_.left + (innerRegion_.width * 0.5f));
+            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
             sfml_util::PopupButton_ContinueSPtr_t buttonContinueSPtr(new sfml_util::PopupButton_Continue(POPUP_INFO_, MIDDLE - 30.0f, BUTTON_POS_TOP));
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
@@ -291,7 +240,7 @@ namespace sfml_util
 
         if (POPUP_INFO_.Buttons() & Response::Okay)
         {
-            const float MIDDLE(StageRegionLeft() + innerRegion_.left + (innerRegion_.width * 0.5f));
+            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
             sfml_util::PopupButton_OkaySPtr_t buttonOkaySPtr(new sfml_util::PopupButton_Okay(POPUP_INFO_, MIDDLE - 50.0f, BUTTON_POS_TOP));
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
@@ -302,7 +251,7 @@ namespace sfml_util
 
         if (POPUP_INFO_.Buttons() & Response::Select)
         {
-            const float MIDDLE(StageRegionLeft() + innerRegion_.left + (innerRegion_.width * 0.5f));
+            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
             selectPopupButtonSPtr_.reset( new sfml_util::PopupButton_Select(POPUP_INFO_, MIDDLE - 100.0f, BUTTON_POS_TOP) );
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
@@ -313,10 +262,10 @@ namespace sfml_util
 
         //establish text region
         //Note:  Spellbook popup has two regions, one for each page, so textRegion_ is not used on the Spellbook popup stage.
-        textRegion_.left   = StageRegionLeft() + innerRegion_.left;
-        textRegion_.top    = StageRegionTop() + innerRegion_.top;
-        textRegion_.width  = innerRegion_.width;
-        textRegion_.height = (innerRegion_.height - BUTTON_VERT_OFFSET) - 12.0f;//this magic # found by exeriment to be a good looking boundary between text and buttons
+        textRegion_.left   = StageRegionLeft() + INNER_REGION_.left;
+        textRegion_.top    = StageRegionTop() + INNER_REGION_.top;
+        textRegion_.width  = INNER_REGION_.width;
+        textRegion_.height = (INNER_REGION_.height - BUTTON_VERT_OFFSET) - 12.0f;//this magic # found by exeriment to be a good looking boundary between text and buttons
 
         sf::FloatRect textRegionRect(textRegion_);
         textRegionRect.height = 0.0f;
@@ -498,7 +447,73 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
+            //setup regions
+            auto const LEFT_PAGE_RECT_RAW { sfml_util::ConvertRect<int, float>(sfml_util::gui::PopupManager::Rect_Spellbook_PageLeft()) };
+            
+            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTextureSPtr_->getSize().x));
+
+            pageRectLeft_.left   = INNER_REGION_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
+            pageRectLeft_.top    = INNER_REGION_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
+            pageRectLeft_.width  = LEFT_PAGE_RECT_RAW.width * SCALE;
+            pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
+            
+            auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(sfml_util::gui::PopupManager::Rect_Spellbook_PageRight()) };
+
+            pageRectRight_.left = INNER_REGION_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
+            pageRectRight_.top = INNER_REGION_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
+            pageRectRight_.width = RIGHT_PAGE_RECT_RAW.width * SCALE;
+            pageRectRight_.height = RIGHT_PAGE_RECT_RAW.height * SCALE;
+
+            //setup player image
             playerTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
+            playerTextureSPtr_->setSmooth(true);
+            sfml_util::Invert( * playerTextureSPtr_);
+            sfml_util::Mask( * playerTextureSPtr_, sf::Color::White);
+            //
+            playerSprite_.setTexture( * playerTextureSPtr_ );
+            auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
+            playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
+            playerSprite_.setColor(sf::Color(255, 255, 255, 127));
+            playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
+            
+            //setup player details text
+            auto cPtr{ POPUP_INFO_.CreaturePtr() };
+            std::ostringstream ss;
+            ss << cPtr->Name() << "\n";
+
+            if (cPtr->IsBeast())
+            {
+                ss << cPtr->Race().Name();
+
+                if (cPtr->Race().Which() != game::creature::race::Wolfen)
+                {
+                    ss << ", " << cPtr->Role().Name();
+                }
+
+                ss << " " << cPtr->RankClassName() << "\n";
+            }
+            else
+            {
+                ss << cPtr->RankClassName() << " " << cPtr->Role().Name() << "\n" << cPtr->Race().Name() << "\n";
+            }
+
+            ss << "Rank:  " << cPtr->Rank() << "\n"
+               << "Health:  " << cPtr->HealthCurrent() << "/" << cPtr->HealthNormal() << " " << cPtr->HealthPercentStr() << "\n"
+               << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
+               << "\n";
+
+            const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(ss.str(),
+                                                             sfml_util::FontManager::Instance()->Font_Default1(),
+                                                             sfml_util::FontManager::Instance()->Size_Small(),
+                                                             sfml_util::FontManager::Color_GrayDarker(),
+                                                             sfml_util::Justified::Left);
+
+            const sf::FloatRect DETAILS_TEXT_RECT{ pageRectLeft_.left + playerSprite_.getGlobalBounds().width + sfml_util::MapByRes(10.0f, 40.0f),
+                                                   pageRectLeft_.top + sfml_util::MapByRes(20.0f, 80.0f),
+                                                   0.0f,
+                                                   0.0f };
+
+            deatilsTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowDetails", DETAILS_TEXT_INFO, DETAILS_TEXT_RECT);
         }
     }
 
@@ -536,6 +551,7 @@ namespace sfml_util
         else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
             target.draw(playerSprite_, states);
+            deatilsTextRegionUPtr_->draw(target, states);
         }
 
         Stage::Draw(target, states);

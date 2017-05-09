@@ -82,13 +82,13 @@ namespace gui
         static inline float SpeedMult_Fade() { return 500.0f; }
 
         //inner rects that content can appear within
-        static inline sf::IntRect Rect_Banner()         { return sf::IntRect( 78,  32, 338, 184); }
-        static inline sf::IntRect Rect_Regular()        { return sf::IntRect( 32,  32, 431, 268); }
-        static inline sf::IntRect Rect_RegularSidebar() { return sf::IntRect( 115, 32, 347, 268); }
-        static inline sf::IntRect Rect_Large()          { return sf::IntRect( 47,  47, 407, 403); }
-        static inline sf::IntRect Rect_LargeSidebar()   { return sf::IntRect( 85,  47, 360, 403); }
-        static inline sf::IntRect Rect_Spellbook_Page1(){ return sf::IntRect(128, 120, 648, 982); }
-        static inline sf::IntRect Rect_Spellbook_Page2(){ return sf::IntRect(982, 120, 648, 982); }
+        static inline sf::IntRect Rect_Banner()                 { return sf::IntRect( 78,  32, 338, 184); }
+        static inline sf::IntRect Rect_Regular()                { return sf::IntRect( 32,  32, 431, 268); }
+        static inline sf::IntRect Rect_RegularSidebar()         { return sf::IntRect(115,  32, 347, 268); }
+        static inline sf::IntRect Rect_Large()                  { return sf::IntRect( 47,  47, 407, 403); }
+        static inline sf::IntRect Rect_LargeSidebar()           { return sf::IntRect( 85,  47, 360, 403); }
+        static inline sf::IntRect Rect_Spellbook_PageLeft()     { return sf::IntRect(165, 155, 652, 990); }
+        static inline sf::IntRect Rect_Spellbook_PageRight()    { return sf::IntRect(932, 155, 652, 990); }
 
         //Returns a sprite for a randomly selected popup window accent that is
         //positioned, scaled, and colored for drawing to the paper popup window.

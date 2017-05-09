@@ -12,6 +12,7 @@
 #include "game/item/armor-factory.hpp"
 #include "game/item/misc-item-factory.hpp"
 #include "game/creature/creature.hpp"
+#include "game/spell/spell-enum.hpp"
 
 #include <exception>
 #include <sstream>
@@ -28,6 +29,7 @@ namespace player
         SetupInventory(characterPtrC);
         characterPtrC->SetCurrentWeaponsToBest();
         SetStartingHealth(characterPtrC);
+        SetStartingMana(characterPtrC);
         EnsureValidImageFilename(characterPtrC);
     }
 
@@ -191,6 +193,13 @@ namespace player
             characterPtrC->ItemAdd(wandSPtr);
             characterPtrC->ItemEquip(wandSPtr);
 
+            characterPtrC->SpellAdd(spell::Spells::Awaken);
+            characterPtrC->SpellAdd(spell::Spells::Bandage);
+            characterPtrC->SpellAdd(spell::Spells::ClearMind);
+            characterPtrC->SpellAdd(spell::Spells::Lift);
+            characterPtrC->SpellAdd(spell::Spells::Sleep);
+            characterPtrC->SpellAdd(spell::Spells::Antidote);
+
             return;
         }
 
@@ -212,6 +221,13 @@ namespace player
             characterPtrC->ItemAdd(wandSPtr);
             characterPtrC->ItemEquip(wandSPtr);
 
+            characterPtrC->SpellAdd(spell::Spells::Daze);
+            characterPtrC->SpellAdd(spell::Spells::Frighten);
+            characterPtrC->SpellAdd(spell::Spells::Sleep);
+            characterPtrC->SpellAdd(spell::Spells::Awaken);
+            characterPtrC->SpellAdd(spell::Spells::Poison);
+            characterPtrC->SpellAdd(spell::Spells::Sparks);
+            characterPtrC->SpellAdd(spell::Spells::Trip);
             return;
         }
 
@@ -282,5 +298,18 @@ namespace player
         characterPtrC->HealthNormalSet(STARTING_HEALTH);
         characterPtrC->HealthCurrentSet(STARTING_HEALTH);
     }
+
+
+    void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
+    {
+        if ((characterPtrC->Role().Which() == creature::role::Sorcerer) ||
+            (characterPtrC->Role().Which() == creature::role::Cleric))
+        {
+            auto const STARTING_MANA{ characterPtrC->Stats().Int().Current() / 2 };
+            characterPtrC->ManaNormalSet(STARTING_MANA);
+            characterPtrC->ManaCurrentSet(STARTING_MANA);
+        }
+    }
+
 }
 }

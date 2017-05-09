@@ -29,6 +29,7 @@ namespace player
         static void EquipBodyParts(CharacterPtrC_t);
         static stats::Health_t GetStartingHealth(CharacterCPtrC_t);
         static void SetStartingHealth(CharacterPtrC_t);
+        static void SetStartingMana(CharacterPtrC_t);
     };
 
 }

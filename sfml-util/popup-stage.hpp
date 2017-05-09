@@ -31,6 +31,7 @@ namespace sfml_util
     namespace gui
     {
         class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
         using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
     }
 
@@ -42,6 +43,12 @@ namespace sfml_util
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
+
+        //prevent copy construction
+        PopupStage(const PopupStage &) =delete;
+
+        //prevent copy assignment
+        PopupStage & operator=(const PopupStage &) =delete;
 
         //defines what is happening on the spellbook popup
         enum class SpellbookState
@@ -56,15 +63,9 @@ namespace sfml_util
         PopupStage(const game::PopupInfo & POPUP_INFO,
                    const sf::FloatRect &   REGION,
                    const sf::FloatRect &   INNER_REGION,
-                   const TextureSPtr_t &   TEXTURE_SPTR,
                    const sf::Sprite &      ACCENT_SPRITE,
-                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR);
-
-        PopupStage(const game::PopupInfo & POPUP_INFO,
-                   const sf::FloatRect &   REGION,
-                   const sf::FloatRect &   INNER_REGION,
-                   const sf::Sprite &      ACCENT_SPRITE,
-                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR);
+                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR,
+                   const TextureSPtr_t &   TEXTURE_SPTR = TextureSPtr_t());
 
         virtual ~PopupStage();
 
@@ -97,7 +98,7 @@ namespace sfml_util
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
         TextureSPtr_t            backgroundTextureSPtr_;
-        sf::FloatRect            innerRegion_;
+        const sf::FloatRect      INNER_REGION_;
         gui::TextRegionSPtr_t    textRegionSPtr_;
         sf::FloatRect            textRegion_;
         float                    elapsedTimeCounter_;
@@ -137,7 +138,7 @@ namespace sfml_util
         float                 imagePrevStartPosX_;
         float                 imageCurrTravelDist_;
         float                 imagePrevTravelDist_;
-        std::queue<std::size_t>    imageMoveQueue_;
+        std::queue<std::size_t> imageMoveQueue_;
         sliders::ZeroSliderOnce<float> imageSlider_;
 
         //members used to fade two images
@@ -147,11 +148,13 @@ namespace sfml_util
         float fadeAlpha_;
 
         //members supporting the spellbook popup
-        SpellbookState spellbookState_;
-        TextureSPtr_t playerTextureSPtr_;
-        sf::Sprite playerSprite_;
+        SpellbookState          spellbookState_;
+        TextureSPtr_t           playerTextureSPtr_;
+        sf::Sprite              playerSprite_;
+        sf::FloatRect           pageRectLeft_;
+        sf::FloatRect           pageRectRight_;
+        gui::TextRegionUPtr_t   deatilsTextRegionUPtr_;
     };
-
 
     using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
 

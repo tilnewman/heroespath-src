@@ -945,6 +945,36 @@ namespace creature
     }
 
 
+    bool Creature::SpellAdd(const spell::Spells::Enum E)
+    {
+        if (std::find(spellsVec_.begin(), spellsVec_.end(), E) == spellsVec_.end())
+        {
+            spellsVec_.push_back(E);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    bool Creature::SpellRemove(const spell::Spells::Enum E)
+    {
+        auto const FOUND_ITER{ std::find(spellsVec_.begin(), spellsVec_.end(), E) };
+
+        if (FOUND_ITER == spellsVec_.end())
+        {
+            return false;
+        }
+        else
+        {
+            spellsVec_.erase(FOUND_ITER);
+            return true;
+        }
+    }
+
+
     const std::string Creature::ToString() const
     {
         std::ostringstream ss;

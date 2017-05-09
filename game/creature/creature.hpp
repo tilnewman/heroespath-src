@@ -90,7 +90,7 @@ namespace creature
 
         inline const BodyType Body() const                      { return bodyType_; }
 
-        inline bool IsPlayerCharacter() const                   { return false; }
+        inline virtual bool IsPlayerCharacter() const           { return false; }
 
         inline const std::string Name() const                   { return name_; }
         inline void SetName(const std::string & N)              { name_ = N; }
@@ -226,6 +226,9 @@ namespace creature
         inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
+
+        bool SpellAdd(const spell::Spells::Enum);
+        bool SpellRemove(const spell::Spells::Enum);
 
         item::Weight_t WeightCanCarry() const;
 
