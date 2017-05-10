@@ -70,7 +70,7 @@ namespace sfml_util
             Initial = 0,
             Waiting,
             FadingOut,
-            FadeingIn,
+            FadingIn,
             Count
         };
 
@@ -104,18 +104,19 @@ namespace sfml_util
         //returns true of the select number is valid
         bool ProcessSelectNumber();
 
+        void SetupSpellbookPageRightForFadeIn();
         void SetupSpellbookPageRightText(const game::spell::SpellPtrC_t);
-        void SetSpellbookPageRightColors(const sf::Color & IMAGE_COLOR,
-                                         const sf::Color & TEXT_COLOR);
+        void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
+        void SetSpellbookPageRightColors();
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:
-        static const float IMAGE_SLIDER_SPEED_;
-        static const int   NUMBER_SELECT_INVALID_;
-        static const float BEFORE_FADE_STARTS_DELAY_SEC_;
-        static const float SPELLBOOK_COLOR_FADE_SPEED_;
-        static const float SPELLBOOK_IMAGE_ALPHA_;
+        static const float     IMAGE_SLIDER_SPEED_;
+        static const int       NUMBER_SELECT_INVALID_;
+        static const float     BEFORE_FADE_STARTS_DELAY_SEC_;
+        static const float     SPELLBOOK_COLOR_FADE_SPEED_;
+        static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
@@ -191,8 +192,12 @@ namespace sfml_util
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
         gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
         game::spell::SpellPtr_t spellCurrentPtr_;
-        sf::Color               spellPageImageColor_;
-        sf::Color               spellPageTextColor_;
+        sf::Color               spellColorImageCurrent_;
+        sf::Color               spellColorImageStart_;
+        sf::Color               spellColorImageEnd_;
+        sf::Color               spellColorTextCurrent_;
+        sf::Color               spellColorTextStart_;
+        sf::Color               spellColorTextEnd_;
         sliders::ZeroSliderOnce<float> spellColorSlider_;
     };
 
