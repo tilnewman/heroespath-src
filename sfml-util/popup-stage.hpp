@@ -34,6 +34,7 @@ namespace game
 namespace spell
 {
     class Spell;
+    using SpellPtr_t = Spell *;
     using SpellPtrC_t = Spell * const;
 }
 }
@@ -66,7 +67,8 @@ namespace sfml_util
         //defines what is happening on the spellbook popup
         enum class SpellbookState
         {
-            Waiting = 0,
+            Initial = 0,
+            Waiting,
             FadingOut,
             FadeingIn,
             Count
@@ -102,7 +104,9 @@ namespace sfml_util
         //returns true of the select number is valid
         bool ProcessSelectNumber();
 
-        void SetupSpellDetails(const game::spell::SpellPtrC_t);
+        void SetupSpellbookPageRightText(const game::spell::SpellPtrC_t);
+        void SetSpellbookPageRightColors(const sf::Color & IMAGE_COLOR,
+                                         const sf::Color & TEXT_COLOR);
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
@@ -110,6 +114,8 @@ namespace sfml_util
         static const float IMAGE_SLIDER_SPEED_;
         static const int   NUMBER_SELECT_INVALID_;
         static const float BEFORE_FADE_STARTS_DELAY_SEC_;
+        static const float SPELLBOOK_COLOR_FADE_SPEED_;
+        static const float SPELLBOOK_IMAGE_ALPHA_;
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
@@ -184,6 +190,10 @@ namespace sfml_util
         sf::Sprite              spellSprite_;
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
         gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
+        game::spell::SpellPtr_t spellCurrentPtr_;
+        sf::Color               spellPageImageColor_;
+        sf::Color               spellPageTextColor_;
+        sliders::ZeroSliderOnce<float> spellColorSlider_;
     };
 
     using PopupStageSPtr_t = std::shared_ptr<PopupStage>;

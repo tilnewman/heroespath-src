@@ -8,6 +8,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
 #include "sfml-util/text-rendering.hpp"
+#include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
@@ -35,6 +36,8 @@ namespace sfml_util
     const int   PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
     const float PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
     const float PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
+    const float PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 1.5f };
+    const float PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192.0f };
 
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
@@ -86,7 +89,7 @@ namespace sfml_util
         imageSlider_               (IMAGE_SLIDER_SPEED_),
         beforeFadeTimerSec_        (0.0f),
         fadeAlpha_                 (0.0f),
-        spellbookState_            (SpellbookState::FadeingIn),
+        spellbookState_            (SpellbookState::Initial),
         playerTextureSPtr_         (),
         playerSprite_              (),
         pageRectLeft_              (),
@@ -105,7 +108,11 @@ namespace sfml_util
         spellTextureSPtr_          (),
         spellSprite_               (),
         spellTitleTextRegionUPtr_  (),
-        spellDetailsTextUPtr_      ()
+        spellDetailsTextUPtr_      (),
+        spellCurrentPtr_           (nullptr),
+        spellPageImageColor_       (sf::Color::Transparent),
+        spellPageTextColor_        (sf::Color::Transparent),
+        spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
         if (TEXTURE_SPTR.get() != nullptr)
         {
@@ -198,17 +205,16 @@ namespace sfml_util
                 (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
                 (PACKAGE.keypress_event.code == sf::Keyboard::Down))
             {
-                //TODO handle change in right page spell description
                 if (PACKAGE.package.PTR_->GetSelected() != nullptr)
                 {
-                    if (spellSoundEffectSPtr_->getStatus() == sf::SoundSource::Status::Playing)
+                    spellCurrentPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
+
+                    if (SpellbookState::FadingOut != spellbookState_)
                     {
-                        spellSoundEffectSPtr_->stop();
+                        spellbookState_ = SpellbookState::FadingOut;
+                        spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
                     }
 
-                    spellSoundEffectSPtr_->play();
-                    
-                    SetupSpellDetails(PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC);
                     return true;
                 }
                 else
@@ -647,7 +653,12 @@ namespace sfml_util
             keyEvent.code = sf::Keyboard::Up;
             spellListBoxSPtr_->KeyRelease(keyEvent);
 
-            SetupSpellDetails(spellListBoxSPtr_->At(0)->SPELL_CPTRC);
+            spellCurrentPtr_ = spellListBoxSPtr_->At(0)->SPELL_CPTRC;
+            SetupSpellbookPageRightText(spellCurrentPtr_);
+            spellPageImageColor_ = sf::Color::Transparent;
+            spellPageTextColor_ = sf::Color::Transparent;
+            SetSpellbookPageRightColors(spellPageImageColor_, spellPageTextColor_);
+            spellbookState_ = SpellbookState::FadeingIn;
         }
     }
 
@@ -687,9 +698,13 @@ namespace sfml_util
             target.draw(playerSprite_, states);
             deatilsTextRegionUPtr_->draw(target, states);
             listBoxLabelTextRegionUPtr_->draw(target, states);
+
+            auto const BLEND_MODE_ORIG{ states.blendMode };
+            states.blendMode = sf::BlendAlpha;
             target.draw(spellSprite_, states);
             spellTitleTextRegionUPtr_->draw(target, states);
             spellDetailsTextUPtr_->draw(target, states);
+            states.blendMode = BLEND_MODE_ORIG;
         }
 
         Stage::Draw(target, states);
@@ -699,6 +714,74 @@ namespace sfml_util
     void PopupStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+
+        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            if (SpellbookState::Initial == spellbookState_)
+            {
+                SetupSpellbookPageRightText(spellCurrentPtr_);
+                spellPageImageColor_ = sf::Color::Transparent;
+                spellPageTextColor_ = sf::Color::Transparent;
+                SetSpellbookPageRightColors(spellPageImageColor_, spellPageTextColor_);
+                spellbookState_ = SpellbookState::FadeingIn;
+                spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
+                spellSoundEffectSPtr_->play();
+            }
+            else if (SpellbookState::FadeingIn == spellbookState_)
+            {
+                const sf::Uint8 NEW_IMAGE_RGB_COLOR{ static_cast<sf::Uint8>(spellColorSlider_.Update(ELAPSED_TIME_SECONDS) * 255.0f) };
+                spellPageImageColor_.r = NEW_IMAGE_RGB_COLOR;
+                spellPageImageColor_.g = NEW_IMAGE_RGB_COLOR;
+                spellPageImageColor_.b = NEW_IMAGE_RGB_COLOR;
+
+                const sf::Uint8 NEW_IMAGE_ALPHA_COLOR{ static_cast<sf::Uint8>(spellColorSlider_.Update(ELAPSED_TIME_SECONDS) * SPELLBOOK_IMAGE_ALPHA_) };
+                spellPageImageColor_.a = NEW_IMAGE_ALPHA_COLOR;
+
+                const sf::Uint8 NEW_TEXT_RGB_COLOR{ 0 };
+                spellPageTextColor_.r = NEW_TEXT_RGB_COLOR;
+                spellPageTextColor_.g = NEW_TEXT_RGB_COLOR;
+                spellPageTextColor_.b = NEW_TEXT_RGB_COLOR;
+
+                const sf::Uint8 NEW_TEXT_ALPHA_COLOR{ static_cast<sf::Uint8>(spellColorSlider_.Update(ELAPSED_TIME_SECONDS) * 255.0f) };
+                spellPageTextColor_.a = NEW_TEXT_ALPHA_COLOR;
+
+                SetSpellbookPageRightColors(spellPageImageColor_, spellPageTextColor_);
+
+                if (spellColorSlider_.GetIsDone())
+                {
+                    spellbookState_ = SpellbookState::Waiting;
+                }
+            }
+            else if (SpellbookState::FadingOut == spellbookState_)
+            {
+                const sf::Uint8 NEW_IMAGE_RGB_COLOR{ static_cast<sf::Uint8>((1.0f - spellColorSlider_.Update(ELAPSED_TIME_SECONDS)) * 255.0f) };
+                spellPageImageColor_.r = NEW_IMAGE_RGB_COLOR;
+                spellPageImageColor_.g = NEW_IMAGE_RGB_COLOR;
+                spellPageImageColor_.b = NEW_IMAGE_RGB_COLOR;
+
+                const sf::Uint8 NEW_IMAGE_ALPHA_COLOR{ static_cast<sf::Uint8>((1.0f - spellColorSlider_.Update(ELAPSED_TIME_SECONDS)) * SPELLBOOK_IMAGE_ALPHA_) };
+                spellPageImageColor_.a = NEW_IMAGE_ALPHA_COLOR;
+
+                const sf::Uint8 NEW_TEXT_RGB_COLOR{ 0 };
+                spellPageTextColor_.r = NEW_TEXT_RGB_COLOR;
+                spellPageTextColor_.g = NEW_TEXT_RGB_COLOR;
+                spellPageTextColor_.b = NEW_TEXT_RGB_COLOR;
+
+                const sf::Uint8 NEW_TEXT_ALPHA_COLOR{ static_cast<sf::Uint8>((1.0f - spellColorSlider_.Update(ELAPSED_TIME_SECONDS)) * 255.0f) };
+                spellPageTextColor_.a = NEW_TEXT_ALPHA_COLOR;
+                
+                SetSpellbookPageRightColors(spellPageImageColor_, spellPageTextColor_);
+                
+                if (spellColorSlider_.GetIsDone())
+                {
+                    SetupSpellbookPageRightText(spellCurrentPtr_);
+                    spellbookState_ = SpellbookState::FadeingIn;
+                    spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
+                    spellSoundEffectSPtr_->play();
+                }
+            }
+            return;
+        }
 
         if (secondCounter_ > 0)
             elapsedTimeCounter_ += ELAPSED_TIME_SECONDS;
@@ -1179,10 +1262,13 @@ namespace sfml_util
     }
 
 
-    void PopupStage::SetupSpellDetails(const game::spell::SpellPtrC_t SPELL_CPTRC)
+    void PopupStage::SetupSpellbookPageRightText(const game::spell::SpellPtrC_t SPELL_CPTRC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_CPTRC != nullptr), "sfml_util::PopupStage::SetupSpellDetails() was given a null SPELL_CPTRC.");
-    
+        if (SPELL_CPTRC == nullptr)
+        {
+            return;
+        }
+
         //setup spell title text
         const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(SPELL_CPTRC->Name(),
                                                             sfml_util::FontManager::Instance()->Font_Default1(),
@@ -1205,7 +1291,6 @@ namespace sfml_util
         {
             spellTitleTextRegionUPtr_->SetText(SPELL_CPTRC->Name());
         }
-
 
         //setup spell image
         spellTextureSPtr_ = sfml_util::gui::SpellImageManager::Instance()->Get(SPELL_CPTRC->Which());
@@ -1251,6 +1336,16 @@ namespace sfml_util
         {
             spellDetailsTextUPtr_->SetText(ss.str());
         }
+    }
+
+
+    void PopupStage::SetSpellbookPageRightColors(const sf::Color & IMAGE_COLOR,
+                                                 const sf::Color & TEXT_COLOR)
+    {
+        spellSprite_.setColor(IMAGE_COLOR);
+        const sfml_util::gui::ColorSet TEXT_COLOR_SET(TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
+        spellTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
+        spellDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
     }
 
 }
