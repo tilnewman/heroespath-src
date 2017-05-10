@@ -14,6 +14,7 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/spell-image-manager.hpp"
 
 #include "game/loop-manager.hpp"
 #include "game/log-macros.hpp"
@@ -99,7 +100,12 @@ namespace sfml_util
         LISTBOX_COLOR_BG_          (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 220)),
         LISTBOX_COLORSET_          (LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
         LISTBOX_BG_INFO_           (LISTBOX_COLOR_BG_),
-        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left)
+        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
+        spellSoundEffectSPtr_      (SoundManager::Instance()->SoundEffectAcquire(sound_effect::Magic1)),
+        spellTextureSPtr_          (),
+        spellSprite_               (),
+        spellTitleTextRegionUPtr_  (),
+        spellDetailsTextUPtr_      ()
     {
         if (TEXTURE_SPTR.get() != nullptr)
         {
@@ -111,7 +117,9 @@ namespace sfml_util
 
 
     PopupStage::~PopupStage()
-    {}
+    {
+        SoundManager::Instance()->SoundEffectRelease(sound_effect::Magic1);
+    }
 
 
     bool PopupStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
@@ -191,8 +199,22 @@ namespace sfml_util
                 (PACKAGE.keypress_event.code == sf::Keyboard::Down))
             {
                 //TODO handle change in right page spell description
-                //PACKAGE.package.PTR_->GetSelected()
-                return true;
+                if (PACKAGE.package.PTR_->GetSelected() != nullptr)
+                {
+                    if (spellSoundEffectSPtr_->getStatus() == sf::SoundSource::Status::Playing)
+                    {
+                        spellSoundEffectSPtr_->stop();
+                    }
+
+                    spellSoundEffectSPtr_->play();
+                    
+                    SetupSpellDetails(PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
@@ -624,6 +646,8 @@ namespace sfml_util
             spellListBoxSPtr_->KeyRelease(keyEvent);
             keyEvent.code = sf::Keyboard::Up;
             spellListBoxSPtr_->KeyRelease(keyEvent);
+
+            SetupSpellDetails(spellListBoxSPtr_->At(0)->SPELL_CPTRC);
         }
     }
 
@@ -663,6 +687,9 @@ namespace sfml_util
             target.draw(playerSprite_, states);
             deatilsTextRegionUPtr_->draw(target, states);
             listBoxLabelTextRegionUPtr_->draw(target, states);
+            target.draw(spellSprite_, states);
+            spellTitleTextRegionUPtr_->draw(target, states);
+            spellDetailsTextUPtr_->draw(target, states);
         }
 
         Stage::Draw(target, states);
@@ -1148,6 +1175,81 @@ namespace sfml_util
             }
 
             return true;
+        }
+    }
+
+
+    void PopupStage::SetupSpellDetails(const game::spell::SpellPtrC_t SPELL_CPTRC)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_CPTRC != nullptr), "sfml_util::PopupStage::SetupSpellDetails() was given a null SPELL_CPTRC.");
+    
+        //setup spell title text
+        const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(SPELL_CPTRC->Name(),
+                                                            sfml_util::FontManager::Instance()->Font_Default1(),
+                                                            sfml_util::FontManager::Instance()->Size_Large(),
+                                                            sfml_util::FontManager::Color_GrayDarker(),
+                                                            sfml_util::Justified::Center);
+
+        const sf::FloatRect SPELL_TITLE_TEXTRECT{ pageRectRight_.left,
+                                                  pageRectRight_.top,
+                                                  pageRectRight_.width,
+                                                  0.0f };
+
+        if (spellTitleTextRegionUPtr_.get() == nullptr)
+        {
+            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellTitle",
+                                                                           SPELL_TITLE_TEXTINFO,
+                                                                           SPELL_TITLE_TEXTRECT);
+        }
+        else
+        {
+            spellTitleTextRegionUPtr_->SetText(SPELL_CPTRC->Name());
+        }
+
+
+        //setup spell image
+        spellTextureSPtr_ = sfml_util::gui::SpellImageManager::Instance()->Get(SPELL_CPTRC->Which());
+        spellTextureSPtr_->setSmooth(true);
+        //
+        spellSprite_.setTexture( * spellTextureSPtr_);
+        auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
+        spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
+        spellSprite_.setColor(sf::Color(255, 255, 255, 192));
+        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
+
+        //setup spell details text
+        std::ostringstream ss;
+        ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
+           << "Rank: " << SPELL_CPTRC->Rank() << "\n"
+           << "Targets " << game::TargetType::Name(SPELL_CPTRC->TargetType()) << "\n"
+           << game::spell::SpellClass::ToString(SPELL_CPTRC->Class(), true) << "\n\n"
+           << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra() << "\n\n";
+
+        const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(ss.str(),
+                                                              sfml_util::FontManager::Instance()->Font_Default1(),
+                                                              sfml_util::FontManager::Instance()->Size_Normal(),
+                                                              sfml_util::FontManager::Color_GrayDarker(),
+                                                              sfml_util::Justified::Center);
+
+        auto const SPELLDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SPELLDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(30.0f, 90.0f) };
+        auto const SPELLDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
+        auto const SPELLDETAILS_TEXTRECT_HEIGHT { (pageRectRight_.top + pageRectRight_.height) - SPELLDETAILS_TEXTRECT_TOP };
+        
+        const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
+                                                    SPELLDETAILS_TEXTRECT_TOP,
+                                                    SPELLDETAILS_TEXTRECT_WIDTH,
+                                                    SPELLDETAILS_TEXTRECT_HEIGHT };
+
+        if (spellDetailsTextUPtr_.get() == nullptr)
+        {
+            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDetails",
+                                                                       SPELL_DETAILS_TEXTINFO,
+                                                                       SPELL_DETAILS_TEXTRECT);
+        }
+        else
+        {
+            spellDetailsTextUPtr_->SetText(ss.str());
         }
     }
 

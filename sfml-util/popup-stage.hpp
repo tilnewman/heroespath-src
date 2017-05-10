@@ -6,6 +6,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-window.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/gradient.hpp"
@@ -27,10 +28,18 @@
 #include <utility>
 
 
+//forward declarations
+namespace game
+{
+namespace spell
+{
+    class Spell;
+    using SpellPtrC_t = Spell * const;
+}
+}
 namespace sfml_util
 {
 
-    //forward declaration
     namespace gui
     {
         class TextRegion;
@@ -92,6 +101,8 @@ namespace sfml_util
 
         //returns true of the select number is valid
         bool ProcessSelectNumber();
+
+        void SetupSpellDetails(const game::spell::SpellPtrC_t);
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
@@ -168,6 +179,11 @@ namespace sfml_util
         const gui::ColorSet     LISTBOX_COLORSET_;
         gui::BackgroundInfo     LISTBOX_BG_INFO_;
         gui::TextInfo           listBoxItemTextInfo_;
+        SoundSPtr_t             spellSoundEffectSPtr_;
+        TextureSPtr_t           spellTextureSPtr_;
+        sf::Sprite              spellSprite_;
+        gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
+        gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
     };
 
     using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
