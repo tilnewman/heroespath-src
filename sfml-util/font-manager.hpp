@@ -24,10 +24,10 @@ namespace sfml_util
     class FontManager
     {
         //prevent copy construction
-        FontManager(const FontManager &);
+        FontManager(const FontManager &) =delete;
 
         //prevent copy assignment
-        FontManager & operator=(const FontManager &);
+        FontManager & operator=(const FontManager &) =delete;
 
         //prevent non-singleton construction
         FontManager();

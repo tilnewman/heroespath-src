@@ -24,10 +24,10 @@ namespace gui
     class GuiEntity : public IGuiEntity
     {
         //prevent copy construction
-        GuiEntity(const GuiEntity &);
+        GuiEntity(const GuiEntity &) =delete;
 
         //prevent copy assignment
-        GuiEntity & operator=(const GuiEntity &);
+        GuiEntity & operator=(const GuiEntity &) =delete;
 
     public:
         GuiEntity(  const std::string &   NAME,

@@ -121,10 +121,10 @@ namespace map
     class QuadTree
     {
         //prevent copy construction
-        QuadTree(const QuadTree &);
+        QuadTree(const QuadTree &) =delete;
 
         //prevent copy assignment
-        QuadTree & operator=(const QuadTree &);
+        QuadTree & operator=(const QuadTree &) =delete;
 
     public:
         QuadTree();
@@ -154,10 +154,10 @@ namespace map
     class TileMap
     {
         //prevent copy construction
-        TileMap(const TileMap &);
+        TileMap(const TileMap &) =delete;
 
         //prevent copy assignment
-        TileMap & operator=(const TileMap &);
+        TileMap & operator=(const TileMap &) =delete;
 
     public:
         TileMap(const std::string &  MAP_PATH_STR,

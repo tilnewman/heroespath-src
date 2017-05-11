@@ -36,10 +36,10 @@ namespace stage
         public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
         //prevent copy construction
-        SettingsStage(const SettingsStage &);
+        SettingsStage(const SettingsStage &) =delete;
 
         //prevent copy assignment
-        SettingsStage & operator=(const SettingsStage &);
+        SettingsStage & operator=(const SettingsStage &) =delete;
 
     public:
         SettingsStage();

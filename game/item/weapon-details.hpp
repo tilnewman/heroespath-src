@@ -59,10 +59,10 @@ namespace weapon
     class WeaponDetailLoader
     {
         //prevent copy assignment
-        WeaponDetailLoader & operator=(const WeaponDetailLoader &);
+        WeaponDetailLoader & operator=(const WeaponDetailLoader &) =delete;
 
         //prevent copy construction
-        WeaponDetailLoader(const WeaponDetailLoader &);
+        WeaponDetailLoader(const WeaponDetailLoader &) =delete;
 
         //prevent non-singleton construction
         WeaponDetailLoader();

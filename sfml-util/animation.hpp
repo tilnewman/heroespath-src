@@ -18,8 +18,8 @@ namespace sfml_util
     class SingleTextureAnimation : public gui::GuiEntity
     {
         //prevent copy construction and copy assignment
-        SingleTextureAnimation(const SingleTextureAnimation &);
-        SingleTextureAnimation & operator=(const SingleTextureAnimation &);
+        SingleTextureAnimation(const SingleTextureAnimation &) =delete;
+        SingleTextureAnimation & operator=(const SingleTextureAnimation &) =delete;
     public:
         SingleTextureAnimation(const std::string & ENTITY_NAME,
                                const std::string & TEXTURE_FILE_PATH,
@@ -88,8 +88,8 @@ namespace sfml_util
     class MultiTextureAnimation : public gui::GuiEntity
     {
         //prevent copy construction and copy assignment
-        MultiTextureAnimation(const MultiTextureAnimation &);
-        MultiTextureAnimation & operator=(const MultiTextureAnimation &);
+        MultiTextureAnimation(const MultiTextureAnimation &) =delete;
+        MultiTextureAnimation & operator=(const MultiTextureAnimation &) =delete;
     public:
         MultiTextureAnimation(const std::string & ENTITY_NAME,
                               const std::string & TEXTURES_DIRECTORY,

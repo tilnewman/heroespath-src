@@ -45,10 +45,10 @@ namespace combat
     class Encounter
     {
         //prevent copy construction
-        Encounter(const Encounter &);
+        Encounter(const Encounter &) =delete;
 
         //prevent copy assignment
-        Encounter & operator=(const Encounter &);
+        Encounter & operator=(const Encounter &) =delete;
 
         //prevent non-singleton construction
         Encounter();

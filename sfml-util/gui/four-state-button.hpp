@@ -41,10 +41,10 @@ namespace gui
     class FourStateButton : public GuiEntity
     {
         //prevent copy construction
-        FourStateButton(const FourStateButton &);
+        FourStateButton(const FourStateButton &) =delete;
 
         //prevent copy assignment
-        FourStateButton & operator=(const FourStateButton &);
+        FourStateButton & operator=(const FourStateButton &) =delete;
 
     public:
         //if using this constructor, Setup() must be called before any other functions

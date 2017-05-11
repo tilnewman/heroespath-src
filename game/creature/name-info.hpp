@@ -30,10 +30,10 @@ namespace creature
         using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
 
         //prevent copy construction
-        NameInfo(const NameInfo &);
+        NameInfo(const NameInfo &) =delete;
 
         //prevent copy assignment
-        NameInfo & operator=(const NameInfo &);
+        NameInfo & operator=(const NameInfo &) =delete;
 
         //prevent non-singleton construction
         NameInfo();

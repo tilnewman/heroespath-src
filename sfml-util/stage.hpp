@@ -35,10 +35,10 @@ namespace sfml_util
     class Stage : public IStage
     {
         //prevent copy construction
-        Stage(const Stage &);
+        Stage(const Stage &) =delete;
 
         //prevent copy assignment
-        Stage & operator=(const Stage &);
+        Stage & operator=(const Stage &) =delete;
 
     public:
         Stage(const std::string & NAME);

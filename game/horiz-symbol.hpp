@@ -14,10 +14,10 @@ namespace game
     class BottomSymbol
     {
         //prevent copy construction
-        BottomSymbol(const BottomSymbol &);
+        BottomSymbol(const BottomSymbol &) =delete;
 
         //prevent copy assignment
-        BottomSymbol & operator=(const BottomSymbol &);
+        BottomSymbol & operator=(const BottomSymbol &) =delete;
 
     public:
         BottomSymbol(const float     VERT_SCALE        = 1.0f,

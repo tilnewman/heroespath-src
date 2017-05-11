@@ -23,10 +23,10 @@ namespace gui
     class TextButton : public GuiText
     {
         //prevent copy construction
-        TextButton(const TextButton &);
+        TextButton(const TextButton &) =delete;
 
         //prevent copy assignment
-        TextButton & operator=(const TextButton &);
+        TextButton & operator=(const TextButton &) =delete;
 
     public:
         //if using this constructor, Setup() must be called before any other functions

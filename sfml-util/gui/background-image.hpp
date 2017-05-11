@@ -21,10 +21,10 @@ namespace gui
     class BackgroundImage : public sf::Drawable
     {
         //prevent copy construction
-        BackgroundImage(const BackgroundImage &);
+        BackgroundImage(const BackgroundImage &) =delete;
 
         //prevent copy assignment
-        BackgroundImage & operator=(const BackgroundImage &);
+        BackgroundImage & operator=(const BackgroundImage &) =delete;
 
     public:
         //if using this constructor then Setup() must be called before any other function

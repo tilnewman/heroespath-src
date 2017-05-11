@@ -37,10 +37,10 @@ namespace game
     class LoopManager
     {
         //prevent copy construction
-        LoopManager(const LoopManager &);
+        LoopManager(const LoopManager &) =delete;
 
         //prevent copy assignment
-        LoopManager & operator=(const LoopManager &);
+        LoopManager & operator=(const LoopManager &) =delete;
 
         //prevent non-singleton construction
         LoopManager();

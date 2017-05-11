@@ -43,10 +43,10 @@ namespace misc
     class ItemFactory : public FactoryBase
     {
         //prevent copy construction
-        ItemFactory(const ItemFactory &);
+        ItemFactory(const ItemFactory &) =delete;
 
         //prevent copy assignment
-        ItemFactory & operator=(const ItemFactory &);
+        ItemFactory & operator=(const ItemFactory &) =delete;
 
         //prevent non-singleton construction
         ItemFactory();

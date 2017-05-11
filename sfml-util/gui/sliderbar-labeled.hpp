@@ -22,8 +22,8 @@ namespace gui
     class SliderBarLabeled : public SliderBar
     {
         //prevent copy construction and copy assignment
-        SliderBarLabeled(const SliderBarLabeled &);
-        SliderBarLabeled & operator=(const SliderBarLabeled &);
+        SliderBarLabeled(const SliderBarLabeled &) =delete;
+        SliderBarLabeled & operator=(const SliderBarLabeled &) =delete;
 
     public:
         SliderBarLabeled(const std::string &   NAME,

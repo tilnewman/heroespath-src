@@ -23,10 +23,10 @@ namespace gui
     class Line : public GuiEntity
     {
         //prevent copy construction
-        Line(const Line &);
+        Line(const Line &) =delete;
 
         //prevent copy assignment
-        Line & operator=(const Line &);
+        Line & operator=(const Line &) =delete;
 
     public:
         Line(const std::string & NAME,

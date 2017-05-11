@@ -29,10 +29,10 @@ namespace sfml_util
     class Loop : public ILoop
     {
         //prevent copy construction
-        Loop(const Loop &);
+        Loop(const Loop &) =delete;
 
         //prevent copy assignment
-        Loop & operator=(const Loop &);
+        Loop & operator=(const Loop &) =delete;
 
     public:
         Loop(const std::string & NAME);

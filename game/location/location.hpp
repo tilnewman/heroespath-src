@@ -23,10 +23,10 @@ namespace location
     class Location : public ILocation
     {
         //prevent copy construction
-        Location(const Location &);
+        Location(const Location &) =delete;
 
         //prevent copy assignment
-        Location & operator=(const Location &);
+        Location & operator=(const Location &) =delete;
 
     public:
         Location(const map::Enum WHICH_MAP    = map::Thornberry,

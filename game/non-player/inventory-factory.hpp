@@ -45,10 +45,10 @@ namespace ownership
     class InventoryFactory
     {
         //prevent copy construction
-        InventoryFactory(const InventoryFactory &);
+        InventoryFactory(const InventoryFactory &) =delete;
 
         //prevent copy assignment
-        InventoryFactory & operator=(const InventoryFactory &);
+        InventoryFactory & operator=(const InventoryFactory &) =delete;
 
         //prevent non-singleton construction
         InventoryFactory();

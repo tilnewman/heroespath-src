@@ -29,10 +29,10 @@ namespace gui
     class GuiText : public GuiEntity
     {
         //prevent copy construction
-        GuiText(const GuiText &);
+        GuiText(const GuiText &) =delete;
 
         //prevent copy assignment
-        GuiText & operator=(const GuiText &);
+        GuiText & operator=(const GuiText &) =delete;
 
     public:
         //if this constructor is used, then Setup() must be called before any other functions

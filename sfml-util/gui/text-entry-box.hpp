@@ -36,8 +36,8 @@ namespace gui
     class TextEntryBox : public GuiEntity
     {
         //prevent copy construction and copy assignment
-        TextEntryBox(const TextEntryBox &);
-        TextEntryBox & operator=(const TextEntryBox &);
+        TextEntryBox(const TextEntryBox &) =delete;
+        TextEntryBox & operator=(const TextEntryBox &) =delete;
 
     public:
         //if using this constructor, Setup() must be called before any other function

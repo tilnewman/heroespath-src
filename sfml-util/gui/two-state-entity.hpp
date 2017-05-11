@@ -24,9 +24,11 @@ namespace gui
     //Prevents using guiImage_.overSprite, but guiText_.overTextInfo_ is allowed.
     class TwoStateEntity : public GuiEntity
     {
-        //prevent copy construction and copy assignment
-        TwoStateEntity(const TwoStateEntity &);
-        TwoStateEntity & operator=(const TwoStateEntity &);
+        //prevent copy construction
+        TwoStateEntity(const TwoStateEntity &) =delete;
+
+        //prevent copy assignment
+        TwoStateEntity & operator=(const TwoStateEntity &) =delete;
 
     public:
         TwoStateEntity( const std::string &   NAME,
@@ -86,4 +88,5 @@ namespace gui
 
 }
 }
+
 #endif //SFMLUTIL_TWOSTATEENTITY_INCLUDED

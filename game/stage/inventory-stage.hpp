@@ -96,10 +96,10 @@ namespace stage
         using CharViewMap_t = std::map<std::size_t, ViewType>;
 
         //prevent copy construction
-        InventoryStage(const InventoryStage &);
+        InventoryStage(const InventoryStage &) =delete;
 
         //prevent copy assignment
-        InventoryStage & operator=(const InventoryStage &);
+        InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:
         InventoryStage(creature::CreaturePtr_t creaturePtr);

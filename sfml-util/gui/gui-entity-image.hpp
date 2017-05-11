@@ -20,8 +20,8 @@ namespace gui
     class GuiImage : public GuiEntity
     {
         //prevent copy construction and copy assignment
-        GuiImage(const GuiImage &);
-        GuiImage & operator=(const GuiImage &);
+        GuiImage(const GuiImage &) =delete;
+        GuiImage & operator=(const GuiImage &) =delete;
 
     public:
         GuiImage(const std::string &   NAME,

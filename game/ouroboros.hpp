@@ -18,10 +18,10 @@ namespace game
     class Ouroboros : public sfml_util::gui::GuiEntity
     {
         //prevent copy construction
-        Ouroboros(const Ouroboros &);
+        Ouroboros(const Ouroboros &) =delete;
 
         //prevent copy assignment
-        Ouroboros & operator=(const Ouroboros &);
+        Ouroboros & operator=(const Ouroboros &) =delete;
 
     public:
         Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);

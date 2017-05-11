@@ -26,10 +26,10 @@ namespace stage
     class CreditsStage : public sfml_util::Stage
     {
         //prevent copy construction
-        CreditsStage(const CreditsStage &);
+        CreditsStage(const CreditsStage &) =delete;
 
         //prevent copy assignment
-        CreditsStage & operator=(const CreditsStage &);
+        CreditsStage & operator=(const CreditsStage &) =delete;
 
     public:
         CreditsStage();

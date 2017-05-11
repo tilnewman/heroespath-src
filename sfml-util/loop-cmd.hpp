@@ -42,10 +42,10 @@ namespace sfml_util
     class LoopCmd : public ILoopCmd
     {
         //prevent copy construction
-        LoopCmd(const LoopCmd &);
+        LoopCmd(const LoopCmd &) =delete;
 
         //prevent copy assignment
-        LoopCmd & operator=(const LoopCmd &);
+        LoopCmd & operator=(const LoopCmd &) =delete;
 
     public:
         LoopCmd(const std::string & NAME, ILoopSPtr_t & iLoopSPtr);

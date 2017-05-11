@@ -57,10 +57,10 @@ namespace armor
     class ArmorDetailLoader
     {
         //prevent copy assignment
-        ArmorDetailLoader & operator=(const ArmorDetailLoader &);
+        ArmorDetailLoader & operator=(const ArmorDetailLoader &) =delete;
 
         //prevent copy construction
-        ArmorDetailLoader(const ArmorDetailLoader &);
+        ArmorDetailLoader(const ArmorDetailLoader &) =delete;
 
         //prevent non-singleton construction
         ArmorDetailLoader();

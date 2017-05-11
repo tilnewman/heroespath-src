@@ -59,10 +59,10 @@ namespace combat
     class SummaryView
     {
         //prevent copy construction
-        SummaryView(const SummaryView &);
+        SummaryView(const SummaryView &) =delete;
 
         //prevent copy assignment
-        SummaryView & operator=(const SummaryView &);
+        SummaryView & operator=(const SummaryView &) =delete;
 
     public:
         SummaryView();

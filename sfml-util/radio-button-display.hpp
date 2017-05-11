@@ -23,10 +23,10 @@ namespace gui_demo
         public sfml_util::gui::RadioButtonSet
     {
         //prevent copy construction
-        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &);
+        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) =delete;
 
         //prevent copy assignment
-        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &);
+        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) =delete;
 
     public:
         //If Using this constructor, then one of the Setup() functions must be called before any other member

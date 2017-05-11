@@ -17,10 +17,10 @@ namespace state
     class WorldState
     {
         //prevent copy construction
-        WorldState(const WorldState &);
+        WorldState(const WorldState &) =delete;
 
         //prevent copy assignment
-        WorldState & operator=(const WorldState &);
+        WorldState & operator=(const WorldState &) =delete;
 
     public:
         WorldState();

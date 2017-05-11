@@ -37,10 +37,10 @@ namespace stage
         public game::callback::IPopupHandler_t
     {
         //prevent copy construction
-        CampStage(const CampStage &);
+        CampStage(const CampStage &) =delete;
 
         //prevent copy assignment
-        CampStage & operator=(const CampStage &);
+        CampStage & operator=(const CampStage &) =delete;
 
     public:
         CampStage();

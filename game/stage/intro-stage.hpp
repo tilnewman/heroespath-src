@@ -17,10 +17,10 @@ namespace stage
     class IntroStage : public sfml_util::Stage
     {
         //prevent copy construction
-        IntroStage(const IntroStage &);
+        IntroStage(const IntroStage &) =delete;
 
         //prevent copy assignment
-        IntroStage & operator=(const IntroStage &);
+        IntroStage & operator=(const IntroStage &) =delete;
 
     public:
         IntroStage();

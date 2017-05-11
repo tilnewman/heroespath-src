@@ -18,10 +18,10 @@ namespace sfml_util
     class SliderBarLabeled_Effects : public gui::SliderBarLabeled
     {
         //prevent copy construction
-        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &);
+        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) =delete;
 
         //prevent copy assignment
-        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &);
+        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) =delete;
 
     public:
         SliderBarLabeled_Effects(const std::string &        NAME,

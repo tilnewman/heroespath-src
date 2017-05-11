@@ -27,10 +27,10 @@ namespace gui
     class ConditionImageManager
     {
         //prevent copy construction
-        ConditionImageManager(const ConditionImageManager &);
+        ConditionImageManager(const ConditionImageManager &) =delete;
 
         //prevent copy assignment
-        ConditionImageManager & operator=(const ConditionImageManager &);
+        ConditionImageManager & operator=(const ConditionImageManager &) =delete;
 
         //prevent non-singleton construction
         ConditionImageManager();

@@ -64,10 +64,10 @@ namespace utilz
     class Platform
     {
         //prevent copy construction
-        Platform(const Platform &);
+        Platform(const Platform &) =delete;
 
         //prevent copy assingment
-        Platform & operator=(const Platform &);
+        Platform & operator=(const Platform &) =delete;
 
         //prevent non-singleton construction
         Platform();

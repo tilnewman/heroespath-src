@@ -34,10 +34,10 @@ namespace stage
         public sfml_util::Stage
     {
         //prevent copy construction
-        InnStage(const InnStage &);
+        InnStage(const InnStage &) =delete;
 
         //prevent copy assignment
-        InnStage & operator=(const InnStage &);
+        InnStage & operator=(const InnStage &) =delete;
 
     public:
         InnStage();

@@ -38,10 +38,10 @@ namespace strategy
     class ChanceFactory
     {
         //prevent copy construction
-        ChanceFactory(const ChanceFactory &);
+        ChanceFactory(const ChanceFactory &) =delete;
 
         //prevent copy assignment
-        ChanceFactory & operator=(const ChanceFactory &);
+        ChanceFactory & operator=(const ChanceFactory &) =delete;
 
         //prevent non-singleton construction
         ChanceFactory();

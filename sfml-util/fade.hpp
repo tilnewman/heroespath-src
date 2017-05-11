@@ -17,10 +17,10 @@ namespace sfml_util
     class Fade : public sf::Drawable
     {
         //prevent copy construction
-        Fade(const Fade &);
+        Fade(const Fade &) =delete;
 
         //prevent copy assignment
-        Fade & operator=(const Fade &);
+        Fade & operator=(const Fade &) =delete;
 
     public:
         Fade();//must call Setup() before any other functinos if using this constructor

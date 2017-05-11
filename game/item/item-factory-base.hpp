@@ -19,10 +19,10 @@ namespace item
     class FactoryBase
     {
         //prevent copy construction
-        FactoryBase(const FactoryBase &);
+        FactoryBase(const FactoryBase &) =delete;
 
         //prevent copy assignment
-        FactoryBase & operator=(const FactoryBase &);
+        FactoryBase & operator=(const FactoryBase &) =delete;
 
     public:
         FactoryBase();

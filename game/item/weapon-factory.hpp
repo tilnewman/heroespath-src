@@ -41,10 +41,10 @@ namespace weapon
     class WeaponFactory : public FactoryBase
     {
         //prevent copy construction
-        WeaponFactory(const WeaponFactory &);
+        WeaponFactory(const WeaponFactory &) =delete;
 
         //prevent copy assignment
-        WeaponFactory & operator=(const WeaponFactory &);
+        WeaponFactory & operator=(const WeaponFactory &) =delete;
 
         //prevent non-singleton construction
         WeaponFactory();

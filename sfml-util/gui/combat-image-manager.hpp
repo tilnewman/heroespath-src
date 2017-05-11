@@ -29,10 +29,10 @@ namespace gui
     class CombatImageManager
     {
         //prevent copy assignment
-        CombatImageManager & operator=(const CombatImageManager &);
+        CombatImageManager & operator=(const CombatImageManager &) =delete;
 
         //prevent copy construction
-        CombatImageManager(const CombatImageManager &);
+        CombatImageManager(const CombatImageManager &) =delete;
 
         //prevent non-singleton construction
         CombatImageManager();

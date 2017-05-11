@@ -21,10 +21,10 @@ namespace game
     class SettingsFile : public appbase::ConfigBase
     {
         //prevent copy assignment
-        SettingsFile(const SettingsFile &);
+        SettingsFile(const SettingsFile &) =delete;
 
         //prevent copy assignment
-        SettingsFile & operator=(const SettingsFile &);
+        SettingsFile & operator=(const SettingsFile &) =delete;
 
         //prevent non-singleton construction
         SettingsFile();

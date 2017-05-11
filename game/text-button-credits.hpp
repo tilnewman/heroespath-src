@@ -18,8 +18,8 @@ namespace game
     class CreditsButton : public sfml_util::gui::TextButton
     {
         //prevent copy construction and copy assignment
-        CreditsButton(const CreditsButton &);
-        CreditsButton & operator=(const CreditsButton &);
+        CreditsButton(const CreditsButton &) =delete;
+        CreditsButton & operator=(const CreditsButton &) =delete;
 
     public:
         //if using this constructor, Setup() must be called before any other functions

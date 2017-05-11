@@ -74,10 +74,10 @@ namespace combat
     class CombatDisplay : public sfml_util::Stage
     {
         //prevent copy constructions/
-        CombatDisplay(const CombatDisplay &);
+        CombatDisplay(const CombatDisplay &) =delete;
 
         //prevent copy assignment
-        CombatDisplay & operator=(const CombatDisplay &);
+        CombatDisplay & operator=(const CombatDisplay &) =delete;
 
     public:
         CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());

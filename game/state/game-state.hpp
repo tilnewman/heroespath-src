@@ -38,10 +38,10 @@ namespace state
     class GameState
     {
         //prevent copy construction
-        GameState(const GameState &);
+        GameState(const GameState &) =delete;
 
         //prevent copy assignment
-        GameState & operator=(const GameState &);
+        GameState & operator=(const GameState &) =delete;
 
     public:
         GameState(const player::PartySPtr_t &    PARTY_SPTR       = player::PartySPtr_t(),

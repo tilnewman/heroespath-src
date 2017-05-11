@@ -31,8 +31,8 @@ namespace box
     class Box : public GuiEntity
     {
         //prevent copy construction and copy assignment
-        Box(const Box &);
-        Box & operator=(const Box &);
+        Box(const Box &) =delete;
+        Box & operator=(const Box &) =delete;
 
     public:
         //if no box::Info object is given, then Setup() must be called before any other function

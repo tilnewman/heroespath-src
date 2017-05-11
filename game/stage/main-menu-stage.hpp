@@ -31,10 +31,10 @@ namespace stage
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         //prevent copy construction
-        MainMenuStage(const MainMenuStage &);
+        MainMenuStage(const MainMenuStage &) =delete;
 
         //prevent copy assignment
-        MainMenuStage & operator=(const MainMenuStage &);
+        MainMenuStage & operator=(const MainMenuStage &) =delete;
 
     public:
         MainMenuStage();

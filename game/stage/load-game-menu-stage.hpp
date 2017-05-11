@@ -46,10 +46,10 @@ namespace stage
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         //prevent copy construction
-        LoadGameStage(const LoadGameStage &);
+        LoadGameStage(const LoadGameStage &) =delete;
 
         //prevent copy assignment
-        LoadGameStage & operator=(const LoadGameStage &);
+        LoadGameStage & operator=(const LoadGameStage &) =delete;
 
     public:
         LoadGameStage();

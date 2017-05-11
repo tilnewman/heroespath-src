@@ -46,10 +46,10 @@ namespace state
         GameStateFactory();
 
         //prevent copy construction
-        GameStateFactory(const GameStateFactory &);
+        GameStateFactory(const GameStateFactory &) =delete;
 
         //prevent copy assignment
-        GameStateFactory & operator=(const GameStateFactory &);
+        GameStateFactory & operator=(const GameStateFactory &) =delete;
 
     public:
         static GameStateFactorySPtr_t Instance();

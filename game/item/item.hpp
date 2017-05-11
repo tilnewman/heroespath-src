@@ -27,10 +27,10 @@ namespace item
     class Item
     {
         //prevent copy construction
-        Item(const Item &);
+        Item(const Item &) =delete;
 
         //prevent copy assignment
-        Item & operator=(const Item &);
+        Item & operator=(const Item &) =delete;
 
     public:
         Item(const std::string &        NAME               = "no_name_error",

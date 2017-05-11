@@ -34,10 +34,10 @@ namespace non_player
     class Party
     {
         //prevent copy construction
-        Party(const Party &);
+        Party(const Party &) =delete;
 
         //prevent copy assignment
-        Party & operator=(const Party &);
+        Party & operator=(const Party &) =delete;
 
     public:
         Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());

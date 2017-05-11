@@ -23,10 +23,10 @@ namespace gui
     class GuiElements
     {
         //prevent copy construction
-        GuiElements(const GuiElements &);
+        GuiElements(const GuiElements &) =delete;
 
         //prevent copy assignment
-        GuiElements & operator=(const GuiElements &);
+        GuiElements & operator=(const GuiElements &) =delete;
 
         //prevent non-singleton construction
         GuiElements();

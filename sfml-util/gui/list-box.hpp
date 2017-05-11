@@ -94,10 +94,10 @@ namespace gui
         public callback::ISliderBarCallbackHandler_t
     {
         //prevent copy construction
-        ListBox(const ListBox &);
+        ListBox(const ListBox &) =delete;
 
         //prevent copy construction
-        ListBox & operator=(const ListBox &);
+        ListBox & operator=(const ListBox &) =delete;
 
     public:
         explicit ListBox(const std::string &       NAME,

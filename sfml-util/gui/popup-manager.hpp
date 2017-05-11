@@ -55,10 +55,10 @@ namespace gui
     class PopupManager
     {
         //prevent copy construction
-        PopupManager(const PopupManager &);
+        PopupManager(const PopupManager &) =delete;
 
         //prevent copy assignment
-        PopupManager & operator=(const PopupManager &);
+        PopupManager & operator=(const PopupManager &) =delete;
 
         //prevent non-singleton construction
         PopupManager();

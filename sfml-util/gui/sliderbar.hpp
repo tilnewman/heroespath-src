@@ -32,10 +32,10 @@ namespace gui
     class SliderBar : public GuiEntity
     {
         //prevent copy construction
-        SliderBar(const SliderBar &);
+        SliderBar(const SliderBar &) =delete;
 
         //prevent copy assignment
-        SliderBar & operator=(const SliderBar &);
+        SliderBar & operator=(const SliderBar &) =delete;
 
     public:
         SliderBar(const std::string & NAME,

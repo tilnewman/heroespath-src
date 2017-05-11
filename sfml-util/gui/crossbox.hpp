@@ -27,8 +27,8 @@ namespace box
     class CrossBox : public Box
     {
         //prevent copy construction and copy assignment
-        CrossBox(const CrossBox &);
-        CrossBox & operator=(const CrossBox &);
+        CrossBox(const CrossBox &) =delete;
+        CrossBox & operator=(const CrossBox &) =delete;
 
     public:
         CrossBox(const std::string &    NAME,

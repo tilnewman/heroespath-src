@@ -28,10 +28,10 @@ namespace gui
     class ItemImageManager
     {
         //prevent copy construction
-        ItemImageManager(const ItemImageManager &);
+        ItemImageManager(const ItemImageManager &) =delete;
 
         //prevent copy assignment
-        ItemImageManager & operator=(const ItemImageManager &);
+        ItemImageManager & operator=(const ItemImageManager &) =delete;
 
         //prevent non-singleton construction
         ItemImageManager();

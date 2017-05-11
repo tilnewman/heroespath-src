@@ -33,10 +33,10 @@ namespace combat
     class PartyFactory
     {
         //prevent copy construction
-        PartyFactory(const PartyFactory &);
+        PartyFactory(const PartyFactory &) =delete;
 
         //prevent copy assignment
-        PartyFactory & operator=(const PartyFactory &);
+        PartyFactory & operator=(const PartyFactory &) =delete;
 
         //prevent non-singletone instantiation
         PartyFactory();

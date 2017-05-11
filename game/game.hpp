@@ -27,10 +27,10 @@ namespace game
     class Game
     {
         //prevent copy construction
-        Game(const Game &);
+        Game(const Game &) =delete;
 
         //prevent copy assignment
-        Game & operator=(const Game &);
+        Game & operator=(const Game &) =delete;
 
         //prevent non-singleton construction
         Game();

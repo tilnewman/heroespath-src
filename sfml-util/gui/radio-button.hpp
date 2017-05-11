@@ -88,10 +88,10 @@ namespace gui
     class RadioButtonSet : public GuiEntity
     {
         //prevent copy construction
-        RadioButtonSet(const RadioButtonSet &);
+        RadioButtonSet(const RadioButtonSet &) =delete;
 
         //prevent copy assignment
-        RadioButtonSet & operator=(const RadioButtonSet &);
+        RadioButtonSet & operator=(const RadioButtonSet &) =delete;
 
     public:
         //If Using this constructor, then one of the Setup() functions must be called before any other member

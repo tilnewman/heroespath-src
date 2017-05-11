@@ -33,10 +33,10 @@ namespace gui
         public callback::ISliderBarCallbackHandler_t
     {
         //prevent copy construction
-        ScrollRegion(const ScrollRegion &);
+        ScrollRegion(const ScrollRegion &) =delete;
 
         //prevent copy assignment
-        ScrollRegion & operator=(const ScrollRegion &);
+        ScrollRegion & operator=(const ScrollRegion &) =delete;
 
     public:
         //if using this constructor with default values then Setup() must be called before any other function

@@ -29,10 +29,10 @@ namespace combat
     class CombatNode : public sfml_util::gui::GuiEntity
     {
         //prevent copy construction
-        CombatNode(const CombatNode &);
+        CombatNode(const CombatNode &) =delete;
 
         //prevent copy assignment
-        CombatNode & operator=(const CombatNode &);
+        CombatNode & operator=(const CombatNode &) =delete;
 
     public:
         CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,

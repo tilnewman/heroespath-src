@@ -31,10 +31,10 @@ namespace armor
     class ArmorFactory : public FactoryBase
     {
         //prevent copy construction
-        ArmorFactory(const ArmorFactory &);
+        ArmorFactory(const ArmorFactory &) =delete;
 
         //prevent copy assignment
-        ArmorFactory & operator=(const ArmorFactory &);
+        ArmorFactory & operator=(const ArmorFactory &) =delete;
 
         //prevent non-singleton construction
         ArmorFactory();

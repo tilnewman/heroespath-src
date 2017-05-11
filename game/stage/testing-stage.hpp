@@ -29,10 +29,10 @@ namespace stage
     class TestingStage : public sfml_util::Stage
     {
         //prevent copy construction
-        TestingStage(const TestingStage &);
+        TestingStage(const TestingStage &) =delete;
 
         //prevent copy assignment
-        TestingStage & operator=(const TestingStage &);
+        TestingStage & operator=(const TestingStage &) =delete;
 
     public:
         TestingStage();

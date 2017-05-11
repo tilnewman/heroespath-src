@@ -25,8 +25,8 @@ namespace sfml_util
     class SliderBarLabeled_Music : public gui::SliderBarLabeled
     {
         //prevent copy construction and copy assignment
-        SliderBarLabeled_Music(const SliderBarLabeled_Music &);
-        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &);
+        SliderBarLabeled_Music(const SliderBarLabeled_Music &) =delete;
+        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) =delete;
 
     public:
         SliderBarLabeled_Music(const std::string &        NAME,

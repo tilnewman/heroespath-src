@@ -17,8 +17,8 @@ namespace sfml_util
     class CommandQueue
     {
         //prevent copy construction and copy assignment
-        CommandQueue(const CommandQueue &);
-        CommandQueue & operator=(const CommandQueue &);
+        CommandQueue(const CommandQueue &) =delete;
+        CommandQueue & operator=(const CommandQueue &) =delete;
 
     public:
         CommandQueue();

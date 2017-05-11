@@ -32,10 +32,10 @@ namespace gui
     class CreatureImageManager
     {
         //prevent copy construction
-        CreatureImageManager(const CreatureImageManager &);
+        CreatureImageManager(const CreatureImageManager &) =delete;
 
         //prevent copy assignment
-        CreatureImageManager & operator=(const CreatureImageManager &);
+        CreatureImageManager & operator=(const CreatureImageManager &) =delete;
 
         //prevent non-singleton construction
         CreatureImageManager();

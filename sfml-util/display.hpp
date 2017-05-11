@@ -39,10 +39,10 @@ namespace sfml_util
     class Display
     {
         //prevent copy construction
-        Display(const Display &);
+        Display(const Display &) =delete;
 
         //prevent copy assignment
-        Display & operator=(const Display &);
+        Display & operator=(const Display &) =delete;
 
         //prevent non-singleton construction
         Display();

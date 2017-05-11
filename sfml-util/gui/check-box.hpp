@@ -76,8 +76,8 @@ namespace gui
     class CheckBoxSet : public GuiEntity
     {
         //prevent copy construction and copy assignment
-        CheckBoxSet(const CheckBoxSet &);
-        CheckBoxSet & operator=(const CheckBoxSet &);
+        CheckBoxSet(const CheckBoxSet &) =delete;
+        CheckBoxSet & operator=(const CheckBoxSet &) =delete;
 
     public:
         //Constructor for cases where each radio button's label text has a different style, size, etc.

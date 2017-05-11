@@ -39,10 +39,10 @@ namespace stage
         public game::callback::IPopupHandler_t
     {
         //prevent copy construction
-        PartyStage(const PartyStage &);
+        PartyStage(const PartyStage &) =delete;
 
         //prevent copy assignment
-        PartyStage & operator=(const PartyStage &);
+        PartyStage & operator=(const PartyStage &) =delete;
 
     public:
         PartyStage();

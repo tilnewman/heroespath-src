@@ -20,8 +20,8 @@ namespace game
     class Logger : public appbase::logbase::LogBase
     {
         //prevent copy assignment, copy construction, and non-singleton construction
-        Logger(const Logger &);
-        Logger & operator=(const Logger &);
+        Logger(const Logger &) =delete;
+        Logger & operator=(const Logger &) =delete;
         Logger();
 
     public:
