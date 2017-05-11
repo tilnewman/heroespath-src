@@ -20,11 +20,16 @@ namespace sfml_util
 {
 
     class StaticSounds;
+    using StaticSoundsPtr_t  = StaticSounds *;
     using StaticSoundsSPtr_t = std::shared_ptr<StaticSounds>;
     using StaticSoundsSVec_t = std::vector<StaticSoundsSPtr_t>;
 
     class SoundManager;
     using SoundManagerSPtr_t = std::shared_ptr<SoundManager>;
+
+
+    using SoundBufferRefCountPair_t = std::pair<SoundBufferSPtr_t, std::size_t>;
+    using SoundBufferRefCountVec_t = std::vector<SoundBufferRefCountPair_t>;
 
 
     //simple wrapper responsible for everything needed to describe and operate a set of song(s)
@@ -113,30 +118,33 @@ namespace sfml_util
         SoundSPtr_t SoundEffectAcquire(const sound_effect::Enum);
         void SoundEffectRelease(const sound_effect::Enum);
 
-        inline const StaticSoundsSPtr_t StaticSounds_Prompt() const            { return promptSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_Switch() const            { return switchSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_TickOn() const            { return tickOnSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_TickOff() const           { return tickOffSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_Thock() const             { return thockSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_Coin() const              { return coinSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_Gem() const               { return gemSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_MeteorShard() const       { return meteorShardSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ItemGive() const          { return itemGiveSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ItemDrop() const          { return itemDropSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_BlowpipeShoot() const     { return blowpipeShootSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_BlowpipeHit() const       { return blowpipeHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ArrowShoot() const        { return arrowShootSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ArrowHit() const          { return arrowHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ProjectileMiss() const    { return projectileMissSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_MeleeMiss() const         { return meleeMissSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_FistHit() const           { return fistHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_BreathHit() const         { return breathHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_TendrilHit() const        { return tendrilHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_WhipHit() const           { return whipHitSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_WhipMiss() const          { return whipMissSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_MaterialHitMetal() const  { return materialHitMetalSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_MaterialHitMisc() const   { return materialHitMiscSoundsSPtr_; }
-        inline const StaticSoundsSPtr_t StaticSounds_ClawTear() const          { return clawHitSoundsSPtr_; }
+        inline const StaticSoundsPtr_t StaticSounds_Prompt() const            { return promptSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_Switch() const            { return switchSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_TickOn() const            { return tickOnSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_TickOff() const           { return tickOffSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_Thock() const             { return thockSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_Coin() const              { return coinSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_Gem() const               { return gemSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_MeteorShard() const       { return meteorShardSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ItemGive() const          { return itemGiveSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ItemDrop() const          { return itemDropSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_BlowpipeShoot() const     { return blowpipeShootSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_BlowpipeHit() const       { return blowpipeHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ArrowShoot() const        { return arrowShootSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ArrowHit() const          { return arrowHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ProjectileMiss() const    { return projectileMissSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_MeleeMiss() const         { return meleeMissSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_FistHit() const           { return fistHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_BreathHit() const         { return breathHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_TendrilHit() const        { return tendrilHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_WhipHit() const           { return whipHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_WhipMiss() const          { return whipMissSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_MaterialHitMetal() const  { return materialHitMetalSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_MaterialHitMisc() const   { return materialHitMiscSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_ClawTear() const          { return clawHitSoundsSPtr_.get(); }
+        inline const StaticSoundsPtr_t StaticSounds_Wind() const              { return windSoundsSPtr_.get(); }
+
+        void StaticSoundsReleaseAll();
 
     private:
         void OpenMusic(const std::string & MUSIC_FILE_NAME,
@@ -171,7 +179,7 @@ namespace sfml_util
         float              musicVolume_;
         float              effectsVolume_;
         MusicSVec_t        musicSVec_;
-        SoundBufferSVec_t  soundEffectBufferSVec_;
+        SoundBufferRefCountVec_t soundEffectBufferPairVec_;
         StaticSoundsSPtr_t promptSoundsSPtr_;
         StaticSoundsSPtr_t switchSoundsSPtr_;
         StaticSoundsSPtr_t tickOnSoundsSPtr_;
@@ -196,6 +204,7 @@ namespace sfml_util
         StaticSoundsSPtr_t materialHitMetalSoundsSPtr_;
         StaticSoundsSPtr_t materialHitMiscSoundsSPtr_;
         StaticSoundsSPtr_t clawHitSoundsSPtr_;
+        StaticSoundsSPtr_t windSoundsSPtr_;
         StaticSoundsSVec_t allStaticSoundsSVec_;
         MusicInfoSVec_t    combatIntroMusicInfoVec_;
         SongsVec_t         songsVec_;

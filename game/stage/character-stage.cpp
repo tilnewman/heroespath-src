@@ -9,10 +9,10 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "sfml-util/gradient.hpp"
-#include "sfml-util/gradient-info.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
+#include "sfml-util/gradient.hpp"
+#include "sfml-util/gradient-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/radio-button.hpp"
@@ -55,7 +55,7 @@ namespace stage
                            const std::string & IMAGE_FILENAME_OVER)
     :
         FourStateButton(std::string(NAME).append("_MenuButton")),
-        stagePtr_()
+        stagePtr_      ()
     {
         const std::string BUTTONS_PATH( GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir") );
 
@@ -77,9 +77,13 @@ namespace stage
         if (DID_STATE_CHANGE)
         {
             if (GetMouseState() == sfml_util::MouseState::Over)
+            {
                 sfml_util::SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+            }
             else
+            {
                 sfml_util::SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+            }
 
             if (stagePtr_ == nullptr)
             {
@@ -195,7 +199,6 @@ namespace stage
         sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
         nInsTextRegionSPtr_     (),
         nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
-        windSoundEffectsSPtr_   (),
         bottomSymbol_           (),
         selectedImageIndex_     (0)
     {}
@@ -923,10 +926,6 @@ sfml_util::PopupImage::Regular));
         AdjustRoleRadioButtonsForRace(static_cast<game::creature::race::Enum>(0));
 
         SetupRoleDescriptionBox();
-
-        //prep sound effects
-        sfml_util::SoundEffectEnumVec_t soundEffectsEnumVec = { sfml_util::sound_effect::WindGust1, sfml_util::sound_effect::WindGust2, sfml_util::sound_effect::WindGust3 };
-        windSoundEffectsSPtr_.reset( new sfml_util::StaticSounds(soundEffectsEnumVec, sfml_util::StaticSounds::INVALID_VOLUME_, true) );
     }
 
 
@@ -1757,7 +1756,7 @@ sfml_util::PopupImage::Regular));
             (false == isAnimStats_) &&
             (false == nameTextEntryBoxSPtr_->HasFocus()))
         {
-            windSoundEffectsSPtr_->PlayRandom();
+            sfml_util::SoundManager::Instance()->StaticSounds_Wind()->PlayRandom();
             animStatsTimeCounterSec_ = 0.0f;
             animStatsDelayPerSec_ = 0.01f;//any fraction of a second will work here
             isAnimStats_ = true;

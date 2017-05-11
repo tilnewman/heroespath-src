@@ -18,11 +18,13 @@ namespace sfml_util
                                const bool                   WILL_LOAD_ALL)
     :
         SOUND_MANAGER_CPTR_(SoundManager::Instance().get()),
-        sptrVec_           (),
+        soundSVec_         (),
         enumVec_           (ENUM_VEC),
         volume_            (0.0f)
     {
-        sptrVec_.resize(enumVec_.size());
+        M_ASSERT_OR_LOGANDTHROW_SS((enumVec_.empty() == false), "sfml_util::StaticSounds::Constructor was given an empty ENUM_VEC.");
+
+        soundSVec_.resize(enumVec_.size());
 
         if (WILL_LOAD_ALL)
             LoadAll();
@@ -37,7 +39,7 @@ namespace sfml_util
                                const bool               WILL_LOAD_ALL)
     :
         SOUND_MANAGER_CPTR_(SoundManager::Instance().get()),
-        sptrVec_           (),
+        soundSVec_           (),
         enumVec_           (),
         volume_            (0.0f)
     {
@@ -48,7 +50,7 @@ namespace sfml_util
         for (int i(FIRST); i <= LAST; ++i)
             enumVec_.push_back( static_cast<sound_effect::Enum>(i) );
 
-        sptrVec_.resize(enumVec_.size());
+        soundSVec_.resize(enumVec_.size());
 
         if (WILL_LOAD_ALL)
             LoadAll();
@@ -77,33 +79,37 @@ namespace sfml_util
                 if (E == enumVec_[i])
                 {
                     PlayAt(i);
-                    break;
+                    return;
                 }
             }
+
+            std::ostringstream ssErr;
+            ssErr << "sfml_util::StaticSounds::Play(" << sound_effect::ToString(E) << ") did not find that sound effect amoung the static sounds.";
+            throw std::range_error(ssErr.str());
         }
     }
 
 
     void StaticSounds::PlayAt(const std::size_t INDEX)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sptrVec_.size()), "sfml_util::StaticSounds::PlayAt(" << INDEX << ") was given an index out of range.");
+        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < soundSVec_.size()), "sfml_util::StaticSounds::PlayAt(" << INDEX << ") was given an index out of range.");
 
-        if (sptrVec_[INDEX].get() == nullptr)
+        if (soundSVec_[INDEX].get() == nullptr)
             LoadAt(INDEX);
 
-        sptrVec_[INDEX]->play();
+        soundSVec_[INDEX]->play();
     }
 
 
     void StaticSounds::PlayRandom()
     {
-        if (sptrVec_.size() == 1)
+        if (soundSVec_.size() == 1)
         {
             PlayAt(0);
         }
         else
         {
-            PlayAt(utilz::random::Int(sptrVec_.size() - 1));
+            PlayAt(utilz::random::Int(soundSVec_.size() - 1));
         }
     }
 
@@ -126,7 +132,7 @@ namespace sfml_util
             }
         }
 
-        for (auto & sptr : sptrVec_)
+        for (auto & sptr : soundSVec_)
             if (sptr.get() != nullptr)
                 sptr->setVolume(volume_);
     }
@@ -134,12 +140,12 @@ namespace sfml_util
 
     void StaticSounds::LoadAt(const std::size_t INDEX)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sptrVec_.size()), "sfml_util::StaticSounds::LoadAt(" << INDEX << ") was given an index out of range.");
+        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < soundSVec_.size()), "sfml_util::StaticSounds::LoadAt(" << INDEX << ") was given an index out of range.");
 
-        if (sptrVec_[INDEX].get() == nullptr)
+        if (soundSVec_[INDEX].get() == nullptr)
         {
-            sptrVec_[INDEX] = SOUND_MANAGER_CPTR_->SoundEffectAcquire(enumVec_[INDEX]);
-            sptrVec_[INDEX]->setVolume(volume_);
+            soundSVec_[INDEX] = SOUND_MANAGER_CPTR_->SoundEffectAcquire(enumVec_[INDEX]);
+            soundSVec_[INDEX]->setVolume(volume_);
         }
     }
 
@@ -155,7 +161,7 @@ namespace sfml_util
 
     void StaticSounds::LoadAll()
     {
-        const std::size_t NUM_SOUNDS(sptrVec_.size());
+        const std::size_t NUM_SOUNDS(soundSVec_.size());
         for (std::size_t i(0); i < NUM_SOUNDS; ++i)
             LoadAt(i);
     }
@@ -163,11 +169,12 @@ namespace sfml_util
 
     void StaticSounds::ReleaseAt(const std::size_t INDEX)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sptrVec_.size()), "sfml_util::StaticSounds::ReleaseAt(" << INDEX << ") was given an index out of range.");
+        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < soundSVec_.size()), "sfml_util::StaticSounds::ReleaseAt(" << INDEX << ") was given an index out of range.");
 
-        if (sptrVec_[INDEX].get() != nullptr)
+        if (soundSVec_[INDEX].get() != nullptr)
         {
-            sptrVec_[INDEX].reset();
+            soundSVec_[INDEX].reset();
+            SOUND_MANAGER_CPTR_->SoundEffectRelease(enumVec_[INDEX]);
         }
     }
 
@@ -183,7 +190,7 @@ namespace sfml_util
 
     void StaticSounds::ReleaseAll()
     {
-        const std::size_t NUM_SOUNDS(sptrVec_.size());
+        const std::size_t NUM_SOUNDS(soundSVec_.size());
         for (std::size_t i(0); i < NUM_SOUNDS; ++i)
             ReleaseAt(i);
     }

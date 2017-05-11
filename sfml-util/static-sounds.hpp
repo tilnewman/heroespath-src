@@ -44,7 +44,7 @@ namespace sfml_util
         void PlayAt(const std::size_t);
         void PlayRandom();
 
-        inline std::size_t Size() const                                 { return sptrVec_.size(); }
+        inline std::size_t Size() const                                 { return soundSVec_.size(); }
         inline bool Contains(const sound_effect::Enum E) const          { return (std::find(enumVec_.begin(), enumVec_.end(), E) != enumVec_.end()); }
         inline sound_effect::Enum GetEnumAt(const std::size_t I) const  { return enumVec_.at(I); }
 
@@ -65,11 +65,12 @@ namespace sfml_util
 
     private:
         const SoundManagerPtr_t SOUND_MANAGER_CPTR_;
-        SoundSVec_t sptrVec_;
+        SoundSVec_t soundSVec_;
         SoundEffectEnumVec_t enumVec_;
         float volume_;
     };
 
+    using StaticSoundsPtr_t  = StaticSounds *;
     using StaticSoundsSPtr_t = std::shared_ptr<StaticSounds>;
 
 }

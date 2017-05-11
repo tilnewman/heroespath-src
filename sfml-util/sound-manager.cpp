@@ -34,7 +34,7 @@ namespace sfml_util
         musicVolume_                (0.0f),
         effectsVolume_              (0.0f),
         musicSVec_                  (),
-        soundEffectBufferSVec_      (),
+        soundEffectBufferPairVec_   (),
         promptSoundsSPtr_           (),
         switchSoundsSPtr_           (),
         tickOnSoundsSPtr_           (),
@@ -59,12 +59,13 @@ namespace sfml_util
         materialHitMetalSoundsSPtr_ (),
         materialHitMiscSoundsSPtr_  (),
         clawHitSoundsSPtr_          (),
+        windSoundsSPtr_             (),
         allStaticSoundsSVec_        (),
         combatIntroMusicInfoVec_    (),
         songsVec_                   ()
     {
         musicSVec_.resize(music::Count);
-        soundEffectBufferSVec_.resize(sound_effect::Count);
+        soundEffectBufferPairVec_.resize(sound_effect::Count);
         CacheMusicInfo_CombatIntro();
     }
 
@@ -95,21 +96,21 @@ namespace sfml_util
         const SoundEffectEnumVec_t PROMPT_SOUNDS_ENUM_VEC = { sound_effect::PromptGeneric,
                                                               sound_effect::PromptQuestion,
                                                               sound_effect::PromptWarn };
-        promptSoundsSPtr_.reset(new StaticSounds(PROMPT_SOUNDS_ENUM_VEC));
+        promptSoundsSPtr_ = std::make_shared<StaticSounds>(PROMPT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t SWITCH_SOUNDS_ENUM_VEC = { sound_effect::Switch1,
                                                               sound_effect::Switch2,
                                                               sound_effect::Switch3,
                                                               sound_effect::Switch4 };
-        switchSoundsSPtr_.reset(new StaticSounds(SWITCH_SOUNDS_ENUM_VEC));
+        switchSoundsSPtr_ = std::make_shared<StaticSounds>(SWITCH_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TICKON_SOUNDS_ENUM_VEC = { sound_effect::TickOn1,
                                                                sound_effect::TickOn2 };
-        tickOnSoundsSPtr_.reset(new StaticSounds(TICKON_SOUNDS_ENUM_VEC));
+        tickOnSoundsSPtr_ = std::make_shared<StaticSounds>(TICKON_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TICKOFF_SOUNDS_ENUM_VEC = { sound_effect::TickOff1,
                                                                 sound_effect::TickOff2 };
-        tickOffSoundsSPtr_.reset(new StaticSounds(TICKOFF_SOUNDS_ENUM_VEC));
+        tickOffSoundsSPtr_ = std::make_shared<StaticSounds>(TICKOFF_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t THOCK_SOUNDS_ENUM_VEC = { sound_effect::Thock1,
                                                               sound_effect::Thock2,
@@ -117,7 +118,7 @@ namespace sfml_util
                                                               sound_effect::Thock4,
                                                               sound_effect::Thock5,
                                                               sound_effect::Thock6 };
-        thockSoundsSPtr_.reset(new StaticSounds(THOCK_SOUNDS_ENUM_VEC));
+        thockSoundsSPtr_ = std::make_shared<StaticSounds>(THOCK_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t COIN_SOUNDS_ENUM_VEC = { sound_effect::Coins1,
                                                             sound_effect::Coins2,
@@ -135,29 +136,29 @@ namespace sfml_util
                                                             sound_effect::Coins14,
                                                             sound_effect::Coins15,
                                                             sound_effect::Coins16 };
-        coinSoundsSPtr_.reset(new StaticSounds(COIN_SOUNDS_ENUM_VEC));
+        coinSoundsSPtr_ = std::make_shared<StaticSounds>(COIN_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t GEM_SOUNDS_ENUM_VEC = { sound_effect::Gems };
-        gemSoundsSPtr_.reset(new StaticSounds(GEM_SOUNDS_ENUM_VEC));
+        gemSoundsSPtr_ = std::make_shared<StaticSounds>(GEM_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t METEORSHARD_SOUNDS_ENUM_VEC = { sound_effect::MeteorShards };
-        meteorShardSoundsSPtr_.reset(new StaticSounds(METEORSHARD_SOUNDS_ENUM_VEC));
+        meteorShardSoundsSPtr_ = std::make_shared<StaticSounds>(METEORSHARD_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ITEMGIVE_SOUNDS_ENUM_VEC = { sound_effect::ItemGive };
-        itemGiveSoundsSPtr_.reset(new StaticSounds(ITEMGIVE_SOUNDS_ENUM_VEC));
+        itemGiveSoundsSPtr_ = std::make_shared<StaticSounds>(ITEMGIVE_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ITEMDROP_SOUNDS_ENUM_VEC = { sound_effect::ItemDrop };
-        itemDropSoundsSPtr_.reset(new StaticSounds(ITEMDROP_SOUNDS_ENUM_VEC));
+        itemDropSoundsSPtr_ = std::make_shared<StaticSounds>(ITEMDROP_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC = { sound_effect::BlowpipeShoot1,
                                                                       sound_effect::BlowpipeShoot2,
                                                                       sound_effect::BlowpipeShoot3 };
-        blowpipeShootSoundsSPtr_.reset(new StaticSounds(BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC));
+        blowpipeShootSoundsSPtr_ = std::make_shared<StaticSounds>(BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BLOWPIPE_HIT_SOUNDS_ENUM_VEC = { sound_effect::BlowpipeHit1,
                                                                     sound_effect::BlowpipeHit2,
                                                                     sound_effect::BlowpipeHit3 };
-        blowpipeHitSoundsSPtr_.reset(new StaticSounds(BLOWPIPE_HIT_SOUNDS_ENUM_VEC));
+        blowpipeHitSoundsSPtr_ = std::make_shared<StaticSounds>(BLOWPIPE_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ARROW_SHOOT_SOUNDS_ENUM_VEC = { sound_effect::ArrowShoot1,
                                                                    sound_effect::ArrowShoot2,
@@ -165,10 +166,10 @@ namespace sfml_util
                                                                    sound_effect::ArrowShoot4,
                                                                    sound_effect::ArrowShoot5,
                                                                    sound_effect::ArrowShoot6 };
-        arrowShootSoundsSPtr_.reset(new StaticSounds(ARROW_SHOOT_SOUNDS_ENUM_VEC));
+        arrowShootSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ARROW_HIT_SOUNDS_ENUM_VEC = { sound_effect::ArrowHit };
-        arrowHitSoundsSPtr_.reset(new StaticSounds(ARROW_HIT_SOUNDS_ENUM_VEC));
+        arrowHitSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t PROJECTILE_MISS_SOUNDS_ENUM_VEC = { sound_effect::ProjectileMiss1,
                                                                        sound_effect::ProjectileMiss2,
@@ -183,7 +184,7 @@ namespace sfml_util
                                                                        sound_effect::ProjectileMiss11,
                                                                        sound_effect::ProjectileMiss12,
                                                                        sound_effect::ProjectileMiss13 };
-        projectileMissSoundsSPtr_.reset(new StaticSounds(ARROW_SHOOT_SOUNDS_ENUM_VEC));
+        projectileMissSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MELEE_MISS_SOUNDS_ENUM_VEC = { sound_effect::MeleeMiss1,
                                                                   sound_effect::MeleeMiss2,
@@ -226,7 +227,7 @@ namespace sfml_util
                                                                   sound_effect::MeleeMiss39,
                                                                   sound_effect::MeleeMiss40,
                                                                   sound_effect::MeleeMiss41 };
-        meleeMissSoundsSPtr_.reset(new StaticSounds(MELEE_MISS_SOUNDS_ENUM_VEC));
+        meleeMissSoundsSPtr_ = std::make_shared<StaticSounds>(MELEE_MISS_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t FIST_HIT_SOUNDS_ENUM_VEC = { sound_effect::FistHit1,
                                                                 sound_effect::FistHit2,
@@ -237,20 +238,20 @@ namespace sfml_util
                                                                 sound_effect::FistHit7,
                                                                 sound_effect::FistHit8 };
 
-        fistHitSoundsSPtr_.reset(new StaticSounds(FIST_HIT_SOUNDS_ENUM_VEC));
+        fistHitSoundsSPtr_ = std::make_shared<StaticSounds>(FIST_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BREATH_HIT_SOUNDS_ENUM_VEC = { sound_effect::BreathHit1,
                                                                   sound_effect::BreathHit2 };
-        breathHitSoundsSPtr_.reset(new StaticSounds(BREATH_HIT_SOUNDS_ENUM_VEC));
+        breathHitSoundsSPtr_ = std::make_shared<StaticSounds>(BREATH_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TENDRILS_HIT_SOUNDS_ENUM_VEC = { sound_effect::TendrilHit1,
                                                                     sound_effect::TendrilHit2,
                                                                     sound_effect::TendrilHit3,
                                                                     sound_effect::TendrilHit4 };
-        tendrilHitSoundsSPtr_.reset(new StaticSounds(TENDRILS_HIT_SOUNDS_ENUM_VEC));
+        tendrilHitSoundsSPtr_ = std::make_shared<StaticSounds>(TENDRILS_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t WHIP_HIT_SOUNDS_ENUM_VEC = { sound_effect::WhipHit };
-        whipHitSoundsSPtr_.reset(new StaticSounds(WHIP_HIT_SOUNDS_ENUM_VEC));
+        whipHitSoundsSPtr_ = std::make_shared<StaticSounds>(WHIP_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t WHIP_MISS_SOUNDS_ENUM_VEC = { sound_effect::WhipMiss1,
                                                                  sound_effect::WhipMiss2,
@@ -262,14 +263,14 @@ namespace sfml_util
                                                                  sound_effect::WhipMiss8,
                                                                  sound_effect::WhipMiss9,
                                                                  sound_effect::WhipMiss10 };
-        whipMissSoundsSPtr_.reset(new StaticSounds(WHIP_MISS_SOUNDS_ENUM_VEC));
+        whipMissSoundsSPtr_ = std::make_shared<StaticSounds>(WHIP_MISS_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC = { sound_effect::MaterialHitMetal1,
                                                                           sound_effect::MaterialHitMetal2,
                                                                           sound_effect::MaterialHitMetal3,
                                                                           sound_effect::MaterialHitMetal4,
                                                                           sound_effect::MaterialHitMetal5 };
-        materialHitMetalSoundsSPtr_.reset(new StaticSounds(MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC));
+        materialHitMetalSoundsSPtr_ = std::make_shared<StaticSounds>(MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC = { sound_effect::MaterialHitBone,
                                                                          sound_effect::MaterialHitCloth,
@@ -284,10 +285,15 @@ namespace sfml_util
                                                                          sound_effect::MaterialHitTooth,
                                                                          sound_effect::MaterialHitWood,
                                                                          sound_effect::MaterialHitMisc};
-        materialHitMiscSoundsSPtr_.reset(new StaticSounds(MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC));
+        materialHitMiscSoundsSPtr_ = std::make_shared<StaticSounds>(MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t CLAW_HIT_SOUNDS_ENUM_VEC = { sound_effect::ClawTear };
-        clawHitSoundsSPtr_.reset(new StaticSounds(CLAW_HIT_SOUNDS_ENUM_VEC));
+        clawHitSoundsSPtr_ = std::make_shared<StaticSounds>(CLAW_HIT_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t WIND_SOUNDS_ENUM_VEC = { sfml_util::sound_effect::WindGust1,
+                                                            sfml_util::sound_effect::WindGust2,
+                                                            sfml_util::sound_effect::WindGust3 };
+        windSoundsSPtr_ = std::make_shared<StaticSounds>(WIND_SOUNDS_ENUM_VEC);
 
         allStaticSoundsSVec_ = { promptSoundsSPtr_,
                                  switchSoundsSPtr_,
@@ -312,7 +318,8 @@ namespace sfml_util
                                  whipMissSoundsSPtr_,
                                  materialHitMetalSoundsSPtr_,
                                  materialHitMiscSoundsSPtr_,
-                                 clawHitSoundsSPtr_ };
+                                 clawHitSoundsSPtr_,
+                                 windSoundsSPtr_ };
     }
 
 
@@ -478,12 +485,16 @@ namespace sfml_util
 
     SoundSPtr_t SoundManager::SoundEffectAcquire(const sound_effect::Enum E)
     {
-        SoundBufferSPtr_t bufferSPtr(soundEffectBufferSVec_.at(E));
+        SoundBufferSPtr_t bufferSPtr(soundEffectBufferPairVec_.at(E).first);
 
         if (bufferSPtr.get() == nullptr)
+        {
             LoadSound(sound_effect::Filename(E), sound_effect::Directory(E), bufferSPtr);
+            M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second == 0), "sfml_util::SoundManager::SoundEffectAcquire(" << sound_effect::ToString(E) << ") found a null SoundBufferSPtr_t but the ref count was " << soundEffectBufferPairVec_.at(E).second << " instead of 0.");
+        }
 
-        SoundSPtr_t soundSPtr(new sf::Sound( * bufferSPtr));
+        ++soundEffectBufferPairVec_.at(E).second;
+        auto soundSPtr = std::make_shared<sf::Sound>( * bufferSPtr);
         soundSPtr->setVolume(SoundEffectVolume());
         return soundSPtr;
     }
@@ -491,7 +502,19 @@ namespace sfml_util
 
     void SoundManager::SoundEffectRelease(const sound_effect::Enum E)
     {
-        soundEffectBufferSVec_.at(E).reset();
+        M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second != 0), "sfml_util::SoundManager::SoundEffectRelease(" << sound_effect::ToString(E) << ") found the ref count to be " << soundEffectBufferPairVec_.at(E).second << " instead of anything > 0.");
+
+        if (--soundEffectBufferPairVec_.at(E).second == 0)
+        {
+            soundEffectBufferPairVec_.at(E).first.reset();
+        }
+    }
+
+
+    void SoundManager::StaticSoundsReleaseAll()
+    {
+        for (auto & nextStaticSoundsSPtr : allStaticSoundsSVec_)
+            nextStaticSoundsSPtr->ReleaseAll();
     }
 
 
@@ -706,15 +729,18 @@ namespace sfml_util
                 auto const ENUM_STR{ sound_effect::ToString(ENUM) };
                 game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
 
-                SoundSPtr_t soundSPtr{ SoundEffectAcquire(ENUM) };
-                M_ASSERT_OR_LOGANDTHROW_SS((soundSPtr.get() != nullptr), "sfml_util::SoundManager::Test()  SFX Testing block found SoundEffectAcquire(\"" << ENUM_STR << "\") returned a nullptr.");
+                {
+                    SoundSPtr_t soundSPtr{ SoundEffectAcquire(ENUM) };
+                    M_ASSERT_OR_LOGANDTHROW_SS((soundSPtr.get() != nullptr), "sfml_util::SoundManager::Test()  SFX Testing block found SoundEffectAcquire(\"" << ENUM_STR << "\") returned a nullptr.");
 
-                soundSPtr->setVolume(100.0f);
-                soundSPtr->play();
-                soundSPtr->play();
-                std::this_thread::sleep_for(std::chrono::milliseconds(200));
-                soundSPtr->stop();
+                    soundSPtr->setVolume(100.0f);
+                    soundSPtr->play();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                    soundSPtr->stop();
+                }
 
+                SoundEffectRelease(ENUM);
+                
                 ++sfxIndex;
                 return false;
             }

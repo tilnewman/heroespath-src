@@ -1,5 +1,5 @@
-#ifndef GAME_CHARACTERSTAGE_INCLUDED
-#define GAME_CHARACTERSTAGE_INCLUDED
+#ifndef GAME_CHARACTERSTAGE_HPP_INCLUDED
+#define GAME_CHARACTERSTAGE_HPP_INCLUDED
 //
 // character-stage.hpp
 //  A Stage class that displays the character creation screen.
@@ -10,7 +10,6 @@
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/animation.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -303,8 +302,6 @@ namespace stage
         sfml_util::gui::TextRegionSPtr_t              nInsTextRegionSPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> nInsTextSlider_;
         //
-        sfml_util::StaticSoundsSPtr_t windSoundEffectsSPtr_;
-        //
         BottomSymbol bottomSymbol_;
         //
         std::size_t selectedImageIndex_;
@@ -312,4 +309,5 @@ namespace stage
 
 }
 }
-#endif //GAME_CHARACTERSTAGE_INCLUDED
+
+#endif //GAME_CHARACTERSTAGE_HPP_INCLUDED

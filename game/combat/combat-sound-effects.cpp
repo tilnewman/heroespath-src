@@ -16,41 +16,7 @@ namespace combat
 {
 
     CombatSoundEffects::CombatSoundEffects()
-    :
-        blowpipeShootSoundsSPtr_   (sfml_util::SoundManager::Instance()->StaticSounds_BlowpipeShoot()),
-        blowpipeHitSoundsSPtr_     (sfml_util::SoundManager::Instance()->StaticSounds_BlowpipeHit()),
-        arrowShootSoundsSPtr_      (sfml_util::SoundManager::Instance()->StaticSounds_ArrowShoot()),
-        arrowHitSoundsSPtr_        (sfml_util::SoundManager::Instance()->StaticSounds_ArrowHit()),
-        projectileMissSoundsSPtr_  (sfml_util::SoundManager::Instance()->StaticSounds_ProjectileMiss()),
-        meleeMissSoundsSPtr_       (sfml_util::SoundManager::Instance()->StaticSounds_MeleeMiss()),
-        fistHitSoundsSPtr_         (sfml_util::SoundManager::Instance()->StaticSounds_FistHit()),
-        breathHitSoundsSPtr_       (sfml_util::SoundManager::Instance()->StaticSounds_BreathHit()),
-        tendrilHitSoundsSPtr_      (sfml_util::SoundManager::Instance()->StaticSounds_TendrilHit()),
-        whipHitSoundsSPtr_         (sfml_util::SoundManager::Instance()->StaticSounds_WhipHit()),
-        whipMissSoundsSPtr_        (sfml_util::SoundManager::Instance()->StaticSounds_WhipMiss()),
-        materialHitMetalSoundsSPtr_(sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMetal()),
-        materialHitMiscSoundsSPtr_ (sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()),
-        clawTearSoundsSPtr_        (sfml_util::SoundManager::Instance()->StaticSounds_ClawTear())
     {}
-
-
-    CombatSoundEffects::~CombatSoundEffects()
-    {
-        blowpipeShootSoundsSPtr_->ReleaseAll();
-        blowpipeHitSoundsSPtr_->ReleaseAll();
-        arrowShootSoundsSPtr_->ReleaseAll();
-        arrowHitSoundsSPtr_->ReleaseAll();
-        projectileMissSoundsSPtr_->ReleaseAll();
-        meleeMissSoundsSPtr_->ReleaseAll();
-        fistHitSoundsSPtr_->ReleaseAll();
-        breathHitSoundsSPtr_->ReleaseAll();
-        tendrilHitSoundsSPtr_->ReleaseAll();
-        whipHitSoundsSPtr_->ReleaseAll();
-        whipMissSoundsSPtr_->ReleaseAll();
-        materialHitMetalSoundsSPtr_->ReleaseAll();
-        materialHitMiscSoundsSPtr_->ReleaseAll();
-        clawTearSoundsSPtr_->ReleaseAll();
-    }
 
 
     void CombatSoundEffects::PlayShoot(const item::ItemSPtr_t & WEAPON_SPTR)
@@ -65,11 +31,11 @@ namespace combat
 
         if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))
         {
-            blowpipeShootSoundsSPtr_->PlayRandom();
+            sfml_util::SoundManager::Instance()->StaticSounds_BlowpipeShoot()->PlayRandom();
         }
         else if ((WEAPON_TYPE & item::weapon_type::Bow) || (WEAPON_TYPE & item::weapon_type::Crossbow))
         {
-            arrowShootSoundsSPtr_->PlayRandom();
+            sfml_util::SoundManager::Instance()->StaticSounds_ArrowShoot()->PlayRandom();
         }
         else
         {
@@ -93,53 +59,53 @@ namespace combat
         {
             if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))
             {
-                blowpipeHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_BlowpipeHit()->PlayRandom();
             }
             else if ((WEAPON_TYPE & item::weapon_type::Bow) || (WEAPON_TYPE & item::weapon_type::Crossbow))
             {
-                arrowHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_ArrowHit()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Fists)
             {
-                fistHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_FistHit()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Tendrils)
             {
-                tendrilHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_TendrilHit()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Breath)
             {
-                breathHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_BreathHit()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Claws)
             {
-                clawTearSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_ClawTear()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Whip)
             {
-                whipHitSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_WhipHit()->PlayRandom();
             }
             else
             {
                 switch (WEAPON_SPTR->MaterialPrimary())
                 {
 
-                    case item::material::Wood:              { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitWood); }
+                    case item::material::Wood:              { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitWood); }
                     case item::material::HardLeather:
-                    case item::material::SoftLeather:       { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitLeather); }
-                    case item::material::Bone:              { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitBone); }
+                    case item::material::SoftLeather:       { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitLeather); }
+                    case item::material::Bone:              { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitBone); }
 
                     case item::material::Water:
                     case item::material::Acid:
-                    case item::material::Blood:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitLiquid); }
+                    case item::material::Blood:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitLiquid); }
 
-                    case item::material::Plant:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitPlant); }
+                    case item::material::Plant:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitPlant); }
 
-                    case item::material::Flesh:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitFlesh); }
+                    case item::material::Flesh:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitFlesh); }
 
-                    case item::material::Scale:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitScale); }
+                    case item::material::Scale:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitScale); }
 
-                    case item::material::Hide:              { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitHide); }
+                    case item::material::Hide:              { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitHide); }
 
                     case item::material::Stone:
                     case item::material::Obsidian:
@@ -149,15 +115,15 @@ namespace combat
                     case item::material::Ruby:
                     case item::material::Lapis:
                     case item::material::Sapphire:
-                    case item::material::Diamond:           { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitStone); }
+                    case item::material::Diamond:           { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitStone); }
 
                     case item::material::Rope:
-                    case item::material::Cloth:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitCloth); }
+                    case item::material::Cloth:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitCloth); }
 
                     case item::material::Claw:
-                    case item::material::Horn:              { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitHorn); }
+                    case item::material::Horn:              { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitHorn); }
 
-                    case item::material::Tooth:             { return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitTooth); }
+                    case item::material::Tooth:             { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitTooth); }
 
                     case item::material::Tin:
                     case item::material::Gold:
@@ -165,7 +131,7 @@ namespace combat
                     case item::material::Bronze:
                     case item::material::Silver:
                     case item::material::Steel:
-                    case item::material::Platinum:          { return materialHitMetalSoundsSPtr_->PlayRandom(); }
+                    case item::material::Platinum:          { return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->PlayRandom(); }
 
                     case item::material::Feathers:
                     case item::material::Fur:
@@ -179,7 +145,7 @@ namespace combat
                     case item::material::Count:
                     default:
                     {
-                        return materialHitMiscSoundsSPtr_->Play(sfml_util::sound_effect::MaterialHitMisc);
+                        return sfml_util::SoundManager::Instance()->StaticSounds_MaterialHitMisc()->Play(sfml_util::sound_effect::MaterialHitMisc);
                     }
                 }
             }
@@ -188,15 +154,15 @@ namespace combat
         {
             if (WEAPON_TYPE & item::weapon_type::Projectile)
             {
-                projectileMissSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_ProjectileMiss()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Whip)
             {
-                whipMissSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_WhipMiss()->PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Melee)
             {
-                meleeMissSoundsSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_MeleeMiss()->PlayRandom();
             }
             else
             {

@@ -5,6 +5,7 @@
 
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
@@ -56,7 +57,9 @@ namespace sfml_util
 
 
     Stage::~Stage()
-    {}
+    {
+        SoundManager::Instance()->StaticSoundsReleaseAll();
+    }
 
 
     void Stage::UpdateTime(const float ELAPSED_TIME_SECONDS)

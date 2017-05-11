@@ -165,10 +165,6 @@ namespace combat
         //members that control the shake or image position offset
         sf::Vector2f imagePosV_;
         sf::Vector2f imagePosOffsetV_;
-
-        //members that control sound effects
-        sfml_util::StaticSoundsSPtr_t soundsTickOnSPtr_;
-        sfml_util::StaticSoundsSPtr_t soundsTickOffSPtr_;
     };
 
     using CombatNodePtr_t   = CombatNode *;

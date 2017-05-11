@@ -7,7 +7,6 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/static-sounds.hpp"
-#include "utilz/random.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/loaders.hpp"
@@ -16,6 +15,8 @@
 #include "game/log-macros.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/game-data-file.hpp"
+
+#include "utilz/random.hpp"
 
 
 namespace game
@@ -68,9 +69,7 @@ namespace combat
         isFlying_            (false),
         wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
         imagePosV_           (0.0f, 0.0f),
-        imagePosOffsetV_     (0.0f, 0.0f),
-        soundsTickOnSPtr_    (sfml_util::SoundManager::Instance()->StaticSounds_TickOn()),
-        soundsTickOffSPtr_   (sfml_util::SoundManager::Instance()->StaticSounds_TickOff())
+        imagePosOffsetV_     (0.0f, 0.0f)
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -442,7 +441,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                soundsTickOnSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
@@ -455,7 +454,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                soundsTickOffSPtr_->PlayRandom();
+                sfml_util::SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
