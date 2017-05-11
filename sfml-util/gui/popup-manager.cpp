@@ -312,7 +312,7 @@ namespace gui
                                PopupImage::Spellbook,
                                1.0f,
                                game::Popup::Spellbook,
-                               sfml_util::sound_effect::TickOn1,//TODO TEMP REPLCE with book/page-turn sound effect
+                               sfml_util::sound_effect::None,//TODO TEMP REPLCE with book/page-turn sound effect
                                sfml_util::PopupButtonColor::Dark,
                                false,
                                std::vector<std::size_t>(),

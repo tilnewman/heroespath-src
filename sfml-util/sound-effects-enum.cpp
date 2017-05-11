@@ -169,8 +169,8 @@ namespace sfml_util
             case MaterialHitMisc:   { return "material-hit-misc"; }
             case ClawTear:          { return "claw-tear";  }
             case Magic1:            { return "magic1"; }
+            case None:              { return "None"; }
             case Count:
-            case None:
             case Random:
             default:
             {

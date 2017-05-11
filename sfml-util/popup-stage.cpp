@@ -246,7 +246,10 @@ namespace sfml_util
     void PopupStage::Setup()
     {
         //sound effect
-        SoundManager::Instance()->StaticSounds_Prompt()->Play(POPUP_INFO_.SoundEffect());
+        if (POPUP_INFO_.SoundEffect() != sound_effect::None)
+        {
+            SoundManager::Instance()->StaticSounds_Prompt()->Play(POPUP_INFO_.SoundEffect());
+        }
 
         //darken the box gold bars a bit
         box_.SetEntityColors(sfml_util::gui::ColorSet(sf::Color(200,200,200)));
