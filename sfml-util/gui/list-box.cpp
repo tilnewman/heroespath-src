@@ -636,7 +636,7 @@ namespace gui
         {
             for (; itr != list_.end(); ++itr)
             {
-                if ((entityPosY + (*itr)->GetEntityRegion().height) > (entityRegion_.top + entityRegion_.height))
+                if ((entityPosY + ((*itr)->GetEntityRegion().height + betweenPad_)) > (entityRegion_.top + entityRegion_.height))
                 {
                     (*itr)->SetEntityWillDraw(false);
                     break;
@@ -782,7 +782,7 @@ namespace gui
                 --prevItr;
                 if (*prevItr == selectedSPtr_)
                 {
-                    if ((vertTracker + CURRENT_HEIGHT + margin_) > entityRegion_.height)
+                    if ((*itr)->GetEntityWillDraw() == false)
                         currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
 
                     SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
