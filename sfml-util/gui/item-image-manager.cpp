@@ -362,7 +362,7 @@ namespace gui
         }
 
         //test misc items
-        auto const RAND_REPEAT_COUNT{ 100 };
+        auto const RAND_REPEAT_COUNT{ 501 };
         static auto miscIndex{ 1 };
         static auto randIndex{ 0 };
         if (miscIndex < static_cast<int>(game::item::misc_type::Count))

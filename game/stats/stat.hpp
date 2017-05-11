@@ -79,15 +79,21 @@ namespace stats
         inline bool ForceValidCurrent()                             { return ModifyCurrent(0); }
         inline bool ForceValidAll()                                 { const bool A{ForceValidNormal()}; const bool B{ForceValidCurrent()}; return (A || B); }
 
+        inline Stat_t NormalReduced() const                         { return Reduce(normal_); }
+        inline Stat_t CurrentReduced() const                        { return Reduce(current_); }
+        inline Stat_t ActualReduced() const                         { return Reduce(actual_); }
+        
+        static Stat_t Reduce(const Stat_t);
+
         friend bool operator==(const Stat & L, const Stat & R);
         friend bool operator<(const Stat & L, const Stat & R);
-
-        static const int X_;
 
     public:
         static const Stat_t VAL_MIN_;
         static const Stat_t VAL_MAX_INITIAL_;
         static const Stat_t VAL_INVALID_;
+        static const float  REDUCE_DIVISOR_;
+        static const float  REDUCE_MULTIPLIER_;
 
     protected:
         Stat_t normal_;

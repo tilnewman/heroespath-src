@@ -6,6 +6,8 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"
 
+#include "utilz/random.hpp"
+
 
 namespace game
 {
@@ -186,6 +188,41 @@ namespace spell
         else
         {
             return effectedCreaturePtr->NameOrRaceAndClass() + " is not poisoned";
+        }
+    }
+
+
+    const std::string PoisonCloud::EffectCreature(creature::CreaturePtr_t castingCreaturePtr, creature::CreaturePtr_t effectedCreaturePtr) const
+    {
+        if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
+        {
+            return effectedCreaturePtr->NameOrRaceAndClass() + " is already poisoned";
+        }
+        else
+        {
+            auto const RAND_CASTER{ utilz::random::Int(castingCreaturePtr->Stats().Int().CurrentReduced(),
+                                                       castingCreaturePtr->Stats().Int().Current()) };
+
+            //check for player character 'natural' success
+            if ((castingCreaturePtr->IsPlayerCharacter()) && (RAND_CASTER >= castingCreaturePtr->Stats().Int().Normal()))
+            {
+                return Spell::EFFECT_STR_SUCCESS_;
+            }
+            
+            auto const RAND_DEFENDER{ utilz::random::Int(effectedCreaturePtr->Stats().Int().CurrentReduced(),
+                                                         effectedCreaturePtr->Stats().Int().Current())};
+
+            //check for 'normal' success
+            auto const CHANCE_VAL_CASTER{ RAND_CASTER + castingCreaturePtr->Rank() };
+            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER + effectedCreaturePtr->Rank() };
+            if (CHANCE_VAL_CASTER >= CHANCE_VAL_DEFENDER)
+            {
+                return Spell::EFFECT_STR_SUCCESS_;
+            }
+            else
+            {
+                return effectedCreaturePtr->NameOrRaceAndClass() + " was not effected";
+            }
         }
     }
 

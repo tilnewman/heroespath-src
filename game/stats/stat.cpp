@@ -12,9 +12,11 @@ namespace game
 namespace stats
 {
 
-    const Stat_t Stat::VAL_MIN_         {  0 };
-    const Stat_t Stat::VAL_MAX_INITIAL_ { 20 };
-    const Stat_t Stat::VAL_INVALID_     { -1 };
+    const Stat_t Stat::VAL_MIN_           {  0 };
+    const Stat_t Stat::VAL_MAX_INITIAL_   { 20 };
+    const Stat_t Stat::VAL_INVALID_       { -1 };
+    const float  Stat::REDUCE_DIVISOR_    { 5.0f };
+    const float  Stat::REDUCE_MULTIPLIER_ { 2.0f };
 
 
     Stat::Stat(const stat::Enum WHICH, const Stat_t VALUE)
@@ -165,6 +167,12 @@ namespace stats
         actual_ *= -1;
         current_ *= -1;
         normal_ *= -1;
+    }
+
+
+    Stat_t Stat::Reduce(const Stat_t VAL)
+    {
+        return static_cast<Stat_t>((static_cast<float>(VAL) * REDUCE_MULTIPLIER_) / REDUCE_DIVISOR_);
     }
 
 }

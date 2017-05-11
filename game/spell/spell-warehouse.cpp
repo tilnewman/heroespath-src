@@ -25,17 +25,18 @@ namespace spell
 
         spellsSVec_.resize(Spells::Count);
 
-        spellsSVec_[Spells::Antidote]   = std::make_shared<Antidote>();
-        spellsSVec_[Spells::Awaken]     = std::make_shared<Awaken>();
-        spellsSVec_[Spells::Bandage]    = std::make_shared<Bandage>();
-        spellsSVec_[Spells::ClearMind]  = std::make_shared<ClearMind>();
-        spellsSVec_[Spells::Daze]       = std::make_shared<Daze>();
-        spellsSVec_[Spells::Frighten]   = std::make_shared<Frighten>();
-        spellsSVec_[Spells::Lift]       = std::make_shared<Lift>();
-        spellsSVec_[Spells::Poison]     = std::make_shared<Poison>();
-        spellsSVec_[Spells::Sleep]      = std::make_shared<Sleep>();
-        spellsSVec_[Spells::Sparks]     = std::make_shared<Sparks>();
-        spellsSVec_[Spells::Trip]       = std::make_shared<Trip>();
+        spellsSVec_[Spells::Antidote]    = std::make_shared<Antidote>();
+        spellsSVec_[Spells::Awaken]      = std::make_shared<Awaken>();
+        spellsSVec_[Spells::Bandage]     = std::make_shared<Bandage>();
+        spellsSVec_[Spells::ClearMind]   = std::make_shared<ClearMind>();
+        spellsSVec_[Spells::Daze]        = std::make_shared<Daze>();
+        spellsSVec_[Spells::Frighten]    = std::make_shared<Frighten>();
+        spellsSVec_[Spells::Lift]        = std::make_shared<Lift>();
+        spellsSVec_[Spells::Poison]      = std::make_shared<Poison>();
+        spellsSVec_[Spells::PoisonCloud] = std::make_shared<PoisonCloud>();
+        spellsSVec_[Spells::Sleep]       = std::make_shared<Sleep>();
+        spellsSVec_[Spells::Sparks]      = std::make_shared<Sparks>();
+        spellsSVec_[Spells::Trip]        = std::make_shared<Trip>();
     }
 
 

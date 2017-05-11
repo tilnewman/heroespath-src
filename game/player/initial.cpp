@@ -228,6 +228,9 @@ namespace player
             characterPtrC->SpellAdd(spell::Spells::Poison);
             characterPtrC->SpellAdd(spell::Spells::Sparks);
             characterPtrC->SpellAdd(spell::Spells::Trip);
+
+            //TODO TEMP REMOVE -this line was only added so that mutli-creature targeting spells could be tested
+            characterPtrC->SpellAdd(spell::Spells::PoisonCloud);
             return;
         }
 

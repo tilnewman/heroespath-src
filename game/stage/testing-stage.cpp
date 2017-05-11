@@ -310,10 +310,10 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_ItemImageManager{ false };
-        if (false == hasTestingCompleted_ItemImageManager)
+        static auto hasTestingCompleted_SoundManager{ false };
+        if (false == hasTestingCompleted_SoundManager)
         {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
+            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
             return;
         }
 
@@ -324,10 +324,10 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_SoundManager{ false };
-        if (false == hasTestingCompleted_SoundManager)
+        static auto hasTestingCompleted_ItemImageManager{ false };
+        if (false == hasTestingCompleted_ItemImageManager)
         {
-            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
+            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
             return;
         }
 

@@ -121,6 +121,15 @@ namespace spell
         virtual const std::string EffectCreature(creature::CreaturePtr_t castingCreaturePtr, creature::CreaturePtr_t effectedCreaturePtr) const;
     };
 
+
+    class PoisonCloud : public Spell
+    {
+    public:
+        PoisonCloud() : Spell(Spells::PoisonCloud, SpellType::EffectCreature, static_cast<SpellClass::Enum>(SpellClass::Combat), 3, 1, TargetType::AllEnemies) {}
+        virtual ~PoisonCloud() {}
+        virtual const std::string EffectCreature(creature::CreaturePtr_t castingCreaturePtr, creature::CreaturePtr_t effectedCreaturePtr) const;
+    };
+
 }
 }
 

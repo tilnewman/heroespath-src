@@ -91,6 +91,25 @@ namespace spell
             return 0;
         }
 
+        //Returns the number of target creatures that will be effected.
+        virtual int EffectedCreatureCount(creature::CreaturePtr_t) const
+        {
+            if ((TargetType::SingleCharacter == targetType_) ||
+                (TargetType::SingleEnemy == targetType_))
+            {
+                return 1;
+            }
+            else if ((TargetType::AllCharacters == targetType_) ||
+                     (TargetType::AllEnemies == targetType_))
+            {
+                return EFFECTS_ALL_CREATURES_COUNT_;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
 
@@ -114,7 +133,7 @@ namespace spell
     public:
         static const std::string EFFECT_STR_SUCCESS_;
         static const std::string EFFECT_STR_NOTHING_TO_DO_;
-
+        static const int         EFFECTS_ALL_CREATURES_COUNT_;
     protected:
         Spells::Enum which_;
         stats::Rank_t rank_;

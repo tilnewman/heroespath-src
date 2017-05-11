@@ -27,6 +27,7 @@ namespace spell
             ClearMind,
             Poison,
             Antidote,//cures poison
+            PoisonCloud,
             Count
         };
 

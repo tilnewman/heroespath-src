@@ -63,9 +63,6 @@ namespace combat
                                                                      CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
 
     private:
-        static const float STAT_MIN_DIVISOR_;
-        static const float STAT_MIN_MULTIPLIER_;
-
         static const HitInfoVec_t AttackWithAllWeapons(creature::CreaturePtrC_t creatureAttackingPtrC,
                                                        creature::CreaturePtrC_t creatureDefendingPtrC,
                                                        const bool               WILL_FORCE_HIT = false);
@@ -83,12 +80,6 @@ namespace combat
                                                bool &                   isCriticalHit_OutParam);
 
         static bool IsConditionContained(const creature::Conditions::Enum E, const HitInfoVec_t & HIT_INFO_VEC);
-
-        template<typename T>
-        static T StatReduced(const T VAL)
-        {
-            return static_cast<T>( (static_cast<float>(VAL) * STAT_MIN_MULTIPLIER_) / STAT_MIN_DIVISOR_);
-        }
     };
 
 }
