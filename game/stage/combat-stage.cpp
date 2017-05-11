@@ -115,8 +115,8 @@ namespace stage
         combatSoundEffects_        (),
         turnPhase_                 (TurnPhase::NotATurn),
         preTurnPhase_              (PreTurnPhase::Start),
-        turnActionPhase_               (TurnActionPhase::None),
-        animPhase_          (AnimPhase::NotAnimating),
+        turnActionPhase_           (TurnActionPhase::None),
+        animPhase_                 (AnimPhase::NotAnimating),
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
         zoomSliderOrigPos_         (0.0f),
@@ -259,9 +259,7 @@ namespace stage
     {
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
         {
-            if ((POPUP_RESPONSE.Response() == sfml_util::Response::Okay) ||
-                (POPUP_RESPONSE.Response() == sfml_util::Response::Select) ||
-                (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+            if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
                 return true;

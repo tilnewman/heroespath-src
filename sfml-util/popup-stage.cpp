@@ -871,13 +871,32 @@ namespace sfml_util
 
     bool PopupStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
+        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
+                (KEY_EVENT.code == sf::Keyboard::Space))
+            {
+                SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
+                return true;
+            }
+            else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
+                     (KEY_EVENT.code == sf::Keyboard::C))
+            {
+                SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
+                return true;
+            }
+        }
+
         if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             beforeFadeTimerSec_ = BEFORE_FADE_STARTS_DELAY_SEC_;
             fadeAlpha_ = 256.0f;//anything greater than 255.0f will work here
         }
 
-        if ((POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem) || (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithoutItem))
+        if ((POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem) ||
+            (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithoutItem))
         {
             if ((KEY_EVENT.code == sf::Keyboard::I) && (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem))
             {
@@ -1267,7 +1286,7 @@ namespace sfml_util
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(spellColorImageCurrent_);
         spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
-
+        
         //setup spell details text
         std::ostringstream ss;
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
