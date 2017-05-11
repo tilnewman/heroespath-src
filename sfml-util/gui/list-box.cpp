@@ -630,7 +630,6 @@ namespace gui
                                                  false);
         }
 
-
         //establish the visible set of entitys in the box
         if (list_.empty() == false)
         {

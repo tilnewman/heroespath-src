@@ -204,7 +204,7 @@ namespace creature
         const item::ItemSVec_t CurrentWeaponsInc();
         void SetCurrentWeaponsToBest();
         void SetCurrentWeaponsToBestIfInvalidated();
-        const item::ItemSVec_t CurrentWeaponsCopy() const       { return currWeaponsSVec_; }
+        inline const item::ItemSVec_t CurrentWeaponsCopy() const{ return currWeaponsSVec_; }
         std::size_t WeaponsCount() const;
         inline bool HasWeapons() const                          { return WeaponsCount() > 0; }
         inline bool HasWeaponsHeld() const                      { return CurrentWeaponsCopy().empty() == false; }
