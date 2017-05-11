@@ -573,7 +573,7 @@ namespace gui
         imageMap_.clear();
 
         //find the first visible (or last) entity
-        typename ListBoxItemSLst_t::iterator itr(list_.begin());
+        auto itr(list_.begin());
         if (list_.empty() == false)
         {
             float vertTracker(0.0f);
@@ -583,16 +583,18 @@ namespace gui
                 if (vertTracker < currentViewPos_)
                 {
                     //check if at the end of the list
-                    typename ListBoxItemSLst_t::const_iterator tempItr(itr);
-                    ++tempItr;
-                    if (tempItr == list_.end())
+                    auto nextItr(itr);
+                    ++nextItr;
+                    if (nextItr == list_.end())
                     {
                         currentViewPos_ = vertTracker;
                         break;
                     }
                 }
                 else
+                {
                     break;
+                }
 
                 (*itr)->SetEntityWillDraw(false);
                 vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
@@ -601,7 +603,7 @@ namespace gui
 
         //setup first visible entity
         ListBoxItemSPtr_t firstVisibleEntitySPtr;
-        float entityPosY(entityRegion_.top + margin_);
+        auto entityPosY(entityRegion_.top + margin_);
         if (list_.empty() == false)
         {
             firstVisibleEntitySPtr = *itr;
@@ -744,12 +746,13 @@ namespace gui
         float vertTracker(entityRegion_.height);
         for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
         {
-            typename ListBoxItemSLst_t::const_iterator tempItr(itr);
-            ++tempItr;
-            if (*tempItr == selectedSPtr_)
+            auto const NEXT_HEIGHT{ (*itr)->GetEntityRegion().height + betweenPad_ };
+            auto nextItr(itr);
+            ++nextItr;
+            if (*nextItr == selectedSPtr_)
             {
                 if (vertTracker >= entityRegion_.height)
-                    currentViewPos_ -= (*itr)->GetEntityRegion().height + betweenPad_;
+                    currentViewPos_ -= NEXT_HEIGHT;
 
                 SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
                 selectedSPtr_ = *itr;
@@ -759,7 +762,7 @@ namespace gui
             else
             {
                 if ((*itr)->GetEntityWillDraw())
-                    vertTracker -= (*itr)->GetEntityRegion().height + betweenPad_;
+                    vertTracker -= NEXT_HEIGHT;
             }
         }
 
@@ -772,14 +775,15 @@ namespace gui
         float vertTracker(0.0f);
         for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
         {
+            auto const CURRENT_HEIGHT{ (*itr)->GetEntityRegion().height };
             if (itr != list_.begin())
             {
-                typename ListBoxItemSLst_t::const_iterator prevItr(itr);
+                auto prevItr(itr);
                 --prevItr;
                 if (*prevItr == selectedSPtr_)
                 {
-                    if ((vertTracker + ((*itr)->GetEntityRegion().height + margin_)) > entityRegion_.height)
-                        currentViewPos_ += (*itr)->GetEntityRegion().height + betweenPad_;
+                    if ((vertTracker + CURRENT_HEIGHT + margin_) > entityRegion_.height)
+                        currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
 
                     SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
                     selectedSPtr_ = *itr;
@@ -789,7 +793,7 @@ namespace gui
             }
 
             if ((*itr)->GetEntityWillDraw())
-                vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
+                vertTracker += CURRENT_HEIGHT + betweenPad_;
         }
 
         return false;
