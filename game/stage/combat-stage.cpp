@@ -198,7 +198,7 @@ namespace stage
             return HandleFight();
 
         if (PACKAGE.PTR_ == castTBoxButtonSPtr_.get())
-            return HandleCast();
+            return HandleCast_Step1();
 
         if (PACKAGE.PTR_ == advanceTBoxButtonSPtr_.get())
             return HandleAdvance();
@@ -261,7 +261,12 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
+                const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
+                M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
+                auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
+                M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
+                HandleCase_Step2(spellPtr);
                 return true;
             }
             else
@@ -1291,7 +1296,7 @@ namespace stage
                 return HandleFight();
 
             if (KE.code == sf::Keyboard::C)
-                return HandleCast();
+                return HandleCast_Step1();
 
             if (KE.code == sf::Keyboard::Right)
                 return HandleAdvance();
@@ -1830,7 +1835,7 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCast()
+    bool CombatStage::HandleCast_Step1()
     {
         auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_, combatDisplayStagePtr_)  );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
@@ -1846,6 +1851,12 @@ namespace stage
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             return true;
         }
+    }
+
+
+    void CombatStage::HandleCase_Step2(spell::SpellPtr_t)
+    {
+        //TODO
     }
 
 

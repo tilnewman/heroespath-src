@@ -186,7 +186,8 @@ namespace stage
         void PositionSlideStartTasks();
         bool HandleAttack();
         bool HandleFight();
-        bool HandleCast();
+        bool HandleCast_Step1();
+        void HandleCase_Step2(spell::SpellPtr_t);
         bool HandleAdvance();
         bool HandleRetreat();
         bool HandleBlock();
