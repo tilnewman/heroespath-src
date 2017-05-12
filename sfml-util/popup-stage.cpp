@@ -39,6 +39,7 @@ namespace sfml_util
     const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 6.0f };
     const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
     const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
+    const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_                { sf::Color(127, 32, 32) };
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &   REGION,
@@ -94,7 +95,7 @@ namespace sfml_util
         playerSprite_              (),
         pageRectLeft_              (),
         pageRectRight_             (),
-        deatilsTextRegionUPtr_     (),
+        charDetailsTextRegionUPtr_ (),
         listBoxLabelTextRegionUPtr_(),
         spellListBoxSPtr_          (),
         LISTBOX_IMAGE_COLOR_       (sf::Color(255, 255, 255, 190)),
@@ -109,6 +110,8 @@ namespace sfml_util
         spellSprite_               (),
         spellTitleTextRegionUPtr_  (),
         spellDetailsTextUPtr_      (),
+        spellUnableTextUPtr_       (),
+        spellDescTextUPtr_         (),
         spellCurrentPtr_           (nullptr),
         spellColorImageCurrent_    (sf::Color::Transparent),
         spellColorImageStart_      (sf::Color::Transparent),
@@ -116,6 +119,7 @@ namespace sfml_util
         spellColorTextCurrent_     (sf::Color::Transparent),
         spellColorTextStart_       (sf::Color::Transparent),
         spellColorTextEnd_         (sf::Color::Transparent),
+        spellUnableTextWillShow_   (false),
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
         if (BG_TEXTURE_SPTR.get() != nullptr)
@@ -649,7 +653,7 @@ namespace sfml_util
                                                    0.0f,
                                                    0.0f };
 
-            deatilsTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowDetails",
+            charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowDetails",
                                                                        DETAILS_TEXTINFO,
                                                                        DETAILS_TEXT_RECT);
 
@@ -776,11 +780,16 @@ namespace sfml_util
             //target.draw(accentSprite1_, states);
             //target.draw(accentSprite2_, states);
             target.draw(playerSprite_, states);
-            deatilsTextRegionUPtr_->draw(target, states);
+            charDetailsTextRegionUPtr_->draw(target, states);
             listBoxLabelTextRegionUPtr_->draw(target, states);
             target.draw(spellSprite_, states);
             spellTitleTextRegionUPtr_->draw(target, states);
             spellDetailsTextUPtr_->draw(target, states);
+            if (spellUnableTextWillShow_)
+            {
+                spellUnableTextUPtr_->draw(target, states);
+            }
+            spellDescTextUPtr_->draw(target, states);
         }
 
         Stage::Draw(target, states);
@@ -1366,8 +1375,7 @@ namespace sfml_util
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
            << "Rank: " << SPELL_CPTRC->Rank() << "\n"
            << "Targets " << game::TargetType::Name(SPELL_CPTRC->TargetType()) << "\n"
-           << "Can be cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n\n"
-           << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra() << "\n\n";
+           << "Cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(ss.str(),
                                                               sfml_util::FontManager::Instance()->Font_Default1(),
@@ -1378,7 +1386,7 @@ namespace sfml_util
         auto const SPELLDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
         auto const SPELLDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
         auto const SPELLDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
-        auto const SPELLDETAILS_TEXTRECT_HEIGHT { (pageRectRight_.top + pageRectRight_.height) - SPELLDETAILS_TEXTRECT_TOP };
+        auto const SPELLDETAILS_TEXTRECT_HEIGHT { 0.0f };
         
         const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
                                                     SPELLDETAILS_TEXTRECT_TOP,
@@ -1395,6 +1403,88 @@ namespace sfml_util
         {
             spellDetailsTextUPtr_->SetText(ss.str());
         }
+
+        //setup spell 'unable to cast' text
+        ss.str(" ");
+        spellUnableTextWillShow_ = false;
+        if (POPUP_INFO_.CreaturePtr()->ManaCurrent() < SPELL_CPTRC->ManaCost())
+        {
+            ss << "Insufficient Mana";
+            spellUnableTextWillShow_ = true;
+        }
+        else
+        {
+            auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
+
+            if ((SPELL_CPTRC->ValidPhases() & CURRENT_PHASE) == 0)
+            {
+                ss << "";
+                if (CURRENT_PHASE & game::Phase::Combat)             ss << "Cannot cast during combat.";
+                else if (CURRENT_PHASE & game::Phase::Conversation)  ss << "Cannot cast while talking.";
+                else if (CURRENT_PHASE & game::Phase::Exploring)     ss << "Cannot cast while exploring.";
+                else if (CURRENT_PHASE & game::Phase::Inventory)     ss << "Cannot cast from inventory.";
+                else ss << "Only during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << ".";
+
+                spellUnableTextWillShow_ = true;
+            }
+        }
+
+        const sfml_util::gui::TextInfo SPELL_UNABLE_TEXTINFO(ss.str(),
+                                                             sfml_util::FontManager::Instance()->Font_Default2(),
+                                                             sfml_util::FontManager::Instance()->Size_Normal(),
+                                                             SPELL_UNABLE_TEXT_COLOR_,
+                                                             sf::BlendAlpha,
+                                                             sf::Text::Bold,
+                                                             sfml_util::Justified::Center);
+
+        auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
+
+        auto const SPELL_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SPELL_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+        auto const SPELL_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
+        auto const SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };
+        
+        const sf::FloatRect SPELL_UNABLE_TEXTRECT{ SPELL_UNABLE_TEXTRECT_LEFT,
+                                                   SPELL_UNABLE_TEXTRECT_TOP,
+                                                   SPELL_UNABLE_TEXTRECT_WIDTH,
+                                                   SPELL_UNABLE_TEXTRECT_HEIGHT };
+
+        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellUnableToCast",
+                                                                 SPELL_UNABLE_TEXTINFO,
+                                                                 SPELL_UNABLE_TEXTRECT);
+        
+        //setup spell description text
+        ss.str("");
+        ss << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra();
+
+        const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(ss.str(),
+                                                           sfml_util::FontManager::Instance()->Font_Default1(),
+                                                           sfml_util::FontManager::Instance()->Size_Small(),
+                                                           sfml_util::FontManager::Color_GrayDarker(),
+                                                           sfml_util::Justified::Center);
+
+        auto const SPELL_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
+        auto const SPELL_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SPELL_DESC_HORIZ_MARGIN };
+        auto spellDescTextRectTop{ 0.0f };
+        if (spellUnableTextWillShow_)
+        {
+            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top + spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+        }
+        else
+        {
+            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+        }
+        auto const SPELL_DESC_TEXTRECT_WIDTH{ pageRectRight_.width - (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
+        auto const SPELL_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER };
+        
+        const sf::FloatRect SPELL_DESC_TEXTRECT{ SPELL_DESC_TEXTRECT_LEFT,
+                                                 spellDescTextRectTop,
+                                                 SPELL_DESC_TEXTRECT_WIDTH,
+                                                 SPELL_DESC_TEXTRECT_HEIGHT };
+
+        spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
+                                                               SPELL_DESC_TEXTINFO,
+                                                               SPELL_DESC_TEXTRECT);
     }
 
 
@@ -1450,6 +1540,15 @@ namespace sfml_util
         
         spellTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
         spellDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
+        spellDescTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
+
+        auto unableTextColor{ SPELL_UNABLE_TEXT_COLOR_ };
+        unableTextColor.a = spellColorTextCurrent_.a;
+        const sfml_util::gui::ColorSet TUNABLE_EXT_COLOR_SET(unableTextColor,
+                                                             unableTextColor,
+                                                             unableTextColor,
+                                                             unableTextColor);
+        spellUnableTextUPtr_->SetEntityColors(TUNABLE_EXT_COLOR_SET);
     }
 
 }

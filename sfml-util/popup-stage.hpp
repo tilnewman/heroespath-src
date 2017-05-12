@@ -116,6 +116,7 @@ namespace sfml_util
         static const float     SPELLBOOK_COLOR_FADE_SPEED_;
         static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
+        static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
@@ -177,7 +178,7 @@ namespace sfml_util
         sf::Sprite              playerSprite_;
         sf::FloatRect           pageRectLeft_;
         sf::FloatRect           pageRectRight_;
-        gui::TextRegionUPtr_t   deatilsTextRegionUPtr_;
+        gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
         gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
         gui::ListBoxSPtr_t      spellListBoxSPtr_;
         const sf::Color         LISTBOX_IMAGE_COLOR_;
@@ -192,6 +193,8 @@ namespace sfml_util
         sf::Sprite              spellSprite_;
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
         gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
+        gui::TextRegionUPtr_t   spellUnableTextUPtr_;
+        gui::TextRegionUPtr_t   spellDescTextUPtr_;
         game::spell::SpellPtr_t spellCurrentPtr_;
         sf::Color               spellColorImageCurrent_;
         sf::Color               spellColorImageStart_;
@@ -199,6 +202,7 @@ namespace sfml_util
         sf::Color               spellColorTextCurrent_;
         sf::Color               spellColorTextStart_;
         sf::Color               spellColorTextEnd_;
+        bool                    spellUnableTextWillShow_;
         sliders::ZeroSliderOnce<float> spellColorSlider_;
     };
 

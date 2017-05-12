@@ -28,7 +28,6 @@ namespace game
         currentLoopSPtr_  ( new sfml_util::Loop("LoopManagerDefault") ),
         popupResponse_    (sfml_util::Response::None),
         popupSelection_   (0),
-        popupPrevState_   (LoopState::None),
         prevState_        (LoopState::None),
         prevSettingsState_(LoopState::None),
         stateBeforeFade_  (LoopState::None)
@@ -60,6 +59,40 @@ namespace game
     void LoopManager::SetStartupStage(const std::string & STARTUP_STAGE_NAME)
     {
         startupStage_ = STARTUP_STAGE_NAME;
+    }
+
+
+    Phase::Enum LoopManager::GetPhase() const
+    {
+        if (LoopState::Adventure == state_)
+        {
+            return Phase::Exploring;
+        }
+        else if (LoopState::Combat == state_)
+        {
+            return Phase::Combat;
+        }
+        else if (LoopState::Inventory == state_)
+        {
+            return Phase::Inventory;
+        }
+        else if (LoopState::Popup == state_)
+        {
+            if (LoopState::Adventure == prevState_)
+            {
+                return Phase::Exploring;
+            }
+            else if (LoopState::Combat == prevState_)
+            {
+                return Phase::Combat;
+            }
+            else if (LoopState::Inventory == prevState_)
+            {
+                return Phase::Inventory;
+            }
+        }
+        
+        return static_cast<Phase::Enum>(0);
     }
 
 

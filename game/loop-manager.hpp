@@ -13,6 +13,7 @@
 #include "sfml-util/response-enum.hpp"
 
 #include "game/loop-state-enum.hpp"
+#include "game/phase-enum.hpp"
 
 
 namespace game
@@ -52,9 +53,12 @@ namespace game
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME);
 
         inline LoopState::Enum GetState() const                     { return state_; }
+        inline LoopState::Enum GetPrevState() const                 { return prevState_; }
         inline sfml_util::Response::Enum GetPopupResponse() const   { return popupResponse_; }
         inline std::size_t GetPopupSelection() const                { return popupSelection_; }
         inline void ClearPopupResponse()                            { popupResponse_ = sfml_util::Response::None; popupSelection_ = 0; }
+
+        Phase::Enum GetPhase() const;
 
         void Execute();
 
@@ -131,14 +135,13 @@ namespace game
 
     private:
         static LoopManagerSPtr_t  instanceSPtr_;
-        static std::string startupStage_;
+        static std::string        startupStage_;
         //
         LoopState::Enum           state_;
         sfml_util::CommandQueue   cmdQueue_;
         sfml_util::ILoopSPtr_t    currentLoopSPtr_;
         sfml_util::Response::Enum popupResponse_;
         std::size_t               popupSelection_;
-        LoopState::Enum           popupPrevState_;
         LoopState::Enum           prevState_;
         LoopState::Enum           prevSettingsState_;
         LoopState::Enum           stateBeforeFade_;
