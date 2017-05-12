@@ -38,13 +38,12 @@ namespace sfml_util
     const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
     const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 6.0f };
     const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
+    const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &   REGION,
                            const sf::FloatRect &   INNER_REGION,
-                           const sf::Sprite &      ACCENT_SPRITE,
-                           const TextureSPtr_t &   ACCENT_TEXTURE_SPTR,
-                           const TextureSPtr_t &   TEXTURE_SPTR)
+                           const TextureSPtr_t &   BG_TEXTURE_SPTR)
     :
         Stage                      (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
         POPUP_INFO_                (POPUP_INFO),
@@ -57,8 +56,10 @@ namespace sfml_util
         secondCounter_             (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
         box_                       ("PopupWindow's", gui::box::Info()),
         gradient_                  (),
-        accentSprite_              (ACCENT_SPRITE),
-        accentTextureSPtr_         (ACCENT_TEXTURE_SPTR),
+        accentSprite1_             (),
+        accentTexture1SPtr_        (),
+        accentSprite2_             (),
+        accentTexture2SPtr_        (),
         selectPopupButtonSPtr_     (),
         sliderbarSPtr_             (),
         sliderbarPosTop_           (0.0f),
@@ -117,11 +118,11 @@ namespace sfml_util
         spellColorTextEnd_         (sf::Color::Transparent),
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
-        if (TEXTURE_SPTR.get() != nullptr)
+        if (BG_TEXTURE_SPTR.get() != nullptr)
         {
-            backgroundTextureSPtr_ = TEXTURE_SPTR;
+            backgroundTextureSPtr_ = BG_TEXTURE_SPTR;
             backgroundTextureSPtr_->setSmooth(true);
-            backgroundSprite_.setTexture( * backgroundTextureSPtr_);
+            backgroundSprite_.setTexture( * BG_TEXTURE_SPTR);
         }
     }
 
@@ -370,28 +371,34 @@ namespace sfml_util
 
         gradient_.Setup(R, GradientInfo(sf::Color::Black, 0, sfml_util::Side::Top, sf::Color(0, 0, 0, 20)));
 
-        //establish the accent sprite position and size
+        //set the accent sprite's size
         if (POPUP_INFO_.WillAddRandImage())
         {
+            //load the first accent sprite
+            accentTexture1SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
+            accentSprite1_.setTexture(*accentTexture1SPtr_);
+
             //scale the accent image
             auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
-            const float SCALE_VERT((textRegion_.height * SIZE_RATIO) / accentSprite_.getLocalBounds().height);
-            accentSprite_.setScale(SCALE_VERT, SCALE_VERT);
+            const float SCALE_VERT((textRegion_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height);
+            accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
 
-            if (accentSprite_.getGlobalBounds().width > (textRegion_.width * SIZE_RATIO))
+            if (accentSprite1_.getGlobalBounds().width > (textRegion_.width * SIZE_RATIO))
             {
-                const float SCALE_HORIZ((textRegion_.width * SIZE_RATIO) / accentSprite_.getLocalBounds().width);
+                const float SCALE_HORIZ((textRegion_.width * SIZE_RATIO) / accentSprite1_.getLocalBounds().width);
 
                 if (SCALE_HORIZ < SCALE_VERT)
                 {
-                    accentSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                    accentSprite1_.setScale(SCALE_HORIZ, SCALE_HORIZ);
                 }
             }
 
             //always center the accent sprite image
-            const float ACCENT_POS_LEFT((StageRegionLeft() + (StageRegionWidth() * 0.5f)) - (accentSprite_.getGlobalBounds().width * 0.5f));
-            const float ACCENT_POS_TOP((StageRegionTop() + (StageRegionHeight() * 0.5f)) - (accentSprite_.getGlobalBounds().height * 0.5f));
-            accentSprite_.setPosition(ACCENT_POS_LEFT, ACCENT_POS_TOP);
+            const float ACCENT_POS_LEFT((StageRegionLeft() + (StageRegionWidth() * 0.5f)) - (accentSprite1_.getGlobalBounds().width * 0.5f));
+            const float ACCENT_POS_TOP((StageRegionTop() + (StageRegionHeight() * 0.5f)) - (accentSprite1_.getGlobalBounds().height * 0.5f));
+            accentSprite1_.setPosition(ACCENT_POS_LEFT, ACCENT_POS_TOP);
+        
+            accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
 
         //sliderbar setup
@@ -539,6 +546,60 @@ namespace sfml_util
             pageRectRight_.width = RIGHT_PAGE_RECT_RAW.width * SCALE;
             pageRectRight_.height = RIGHT_PAGE_RECT_RAW.height * SCALE;
 
+            //setup the left accent image
+            {
+                accentTexture1SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
+                accentSprite1_.setTexture(*accentTexture1SPtr_);
+
+                auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+                const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height);
+                accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
+
+                if (accentSprite1_.getGlobalBounds().width > (pageRectLeft_.width * SIZE_RATIO))
+                {
+                    const float SCALE_HORIZ((pageRectLeft_.width * SIZE_RATIO) / accentSprite1_.getLocalBounds().width);
+
+                    if (SCALE_HORIZ < SCALE_VERT)
+                    {
+                        accentSprite1_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                    }
+                }
+
+                //always center the accent sprite image
+                const float ACCENT1_POS_LEFT((pageRectLeft_.left + (pageRectLeft_.width  * 0.5f)) - (accentSprite1_.getGlobalBounds().width * 0.5f));
+                const float ACCENT1_POS_TOP ((pageRectLeft_.top  + (pageRectLeft_.height * 0.5f)) - (accentSprite1_.getGlobalBounds().height * 0.5f));
+                accentSprite1_.setPosition(ACCENT1_POS_LEFT, ACCENT1_POS_TOP);
+
+                accentSprite1_.setColor(sf::Color(255, 255, 255, 16));
+            }
+
+            //setup the right accent image
+            {
+                accentTexture2SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
+                accentSprite2_.setTexture(*accentTexture2SPtr_);
+
+                auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+                const float SCALE_VERT((pageRectRight_.height * SIZE_RATIO) / accentSprite2_.getLocalBounds().height);
+                accentSprite2_.setScale(SCALE_VERT, SCALE_VERT);
+
+                if (accentSprite2_.getGlobalBounds().width > (pageRectRight_.width * SIZE_RATIO))
+                {
+                    const float SCALE_HORIZ((pageRectRight_.width * SIZE_RATIO) / accentSprite2_.getLocalBounds().width);
+
+                    if (SCALE_HORIZ < SCALE_VERT)
+                    {
+                        accentSprite2_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                    }
+                }
+
+                //always center the accent sprite image
+                const float ACCENT2_POS_LEFT((pageRectRight_.left + (pageRectRight_.width  * 0.5f)) - (accentSprite2_.getGlobalBounds().width * 0.5f));
+                const float ACCENT2_POS_TOP((pageRectRight_.top + (pageRectRight_.height * 0.5f)) - (accentSprite2_.getGlobalBounds().height * 0.5f));
+                accentSprite2_.setPosition(ACCENT2_POS_LEFT, ACCENT2_POS_TOP);
+
+                accentSprite2_.setColor(sf::Color(255, 255, 255, 16));
+            }
+
             //setup player image
             playerTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
             playerTextureSPtr_->setSmooth(true);
@@ -680,10 +741,14 @@ namespace sfml_util
             target.draw(gradient_, states);
         }
         else
+        {
             target.draw(backgroundSprite_, states);
+        }
 
         if (POPUP_INFO_.WillAddRandImage())
-            target.draw(accentSprite_, states);
+        {
+            target.draw(accentSprite1_, states);
+        }
 
         textRegionSPtr_->draw(target, states);
 
@@ -692,10 +757,14 @@ namespace sfml_util
             target.draw(imageSpriteCurr_, states);
 
             if (areImagesMoving_ && (false == isInitialAnimation_))
+            {
                 target.draw(imageSpritePrev_, states);
+            }
 
             if (willShowImageCount_ && (imageNumTextRegionSPtr_.get() != nullptr))
+            {
                 imageNumTextRegionSPtr_->draw(target, states);
+            }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
@@ -704,6 +773,8 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
+            //target.draw(accentSprite1_, states);
+            //target.draw(accentSprite2_, states);
             target.draw(playerSprite_, states);
             deatilsTextRegionUPtr_->draw(target, states);
             listBoxLabelTextRegionUPtr_->draw(target, states);

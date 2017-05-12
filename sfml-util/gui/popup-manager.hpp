@@ -90,11 +90,6 @@ namespace gui
         static inline sf::IntRect Rect_Spellbook_PageLeft()     { return sf::IntRect(165, 155, 652, 990); }
         static inline sf::IntRect Rect_Spellbook_PageRight()    { return sf::IntRect(932, 155, 652, 990); }
 
-        //Returns a sprite for a randomly selected popup window accent that is
-        //positioned, scaled, and colored for drawing to the paper popup window.
-        //throws std::range_error on an unknown enum value
-        const sf::Sprite AccentSprite(const game::PopupInfo &, TextureSPtr_t &) const;
-
         //throws range_error on an unknown enum value
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 
@@ -171,12 +166,11 @@ namespace gui
 
         sfml_util::PopupStageSPtr_t CreatePopupStage(const game::PopupInfo &);
 
+        TextureSPtr_t LoadRandomAccentImage() const;
+
     private:
         void LoadPopup(const std::string & POPUP_FILE_NAME,
                        TextureSPtr_t &     textureSPtr) const;
-
-        void LoadAccent(const std::string & ACCENT_FILE_NAME,
-                        TextureSPtr_t &     textureSPtr) const;
 
         float GetScaleForImage(const PopupImage::Enum E) const;
 
@@ -185,7 +179,6 @@ namespace gui
     private:
         static std::string windowTextureDirectoryPath_;
         static std::string accentTextureDirectoryPath_;
-        static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
         static PopupManagerSPtr_t instanceSPtr_;
         static sf::Color fontColor_;
         //

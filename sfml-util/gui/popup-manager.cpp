@@ -25,7 +25,6 @@ namespace gui
 
     std::string         PopupManager::windowTextureDirectoryPath_("");
     std::string         PopupManager::accentTextureDirectoryPath_("");
-    const sf::Uint8     PopupManager::ACCENT_IMAGE_ALPHA_(32);
     PopupManagerSPtr_t  PopupManager::instanceSPtr_(nullptr);
     sf::Color           PopupManager::fontColor_(sf::Color(64, 64, 64, 255));//set to match FontManager::Color_GrayDarker() before being set in the constructor
 
@@ -98,60 +97,6 @@ namespace gui
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) / bfs::path(WINDOW_FILE_NAME)));
         sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
-    }
-
-
-    const sf::Sprite PopupManager::AccentSprite(const game::PopupInfo & POPUP_INFO, TextureSPtr_t & accentTextureSPtr) const
-    {
-        //check if given popup image is valid
-        if (false == sfml_util::PopupImage::IsValid(POPUP_INFO.Image()))
-        {
-            std::ostringstream ss;
-            ss << "PopupManager::AccentSprite(PopupImage::Enum=" << POPUP_INFO.Image() << ")_InvalidValueError.";
-            throw std::range_error(ss.str());
-        }
-
-        TextureSPtr_t tempTextureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(utilz::random::Int(accentPathsVec_.size() - 1)).string());
-
-        if (utilz::random::Bool())
-        {
-            accentTextureSPtr = sfml_util::FlipHorizCopy( * tempTextureSPtr);
-        }
-        else
-        {
-            accentTextureSPtr = tempTextureSPtr;
-        }
-
-        accentTextureSPtr->setSmooth(true);
-
-        sf::Sprite accentSprite;
-        accentSprite.setTexture( * accentTextureSPtr);
-
-        //scale the accent image down to fit within the window
-        sf::FloatRect rect( sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(), POPUP_INFO.ImageScale())) );
-        rect.left   *= POPUP_INFO.SizeX();
-        rect.top    *= POPUP_INFO.SizeY();
-        rect.width  *= POPUP_INFO.SizeX();
-        rect.height *= POPUP_INFO.SizeY();
-
-        if (accentSprite.getGlobalBounds().width > rect.width)
-        {
-            const float NEW_SCALE((rect.width / accentSprite.getGlobalBounds().width) - 0.25f);
-            accentSprite.setScale(NEW_SCALE, NEW_SCALE);
-        }
-        if (accentSprite.getGlobalBounds().height > rect.height)
-        {
-            const float NEW_SCALE((rect.height / accentSprite.getGlobalBounds().height) - 0.25f);
-            accentSprite.setScale(NEW_SCALE, NEW_SCALE);
-        }
-
-        //no need to position because the PopupStage will do that after establishing the background pos and size
-
-        //fade out
-        accentSprite.setColor( sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_) );
-
-        return accentSprite;
     }
 
 
@@ -382,28 +327,19 @@ namespace gui
             innerRegion.top    = PAD;
             innerRegion.top   -= PAD;
 
-            sf::Sprite accentSprite;
-            TextureSPtr_t accentTextureSPtr{nullptr};
-            if (NEW_POPUP_INFO.WillAddRandImage())
-            {
-                accentSprite = AccentSprite(NEW_POPUP_INFO, accentTextureSPtr);
-            }
-
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(NEW_POPUP_INFO,
                                                                          REGION,
-                                                                         innerRegion,
-                                                                         accentSprite,
-                                                                         accentTextureSPtr) );
+                                                                         innerRegion) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
         else if (POPUP_INFO.Image() == sfml_util::PopupImage::Spellbook)
         {
-            sfml_util::TextureSPtr_t textureSPtr( Texture(POPUP_INFO.Image()) );
+            sfml_util::TextureSPtr_t backgroundTextureSPtr( Texture(POPUP_INFO.Image()) );
 
             //define the outer limits of the stage
             auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
-            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(textureSPtr->getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(textureSPtr->getSize().x) };
+            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTextureSPtr->getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(backgroundTextureSPtr->getSize().x) };
 
             sf::FloatRect rect;
             rect.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
@@ -411,28 +347,22 @@ namespace gui
             rect.width = SPELLBOOK_WIDTH;
             rect.height = SPELLBOOK_HEIGHT;
 
-            //Spellbook popup's do not use accent sprites
-            sf::Sprite accentSprite;
-            sfml_util::TextureSPtr_t accentTextureSPtr;
-
             auto const INNER_RECT{ rect };
 
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         accentSprite,
-                                                                         accentTextureSPtr,
-                                                                         textureSPtr) );
+                                                                         backgroundTextureSPtr) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
         else
         {
-            sfml_util::TextureSPtr_t textureSPtr( Texture(POPUP_INFO.Image()) );
+            sfml_util::TextureSPtr_t backgroundTextureSPtr( Texture(POPUP_INFO.Image()) );
 
             //define the outer limits of the stage
-            const float TEXTURE_WIDTH (static_cast<float>(textureSPtr->getSize().x));
-            const float TEXTURE_HEIGHT(static_cast<float>(textureSPtr->getSize().y));
+            const float TEXTURE_WIDTH (static_cast<float>(backgroundTextureSPtr->getSize().x));
+            const float TEXTURE_HEIGHT(static_cast<float>(backgroundTextureSPtr->getSize().y));
 
             sf::FloatRect rect;
             rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (TEXTURE_WIDTH * 0.5f);
@@ -442,22 +372,29 @@ namespace gui
 
             const sf::FloatRect INNER_RECT(sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(), POPUP_INFO.ImageScale())));
 
-            sf::Sprite accentSprite;
-            TextureSPtr_t accentTextureSPtr{ nullptr };
-            if (POPUP_INFO.WillAddRandImage())
-            {
-                accentSprite = AccentSprite(POPUP_INFO, accentTextureSPtr);
-            }
-
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         accentSprite,
-                                                                         accentTextureSPtr,
-                                                                         textureSPtr) );
+                                                                         backgroundTextureSPtr) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
+    }
+
+
+    TextureSPtr_t PopupManager::LoadRandomAccentImage() const
+    {
+        TextureSPtr_t tempTextureSPtr;
+        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(utilz::random::Int(accentPathsVec_.size() - 1)).string());
+
+        if (utilz::random::Bool())
+        {
+            sfml_util::FlipHoriz(*tempTextureSPtr);
+        }
+
+        tempTextureSPtr->setSmooth(true);
+
+        return tempTextureSPtr;
     }
 
 

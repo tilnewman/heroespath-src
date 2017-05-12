@@ -78,9 +78,7 @@ namespace sfml_util
         PopupStage(const game::PopupInfo & POPUP_INFO,
                    const sf::FloatRect &   REGION,
                    const sf::FloatRect &   INNER_REGION,
-                   const sf::Sprite &      ACCENT_SPRITE,
-                   const TextureSPtr_t &   ACCENT_TEXTURE_SPTR,
-                   const TextureSPtr_t &   TEXTURE_SPTR = TextureSPtr_t());
+                   const TextureSPtr_t &   BG_TEXTURE_SPTR = TextureSPtr_t());
 
         virtual ~PopupStage();
 
@@ -117,6 +115,7 @@ namespace sfml_util
         static const float     BEFORE_FADE_STARTS_DELAY_SEC_;
         static const float     SPELLBOOK_COLOR_FADE_SPEED_;
         static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
+        static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
@@ -128,8 +127,10 @@ namespace sfml_util
         std::size_t              secondCounter_;
         gui::box::Box            box_;
         GradientRect             gradient_;
-        sf::Sprite               accentSprite_;
-        TextureSPtr_t            accentTextureSPtr_;
+        sf::Sprite               accentSprite1_;
+        TextureSPtr_t            accentTexture1SPtr_;
+        sf::Sprite               accentSprite2_;
+        TextureSPtr_t            accentTexture2SPtr_;
         PopupButton_SelectSPtr_t selectPopupButtonSPtr_;
 
         //members supporting the image select sliderbar
