@@ -7,6 +7,7 @@
 #include "game/spell/spell-enum.hpp"
 #include "game/spell/spell-type-enum.hpp"
 #include "game/target-enum.hpp"
+#include "game/phase-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -39,7 +40,7 @@ namespace spell
     public:
         Spell(const Spells::Enum     WHICH,
               const SpellType::Enum  TYPE,
-              const SpellClass::Enum CLASS,
+              const Phase::Enum      VALID_PHASES,
               const stats::Mana_t    MANA_COST,
               const stats::Rank_t    RANK,
               const TargetType::Enum TARGET_TYPE);
@@ -57,7 +58,7 @@ namespace spell
 
         inline Spells::Enum Which() const           { return which_; }
         inline SpellType::Enum Type() const         { return type_; }
-        inline SpellClass::Enum Class() const       { return class_; }
+        inline Phase::Enum ValidPhases() const      { return validPhases_; }
         inline stats::Mana_t ManaCost() const       { return manaCost_; }
         inline stats::Rank_t Rank() const           { return rank_; }
         inline TargetType::Enum TargetType() const  { return targetType_; }
@@ -135,11 +136,11 @@ namespace spell
         static const std::string EFFECT_STR_NOTHING_TO_DO_;
         static const int         EFFECTS_ALL_CREATURES_COUNT_;
     protected:
-        Spells::Enum which_;
-        stats::Rank_t rank_;
-        SpellType::Enum type_;
-        SpellClass::Enum class_;
-        stats::Mana_t manaCost_;
+        Spells::Enum     which_;
+        stats::Rank_t    rank_;
+        SpellType::Enum  type_;
+        Phase::Enum      validPhases_;
+        stats::Mana_t    manaCost_;
         TargetType::Enum targetType_;
     };
 
@@ -155,16 +156,16 @@ namespace spell
 
     inline bool operator<(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_, L.targetType_)
+        return std::tie(L.which_, L.rank_, L.type_, L.validPhases_, L.manaCost_, L.targetType_)
                 <
-               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_, R.targetType_);
+               std::tie(R.which_, R.rank_, R.type_, R.validPhases_, R.manaCost_, R.targetType_);
     }
 
     inline bool operator==(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_, L.rank_, L.type_, L.class_, L.manaCost_, L.targetType_)
+        return std::tie(L.which_, L.rank_, L.type_, L.validPhases_, L.manaCost_, L.targetType_)
                 ==
-               std::tie(R.which_, R.rank_, R.type_, R.class_, R.manaCost_, R.targetType_);
+               std::tie(R.which_, R.rank_, R.type_, R.validPhases_, R.manaCost_, R.targetType_);
     }
 
     inline bool operator!=(const Spell & L, const Spell & R)

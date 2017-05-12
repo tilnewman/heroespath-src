@@ -32,6 +32,7 @@
 #include "game/combat/combat-text.hpp"
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/combat-anim.hpp"
+#include "game/combat/combat-text.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/title-warehouse.hpp"
@@ -39,7 +40,8 @@
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/algorithms.hpp"
-#include "game/combat/combat-text.hpp"
+#include "game/spell/spell-base.hpp"
+#include "game/phase-enum.hpp"
 
 #include <sstream>
 #include <exception>
@@ -263,8 +265,24 @@ namespace stage
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
+                
                 auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
                 M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
+                
+                if ((spellPtr->ValidPhases() & Phase::Combat) == 0)
+                {
+                    QuickSmallPopup("The " + spellPtr->Name() + " spell cannot be cast during combat.", true, false);
+                    return false;
+                }
+
+                if (spellPtr->ManaCost() > turnCreaturePtr_->ManaCurrent())
+                {
+                    std::ostringstream ss;
+                    ss << turnCreaturePtr_->Name() << " does not have enough mana to cast " << spellPtr->Name() << ".  " << (spellPtr->ManaCost() - turnCreaturePtr_->ManaCurrent()) << " short.";
+                    QuickSmallPopup(ss.str(), true, false);
+                    return false;
+                }
+                
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
                 HandleCase_Step2(spellPtr);
                 return true;

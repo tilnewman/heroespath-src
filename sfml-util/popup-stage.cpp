@@ -1366,7 +1366,7 @@ namespace sfml_util
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
            << "Rank: " << SPELL_CPTRC->Rank() << "\n"
            << "Targets " << game::TargetType::Name(SPELL_CPTRC->TargetType()) << "\n"
-           << game::spell::SpellClass::ToString(SPELL_CPTRC->Class(), true) << "\n\n"
+           << "Can be cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n\n"
            << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra() << "\n\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(ss.str(),

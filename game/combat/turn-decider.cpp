@@ -13,6 +13,7 @@
 #include "game/creature/algorithms.hpp"
 #include "game/spell/spell-type-enum.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/phase-enum.hpp"
 
 #include <vector>
 #include <tuple>
@@ -640,7 +641,7 @@ namespace combat
                      back_inserter(combatSpellsPVec),
                      [] (const spell::SpellPtr_t S_PTR) { return ((S_PTR->Type() != spell::SpellType::EnchantItemHelpful) &&
                                                                   (S_PTR->Type() != spell::SpellType::EnchantItemHarmful) &&
-                                                                  (S_PTR->Class() & spell::SpellClass::Combat)); });
+                                                                  (S_PTR->ValidPhases() & Phase::Combat)); });
 
         if (combatSpellsPVec.empty())
         {
@@ -716,7 +717,7 @@ namespace combat
                      (const spell::SpellPtr_t S_PTR)
                      {
                         for (auto const NEXT_SPELL_TYPE : SPELL_TYPES_VEC)
-                            if ((S_PTR->Class() & spell::SpellClass::Combat) &&
+                            if ((S_PTR->ValidPhases() & Phase::Combat) &&
                                 (NEXT_SPELL_TYPE == S_PTR->Type()))
                                 return true;
 
