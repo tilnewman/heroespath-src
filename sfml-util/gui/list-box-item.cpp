@@ -18,7 +18,8 @@ namespace sfml_util
 namespace gui
 {
 
-    ListBoxItem::ListBoxItem(const std::string & NAME)
+    ListBoxItem::ListBoxItem(const std::string & NAME,
+                             const bool          IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemBase")),
             character_sptr(),
@@ -26,12 +27,14 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                         NAME,
-                             const sfml_util::gui::TextInfo &            TEXT_INFO)
+    ListBoxItem::ListBoxItem(const std::string &              NAME,
+                             const sfml_util::gui::TextInfo & TEXT_INFO,
+                             const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTextOnly"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -39,13 +42,15 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                         NAME,
-                             const sfml_util::gui::TextInfo &            TEXT_INFO,
-                             const game::player::CharacterSPtr_t & CHARACTER_SPTR)
+    ListBoxItem::ListBoxItem(const std::string &                   NAME,
+                             const sfml_util::gui::TextInfo &      TEXT_INFO,
+                             const game::player::CharacterSPtr_t & CHARACTER_SPTR,
+                             const bool                            IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemPlayerCharacter"), TEXT_INFO, sf::FloatRect()),
             character_sptr(CHARACTER_SPTR),
@@ -53,13 +58,15 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                        NAME,
-                             const sfml_util::gui::TextInfo &           TEXT_INFO,
-                             const game::state::GameStateSPtr_t & GAMESTATE_SPTR)
+    ListBoxItem::ListBoxItem(const std::string &                  NAME,
+                             const sfml_util::gui::TextInfo &     TEXT_INFO,
+                             const game::state::GameStateSPtr_t & GAMESTATE_SPTR,
+                             const bool                           IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -67,13 +74,15 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
     ListBoxItem::ListBoxItem(const std::string &                  NAME,
                              const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const game::creature::ConditionPtr_t CONDITION_CPTRC_PARAM)
+                             const game::creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
+                             const bool                           IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -81,13 +90,15 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (CONDITION_CPTRC_PARAM),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
     ListBoxItem::ListBoxItem(const std::string &              NAME,
                              const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const game::item::ItemSPtr_t &   IITEM_SPTR)
+                             const game::item::ItemSPtr_t &   IITEM_SPTR,
+                             const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -95,13 +106,15 @@ namespace gui
             iitem_sptr    (IITEM_SPTR),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
     ListBoxItem::ListBoxItem(const std::string &               NAME,
                              const sfml_util::gui::TextInfo &  TEXT_INFO,
-                             const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM)
+                             const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+                             const bool                        IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -109,13 +122,15 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (TITLE_CPTRC_PARAM),
-            SPELL_CPTRC   (nullptr)
+            SPELL_CPTRC   (nullptr),
+            is_valid      (IS_VALID)
     {}
 
 
     ListBoxItem::ListBoxItem(const std::string &              NAME,
                              const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM)
+                             const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
+                             const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect()),
             character_sptr(),
@@ -123,7 +138,8 @@ namespace gui
             iitem_sptr    (),
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (SPELL_CPTRC_PARAM)
+            SPELL_CPTRC   (SPELL_CPTRC_PARAM),
+            is_valid      (IS_VALID)
     {}
 
 
@@ -134,14 +150,16 @@ namespace gui
                         L.iitem_sptr,
                         L.COND_CPTRC,
                         L.TITLE_CPTRC,
-                        L.SPELL_CPTRC)
+                        L.SPELL_CPTRC,
+                        L.is_valid)
                ==
                std::tie(R.character_sptr,
                         R.gamestate_sptr,
                         R.iitem_sptr,
                         R.COND_CPTRC,
                         R.TITLE_CPTRC,
-                        R.SPELL_CPTRC);
+                        R.SPELL_CPTRC,
+                        R.is_valid);
     }
 
 
@@ -152,14 +170,16 @@ namespace gui
                         L.iitem_sptr,
                         L.COND_CPTRC,
                         L.TITLE_CPTRC,
-                        L.SPELL_CPTRC)
+                        L.SPELL_CPTRC,
+                        L.is_valid)
                <
                std::tie(R.character_sptr,
                         R.gamestate_sptr,
                         R.iitem_sptr,
                         R.COND_CPTRC,
                         R.TITLE_CPTRC,
-                        R.SPELL_CPTRC);
+                        R.SPELL_CPTRC,
+                        R.is_valid);
     }
 
 }

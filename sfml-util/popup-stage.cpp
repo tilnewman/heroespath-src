@@ -699,7 +699,8 @@ namespace sfml_util
                 listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
                 auto const LISTBOXITEM_SPTR( std::make_shared<gui::ListBoxItem>(NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
                                                                                 listBoxItemTextInfo_,
-                                                                                NEXT_SPELL_PTR) );
+                                                                                NEXT_SPELL_PTR,
+                                                                                CanCastSpell(NEXT_SPELL_PTR)) );
                 listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
             }
 
@@ -966,9 +967,17 @@ namespace sfml_util
             else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
                      (KEY_EVENT.code == sf::Keyboard::C))
             {
-                SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
-                return true;
+                if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
+                {
+                    SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
+                    game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
+                    return true;
+                }
+                else
+                {
+                    //TODO unable sound effect
+                    return false;
+                }
             }
         }
 
@@ -1407,18 +1416,16 @@ namespace sfml_util
         //setup spell 'unable to cast' text
         ss.str(" ");
         spellUnableTextWillShow_ = false;
-        if (POPUP_INFO_.CreaturePtr()->ManaCurrent() < SPELL_CPTRC->ManaCost())
+        if (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) == false)
         {
             ss << "Insufficient Mana";
             spellUnableTextWillShow_ = true;
         }
         else
         {
-            auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
-
-            if ((SPELL_CPTRC->ValidPhases() & CURRENT_PHASE) == 0)
+            if (CanCastSpellInPhase(SPELL_CPTRC) == false)
             {
-                ss << "";
+                auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
                 if (CURRENT_PHASE & game::Phase::Combat)             ss << "Cannot cast during combat.";
                 else if (CURRENT_PHASE & game::Phase::Conversation)  ss << "Cannot cast while talking.";
                 else if (CURRENT_PHASE & game::Phase::Exploring)     ss << "Cannot cast while exploring.";
@@ -1549,6 +1556,24 @@ namespace sfml_util
                                                              unableTextColor,
                                                              unableTextColor);
         spellUnableTextUPtr_->SetEntityColors(TUNABLE_EXT_COLOR_SET);
+    }
+
+
+    bool PopupStage::DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    {
+        return (POPUP_INFO_.CreaturePtr()->ManaCurrent() >= SPELL_CPTRC->ManaCost());
+    }
+
+
+    bool PopupStage::CanCastSpellInPhase(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    {
+        return (SPELL_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+    }
+
+
+    bool PopupStage::CanCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    {
+        return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) && CanCastSpellInPhase(SPELL_CPTRC));
     }
 
 }

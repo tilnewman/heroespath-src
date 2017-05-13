@@ -107,6 +107,10 @@ namespace sfml_util
         void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
         void SetSpellbookPageRightColors();
 
+        bool DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t) const;
+        bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
+        bool CanCastSpell(const game::spell::SpellPtrC_t) const;
+
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:

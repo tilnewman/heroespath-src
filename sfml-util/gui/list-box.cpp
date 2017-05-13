@@ -199,12 +199,23 @@ namespace gui
             const ListBoxItemSPtr_t nextEntitySPtr( * itr );
             const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(nextEntitySPtr));
 
-            //highlight the current selection
-            const bool IS_HIGHLIGHTED((selectedSPtr_.get() != nullptr) &&
-                                      (nextEntitySPtr == selectedSPtr_) &&
-                                      (nextEntitySPtr->GetEntityWillDraw()));
+            //highlight invalid entries 
+            if (nextEntitySPtr->is_valid == false)
+            {
+                sf::FloatRect rect(nextEntitySPtr->GetEntityRegion());
+                rect.left -= margin_;
+                rect.width = entityRegion_.width;
 
-            if (IS_HIGHLIGHTED)
+                if (IMAGE_MAP_CITER != imageMap_.end())
+                    rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
+
+                sfml_util::DrawRectangle<float>(target, states, rect, sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
+            }
+
+            //highlight the current selection
+            if ((selectedSPtr_.get() != nullptr) &&
+                (nextEntitySPtr == selectedSPtr_) &&
+                (nextEntitySPtr->GetEntityWillDraw()))
             {
                 sf::FloatRect rect(nextEntitySPtr->GetEntityRegion());
                 rect.left -= margin_;

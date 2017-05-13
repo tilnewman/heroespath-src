@@ -58,41 +58,49 @@ namespace gui
         ListBoxItem & operator=(const ListBoxItem &) =delete;
 
     public:
-        ListBoxItem(const std::string & NAME);
+        ListBoxItem(const std::string & NAME,
+                    const bool          IS_VALID = true);
 
         //used by the Combat Stage for a ListBox of text lines
         ListBoxItem(const std::string &              NAME,
-                    const sfml_util::gui::TextInfo & TEXT_INFO);
+                    const sfml_util::gui::TextInfo & TEXT_INFO,
+                    const bool                       IS_VALID = true);
 
         //used by the Party Stage for a ListBox of Characters
         ListBoxItem(const std::string &                   NAME,
                     const sfml_util::gui::TextInfo &      TEXT_INFO,
-                    const game::player::CharacterSPtr_t & CHARACTER_SPTR);
+                    const game::player::CharacterSPtr_t & CHARACTER_SPTR,
+                    const bool                            IS_VALID = true);
 
         //used by the LoadGame Stage for a ListBox of GameStates
         ListBoxItem(const std::string &                  NAME,
                     const sfml_util::gui::TextInfo &     TEXT_INFO,
-                    const game::state::GameStateSPtr_t & GAMESTATE_SPTR);
+                    const game::state::GameStateSPtr_t & GAMESTATE_SPTR,
+                    const bool                           IS_VALID = true);
 
         //used by the inventory stage to list items
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const game::item::ItemSPtr_t &   IITEM_SPTR);
+                    const game::item::ItemSPtr_t &   IITEM_SPTR,
+                    const bool                       IS_VALID = true);
 
         //used by the inventory stage to list conditions
         ListBoxItem(const std::string &                  NAME,
                     const sfml_util::gui::TextInfo &     TEXT_INFO,
-                    const game::creature::ConditionPtr_t CONDITION_PTR_PARAM);
+                    const game::creature::ConditionPtr_t CONDITION_PTR_PARAM,
+                    const bool                           IS_VALID = true);
 
         //used by the inventory stage to list titles
         ListBoxItem(const std::string &               NAME,
                     const sfml_util::gui::TextInfo &  TEXT_INFO,
-                    const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM);
+                    const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+                    const bool                        IS_VALID = true);
 
         //used by the inventory stage to list spells
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM);
+                    const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
+                    const bool                       IS_VALID = true);
 
         game::player::CharacterSPtr_t         character_sptr;
         game::state::GameStateSPtr_t          gamestate_sptr;
@@ -100,6 +108,7 @@ namespace gui
         const game::creature::ConditionPtrC_t COND_CPTRC;
         const game::creature::TitlePtrC_t     TITLE_CPTRC;
         const game::spell::SpellPtrC_t        SPELL_CPTRC;
+        bool                                  is_valid;
 
         friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);
         friend bool operator<(const ListBoxItem & L, const ListBoxItem & R);
