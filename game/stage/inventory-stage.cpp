@@ -186,10 +186,7 @@ namespace stage
 
 
     InventoryStage::~InventoryStage()
-    {
-        sfml_util::SoundManager::Instance()->SoundEffectRelease(sfml_util::sound_effect::Gems);
-        sfml_util::SoundManager::Instance()->SoundEffectRelease(sfml_util::sound_effect::MeteorShards);
-    }
+    {}
 
 
     bool InventoryStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
@@ -1829,6 +1826,7 @@ namespace stage
         ss << "Coins:  " << creaturePtr_->Inventory().Coins() << "\n"
            << "Gems:  " << creaturePtr_->Inventory().Gems() << "\n"
            << "Meteor Shards:  " << creaturePtr_->Inventory().MeteorShards() << "\n"
+           << "Mana:  " << creaturePtr_->ManaCurrent() << "/" << creaturePtr_->ManaNormal() << "\n"
            << "Weight: " << creaturePtr_->Inventory().Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
 
@@ -1839,7 +1837,7 @@ namespace stage
                                                         sfml_util::Justified::Left);
 
         const sf::FloatRect CENTER_TEXT_RECT(0.0f,
-                                             mainMenuTitle_.LowerPosition(true) + sfml_util::MapByRes(30.0f, 90.0f),
+                                             mainMenuTitle_.LowerPosition(true) + sfml_util::MapByRes(5.0f, 30.0f),
                                              0.0f,
                                              0.0f);
 
