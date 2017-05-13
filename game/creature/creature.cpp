@@ -920,6 +920,9 @@ namespace creature
         if (spellsVec_.empty())
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells" + RESPONSE_POSTFIX;
 
+        if (ManaCurrent() <= 0)
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
+
         return "";
     }
 

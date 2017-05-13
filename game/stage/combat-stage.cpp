@@ -718,7 +718,6 @@ namespace stage
                                                                      CLERIC_STATS));
 
             player::Initial::Setup(clericSPtr.get());
-            clericSPtr->ManaCurrentSet(1);//TEMP TODO REMOVE -this was put in place to test for spells that the character does not have enough mana to cast
             partySPtr->Add(clericSPtr);
         }
 
@@ -739,7 +738,6 @@ namespace stage
                                                                        SORCERER_STATS));
 
             player::Initial::Setup(sorcererSPtr.get());
-            sorcererSPtr->ManaCurrentSet(1);//TEMP TODO REMOVE -this was put in place to test for spells that the character does not have enough mana to cast
             partySPtr->Add(sorcererSPtr);
         }
         /*

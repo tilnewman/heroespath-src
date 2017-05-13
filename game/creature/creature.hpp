@@ -220,7 +220,9 @@ namespace creature
         inline const UniqueTraits_t UniqueTraits() const        { return UniqueTraits_t( std::make_tuple(Name(), Role().Which(), DateTimeCreated(), serialNumber_) ); }
 
         inline bool CanCastSpells() const                       { return CanCastSpellsStr().empty(); }
+        
         const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
+        
         bool CanCastSpellByType(const spell::SpellType::Enum) const;
 
         inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
