@@ -718,6 +718,7 @@ namespace stage
                                                                      CLERIC_STATS));
 
             player::Initial::Setup(clericSPtr.get());
+            clericSPtr->ManaCurrentSet(1);
             partySPtr->Add(clericSPtr);
         }
 
@@ -738,6 +739,7 @@ namespace stage
                                                                        SORCERER_STATS));
 
             player::Initial::Setup(sorcererSPtr.get());
+            sorcererSPtr->ManaCurrentSet(1);
             partySPtr->Add(sorcererSPtr);
         }
         /*

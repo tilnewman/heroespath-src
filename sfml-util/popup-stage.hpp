@@ -12,6 +12,7 @@
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/popup-buttons.hpp"
 #include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/color-shaker.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
@@ -71,6 +72,7 @@ namespace sfml_util
             Waiting,
             FadingOut,
             FadingIn,
+            Warning,
             Count
         };
 
@@ -121,6 +123,7 @@ namespace sfml_util
         static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
         static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
+        static const float     SPELL_WARNING_DURATION_SEC_;
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
@@ -207,6 +210,8 @@ namespace sfml_util
         sf::Color               spellColorTextStart_;
         sf::Color               spellColorTextEnd_;
         bool                    spellUnableTextWillShow_;
+        float                   spellWarningTimerSec_;
+        ColorShaker             spellWarnColorShaker_;
         sliders::ZeroSliderOnce<float> spellColorSlider_;
     };
 

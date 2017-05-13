@@ -40,6 +40,7 @@ namespace sfml_util
     const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
     const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
     const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_                { sf::Color(127, 32, 32) };
+    const float     PopupStage::SPELL_WARNING_DURATION_SEC_             { 2.0f };
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &   REGION,
@@ -120,6 +121,8 @@ namespace sfml_util
         spellColorTextStart_       (sf::Color::Transparent),
         spellColorTextEnd_         (sf::Color::Transparent),
         spellUnableTextWillShow_   (false),
+        spellWarningTimerSec_      (0.0f),
+        spellWarnColorShaker_      (SPELL_UNABLE_TEXT_COLOR_, sf::Color::Transparent, 60.0f),
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
         if (BG_TEXTURE_SPTR.get() != nullptr)
@@ -830,6 +833,17 @@ namespace sfml_util
                     SetupSpellbookPageRightForFadeIn();
                 }
             }
+            else if (SpellbookState::Warning == spellbookState_)
+            {
+                spellUnableTextUPtr_->SetEntityColorFgBoth(spellWarnColorShaker_.Update(ELAPSED_TIME_SECONDS));
+                spellWarningTimerSec_ += ELAPSED_TIME_SECONDS;
+                if (spellWarningTimerSec_ > SPELL_WARNING_DURATION_SEC_)
+                {
+                    spellUnableTextUPtr_->SetEntityColorFgBoth(SPELL_UNABLE_TEXT_COLOR_);
+                    spellWarningTimerSec_ = 0.0f;
+                    spellbookState_ = SpellbookState::Waiting;
+                }
+            }
             return;
         }
 
@@ -964,8 +978,9 @@ namespace sfml_util
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
                 return true;
             }
-            else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
-                     (KEY_EVENT.code == sf::Keyboard::C))
+            else if ((SpellbookState::Waiting == spellbookState_) &&
+                     ((KEY_EVENT.code == sf::Keyboard::Return) ||
+                     (KEY_EVENT.code == sf::Keyboard::C)))
             {
                 if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
                 {
@@ -975,7 +990,12 @@ namespace sfml_util
                 }
                 else
                 {
-                    //TODO unable sound effect
+                    SoundManager::Instance()->StaticSounds_Prompt()->Play(sound_effect::PromptWarn);
+                    if (SpellbookState::Waiting == spellbookState_)
+                    {
+                        spellbookState_ = SpellbookState::Warning;
+                        spellWarningTimerSec_ = 0.0f;
+                    }
                     return false;
                 }
             }
