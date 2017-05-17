@@ -6,6 +6,8 @@
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/strategy-enums.hpp"
 
+#include <vector>
+
 
 namespace game
 {
@@ -18,10 +20,8 @@ namespace creature
 {
     //forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t  = Creature *;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace combat
 {
@@ -30,21 +30,25 @@ namespace combat
     class TurnActionInfo
     {
     public:
-        TurnActionInfo(const TurnAction::Enum        ACTION     = TurnAction::Count,
-                       const creature::CreaturePtr_t TARGET_PTR = nullptr,
-                       const spell::SpellPtr_t       SPELL_PTR  = nullptr);
+        TurnActionInfo(const TurnAction::Enum        ACTION = TurnAction::Nothing,
+                       const creature::CreaturePtr_t TARGET_PTR = nullptr);
+
+        TurnActionInfo(const spell::SpellPtr_t        SPELL_PTR,
+                       const creature::CreaturePVec_t TARGET_PVEC);
 
         inline TurnAction::Enum         Action() const  { return actionType_; }
-        inline creature::CreaturePtr_t  Target() const  { return targetPtr_; }
         inline spell::SpellPtr_t        Spell() const   { return spellPtr_; }
+        inline creature::CreaturePVec_t Targets() const { return targetsPVec_; }
+
+        creature::CreaturePtr_t Target() const;
 
         friend bool operator<(const TurnActionInfo & A, const TurnActionInfo & B);
         friend bool operator==(const TurnActionInfo & A, const TurnActionInfo & B);
 
     private:
-        TurnAction::Enum        actionType_;
-        creature::CreaturePtr_t targetPtr_;
-        spell::SpellPtr_t       spellPtr_;
+        TurnAction::Enum         actionType_;
+        creature::CreaturePVec_t targetsPVec_;
+        spell::SpellPtr_t        spellPtr_;
     };
 
 

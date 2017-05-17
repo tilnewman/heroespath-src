@@ -133,7 +133,7 @@ namespace state
     }
 
 
-    player::CharacterSSet_t GameStateFactory::LoadAllCharacters() const
+    player::CharacterSSet_t GameStateFactory::LoadAllCompanions() const
     {
         namespace bfs = boost::filesystem;
 
@@ -178,11 +178,11 @@ namespace state
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAllCharacters(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw std::exception(\"" << E.what() << "\")");
+                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw std::exception(\"" << E.what() << "\")");
             }
             catch (...)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAllCharacters(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw UNKNOWN exception.");
+                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw UNKNOWN exception.");
             }
         }
 

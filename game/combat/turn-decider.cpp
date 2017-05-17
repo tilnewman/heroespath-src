@@ -688,7 +688,53 @@ namespace combat
                                                   const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
                                                   const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
     {
-        return TurnActionInfo(TurnAction::Cast, MOST_DESIRED_TARGET_CPTRC, PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPES_VEC));
+        auto spellPtr{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPES_VEC) };
+
+        if (spellPtr == nullptr)
+        {
+            auto const SPELL_TYPES_STR{ utilz::Vector::Join(SPELL_TYPES_VEC, false, false, &spell::SpellType::ToString) };
+            
+            std::ostringstream ssErr;
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->DisplayableNameRaceRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->DisplayableNameRaceRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
+            throw std::runtime_error(ssErr.str());
+        }
+        
+        creature::CreaturePVec_t targetedCreaturesPVec;
+        if (spellPtr->TargetType() == TargetType::AllCompanions)
+        {
+            if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
+            {
+                targetedCreaturesPVec = creature::Algorithms::Players(true);
+            }
+            else
+            {
+                targetedCreaturesPVec = creature::Algorithms::NonPlayers(true);
+            }
+        }
+        else if (spellPtr->TargetType() == TargetType::AllOpponents)
+        {
+            if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
+            {
+                targetedCreaturesPVec = creature::Algorithms::NonPlayers(true);
+            }
+            else
+            {
+                targetedCreaturesPVec = creature::Algorithms::Players(true);
+            }
+        }
+        else if ((spellPtr->TargetType() == TargetType::SingleCompanion) ||
+                 (spellPtr->TargetType() == TargetType::SingleOpponent))
+        {
+            targetedCreaturesPVec.push_back(MOST_DESIRED_TARGET_CPTRC);
+        }
+        else
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->DisplayableNameRaceRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->DisplayableNameRaceRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->TargetType()) << "\" -which is not yet supported.";
+            throw std::runtime_error(ssErr.str());
+        }
+
+        return TurnActionInfo(spellPtr, targetedCreaturesPVec);
     }
 
 

@@ -78,13 +78,13 @@ namespace combat
                 const creature::ConditionEnumVec_t & CONDITIONS_VEC  = creature::ConditionEnumVec_t(),
                 const std::string &                  ACTION_VERB     = "");
 
-        inline bool WasHit() const                  { return hitType_ != HitType::Count; }
-        inline HitType::Enum HitKind() const        { return hitType_; }
-        inline DodgeType::Enum DodgeKind() const    { return dodgeType_; }
-        inline item::ItemSPtr_t Weapon() const      { return weaponSPtr_; }
-        inline stats::Health_t Damage() const       { return damage_; }
-        inline bool IsCritical() const              { return isCritical_; }
-        inline bool IsPowerHit() const              { return isPower_; }
+        inline bool              WasHit() const     { return hitType_ != HitType::Count; }
+        inline HitType::Enum     HitKind() const    { return hitType_; }
+        inline DodgeType::Enum   DodgeKind() const  { return dodgeType_; }
+        inline item::ItemSPtr_t  Weapon() const     { return weaponSPtr_; }
+        inline stats::Health_t   Damage() const     { return damage_; }
+        inline bool              IsCritical() const { return isCritical_; }
+        inline bool              IsPowerHit() const { return isPower_; }
         inline const std::string ActionVerb() const { return actionVerb_; }
 
         inline const creature::ConditionEnumVec_t Conditions() const { return conditionsVec_; }
@@ -133,20 +133,20 @@ namespace combat
         CreatureEffect(const CreatureEffect &);
         CreatureEffect & operator=(const CreatureEffect &);
 
-        inline std::size_t               GetCount() const           { return hitInfoVec_.size(); }
-        inline HitInfoVec_t              GetHitInfoVec() const      { return hitInfoVec_; }
-        inline spell::SpellPtr_t         GetSpell() const           { return spellPtr_; }
-        inline creature::CreaturePtr_t   GetCreature() const        { return creaturePtr_; }
-        inline bool                      GetWasPounced() const      { return wasPounced_; }
+        inline std::size_t                  GetCount() const           { return hitInfoVec_.size(); }
+        inline HitInfoVec_t                 GetHitInfoVec() const      { return hitInfoVec_; }
+        inline spell::SpellPtr_t            GetSpell() const           { return spellPtr_; }
+        inline creature::CreaturePtr_t      GetCreature() const        { return creaturePtr_; }
+        inline bool                         GetWasPounced() const      { return wasPounced_; }
 
         bool GetWasHit() const;
         stats::Health_t GetDamageTotal() const;
 
-        const creature::ConditionEnumVec_t  GetHitConditions() const;
-        inline creature::ConditionEnumVec_t GetNonHitConditions() const { return conditionsVec_; }
-        const creature::ConditionEnumVec_t  GetAllConditions() const;
-        bool                                ContainsCondition(const creature::Conditions::Enum) const;
-        bool                                RemoveCondition(const creature::Conditions::Enum);
+        const creature::ConditionEnumVec_t          GetHitConditions() const;
+        inline const creature::ConditionEnumVec_t   GetNonHitConditions() const { return conditionsVec_; }
+        const creature::ConditionEnumVec_t          GetAllConditions() const;
+        bool                                        ContainsCondition(const creature::Conditions::Enum) const;
+        bool                                        RemoveCondition(const creature::Conditions::Enum);
 
         inline bool WasKill() const { return ContainsCondition(creature::Conditions::Dead); }
 

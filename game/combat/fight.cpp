@@ -424,7 +424,7 @@ namespace combat
 
     const FightResult FightClub::Cast(spell::SpellCPtrC_t,
                                       creature::CreaturePtrC_t,
-                                      creature::CreaturePtrC_t)
+                                      creature::CreaturePVec_t &)
     {
         //TODO
 

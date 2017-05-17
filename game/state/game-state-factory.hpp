@@ -59,7 +59,7 @@ namespace state
         GameStateSSet_t LoadAllGames() const;
         void SaveGame(const GameStateSPtr_t & GAME_SPTR) const;
 
-        player::CharacterSSet_t LoadAllCharacters() const;
+        player::CharacterSSet_t LoadAllCompanions() const;
         void SaveCharacter(const player::CharacterSPtr_t &) const;
         bool DeleteCharacter(const player::CharacterSPtr_t &) const;
 

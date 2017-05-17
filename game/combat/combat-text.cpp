@@ -596,8 +596,8 @@ namespace combat
 
         ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType());
 
-        if ((TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllCharacters) ||
-            (TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllEnemies))
+        if ((TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllCompanions) ||
+            (TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllOpponents))
         {
             ss << " effecting " << FIGHT_RESULT.Count();
         }

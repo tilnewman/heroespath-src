@@ -14,10 +14,10 @@ namespace game
         enum Enum
         {
             None = 0,
-            SingleEnemy,
-            AllEnemies,
-            SingleCharacter,
-            AllCharacters,
+            SingleOpponent,
+            AllOpponents,
+            SingleCompanion,
+            AllCompanions,
             Item,
             QuestSpecific,
             Count

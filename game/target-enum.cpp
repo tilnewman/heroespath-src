@@ -16,10 +16,10 @@ namespace game
         switch (E)
         {
             case None:              { return "None"; }
-            case SingleEnemy:       { return "SingleEnemy"; }
-            case AllEnemies:        { return "AllEnemies"; }
-            case SingleCharacter:   { return "SingleCharacter"; }
-            case AllCharacters:     { return "AllCharacters"; }
+            case SingleOpponent:    { return "SingleOpponent"; }
+            case AllOpponents:      { return "AllOpponents"; }
+            case SingleCompanion:   { return "SingleCompanion"; }
+            case AllCompanions:     { return "AllCompanions"; }
             case Item:              { return "Item"; }
             case QuestSpecific:     { return "QuestSpecific"; }
             case Count:
@@ -38,10 +38,10 @@ namespace game
         switch (E)
         {
             case None:              { return "(None)"; }
-            case SingleEnemy:       { return "Single Enemy"; }
-            case AllEnemies:        { return "All Enemies"; }
-            case SingleCharacter:   { return "Single Character"; }
-            case AllCharacters:     { return "All Characters"; }
+            case SingleOpponent:    { return "Single Opponent"; }
+            case AllOpponents:      { return "All Opponents"; }
+            case SingleCompanion:   { return "Single Companion"; }
+            case AllCompanions:     { return "All Companions"; }
             case Item:              { return "Item"; }
             case QuestSpecific:     { return "(Quest Specific)"; }
             case Count:
@@ -62,10 +62,10 @@ namespace game
         std::ostringstream ss;
         switch (E)
         {
-            case SingleEnemy:       { ss << "a single enemy"; break; }
-            case AllEnemies:        { ss << "all enemies"; break; }
-            case SingleCharacter:   { ss << "a single character"; break; }
-            case AllCharacters:     { ss << "all characters"; break; }
+            case SingleOpponent:    { ss << "a single opponent"; break; }
+            case AllOpponents:      { ss << "all opponent"; break; }
+            case SingleCompanion:   { ss << "a single companion"; break; }
+            case AllCompanions:     { ss << "all companion"; break; }
             case Item:              { ss << "an item"; break; }
             case QuestSpecific:
             case None:

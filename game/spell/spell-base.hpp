@@ -95,13 +95,13 @@ namespace spell
         //Returns the number of target creatures that will be effected.
         virtual int EffectedCreatureCount(creature::CreaturePtr_t) const
         {
-            if ((TargetType::SingleCharacter == targetType_) ||
-                (TargetType::SingleEnemy == targetType_))
+            if ((TargetType::SingleCompanion == targetType_) ||
+                (TargetType::SingleOpponent == targetType_))
             {
                 return 1;
             }
-            else if ((TargetType::AllCharacters == targetType_) ||
-                     (TargetType::AllEnemies == targetType_))
+            else if ((TargetType::AllCompanions == targetType_) ||
+                     (TargetType::AllOpponents == targetType_))
             {
                 return EFFECTS_ALL_CREATURES_COUNT_;
             }

@@ -186,9 +186,9 @@ namespace stage
         void PositionSlideStartTasks();
         bool HandleAttack();
         bool HandleFight();
-        bool HandleCast_Step1();
-        void HandleCast_Step2(spell::SpellPtr_t);
-        void HandleCast_Step3(creature::CreaturePtr_t creatureToCastUponPtr);
+        bool HandleCast_Step1_ValidateCastAndSelectSpell();
+        void HandleCast_Step2_SelectTargetOrPerformOnAll(spell::SpellPtr_t);
+        void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
         bool HandleAdvance();
         bool HandleRetreat();
         bool HandleBlock();

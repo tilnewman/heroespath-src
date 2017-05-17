@@ -120,6 +120,56 @@ namespace utilz
                 return V[utilz::random::Int(V.size() - 1)];
             }
         }
+
+
+        //default function for Join() below
+        template<typename T>
+        static T ReturnOnly(const T)
+        {
+            return T;
+        }
+        
+
+        template<typename T>
+        static const std::string Join(const std::vector<T> V,
+                                      const bool        WILL_WRAP = false,
+                                      const bool        WILL_AND = false,
+                                      const std::string(*TO_STRING)(const T) = &Vector::ReturnOnly)
+        {
+            const std::size_t NUM_ELEMENTS{ V.size() };
+            if (NUM_ELEMENTS == 0)
+            {
+                return "";//skip wrapping on empty case
+            }
+
+            std::ostringstream ss;
+
+            for (std::size_t i(0); i < NUM_ELEMENTS; ++i)
+            {
+                if (i != 0)
+                {
+                    ss << ", ";
+                }
+                
+                if (WILL_AND &&
+                    (NUM_ELEMENTS > 2) &&
+                    ((NUM_ELEMENTS - 1) == i))
+                {
+                    ss << "and ";
+                }
+
+                ss << TO_STRING(V[i]);
+            }
+
+            if (WILL_WRAP && (ss.str().empty() == false))
+            {
+                return "(" + ss.str() + ")";
+            }
+            else
+            {
+                return ss.str();
+            }
+        }
     };
 
 }

@@ -110,14 +110,19 @@ namespace combat
 
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
+        auto lConditionsVec{ L.conditionsVec_ };
+        auto rConditionsVec{ R.conditionsVec_ };
+        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
+        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+
         return std::tie(L.hitType_,
                         L.dodgeType_,
                         L.weaponSPtr_,
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
-                        L.conditionsVec_,
-                        L.actionVerb_)
+                        L.actionVerb_,
+                        lConditionsVec)
                <
                std::tie(R.hitType_,
                         R.dodgeType_,
@@ -125,21 +130,26 @@ namespace combat
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,
-                        R.conditionsVec_,
-                        R.actionVerb_);
+                        R.actionVerb_,
+                        rConditionsVec);
     }
 
 
     bool operator==(const HitInfo & L, const HitInfo & R)
     {
+        auto lConditionsVec{ L.conditionsVec_ };
+        auto rConditionsVec{ R.conditionsVec_ };
+        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
+        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+
         return std::tie(L.hitType_,
                         L.dodgeType_,
                         L.weaponSPtr_,
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
-                        L.conditionsVec_,
-                        L.actionVerb_)
+                        L.actionVerb_,
+                        lConditionsVec)
                ==
                std::tie(R.hitType_,
                         R.dodgeType_,
@@ -147,8 +157,8 @@ namespace combat
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,
-                        R.conditionsVec_,
-                        R.actionVerb_);
+                        R.actionVerb_,
+                        rConditionsVec);
     }
 
 
@@ -297,17 +307,43 @@ namespace combat
 
     bool operator<(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsVec_, L.wasPounced_)
+        auto lConditionsVec{ L.conditionsVec_ };
+        auto rConditionsVec{ R.conditionsVec_ };
+        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
+        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+
+        return std::tie(L.hitInfoVec_,
+                        L.spellPtr_,
+                        L.creaturePtr_,
+                        L.wasPounced_,
+                        lConditionsVec)
                <
-               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsVec_, R.wasPounced_);
+               std::tie(R.hitInfoVec_,
+                        R.spellPtr_,
+                        R.creaturePtr_,
+                        R.wasPounced_,
+                        rConditionsVec);
     }
 
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_, L.spellPtr_, L.creaturePtr_, L.conditionsVec_, L.wasPounced_)
+        auto lConditionsVec{ L.conditionsVec_ };
+        auto rConditionsVec{ R.conditionsVec_ };
+        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
+        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+
+        return std::tie(L.hitInfoVec_,
+                        L.spellPtr_,
+                        L.creaturePtr_,
+                        L.wasPounced_,
+                        lConditionsVec)
                ==
-               std::tie(R.hitInfoVec_, R.spellPtr_, R.creaturePtr_, R.conditionsVec_, R.wasPounced_);
+               std::tie(R.hitInfoVec_,
+                        R.spellPtr_,
+                        R.creaturePtr_,
+                        R.wasPounced_,
+                        rConditionsVec);
     }
 
 

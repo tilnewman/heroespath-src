@@ -49,9 +49,9 @@ namespace combat
                                                                HitInfoVec_t &           hitInfoVec,
                                                                const stats::Health_t    TOTAL_DAMAGE);
 
-        static const FightResult Cast(spell::SpellCPtrC_t       SPELL_CPTRC,
-                                      creature::CreaturePtrC_t  creatureCastingPtrC,
-                                      creature::CreaturePtrC_t  creatureDefendingPtrC);
+        static const FightResult Cast(spell::SpellCPtrC_t        SPELL_CPTRC,
+                                      creature::CreaturePtrC_t   creatureCastingPtrC,
+                                      creature::CreaturePVec_t & creaturesDefendingPVec);
 
         static const FightResult Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC);

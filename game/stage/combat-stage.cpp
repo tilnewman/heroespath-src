@@ -201,7 +201,7 @@ namespace stage
             return HandleFight();
 
         if (PACKAGE.PTR_ == castTBoxButtonSPtr_.get())
-            return HandleCast_Step1();
+            return HandleCast_Step1_ValidateCastAndSelectSpell();
 
         if (PACKAGE.PTR_ == advanceTBoxButtonSPtr_.get())
             return HandleAdvance();
@@ -285,7 +285,7 @@ namespace stage
                 }
                 
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
-                HandleCast_Step2(spellPtr);
+                HandleCast_Step2_SelectTargetOrPerformOnAll(spellPtr);
                 return true;
             }
             else
@@ -1267,7 +1267,7 @@ namespace stage
                             }
                         }
                     }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleEnemy))
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent))
                     {
                         if (creatureAtPosPtr->IsPlayerCharacter())
                         {
@@ -1276,10 +1276,10 @@ namespace stage
                         else
                         {
                             combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3(creatureAtPosPtr);
+                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
                         }
                     }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleCharacter))
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion))
                     {
                         if (creatureAtPosPtr->IsPlayerCharacter() == false)
                         {
@@ -1288,7 +1288,7 @@ namespace stage
                         else
                         {
                             combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3(creatureAtPosPtr);
+                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
                         }
                     }
                 }
@@ -1346,7 +1346,7 @@ namespace stage
                 return HandleFight();
 
             if (KE.code == sf::Keyboard::C)
-                return HandleCast_Step1();
+                return HandleCast_Step1_ValidateCastAndSelectSpell();
 
             if (KE.code == sf::Keyboard::Right)
                 return HandleAdvance();
@@ -1710,7 +1710,8 @@ namespace stage
 
             case combat::TurnAction::Cast:
             {
-                fightResult_ = combat::FightClub::Cast(turnActionInfo_.Spell(), turnCreaturePtr_, turnActionInfo_.Target());
+                creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
+                fightResult_ = combat::FightClub::Cast(turnActionInfo_.Spell(), turnCreaturePtr_, targetedCreaturesPVec);
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
                 return TurnActionPhase::Cast;
@@ -1886,7 +1887,7 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCast_Step1()
+    bool CombatStage::HandleCast_Step1_ValidateCastAndSelectSpell()
     {
         auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_, combatDisplayStagePtr_)  );
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
@@ -1905,12 +1906,12 @@ namespace stage
     }
 
 
-    void CombatStage::HandleCast_Step2(spell::SpellPtr_t spellPtr)
+    void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell::SpellPtr_t spellPtr)
     {
         spellBeingCastPtr_ = spellPtr;
 
-        if ((spellPtr->TargetType() == TargetType::SingleCharacter) ||
-            (spellPtr->TargetType() == TargetType::SingleEnemy))
+        if ((spellPtr->TargetType() == TargetType::SingleCompanion) ||
+            (spellPtr->TargetType() == TargetType::SingleOpponent))
         {
             SetUserActionAllowed(true);
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
@@ -1918,31 +1919,39 @@ namespace stage
             SetTurnPhase(TurnPhase::TargetSelect);
             SetupTurnBox();
         }
-        else if ((spellPtr->TargetType() == TargetType::AllCharacters) ||
-                 (spellPtr->TargetType() == TargetType::AllEnemies))
+        else if (spellPtr->TargetType() == TargetType::AllCompanions)
         {
-            /*
-            SetUserActionAllowed(false);
-
-            turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr, nullptr);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
-            SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));
-
-            SetTurnPhase(TurnPhase::CenterAndZoomOut);
-
-            combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, creatureToAttackPtr });
-            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
-
-            SetupTurnBox();
-            */
+            HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(true));
+        }
+        else if (spellPtr->TargetType() == TargetType::AllOpponents)
+        {
+            HandleCast_Step3_PerformOnTargets(creature::Algorithms::NonPlayers(true));
+        }
+        else
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell=" << spellPtr->Name() << ") had a target_type of " << TargetType::ToString(spellPtr->TargetType()) << " which is not yet supported during combat.";
+            throw std::runtime_error(ssErr.str());
         }
     }
 
 
-    void CombatStage::HandleCast_Step3(creature::CreaturePtr_t)// creatureToCastUponPtr)
+    void CombatStage::HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec)
     {
+        SetUserActionAllowed(false);
 
+        turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_, creaturesToCastUponPVec);
+        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        fightResult_ = combat::FightClub::Cast(spellBeingCastPtr_, turnCreaturePtr_, creaturesToCastUponPVec);
+        SetTurnActionPhase(TurnActionPhase::Cast);
+
+        SetTurnPhase(TurnPhase::CenterAndZoomOut);
+        auto creaturesToCenterOnPVec{ creaturesToCastUponPVec };
+        creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+        combatAnimationPtr_->CenteringStart(creaturesToCenterOnPVec);
+        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+
+        SetupTurnBox();
     }
 
 
@@ -2495,11 +2504,11 @@ namespace stage
             {
                 preambleSS << "Click on the ";
                 
-                if (spellBeingCastPtr_->TargetType() == TargetType::SingleCharacter)
+                if (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion)
                 {
                     preambleSS << "enemy creature";
                 }
-                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleEnemy)
+                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent)
                 {
                     preambleSS << "character";
                 }
@@ -2864,7 +2873,7 @@ namespace stage
     {
         SetUserActionAllowed(false);
 
-        turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr, nullptr);
+        turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr);
         encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
         SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));

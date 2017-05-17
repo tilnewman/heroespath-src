@@ -290,7 +290,7 @@ namespace stage
         }
 
         //load all players not yet assigned to a party/started game
-        game::player::CharacterSSet_t charactersSSet( game::state::GameStateFactory::Instance()->LoadAllCharacters() );
+        game::player::CharacterSSet_t charactersSSet( game::state::GameStateFactory::Instance()->LoadAllCompanions() );
 
         //fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSLst_t itemSList;
