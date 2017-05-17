@@ -561,7 +561,7 @@ namespace combat
         
         //fade-out
         auto color{ selectAnimSprite_.getColor() };
-        color.a = static_cast<sf::Uint8>(sprite_.getColor().a * (1.0f - (SLIDER_RATIO * 1.0f)));
+        color.a = static_cast<sf::Uint8>(sprite_.getColor().a * (1.0f - SLIDER_RATIO));
         selectAnimSprite_.setColor(color);
     }
 
