@@ -37,7 +37,7 @@ namespace combat
     const sf::Uint8 CombatNode::DECAL_IMAGE_ALPHA_                   (46);
     const float     CombatNode::WING_IMAGE_SCALE_                    (0.65f);
     const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_             (0.333f);
-    const float     CombatNode::WING_IMAGE_ANIM_SPEED_               (4.0f);
+    const float     CombatNode::WING_IMAGE_ANIM_SPEED_               (8.0f);
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_             (-90.0f);
     //
     sfml_util::TextureSPtr_t CombatNode::crossBonesTextureSPtr_ { nullptr };
@@ -69,7 +69,9 @@ namespace combat
         isFlying_            (false),
         wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
         imagePosV_           (0.0f, 0.0f),
-        imagePosOffsetV_     (0.0f, 0.0f)
+        imagePosOffsetV_     (0.0f, 0.0f),
+        willShowSelectAnim_  (false),
+        selectAnimSprite_    ()
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -79,6 +81,7 @@ namespace combat
 
         HealthChangeTasks();
 
+        textureSPtr_->setSmooth(true);
         sprite_.setTexture( * textureSPtr_);
 
         //sprite color
@@ -153,11 +156,20 @@ namespace combat
 
         //sfml_util::DrawRectangle(target, states, sf::FloatRect(entityRegion_));
 
-        //creature outline
+        //creature outline image
         {
             const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
             states.blendMode = sf::BlendAdd;
             target.draw(sprite_, states);
+            states.blendMode = ORIG_BLEND_MODE;
+        }
+
+        //select anim image
+        if (willShowSelectAnim_)
+        {
+            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
+            states.blendMode = sf::BlendAdd;
+            target.draw(selectAnimSprite_, states);
             states.blendMode = ORIG_BLEND_MODE;
         }
 
@@ -526,6 +538,37 @@ namespace combat
         SetRotationDegrees((12.0f * 360.0f) * SLIDER_POS);
         SetRegion(1.0f - SLIDER_POS);
         MoveEntityPos((GetEntityRegion().width * SLIDER_POS) * SLIDER_POS, (GetEntityRegion().height * SLIDER_POS) * SLIDER_POS);
+    }
+
+
+    void CombatNode::SelectAnimStart()
+    {
+        willShowSelectAnim_ = true;
+        selectAnimSprite_ = sprite_;
+    }
+
+
+    void CombatNode::SelectAnimUpdate(const float SLIDER_RATIO)
+    {
+        //grow
+        auto const SCALE{ 1.0f + (2.0f * SLIDER_RATIO) };
+        selectAnimSprite_.setScale(SCALE, SCALE);
+        
+        //re-center
+        auto const HORIZ_ADJ{ (selectAnimSprite_.getGlobalBounds().width  - sprite_.getGlobalBounds().width)  * 0.5f };
+        auto const VERT_ADJ { (selectAnimSprite_.getGlobalBounds().height - sprite_.getGlobalBounds().height) * 0.5f };
+        selectAnimSprite_.setPosition(sprite_.getPosition().x - HORIZ_ADJ, sprite_.getPosition().y - VERT_ADJ);
+        
+        //fade-out
+        auto color{ selectAnimSprite_.getColor() };
+        color.a = static_cast<sf::Uint8>(sprite_.getColor().a * (1.0f - (SLIDER_RATIO * 1.0f)));
+        selectAnimSprite_.setColor(color);
+    }
+
+
+    void CombatNode::SelectAnimStop()
+    {
+        willShowSelectAnim_ = false;
     }
 
 }

@@ -5,6 +5,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/shaker.hpp"
+#include "sfml-util/sliders.hpp"
 
 #include <vector>
 #include <memory>
@@ -138,16 +139,23 @@ namespace combat
 
         inline creature::CreatureCPtr_t ShakeAnimCreatureCPtr() { return shakeAnimCreatureWasCPtr_; }
 
-        void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t);
         void ShakeAnimRestart();
+
+        void SelectAnimStart(creature::CreatureCPtrC_t);
+        void SelectAnimStop();
 
     private:
         static CombatAnimation * instance_;
         static CombatDisplayPtr_t combatDisplayStagePtr_;
 
+        static const float SELECT_ANIM_SLIDER_SPEED_;
+
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
+
+        sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
         //members supporting the Projectile Shoot Animation
         sfml_util::TextureSPtr_t projAnimTextureSPtr_;
@@ -177,6 +185,10 @@ namespace combat
         creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
         float                    shakeAnimCreatureWasSpeed_;
         SakeInfoMap_t            shakeAnimInfoMap_;
+
+        //members to perform the selection animation
+        CombatNodePtr_t selectAnimCombatNodePtr_;
+        
     };
 
     using CombatAnimationPtr_t = CombatAnimation *;

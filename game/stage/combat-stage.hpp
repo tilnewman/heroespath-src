@@ -146,7 +146,7 @@ namespace stage
             FinalPause,
             Count
         };
-
+        
     public:
         CombatStage();
         virtual ~CombatStage();
@@ -180,14 +180,15 @@ namespace stage
         void HandlePerformReportPhaseOverTasks();
         void HandleEnemyTurnStep1_Decide();
         TurnActionPhase HandleEnemyTurnStep2_Perform();
-        void StartTurn_Step1();//start centering anim
-        void StartTurn_Step2();//start pre-pause
+        void StartTurn_Step1();
+        void StartTurn_Step2();
         void EndTurn();
         void PositionSlideStartTasks();
         bool HandleAttack();
         bool HandleFight();
         bool HandleCast_Step1();
-        void HandleCase_Step2(spell::SpellPtr_t);
+        void HandleCast_Step2(spell::SpellPtr_t);
+        void HandleCast_Step3(creature::CreaturePtr_t creatureToCastUponPtr);
         bool HandleAdvance();
         bool HandleRetreat();
         bool HandleBlock();
@@ -207,7 +208,6 @@ namespace stage
                              const bool          WILL_PREPEND_NEWLINE);
 
         void SetupTurnBox();
-        void HandleAttackStage2();
         void StartPerformAnim();
 
         const std::string TurnPhaseToString(const TurnPhase);
@@ -301,6 +301,7 @@ namespace stage
         PreTurnPhase                     preTurnPhase_;
         TurnActionPhase                  turnActionPhase_;
         AnimPhase                        animPhase_;
+        spell::SpellPtr_t                spellBeingCastPtr_;
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;

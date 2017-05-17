@@ -47,8 +47,9 @@ namespace combat
     }
 
 
-    CombatAnimation *        CombatAnimation::instance_{ nullptr };
-    CombatDisplayPtr_t  CombatAnimation::combatDisplayStagePtr_{ nullptr };
+    CombatAnimation *   CombatAnimation::instance_                  { nullptr };
+    CombatDisplayPtr_t  CombatAnimation::combatDisplayStagePtr_     { nullptr };
+    const float         CombatAnimation::SELECT_ANIM_SLIDER_SPEED_  { 8.0f };
 
 
     CombatAnimation::CombatAnimation()
@@ -56,6 +57,7 @@ namespace combat
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
         BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
+        slider_                          (1.0f), //any value greater than zero will work temporarily here
         projAnimTextureSPtr_             (),
         projAnimSprite_                  (),
         projAnimBeginPosV_               (0.0f, 0.0f),
@@ -72,7 +74,8 @@ namespace combat
         meleeMoveAnimTargetCombatNodePtr_(nullptr),
         shakeAnimCreatureWasCPtr_        (nullptr),
         shakeAnimCreatureWasSpeed_       (0.0f),
-        shakeAnimInfoMap_                ()
+        shakeAnimInfoMap_                (),
+        selectAnimCombatNodePtr_         (nullptr)
     {}
 
 
@@ -144,6 +147,15 @@ namespace combat
         if (willRemoveNullShakeInfo)
         {
             shakeAnimInfoMap_.erase(nullptr);
+        }
+
+        if (selectAnimCombatNodePtr_ != nullptr)
+        {
+            selectAnimCombatNodePtr_->SelectAnimUpdate( slider_.Update(ELAPSED_TIME_SECONDS) );
+            if (slider_.GetIsDone())
+            {
+                SelectAnimStop();
+            }
         }
     }
 
@@ -547,6 +559,27 @@ namespace combat
     {
         ShakeAnimStart(shakeAnimCreatureWasCPtr_, shakeAnimCreatureWasSpeed_, false);
         shakeAnimCreatureWasCPtr_ = nullptr;
+    }
+
+
+    void CombatAnimation::SelectAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    {
+        selectAnimCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC);
+        if (selectAnimCombatNodePtr_ != nullptr)
+        {
+            selectAnimCombatNodePtr_->SelectAnimStart();
+            slider_.Reset(SELECT_ANIM_SLIDER_SPEED_);
+        }
+    }
+
+
+    void CombatAnimation::SelectAnimStop()
+    {
+        if (selectAnimCombatNodePtr_ != nullptr)
+        {
+            selectAnimCombatNodePtr_->SelectAnimStop();
+            selectAnimCombatNodePtr_ = nullptr;
+        }
     }
 
 }

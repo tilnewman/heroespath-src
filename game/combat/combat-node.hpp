@@ -92,6 +92,10 @@ namespace combat
 
         void UpdateDeathAnim(const float SLIDER_POS);
 
+        void SelectAnimStart();
+        void SelectAnimUpdate(const float SLIDER_RATIO);
+        void SelectAnimStop();
+
     protected:
         virtual void OnClick(const sf::Vector2f &) {}
         const sf::Color HealthColor() const;
@@ -165,6 +169,11 @@ namespace combat
         //members that control the shake or image position offset
         sf::Vector2f imagePosV_;
         sf::Vector2f imagePosOffsetV_;
+
+        //members that support the select animation
+        bool willShowSelectAnim_;
+        sf::Sprite selectAnimSprite_;
+
     };
 
     using CombatNodePtr_t   = CombatNode *;

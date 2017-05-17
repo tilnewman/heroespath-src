@@ -119,6 +119,7 @@ namespace stage
         preTurnPhase_              (PreTurnPhase::Start),
         turnActionPhase_           (TurnActionPhase::None),
         animPhase_                 (AnimPhase::NotAnimating),
+        spellBeingCastPtr_         (nullptr),
         performReportEffectIndex_  (0),
         performReportHitIndex_     (0),
         zoomSliderOrigPos_         (0.0f),
@@ -284,7 +285,7 @@ namespace stage
                 }
                 
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
-                HandleCase_Step2(spellPtr);
+                HandleCast_Step2(spellPtr);
                 return true;
             }
             else
@@ -1247,19 +1248,47 @@ namespace stage
                 }
                 else if (TurnPhase::TargetSelect == turnPhase_)
                 {
-                    if (creatureAtPosPtr->IsPlayerCharacter())
+                    if (nullptr == spellBeingCastPtr_)
                     {
-                        QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", false, true);
-                    }
-                    else
-                    {
-                        if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
+                        if (creatureAtPosPtr->IsPlayerCharacter())
                         {
-                            HandleAttackTasks(creatureAtPosPtr);
+                            QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", false, true);
                         }
                         else
                         {
-                            QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", false, true);
+                            if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
+                            {
+                                combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
+                                HandleAttackTasks(creatureAtPosPtr);
+                            }
+                            else
+                            {
+                                QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", false, true);
+                            }
+                        }
+                    }
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleEnemy))
+                    {
+                        if (creatureAtPosPtr->IsPlayerCharacter())
+                        {
+                            QuickSmallPopup("That is one of your player characters, not an enemy.  Click on an enemy creature instead.", false, true);
+                        }
+                        else
+                        {
+                            combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
+                            HandleCast_Step3(creatureAtPosPtr);
+                        }
+                    }
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleCharacter))
+                    {
+                        if (creatureAtPosPtr->IsPlayerCharacter() == false)
+                        {
+                            QuickSmallPopup("That is and enemy, not one of your character.  Click on one of your characters instead.", false, true);
+                        }
+                        else
+                        {
+                            combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
+                            HandleCast_Step3(creatureAtPosPtr);
                         }
                     }
                 }
@@ -1278,7 +1307,8 @@ namespace stage
         }
 
         //esc can cancel fight target selection phase
-        if ((TurnPhase::TargetSelect == turnPhase_) && ((KE.code == sf::Keyboard::Escape) || (KE.code == sf::Keyboard::X)))
+        if ((TurnPhase::TargetSelect == turnPhase_) &&
+            ((KE.code == sf::Keyboard::Escape) || (KE.code == sf::Keyboard::X)))
         {
             SetTurnPhase(TurnPhase::Determine);
             SetUserActionAllowed(true);
@@ -1805,6 +1835,7 @@ namespace stage
         SetAnimPhase(AnimPhase::NotAnimating);
 
         turnCreaturePtr_ = nullptr;
+        spellBeingCastPtr_ = nullptr;
 
         MoveTurnBoxObjectsOffScreen(true);
     }
@@ -1874,9 +1905,44 @@ namespace stage
     }
 
 
-    void CombatStage::HandleCase_Step2(spell::SpellPtr_t)
+    void CombatStage::HandleCast_Step2(spell::SpellPtr_t spellPtr)
     {
-        //TODO
+        spellBeingCastPtr_ = spellPtr;
+
+        if ((spellPtr->TargetType() == TargetType::SingleCharacter) ||
+            (spellPtr->TargetType() == TargetType::SingleEnemy))
+        {
+            SetUserActionAllowed(true);
+            combatDisplayStagePtr_->SetSummaryViewAllowed(false);
+            combatDisplayStagePtr_->SetScrollingAllowed(true);
+            SetTurnPhase(TurnPhase::TargetSelect);
+            SetupTurnBox();
+        }
+        else if ((spellPtr->TargetType() == TargetType::AllCharacters) ||
+                 (spellPtr->TargetType() == TargetType::AllEnemies))
+        {
+            /*
+            SetUserActionAllowed(false);
+
+            turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr, nullptr);
+            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
+            SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));
+
+            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+
+            combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, creatureToAttackPtr });
+            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+
+            SetupTurnBox();
+            */
+        }
+    }
+
+
+    void CombatStage::HandleCast_Step3(creature::CreaturePtr_t)// creatureToCastUponPtr)
+    {
+
     }
 
 
@@ -2401,13 +2467,13 @@ namespace stage
             isPreambleShowing = true;
 
             preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                    turnActionInfo_,
-                                                    fightResult_,
-                                                    false,
-                                                    false,
-                                                    false,
-                                                    performReportEffectIndex_,
-                                                    performReportHitIndex_);
+                                                   turnActionInfo_,
+                                                   fightResult_,
+                                                   false,
+                                                   false,
+                                                   false,
+                                                   performReportEffectIndex_,
+                                                   performReportHitIndex_);
         }
         else if (TurnPhase::TargetSelect == turnPhase_)
         {
@@ -2420,7 +2486,27 @@ namespace stage
 
             isPreambleShowing = true;
 
-            preambleSS << "Click to select who to fight...";
+            if (nullptr == spellBeingCastPtr_)
+            {
+                preambleSS << "Click to select who to fight...\n\n"
+                           << "(Press Escape or X to Cancel)";
+            }
+            else
+            {
+                preambleSS << "Click on the ";
+                
+                if (spellBeingCastPtr_->TargetType() == TargetType::SingleCharacter)
+                {
+                    preambleSS << "enemy creature";
+                }
+                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleEnemy)
+                {
+                    preambleSS << "character";
+                }
+
+                preambleSS << " to cast " << spellBeingCastPtr_->Name() << " on...\n\n"
+                           << "(Press Escape or X to Cancel)";
+            }
         }
         else if (TurnPhase::ConditionWakePause == turnPhase_)
         {
