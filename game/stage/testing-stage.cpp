@@ -39,7 +39,9 @@ namespace game
 namespace stage
 {
 
-    const std::size_t TestingStage::TEXT_LINES_COUNT_MAX_(100);
+    const std::size_t                       TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
+    sfml_util::MultiTextureAnimationSPtr_t  TestingStage::multiTextureAnimSPtr_;
+    sfml_util::SingleTextureAnimationSPtr_t TestingStage::singleTextureAnimSPtr_;
 
 
     TestingStage::TestingStage()
@@ -68,6 +70,16 @@ namespace stage
     void TestingStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
         Stage::Draw(target, states);
+
+        if (multiTextureAnimSPtr_.get() != nullptr)
+        {
+            multiTextureAnimSPtr_->draw(target, states);
+        }
+
+        if (singleTextureAnimSPtr_.get() != nullptr)
+        {
+            singleTextureAnimSPtr_->draw(target, states);
+        }
 
         auto const IMAGE_POS_TOP{ 1.0f };
         {
@@ -251,6 +263,13 @@ namespace stage
         {
             PerformStatsTests();
             hasTestingCompleted_Stats = true;
+            return;
+        }
+
+        static auto hasTestingCompleted_Animations{ false };
+        if (false == hasTestingCompleted_Animations)
+        {
+            hasTestingCompleted_Animations = TestAnimations();
             return;
         }
 
@@ -510,7 +529,7 @@ namespace stage
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+            LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestImageSet() Starting Tests...");
         }
 
         static std::vector<std::string> imagePathKeyVec =
@@ -569,6 +588,130 @@ namespace stage
 
         LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestImageSet() ALL Tests Passed.");
         return true;
+    }
+
+
+    bool TestingStage::TestAnimations()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() Starting Tests...");
+        }
+
+        static std::vector<std::string> multiTexturedAnimPathKeyVec =
+        {
+            "media-anim-images-dir-dualcharge",
+            "media-anim-images-dir-explosion",
+            "media-anim-images-dir-firesmall",
+            "media-anim-images-dir-inferno",
+            "media-anim-images-dir-lightningball",
+            "media-anim-images-dir-lightningbolt",
+            "media-anim-images-dir-orbcharge",
+            "media-anim-images-dir-orbshimmer",
+            "media-anim-images-dir-shimmer",
+            "media-anim-images-dir-smoke",
+            "media-anim-images-dir-spiderflare",
+            "media-anim-images-dir-symbolreduce",
+            "media-anim-images-dir-whiteburst",
+        };
+
+        static std::size_t multiTexturedAnimIndex{ 0 };
+        if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
+        {
+            static auto isNewAnimation{ true };
+            if (TestMultiTextureAnimation(multiTexturedAnimPathKeyVec[multiTexturedAnimIndex], isNewAnimation) == false)
+            {
+                isNewAnimation = false;
+                return false;
+            }
+
+            isNewAnimation = true;
+            ++multiTexturedAnimIndex;
+            return false;
+        }
+
+        multiTextureAnimSPtr_.reset();
+
+        static auto isNewSingleTextureAnimation{ true };
+
+        static auto hasAnimationBeenTested_CandleFlame{ false };
+        if (false == hasAnimationBeenTested_CandleFlame)
+        {
+            if (TestSingleTextureAnimation("media-anim-images-candleflame", isNewSingleTextureAnimation, 128, 128, 64) == false)
+            {
+                isNewSingleTextureAnimation = false;
+                return false;
+            }
+
+            isNewSingleTextureAnimation = true;
+            hasAnimationBeenTested_CandleFlame = true;
+        }
+        
+        static auto hasAnimationBeenTested_FireTorch{ false };
+        if (false == hasAnimationBeenTested_FireTorch)
+        {
+            if (TestSingleTextureAnimation("media-anim-image-firetorch", isNewSingleTextureAnimation, 128, 256, 32) == false)
+            {
+                isNewSingleTextureAnimation = false;
+                return false;
+            }
+
+            isNewSingleTextureAnimation = true;
+            hasAnimationBeenTested_FireTorch = true;
+        }
+        
+        singleTextureAnimSPtr_.reset();
+
+        LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
+        return true;
+    }
+
+
+    bool TestingStage::TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT)
+    {   
+        if (WILL_REBUILD_ANIMATION_OBJECT)
+        {
+            std::ostringstream ss;
+            ss << "TestMultiTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
+            LoopManager::Instance()->TestingStrAppend(ss.str());
+
+            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>("TestMultiTextureAnimation_" + MEDIA_PATH_KEY_STR,
+                                                                                       game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+                                                                                       0.0f,
+                                                                                       0.0f,
+                                                                                       0.06f,
+                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
+                                                                                       sfml_util::MapByRes(1.0f, 3.0f));
+        }
+
+        return multiTextureAnimSPtr_->UpdateTime(0.02f);
+    }
+
+
+    bool TestingStage::TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT, const unsigned int FRAME_WIDTH, const unsigned int FRAME_HEIGHT, const unsigned int FRAME_COUNT)
+    {
+        if (WILL_REBUILD_ANIMATION_OBJECT)
+        {
+            std::ostringstream ss;
+            ss << "TestSingleTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
+            LoopManager::Instance()->TestingStrAppend(ss.str());
+
+            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>("TestSingleTextureAnimation_" + MEDIA_PATH_KEY_STR,
+                                                                                         game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+                                                                                         0.0f,
+                                                                                         0.0f,
+                                                                                         FRAME_WIDTH,
+                                                                                         FRAME_HEIGHT,
+                                                                                         0.06f,
+                                                                                         FRAME_COUNT,
+                                                                                         sf::BlendAlpha,
+                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
+                                                                                         sfml_util::MapByRes(1.0f, 3.0f));
+        }
+
+        return singleTextureAnimSPtr_->UpdateTime(0.02f);
     }
 
 }

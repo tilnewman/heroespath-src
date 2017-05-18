@@ -31,7 +31,7 @@ namespace sfml_util
         FRAME_HEIGHT_           (FRAME_HEIGHT),
         FRAME_COUNT_            (FRAME_COUNT),
         FIRST_FRAME_POS_LEFT_   (FIRST_FRAME_POS_LEFT),
-        FIRSt_FRAME_POS_TOP_    (FIRST_FRAME_POS_TOP),
+        FIRST_FRAME_POS_TOP_    (FIRST_FRAME_POS_TOP),
         FRAME_HORIZ_GAP_        (FRAME_HORIZ_GAP),
         FRAME_VERT_GAP_         (FRAME_VERT_GAP),
         BLEND_MODE_             (BLEND_MODE),
@@ -57,26 +57,26 @@ namespace sfml_util
         auto const TEXTURE_HEIGHT(textureSPtr_->getSize().y);
 
         auto posX(FIRST_FRAME_POS_LEFT_);
-        auto posY(FIRSt_FRAME_POS_TOP_);
+        auto posY(FIRST_FRAME_POS_TOP_);
 
         while(posY < (TEXTURE_HEIGHT - FRAME_HEIGHT_))
         {
-            if (rects_.size() != 0)
+            if (rects_.empty() == false)
                 posY += FRAME_HEIGHT_ + FRAME_VERT_GAP_;
 
             while (posX < (TEXTURE_WIDTH - FRAME_WIDTH_))
             {
-                if (rects_.size() != 0)
+                if (rects_.empty() == false)
                     posX += FRAME_WIDTH_ + FRAME_HORIZ_GAP_;
 
                 rects_.push_back( sf::IntRect(posX, posY, FRAME_WIDTH_, FRAME_HEIGHT_) );
 
-                if ((FRAME_COUNT_ != 0) && (rects_.size() >= FRAME_COUNT_))
+                if ((FRAME_COUNT_ != 0) && (rects_.size() == FRAME_COUNT_))
                     break;
             };
             posX = FIRST_FRAME_POS_LEFT_;
 
-            if ((FRAME_COUNT_ != 0) && (rects_.size() >= FRAME_COUNT_))
+            if ((FRAME_COUNT_ != 0) && (rects_.size() == FRAME_COUNT_))
                 break;
         };
     }

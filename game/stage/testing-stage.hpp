@@ -6,6 +6,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/animation.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/stats/stat-set.hpp"
@@ -57,9 +58,14 @@ namespace stage
 
         bool TestImageSet();
 
+        bool TestAnimations();
+        bool TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT);
+        bool TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT, const unsigned int FRAME_WIDTH, const unsigned int FRAME_HEIGHT, const unsigned int FRAME_COUNT);
+
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
-
+        static sfml_util::MultiTextureAnimationSPtr_t multiTextureAnimSPtr_;
+        static sfml_util::SingleTextureAnimationSPtr_t singleTextureAnimSPtr_;
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;

@@ -72,7 +72,7 @@ namespace sfml_util
         const unsigned int FRAME_HEIGHT_;
         const std::size_t  FRAME_COUNT_;
         const unsigned int FIRST_FRAME_POS_LEFT_;
-        const unsigned int FIRSt_FRAME_POS_TOP_;
+        const unsigned int FIRST_FRAME_POS_TOP_;
         const unsigned int FRAME_HORIZ_GAP_;
         const unsigned int FRAME_VERT_GAP_;
         //
