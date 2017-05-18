@@ -152,6 +152,15 @@ namespace stage
                                                       128)));
 
         creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+                                                      "Various Spell Animations",
+                                                      "Posted on OpenGameArt.org by Mikodrak\nwww.opengameart.org/users/Mikodrak\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0\nCreated by Martin Jelinek\njelinek.cz@gmail.com\nwww.nyrthos.com",
+                                                      credit_media_type::AnimMultiTexture,
+                                                      "media-anim-images-dir-lightningbolt",
+                                                      sfml_util::MapByRes(1.0f, 3.0f),
+                                                      sf::Vector2f(0.0f, 0.0f),
+                                                      0.10f)));
+
+        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
                                                       "Terrain Art",
                                                       "Daniel Cook\nA beautiful (and free!) (for any use) set of tiles.\nwww.lostgarden.com",
                                                       credit_media_type::Image,
@@ -202,7 +211,7 @@ namespace stage
 
         creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
                                                       "Inventory Sound Effects",
-                                                      "Posted on OpenGameArt.org as 'Little Robot Sound Factory'\nwww.littlerobotsoundfactory.com\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nwww.creativecommons.org/licenses/by/3.0",
+                                                      "Posted on OpenGameArt.org as 'Little Robot Sound Factory'\nwww.littlerobotsoundfactory.com\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
                                                       sfml_util::MapByRes(1.0f, 2.0f))));
