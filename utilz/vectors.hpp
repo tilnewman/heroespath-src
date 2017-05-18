@@ -194,18 +194,6 @@ namespace utilz
                 }
             }
 
-            if (MAX_COUNT > VEC_ELEMENT_COUNT)
-            {
-                M_HP_LOG_WRN("utilz::Vector::Join(\"" << ss.str()
-                    << "\", will_wrap="  << std::boolalpha << WILL_WRAP
-                    << ", will_and=" << WILL_AND
-                    << ", max_count=" << MAX_COUNT
-                    << ", will_ellipsis=" << WILL_ELLIPSIS
-                    << ") was given a max_count=" << MAX_COUNT
-                    << " that was greater than the total_vec_count=" << VEC_ELEMENT_COUNT
-                    << ".");
-            }
-
             if (WILL_WRAP && (ss.str().empty() == false))
             {
                 return "(" + ss.str() + ")";

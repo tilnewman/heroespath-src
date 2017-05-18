@@ -33,6 +33,7 @@
 #include "game/combat/combat-text.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/conditions.hpp"
+#include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/item/weapon-factory.hpp"

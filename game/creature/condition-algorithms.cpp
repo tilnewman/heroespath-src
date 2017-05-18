@@ -75,12 +75,13 @@ namespace condition
     {
         if (conditionsVec.empty() == false)
         {
-            std::remove_if(conditionsVec.begin(),
-                           conditionsVec.end(),
-                           [=](const Conditions::Enum E)
-                            {
-                                return ((MIN_SEVERITY != 0) && (condition::Severity::Get(E) <= MIN_SEVERITY));
-                            });
+            conditionsVec.erase(std::remove_if(conditionsVec.begin(),
+                                               conditionsVec.end(),
+                                               [=](const Conditions::Enum E)
+                                                {
+                                                    return ((MIN_SEVERITY != 0) && (condition::Severity::Get(E) <= MIN_SEVERITY));
+                                                }),
+                                conditionsVec.end());
         }
     }
 
