@@ -1509,9 +1509,16 @@ namespace sfml_util
                                                  SPELL_DESC_TEXTRECT_WIDTH,
                                                  SPELL_DESC_TEXTRECT_HEIGHT };
 
-        spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
-                                                               SPELL_DESC_TEXTINFO,
-                                                               SPELL_DESC_TEXTRECT);
+        if (spellDescTextUPtr_.get() == nullptr)
+        {
+            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
+                                                                   SPELL_DESC_TEXTINFO,
+                                                                   SPELL_DESC_TEXTRECT);
+        }
+        else
+        {
+            spellDescTextUPtr_->Setup(SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, this);
+        }
     }
 
 

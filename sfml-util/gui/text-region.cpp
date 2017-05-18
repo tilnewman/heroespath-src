@@ -9,6 +9,7 @@
 #include "sfml-util/gui/box-info.hpp"
 
 #include "game/log-macros.hpp"
+
 #include "utilz/assertlogandthrow.hpp"
 
 
@@ -142,17 +143,17 @@ namespace gui
         text_ = TEXT_INFO.text;
         stagePtr_ = stagePtrParam;
 
-        sfml_util::gui::SliderBarSPtr_t tempSliderBarSPtr;
+        sfml_util::gui::SliderBarSPtr_t newSliderBarSPtr;
         text_render::RenderToArea(GetEntityName(),
                                   TEXT_INFO,
-                                  tempSliderBarSPtr,
+                                  newSliderBarSPtr,
                                   renderedText_,
                                   REGION,
                                   SMALLER_FONT_SIZE,
                                   MARGINS,
                                   WILL_ALLOW_SCROLLBAR);
 
-        HandleSliderBar(tempSliderBarSPtr);
+        HandleSliderBar(newSliderBarSPtr);
 
         //position the text for on-screen coordinates
         const std::size_t NUM_LINES(renderedText_.vec_vec.size());
@@ -179,7 +180,7 @@ namespace gui
     }
 
 
-    void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarSPtr_t & tempSliderBarSPtr)
+    void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarSPtr_t & newSliderBarSPtr)
     {
         if (stagePtr_ != nullptr)
         {
@@ -189,9 +190,9 @@ namespace gui
                 sliderBarSPtr_.reset();
             }
 
-            if (tempSliderBarSPtr.get() != nullptr)
+            if (newSliderBarSPtr.get() != nullptr)
             {
-                sliderBarSPtr_ = tempSliderBarSPtr;
+                sliderBarSPtr_ = newSliderBarSPtr;
                 sliderBarSPtr_->SetOnChangeHandler(this);
                 sliderBarSPtr_->SetCurrentValue(0.0f);
                 stagePtr_->EntityAdd(sliderBarSPtr_);
@@ -337,13 +338,13 @@ namespace gui
             renderedText_.longest_line = TEXT_REGION.renderedText_.longest_line;
 
         //
-        sfml_util::gui::SliderBarSPtr_t tempSliderBarSPtr;
+        sfml_util::gui::SliderBarSPtr_t newSliderBarSPtr;
         text_render::ApplyToArea(GetEntityName(),
-                                 tempSliderBarSPtr,
+                                 newSliderBarSPtr,
                                  renderedText_,
                                  GetEntityRegion());
 
-        HandleSliderBar(tempSliderBarSPtr);
+        HandleSliderBar(newSliderBarSPtr);
 
         //establish the new region
         const sf::FloatRect OUTLINE_RECT(entityRegion_.left,
