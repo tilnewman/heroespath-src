@@ -18,6 +18,8 @@ namespace spell
     const std::string Spell::EFFECT_STR_SUCCESS_         { "" };
     const std::string Spell::EFFECT_STR_NOTHING_TO_DO_   { "Nothing to do." };
     const int         Spell::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
+    const std::string Spell::EFFECT_STR_IS_ALREADY_      { " is already " };
+    const std::string Spell::EFFECT_STR_RESISTED_        { " resisted the spell" };
 
 
     Spell::Spell(const Spells::Enum     WHICH,

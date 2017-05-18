@@ -8,6 +8,7 @@
 #include "game/spell/spell-type-enum.hpp"
 #include "game/target-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "game/creature/condition-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -65,29 +66,30 @@ namespace spell
 
         //Returns a short sentance describing what the spell did.
         //For the following functions the first CreaturePtr_t is the caster and the second is the target.
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t,
-                                               creature::CreaturePtr_t) const
+        virtual const std::string ActionPhrase(creature::CreaturePtr_t,         //creatureCasting
+                                               creature::CreaturePtr_t) const   //creatureCastUpon
         {
             return "TODO";
         }
 
         //Allows the spell to change the target creature.
-        virtual const std::string EffectCreature(creature::CreaturePtr_t,
-                                                 creature::CreaturePtr_t) const
+        virtual const std::string EffectCreature(creature::CreaturePtr_t,              //creatureCasting
+                                                 creature::CreaturePtr_t,              //creatureCastUpon
+                                                 creature::ConditionEnumVec_t &) const //conditionsAdded
         {
             return Spell::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Allows the spell to change the target item.
-        virtual const std::string EffectItem(creature::CreaturePtr_t,
-                                             item::ItemSPtr_t &) const
+        virtual const std::string EffectItem(creature::CreaturePtr_t,   //creatureCasting
+                                             item::ItemSPtr_t &) const  //itemCastUpon
         {
             return Spell::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Returns the amount of health that the spell either gives or takes away.
-        virtual stats::Health_t Health(creature::CreaturePtr_t,
-                                       creature::CreaturePtr_t) const
+        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t,      //creatureCasting
+                                          creature::CreaturePtr_t) const//creatureCastUpon
         {
             return 0;
         }
@@ -134,7 +136,10 @@ namespace spell
     public:
         static const std::string EFFECT_STR_SUCCESS_;
         static const std::string EFFECT_STR_NOTHING_TO_DO_;
+        static const std::string EFFECT_STR_IS_ALREADY_;
+        static const std::string EFFECT_STR_RESISTED_;
         static const int         EFFECTS_ALL_CREATURES_COUNT_;
+
     protected:
         Spells::Enum     which_;
         stats::Rank_t    rank_;

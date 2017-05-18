@@ -1714,6 +1714,7 @@ namespace stage
             case combat::TurnAction::Cast:
             {
                 creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
+                combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
                 fightResult_ = combat::FightClub::Cast(turnActionInfo_.Spell(), turnCreaturePtr_, targetedCreaturesPVec);
                 SetupTurnBox();
                 AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
@@ -1943,6 +1944,7 @@ namespace stage
     {
         SetUserActionAllowed(false);
 
+        combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesToCastUponPVec);
         turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_, creaturesToCastUponPVec);
         encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Cast(spellBeingCastPtr_, turnCreaturePtr_, creaturesToCastUponPVec);
@@ -2507,11 +2509,11 @@ namespace stage
             {
                 preambleSS << "Click on the ";
                 
-                if (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion)
+                if (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent)
                 {
                     preambleSS << "enemy creature";
                 }
-                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent)
+                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion)
                 {
                     preambleSS << "character";
                 }
@@ -2675,6 +2677,14 @@ namespace stage
             }
 
             case TurnActionPhase::Cast:
+            {
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                SetTurnPhase(TurnPhase::PerformReport);
+                SetAnimPhase(AnimPhase::NotAnimating);
+                SetupTurnBox();
+                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostCast)");
+                break;
+            }
             case TurnActionPhase::Roar:
             case TurnActionPhase::Pounce:
             case TurnActionPhase::None:

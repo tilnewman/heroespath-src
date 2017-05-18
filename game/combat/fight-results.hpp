@@ -64,11 +64,12 @@ namespace combat
     };
 
 
-    //Everything required to describe a weapon making contact with a creature.
-    //Note:  It is possible to hit with no damage.
+    //Everything required to describe a how a creature's health was reduced.
+    //Note:  It is possible to hit with a weapon and cause no damage.
     class HitInfo
     {
     public:
+        //use this constructor when a weapon is used to hit
         HitInfo(const item::ItemSPtr_t &             ITEM_SPTR       = item::ItemSPtr_t(),
                 const HitType::Enum                  HIT_TYPE        = HitType::Count,
                 const DodgeType::Enum                DODGE_TYPE      = DodgeType::Count,
@@ -78,21 +79,35 @@ namespace combat
                 const creature::ConditionEnumVec_t & CONDITIONS_VEC  = creature::ConditionEnumVec_t(),
                 const std::string &                  ACTION_VERB     = "");
 
-        inline bool              WasHit() const     { return hitType_ != HitType::Count; }
-        inline HitType::Enum     HitKind() const    { return hitType_; }
-        inline DodgeType::Enum   DodgeKind() const  { return dodgeType_; }
-        inline item::ItemSPtr_t  Weapon() const     { return weaponSPtr_; }
-        inline stats::Health_t   Damage() const     { return damage_; }
-        inline bool              IsCritical() const { return isCritical_; }
-        inline bool              IsPowerHit() const { return isPower_; }
-        inline const std::string ActionVerb() const { return actionVerb_; }
+        //use this constructor when a spell adds or removes health
+        HitInfo(const spell::SpellPtr_t              SPELL_CPTR,
+                const std::string &                  EFFECT_STR,
+                const stats::Health_t                DAMAGE,
+                const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                const std::string &                  ACTION_PHRASE);
+
+        HitInfo(const HitInfo &);
+        HitInfo & operator=(const HitInfo &);
+
+        inline bool              WasHit() const      { return hitType_ != HitType::Count; }
+        inline HitType::Enum     HitKind() const     { return hitType_; }
+        inline DodgeType::Enum   DodgeKind() const   { return dodgeType_; }
+        inline item::ItemSPtr_t  Weapon() const      { return weaponSPtr_; }
+        inline stats::Health_t   Damage() const      { return damage_; }
+        inline bool              IsCritical() const  { return isCritical_; }
+        inline bool              IsPowerHit() const  { return isPower_; }
+        inline const std::string ActionVerb() const  { return actionVerb_; }
+        inline spell::SpellPtr_t SpellPtr() const    { return spellPtr_; }
+        inline bool              IsSpell() const     { return (spellPtr_ != nullptr); }
+        inline bool              IsWeapon() const    { return (weaponSPtr_.get() != nullptr); }
+        inline const std::string SpellEffect() const { return spellEffectStr_; }
 
         inline const creature::ConditionEnumVec_t Conditions() const { return conditionsVec_; }
 
         bool ContainsCondition(const creature::Conditions::Enum) const;
         bool RemoveCondition(const creature::Conditions::Enum);
 
-        inline bool WasKill() const                 { return ContainsCondition(creature::Conditions::Dead); }
+        inline bool WasKill() const { return ContainsCondition(creature::Conditions::Dead); }
 
         friend bool operator<(const HitInfo & L, const HitInfo & R);
         friend bool operator==(const HitInfo & L, const HitInfo & R);
@@ -106,9 +121,12 @@ namespace combat
         bool isPower_;
         creature::ConditionEnumVec_t conditionsVec_;
         std::string actionVerb_;
+        spell::SpellPtr_t spellPtr_;
+        std::string spellEffectStr_;
     };
 
     using HitInfoVec_t = std::vector<HitInfo>;
+
 
     bool operator<(const HitInfo & L, const HitInfo & R);
 
@@ -162,6 +180,7 @@ namespace combat
     };
 
     using CreatureEffectVec_t = std::vector<CreatureEffect>;
+
 
     bool operator<(const CreatureEffect & L, const CreatureEffect & R);
 

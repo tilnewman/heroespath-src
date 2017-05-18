@@ -68,15 +68,79 @@ namespace combat
                      const creature::ConditionEnumVec_t & CONDITIONS_VEC,
                      const std::string &                  ACTION_VERB)
     :
-        hitType_      (HIT_TYPE),
-        dodgeType_    (DODGE_TYPE),
-        weaponSPtr_   (ITEM_SPTR),
-        damage_       (DAMAGE),
-        isCritical_   (IS_CRITICAL_HIT),
-        isPower_      (IS_POWER_HIT),
-        conditionsVec_(CONDITIONS_VEC),
-        actionVerb_   (ACTION_VERB)
+        hitType_       (HIT_TYPE),
+        dodgeType_     (DODGE_TYPE),
+        weaponSPtr_    (ITEM_SPTR),
+        damage_        (DAMAGE),
+        isCritical_    (IS_CRITICAL_HIT),
+        isPower_       (IS_POWER_HIT),
+        conditionsVec_ (CONDITIONS_VEC),
+        actionVerb_    (ACTION_VERB),
+        spellPtr_      (nullptr),
+        spellEffectStr_("")
     {}
+
+
+    HitInfo::HitInfo(const spell::SpellPtr_t              SPELL_CPTR,
+                     const std::string &                  EFFECT_STR,
+                     const stats::Health_t                DAMAGE,
+                     const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                     const std::string &                  ACTION_PHRASE)
+    :
+        hitType_       (HitType::Spell),
+        dodgeType_     (DodgeType::Count),
+        weaponSPtr_    (),
+        damage_        (DAMAGE),
+        isCritical_    (false),
+        isPower_       (false),
+        conditionsVec_ (CONDITIONS_VEC),
+        actionVerb_    (ACTION_PHRASE),
+        spellPtr_      (SPELL_CPTR),
+        spellEffectStr_(EFFECT_STR)
+    {}
+
+
+    HitInfo::HitInfo(const HitInfo & HI)
+    :
+        hitType_      (HI.hitType_),
+        dodgeType_    (HI.dodgeType_),
+        weaponSPtr_   (HI.weaponSPtr_),
+        damage_       (HI.damage_),
+        isCritical_   (HI.isCritical_),
+        isPower_      (HI.isPower_),
+        conditionsVec_(HI.conditionsVec_),
+        actionVerb_   (HI.actionVerb_),
+        
+        //The lifetimes of this object is not managed by this class.
+        //These pointers were originally provided from an owning
+        //std::shared_ptr, which is not effected by the copies made here.
+        //Given the short use of CreatureEffects copying these pointers is safe.
+        spellPtr_(HI.spellPtr_),
+
+        spellEffectStr_(HI.spellEffectStr_)
+    {}
+
+
+    HitInfo & HitInfo::operator=(const HitInfo & HI)
+    {
+        if (& HI != this)
+        {
+            hitType_        = HI.hitType_;
+            dodgeType_      = HI.dodgeType_;
+            weaponSPtr_     = HI.weaponSPtr_;
+            damage_         = HI.damage_;
+            isCritical_     = HI.isCritical_;
+            isPower_        = HI.isPower_;
+            conditionsVec_  = HI.conditionsVec_;
+            actionVerb_     = HI.actionVerb_;
+            spellEffectStr_ = HI.spellEffectStr_;
+
+            //see copy constructor comment regarding this pointer
+            spellPtr_ = HI.spellPtr_;
+        }
+
+        return * this;
+    }
 
 
     bool HitInfo::ContainsCondition(const creature::Conditions::Enum E) const
@@ -122,6 +186,8 @@ namespace combat
                         L.isCritical_,
                         L.isPower_,
                         L.actionVerb_,
+                        L.spellPtr_,
+                        L.spellEffectStr_,
                         lConditionsVec)
                <
                std::tie(R.hitType_,
@@ -131,6 +197,8 @@ namespace combat
                         R.isCritical_,
                         R.isPower_,
                         R.actionVerb_,
+                        R.spellPtr_,
+                        R.spellEffectStr_,
                         rConditionsVec);
     }
 
@@ -149,6 +217,8 @@ namespace combat
                         L.isCritical_,
                         L.isPower_,
                         L.actionVerb_,
+                        L.spellPtr_,
+                        L.spellEffectStr_,
                         lConditionsVec)
                ==
                std::tie(R.hitType_,
@@ -158,6 +228,8 @@ namespace combat
                         R.isCritical_,
                         R.isPower_,
                         R.actionVerb_,
+                        R.spellPtr_,
+                        R.spellEffectStr_,
                         rConditionsVec);
     }
 
@@ -183,7 +255,7 @@ namespace combat
         //The lifetimes of these two objects are not managed by this class.
         //These pointers were originally provided from an owning
         //std::shared_ptr, which is not effected by the copies made here.
-        //So copying these pointers is safe.
+        //Given the short use of CreatureEffects copying these pointers is safe.
         spellPtr_     (CE.spellPtr_),
         creaturePtr_  (CE.creaturePtr_),
 

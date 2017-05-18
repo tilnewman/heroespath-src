@@ -113,7 +113,7 @@ namespace creature
                                                       WILL_ELLIPSIS,
                                                       [](const CreaturePtr_t CPTR) -> const std::string
                                                         {
-                                                            return CPTR->DisplayableNameRaceRole();
+                                                            return CPTR->NameAndRaceAndRole();
                                                         });
         }
         else

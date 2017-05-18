@@ -700,7 +700,7 @@ namespace combat
                                                                                     &spell::SpellType::ToString) };
             
             std::ostringstream ssErr;
-            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->DisplayableNameRaceRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->DisplayableNameRaceRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
             throw std::runtime_error(ssErr.str());
         }
         
@@ -735,7 +735,7 @@ namespace combat
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->DisplayableNameRaceRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->DisplayableNameRaceRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->TargetType()) << "\" -which is not yet supported.";
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->TargetType()) << "\" -which is not yet supported.";
             throw std::runtime_error(ssErr.str());
         }
 

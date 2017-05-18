@@ -333,6 +333,24 @@ namespace combat
     }
 
 
+    const CreatureEffect FightClub::CastSpellUpon(const spell::SpellPtr_t              SPELL_CPTR,
+                                                  const std::string &                  EFFECT_STR,
+                                                  creature::CreaturePtrC_t             creatureCastingPtrC,
+                                                  creature::CreaturePtrC_t             creatureCastUponPtrC,
+                                                  const stats::Health_t                HEALTH_ADJ,
+                                                  const creature::ConditionEnumVec_t & CONDITIONS_VEC)
+    {
+        HitInfoVec_t hitInfoVec;
+        hitInfoVec.push_back( HitInfo(SPELL_CPTR,
+                                      EFFECT_STR,
+                                      -1 * HEALTH_ADJ,
+                                      CONDITIONS_VEC,
+                                      SPELL_CPTR->ActionPhrase(creatureCastingPtrC, creatureCastUponPtrC)) );
+        
+        return CreatureEffect(creatureCastUponPtrC, hitInfoVec, SPELL_CPTR);
+    }
+
+
     stats::Health_t FightClub::DetermineDamage(const item::ItemSPtr_t & WEAPON_SPTR,
                                                creature::CreaturePtrC_t creatureAttackingPtrC,
                                                creature::CreaturePtrC_t creatureDefendingPtrC,
@@ -422,36 +440,49 @@ namespace combat
 
 
 
-    const FightResult FightClub::Cast(spell::SpellCPtrC_t        spellPtrC,
-                                      creature::CreaturePtrC_t   creatureCastingPtr,
-                                      creature::CreaturePVec_t & creaturesCastUponPVec)
+    const FightResult FightClub::Cast(const spell::SpellPtr_t          SPELL_CPTR,
+                                      creature::CreaturePtrC_t         creatureCastingPtr,
+                                      const creature::CreaturePVec_t & creaturesCastUponPVec)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false), "game::combat::FightClub::Cast(spell=" << spellPtrC->Name()
-                                                                             << ", creature_casting=" << creatureCastingPtr->DisplayableNameRaceRole()
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false), "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
+                                                                             << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
                                                                              << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
 
-        if (((spellPtrC->TargetType() == TargetType::SingleCompanion) || (spellPtrC->TargetType() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
+        if (((SPELL_CPTR->TargetType() == TargetType::SingleCompanion) || (SPELL_CPTR->TargetType() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
         {
             std::ostringstream ssErr;
-            ssErr << "game::combat::FightClub::Cast(spell=" << spellPtrC->Name()
-                  << ", creature_casting=" << creatureCastingPtr->DisplayableNameRaceRole()
+            ssErr << "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
+                  << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
                   << ", creatures_cast_upon=\"" << utilz::Vector::Join<creature::CreaturePtr_t>(creaturesCastUponPVec,
                                                                                                 false,
                                                                                                 false,
                                                                                                 0,
                                                                                                 false,
                                                                                                 [](const creature::CreaturePtr_t CPTR) -> const std::string
-                                                                                                  { return CPTR->DisplayableNameRaceRole(); })
-                  << "\") spell target_type=" << TargetType::ToString(spellPtrC->TargetType())
+                                                                                                  { return CPTR->NameAndRaceAndRole(); })
+                  << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->TargetType())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
             throw std::runtime_error(ssErr.str());
         }
 
+        CreatureEffectVec_t creatureEffectVec;
+        for (auto nextCreatureCastUpon : creaturesCastUponPVec)
+        {
+            creature::ConditionEnumVec_t conditionsVec;
+            auto const HEALTH_ADJ{ SPELL_CPTR->HealthAdj(creatureCastingPtr, nextCreatureCastUpon) };
+            auto const SPELL_RESULT_STR{ SPELL_CPTR->EffectCreature(creatureCastingPtr, nextCreatureCastUpon, conditionsVec) };
+            creatureEffectVec.push_back( CastSpellUpon(SPELL_CPTR,
+                                                       SPELL_RESULT_STR,
+                                                       creatureCastingPtr,
+                                                       nextCreatureCastUpon,
+                                                       HEALTH_ADJ,
+                                                       conditionsVec) );
+            
+            //TODO Handle Encounter::Instance()->TurnInfo
+        }
 
-
-        //TODO Handle Encounter::Instance()->TurnInfo
-        return FightResult();
+        return FightResult(creatureEffectVec);
     }
 
 

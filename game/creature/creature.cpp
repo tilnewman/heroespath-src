@@ -77,7 +77,7 @@ namespace creature
     {}
 
 
-    const std::string Creature::NameOrRaceAndClass(const bool IS_FIRST_LETTER_CAPS) const
+    const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
         std::ostringstream ss;
         if (IsPlayerCharacter())
@@ -105,7 +105,7 @@ namespace creature
     }
 
 
-    const std::string Creature::DisplayableNameRaceRole() const
+    const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
         auto const NAME_STR(Name());
         auto const RACE_STR(Race().Name());
@@ -113,15 +113,28 @@ namespace creature
 
         std::ostringstream ss;
 
-        if (NAME_STR != RACE_STR)
-            ss << NAME_STR << " ";
-
-        ss << "the " << RACE_STR;
-
+        if (NAME_STR == RACE_STR)
+        {
+            ss << NAME_STR;
+        }
+        else
+        {
+            ss << NAME_STR << " the " << RACE_STR;
+        }
+        
         if (RACE_STR != ROLE_STR)
+        {
             ss << " " << ROLE_STR;
+        }
 
-        return ss.str();
+        if (IS_FIRST_LETTER_CAPS)
+        {
+            return ss.str();
+        }
+        else
+        {
+            return boost::algorithm::to_lower_copy(ss.str());
+        }
     }
 
 

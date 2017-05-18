@@ -227,6 +227,8 @@ namespace combat
                 {
                     ss << CastDescriptionFullVersion(TURN_ACTION_INFO, FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
                 }
+
+                break;
             }
 
             case combat::TurnAction::ChangeWeapon:
@@ -608,10 +610,40 @@ namespace combat
 
 
     const std::string Text::CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                           const FightResult &)
+                                                           const FightResult &    FIGHT_RESULT)
     {
         std::ostringstream ss;
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType()) << "...";
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell ";
+        if (FIGHT_RESULT.Count() == 1)
+        {
+            ss << "on ";
+            if (FIGHT_RESULT.FirstCreature()->IsPlayerCharacter())
+            {
+                ss << FIGHT_RESULT.FirstCreature()->Name();
+            }
+            else
+            {
+                ss << "a " << FIGHT_RESULT.FirstCreature()->NameOrRaceAndRole();
+            }
+        }
+        else if (FIGHT_RESULT.Count() > 1)
+        {
+            ss << "effecting " << FIGHT_RESULT.Count();
+            if (FIGHT_RESULT.FirstCreature()->IsPlayerCharacter())
+            {
+                ss << " characters";
+            }
+            else
+            {
+                ss << " creatures";
+            }
+        }
+        else
+        {
+            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType());
+        }
+
+        ss << "...";
         return ss.str();
     }
 
@@ -709,11 +741,11 @@ namespace combat
         auto const CREATURE_PTR{ FIGHT_RESULT.FirstCreature() };
         if (CREATURE_PTR->IsPlayerCharacter())
         {
-            ss << "at " << CREATURE_PTR->NameOrRaceAndClass();
+            ss << "at " << CREATURE_PTR->NameOrRaceAndRole();
         }
         else
         {
-            ss << "at a " << CREATURE_PTR->NameOrRaceAndClass();
+            ss << "at a " << CREATURE_PTR->NameOrRaceAndRole();
         }
 
         return ss.str();

@@ -49,9 +49,9 @@ namespace combat
                                                                HitInfoVec_t &           hitInfoVec,
                                                                const stats::Health_t    TOTAL_DAMAGE);
 
-        static const FightResult Cast(spell::SpellCPtrC_t        SPELL_CPTRC,
-                                      creature::CreaturePtrC_t   creatureCastingPtrC,
-                                      creature::CreaturePVec_t & creaturesDefendingPVec);
+        static const FightResult Cast(const spell::SpellPtr_t          SPELL_CPTR,
+                                      creature::CreaturePtrC_t         creatureCastingPtrC,
+                                      const creature::CreaturePVec_t & creaturesDefendingPVec);
 
         static const FightResult Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC);
@@ -72,6 +72,13 @@ namespace combat
                                                     creature::CreaturePtrC_t creatureAttackingPtrC,
                                                     creature::CreaturePtrC_t creatureDefendingPtrC,
                                                     const bool               WILL_FORCE_HIT = false);
+
+        static const CreatureEffect CastSpellUpon(const spell::SpellPtr_t              SPELL_CPTR,
+                                                  const std::string &                  EFFECT_STR,
+                                                  creature::CreaturePtrC_t             creatureCastingPtrC,
+                                                  creature::CreaturePtrC_t             creatureCastUponPtrC,
+                                                  const stats::Health_t                HEALTH_ADJ,
+                                                  const creature::ConditionEnumVec_t & CONDITIONS_VEC);
 
         static stats::Health_t DetermineDamage(const item::ItemSPtr_t & WEAPON_SPTR,
                                                creature::CreaturePtrC_t creatureAttackingPtrC,

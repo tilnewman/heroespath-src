@@ -18,17 +18,17 @@ namespace spell
                                            creature::CreaturePtr_t effectedCreaturePtr) const
     {
         auto const RANDOM_VALUE{ utilz::random::Int(3) };
-        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndClass() + " shoots sparks at " + effectedCreaturePtr->NameOrRaceAndClass() + ".";
-        else if (RANDOM_VALUE == 1) return effectedCreaturePtr->NameOrRaceAndClass() + " is sprayed with sparks.";
-        else if (RANDOM_VALUE == 2) return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndClass() + ".";
-        else                        return "Sparks shower upon " + effectedCreaturePtr->NameOrRaceAndClass() + ".";
+        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " shoots sparks at " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        else if (RANDOM_VALUE == 1) return effectedCreaturePtr->NameOrRaceAndRole() + " is sprayed with sparks.";
+        else if (RANDOM_VALUE == 2) return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        else                        return "Sparks shower upon " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
     }
 
 
-    stats::Health_t Sparks::Health(creature::CreaturePtr_t castingCreaturePtr,
-                                   creature::CreaturePtr_t) const
+    stats::Health_t Sparks::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
+                                      creature::CreaturePtr_t) const
     {
-        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, castingCreaturePtr->Rank(), 10);
+        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, castingCreaturePtr->Rank(), 10);
     }
 
 
@@ -36,36 +36,41 @@ namespace spell
                                             creature::CreaturePtr_t effectedCreaturePtr) const
     {
         auto const RANDOM_VALUE{ utilz::random::Int(3) };
-        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndClass() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndClass() + ".";
-        else if (RANDOM_VALUE == 1) return castingCreaturePtr->NameOrRaceAndClass() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndClass() + "'s wounds.";
-        else if (RANDOM_VALUE == 2) return "Magical bandages wrap " + effectedCreaturePtr->NameOrRaceAndClass() + "'s injuries.";
-        else                        return effectedCreaturePtr->NameOrRaceAndClass() + "'s wounds are magically bandaged.";
+        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        else if (RANDOM_VALUE == 1) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds.";
+        else if (RANDOM_VALUE == 2) return "Magical bandages wrap " + effectedCreaturePtr->NameOrRaceAndRole() + "'s injuries.";
+        else                        return effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds are magically bandaged.";
     }
 
 
-    stats::Health_t Bandage::Health(creature::CreaturePtr_t castingCreaturePtr,
-                                    creature::CreaturePtr_t) const
+    stats::Health_t Bandage::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
+                                       creature::CreaturePtr_t) const
     {
         return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, castingCreaturePtr->Rank(), 10);
     }
 
 
-    const std::string Sleep::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Sleep::EffectCreature(creature::CreaturePtr_t,
+                                            creature::CreaturePtr_t        effectedCreaturePtr,
+                                            creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural) ||
             effectedCreaturePtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already asleep";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "asleep";
         }
         else
         {
             effectedCreaturePtr->ConditionAdd(creature::Conditions::AsleepNatural);
+            conditionsAddedVec.push_back(creature::Conditions::AsleepNatural);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
 
 
-    const std::string Awaken::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Awaken::EffectCreature(creature::CreaturePtr_t,
+                                             creature::CreaturePtr_t effectedCreaturePtr,
+                                             creature::ConditionEnumVec_t &) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural))
         {
@@ -84,26 +89,31 @@ namespace spell
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is not asleep or unconscious";
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is not asleep or unconscious";
         }
     }
 
 
-    const std::string Trip::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Trip::EffectCreature(creature::CreaturePtr_t,
+                                           creature::CreaturePtr_t        effectedCreaturePtr,
+                                           creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already tripped";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "tripped";
         }
         else
         {
             effectedCreaturePtr->ConditionAdd(creature::Conditions::Tripped);
+            conditionsAddedVec.push_back(creature::Conditions::Tripped);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
 
 
-    const std::string Lift::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Lift::EffectCreature(creature::CreaturePtr_t,
+                                           creature::CreaturePtr_t effectedCreaturePtr,
+                                           creature::ConditionEnumVec_t &) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
         {
@@ -112,40 +122,48 @@ namespace spell
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is not tripped";
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is not tripped";
         }
     }
 
 
-    const std::string Daze::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Daze::EffectCreature(creature::CreaturePtr_t,
+                                           creature::CreaturePtr_t        effectedCreaturePtr,
+                                           creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already dazed";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dazed";
         }
         else
         {
             effectedCreaturePtr->ConditionAdd(creature::Conditions::Dazed);
+            conditionsAddedVec.push_back(creature::Conditions::Dazed);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
 
 
-    const std::string Frighten::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Frighten::EffectCreature(creature::CreaturePtr_t,
+                                               creature::CreaturePtr_t        effectedCreaturePtr,
+                                               creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already frightened";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "frightened";
         }
         else
         {
             effectedCreaturePtr->ConditionAdd(creature::Conditions::Frightened);
+            conditionsAddedVec.push_back(creature::Conditions::Frightened);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
 
 
-    const std::string ClearMind::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string ClearMind::EffectCreature(creature::CreaturePtr_t,
+                                                creature::CreaturePtr_t effectedCreaturePtr,
+                                                creature::ConditionEnumVec_t &) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
         {
@@ -159,26 +177,31 @@ namespace spell
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is not frightened or dazed";
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is not frightened or dazed";
         }
     }
 
 
-    const std::string Poison::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Poison::EffectCreature(creature::CreaturePtr_t,
+                                             creature::CreaturePtr_t        effectedCreaturePtr,
+                                             creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already poisoned";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";
         }
         else
         {
             effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
+            conditionsAddedVec.push_back(creature::Conditions::Poisoned);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
 
 
-    const std::string Antidote::EffectCreature(creature::CreaturePtr_t, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string Antidote::EffectCreature(creature::CreaturePtr_t,
+                                               creature::CreaturePtr_t effectedCreaturePtr,
+                                               creature::ConditionEnumVec_t &) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
@@ -187,16 +210,18 @@ namespace spell
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is not poisoned";
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is not poisoned";
         }
     }
 
 
-    const std::string PoisonCloud::EffectCreature(creature::CreaturePtr_t castingCreaturePtr, creature::CreaturePtr_t effectedCreaturePtr) const
+    const std::string PoisonCloud::EffectCreature(creature::CreaturePtr_t        castingCreaturePtr,
+                                                  creature::CreaturePtr_t        effectedCreaturePtr,
+                                                  creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
-            return effectedCreaturePtr->NameOrRaceAndClass() + " is already poisoned";
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";
         }
         else
         {
@@ -204,8 +229,11 @@ namespace spell
                                                        castingCreaturePtr->Stats().Int().Current()) };
 
             //check for player character 'natural' success
-            if ((castingCreaturePtr->IsPlayerCharacter()) && (RAND_CASTER >= castingCreaturePtr->Stats().Int().Normal()))
+            if ((castingCreaturePtr->IsPlayerCharacter()) &&
+                (RAND_CASTER >= castingCreaturePtr->Stats().Int().Normal()))
             {
+                effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
+                conditionsAddedVec.push_back(creature::Conditions::Poisoned);
                 return Spell::EFFECT_STR_SUCCESS_;
             }
             
@@ -217,11 +245,13 @@ namespace spell
             auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER + effectedCreaturePtr->Rank() };
             if (CHANCE_VAL_CASTER >= CHANCE_VAL_DEFENDER)
             {
+                effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
+                conditionsAddedVec.push_back(creature::Conditions::Poisoned);
                 return Spell::EFFECT_STR_SUCCESS_;
             }
             else
             {
-                return effectedCreaturePtr->NameOrRaceAndClass() + " resisted the spell";
+                return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
             }
         }
     }

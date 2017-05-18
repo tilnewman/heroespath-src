@@ -95,9 +95,8 @@ namespace creature
         inline const std::string Name() const                   { return name_; }
         inline void SetName(const std::string & N)              { name_ = N; }
 
-        const std::string NameOrRaceAndClass(const bool IS_FIRST_LETTER_CAPS = true) const;
-
-        const std::string DisplayableNameRaceRole() const;
+        const std::string NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
+        const std::string NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
 
         inline const std::string ImageFilename() const          { return imageFilename_; };
         void ImageFilename(const std::string & S)               { imageFilename_ = S; };

@@ -552,7 +552,7 @@ namespace combat
     void CombatNode::SelectAnimUpdate(const float SLIDER_RATIO)
     {
         //grow
-        auto const SCALE{ 1.0f + (2.0f * SLIDER_RATIO) };
+        auto const SCALE{ 1.0f + (sfml_util::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
         selectAnimSprite_.setScale(SCALE, SCALE);
         
         //re-center

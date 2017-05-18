@@ -156,6 +156,8 @@ namespace combat
 
         void InitialNonPlayerPartyCombatTreeSetup();
 
+        void SortCreatureListByDisplayedPosition(creature::CreaturePVec_t &) const;
+
         inline void SetIsPlayerTurn(const bool B)                               { isPlayerTurn_ = B; }
 
         inline int GetBlockingDistanceBetween(const creature::CreaturePtrC_t & A_CPTRC, const creature::CreaturePtrC_t & B_CPTRC) const { return combatTree_.GetBlockingDistanceBetween(A_CPTRC, B_CPTRC); }

@@ -1126,6 +1126,21 @@ namespace combat
     }
 
 
+    void CombatDisplay::SortCreatureListByDisplayedPosition(creature::CreaturePVec_t & creaturesPVec) const
+    {
+        std::sort(creaturesPVec.begin(),
+                  creaturesPVec.end(),
+                  [this](const creature::CreaturePtr_t CPTR_A, const creature::CreaturePtr_t CPTR_B) -> bool
+                    {
+                        auto const COMBAT_NODE_PTR_A{ GetCombatNodeForCreature(CPTR_A) };
+                        auto const COMBAT_NODE_PTR_B{ GetCombatNodeForCreature(CPTR_B) };
+                        return std::tie(COMBAT_NODE_PTR_A->GetEntityPos().x, COMBAT_NODE_PTR_A->GetEntityPos().y)
+                                <
+                               std::tie(COMBAT_NODE_PTR_B->GetEntityPos().x, COMBAT_NODE_PTR_B->GetEntityPos().y);
+                    });
+    }
+
+
     void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
