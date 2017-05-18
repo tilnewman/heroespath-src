@@ -158,7 +158,7 @@ namespace stage
                                                       "media-anim-images-dir-lightningbolt",
                                                       sfml_util::MapByRes(1.0f, 3.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
-                                                      0.10f)));
+                                                      0.75f)));
 
         creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
                                                       "Terrain Art",

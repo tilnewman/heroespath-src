@@ -118,6 +118,7 @@ namespace stage
                                                                    0.05f,
                                                                    1.20f,
                                                                    1.20f,
+                                                                   sf::Color::White,
                                                                    sf::BlendAdd) );
         EntityAdd(fireAnim1SPtr_);
 

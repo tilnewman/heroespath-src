@@ -2,8 +2,8 @@
 // animation.cpp
 //
 #include "animation.hpp"
+
 #include "sfml-util/loaders.hpp"
-#include <boost/filesystem.hpp>
 
 
 namespace sfml_util
@@ -20,12 +20,13 @@ namespace sfml_util
                                                     const sf::BlendMode BLEND_MODE,
                                                     const float         SCALE_HORIZ,
                                                     const float         SCALE_VERT,
+                                                    const sf::Color &   COLOR,
                                                     const unsigned int  FIRST_FRAME_POS_LEFT,
                                                     const unsigned int  FIRST_FRAME_POS_TOP,
                                                     const unsigned int  FRAME_HORIZ_GAP,
                                                     const unsigned int  FRAME_VERT_GAP )
     :
-        GuiEntity               (std::string(ENTITY_NAME).append("_Animation"), SCREEN_POS_LEFT, SCREEN_POS_TOP),
+        GuiEntity               (std::string(ENTITY_NAME).append("_SingleTextureAnimation"), SCREEN_POS_LEFT, SCREEN_POS_TOP),
         FRAME_WIDTH_            (FRAME_WIDTH),
         FRAME_HEIGHT_           (FRAME_HEIGHT),
         FRAME_COUNT_            (FRAME_COUNT),
@@ -39,21 +40,24 @@ namespace sfml_util
         textureSPtr_            (),
         rects_                  (),
         currentFrame_           (0),
-        timeElapsed_            (0.0f)
+        frameTimerSec_          (0.0f),
+        color_                  (COLOR)
     {
         sfml_util::LoadImageOrTextureSPtr(textureSPtr_, TEXTURE_FILE_PATH);
+        textureSPtr_->setSmooth(true);
 
         sprite_.setTexture( * textureSPtr_ );
         sprite_.setPosition(SCREEN_POS_LEFT, SCREEN_POS_TOP);
         sprite_.setScale(SCALE_HORIZ, SCALE_VERT);
+        sprite_.setColor(color_);
 
         SetEntityRegion( sf::FloatRect(SCREEN_POS_LEFT, SCREEN_POS_TOP, static_cast<float>(FRAME_WIDTH), static_cast<float>(FRAME_HEIGHT)) );
 
-        const unsigned int TEXTURE_WIDTH (textureSPtr_->getSize().x);
-        const unsigned int TEXTURE_HEIGHT(textureSPtr_->getSize().y);
+        auto const TEXTURE_WIDTH (textureSPtr_->getSize().x);
+        auto const TEXTURE_HEIGHT(textureSPtr_->getSize().y);
 
-        unsigned int posX(FIRST_FRAME_POS_LEFT_);
-        unsigned int posY(FIRSt_FRAME_POS_TOP_);
+        auto posX(FIRST_FRAME_POS_LEFT_);
+        auto posY(FIRSt_FRAME_POS_TOP_);
 
         while(posY < (TEXTURE_HEIGHT - FRAME_HEIGHT_))
         {
@@ -104,19 +108,25 @@ namespace sfml_util
     }
 
 
-    bool SingleTextureAnimation::UpdateTime(const float SECONDS)
+    bool SingleTextureAnimation::UpdateTime(const float ELAPSED_TIME_SEC)
     {
-        timeElapsed_ += SECONDS;
-        if (timeElapsed_ >= timeBetweenFrames_)
+        auto didReachEndOfFrames{ false };
+
+        frameTimerSec_ += ELAPSED_TIME_SEC;
+        if (frameTimerSec_ > timeBetweenFrames_)
         {
-            timeElapsed_ = 0.0f;
-            ++currentFrame_;
-            currentFrame_ %= (rects_.size() - 1);
+            frameTimerSec_ -= timeBetweenFrames_;
+            if (++currentFrame_ >= (rects_.size() - 1))
+            {
+                currentFrame_ = 0;
+                didReachEndOfFrames = true;
+            }
+
             sprite_.setTextureRect( rects_[currentFrame_] );
-            return true;
+            sprite_.setColor(color_);
         }
-        else
-            return false;
+
+        return didReachEndOfFrames;
     }
 
 
@@ -141,6 +151,7 @@ namespace sfml_util
                                                  const float         TIME_BETWEEN_FRAMES,
                                                  const float         SCALE_HORIZ,
                                                  const float         SCALE_VERT,
+                                                 const sf::Color &   COLOR,
                                                  const sf::BlendMode BLEND_MODE)
     :
         GuiEntity           (std::string(ENTITY_NAME).append("_MutiTextureAnimation"), SCREEN_POS_LEFT, SCREEN_POS_TOP),
@@ -149,13 +160,18 @@ namespace sfml_util
         sprite_             (),
         textureSVec_        (),
         currentFrame_       (0),
-        timeElapsed_        (0.0f)
+        frameTimerSec_      (0.0f),
+        color_              (COLOR)
     {
         sfml_util::LoadAllImageOrTextureInDir(textureSVec_, TEXTURES_DIRECTORY);
+
+        for (auto nextTextureSPtr : textureSVec_)
+            nextTextureSPtr->setSmooth(true);
 
         sprite_.setTexture( * textureSVec_[0] );
         sprite_.setPosition(SCREEN_POS_LEFT, SCREEN_POS_TOP);
         sprite_.setScale(SCALE_HORIZ, SCALE_VERT);
+        sprite_.setColor(color_);
 
         SetEntityRegion( sf::FloatRect(SCREEN_POS_LEFT, SCREEN_POS_TOP, sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height) );
     }
@@ -189,17 +205,23 @@ namespace sfml_util
 
     bool MultiTextureAnimation::UpdateTime(const float SECONDS)
     {
-        timeElapsed_ += SECONDS;
-        if (timeElapsed_ >= timeBetweenFrames_)
+        auto didReachEndOfFrames{ false };
+
+        frameTimerSec_ += SECONDS;
+        if (frameTimerSec_ > timeBetweenFrames_)
         {
-            timeElapsed_ = 0.0f;
-            ++currentFrame_;
-            currentFrame_ %= (textureSVec_.size() - 1);
+            frameTimerSec_ -= timeBetweenFrames_;
+            if (++currentFrame_ >= (textureSVec_.size() - 1))
+            {
+                currentFrame_ = 0;
+                didReachEndOfFrames = true;
+            }
+
             sprite_.setTexture( * textureSVec_[currentFrame_] );
-            return true;
+            sprite_.setColor(color_);
         }
-        else
-            return false;
+
+        return didReachEndOfFrames;
     }
 
 

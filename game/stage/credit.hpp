@@ -100,7 +100,7 @@ namespace stage
     using CreditSPtr_t = std::shared_ptr<Credit>;
     using CreditSVec_t = std::vector<CreditSPtr_t>;
 
+}
+}
 
-}
-}
 #endif //GAME_STAGE_CREDIT_INCLUDED
