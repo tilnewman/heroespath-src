@@ -169,13 +169,9 @@ namespace creature
         inline bool IsDead() const                              { return HasCondition(Conditions::Dead); }
         inline bool IsAlive() const                             { return ! IsDead(); }
 
-        //returns most severe first
-        //a count of zero means 'list all'
-        const std::string ConditionList(const std::size_t MAX_TO_LIST_COUNT = 0,
-                                        const size_t      SEVERITY_AT_LEAST = 0,
-                                        const bool        WILL_WRAP         = false,
-                                        const bool        WILL_AND          = false,
-                                        const bool        WILL_ELLIPSIS     = false);
+        //assumes descending sort, not wrapped, no and appended, and with ellipsis if needed
+        const std::string ConditionNames(const std::size_t MAX_TO_LIST  = 0,
+                                         const size_t      MIN_SEVERITY = condition::Severity::ALL);
 
         inline bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
         const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;

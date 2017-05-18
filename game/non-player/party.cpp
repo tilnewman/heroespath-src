@@ -76,17 +76,31 @@ namespace non_player
             raceRoleMap[std::make_pair(NEXT_CHAR_SPTR->Race().Name(), NEXT_CHAR_SPTR->Role().Name())]++;
 
         //make a single string summary of all race/role combinations
-        const std::size_t RACEROLE_PAIR_COUNT(raceRoleMap.size());
-        std::size_t raceRolePairCounter(0);
         std::ostringstream ss;
-        for (auto const & NEXT_RACEROLECOUNT_PAIR : raceRoleMap)
+        using RaceRoleCountMapIter_t = RaceRoleCountMap_t::iterator;
+        for (RaceRoleCountMapIter_t itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
+        {
+            auto const NEXT_RACEROLECOUNT_PAIR{ * itr };
+
+            if (itr != raceRoleMap.begin())
+            {
+                ss << ", ";
+
+                auto nextItr{ itr };
+                std::advance(nextItr, 1);
+                if (nextItr == raceRoleMap.end())
+                {
+                    ss << "and ";
+                }
+            }
+
             ss << NEXT_RACEROLECOUNT_PAIR.second
                << " " << NEXT_RACEROLECOUNT_PAIR.first.first
                << " " << NEXT_RACEROLECOUNT_PAIR.first.second
-               << ((NEXT_RACEROLECOUNT_PAIR.second > 1) ? "s" : "")
-               << (((RACEROLE_PAIR_COUNT >= 2) && (raceRolePairCounter++ == (RACEROLE_PAIR_COUNT - 2))) ? ", and " : ", ");
+               << ((NEXT_RACEROLECOUNT_PAIR.second > 1) ? "s" : "");
+        }
 
-        return boost::algorithm::erase_last_copy(ss.str(), ", ");
+        return ss.str();
     }
 
 }

@@ -21,20 +21,25 @@ namespace condition
     struct Algorithms
     {
         static const std::string Names(const ConditionEnumVec_t & CONDITIONS_VEC,
-                                       const std::string          SEPARATOR       = ", ",
-                                       const bool                 WILL_WRAP       = false,
-                                       const std::size_t          MAX_TO_LIST     = 0, //zero means 'all'
-                                       const std::size_t          MIN_SEVERITY    = 0,
-                                       const bool                 WILL_AND        = false,
-                                       const bool                 WILL_ELLIPSIS   = false);
+                                       const bool                 WILL_WRAP     = false,
+                                       const bool                 WILL_AND      = false,
+                                       const std::size_t          MAX_TO_LIST   = 0,
+                                       const bool                 WILL_ELLIPSIS = false,
+                                       const std::size_t          MIN_SEVERITY  = 0,
+                                       const bool                 WILL_SORT_DESCENDING = true);
 
+        //Note:  Each Condition has a unique Severity so these sorts are complete.
         static void SortBySeverity(ConditionEnumVec_t & conditionsVec,
-                                   const bool           SORT_DESCENDING = false);
+                                   const bool           SORT_DESCENDING = true);
 
         static const ConditionEnumVec_t SortBySeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
-                                                           const bool                 SORT_DESCENDING = false);
+                                                           const bool                 SORT_DESCENDING = true);
 
+        static void RemoveByMinSeverity(ConditionEnumVec_t & conditionsVec,
+                                        const std::size_t    MIN_SEVERITY);
 
+        static const ConditionEnumVec_t RemoveByMinSeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
+                                                                const std::size_t          MIN_SEVERITY);
     };
 
 }

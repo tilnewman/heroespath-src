@@ -26,8 +26,10 @@ namespace item
     struct Algorithms
     {
         static const std::string Names(const ItemSVec_t &,
-                                       const bool         WILL_WRAP = false,
-                                       const bool         WILL_APPEND_AND = false);
+                                       const bool         WILL_WRAP       = false,
+                                       const bool         WILL_APPEND_AND = false,
+                                       const std::size_t  MAX_COUNT       = 0,
+                                       const bool         WILL_ELLIPSIS   = false);
 
         static const ItemSVec_t FindByCategory(const ItemSVec_t &   itemSVec,
                                                const category::Enum CATEGORY_TYPE,

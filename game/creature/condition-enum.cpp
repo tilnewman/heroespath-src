@@ -63,29 +63,32 @@ namespace creature
         return GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
 
+
     namespace condition
     {
-        const std::size_t Severity::ALL          (0);
-        const std::size_t Severity::BENEFITIAL   (1);
-        const std::size_t Severity::LEAST_HARMFUL(2);
-        const std::size_t Severity::MOST_HARMFUL (100);
+        //see comments in header
+        const std::size_t Severity::ALL             {    0 };
+        const std::size_t Severity::GOOD            {    1 };
+        const std::size_t Severity::LEAST_BENEFITIAL{    2 };
+        const std::size_t Severity::MOST_BENEFITIAL { 1000 };
+        const std::size_t Severity::LEAST_HARMFUL   { 1001 };
+        const std::size_t Severity::MOST_HARMFUL    { 2000 };
+        
 
-
+        //see comments in header
         std::size_t Severity::Get(const Conditions::Enum E)
         {
             switch (E)
             {
-                //Note:  Keep the 'Good' condition at a different number from 'Benefitial'
-                case Conditions::Good:          { return ALL; }
-
+                case Conditions::Good:          { return GOOD; }
                 case Conditions::Frightened:    { return LEAST_HARMFUL; }
-                case Conditions::Dazed:         { return 10; }
-                case Conditions::Tripped:       { return 20; }
-                case Conditions::AsleepNatural: { return 30; }
-                case Conditions::Poisoned:      { return 40; }
-                case Conditions::AsleepMagical: { return 50; }
-                case Conditions::Unconscious:   { return 80; }
-                case Conditions::Stone:         { return 90; }
+                case Conditions::Dazed:         { return 1100; }
+                case Conditions::Tripped:       { return 1200; }
+                case Conditions::AsleepNatural: { return 1300; }
+                case Conditions::Poisoned:      { return 1400; }
+                case Conditions::AsleepMagical: { return 1500; }
+                case Conditions::Unconscious:   { return 1800; }
+                case Conditions::Stone:         { return 1900; }
                 case Conditions::Dead:          { return MOST_HARMFUL; }
                 case Conditions::Count:
                 default:

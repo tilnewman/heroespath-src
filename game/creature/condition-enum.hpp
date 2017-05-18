@@ -56,16 +56,29 @@ namespace condition
 
     struct Severity
     {
+        //Note:  Keep the GOOD condition at a different Severity from
+        //       LEAST_BENEFITIAL, so that GOOD can be avoided when
+        //       displaying conditions on the battlefield.
+        //
+        //       Keep ALL equal to zero so that min severity works.
+        //
+        //       Keep LEAST_... < MOST_... so descending sort works.
+        //
         static const std::size_t ALL;
-        static const std::size_t BENEFITIAL;
+        static const std::size_t GOOD;
+        static const std::size_t LEAST_BENEFITIAL;
+        static const std::size_t MOST_BENEFITIAL;
         static const std::size_t LEAST_HARMFUL;
         static const std::size_t MOST_HARMFUL;
+        
 
-        //larger return values are more harmful
+        //Note:  Larger return values are more harmful.
+        //       Each Condition must have a unique Severity.
         static std::size_t Get(const Conditions::Enum);
     };
 
 }
 }
 }
+
 #endif //GAME_CONDITIONENUM_INCLUDED

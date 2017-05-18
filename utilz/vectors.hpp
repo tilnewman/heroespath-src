@@ -4,10 +4,13 @@
 // vectors.hpp
 //  A set of helper functions for working with vectors
 //
+#include "game/log-macros.hpp"
+
 #include "utilz/random.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include <vector>
+#include <sstream>
 #include <algorithm>
 
 
@@ -122,29 +125,51 @@ namespace utilz
         }
 
 
-        //default function for Join() below
         template<typename T>
-        static T ReturnOnly(const T)
+        static const std::string Join(const std::vector<T> VEC,
+                                      const bool           WILL_WRAP     = false,
+                                      const bool           WILL_AND      = false,
+                                      const std::size_t    MAX_COUNT     = 0,
+                                      const bool           WILL_ELLIPSIS = false,
+                                      bool(*ONLY_IF_FUNC)(const T) = [](const T) -> bool
+                                        {
+                                            return true;
+                                        },
+                                      const std::string(*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string
+                                        {
+                                            std::ostringstream ss;
+                                            ss << x;
+                                            return ss.str();
+                                        })
         {
-            return T;
-        }
-        
+            const std::size_t VEC_ELEMENT_COUNT{ VEC.size() };
+            if (VEC_ELEMENT_COUNT == 0)
+            {
+                return "";//skip wrapping on empty case
+            }
 
-        template<typename T>
-        static const std::string Join(const std::vector<T> V,
-                                      const bool        WILL_WRAP = false,
-                                      const bool        WILL_AND = false,
-                                      const std::string(*TO_STRING)(const T) = &Vector::ReturnOnly)
-        {
-            const std::size_t NUM_ELEMENTS{ V.size() };
-            if (NUM_ELEMENTS == 0)
+            std::size_t toJoinCount{ 0 };
+            std::vector<T> toJoinVec;
+            for (auto const & NEXT_ELEMENT : VEC)
+            {
+                if (ONLY_IF_FUNC(NEXT_ELEMENT))
+                {
+                    toJoinVec.push_back(NEXT_ELEMENT);
+                    if ((MAX_COUNT != 0) && (++toJoinCount == MAX_COUNT))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            const std::size_t TO_JOIN_ELEMENT_COUNT{ toJoinVec.size() };
+            if (TO_JOIN_ELEMENT_COUNT == 0)
             {
                 return "";//skip wrapping on empty case
             }
 
             std::ostringstream ss;
-
-            for (std::size_t i(0); i < NUM_ELEMENTS; ++i)
+            for (std::size_t i(0); i < TO_JOIN_ELEMENT_COUNT; ++i)
             {
                 if (i != 0)
                 {
@@ -152,13 +177,33 @@ namespace utilz
                 }
                 
                 if (WILL_AND &&
-                    (NUM_ELEMENTS > 2) &&
-                    ((NUM_ELEMENTS - 1) == i))
+                    (TO_JOIN_ELEMENT_COUNT > 2) &&
+                    (i >= 2) &&
+                    ((TO_JOIN_ELEMENT_COUNT - 1) == i))
                 {
                     ss << "and ";
                 }
 
-                ss << TO_STRING(V[i]);
+                ss << TO_STRING_FUNC(toJoinVec[i]);
+
+                if (WILL_ELLIPSIS &&
+                    (TO_JOIN_ELEMENT_COUNT < VEC_ELEMENT_COUNT) &&
+                    ((TO_JOIN_ELEMENT_COUNT - 1) == i))
+                {
+                    ss << "...";
+                }
+            }
+
+            if (MAX_COUNT > VEC_ELEMENT_COUNT)
+            {
+                M_HP_LOG_WRN("utilz::Vector::Join(\"" << ss.str()
+                    << "\", will_wrap="  << std::boolalpha << WILL_WRAP
+                    << ", will_and=" << WILL_AND
+                    << ", max_count=" << MAX_COUNT
+                    << ", will_ellipsis=" << WILL_ELLIPSIS
+                    << ") was given a max_count=" << MAX_COUNT
+                    << " that was greater than the total_vec_count=" << VEC_ELEMENT_COUNT
+                    << ".");
             }
 
             if (WILL_WRAP && (ss.str().empty() == false))

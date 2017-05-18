@@ -13,6 +13,7 @@
 #include "game/state/game-state.hpp"
 
 #include "utilz/random.hpp"
+#include "utilz/vectors.hpp"
 
 #include <sstream>
 
@@ -96,36 +97,44 @@ namespace creature
     }
 
 
-    const std::string Algorithms::Names(const CreaturePVec_t & CREATURE_PVEC, const bool WILL_WRAP, const bool WILL_APPEND_AND)
+    const std::string Algorithms::Names(const CreaturePVec_t & CREATURE_PVEC,
+                                        const bool             WILL_WRAP,
+                                        const bool             WILL_APPEND_AND,
+                                        const bool             WILL_ADD_RACE_AND_ROLE,
+                                        const std::size_t      MAX_COUNT,
+                                        const bool             WILL_ELLIPSIS)
     {
-        if (CREATURE_PVEC.empty())
+        if (WILL_ADD_RACE_AND_ROLE)
         {
-            return "";//don't wrap the empty case
+            return utilz::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
+                                                      WILL_WRAP,
+                                                      WILL_APPEND_AND,
+                                                      MAX_COUNT,
+                                                      WILL_ELLIPSIS,
+                                                      [](const CreaturePtr_t) -> bool
+                                                        {
+                                                            return true;
+                                                        },
+                                                      [](const CreaturePtr_t CPTR) -> const std::string
+                                                        {
+                                                            return CPTR->DisplayableNameRaceRole();
+                                                        });
         }
         else
         {
-            std::ostringstream ss;
-
-            if (WILL_WRAP)
-                ss << "(";
-
-            auto counter = std::size_t{ 0 };
-            auto appendedFirstName(false);
-            auto const NUM_CREATURES{ CREATURE_PVEC.size() };
-
-            for (auto const & NEXT_CREATURE_PTR : CREATURE_PVEC)
-            {
-                ss << ((appendedFirstName) ? ", " : "")
-                    << ((WILL_APPEND_AND && (NUM_CREATURES > 1) && ((NUM_CREATURES - 1) == counter++)) ? "and " : "")
-                    << NEXT_CREATURE_PTR->Name();
-
-                appendedFirstName = true;
-            }
-
-            if (WILL_WRAP)
-                ss << ")";
-
-            return ss.str();
+            return utilz::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
+                                                      WILL_WRAP,
+                                                      WILL_APPEND_AND,
+                                                      MAX_COUNT,
+                                                      WILL_ELLIPSIS,
+                                                      [](const CreaturePtr_t) -> bool
+                                                        {
+                                                            return true;
+                                                        },
+                                                      [](const CreaturePtr_t CPTR) -> const std::string
+                                                        {
+                                                            return CPTR->Name();
+                                                        });
         }
     }
 

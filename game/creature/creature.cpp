@@ -3,9 +3,6 @@
 //
 #include "creature.hpp"
 
-#include "utilz/real.hpp"
-#include "utilz/assertlogandthrow.hpp"
-
 #include "game/log-macros.hpp"
 #include "game/spell/spell-warehouse.hpp"
 #include "game/item/algorithms.hpp"
@@ -14,6 +11,10 @@
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
+
+#include "utilz/real.hpp"
+#include "utilz/assertlogandthrow.hpp"
+#include "utilz/vectors.hpp"
 
 
 namespace game
@@ -359,19 +360,16 @@ namespace creature
     }
 
 
-    const std::string Creature::ConditionList(const std::size_t MAX_TO_LIST_COUNT,
-                                              const size_t      SEVERITY_AT_LEAST,
-                                              const bool        WILL_WRAP,
-                                              const bool        WILL_AND,
-                                              const bool        WILL_ELLIPSIS)
+    const std::string Creature::ConditionNames(const std::size_t MAX_TO_LIST,
+                                               const size_t      MIN_SEVERITY)
     {
-        return condition::Algorithms::Names(condition::Algorithms::SortBySeverityCopy(conditionsVec_),
-                                            ", ",
-                                            WILL_WRAP,
-                                            MAX_TO_LIST_COUNT,
-                                            SEVERITY_AT_LEAST,
-                                            WILL_AND,
-                                            WILL_ELLIPSIS);
+        return creature::condition::Algorithms::Names(conditionsVec_,
+                                                      false,
+                                                      false,
+                                                      MAX_TO_LIST,
+                                                      true,
+                                                      MIN_SEVERITY,
+                                                      true);
     }
 
 

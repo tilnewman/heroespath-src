@@ -15,6 +15,7 @@
 #include "game/log-macros.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/game-data-file.hpp"
+#include "game/creature/condition-algorithms.hpp"
 
 #include "utilz/random.hpp"
 
@@ -289,7 +290,7 @@ namespace combat
 
     void CombatNode::UpdateConditionText()
     {
-        condTextObj_.setString(creaturePtr_->ConditionList(3, creature::condition::Severity::BENEFITIAL, false, false, true));
+        condTextObj_.setString( creaturePtr_->ConditionNames(3, creature::condition::Severity::LEAST_BENEFITIAL) );
         SetTextPositions();
     }
 

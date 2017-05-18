@@ -2,7 +2,10 @@
 // algorithms.cpp
 //
 #include "algorithms.hpp"
+
 #include "utilz/random.hpp"
+#include "utilz/vectors.hpp"
+
 #include "game/item/item.hpp"
 
 
@@ -11,37 +14,25 @@ namespace game
 namespace item
 {
 
-    const std::string Algorithms::Names(const ItemSVec_t & ITEM_SVEC, const bool WILL_WRAP, const bool WILL_APPEND_AND)
+    const std::string Algorithms::Names(const ItemSVec_t & ITEM_SVEC,
+                                        const bool         WILL_WRAP,
+                                        const bool         WILL_APPEND_AND,
+                                        const std::size_t  MAX_COUNT,
+                                        const bool         WILL_ELLIPSIS)
     {
-        if (ITEM_SVEC.empty())
-        {
-            return "";//don't wrap the empty case
-        }
-        else
-        {
-            std::ostringstream ss;
-
-            if (WILL_WRAP)
-                ss << "(";
-
-            auto counter = std::size_t{ 0 };
-            auto appendedFirstName(false);
-            auto const NUM_ITEMS{ ITEM_SVEC.size() };
-
-            for (auto const & NEXT_ITEM_SPTR : ITEM_SVEC)
-            {
-                ss << ((appendedFirstName) ? ", " : "")
-                    << ((WILL_APPEND_AND && (NUM_ITEMS > 1) && ((NUM_ITEMS - 1) == counter++)) ? "and " : "")
-                    << NEXT_ITEM_SPTR->Name();
-
-                appendedFirstName = true;
-            }
-
-            if (WILL_WRAP)
-                ss << ")";
-
-            return ss.str();
-        }
+        return utilz::Vector::Join<ItemSPtr_t>(ITEM_SVEC,
+                                               WILL_WRAP,
+                                               WILL_APPEND_AND,
+                                               MAX_COUNT,
+                                               WILL_ELLIPSIS,
+                                               [](const ItemSPtr_t) -> bool
+                                                {
+                                                    return true;
+                                                },
+                                               [](const ItemSPtr_t SPTR) -> const std::string
+                                                {
+                                                    return SPTR->Name();
+                                                });
     }
 
 

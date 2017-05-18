@@ -4,11 +4,9 @@
 #include "combat-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
-#include "utilz/random.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
@@ -42,6 +40,10 @@
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
+
+#include "utilz/real.hpp"
+#include "utilz/random.hpp"
+#include "utilz/vectors.hpp"
 
 #include <sstream>
 #include <exception>
@@ -2371,7 +2373,7 @@ namespace stage
             if (turnCreaturePtr_->Conditions().size() > 1)
                 infoSS << "s";
 
-            infoSS << ":  " << turnCreaturePtr_->ConditionList();
+            infoSS << ":  " << turnCreaturePtr_->ConditionNames(6);
 
             armorSS << "Armor Rating: " << turnCreaturePtr_->ArmorRating();
 
@@ -2419,7 +2421,7 @@ namespace stage
             }
             else
             {
-                auto const CONDITION_LIST_STR{ turnCreaturePtr_->ConditionList() };
+                auto const CONDITION_LIST_STR{ turnCreaturePtr_->ConditionNames(6) };
                 enemyCondsSS << "Condition";
 
                 if (boost::algorithm::contains(CONDITION_LIST_STR, ","))

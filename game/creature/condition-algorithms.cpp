@@ -7,6 +7,8 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-warehouse.hpp"
 
+#include "utilz/vectors.hpp"
+
 #include <sstream>
 #include <algorithm>
 
@@ -19,68 +21,29 @@ namespace condition
 {
 
     const std::string Algorithms::Names(const ConditionEnumVec_t & CONDITIONS_VEC,
-                                        const std::string          SEPARATOR,
                                         const bool                 WILL_WRAP,
-                                        const std::size_t          MAX_TO_LIST,
-                                        const std::size_t          MIN_SEVERITY,
                                         const bool                 WILL_AND,
-                                        const bool                 WILL_ELLIPSIS)
+                                        const std::size_t          MAX_COUNT,
+                                        const bool                 WILL_ELLIPSIS,
+                                        const std::size_t          MIN_SEVERITY,
+                                        const bool                 WILL_SORT_DESCENDING)
+
     {
-        auto const CONDITION_COUNT{ CONDITIONS_VEC.size() };
-        if (CONDITION_COUNT == 0)
+        auto tempVec{ CONDITIONS_VEC };
+        RemoveByMinSeverity(tempVec, MIN_SEVERITY);
+        
+        if (WILL_SORT_DESCENDING)
         {
-            return "";
+            SortBySeverity(tempVec, true);
         }
-        else
-        {
-            std::size_t count(0);
-            std::ostringstream ss;
 
-            for (std::size_t i(0); i<CONDITION_COUNT; ++i)
-            {
-                auto const CONDITION_PTR{ condition::Warehouse::Get(CONDITIONS_VEC[i]) };
-                if ((MIN_SEVERITY == 0) || (CONDITION_PTR->Severity() >= MIN_SEVERITY))
-                {
-                    if (i != 0)
-                    {
-                        ss << SEPARATOR;
-                    }
-
-                    if ((WILL_AND) && (CONDITION_COUNT >= 2) && (i == (CONDITION_COUNT - 1)))
-                    {
-                        ss << "and ";
-                    }
-
-                    ss << CONDITION_PTR->Name();
-
-                    if ((MAX_TO_LIST != 0) && (++count >= MAX_TO_LIST))
-                    {
-                        if (WILL_ELLIPSIS && (i < (CONDITION_COUNT - 1)))
-                        {
-                            ss << "...";
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            if (ss.str().empty())
-            {
-                return "";
-            }
-            else
-            {
-                if (WILL_WRAP)
-                {
-                    return "(" + ss.str() + ")";
-                }
-                else
-                {
-                    return ss.str();
-                }
-            }
-        }
+        return utilz::Vector::Join<Conditions::Enum>(tempVec,
+                                                     WILL_WRAP,
+                                                     WILL_AND,
+                                                     MAX_COUNT,
+                                                     WILL_ELLIPSIS,
+                                                     [](const Conditions::Enum) -> bool { return true;},
+                                                     [](const Conditions::Enum E) -> const std::string { return Conditions::Name(E); });
     }
 
 
@@ -104,6 +67,30 @@ namespace condition
         auto sortedConditionsVec{ CONDITIONS_VEC };
         SortBySeverity(sortedConditionsVec, SORT_DESCENDING);
         return sortedConditionsVec;
+    }
+
+
+    void Algorithms::RemoveByMinSeverity(ConditionEnumVec_t & conditionsVec,
+                                         const std::size_t    MIN_SEVERITY)
+    {
+        if (conditionsVec.empty() == false)
+        {
+            std::remove_if(conditionsVec.begin(),
+                           conditionsVec.end(),
+                           [=](const Conditions::Enum E)
+                            {
+                                return ((MIN_SEVERITY != 0) && (condition::Severity::Get(E) <= MIN_SEVERITY));
+                            });
+        }
+    }
+
+
+    const ConditionEnumVec_t Algorithms::RemoveByMinSeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
+                                                                 const std::size_t          MIN_SEVERITY)
+    {
+        auto tempVec{ CONDITIONS_VEC };
+        RemoveByMinSeverity(tempVec, MIN_SEVERITY);
+        return tempVec;
     }
 
 }

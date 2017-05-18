@@ -261,7 +261,7 @@ namespace combat
         descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect()) );
 
         std::ostringstream condSS;
-        condSS << "Condition:  " << combatNodePtr->Creature()->ConditionList();
+        condSS << "Condition:  " << combatNodePtr->Creature()->ConditionNames(6);
         const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(condSS.str(),
                                                                      sfml_util::FontManager::Instance()->Font_Default1(),
                                                                      sfml_util::FontManager::Instance()->Size_Small(),

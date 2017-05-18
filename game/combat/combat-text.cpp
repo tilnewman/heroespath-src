@@ -577,7 +577,7 @@ namespace combat
                 }
                 else
                 {
-                    ss << " and causes " << creature::condition::Algorithms::Names(CONDITIONS_VEC, ", ", false, 0, 0, true);
+                    ss << " and causes " << creature::condition::Algorithms::Names(CONDITIONS_VEC, false, true);
                 }
             }
         }
@@ -690,7 +690,7 @@ namespace combat
         auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
         if (NUM_CONDITIONS != 0)
         {
-            ss << " and causing " << creature::condition::Algorithms::Names(CONDITIONS_EXCLUDING_DEAD_SVEC, ", ", false, NUM_CONDITIONS_TO_LIST, 0, true);
+            ss << " and causing " << creature::condition::Algorithms::Names(CONDITIONS_EXCLUDING_DEAD_SVEC, false, true, NUM_CONDITIONS_TO_LIST);
 
             if (NUM_CONDITIONS > NUM_CONDITIONS_TO_LIST)
             {

@@ -1754,7 +1754,7 @@ namespace stage
         ss << "Rank:  " << creaturePtr_->Rank() << "\n"
            << "Experience: " << creaturePtr_->Exp() << "\n"
            << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal() << " " << creaturePtr_->HealthPercentStr() << "\n"
-           << "Condition:  " << creaturePtr_->ConditionList() << "\n"
+           << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
            << "\n";
 
         const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(ss.str(),

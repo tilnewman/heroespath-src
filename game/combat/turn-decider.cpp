@@ -692,7 +692,13 @@ namespace combat
 
         if (spellPtr == nullptr)
         {
-            auto const SPELL_TYPES_STR{ utilz::Vector::Join(SPELL_TYPES_VEC, false, false, &spell::SpellType::ToString) };
+            auto const SPELL_TYPES_STR{ utilz::Vector::Join<spell::SpellType::Enum>(SPELL_TYPES_VEC,
+                                                                                    false,
+                                                                                    false,
+                                                                                    0,
+                                                                                    false,
+                                                                                    [](const spell::SpellType::Enum) { return true; },
+                                                                                    &spell::SpellType::ToString) };
             
             std::ostringstream ssErr;
             ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->DisplayableNameRaceRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->DisplayableNameRaceRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
