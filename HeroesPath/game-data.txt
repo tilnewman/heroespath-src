@@ -24,10 +24,21 @@ media-images-conditions-dir=image/conditions/
 media-images-combat-dir=image/combat/
 
 #animation files and folders
-media-anim-image-torchflame=image/anim/fire-torch/flames.png
-media-anim-images-dir-inferno=image/anim/inferno_256x256x50/
-media-anim-images-dir-smoke=image/anim/smoke_256x256x90/
-media-anim-images-candleflame=image/anim/candle-flame/lighter-flame.png
+media-anim-images-candleflame=      image/anim/candle-flame/candle-flame.png
+media-anim-images-dir-dualcharge=   image/anim/dual-charge_133x69_14/
+media-anim-images-dir-explosion=    image/anim/explosion_320x240x90/
+media-anim-images-dir-firesmall=    image/anim/fire-small_20x36x4/
+media-anim-image-firetorch=         image/anim/fire-torch/fire-torch.png
+media-anim-images-dir-inferno=      image/anim/inferno_256x256x50/
+media-anim-images-dir-lightningball=image/anim/lightning-ball_56x65x25/
+media-anim-images-dir-lightningbolt=image/anim/lightning-bolt_98x203x23/
+media-anim-images-dir-orbcharge=    image/anim/orb-charge_80x67x33/
+media-anim-images-dir-orbshimmer=   image/anim/orb-shimmer_184x85x22
+media-anim-images-dir-shimmer=      image/anim/shimmer_186x83x36
+media-anim-images-dir-smoke=        image/anim/smoke_256x256x90/
+media-anim-images-dir-spiderflare=  image/anim/spider-flare_168x148x25
+media-anim-images-dir-symbolreduce= image/anim/symbol-reduce_177x156x21
+media-anim-images-dir-whiteburst=   image/anim/white-burst_50x47x24
 
 #images
 media-images-gui-elements=image/gui/elements/gui-elements-lamoot.png

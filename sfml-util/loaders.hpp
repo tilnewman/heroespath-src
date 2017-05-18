@@ -56,7 +56,7 @@ namespace sfml_util
     //Returns the number loaded into the std::vector<> from DIR_STR.
     template<typename ImageOrTextureSPtr_t>
     std::size_t LoadAllImageOrTextureInDir(std::vector< ImageOrTextureSPtr_t > & imageOrTextureSVec,
-                                      const std::string &                   DIR_STR = ".")
+                                           const std::string &                   DIR_STR = ".")
     {
         namespace bfs = boost::filesystem;
 
@@ -69,12 +69,13 @@ namespace sfml_util
 
         const std::size_t ORIG_SIZE(imageOrTextureSVec.size());
 
-        //attempt to load all files, ignore extensions
         bfs::directory_iterator endItr;
         for (bfs::directory_iterator dirItr(DIR_OBJ); endItr != dirItr; ++dirItr)
         {
-            //ignore subdirectories, etc.
-            if (bfs::is_regular_file(dirItr->status()))
+            //ignore non-regular files, files with the extension .txt, and files named "sample.gif"
+            if ((bfs::is_regular_file(dirItr->status())) &&
+                (boost::algorithm::iends_with(dirItr->path().string(), ".txt") == false) &&
+                (boost::algorithm::icontains(dirItr->path().string(), "sample.gif") == false))
             {
                 ImageOrTextureSPtr_t tempImageOrTextureSPtr(new typename ImageOrTextureSPtr_t::element_type);
                 LoadImageOrTexture(*tempImageOrTextureSPtr, dirItr->path().string());
