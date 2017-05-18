@@ -422,11 +422,33 @@ namespace combat
 
 
 
-    const FightResult FightClub::Cast(spell::SpellCPtrC_t,
-                                      creature::CreaturePtrC_t,
-                                      creature::CreaturePVec_t &)
+    const FightResult FightClub::Cast(spell::SpellCPtrC_t        spellPtrC,
+                                      creature::CreaturePtrC_t   creatureCastingPtr,
+                                      creature::CreaturePVec_t & creaturesCastUponPVec)
     {
-        //TODO
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false), "game::combat::FightClub::Cast(spell=" << spellPtrC->Name()
+                                                                             << ", creature_casting=" << creatureCastingPtr->DisplayableNameRaceRole()
+                                                                             << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
+
+        if (((spellPtrC->TargetType() == TargetType::SingleCompanion) || (spellPtrC->TargetType() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::combat::FightClub::Cast(spell=" << spellPtrC->Name()
+                  << ", creature_casting=" << creatureCastingPtr->DisplayableNameRaceRole()
+                  << ", creatures_cast_upon=\"" << utilz::Vector::Join<creature::CreaturePtr_t>(creaturesCastUponPVec,
+                                                                                                false,
+                                                                                                false,
+                                                                                                0,
+                                                                                                false,
+                                                                                                [](const creature::CreaturePtr_t CPTR) -> const std::string
+                                                                                                  { return CPTR->DisplayableNameRaceRole(); })
+                  << "\") spell target_type=" << TargetType::ToString(spellPtrC->TargetType())
+                  << " but there were " << creaturesCastUponPVec.size()
+                  << " creatures being cast upon.  There should have been only 1.";
+            throw std::runtime_error(ssErr.str());
+        }
+
+
 
         //TODO Handle Encounter::Instance()->TurnInfo
         return FightResult();

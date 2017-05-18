@@ -4,8 +4,6 @@
 // vectors.hpp
 //  A set of helper functions for working with vectors
 //
-#include "game/log-macros.hpp"
-
 #include "utilz/random.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
@@ -131,15 +129,15 @@ namespace utilz
                                       const bool           WILL_AND      = false,
                                       const std::size_t    MAX_COUNT     = 0,
                                       const bool           WILL_ELLIPSIS = false,
-                                      bool(*ONLY_IF_FUNC)(const T) = [](const T) -> bool
-                                        {
-                                            return true;
-                                        },
                                       const std::string(*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string
                                         {
                                             std::ostringstream ss;
                                             ss << x;
                                             return ss.str();
+                                        },
+                                      bool(*ONLY_IF_FUNC)(const T) = [](const T) -> bool
+                                        {
+                                            return true;
                                         })
         {
             const std::size_t VEC_ELEMENT_COUNT{ VEC.size() };

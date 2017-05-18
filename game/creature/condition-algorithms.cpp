@@ -42,7 +42,6 @@ namespace condition
                                                      WILL_AND,
                                                      MAX_COUNT,
                                                      WILL_ELLIPSIS,
-                                                     [](const Conditions::Enum) -> bool { return true;},
                                                      [](const Conditions::Enum E) -> const std::string { return Conditions::Name(E); });
     }
 

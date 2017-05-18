@@ -111,10 +111,6 @@ namespace creature
                                                       WILL_APPEND_AND,
                                                       MAX_COUNT,
                                                       WILL_ELLIPSIS,
-                                                      [](const CreaturePtr_t) -> bool
-                                                        {
-                                                            return true;
-                                                        },
                                                       [](const CreaturePtr_t CPTR) -> const std::string
                                                         {
                                                             return CPTR->DisplayableNameRaceRole();
@@ -127,10 +123,6 @@ namespace creature
                                                       WILL_APPEND_AND,
                                                       MAX_COUNT,
                                                       WILL_ELLIPSIS,
-                                                      [](const CreaturePtr_t) -> bool
-                                                        {
-                                                            return true;
-                                                        },
                                                       [](const CreaturePtr_t CPTR) -> const std::string
                                                         {
                                                             return CPTR->Name();

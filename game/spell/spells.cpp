@@ -221,7 +221,7 @@ namespace spell
             }
             else
             {
-                return effectedCreaturePtr->NameOrRaceAndClass() + " was not effected";
+                return effectedCreaturePtr->NameOrRaceAndClass() + " resisted the spell";
             }
         }
     }

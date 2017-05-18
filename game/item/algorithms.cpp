@@ -25,10 +25,6 @@ namespace item
                                                WILL_APPEND_AND,
                                                MAX_COUNT,
                                                WILL_ELLIPSIS,
-                                               [](const ItemSPtr_t) -> bool
-                                                {
-                                                    return true;
-                                                },
                                                [](const ItemSPtr_t SPTR) -> const std::string
                                                 {
                                                     return SPTR->Name();

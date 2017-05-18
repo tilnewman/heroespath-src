@@ -697,7 +697,6 @@ namespace combat
                                                                                     false,
                                                                                     0,
                                                                                     false,
-                                                                                    [](const spell::SpellType::Enum) { return true; },
                                                                                     &spell::SpellType::ToString) };
             
             std::ostringstream ssErr;
