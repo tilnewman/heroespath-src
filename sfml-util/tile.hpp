@@ -6,6 +6,7 @@
 //
 #include "sfml-graphics.hpp"
 #include "utilz/random.hpp"
+#include "utilz/vectors.hpp"
 
 
 namespace sfml_util
@@ -94,7 +95,7 @@ namespace sfml_util
         }
 
         if (WILL_RANDOM_ORDER)
-            utilz::random::ShuffleVec(spriteSVec);
+            utilz::Vector::ShuffleVec(spriteSVec);
 
         const std::size_t SPRITE_COUNT(spriteSVec.size());
 
@@ -121,7 +122,7 @@ namespace sfml_util
                     spriteVecIndex = 0;
 
                     if (WILL_RANDOM_ORDER)
-                        utilz::random::ShuffleVec(spriteSVec);
+                        utilz::Vector::ShuffleVec(spriteSVec);
                 }
             }
         }
