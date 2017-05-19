@@ -118,31 +118,31 @@ namespace sfml_util
         SoundSPtr_t SoundEffectAcquire(const sound_effect::Enum);
         void SoundEffectRelease(const sound_effect::Enum);
 
-        inline const StaticSoundsPtr_t StaticSounds_Prompt() const            { return promptSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_Switch() const            { return switchSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_TickOn() const            { return tickOnSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_TickOff() const           { return tickOffSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_Thock() const             { return thockSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_Coin() const              { return coinSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_Gem() const               { return gemSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_MeteorShard() const       { return meteorShardSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ItemGive() const          { return itemGiveSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ItemDrop() const          { return itemDropSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_BlowpipeShoot() const     { return blowpipeShootSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_BlowpipeHit() const       { return blowpipeHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ArrowShoot() const        { return arrowShootSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ArrowHit() const          { return arrowHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ProjectileMiss() const    { return projectileMissSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_MeleeMiss() const         { return meleeMissSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_FistHit() const           { return fistHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_BreathHit() const         { return breathHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_TendrilHit() const        { return tendrilHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_WhipHit() const           { return whipHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_WhipMiss() const          { return whipMissSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_MaterialHitMetal() const  { return materialHitMetalSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_MaterialHitMisc() const   { return materialHitMiscSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_ClawTear() const          { return clawHitSoundsSPtr_.get(); }
-        inline const StaticSoundsPtr_t StaticSounds_Wind() const              { return windSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Prompt() const            { return promptSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Switch() const            { return switchSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_TickOn() const            { return tickOnSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_TickOff() const           { return tickOffSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Thock() const             { return thockSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Coin() const              { return coinSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Gem() const               { return gemSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_MeteorShard() const       { return meteorShardSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ItemGive() const          { return itemGiveSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ItemDrop() const          { return itemDropSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_BlowpipeShoot() const     { return blowpipeShootSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_BlowpipeHit() const       { return blowpipeHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ArrowShoot() const        { return arrowShootSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ArrowHit() const          { return arrowHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ProjectileMiss() const    { return projectileMissSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_MeleeMiss() const         { return meleeMissSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_FistHit() const           { return fistHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_BreathHit() const         { return breathHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_TendrilHit() const        { return tendrilHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_WhipHit() const           { return whipHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_WhipMiss() const          { return whipMissSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_MaterialHitMetal() const  { return materialHitMetalSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_MaterialHitMisc() const   { return materialHitMiscSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_ClawTear() const          { return clawHitSoundsSPtr_.get(); }
+        inline StaticSoundsPtr_t StaticSounds_Wind() const              { return windSoundsSPtr_.get(); }
 
         void StaticSoundsReleaseAll();
 
