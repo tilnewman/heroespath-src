@@ -20,7 +20,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     file (READ build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
 endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
     file (READ build-flags-clang.txt CUSTOM_BUILD_FLAGS)
 endif()
 
