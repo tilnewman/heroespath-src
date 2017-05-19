@@ -118,7 +118,6 @@ namespace sfml_util
         static DisplaySPtr_t instanceSPtr_;
         //
         WinSPtr_t        winSPtr_;
-        PopupImage::Enum whichPopup_;
         std::string      winTitle_;
         sf::Uint32       winStyle_;
         int              frameRateLimit_;

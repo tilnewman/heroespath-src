@@ -267,8 +267,8 @@ namespace game
                 (L.numberMin_ == R.numberMin_) &&
                 (L.numberMax_ == R.numberMax_) &&
                 (L.numberInvalidVec_ == R.numberInvalidVec_) &&
-                (utilz::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)),
-                (L.creatureCPtr_ == R.creatureCPtr_),
+                (utilz::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)) &&
+                (L.creatureCPtr_ == R.creatureCPtr_) &&
                 (L.initialSelection_ == R.initialSelection_));
     }
 

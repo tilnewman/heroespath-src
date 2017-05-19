@@ -40,7 +40,6 @@ namespace sfml_util
     Display::Display()
     :
         winSPtr_         (),
-        whichPopup_      (PopupImage::Banner),
         winTitle_        (""),
         winStyle_        (0),
         frameRateLimit_  (0),

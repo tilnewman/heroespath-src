@@ -49,7 +49,7 @@ namespace utilz
                 std::copy(B_VEC.begin(), B_VEC.end(), back_inserter(finalVec));
             }
 
-            if (WILL_MAKE_UNIQUE)
+            if (WILL_UNIQUE)
             {
                 std::unique(finalVec.begin(), finalVec.end());
             }

@@ -109,6 +109,7 @@ namespace gui
             case PopupImage::RegularSidebar: { return sfml_util::ScaleRectCopy(Rect_RegularSidebar(), SCALE); }
             case PopupImage::Large:          { return sfml_util::ScaleRectCopy(Rect_Large(), SCALE); }
             case PopupImage::LargeSidebar:   { return sfml_util::ScaleRectCopy(Rect_LargeSidebar(), SCALE); }
+            case PopupImage::Spellbook:
             case PopupImage::Custom:
             case PopupImage::Count:
             default:
