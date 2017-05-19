@@ -5,6 +5,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/spell/spell-warehouse.hpp"
+#include "game/spell/spell-base.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition.hpp"
@@ -941,7 +942,7 @@ namespace creature
     bool Creature::CanCastSpellByType(const spell::SpellType::Enum E) const
     {
         for (auto const NEXT_SPELL_ENUM : spellsVec_)
-            if (NEXT_SPELL_ENUM == E)
+            if (spell::Warehouse::Get(NEXT_SPELL_ENUM)->Type() == E)
                 return true;
 
         return false;

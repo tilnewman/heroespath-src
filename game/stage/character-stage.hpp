@@ -278,7 +278,6 @@ namespace stage
         int           initialRollCounter_;
         //
         float             dragStartY_;
-        stats::stat::Enum draggedStat_;
         stats::stat::Enum closestDragStat_;
         //
         sfml_util::gui::RadioButtonSetSPtr_t raceRadioButtonSPtr_;

@@ -242,7 +242,6 @@ namespace combat
         int                             blockingPosMin_;
         int                             blockingPosMax_;
         float                           zoomLevel_;
-        float                           initialZoomHorizDiff_;
         bool                            isMouseHeldDownInBF_;
         sf::Vector2f                    prevMousePos_;
         bool                            isPlayerTurn_;

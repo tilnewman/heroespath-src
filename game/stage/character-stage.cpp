@@ -180,7 +180,6 @@ namespace stage
         fixedStatsSVec_         (),
         initialRollCounter_     (0),
         dragStartY_             (-1.0f),
-        draggedStat_            (stats::stat::Count),
         closestDragStat_        (stats::stat::Count),
         raceRadioButtonSPtr_    (),
         racetDescTextRegionSPtr_(),

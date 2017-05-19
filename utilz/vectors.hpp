@@ -98,7 +98,7 @@ namespace utilz
         {
             if (v.size() > 1)
             {
-                std::shuffle(v.begin(), v.end(), MersenneTwister::engine);
+                std::shuffle(v.begin(), v.end(), random::MersenneTwister::engine);
                 return true;
             }
             else
