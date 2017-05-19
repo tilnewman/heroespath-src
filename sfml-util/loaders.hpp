@@ -75,6 +75,7 @@ namespace sfml_util
             //ignore non-regular files, files with the extension .txt, and files named "sample.gif"
             if ((bfs::is_regular_file(dirItr->status())) &&
                 (boost::algorithm::iends_with(dirItr->path().string(), ".txt") == false) &&
+                (boost::algorithm::iends_with(dirItr->path().string(), ".DS_Store") == false) &&
                 (boost::algorithm::icontains(dirItr->path().string(), "sample.gif") == false))
             {
                 ImageOrTextureSPtr_t tempImageOrTextureSPtr(new typename ImageOrTextureSPtr_t::element_type);
