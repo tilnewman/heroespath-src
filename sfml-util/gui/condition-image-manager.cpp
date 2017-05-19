@@ -20,7 +20,7 @@ namespace gui
 
     ConditionImageManagerSPtr_t ConditionImageManager::instance_;
     std::string                 ConditionImageManager::conditionImagesDirectory_("");
-    const std::string           ConditionImageManager::filenameExtension_       (".gif");
+    const std::string           ConditionImageManager::filenameExtension_       (".png");
 
 
     ConditionImageManager::ConditionImageManager()

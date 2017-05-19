@@ -20,7 +20,7 @@ namespace gui
 
     SpellImageManagerSPtr_t SpellImageManager::instance_;
     std::string             SpellImageManager::spellImagesDirectory_("");
-    const std::string       SpellImageManager::filenameExtension_   (".gif");
+    const std::string       SpellImageManager::filenameExtension_   (".png");
 
 
     SpellImageManager::SpellImageManager()
