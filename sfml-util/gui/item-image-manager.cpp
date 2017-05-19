@@ -25,7 +25,7 @@ namespace gui
 
     std::string            ItemImageManager::imagesDirectoryPath_;
     ItemImageManagerSPtr_t ItemImageManager::instanceSPtr_;
-    const std::string      ItemImageManager::EXT_(".gif");
+    const std::string      ItemImageManager::EXT_(".png");
 
 
     ItemImageManager::ItemImageManager()

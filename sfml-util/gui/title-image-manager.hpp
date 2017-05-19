@@ -50,7 +50,7 @@ namespace gui
 
         inline static const std::string PlaceholderFileName()   { return "placeholder" + FileNameExt(); }
         inline static float DimmensionMax()                     { return 256.0f; }
-        inline static const std::string FileNameExt()           { return ".gif"; }
+        inline static const std::string FileNameExt()           { return ".png"; }
 
         const TextureSPtr_t Get(game::creature::TitlePtr_t TITLE_PTR) const;
 
