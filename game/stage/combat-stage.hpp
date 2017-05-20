@@ -147,7 +147,7 @@ namespace stage
             FinalPause,
             Count
         };
-        
+
     public:
         CombatStage();
         virtual ~CombatStage();

@@ -554,12 +554,12 @@ namespace combat
         //grow
         auto const SCALE{ 1.0f + (sfml_util::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
         selectAnimSprite_.setScale(SCALE, SCALE);
-        
+
         //re-center
         auto const HORIZ_ADJ{ (selectAnimSprite_.getGlobalBounds().width  - sprite_.getGlobalBounds().width)  * 0.5f };
         auto const VERT_ADJ { (selectAnimSprite_.getGlobalBounds().height - sprite_.getGlobalBounds().height) * 0.5f };
         selectAnimSprite_.setPosition(sprite_.getPosition().x - HORIZ_ADJ, sprite_.getPosition().y - VERT_ADJ);
-        
+
         //fade-out
         auto color{ selectAnimSprite_.getColor() };
         color.a = static_cast<sf::Uint8>(sprite_.getColor().a * (1.0f - SLIDER_RATIO));

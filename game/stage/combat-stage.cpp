@@ -270,10 +270,10 @@ namespace stage
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
-                
+
                 auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
                 M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
-                
+
                 if ((spellPtr->ValidPhases() & Phase::Combat) == 0)
                 {
                     QuickSmallPopup("The " + spellPtr->Name() + " spell cannot be cast during combat.", true, false);
@@ -287,7 +287,7 @@ namespace stage
                     QuickSmallPopup(ss.str(), true, false);
                     return false;
                 }
-                
+
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
                 HandleCast_Step2_SelectTargetOrPerformOnAll(spellPtr);
                 return true;
@@ -923,7 +923,7 @@ namespace stage
         SetUserActionAllowed(false);
 
         //TODO TEMP REMOVE -testing sparks animation
-        
+
     }
 
 
@@ -2537,7 +2537,7 @@ namespace stage
             else
             {
                 preambleSS << "Click on the ";
-                
+
                 if (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent)
                 {
                     preambleSS << "enemy creature";

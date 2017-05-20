@@ -649,7 +649,7 @@ namespace stage
             isNewSingleTextureAnimation = true;
             hasAnimationBeenTested_CandleFlame = true;
         }
-        
+
         static auto hasAnimationBeenTested_FireTorch{ false };
         if (false == hasAnimationBeenTested_FireTorch)
         {
@@ -662,7 +662,7 @@ namespace stage
             isNewSingleTextureAnimation = true;
             hasAnimationBeenTested_FireTorch = true;
         }
-        
+
         singleTextureAnimSPtr_.reset();
 
         LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
@@ -671,7 +671,7 @@ namespace stage
 
 
     bool TestingStage::TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT)
-    {   
+    {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {
             std::ostringstream ss;

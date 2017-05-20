@@ -70,7 +70,7 @@ namespace condition
         static const std::size_t MOST_BENEFITIAL;
         static const std::size_t LEAST_HARMFUL;
         static const std::size_t MOST_HARMFUL;
-        
+
 
         //Note:  Larger return values are more harmful.
         //       Each Condition must have a unique Severity.

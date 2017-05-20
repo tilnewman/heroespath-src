@@ -346,7 +346,7 @@ namespace combat
                                       -1 * HEALTH_ADJ,
                                       CONDITIONS_VEC,
                                       SPELL_CPTR->ActionPhrase(creatureCastingPtrC, creatureCastUponPtrC)) );
-        
+
         return CreatureEffect(creatureCastUponPtrC, hitInfoVec, SPELL_CPTR);
     }
 
@@ -478,7 +478,7 @@ namespace combat
                                                        nextCreatureCastUpon,
                                                        HEALTH_ADJ,
                                                        conditionsVec) );
-            
+
             //TODO Handle Encounter::Instance()->TurnInfo
         }
 

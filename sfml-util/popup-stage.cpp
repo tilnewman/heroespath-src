@@ -404,7 +404,7 @@ namespace sfml_util
             const float ACCENT_POS_LEFT((StageRegionLeft() + (StageRegionWidth() * 0.5f)) - (accentSprite1_.getGlobalBounds().width * 0.5f));
             const float ACCENT_POS_TOP((StageRegionTop() + (StageRegionHeight() * 0.5f)) - (accentSprite1_.getGlobalBounds().height * 0.5f));
             accentSprite1_.setPosition(ACCENT_POS_LEFT, ACCENT_POS_TOP);
-        
+
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
 
@@ -538,14 +538,14 @@ namespace sfml_util
         {
             //setup regions
             auto const LEFT_PAGE_RECT_RAW { sfml_util::ConvertRect<int, float>(sfml_util::gui::PopupManager::Rect_Spellbook_PageLeft()) };
-            
+
             auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTextureSPtr_->getSize().x));
 
             pageRectLeft_.left   = INNER_REGION_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
             pageRectLeft_.top    = INNER_REGION_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
             pageRectLeft_.width  = LEFT_PAGE_RECT_RAW.width * SCALE;
             pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
-            
+
             auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(sfml_util::gui::PopupManager::Rect_Spellbook_PageRight()) };
 
             pageRectRight_.left = INNER_REGION_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
@@ -618,7 +618,7 @@ namespace sfml_util
             playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
             playerSprite_.setColor(sf::Color(255, 255, 255, 127));
             playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
-            
+
             //setup player details text
             auto cPtr{ POPUP_INFO_.CreaturePtr() };
             std::ostringstream ss;
@@ -675,7 +675,7 @@ namespace sfml_util
             listBoxLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellListLabel",
                                                                             LISTBOX_LABEL_TEXTINFO,
                                                                             LISTBOX_LABEL_TEXTRECT);
-        
+
 
             //spell listbox
             auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
@@ -683,7 +683,7 @@ namespace sfml_util
             auto const LISTBOX_RECT_TOP   { listBoxLabelTextRegionUPtr_->GetEntityRegion().top + listBoxLabelTextRegionUPtr_->GetEntityRegion().height + LISTBOX_MARGIN };
             auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
             auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height) - LISTBOX_RECT_TOP) - (LISTBOX_MARGIN * 2.0f) };
-            
+
             const sf::FloatRect LISTBOX_RECT(LISTBOX_RECT_LEFT,
                                              LISTBOX_RECT_TOP,
                                              LISTBOX_RECT_WIDTH,
@@ -1398,7 +1398,7 @@ namespace sfml_util
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(spellColorImageCurrent_);
         spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
-        
+
         //setup spell details text
         std::ostringstream ss;
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
@@ -1416,7 +1416,7 @@ namespace sfml_util
         auto const SPELLDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
         auto const SPELLDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SPELLDETAILS_TEXTRECT_HEIGHT { 0.0f };
-        
+
         const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
                                                     SPELLDETAILS_TEXTRECT_TOP,
                                                     SPELLDETAILS_TEXTRECT_WIDTH,
@@ -1470,7 +1470,7 @@ namespace sfml_util
         auto const SPELL_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
         auto const SPELL_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };
-        
+
         const sf::FloatRect SPELL_UNABLE_TEXTRECT{ SPELL_UNABLE_TEXTRECT_LEFT,
                                                    SPELL_UNABLE_TEXTRECT_TOP,
                                                    SPELL_UNABLE_TEXTRECT_WIDTH,
@@ -1479,7 +1479,7 @@ namespace sfml_util
         spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellUnableToCast",
                                                                  SPELL_UNABLE_TEXTINFO,
                                                                  SPELL_UNABLE_TEXTRECT);
-        
+
         //setup spell description text
         ss.str("");
         ss << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra();
@@ -1503,7 +1503,7 @@ namespace sfml_util
         }
         auto const SPELL_DESC_TEXTRECT_WIDTH{ pageRectRight_.width - (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
         auto const SPELL_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER };
-        
+
         const sf::FloatRect SPELL_DESC_TEXTRECT{ SPELL_DESC_TEXTRECT_LEFT,
                                                  spellDescTextRectTop,
                                                  SPELL_DESC_TEXTRECT_WIDTH,
@@ -1571,7 +1571,7 @@ namespace sfml_util
                                                       spellColorTextCurrent_,
                                                       spellColorTextCurrent_,
                                                       spellColorTextCurrent_);
-        
+
         spellTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
         spellDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
         spellDescTextUPtr_->SetEntityColors(TEXT_COLOR_SET);

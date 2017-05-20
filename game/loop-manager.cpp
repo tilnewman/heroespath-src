@@ -91,7 +91,7 @@ namespace game
                 return Phase::Inventory;
             }
         }
-        
+
         return static_cast<Phase::Enum>(0);
     }
 

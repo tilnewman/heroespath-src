@@ -31,7 +31,7 @@ namespace condition
     {
         auto tempVec{ CONDITIONS_VEC };
         RemoveByMinSeverity(tempVec, MIN_SEVERITY);
-        
+
         if (WILL_SORT_DESCENDING)
         {
             SortBySeverity(tempVec, true);

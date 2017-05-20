@@ -63,7 +63,7 @@ namespace animation
         sprite_.setScale(1.0f, 1.0f);
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
         sprite_.rotate(rotationSpeed_ * SLIDER_POS);
-        
+
         //set position
         auto const POS_X{ startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS) };
         auto const POS_Y{ startPosV_.y + ((endPosV_.y - startPosV_.y) * SLIDER_POS) };
@@ -71,7 +71,7 @@ namespace animation
 
         //set color
         sprite_.setColor( sfml_util::color::TransitionColor(startColor_, endColor_, SLIDER_POS) );
-        
+
         //set scale
         auto const SCALE{ startScale_  - ((endScale_ - startScale_) * (1.0f - SLIDER_POS)) };
         sprite_.setScale(SCALE, SCALE);
@@ -135,13 +135,13 @@ namespace animation
 
             auto const EMITTER_VERTICAL_SPAN{ (SPRAY_RATIO_MINOR_ * REGION_.height) };
             auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f)) - (EMITTER_VERTICAL_SPAN * 0.5f)) + utilz::random::Float(EMITTER_VERTICAL_SPAN) };
-            
+
             auto const EMITTER_HORIZ_OFFSET{ utilz::random::Float(SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
             auto const START_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? REGION_.left + EMITTER_HORIZ_OFFSET : (REGION_.left + REGION_.width) - EMITTER_HORIZ_OFFSET) };
 
             auto const TARGET_VERT_SPAN{ utilz::random::Float(REGION_.height * SPRAY_RATIO_MAJOR_) };
             auto const END_POS_TOP{ ((utilz::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN : START_POS_TOP - TARGET_VERT_SPAN) };
-            
+
             auto const TARGET_HORIZ_SPAN_MIN{ (REGION_.width * SPRAY_RATIO_MINOR_) };
             auto const TARGET_HORIZ_SPAN_MAX{ (REGION_.width * SPRAY_RATIO_MAJOR_) };
             auto const TARGET_HORIZ_SPAN{ utilz::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };

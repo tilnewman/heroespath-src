@@ -82,7 +82,7 @@ namespace stats
         inline Stat_t NormalReduced() const                         { return Reduce(normal_); }
         inline Stat_t CurrentReduced() const                        { return Reduce(current_); }
         inline Stat_t ActualReduced() const                         { return Reduce(actual_); }
-        
+
         static Stat_t Reduce(const Stat_t);
 
         friend bool operator==(const Stat & L, const Stat & R);

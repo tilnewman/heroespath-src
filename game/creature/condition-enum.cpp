@@ -73,7 +73,7 @@ namespace creature
         const std::size_t Severity::MOST_BENEFITIAL { 1000 };
         const std::size_t Severity::LEAST_HARMFUL   { 1001 };
         const std::size_t Severity::MOST_HARMFUL    { 2000 };
-        
+
 
         //see comments in header
         std::size_t Severity::Get(const Conditions::Enum E)

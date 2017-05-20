@@ -236,7 +236,7 @@ namespace spell
                 conditionsAddedVec.push_back(creature::Conditions::Poisoned);
                 return Spell::EFFECT_STR_SUCCESS_;
             }
-            
+
             auto const RAND_DEFENDER{ utilz::random::Int(effectedCreaturePtr->Stats().Int().CurrentReduced(),
                                                          effectedCreaturePtr->Stats().Int().Current())};
 

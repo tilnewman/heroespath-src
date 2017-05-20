@@ -173,7 +173,7 @@ namespace utilz
                 {
                     ss << ", ";
                 }
-                
+
                 if (WILL_AND &&
                     (TO_JOIN_ELEMENT_COUNT > 2) &&
                     (i >= 2) &&

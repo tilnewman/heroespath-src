@@ -110,7 +110,7 @@ namespace combat
         isPower_      (HI.isPower_),
         conditionsVec_(HI.conditionsVec_),
         actionVerb_   (HI.actionVerb_),
-        
+
         //The lifetimes of this object is not managed by this class.
         //These pointers were originally provided from an owning
         //std::shared_ptr, which is not effected by the copies made here.

@@ -698,12 +698,12 @@ namespace combat
                                                                                     0,
                                                                                     false,
                                                                                     &spell::SpellType::ToString) };
-            
+
             std::ostringstream ssErr;
             ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
             throw std::runtime_error(ssErr.str());
         }
-        
+
         creature::CreaturePVec_t targetedCreaturesPVec;
         if (spellPtr->TargetType() == TargetType::AllCompanions)
         {

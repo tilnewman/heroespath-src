@@ -199,7 +199,7 @@ namespace gui
             const ListBoxItemSPtr_t nextEntitySPtr( * itr );
             const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(nextEntitySPtr));
 
-            //highlight invalid entries 
+            //highlight invalid entries
             if (nextEntitySPtr->is_valid == false)
             {
                 sf::FloatRect rect(nextEntitySPtr->GetEntityRegion());

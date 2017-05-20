@@ -30,7 +30,7 @@ namespace animation
               const sf::Color &    END_COLOR);
 
         inline bool IsFinished() const { return isFinished_; }
-        
+
         //Returns true if isFinished_, implying that moving/animating has
         //stopped and that this Spark can be discarded/ignored/not-drawn.
         bool Update(const float ELAPSED_TIME_SEC);
@@ -63,7 +63,7 @@ namespace animation
         SparksAnimation & operator=(const SparksAnimation &);
 
     public:
-        explicit SparksAnimation(const bool            WILL_EMIT_RIGHT, 
+        explicit SparksAnimation(const bool            WILL_EMIT_RIGHT,
                                  const sf::FloatRect & REGION,
                                  const float           SPRAY_RATIO                    = 0.25f,
                                  const float           SCALE_BASE                     = 1.0f,

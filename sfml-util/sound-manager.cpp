@@ -740,7 +740,7 @@ namespace sfml_util
                 }
 
                 SoundEffectRelease(ENUM);
-                
+
                 ++sfxIndex;
                 return false;
             }

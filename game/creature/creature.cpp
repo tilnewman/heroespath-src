@@ -122,7 +122,7 @@ namespace creature
         {
             ss << NAME_STR << " the " << RACE_STR;
         }
-        
+
         if (RACE_STR != ROLE_STR)
         {
             ss << " " << ROLE_STR;
