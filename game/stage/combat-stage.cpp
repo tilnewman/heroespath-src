@@ -2380,6 +2380,11 @@ namespace stage
 
             armorSS << "Armor Rating: " << turnCreaturePtr_->ArmorRating();
 
+            if (turnCreaturePtr_->ManaNormal() > 0)
+            {
+                armorSS << "\n\nMana: " << turnCreaturePtr_->ManaCurrent() << "/" << turnCreaturePtr_->ManaNormal();
+            }
+
             preambleSS.str(EMPTY_STR);
             enemyCondsSS.str(EMPTY_STR);
         }
