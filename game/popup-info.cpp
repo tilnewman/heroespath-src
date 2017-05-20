@@ -202,7 +202,7 @@ namespace game
                     ss << ", bg_image=\"" << boxInfo_.bg_info.path << "\"";
                 else
                     if (boxInfo_.bg_info.textureSPtr.get() == nullptr)
-                        ss << ", color=" << sfml_util::ColorToString(boxInfo_.bg_info.color);
+                        ss << ", color=" << sfml_util::color::ColorToString(boxInfo_.bg_info.color);
             }
         }
 

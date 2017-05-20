@@ -352,7 +352,7 @@ namespace sfml_util
         {
             std::ostringstream ss;
             ss << NAME_
-               << " fade_from_color=" << sfml_util::ColorToString(FADE_FROM_COLOR_)
+               << " fade_from_color=" << sfml_util::color::ColorToString(FADE_FROM_COLOR_)
                << ", speed_mult=" << SPEED_MULT_
                << ", will_hold_after_fade=" << std::boolalpha << WILL_HOLD_FADE_;
             return ss.str();
@@ -394,7 +394,7 @@ namespace sfml_util
         {
             std::ostringstream ss;
             ss << NAME_
-               << " fade_to_color=" << sfml_util::ColorToString(FADE_TO_COLOR_)
+               << " fade_to_color=" << sfml_util::color::ColorToString(FADE_TO_COLOR_)
                << ", speed_mult=" << SPEED_MULT_
                << ", will_hold_after_fade=" << std::boolalpha << WILL_HOLD_FADE_;
             return ss.str();

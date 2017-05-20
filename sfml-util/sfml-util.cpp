@@ -110,49 +110,6 @@ namespace sfml_util
     }
 
 
-    const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP)
-    {
-        if (sf::Color::Black == C)
-            return "Black";
-
-        if (sf::Color::White == C)
-            return "White";
-
-        if (sf::Color::Red == C)
-            return "Red";
-
-        if (sf::Color::Green == C)
-            return "Green";
-
-        if (sf::Color::Blue == C)
-            return "Blue";
-
-        if (sf::Color::Yellow == C)
-            return "Yellow";
-
-        if (sf::Color::Magenta == C)
-            return "Magenta";
-
-        if (sf::Color::Cyan == C)
-            return "Cyan";
-
-        std::ostringstream ss;
-        ss << ((WILL_WRAP) ? "(" : "")
-           << static_cast<int>(C.r)
-           << ", "
-           << static_cast<int>(C.g)
-           << ", "
-           << static_cast<int>(C.b);
-
-        if (C.a != 255)
-            ss << ", " << static_cast<int>(C.a);
-
-        ss << ((WILL_WRAP) ? ")" : "");
-
-        return ss.str();
-    }
-
-
     const std::string KeyCodeToString(const sf::Keyboard::Key KEY)
     {
         switch (KEY)
@@ -386,35 +343,91 @@ namespace sfml_util
     }
 
 
-    bool ColorLess(const sf::Color & L, const sf::Color & R)
+    namespace color
     {
-        const sf::Uint8 LR(L.r);
-        const sf::Uint8 LG(L.g);
-        const sf::Uint8 LB(L.b);
-        const sf::Uint8 LA(L.a);
+        bool ColorLess(const sf::Color & L, const sf::Color & R)
+        {
+            const sf::Uint8 LR(L.r);
+            const sf::Uint8 LG(L.g);
+            const sf::Uint8 LB(L.b);
+            const sf::Uint8 LA(L.a);
 
-        const sf::Uint8 RR(R.r);
-        const sf::Uint8 RG(R.g);
-        const sf::Uint8 RB(R.b);
-        const sf::Uint8 RA(R.a);
+            const sf::Uint8 RR(R.r);
+            const sf::Uint8 RG(R.g);
+            const sf::Uint8 RB(R.b);
+            const sf::Uint8 RA(R.a);
 
-        return std::tie(LR, LG, LB, LA)
-               <
-               std::tie(RR, RG, RB, RA);
-    }
+            return std::tie(LR, LG, LB, LA)
+                <
+                std::tie(RR, RG, RB, RA);
+        }
 
 
-    bool BlendModeLess(const sf::BlendMode & L, const sf::BlendMode & R)
-    {
-        const sf::BlendMode::Factor   L_ADF(L.alphaDstFactor);
-        const sf::BlendMode::Equation L_AEQ(L.alphaEquation);
-        const sf::BlendMode::Factor   L_ASF(L.alphaSrcFactor);
+        bool BlendModeLess(const sf::BlendMode & L, const sf::BlendMode & R)
+        {
+            const sf::BlendMode::Factor   L_ADF(L.alphaDstFactor);
+            const sf::BlendMode::Equation L_AEQ(L.alphaEquation);
+            const sf::BlendMode::Factor   L_ASF(L.alphaSrcFactor);
 
-        const sf::BlendMode::Factor   R_ADF(R.alphaDstFactor);
-        const sf::BlendMode::Equation R_AEQ(R.alphaEquation);
-        const sf::BlendMode::Factor   R_ASF(R.alphaSrcFactor);
+            const sf::BlendMode::Factor   R_ADF(R.alphaDstFactor);
+            const sf::BlendMode::Equation R_AEQ(R.alphaEquation);
+            const sf::BlendMode::Factor   R_ASF(R.alphaSrcFactor);
 
-        return std::tie(L_ADF, L_AEQ, L_ASF) < std::tie(R_ADF, R_AEQ, R_ASF);
+            return std::tie(L_ADF, L_AEQ, L_ASF) < std::tie(R_ADF, R_AEQ, R_ASF);
+        }
+
+
+        const sf::Color TransitionColor(const sf::Color & FROM, const sf::Color & TO, const float RATIO_COMPLETE)
+        {
+            auto const RED  { static_cast<sf::Uint8>(FROM.r + static_cast<sf::Uint8>((static_cast<float>(TO.r) - static_cast<float>(FROM.r)) * RATIO_COMPLETE)) };
+            auto const GREEN{ static_cast<sf::Uint8>(FROM.g + static_cast<sf::Uint8>((static_cast<float>(TO.g) - static_cast<float>(FROM.g)) * RATIO_COMPLETE)) };
+            auto const BLUE { static_cast<sf::Uint8>(FROM.b + static_cast<sf::Uint8>((static_cast<float>(TO.b) - static_cast<float>(FROM.b)) * RATIO_COMPLETE)) };
+            auto const ALPHA{ static_cast<sf::Uint8>(FROM.a + static_cast<sf::Uint8>((static_cast<float>(TO.a) - static_cast<float>(FROM.a)) * RATIO_COMPLETE)) };
+            return sf::Color(RED, GREEN, BLUE, ALPHA);
+        }
+
+
+        const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP)
+        {
+            if (sf::Color::Black == C)
+                return "Black";
+
+            if (sf::Color::White == C)
+                return "White";
+
+            if (sf::Color::Red == C)
+                return "Red";
+
+            if (sf::Color::Green == C)
+                return "Green";
+
+            if (sf::Color::Blue == C)
+                return "Blue";
+
+            if (sf::Color::Yellow == C)
+                return "Yellow";
+
+            if (sf::Color::Magenta == C)
+                return "Magenta";
+
+            if (sf::Color::Cyan == C)
+                return "Cyan";
+
+            std::ostringstream ss;
+            ss << ((WILL_WRAP) ? "(" : "")
+                << static_cast<int>(C.r)
+                << ", "
+                << static_cast<int>(C.g)
+                << ", "
+                << static_cast<int>(C.b);
+
+            if (C.a != 255)
+                ss << ", " << static_cast<int>(C.a);
+
+            ss << ((WILL_WRAP) ? ")" : "");
+
+            return ss.str();
+        }
     }
 
 }//end of namespace sfml_util

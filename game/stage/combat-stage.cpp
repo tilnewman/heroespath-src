@@ -176,7 +176,8 @@ namespace stage
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         testingTextRegionSPtr_      (),
-        pauseTitle_                 ("")
+        pauseTitle_                 (""),
+        sparksAnimUPtr_             (nullptr)
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -920,6 +921,9 @@ namespace stage
         MoveTurnBoxObjectsOffScreen(true);
         restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
+
+        //TODO TEMP REMOVE -testing sparks animation
+        
     }
 
 
@@ -928,6 +932,11 @@ namespace stage
         target.draw( * commandBoxSPtr_, states);
         Stage::Draw(target, states);
         statusBoxSPtr_->draw(target, states);
+
+        if (sparksAnimUPtr_.get() != nullptr)
+        {
+            sparksAnimUPtr_->draw(target, states);
+        }
 
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
             (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
@@ -963,6 +972,11 @@ namespace stage
     void CombatStage::UpdateTime(const float ELAPSED_TIME_SEC)
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
+
+        if (sparksAnimUPtr_.get() != nullptr)
+        {
+            sparksAnimUPtr_->Update(ELAPSED_TIME_SEC);
+        }
 
         combatAnimationPtr_->UpdateTime(ELAPSED_TIME_SEC);
 
@@ -1778,6 +1792,13 @@ namespace stage
     //start pre-pause
     void CombatStage::StartTurn_Step2()
     {
+        //TODO TEMP REMOVE -testing sparks animation
+        sparksAnimUPtr_ = std::make_unique<sfml_util::animation::SparksAnimation>(true,
+                                                                                  combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_)->GetEntityRegion(),
+                                                                                  0.25f,
+                                                                                  sfml_util::MapByRes(0.15f, 0.45f),
+                                                                                  0.75f);
+
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
@@ -1821,6 +1842,9 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
+        //TODO TEMP REMOVE
+        sparksAnimUPtr_.reset();
+
         if (restoreInfo_.CanTurnAdvance())
         {
             encounterSPtr_->IncrementTurn();

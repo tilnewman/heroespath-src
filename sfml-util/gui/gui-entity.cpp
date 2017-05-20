@@ -255,10 +255,10 @@ namespace gui
         }
 
         if (L.entityFgColor_ != R.entityFgColor_)
-            return sfml_util::ColorLess(L.entityFgColor_, R.entityFgColor_);
+            return sfml_util::color::ColorLess(L.entityFgColor_, R.entityFgColor_);
 
         if (L.entityBgColor_ != R.entityBgColor_)
-            return sfml_util::ColorLess(L.entityBgColor_, R.entityBgColor_);
+            return sfml_util::color::ColorLess(L.entityBgColor_, R.entityBgColor_);
 
         return  std::tie(L.entityName_,
                          L.entityMouseState_,

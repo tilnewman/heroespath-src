@@ -60,10 +60,10 @@ namespace gui
     bool operator<(const TextInfo & L, const TextInfo R)
     {
         if (L.color != R.color)
-            return sfml_util::ColorLess(L.color, R.color);
+            return sfml_util::color::ColorLess(L.color, R.color);
 
         if (L.blendMode != R.blendMode)
-            return sfml_util::BlendModeLess(L.blendMode, R.blendMode);
+            return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
 
         return std::tie(L.text,
                         L.fontSPtr,

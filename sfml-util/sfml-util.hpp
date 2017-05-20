@@ -159,9 +159,6 @@ namespace sfml_util
     }
 
 
-    const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
-
-
     template<typename Given_t, typename Return_t>
     Return_t FindPowerOf2GreaterThan(const Given_t A)
     {
@@ -276,37 +273,6 @@ namespace sfml_util
     TextureSPtr_t FlipVertCopy(const sf::Texture &);
 
 
-    template<typename T>
-    T Average(const std::vector<T> & V)
-    {
-        if (V.empty())
-            return T(0);
-
-        T sum(0);
-        for (auto const NEXT_VALUE : V)
-            sum += NEXT_VALUE;
-
-        return sum / V.size();
-    }
-
-    template<typename T>
-    T StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
-    {
-        if ((COUNT == 0) || (COUNT > V.size()))
-            return T(0);
-
-        T deviationSum(0);
-
-        for (std::size_t i(0); i < COUNT; ++i)
-        {
-            auto const NEXT_VALUE{ V[i] };
-            deviationSum += std::pow((NEXT_VALUE - AVERAGE), 2);
-        }
-
-        return std::sqrt(deviationSum / COUNT);
-    }
-
-
     void Invert(sf::Texture & texture, const bool WILL_INVERT_ALPHA = false);
 
     void Mask(sf::Texture &     texture,
@@ -324,11 +290,16 @@ namespace sfml_util
                        sf::Image & image,
                        const sf::RenderStates & RENDER_STATES = sf::RenderStates());
 
+    namespace color
+    {
+        bool ColorLess(const sf::Color & L, const sf::Color & R);
 
-    bool ColorLess(const sf::Color & L, const sf::Color & R);
+        bool BlendModeLess(const sf::BlendMode & L, const sf::BlendMode & R);
 
-    bool BlendModeLess(const sf::BlendMode & L, const sf::BlendMode & R);
+        const sf::Color TransitionColor(const sf::Color & FROM, const sf::Color & TO, const float RATIO_COMPLETE);
 
+        const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
+    };
 
 }//end of namespace sfml_util
 

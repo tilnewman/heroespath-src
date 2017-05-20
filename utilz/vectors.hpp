@@ -201,6 +201,44 @@ namespace utilz
                 return ss.str();
             }
         }
+
+        template<typename T>
+        static T Average(const std::vector<T> & V)
+        {
+            if (V.empty())
+            {
+                return T(0);
+            }
+
+            T sum{ 0 };
+            for (auto const NEXT_VALUE : V)
+            {
+                sum += NEXT_VALUE;
+            }
+
+            return sum / V.size();
+        }
+
+
+        template<typename T>
+        static T StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
+        {
+            if ((COUNT == 0) || (COUNT > V.size()))
+            {
+                return T{ 0 };
+            }
+
+            T deviationSum{ 0 };
+
+            for (std::size_t i(0); i < COUNT; ++i)
+            {
+                auto const NEXT_VALUE{ V[i] };
+                deviationSum += std::pow((NEXT_VALUE - AVERAGE), 2);
+            }
+
+            return std::sqrt(deviationSum / COUNT);
+        }
+
     };
 
 }

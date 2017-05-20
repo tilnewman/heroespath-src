@@ -14,6 +14,7 @@
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/sparks-animation.hpp"
 
 #include "game/i-popup-callback.hpp"
 #include "game/horiz-symbol.hpp"
@@ -362,6 +363,8 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;
         std::string pauseTitle_;
+
+        sfml_util::animation::SparksAnimationUPtr_t sparksAnimUPtr_;
     };
 
 }
