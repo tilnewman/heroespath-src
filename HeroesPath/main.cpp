@@ -59,7 +59,7 @@ int main()
         //setup the graphics display
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
-        sfml_util::WinSPtr_t winSPtr( sfml_util::Display::OpenRenderWindow("Heroes Path", sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) );
+        sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow("Heroes' Path", sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
         winSPtr->setFramerateLimit( gameDataFileSPtr->GetCopyInt("system-window-frame-rate-limit", 0) );
         winSPtr->setVerticalSyncEnabled( gameDataFileSPtr->GetCopyBool("system-window-sync", true) );
 
