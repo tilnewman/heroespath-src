@@ -4,11 +4,14 @@ project("Heroes Path")
 message(STATUS "System Detected: ${CMAKE_SYSTEM}")
 
 set(CUSTOM_BUILD_FLAGS "")
+SET(CUSTOM_LINK_FLAGS "")
+
+option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
 
 if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
     message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
-    
+
     file (READ build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
 
     set(BOOST_INCLUDEDIR "C:/local/boost_1_61_0")
@@ -17,7 +20,15 @@ if(MSVC)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
-    file (READ build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
+
+    SET(CUSTOM_LINK_FLAGS "-pthread")
+
+    if(VALGRIND_BUILD)
+        file (READ build-flags-gnu-valgrind.txt CUSTOM_BUILD_FLAGS)
+        message("Compiler flags customized for Valgrind.")
+    else()
+        file (READ build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
+    endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
@@ -25,10 +36,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
 endif()
 
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
+SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CUSTOM_LINK_FLAGS}" )
 
-message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with build flags: ${CUSTOM_BUILD_FLAGS}")
+message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with compile flags: ${CUSTOM_BUILD_FLAGS} and linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 
-set(CUSTOM_PROJECT_BOOST_VER "1.61.0")
+set(CUSTOM_PROJECT_BOOST_VER "1.58.0")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
 set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
