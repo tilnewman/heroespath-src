@@ -57,12 +57,12 @@ namespace spell
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
-        inline Spells::Enum Which() const           { return which_; }
-        inline SpellType::Enum Type() const         { return type_; }
-        inline Phase::Enum ValidPhases() const      { return validPhases_; }
-        inline stats::Mana_t ManaCost() const       { return manaCost_; }
-        inline stats::Rank_t Rank() const           { return rank_; }
-        inline TargetType::Enum TargetType() const  { return targetType_; }
+        inline Spells::Enum Which() const       { return which_; }
+        inline SpellType::Enum Type() const     { return type_; }
+        inline Phase::Enum ValidPhases() const  { return validPhases_; }
+        inline stats::Mana_t ManaCost() const   { return manaCost_; }
+        inline stats::Rank_t Rank() const       { return rank_; }
+        inline TargetType::Enum Target() const  { return targetType_; }
 
         //Returns a short sentance describing what the spell did.
         //For the following functions the first CreaturePtr_t is the caster and the second is the target.

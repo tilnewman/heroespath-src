@@ -705,7 +705,7 @@ namespace combat
         }
 
         creature::CreaturePVec_t targetedCreaturesPVec;
-        if (spellPtr->TargetType() == TargetType::AllCompanions)
+        if (spellPtr->Target() == TargetType::AllCompanions)
         {
             if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
             {
@@ -716,7 +716,7 @@ namespace combat
                 targetedCreaturesPVec = creature::Algorithms::NonPlayers(true);
             }
         }
-        else if (spellPtr->TargetType() == TargetType::AllOpponents)
+        else if (spellPtr->Target() == TargetType::AllOpponents)
         {
             if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
             {
@@ -727,15 +727,15 @@ namespace combat
                 targetedCreaturesPVec = creature::Algorithms::Players(true);
             }
         }
-        else if ((spellPtr->TargetType() == TargetType::SingleCompanion) ||
-                 (spellPtr->TargetType() == TargetType::SingleOpponent))
+        else if ((spellPtr->Target() == TargetType::SingleCompanion) ||
+                 (spellPtr->Target() == TargetType::SingleOpponent))
         {
             targetedCreaturesPVec.push_back(MOST_DESIRED_TARGET_CPTRC);
         }
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->TargetType()) << "\" -which is not yet supported.";
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->Target()) << "\" -which is not yet supported.";
             throw std::runtime_error(ssErr.str());
         }
 

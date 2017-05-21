@@ -74,6 +74,9 @@ namespace creature
 
         virtual ~PopupInfo();
 
+        PopupInfo(const PopupInfo &);
+        PopupInfo & operator=(const PopupInfo &);
+
         inline const std::string                 Name() const               { return name_; }
         inline sfml_util::PopupButtons::Enum     Buttons() const            { return buttons_; }
         inline sfml_util::PopupImage::Enum       Image() const              { return image_; }

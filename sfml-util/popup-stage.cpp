@@ -1403,7 +1403,7 @@ namespace sfml_util
         std::ostringstream ss;
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
            << "Rank: " << SPELL_CPTRC->Rank() << "\n"
-           << "Targets " << game::TargetType::Name(SPELL_CPTRC->TargetType()) << "\n"
+           << "Targets " << game::TargetType::Name(SPELL_CPTRC->Target()) << "\n"
            << "Cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(ss.str(),

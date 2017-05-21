@@ -596,10 +596,10 @@ namespace combat
     {
         std::ostringstream ss;
 
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType());
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell " << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->Target());
 
-        if ((TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllCompanions) ||
-            (TURN_ACTION_INFO.Spell()->TargetType() == TargetType::AllOpponents))
+        if ((TURN_ACTION_INFO.Spell()->Target() == TargetType::AllCompanions) ||
+            (TURN_ACTION_INFO.Spell()->Target() == TargetType::AllOpponents))
         {
             ss << " effecting " << FIGHT_RESULT.Count();
         }
@@ -640,7 +640,7 @@ namespace combat
         }
         else
         {
-            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->TargetType());
+            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->Target());
         }
 
         ss << "...";

@@ -448,7 +448,7 @@ namespace combat
                                                                              << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
                                                                              << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
 
-        if (((SPELL_CPTR->TargetType() == TargetType::SingleCompanion) || (SPELL_CPTR->TargetType() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
+        if (((SPELL_CPTR->Target() == TargetType::SingleCompanion) || (SPELL_CPTR->Target() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
         {
             std::ostringstream ssErr;
             ssErr << "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
@@ -460,7 +460,7 @@ namespace combat
                                                                                                 false,
                                                                                                 [](const creature::CreaturePtr_t CPTR) -> const std::string
                                                                                                   { return CPTR->NameAndRaceAndRole(); })
-                  << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->TargetType())
+                  << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
             throw std::runtime_error(ssErr.str());

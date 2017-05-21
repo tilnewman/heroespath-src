@@ -299,7 +299,7 @@ namespace sfml_util
         const sf::Color TransitionColor(const sf::Color & FROM, const sf::Color & TO, const float RATIO_COMPLETE);
 
         const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
-    };
+    }
 
 }//end of namespace sfml_util
 

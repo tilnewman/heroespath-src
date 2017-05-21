@@ -1284,7 +1284,7 @@ namespace stage
                             }
                         }
                     }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent))
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->Target() == TargetType::SingleOpponent))
                     {
                         if (creatureAtPosPtr->IsPlayerCharacter())
                         {
@@ -1296,7 +1296,7 @@ namespace stage
                             HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
                         }
                     }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion))
+                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->Target() == TargetType::SingleCompanion))
                     {
                         if (creatureAtPosPtr->IsPlayerCharacter() == false)
                         {
@@ -1938,8 +1938,8 @@ namespace stage
     {
         spellBeingCastPtr_ = spellPtr;
 
-        if ((spellPtr->TargetType() == TargetType::SingleCompanion) ||
-            (spellPtr->TargetType() == TargetType::SingleOpponent))
+        if ((spellPtr->Target() == TargetType::SingleCompanion) ||
+            (spellPtr->Target() == TargetType::SingleOpponent))
         {
             SetUserActionAllowed(true);
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
@@ -1947,18 +1947,18 @@ namespace stage
             SetTurnPhase(TurnPhase::TargetSelect);
             SetupTurnBox();
         }
-        else if (spellPtr->TargetType() == TargetType::AllCompanions)
+        else if (spellPtr->Target() == TargetType::AllCompanions)
         {
             HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(true));
         }
-        else if (spellPtr->TargetType() == TargetType::AllOpponents)
+        else if (spellPtr->Target() == TargetType::AllOpponents)
         {
             HandleCast_Step3_PerformOnTargets(creature::Algorithms::NonPlayers(true));
         }
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell=" << spellPtr->Name() << ") had a target_type of " << TargetType::ToString(spellPtr->TargetType()) << " which is not yet supported during combat.";
+            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell=" << spellPtr->Name() << ") had a target_type of " << TargetType::ToString(spellPtr->Target()) << " which is not yet supported during combat.";
             throw std::runtime_error(ssErr.str());
         }
     }
@@ -2538,11 +2538,11 @@ namespace stage
             {
                 preambleSS << "Click on the ";
 
-                if (spellBeingCastPtr_->TargetType() == TargetType::SingleOpponent)
+                if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
                 {
                     preambleSS << "enemy creature";
                 }
-                else if (spellBeingCastPtr_->TargetType() == TargetType::SingleCompanion)
+                else if (spellBeingCastPtr_->Target() == TargetType::SingleCompanion)
                 {
                     preambleSS << "character";
                 }

@@ -102,7 +102,9 @@ namespace game
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_)
+        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
+        creatureCPtr_    (nullptr),
+        initialSelection_(0)
     {}
 
 
@@ -129,7 +131,9 @@ namespace game
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_)
+        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
+        creatureCPtr_    (nullptr),
+        initialSelection_(0)
     {}
 
 
@@ -155,12 +159,75 @@ namespace game
         numberMin_       (THE_MIN),
         numberMax_       (THE_MAX),
         numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_)
+        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
+        creatureCPtr_    (nullptr),
+        initialSelection_(0)
     {}
 
 
     PopupInfo::~PopupInfo()
     {}
+
+
+    PopupInfo::PopupInfo(const PopupInfo & PI)
+    :
+        name_            (PI.name_),
+        textInfo_        (PI.textInfo_),
+        buttons_         (PI.buttons_),
+        image_           (PI.image_),
+        type_            (PI.type_),
+        soundEffect_     (PI.soundEffect_),
+        boxInfo_         (PI.boxInfo_),
+        ratioX_          (PI.ratioX_),
+        ratioY_          (PI.ratioY_),
+        buttonColor_     (PI.buttonColor_),
+        willAddRandImage_(PI.willAddRandImage_),
+        imageScale_      (PI.imageScale_),
+        textureSVec_     (PI.textureSVec_),
+        numberMin_       (PI.numberMin_),
+        numberMax_       (PI.numberMax_),
+        numberInvalidVec_(PI.numberInvalidVec_),
+        imageFadeSpeed_  (PI.imageFadeSpeed_),
+
+        //The creature object is not managed by this class,
+        //so it is safe to copy here.
+        creatureCPtr_    (PI.creatureCPtr_),
+
+        initialSelection_(PI.initialSelection_)
+    {}
+
+
+    PopupInfo & PopupInfo::operator=(const PopupInfo & PI)
+    {
+        if (& PI != this)
+        {
+            name_             = PI.name_;
+            textInfo_         = PI.textInfo_;
+            buttons_          = PI.buttons_;
+            image_            = PI.image_;
+            type_             = PI.type_;
+            soundEffect_      = PI.soundEffect_;
+            boxInfo_          = PI.boxInfo_;
+            ratioX_           = PI.ratioX_;
+            ratioY_           = PI.ratioY_;
+            buttonColor_      = PI.buttonColor_;
+            willAddRandImage_ = PI.willAddRandImage_;
+            imageScale_       = PI.imageScale_;
+            textureSVec_      = PI.textureSVec_;
+            numberMin_        = PI.numberMin_;
+            numberMax_        = PI.numberMax_;
+            numberInvalidVec_ = PI.numberInvalidVec_;
+            imageFadeSpeed_   = PI.imageFadeSpeed_;
+
+            //The creature object is not managed by this class,
+            //so it is safe to copy here.
+            creatureCPtr_ = PI.creatureCPtr_;
+
+            initialSelection_ = PI.initialSelection_;
+        }
+
+        return * this;
+    }
 
 
     const std::string PopupInfo::ToStringShort(const bool WILL_WRAP) const
