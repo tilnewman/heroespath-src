@@ -124,15 +124,8 @@ namespace game
             }
 
             const bool SAVED_VERTICAL_SYNC( GetCopyBool(KEY_VERTICAL_SYNC_, true) );
-            if (SAVED_VERTICAL_SYNC)
-            {
-                M_HP_LOG("SettingsFile::LoadAndRestore() setting the display vertical sync to " << std::boolalpha << SAVED_VERTICAL_SYNC);
-                sfml_util::Display::Instance()->SetVerticalSync(SAVED_VERTICAL_SYNC);
-            }
-            else
-            {
-                M_HP_LOG("SettingsFile::LoadAndRestore() vertical sync is false so SetVerticalSync() will not be called.");
-            }
+            M_HP_LOG("SettingsFile::LoadAndRestore() setting the display vertical sync to " << std::boolalpha << SAVED_VERTICAL_SYNC);
+            sfml_util::Display::Instance()->SetVerticalSync(SAVED_VERTICAL_SYNC);
         }
         else
         {
