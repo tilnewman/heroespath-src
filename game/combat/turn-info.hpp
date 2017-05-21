@@ -37,6 +37,9 @@ namespace combat
                  const TurnAction::Enum TURN_STATE    = TurnAction::Count,
                  const strategy::Info   STRATEGY_INFO = strategy::Info());
 
+        TurnInfo(const TurnInfo &);
+        TurnInfo & operator=(const TurnInfo &);
+
         inline bool GetIsFlying() const                                         { return isFlying_; }
         inline void SetIsFlying(const bool B)                                   { isFlying_ = B; }
 

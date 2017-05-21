@@ -26,6 +26,8 @@ namespace callback
 
         PtrWrapper(const PtrWrapper & PW)
         :
+            //The lifetime of this object is not managed by this class.
+            //Usage is short-term observation only, so ptr copying is safe.
             PTR_(PW.PTR_)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr), "sfml_util::callback::PtrWrapper(PtrWrapper) copy-constructor was given a null PACKAGE_PTR.");
@@ -35,6 +37,7 @@ namespace callback
         {
             if (& PW != this)
             {
+                //See copy constructor comment regarding copying this pointer.
                 PTR_ = PW.PTR_;
             }
 

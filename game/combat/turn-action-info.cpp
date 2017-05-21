@@ -33,8 +33,7 @@ namespace combat
         actionType_ (TAI.actionType_),
 
         //The lifetime of these objects is not managed by this class.
-        //Their usage is short-term observation only, so copying the
-        //pointers is safe here.
+        //Usage is short-term observation only, so ptr copying is safe.
         targetsPVec_(TAI.targetsPVec_),
         spellPtr_   (TAI.spellPtr_)
     {}

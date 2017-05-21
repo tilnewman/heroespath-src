@@ -111,10 +111,8 @@ namespace combat
         conditionsVec_(HI.conditionsVec_),
         actionVerb_   (HI.actionVerb_),
 
-        //The lifetimes of this object is not managed by this class.
-        //These pointers were originally provided from an owning
-        //std::shared_ptr, which is not effected by the copies made here.
-        //Given the short use of CreatureEffects copying these pointers is safe.
+        //The lifetime of this object is not managed by this class.
+        //Usage is short-term observation only, so ptr copying is safe.
         spellPtr_(HI.spellPtr_),
 
         spellEffectStr_(HI.spellEffectStr_)
@@ -252,10 +250,8 @@ namespace combat
     :
         hitInfoVec_   (CE.hitInfoVec_),
 
-        //The lifetimes of these two objects are not managed by this class.
-        //These pointers were originally provided from an owning
-        //std::shared_ptr, which is not effected by the copies made here.
-        //Given the short use of CreatureEffects copying these pointers is safe.
+        //The lifetime of these objects is not managed by this class.
+        //Usage is short-term observation only, so ptr copying is safe.
         spellPtr_     (CE.spellPtr_),
         creaturePtr_  (CE.creaturePtr_),
 
