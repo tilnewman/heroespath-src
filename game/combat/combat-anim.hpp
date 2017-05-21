@@ -188,7 +188,6 @@ namespace combat
 
         //members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
-
     };
 
     using CombatAnimationPtr_t = CombatAnimation *;
