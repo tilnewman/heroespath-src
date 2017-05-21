@@ -490,7 +490,10 @@ namespace sfml_util
         if (bufferSPtr.get() == nullptr)
         {
             LoadSound(sound_effect::Filename(E), sound_effect::Directory(E), bufferSPtr);
-            M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second == 0), "sfml_util::SoundManager::SoundEffectAcquire(" << sound_effect::ToString(E) << ") found a null SoundBufferSPtr_t but the ref count was " << soundEffectBufferPairVec_.at(E).second << " instead of 0.");
+            
+            //TEMP TODO FIX
+            //M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second == 0), "sfml_util::SoundManager::SoundEffectAcquire(" << sound_effect::ToString(E) << ") found a null SoundBufferSPtr_t but the ref count was " << soundEffectBufferPairVec_.at(E).second << " instead of 0.");
+            soundEffectBufferPairVec_.at(E).second = 0;
         }
 
         ++soundEffectBufferPairVec_.at(E).second;
