@@ -58,7 +58,7 @@ namespace sfml_util
 
     Stage::~Stage()
     {
-        SoundManager::Instance()->StaticSoundsReleaseAll();
+        SoundManager::Instance()->ClearSoundEffectsCache();
     }
 
 

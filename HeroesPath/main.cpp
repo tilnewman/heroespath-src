@@ -100,7 +100,7 @@ int main()
             settingsFileSPtr->LoadAndRestore();
 
             //load game assets
-            soundManagerSPtr->LoadStaticSoundSets(); //important to call this after settingsFileSPtr->LoadAndRestore() so the sound effects have the correct volume
+            soundManagerSPtr->LoadSoundSets(); //important to call this after settingsFileSPtr->LoadAndRestore() so the sound effects have the correct volume
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
             popupManagerSPtr->LoadAssets();
 

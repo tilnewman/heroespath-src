@@ -5,15 +5,15 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/static-sounds.hpp"
-#include "utilz/random.hpp"
 #include "sfml-util/music-info.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
 
 #include "stringutil/stringhelp.hpp"
+
+#include "utilz/random.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -60,13 +60,16 @@ namespace sfml_util
         materialHitMiscSoundsSPtr_  (),
         clawHitSoundsSPtr_          (),
         windSoundsSPtr_             (),
-        allStaticSoundsSVec_        (),
+        soundEffectsSetSVec_        (),
         combatIntroMusicInfoVec_    (),
-        songsVec_                   ()
+        songsVec_                   (),
+        soundEffectsToPlayVec_      (),
+        soundEffectsSVec_           ()
     {
         musicSVec_.resize(music::Count);
         soundEffectBufferPairVec_.resize(sound_effect::Count);
         CacheMusicInfo_CombatIntro();
+        soundEffectsSVec_.resize(sound_effect::Count);
     }
 
 
@@ -91,26 +94,26 @@ namespace sfml_util
     }
 
 
-    void SoundManager::LoadStaticSoundSets()
+    void SoundManager::LoadSoundSets()
     {
         const SoundEffectEnumVec_t PROMPT_SOUNDS_ENUM_VEC = { sound_effect::PromptGeneric,
                                                               sound_effect::PromptQuestion,
                                                               sound_effect::PromptWarn };
-        promptSoundsSPtr_ = std::make_shared<StaticSounds>(PROMPT_SOUNDS_ENUM_VEC);
+        promptSoundsSPtr_ = std::make_shared<SoundEffectsSet>(PROMPT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t SWITCH_SOUNDS_ENUM_VEC = { sound_effect::Switch1,
                                                               sound_effect::Switch2,
                                                               sound_effect::Switch3,
                                                               sound_effect::Switch4 };
-        switchSoundsSPtr_ = std::make_shared<StaticSounds>(SWITCH_SOUNDS_ENUM_VEC);
+        switchSoundsSPtr_ = std::make_shared<SoundEffectsSet>(SWITCH_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TICKON_SOUNDS_ENUM_VEC = { sound_effect::TickOn1,
                                                                sound_effect::TickOn2 };
-        tickOnSoundsSPtr_ = std::make_shared<StaticSounds>(TICKON_SOUNDS_ENUM_VEC);
+        tickOnSoundsSPtr_ = std::make_shared<SoundEffectsSet>(TICKON_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TICKOFF_SOUNDS_ENUM_VEC = { sound_effect::TickOff1,
                                                                 sound_effect::TickOff2 };
-        tickOffSoundsSPtr_ = std::make_shared<StaticSounds>(TICKOFF_SOUNDS_ENUM_VEC);
+        tickOffSoundsSPtr_ = std::make_shared<SoundEffectsSet>(TICKOFF_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t THOCK_SOUNDS_ENUM_VEC = { sound_effect::Thock1,
                                                               sound_effect::Thock2,
@@ -118,7 +121,7 @@ namespace sfml_util
                                                               sound_effect::Thock4,
                                                               sound_effect::Thock5,
                                                               sound_effect::Thock6 };
-        thockSoundsSPtr_ = std::make_shared<StaticSounds>(THOCK_SOUNDS_ENUM_VEC);
+        thockSoundsSPtr_ = std::make_shared<SoundEffectsSet>(THOCK_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t COIN_SOUNDS_ENUM_VEC = { sound_effect::Coins1,
                                                             sound_effect::Coins2,
@@ -136,29 +139,29 @@ namespace sfml_util
                                                             sound_effect::Coins14,
                                                             sound_effect::Coins15,
                                                             sound_effect::Coins16 };
-        coinSoundsSPtr_ = std::make_shared<StaticSounds>(COIN_SOUNDS_ENUM_VEC);
+        coinSoundsSPtr_ = std::make_shared<SoundEffectsSet>(COIN_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t GEM_SOUNDS_ENUM_VEC = { sound_effect::Gems };
-        gemSoundsSPtr_ = std::make_shared<StaticSounds>(GEM_SOUNDS_ENUM_VEC);
+        gemSoundsSPtr_ = std::make_shared<SoundEffectsSet>(GEM_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t METEORSHARD_SOUNDS_ENUM_VEC = { sound_effect::MeteorShards };
-        meteorShardSoundsSPtr_ = std::make_shared<StaticSounds>(METEORSHARD_SOUNDS_ENUM_VEC);
+        meteorShardSoundsSPtr_ = std::make_shared<SoundEffectsSet>(METEORSHARD_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ITEMGIVE_SOUNDS_ENUM_VEC = { sound_effect::ItemGive };
-        itemGiveSoundsSPtr_ = std::make_shared<StaticSounds>(ITEMGIVE_SOUNDS_ENUM_VEC);
+        itemGiveSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ITEMGIVE_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ITEMDROP_SOUNDS_ENUM_VEC = { sound_effect::ItemDrop };
-        itemDropSoundsSPtr_ = std::make_shared<StaticSounds>(ITEMDROP_SOUNDS_ENUM_VEC);
+        itemDropSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ITEMDROP_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC = { sound_effect::BlowpipeShoot1,
                                                                       sound_effect::BlowpipeShoot2,
                                                                       sound_effect::BlowpipeShoot3 };
-        blowpipeShootSoundsSPtr_ = std::make_shared<StaticSounds>(BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC);
+        blowpipeShootSoundsSPtr_ = std::make_shared<SoundEffectsSet>(BLOWPIPE_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BLOWPIPE_HIT_SOUNDS_ENUM_VEC = { sound_effect::BlowpipeHit1,
                                                                     sound_effect::BlowpipeHit2,
                                                                     sound_effect::BlowpipeHit3 };
-        blowpipeHitSoundsSPtr_ = std::make_shared<StaticSounds>(BLOWPIPE_HIT_SOUNDS_ENUM_VEC);
+        blowpipeHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(BLOWPIPE_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ARROW_SHOOT_SOUNDS_ENUM_VEC = { sound_effect::ArrowShoot1,
                                                                    sound_effect::ArrowShoot2,
@@ -166,10 +169,10 @@ namespace sfml_util
                                                                    sound_effect::ArrowShoot4,
                                                                    sound_effect::ArrowShoot5,
                                                                    sound_effect::ArrowShoot6 };
-        arrowShootSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
+        arrowShootSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t ARROW_HIT_SOUNDS_ENUM_VEC = { sound_effect::ArrowHit };
-        arrowHitSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_HIT_SOUNDS_ENUM_VEC);
+        arrowHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ARROW_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t PROJECTILE_MISS_SOUNDS_ENUM_VEC = { sound_effect::ProjectileMiss1,
                                                                        sound_effect::ProjectileMiss2,
@@ -184,7 +187,7 @@ namespace sfml_util
                                                                        sound_effect::ProjectileMiss11,
                                                                        sound_effect::ProjectileMiss12,
                                                                        sound_effect::ProjectileMiss13 };
-        projectileMissSoundsSPtr_ = std::make_shared<StaticSounds>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
+        projectileMissSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MELEE_MISS_SOUNDS_ENUM_VEC = { sound_effect::MeleeMiss1,
                                                                   sound_effect::MeleeMiss2,
@@ -227,7 +230,7 @@ namespace sfml_util
                                                                   sound_effect::MeleeMiss39,
                                                                   sound_effect::MeleeMiss40,
                                                                   sound_effect::MeleeMiss41 };
-        meleeMissSoundsSPtr_ = std::make_shared<StaticSounds>(MELEE_MISS_SOUNDS_ENUM_VEC);
+        meleeMissSoundsSPtr_ = std::make_shared<SoundEffectsSet>(MELEE_MISS_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t FIST_HIT_SOUNDS_ENUM_VEC = { sound_effect::FistHit1,
                                                                 sound_effect::FistHit2,
@@ -238,20 +241,20 @@ namespace sfml_util
                                                                 sound_effect::FistHit7,
                                                                 sound_effect::FistHit8 };
 
-        fistHitSoundsSPtr_ = std::make_shared<StaticSounds>(FIST_HIT_SOUNDS_ENUM_VEC);
+        fistHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(FIST_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t BREATH_HIT_SOUNDS_ENUM_VEC = { sound_effect::BreathHit1,
                                                                   sound_effect::BreathHit2 };
-        breathHitSoundsSPtr_ = std::make_shared<StaticSounds>(BREATH_HIT_SOUNDS_ENUM_VEC);
+        breathHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(BREATH_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TENDRILS_HIT_SOUNDS_ENUM_VEC = { sound_effect::TendrilHit1,
                                                                     sound_effect::TendrilHit2,
                                                                     sound_effect::TendrilHit3,
                                                                     sound_effect::TendrilHit4 };
-        tendrilHitSoundsSPtr_ = std::make_shared<StaticSounds>(TENDRILS_HIT_SOUNDS_ENUM_VEC);
+        tendrilHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(TENDRILS_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t WHIP_HIT_SOUNDS_ENUM_VEC = { sound_effect::WhipHit };
-        whipHitSoundsSPtr_ = std::make_shared<StaticSounds>(WHIP_HIT_SOUNDS_ENUM_VEC);
+        whipHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(WHIP_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t WHIP_MISS_SOUNDS_ENUM_VEC = { sound_effect::WhipMiss1,
                                                                  sound_effect::WhipMiss2,
@@ -263,14 +266,14 @@ namespace sfml_util
                                                                  sound_effect::WhipMiss8,
                                                                  sound_effect::WhipMiss9,
                                                                  sound_effect::WhipMiss10 };
-        whipMissSoundsSPtr_ = std::make_shared<StaticSounds>(WHIP_MISS_SOUNDS_ENUM_VEC);
+        whipMissSoundsSPtr_ = std::make_shared<SoundEffectsSet>(WHIP_MISS_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC = { sound_effect::MaterialHitMetal1,
                                                                           sound_effect::MaterialHitMetal2,
                                                                           sound_effect::MaterialHitMetal3,
                                                                           sound_effect::MaterialHitMetal4,
                                                                           sound_effect::MaterialHitMetal5 };
-        materialHitMetalSoundsSPtr_ = std::make_shared<StaticSounds>(MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC);
+        materialHitMetalSoundsSPtr_ = std::make_shared<SoundEffectsSet>(MATERIAL_HIT_METAL_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC = { sound_effect::MaterialHitBone,
                                                                          sound_effect::MaterialHitCloth,
@@ -285,17 +288,17 @@ namespace sfml_util
                                                                          sound_effect::MaterialHitTooth,
                                                                          sound_effect::MaterialHitWood,
                                                                          sound_effect::MaterialHitMisc};
-        materialHitMiscSoundsSPtr_ = std::make_shared<StaticSounds>(MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC);
+        materialHitMiscSoundsSPtr_ = std::make_shared<SoundEffectsSet>(MATERIAL_HIT_MISC_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t CLAW_HIT_SOUNDS_ENUM_VEC = { sound_effect::ClawTear };
-        clawHitSoundsSPtr_ = std::make_shared<StaticSounds>(CLAW_HIT_SOUNDS_ENUM_VEC);
+        clawHitSoundsSPtr_ = std::make_shared<SoundEffectsSet>(CLAW_HIT_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t WIND_SOUNDS_ENUM_VEC = { sfml_util::sound_effect::WindGust1,
                                                             sfml_util::sound_effect::WindGust2,
                                                             sfml_util::sound_effect::WindGust3 };
-        windSoundsSPtr_ = std::make_shared<StaticSounds>(WIND_SOUNDS_ENUM_VEC);
+        windSoundsSPtr_ = std::make_shared<SoundEffectsSet>(WIND_SOUNDS_ENUM_VEC);
 
-        allStaticSoundsSVec_ = { promptSoundsSPtr_,
+        soundEffectsSetSVec_ = { promptSoundsSPtr_,
                                  switchSoundsSPtr_,
                                  tickOnSoundsSPtr_,
                                  tickOffSoundsSPtr_,
@@ -461,6 +464,8 @@ namespace sfml_util
 
         for (auto const & NEXT_SONGS_OBJ_TO_REMOVE_SPTR : songsToRemove)
             songsVec_.erase(std::remove(songsVec_.begin(), songsVec_.end(), NEXT_SONGS_OBJ_TO_REMOVE_SPTR), songsVec_.end());
+
+        SoundEffectsUpdate();
     }
 
 
@@ -478,46 +483,19 @@ namespace sfml_util
     {
         effectsVolume_ = V;
 
-        for (auto & nextStaticSoundsSPtr : allStaticSoundsSVec_)
-            nextStaticSoundsSPtr->Volume(V);
-    }
-
-
-    SoundSPtr_t SoundManager::SoundEffectAcquire(const sound_effect::Enum E)
-    {
-        SoundBufferSPtr_t bufferSPtr(soundEffectBufferPairVec_.at(E).first);
-
-        if (bufferSPtr.get() == nullptr)
+        for (auto & nextSoundEffectDataSPtr : soundEffectsSVec_)
         {
-            LoadSound(sound_effect::Filename(E), sound_effect::Directory(E), bufferSPtr);
-            
-            //TEMP TODO FIX
-            //M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second == 0), "sfml_util::SoundManager::SoundEffectAcquire(" << sound_effect::ToString(E) << ") found a null SoundBufferSPtr_t but the ref count was " << soundEffectBufferPairVec_.at(E).second << " instead of 0.");
-            soundEffectBufferPairVec_.at(E).second = 0;
-        }
-
-        ++soundEffectBufferPairVec_.at(E).second;
-        auto soundSPtr = std::make_shared<sf::Sound>( * bufferSPtr);
-        soundSPtr->setVolume(SoundEffectVolume());
-        return soundSPtr;
-    }
-
-
-    void SoundManager::SoundEffectRelease(const sound_effect::Enum E)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((soundEffectBufferPairVec_.at(E).second != 0), "sfml_util::SoundManager::SoundEffectRelease(" << sound_effect::ToString(E) << ") found the ref count to be " << soundEffectBufferPairVec_.at(E).second << " instead of anything > 0.");
-
-        if (--soundEffectBufferPairVec_.at(E).second == 0)
-        {
-            soundEffectBufferPairVec_.at(E).first.reset();
+            if (nextSoundEffectDataSPtr.get() != nullptr)
+            {
+                nextSoundEffectDataSPtr->sound.setVolume(effectsVolume_);
+            }
         }
     }
 
 
-    void SoundManager::StaticSoundsReleaseAll()
+    void SoundManager::SoundEffectPlay(const sound_effect::Enum E)
     {
-        for (auto & nextStaticSoundsSPtr : allStaticSoundsSVec_)
-            nextStaticSoundsSPtr->ReleaseAll();
+        soundEffectsToPlayVec_.push_back(E);
     }
 
 
@@ -528,16 +506,6 @@ namespace sfml_util
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME) / bfs::path(MUSIC_FILE_NAME)));
         sfml_util::OpenMusicSPtr(musicSPtr, PATH_OBJ.string());
-    }
-
-
-    void SoundManager::LoadSound(const std::string & SOUND_FILE_NAME,
-                                 const std::string & SOUND_DIR_NAME,
-                                 SoundBufferSPtr_t & soundBufferSPtr) const
-    {
-        namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(soundsDirectoryPath_) / bfs::path(SOUND_DIR_NAME) / bfs::path(SOUND_FILE_NAME)));
-        sfml_util::LoadSoundBufferSPtr(soundBufferSPtr, PATH_OBJ.string());
     }
 
 
@@ -638,6 +606,74 @@ namespace sfml_util
         static auto playOrStop{ false };
         static auto const MUSIC_COUNT_MAX{ 50 };
 
+        //test sound effects individually
+        {
+            static auto hasSFXPromptedStart{ false };
+            if (false == hasSFXPromptedStart)
+            {
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests starting...");
+                hasSFXPromptedStart = true;
+            }
+
+            static auto sfxIndex{ 0 };
+            if (sfxIndex < sound_effect::Count)
+            {
+                auto const ENUM{ static_cast<sound_effect::Enum>(sfxIndex) };
+                auto const ENUM_STR{ sound_effect::ToString(ENUM) };
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
+                SoundEffectPlay(ENUM);
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                ++sfxIndex;
+                return false;
+            }
+
+            static auto hasSFXPromptedEnd{ false };
+            if (false == hasSFXPromptedEnd)
+            {
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
+                hasSFXPromptedEnd = true;
+            }
+        }
+
+        //test sound effects through SoundEffectsSet interface
+        {
+            static auto hasStaticSFXPromptedStart{ false };
+            if (false == hasStaticSFXPromptedStart)
+            {
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SoundEffectsSet SFX Tests starting...");
+                hasStaticSFXPromptedStart = true;
+            }
+
+            static std::size_t sfxSetIndex{ 0 };
+            static std::size_t sfxSetInnerIndex{ 0 };
+            if (sfxSetIndex < soundEffectsSetSVec_.size())
+            {
+                if (false == TestSoundEffectsSet(soundEffectsSetSVec_.at(sfxSetIndex), sfxSetInnerIndex))
+                {
+                    ++sfxSetInnerIndex;
+                    return false;
+                }
+                else
+                {
+                    std::ostringstream ss;
+                    ss << sfxSetIndex;
+                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager SoundEffectsSet SFX Tested Set #" + ss.str());
+
+                    sfxSetInnerIndex = 0;
+                    ++sfxSetIndex;
+                }
+
+                return false;
+            }
+
+            static auto hasStaticSFXPromptedEnd{ false };
+            if (false == hasStaticSFXPromptedEnd)
+            {
+                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SoundEffectsSet SFX Tests finished.  All Passed.");
+                hasStaticSFXPromptedEnd = true;
+            }
+        }
+
         //test regular music
         static auto musicIndex{ 0 };
         {
@@ -716,108 +752,106 @@ namespace sfml_util
             }
         }
 
-        //test sound effects
-        {
-            static auto hasSFXPromptedStart{ false };
-            if (false == hasSFXPromptedStart)
-            {
-                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests starting...");
-                hasSFXPromptedStart = true;
-            }
-
-            static auto sfxIndex{ 0 };
-            if (sfxIndex < sound_effect::Count)
-            {
-                auto const ENUM{ static_cast<sound_effect::Enum>(sfxIndex) };
-                auto const ENUM_STR{ sound_effect::ToString(ENUM) };
-                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
-
-                {
-                    SoundSPtr_t soundSPtr{ SoundEffectAcquire(ENUM) };
-                    M_ASSERT_OR_LOGANDTHROW_SS((soundSPtr.get() != nullptr), "sfml_util::SoundManager::Test()  SFX Testing block found SoundEffectAcquire(\"" << ENUM_STR << "\") returned a nullptr.");
-
-                    soundSPtr->setVolume(100.0f);
-                    soundSPtr->play();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-                    soundSPtr->stop();
-                }
-
-                SoundEffectRelease(ENUM);
-
-                ++sfxIndex;
-                return false;
-            }
-
-            static auto hasSFXPromptedEnd{ false };
-            if (false == hasSFXPromptedEnd)
-            {
-                game::LoopManager::Instance()->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
-                hasSFXPromptedEnd = true;
-            }
-        }
-
-        //test sound effects through static sounds interface
-        {
-            static auto hasStaticSFXPromptedStart{ false };
-            if (false == hasStaticSFXPromptedStart)
-            {
-                game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests starting...");
-                hasStaticSFXPromptedStart = true;
-            }
-
-            static std::size_t staticSfxIndex{ 0 };
-            static std::size_t staticSfxInnerIndex{ 0 };
-            if (staticSfxIndex < allStaticSoundsSVec_.size())
-            {
-                if (0 == staticSfxInnerIndex)
-                {
-                    allStaticSoundsSVec_.at(staticSfxIndex)->LoadAll();
-                }
-
-                if (false == TestStaticSounds(allStaticSoundsSVec_.at(staticSfxIndex), staticSfxInnerIndex))
-                {
-                    ++staticSfxInnerIndex;
-                    return false;
-                }
-                else
-                {
-                    allStaticSoundsSVec_.at(staticSfxIndex)->ReleaseAll();
-
-                    std::ostringstream ss;
-                    ss << staticSfxIndex;
-                    game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tested Set #" + ss.str());
-
-                    staticSfxInnerIndex = 0;
-                    ++staticSfxIndex;
-                }
-
-                return false;
-            }
-
-            static auto hasStaticSFXPromptedEnd{ false };
-            if (false == hasStaticSFXPromptedEnd)
-            {
-                game::LoopManager::Instance()->TestingStrIncrement("SoundManager StaticSet SFX Tests finished.  All Passed.");
-                hasStaticSFXPromptedEnd = true;
-            }
-        }
-
         game::LoopManager::Instance()->TestingStrAppend("sfml_util::SoundManager::Test() ALL TESTS PASSED");
         return true;
     }
 
 
-    bool SoundManager::TestStaticSounds(StaticSoundsSPtr_t & staticSoundsSPtr, const std::size_t INDEX)
+    bool SoundManager::TestSoundEffectsSet(SoundEffectsSetSPtr_t & soundEffectsSetSPtr, const std::size_t INDEX)
     {
-        if (INDEX < staticSoundsSPtr->Size())
+        if (INDEX < soundEffectsSetSPtr->Size())
         {
-            staticSoundsSPtr->PlayAt(INDEX);
+            soundEffectsSetSPtr->PlayAt(INDEX);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
             return false;
         }
         else
         {
             return true;
         }
+    }
+
+
+    void SoundManager::SoundEffectsUpdate()
+    {
+        for (auto const NEXT_SOUNDEFFECT_TO_PLAY_ENUM : soundEffectsToPlayVec_)
+        {
+            SoundEffectDataSPtr_t & sfxDataSPtr{ soundEffectsSVec_[NEXT_SOUNDEFFECT_TO_PLAY_ENUM] };
+            if (sfxDataSPtr.get() == nullptr)
+            {
+                //start new sound effects that need playing
+                sfxDataSPtr = std::make_shared<SoundEffectData>();
+                LoadSound(NEXT_SOUNDEFFECT_TO_PLAY_ENUM, sfxDataSPtr);
+                sfxDataSPtr->sound.setVolume(SoundEffectVolume());
+                sfxDataSPtr->sound.play();
+            }
+            else
+            {
+                //This restarts play from the beginning if already playing.
+                sfxDataSPtr->sound.play();
+            }
+        }
+
+        soundEffectsToPlayVec_.clear();
+    }
+
+
+    void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
+    {
+        //eliminate sound effects that are done playing
+        for (auto & nextSoundEffectDataSPtr : soundEffectsSVec_)
+        {
+            if (nextSoundEffectDataSPtr.get() != nullptr)
+            {
+                if (WILL_STOP_PLAYING_SFX &&
+                    (nextSoundEffectDataSPtr->sound.getStatus() == sf::SoundSource::Playing))
+                {
+                    nextSoundEffectDataSPtr->sound.stop();
+                }
+
+                if (nextSoundEffectDataSPtr->sound.getStatus() == sf::SoundSource::Stopped)
+                {
+                    nextSoundEffectDataSPtr.reset();
+                }
+            }
+        }
+    }
+
+
+    void SoundManager::LoadSound(const sound_effect::Enum ENUM,
+                                 SoundEffectDataSPtr_t &  soundEffectDataSPtr) const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((soundEffectDataSPtr.get() != nullptr),
+            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            << sound_effect::ToString(ENUM)
+            << ", was given a soundEffectDataSPtr that was null.");
+
+        namespace bfs = boost::filesystem;
+
+        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(soundsDirectoryPath_) /
+            bfs::path(sound_effect::Directory(ENUM)) /
+            bfs::path(sound_effect::Filename(ENUM))));
+
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ),
+            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            << sound_effect::ToString(ENUM)
+            << ", attempting path=\"" << PATH_OBJ.string()
+            << "\", failed because that file does not exist.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ),
+            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            << sound_effect::ToString(ENUM)
+            << ", attempting path=\"" << PATH_OBJ.string()
+            << "\", failed because that is not a regular file.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(soundEffectDataSPtr->buffer.loadFromFile(PATH_OBJ.string().c_str()),
+            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            << sound_effect::ToString(ENUM)
+            << ", attempting path=\"" << PATH_OBJ.string()
+            << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
+            << " for more information.");
+
+        soundEffectDataSPtr->sound.setBuffer(soundEffectDataSPtr->buffer);
     }
 
 }

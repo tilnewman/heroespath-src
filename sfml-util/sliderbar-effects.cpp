@@ -4,7 +4,6 @@
 #include "sliderbar-effects.hpp"
 
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 
 #include "game/log-macros.hpp"
 
@@ -117,12 +116,12 @@ namespace sfml_util
         {
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
                 currentVal_ += 0.1f;
             }
             else
             {
-                SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
                 currentVal_ -= 0.1f;
             }
 
@@ -135,12 +134,12 @@ namespace sfml_util
             {
                 if (STYLE_.orientation == Orientation::Horiz)
                 {
-                    SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
                     currentVal_ -= 0.1f;
                 }
                 else
                 {
-                    SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
                     currentVal_ += 0.1f;
                 }
 
@@ -151,7 +150,7 @@ namespace sfml_util
             {
                 if (padImage_.MouseDown(MOUSE_POS_V))
                 {
-                    SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
                     entityMouseState_ = MouseState::Down;
                 }
                 else
@@ -162,7 +161,7 @@ namespace sfml_util
                         {
                             if (MOUSE_POS_V.x < padImage_.GetEntityRegion().left)
                             {
-                                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
                                 currentVal_ += 0.1f;
                                 SetupAllPositions();
                                 return true;
@@ -171,7 +170,7 @@ namespace sfml_util
                             {
                                 if (MOUSE_POS_V.x >(padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
                                 {
-                                    SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                                    SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
                                     currentVal_ -= 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -182,7 +181,7 @@ namespace sfml_util
                         {
                             if (MOUSE_POS_V.y < padImage_.GetEntityRegion().top)
                             {
-                                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
                                 currentVal_ += 0.1f;
                                 SetupAllPositions();
                                 return true;
@@ -191,7 +190,7 @@ namespace sfml_util
                             {
                                 if (MOUSE_POS_V.y >(padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
                                 {
-                                    SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                                    SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
                                     currentVal_ -= 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -257,7 +256,7 @@ namespace sfml_util
             {
                 willPlaySound_ = false;
                 timeSinceLastPlaySec_ = 0.0f;
-                SoundManager::Instance()->StaticSounds_Prompt()->Play(sound_effect::PromptWarn);
+                SoundManager::Instance()->SoundEffectsSet_Prompt()->Play(sound_effect::PromptWarn);
                 return true;
             }
         }

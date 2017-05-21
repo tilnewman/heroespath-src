@@ -6,7 +6,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/loaders.hpp"
@@ -454,7 +453,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
@@ -467,7 +466,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);

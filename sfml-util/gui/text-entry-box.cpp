@@ -5,7 +5,6 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
@@ -139,7 +138,7 @@ namespace gui
     bool TextEntryBox::KeyPress(const sf::Event::KeyEvent & KE)
     {
         if ((KE.code != sf::Keyboard::LShift) && (KE.code != sf::Keyboard::RShift))
-            SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
 
         return true;
     }

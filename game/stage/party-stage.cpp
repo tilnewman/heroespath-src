@@ -9,7 +9,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
@@ -622,7 +621,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_BackButton();
             return true;
@@ -630,7 +629,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
             deleteButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_DeleteButton();
             return true;
@@ -638,7 +637,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             startButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_StartButton();
             return true;

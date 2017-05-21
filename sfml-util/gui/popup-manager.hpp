@@ -36,7 +36,7 @@ namespace sfml_util
 
 namespace gui
 {
-    //forward declarations
+
     namespace box
     {
         class Info;

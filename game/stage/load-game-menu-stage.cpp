@@ -9,7 +9,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
@@ -256,7 +255,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_MainMenu();
             return true;
         }

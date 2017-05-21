@@ -12,7 +12,6 @@
 #include "sfml-util/tile.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
@@ -130,28 +129,28 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
             createButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_CharacterCreation();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             settingsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_Settings();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
             creditsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_Credits();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::E)
         {
             exitButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_Exit();
             return true;
         }
@@ -160,7 +159,7 @@ namespace stage
             if (false == resumeButtonSPtr_->IsDisabled())
             {
                 resumeButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-                sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+                sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
                 LoopManager::Instance()->Goto_LoadGameMenu();
                 return true;
             }

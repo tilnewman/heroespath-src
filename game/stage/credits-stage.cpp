@@ -8,7 +8,6 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 
@@ -396,7 +395,7 @@ namespace stage
             isKeyHeldDown_ = true;
         else
         {
-            sfml_util::SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             LoopManager::Instance()->Goto_MainMenu();
         }
 

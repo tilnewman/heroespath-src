@@ -5,7 +5,6 @@
 
 #include "sfml-util/text-rendering.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
@@ -211,9 +210,9 @@ namespace gui
         if (DID_MOUSE_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
-                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
             else
-                SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
 
             ResetText();
         }

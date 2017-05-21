@@ -5,7 +5,6 @@
 
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/color-set.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <sstream>
@@ -338,7 +337,7 @@ namespace gui
         {
             if ((false == IsInvalid(i)) && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) && (downInWhichRegion_ == i)))
             {
-                SoundManager::Instance()->StaticSounds_Thock()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
                 currentSelections_[i] = ! currentSelections_[i];
                 checkBoxSVec_[i]->SetIsInFirstState( ! checkBoxSVec_[i]->IsInFirstState());
                 return true;
@@ -381,7 +380,7 @@ namespace gui
                 (currentSelections_[i] == false))
             {
                 if (checkBoxSVec_[i]->GetMouseState() != MouseState::Over)
-                    SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
 
                 checkBoxSVec_[i]->SetMouseState(MouseState::Over);
                 wereAnyStatesChanged = true;

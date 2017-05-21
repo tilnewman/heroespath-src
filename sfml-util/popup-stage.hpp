@@ -6,7 +6,6 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-window.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/gradient.hpp"
@@ -195,7 +194,6 @@ namespace sfml_util
         const gui::ColorSet     LISTBOX_COLORSET_;
         gui::BackgroundInfo     LISTBOX_BG_INFO_;
         gui::TextInfo           listBoxItemTextInfo_;
-        SoundSPtr_t             spellSoundEffectSPtr_;
         TextureSPtr_t           spellTextureSPtr_;
         sf::Sprite              spellSprite_;
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;

@@ -15,11 +15,6 @@
 #include <memory>
 
 
-namespace sfml_util
-{
-    class StaticSounds;
-    using StaticSoundsSPtr_t = std::shared_ptr<StaticSounds>;
-}
 namespace game
 {
 namespace combat

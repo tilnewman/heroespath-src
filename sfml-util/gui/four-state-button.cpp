@@ -6,7 +6,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/static-sounds.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -346,7 +345,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             Reset();
         }
 
@@ -363,7 +362,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->StaticSounds_Switch()->PlayRandom();
+            SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
             Reset();
         }
 
@@ -381,9 +380,9 @@ namespace gui
         if (DID_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
-                SoundManager::Instance()->StaticSounds_TickOn()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
             else
-                SoundManager::Instance()->StaticSounds_TickOff()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
 
             Reset();
         }
