@@ -61,7 +61,10 @@ int main()
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::WinSPtr_t winSPtr( sfml_util::Display::OpenRenderWindow("Heroes Path", sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) );
         winSPtr->setFramerateLimit( gameDataFileSPtr->GetCopyInt("system-window-frame-rate-limit", 0) );
-        winSPtr->setVerticalSyncEnabled( gameDataFileSPtr->GetCopyBool("system-window-sync", true) );
+        if (gameDataFileSPtr->GetCopyBool("system-window-sync", true))
+        {
+            winSPtr->setVerticalSyncEnabled(true);
+        }
 
         //set resource paths for manager classes
         sfml_util::FontManager::SetFontsDirectory(                      gameDataFileSPtr->GetMediaPath("media-fonts-dir"));
