@@ -26,7 +26,7 @@
     {                                                                   \
         if(false == (exp))                                              \
         {                                                               \
-            M_LOG_FAT( * game::Logger::Instance(), (str_static)); \
+            M_LOG_FAT( * game::Logger::Instance(), (str_static));       \
             throw std::runtime_error( (str_static) );                   \
         }                                                               \
     }                                                                   \
@@ -39,7 +39,7 @@
         {                                                                                 \
             std::ostringstream _m_oss_logandthrow_temp;                                   \
             _m_oss_logandthrow_temp << str_stream;                                        \
-            M_LOG_FAT( * game::Logger::Instance(), _m_oss_logandthrow_temp.str() ); \
+            M_LOG_FAT( * game::Logger::Instance(), _m_oss_logandthrow_temp.str() );       \
             throw std::runtime_error( _m_oss_logandthrow_temp.str() );                    \
         }                                                                                 \
     }                                                                                     \
@@ -55,7 +55,7 @@
         if (false == (exp))                                             \
         {                                                               \
             std::cerr << (str_static) << std::endl;                     \
-            M_LOG_FAT( * game::Logger::Instance(), (str_static)); \
+            M_LOG_FAT( * game::Logger::Instance(), (str_static));       \
             assert( (exp) );                                            \
         }                                                               \
     }                                                                   \
@@ -73,7 +73,7 @@
                                     << str_stream;                                       \
                                                                                          \
             std::cerr << _m_oss_logandthrow_temp.str() << std::endl;                     \
-            M_LOG_FAT( * game::Logger::Instance(), _m_oss_logandthrow_temp.str()); \
+            M_LOG_FAT( * game::Logger::Instance(), _m_oss_logandthrow_temp.str());       \
             assert( (exp) );                                                             \
         }                                                                                \
     }                                                                                    \

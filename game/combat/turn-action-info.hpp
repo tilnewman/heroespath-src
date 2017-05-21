@@ -36,6 +36,9 @@ namespace combat
         TurnActionInfo(const spell::SpellPtr_t        SPELL_PTR,
                        const creature::CreaturePVec_t TARGET_PVEC);
 
+        TurnActionInfo(const TurnActionInfo &);
+        TurnActionInfo & operator=(const TurnActionInfo &);
+
         inline TurnAction::Enum         Action() const  { return actionType_; }
         inline spell::SpellPtr_t        Spell() const   { return spellPtr_; }
         inline creature::CreaturePVec_t Targets() const { return targetsPVec_; }
