@@ -6,14 +6,14 @@
 
 //prevent warnings that can be ignored in SFML
 #include "utilz/platform.hpp"
-#ifdef PLATFORMDETECT__APPPLE_OOSS
+#ifdef PPLATFFORMDDETECT__APPPPLE_OOSS
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/System.hpp>
 
-#ifdef PLATFORMDETECT__APPPLE_OOSS
+#ifdef PPLATFFORMDDETECT__APPPPLE_OOSS
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #pragma GCC diagnostic warning "-Wundef"
 #endif

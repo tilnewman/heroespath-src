@@ -6,7 +6,7 @@
 
 //suppress warnings that are safe to ignore in boost
 #include "utilz/platform.hpp"
-#ifdef PLATFORMDETECT__APPPLE_OOSS
+#ifdef PPLATFFORMDDETECT__APPPPLE_OOSS
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
@@ -17,7 +17,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/base_object.hpp>
 
-#ifdef PLATFORMDETECT__APPPLE_OOSS
+#ifdef PPLATFFORMDDETECT__APPPPLE_OOSS
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
