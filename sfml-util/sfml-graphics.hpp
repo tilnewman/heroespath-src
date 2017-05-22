@@ -6,14 +6,14 @@
 
 //prevent warnings that can be ignored in SFML
 #include "utilz/platform.hpp"
-#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
+#ifdef PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/Graphics.hpp>
 
-#ifdef SFMLUTIL_PLATFORMDETECT__APPLE_OS
+#ifdef PLATFORMDETECT__APPLE_OS
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #pragma GCC diagnostic warning "-Wundef"
 #endif

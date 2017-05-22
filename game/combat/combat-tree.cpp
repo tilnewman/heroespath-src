@@ -441,7 +441,7 @@ namespace combat
                 ((std::get<0>(nextEdge) == ID2) && (std::get<1>(nextEdge) == ID1)))
             {
                 std::get<2>(nextEdge) = TYPE;
-                break;
+                return;
             }
         }
 

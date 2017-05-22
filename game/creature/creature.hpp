@@ -98,8 +98,8 @@ namespace creature
         const std::string NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
         const std::string NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
 
-        inline const std::string ImageFilename() const          { return imageFilename_; };
-        void ImageFilename(const std::string & S)               { imageFilename_ = S; };
+        inline const std::string ImageFilename() const          { return imageFilename_; }
+        void ImageFilename(const std::string & S)               { imageFilename_ = S; }
 
         inline sex::Enum Sex() const                            { return sex_; }
         inline const std::string SexName() const                { return creature::sex::ToString(sex_); }
@@ -175,7 +175,7 @@ namespace creature
         inline bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
         const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        inline  const item::Inventory Inventory() const         { return inventory_; }
+        inline const item::Inventory & Inventory() const         { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
         inline bool CoinsAdj(const item::Coin_t A)              { return inventory_.CoinsAdj(A); }

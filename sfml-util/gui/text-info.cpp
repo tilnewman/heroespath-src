@@ -119,7 +119,7 @@ namespace gui
         text.setCharacterSize(TEXT_INFO.charSize);
 
 //linux SFML lib does not seem to support outline fonts...
-#ifdef SFMLUTIL_PLATFORMDETECT__LINUX
+#ifdef PLATFORMDETECT__LINUX
         text.setColor(TEXT_INFO.color);
 #else
         if (TEXT_INFO.isOutlineOnly)

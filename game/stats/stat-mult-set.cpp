@@ -86,11 +86,11 @@ namespace stats
 
     bool operator==(const StatMultSet & L, const StatMultSet & R)
     {
-        return (utilz::IsRealClose(L.str_, R.str_),
-                utilz::IsRealClose(L.acc_, R.acc_),
-                utilz::IsRealClose(L.cha_, R.cha_),
-                utilz::IsRealClose(L.lck_, R.lck_),
-                utilz::IsRealClose(L.spd_, R.spd_),
+        return (utilz::IsRealClose(L.str_, R.str_) &&
+                utilz::IsRealClose(L.acc_, R.acc_) &&
+                utilz::IsRealClose(L.cha_, R.cha_) &&
+                utilz::IsRealClose(L.lck_, R.lck_) &&
+                utilz::IsRealClose(L.spd_, R.spd_) &&
                 utilz::IsRealClose(L.int_, R.int_));
     }
 
