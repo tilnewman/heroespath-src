@@ -390,7 +390,7 @@ namespace stage
                     {
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many coins?";
-                        PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Coins());
+                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().Coins()));
                         return false;
                     }
                 }
@@ -405,7 +405,7 @@ namespace stage
                     {
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many gems?";
-                        PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Gems());
+                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().Gems()));
                         return false;
                     }
                 }
@@ -422,7 +422,7 @@ namespace stage
                     {
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many Meteor Shards?";
-                        PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().MeteorShards());
+                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().MeteorShards()));
                         return false;
                     }
                 }
@@ -438,19 +438,16 @@ namespace stage
                 {
                     HandleMeteorShardsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Coins:
                 {
                     HandleCoinsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Gems:
                 {
                     HandleGemsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Item:
                 case ContentType::Count:
@@ -1723,7 +1720,7 @@ namespace stage
         sfml_util::Mask( * creatureTextureSPtr_, sf::Color::White);
         creatureTextureSPtr_->setSmooth(true);
         creatureSprite_.setTexture( * creatureTextureSPtr_);
-        creatureSprite_.setTextureRect( sf::IntRect(0, 0, creatureTextureSPtr_->getSize().x, creatureTextureSPtr_->getSize().y) );
+        creatureSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(creatureTextureSPtr_->getSize().x), static_cast<int>(creatureTextureSPtr_->getSize().y)) );
         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
         creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
         creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -2229,7 +2226,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
 
-        creaturePtr_->CoinsAdj(COUNT * -1);
+        creaturePtr_->CoinsAdj(static_cast<game::item::Coin_t>(COUNT) * -1);
         creatureToGiveToPtr->CoinsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2242,7 +2239,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
 
-        creaturePtr_->GemsAdj(COUNT * -1);
+        creaturePtr_->GemsAdj(static_cast<game::item::Gem_t>(COUNT) * -1);
         creatureToGiveToPtr->GemsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2255,7 +2252,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(COUNT * -1);
+        creaturePtr_->MeteorShardsAdj(static_cast<game::item::Meteor_t>(COUNT) * -1);
         creatureToGiveToPtr->MeteorShardsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2276,13 +2273,13 @@ namespace stage
                 const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreatureSPtr->Inventory().Coins());
                 if (NEXT_CREATURE_COINS_OWNED > 0)
                 {
-                    coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
+                    coinsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_COINS_OWNED);
                     nextCreatureSPtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
                 }
             }
         }
 
-        creaturePtr_->CoinsAdj(coinsOwnedByOtherPartyMembers);
+        creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(coinsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2305,13 +2302,13 @@ namespace stage
                 const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreatureSPtr->Inventory().Gems());
                 if (NEXT_CREATURE_GEMS_OWNED > 0)
                 {
-                    gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
+                    gemsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_GEMS_OWNED);
                     nextCreatureSPtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
                 }
             }
         }
 
-        creaturePtr_->GemsAdj(gemsOwnedByOtherPartyMembers);
+        creaturePtr_->GemsAdj(static_cast<item::Gem_t>(gemsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2334,13 +2331,13 @@ namespace stage
                 const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreatureSPtr->Inventory().MeteorShards());
                 if (NEXT_CREATURE_SHARDS_OWNED > 0)
                 {
-                    shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS_OWNED;
+                    shardsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_SHARDS_OWNED);
                     nextCreatureSPtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
                 }
             }
         }
 
-        creaturePtr_->MeteorShardsAdj(shardsOwnedByOtherPartyMembers);
+        creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(shardsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2545,7 +2542,7 @@ namespace stage
         detailViewTextureSPtr_->setSmooth(true);
 
         detailViewSprite_.setTexture(*detailViewTextureSPtr_);
-        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, detailViewTextureSPtr_->getSize().x, detailViewTextureSPtr_->getSize().y));
+        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTextureSPtr_->getSize().x), static_cast<int>(detailViewTextureSPtr_->getSize().y)));
         const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
         detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
@@ -2598,7 +2595,7 @@ namespace stage
         detailViewTextureSPtr_->setSmooth(true);
 
         detailViewSprite_.setTexture( * detailViewTextureSPtr_);
-        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, detailViewTextureSPtr_->getSize().x, detailViewTextureSPtr_->getSize().y));
+        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTextureSPtr_->getSize().x), static_cast<int>(detailViewTextureSPtr_->getSize().y)));
         detailViewSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
         detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::MapByRes(0.0f, 50.0f));
 
@@ -2606,8 +2603,7 @@ namespace stage
         creature::Achievements a(CREATURE_CPTRC->AchievementsCopy());
 
         const std::string NOMORE_TITLE_MSG_STR("  (There are no more titles to earn)");
-        const std::string NONEYET_TITLE_MSG_STR("");
-
+        
         creature::TitleCPtrC_t ENEMIESFACED_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::EnemiesFaced));
         creature::TitleCPtrC_t MELEEHITS_NEXT_TITLE_CPTR       (a.GetNextTitle(creature::AchievementType::MeleeHits));
         creature::TitleCPtrC_t BATTLESSURVIVED_NEXT_TITLE_CPTR (a.GetNextTitle(creature::AchievementType::BattlesSurvived));

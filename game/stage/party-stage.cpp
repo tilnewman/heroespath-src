@@ -377,7 +377,7 @@ namespace stage
                                                              6.0f,
                                                              boxInfo,
                                                              sfml_util::FontManager::Instance()->Color_Orange(),
-                                                             player::Party::MAX_CHARACTER_COUNT_,
+                                                             static_cast<int>(player::Party::MAX_CHARACTER_COUNT_),
                                                              this) );
         EntityAdd(partyListBoxSPtr_);
 
@@ -509,7 +509,7 @@ namespace stage
                 mouseOverTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(itemSPtr->character_sptr->ImageFilename());
                 mouseOverTextureSPtr_->setSmooth(true);
                 mouseOverSprite_.setTexture( * mouseOverTextureSPtr_ );
-                mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, mouseOverTextureSPtr_->getSize().x, mouseOverTextureSPtr_->getSize().y) );
+                mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(mouseOverTextureSPtr_->getSize().x), static_cast<int>(mouseOverTextureSPtr_->getSize().y)) );
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
                 mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_ + sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() + game::creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);

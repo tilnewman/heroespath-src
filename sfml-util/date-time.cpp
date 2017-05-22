@@ -115,7 +115,7 @@ namespace sfml_util
 
 
     //simple wrapper for date and time
-    DateTime::DateTime(const Date DATE, const Time TIME)
+    DateTime::DateTime(const Date & DATE, const Time & TIME)
     :
         date(DATE),
         time(TIME)

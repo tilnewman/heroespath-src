@@ -158,7 +158,7 @@ namespace sfml_util
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
             const std::size_t CURR_VAL(POPUP_INFO_.NumberSelMin() + static_cast<std::size_t>(CURR_RATIO * static_cast<float>(POPUP_INFO_.NumberSelMax() - POPUP_INFO_.NumberSelMin())));
 
-            selectPopupButtonSPtr_->SetSelection(CURR_VAL);
+            selectPopupButtonSPtr_->SetSelection(static_cast<int>(CURR_VAL));
 
             std::ostringstream minNumSS;
             minNumSS << POPUP_INFO_.NumberSelMin();
@@ -454,7 +454,7 @@ namespace sfml_util
 
             const sfml_util::gui::box::Info TEXTENTRY_BOX_INFO(true,
                                                                TEXTENTRY_REGION,
-                                                               sf::Color::White,
+                                                               sfml_util::gui::ColorSet(sf::Color::White),
                                                                TEXTENTRY_BG_INFO);
 
             textEntryBoxSPtr_.reset( new sfml_util::gui::TextEntryBox("PopupStage's",
@@ -1038,11 +1038,13 @@ namespace sfml_util
             if (ProcessSelectNumber())
             {
                 SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, GetSelectNumber());
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, static_cast<std::size_t>(GetSelectNumber()));
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         if ((KEY_EVENT.code == sf::Keyboard::Left) && (POPUP_INFO_.Images().empty() == false))
@@ -1059,7 +1061,9 @@ namespace sfml_util
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         if ((KEY_EVENT.code == sf::Keyboard::Right) && (POPUP_INFO_.Images().empty() == false))
@@ -1223,7 +1227,7 @@ namespace sfml_util
 
             POPUP_INFO_.Images()[newIndex]->setSmooth(true);
             imageSpriteCurr_.setTexture( * POPUP_INFO_.Images()[newIndex] );
-            imageSpriteCurr_.setTextureRect(sf::IntRect(0, 0, POPUP_INFO_.Images()[newIndex]->getSize().x, POPUP_INFO_.Images()[newIndex]->getSize().y));
+            imageSpriteCurr_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(POPUP_INFO_.Images()[newIndex]->getSize().x), static_cast<int>(POPUP_INFO_.Images()[newIndex]->getSize().y)));
             imageSpriteCurr_.setScale(1.0f, 1.0f);
 
             const float POS_LEFT(textRegion_.left + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f));

@@ -195,7 +195,7 @@ namespace logbase
         boost::recursive_mutex::scoped_lock lock(fileAccessMutex_);
 
         //handle file rotation, if it is limited, and we are over the limit
-        if (((unsigned long)fileStream_.tellp()) >= FILE_SIZE_LIMIT_BYTES_)
+        if (static_cast<unsigned long>(fileStream_.tellp()) >= FILE_SIZE_LIMIT_BYTES_)
         {
             OpenNextFile();
         }
@@ -332,7 +332,7 @@ namespace logbase
         stream  << std::setfill('0')
                 << DATE_INFO.year
                 << "-"
-                << std::setw(2) << (int) DATE_INFO.month
+                << std::setw(2) << static_cast<int>(DATE_INFO.month)
                 << "-"
                 << std::setw(2) << DATE_INFO.day;
     }

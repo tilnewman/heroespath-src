@@ -30,7 +30,7 @@ namespace sfml_util
              const float REGION_WIDTH,
              const float REGION_HEIGHT);
 
-        Fade(const sf::FloatRect & SCREEN_REGION);
+        explicit Fade(const sf::FloatRect & SCREEN_REGION);
 
         virtual ~Fade();
 

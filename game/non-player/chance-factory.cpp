@@ -1395,24 +1395,6 @@ namespace ownership
     }
 
 
-    void ChanceFactory::PopulateArmorMaterials(const std::string &                 ARMOR_NAME,
-                                               const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
-                                               const Profile &                     PROFILE,
-                                               const non_player::CharacterSPtr_t & CREATURE_SPTR,
-                                               chance::MaterialChanceMap_t &       materialsMapPri,
-                                               chance::MaterialChanceMap_t &       materialsMapSec)
-    {
-        const item::armor::ArmorDetails ARMOR_DETAILS(item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(ARMOR_NAME));
-
-        PopulatMaterials(TYPICAL_PRI_MATERIALS,
-                         PROFILE,
-                         CREATURE_SPTR,
-                         materialsMapPri,
-                         materialsMapSec,
-                         ARMOR_DETAILS.weight);
-    }
-
-
     void ChanceFactory::PopulatMaterials(const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
                                          const Profile &                     PROFILE,
                                          const non_player::CharacterSPtr_t & CREATURE_SPTR,
@@ -1476,13 +1458,6 @@ namespace ownership
     {
         const item::weapon::WeaponDetails WEAPON_DETAILS(item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME));
         return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
-    }
-
-
-    item::Weight_t ChanceFactory::LookupArmorWeight(const std::string & ARMOR_NAME)
-    {
-        const item::armor::ArmorDetails DETAILS( item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(ARMOR_NAME) );
-        return DETAILS.weight;
     }
 
 

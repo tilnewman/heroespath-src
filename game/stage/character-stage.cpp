@@ -1031,7 +1031,6 @@ sfml_util::PopupImage::Regular));
                                               DESC_TEXT_COLOR_,
                                               sfml_util::Justified::Center);
 
-        std::string helpStr("");
         sf::Color helpStrColor;
         sfml_util::gui::TextInfo helpTextInfo(descTextInfo);
         sfml_util::gui::TextRegionSVec_t textRegionSVec;
@@ -1868,8 +1867,7 @@ sfml_util::PopupImage::Regular));
         {
             const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
             const stats::Stat_t NEXT_STAT_VAL(statSetRace_.Get(NEXT_STAT_ENUM).Normal());
-            const std::string NEXT_STAT_NAME( stats::stat::Name(NEXT_STAT_ENUM) );
-
+            
             if ((NEXT_STAT_VAL != 0) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&
@@ -1893,14 +1891,14 @@ sfml_util::PopupImage::Regular));
         {
             const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
             const stats::Stat_t NEXT_STAT_VAL(statSetRole_.Get(NEXT_STAT_ENUM).Normal());
-            const std::string NEXT_STAT_NAME( stats::stat::Name(NEXT_STAT_ENUM) );
-
-            float extraHorizOffset(0.0f);
+            
             if ((NEXT_STAT_VAL != 0) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&
                 (initialRollCounter_ >= 6))
             {
+                float extraHorizOffset(0.0f);
+
                 if (std::find(preExistingStatVec.begin(), preExistingStatVec.end(), NEXT_STAT_ENUM) == preExistingStatVec.end())
                     extraHorizOffset = 0.0f;
                 else
@@ -2367,7 +2365,7 @@ sfml_util::PopupImage::Regular));
         const std::size_t NUM_STUCK_ANIMS(stuckAnimIndexVec.size());
         for (std::size_t i(0); i < NUM_STUCK_ANIMS; ++i)
         {
-            const typename AnimNumSVec_t::iterator ITR_TO_ERASE(animStatsSVec_.begin() + i);
+            const typename AnimNumSVec_t::iterator ITR_TO_ERASE(animStatsSVec_.begin() + AnimNumSVec_t::iterator::difference_type(i));
             //M_HP_LOG("CharacterStage::HandleStuckAnims() destroying a stuck anim at index=" << i << ", value=" << (*ITR_TO_ERASE)->Value());
             animStatsSVec_.erase(ITR_TO_ERASE);
         }

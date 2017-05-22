@@ -65,7 +65,7 @@ namespace sfml_util
              const int MINUTE = INVALID_VALUE_,
              const int SECOND = INVALID_VALUE_);
 
-        Time(const sf::Time & TIME_OBJ);
+        explicit Time(const sf::Time & TIME_OBJ);
 
         const std::string ToString() const;
 
@@ -116,8 +116,8 @@ namespace sfml_util
     class DateTime
     {
     public:
-        DateTime(const Date DATE = Date(),
-                 const Time TIME = Time());
+        DateTime(const Date & DATE = Date(),
+                 const Time & TIME = Time());
 
         const std::string ToString() const;
         inline bool IsValid() const                     { return (date.IsValid() && time.IsValid()); }

@@ -103,7 +103,7 @@ namespace stats
 
         for (int i(0); i < stat::Count; ++i)
         {
-            auto const NEXT_STAT{ statVec_[i] };
+            auto const NEXT_STAT{ statVec_[static_cast<std::size_t>(i)] };
 
             if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Normal() != Stat::VAL_INVALID_))))
             {
@@ -148,7 +148,7 @@ namespace stats
 
         for (int i(0); i < stat::Count; ++i)
         {
-            auto const NEXT_STAT{ statVec_[i] };
+            auto const NEXT_STAT{ statVec_[static_cast<std::size_t>(i)] };
 
             if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Current() != Stat::VAL_INVALID_))))
             {

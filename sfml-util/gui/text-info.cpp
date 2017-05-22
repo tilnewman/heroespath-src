@@ -57,7 +57,7 @@ namespace gui
     {}
 
 
-    bool operator<(const TextInfo & L, const TextInfo R)
+    bool operator<(const TextInfo & L, const TextInfo & R)
     {
         if (L.color != R.color)
             return sfml_util::color::ColorLess(L.color, R.color);
@@ -83,7 +83,7 @@ namespace gui
     }
 
 
-    bool operator==(const TextInfo & L, const TextInfo R)
+    bool operator==(const TextInfo & L, const TextInfo & R)
     {
         if (utilz::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
             return false;

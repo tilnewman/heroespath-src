@@ -64,7 +64,7 @@ namespace gui
         static auto roleIndex { 0 };
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
-        static auto i         { 0 };
+        static std::size_t i  { 0 };
 
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
@@ -258,14 +258,16 @@ namespace gui
 
         if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
         {
-            return filenameVec[utilz::random::Int(0, filenameVec.size() - 1)];
+            return filenameVec[static_cast<std::size_t>(utilz::random::Int(0, filenameVec.size() - static_cast<std::size_t>(1)))];
         }
         else
+        {
             return filenameVec[0];
+        }
     }
 
 
-    void CreatureImageManager::GetFilenames(std::vector<std::string> &                     outputVec,
+    void CreatureImageManager::GetFilenames(std::vector<std::string> &               outputVec,
                                             const game::creature::race::Enum         RACE,
                                             const game::creature::role::Enum         ROLE,
                                             const game::creature::sex::Enum          SEX,

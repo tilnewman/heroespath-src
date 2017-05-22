@@ -174,7 +174,9 @@ namespace stage
 
         //if there is a lot of text (multi-lined), reduce the size to look better
         if (boost::algorithm::icontains(CONTENT_TEXT, "\n"))
-            textInfoContent.charSize -= sfml_util::MapByRes(3, 50);
+        {
+            textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 50));
+        }
 
         contentTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("CreditContent", textInfoContent, creditsRegion));
         creditsRegion.top += contentTextRegionSPtr_->GetEntityRegion().height;

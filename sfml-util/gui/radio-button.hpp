@@ -95,7 +95,7 @@ namespace gui
 
     public:
         //If Using this constructor, then one of the Setup() functions must be called before any other member
-        RadioButtonSet(const std::string & NAME);
+        explicit RadioButtonSet(const std::string & NAME);
 
         //Constructor for cases where each radio button's label text has a different style, size, etc.
         RadioButtonSet( const std::string &    NAME,

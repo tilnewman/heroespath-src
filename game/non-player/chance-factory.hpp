@@ -152,13 +152,6 @@ namespace ownership
                                             chance::MaterialChanceMap_t &         materialsMapPri,
                                             chance::MaterialChanceMap_t &         materialsMapSec);
 
-        static void PopulateArmorMaterials( const std::string &                   ARMOR_NAME,
-                                            const chance::MaterialChanceMap_t &   TYPICAL_PRI_MATERIALS,
-                                            const Profile &                       PROFILE,
-                                            const non_player::CharacterSPtr_t &   CHARACTER_SPTR,
-                                            chance::MaterialChanceMap_t &         materialsMapPri,
-                                            chance::MaterialChanceMap_t &         materialsMapSec);
-
         static void PopulatMaterials(const chance::MaterialChanceMap_t &   TYPICAL_PRI_MATERIALS,
                                      const Profile &                       PROFILE,
                                      const non_player::CharacterSPtr_t &   CHARACTER_SPTR,
@@ -236,8 +229,6 @@ namespace ownership
 
         static bool IsWeaponPossibleConsideringComplexity(const std::string &         WEAPON_NAME,
                                                           const complexity_type::Enum CREATURE_COMPLEXITY);
-
-        static item::Weight_t LookupArmorWeight(const std::string & ARMOR_NAME);
 
         static const chance::MaterialChanceMap_t MakeTypicalArmorMaterials(const Profile &                   PROFILE,
                                                                            const non_player::CharacterSPtr_t & CREATURE_SPTR,

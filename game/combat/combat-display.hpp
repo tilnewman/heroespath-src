@@ -80,7 +80,7 @@ namespace combat
         CombatDisplay & operator=(const CombatDisplay &) =delete;
 
     public:
-        CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());
+        explicit CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());
         virtual ~CombatDisplay();
 
         virtual void Setup();

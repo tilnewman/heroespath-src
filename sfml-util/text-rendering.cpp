@@ -340,14 +340,13 @@ namespace text_render
                                 std::size_t &            strIndex,
                                 char &              termChar)
     {
-        char prevChar(0);
         char currChar(0);
         TextSnippetVec_t textSnippetVec;
         const std::size_t STR_LEN(TEXT_INFO_SET.text.size());
 
         for (; strIndex < STR_LEN; ++strIndex)
         {
-            prevChar = currChar;
+            char prevChar = currChar;
             currChar = TEXT_INFO_SET.text[strIndex];
 
             TextSnippet nextTextSnippet;
@@ -361,7 +360,9 @@ namespace text_render
             textPos.x += nextTextSnippet.sf_text.getLocalBounds().width + 1;
 
             if (0 != prevChar)
-                textPos.x += nextTextSnippet.sf_text.getFont()->getKerning(prevChar, currChar, nextTextSnippet.sf_text.getCharacterSize());
+            {
+                textPos.x += nextTextSnippet.sf_text.getFont()->getKerning(static_cast<sf::Uint32>(prevChar), static_cast<sf::Uint32>(currChar), nextTextSnippet.sf_text.getCharacterSize());
+            }
 
             float textHeight(nextTextSnippet.sf_text.getFont()->getLineSpacing(nextTextSnippet.sf_text.getCharacterSize()));
             if (nextTextSnippet.sf_text.getCharacterSize() < 30)

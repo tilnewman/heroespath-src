@@ -22,7 +22,7 @@ namespace creature
     class Race
     {
     public:
-        Race(const race::Enum    RACE_ENUM = race::Count_PlayerRaces);
+        explicit Race(const race::Enum RACE_ENUM = race::Count_PlayerRaces);
 
         virtual ~Race();
 

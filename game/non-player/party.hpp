@@ -40,7 +40,7 @@ namespace non_player
         Party & operator=(const Party &) =delete;
 
     public:
-        Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
+        explicit Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
         virtual ~Party();
 
         inline const CharacterSVec_t Characters() const { return charactersSVec_; }

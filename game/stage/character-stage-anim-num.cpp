@@ -79,10 +79,10 @@ namespace stage
 
             //color
             const float COLOR_VALF(static_cast<float>(colorVal_));
-            color_.r = static_cast<sf::Int8>(COLOR_VALF + ((255 - COLOR_VALF) * SLIDERX_RATIO));
-            color_.g = static_cast<sf::Int8>(COLOR_VALF + ((255 - COLOR_VALF) * SLIDERX_RATIO));
-            color_.b = static_cast<sf::Int8>(COLOR_VALF + ((255 - COLOR_VALF) * SLIDERX_RATIO));
-            color_.a = static_cast<sf::Int8>(COLOR_VALF + ((255 - COLOR_VALF) * SLIDERX_RATIO));
+            color_.r = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
+            color_.g = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
+            color_.b = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
+            color_.a = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             sfml_util::SetTextColor(textObj_, color_);
 
             isDoneMoving_ = (SLIDERX_RATIO >= 0.99);

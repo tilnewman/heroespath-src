@@ -41,15 +41,15 @@ namespace player
         Party & operator=(const Party &) =delete;
 
     public:
-        Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
+        explicit Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
         virtual ~Party();
 
         inline const CharacterSVec_t Characters() const { return charactersSVec_; }
 
         //Sets error_msg to a message describing why upon failure, otherwise error_msg is not changed.
-        bool Add(const CharacterSPtr_t & CHARACTER_SPTR, std::string error_msg = std::string());
+        bool Add(const CharacterSPtr_t & CHARACTER_SPTR, std::string & error_msg);
 
-        bool IsAddAllowed(const CharacterSPtr_t & CHARACTER_SPTR, std::string error_msg);
+        bool IsAddAllowed(const CharacterSPtr_t & CHARACTER_SPTR, std::string & error_msg);
 
         //returns true if the character existed in the charactersSVec_ and was removed.
         bool Remove(const CharacterSPtr_t & CHARACTER_SPTR);

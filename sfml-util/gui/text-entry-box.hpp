@@ -41,7 +41,7 @@ namespace gui
 
     public:
         //if using this constructor, Setup() must be called before any other function
-        TextEntryBox(const std::string & NAME);
+        explicit TextEntryBox(const std::string & NAME);
 
         TextEntryBox(const std::string &   NAME,
                      const sf::FloatRect & REGION,

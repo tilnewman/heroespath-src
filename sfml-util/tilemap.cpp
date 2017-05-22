@@ -271,7 +271,7 @@ namespace map
                 //const sf::Uint8 ALPHA( * (PIXEL_PTR + i + 3) );
 
                 const unsigned DEST_X((i / 4) % destImage.getSize().x);
-                const unsigned DEST_Y((i / 4) / destImage.getSize().x);
+                const unsigned DEST_Y((static_cast<unsigned int>(i) / static_cast<unsigned int>(4)) / destImage.getSize().x);
 
                 //check for faded blue background color that should be made fully transparent
                 if ((RED   == TRANSPARENT_MASK_.r) &&
@@ -604,7 +604,7 @@ namespace map
             catch (const std::exception & E)
             {
                 M_HP_LOG("TileMap::ParseMapFile(\"" << MAP_PATH_STR << "\") boost::property_tree::read_xml() threw '" << E.what() << "' exception.");
-                throw E;
+                throw;
             }
             catch (...)
             {
@@ -684,7 +684,7 @@ namespace map
         catch (const std::exception & E)
         {
             M_HP_LOG("TileMap::ParseMapFile(" << MAP_PATH_STR << ") boost::property_tree functions threw '" << E.what() << "' exception.");
-            throw E;
+            throw;
         }
         catch (...)
         {
@@ -768,7 +768,7 @@ namespace map
                              << "\"" << nextVal << "\") threw '"
                              << E.what() << "' exception.");
 
-                    throw E;
+                    throw;
                 }
                 catch (...)
                 {
@@ -809,7 +809,7 @@ namespace map
                 mapLayerSPtr->tilesimage_svec.push_back(TILES_IMAGE_SPTR);
 
                 // adjust the tile number to start at one
-                const unsigned TILE_NUM((TILE_NUM_ADJ - TILES_IMAGE_SPTR->first_id) + 1);
+                const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILES_IMAGE_SPTR->first_id)) + static_cast<unsigned int>(1));
 
                 // get a pointer to the current tile's quad
                 sf::Vertex * quad( & mapLayerSPtr->vert_array[(vertIndex++) * 4]);

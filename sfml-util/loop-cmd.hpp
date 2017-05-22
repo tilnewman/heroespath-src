@@ -66,7 +66,7 @@ namespace sfml_util
     class LoopCmd_Execute : public LoopCmd
     {
     public:
-        LoopCmd_Execute(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_Execute(ILoopSPtr_t & iLoopSPtr)
         :
             LoopCmd("Execute", iLoopSPtr)
         {}
@@ -232,7 +232,7 @@ namespace sfml_util
     class LoopCmd_AddStage_Default : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Default(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_AddStage_Default(ILoopSPtr_t & iLoopSPtr)
         :
             LoopCmd("AddStageDefault", iLoopSPtr)
         {}
@@ -286,7 +286,7 @@ namespace sfml_util
     class LoopCmd_RemoveAllStages : public LoopCmd
     {
     public:
-        LoopCmd_RemoveAllStages(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_RemoveAllStages(ILoopSPtr_t & iLoopSPtr)
         :
             LoopCmd("RemoveAllStages", iLoopSPtr)
         {}
@@ -307,7 +307,7 @@ namespace sfml_util
     class LoopCmd_ExitAfterFade : public LoopCmd
     {
     public:
-        LoopCmd_ExitAfterFade(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_ExitAfterFade(ILoopSPtr_t & iLoopSPtr)
         :
             LoopCmd("ExitAfterFade", iLoopSPtr)
         {}
@@ -370,10 +370,10 @@ namespace sfml_util
     class LoopCmd_FadeOut : public LoopCmd
     {
     public:
-        LoopCmd_FadeOut(ILoopSPtr_t &     iLoopSPtr,
-                        const sf::Color & FADE_TO_COLOR  = sf::Color::Black,
-                        const float       SPEED_MULT     = 300.0f,
-                        const bool        WILL_HOLD_FADE = false)
+        explicit LoopCmd_FadeOut(ILoopSPtr_t &     iLoopSPtr,
+                                 const sf::Color & FADE_TO_COLOR  = sf::Color::Black,
+                                 const float       SPEED_MULT     = 300.0f,
+                                 const bool        WILL_HOLD_FADE = false)
         :
             LoopCmd        (std::string("FadeOut"), iLoopSPtr),
             SPEED_MULT_    (SPEED_MULT),
@@ -478,7 +478,7 @@ namespace sfml_util
     class LoopCmd_RemoveFocus : public LoopCmd
     {
     public:
-        LoopCmd_RemoveFocus(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_RemoveFocus(ILoopSPtr_t & iLoopSPtr)
         :
             LoopCmd("RemoveFocus", iLoopSPtr)
         {}

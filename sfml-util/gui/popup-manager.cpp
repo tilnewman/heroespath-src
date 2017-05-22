@@ -386,7 +386,7 @@ namespace gui
     TextureSPtr_t PopupManager::LoadRandomAccentImage() const
     {
         TextureSPtr_t tempTextureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(utilz::random::Int(accentPathsVec_.size() - 1)).string());
+        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(static_cast<std::size_t>(utilz::random::Int(accentPathsVec_.size() - static_cast<std::size_t>(1)))).string());
 
         if (utilz::random::Bool())
         {
@@ -417,8 +417,7 @@ namespace gui
         namespace bfs = boost::filesystem;
 
         const bfs::path   DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+        
         M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)), "sfml_util::gui::PopupManager::LoadAssets() accents dir path not found \"" << DIR_OBJ.string() << "\".");
         M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)), "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \"" << DIR_OBJ.string() << "\".");
 

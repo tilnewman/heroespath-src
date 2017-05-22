@@ -201,7 +201,6 @@ namespace creature
         return ((E == race::Pixie) ||
                 (E == race::Shade) ||
                 (E == race::Griffin) ||
-                (E == race::Werebat) ||
                 (E == race::Werebat));
     }
 

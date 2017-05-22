@@ -152,7 +152,7 @@ namespace gui
 
         inline std::size_t GetCount() const     { return list_.size(); }
         inline bool Empty() const               { return list_.empty(); }
-        inline std::size_t GetLimit() const     { return itemLimit_; }
+        inline std::size_t GetLimit() const     { return static_cast<std::size_t>(itemLimit_); }
 
         void Add(const ListBoxItemSPtr_t & THING_SPTR,
                  const bool                WILL_INC_CURRENT_SEL = false);

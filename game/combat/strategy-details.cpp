@@ -528,7 +528,7 @@ namespace strategy
                     auto initialChance{ CHANCE };
                     for (int i(initialCount); i < 99; ++i)
                     {
-                        OutParam_OutnumberRetreatChanceMap[i] = initialChance;
+                        OutParam_OutnumberRetreatChanceMap[static_cast<std::size_t>(i)] = initialChance;
                         initialChance = initialChance * 2.0f;
                         if (initialChance > 1.0f)
                             initialChance = 1.0f;
