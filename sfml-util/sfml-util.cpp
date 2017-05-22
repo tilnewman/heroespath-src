@@ -9,13 +9,13 @@
 
 //prevent boost warnings that can be ignored
 #include "utilz/platform.hpp"
-#ifdef PLATFORMDETECT__AAPPLE_OS
+#ifdef PLATFORMDETECT__APPPLE_OOSS
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
 
-#ifdef PLATFORMDETECT__AAPPLE_OS
+#ifdef PLATFORMDETECT__APPPLE_OOSS
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 

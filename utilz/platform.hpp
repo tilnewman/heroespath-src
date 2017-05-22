@@ -11,9 +11,9 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64) || defined(__WINDOWS__)
 #define PLATFORMDETECT__WINDOWS
 #elif defined(macintosh) || defined(Macintosh)
-#define PLATFORMDETECT__AAPPLE_OS9
+#define PLATFORMDETECT__APPPLE_OOSS9
 #elif defined(__APPLE__) || defined(__MACH__)
-#define PLATFORMDETECT__AAPPLE_OS
+#define PLATFORMDETECT__APPPLE_OOSS
 #elif defined(linux) || defined(__linux) || defined(__linux__)
 #define PLATFORMDETECT__LINUX
 #endif

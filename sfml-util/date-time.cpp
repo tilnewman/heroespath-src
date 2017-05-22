@@ -5,14 +5,14 @@
 
 //suppress warnings that are safe to ignore in boost
 #include "utilz/platform.hpp"
-#ifdef PLATFORMDETECT__AAPPLE_OS
+#ifdef PLATFORMDETECT__APPPLE_OOSS
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#ifdef PLATFORMDETECT__AAPPLE_OS
+#ifdef PLATFORMDETECT__APPPLE_OOSS
 #pragma GCC diagnostic warning "-Wundef"
 #pragma GCC diagnostic warning "-Wswitch-enum"
 #endif
