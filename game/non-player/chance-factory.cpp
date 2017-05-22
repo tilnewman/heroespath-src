@@ -276,7 +276,7 @@ namespace ownership
         {
             //if all weapons have already been chosen then break from the selection loop
             bool willBreak(true);
-            for (auto const & NEXT_BOOL : numberSelectedVec)
+            for (auto const NEXT_BOOL : numberSelectedVec)
             {
                 if (NEXT_BOOL == false)
                 {

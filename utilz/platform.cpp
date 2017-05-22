@@ -62,12 +62,12 @@ namespace utilz
         platform_ = platform_type::Windows;
 #endif
 
-#ifdef PLATFORMDETECT__APPLE_OS9
+#ifdef PLATFORMDETECT__AAPPLE_OS9
         ss << "  APPLE (OS9)";
         platform_ = platform_type::Unsupported;
 #endif
 
-#ifdef PLATFORMDETECT__APPLE_OS
+#ifdef PLATFORMDETECT__AAPPLE_OS
         ss << "  APPLE (OS)";
         platform_ = platform_type::Apple;
 #endif

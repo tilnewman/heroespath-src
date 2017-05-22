@@ -6,13 +6,13 @@
 //
 //suppress warnings that are safe to ignore in boost
 #include "utilz/platform.hpp"
-#ifdef PLATFORMDETECT__APPLE_OS
+#ifdef PLATFORMDETECT__AAPPLE_OS
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/Graphics/Color.hpp>
 
-#ifdef PLATFORMDETECT__APPLE_OS
+#ifdef PLATFORMDETECT__AAPPLE_OS
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #endif
 

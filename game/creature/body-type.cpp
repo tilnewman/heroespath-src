@@ -171,8 +171,10 @@ namespace creature
                 if (ROLE == role::Wing)
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
 
-                //grunt
-                return BodyType::Make_Humanoid(false, false, false);
+                if (ROLE == role::Grunt)
+                    return BodyType::Make_Humanoid(false, false, false);
+
+                break;
             }
             case creature::race::Enum::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
             case creature::race::Enum::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, 0, true); }
@@ -194,6 +196,8 @@ namespace creature
 
                 if (ROLE == role::Whelp)
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
+                
+                break;
             }
             case creature::race::Enum::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
             case creature::race::Enum::Skeleton:
@@ -227,6 +231,8 @@ namespace creature
 
                 if (ROLE == role::Wing)
                     return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
+                
+                break;
             }
             case creature::race::Enum::Griffin:
             {
