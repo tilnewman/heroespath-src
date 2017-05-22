@@ -356,7 +356,9 @@ namespace stage
                 case ContentType::Item:
                 {
                     if (listBoxItemToGiveSPtr_.get() == nullptr)
+                    {
                         return false;
+                    }
 
                     const item::ItemSPtr_t IITEM_SPTR(listBoxItemToGiveSPtr_->iitem_sptr);
                     const std::string CAN_GIVE_ITEM_STR(creatureToGiveToPtr_->ItemIsAddAllowed(IITEM_SPTR));
@@ -377,7 +379,6 @@ namespace stage
                         EndOfGiveShareGatherTasks();
                         return false;
                     }
-                    break;
                 }
                 case ContentType::Coins:
                 {
