@@ -431,8 +431,8 @@ namespace stage
         auto playerSPtr( std::make_shared<player::Character>("StatsTestingCreatureName",
                                                              creature::sex::Female,
                                                              creature::BodyType::Make_Wolfen(),
-                                                             creature::race::Wolfen,
-                                                             creature::role::Wolfen,
+                                                             creature::Race(creature::race::Wolfen),
+                                                             creature::Role(creature::role::Wolfen),
                                                              STAT_SET_CHAR_BASE) );
 
         playerSPtr->Stats() = STAT_SET_CHAR_BASE;

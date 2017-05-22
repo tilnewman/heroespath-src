@@ -35,7 +35,7 @@ namespace sfml_util
         Loop & operator=(const Loop &) =delete;
 
     public:
-        Loop(const std::string & NAME);
+        explicit Loop(const std::string & NAME);
         virtual ~Loop();
 
         inline virtual void Exit() { willExit_ = true; }

@@ -405,8 +405,7 @@ namespace combat
             if (WILL_APPEND_ING) strVec.push_back("attacking"); else strVec.push_back("attacks");
         }
 
-        std::unique(strVec.begin(), strVec.end());
-
+        strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
         return strVec.at(utilz::random::Int(strVec.size() - 1));
     }
 
@@ -681,7 +680,7 @@ namespace combat
 
         if (strVec.size() > 1)
         {
-            std::unique(strVec.begin(), strVec.end());
+            strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
             return boost::algorithm::join(strVec, " and ");
         }
         else if (strVec.size() == 1)

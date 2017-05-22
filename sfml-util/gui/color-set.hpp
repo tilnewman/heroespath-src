@@ -45,7 +45,7 @@ namespace gui
                  const sf::Color & BG_WITHOUT_FOCUS);
 
         //use this constructor when the bg is white and colors are the same with and without focus
-        ColorSet(const sf::Color & FG);
+        explicit ColorSet(const sf::Color & FG);
 
         //use this constructor when the without_focus colors are automatically darker than those with_focus
         ColorSet(const sf::Color & FG_WITH_FOCUS,

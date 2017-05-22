@@ -47,7 +47,7 @@ namespace gui
 
     public:
         //if using this constructor, Setup() must be called before any other function
-        TextRegion(const std::string & NAME);
+        explicit TextRegion(const std::string & NAME);
 
         //if this constructor is used then no scrollbar will be created, even if the text height exceeds the REGION
         TextRegion( const std::string &     NAME,

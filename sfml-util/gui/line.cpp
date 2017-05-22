@@ -202,7 +202,7 @@ namespace gui
             {
                 endBotOrRightSprite_.setPosition(posX, 0.0f);
                 offScreenTexture_.draw(endBotOrRightSprite_);
-                posX += endBotOrRightSprite_.getLocalBounds().width;
+                //posX += endBotOrRightSprite_.getLocalBounds().width;//posX is not used again so this addition is pointless
             }
 
             sf::FloatRect r(GetEntityRegion());
@@ -252,7 +252,7 @@ namespace gui
             {
                 endBotOrRightSprite_.setPosition(0.0f, posY);
                 offScreenTexture_.draw(endBotOrRightSprite_);
-                posY += endBotOrRightSprite_.getLocalBounds().height;
+                //posY += endBotOrRightSprite_.getLocalBounds().height;//posY is not used again so this addition is pointless
             }
 
             sf::FloatRect r(GetEntityRegion());

@@ -340,14 +340,13 @@ namespace text_render
                                 std::size_t &            strIndex,
                                 char &              termChar)
     {
-        char prevChar(0);
         char currChar(0);
         TextSnippetVec_t textSnippetVec;
         const std::size_t STR_LEN(TEXT_INFO_SET.text.size());
 
         for (; strIndex < STR_LEN; ++strIndex)
         {
-            prevChar = currChar;
+            char prevChar = currChar;
             currChar = TEXT_INFO_SET.text[strIndex];
 
             TextSnippet nextTextSnippet;

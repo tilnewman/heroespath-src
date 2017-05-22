@@ -20,8 +20,8 @@ namespace sfml_util
 
     //ImageOrTexture_t must be sf::Image or sf::Texture
     template<typename ImageOrTexture_t>
-    void LoadImageOrTexture(ImageOrTexture_t & imageOrTexture,
-                            const std::string  PATH_STR)
+    void LoadImageOrTexture(ImageOrTexture_t &  imageOrTexture,
+                            const std::string & PATH_STR)
     {
         namespace bfs = boost::filesystem;
 
@@ -44,7 +44,7 @@ namespace sfml_util
     //ImageOrTextureSPtr_t must be ImageSPtr_t or TextureSPtr_t.
     template<typename ImageOrTextureSPtr_t>
     void LoadImageOrTextureSPtr(ImageOrTextureSPtr_t &  imageOrTextureSPtr,
-                                const std::string       PATH_STR)
+                                const std::string &     PATH_STR)
     {
         if (nullptr == imageOrTextureSPtr.get())
             imageOrTextureSPtr.reset( new typename ImageOrTextureSPtr_t::element_type);
@@ -90,10 +90,10 @@ namespace sfml_util
     }
 
 
-    void LoadFont(sf::Font & font, const std::string PATH_STR);
+    void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
 
-    void LoadFontSPtr(FontSPtr_t & fontSPtr, const std::string PATH_STR);
+    void LoadFontSPtr(FontSPtr_t & fontSPtr, const std::string & PATH_STR);
 
 
     //Returns the number loaded into the std::vector<> from DIR_STR.

@@ -72,8 +72,7 @@ namespace state
 
         //configure the path
         const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_GAME_DIR_NAME_)));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+        
         GameStateSSet_t gameStateSSet;
 
         //check for early exit cases
@@ -139,8 +138,7 @@ namespace state
 
         //configure the path
         const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+        
         player::CharacterSSet_t characterSSet;
 
         //check for early exit cases
@@ -206,8 +204,7 @@ namespace state
 
         //configure the path
         const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+        
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
             return false;
@@ -278,8 +275,7 @@ namespace state
 
         //establish the path
         const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(DIR_STR)));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+        
         //create directory if missing
         if (false == bfs::exists(DIR_OBJ))
         {

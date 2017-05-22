@@ -438,19 +438,16 @@ namespace stage
                 {
                     HandleMeteorShardsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Coins:
                 {
                     HandleCoinsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Gems:
                 {
                     HandleGemsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
                     return false;
-                    break;
                 }
                 case ContentType::Item:
                 case ContentType::Count:
@@ -2229,7 +2226,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
 
-        creaturePtr_->CoinsAdj(COUNT * -1);
+        creaturePtr_->CoinsAdj(static_cast<game::item::Coin_t>(COUNT) * -1);
         creatureToGiveToPtr->CoinsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2242,7 +2239,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
 
-        creaturePtr_->GemsAdj(COUNT * -1);
+        creaturePtr_->GemsAdj(static_cast<game::item::Gem_t>(COUNT) * -1);
         creatureToGiveToPtr->GemsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2255,7 +2252,7 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(COUNT * -1);
+        creaturePtr_->MeteorShardsAdj(static_cast<game::item::Meteor_t>(COUNT) * -1);
         creatureToGiveToPtr->MeteorShardsAdj(COUNT);
 
         std::ostringstream ss;
@@ -2606,8 +2603,7 @@ namespace stage
         creature::Achievements a(CREATURE_CPTRC->AchievementsCopy());
 
         const std::string NOMORE_TITLE_MSG_STR("  (There are no more titles to earn)");
-        const std::string NONEYET_TITLE_MSG_STR("");
-
+        
         creature::TitleCPtrC_t ENEMIESFACED_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::EnemiesFaced));
         creature::TitleCPtrC_t MELEEHITS_NEXT_TITLE_CPTR       (a.GetNextTitle(creature::AchievementType::MeleeHits));
         creature::TitleCPtrC_t BATTLESSURVIVED_NEXT_TITLE_CPTR (a.GetNextTitle(creature::AchievementType::BattlesSurvived));

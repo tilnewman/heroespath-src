@@ -27,7 +27,7 @@ namespace gui
     public:
         MouseTextInfo();
 
-        MouseTextInfo(const TextInfo & TEXT_INFO);
+        explicit MouseTextInfo(const TextInfo & TEXT_INFO);
 
         MouseTextInfo(const TextInfo & UP,
                       const TextInfo & DOWN,

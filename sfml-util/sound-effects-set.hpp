@@ -16,7 +16,7 @@ namespace sfml_util
     class SoundEffectsSet
     {
     public:
-        SoundEffectsSet(const SoundEffectEnumVec_t & ENUM_VEC);
+        explicit SoundEffectsSet(const SoundEffectEnumVec_t & ENUM_VEC);
 
         SoundEffectsSet(const sound_effect::Enum FIRST_SOUND_EFFECT_ENUM,
                         const sound_effect::Enum LAST_SOUND_EFFECT_ENUM);

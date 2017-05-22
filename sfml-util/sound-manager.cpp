@@ -645,9 +645,10 @@ namespace sfml_util
             }
 
             static std::size_t sfxSetIndex{ 0 };
-            static std::size_t sfxSetInnerIndex{ 0 };
             if (sfxSetIndex < soundEffectsSetSVec_.size())
             {
+                static std::size_t sfxSetInnerIndex{ 0 };
+
                 if (false == TestSoundEffectsSet(soundEffectsSetSVec_.at(sfxSetIndex), sfxSetInnerIndex))
                 {
                     ++sfxSetInnerIndex;
@@ -687,7 +688,7 @@ namespace sfml_util
                 if (false == playOrStop)
                 {
                     MusicStart(NEXT_ENUM);
-                    playOrStop = !playOrStop;
+                    playOrStop = true;
                     counter = 0;
                     return false;
                 }
@@ -711,8 +712,9 @@ namespace sfml_util
         }
 
         //test combat music
-        static std::size_t combatMusicIndex{ 0 };
         {
+            static std::size_t combatMusicIndex{ 0 };
+
             if (combatMusicIndex < CombatMusicCount())
             {
                 std::ostringstream ss;
@@ -728,7 +730,7 @@ namespace sfml_util
                 {
                     musicSPtr->setVolume(100.0f);
                     musicSPtr->play();
-                    playOrStop = !playOrStop;
+                    playOrStop = true;
                     counter = 0;
                     return false;
                 }

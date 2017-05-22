@@ -22,7 +22,7 @@ namespace stage
     class LoopCmd_AddStage_Camp : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Camp(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Camp(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Camp();
         virtual bool Execute();
     };
@@ -34,7 +34,7 @@ namespace stage
     class LoopCmd_AddStage_Settings : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Settings(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Settings(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Settings();
         virtual bool Execute();
     };
@@ -46,7 +46,7 @@ namespace stage
     class LoopCmd_AddStage_Party_Creation : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Party_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Party_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Party_Creation();
         virtual bool Execute();
     };
@@ -58,7 +58,7 @@ namespace stage
     class LoopCmd_AddStage_MainMenu : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_MainMenu(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_MainMenu(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_MainMenu();
         virtual bool Execute();
     };
@@ -70,7 +70,7 @@ namespace stage
     class LoopCmd_AddStage_LoadGameMenu : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_LoadGameMenu(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_LoadGameMenu(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_LoadGameMenu();
         virtual bool Execute();
     };
@@ -82,7 +82,7 @@ namespace stage
     class LoopCmd_AddStage_Intro : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Intro(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Intro(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Intro();
         virtual bool Execute();
     };
@@ -94,7 +94,7 @@ namespace stage
     class LoopCmd_AddStage_Inn : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Inn(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Inn(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Inn();
         virtual bool Execute();
     };
@@ -106,7 +106,7 @@ namespace stage
     class LoopCmd_AddStage_Credits : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Credits(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Credits(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Credits();
         virtual bool Execute();
     };
@@ -118,7 +118,7 @@ namespace stage
     class LoopCmd_AddStage_Character_Creation : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Character_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Character_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Character_Creation();
         virtual bool Execute();
     };
@@ -130,7 +130,7 @@ namespace stage
     class LoopCmd_AddStage_Combat : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Combat();
         virtual bool Execute();
     };
@@ -144,7 +144,7 @@ namespace stage
         LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) =delete;
 
     public:
-        LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t & loopSPtr, creature::CreaturePtr_t creaturePtr);
+        explicit LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t & loopSPtr, creature::CreaturePtr_t creaturePtr);
         virtual ~LoopCmd_AddStage_Inventory();
         virtual bool Execute();
     private:
@@ -157,7 +157,7 @@ namespace stage
     class LoopCmd_AddStage_Test : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Test(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Test(sfml_util::ILoopSPtr_t & loopSPtr);
         virtual ~LoopCmd_AddStage_Test();
         virtual bool Execute();
     };

@@ -300,7 +300,9 @@ namespace combat
             utilz::Vector::Append(creature::Algorithms::FindByProjectileWeapons(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (selectedPlayersPVec.size() > 1)
-            std::unique(selectedPlayersPVec.begin(), selectedPlayersPVec.end());
+        {
+            selectedPlayersPVec.erase(std::unique(selectedPlayersPVec.begin(), selectedPlayersPVec.end()), selectedPlayersPVec.end());
+        }
 
         return creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(selectedPlayersPVec, false);
     }
@@ -418,7 +420,9 @@ namespace combat
                 refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreature().second);
 
         if (refinedTargetsPVec.size() > 1)
-            std::unique(refinedTargetsPVec.begin(), refinedTargetsPVec.end());
+        {
+            refinedTargetsPVec.erase(std::unique(refinedTargetsPVec.begin(), refinedTargetsPVec.end()), refinedTargetsPVec.end());
+        }
 
         return refinedTargetsPVec;
     }

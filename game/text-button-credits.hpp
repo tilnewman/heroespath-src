@@ -23,7 +23,7 @@ namespace game
 
     public:
         //if using this constructor, Setup() must be called before any other functions
-        CreditsButton(const std::string & NAME);
+        explicit CreditsButton(const std::string & NAME);
 
         CreditsButton(const std::string &                   NAME,
                       const float                           POS_LEFT,

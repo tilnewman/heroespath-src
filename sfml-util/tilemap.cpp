@@ -604,7 +604,7 @@ namespace map
             catch (const std::exception & E)
             {
                 M_HP_LOG("TileMap::ParseMapFile(\"" << MAP_PATH_STR << "\") boost::property_tree::read_xml() threw '" << E.what() << "' exception.");
-                throw E;
+                throw;
             }
             catch (...)
             {
@@ -684,7 +684,7 @@ namespace map
         catch (const std::exception & E)
         {
             M_HP_LOG("TileMap::ParseMapFile(" << MAP_PATH_STR << ") boost::property_tree functions threw '" << E.what() << "' exception.");
-            throw E;
+            throw;
         }
         catch (...)
         {
@@ -768,7 +768,7 @@ namespace map
                              << "\"" << nextVal << "\") threw '"
                              << E.what() << "' exception.");
 
-                    throw E;
+                    throw;
                 }
                 catch (...)
                 {

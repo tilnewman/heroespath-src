@@ -119,7 +119,7 @@ namespace gui
 
         wasDownInRegion_ = false;
 
-        didStateChange = (guiText_.MouseUp(MOUSE_POS_V) || guiImage_.MouseUp(MOUSE_POS_V));
+        //didStateChange = (guiText_.MouseUp(MOUSE_POS_V) || guiImage_.MouseUp(MOUSE_POS_V));
 
         //prevent the image from being in state MouseState::Over
         if (MouseState::Over == guiImage_.GetMouseState())

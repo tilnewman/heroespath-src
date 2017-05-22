@@ -34,9 +34,9 @@ namespace game
     class CreatureWrapper
     {
     public:
-        CreatureWrapper(const creature::CreatureSPtr_t & CREATURE_SPTR);
-        CreatureWrapper(const player::CharacterSPtr_t & PLAYER_CHAR_SPTR);
-        CreatureWrapper(const non_player::CharacterSPtr_t & NON_PLAYER_CHAR_SPTR);
+        explicit CreatureWrapper(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        explicit CreatureWrapper(const player::CharacterSPtr_t & PLAYER_CHAR_SPTR);
+        explicit CreatureWrapper(const non_player::CharacterSPtr_t & NON_PLAYER_CHAR_SPTR);
 
         bool IsPlayerCharacter() const;
         inline creature::CreatureSPtr_t Creature() const    { return creatureSPtr_; }

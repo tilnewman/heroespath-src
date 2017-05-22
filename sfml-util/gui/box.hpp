@@ -36,7 +36,7 @@ namespace box
 
     public:
         //if no box::Info object is given, then Setup() must be called before any other function
-        Box(const std::string & NAME, const box::Info & BOX_INFO = box::Info());
+        explicit Box(const std::string & NAME, const box::Info & BOX_INFO = box::Info());
 
         virtual ~Box();
 

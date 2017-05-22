@@ -454,7 +454,7 @@ namespace sfml_util
 
             const sfml_util::gui::box::Info TEXTENTRY_BOX_INFO(true,
                                                                TEXTENTRY_REGION,
-                                                               sf::Color::White,
+                                                               sfml_util::gui::ColorSet(sf::Color::White),
                                                                TEXTENTRY_BG_INFO);
 
             textEntryBoxSPtr_.reset( new sfml_util::gui::TextEntryBox("PopupStage's",

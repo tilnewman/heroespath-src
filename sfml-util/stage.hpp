@@ -41,7 +41,7 @@ namespace sfml_util
         Stage & operator=(const Stage &) =delete;
 
     public:
-        Stage(const std::string & NAME);
+        explicit Stage(const std::string & NAME);
 
         Stage(const std::string &   NAME,
               const sf::FloatRect & REGION);

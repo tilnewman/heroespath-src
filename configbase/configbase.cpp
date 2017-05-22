@@ -98,7 +98,7 @@ namespace appbase
     }
 
 
-    bool ConfigBase::Save(const std::string FILENAME) const
+    bool ConfigBase::Save(const std::string & FILENAME) const
     {
         boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
 

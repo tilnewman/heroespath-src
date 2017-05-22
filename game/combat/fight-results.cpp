@@ -507,7 +507,7 @@ namespace combat
 
         if (WILL_UNIUQE)
         {
-            std::unique(conditionsVec.begin(), conditionsVec.end());
+            conditionsVec.erase(std::unique(conditionsVec.begin(), conditionsVec.end()), conditionsVec.end());
         }
 
         return conditionsVec;

@@ -102,7 +102,7 @@ namespace stage
         InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:
-        InventoryStage(creature::CreaturePtr_t creaturePtr);
+        explicit InventoryStage(creature::CreaturePtr_t creaturePtr);
         virtual ~InventoryStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }

@@ -204,7 +204,6 @@ namespace sfml_util
         else if ((7680 == res.width) && (4320 == res.height)) { res.name = "8K_UHD"  ; res.aspect_ratio = "16:9"    ; return true; }
         else if ((7680 == res.width) && (4800 == res.height)) { res.name = "WHUXGA"  ; res.aspect_ratio = "16:10"   ; return true; }
         else if ((8192 == res.width) && (4608 == res.height)) { res.name = "8K"      ; res.aspect_ratio = "16:9"    ; return true; }
-        else if ((7680 == res.width) && (4800 == res.height)) { res.name = "WHUXGA"  ; res.aspect_ratio = "16:10"   ; return true; }
         {
             res.name = "?";
             res.aspect_ratio = "?";

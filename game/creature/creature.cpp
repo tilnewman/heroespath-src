@@ -921,7 +921,7 @@ namespace creature
         const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot cast because " : "");
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
-        if (role::Knight == role_)
+        if (role::Knight == role_.Which())
             return RESPONSE_PREFIX + "knights cannot cast spells" + RESPONSE_POSTFIX;
 
         const std::string CAN_TAKE_ACTION_STR(CanTakeActionStr(false));
