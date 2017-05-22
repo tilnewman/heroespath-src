@@ -1,0 +1,59 @@
+{
+   MesaBug1_JumpDependsOnUninit_glGetIntegerv()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.12.2.0.41591
+   fun:glGetIntegerv
+   ...
+}
+{
+   MesaBug2_JumpDependsOnUninit_glEnableClientState()
+   Memcheck:Cond
+   fun:glEnableClientState
+   fun:_ZN2sf12RenderTarget13resetGLStatesEv
+   ...
+}
+{
+   MesaBug3_JumpDependsOnUninit_glVertexPointer()
+   Memcheck:Cond
+   fun:glVertexPointer
+   fun:_ZN2sf12RenderTarget4drawEPKNS_6VertexEmNS_13PrimitiveTypeERKNS_12RenderStatesE
+   ...
+}
+{
+   MesaBug4_JumpDependsOnUninit_glColorPointer()
+   Memcheck:Cond
+   fun:glColorPointer
+   ...
+}
+{
+   MesaBug5_JumpDependsOnUninit_glTexCoordPointer()
+   Memcheck:Cond
+   fun:glTexCoordPointer
+   ...
+}
+{
+   MesaBug6_JumpDependsOnUninit_glDrawArrays()
+   Memcheck:Cond
+   fun:glDrawArrays
+   ...
+}
+{
+   SFMLBug1_JumpDependsOnUninit_sf::Texture::create()
+   Memcheck:Cond
+   fun:_ZN2sf7Texture6createEjj
+   ...
+}
+{
+   SFMLBug2_JumpDependsOnUninit_sf::RenderTexture::create()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   fun:_ZN2sf13RenderTexture6createEjjb
+   ...
+}
+{
+   SFMLBug3_JumpDependsOnUninit_sf::Font::findGlyphRect()
+   Memcheck:Cond
+   fun:_ZNK2sf4Font13findGlyphRectERNS0_4PageEjj
+   ...
+}
+
