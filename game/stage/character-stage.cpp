@@ -1227,8 +1227,8 @@ sfml_util::PopupImage::Regular));
         const std::string RECC_STRONG_STR("It is strongly reccomended that you increase this attribute.");
 
         sf::Color reccNormalColor(DESC_TEXT_COLOR_);
-        reccNormalColor.g += static_cast<sf::Uint8>(20);
-        reccNormalColor.b += static_cast<sf::Uint8>(40);
+        reccNormalColor.g = static_cast<sf::Uint8>(static_cast<int>(reccNormalColor.g) + 20);
+        reccNormalColor.b = static_cast<sf::Uint8>(static_cast<int>(reccNormalColor.b) + 40);
 
         sf::Color reccStrongColor(255, 200, 181);
 

@@ -239,7 +239,7 @@ namespace box
             botLine_.Setup(x, y, static_cast<std::size_t>(SECOND_HORIZ_LEN));
 
         x -= (SECOND_HORIZ_LEN + tJointBotSprite_.getLocalBounds().width);
-        y -= (tJointBotSprite_.getLocalBounds().height - GE_SPTR->GetRect_LineSmallHorizontalBot().height);
+        y -= (tJointBotSprite_.getLocalBounds().height - static_cast<float>(GE_SPTR->GetRect_LineSmallHorizontalBot().height));
 
         x = (LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width + FIRST_HORIZ_LEN);
         tJointBotSprite_.setPosition(x, y);

@@ -442,7 +442,7 @@ namespace combat
             //keep track of which shoulder-to-shoulder this vert/NEXT_BLOCKING_POS is
             const std::size_t SHOULDER_TO_SHOULDER_POS(shoulderToShoulderBlockingMap[NEXT_BLOCKING_POS]++);
 
-            const float POS_LEFT((battlefieldWidth_ * 0.5f) + (NEXT_BLOCKING_POS * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER));
+            const float POS_LEFT((battlefieldWidth_ * 0.5f) + (static_cast<float>(NEXT_BLOCKING_POS) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER));
 
             const float SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF((static_cast<float>(SHOULDER_TO_SHOULDER_COUNT) * 0.5f) * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER);
             const float SHOULDER_TO_SHOULDER_POS_HEIGHT(static_cast<float>(SHOULDER_TO_SHOULDER_POS) * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER);

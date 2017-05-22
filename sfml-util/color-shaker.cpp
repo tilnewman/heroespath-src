@@ -31,10 +31,10 @@ namespace sfml_util
             const float NEW_RATIO(shaker_.Update(ELAPSED_TIME_SECONDS));
 
             colorCurr_ = colorOrig_;
-            colorCurr_.r = colorCurr_.r + static_cast<sf::Uint8>(NEW_RATIO * redDiff_);
-            colorCurr_.g = colorCurr_.g + static_cast<sf::Uint8>(NEW_RATIO * greenDiff_);
-            colorCurr_.b = colorCurr_.b + static_cast<sf::Uint8>(NEW_RATIO * blueDiff_);
-            colorCurr_.a = colorCurr_.a + static_cast<sf::Uint8>(NEW_RATIO * alphaDiff_);
+            colorCurr_.r = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.r) + static_cast<int>(NEW_RATIO * redDiff_));
+            colorCurr_.g = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.g) + static_cast<int>(NEW_RATIO * greenDiff_));
+            colorCurr_.b = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.b) + static_cast<int>(NEW_RATIO * blueDiff_));
+            colorCurr_.a = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.a) + static_cast<int>(NEW_RATIO * alphaDiff_));
         }
 
         return colorCurr_;
