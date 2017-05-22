@@ -555,7 +555,7 @@ namespace sfml_util
 
     void SoundManager::MusicAcquire_CombatIntro(MusicInfo & musicInfo, MusicSPtr_t & musicSPtr)
     {
-        const std::size_t INDEX(utilz::random::Int(0, combatIntroMusicInfoVec_.size() - 1));
+        const std::size_t INDEX(static_cast<std::size_t>(utilz::random::Int(0, combatIntroMusicInfoVec_.size() - static_cast<std::size_t>(1))));
         MusicAcquire_CombatIntro(musicInfo, musicSPtr, INDEX);
     }
 

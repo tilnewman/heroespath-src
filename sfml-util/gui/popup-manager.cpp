@@ -386,7 +386,7 @@ namespace gui
     TextureSPtr_t PopupManager::LoadRandomAccentImage() const
     {
         TextureSPtr_t tempTextureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(utilz::random::Int(accentPathsVec_.size() - 1)).string());
+        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(static_cast<std::size_t>(utilz::random::Int(accentPathsVec_.size() - static_cast<std::size_t>(1)))).string());
 
         if (utilz::random::Bool())
         {

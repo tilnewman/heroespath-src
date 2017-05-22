@@ -28,7 +28,7 @@ namespace spell
     stats::Health_t Sparks::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
                                       creature::CreaturePtr_t) const
     {
-        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, castingCreaturePtr->Rank(), 10);
+        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, static_cast<int>(castingCreaturePtr->Rank()), 10);
     }
 
 
@@ -46,7 +46,7 @@ namespace spell
     stats::Health_t Bandage::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
                                        creature::CreaturePtr_t) const
     {
-        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, castingCreaturePtr->Rank(), 10);
+        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, static_cast<int>(castingCreaturePtr->Rank()), 10);
     }
 
 
@@ -241,8 +241,8 @@ namespace spell
                                                          effectedCreaturePtr->Stats().Int().Current())};
 
             //check for 'normal' success
-            auto const CHANCE_VAL_CASTER{ RAND_CASTER + castingCreaturePtr->Rank() };
-            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER + effectedCreaturePtr->Rank() };
+            auto const CHANCE_VAL_CASTER{ RAND_CASTER + static_cast<int>(castingCreaturePtr->Rank()) };
+            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER + static_cast<int>(effectedCreaturePtr->Rank()) };
             if (CHANCE_VAL_CASTER >= CHANCE_VAL_DEFENDER)
             {
                 effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);

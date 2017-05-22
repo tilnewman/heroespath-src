@@ -360,7 +360,9 @@ namespace text_render
             textPos.x += nextTextSnippet.sf_text.getLocalBounds().width + 1;
 
             if (0 != prevChar)
-                textPos.x += nextTextSnippet.sf_text.getFont()->getKerning(prevChar, currChar, nextTextSnippet.sf_text.getCharacterSize());
+            {
+                textPos.x += nextTextSnippet.sf_text.getFont()->getKerning(static_cast<sf::Uint32>(prevChar), static_cast<sf::Uint32>(currChar), nextTextSnippet.sf_text.getCharacterSize());
+            }
 
             float textHeight(nextTextSnippet.sf_text.getFont()->getLineSpacing(nextTextSnippet.sf_text.getCharacterSize()));
             if (nextTextSnippet.sf_text.getCharacterSize() < 30)

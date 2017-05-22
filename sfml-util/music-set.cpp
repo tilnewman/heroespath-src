@@ -75,15 +75,23 @@ namespace sfml_util
                 //populate a vector of songs that does not include the currently (or just finished) playing
                 MusicEnumVec_t possibleVec;
                 for (auto const & NEXT_MUSIC_ENUM : whichVec_)
+                {
                     if (NEXT_MUSIC_ENUM != currentlyPlaying_)
+                    {
                         possibleVec.push_back(NEXT_MUSIC_ENUM);
+                    }
+                }
 
                 //pick next song at random
                 const std::size_t NUM_POSSIBLE_SONGS(possibleVec.size());
                 if (NUM_POSSIBLE_SONGS == 1)
+                {
                     return possibleVec[0];
+                }
                 else
-                    return possibleVec[utilz::random::Int(0, NUM_POSSIBLE_SONGS - 1)];
+                {
+                    return possibleVec[static_cast<std::size_t>(utilz::random::Int(0, NUM_POSSIBLE_SONGS - static_cast<std::size_t>(1)))];
+                }
             }
             else
             {

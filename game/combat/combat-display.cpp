@@ -388,7 +388,7 @@ namespace combat
             if (NEXT_VERTEX.second->GetBlockingPos() > highestBlockingPos)
                 highestBlockingPos = NEXT_VERTEX.second->GetBlockingPos();
 
-            const std::size_t SHOULDER_TO_SHOULDER_COUNT(combatTree_.VertexCountByBlockingPos(NEXT_VERTEX.first));
+            const std::size_t SHOULDER_TO_SHOULDER_COUNT(combatTree_.VertexCountByBlockingPos(static_cast<int>(NEXT_VERTEX.first)));
             if (shoulderToShoulderMax < SHOULDER_TO_SHOULDER_COUNT)
                 shoulderToShoulderMax = SHOULDER_TO_SHOULDER_COUNT;
 

@@ -257,7 +257,7 @@ namespace combat
             case combat::TurnAction::LandPounce:
             {
                 std::vector<std::string> strVec{ "surges", "charages", "leaps", "rushes", "springs" };
-                ss << strVec.at(utilz::random::Int(strVec.size() - 1));
+                ss << strVec.at(static_cast<std::size_t>(utilz::random::Int(strVec.size() - static_cast<std::size_t>(1))));
 
                 if (utilz::random::Bool())
                 {
@@ -406,7 +406,7 @@ namespace combat
         }
 
         strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
-        return strVec.at(utilz::random::Int(strVec.size() - 1));
+        return strVec.at(static_cast<std::size_t>(utilz::random::Int(strVec.size() - static_cast<std::size_t>(1))));
     }
 
 

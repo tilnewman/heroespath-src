@@ -106,7 +106,7 @@ namespace sfml_util
     {
         M_ASSERT_OR_LOGANDTHROW_SS((winSPtr_.get() != nullptr), "Display::SetFrameRateLimit() called before window created.");
         frameRateLimit_ = LIMIT;
-        winSPtr_->setFramerateLimit(LIMIT);
+        winSPtr_->setFramerateLimit(static_cast<unsigned int>(LIMIT));
     }
 
 

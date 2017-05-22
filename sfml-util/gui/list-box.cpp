@@ -151,7 +151,9 @@ namespace gui
                 typename ListBoxItemSLst_t::const_iterator tempItr(itr);
                 ++tempItr;
                 if (tempItr == list_.end())
+                {
                     break;
+                }
             }
             currentViewPos_ = (GetTotalHeight() - (*itr)->GetEntityRegion().height) * PACKAGE.PTR_->GetCurrentValue();
             SetupList();
@@ -355,7 +357,7 @@ namespace gui
         else
         {
             typename sfml_util::gui::ListBoxItemSLst_t::iterator itr(list_.begin());
-            std::advance(itr, INDEX);
+            std::advance(itr, static_cast<sfml_util::gui::ListBoxItemSLst_t::iterator::difference_type>(INDEX));
             return * itr;
         }
     }
@@ -543,9 +545,9 @@ namespace gui
         {
             const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
             const callback::ListBoxEventPackage PACKAGE(PTR_PACKAGE,
-                                                    sfml_util::GuiEvent::SelectionChange,
-                                                    callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
-                                                    NEW_SELECTED_INDEX);
+                                                        sfml_util::GuiEvent::SelectionChange,
+                                                        callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
+                                                        static_cast<int>(NEW_SELECTED_INDEX));
             callbackPtr_->HandleCallback(PACKAGE);
         }
     }

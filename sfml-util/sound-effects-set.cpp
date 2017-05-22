@@ -26,7 +26,7 @@ namespace sfml_util
     {
         auto const FIRST{ static_cast<int>(FIRST_SOUND_EFFECT_ENUM) };
         auto const LAST { static_cast<int>(LAST_SOUND_EFFECT_ENUM) };
-        enumVec_.reserve((LAST - FIRST) + 1);
+        enumVec_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
 
         for (int i(FIRST); i <= LAST; ++i)
             enumVec_.push_back( static_cast<sound_effect::Enum>(i) );
@@ -75,7 +75,7 @@ namespace sfml_util
         }
         else
         {
-            PlayAt(utilz::random::Int(enumVec_.size() - 1));
+            PlayAt(static_cast<std::size_t>(utilz::random::Int(enumVec_.size() - static_cast<std::size_t>(1))));
         }
     }
 

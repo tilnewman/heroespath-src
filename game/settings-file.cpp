@@ -51,15 +51,15 @@ namespace game
             SetFloat(KEY_THEMEMUSIC_VOL_, sfml_util::SoundManager::Instance()->MusicVolume());
             SetFloat(KEY_SOUNDEFFECTS_VOL_, sfml_util::SoundManager::Instance()->SoundEffectVolume());
             SetInt(KEY_RESOLUTION_WIDTH_, sfml_util::Display::Instance()->GetWinWidthu());
-            SetInt(KEY_RESOLUTION_HEIGHT_, sfml_util::Display::Instance()->GetWinHeightu());
+            SetInt(KEY_RESOLUTION_HEIGHT_, static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()));
             SetBool(KEY_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
             SetInt(KEY_FRAMERATE_LIMIT_, sfml_util::Display::Instance()->GetFrameRateLimit());
-            SetInt(KEY_ANTIALIAS_LEVEL_, sfml_util::Display::Instance()->AntialiasLevel());
+            SetInt(KEY_ANTIALIAS_LEVEL_, static_cast<int>(sfml_util::Display::Instance()->AntialiasLevel()));
 
             unsigned bitDepth(sfml_util::Display::Instance()->WinColorDepth());
             if (0 == bitDepth)
                 bitDepth = 32;
-            SetInt(KEY_RESOLUTION_BITDEPTH_, bitDepth);
+            SetInt(KEY_RESOLUTION_BITDEPTH_, static_cast<int>(bitDepth));
 
             M_ASSERT_OR_LOGANDTHROW_SS(Save(), "SettingsFile::AcquireAndSave() failed to Save().");
         }
@@ -94,11 +94,11 @@ namespace game
             }
 
             const unsigned ERROR_VALUE(1024);
-            const unsigned SAVED_ANTIALIAS_LEVEL(GetCopyInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE));
+            const unsigned SAVED_ANTIALIAS_LEVEL(static_cast<unsigned>(GetCopyInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)));
             if (SAVED_ANTIALIAS_LEVEL != ERROR_VALUE)
             {
                 M_HP_LOG("SettingsFile::LoadAndRestore() setting display antialias level to " << SAVED_ANTIALIAS_LEVEL);
-                sfml_util::Display::Instance()->SetFrameRateLimit(SAVED_ANTIALIAS_LEVEL);
+                sfml_util::Display::Instance()->SetFrameRateLimit(static_cast<int>(SAVED_ANTIALIAS_LEVEL));
             }
 
             const int WIDTH(GetCopyInt(KEY_RESOLUTION_WIDTH_, -1));
@@ -111,7 +111,7 @@ namespace game
                  (static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()) != HEIGHT) ||
                  (sfml_util::Display::Instance()->AntialiasLevel() != SAVED_ANTIALIAS_LEVEL)))
             {
-                const sf::VideoMode NEW_VIDEO_MODE(WIDTH, HEIGHT, BITDEPTH);
+                const sf::VideoMode NEW_VIDEO_MODE(static_cast<unsigned>(WIDTH), static_cast<unsigned>(HEIGHT), static_cast<unsigned>(BITDEPTH));
                 M_HP_LOG("SettingsFile::LoadAndRestore() setting display resolution to " << sfml_util::VideoModeToString(NEW_VIDEO_MODE) << " AA=" << SAVED_ANTIALIAS_LEVEL);
                 sfml_util::Display::ChangeVideoMode(NEW_VIDEO_MODE, SAVED_ANTIALIAS_LEVEL);
             }

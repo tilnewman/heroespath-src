@@ -2365,7 +2365,7 @@ sfml_util::PopupImage::Regular));
         const std::size_t NUM_STUCK_ANIMS(stuckAnimIndexVec.size());
         for (std::size_t i(0); i < NUM_STUCK_ANIMS; ++i)
         {
-            const typename AnimNumSVec_t::iterator ITR_TO_ERASE(animStatsSVec_.begin() + i);
+            const typename AnimNumSVec_t::iterator ITR_TO_ERASE(animStatsSVec_.begin() + AnimNumSVec_t::iterator::difference_type(i));
             //M_HP_LOG("CharacterStage::HandleStuckAnims() destroying a stuck anim at index=" << i << ", value=" << (*ITR_TO_ERASE)->Value());
             animStatsSVec_.erase(ITR_TO_ERASE);
         }
