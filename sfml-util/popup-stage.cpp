@@ -901,7 +901,7 @@ namespace sfml_util
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();
 
-                SetupSelectImage(imageMoveQueue_.front(), IMAGE_SLIDER_SPEED_ + (static_cast<float>(imageMoveQueue_.size() * 0.25f)));
+                SetupSelectImage(imageMoveQueue_.front(), IMAGE_SLIDER_SPEED_ + ((static_cast<float>(imageMoveQueue_.size()) * 0.25f)));
                 imageMoveQueue_.pop();
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
 

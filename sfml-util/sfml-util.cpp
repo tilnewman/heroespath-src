@@ -293,9 +293,9 @@ namespace sfml_util
             for (unsigned int x(0); x < image.getSize().x; ++x)
             {
                 sf::Color color(image.getPixel(x, y));
-                color.r = 255 - color.r;
-                color.g = 255 - color.g;
-                color.b = 255 - color.b;
+                color.r = static_cast<sf::Uint8>(255) - color.r;
+                color.g = static_cast<sf::Uint8>(255) - color.g;
+                color.b = static_cast<sf::Uint8>(255) - color.b;
 
                 if (WILL_INVERT_ALPHA)
                     color.a = 255 - color.a;

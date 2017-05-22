@@ -498,7 +498,7 @@ namespace stage
         sfml_util::LoadImageOrTextureSPtr<sfml_util::TextureSPtr_t>(paperBgTextureSPtr_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
         paperBgTextureSPtr_->setSmooth(true);
         paperBgSprite_.setTexture( * paperBgTextureSPtr_ );
-        paperBgSprite_.setScale(SCREEN_WIDTH_ / paperBgTextureSPtr_->getSize().x, SCREEN_HEIGHT_ / paperBgTextureSPtr_->getSize().y);
+        paperBgSprite_.setScale(SCREEN_WIDTH_ / static_cast<float>(paperBgTextureSPtr_->getSize().x), SCREEN_HEIGHT_ / static_cast<float>(paperBgTextureSPtr_->getSize().y));
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
         //ouroboros

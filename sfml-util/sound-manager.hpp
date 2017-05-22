@@ -28,6 +28,13 @@ namespace sfml_util
 
     struct SoundEffectData
     {
+        SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
+                        const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
+        :
+            sound(SOUND),
+            buffer(BUFFER)
+        {}
+
         sf::Sound sound;
         sf::SoundBuffer buffer;
     };

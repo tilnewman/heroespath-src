@@ -1043,7 +1043,7 @@ namespace ownership
         }
 
         //adjust for item weight that can make special materials less likely
-        const float WEIGHT_CHANCE_ADJUSTMENT(ITEM_WEIGHT / 2500.0f);
+        const float WEIGHT_CHANCE_ADJUSTMENT(static_cast<float>(ITEM_WEIGHT) / 2500.0f);
         chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
         chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
         chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;

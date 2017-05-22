@@ -93,11 +93,11 @@ namespace gui
         float textRectLeftToUse(0.0f);
         float textRectTopToUse(0.0f);
 
-        const float WIDTH_DIFF(bgInfo_.textureSPtr->getSize().x - bgInfo_.region.width);
+        const float WIDTH_DIFF(static_cast<float>(bgInfo_.textureSPtr->getSize().x) - bgInfo_.region.width);
         if (WIDTH_DIFF > 10.0f)
             textRectLeftToUse = utilz::random::Float(0.0f, WIDTH_DIFF);
 
-        const float HEIGHT_DIFF(bgInfo_.textureSPtr->getSize().y - bgInfo_.region.height);
+        const float HEIGHT_DIFF(static_cast<float>(bgInfo_.textureSPtr->getSize().y) - bgInfo_.region.height);
         if (HEIGHT_DIFF > 10.0f)
             textRectTopToUse = utilz::random::Float(0.0f, HEIGHT_DIFF);
 

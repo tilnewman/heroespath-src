@@ -28,7 +28,7 @@ namespace combat
     const sf::Color CombatNode::HIGHLIGHT_ADJ_COLOR_                 (sf::Color(HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, 0));
     const sf::Color CombatNode::PLAYER_NAME_COLOR_                   (sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
     const sf::Color CombatNode::CONDITION_COLOR_                     (sfml_util::FontManager::Color_Light() - HIGHLIGHT_ADJ_COLOR_);
-    const sf::Color CombatNode::NONPLAYER_NAME_COLOR_                (sf::Color(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_) - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Color CombatNode::NONPLAYER_NAME_COLOR_                (sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_))) - HIGHLIGHT_ADJ_COLOR_);
     const sf::Uint8 CombatNode::CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_(32);
     const sf::Uint8 CombatNode::CREATURE_IMAGE_COLOR_ALPHA_          (32);
     const sf::Color CombatNode::CREATURE_IMAGE_COLOR_PLAYER_         (sf::Color(255, 243, 201, CREATURE_IMAGE_COLOR_ALPHA_));//slightly orange
@@ -364,7 +364,7 @@ namespace combat
 
     const sf::Color CombatNode::HealthColor() const
     {
-        sf::Color c(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
+        sf::Color c(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
         c.g = static_cast<sf::Uint8>(static_cast<float>(c.g) * healthRatioDisplayed_);
         c.b = static_cast<sf::Uint8>(static_cast<float>(c.b) * healthRatioDisplayed_);
         return c;
@@ -373,13 +373,13 @@ namespace combat
 
     const sf::Color CombatNode::HealthColorRed() const
     {
-        return sf::Color(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
+        return sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
     }
 
 
     const sf::Color CombatNode::HealthColorTick() const
     {
-        return sf::Color(255, 255 - HIGHLIGHT_ADJ_VALUE_, 255 - HIGHLIGHT_ADJ_VALUE_);
+        return sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
     }
 
 

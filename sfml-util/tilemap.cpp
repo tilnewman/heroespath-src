@@ -270,8 +270,8 @@ namespace map
                 const sf::Uint8 BLUE ( * (PIXEL_PTR + i + 2) );
                 //const sf::Uint8 ALPHA( * (PIXEL_PTR + i + 3) );
 
-                const unsigned DEST_X((i / 4) % destImage.getSize().x);
-                const unsigned DEST_Y((static_cast<unsigned int>(i) / static_cast<unsigned int>(4)) / destImage.getSize().x);
+                const unsigned DEST_X((static_cast<unsigned>(i) / static_cast<unsigned>(4)) % destImage.getSize().x);
+                const unsigned DEST_Y((static_cast<unsigned>(i) / static_cast<unsigned>(4)) / destImage.getSize().x);
 
                 //check for faded blue background color that should be made fully transparent
                 if ((RED   == TRANSPARENT_MASK_.r) &&
@@ -360,16 +360,16 @@ namespace map
         const sf::Vector2f CURR_SCREEN_POS( GetScreenPosPlayer() );
 
         //move within the view before moving the view
-        if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + WIN_SIZE_V_.y) - BORDER_PAD_))
+        if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + static_cast<float>(WIN_SIZE_V_.y)) - BORDER_PAD_))
         {
             playerPosOffsetV_.y += ADJUSTMENT;
             return true;
         }
         else
         {
-            const float VERT_LIMIT(static_cast<float>(mapTileCountY_ * tileSizeHeight_) - (WIN_SIZE_V_.y));
+            const float VERT_LIMIT(static_cast<float>(mapTileCountY_ * tileSizeHeight_) - static_cast<float>(WIN_SIZE_V_.y));
 
-            if ((offScreenRect_.top + (prevTileOffsets_.begin_y * tileSizeHeight_)) < VERT_LIMIT)
+            if ((offScreenRect_.top + static_cast<float>(prevTileOffsets_.begin_y * tileSizeHeight_)) < VERT_LIMIT)
             {
                 offScreenRect_.top += ADJUSTMENT;
                 SetupMapSprite();
@@ -431,14 +431,14 @@ namespace map
         const sf::Vector2f CURR_SCREEN_POS( GetScreenPosPlayer() );
 
         //move within the view before moving the view
-        if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + WIN_SIZE_V_.x) - BORDER_PAD_))
+        if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + static_cast<float>(WIN_SIZE_V_.x)) - BORDER_PAD_))
         {
             playerPosOffsetV_.x += ADJUSTMENT;
             return true;
         }
         else
         {
-            const float HORIZ_LIMIT(static_cast<float>(mapTileCountX_ * tileSizeWidth_) - (WIN_SIZE_V_.x));
+            const float HORIZ_LIMIT(static_cast<float>((mapTileCountX_ * tileSizeWidth_) - WIN_SIZE_V_.x));
 
             if ((offScreenRect_.left + (prevTileOffsets_.begin_x * tileSizeWidth_)) < HORIZ_LIMIT)
             {
@@ -481,32 +481,44 @@ namespace map
             {
                 if (offScreenRect_.left > 0.0f)
                 {
-                    offScreenRect_.left -= tileSizeWidth_;
+                    offScreenRect_.left -= static_cast<float>(tileSizeWidth_);
 
                     if (offScreenRect_.left < 0.0f)
+                    {
                         offScreenRect_.left = 0.0f;
+                    }
                 }
             }
             else
             {
                 if (CURRENT_TILE_OFFSETS.begin_x < prevTileOffsets_.begin_x)
+                {
                     if (offScreenRect_.left > 0.0f)
-                        offScreenRect_.left += tileSizeWidth_;
+                    {
+                        offScreenRect_.left += static_cast<float>(tileSizeWidth_);
+                    }
+                }
             }
 
             if (CURRENT_TILE_OFFSETS.begin_y > prevTileOffsets_.begin_y)
             {
                 if (offScreenRect_.top > 0.0f)
                 {
-                    offScreenRect_.top -= tileSizeHeight_;
+                    offScreenRect_.top -= static_cast<float>(tileSizeHeight_);
 
                     if (offScreenRect_.top < 0.0f)
+                    {
                         offScreenRect_.top = 0.0f;
+                    }
                 }
             }
             else
+            {
                 if (CURRENT_TILE_OFFSETS.begin_y < prevTileOffsets_.begin_y)
-                    offScreenRect_.top += tileSizeHeight_;
+                {
+                    offScreenRect_.top += static_cast<float>(tileSizeHeight_);
+                }
+            }
 
             prevTileOffsets_ = CURRENT_TILE_OFFSETS;
             SetupMapSprite();
@@ -831,10 +843,10 @@ namespace map
                 const float TU( static_cast<float>(TILE_NUM % TEXTURE_TILE_COUNT_HORIZ) );
                 const float TV( static_cast<float>(TILE_NUM / TEXTURE_TILE_COUNT_HORIZ) );
 
-                const float TEXT_COORD_HORIZ_SIZE               (static_cast<float>(TU * tileSizeWidth_) );
+                const float TEXT_COORD_HORIZ_SIZE               (TU * static_cast<float>(tileSizeWidth_) );
                 const float TEXT_COORD_HORIZ_SIZE_PLUS_ONE_TILE (TEXT_COORD_HORIZ_SIZE + static_cast<float>(tileSizeWidth_));
 
-                const float TEXT_COORD_VERT_SIZE                (static_cast<float>(TV * tileSizeHeight_));
+                const float TEXT_COORD_VERT_SIZE                (TV * static_cast<float>(tileSizeHeight_));
                 const float TEXT_COORD_VERT_SIZE_PLUS_ONE_TILE  (TEXT_COORD_VERT_SIZE + static_cast<float>(tileSizeHeight_));
 
                 // define its 4 texture coordinates
@@ -929,8 +941,8 @@ namespace map
         const float OFFSET_DIFFX(static_cast<float>(TILE_OFFSETS.end_x - TILE_OFFSETS.begin_x));
         const float OFFSET_DIFFY(static_cast<float>(TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y));
 
-        sf::Vector2f posMappedV(static_cast<float>(WIN_POS_V_.x + ((OFFSET_DIFFX * tileSizeWidth_) * 0.5f)),
-                                static_cast<float>(WIN_POS_V_.y + ((OFFSET_DIFFY * tileSizeHeight_) * 0.5f)));
+        sf::Vector2f posMappedV(static_cast<float>(WIN_POS_V_.x + ((OFFSET_DIFFX * static_cast<float>(tileSizeWidth_)) * 0.5f)),
+                                static_cast<float>(WIN_POS_V_.y + ((OFFSET_DIFFY * static_cast<float>(tileSizeHeight_)) * 0.5f)));
 
         return posMappedV;
     }

@@ -207,7 +207,7 @@ namespace utilz
         {
             if (V.empty())
             {
-                return T(0);
+                return static_cast<T>(0);
             }
 
             T sum{ 0 };
@@ -225,7 +225,7 @@ namespace utilz
         {
             if ((COUNT == 0) || (COUNT > V.size()))
             {
-                return T{ 0 };
+                return static_cast<T>(0);
             }
 
             T deviationSum{ 0 };
@@ -233,10 +233,10 @@ namespace utilz
             for (std::size_t i(0); i < COUNT; ++i)
             {
                 auto const NEXT_VALUE{ V[i] };
-                deviationSum += std::pow((NEXT_VALUE - AVERAGE), 2);
+                deviationSum += std::pow((NEXT_VALUE - AVERAGE), static_cast<T>(2));
             }
 
-            return std::sqrt(deviationSum / COUNT);
+            return std::sqrt(deviationSum / static_cast<T>(COUNT));
         }
 
     };

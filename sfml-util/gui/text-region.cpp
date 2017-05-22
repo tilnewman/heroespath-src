@@ -415,8 +415,10 @@ namespace gui
         {
             const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
                 renderedText_.vec_vec[l][s].sf_text.setPosition(renderedText_.vec_vec[l][s].sf_text.getPosition().x,
-                                                                (entityRegion_.top + (l * FIRST_LINE_HEIGHT)) - SCROLL_POS);
+                                                                (entityRegion_.top + (static_cast<float>(l) * FIRST_LINE_HEIGHT)) - SCROLL_POS);
+            }
         }
     }
 

@@ -366,7 +366,9 @@ namespace text_render
 
             float textHeight(nextTextSnippet.sf_text.getFont()->getLineSpacing(nextTextSnippet.sf_text.getCharacterSize()));
             if (nextTextSnippet.sf_text.getCharacterSize() < 30)
-                textHeight -= ((nextTextSnippet.sf_text.getCharacterSize() / 5) * 2);
+            {
+                textHeight -= static_cast<float>((static_cast<int>(nextTextSnippet.sf_text.getCharacterSize()) / 5) * 2);
+            }
 
             if (heightTracker < textHeight)
                 heightTracker = textHeight;

@@ -30,12 +30,16 @@ namespace ownership
     {
         float subtotal(0.0f);
         for (auto const & NEXT_CHANCE_PAIR : map)
+        {
             subtotal += NEXT_CHANCE_PAIR.second;
+        }
 
-        const float NORMALIZE_ADJ((1.0f - subtotal) / map.size());
+        const float NORMALIZE_ADJ((1.0f - subtotal) / static_cast<float>(map.size()));
 
         for (auto & nextChancePair : map)
+        {
             nextChancePair.second += NORMALIZE_ADJ;
+        }
     }
 
 

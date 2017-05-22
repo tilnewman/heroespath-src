@@ -4,7 +4,6 @@
 #include "combat-display.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/tile.hpp"
 #include "sfml-util/display.hpp"
@@ -25,6 +24,8 @@
 #include "game/creature/algorithms.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/state/game-state.hpp"
+
+#include "utilz/real.hpp"
 
 #include <sstream>
 #include <numeric>
@@ -426,8 +427,8 @@ namespace combat
         const float CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER(CELL_HEIGHT_ZOOM_ADJ + POSITIONING_BETWEEN_SPACER_VERT_ZOOM_ADJ);
         const float CELL_WIDTH_ZOOM_ADJ_WITH_SPACER(CELL_WIDTH_ZOOM_ADJ + POSITIONING_BETWEEN_SPACER_HORIZ_ZOOM_ADJ);
 
-        battlefieldWidth_  = std::abs(lowestBlockingPos  * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) + std::abs(highestBlockingPos * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) + (POSITIONING_MARGIN_HORIZ_ZOOM_ADJ * 2.0f);
-        battlefieldHeight_ = (shoulderToShoulderMax * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER) + (POSITIONING_MARGIN_VERT_ZOOM_ADJ * 2.0f);
+        battlefieldWidth_  = std::abs(static_cast<float>(lowestBlockingPos)  * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) + std::abs(static_cast<float>(highestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) + (POSITIONING_MARGIN_HORIZ_ZOOM_ADJ * 2.0f);
+        battlefieldHeight_ = (static_cast<float>(shoulderToShoulderMax) * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER) + (POSITIONING_MARGIN_VERT_ZOOM_ADJ * 2.0f);
 
         //set battlefield positions
         std::map<int, std::size_t> shoulderToShoulderBlockingMap;

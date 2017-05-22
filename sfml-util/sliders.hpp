@@ -36,8 +36,8 @@ namespace sliders
     class ZeroSlider
     {
     public:
-        ZeroSlider( const T    SPEED               = T(1),
-                    const T    INITIAL_VAL         = T(0),
+        ZeroSlider( const T    SPEED               = static_cast<T>(1),
+                    const T    INITIAL_VAL         = static_cast<T>(0),
                     const bool WILL_START_FORWARD = true)
         :
             age_  (0),//ignore these initializers because of Reset()
@@ -47,18 +47,18 @@ namespace sliders
         }
 
         //NOTE: The current value is not cached, so this is an expensive call.  Polling this functino is not reccomended.
-        inline T GetCur()       { return Update( T(0) ); }
+        inline T GetCur()       { return Update(static_cast<T>(0) ); }
 
         inline T GetSpd() const { return speed_; }
 
-        void Reset( const T    SPEED              = T(1),
-                    const T    INITIAL_VAL        = T(0),
+        void Reset( const T    SPEED              = static_cast<T>(1),
+                    const T    INITIAL_VAL        = static_cast<T>(0),
                     const bool WILL_START_FORWARD = true)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, T(0))), "ZeroSlider::Reset() given speed of zero.");
-            M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= T(0)) && (INITIAL_VAL <= T(1))), "ZeroSlider::Reset() given initial value of " << INITIAL_VAL << ", which is not [0.0, 1.0].");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, static_cast<T>(0))), "ZeroSlider::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= static_cast<T>(0)) && (INITIAL_VAL <= static_cast<T>(1))), "ZeroSlider::Reset() given initial value of " << INITIAL_VAL << ", which is not [0.0, 1.0].");
 
-            const T DIRECTION((WILL_START_FORWARD) ? T(1) : T(-1));
+            const T DIRECTION((WILL_START_FORWARD) ? static_cast<T>(1) : static_cast<T>(-1));
             age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL_VAL * DIRECTION));
             speed_ = SPEED;
         }
@@ -74,7 +74,7 @@ namespace sliders
         T speed_;
         static const T THREE_QTR_PI_;
     };
-    template<typename T> const T ZeroSlider<T>::THREE_QTR_PI_((boostmath::pi<T>() / T(2)) + boostmath::pi<T>());
+    template<typename T> const T ZeroSlider<T>::THREE_QTR_PI_((boostmath::pi<T>() / static_cast<T>(2)) + boostmath::pi<T>());
 
 
 
@@ -144,8 +144,8 @@ namespace sliders
     class ZeroSliderOnce
     {
     public:
-        ZeroSliderOnce( const T SPEED       = T(1),
-                        const T INITIAL_VAL = T(0))
+        ZeroSliderOnce( const T SPEED       = static_cast<T>(1),
+                        const T INITIAL_VAL = static_cast<T>(0))
             :
             age_(0),//ignore these initializers because of Reset()
             spd_(0),
@@ -159,15 +159,15 @@ namespace sliders
         inline T GetSpd() const       { return spd_; }
         inline bool GetIsDone() const { return (false == willContinue_); }
 
-        void Reset( const T SPEED       = T(1),
-                    const T INITIAL_VAL = T(0))
+        void Reset( const T SPEED       = static_cast<T>(1),
+                    const T INITIAL_VAL = static_cast<T>(0))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, T(0))), "ZeroSliderOnce::Reset() given speed of zero.");
-            M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= T(0)) && (INITIAL_VAL <= T(1))), "ZeroSliderOnce::Reset() given initial value of " << INITIAL_VAL << ", which is not within [0,1].");
+            M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, static_cast<T>(0))), "ZeroSliderOnce::Reset() given speed of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= static_cast<T>(0)) && (INITIAL_VAL <= static_cast<T>(1))), "ZeroSliderOnce::Reset() given initial value of " << INITIAL_VAL << ", which is not within [0,1].");
 
             age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL_VAL));
             spd_ = SPEED;
-            val_ = T(0);
+            val_ = static_cast<T>(0);
             willContinue_ = true;
         }
 
@@ -197,8 +197,8 @@ namespace sliders
         static const T THREE_QTR_PI_;
     };
 
-    template<typename T> const T ZeroSliderOnce<T>::TWO_PI_(boostmath::pi<T>() * T(2));
-    template<typename T> const T ZeroSliderOnce<T>::THREE_QTR_PI_((boostmath::pi<T>() / T(2)) + boostmath::pi<T>());
+    template<typename T> const T ZeroSliderOnce<T>::TWO_PI_(boostmath::pi<T>() * static_cast<T>(2));
+    template<typename T> const T ZeroSliderOnce<T>::THREE_QTR_PI_((boostmath::pi<T>() / static_cast<T>(2)) + boostmath::pi<T>());
 
 
 
@@ -224,7 +224,7 @@ namespace sliders
         //Note:  The current value is not cached, so this is an expensive call.  Polling is not reccomended.
         inline Value_t GetCur() const    { return ApplyRange(slider_.GetCur()); }
         inline Value_t GetBeg() const    { return begin_; }
-        inline Value_t GetEnd() const    { return begin_ + static_cast<Value_t>(diff_); }
+        inline Value_t GetEnd() const    { return static_cast<Value_t>(begin_ + static_cast<Value_t>(diff_)); }
         inline Math_t  GetSpd() const    { return slider_.GetSpd(); }
         inline bool    GetIsDone() const { return slider_.GetIsDone(); }
 
@@ -313,9 +313,13 @@ namespace sliders
             Value_t newCurrentVal(0);
 
             if (isIncreasing_)
+            {
                 newCurrentVal = slider_.Update(ADJUSTMENT);
+            }
             else
-                newCurrentVal = slider_.GetEnd() - (slider_.Update(ADJUSTMENT) - slider_.GetBeg());
+            {
+                newCurrentVal = static_cast<Value_t>(slider_.GetEnd() - (slider_.Update(ADJUSTMENT) - slider_.GetBeg()));
+            }
 
             if (slider_.GetIsDone())
                 Reset(min_, max_, newCurrentVal, ((isIncreasing_) ? min_ : max_ ));

@@ -236,10 +236,14 @@ namespace sfml_util
                 if (nullptr == popupStageSPtr_.get())
                 {
                     for (auto & nextStageSPtr : stageSVec_)
+                    {
                         nextStageSPtr->SetMouseHover(MOUSE_POS_NEW_V, false);
+                    }
                 }
                 else
+                {
                     popupStageSPtr_->SetMouseHover(MOUSE_POS_NEW_V, false);
+                }
             }
         }
     }

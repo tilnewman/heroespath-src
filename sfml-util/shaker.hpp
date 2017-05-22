@@ -19,10 +19,10 @@ namespace sfml_util
     class Shaker
     {
     public:
-        Shaker(const T THE_MIN      = T(0),
-               const T THE_MAX      = T(1),
-               const T SPEED        = T(50),
-               const T START_AT     = T(0),
+        Shaker(const T THE_MIN      = static_cast<T>(0),
+               const T THE_MAX      = static_cast<T>(1),
+               const T SPEED        = static_cast<T>(50),
+               const T START_AT     = static_cast<T>(0),
                const bool WILL_GROW = true)
         :
             min_      (),
@@ -45,7 +45,7 @@ namespace sfml_util
         void Reset(const T    THE_MIN,
                    const T    THE_MAX,
                    const T    SPEED,
-                   const T    START_AT  = T(0),
+                   const T    START_AT  = static_cast<T>(0),
                    const bool WILL_GROW = true)
         {
             min_       = THE_MIN;

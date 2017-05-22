@@ -112,13 +112,17 @@ namespace box
         cTopRightSprite_.setPosition(RIGHT, TOP_TO_USE);
 
         if (VERT_MID_LEN > 0)
-            rightLine_.Setup(RIGHT + cTopRightSprite_.getLocalBounds().width - GE_SPTR->GetRect_LineSmallVerticalRight().width, TOP_TO_USE + cTopRightSprite_.getLocalBounds().height, static_cast<std::size_t>(VERT_MID_LEN));
+        {
+            rightLine_.Setup((RIGHT + cTopRightSprite_.getLocalBounds().width) - static_cast<float>(GE_SPTR->GetRect_LineSmallVerticalRight().width), TOP_TO_USE + cTopRightSprite_.getLocalBounds().height, static_cast<std::size_t>(VERT_MID_LEN));
+        }
 
         const float BOTTOM(TOP_TO_USE + cTopRightSprite_.getLocalBounds().height + VERT_MID_LEN);
         cBotRightSprite_.setPosition(RIGHT, BOTTOM);
 
         if (HORIZ_MID_LEN > 0)
-            botLine_.Setup(LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width, BOTTOM + cBotRightSprite_.getLocalBounds().height - GE_SPTR->GetRect_LineSmallHorizontalBot().height, static_cast<std::size_t>(HORIZ_MID_LEN));
+        {
+            botLine_.Setup(LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width, (BOTTOM + cBotRightSprite_.getLocalBounds().height) - static_cast<float>(GE_SPTR->GetRect_LineSmallHorizontalBot().height), static_cast<std::size_t>(HORIZ_MID_LEN));
+        }
 
         cBotLeftSprite_.setPosition(LEFT_TO_USE, BOTTOM);
 
