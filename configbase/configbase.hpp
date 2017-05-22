@@ -52,12 +52,12 @@ namespace appbase
         virtual bool Load();
 
         //Pass a string to override the default which uses the member fileNameStr.
-        virtual bool Save(const std::string FILENAME = "") const;
+        virtual bool Save(const std::string & FILENAME = "") const;
 
         //Returns the value stored at KEY.
         //Retuns DEFAULT if key does not exist, or cannot be cast to the desired type.
         template<typename T>
-        T GetCopy(const std::string KEY, const T DEFAULT = T()) const
+        T GetCopy(const std::string & KEY, const T DEFAULT = T()) const
         {
             T temp(DEFAULT);
             Get<T>(temp, KEY);

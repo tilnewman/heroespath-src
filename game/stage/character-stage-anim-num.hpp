@@ -66,7 +66,7 @@ namespace stage
         stats::Stat_t value_;
         stats::stat::Enum whichStat_;
         bool      ignoreMe_;
-        sf::Int8  colorVal_;
+        sf::Uint8 colorVal_;
         float     startLeft_;
         float     startTop_;
         float     distanceX_;

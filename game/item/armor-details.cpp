@@ -121,7 +121,7 @@ namespace armor
         armorDetails.name =            CleanStringField(fieldsVec[0], false);
         armorDetails.complexity =      non_player::ownership::complexity_type::FromString( CleanStringField(fieldsVec[1], false) );
         armorDetails.price =           StringFieldToInt("Price", fieldsVec[2]);
-        armorDetails.weight =          StringFieldToInt("Weight", fieldsVec[3]);
+        armorDetails.weight =          static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
         armorDetails.armor_rating =    StringFieldToInt("ArmorRating", fieldsVec[4]);
         armorDetails.image_filename =  CleanStringField(fieldsVec[5], true);
         armorDetails.description =     CleanStringField(fieldsVec[6], false);

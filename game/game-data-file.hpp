@@ -34,7 +34,7 @@ namespace game
 
     public:
         template<typename T>
-        T GetCopyDataFile(const std::string KEY, const T DEFAULT = T()) const
+        T GetCopyDataFile(const std::string & KEY, const T DEFAULT = T()) const
         {
             T temp(DEFAULT);
             Get<T>(temp, KEY);//this throws if the KEY is not found or if the value could not be boost::lexical_cast<T>().

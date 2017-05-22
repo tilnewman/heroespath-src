@@ -69,7 +69,7 @@ namespace sfml_util
                 if (rects_.empty() == false)
                     posX += FRAME_WIDTH_ + FRAME_HORIZ_GAP_;
 
-                rects_.push_back( sf::IntRect(posX, posY, FRAME_WIDTH_, FRAME_HEIGHT_) );
+                rects_.push_back( sf::IntRect(static_cast<int>(posX), static_cast<int>(posY), static_cast<int>(FRAME_WIDTH_), static_cast<int>(FRAME_HEIGHT_)) );
 
                 if ((FRAME_COUNT_ != 0) && (rects_.size() == FRAME_COUNT_))
                     break;

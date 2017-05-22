@@ -23,7 +23,7 @@ namespace armor
     //A simple wrapper for all the info needed to describe one piece of armor
     struct ArmorInfo
     {
-        ArmorInfo(const armor_type::Enum TYPE = armor_type::NotArmor);
+        explicit ArmorInfo(const armor_type::Enum TYPE = armor_type::NotArmor);
 
         //when used here in this class, only one bit is ever set.
         item::armor_type::Enum type;

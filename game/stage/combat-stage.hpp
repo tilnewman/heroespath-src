@@ -176,7 +176,7 @@ namespace stage
     private:
         void AppendInitialStatus();
         void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
-        void StartPause(const float DURATION_SEC, const std::string TITLE);
+        void StartPause(const float DURATION_SEC, const std::string & TITLE);
         void EndPause();
         void HandlePerformReportPhaseOverTasks();
         void HandleEnemyTurnStep1_Decide();

@@ -140,7 +140,7 @@ namespace stage
                                                                         "",
                                                                         std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui")).append("gears1_lit.png"),
                                                                         "",
-                                                                        sfml_util::gui::TextInfo(),
+                                                                        sfml_util::gui::MouseTextInfo(),
                                                                         sfml_util::gui::TextInfo(),
                                                                         false,
                                                                         sfml_util::MapByRes(0.6f, 2.0f),
@@ -554,6 +554,7 @@ namespace stage
 
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
+        std::string errMsgIgnored{ "" };
         player::PartySPtr_t partySPtr(new player::Party());
 
         {
@@ -568,12 +569,12 @@ namespace stage
             auto knightSPtr( std::make_shared<player::Character>(KNIGHT_NAME,
                                                                  creature::sex::Male,
                                                                  creature::BodyType::Make_Humanoid(),
-                                                                 creature::race::Human,
-                                                                 creature::role::Knight,
+                                                                 creature::Race(creature::race::Human),
+                                                                 creature::Role(creature::role::Knight),
                                                                  KNIGHT_STATS) );
 
             player::Initial::Setup(knightSPtr.get());
-            partySPtr->Add(knightSPtr);
+            partySPtr->Add(knightSPtr, errMsgIgnored);
         }
         /*
         {
@@ -589,8 +590,8 @@ namespace stage
             auto firebrandSPtr = std::make_shared<player::Character>(FIREBRAND_NAME,
                                                                      creature::sex::Male,
                                                                      creature::BodyType::Make_Dragon(),
-                                                                     creature::race::Dragon,
-                                                                     creature::role::Firebrand,
+                                                                     creature::Race(creature::race::Dragon),
+                                                                     creature::Role(creature::role::Firebrand),
                                                                      FIREBRAND_STATS);
 
             const stats::StatSet STATS_MOD(utilz::random::Int(2) * ((utilz::random::Bool()) ? -1 : 1),
@@ -603,7 +604,7 @@ namespace stage
             firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
 
             player::Initial::Setup(firebrandSPtr.get());
-            partySPtr->Add(firebrandSPtr);
+            partySPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
         {
@@ -618,12 +619,12 @@ namespace stage
             player::CharacterSPtr_t archerSPtr(new player::Character(ARCHER_NAME,
                                                                      creature::sex::Female,
                                                                      creature::BodyType::Make_Humanoid(),
-                                                                     creature::race::Human,
-                                                                     creature::role::Archer,
+                                                                     creature::Race(creature::race::Human),
+                                                                     creature::Role(creature::role::Archer),
                                                                      ARCHER_STATS));
 
             player::Initial::Setup(archerSPtr.get());
-            partySPtr->Add(archerSPtr);
+            partySPtr->Add(archerSPtr, errMsgIgnored);
         }
         /*
         {
@@ -638,12 +639,12 @@ namespace stage
             player::CharacterSPtr_t wolfenSPtr(new player::Character(WOLFEN_NAME,
                                                                      creature::sex::Female,
                                                                      creature::BodyType::Make_Wolfen(),
-                                                                     creature::race::Wolfen,
-                                                                     creature::role::Wolfen,
+                                                                     creature::Race(creature::race::Wolfen),
+                                                                     creature::Role(creature::role::Wolfen),
                                                                      WOLFEN_STATS));
 
             player::Initial::Setup(wolfenSPtr.get());
-            partySPtr->Add(wolfenSPtr);
+            partySPtr->Add(wolfenSPtr, errMsgIgnored);
         }
         */
         {
@@ -658,12 +659,12 @@ namespace stage
             player::CharacterSPtr_t bardSPtr(new player::Character(BARD_NAME,
                                                                    creature::sex::Male,
                                                                    creature::BodyType::Make_Humanoid(),
-                                                                   creature::race::Human,
-                                                                   creature::role::Bard,
+                                                                   creature::Race(creature::race::Human),
+                                                                   creature::Role(creature::role::Bard),
                                                                    BARD_STATS));
 
             player::Initial::Setup(bardSPtr.get());
-            partySPtr->Add(bardSPtr);
+            partySPtr->Add(bardSPtr, errMsgIgnored);
         }
         /*
         {
@@ -678,12 +679,12 @@ namespace stage
             player::CharacterSPtr_t bmSPtr(new player::Character(BEASTMASTER_NAME,
                                                                  creature::sex::Male,
                                                                  creature::BodyType::Make_Humanoid(),
-                                                                 creature::race::Human,
-                                                                 creature::role::Beastmaster,
+                                                                 creature::Race(creature::race::Human),
+                                                                 creature::Role(creature::role::Beastmaster),
                                                                  BEASTMASTER_STATS));
 
             player::Initial::Setup(bmSPtr.get());
-            partySPtr->Add(bmSPtr);
+            partySPtr->Add(bmSPtr, errMsgIgnored);
         }
         */
         {
@@ -698,12 +699,12 @@ namespace stage
             player::CharacterSPtr_t thiefSPtr(new player::Character(THEIF_NAME,
                                                                     creature::sex::Male,
                                                                     creature::BodyType::Make_Humanoid(),
-                                                                    creature::race::Gnome,
-                                                                    creature::role::Thief,
+                                                                    creature::Race(creature::race::Gnome),
+                                                                    creature::Role(creature::role::Thief),
                                                                     THEIF_STATS));
 
             player::Initial::Setup(thiefSPtr.get());
-            partySPtr->Add(thiefSPtr);
+            partySPtr->Add(thiefSPtr, errMsgIgnored);
         }
 
         {
@@ -718,13 +719,13 @@ namespace stage
             player::CharacterSPtr_t clericSPtr(new player::Character(CLERIC_NAME,
                                                                      creature::sex::Female,
                                                                      creature::BodyType::Make_Pixie(),
-                                                                     creature::race::Pixie,
-                                                                     creature::role::Cleric,
+                                                                     creature::Race(creature::race::Pixie),
+                                                                     creature::Role(creature::role::Cleric),
                                                                      CLERIC_STATS));
 
             player::Initial::Setup(clericSPtr.get());
             clericSPtr->ManaCurrentSet(1);
-            partySPtr->Add(clericSPtr);
+            partySPtr->Add(clericSPtr, errMsgIgnored);
         }
 
         {
@@ -739,13 +740,13 @@ namespace stage
             player::CharacterSPtr_t sorcererSPtr(new player::Character(SORCERER_NAME,
                                                                        creature::sex::Male,
                                                                        creature::BodyType::Make_Pixie(),
-                                                                       creature::race::Pixie,
-                                                                       creature::role::Sorcerer,
+                                                                       creature::Race(creature::race::Pixie),
+                                                                       creature::Role(creature::role::Sorcerer),
                                                                        SORCERER_STATS));
 
             player::Initial::Setup(sorcererSPtr.get());
             sorcererSPtr->ManaCurrentSet(1);
-            partySPtr->Add(sorcererSPtr);
+            partySPtr->Add(sorcererSPtr, errMsgIgnored);
         }
         /*
         {
@@ -760,12 +761,12 @@ namespace stage
             player::CharacterSPtr_t sylavinSPtr(new player::Character(SYLAVIN_NAME,
                                                                       creature::sex::Male,
                                                                       creature::BodyType::Make_Dragon(),
-                                                                      creature::race::Dragon,
-                                                                      creature::role::Sylavin,
+                                                                      creature::Race(creature::race::Dragon),
+                                                                      creature::Role(creature::role::Sylavin),
                                                                       SYLAVIN_STATS));
 
             player::Initial::Setup(sylavinSPtr.get());
-            partySPtr->Add(sylavinSPtr);
+            partySPtr->Add(sylavinSPtr, errMsgIgnored);
         }
         */
         if (restoreInfo_.HasRestored() == false)
@@ -1457,7 +1458,7 @@ namespace stage
     }
 
 
-    void CombatStage::StartPause(const float DURATION_SEC, const std::string TITLE)
+    void CombatStage::StartPause(const float DURATION_SEC, const std::string & TITLE)
     {
         pauseElapsedSec_ = 0.0f;
         pauseDurationSec_ = DURATION_SEC;

@@ -25,7 +25,7 @@ namespace creature
     class Role
     {
     public:
-        Role(const role::Enum ROLE = role::PlayerRoleCount);
+        explicit Role(const role::Enum ROLE = role::PlayerRoleCount);
 
         virtual ~Role();
 

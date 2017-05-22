@@ -118,7 +118,7 @@ namespace utilz
             }
             else
             {
-                return V[utilz::random::Int(V.size() - 1)];
+                return V[static_cast<std::size_t>(utilz::random::Int(static_cast<int>(V.size()) - 1))];
             }
         }
 

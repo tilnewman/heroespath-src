@@ -7,8 +7,8 @@
 
 namespace sfml_util
 {
-    void LoadFont(  sf::Font &          font,
-                    const std::string   PATH_STR )
+    void LoadFont(sf::Font &          font,
+                  const std::string & PATH_STR )
     {
         namespace bfs = boost::filesystem;
 
@@ -26,8 +26,8 @@ namespace sfml_util
 
 
     //Returns true if loaded successfully.
-    void LoadFontSPtr(  FontSPtr_t &      fontSPtr,
-                        const std::string PATH_STR )
+    void LoadFontSPtr(FontSPtr_t &        fontSPtr,
+                      const std::string & PATH_STR )
     {
         if (nullptr == fontSPtr.get())
             fontSPtr.reset(new typename FontSPtr_t::element_type);

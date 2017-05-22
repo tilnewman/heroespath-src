@@ -128,7 +128,7 @@ namespace weapon
         weaponDetails.name =            CleanStringField(fieldsVec[0], false);
         weaponDetails.complexity =      non_player::ownership::complexity_type::FromString( CleanStringField(fieldsVec[1], false) );
         weaponDetails.price =           StringFieldToInt("Price", fieldsVec[2]);
-        weaponDetails.weight =          StringFieldToInt("Weight", fieldsVec[3]);
+        weaponDetails.weight =          static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
         weaponDetails.damage_min =      StringFieldToInt("DamageMin", fieldsVec[4]);
         weaponDetails.damage_max =      StringFieldToInt("DamageMax", fieldsVec[5]);
         weaponDetails.handedness =      ((CleanStringField(fieldsVec[6], true) == "two-handed") ? item::category::TwoHanded : item::category::OneHanded );

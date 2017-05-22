@@ -57,7 +57,7 @@ namespace non_player
         Character(const std::string &                  NAME           = "no_name_error",
                   const creature::sex::Enum            SEX            = creature::sex::Unknown,
                   const creature::BodyType &           BODY_TYPE      = creature::BodyType(),
-                  const creature::Race &               RACE           = creature::race::Count,
+                  const creature::Race &               RACE           = creature::Race(creature::race::Count_PlayerRaces),
                   const creature::Role &               ROLE           = creature::Role(creature::role::Count),
                   const stats::StatSet &               STATS          = stats::StatSet(),
                   const stats::Health_t                HEALTH         = 0,

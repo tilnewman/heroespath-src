@@ -62,8 +62,8 @@ namespace combat
         non_player::CharacterSPtr_t goblinGruntSPtr( new non_player::Character(creature::race::Name(creature::race::Goblin),
                                                                                GOBLIN_SEX,
                                                                                creature::BodyType::Make_FromRaceAndRole(creature::race::Goblin, creature::role::Grunt),
-                                                                               creature::race::Goblin,
-                                                                               creature::role::Grunt,
+                                                                               creature::Race(creature::race::Goblin),
+                                                                               creature::Role(creature::role::Grunt),
                                                                                GOBLIN_STATS,
                                                                                GOBLIN_HEALTH) );
 

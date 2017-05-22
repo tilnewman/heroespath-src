@@ -64,7 +64,7 @@ namespace gui
         static auto roleIndex { 0 };
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
-        static auto i         { 0 };
+        static std::size_t i  { 0 };
 
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
@@ -105,7 +105,7 @@ namespace gui
 
                             M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (wolfen_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", wolfen_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
 
-                            if (i < static_cast<int>(filenamesVec.size()))
+                            if (i < filenamesVec.size())
                             {
                                 auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
                                 M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (wolfen_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", wolfen_class=" << CLASS_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
@@ -139,7 +139,7 @@ namespace gui
 
                                 M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
 
-                                if (i < static_cast<int>(filenamesVec.size()))
+                                if (i < filenamesVec.size())
                                 {
                                     auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
                                     M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
@@ -167,7 +167,7 @@ namespace gui
 
                         M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", GetFilenames() failed to return anything.");
 
-                        if (i < static_cast<int>(filenamesVec.size()))
+                        if (i < filenamesVec.size())
                         {
                             auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
                             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
@@ -258,14 +258,16 @@ namespace gui
 
         if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
         {
-            return filenameVec[utilz::random::Int(0, filenameVec.size() - 1)];
+            return filenameVec[static_cast<std::size_t>(utilz::random::Int(0, static_cast<int>(filenameVec.size()) - 1))];
         }
         else
+        {
             return filenameVec[0];
+        }
     }
 
 
-    void CreatureImageManager::GetFilenames(std::vector<std::string> &                     outputVec,
+    void CreatureImageManager::GetFilenames(std::vector<std::string> &               outputVec,
                                             const game::creature::race::Enum         RACE,
                                             const game::creature::role::Enum         ROLE,
                                             const game::creature::sex::Enum          SEX,

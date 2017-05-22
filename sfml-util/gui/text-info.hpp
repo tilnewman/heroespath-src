@@ -57,9 +57,9 @@ namespace gui
     };
 
 
-    bool operator<(const TextInfo & L, const TextInfo R);
+    bool operator<(const TextInfo & L, const TextInfo & R);
 
-    bool operator==(const TextInfo & L, const TextInfo R);
+    bool operator==(const TextInfo & L, const TextInfo & R);
 
     inline bool operator!=(const TextInfo & L, const TextInfo & R)
     {

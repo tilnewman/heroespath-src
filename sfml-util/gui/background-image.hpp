@@ -30,12 +30,12 @@ namespace gui
         //if using this constructor then Setup() must be called before any other function
         BackgroundImage();
 
-        BackgroundImage(const BackgroundInfo & BG_INFO,
-                        const float            IMAGE_SCALE       = 1.0f,
-                        const bool             WILL_SMOOTH_IMAGE = false);
+        explicit BackgroundImage(const BackgroundInfo & BG_INFO,
+                                 const float            IMAGE_SCALE       = 1.0f,
+                                 const bool             WILL_SMOOTH_IMAGE = false);
 
         //use this constructor to create a background tile that is scaled per resolution like is used on the main menu backgrounds
-        BackgroundImage(const std::string & MEDIA_PATH_KEY_STR);
+        explicit BackgroundImage(const std::string & MEDIA_PATH_KEY_STR);
 
         virtual ~BackgroundImage();
 

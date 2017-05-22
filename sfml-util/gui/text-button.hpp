@@ -30,7 +30,7 @@ namespace gui
 
     public:
         //if using this constructor, Setup() must be called before any other functions
-        TextButton(const std::string & NAME);
+        explicit TextButton(const std::string & NAME);
 
         TextButton( const std::string &   NAME,
                     const float           POS_LEFT,

@@ -22,7 +22,7 @@ namespace sfml_util
                    const std::string & NAME           = "",
                    const std::string & ASPECT_RATIO   = "");
 
-        Resolution(const sf::VideoMode & VM);
+        explicit Resolution(const sf::VideoMode & VM);
 
         const std::string ToString(const bool WILL_WRAP = true) const;
 

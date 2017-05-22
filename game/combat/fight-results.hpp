@@ -196,8 +196,8 @@ namespace combat
     class FightResult
     {
     public:
-        FightResult(const CreatureEffectVec_t & CREATURE_EFFECT_VEC = CreatureEffectVec_t());
-        FightResult(const CreatureEffect & CREATURE_EFFECT);
+        explicit FightResult(const CreatureEffectVec_t & CREATURE_EFFECT_VEC = CreatureEffectVec_t());
+        explicit FightResult(const CreatureEffect & CREATURE_EFFECT);
 
         inline CreatureEffectVec_t Effects() const  { return creatureEffectVec_; }
         inline std::size_t Count() const            { return creatureEffectVec_.size(); }

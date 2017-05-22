@@ -4,6 +4,7 @@
 #include "party.hpp"
 
 #include "game/player/character.hpp"
+
 #include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
@@ -28,22 +29,21 @@ namespace player
     {}
 
 
-    bool Party::Add(const CharacterSPtr_t & CHARACTER_SPTR, std::string error_msg)
+    bool Party::Add(const CharacterSPtr_t & CHARACTER_SPTR, std::string & error_msg)
     {
-        const bool IS_ALLOWED( IsAddAllowed(CHARACTER_SPTR, error_msg) );
-        if (false == IS_ALLOWED)
-        {
-            return false;
-        }
-        else
+        if (IsAddAllowed(CHARACTER_SPTR, error_msg))
         {
             charactersSVec_.push_back(CHARACTER_SPTR);
             return true;
         }
+        else
+        {
+            return false;
+        }
     }
 
 
-    bool Party::IsAddAllowed(const CharacterSPtr_t &, std::string error_msg)
+    bool Party::IsAddAllowed(const CharacterSPtr_t &, std::string & error_msg)
     {
         //TODO more checking here
 

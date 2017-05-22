@@ -637,7 +637,7 @@ namespace combat
             std::copy(tempIdVec.begin(), tempIdVec.end(), back_inserter(IdVec_OutParam));
 
         if (IdVec_OutParam.size() > 1)
-            std::unique(IdVec_OutParam.begin(), IdVec_OutParam.end());
+            IdVec_OutParam.erase(std::unique(IdVec_OutParam.begin(), IdVec_OutParam.end()), IdVec_OutParam.end());
 
         auto const NEW_COUNT(IdVec_OutParam.size());
 
@@ -656,10 +656,14 @@ namespace combat
         GetNodeIDsAtBlockingPos(idVec, BLOCKING_POS);
 
         for (auto const NEXT_ID : idVec)
+        {
             NodePVec_OutParam.push_back(GetNode(NEXT_ID));
+        }
 
         if (NodePVec_OutParam.size() > 1)
-            std::unique(NodePVec_OutParam.begin(), NodePVec_OutParam.end());
+        {
+            NodePVec_OutParam.erase(std::unique(NodePVec_OutParam.begin(), NodePVec_OutParam.end()), NodePVec_OutParam.end());
+        }
 
         auto const NEW_COUNT(NodePVec_OutParam.size());
 
@@ -681,7 +685,9 @@ namespace combat
             NodePVec_OutParam.push_back(GetNode(NEXT_ID));
 
         if (NodePVec_OutParam.size() > 1)
-            std::unique(NodePVec_OutParam.begin(), NodePVec_OutParam.end());
+        {
+            NodePVec_OutParam.erase(std::unique(NodePVec_OutParam.begin(), NodePVec_OutParam.end()), NodePVec_OutParam.end());
+        }
 
         auto const NEW_COUNT(NodePVec_OutParam.size());
 

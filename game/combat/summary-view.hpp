@@ -40,7 +40,7 @@ namespace combat
     //wraps an image with text for display on the screen
     struct ItemWithText
     {
-        ItemWithText(const item::ItemSPtr_t & ITEM_SPTR = item::ItemSPtr_t());
+        explicit ItemWithText(const item::ItemSPtr_t & ITEM_SPTR = item::ItemSPtr_t());
 
         sf::Sprite sprite;
         sfml_util::TextureSPtr_t texture_sptr;

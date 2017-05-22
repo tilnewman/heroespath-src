@@ -300,7 +300,9 @@ namespace combat
             utilz::Vector::Append(creature::Algorithms::FindByProjectileWeapons(SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
 
         if (selectedPlayersPVec.size() > 1)
-            std::unique(selectedPlayersPVec.begin(), selectedPlayersPVec.end());
+        {
+            selectedPlayersPVec.erase(std::unique(selectedPlayersPVec.begin(), selectedPlayersPVec.end()), selectedPlayersPVec.end());
+        }
 
         return creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(selectedPlayersPVec, false);
     }
@@ -418,7 +420,9 @@ namespace combat
                 refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreature().second);
 
         if (refinedTargetsPVec.size() > 1)
-            std::unique(refinedTargetsPVec.begin(), refinedTargetsPVec.end());
+        {
+            refinedTargetsPVec.erase(std::unique(refinedTargetsPVec.begin(), refinedTargetsPVec.end()), refinedTargetsPVec.end());
+        }
 
         return refinedTargetsPVec;
     }
@@ -677,7 +681,7 @@ namespace combat
         }
         else
         {
-            spellToCastPtr = finalSpellPVec.at(utilz::random::Int(finalSpellPVec.size() - 1));
+            spellToCastPtr = finalSpellPVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(finalSpellPVec.size()) - 1)));
         }
 
         return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, { spellToCastPtr->Type() });
@@ -787,7 +791,7 @@ namespace combat
         }
         else
         {
-            return spellsOfTypePVec.at( utilz::random::Int(spellsOfTypePVec.size() - 1) );
+            return spellsOfTypePVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(spellsOfTypePVec.size()) - 1)) );
         }
     }
 
