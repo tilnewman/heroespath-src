@@ -97,7 +97,9 @@ namespace stage
                 {
                     const sf::Int8 ALPHA(static_cast<sf::Int8>(fadeCounter_));
                     if (fadeCounter_ < 254.0f)
-                        color_.a = 255 - ALPHA;
+                    {
+                        color_.a = static_cast<sf::Uint8>(255) - ALPHA;
+                    }
                     else
                     {
                         isDoneFading_ = true;

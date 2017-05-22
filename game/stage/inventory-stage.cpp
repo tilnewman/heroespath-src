@@ -2226,8 +2226,8 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
 
-        creaturePtr_->CoinsAdj(static_cast<game::item::Coin_t>(COUNT) * -1);
-        creatureToGiveToPtr->CoinsAdj(COUNT);
+        creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(COUNT) * -1);
+        creatureToGiveToPtr->CoinsAdj(static_cast<item::Coin_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " coins taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
@@ -2239,8 +2239,8 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
 
-        creaturePtr_->GemsAdj(static_cast<game::item::Gem_t>(COUNT) * -1);
-        creatureToGiveToPtr->GemsAdj(COUNT);
+        creaturePtr_->GemsAdj(static_cast<item::Gem_t>(COUNT) * -1);
+        creatureToGiveToPtr->GemsAdj(static_cast<item::Gem_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " gems taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
@@ -2252,8 +2252,8 @@ namespace stage
     {
         sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(static_cast<game::item::Meteor_t>(COUNT) * -1);
-        creatureToGiveToPtr->MeteorShardsAdj(COUNT);
+        creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT) * -1);
+        creatureToGiveToPtr->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";

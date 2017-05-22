@@ -162,7 +162,7 @@ namespace gui
         if (ORIENTATION_ == Orientation::Horiz)
         {
             //create
-            unsigned int createWidthToUse(length_);
+            unsigned int createWidthToUse(static_cast<unsigned int>(length_));
             if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
                 createWidthToUse = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().width + endBotOrRightSprite_.getLocalBounds().width);
 
@@ -213,7 +213,7 @@ namespace gui
         else
         {
             //create off-screen texture
-            unsigned int createHeightToUse(length_);
+            unsigned int createHeightToUse(static_cast<unsigned int>(length_));
             if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
                 createHeightToUse = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().height + endBotOrRightSprite_.getLocalBounds().height);
 
@@ -242,7 +242,7 @@ namespace gui
             if (pixelsOfMiddleToUse_ > 0)
             {
                 const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
-                middleSprite_.setTextureRect(sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, ORIG_RECT.width, static_cast<unsigned int>(pixelsOfMiddleToUse_)));
+                middleSprite_.setTextureRect(sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, ORIG_RECT.width, static_cast<int>(pixelsOfMiddleToUse_)));
                 middleSprite_.setPosition(0.0f, posY);
                 offScreenTexture_.draw(middleSprite_);
                 posY += static_cast<float>(pixelsOfMiddleToUse_);

@@ -50,7 +50,7 @@ namespace game
         {
             SetFloat(KEY_THEMEMUSIC_VOL_, sfml_util::SoundManager::Instance()->MusicVolume());
             SetFloat(KEY_SOUNDEFFECTS_VOL_, sfml_util::SoundManager::Instance()->SoundEffectVolume());
-            SetInt(KEY_RESOLUTION_WIDTH_, sfml_util::Display::Instance()->GetWinWidthu());
+            SetInt(KEY_RESOLUTION_WIDTH_, static_cast<int>(sfml_util::Display::Instance()->GetWinWidthu()));
             SetInt(KEY_RESOLUTION_HEIGHT_, static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()));
             SetBool(KEY_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
             SetInt(KEY_FRAMERATE_LIMIT_, sfml_util::Display::Instance()->GetFrameRateLimit());

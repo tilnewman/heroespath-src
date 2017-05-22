@@ -681,7 +681,7 @@ namespace combat
         }
         else
         {
-            spellToCastPtr = finalSpellPVec.at(static_cast<std::size_t>(utilz::random::Int(finalSpellPVec.size() - static_cast<std::size_t>(1))));
+            spellToCastPtr = finalSpellPVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(finalSpellPVec.size()) - 1)));
         }
 
         return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, { spellToCastPtr->Type() });
@@ -791,7 +791,7 @@ namespace combat
         }
         else
         {
-            return spellsOfTypePVec.at(static_cast<std::size_t>(utilz::random::Int(spellsOfTypePVec.size() - static_cast<std::size_t>(1))) );
+            return spellsOfTypePVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(spellsOfTypePVec.size()) - 1)) );
         }
     }
 

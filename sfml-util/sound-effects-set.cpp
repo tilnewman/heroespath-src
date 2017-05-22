@@ -75,7 +75,7 @@ namespace sfml_util
         }
         else
         {
-            PlayAt(static_cast<std::size_t>(utilz::random::Int(enumVec_.size() - static_cast<std::size_t>(1))));
+            PlayAt(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(enumVec_.size()) - 1)));
         }
     }
 
