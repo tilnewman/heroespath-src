@@ -440,7 +440,7 @@ namespace map
         {
             const float HORIZ_LIMIT(static_cast<float>((mapTileCountX_ * tileSizeWidth_) - WIN_SIZE_V_.x));
 
-            if ((offScreenRect_.left + (prevTileOffsets_.begin_x * static_cast<float>(tileSizeWidth_))) < HORIZ_LIMIT)
+            if ((offScreenRect_.left + static_cast<float>(prevTileOffsets_.begin_x * tileSizeWidth_)) < HORIZ_LIMIT)
             {
                 offScreenRect_.left += ADJUSTMENT;
                 SetupMapSprite();

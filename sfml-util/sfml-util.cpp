@@ -298,7 +298,9 @@ namespace sfml_util
                 color.b = static_cast<sf::Uint8>(255 - static_cast<int>(color.b));
 
                 if (WILL_INVERT_ALPHA)
-                    color.a = 255 - color.a;
+                {
+                    color.a = static_cast<sf::Uint8>(255 - static_cast<int>(color.a));
+                }
 
                 image.setPixel(x, y, color);
             }
