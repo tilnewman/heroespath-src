@@ -36,7 +36,7 @@ namespace item
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
 
-        inline static bool IsBroken(const category::Enum E)    { return (E & category::Broken); }
+        inline static bool IsBroken(const category::Enum E)    { return (E == category::Broken); }
         inline static bool IsArmor(const category::Enum E)     { return (E & category::Armor); }
         inline static bool IsWeapon(const category::Enum E)    { return (E & category::Weapon); }
         inline static bool IsWearable(const category::Enum E)  { return (E & category::Wearable); }

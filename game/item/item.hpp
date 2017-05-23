@@ -74,7 +74,7 @@ namespace item
         inline bool IsArmorType(const armor_type::Enum E) const     { return (armorType_ & E); }
         inline bool IsMiscType(const misc_type::Enum E) const       { return (miscType_ & E); }
 
-        inline bool IsBroken() const                            { return (category_ & category::Broken); }
+        inline bool IsBroken() const                            { return (category_ == category::Broken); }
         inline bool IsArmor() const                             { return (category_ & category::Armor); }
         inline bool IsWeapon() const                            { return (category_ & category::Weapon); }
         inline bool IsWearable() const                          { return (category_ & category::Wearable); }

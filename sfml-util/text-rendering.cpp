@@ -353,9 +353,13 @@ namespace text_render
 
             //replace font of numbers to a special font that makes the numbers look cool
             if (isdigit(currChar))
+            {
                 nextTextSnippet.Setup(textPos.x, textPos.y, std::string(1, currChar), TEXT_INFO_SET.ti_num);
+            }
             else
+            {
                 nextTextSnippet.Setup(textPos.x, textPos.y, std::string(1, currChar), TEXT_INFO_SET.ti_char);
+            }
 
             textPos.x += nextTextSnippet.sf_text.getLocalBounds().width + 1;
 
