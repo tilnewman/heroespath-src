@@ -8,6 +8,8 @@
 
 #include "game/item/item.hpp"
 
+#include <string>
+
 
 namespace game
 {

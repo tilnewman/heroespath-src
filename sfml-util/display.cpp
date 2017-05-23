@@ -10,6 +10,8 @@
 
 #include <sstream>
 #include <exception>
+#include <string>
+#include <vector>
 
 
 namespace sfml_util

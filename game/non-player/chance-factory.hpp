@@ -16,6 +16,7 @@
 #include <map>
 #include <vector>
 #include <cstddef> //for std::size_t
+#include <string>
 
 
 namespace game

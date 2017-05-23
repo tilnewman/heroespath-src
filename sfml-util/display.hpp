@@ -10,6 +10,7 @@
 #include "sfml-util/gui/popup-manager.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace sfml_util

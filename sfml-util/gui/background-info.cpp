@@ -3,6 +3,8 @@
 //
 #include "background-info.hpp"
 
+#include <string>
+
 
 namespace sfml_util
 {

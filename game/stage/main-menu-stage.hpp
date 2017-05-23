@@ -17,6 +17,7 @@
 #include "sfml-util/gui/background-image.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace game

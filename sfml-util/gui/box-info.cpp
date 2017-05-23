@@ -5,6 +5,8 @@
 
 #include "utilz/real.hpp"
 
+#include <string>
+
 
 namespace sfml_util
 {

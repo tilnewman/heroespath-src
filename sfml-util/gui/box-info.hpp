@@ -8,6 +8,7 @@
 #include "sfml-util/gui/background-info.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace sfml_util

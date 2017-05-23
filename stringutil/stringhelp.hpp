@@ -35,6 +35,8 @@
 //      (avoid using boost's split -use the Tokenizer instead)
 //
 #include <set>
+#include <string>
+#include <algorithm>
 
 #ifdef _MSC_VER
 #pragma warning(push)

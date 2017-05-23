@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <tuple>
+#include <string>
 
 
 namespace game

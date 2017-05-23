@@ -18,6 +18,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <string>
 
 
 namespace sfml_util

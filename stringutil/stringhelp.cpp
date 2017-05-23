@@ -2,7 +2,11 @@
 // stringhelp.cpp
 //
 #include "stringhelp.hpp"
+
 #include <vector>
+#include <string>
+#include <algorithm>
+
 
 namespace appbase
 {

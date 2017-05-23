@@ -19,6 +19,8 @@
 #include "game/loop-manager.hpp"
 
 #include <sstream>
+#include <string>
+#include <vector>
 
 
 namespace game

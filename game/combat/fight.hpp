@@ -6,6 +6,7 @@
 #include "game/combat/fight-results.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace game
