@@ -8,6 +8,8 @@
 
 #include "utilz/random.hpp"
 
+#include <string>
+
 
 namespace game
 {

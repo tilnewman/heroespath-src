@@ -2,10 +2,7 @@
 // sfml-util.cpp
 //
 #include "sfml-util.hpp"
-#include "utilz/platform.hpp"
 #include "sfml-util/display.hpp"
-
-#include <tuple>
 
 //prevent boost warnings that can be ignored
 #include "utilz/platform.hpp"
@@ -19,6 +16,8 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
+#include <tuple>
+#include <algorithm>
 
 
 namespace sfml_util

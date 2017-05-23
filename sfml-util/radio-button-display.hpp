@@ -11,6 +11,7 @@
 #include "game/i-popup-callback.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace gui_demo

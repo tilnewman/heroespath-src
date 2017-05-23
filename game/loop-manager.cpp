@@ -13,6 +13,8 @@
 #include "game/creature/creature.hpp"
 #include "game/popup-info.hpp"
 
+#include <string>
+
 
 namespace game
 {
