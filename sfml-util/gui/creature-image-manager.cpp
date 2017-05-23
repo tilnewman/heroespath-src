@@ -64,8 +64,7 @@ namespace gui
         static auto roleIndex { 0 };
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
-        static std::size_t i  { 0 };
-
+        
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
             auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
@@ -78,6 +77,8 @@ namespace gui
 
                 if (sexIndex < static_cast<int>(game::creature::sex::Count))
                 {
+                    static std::size_t i{ 0 };
+
                     auto const SEX_ENUM{ static_cast<game::creature::sex::Enum>(sexIndex) };
                     auto const SEX_STR { game::creature::sex::ToString(SEX_ENUM) };
 

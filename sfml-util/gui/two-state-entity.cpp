@@ -95,12 +95,12 @@ namespace gui
 
     bool TwoStateEntity::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        bool didStateChange(false);
-
         //Use MouseState::Down as the second state possible for a TwoStateEntity.
         //This behavior matches that of a checkbox, or radio-button, etc.
         if (GetEntityRegion().contains(MOUSE_POS_V) && wasDownInRegion_)
         {
+            auto didStateChange{ false };
+
             if (guiText_.GetMouseState() != MouseState::Down)
             {
                 guiText_.SetMouseState(MouseState::Down);
@@ -119,11 +119,11 @@ namespace gui
 
         wasDownInRegion_ = false;
 
-        //didStateChange = (guiText_.MouseUp(MOUSE_POS_V) || guiImage_.MouseUp(MOUSE_POS_V));
-
         //prevent the image from being in state MouseState::Over
         if (MouseState::Over == guiImage_.GetMouseState())
+        {
             guiImage_.SetMouseState(MouseState::Over);
+        }
 
         return false;
     }
