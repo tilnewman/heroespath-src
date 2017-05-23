@@ -19,11 +19,11 @@ namespace sfml_util
     class Shaker
     {
     public:
-        Shaker(const T THE_MIN      = static_cast<T>(0),
-               const T THE_MAX      = static_cast<T>(1),
-               const T SPEED        = static_cast<T>(50),
-               const T START_AT     = static_cast<T>(0),
-               const bool WILL_GROW = true)
+        explicit Shaker(const T THE_MIN      = static_cast<T>(0),
+                        const T THE_MAX      = static_cast<T>(1),
+                        const T SPEED        = static_cast<T>(50),
+                        const T START_AT     = static_cast<T>(0),
+                        const bool WILL_GROW = true)
         :
             min_      (),
             diff_     (),
