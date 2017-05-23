@@ -3,9 +3,6 @@
 //
 #include "fight.hpp"
 
-#include "utilz/random.hpp"
-#include "utilz/vectors.hpp"
-
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/algorithms.hpp"
@@ -14,6 +11,11 @@
 #include "game/combat/combat-display.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/combat/combat-text.hpp"
+
+#include "utilz/random.hpp"
+#include "utilz/vectors.hpp"
+
+#include <string>
 
 
 namespace game

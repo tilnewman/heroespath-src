@@ -6,6 +6,7 @@
 #include "game/log-macros.hpp"
 
 #include <sstream>
+#include <string>
 #include <exception>
 #include <iomanip>
 

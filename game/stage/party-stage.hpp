@@ -18,6 +18,8 @@
 #include "game/main-menu-title.hpp"
 
 #include <memory>
+#include <string>
+
 
 namespace game
 {
