@@ -50,7 +50,7 @@ namespace sfml_util
         virtual void SetMouseVisibility(const bool IS_VISIBLE) = 0;
 
         virtual void SetState(const game::LoopState::Enum) = 0;
-        virtual game::LoopState::Enum  GetState() const = 0;
+        virtual game::LoopState::Enum GetState() const = 0;
 
         virtual void ConsumeEvents() = 0;
 
@@ -81,11 +81,11 @@ namespace sfml_util
         virtual void ProcessFader() = 0;
         virtual void ProcessPopup() = 0;
         virtual void ProcessEvents() = 0;
-        virtual void ProcessKeyStrokes(const sf::Event EVENT) = 0;
+        virtual void ProcessKeyStrokes(const sf::Event & EVENT) = 0;
         virtual void ProcessMouseMove() = 0;
         virtual void ProcessMouseButtonLeftPressed(const sf::Vector2f &) = 0;
         virtual void ProcessMouseButtonLeftReleased(const sf::Vector2f &) = 0;
-        virtual void ProcessMouseWheelRoll(const sf::Event EVENT) = 0;
+        virtual void ProcessMouseWheelRoll(const sf::Event & EVENT) = 0;
         virtual void ProcessPopupCallback() = 0;
         virtual void ProcessTimeUpdate() = 0;
         virtual void ProcessDrawing() = 0;

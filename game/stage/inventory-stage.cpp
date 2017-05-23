@@ -671,21 +671,21 @@ namespace stage
     }
 
 
-    void InventoryStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void InventoryStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(paperBgSprite_, states);
-        target.draw(mainMenuTitle_, states);
-        bottomSymbol_.Draw(target, states);
-        target.draw(creatureSprite_, states);
-        Stage::Draw(target, states);
+        target.draw(paperBgSprite_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        target.draw(creatureSprite_, STATES);
+        Stage::Draw(target, STATES);
 
         //always draw because it is a fast operation and will be fully transparent when should not be drawn
-        target.draw(detailViewQuads_, states);
+        target.draw(detailViewQuads_, STATES);
 
         if (detailViewTextSPtr_.get() != nullptr)
         {
-            target.draw(detailViewSprite_, states);
-            detailViewTextSPtr_->draw(target, states);
+            target.draw(detailViewSprite_, STATES);
+            detailViewTextSPtr_->draw(target, STATES);
         }
     }
 
@@ -1820,11 +1820,12 @@ namespace stage
     void InventoryStage::SetupCenterText()
     {
         std::ostringstream ss;
-        ss << "Coins:  " << creaturePtr_->Inventory().Coins() << "\n"
-           << "Gems:  " << creaturePtr_->Inventory().Gems() << "\n"
-           << "Meteor Shards:  " << creaturePtr_->Inventory().MeteorShards() << "\n"
+        auto const & INVENTORY{ creaturePtr_->Inventory() };
+        ss << "Coins:  " << INVENTORY.Coins() << "\n"
+           << "Gems:  " << INVENTORY.Gems() << "\n"
+           << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
            << "Mana:  " << creaturePtr_->ManaCurrent() << "/" << creaturePtr_->ManaNormal() << "\n"
-           << "Weight: " << creaturePtr_->Inventory().Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
+           << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
 
         const sfml_util::gui::TextInfo CENTER_TEXT_INFO(ss.str(),
@@ -2797,81 +2798,83 @@ namespace stage
             healthTradedNextTitleStr = ss.str();
         }
 
+        auto const ROLE{ CREATURE_CPTRC->Role().Which() };
+
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::BackstabsHits).Name()     << ":                "      << a.AchievementCopy(creature::AchievementType::BackstabsHits).Count()      << backstabsHitsNextTitleStr;
-        const std::string BACKSTABHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BackstabsHits).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string BACKSTABHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BackstabsHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::BattlesSurvived).Name()   << ":             "         << a.AchievementCopy(creature::AchievementType::BattlesSurvived).Count()    << battlesSurvivedNextTitleStr;
-        const std::string BATTLESSURVIVED_FINAL_STR((a.AchievementCopy(creature::AchievementType::BattlesSurvived).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string BATTLESSURVIVED_FINAL_STR((a.AchievementCopy(creature::AchievementType::BattlesSurvived).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::BeastMindLinks).Name()    << ":          "            << a.AchievementCopy(creature::AchievementType::BeastMindLinks).Count()     << beastMindLinksNextTitleStr;
-        const std::string BEASTMINDLINKS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastMindLinks).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string BEASTMINDLINKS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastMindLinks).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::BeastRoars).Name()        << ":                   "   << a.AchievementCopy(creature::AchievementType::BeastRoars).Count()         << beastRoarsNextTitleStr;
-        const std::string BEASTROARS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastRoars).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string BEASTROARS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastRoars).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::FlyingAttackHits).Name()  << ":         "             << a.AchievementCopy(creature::AchievementType::FlyingAttackHits).Count()   << flyingAttackHitsNextTitleStr;
-        const std::string FLYINGATTACKHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::FlyingAttackHits).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string FLYINGATTACKHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::FlyingAttackHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::DodgedFlying).Name()      << ":      "                << a.AchievementCopy(creature::AchievementType::DodgedFlying).Count()       << dodgedFlyingNextTitleStr;
-        const std::string DODGEDFLYING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedFlying).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string DODGEDFLYING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedFlying).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::DodgedStanding).Name()    << ":  "                    << a.AchievementCopy(creature::AchievementType::DodgedStanding).Count()     << dodgedStandingNextTitleStr;
-        const std::string DODGEDSTANDING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedStanding).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string DODGEDSTANDING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedStanding).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::EnemiesFaced).Name()      << ":               "       << a.AchievementCopy(creature::AchievementType::EnemiesFaced).Count()       << enemiesFacedNextTitleStr;
-        const std::string ENEMIESFACED_FINAL_STR((a.AchievementCopy(creature::AchievementType::EnemiesFaced).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string ENEMIESFACED_FINAL_STR((a.AchievementCopy(creature::AchievementType::EnemiesFaced).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::HealthGiven).Name()       << ":                 "     << a.AchievementCopy(creature::AchievementType::HealthGiven).Count()        << healthGivenNextTitleStr;
-        const std::string HEALTHGIVEN_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthGiven).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string HEALTHGIVEN_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthGiven).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::HealthTraded).Name()      << ":                "      << a.AchievementCopy(creature::AchievementType::HealthTraded).Count()       << healthTradedNextTitleStr;
-        const std::string HEALTHTRADED_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthTraded).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string HEALTHTRADED_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthTraded).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::LocksPicked).Name()       << ":                  "    << a.AchievementCopy(creature::AchievementType::LocksPicked).Count()        << locksPickedNextTitleStr;
-        const std::string LOCKSPICKED_FINAL_STR((a.AchievementCopy(creature::AchievementType::LocksPicked).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string LOCKSPICKED_FINAL_STR((a.AchievementCopy(creature::AchievementType::LocksPicked).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::MeleeHits).Name()         << ":                    "  << a.AchievementCopy(creature::AchievementType::MeleeHits).Count()          << meleeHitsNextTitleStr;
-        const std::string MELEEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MeleeHits).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string MELEEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MeleeHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::MoonHowls).Name()         << ":                  "    << a.AchievementCopy(creature::AchievementType::MoonHowls).Count()          << moonHowlsNextTitleStr;
-        const std::string MOONHOWLS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MoonHowls).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string MOONHOWLS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MoonHowls).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::PackActions).Name()       << ":                  "    << a.AchievementCopy(creature::AchievementType::PackActions).Count()        << packActionsNextTitleStr;
-        const std::string PACKACTIONS_FINAL_STR((a.AchievementCopy(creature::AchievementType::PackActions).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string PACKACTIONS_FINAL_STR((a.AchievementCopy(creature::AchievementType::PackActions).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::ProjectileHits).Name()    << ":               "       << a.AchievementCopy(creature::AchievementType::ProjectileHits).Count()     << projectileHitsNextTitleStr;
-        const std::string PROJECTILEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::ProjectileHits).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string PROJECTILEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::ProjectileHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::SongsPlayed).Name()       << ":                 "     << a.AchievementCopy(creature::AchievementType::SongsPlayed).Count()        << songsPlayedNextTitleStr;
-        const std::string SONGSPLAYED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SongsPlayed).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string SONGSPLAYED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SongsPlayed).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::SpellsCast).Name()        << ":                    "  << a.AchievementCopy(creature::AchievementType::SpellsCast).Count()         << spellsCastNextTitleStr;
-        const std::string SPELLSCAST_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpellsCast).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string SPELLSCAST_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpellsCast).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::SpiritsLifted).Name()     << ":                 "     << a.AchievementCopy(creature::AchievementType::SpiritsLifted).Count()      << spiritsLiftedNextTitleStr;
-        const std::string SPIRITSLIFTED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpiritsLifted).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string SPIRITSLIFTED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpiritsLifted).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n" << a.AchievementCopy(creature::AchievementType::TurnsInFlight).Name()     << ":              "        << a.AchievementCopy(creature::AchievementType::TurnsInFlight).Count()      << turnsInFlightNextTitleStr;
-        const std::string TURNSINFLIGHT_FINAL_STR((a.AchievementCopy(creature::AchievementType::TurnsInFlight).IsRoleInList(CREATURE_CPTRC->Role().Which())) ? ss.str() : "");
+        const std::string TURNSINFLIGHT_FINAL_STR((a.AchievementCopy(creature::AchievementType::TurnsInFlight).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n"
@@ -2900,11 +2903,11 @@ namespace stage
                                                  sfml_util::FontManager::Instance()->Size_Smallish(),
                                                  sf::Color::White,
                                                  sfml_util::Justified::Left);
-
+        auto const DETAILVIEW_BOUNDS{ detailViewSprite_.getGlobalBounds() };
         const sf::FloatRect TEXT_RECT(DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
-                                      detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height - 20.0f,
+                                      DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height - 20.0f,
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
-                                      (DETAILVIEW_HEIGHT_ - (detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height)) - (2.0f * DETAILVIEW_INNER_PAD_));
+                                      (DETAILVIEW_HEIGHT_ - (DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
         detailViewTextSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT) );
     }

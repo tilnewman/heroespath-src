@@ -33,8 +33,8 @@ namespace combat
         TurnActionInfo(const TurnAction::Enum        ACTION = TurnAction::Nothing,
                        const creature::CreaturePtr_t TARGET_PTR = nullptr);
 
-        TurnActionInfo(const spell::SpellPtr_t        SPELL_PTR,
-                       const creature::CreaturePVec_t TARGET_PVEC);
+        TurnActionInfo(const spell::SpellPtr_t          SPELL_PTR,
+                       const creature::CreaturePVec_t & TARGET_PVEC);
 
         TurnActionInfo(const TurnActionInfo &);
         TurnActionInfo & operator=(const TurnActionInfo &);

@@ -111,7 +111,7 @@ namespace stage
         virtual bool HandleCallback(const game::callback::PopupResponse &);
 
         void Setup();
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);

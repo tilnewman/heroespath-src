@@ -29,7 +29,7 @@ namespace utilz
 
             if (WILL_UNIQUE)
             {
-                std::unique(b_Vec.begin(), b_Vec.end());
+                b_Vec.erase(std::unique(b_Vec.begin(), b_Vec.end()), b_Vec.end());
             }
         }
 
@@ -51,7 +51,7 @@ namespace utilz
 
             if (WILL_UNIQUE)
             {
-                std::unique(finalVec.begin(), finalVec.end());
+                finalVec.erase(std::unique(finalVec.begin(), finalVec.end()), finalVec.end());
             }
 
             return finalVec;
@@ -124,11 +124,11 @@ namespace utilz
 
 
         template<typename T>
-        static const std::string Join(const std::vector<T> VEC,
-                                      const bool           WILL_WRAP     = false,
-                                      const bool           WILL_AND      = false,
-                                      const std::size_t    MAX_COUNT     = 0,
-                                      const bool           WILL_ELLIPSIS = false,
+        static const std::string Join(const std::vector<T> & VEC,
+                                      const bool             WILL_WRAP     = false,
+                                      const bool             WILL_AND      = false,
+                                      const std::size_t      MAX_COUNT     = 0,
+                                      const bool             WILL_ELLIPSIS = false,
                                       const std::string(*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string
                                         {
                                             std::ostringstream ss;

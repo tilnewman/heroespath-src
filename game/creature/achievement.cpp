@@ -17,7 +17,7 @@ namespace creature
 {
 
     Achievement::Achievement(const AchievementType::Enum WHICH,
-                             const TitleCountMap_t       TITLE_COUNT_MAP)
+                             const TitleCountMap_t &     TITLE_COUNT_MAP)
     :
         which_        (WHICH),
         count_        (0),

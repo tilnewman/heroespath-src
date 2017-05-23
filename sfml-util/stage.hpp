@@ -80,7 +80,7 @@ namespace sfml_util
         virtual void RemoveFocus();
         virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR);
 
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         //only a required function for the SettingsStage which can change resolution
         virtual void HandleResolutionChange() {}
@@ -101,7 +101,7 @@ namespace sfml_util
         inline virtual void PerformNextTest() {}
 
     protected:
-        void DrawHoverText(sf::RenderTarget &, sf::RenderStates &);
+        void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
         const std::string     STAGE_NAME_;

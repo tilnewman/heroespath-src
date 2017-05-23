@@ -370,22 +370,24 @@ namespace stage
     }
 
 
-    void CreditsStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CreditsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
+        target.draw(backgroundImage_, STATES);
 
-        Stage::Draw(target, states);
+        Stage::Draw(target, STATES);
 
         for (auto & nextCreditSPtr : creditSVec_)
-            nextCreditSPtr->Draw(target, states);
+        {
+            nextCreditSPtr->Draw(target, STATES);
+        }
 
         //draw solid black rectangles above and below the credits box to hide the scrolling credits when outside the box
-        sfml_util::DrawRectangle(target, states, sf::FloatRect(0.0f, 0.0f, SCREEN_WIDTH_, creditBoxPosTop_ - 5.0f), sf::Color::Black, 1.0f, sf::Color::Black);
-        sfml_util::DrawRectangle(target, states, sf::FloatRect(0.0f, creditBoxPosTop_ + creditBoxHeight_ + 5.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_), sf::Color::Black, 1.0f, sf::Color::Black);
+        sfml_util::DrawRectangle(target, STATES, sf::FloatRect(0.0f, 0.0f, SCREEN_WIDTH_, creditBoxPosTop_ - 5.0f), sf::Color::Black, 1.0f, sf::Color::Black);
+        sfml_util::DrawRectangle(target, STATES, sf::FloatRect(0.0f, creditBoxPosTop_ + creditBoxHeight_ + 5.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_), sf::Color::Black, 1.0f, sf::Color::Black);
 
-        target.draw(box_, states);
+        target.draw(box_, STATES);
 
-        target.draw(bpTitleSprite_, states);
+        target.draw(bpTitleSprite_, STATES);
     }
 
 

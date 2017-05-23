@@ -928,45 +928,45 @@ namespace stage
     }
 
 
-    void CombatStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CombatStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw( * commandBoxSPtr_, states);
-        Stage::Draw(target, states);
-        statusBoxSPtr_->draw(target, states);
+        target.draw( * commandBoxSPtr_, STATES);
+        Stage::Draw(target, STATES);
+        statusBoxSPtr_->draw(target, STATES);
 
         if (sparksAnimUPtr_.get() != nullptr)
         {
-            sparksAnimUPtr_->draw(target, states);
+            sparksAnimUPtr_->draw(target, STATES);
         }
 
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
             (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
-            turnBoxSPtr_->draw(target, states);
+            turnBoxSPtr_->draw(target, STATES);
 
-            titleTBoxTextRegionSPtr_->draw(target, states);
-            weaponTBoxTextRegionSPtr_->draw(target, states);
-            armorTBoxTextRegionSPtr_->draw(target, states);
-            infoTBoxTextRegionSPtr_->draw(target, states);
-            enemyActionTBoxRegionSPtr_->draw(target, states);
-            enemyCondsTBoxRegionSPtr_->draw(target, states);
+            titleTBoxTextRegionSPtr_->draw(target, STATES);
+            weaponTBoxTextRegionSPtr_->draw(target, STATES);
+            armorTBoxTextRegionSPtr_->draw(target, STATES);
+            infoTBoxTextRegionSPtr_->draw(target, STATES);
+            enemyActionTBoxRegionSPtr_->draw(target, STATES);
+            enemyCondsTBoxRegionSPtr_->draw(target, STATES);
 
-            attackTBoxButtonSPtr_->draw(target, states);
-            fightTBoxButtonSPtr_->draw(target, states);
-            castTBoxButtonSPtr_->draw(target, states);
-            advanceTBoxButtonSPtr_->draw(target, states);
-            retreatTBoxButtonSPtr_->draw(target, states);
-            blockTBoxButtonSPtr_->draw(target, states);
-            skipTBoxButtonSPtr_->draw(target, states);
-            flyTBoxButtonSPtr_->draw(target, states);
-            landTBoxButtonSPtr_->draw(target, states);
-            roarTBoxButtonSPtr_->draw(target, states);
-            pounceTBoxButtonSPtr_->draw(target, states);
+            attackTBoxButtonSPtr_->draw(target, STATES);
+            fightTBoxButtonSPtr_->draw(target, STATES);
+            castTBoxButtonSPtr_->draw(target, STATES);
+            advanceTBoxButtonSPtr_->draw(target, STATES);
+            retreatTBoxButtonSPtr_->draw(target, STATES);
+            blockTBoxButtonSPtr_->draw(target, STATES);
+            skipTBoxButtonSPtr_->draw(target, STATES);
+            flyTBoxButtonSPtr_->draw(target, STATES);
+            landTBoxButtonSPtr_->draw(target, STATES);
+            roarTBoxButtonSPtr_->draw(target, STATES);
+            pounceTBoxButtonSPtr_->draw(target, STATES);
         }
 
-        combatAnimationPtr_->Draw(target, states);
-        DrawHoverText(target, states);
-        testingTextRegionSPtr_->draw(target, states);
+        combatAnimationPtr_->Draw(target, STATES);
+        DrawHoverText(target, STATES);
+        testingTextRegionSPtr_->draw(target, STATES);
     }
 
 
@@ -1285,7 +1285,7 @@ namespace stage
                             }
                         }
                     }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->Target() == TargetType::SingleOpponent))
+                    else if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
                     {
                         if (creatureAtPosPtr->IsPlayerCharacter())
                         {
@@ -1372,21 +1372,6 @@ namespace stage
             if (KE.code == sf::Keyboard::Left)
                 return HandleRetreat();
 
-            if ((KE.code == sf::Keyboard::B) || ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction())))
-                return HandleBlock();
-
-            if ((KE.code == sf::Keyboard::S) || ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction() == false)))
-                return HandleSkip();
-
-            if (KE.code == sf::Keyboard::I)
-            {
-                if ((turnCreaturePtr_ != nullptr) && turnCreaturePtr_->IsPlayerCharacter())
-                {
-                    restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                    game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_);
-                }
-            }
-
             if (KE.code == sf::Keyboard::Y)
                 return HandleFly();
 
@@ -1396,11 +1381,37 @@ namespace stage
             if (KE.code == sf::Keyboard::R)
                 return HandleRoar();
 
-            if (KE.code == sf::Keyboard::P)
-                return HandlePounce(encounterSPtr_->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying());
-
             if (KE.code == sf::Keyboard::X)
                 return HandleWeaponChange();
+
+            if (nullptr != turnCreaturePtr_)
+            {
+                if ((KE.code == sf::Keyboard::B) ||
+                    ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction())))
+                {
+                    return HandleBlock();
+                }
+
+                if ((KE.code == sf::Keyboard::S) ||
+                    ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction() == false)))
+                {
+                    return HandleSkip();
+                }
+
+                if (KE.code == sf::Keyboard::I)
+                {
+                    if (turnCreaturePtr_->IsPlayerCharacter())
+                    {
+                        restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_);
+                    }
+                }
+
+                if (KE.code == sf::Keyboard::P)
+                {
+                    return HandlePounce(encounterSPtr_->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying());
+                }
+            }
         }
 
         return Stage::KeyRelease(KE);
@@ -2588,9 +2599,10 @@ namespace stage
         weaponTBoxTextRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (weaponTBoxTextRegionSPtr_->GetEntityRegion().width * 0.5f),
                                                 (titleTBoxTextRegionSPtr_->GetEntityRegion().top + titleTBoxTextRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
 
+        auto const WEAPON_TBOXTEXT_REGION{ weaponTBoxTextRegionSPtr_->GetEntityRegion() };
         armorTBoxTextRegionSPtr_->SetText(armorSS.str());
         armorTBoxTextRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (armorTBoxTextRegionSPtr_->GetEntityRegion().width * 0.5f),
-                                               (weaponTBoxTextRegionSPtr_->GetEntityRegion().top + weaponTBoxTextRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
+                                               (WEAPON_TBOXTEXT_REGION.top + WEAPON_TBOXTEXT_REGION.height) - VERT_POS_SHIFT);
 
         enemyCondsTBoxRegionSPtr_->SetText(enemyCondsSS.str());
         enemyCondsTBoxRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyCondsTBoxRegionSPtr_->GetEntityRegion().width * 0.5f),

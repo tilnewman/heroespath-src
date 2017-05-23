@@ -10,9 +10,9 @@ namespace game
 namespace combat
 {
 
-    TurnInfo::TurnInfo(const bool                   IS_FLYING,
-                       const TurnAction::Enum       TURN_STATE,
-                       const combat::strategy::Info STRATEGY_INFO)
+    TurnInfo::TurnInfo(const bool                     IS_FLYING,
+                       const TurnAction::Enum         TURN_STATE,
+                       const combat::strategy::Info & STRATEGY_INFO)
     :
         isFlying_                  (IS_FLYING),
         turnActionInfo_            (TURN_STATE),

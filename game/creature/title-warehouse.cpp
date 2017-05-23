@@ -209,7 +209,7 @@ namespace title
 
     TitlePtr_t Warehouse::Get(const Titles::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(((E >= 0) || (E < Titles::Count)),                 "game::creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
+        M_ASSERT_OR_LOGANDTHROW_SS(((E >= 0) && (E < Titles::Count)),                 "game::creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
         M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < titleSVec_.size()), "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E) << "\") enum given was " << E << " but that was greater than (or equal to) the vec size of " << titleSVec_.size() << ".");
         M_ASSERT_OR_LOGANDTHROW_SS((titleSVec_.empty() == false),                     "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E) << "\") called before vec was populated by Setup().");
         const TitlePtr_t TITLE_PTR(titleSVec_[E].get());

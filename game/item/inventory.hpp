@@ -30,11 +30,11 @@ namespace item
     class Inventory
     {
     public:
-        Inventory(const Coin_t      COINS              = 0,
-                  const Meteor_t    METEOR_SHARDS      = 0,
-                  const Gem_t       GEMS               = 0,
-                  const ItemSVec_t ITEMS_SVEC          = ItemSVec_t(),
-                  const ItemSVec_t EQUIPPED_ITEMS_SVEC = ItemSVec_t());
+        Inventory(const Coin_t       COINS               = 0,
+                  const Meteor_t     METEOR_SHARDS       = 0,
+                  const Gem_t        GEMS                = 0,
+                  const ItemSVec_t & ITEMS_SVEC          = ItemSVec_t(),
+                  const ItemSVec_t & EQUIPPED_ITEMS_SVEC = ItemSVec_t());
 
         virtual ~Inventory();
 
@@ -50,16 +50,16 @@ namespace item
         inline const ItemSVec_t Items() const          { return itemsSVec_; }
         inline const ItemSVec_t ItemsEquipped() const   { return equippedItemsSVec_; }
 
-        void ItemAdd(const ItemSPtr_t ITEM_SPTR);
-        void ItemRemove(const ItemSPtr_t ITEM_SPTR);
+        void ItemAdd(const ItemSPtr_t & ITEM_SPTR);
+        void ItemRemove(const ItemSPtr_t & ITEM_SPTR);
 
         //moves the item from itemsSVec_ to equippedItemsSVec_
-        void ItemEquip(const ItemSPtr_t ITEM_SPTR);
+        void ItemEquip(const ItemSPtr_t & ITEM_SPTR);
 
         //moves the item from equippedItemsSVec_ to itemsSVec_
-        void ItemUnEquip(const ItemSPtr_t ITEM_SPTR);
+        void ItemUnEquip(const ItemSPtr_t & ITEM_SPTR);
 
-        bool ContainsItem(const ItemSPtr_t ITEM_SPTR) const;
+        bool ContainsItem(const ItemSPtr_t & ITEM_SPTR) const;
 
         Weight_t Weight() const;
 

@@ -165,6 +165,7 @@ namespace logbase
     {
         //prevent the \e below from generating warnings in visual studio
         #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+        #pragma warning(push)
         #pragma warning(disable : 4129)
         #endif
 
@@ -182,7 +183,7 @@ namespace logbase
         }
 
         #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-        #pragma warning(default : 4129)
+        #pragma warning(pop)
         #endif
     }
 

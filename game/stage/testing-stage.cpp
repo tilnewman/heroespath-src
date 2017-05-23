@@ -67,18 +67,18 @@ namespace stage
     }
 
 
-    void TestingStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        Stage::Draw(target, states);
+        Stage::Draw(target, STATES);
 
         if (multiTextureAnimSPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->draw(target, states);
+            multiTextureAnimSPtr_->draw(target, STATES);
         }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
         {
-            singleTextureAnimSPtr_->draw(target, states);
+            singleTextureAnimSPtr_->draw(target, STATES);
         }
 
         auto const IMAGE_POS_TOP{ 1.0f };
@@ -116,7 +116,7 @@ namespace stage
 
                 posLeft -= (sprite.getGlobalBounds().width + 5.0f);
                 sprite.setPosition(posLeft, IMAGE_POS_TOP);
-                target.draw(sprite, states);
+                target.draw(sprite, STATES);
                 ++imageDrawCount;
 
                 if (posLeft < 0.0f)
@@ -140,13 +140,17 @@ namespace stage
             for (std::size_t i(testingBlurbsVec_.size() - 1); i < testingBlurbsVec_.size(); --i)
             {
                 if (i >= testingBlurbsVec_.size())
+                {
                     break;
+                }
 
                 std::ostringstream ss;
                 ss << testingBlurbsVec_.at(i).first;
 
                 if (testingBlurbsVec_.at(i).second > 0)
+                {
                     ss << " " << testingBlurbsVec_.at(i).second;
+                }
 
                 sf::Text text(sf::String(ss.str()),
                               * sfml_util::FontManager::Instance()->Font_Default1(),
@@ -154,11 +158,14 @@ namespace stage
 
                 text.setPosition(1.0f, posTop);
 
-                target.draw(text, states);
+                target.draw(text, STATES);
 
                 posTop -= TEXT_HEIGHT;
+
                 if (posTop < DO_NOT_PASS_TOP)
+                {
                     break;
+                }
             }
         }
     }
@@ -371,7 +378,6 @@ namespace stage
         actualSet = STAT_SET_MOD1;
         TestStatSetsCurrentAndNormal("Mod1 Set Identity", actualSet, STAT_SET_MOD1);
 
-        actualSet = STAT_SET_MOD1;
         actualSet = STAT_SET_MOD1.CreateInvertCopy();
         const stats::StatSet STAT_SET_MOD1_INV(0, 1, -2, 3, -4, 5);
         TestStatSetsCurrentAndNormal("Mod1 Set CreateInvertCopy()", actualSet, STAT_SET_MOD1_INV);

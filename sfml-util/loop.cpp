@@ -341,7 +341,7 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessKeyStrokes(const sf::Event EVENT)
+    void Loop::ProcessKeyStrokes(const sf::Event & EVENT)
     {
         if ((EVENT.type != prevEventType_) || (EVENT.key.code != prevKeyPressed_))
         {
@@ -469,7 +469,7 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessMouseWheelRoll(const sf::Event EVENT)
+    void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT)
     {
         const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition(*winSPtr_)));
 
@@ -528,8 +528,7 @@ namespace sfml_util
 
             //establish the path
             const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
-            const std::string DIR_OBJ_STR(DIR_OBJ.string());
-
+            
             //create directory if missing
             if (false == bfs::exists(DIR_OBJ))
             {

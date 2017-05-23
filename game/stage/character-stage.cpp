@@ -981,8 +981,9 @@ sfml_util::PopupImage::Regular));
         const creature::role::Enum ROLE_ENUM( ((static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
         const std::string ROLE_DESC( creature::role::Desc(ROLE_ENUM) );
 
-        const sf::FloatRect REGION(roleRadioButtonSPtr_->GetEntityRegion().left + roleRadioButtonSPtr_->GetEntityRegion().width + 15.0f,
-                                   roleRadioButtonSPtr_->GetEntityRegion().top + sfml_util::MapByRes(25.0f, 75.0f),
+        auto const ROLE_RADIOBUTTON_REGION{ roleRadioButtonSPtr_->GetEntityRegion() };
+        const sf::FloatRect REGION(ROLE_RADIOBUTTON_REGION.left + ROLE_RADIOBUTTON_REGION.width + 15.0f,
+                                   ROLE_RADIOBUTTON_REGION.top + sfml_util::MapByRes(25.0f, 75.0f),
                                    sfml_util::MapByRes(240.0f, 1750.0f),
                                    roleRadioButtonSPtr_->GetEntityRegion().height - 30.0f);
 
@@ -1218,7 +1219,7 @@ sfml_util::PopupImage::Regular));
             (AreAnyAnimNumStillMoving()) ||
             (AreAnyStatsIgnored()))
         {
-            textInfo.text = "";
+            textInfo.text.clear();
             textInfo.color = DESC_TEXT_COLOR_;
             return false;
         }
@@ -1681,22 +1682,22 @@ sfml_util::PopupImage::Regular));
     }
 
 
-    void CharacterStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CharacterStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        target.draw(mainMenuTitle_, states);
-        bottomSymbol_.Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        bottomSymbol_.Draw(target, STATES);
 
-        Stage::Draw(target, states);
+        Stage::Draw(target, STATES);
 
         //Don't draw statBox_.  That is in entitySSet_.
 
-        target.draw(strLabelTextRegion_, states);
-        target.draw(accLabelTextRegion_, states);
-        target.draw(chaLabelTextRegion_, states);
-        target.draw(lckLabelTextRegion_, states);
-        target.draw(spdLabelTextRegion_, states);
-        target.draw(intLabelTextRegion_, states);
+        target.draw(strLabelTextRegion_, STATES);
+        target.draw(accLabelTextRegion_, STATES);
+        target.draw(chaLabelTextRegion_, STATES);
+        target.draw(lckLabelTextRegion_, STATES);
+        target.draw(spdLabelTextRegion_, STATES);
+        target.draw(intLabelTextRegion_, STATES);
 
         //draw lines between stats
         sf::Vertex line1[] = { sf::Vertex(sf::Vector2f(STATS_POS_LEFT_ + 0.0f, statsLine1PosTop_)), sf::Vertex(sf::Vector2f(STATS_POS_LEFT_ + 10.0f + statsLineLength_, statsLine1PosTop_)) };
@@ -1724,17 +1725,17 @@ sfml_util::PopupImage::Regular));
         //draw stat modifier texts
         const std::size_t NUM_STAT_MODS(statModifierTextVec_.size());
         for (std::size_t i(0); i < NUM_STAT_MODS; ++i)
-            target.draw(statModifierTextVec_[i], states);
+            target.draw(statModifierTextVec_[i], STATES);
 
         //draw animating digits
         const std::size_t NUM_DIGITS(animStatsSVec_.size());
         for (std::size_t i(0); i < NUM_DIGITS; ++i)
             if (false == animStatsSVec_[i]->IgnoreMe())
-                target.draw( * animStatsSVec_[i], states);
+                target.draw( * animStatsSVec_[i], STATES);
 
         for (std::size_t i(0); i < stats::stat::Count; ++i)
             if (false == fixedStatsSVec_[i]->IgnoreMe())
-                target.draw( * fixedStatsSVec_[i], states);
+                target.draw( * fixedStatsSVec_[i], STATES);
 
         /*
         //draw the rectangle defining the smoke anim drift boundary
@@ -1742,7 +1743,7 @@ sfml_util::PopupImage::Regular));
                               0.0f,
                               (sfml_util::Display::Instance()->GetWinWidth() - 150.0f) - smokeAnimmaxX_,
                               400.0f);
-        sfml_util::DrawRectangle(target, states, R, sf::Color::Red);
+        sfml_util::DrawRectangle(target, STATES, R, sf::Color::Red);
         */
     }
 

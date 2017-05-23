@@ -84,25 +84,25 @@ namespace combat
                                                                            const bool                     NUM_PLAYERS_IN_ATTACK_RANGE,
                                                                            const bool                     CAN_ATTACK_MOST_DESIRED_TARGET_WITH);
 
-        static const TurnActionInfo DecideIfDoingBeastAction(const TurnInfo &               TURN_INFO,
-                                                             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                             const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                             const creature::CreaturePVec_t PLAYERS_IN_MELEE_RANGE_PVEC,
-                                                             const int                      MOST_DESIRED_TARGET_CREATURE_DISTANCE);
+        static const TurnActionInfo DecideIfDoingBeastAction(const TurnInfo &                 TURN_INFO,
+                                                             const creature::CreaturePtrC_t   CREATURE_DECIDING_CPTRC,
+                                                             const creature::CreaturePtrC_t   MOST_DESIRED_TARGET_CPTRC,
+                                                             const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
+                                                             const int                        MOST_DESIRED_TARGET_CREATURE_DISTANCE);
 
         static const TurnActionInfo ForcePickSpellToCast(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                                          const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC);
 
         static const TurnActionInfo DecideSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                                 const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                const spell::SpellTypeVec_t    SPELL_TYPES_VEC);
+                                                const spell::SpellTypeVec_t &  SPELL_TYPES_VEC);
 
 
         static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                            const spell::SpellType::Enum   SPELL_TYPE);
 
         static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                           const spell::SpellTypeVec_t    SPELL_TYPES_VEC);
+                                           const spell::SpellTypeVec_t &  SPELL_TYPES_VEC);
 
         static const TurnActionInfo DecideIfFlying(const TurnInfo &               TURN_INFO,
                                                    const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC);

@@ -197,15 +197,16 @@ namespace combat
         combatDisplayStagePtr_->CombatTreeObj().GetCombatNodes(combatNodePVec);
         for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
         {
+            auto const NEXT_REGION{ NEXT_COMBANODE_SPTR->GetEntityRegion() };
             if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
             {
-                creatureAttackingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
-                creatureAttackingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
+                creatureAttackingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
+                creatureAttackingCenterPosV.y = NEXT_REGION.top +  NEXT_REGION.height * 0.5f;
             }
             else if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_DEFENDING_CPTRC)
             {
-                creatureDefendingCenterPosV.x = NEXT_COMBANODE_SPTR->GetEntityRegion().left + NEXT_COMBANODE_SPTR->GetEntityRegion().width * 0.5f;
-                creatureDefendingCenterPosV.y = NEXT_COMBANODE_SPTR->GetEntityRegion().top + NEXT_COMBANODE_SPTR->GetEntityRegion().height * 0.5f;
+                creatureDefendingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
+                creatureDefendingCenterPosV.y = NEXT_REGION.top +  NEXT_REGION.height * 0.5f;
             }
         }
 
@@ -259,8 +260,10 @@ namespace combat
             projAnimSprite_.setOrigin(0.0f, 0.0f);
         }
 
-        if ((combatDisplayStagePtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left, projAnimSprite_.getGlobalBounds().top) == false) ||
-            (combatDisplayStagePtr_->BattlefieldRect().contains(projAnimSprite_.getGlobalBounds().left + projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().top + projAnimSprite_.getGlobalBounds().height) == false))
+        auto const PROJ_ANIM_SPRITE_GBOUNDS{ projAnimSprite_.getGlobalBounds() };
+
+        if ((combatDisplayStagePtr_->BattlefieldRect().contains(PROJ_ANIM_SPRITE_GBOUNDS.left,  PROJ_ANIM_SPRITE_GBOUNDS.top) == false) ||
+            (combatDisplayStagePtr_->BattlefieldRect().contains(PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width, PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height) == false))
         {
             ProjectileShootAnimStop();
         }
@@ -355,11 +358,13 @@ namespace combat
             targetPosV = sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
         }
 
-        auto const DIFF_X((combatDisplayStagePtr_->BattlefieldRect().left + (combatDisplayStagePtr_->BattlefieldRect().width * 0.5f)) - targetPosV.x);
+        auto const BF_RECT{ combatDisplayStagePtr_->BattlefieldRect() };
+
+        auto const DIFF_X((BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x);
         auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
         combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
 
-        auto const DIFF_Y((combatDisplayStagePtr_->BattlefieldRect().top + (combatDisplayStagePtr_->BattlefieldRect().height * 0.5f)) - targetPosV.y);
+        auto const DIFF_Y((BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y);
         auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
         combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
 

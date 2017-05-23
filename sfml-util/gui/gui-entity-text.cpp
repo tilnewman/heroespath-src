@@ -139,10 +139,7 @@ namespace gui
         sprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(renderedTextSPtr_->longest_line), static_cast<int>(renderedTextSPtr_->total_height)));
         sprite_.setPosition(POS_LEFT, POS_TOP);
 
-        SetEntityRegion(sf::FloatRect(sprite_.getGlobalBounds().left,
-                                      sprite_.getGlobalBounds().top,
-                                      sprite_.getGlobalBounds().width,
-                                      sprite_.getGlobalBounds().height));
+        SetEntityRegion(sprite_.getGlobalBounds());
     }
 
 

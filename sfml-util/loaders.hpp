@@ -72,14 +72,16 @@ namespace sfml_util
         bfs::directory_iterator endItr;
         for (bfs::directory_iterator dirItr(DIR_OBJ); endItr != dirItr; ++dirItr)
         {
+            auto const DIR_PATH_STR{ dirItr->path().string() };
+
             //ignore non-regular files, files with the extension .txt, and files named "sample.gif"
             if ((bfs::is_regular_file(dirItr->status())) &&
-                (boost::algorithm::iends_with(dirItr->path().string(), ".txt") == false) &&
-                (boost::algorithm::iends_with(dirItr->path().string(), ".DS_Store") == false) &&
-                (boost::algorithm::icontains(dirItr->path().string(), "sample.gif") == false))
+                (boost::algorithm::iends_with(DIR_PATH_STR, ".txt") == false) &&
+                (boost::algorithm::iends_with(DIR_PATH_STR, ".DS_Store") == false) &&
+                (boost::algorithm::icontains(DIR_PATH_STR, "sample.gif") == false))
             {
                 ImageOrTextureSPtr_t tempImageOrTextureSPtr(new typename ImageOrTextureSPtr_t::element_type);
-                LoadImageOrTexture(*tempImageOrTextureSPtr, dirItr->path().string());
+                LoadImageOrTexture(*tempImageOrTextureSPtr, DIR_PATH_STR);
                 imageOrTextureSVec.push_back(tempImageOrTextureSPtr);
             }
         }

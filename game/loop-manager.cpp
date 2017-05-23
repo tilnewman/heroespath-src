@@ -368,15 +368,15 @@ namespace game
     }
 
 
-    void LoopManager::TransitionHelper(const bool                      WILL_CLEAR_QUEUE,
-                                       const bool                      WILL_EXIT_LOOP,
-                                       const bool                      WILL_IGNORE_MOUSE,
-                                       const bool                      WILL_RESTORE_MOUSE,
-                                       const bool                      WILL_FINAL_EXECUTE,
-                                       const LoopState::Enum           NEW_STATE,
-                                       const sfml_util::ILoopCmdSPtr_t ADD_STAGE_LOOP_CMD,
-                                       const sfml_util::music::Enum    MUSIC_TO_STOP,
-                                       const sfml_util::music::Enum    MUSIC_TO_START)
+    void LoopManager::TransitionHelper(const bool                        WILL_CLEAR_QUEUE,
+                                       const bool                        WILL_EXIT_LOOP,
+                                       const bool                        WILL_IGNORE_MOUSE,
+                                       const bool                        WILL_RESTORE_MOUSE,
+                                       const bool                        WILL_FINAL_EXECUTE,
+                                       const LoopState::Enum             NEW_STATE,
+                                       const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+                                       const sfml_util::music::Enum      MUSIC_TO_STOP,
+                                       const sfml_util::music::Enum      MUSIC_TO_START)
     {
         if (WILL_CLEAR_QUEUE)
             cmdQueue_.Clear();

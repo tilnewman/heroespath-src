@@ -187,7 +187,7 @@ namespace sfml_util
                                                                        sound_effect::ProjectileMiss11,
                                                                        sound_effect::ProjectileMiss12,
                                                                        sound_effect::ProjectileMiss13 };
-        projectileMissSoundsSPtr_ = std::make_shared<SoundEffectsSet>(ARROW_SHOOT_SOUNDS_ENUM_VEC);
+        projectileMissSoundsSPtr_ = std::make_shared<SoundEffectsSet>(PROJECTILE_MISS_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t MELEE_MISS_SOUNDS_ENUM_VEC = { sound_effect::MeleeMiss1,
                                                                   sound_effect::MeleeMiss2,

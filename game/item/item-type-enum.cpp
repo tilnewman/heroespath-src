@@ -388,7 +388,7 @@ namespace item
 
     bool material::IsMagical(const material::Enum PRI, const material::Enum SEC)
     {
-        return ((PRI == material::Ether) || (SEC == material::Ether));
+        return ContainsEther(PRI, SEC);
     }
 
 

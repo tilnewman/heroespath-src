@@ -37,7 +37,7 @@ namespace stage
 
         virtual void Setup();
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE);
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
@@ -48,10 +48,10 @@ namespace stage
         static const float SCROLL_SPEED_MAX_;
         static const float CREDIT_BOX_INNER_PAD_;
         //
-        const float     CREDIT_BOX_WIDTH_;
-        const float     SCREEN_WIDTH_;
-        const float     SCREEN_HEIGHT_;
-        const float     CREDITBOX_POS_LEFT_;
+        const float CREDIT_BOX_WIDTH_;
+        const float SCREEN_WIDTH_;
+        const float SCREEN_HEIGHT_;
+        const float CREDITBOX_POS_LEFT_;
         //
         const sfml_util::MusicSetSPtr_t BG_MUSIC_SET_SPTR_;
         //

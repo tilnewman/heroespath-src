@@ -15,11 +15,11 @@ namespace game
 namespace item
 {
 
-    Inventory::Inventory(const Coin_t     COINS,
-                         const Meteor_t   METEOR_SHARDS,
-                         const Gem_t      GEMS,
-                         const ItemSVec_t ITEMS_SVEC,
-                         const ItemSVec_t EQUIPPED_ITEMS_SVEC)
+    Inventory::Inventory(const Coin_t       COINS,
+                         const Meteor_t     METEOR_SHARDS,
+                         const Gem_t        GEMS,
+                         const ItemSVec_t & ITEMS_SVEC,
+                         const ItemSVec_t & EQUIPPED_ITEMS_SVEC)
     :
         coins_           (COINS),
         meteorShards_    (METEOR_SHARDS),
@@ -208,14 +208,14 @@ namespace item
         return count;
     }
 
-    void Inventory::ItemAdd(const ItemSPtr_t ITEM_SPTR)
+    void Inventory::ItemAdd(const ItemSPtr_t & ITEM_SPTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemAdd(nullptr) was given a null ITEM_SPTR.");
         itemsSVec_.push_back(ITEM_SPTR);
     }
 
 
-    void Inventory::ItemRemove(const ItemSPtr_t ITEM_SPTR)
+    void Inventory::ItemRemove(const ItemSPtr_t & ITEM_SPTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemRemove(nullptr) was given a null ITEM_SPTR.");
 
@@ -226,14 +226,14 @@ namespace item
     }
 
 
-    void Inventory::ItemEquip(const ItemSPtr_t ITEM_SPTR)
+    void Inventory::ItemEquip(const ItemSPtr_t & ITEM_SPTR)
     {
         ItemRemove(ITEM_SPTR);
         equippedItemsSVec_.push_back(ITEM_SPTR);
     }
 
 
-    void Inventory::ItemUnEquip(const ItemSPtr_t ITEM_SPTR)
+    void Inventory::ItemUnEquip(const ItemSPtr_t & ITEM_SPTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemUnequip(nullptr) was given a null ITEM_SPTR.");
 
@@ -245,7 +245,7 @@ namespace item
     }
 
 
-    bool Inventory::ContainsItem(const ItemSPtr_t ITEM_SPTR) const
+    bool Inventory::ContainsItem(const ItemSPtr_t & ITEM_SPTR) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ContainsItem(nullptr) was given a null ITEM_SPTR.");
 

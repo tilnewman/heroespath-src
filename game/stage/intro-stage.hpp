@@ -27,7 +27,7 @@ namespace stage
         virtual ~IntroStage();
 
         virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
     private:

@@ -19,8 +19,8 @@ namespace combat
     {}
 
 
-    TurnActionInfo::TurnActionInfo(const spell::SpellPtr_t        SPELL_PTR,
-                                   const creature::CreaturePVec_t TARGET_PVEC)
+    TurnActionInfo::TurnActionInfo(const spell::SpellPtr_t          SPELL_PTR,
+                                   const creature::CreaturePVec_t & TARGET_PVEC)
     :
         actionType_ (TurnAction::Cast),
         targetsPVec_(TARGET_PVEC),

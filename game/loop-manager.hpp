@@ -123,15 +123,15 @@ namespace game
         void TransitionTo_Inventory(creature::CreaturePtr_t);
         void TransitionTo(const LoopState::Enum);
 
-        void TransitionHelper(const bool                      WILL_CLEAR_QUEUE,
-                              const bool                      WILL_EXIT_LOOP,
-                              const bool                      WILL_IGNORE_MOUSE,
-                              const bool                      WILL_RESTORE_MOUSE,
-                              const bool                      WILL_FINAL_EXECUTE,
-                              const LoopState::Enum           NEW_STATE,
-                              const sfml_util::ILoopCmdSPtr_t ADD_STAGE_LOOP_CMD,
-                              const sfml_util::music::Enum    MUSIC_TO_STOP  = sfml_util::music::All,
-                              const sfml_util::music::Enum    MUSIC_TO_START = sfml_util::music::None);
+        void TransitionHelper(const bool                        WILL_CLEAR_QUEUE,
+                              const bool                        WILL_EXIT_LOOP,
+                              const bool                        WILL_IGNORE_MOUSE,
+                              const bool                        WILL_RESTORE_MOUSE,
+                              const bool                        WILL_FINAL_EXECUTE,
+                              const LoopState::Enum             NEW_STATE,
+                              const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+                              const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
+                              const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
 
     private:
         static LoopManagerSPtr_t  instanceSPtr_;

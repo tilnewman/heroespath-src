@@ -75,11 +75,11 @@ namespace stage
     }
 
 
-    void InnStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void InnStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        bottomSymbol_.Draw(target, states);
-        Stage::Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        Stage::Draw(target, STATES);
     }
 
 }

@@ -58,7 +58,7 @@ namespace stage
         virtual bool HandleCallback_DeleteButton();
 
         virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
         virtual player::CharacterSPtr_t GetSelectedCharacter() const;

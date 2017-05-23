@@ -45,12 +45,12 @@ namespace map
     }
 
 
-    TilesImage::TilesImage(const std::string & NAME,
-                           const std::string & RELATIVE_PATH,
-                           const std::size_t   FIRST_ID,
-                           const std::size_t   TILE_COUNT,
-                           const std::size_t   COLUMN_COUNT,
-                           const TextureSPtr_t TEXTURE_SPTR)
+    TilesImage::TilesImage(const std::string &   NAME,
+                           const std::string &   RELATIVE_PATH,
+                           const std::size_t     FIRST_ID,
+                           const std::size_t     TILE_COUNT,
+                           const std::size_t     COLUMN_COUNT,
+                           const TextureSPtr_t & TEXTURE_SPTR)
     :
         name        (NAME),
         path_rel    (RELATIVE_PATH),
@@ -65,13 +65,12 @@ namespace map
     bool operator==(const TilesImage & L, const TilesImage & R)
     {
         return ((L.first_id == R.first_id) &&
-            (L.texture_sptr == R.texture_sptr) &&
-            (L.path_rel == R.path_rel) &&
-            (L.path_obj == R.path_obj) &&
-            (L.tile_count == R.tile_count) &&
-            (L.column_count == R.column_count) &&
-            (L.name == R.name) &&
-            (L.path_obj == R.path_obj));
+                (L.texture_sptr == R.texture_sptr) &&
+                (L.path_rel == R.path_rel) &&
+                (L.path_obj == R.path_obj) &&
+                (L.tile_count == R.tile_count) &&
+                (L.column_count == R.column_count) &&
+                (L.name == R.name));
     }
 
 
@@ -106,7 +105,6 @@ namespace map
                                           const sf::FloatRect &  RECT,
                                           const FloatRectVec_t & COLL_RECTS_VEC)
     {
-        FloatRectVec_t collRects;
         for (auto const & NEXT_COLL_RECT : COLL_RECTS_VEC)
         {
             if ((RECT.left < (NEXT_COLL_RECT.left + NEXT_COLL_RECT.width)) &&

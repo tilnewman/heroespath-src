@@ -56,13 +56,13 @@ namespace gui
             static const int INVALID_SELECTION_;
             static const sf::Vector2f INVALID_MOUSE_POS_V_;
 
-            explicit ListBoxEventPackage(ListBoxPtrPackage_t              PACKAGE,
-                                         const sfml_util::GuiEvent::Enum  GUI_EVENT         = sfml_util::GuiEvent::None,
-                                         const sf::Vector2f &             MOUSE_POS_V       = INVALID_MOUSE_POS_V_,
-                                         const int                        CURR_SELECTION    = INVALID_SELECTION_,
-                                         const bool                       HAS_FOCUS_CHANGED = false,
-                                         const sf::Event::KeyEvent        KEYPRESS_EVENT    = sf::Event::KeyEvent(),
-                                         const sf::Event::MouseWheelEvent MOUSEWHEEL_EVENT  = sf::Event::MouseWheelEvent())
+            explicit ListBoxEventPackage(ListBoxPtrPackage_t                PACKAGE,
+                                         const sfml_util::GuiEvent::Enum    GUI_EVENT         = sfml_util::GuiEvent::None,
+                                         const sf::Vector2f &               MOUSE_POS_V       = INVALID_MOUSE_POS_V_,
+                                         const int                          CURR_SELECTION    = INVALID_SELECTION_,
+                                         const bool                         HAS_FOCUS_CHANGED = false,
+                                         const sf::Event::KeyEvent        & KEYPRESS_EVENT    = sf::Event::KeyEvent(),
+                                         const sf::Event::MouseWheelEvent & MOUSEWHEEL_EVENT  = sf::Event::MouseWheelEvent())
             :
                 package          (PACKAGE),
                 gui_event        (GUI_EVENT),
@@ -174,7 +174,7 @@ namespace gui
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
 
         inline const sf::Color GetHighlightColor() const { return highlightColor_; }
-        inline void SetHighlightColor(const sf::Color C) { highlightColor_ = C; }
+        inline void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
 
     protected:
         void CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX);

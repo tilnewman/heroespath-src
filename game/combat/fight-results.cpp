@@ -163,7 +163,7 @@ namespace combat
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            condsToRemoveVec.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
+            conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return WILL_REMOVE_A_CONDITION;

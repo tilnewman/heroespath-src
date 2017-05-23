@@ -110,13 +110,13 @@ namespace stage
     }
 
 
-    void MainMenuStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void MainMenuStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
+        target.draw(backgroundImage_, STATES);
         target.draw(gradient_);
-        target.draw(titleSprite_, states);
-        bottomSymbol_.Draw(target, states);
-        Stage::Draw(target, states);
+        target.draw(titleSprite_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        Stage::Draw(target, STATES);
     }
 
 

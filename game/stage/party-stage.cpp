@@ -424,23 +424,27 @@ namespace stage
     }
 
 
-    void PartyStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void PartyStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        target.draw(mainMenuTitle_, states);
-        bottomSymbol_.Draw(target, states);
-        Stage::Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        Stage::Draw(target, STATES);
 
         if (willDisplayCharacterCountWarningText_)
-            target.draw( * warningTextRegionSPtr_, states);
+        {
+            target.draw(*warningTextRegionSPtr_, STATES);
+        }
 
         if (willShowMouseOverPopup_ && (mouseOverTextureSPtr_.get() != nullptr))
         {
-            target.draw(mouseOverQuad_, states);
-            target.draw(mouseOverSprite_, states);
+            target.draw(mouseOverQuad_, STATES);
+            target.draw(mouseOverSprite_, STATES);
 
             if (mouseOverTextRegionSPtr_.get() != nullptr)
-                mouseOverTextRegionSPtr_->draw(target, states);
+            {
+                mouseOverTextRegionSPtr_->draw(target, STATES);
+            }
         }
     }
 

@@ -22,22 +22,22 @@ namespace sfml_util
         SingleTextureAnimation & operator=(const SingleTextureAnimation &) =delete;
 
     public:
-        SingleTextureAnimation(const std::string & ENTITY_NAME,
-                               const std::string & TEXTURE_FILE_PATH,
-                               const float         SCREEN_POS_LEFT,
-                               const float         SCREEN_POS_TOP,
-                               const unsigned int  FRAME_WIDTH,
-                               const unsigned int  FRAME_HEIGHT,
-                               const float         TIME_BETWEEN_FRAMES,
-                               const std::size_t   FRAME_COUNT          = 0,//zero here means each texture region big enough for a frame contains a frame, and frameCount_ will be set in the constructor
-                               const sf::BlendMode BLEND_MODE           = sf::BlendAlpha,
-                               const float         SCALE_HORIZ          = 1.0f,
-                               const float         SCALE_VERT           = 1.0f,
-                               const sf::Color &   COLOR                = sf::Color::White,
-                               const unsigned int  FIRST_FRAME_POS_LEFT = 0,
-                               const unsigned int  FIRST_FRAME_POS_TOP  = 0,
-                               const unsigned int  FRAME_HORIZ_GAP      = 0,
-                               const unsigned int  FRAME_VERT_GAP       = 0);
+        SingleTextureAnimation(const std::string &   ENTITY_NAME,
+                               const std::string &   TEXTURE_FILE_PATH,
+                               const float           SCREEN_POS_LEFT,
+                               const float           SCREEN_POS_TOP,
+                               const unsigned int    FRAME_WIDTH,
+                               const unsigned int    FRAME_HEIGHT,
+                               const float           TIME_BETWEEN_FRAMES,
+                               const std::size_t     FRAME_COUNT          = 0,//zero here means each texture region big enough for a frame contains a frame, and frameCount_ will be set in the constructor
+                               const sf::BlendMode & BLEND_MODE           = sf::BlendAlpha,
+                               const float           SCALE_HORIZ          = 1.0f,
+                               const float           SCALE_VERT           = 1.0f,
+                               const sf::Color &     COLOR                = sf::Color::White,
+                               const unsigned int    FIRST_FRAME_POS_LEFT = 0,
+                               const unsigned int    FIRST_FRAME_POS_TOP  = 0,
+                               const unsigned int    FRAME_HORIZ_GAP      = 0,
+                               const unsigned int    FRAME_VERT_GAP       = 0);
 
         virtual ~SingleTextureAnimation();
 
@@ -98,15 +98,15 @@ namespace sfml_util
         MultiTextureAnimation & operator=(const MultiTextureAnimation &) =delete;
 
     public:
-        MultiTextureAnimation(const std::string & ENTITY_NAME,
-                              const std::string & TEXTURES_DIRECTORY,
-                              const float         SCREEN_POS_LEFT,
-                              const float         SCREEN_POS_TOP,
-                              const float         TIME_BETWEEN_FRAMES,
-                              const float         SCALE_HORIZ = 1.0f,
-                              const float         SCALE_VERT  = 1.0f,
-                              const sf::Color &   COLOR       = sf::Color::White,
-                              const sf::BlendMode BLEND_MODE  = sf::BlendAlpha);
+        MultiTextureAnimation(const std::string &   ENTITY_NAME,
+                              const std::string &   TEXTURES_DIRECTORY,
+                              const float           SCREEN_POS_LEFT,
+                              const float           SCREEN_POS_TOP,
+                              const float           TIME_BETWEEN_FRAMES,
+                              const float           SCALE_HORIZ = 1.0f,
+                              const float           SCALE_VERT  = 1.0f,
+                              const sf::Color &     COLOR       = sf::Color::White,
+                              const sf::BlendMode & BLEND_MODE  = sf::BlendAlpha);
 
         virtual ~MultiTextureAnimation();
 

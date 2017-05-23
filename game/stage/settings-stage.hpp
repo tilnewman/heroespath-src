@@ -51,7 +51,7 @@ namespace stage
         virtual bool HandleCallback(const game::callback::PopupResponse &);
 
         virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual void HandleResolutionChange();
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
         float GetBackButtonPosLeft() const;

@@ -37,6 +37,7 @@
 #include <set>
 
 #ifdef _MSC_VER
+#pragma warning(push)
 #pragma warning(disable: 4512 4701 4127)
 #endif
 
@@ -57,7 +58,7 @@
 
 
 #ifdef _MSC_VER
-#pragma warning(default: 4512 4701 4127)
+#pragma warning(pop)
 #endif
 
 

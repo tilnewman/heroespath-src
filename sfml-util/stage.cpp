@@ -178,15 +178,15 @@ namespace sfml_util
     }
 
 
-    void Stage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void Stage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         for (auto const & ENTITY_SPTR: entitySSet_)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((ENTITY_SPTR.get() != nullptr), "Stage::Draw() encountered a null entitySPtr in entitySSet_.");
-            ENTITY_SPTR->draw(target, states);
+            ENTITY_SPTR->draw(target, STATES);
         }
 
-        DrawHoverText(target, states);
+        DrawHoverText(target, STATES);
     }
 
 
@@ -301,12 +301,12 @@ namespace sfml_util
     }
 
 
-    void Stage::DrawHoverText(sf::RenderTarget & target, sf::RenderStates & states)
+    void Stage::DrawHoverText(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         if (hoverTextBoxSPtr_.get() != nullptr)
         {
-            target.draw( * hoverTextBoxSPtr_, states);
-            target.draw(hoverSfText_, states);
+            target.draw( * hoverTextBoxSPtr_, STATES);
+            target.draw(hoverSfText_, STATES);
         }
     }
 

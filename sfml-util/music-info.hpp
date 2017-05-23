@@ -39,7 +39,7 @@ namespace sfml_util
         inline const std::string DirName() const        { return dirName_; }
 
         inline const sfml_util::Time Duration() const { return duration_; }
-        inline void Duration(const sfml_util::Time DURATION) { duration_ = DURATION; }
+        inline void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
 
         friend bool operator==(const MusicInfo & L, const MusicInfo & R);
 

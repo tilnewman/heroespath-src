@@ -9,22 +9,22 @@
 namespace sfml_util
 {
 
-    SingleTextureAnimation::SingleTextureAnimation( const std::string & ENTITY_NAME,
-                                                    const std::string & TEXTURE_FILE_PATH,
-                                                    const float         SCREEN_POS_LEFT,
-                                                    const float         SCREEN_POS_TOP,
-                                                    const unsigned int  FRAME_WIDTH,
-                                                    const unsigned int  FRAME_HEIGHT,
-                                                    const float         TIME_BETWEEN_FRAMES,
-                                                    const std::size_t   FRAME_COUNT,
-                                                    const sf::BlendMode BLEND_MODE,
-                                                    const float         SCALE_HORIZ,
-                                                    const float         SCALE_VERT,
-                                                    const sf::Color &   COLOR,
-                                                    const unsigned int  FIRST_FRAME_POS_LEFT,
-                                                    const unsigned int  FIRST_FRAME_POS_TOP,
-                                                    const unsigned int  FRAME_HORIZ_GAP,
-                                                    const unsigned int  FRAME_VERT_GAP )
+    SingleTextureAnimation::SingleTextureAnimation( const std::string &   ENTITY_NAME,
+                                                    const std::string &   TEXTURE_FILE_PATH,
+                                                    const float           SCREEN_POS_LEFT,
+                                                    const float           SCREEN_POS_TOP,
+                                                    const unsigned int    FRAME_WIDTH,
+                                                    const unsigned int    FRAME_HEIGHT,
+                                                    const float           TIME_BETWEEN_FRAMES,
+                                                    const std::size_t     FRAME_COUNT,
+                                                    const sf::BlendMode & BLEND_MODE,
+                                                    const float           SCALE_HORIZ,
+                                                    const float           SCALE_VERT,
+                                                    const sf::Color &     COLOR,
+                                                    const unsigned int    FIRST_FRAME_POS_LEFT,
+                                                    const unsigned int    FIRST_FRAME_POS_TOP,
+                                                    const unsigned int    FRAME_HORIZ_GAP,
+                                                    const unsigned int    FRAME_VERT_GAP )
     :
         GuiEntity               (std::string(ENTITY_NAME).append("_SingleTextureAnimation"), SCREEN_POS_LEFT, SCREEN_POS_TOP),
         FRAME_WIDTH_            (FRAME_WIDTH),
@@ -144,15 +144,15 @@ namespace sfml_util
     }
 
 
-    MultiTextureAnimation::MultiTextureAnimation(const std::string & ENTITY_NAME,
-                                                 const std::string & TEXTURES_DIRECTORY,
-                                                 const float         SCREEN_POS_LEFT,
-                                                 const float         SCREEN_POS_TOP,
-                                                 const float         TIME_BETWEEN_FRAMES,
-                                                 const float         SCALE_HORIZ,
-                                                 const float         SCALE_VERT,
-                                                 const sf::Color &   COLOR,
-                                                 const sf::BlendMode BLEND_MODE)
+    MultiTextureAnimation::MultiTextureAnimation(const std::string &   ENTITY_NAME,
+                                                 const std::string &   TEXTURES_DIRECTORY,
+                                                 const float           SCREEN_POS_LEFT,
+                                                 const float           SCREEN_POS_TOP,
+                                                 const float           TIME_BETWEEN_FRAMES,
+                                                 const float           SCALE_HORIZ,
+                                                 const float           SCALE_VERT,
+                                                 const sf::Color &     COLOR,
+                                                 const sf::BlendMode & BLEND_MODE)
     :
         GuiEntity           (std::string(ENTITY_NAME).append("_MutiTextureAnimation"), SCREEN_POS_LEFT, SCREEN_POS_TOP),
         BLEND_MODE_         (BLEND_MODE),

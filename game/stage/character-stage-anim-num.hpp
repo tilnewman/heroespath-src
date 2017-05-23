@@ -24,13 +24,13 @@ namespace stage
     class AnimNum : public sf::Drawable
     {
     public:
-        AnimNum(const stats::Stat_t            VALUE,
-                const stats::stat::Enum        WHICH_STAT,
-                const float                    START_LEFT,
-                const float                    START_TOP,
-                const float                    TARGET_LEFT,
-                const float                    TARGET_TOP,
-                const sfml_util::gui::TextInfo TEXT_INFO);
+        AnimNum(const stats::Stat_t              VALUE,
+                const stats::stat::Enum          WHICH_STAT,
+                const float                      START_LEFT,
+                const float                      START_TOP,
+                const float                      TARGET_LEFT,
+                const float                      TARGET_TOP,
+                const sfml_util::gui::TextInfo & TEXT_INFO);
 
         virtual ~AnimNum();
 

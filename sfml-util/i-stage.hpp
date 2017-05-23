@@ -47,7 +47,7 @@ namespace sfml_util
         virtual void RemoveFocus() = 0;
         virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR) = 0;
 
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states) = 0;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
 
         virtual void HandleResolutionChange() = 0;
 

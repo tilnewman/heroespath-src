@@ -44,7 +44,7 @@ namespace stage
         virtual ~InnStage();
 
         virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
     private:
         const float SCREEN_WIDTH_;

@@ -70,7 +70,7 @@ namespace condition
     {
         M_ASSERT_OR_LOGANDTHROW_SS((conditionsSVec_.empty() == false), "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E) << ") was called before Setup().");
         M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < conditionsSVec_.size()), "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E) << ") found insuff sized conditionsSVec_, probably from a bug in Setup().");
-        return conditionsSVec_.at(E).get();
+        return conditionsSVec_.at(static_cast<std::size_t>(E)).get();
     }
 
 }

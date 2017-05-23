@@ -237,12 +237,12 @@ namespace stage
         }
     }
 
-    void LoadGameStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void LoadGameStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        target.draw(mainMenuTitle_, states);
-        bottomSymbol_.Draw(target, states);
-        Stage::Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        Stage::Draw(target, STATES);
     }
 
 

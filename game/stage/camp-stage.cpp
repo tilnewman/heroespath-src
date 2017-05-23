@@ -108,7 +108,8 @@ namespace stage
         sfml_util::LoadImageOrTexture<sf::Texture>(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
         campfireSprite_.setTexture(campfireTexture_);
         campfireSprite_.setScale(0.8f, 0.8f);
-        campfireSprite_.setPosition(SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width - 75.0f, SCREEN_HEIGHT_ - campfireSprite_.getGlobalBounds().height - 60.0f);
+        auto const CAMPFIRE_BOUNDS_BEFORE{ campfireSprite_.getGlobalBounds() };
+        campfireSprite_.setPosition(SCREEN_WIDTH_ - CAMPFIRE_BOUNDS_BEFORE.width - 75.0f, SCREEN_HEIGHT_ - CAMPFIRE_BOUNDS_BEFORE.height - 60.0f);
 
         //campfire animation
         fireAnim1SPtr_.reset( new sfml_util::MultiTextureAnimation("Fire1",
@@ -145,13 +146,13 @@ namespace stage
     }
 
 
-    void CampStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CampStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        target.draw(mainMenuTitle_, states);
-        target.draw(campfireSprite_, states);
-        botSymbol_.Draw(target, states);
-        Stage::Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        target.draw(campfireSprite_, STATES);
+        botSymbol_.Draw(target, STATES);
+        Stage::Draw(target, STATES);
     }
 
 

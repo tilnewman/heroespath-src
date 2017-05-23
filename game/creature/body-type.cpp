@@ -177,7 +177,7 @@ namespace creature
                 break;
             }
             case creature::race::Enum::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
-            case creature::race::Enum::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, 0, true); }
+            case creature::race::Enum::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, false, true); }
             case creature::race::Enum::LizardWalker:{ return Make_Humanoid(true, true, true); }
             case creature::race::Enum::Minotaur:    { return Make_Humanoid(false, false, true, true); }
             case creature::race::Enum::Plant:

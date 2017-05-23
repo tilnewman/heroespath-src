@@ -33,7 +33,6 @@ namespace creature
     {
         const player::CharacterSVec_t PLAYERS_SVEC(Game::Instance()->State()->Party()->Characters());
 
-        CreaturePVec_t playersPVec;
         for (auto const & NEXT_PLAYER_SPTR : PLAYERS_SVEC)
             if ((LIVING_ONLY == false) || NEXT_PLAYER_SPTR->IsAlive())
                 pVec_OutParam.push_back(NEXT_PLAYER_SPTR.get());
@@ -54,7 +53,6 @@ namespace creature
     {
         game::non_player::CharacterSVec_t NONPLAYERS_SVEC(combat::Encounter::Instance()->NonPlayerParty()->Characters());
 
-        CreaturePVec_t nonPlayersPVec;
         for (auto const & NEXT_NONPLAYER_SPTR : NONPLAYERS_SVEC)
             if ((LIVING_ONLY == false) || NEXT_NONPLAYER_SPTR->IsAlive())
                 pVec_OutParam.push_back(NEXT_NONPLAYER_SPTR.get());

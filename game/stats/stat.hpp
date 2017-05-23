@@ -44,11 +44,11 @@ namespace stats
 
         //returns true if normal_ was prevented from going below zero
         bool ModifyNormal(const Stat_t MODIFIER);
-        inline bool ModifyNormal(const Stat MODIFIER)               { return ModifyNormal(MODIFIER.Current()); }
+        inline bool ModifyNormal(const Stat & MODIFIER)             { return ModifyNormal(MODIFIER.Current()); }
 
         //returns true if current_ was prevented from going below zero
         bool ModifyCurrent(const Stat_t MODIFIER);
-        inline void ModifyCurrent(const Stat MODIFIER)              { ModifyCurrent(MODIFIER.Current()); }
+        inline void ModifyCurrent(const Stat & MODIFIER)            { ModifyCurrent(MODIFIER.Current()); }
 
         //no bounds checking is performed by these functions
         inline void ResetActual(const Stat_t S)                     { actual_ = S; }

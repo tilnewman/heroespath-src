@@ -15,9 +15,9 @@ namespace game
 namespace state
 {
 
-    GameState::GameState(const player::PartySPtr_t &    PARTY_SPTR,
-                         const WorldStateSPtr_t &       WORLD_STATE_SPTR,
-                         const location::LocationSPtr_t LOCATION_SPTR)
+    GameState::GameState(const player::PartySPtr_t &      PARTY_SPTR,
+                         const WorldStateSPtr_t &         WORLD_STATE_SPTR,
+                         const location::LocationSPtr_t & LOCATION_SPTR)
     :
         partySPtr_       (PARTY_SPTR),
         worldStateSPtr_  (WORLD_STATE_SPTR),

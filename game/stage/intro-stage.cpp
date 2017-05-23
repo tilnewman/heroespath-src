@@ -60,14 +60,19 @@ namespace stage
     }
 
 
-    void IntroStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void IntroStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         //This counter eliminates the flicker caused by the Loop's Fade in feature
         //that does not clear the screen for the first few draw loops.
         if (initialDrawHoldCounter_ < 5)
+        {
             ++initialDrawHoldCounter_;
+        }
         else
-            target.draw(titleSprite_, states);
+        {
+            Stage::Draw(target, STATES);
+            target.draw(titleSprite_, STATES);
+        }
     }
 
 

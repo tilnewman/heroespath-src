@@ -193,7 +193,7 @@ namespace gui
             M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (UP) was given a null font pointer.");
 
         if (MOUSE_TEXT_INFO.down.text.empty() == false)
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (DOWN) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text << "\") (DOWN) was given a null font pointer.");
 
         if (MOUSE_TEXT_INFO.over.text.empty() == false)
             M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text << "\") (OVER) was given a null font pointer.");

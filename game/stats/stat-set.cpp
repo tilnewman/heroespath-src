@@ -128,7 +128,7 @@ namespace stats
         std::ostringstream finalSS;
         if (WILL_WRAP)
         {
-            if (ss.str() != "")
+            if (ss.str().empty() == false)
                 finalSS << "(" << ss.str() << ")";
         }
         else
@@ -173,7 +173,7 @@ namespace stats
         std::ostringstream finalSS;
         if (WILL_WRAP)
         {
-            if (ss.str() != "")
+            if (ss.str().empty() == false)
                 finalSS << "(" << ss.str() << ")";
         }
         else

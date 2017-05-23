@@ -21,7 +21,7 @@ namespace gui
                         const FontSPtr_t &    FONT,
                         const unsigned int    CHAR_SIZE,
                         const sf::Color &     COLOR,
-                        const sf::BlendMode   BLEND_MODE,
+                        const sf::BlendMode & BLEND_MODE,
                         const sf::Uint32      STYLE,
                         const Justified::Enum JUSTIFIED,
                         const bool            IS_OUTLINE_ONLY,

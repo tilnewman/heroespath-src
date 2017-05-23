@@ -85,14 +85,15 @@ namespace text_render
             vec_vec     ()
         {}
 
-        RenderedText(const float               LONGEST_LINE,
-                     const float               TOTAL_HEIGHT,
-                     const TextSnippetVecVec_t VEC_VEC)
+        RenderedText(const float                 LONGEST_LINE,
+                     const float                 TOTAL_HEIGHT,
+                     const TextSnippetVecVec_t & VEC_VEC)
         :
             longest_line(LONGEST_LINE),
             total_height(TOTAL_HEIGHT),
             vec_vec     (VEC_VEC)
         {}
+
 
         void Reset()
         {
@@ -100,6 +101,7 @@ namespace text_render
             total_height = 0.0f;
             vec_vec.clear();
         }
+
 
         float longest_line;
         float total_height;

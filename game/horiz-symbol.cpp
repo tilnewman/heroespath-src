@@ -18,13 +18,13 @@ namespace game
     const sf::Color BottomSymbol::DEFAULT_COLOR_(sf::Color(255, 255, 255, 127));
 
 
-    BottomSymbol::BottomSymbol(const float     VERT_SCALE,
-                               const bool      WILL_INVERT_COLOR,
-                               const float     SCREEN_WIDTH,
-                               const float     SCREEN_HEIGHT,
-                               const float     HORIZ_POS,
-                               const float     VERT_POS_OFFSET,
-                               const sf::Color COLOR)
+    BottomSymbol::BottomSymbol(const float       VERT_SCALE,
+                               const bool        WILL_INVERT_COLOR,
+                               const float       SCREEN_WIDTH,
+                               const float       SCREEN_HEIGHT,
+                               const float       HORIZ_POS,
+                               const float       VERT_POS_OFFSET,
+                               const sf::Color & COLOR)
     :
         halfScreenWidth_(0.0f), //all members initialized in Setup() below
         screenHeight_   (0.0f),
@@ -48,54 +48,54 @@ namespace game
     {}
 
 
-    void BottomSymbol::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void BottomSymbol::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         //don't use horizPos_ and center symbols if negative
         if (horizPos_ < 0.0f)
         {
             sprite_.setPosition(((halfScreenWidth_ - sprite_.getGlobalBounds().width) + 8.0f), posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             sprite_.setPosition((halfScreenWidth_ - 8.0f), posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             sprite_.setPosition(((halfScreenWidth_ - (sprite_.getGlobalBounds().width * 2.0f)) + 24.0f), posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             sprite_.setPosition(((halfScreenWidth_ + sprite_.getGlobalBounds().width) - 24.0f), posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
         }
         else
         {
             float posX(horizPos_);
             sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             posX += sprite_.getGlobalBounds().width;
             posX -= 16.0f;
             sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             posX += sprite_.getGlobalBounds().width;
             posX -= 16.0f;
             sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
 
             posX += sprite_.getGlobalBounds().width;
             posX -= 16.0f;
             sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, states);
+            target.draw(sprite_, STATES);
         }
     }
 
 
-    void BottomSymbol::Setup(const float     VERT_SCALE,
-                             const bool      WILL_INVERT_COLOR,
-                             const float     SCREEN_WIDTH,
-                             const float     SCREEN_HEIGHT,
-                             const float     HORIZ_POS,
-                             const float     VERT_POS_OFFSET,
-                             const sf::Color COLOR)
+    void BottomSymbol::Setup(const float       VERT_SCALE,
+                             const bool        WILL_INVERT_COLOR,
+                             const float       SCREEN_WIDTH,
+                             const float       SCREEN_HEIGHT,
+                             const float       HORIZ_POS,
+                             const float       VERT_POS_OFFSET,
+                             const sf::Color & COLOR)
     {
         const std::string IMAGE_PATH_KEY((WILL_INVERT_COLOR) ? "media-images-gui-accents-symbol1-inv" : "media-images-gui-accents-symbol1");
         sfml_util::LoadImageOrTexture<sf::Texture>(texture_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));

@@ -99,7 +99,7 @@ namespace combat
     }
 
 
-    void CombatTree::SetNode(const Id_t ID, const CombatNodeSPtr_t NODE_SPTR)
+    void CombatTree::SetNode(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
         for(auto & nextVertex : vertexList_)
         {

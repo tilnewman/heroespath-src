@@ -50,8 +50,8 @@ namespace item
         static const ItemSVec_t FindByPixie(const ItemSVec_t & itemSVec,
                                             const bool         IS_MATCH = true);
 
-        static const ItemSVec_t FindByBroken(const ItemSVec_t ITEM_SVEC,
-                                              const bool      WILL_KEEP_BROKEN);
+        static const ItemSVec_t FindByBroken(const ItemSVec_t & ITEM_SVEC,
+                                             const bool         WILL_KEEP_BROKEN);
     };
 
 }

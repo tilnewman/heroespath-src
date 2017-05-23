@@ -155,8 +155,9 @@ namespace combat
         offScreenSprite_.setTexture(bgTexture_);
 
         //setup offscreen texture
-        auto const OFFSCREEN_TEXTURE_SIZE_X(((sfml_util::Display::Instance()->GetWinWidthu()  / bgTexture_.getSize().x) + 1) * bgTexture_.getSize().x);
-        auto const OFFSCREEN_TEXTURE_SIZE_Y(((sfml_util::Display::Instance()->GetWinHeightu() / bgTexture_.getSize().y) + 1) * bgTexture_.getSize().y);
+        auto const BG_TEXTUER_SIZE{ bgTexture_.getSize() };
+        auto const OFFSCREEN_TEXTURE_SIZE_X(((sfml_util::Display::Instance()->GetWinWidthu()  / BG_TEXTUER_SIZE.x) + 1) * BG_TEXTUER_SIZE.x);
+        auto const OFFSCREEN_TEXTURE_SIZE_Y(((sfml_util::Display::Instance()->GetWinHeightu() / BG_TEXTUER_SIZE.y) + 1) * BG_TEXTUER_SIZE.y);
         offScreenTexture_.create(OFFSCREEN_TEXTURE_SIZE_X, OFFSCREEN_TEXTURE_SIZE_Y);
         offScreenTexture_.clear(sf::Color::Transparent);
         offScreenTexture_.setRepeated(true);
@@ -174,12 +175,12 @@ namespace combat
     }
 
 
-    void CombatDisplay::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CombatDisplay::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(offScreenSprite_, states);
-        target.draw( * boxSPtr_, states);
-        Stage::Draw(target, states);
-        summaryView_.Draw(target, states);
+        target.draw(offScreenSprite_, STATES);
+        target.draw( * boxSPtr_, STATES);
+        Stage::Draw(target, STATES);
+        summaryView_.Draw(target, STATES);
     }
 
 

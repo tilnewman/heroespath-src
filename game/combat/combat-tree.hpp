@@ -112,7 +112,7 @@ namespace combat
         CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
         CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
 
-        void SetNode(const Id_t ID, const CombatNodeSPtr_t NODE_SPTR);
+        void SetNode(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         Id_t GetNodeId(const CombatNodePtr_t) const;
         Id_t GetNodeId(creature::CreatureCPtrC_t) const;

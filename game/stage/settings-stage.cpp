@@ -294,11 +294,14 @@ namespace stage
                 const sfml_util::MusicOperatorSLst_t MUSIC_OPERAOTR_SLIST(sfml_util::SoundManager::Instance()->MusicOperators());
                 std::ostringstream ss;
                 for (auto const & NEXT_MUSIC_OPERATOR_SPTR : MUSIC_OPERAOTR_SLIST)
-                    ss  << "\"" << NEXT_MUSIC_OPERATOR_SPTR->Info().SongName()
-                        << "\"\nby " << NEXT_MUSIC_OPERATOR_SPTR->Info().ArtistName()
-                        << "\nLicense: " << NEXT_MUSIC_OPERATOR_SPTR->Info().LicenseTitle()
-                        << "\nDuration: " << NEXT_MUSIC_OPERATOR_SPTR->Info().Duration().ToString()
-                        << "\n\n";
+                {
+                    auto const MUSIC_INFO{ NEXT_MUSIC_OPERATOR_SPTR->Info() };
+                    ss << "\"" << MUSIC_INFO.SongName()
+                       << "\"\nby " << MUSIC_INFO.ArtistName()
+                       << "\nLicense: " << MUSIC_INFO.LicenseTitle()
+                       << "\nDuration: " << MUSIC_INFO.Duration().ToString()
+                       << "\n\n";
+                }
 
                 const sfml_util::gui::TextInfo MUSICINFO_TEXTINFO(ss.str(),
                                                                   sfml_util::FontManager::Instance()->Font_Default1(),
@@ -431,16 +434,18 @@ namespace stage
     }
 
 
-    void SettingsStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void SettingsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, states);
-        target.draw(mainMenuTitle_, states);
-        bottomSymbol_.Draw(target, states);
-        target.draw(box_, states);
-        Stage::Draw(target, states);
+        target.draw(backgroundImage_, STATES);
+        target.draw(mainMenuTitle_, STATES);
+        bottomSymbol_.Draw(target, STATES);
+        target.draw(box_, STATES);
+        Stage::Draw(target, STATES);
 
         for (auto const & NEXT_TEXTREGION_SPTR : textRegionSVec_)
-            NEXT_TEXTREGION_SPTR->draw(target, states);
+        {
+            NEXT_TEXTREGION_SPTR->draw(target, STATES);
+        }
     }
 
 

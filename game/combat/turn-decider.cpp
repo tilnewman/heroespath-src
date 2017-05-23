@@ -535,11 +535,12 @@ namespace combat
                                                                              const bool                     NUM_PLAYERS_IN_ATTACK_RANGE,
                                                                              const bool                     CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
     {
-        if ((TURN_INFO.GetStrategyInfo().Advance() != strategy::AdvanceType::Cowardly) && (MOST_DESIRED_TARGET_DISTANCE != 0))
+        auto const ADV_TYPE{ TURN_INFO.GetStrategyInfo().Advance() };
+        if ((ADV_TYPE != strategy::AdvanceType::Cowardly) && (MOST_DESIRED_TARGET_DISTANCE != 0))
         {
-            if (((TURN_INFO.GetStrategyInfo().Advance() == strategy::AdvanceType::None) && (NUM_PLAYERS_IN_ATTACK_RANGE == 0)) ||
-                (TURN_INFO.GetStrategyInfo().Advance() == strategy::AdvanceType::Charger) ||
-                ((TURN_INFO.GetStrategyInfo().Advance() == strategy::AdvanceType::Hesitant) && (TURN_INFO.GetWasHitLastTurn() && (CAN_ATTACK_MOST_DESIRED_TARGET_WITH == false))))
+            if (((ADV_TYPE == strategy::AdvanceType::None) && (NUM_PLAYERS_IN_ATTACK_RANGE == 0)) ||
+                (ADV_TYPE == strategy::AdvanceType::Charger) ||
+                ((ADV_TYPE == strategy::AdvanceType::Hesitant) && (TURN_INFO.GetWasHitLastTurn() && (CAN_ATTACK_MOST_DESIRED_TARGET_WITH == false))))
             {
                 if (MOST_DESIRED_TARGET_DISTANCE < 0)
                 {
@@ -558,11 +559,11 @@ namespace combat
     }
 
 
-    const TurnActionInfo TurnDecider::DecideIfDoingBeastAction(const TurnInfo &               TURN_INFO,
-                                                               const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                               const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                               const creature::CreaturePVec_t PLAYERS_IN_MELEE_RANGE_PVEC,
-                                                               const int                      MOST_DESIRED_TARGET_CREATURE_DISTANCE)
+    const TurnActionInfo TurnDecider::DecideIfDoingBeastAction(const TurnInfo &                 TURN_INFO,
+                                                               const creature::CreaturePtrC_t   CREATURE_DECIDING_CPTRC,
+                                                               const creature::CreaturePtrC_t   MOST_DESIRED_TARGET_CPTRC,
+                                                               const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
+                                                               const int                        MOST_DESIRED_TARGET_CREATURE_DISTANCE)
     {
         if (CREATURE_DECIDING_CPTRC->IsBeast())
         {
@@ -690,7 +691,7 @@ namespace combat
 
     const TurnActionInfo TurnDecider::DecideSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                                   const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                  const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
+                                                  const spell::SpellTypeVec_t &  SPELL_TYPES_VEC)
     {
         auto spellPtr{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPES_VEC) };
 
@@ -756,7 +757,7 @@ namespace combat
 
 
     spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                             const spell::SpellTypeVec_t    SPELL_TYPES_VEC)
+                                             const spell::SpellTypeVec_t &  SPELL_TYPES_VEC)
     {
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 

@@ -737,62 +737,63 @@ namespace sfml_util
     }
 
 
-    void PopupStage::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void PopupStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
         {
-            target.draw(box_, states);
-            target.draw(gradient_, states);
+            target.draw(box_, STATES);
+            target.draw(gradient_, STATES);
         }
         else
         {
-            target.draw(backgroundSprite_, states);
+            target.draw(backgroundSprite_, STATES);
         }
 
         if (POPUP_INFO_.WillAddRandImage())
         {
-            target.draw(accentSprite1_, states);
+            target.draw(accentSprite1_, STATES);
         }
 
-        textRegionSPtr_->draw(target, states);
+        textRegionSPtr_->draw(target, STATES);
 
         if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
-            target.draw(imageSpriteCurr_, states);
+            target.draw(imageSpriteCurr_, STATES);
 
             if (areImagesMoving_ && (false == isInitialAnimation_))
             {
-                target.draw(imageSpritePrev_, states);
+                target.draw(imageSpritePrev_, STATES);
             }
 
             if (willShowImageCount_ && (imageNumTextRegionSPtr_.get() != nullptr))
             {
-                imageNumTextRegionSPtr_->draw(target, states);
+                imageNumTextRegionSPtr_->draw(target, STATES);
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
-            target.draw(imageSpritePrev_, states);
-            target.draw(imageSpriteCurr_, states);
+            target.draw(imageSpritePrev_, STATES);
+            target.draw(imageSpriteCurr_, STATES);
         }
         else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
-            //target.draw(accentSprite1_, states);
-            //target.draw(accentSprite2_, states);
-            target.draw(playerSprite_, states);
-            charDetailsTextRegionUPtr_->draw(target, states);
-            listBoxLabelTextRegionUPtr_->draw(target, states);
-            target.draw(spellSprite_, states);
-            spellTitleTextRegionUPtr_->draw(target, states);
-            spellDetailsTextUPtr_->draw(target, states);
+            //target.draw(accentSprite1_, STATES);
+            //target.draw(accentSprite2_, STATES);
+            target.draw(playerSprite_, STATES);
+            charDetailsTextRegionUPtr_->draw(target, STATES);
+            listBoxLabelTextRegionUPtr_->draw(target, STATES);
+            target.draw(spellSprite_, STATES);
+            spellTitleTextRegionUPtr_->draw(target, STATES);
+            spellDetailsTextUPtr_->draw(target, STATES);
             if (spellUnableTextWillShow_)
             {
-                spellUnableTextUPtr_->draw(target, states);
+                spellUnableTextUPtr_->draw(target, STATES);
             }
-            spellDescTextUPtr_->draw(target, states);
+
+            spellDescTextUPtr_->draw(target, STATES);
         }
 
-        Stage::Draw(target, states);
+        Stage::Draw(target, STATES);
     }
 
 

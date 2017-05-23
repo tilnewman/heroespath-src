@@ -74,7 +74,7 @@ namespace sfml_util
 
 
     template<typename T>
-    void VectorToStream(const sf::Vector2<T> V, std::ostream & stream)
+    void VectorToStream(const sf::Vector2<T> & V, std::ostream & stream)
     {
         stream << Vector2String(V);
     }
@@ -90,7 +90,7 @@ namespace sfml_util
 
 
     template<typename T>
-    void RectToStream(const sf::Rect<T> R, std::ostream stream)
+    void RectToStream(const sf::Rect<T> & R, std::ostream & stream)
     {
         stream << Rect2String(R);
     }
@@ -98,15 +98,15 @@ namespace sfml_util
 
     //Drawing rectangles easily is often handy when testing graphics.
     template<typename T=float>
-    void DrawRectangle( sf::RenderTarget & target,
-                        sf::RenderStates & states,
-                        const T            LEFT,
-                        const T            TOP,
-                        const T            WIDTH,
-                        const T            HEIGHT,
-                        const sf::Color    LINE_COLOR     = sf::Color::White,
-                        const T            LINE_THICKNESS = static_cast<T>(1),
-                        const sf::Color    FILL_COLOR     = sf::Color::Transparent )
+    void DrawRectangle(sf::RenderTarget &       target,
+                       const sf::RenderStates & STATES,
+                       const T                  LEFT,
+                       const T                  TOP,
+                       const T                  WIDTH,
+                       const T                  HEIGHT,
+                       const sf::Color &        LINE_COLOR     = sf::Color::White,
+                       const T                  LINE_THICKNESS = static_cast<T>(1),
+                       const sf::Color &        FILL_COLOR     = sf::Color::Transparent )
     {
         sf::RectangleShape r;
         r.setPosition(static_cast<float>(LEFT), static_cast<float>(TOP));
@@ -114,48 +114,48 @@ namespace sfml_util
         r.setFillColor(FILL_COLOR);
         r.setOutlineColor(LINE_COLOR);
         r.setOutlineThickness(static_cast<float>(LINE_THICKNESS));
-        target.draw(r, states);
+        target.draw(r, STATES);
     }
 
 
     template<typename PosV_t, typename SizeV_t, typename Thickness_t>
-    void DrawRectangle( sf::RenderTarget &         target,
-                        sf::RenderStates &         states,
-                        const sf::Vector2<PosV_t>  POS_V,
-                        const sf::Vector2<SizeV_t> SIZE_V,
-                        const sf::Color            LINE_COLOR     = sf::Color::White,
-                        const Thickness_t          LINE_THICKNESS = static_cast<Thickness_t>(1),
-                        const sf::Color            FILL_COLOR     = sf::Color::Transparent )
+    void DrawRectangle(sf::RenderTarget &           target,
+                       const sf::RenderStates &     STATES,
+                       const sf::Vector2<PosV_t> &  POS_V,
+                       const sf::Vector2<SizeV_t> & SIZE_V,
+                       const sf::Color &            LINE_COLOR     = sf::Color::White,
+                       const Thickness_t            LINE_THICKNESS = static_cast<Thickness_t>(1),
+                       const sf::Color &            FILL_COLOR     = sf::Color::Transparent )
     {
-        DrawRectangle(  target,
-                        states,
-                        static_cast<float>(POS_V.x),
-                        static_cast<float>(POS_V.y),
-                        static_cast<float>(SIZE_V.x),
-                        static_cast<float>(SIZE_V.y),
-                        LINE_COLOR,
-                        static_cast<float>(LINE_THICKNESS),
-                        FILL_COLOR );
+        DrawRectangle(target,
+                      STATES,
+                      static_cast<float>(POS_V.x),
+                      static_cast<float>(POS_V.y),
+                      static_cast<float>(SIZE_V.x),
+                      static_cast<float>(SIZE_V.y),
+                      LINE_COLOR,
+                      static_cast<float>(LINE_THICKNESS),
+                      FILL_COLOR );
     }
 
 
     template<typename T>
-    void DrawRectangle( sf::RenderTarget &  target,
-                        sf::RenderStates &  states,
-                        const sf::Rect<T>   REGION_RECT,
-                        const sf::Color     LINE_COLOR      = sf::Color::White,
-                        const T             LINE_THICKNESS  = static_cast<T>(1),
-                        const sf::Color     FILL_COLOR      = sf::Color::Transparent )
+    void DrawRectangle(sf::RenderTarget &       target,
+                       const sf::RenderStates & STATES,
+                       const sf::Rect<T> &      REGION_RECT,
+                       const sf::Color &        LINE_COLOR      = sf::Color::White,
+                       const T                  LINE_THICKNESS  = static_cast<T>(1),
+                       const sf::Color &        FILL_COLOR      = sf::Color::Transparent )
     {
-        DrawRectangle(  target,
-                        states,
-                        static_cast<float>(REGION_RECT.left),
-                        static_cast<float>(REGION_RECT.top),
-                        static_cast<float>(REGION_RECT.width),
-                        static_cast<float>(REGION_RECT.height),
-                        LINE_COLOR,
-                        static_cast<float>(LINE_THICKNESS),
-                        FILL_COLOR );
+        DrawRectangle(target,
+                      STATES,
+                      static_cast<float>(REGION_RECT.left),
+                      static_cast<float>(REGION_RECT.top),
+                      static_cast<float>(REGION_RECT.width),
+                      static_cast<float>(REGION_RECT.height),
+                      LINE_COLOR,
+                      static_cast<float>(LINE_THICKNESS),
+                      FILL_COLOR );
     }
 
 

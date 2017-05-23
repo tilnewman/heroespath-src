@@ -51,12 +51,12 @@ namespace map
     //holds all the info regarding an image file used by TileMap
     struct TilesImage
     {
-        TilesImage(const std::string & NAME          = "",
-                   const std::string & RELATIVE_PATH = "",
-                   const std::size_t   FIRST_ID      = 0,
-                   const std::size_t   TILE_COUNT    = 1,
-                   const std::size_t   COLUMN_COUNT  = 1,
-                   const TextureSPtr_t TEXTURE_SPTR  = TextureSPtr_t());
+        TilesImage(const std::string &   NAME          = "",
+                   const std::string &   RELATIVE_PATH = "",
+                   const std::size_t     FIRST_ID      = 0,
+                   const std::size_t     TILE_COUNT    = 1,
+                   const std::size_t     COLUMN_COUNT  = 1,
+                   const TextureSPtr_t & TEXTURE_SPTR  = TextureSPtr_t());
 
         inline bool OwnsId(const std::size_t ID) { return ((ID >= first_id) && (ID < (first_id + tile_count))); }
 

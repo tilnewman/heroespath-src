@@ -158,7 +158,7 @@ namespace stage
                              sfml_util::gui::TextInfo & textInfo) const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE);
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);

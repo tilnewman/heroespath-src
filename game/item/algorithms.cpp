@@ -110,7 +110,7 @@ namespace item
     }
 
 
-    const ItemSVec_t Algorithms::FindByBroken(const ItemSVec_t ITEM_SVEC, const bool WILL_KEEP_BROKEN)
+    const ItemSVec_t Algorithms::FindByBroken(const ItemSVec_t & ITEM_SVEC, const bool WILL_KEEP_BROKEN)
     {
         ItemSVec_t resultSVec;
 

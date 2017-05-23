@@ -24,7 +24,7 @@ namespace sfml_util
         return ((L.sides == R.sides) &&
                 (L.corners == R.corners) &&
                 (L.color_from == R.color_from) &&
-                (L.color_to == L.color_to));
+                (L.color_to == R.color_to));
     }
 
 

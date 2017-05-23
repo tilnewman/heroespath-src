@@ -201,11 +201,12 @@ namespace ownership
             PopulateWeaponChances(weaponChances, NEXT_WEAPON_SET, PROFILE, CREATURE_SPTR);
 
         //Add weapons based on body type
-        weaponChances.has_bite = CREATURE_SPTR->Body().HasFangs();
-        weaponChances.has_claws = CREATURE_SPTR->Body().HasClaws();
-        weaponChances.has_fists = (CREATURE_SPTR->Body().HasArms() && CREATURE_SPTR->Body().HasFingers());
-        weaponChances.has_tendrils = CREATURE_SPTR->Body().HasTendrils();
-        weaponChances.has_breath = CREATURE_SPTR->Body().HasBreath();
+        auto const BODY{ CREATURE_SPTR->Body() };
+        weaponChances.has_bite = BODY.HasFangs();
+        weaponChances.has_claws = BODY.HasClaws();
+        weaponChances.has_fists = (BODY.HasArms() && BODY.HasFingers());
+        weaponChances.has_tendrils = BODY.HasTendrils();
+        weaponChances.has_breath = BODY.HasBreath();
 
         //enforce body-type/PROFILE.wealthType/PROFILE.wealthType
         // -what restrictions would there be when the weapon sets are based on creature roles in the GameDataFile?

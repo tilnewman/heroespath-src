@@ -85,7 +85,7 @@ namespace combat
 
         virtual void Setup();
 
-        void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         virtual void SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING);
 

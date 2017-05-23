@@ -97,11 +97,11 @@ namespace sfml_util
         virtual void ProcessFader();
         virtual void ProcessPopup();
         virtual void ProcessEvents();
-        virtual void ProcessKeyStrokes(const sf::Event EVENT);
+        virtual void ProcessKeyStrokes(const sf::Event & EVENT);
         virtual void ProcessMouseMove();
         virtual void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
         virtual void ProcessMouseButtonLeftReleased(const sf::Vector2f &);
-        virtual void ProcessMouseWheelRoll(const sf::Event EVENT);
+        virtual void ProcessMouseWheelRoll(const sf::Event & EVENT);
         virtual void ProcessPopupCallback();
         virtual void ProcessTimeUpdate();
         virtual void ProcessDrawing();

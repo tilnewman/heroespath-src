@@ -76,7 +76,7 @@ namespace appbase
             {
                 LoadNextLine(lineNum, nextLine);
                 ++lineNum;
-                nextLine = "";
+                nextLine.clear();
             }
 
             return (false == data_.empty());

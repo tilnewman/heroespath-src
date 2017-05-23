@@ -55,7 +55,7 @@ namespace gui
 
 
     MouseTextInfo::MouseTextInfo(const std::string & TEXT,
-                                 const FontSPtr_t    FONT,
+                                 const FontSPtr_t &  FONT,
                                  const unsigned int  SIZE,
                                  const sf::Color &   COLOR_UP,
                                  const sf::Color &   COLOR_DOWN,
