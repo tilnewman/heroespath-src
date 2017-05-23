@@ -88,11 +88,15 @@ namespace stage
             for (std::size_t i(textureSVec_.size() - 1); i < textureSVec_.size(); --i)
             {
                 if (i >= textureSVec_.size())
+                {
                     break;
+                }
 
                 auto const NEXT_TEXTURE_SPTR{ textureSVec_.at(i) };
                 if (NEXT_TEXTURE_SPTR.get() == nullptr)
+                {
                     continue;
+                }
 
                 sf::Sprite sprite;
                 sprite.setTexture( * NEXT_TEXTURE_SPTR);
@@ -120,7 +124,9 @@ namespace stage
                 ++imageDrawCount;
 
                 if (posLeft < 0.0f)
+                {
                     break;
+                }
             }
 
             while (textureSVec_.size() > imageDrawCount)

@@ -6,7 +6,7 @@
 
 //suppress warnings that are safe to ignore in boost
 #include "utilz/platform.hpp"
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #endif
@@ -14,7 +14,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/algorithm.hpp>
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wswitch-enum"
 #pragma GCC diagnostic warning "-Wundef"
 #endif

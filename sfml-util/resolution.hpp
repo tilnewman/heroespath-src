@@ -16,11 +16,11 @@ namespace sfml_util
     //Enapsulates everything about a screen resolution except for the bits-per-pixel
     struct Resolution
     {
-        Resolution(const unsigned int  WIDTH          = 0,
-                   const unsigned int  HEIGHT         = 0,
-                   const unsigned int  BITS_PER_PIXEL = 0,
-                   const std::string & NAME           = "",
-                   const std::string & ASPECT_RATIO   = "");
+        explicit Resolution(const unsigned int  WIDTH          = 0,
+                            const unsigned int  HEIGHT         = 0,
+                            const unsigned int  BITS_PER_PIXEL = 0,
+                            const std::string & NAME           = "",
+                            const std::string & ASPECT_RATIO   = "");
 
         explicit Resolution(const sf::VideoMode & VM);
 

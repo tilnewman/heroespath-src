@@ -8,15 +8,16 @@
 
 //prevent boost warnings that can be ignored
 #include "utilz/platform.hpp"
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wundef"
 #endif
+
 
 namespace sfml_util
 {
@@ -36,9 +37,9 @@ namespace sliders
     class ZeroSlider
     {
     public:
-        ZeroSlider( const T    SPEED               = static_cast<T>(1),
-                    const T    INITIAL_VAL         = static_cast<T>(0),
-                    const bool WILL_START_FORWARD = true)
+        explicit ZeroSlider(const T    SPEED              = static_cast<T>(1),
+                            const T    INITIAL_VAL        = static_cast<T>(0),
+                            const bool WILL_START_FORWARD = true)
         :
             age_  (0),//ignore these initializers because of Reset()
             speed_(0)
@@ -77,7 +78,6 @@ namespace sliders
     template<typename T> const T ZeroSlider<T>::THREE_QTR_PI_((boostmath::pi<T>() / static_cast<T>(2)) + boostmath::pi<T>());
 
 
-
     //Slides a value back and forth between THE_MIN and THE_MAX at THE_SPEED and direction given.
     //Math_t must be signed and real. (i.e. float, double, etc.)
     //THE_MIN must be < THE_MAX.
@@ -88,11 +88,11 @@ namespace sliders
     class Slider
     {
     public:
-        Slider( const Value_t THE_MIN            = Value_t(0),
-                const Value_t THE_MAX            = Value_t(1),
-                const Math_t  SPEED              = Math_t (1),
-                const Value_t INITIAL_VAL        = Value_t(0),
-                const bool    WILL_START_FORWARD = true)
+        explicit Slider(const Value_t THE_MIN            = static_cast<Value_t>(0),
+                        const Value_t THE_MAX            = static_cast<Value_t>(1),
+                        const Math_t  SPEED              = static_cast<Math_t>(1),
+                        const Value_t INITIAL_VAL        = static_cast<Value_t>(0),
+                        const bool    WILL_START_FORWARD = true)
         :
             start_     (0), //ignore these initializers because of Reset() below.
             diff_      (0),
@@ -107,10 +107,10 @@ namespace sliders
         inline Value_t GetMax() const { return start_ + diff_; }
         inline Math_t  GetSpd() const { return zeroSlider_.GetSpd(); }
 
-        void Reset( const Value_t THE_MIN            = Value_t(0),
-                    const Value_t THE_MAX            = Value_t(1),
-                    const Math_t  SPEED              = Math_t (1),
-                    const Value_t INITIAL_VAL        = Value_t(0),
+        void Reset( const Value_t THE_MIN            = static_cast<Value_t>(0),
+                    const Value_t THE_MAX            = static_cast<Value_t>(1),
+                    const Math_t  SPEED              = static_cast<Math_t>(1),
+                    const Value_t INITIAL_VAL        = static_cast<Value_t>(0),
                     const bool    WILL_START_FORWARD = true)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((false == utilz::IsRealClose(SPEED, Math_t(0))), "Slider::Reset() given speed of zero.");
@@ -135,7 +135,6 @@ namespace sliders
     };
 
 
-
     //Slides a number from 0.0 to 1.0 at the speed and starting point given.
     //Call the Update(time_delta) function periodically to get the current value.
     //T must be signed and real. (i.e. float, double, etc.)
@@ -144,8 +143,8 @@ namespace sliders
     class ZeroSliderOnce
     {
     public:
-        ZeroSliderOnce( const T SPEED       = static_cast<T>(1),
-                        const T INITIAL_VAL = static_cast<T>(0))
+        explicit ZeroSliderOnce(const T SPEED       = static_cast<T>(1),
+                                const T INITIAL_VAL = static_cast<T>(0))
             :
             age_(0),//ignore these initializers because of Reset()
             spd_(0),
@@ -201,7 +200,6 @@ namespace sliders
     template<typename T> const T ZeroSliderOnce<T>::THREE_QTR_PI_((boostmath::pi<T>() / static_cast<T>(2)) + boostmath::pi<T>());
 
 
-
     //Slides a value from BEGIN to END at THE_SPEED given.
     //Math_t must be signed and real. (i.e. float, double, etc.)
     //Ensure BEGIN < END.
@@ -210,9 +208,9 @@ namespace sliders
     class SliderOnce
     {
     public:
-        SliderOnce( const Value_t BEGIN       = Value_t(0),
-                    const Value_t END         = Value_t(1),
-                    const Math_t  SPEED       = Math_t (1))
+        explicit SliderOnce(const Value_t BEGIN = static_cast<Value_t>(0),
+                            const Value_t END   = static_cast<Value_t>(1),
+                            const Math_t  SPEED = static_cast<Math_t>(1))
         :
             begin_ (0), //ignore these initializers because of Reset() below.
             diff_  (0),
@@ -256,7 +254,6 @@ namespace sliders
     };
 
 
-
     //Slides a value between THE_MIN and THE_MAX at the given speed.
     //Ensure (INITIAL_VAL >= THE_MIN && INITIAL_VAL <= THE_MAX).
     //Ensure THE_MIN < THE_MAX.
@@ -266,10 +263,10 @@ namespace sliders
     {
     public:
         //This constructor uses a random initial target.
-        Slider2(const Value_t THE_MIN     = Value_t(0),
-                const Value_t THE_MAX     = Value_t(1),
-                const Speed_t SPEED       = Speed_t(1),
-                const Value_t INITIAL_VAL = Value_t(0))
+        explicit Slider2(const Value_t THE_MIN     = static_cast<Value_t>(0),
+                         const Value_t THE_MAX     = static_cast<Value_t>(1),
+                         const Speed_t SPEED       = static_cast<Speed_t>(1),
+                         const Value_t INITIAL_VAL = static_cast<Value_t>(0))
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor, which will change these initializer values.
             max_         (THE_MAX),
@@ -334,7 +331,6 @@ namespace sliders
         bool    isIncreasing_;
         SliderOnce<Value_t, Speed_t> slider_;
     };
-
 
 
     //Drifts a value between THE_MIN and THE_MAX at a speed that varies.

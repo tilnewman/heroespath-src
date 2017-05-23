@@ -18,10 +18,10 @@ namespace sfml_util
     //      is safe and will cause nothing (no gradient) to be drawn.
     struct GradientInfo
     {
-        GradientInfo(const sf::Color &  COLOR_TO   = sf::Color::Transparent,
-                     const unsigned int CORNERS    = sfml_util::Corner::None,
-                     const unsigned int SIDES      = sfml_util::Side::None,
-                     const sf::Color &  COLOR_FROM = sf::Color::Transparent);
+        explicit GradientInfo(const sf::Color &  COLOR_TO   = sf::Color::Transparent,
+                              const unsigned int CORNERS    = sfml_util::Corner::None,
+                              const unsigned int SIDES      = sfml_util::Side::None,
+                              const sf::Color &  COLOR_FROM = sf::Color::Transparent);
 
         unsigned int sides;
         unsigned int corners;

@@ -28,16 +28,16 @@ namespace strategy
     class Chances
     {
     public:
-        Chances(const SelectChanceMap_t &           SELECT_CHANCES_MAP            = SelectChanceMap_t(),
-                const RefineChanceMap_t &           REFINE_CHANCES_MAP            = RefineChanceMap_t(),
-                const AdvanceChanceMap_t &          ADVANCE_CHANCES_MAP           = AdvanceChanceMap_t(),
-                const RetreatChanceMap_t &          RETREAT_CHANCES_MAP           = RetreatChanceMap_t(),
-                const OutnumberRetreatChanceMap_t & OUTNUMBER_RETREAT_CHANCES_MAP = OutnumberRetreatChanceMap_t(),
-                const FrequencyChanceMap_t &        ROAR_FREQ_CHANCES_MAP         = FrequencyChanceMap_t(),
-                const FrequencyChanceMap_t &        CAST_FREQ_CHANCES_MAP         = FrequencyChanceMap_t(),
-                const FrequencyChanceMap_t &        FLY_FREQ_CHANCES_MAP          = FrequencyChanceMap_t(),
-                const FrequencyChanceMap_t &        FLY_POUNCE_FREQ_CHANCES_MAP   = FrequencyChanceMap_t(),
-                const FrequencyChanceMap_t &        STAND_POUNCE_FREQ_CHANCES_MAP = FrequencyChanceMap_t());
+        explicit Chances(const SelectChanceMap_t &           SELECT_CHANCES_MAP            = SelectChanceMap_t(),
+                         const RefineChanceMap_t &           REFINE_CHANCES_MAP            = RefineChanceMap_t(),
+                         const AdvanceChanceMap_t &          ADVANCE_CHANCES_MAP           = AdvanceChanceMap_t(),
+                         const RetreatChanceMap_t &          RETREAT_CHANCES_MAP           = RetreatChanceMap_t(),
+                         const OutnumberRetreatChanceMap_t & OUTNUMBER_RETREAT_CHANCES_MAP = OutnumberRetreatChanceMap_t(),
+                         const FrequencyChanceMap_t &        ROAR_FREQ_CHANCES_MAP         = FrequencyChanceMap_t(),
+                         const FrequencyChanceMap_t &        CAST_FREQ_CHANCES_MAP         = FrequencyChanceMap_t(),
+                         const FrequencyChanceMap_t &        FLY_FREQ_CHANCES_MAP          = FrequencyChanceMap_t(),
+                         const FrequencyChanceMap_t &        FLY_POUNCE_FREQ_CHANCES_MAP   = FrequencyChanceMap_t(),
+                         const FrequencyChanceMap_t &        STAND_POUNCE_FREQ_CHANCES_MAP = FrequencyChanceMap_t());
 
         inline const SelectChanceMap_t           SelectChanceMapCopy() const           { return selectChanceMap_; }
         inline const RefineChanceMap_t           RefineChanceMapCopy() const           { return refineChanceMap_; }

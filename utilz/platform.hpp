@@ -9,29 +9,29 @@
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64) || defined(__WINDOWS__)
-#define PLATFORMDETECT__WINDOWS
+#define PLATFORM_DETECTED_IS_WINDOWS
 #elif defined(macintosh) || defined(Macintosh)
-#define PLLATFFORMDEETECT__APPLLE_SO9
+#define PLATFORM_DETECTED_IS_APPLE9
 #elif defined(__APPLE__) || defined(__MACH__)
-#define PLLATFFORMDEETECT__APPLLE_SO
+#define PLATFORM_DETECTED_IS_APPLE
 #elif defined(linux) || defined(__linux) || defined(__linux__)
-#define PLATFORMDETECT__LINUX
+#define PLATFORM_DETECTED_IS_LINUX
 #endif
 
 #if defined(__unix) || defined(__unix__)
-#define PLATFORMDETECT__UNIX
+#define PLATFORM_DETECTED_IS_UNIX
 #endif
 
 #if defined(__posix) || defined(__posix__)
-#define PLATFORMDETECT__POSIX
+#define PLATFORM_DETECTED_IS_POSIX
 #endif
 
 #if defined(__CYGWIN__)
-#define PLATFORMDETECT__CYGWIN
+#define PLATFORM_DETECTED_IS_CYGWIN
 #endif
 
 #if defined(__gnu_linux__)
-#define PLATFORMDETECT__GNU_LINUX
+#define PLATFORM_DETECTED_IS_LINUX_GNU
 #endif
 
 

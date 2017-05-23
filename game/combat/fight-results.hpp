@@ -70,14 +70,14 @@ namespace combat
     {
     public:
         //use this constructor when a weapon is used to hit
-        HitInfo(const item::ItemSPtr_t &             ITEM_SPTR       = item::ItemSPtr_t(),
-                const HitType::Enum                  HIT_TYPE        = HitType::Count,
-                const DodgeType::Enum                DODGE_TYPE      = DodgeType::Count,
-                const stats::Health_t                DAMAGE          = 0,
-                const bool                           IS_CRITICAL_HIT = false,
-                const bool                           IS_POWER_HIT    = false,
-                const creature::ConditionEnumVec_t & CONDITIONS_VEC  = creature::ConditionEnumVec_t(),
-                const std::string &                  ACTION_VERB     = "");
+        explicit HitInfo(const item::ItemSPtr_t &             ITEM_SPTR       = item::ItemSPtr_t(),
+                         const HitType::Enum                  HIT_TYPE        = HitType::Count,
+                         const DodgeType::Enum                DODGE_TYPE      = DodgeType::Count,
+                         const stats::Health_t                DAMAGE          = 0,
+                         const bool                           IS_CRITICAL_HIT = false,
+                         const bool                           IS_POWER_HIT    = false,
+                         const creature::ConditionEnumVec_t & CONDITIONS_VEC  = creature::ConditionEnumVec_t(),
+                         const std::string &                  ACTION_VERB     = "");
 
         //use this constructor when a spell adds or removes health
         HitInfo(const spell::SpellPtr_t              SPELL_CPTR,
@@ -142,11 +142,11 @@ namespace combat
     class CreatureEffect
     {
     public:
-        CreatureEffect(const creature::CreaturePtr_t        CREATURE_PTR   = nullptr,
-                       const HitInfoVec_t &                 HIT_INFO_VEC   = HitInfoVec_t(),
-                       const spell::SpellPtr_t              SPELL_PTR      = nullptr,
-                       const creature::ConditionEnumVec_t & CONDITIONS_VEC = creature::ConditionEnumVec_t(),
-                       const bool                           WAS_POUNCED    = false);
+        explicit CreatureEffect(const creature::CreaturePtr_t        CREATURE_PTR   = nullptr,
+                                const HitInfoVec_t &                 HIT_INFO_VEC   = HitInfoVec_t(),
+                                const spell::SpellPtr_t              SPELL_PTR      = nullptr,
+                                const creature::ConditionEnumVec_t & CONDITIONS_VEC = creature::ConditionEnumVec_t(),
+                                const bool                           WAS_POUNCED    = false);
 
         CreatureEffect(const CreatureEffect &);
         CreatureEffect & operator=(const CreatureEffect &);

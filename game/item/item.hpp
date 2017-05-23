@@ -33,24 +33,24 @@ namespace item
         Item & operator=(const Item &) =delete;
 
     public:
-        Item(const std::string &        NAME               = "no_name_error",
-             const std::string &        DESC               = "no-desc_error",
-             const category::Enum       CATEGORY           = category::Broken,
-             const misc_type::Enum      MISC_TYPE          = misc_type::NotMisc,
-             const weapon_type::Enum    WEAPON_TYPE        = weapon_type::NotAWeapon,
-             const armor_type::Enum     ARMOR_TYPE         = armor_type::NotArmor,
-             const material::Enum       MATERIAL_PRIMARY   = material::Nothing,
-             const material::Enum       MATERIAL_SECONDARY = material::Nothing,
-             const std::string &        IMAGE_FILENAME     = "",
-             const Coin_t               PRICE              = Coin_t(0),
-             const Weight_t             WEIGHT             = Weight_t(0),
-             const stats::Health_t      DAMAGE_MIN         = 0,
-             const stats::Health_t      DAMAGE_MAX         = 0,
-             const stats::Armor_t       ARMOR_RATING       = 0,
-             const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
-             const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
-             const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
-             const bool                 IS_PIXIE_ITEM      = false);
+        explicit Item(const std::string &        NAME               = "no_name_error",
+                      const std::string &        DESC               = "no-desc_error",
+                      const category::Enum       CATEGORY           = category::Broken,
+                      const misc_type::Enum      MISC_TYPE          = misc_type::NotMisc,
+                      const weapon_type::Enum    WEAPON_TYPE        = weapon_type::NotAWeapon,
+                      const armor_type::Enum     ARMOR_TYPE         = armor_type::NotArmor,
+                      const material::Enum       MATERIAL_PRIMARY   = material::Nothing,
+                      const material::Enum       MATERIAL_SECONDARY = material::Nothing,
+                      const std::string &        IMAGE_FILENAME     = "",
+                      const Coin_t               PRICE              = Coin_t(0),
+                      const Weight_t             WEIGHT             = Weight_t(0),
+                      const stats::Health_t      DAMAGE_MIN         = 0,
+                      const stats::Health_t      DAMAGE_MAX         = 0,
+                      const stats::Armor_t       ARMOR_RATING       = 0,
+                      const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
+                      const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
+                      const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
+                      const bool                 IS_PIXIE_ITEM      = false);
 
         virtual ~Item();
 

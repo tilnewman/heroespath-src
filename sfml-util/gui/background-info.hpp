@@ -27,20 +27,20 @@ namespace gui
         BackgroundInfo();
 
         //use this constructor when only a filled-rectangle background is desired
-        BackgroundInfo(const sf::Color &    FILL_COLOR,
-                       const GradientInfo & GRADIENT_INFO = GradientInfo());
+        explicit BackgroundInfo(const sf::Color &    FILL_COLOR,
+                                const GradientInfo & GRADIENT_INFO = GradientInfo());
 
         //use this constructor when the sf::Texture of the background image already exists
-        BackgroundInfo(const TextureSPtr_t & TEXTURESPTR,
-                       const sf::FloatRect & REGION        = sf::FloatRect(),
-                       const sf::Color &     COLOR         = sf::Color::White,
-                       const GradientInfo &  GRADIENT_INFO = GradientInfo());
+        explicit BackgroundInfo(const TextureSPtr_t & TEXTURESPTR,
+                                const sf::FloatRect & REGION        = sf::FloatRect(),
+                                const sf::Color &     COLOR         = sf::Color::White,
+                                const GradientInfo &  GRADIENT_INFO = GradientInfo());
 
         //use this constructor when only the path to the background image is known
-        BackgroundInfo(const std::string &   TEXTURE_PATH,
-                       const sf::FloatRect & REGION        = sf::FloatRect(),
-                       const sf::Color &     COLOR         = sf::Color::White,
-                       const GradientInfo &  GRADIENT_INFO = GradientInfo());
+        explicit BackgroundInfo(const std::string &   TEXTURE_PATH,
+                                const sf::FloatRect & REGION        = sf::FloatRect(),
+                                const sf::Color &     COLOR         = sf::Color::White,
+                                const GradientInfo &  GRADIENT_INFO = GradientInfo());
 
         //returns false if either region dimmension is zero or less
         inline bool IsValid() const { return ((region.width > 0.0f) && (region.height > 0.0f)); }

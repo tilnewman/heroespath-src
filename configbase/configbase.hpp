@@ -33,9 +33,9 @@ namespace appbase
     {
         // constructors / destructor
     public:
-        ConfigBase( const std::string & FILE_PATH_STR = FILE_PATH_DEFAULT_,
-                    const std::string & SEP_STR       = SEP_STR_DEFAULT_,
-                    const std::string & COMMENT_STR   = COMMENT_STR_DEFAULT_);
+        explicit ConfigBase(const std::string & FILE_PATH_STR = FILE_PATH_DEFAULT_,
+                            const std::string & SEP_STR       = SEP_STR_DEFAULT_,
+                            const std::string & COMMENT_STR   = COMMENT_STR_DEFAULT_);
 
         virtual ~ConfigBase();
 

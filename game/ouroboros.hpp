@@ -24,7 +24,7 @@ namespace game
         Ouroboros & operator=(const Ouroboros &) =delete;
 
     public:
-        Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);
+        explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);
         virtual ~Ouroboros();
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

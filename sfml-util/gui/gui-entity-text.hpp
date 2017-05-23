@@ -36,9 +36,9 @@ namespace gui
 
     public:
         //if this constructor is used, then Setup() must be called before any other functions
-        GuiText(const std::string & NAME,
-                const float         TEXT_WIDTH_LIMIT = 0.0f,
-                const FontSPtr_t &  NUMBERS_FONTSPTR = FontSPtr_t());
+        explicit GuiText(const std::string & NAME,
+                         const float         TEXT_WIDTH_LIMIT = 0.0f,
+                         const FontSPtr_t &  NUMBERS_FONTSPTR = FontSPtr_t());
 
         GuiText(const std::string &   NAME,
                 const sf::FloatRect & REGION,

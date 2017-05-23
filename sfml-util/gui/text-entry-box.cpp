@@ -98,7 +98,9 @@ namespace gui
             textRegionSPtr_.reset();
 
         if (callbackHandlerPtr_ != nullptr)
+        {
             callbackHandlerPtr_->HandleCallback(this);
+        }
     }
 
 

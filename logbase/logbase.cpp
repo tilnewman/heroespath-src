@@ -252,7 +252,7 @@ namespace logbase
                 es << "LogBase was unable to create the log directory \"" << GetFilePath() << "\"";
                 std::cerr << es.str() << std::endl;
 
-                throw new std::runtime_error( es.str() );
+                throw std::runtime_error( es.str() );
             }
         }
 
@@ -283,7 +283,7 @@ namespace logbase
             es << "LogBase was unable to open \"" << FULL_PATH.string() << "\" for writing.";
             std::cerr << es.str() << std::endl;
 
-            throw new std::runtime_error( es.str() );
+            throw std::runtime_error( es.str() );
         }
 
         OnFileOpen();

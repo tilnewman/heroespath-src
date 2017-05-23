@@ -17,15 +17,15 @@ namespace sliders
     class PosSlider
     {
     public:
-        PosSlider(const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
-                  const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
-                  const float          SLIDER_SPEED     = 1.0f);
+        explicit PosSlider(const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
+                           const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
+                           const float          SLIDER_SPEED = 1.0f);
 
         virtual ~PosSlider();
 
-        void Setup(const sf::Vector2f & FROM_POS_V       = sf::Vector2f(),
-                   const sf::Vector2f & TO_POS_V         = sf::Vector2f(),
-                   const float          SLIDER_SPEED     = 1.0f);
+        void Setup(const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
+                   const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
+                   const float          SLIDER_SPEED = 1.0f);
 
         virtual void Reset(const bool WILL_RESET_POSITION = false);
         virtual void StartMovingToward(const float DEST_POS_LEFT = -1.0f, const float DEST_POS_TOP = -1.0f);

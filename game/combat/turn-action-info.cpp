@@ -10,7 +10,7 @@ namespace game
 namespace combat
 {
 
-    TurnActionInfo::TurnActionInfo(const TurnAction::Enum         ACTION,
+    TurnActionInfo::TurnActionInfo(const TurnAction::Enum        ACTION,
                                    const creature::CreaturePtr_t TARGET_PTR)
     :
         actionType_ (ACTION),

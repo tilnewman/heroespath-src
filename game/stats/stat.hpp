@@ -24,8 +24,8 @@ namespace stats
     class Stat
     {
     public:
-        Stat(const stat::Enum WHICH = static_cast<stat::Enum>(0),
-             const Stat_t     VALUE = VAL_MIN_);
+        explicit Stat(const stat::Enum WHICH = static_cast<stat::Enum>(0),
+                      const Stat_t     VALUE = VAL_MIN_);
 
         virtual ~Stat();
 

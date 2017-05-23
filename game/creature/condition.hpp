@@ -35,9 +35,9 @@ namespace creature
         Condition & operator=(const Condition &) =delete;
 
     public:
-        Condition(const Conditions::Enum     TYPE          = Conditions::Good,
-                  const bool                 IS_MAGICAL    = false,
-                  const stats::StatMultSet & STAT_MULT_SET = stats::StatMultSet());
+        explicit Condition(const Conditions::Enum     TYPE          = Conditions::Good,
+                           const bool                 IS_MAGICAL    = false,
+                           const stats::StatMultSet & STAT_MULT_SET = stats::StatMultSet());
 
         virtual ~Condition();
 

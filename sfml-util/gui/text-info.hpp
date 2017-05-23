@@ -26,15 +26,15 @@ namespace gui
     class TextInfo
     {
     public:
-        TextInfo(const std::string &   TEXT              = "",
-                 const FontSPtr_t &    FONT              = FontSPtr_t(),
-                 const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
-                 const sf::Color &     COLOR             = sf::Color::White,
-                 const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
-                 const sf::Uint32      STYLE             = sf::Text::Style::Regular,
-                 const Justified::Enum JUSTIFIED         = Justified::Left,
-                 const bool            IS_OUTLINE_ONLY   = false,
-                 const float           OUTLINE_THICKNESS = 0.0f);
+        explicit TextInfo(const std::string &   TEXT              = "",
+                          const FontSPtr_t &    FONT              = FontSPtr_t(),
+                          const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
+                          const sf::Color &     COLOR             = sf::Color::White,
+                          const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
+                          const sf::Uint32      STYLE             = sf::Text::Style::Regular,
+                          const Justified::Enum JUSTIFIED         = Justified::Left,
+                          const bool            IS_OUTLINE_ONLY   = false,
+                          const float           OUTLINE_THICKNESS = 0.0f);
 
         TextInfo(const std::string &   TEXT,
                  const FontSPtr_t &    FONT,

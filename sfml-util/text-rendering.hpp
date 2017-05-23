@@ -24,7 +24,10 @@ namespace sfml_util
 namespace text_render
 {
 
-    static const float SIDEBAR_HORIZ_OFFSET(15.0f);
+    struct Constants
+    {
+        static const float SIDEBAR_HORIZ_OFFSET_;
+    };
 
 
     //used by TextRender internally

@@ -17,12 +17,12 @@ namespace stats
     class StatMultSet
     {
     public:
-        StatMultSet(const float STR = 1.0f,
-                    const float ACC = 1.0f,
-                    const float CHA = 1.0f,
-                    const float LCK = 1.0f,
-                    const float SPD = 1.0f,
-                    const float INT = 1.0f);
+        explicit StatMultSet(const float STR = 1.0f,
+                             const float ACC = 1.0f,
+                             const float CHA = 1.0f,
+                             const float LCK = 1.0f,
+                             const float SPD = 1.0f,
+                             const float INT = 1.0f);
 
         inline float Str() const { return str_; }
         inline float Acc() const { return acc_; }

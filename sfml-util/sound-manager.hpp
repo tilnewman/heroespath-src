@@ -28,8 +28,8 @@ namespace sfml_util
 
     struct SoundEffectData
     {
-        SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
-                        const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
+        explicit SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
+                                 const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
         :
             sound(SOUND),
             buffer(BUFFER)
@@ -46,8 +46,8 @@ namespace sfml_util
     //simple wrapper responsible for everything needed to describe and operate a set of song(s)
     struct Songs
     {
-        Songs(const MusicSetSPtr_t &      SET_SPTR      = MusicSetSPtr_t(),
-              const MusicOperatorSPtr_t & OPERATOR_SPTR = MusicOperatorSPtr_t())
+        explicit  Songs(const MusicSetSPtr_t &      SET_SPTR      = MusicSetSPtr_t(),
+                        const MusicOperatorSPtr_t & OPERATOR_SPTR = MusicOperatorSPtr_t())
         :
             set_sptr(SET_SPTR),
             operator_sptr(OPERATOR_SPTR)

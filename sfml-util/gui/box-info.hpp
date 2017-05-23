@@ -26,13 +26,13 @@ namespace box
     {
     public:
         //use as default constructor to draw nothing, or for specific construction
-        Info(const ColorSet &       COLOR_SET        = ColorSet(),
-             const sf::FloatRect &  REGION           = sf::FloatRect(),
-             const bool             GOLD_BARS        = false,
-             const float            LINE_THICKNESS   = 0.0f,
-             const bool             WILL_FRAME_LINES = false,
-             const bool             WILL_GROW        = false,
-             const BackgroundInfo & BACKGROUND_INFO  = BackgroundInfo());
+        explicit Info(const ColorSet &       COLOR_SET        = ColorSet(),
+                      const sf::FloatRect &  REGION           = sf::FloatRect(),
+                      const bool             GOLD_BARS        = false,
+                      const float            LINE_THICKNESS   = 0.0f,
+                      const bool             WILL_FRAME_LINES = false,
+                      const bool             WILL_GROW        = false,
+                      const BackgroundInfo & BACKGROUND_INFO  = BackgroundInfo());
 
         //use this constructor when only lines are desired
         Info(const float            LINE_THICKNESS,

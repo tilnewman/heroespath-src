@@ -23,21 +23,21 @@ namespace creature
     class BodyType
     {
     public:
-        BodyType(const item::material::Enum SKIN_MATERIAL_INNER = item::material::Flesh,
-                 const item::material::Enum SKIN_MATERIAL_OUTER = item::material::Nothing,
-                 const std::size_t          NUM_HEADS           = 1,
-                 const std::size_t          NUM_ARMS            = 2,
-                 const std::size_t          NUM_LEGS            = 2,
-                 const std::size_t          NUM_EYES            = 2,
-                 const bool                 HAS_FANGS           = false,
-                 const bool                 HAS_CLAWS           = false,
-                 const bool                 HAS_WINGS           = false,
-                 const bool                 HAS_FINGERS         = true,
-                 const bool                 HAS_TAIL            = false,
-                 const bool                 HAS_SPIKES          = false,
-                 const bool                 HAS_HORNS           = false,
-                 const std::size_t          NUM_TENDRILS        = 0,
-                 const bool                 HAS_BREATH          = false);
+        explicit BodyType(const item::material::Enum SKIN_MATERIAL_INNER = item::material::Flesh,
+                          const item::material::Enum SKIN_MATERIAL_OUTER = item::material::Nothing,
+                          const std::size_t          NUM_HEADS           = 1,
+                          const std::size_t          NUM_ARMS            = 2,
+                          const std::size_t          NUM_LEGS            = 2,
+                          const std::size_t          NUM_EYES            = 2,
+                          const bool                 HAS_FANGS           = false,
+                          const bool                 HAS_CLAWS           = false,
+                          const bool                 HAS_WINGS           = false,
+                          const bool                 HAS_FINGERS         = true,
+                          const bool                 HAS_TAIL            = false,
+                          const bool                 HAS_SPIKES          = false,
+                          const bool                 HAS_HORNS           = false,
+                          const std::size_t          NUM_TENDRILS        = 0,
+                          const bool                 HAS_BREATH          = false);
 
         virtual ~BodyType();
 

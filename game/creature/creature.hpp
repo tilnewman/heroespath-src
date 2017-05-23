@@ -69,22 +69,22 @@ namespace creature
 
     public:
         //Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
-        Creature(const std::string &         NAME            = "no_name_error",
-                 const sex::Enum             SEX             = creature::sex::Unknown,
-                 const BodyType &            BODY_TYPE       = BodyType(),
-                 const creature::Race &      RACE            = creature::Race(creature::race::Count_PlayerRaces),
-                 const creature::Role &      ROLE            = creature::Role(creature::role::PlayerRoleCount),
-                 const stats::StatSet &      STATS           = stats::StatSet(),
-                 const stats::Health_t       HEALTH          = 0,
-                 const stats::Rank_t         RANK            = 1,
-                 const stats::Exp_t          EXPERIENCE      = 0,
-                 const ConditionEnumVec_t &  CONDITIONS_VEC  = ConditionEnumVec_t(),
-                 const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
-                 const item::Inventory &     INVENTORY       = item::Inventory(),
-                 const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
-                 const std::string &         IMAGE_FILENAME  = "",
-                 const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
-                 const stats::Mana_t         MANA            = 0);
+        explicit Creature(const std::string &         NAME            = "no_name_error",
+                          const sex::Enum             SEX             = creature::sex::Unknown,
+                          const BodyType &            BODY_TYPE       = BodyType(),
+                          const creature::Race &      RACE            = creature::Race(creature::race::Count_PlayerRaces),
+                          const creature::Role &      ROLE            = creature::Role(creature::role::PlayerRoleCount),
+                          const stats::StatSet &      STATS           = stats::StatSet(),
+                          const stats::Health_t       HEALTH          = 0,
+                          const stats::Rank_t         RANK            = 1,
+                          const stats::Exp_t          EXPERIENCE      = 0,
+                          const ConditionEnumVec_t &  CONDITIONS_VEC  = ConditionEnumVec_t(),
+                          const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
+                          const item::Inventory &     INVENTORY       = item::Inventory(),
+                          const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
+                          const std::string &         IMAGE_FILENAME  = "",
+                          const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
+                          const stats::Mana_t         MANA            = 0);
 
         virtual ~Creature();
 

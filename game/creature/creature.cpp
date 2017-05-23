@@ -495,7 +495,7 @@ namespace creature
         const item::category::Enum CATEGORY(ITEM_SPTR->Category());
         const item::misc_type::Enum MISC_TYPE(ITEM_SPTR->MiscType());
 
-        if (CATEGORY & item::category::Broken)
+        if (CATEGORY == item::category::Broken)
         {
             return "Can't equip because the item is broken.";
         }

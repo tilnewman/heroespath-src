@@ -6,14 +6,14 @@
 
 //prevent warnings that can be ignored in SFML
 #include "utilz/platform.hpp"
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/Audio.hpp>
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #pragma GCC diagnostic warning "-Wundef"
 #endif

@@ -36,8 +36,8 @@ namespace creature
     class Achievement
     {
     public:
-        Achievement(const AchievementType::Enum WHICH           = AchievementType::None,
-                    const TitleCountMap_t &     TITLE_COUNT_MAP = TitleCountMap_t());
+        explicit Achievement(const AchievementType::Enum WHICH           = AchievementType::None,
+                             const TitleCountMap_t &     TITLE_COUNT_MAP = TitleCountMap_t());
 
         inline AchievementType::Enum Which() const              { return which_; }
         inline std::size_t Count() const                        { return count_; }

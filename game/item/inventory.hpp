@@ -30,11 +30,11 @@ namespace item
     class Inventory
     {
     public:
-        Inventory(const Coin_t       COINS               = 0,
-                  const Meteor_t     METEOR_SHARDS       = 0,
-                  const Gem_t        GEMS                = 0,
-                  const ItemSVec_t & ITEMS_SVEC          = ItemSVec_t(),
-                  const ItemSVec_t & EQUIPPED_ITEMS_SVEC = ItemSVec_t());
+        explicit Inventory(const Coin_t       COINS               = 0,
+                           const Meteor_t     METEOR_SHARDS       = 0,
+                           const Gem_t        GEMS                = 0,
+                           const ItemSVec_t & ITEMS_SVEC          = ItemSVec_t(),
+                           const ItemSVec_t & EQUIPPED_ITEMS_SVEC = ItemSVec_t());
 
         virtual ~Inventory();
 

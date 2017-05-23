@@ -117,7 +117,9 @@ namespace gui
     void SliderBar::OnChange(const float)
     {
         if (changeHandlerPtr_ != nullptr)
+        {
             changeHandlerPtr_->HandleCallback(this);
+        }
     }
 
 

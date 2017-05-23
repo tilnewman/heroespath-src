@@ -58,8 +58,8 @@ namespace gui
         ListBoxItem & operator=(const ListBoxItem &) =delete;
 
     public:
-        ListBoxItem(const std::string & NAME,
-                    const bool          IS_VALID = true);
+        explicit ListBoxItem(const std::string & NAME,
+                             const bool          IS_VALID = true);
 
         //used by the Combat Stage for a ListBox of text lines
         ListBoxItem(const std::string &              NAME,

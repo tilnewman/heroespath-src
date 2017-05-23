@@ -328,10 +328,10 @@ namespace sfml_util
     class LoopCmd_FadeIn : public LoopCmd
     {
     public:
-        LoopCmd_FadeIn( ILoopSPtr_t &     iLoopSPtr,
-                        const sf::Color & FADE_FROM_COLOR = sf::Color::Black,
-                        const float       SPEED_MULT      = 200.0f,
-                        const bool        WILL_HOLD_FADE  = false )
+        explicit LoopCmd_FadeIn(ILoopSPtr_t &     iLoopSPtr,
+                                const sf::Color & FADE_FROM_COLOR = sf::Color::Black,
+                                const float       SPEED_MULT      = 200.0f,
+                                const bool        WILL_HOLD_FADE  = false )
         :
             LoopCmd         (std::string("FadeIn"), iLoopSPtr),
             SPEED_MULT_     (SPEED_MULT),

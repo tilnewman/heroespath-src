@@ -44,9 +44,9 @@ namespace box
         //For when the initial position and sizes are not known,
         //but calling SetupCrossBox() after construction is required
         //before drawing.
-        CrossBox(const std::string &    NAME,
-                 const bool             WILL_GROW_TO_FIT = false,
-                 const BackgroundInfo & BACKGROUND_INFO  = BackgroundInfo());
+        explicit CrossBox(const std::string &    NAME,
+                          const bool             WILL_GROW_TO_FIT = false,
+                          const BackgroundInfo & BACKGROUND_INFO  = BackgroundInfo());
 
         virtual ~CrossBox();
 

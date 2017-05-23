@@ -19,6 +19,9 @@ namespace sfml_util
 namespace text_render
 {
 
+    const float Constants::SIDEBAR_HORIZ_OFFSET_{ 15.0f };
+
+
     void RenderToArea(const std::string &               NAME,
                       const gui::TextInfo &             TEXT_INFO,
                       sfml_util::gui::SliderBarSPtr_t & sliderBarSPtr,
@@ -61,7 +64,7 @@ namespace text_render
             {
                 //if the text still won't fit vertically, add the side bar, re-calculate, and then configure the sidebar.
                 sliderBarSPtr.reset( new gui::SliderBar(std::string(NAME).append("Vertical"),
-                                                        (REGION.left + REGION.width) - SIDEBAR_HORIZ_OFFSET,
+                                                        (REGION.left + REGION.width) - Constants::SIDEBAR_HORIZ_OFFSET_,
                                                         REGION.top + 5.0f,
                                                         REGION.height - 10.0f,
                                                         gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),
@@ -95,7 +98,7 @@ namespace text_render
         {
             //if the text won't fit vertically, add the sliderbar
             sliderBarSPtr.reset( new gui::SliderBar(std::string(NAME).append("Vertical"),
-                                                    (REGION.left + REGION.width) - SIDEBAR_HORIZ_OFFSET,
+                                                    (REGION.left + REGION.width) - Constants::SIDEBAR_HORIZ_OFFSET_,
                                                     REGION.top + 5.0f,
                                                     REGION.height - 10.0f,
                                                     gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),

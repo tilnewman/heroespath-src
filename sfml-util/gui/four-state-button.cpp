@@ -415,7 +415,9 @@ namespace gui
     void FourStateButton::OnClick(const sf::Vector2f &)
     {
         if ((false == isDisabled_) && (callbackHandlerPtr_ != nullptr))
+        {
             callbackHandlerPtr_->HandleCallback(this);
+        }
     }
 
 

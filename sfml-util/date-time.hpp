@@ -18,9 +18,9 @@ namespace sfml_util
     //simple wrapper for dates
     struct Date
     {
-        Date(const int YEAR  = INVALID_VALUE_,
-             const int MONTH = INVALID_VALUE_,
-             const int DAY   = INVALID_VALUE_);
+        explicit Date(const int YEAR  = INVALID_VALUE_,
+                      const int MONTH = INVALID_VALUE_,
+                      const int DAY   = INVALID_VALUE_);
 
         const std::string ToString() const;
 
@@ -61,9 +61,9 @@ namespace sfml_util
     //simple wrapper for times
     struct Time
     {
-        Time(const int HOUR   = INVALID_VALUE_,
-             const int MINUTE = INVALID_VALUE_,
-             const int SECOND = INVALID_VALUE_);
+        explicit Time(const int HOUR   = INVALID_VALUE_,
+                      const int MINUTE = INVALID_VALUE_,
+                      const int SECOND = INVALID_VALUE_);
 
         explicit Time(const sf::Time & TIME_OBJ);
 
@@ -116,8 +116,8 @@ namespace sfml_util
     class DateTime
     {
     public:
-        DateTime(const Date & DATE = Date(),
-                 const Time & TIME = Time());
+       explicit DateTime(const Date & DATE = Date(),
+                         const Time & TIME = Time());
 
         const std::string ToString() const;
         inline bool IsValid() const                     { return (date.IsValid() && time.IsValid()); }

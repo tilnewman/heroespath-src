@@ -16,10 +16,10 @@ namespace gui
     //encapsulates all the the style elements of a SliderBar
     struct SliderStyle
     {
-        SliderStyle(const Orientation::Enum ORIENTATION       = Orientation::Vert,
-                    const Brightness::Enum  BRIGHTNESS        = Brightness::Bright,
-                    const bool              WILL_LABEL_ARROWS = true,
-                    const bool              IS_LINE_LARGE     = true)
+        explicit SliderStyle(const Orientation::Enum ORIENTATION       = Orientation::Vert,
+                             const Brightness::Enum  BRIGHTNESS        = Brightness::Bright,
+                             const bool              WILL_LABEL_ARROWS = true,
+                             const bool              IS_LINE_LARGE     = true)
         :
             orientation    (ORIENTATION),
             brightness     (BRIGHTNESS),

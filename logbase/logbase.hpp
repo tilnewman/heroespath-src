@@ -52,12 +52,12 @@ namespace logbase
     {
         // constructors / Destructors
     public:
-        LogBase(const std::string & fileName            = FILE_NAME_DEFAULT,
-                const std::string & fileNameExt         = FILE_NAME_EXT_DEFAULT,
-                const std::string & filePath            = FILE_PATH_DEFAULT,
-                const std::size_t   fileCountMax        = FILE_NUM_MIN,
-                const unsigned long fileSizeMaxBytes    = FILE_SIZE_LIMIT_DEFAULT,
-                const LogPri::Enum  consoleEchoPri      = LogPri::Disabled);
+        explicit LogBase(const std::string & fileName            = FILE_NAME_DEFAULT,
+                         const std::string & fileNameExt         = FILE_NAME_EXT_DEFAULT,
+                         const std::string & filePath            = FILE_PATH_DEFAULT,
+                         const std::size_t   fileCountMax        = FILE_NUM_MIN,
+                         const unsigned long fileSizeMaxBytes    = FILE_SIZE_LIMIT_DEFAULT,
+                         const LogPri::Enum  consoleEchoPri      = LogPri::Disabled);
 
         virtual ~LogBase();
     private:

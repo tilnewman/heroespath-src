@@ -9,13 +9,13 @@
 
 //prevent boost warnings that can be ignored
 #include "utilz/platform.hpp"
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
@@ -240,7 +240,7 @@ namespace sfml_util
 
     void SetTextColor(sf::Text & text, const sf::Color & COLOR)
     {
-#ifdef PLATFORMDETECT__LINUX
+#ifdef PLATFORM_DETECTED_IS_LINUX
         text.setColor(COLOR);
 #else
         text.setFillColor(COLOR);

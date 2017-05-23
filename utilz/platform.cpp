@@ -57,39 +57,39 @@ namespace utilz
         std::ostringstream ss;
         platform_ = platform_type::Unknown;
 
-#ifdef PLATFORMDETECT__WINDOWS
+#ifdef PLATFORM_DETECTED_IS_WINDOWS
         ss << "  Windows";
         platform_ = platform_type::Windows;
 #endif
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO9
+#ifdef PLATFORM_DETECTED_IS_APPLE9
         ss << "  APPLE (OS9)";
         platform_ = platform_type::Unsupported;
 #endif
 
-#ifdef PLLATFFORMDEETECT__APPLLE_SO
+#ifdef PLATFORM_DETECTED_IS_APPLE
         ss << "  APPLE (OS)";
         platform_ = platform_type::Apple;
 #endif
 
-#ifdef PLATFORMDETECT__LINUX
+#ifdef PLATFORM_DETECTED_IS_LINUX
         ss << "  Linux";
         platform_ = platform_type::Linux;
 #endif
 
-#ifdef PLATFORMDETECT__UNIX
+#ifdef PLATFORM_DETECTED_IS_UNIX
         ss << "  Unix";
 #endif
 
-#ifdef PLATFORMDETECT__POSIX
+#ifdef PLATFORM_DETECTED_IS_POSIX
         ss << "  POSIX";
 #endif
 
-#ifdef PLATFORMDETECT__CYGWIN
+#ifdef PLATFORM_DETECTED_IS_CYGWIN
         ss << "  CYGWIN";
 #endif
 
-#ifdef PLATFORMDETECT__GNU_LINUX
+#ifdef PLATFORM_DETECTED_IS_LINUX_GNU
         ss << "  GNU/Linux";
 #endif
 

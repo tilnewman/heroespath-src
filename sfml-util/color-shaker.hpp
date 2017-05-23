@@ -15,10 +15,10 @@ namespace sfml_util
     class ColorShaker
     {
     public:
-        ColorShaker(const sf::Color & COLOR_ORIG,
-                    const sf::Color & COLOR_ALT  = sf::Color::White,
-                    const float       SPEED      = 50.0f,
-                    const bool        WILL_START = true);
+        explicit ColorShaker(const sf::Color & COLOR_ORIG,
+                             const sf::Color & COLOR_ALT  = sf::Color::White,
+                             const float       SPEED      = 50.0f,
+                             const bool        WILL_START = true);
 
         const sf::Color Update(const float ELAPSED_TIME_SECONDS);
 

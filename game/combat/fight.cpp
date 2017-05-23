@@ -542,7 +542,7 @@ namespace combat
         }
         else
         {
-            return FightResult(creatureDefendingPtrC);
+            return FightResult( CreatureEffect(creatureDefendingPtrC) );
         }
     }
 

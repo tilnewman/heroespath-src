@@ -25,8 +25,8 @@ namespace weapon
     //wrapper for all the information needed to identify a single weapon
     struct WeaponInfo
     {
-        WeaponInfo(const weapon_type::Enum TYPE = weapon_type::NotAWeapon,
-                   const std::string &     NAME = "");
+        explicit WeaponInfo(const weapon_type::Enum TYPE = weapon_type::NotAWeapon,
+                            const std::string &     NAME = "");
 
         void ProcessName();
 

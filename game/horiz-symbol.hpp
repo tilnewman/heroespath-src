@@ -20,13 +20,13 @@ namespace game
         BottomSymbol & operator=(const BottomSymbol &) =delete;
 
     public:
-        BottomSymbol(const float       VERT_SCALE        = 1.0f,
-                     const bool        WILL_INVERT_COLOR = false,
-                     const float       SCREEN_WIDTH      = DEFAULT_INVALID_DIMM_,
-                     const float       SCREEN_HEIGHT     = DEFAULT_INVALID_DIMM_,
-                     const float       HORIZ_POS         = DEFAULT_HORIZ_POS_,
-                     const float       VERT_POS_OFFSET   = DEFAULT_VERT_POS_OFFSET_,
-                     const sf::Color & COLOR             = DEFAULT_COLOR_);
+        explicit BottomSymbol(const float       VERT_SCALE        = 1.0f,
+                              const bool        WILL_INVERT_COLOR = false,
+                              const float       SCREEN_WIDTH      = DEFAULT_INVALID_DIMM_,
+                              const float       SCREEN_HEIGHT     = DEFAULT_INVALID_DIMM_,
+                              const float       HORIZ_POS         = DEFAULT_HORIZ_POS_,
+                              const float       VERT_POS_OFFSET   = DEFAULT_VERT_POS_OFFSET_,
+                              const sf::Color & COLOR             = DEFAULT_COLOR_);
 
         virtual ~BottomSymbol();
 

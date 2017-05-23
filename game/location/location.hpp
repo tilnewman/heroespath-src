@@ -29,9 +29,9 @@ namespace location
         Location & operator=(const Location &) =delete;
 
     public:
-        Location(const map::Enum WHICH_MAP    = map::Thornberry,
-                 const float MAP_POS_OFFSET_X = 0.0f,
-                 const float MAP_POS_OFFSET_Y = 0.0f);
+        explicit Location(const map::Enum WHICH_MAP    = map::Thornberry,
+                          const float MAP_POS_OFFSET_X = 0.0f,
+                          const float MAP_POS_OFFSET_Y = 0.0f);
 
         virtual ~Location();
 

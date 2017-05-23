@@ -44,9 +44,9 @@ namespace state
         GameState & operator=(const GameState &) =delete;
 
     public:
-        GameState(const player::PartySPtr_t &      PARTY_SPTR       = player::PartySPtr_t(),
-                  const WorldStateSPtr_t &         WORLD_STATE_SPTR = WorldStateSPtr_t(),
-                  const location::LocationSPtr_t & LOCATION_SPTR    = location::LocationSPtr_t());
+        explicit GameState(const player::PartySPtr_t &      PARTY_SPTR       = player::PartySPtr_t(),
+                           const WorldStateSPtr_t &         WORLD_STATE_SPTR = WorldStateSPtr_t(),
+                           const location::LocationSPtr_t & LOCATION_SPTR    = location::LocationSPtr_t());
 
         virtual ~GameState();
 

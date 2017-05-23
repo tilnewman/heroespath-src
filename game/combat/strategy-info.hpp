@@ -16,16 +16,16 @@ namespace strategy
     class Info
     {
     public:
-        Info(const SelectType::Enum    SELECT_TYPE              = SelectType::None,
-             const RefineType::Enum    REFINE_TYPE              = RefineType::None,
-             const AdvanceType::Enum   ADVANCE_TYPE             = AdvanceType::None,
-             const RetreatType::Enum   RETREAT_TYPE             = RetreatType::None,
-             const std::size_t         OUTNUMBER_RETREAT_COUNT  = 0, //zero means never retreat when melee outnumbered
-             const FrequencyType::Enum ROAR_FREQ_TYPE           = FrequencyType::Never,
-             const FrequencyType::Enum CAST_FREQ_TYPE           = FrequencyType::Never,
-             const FrequencyType::Enum FLY_FREQ_TYPE            = FrequencyType::Never,
-             const FrequencyType::Enum FLY_POUNCE_FREQ_TYPE     = FrequencyType::Never,
-             const FrequencyType::Enum STAND_POUNCE_FREQ_TYPE   = FrequencyType::Never);
+        explicit Info(const SelectType::Enum    SELECT_TYPE              = SelectType::None,
+                      const RefineType::Enum    REFINE_TYPE              = RefineType::None,
+                      const AdvanceType::Enum   ADVANCE_TYPE             = AdvanceType::None,
+                      const RetreatType::Enum   RETREAT_TYPE             = RetreatType::None,
+                      const std::size_t         OUTNUMBER_RETREAT_COUNT  = 0, //zero means never retreat when melee outnumbered
+                      const FrequencyType::Enum ROAR_FREQ_TYPE           = FrequencyType::Never,
+                      const FrequencyType::Enum CAST_FREQ_TYPE           = FrequencyType::Never,
+                      const FrequencyType::Enum FLY_FREQ_TYPE            = FrequencyType::Never,
+                      const FrequencyType::Enum FLY_POUNCE_FREQ_TYPE     = FrequencyType::Never,
+                      const FrequencyType::Enum STAND_POUNCE_FREQ_TYPE   = FrequencyType::Never);
 
         inline SelectType::Enum Select() const              { return selectType_; }
         inline RefineType::Enum Refine() const              { return refineType_; }
