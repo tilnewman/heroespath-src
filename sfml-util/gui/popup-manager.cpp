@@ -45,7 +45,7 @@ namespace gui
     }
 
 
-    PopupManager * const PopupManager::Instance()
+    PopupManager * PopupManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {

@@ -59,7 +59,7 @@ namespace gui
         PopupManager();
 
     public:
-        static PopupManager *  const Instance();
+        static PopupManager * Instance();
         static void InstanceRelease();
         static void SetTexturesDirectoryPaths(const std::string & WINDOWS_PATH,
                                               const std::string & ACCENTS_PATH);

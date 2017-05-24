@@ -19,7 +19,7 @@ namespace game
     {}
 
 
-    Game * const Game::Instance()
+    Game * Game::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {

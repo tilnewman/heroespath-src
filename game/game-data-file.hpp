@@ -30,7 +30,7 @@ namespace game
 
     public:
         virtual ~GameDataFile();
-        static GameDataFile * const Instance();
+        static GameDataFile * Instance();
         static void InstanceRelease();
 
         template<typename T>

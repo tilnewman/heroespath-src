@@ -317,33 +317,35 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_1_)
         {
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
-POPUP_NAME_HELP_2_,
-"Classic:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer\
-\n\n\nPet:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric\
-\n\n\nWing:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric\
-\n\n\nHowler:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric\
-\n\n\n\
-Note that one of your characters must have the role of Beastmaster \
-if you want a Dragon or Wolfen in your party.",
-sfml_util::PopupButtons::Continue,
-sfml_util::PopupImage::Large));
+            LoopManager::Instance()->PopupWaitBegin(this,
+                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                        POPUP_NAME_HELP_2_,
+                                                        std::string("Classic:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
+                                                            "\n\n\nPet:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
+                                                            "\n\n\nWing:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric" +
+                                                            "\n\n\nHowler:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric" +
+                                                            "\n\n\n" +
+                                                            "Note that one of your characters must have the role of Beastmaster " +
+                                                            "if you want a Dragon or Wolfen in your party.",
+                                                        sfml_util::PopupButtons::Continue,
+                                                        sfml_util::PopupImage::Large));
             return false;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_2_)
         {
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
-POPUP_NAME_HELP_3_,
-"To make a character, first select the Race and Role.  Use the text descriptions \
-to guide you.  Then hold down the space bar to summon a random set of attributes.  \
-\n\nDrag the attributes up and down to customize them for the character you are crafting.  \
-Use the attribute description text on the right side of the screen to guide you.  \
-If you don't like the attribute values you have, simply holfd down the space bar \
-again to randomly summon more.\n\nFinally, give your character a name and then click \
-the Save button.  Once you have created all the characters you need, click the Next \
-button.  You can always return and make more characters.",
-sfml_util::PopupButtons::Okay,
-sfml_util::PopupImage::Large));
+            LoopManager::Instance()->PopupWaitBegin(this,
+                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                        POPUP_NAME_HELP_3_,
+                                                        std::string("To make a character, first select the Race and Role.  Use the text descriptions ") +
+                                                            "to guide you.  Then hold down the space bar to summon a random set of attributes.  " +
+                                                            "\n\nDrag the attributes up and down to customize them for the character you are crafting.  " +
+                                                            "Use the attribute description text on the right side of the screen to guide you.  " +
+                                                            "If you don't like the attribute values you have, simply holfd down the space bar " +
+                                                            "again to randomly summon more.\n\nFinally, give your character a name and then click " +
+                                                            "the Save button.  Once you have created all the characters you need, click the Next " +
+                                                            "button.  You can always return and make more characters.",
+                                                        sfml_util::PopupButtons::Okay,
+                                                        sfml_util::PopupImage::Large));
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_IMAGE_SELECTION_) &&
@@ -540,19 +542,20 @@ sfml_util::PopupImage::Large));
 
     bool CharacterStage::HandleCallback_HelpButton()
     {
-        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
-POPUP_NAME_HELP_1_,
-"You play Heroes' Path with a group of six characters called a party.  \
-This is where you create those characters one at a time. \
-The first thing to do is decide what Roles you want those characters to have.  \
-Role is simply a character's occupation, or type.  You should choose the \
-combination of Roles in your party carefully, so they work well together as \
-a team.\
-\n\n\
-If you are new to the game, there are four recommended sets of \
-Roles that are known to be effective and fun to play.  Click continue below to see them listed.",
-sfml_util::PopupButtons::Continue,
-sfml_util::PopupImage::Regular));
+        LoopManager::Instance()->PopupWaitBegin(this,
+                                                sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                    POPUP_NAME_HELP_1_,
+                                                    std::string("You play Heroes' Path with a group of six characters called a party.  ") +
+                                                        "This is where you create those characters one at a time. " +
+                                                        "The first thing to do is decide what Roles you want those characters to have.  " +
+                                                        "Role is simply a character's occupation, or type.  You should choose the " +
+                                                        "combination of Roles in your party carefully, so they work well together as " +
+                                                        "a team." +
+                                                        "\n\n" +
+                                                        "If you are new to the game, there are four recommended sets of " +
+                                                        "Roles that are known to be effective and fun to play.  Click continue below to see them listed.",
+                                                    sfml_util::PopupButtons::Continue,
+                                                    sfml_util::PopupImage::Regular));
         return true;
     }
 

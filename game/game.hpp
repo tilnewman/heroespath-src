@@ -31,7 +31,7 @@ namespace game
         Game();
 
     public:
-        static Game * const Instance();
+        static Game * Instance();
         static void InstanceRelease();
 
         inline state::GameStateSPtr_t State() const             { return stateSPtr_; }

@@ -54,7 +54,7 @@ namespace sfml_util
     {}
 
 
-    FontManager * const FontManager::Instance()
+    FontManager * FontManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {

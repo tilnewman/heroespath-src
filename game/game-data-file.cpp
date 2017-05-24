@@ -29,7 +29,7 @@ namespace game
     {}
 
 
-    GameDataFile * const GameDataFile::Instance()
+    GameDataFile * GameDataFile::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {

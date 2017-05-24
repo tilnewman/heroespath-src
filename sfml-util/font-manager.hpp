@@ -28,7 +28,7 @@ namespace sfml_util
         FontManager();
 
     public:
-        static FontManager * const Instance();
+        static FontManager * Instance();
         static void InstanceRelease();
         static void SetFontsDirectory(const std::string & PATH);
 

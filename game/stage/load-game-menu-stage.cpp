@@ -24,7 +24,6 @@
 
 #include <list>
 #include <string>
-#include <list>
 
 
 namespace game

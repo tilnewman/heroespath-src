@@ -18,6 +18,7 @@
 #include <exception>
 #include <algorithm>
 #include <vector>
+#include <map>
 
 
 namespace game
