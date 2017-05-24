@@ -6,6 +6,9 @@
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
 
+#include <vector>
+#include <map>
+
 
 namespace game
 {

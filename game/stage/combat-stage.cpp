@@ -27,7 +27,6 @@
 #include "game/combat/turn-decider.hpp"
 #include "game/combat/combat-node.hpp"
 #include "game/combat/fight.hpp"
-#include "game/combat/combat-text.hpp"
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/combat-anim.hpp"
 #include "game/combat/combat-text.hpp"

@@ -14,6 +14,7 @@
 #include "game/which-popup-enum.hpp"
 
 #include <string>
+#include <vector>
 
 
 namespace game

@@ -9,6 +9,8 @@
 
 #include "boost/lexical_cast.hpp"
 
+#include <vector>
+
 
 namespace game
 {

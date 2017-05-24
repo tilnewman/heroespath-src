@@ -12,7 +12,6 @@
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"

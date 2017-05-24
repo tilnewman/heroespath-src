@@ -12,6 +12,8 @@
 
 #include "utilz/assertlogandthrow.hpp"
 
+#include <algorithm>
+
 
 namespace sfml_util
 {

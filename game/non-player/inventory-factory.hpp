@@ -9,7 +9,8 @@
 #include "game/non-player/ownership-chance-types.hpp"
 
 #include <map>
-#include <utility>//for std::pair
+#include <utility>
+#include <vector>
 
 
 namespace game

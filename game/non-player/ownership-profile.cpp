@@ -13,6 +13,7 @@
 
 #include <exception>
 #include <sstream>
+#include <map>
 
 
 namespace game

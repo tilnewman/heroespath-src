@@ -16,6 +16,7 @@
 #include "utilz/vectors.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 
 namespace game

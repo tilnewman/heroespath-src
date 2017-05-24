@@ -17,6 +17,8 @@
 #include "utilz/assertlogandthrow.hpp"
 #include "utilz/vectors.hpp"
 
+#include <algorithm>
+
 
 namespace game
 {

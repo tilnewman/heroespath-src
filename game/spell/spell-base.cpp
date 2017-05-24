@@ -4,10 +4,10 @@
 #include "spell-base.hpp"
 
 #include "utilz/strings.hpp"
-
 #include "utilz/random.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 
 namespace game

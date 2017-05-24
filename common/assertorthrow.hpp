@@ -19,8 +19,6 @@
 #elif NDEBUG
 
 //in release builds use throw
-#include <sstream>
-#include <exception>
 #define M_ASSERT_OR_THROW(exp, str_static)          \
 {                                                   \
     if(false == (exp))                              \
@@ -69,7 +67,6 @@ catch (...)                                                 \
 
 //in debug (and all other builds) use assert
 #include <cassert>
-#include <sstream>
 #define M_ASSERT_OR_THROW(exp, str_static)      \
 {                                               \
     assert( (exp) && (str_static) );            \

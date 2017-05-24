@@ -13,10 +13,13 @@
 #include "game/location/location.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 
+#include "utilz/assertlogandthrow.hpp"
+
 #include <boost/filesystem.hpp>
+
+#include <vector>
 
 
 namespace game

@@ -22,6 +22,8 @@
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
 
+#include <list>
+
 
 namespace game
 {

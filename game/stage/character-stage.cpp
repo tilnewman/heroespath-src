@@ -4,7 +4,6 @@
 #include "character-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -22,7 +21,6 @@
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "game/creature/sex-enum.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/creature/race.hpp"
 #include "game/creature/role.hpp"
@@ -31,14 +29,14 @@
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/title.hpp"
 #include "game/creature/condition.hpp"
+#include "game/creature/name-info.hpp"
 #include "game/item/inventory.hpp"
 #include "game/player/initial.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
 #include "game/state/game-state-factory.hpp"
-#include "game/log-macros.hpp"
-#include "game/creature/name-info.hpp"
 
+#include "utilz/real.hpp"
 #include "utilz/random.hpp"
 
 #include <sstream>

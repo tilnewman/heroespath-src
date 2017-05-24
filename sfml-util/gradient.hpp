@@ -7,6 +7,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gradient-info.hpp"
 
+#include <vector>
+
 
 namespace sfml_util
 {

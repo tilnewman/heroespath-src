@@ -8,10 +8,11 @@
 //      quit passing everything around and start using a simple struct that holds all the details of a log (msg/file/line/pri/time/etc) this could also move the timestamp closer to the actual time  of the event
 //
 #include "common/ilog.hpp"
+#include "common/boostinc.hpp"
+
 #include <string>
 #include <sstream>
 #include <fstream>
-#include "common/boostinc.hpp"
 
 
 namespace appbase
@@ -50,21 +51,18 @@ namespace logbase
     //
     class LogBase : public appbase::ILog
     {
-        // constructors / Destructors
     public:
-        explicit LogBase(const std::string & fileName            = FILE_NAME_DEFAULT,
-                         const std::string & fileNameExt         = FILE_NAME_EXT_DEFAULT,
-                         const std::string & filePath            = FILE_PATH_DEFAULT,
-                         const std::size_t   fileCountMax        = FILE_NUM_MIN,
-                         const unsigned long fileSizeMaxBytes    = FILE_SIZE_LIMIT_DEFAULT,
-                         const LogPri::Enum  consoleEchoPri      = LogPri::Disabled);
+        explicit LogBase(const std::string & fileName         = FILE_NAME_DEFAULT,
+                         const std::string & fileNameExt      = FILE_NAME_EXT_DEFAULT,
+                         const std::string & filePath         = FILE_PATH_DEFAULT,
+                         const std::size_t   fileCountMax     = FILE_NUM_MIN,
+                         const unsigned long fileSizeMaxBytes = FILE_SIZE_LIMIT_DEFAULT,
+                         const LogPri::Enum  consoleEchoPri   = LogPri::Disabled);
 
         virtual ~LogBase();
     private:
         LogBase(const LogBase &);
 
-
-        // functions
     public:
         virtual void Log(const std::string & MSG);
 
@@ -133,8 +131,6 @@ namespace logbase
 
         bool IsFileReady();
 
-
-        // data
     public:
         static const std::string        FILE_NAME_DEFAULT;
         static const std::string        FILE_NAME_EXT_DEFAULT;
