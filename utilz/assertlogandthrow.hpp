@@ -18,7 +18,7 @@
 #define M_ASSERT_OR_LOGANDTHROW(exp, str) ;
 #define M_ASSERT_OR_LOGANDTHROW_SS(exp, str) ;
 
-#elif NDEBUG
+#elif defined(NDEBUG)
 
 //in release builds use throw
 #define M_ASSERT_OR_LOGANDTHROW(exp, str_static)                        \

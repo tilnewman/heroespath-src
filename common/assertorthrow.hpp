@@ -16,7 +16,7 @@
 #define M_ASSERT_OR_THROW_SS(exp, str) ;
 #define M_TRY_ASSERT_OR_RETHROW_SS(might_throw, str_stream) (might_throw);
 
-#elif NDEBUG
+#elif defined(NDEBUG)
 
 //in release builds use throw
 #define M_ASSERT_OR_THROW(exp, str_static)          \
