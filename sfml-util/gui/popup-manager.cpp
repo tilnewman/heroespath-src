@@ -16,6 +16,7 @@
 
 #include <sstream>
 #include <exception>
+#include <memory>
 
 
 namespace sfml_util
@@ -23,10 +24,10 @@ namespace sfml_util
 namespace gui
 {
 
-    std::string         PopupManager::windowTextureDirectoryPath_("");
-    std::string         PopupManager::accentTextureDirectoryPath_("");
-    PopupManagerSPtr_t  PopupManager::instanceSPtr_(nullptr);
-    sf::Color           PopupManager::fontColor_(sf::Color(64, 64, 64, 255));//set to match FontManager::Color_GrayDarker() before being set in the constructor
+    std::string PopupManager::windowTextureDirectoryPath_    { "" };
+    std::string PopupManager::accentTextureDirectoryPath_    { "" };
+    sf::Color   PopupManager::fontColor_                     { sf::Color(64, 64, 64, 255) };//set to match FontManager::Color_GrayDarker() before being set in the constructor
+    std::unique_ptr<PopupManager> PopupManager::instanceUPtr_{ nullptr };
 
 
     PopupManager::PopupManager()
@@ -44,16 +45,20 @@ namespace gui
     }
 
 
-    PopupManager::~PopupManager()
-    {}
-
-
-    PopupManagerSPtr_t PopupManager::Instance()
+    PopupManager * const PopupManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new PopupManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new PopupManager);
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void PopupManager::InstanceRelease()
+    {
+        instanceUPtr_.reset();
     }
 
 

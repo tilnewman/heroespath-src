@@ -42,7 +42,9 @@ int main()
     {
         utilz::Platform::Instance()->DetectAndLog();
         if (utilz::Platform::Instance()->IsSupported() == false)
+        {
             throw std::runtime_error("This system (platform) is not supported.");
+        }
 
         //seed the random number generator
         utilz::random::MersenneTwister::Seed();
@@ -51,58 +53,62 @@ int main()
         sfml_util::DisplaySPtr_t displaySPtr(sfml_util::Display::Instance());
         //
         M_LOG(*logSPtr, "Loading the Game Data file...");
-        game::GameDataFileSPtr_t gameDataFileSPtr(game::GameDataFile::Instance());
+        auto gameDataFilePtr(game::GameDataFile::Instance());
 
         //set which stage will startup
-        game::LoopManager::SetStartupStage( gameDataFileSPtr->GetCopy<std::string>("system-startup-stage") );
+        game::LoopManager::SetStartupStage( gameDataFilePtr->GetCopy<std::string>("system-startup-stage") );
 
         //setup the graphics display
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow("Heroes' Path", sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
-        winSPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFileSPtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
-        winSPtr->setVerticalSyncEnabled( gameDataFileSPtr->GetCopyBool("system-window-sync", true) );
+        winSPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
+        winSPtr->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
 
         //set resource paths for manager classes
-        sfml_util::FontManager::SetFontsDirectory(                      gameDataFileSPtr->GetMediaPath("media-fonts-dir"));
-        sfml_util::gui::PopupManager::SetTexturesDirectoryPaths(        gameDataFileSPtr->GetMediaPath("media-images-backgrounds-popup-dir"), gameDataFileSPtr->GetMediaPath("media-images-accents-dir"));
-        sfml_util::SoundManager::SetSoundsDirectory(                    gameDataFileSPtr->GetMediaPath("media-sounds-dir"), gameDataFileSPtr->GetMediaPath("media-music-dir"));
-        sfml_util::gui::ItemImageManager::SetItemImageDirectory(        gameDataFileSPtr->GetMediaPath("media-images-items-dir"));
-        sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(gameDataFileSPtr->GetMediaPath("media-images-creatures-dir") );
-        sfml_util::gui::TitleImageManager::SetTitleImageDirectory(      gameDataFileSPtr->GetMediaPath("media-images-titles-dir") );
-        sfml_util::gui::SpellImageManager::SetImagesDirectory(          gameDataFileSPtr->GetMediaPath("media-images-spells-dir") );
-        sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFileSPtr->GetMediaPath("media-images-conditions-dir") );
-        sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFileSPtr->GetMediaPath("media-images-combat-dir") );
-
-        //setup manager classes
-        game::creature::title::Warehouse::Setup();
-        game::creature::condition::Warehouse::Setup();
-        game::spell::Warehouse::Setup();
-
-        //keep an instance of various singleton classes here to prevent thrashing
-        //TODO reduce game asset loading here and move below, see "load game assets"
-        sfml_util::FontManagerSPtr_t                fontManagerSPtr          ( sfml_util::FontManager::Instance() );
-        sfml_util::gui::PopupManagerSPtr_t          popupManagerSPtr         ( sfml_util::gui::PopupManager::Instance() );
-        sfml_util::SoundManagerSPtr_t               soundManagerSPtr         ( sfml_util::SoundManager::Instance() );
-        sfml_util::gui::GuiElementsSPtr_t           guiElementsSPtr          ( sfml_util::gui::GuiElements::Instance());
-        sfml_util::gui::ItemImageManagerSPtr_t      itemImageManagerSPtr     ( sfml_util::gui::ItemImageManager::Instance() );
-        sfml_util::gui::CreatureImageManagerSPtr_t  creatureImageManagerSPtr ( sfml_util::gui::CreatureImageManager::Instance() );
-        sfml_util::gui::TitleImageManagerSPtr_t     titleImageManagerSPtr    ( sfml_util::gui::TitleImageManager::Instance() );
-        sfml_util::gui::SpellImageManagerSPtr_t     spellImageManagerSPtr    ( sfml_util::gui::SpellImageManager::Instance() );
-        sfml_util::gui::ConditionImageManagerSPtr_t conditionImageManagerSPtr( sfml_util::gui::ConditionImageManager::Instance() );
-        sfml_util::gui::CombatImageManagerSPtr_t    combatImageManagerSPtr   ( sfml_util::gui::CombatImageManager::Instance() );
-        game::GameSPtr_t                            gameSPtr                 ( game::Game::Instance() );
-
+        sfml_util::FontManager::SetFontsDirectory(                      gameDataFilePtr->GetMediaPath("media-fonts-dir"));
+        sfml_util::gui::PopupManager::SetTexturesDirectoryPaths(        gameDataFilePtr->GetMediaPath("media-images-backgrounds-popup-dir"), gameDataFilePtr->GetMediaPath("media-images-accents-dir"));
+        sfml_util::SoundManager::SetSoundsDirectory(                    gameDataFilePtr->GetMediaPath("media-sounds-dir"), gameDataFilePtr->GetMediaPath("media-music-dir"));
+        sfml_util::gui::ItemImageManager::SetItemImageDirectory(        gameDataFilePtr->GetMediaPath("media-images-items-dir"));
+        sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(gameDataFilePtr->GetMediaPath("media-images-creatures-dir") );
+        sfml_util::gui::TitleImageManager::SetTitleImageDirectory(      gameDataFilePtr->GetMediaPath("media-images-titles-dir") );
+        sfml_util::gui::SpellImageManager::SetImagesDirectory(          gameDataFilePtr->GetMediaPath("media-images-spells-dir") );
+        sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
+        sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
+        
         try
         {
+            //load game assets Stage 1
+            game::creature::title::Warehouse::Setup();
+            game::creature::condition::Warehouse::Setup();
+            game::spell::Warehouse::Setup();
+
+            //Call up an instance of the singleton classes here ensure they load
+            //now during startup and not at some other random time during play.
+            //Also, see below for the InstanceRelease() calls.
+            sfml_util::FontManager::Instance();
+            sfml_util::gui::PopupManager::Instance();
+            auto soundManagerSPtr         { sfml_util::SoundManager::Instance() };
+            auto guiElementsSPtr          { sfml_util::gui::GuiElements::Instance() };
+            auto itemImageManagerSPtr     { sfml_util::gui::ItemImageManager::Instance() };
+            auto creatureImageManagerSPtr { sfml_util::gui::CreatureImageManager::Instance() };
+            auto titleImageManagerSPtr    { sfml_util::gui::TitleImageManager::Instance() };
+            auto spellImageManagerSPtr    { sfml_util::gui::SpellImageManager::Instance() };
+            auto conditionImageManagerSPtr{ sfml_util::gui::ConditionImageManager::Instance() };
+            auto combatImageManagerSPtr   { sfml_util::gui::CombatImageManager::Instance() };
+            game::Game::Instance();
+
             //create/load/store the game settings file
-            game::SettingsFileSPtr_t settingsFileSPtr( game::SettingsFile::Instance() );
+            auto settingsFileSPtr( game::SettingsFile::Instance() );
             settingsFileSPtr->LoadAndRestore();
 
-            //load game assets
-            soundManagerSPtr->LoadSoundSets(); //important to call this after settingsFileSPtr->LoadAndRestore() so the sound effects have the correct volume
+            //load game assets Stage 3
+            //NOTE:  This must occur after SettingsFile::LoadAndRestore()
+            //       so that the sound effects created here have the correct
+            //       volume loaded from the settings file.
+            soundManagerSPtr->LoadSoundSets(); 
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
-            popupManagerSPtr->LoadAssets();
+            sfml_util::gui::PopupManager::Instance()->LoadAssets();
 
             //create the game state manager and run the game
             game::LoopManagerSPtr_t gameStateSPtr(game::LoopManager::Instance());
@@ -114,29 +120,37 @@ int main()
         }
         catch (const std::exception & E)
         {
-            std::cout << "game::LoopManager::Execute() threw std::exception(\"" << E.what() << "\")" << std::endl;
-            M_LOG(*logSPtr, "game::LoopManager::Execute() threw std::exception(\"" << E.what() << "\")");
+            std::cout << "game threw std::exception(\"" << E.what() << "\")" << std::endl;
+            M_LOG(*logSPtr, "game threw std::exception(\"" << E.what() << "\")");
         }
         catch (...)
         {
-            std::cout << "game::LoopManager::Execute() threw an unknown non-std exception." << std::endl;
-            M_LOG(*logSPtr, "game::LoopManager::Execute() threw an unknown non-std exception.");
+            std::cout << "game threw an unknown non-std exception." << std::endl;
+            M_LOG(*logSPtr, "game threw an unknown non-std exception.");
         }
 
         //ensure the window is closed before exiting
         if (winSPtr->isOpen())
+        {
             winSPtr->close();
+        }
+
+        //release singleton/manager instances
+        game::Game::InstanceRelease();
+        sfml_util::FontManager::InstanceRelease();
+        sfml_util::gui::PopupManager::InstanceRelease();
+        game::GameDataFile::InstanceRelease();
 
         M_LOG( * logSPtr, "Reached the end of main within the try-catch.");
     }
     catch (const std::exception & E)
     {
-        M_LOG( * logSPtr, "App threw std::exception \"" << E.what() << "\"");
+        M_LOG( * logSPtr, "Appication framework threw std::exception \"" << E.what() << "\"");
         return EXIT_FAILURE;
     }
     catch (...)
     {
-        M_LOG( * logSPtr, "App threw an unknown non-std exception." << std::endl);
+        M_LOG( * logSPtr, "Appication framework threw an unknown non-std exception." << std::endl);
         return EXIT_FAILURE;
     }
 

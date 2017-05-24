@@ -18,12 +18,7 @@ namespace game
     }
 
 
-    //types required by the singleton implementation
-    class Game;
-    using GameSPtr_t = std::shared_ptr<Game>;
-
-
-    //provides access to all game information
+    //Singleton class that provides access to all game information
     class Game
     {
         //prevent copy construction
@@ -36,15 +31,14 @@ namespace game
         Game();
 
     public:
-        virtual ~Game();
-        static GameSPtr_t Instance();
+        static Game * const Instance();
+        static void InstanceRelease();
 
         inline state::GameStateSPtr_t State() const             { return stateSPtr_; }
         inline void StateSet(const state::GameStateSPtr_t & GS) { stateSPtr_ = GS; }
 
     private:
-        static GameSPtr_t instanceSPtr_;
-        //
+        static std::unique_ptr<Game> instanceUPtr_;
         state::GameStateSPtr_t stateSPtr_;
     };
 

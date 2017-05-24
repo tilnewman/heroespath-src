@@ -15,11 +15,6 @@
 namespace sfml_util
 {
 
-    //types required by the singleton implementation
-    class FontManager;
-    using FontManagerSPtr_t = std::shared_ptr<FontManager>;
-
-
     //A class that loads, stores, and distributes fonts by style.
     class FontManager
     {
@@ -33,9 +28,8 @@ namespace sfml_util
         FontManager();
 
     public:
-        virtual ~FontManager();
-
-        static FontManagerSPtr_t Instance();
+        static FontManager * const Instance();
+        static void InstanceRelease();
         static void SetFontsDirectory(const std::string & PATH);
 
         //colors
@@ -104,7 +98,7 @@ namespace sfml_util
 
     private:
         static std::string fontsDirectoryPath_;
-        static FontManagerSPtr_t instanceSPtr_;
+        static std::unique_ptr<FontManager> instanceUPtr_;
         //
         FontSPtr_t euler_fontSPtr_;
         FontSPtr_t gentiumPlus_fontSPtr_;
