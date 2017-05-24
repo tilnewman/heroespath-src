@@ -29,6 +29,8 @@
 
 #include <sstream>
 #include <numeric>
+#include <string>
+#include <algorithm>
 
 
 namespace game

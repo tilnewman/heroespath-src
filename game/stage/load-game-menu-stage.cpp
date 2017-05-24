@@ -23,6 +23,8 @@
 #include "game/player/character.hpp"
 
 #include <list>
+#include <string>
+#include <list>
 
 
 namespace game

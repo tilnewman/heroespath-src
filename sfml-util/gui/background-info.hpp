@@ -7,6 +7,7 @@
 #include "sfml-util/gradient.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace sfml_util

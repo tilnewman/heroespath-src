@@ -11,6 +11,7 @@
 #include "game/spell/spell-base.hpp"
 
 #include <tuple>
+#include <string>
 
 
 namespace sfml_util

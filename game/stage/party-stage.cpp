@@ -24,6 +24,7 @@
 #include "game/player/character.hpp"
 
 #include <sstream>
+#include <string>
 
 
 namespace game

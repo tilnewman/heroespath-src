@@ -9,6 +9,8 @@
 
 #include "game/game-data-file.hpp"
 
+#include <string>
+
 
 namespace game
 {

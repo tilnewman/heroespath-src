@@ -10,6 +10,7 @@
 #include "game/stats/stat-mult-set.hpp"
 
 #include <tuple>
+#include <string>
 
 
 namespace game

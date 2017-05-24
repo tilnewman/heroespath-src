@@ -10,6 +10,7 @@
 #include "game/log-macros.hpp"
 
 #include <sstream>
+#include <string>
 
 
 namespace game

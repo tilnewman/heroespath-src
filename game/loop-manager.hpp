@@ -15,6 +15,8 @@
 #include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
 
+#include <string>
+
 
 namespace game
 {

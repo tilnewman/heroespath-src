@@ -13,6 +13,7 @@
 
 #include <exception>
 #include <sstream>
+#include <string>
 #include <map>
 
 

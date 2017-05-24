@@ -2,9 +2,13 @@
 // main-menu-buttons.cpp
 //
 #include "main-menu-buttons.hpp"
-#include "sfml-util/gui/text-info.hpp"
+
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+
+#include "sfml-util/gui/text-info.hpp"
+
+#include <string>
 
 
 namespace game

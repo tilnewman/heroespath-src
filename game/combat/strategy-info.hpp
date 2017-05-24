@@ -5,6 +5,8 @@
 //
 #include "strategy-enums.hpp"
 
+#include <string>
+
 
 namespace game
 {
