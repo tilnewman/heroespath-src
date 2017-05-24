@@ -31,7 +31,8 @@ namespace game
     public:
         virtual ~GameDataFile();
         static GameDataFile * Instance();
-        static void InstanceRelease();
+        static void Acquire();
+        static void Release();
 
         template<typename T>
         T GetCopyDataFile(const std::string & KEY, const T DEFAULT = T()) const

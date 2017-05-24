@@ -6,6 +6,7 @@
 #include "game/log-macros.hpp"
 
 #include "utilz/platform.hpp"
+#include "utilz/assertlogandthrow.hpp"
 #include "utilz/boost-string-includes.hpp"
 
 #include <memory>
@@ -33,15 +34,25 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset( new GameDataFile );
+            Acquire();
         }
 
         return instanceUPtr_.get();
     }
 
 
-    void GameDataFile::InstanceRelease()
+    void GameDataFile::Acquire()
     {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new GameDataFile);
+        }
+    }
+
+
+    void GameDataFile::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::GameDataFile::Release() called while instanceUPtr_ was null.");
         instanceUPtr_.reset();
     }
 

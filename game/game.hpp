@@ -32,7 +32,8 @@ namespace game
 
     public:
         static Game * Instance();
-        static void InstanceRelease();
+        static void Acquire();
+        static void Release();
 
         inline state::GameStateSPtr_t State() const             { return stateSPtr_; }
         inline void StateSet(const state::GameStateSPtr_t & GS) { stateSPtr_ = GS; }

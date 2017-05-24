@@ -3,7 +3,6 @@
 //
 #include "popup-manager.hpp"
 
-#include "utilz/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -13,6 +12,9 @@
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+
+#include "utilz/random.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>
@@ -49,15 +51,25 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new PopupManager);
+            Acquire();
         }
 
         return instanceUPtr_.get();
     }
 
 
-    void PopupManager::InstanceRelease()
+    void PopupManager::Acquire()
     {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new PopupManager);
+        }
+    }
+
+
+    void PopupManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::PopupManager::Release() called while instanceUPtr_ was null.");
         instanceUPtr_.reset();
     }
 

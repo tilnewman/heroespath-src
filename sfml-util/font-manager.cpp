@@ -8,7 +8,7 @@
 
 #include "game/log-macros.hpp"
 
-#include "common/assertorthrow.hpp"
+#include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -58,15 +58,25 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new FontManager);
+            Acquire();
         }
-
+        
         return instanceUPtr_.get();
     }
 
 
-    void FontManager::InstanceRelease()
+    void FontManager::Acquire()
     {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new FontManager);
+        }
+    }
+
+
+    void FontManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::FontManager::Release() called while instanceUPtr_ was null.");
         instanceUPtr_.reset();
     }
 
