@@ -7,6 +7,7 @@
 #include "sfml-util/sound-effects-enum.hpp"
 
 #include <memory>
+#include <vector>
 
 
 namespace sfml_util

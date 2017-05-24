@@ -2,9 +2,12 @@
 // rank.hpp
 //
 #include "rank.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include <exception>
 #include <sstream>
+#include <algorithm>
 
 
 namespace game

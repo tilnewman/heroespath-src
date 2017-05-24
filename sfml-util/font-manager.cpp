@@ -12,6 +12,7 @@
 
 #include <boost/filesystem.hpp>
 
+#include <memory>
 
 
 namespace sfml_util
@@ -37,8 +38,8 @@ namespace sfml_util
     const unsigned int FontManager::SIZE_TINY_MIN_(14);
     const unsigned int FontManager::SIZE_TINY_MAX_(56);
     //
-    std::string        FontManager::fontsDirectoryPath_;
-    FontManagerSPtr_t  FontManager::instanceSPtr_;
+    std::string FontManager::fontsDirectoryPath_;
+    std::unique_ptr<FontManager> FontManager::instanceUPtr_{ nullptr };
 
 
     FontManager::FontManager()
@@ -53,16 +54,20 @@ namespace sfml_util
     {}
 
 
-    FontManager::~FontManager()
-    {}
-
-
-    FontManagerSPtr_t FontManager::Instance()
+    FontManager * const FontManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new FontManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new FontManager);
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void FontManager::InstanceRelease()
+    {
+        instanceUPtr_.reset();
     }
 
 

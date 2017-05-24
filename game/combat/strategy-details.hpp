@@ -16,6 +16,8 @@
 #include <sstream>
 #include <utility>
 #include <exception>
+#include <algorithm>
+#include <vector>
 
 
 namespace game

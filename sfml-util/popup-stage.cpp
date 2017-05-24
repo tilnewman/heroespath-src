@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <random>
+#include <algorithm>
 
 
 namespace sfml_util

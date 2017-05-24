@@ -43,11 +43,6 @@ namespace gui
     }
 
 
-    //types required by the singleton implementation
-    class PopupManager;
-    using PopupManagerSPtr_t = std::shared_ptr<PopupManager>;
-
-
     using PathVec_t = std::vector<boost::filesystem::path>;
 
 
@@ -64,9 +59,8 @@ namespace gui
         PopupManager();
 
     public:
-        virtual ~PopupManager();
-        static PopupManagerSPtr_t Instance();
-
+        static PopupManager *  const Instance();
+        static void InstanceRelease();
         static void SetTexturesDirectoryPaths(const std::string & WINDOWS_PATH,
                                               const std::string & ACCENTS_PATH);
 
@@ -179,8 +173,8 @@ namespace gui
     private:
         static std::string windowTextureDirectoryPath_;
         static std::string accentTextureDirectoryPath_;
-        static PopupManagerSPtr_t instanceSPtr_;
         static sf::Color fontColor_;
+        static std::unique_ptr<PopupManager> instanceUPtr_;
         //
         const float BACKGROUND_IMAGE_SCALE_DEFAULT_;
         //

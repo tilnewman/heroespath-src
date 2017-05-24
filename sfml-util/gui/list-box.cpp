@@ -6,7 +6,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -20,6 +19,8 @@
 #include "game/player/character.hpp"
 #include "game/creature/condition.hpp"
 #include "game/spell/spells.hpp"
+
+#include <vector>
 
 
 namespace sfml_util

@@ -3,16 +3,18 @@
 //
 #include "game-data-file.hpp"
 
+#include "game/log-macros.hpp"
+
 #include "utilz/platform.hpp"
 #include "utilz/boost-string-includes.hpp"
 
-#include "game/log-macros.hpp"
+#include <memory>
 
 
 namespace game
 {
 
-    GameDataFileSPtr_t GameDataFile::instanceSPtr_;
+    std::unique_ptr<GameDataFile> GameDataFile::instanceUPtr_{ nullptr };
 
 
     GameDataFile::GameDataFile()
@@ -27,12 +29,20 @@ namespace game
     {}
 
 
-    GameDataFileSPtr_t GameDataFile::Instance()
+    GameDataFile * const GameDataFile::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new GameDataFile() );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset( new GameDataFile );
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void GameDataFile::InstanceRelease()
+    {
+        instanceUPtr_.reset();
     }
 
 

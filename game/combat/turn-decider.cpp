@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <tuple>
+#include <algorithm>
 
 
 namespace game

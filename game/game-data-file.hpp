@@ -16,10 +16,6 @@
 namespace game
 {
 
-    class GameDataFile;
-    using GameDataFileSPtr_t = std::shared_ptr<GameDataFile>;
-
-
     //Singleton class that manages a simple configuration file
     class GameDataFile : public appbase::ConfigBase
     {
@@ -33,6 +29,10 @@ namespace game
         GameDataFile();
 
     public:
+        virtual ~GameDataFile();
+        static GameDataFile * const Instance();
+        static void InstanceRelease();
+
         template<typename T>
         T GetCopyDataFile(const std::string & KEY, const T DEFAULT = T()) const
         {
@@ -54,12 +54,8 @@ namespace game
 
         bool WillRunSystemTests() const;
 
-    public:
-        virtual ~GameDataFile();
-        static GameDataFileSPtr_t Instance();
-
     private:
-        static GameDataFileSPtr_t instanceSPtr_;
+        static std::unique_ptr<GameDataFile> instanceUPtr_;
     };
 
 }

@@ -4,11 +4,13 @@
 #include "game.hpp"
 #include "game/state/game-state.hpp"
 
+#include <memory>
+
 
 namespace game
 {
 
-    GameSPtr_t Game::instanceSPtr_;
+    std::unique_ptr<Game> Game::instanceUPtr_{ nullptr };
 
 
     Game::Game()
@@ -17,16 +19,20 @@ namespace game
     {}
 
 
-    Game::~Game()
-    {}
-
-
-    GameSPtr_t Game::Instance()
+    Game * const Game::Instance()
     {
-        if (instanceSPtr_.get() == nullptr)
-            instanceSPtr_.reset( new Game );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset( new Game );
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void Game::InstanceRelease()
+    {
+        instanceUPtr_.reset();
     }
 
 }

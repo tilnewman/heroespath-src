@@ -11,6 +11,7 @@
 #include "game/creature/creature.hpp"
 
 #include <sstream>
+#include <vector>
 
 
 namespace game

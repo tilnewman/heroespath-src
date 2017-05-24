@@ -6,6 +6,7 @@
 #include "sfml-util/sfml-util.hpp"
 
 #include "game/log-macros.hpp"
+
 #include "utilz/assertlogandthrow.hpp"
 
 #include <sstream>

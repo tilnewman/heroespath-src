@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 
 namespace game

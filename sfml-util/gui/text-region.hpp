@@ -11,7 +11,6 @@
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/text-rendering.hpp"
 
 #include <memory>
