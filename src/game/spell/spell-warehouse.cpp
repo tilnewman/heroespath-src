@@ -50,18 +50,18 @@ namespace spell
         M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty()), "game::spell::Warehouse::Setup() was called twice.");
 
         //Note::Keep order in sync with game::spell::Spells::Enum
-        spellsUVec_.push_back( std::move( std::make_unique<Sparks>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Bandage>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Sleep>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Awaken>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Trip>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Lift>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Daze>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Frighten>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<ClearMind>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Poison>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<Antidote>()) );
-        spellsUVec_.push_back( std::move( std::make_unique<PoisonCloud>()) );
+        spellsUVec_.push_back( std::unique_ptr<Sparks>( new Sparks() ) );
+        spellsUVec_.push_back( std::unique_ptr<Bandage>( new Bandage() ) );
+        spellsUVec_.push_back( std::unique_ptr<Sleep>( new Sleep() ) );
+        spellsUVec_.push_back( std::unique_ptr<Awaken>( new Awaken() ) );
+        spellsUVec_.push_back( std::unique_ptr<Trip>( new Trip() ) );
+        spellsUVec_.push_back( std::unique_ptr<Lift>( new Lift() ) );
+        spellsUVec_.push_back( std::unique_ptr<Daze>( new Daze() ) );
+        spellsUVec_.push_back( std::unique_ptr<Frighten>( new Frighten() ) );
+        spellsUVec_.push_back( std::unique_ptr<ClearMind>( new ClearMind() ) );
+        spellsUVec_.push_back( std::unique_ptr<Poison>( new Poison() ) );
+        spellsUVec_.push_back( std::unique_ptr<Antidote>( new Antidote() ) );
+        spellsUVec_.push_back( std::unique_ptr<PoisonCloud>( new PoisonCloud() ) );
     }
 
 

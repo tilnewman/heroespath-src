@@ -12,7 +12,7 @@ if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
     message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
 
-    file (READ build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
+    file (READ ../build-flags/build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
 
     set(BOOST_INCLUDEDIR "C:/local/boost_1_61_0")
     set(BOOST_LIBRARYDIR "C:/local/boost_1_61_0/lib32-msvc-14.0")
@@ -24,15 +24,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     SET(CUSTOM_LINK_FLAGS "-pthread")
 
     if(VALGRIND_BUILD)
-        file (READ build-flags-gnu-valgrind.txt CUSTOM_BUILD_FLAGS)
+        file (READ ../build-flags/build-flags-gnu-valgrind.txt CUSTOM_BUILD_FLAGS)
         message("Compiler flags customized for Valgrind.")
     else()
-        file (READ build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
+        file (READ ../build-flags/build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
     endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
-    file (READ build-flags-clang.txt CUSTOM_BUILD_FLAGS)
+    file (READ ../build-flags/build-flags-clang.txt CUSTOM_BUILD_FLAGS)
 endif()
 
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
