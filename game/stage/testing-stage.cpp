@@ -84,10 +84,12 @@ namespace stage
         {
             std::size_t imageDrawCount{ 0 };
             auto posLeft{ SCREEN_WIDTH_ };
-            std::size_t i{ textureSVec_.size() };
-            while (i != 0)
+            for (std::size_t i(textureSVec_.size() - 1); i < textureSVec_.size(); --i)
             {
-                --i;
+                if (i >= textureSVec_.size())
+                {
+                    break;
+                }
 
                 auto const NEXT_TEXTURE_SPTR{ textureSVec_.at(i) };
                 if (NEXT_TEXTURE_SPTR.get() == nullptr)
@@ -140,10 +142,12 @@ namespace stage
             auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0 + TEXT_HEIGHT };
             auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
 
-            std::size_t i{ testingBlurbsVec_.size() };
-            while (i != 0)
+            for (std::size_t i(testingBlurbsVec_.size() - 1); i < testingBlurbsVec_.size(); --i)
             {
-                --i;
+                if (i >= testingBlurbsVec_.size())
+                {
+                    break;
+                }
 
                 std::ostringstream ss;
                 ss << testingBlurbsVec_.at(i).first;
@@ -223,9 +227,7 @@ namespace stage
         testingBlurbsVec_.push_back( std::make_pair(S, 0) );
 
         if (testingBlurbsVec_.size() > TEXT_LINES_COUNT_MAX_)
-        {
             testingBlurbsVec_.erase(testingBlurbsVec_.begin());
-        }
     }
 
 
@@ -244,9 +246,7 @@ namespace stage
         }
 
         if (false == foundMatch)
-        {
             TestingStrAppend(S);
-        }
     }
 
 
@@ -261,9 +261,7 @@ namespace stage
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (LoopManager::Instance()->IsFading())
-        {
             return;
-        }
 
         static auto hasPromptStart{ false };
         if (false == hasPromptStart)

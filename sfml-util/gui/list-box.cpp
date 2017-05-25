@@ -21,7 +21,6 @@
 #include "game/spell/spells.hpp"
 
 #include <vector>
-#include <algorithm>
 
 
 namespace sfml_util

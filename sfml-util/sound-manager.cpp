@@ -24,9 +24,9 @@
 namespace sfml_util
 {
 
-    std::string SoundManager::soundsDirectoryPath_{ "" };
-    std::string SoundManager::musicDirectoryPath_ { "" };
-    std::unique_ptr<SoundManager> SoundManager::instanceUPtr_{ nullptr };
+    std::string        SoundManager::soundsDirectoryPath_("");
+    std::string        SoundManager::musicDirectoryPath_("");
+    SoundManagerSPtr_t SoundManager::instanceSPtr_;
 
 
     SoundManager::SoundManager()
@@ -73,30 +73,16 @@ namespace sfml_util
     }
 
 
-    SoundManager * SoundManager::Instance()
+    SoundManager::~SoundManager()
+    {}
+
+
+    SoundManagerSPtr_t SoundManager::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
-        {
-            Acquire();
-        }
+        if (nullptr == instanceSPtr_.get())
+            instanceSPtr_.reset(new SoundManager);
 
-        return instanceUPtr_.get();
-    }
-
-
-    void SoundManager::Acquire()
-    {
-        if (instanceUPtr_.get() == nullptr)
-        {
-            instanceUPtr_.reset(new SoundManager);
-        }
-    }
-
-
-    void SoundManager::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::SoundManager::Release() called while instanceUPtr_ was null.");
-        instanceUPtr_.reset();
+        return instanceSPtr_;
     }
 
 
