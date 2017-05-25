@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef APPBASE_ASSERTORTHROW_HPP
-#define APPBASE_ASSERTORTHROW_HPP
+#ifndef COMMON_ASSERTORTHROW_HPP
+#define COMMON_ASSERTORTHROW_HPP
 //
 // assertorthrow.hpp
 //
@@ -134,4 +134,4 @@ catch (...)                                                 \
 
 #endif //#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_ASSERTORTHROW)
 
-#endif //APPBASE_ASSERTORTHROW_HPP
+#endif //COMMON_ASSERTORTHROW_HPP

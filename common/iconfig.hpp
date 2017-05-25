@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef APPBASE_ICONFIG_HPP
-#define APPBASE_ICONFIG_HPP
+#ifndef COMMON_ICONFIG_HPP
+#define COMMON_ICONFIG_HPP
 //
 // iconfig.hpp
 //
@@ -82,4 +82,4 @@ namespace appbase
 }//end of namespace appbase
 
 
-#endif //APPBASE_ICONFIG_HPP
+#endif //COMMON_ICONFIG_HPP

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef APPBASE_LOGMACROS_HPP
-#define APPBASE_LOGMACROS_HPP
+#ifndef COMMON_LOGMACROS_HPP
+#define COMMON_LOGMACROS_HPP
 //
 // logmacros.hpp
 //
@@ -70,4 +70,4 @@
 #endif //#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
 
 
-#endif //APPBASE_LOGMACROS_HPP
+#endif //COMMON_LOGMACROS_HPP

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef APPBASE_ILOG_HPP
-#define APPBASE_ILOG_HPP
+#ifndef COMMON_ILOG_HPP
+#define COMMON_ILOG_HPP
 //
 // ilog.hpp
 //
@@ -91,4 +91,4 @@ namespace appbase
 }//end of namespace appbase
 
 
-#endif //APPBASE_ILOG_HPP
+#endif //COMMON_ILOG_HPP

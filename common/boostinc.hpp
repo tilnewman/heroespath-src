@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef APPBASE_BOOSTINC_HPP
-#define APPBASE_BOOSTINC_HPP
+#ifndef COMMON_BOOSTINC_HPP
+#define COMMON_BOOSTINC_HPP
 //
 // boostinc.hpp
 //  This class helps collect boost includes where
@@ -66,4 +66,4 @@
 #endif
 
 
-#endif //ZUI_BOOST_INC_HPP
+#endif //COMMON_BOOSTINC_HPP
