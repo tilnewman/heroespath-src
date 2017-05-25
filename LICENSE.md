@@ -1,5 +1,4 @@
 # Heroes’ Path Game Source Code License Information
-------
 
 The source code is licensed under the terms and conditions of the zlib/png license.  (http://opensource.org/licenses/Zlib)  The full text of the zlib/png license can be found in a separate file “licenses/zlib-png-license.txt”.
 
