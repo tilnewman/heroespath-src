@@ -114,8 +114,8 @@ int main()
 
         //load game assets Stage 1 (warehouse objects)
         game::creature::title::Warehouse::Fill();
-        game::creature::condition::Warehouse::Setup();
-        game::spell::Warehouse::Setup();
+        game::creature::condition::Warehouse::Fill();
+        game::spell::Warehouse::Fill();
 
         //load game assets Stage 2
         sfml_util::FontManager::Acquire();
@@ -200,7 +200,10 @@ int main()
         utilz::Platform::Release();
 
         //release warehouse objects
+        game::spell::Warehouse::Empty();
+        game::creature::condition::Warehouse::Empty();
         game::creature::title::Warehouse::Empty();
+        
     }
     catch (const std::exception & E)
     {

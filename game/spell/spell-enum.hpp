@@ -38,6 +38,7 @@ namespace spell
 
     struct Spells
     {
+        //Note:  Keep order in sync with spell::Warehouse::Fill()
         enum Enum
         {
             Sparks = 0,

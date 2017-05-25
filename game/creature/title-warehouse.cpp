@@ -270,7 +270,7 @@ namespace title
             M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->ImageFilename().empty() == false),   "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
             M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->RolesCopy().empty() == false),       "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty RolesVec().");
             M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Which() == NEXT_ENUM),               "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in a Title with a different tile::Enum (\"" << Titles::ToString(TITLE_PTR->Which()) << "\")");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),  "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in a Title in the wrong place in the titleUVec_.");
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),  "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") Title is out of order.");
             auto const TEXTURE_SPTR{ sfml_util::gui::TitleImageManager::Instance()->Get(NEXT_ENUM) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr),                 "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty image/texture.");
             ++titleIndex;

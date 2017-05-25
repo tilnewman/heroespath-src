@@ -46,7 +46,7 @@ namespace creature
     //  CombatStage::RemoveSingleTurnTemporaryConditions()
     //  descriptions in the game data file
     //  interactions in fight.cpp
-    //  testing code in conditions.cpp ConditionFactory::Test()
+    //  testing code in conditions.cpp creature::condition::Warehouse::Fill()
     //
     struct Conditions
     {

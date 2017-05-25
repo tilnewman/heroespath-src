@@ -42,27 +42,32 @@ namespace game
 namespace spell
 {
 
-    SpellSVec_t Warehouse::spellsSVec_;
+    SpellUVec_t Warehouse::spellsUVec_;
 
 
-    void Warehouse::Setup()
+    void Warehouse::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsSVec_.empty()), "game::spell::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty()), "game::spell::Warehouse::Setup() was called twice.");
 
-        spellsSVec_.resize(Spells::Count);
+        //Note::Keep order in sync with game::spell::Spells::Enum
+        spellsUVec_.push_back( std::move( std::make_unique<Sparks>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Bandage>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Sleep>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Awaken>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Trip>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Lift>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Daze>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Frighten>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<ClearMind>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Poison>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<Antidote>()) );
+        spellsUVec_.push_back( std::move( std::make_unique<PoisonCloud>()) );
+    }
 
-        spellsSVec_[Spells::Antidote]    = std::make_shared<Antidote>();
-        spellsSVec_[Spells::Awaken]      = std::make_shared<Awaken>();
-        spellsSVec_[Spells::Bandage]     = std::make_shared<Bandage>();
-        spellsSVec_[Spells::ClearMind]   = std::make_shared<ClearMind>();
-        spellsSVec_[Spells::Daze]        = std::make_shared<Daze>();
-        spellsSVec_[Spells::Frighten]    = std::make_shared<Frighten>();
-        spellsSVec_[Spells::Lift]        = std::make_shared<Lift>();
-        spellsSVec_[Spells::Poison]      = std::make_shared<Poison>();
-        spellsSVec_[Spells::PoisonCloud] = std::make_shared<PoisonCloud>();
-        spellsSVec_[Spells::Sleep]       = std::make_shared<Sleep>();
-        spellsSVec_[Spells::Sparks]      = std::make_shared<Sparks>();
-        spellsSVec_[Spells::Trip]        = std::make_shared<Trip>();
+
+    void Warehouse::Empty()
+    {
+        spellsUVec_.clear();
     }
 
 
@@ -80,12 +85,13 @@ namespace spell
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
             auto spellPtr{ Get(NEXT_ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr),                    "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") Get() resulted in a nullptr being returned.");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name().empty() == false),      "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Desc().empty() == false),      "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->DescExtra().empty() == false), "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty DescExtra().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),              "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Mana cost.");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank() != 0),                  "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Rank.");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr),                         "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") Get() resulted in a nullptr being returned.");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name().empty() == false),           "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Desc().empty() == false),           "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->DescExtra().empty() == false),      "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty DescExtra().");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),                   "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Mana cost.");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank() != 0),                       "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Rank.");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name() == Spells::Name(NEXT_ENUM)), "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") Spell is out of order.");
             ++spellIndex;
             LoopManager::Instance()->TestingStrIncrement("Spell Test \"" + spellPtr->Name() + "\"");
             return false;
@@ -98,9 +104,9 @@ namespace spell
 
     SpellPtr_t Warehouse::Get(const Spells::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsSVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsSVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsSVec_, probably from a bug in Setup().");
-        return spellsSVec_.at(E).get();
+        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsUVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
+        return spellsUVec_.at(static_cast<std::size_t>(E)).get();
     }
 
 }

@@ -39,20 +39,21 @@ namespace creature
 {
     class Condition;
     using ConditionPtr_t = Condition *;
-    using ConditionSPtr_t = std::shared_ptr<Condition>;
-    using ConditionSVec_t = std::vector<ConditionSPtr_t>;
+    using ConditionUPtr_t = std::unique_ptr<Condition>;
+    using ConditionUVec_t = std::vector<ConditionUPtr_t>;
 
 namespace condition
 {
 
     struct Warehouse
     {
-        static void Setup();
+        static void Fill();
+        static void Empty();
         static bool Test();
         static ConditionPtr_t Get(const Conditions::Enum);
 
     private:
-        static ConditionSVec_t conditionsSVec_;
+        static ConditionUVec_t conditionsUVec_;
     };
 
 }

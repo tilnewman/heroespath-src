@@ -41,20 +41,21 @@ namespace spell
     //forward declarations
     class Spell;
     using SpellPtr_t  = Spell *;
-    using SpellSPtr_t = std::shared_ptr<Spell>;
-    using SpellSVec_t = std::vector<SpellSPtr_t>;
+    using SpellUPtr_t = std::unique_ptr<Spell>;
+    using SpellUVec_t = std::vector<SpellUPtr_t>;
 
 
     //Responsible for pre-game-start creation and testing of all spells, and
     //then providing access to them.
     struct Warehouse
     {
-        static void Setup();
+        static void Fill();
+        static void Empty();
         static bool Test();
         static SpellPtr_t Get(const Spells::Enum);
 
     private:
-        static SpellSVec_t spellsSVec_;
+        static SpellUVec_t spellsUVec_;
     };
 
 }
