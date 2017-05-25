@@ -181,7 +181,9 @@ namespace sfml_util
             auto min{ frameRateVec_[0] };
             auto max{ 0.0f };
             auto sum{ 0.0f };
-            for (std::size_t i(0); i < frameRateSampleCount_; ++i)
+
+            //skip the first framerate number because that frame included logging the prev framerate
+            for (std::size_t i(1); i < frameRateSampleCount_; ++i)
             {
                 auto const NEXT_FRAMERATE{ frameRateVec_[i] };
 
@@ -200,7 +202,7 @@ namespace sfml_util
 
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
             const float STANDARD_DEVIATION(misc::Vector::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
-            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION << ":  ");
+            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ - 1 << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION << ":  ");
         }
         else
             willLogFrameRate_ = true;
@@ -596,6 +598,19 @@ namespace sfml_util
     }
 
 
+    void Loop::ProcessFramerate()
+    {
+        elapsedTimeSec_ = clock_.getElapsedTime().asSeconds();
+        clock_.restart();
+
+        frameRateVec_[frameRateSampleCount_++] = (1.0f / elapsedTimeSec_);
+        if (frameRateSampleCount_ >= frameRateVec_.size())
+        {
+            frameRateVec_.resize(frameRateSampleCount_ * 2);
+        }
+    }
+
+
     void Loop::ProcessTimeUpdate()
     {
         for (auto & nextStageSPtr : stageSVec_)
@@ -636,18 +651,8 @@ namespace sfml_util
         while (winSPtr_->isOpen() && (false == willExit_))
         {
             winSPtr_->clear(sf::Color::Black);
-
-            elapsedTimeSec_ = clock_.getElapsedTime().asSeconds();
-            clock_.restart();
-
-            frameRateVec_[frameRateSampleCount_++] = (1.0f / elapsedTimeSec_);
-            if (frameRateSampleCount_ >= frameRateVec_.size())
-            {
-                frameRateVec_.resize(frameRateSampleCount_ * 2);
-            }
-
+            ProcessFramerate();
             soundManagerPtr->UpdateTime(elapsedTimeSec_);
-
             PerformNextTest();
             ProcessMouseHover();
             ProcessOneSecondTasks();
@@ -658,9 +663,7 @@ namespace sfml_util
             ProcessFader();
             ProcessPopup();
             ProcessPopupCallback();
-
             winSPtr_->display();
-
             ProcessScreenshot();
         }
 

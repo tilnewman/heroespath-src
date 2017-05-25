@@ -245,23 +245,24 @@ namespace misc
         }
 
 
+        //skip the first value because that is an invalid framerate value
         template<typename T>
         static T StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
         {
-            if ((COUNT == 0) || (COUNT > V.size()))
+            if ((COUNT <= 1) || ((COUNT - 1) > V.size()))
             {
                 return static_cast<T>(0);
             }
 
             T deviationSum{ 0 };
 
-            for (std::size_t i(0); i < COUNT; ++i)
+            for (std::size_t i(1); i < (COUNT - 1); ++i)
             {
                 auto const NEXT_VALUE{ V[i] };
                 deviationSum += std::pow((NEXT_VALUE - AVERAGE), static_cast<T>(2));
             }
 
-            return std::sqrt(deviationSum / static_cast<T>(COUNT));
+            return std::sqrt(deviationSum / static_cast<T>(COUNT - 1));
         }
 
     };

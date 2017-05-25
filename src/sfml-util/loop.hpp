@@ -86,22 +86,22 @@ namespace sfml_util
 
         inline virtual void SetMouseVisibility(const bool IS_VISIBLE)   { winSPtr_->setMouseCursorVisible(IS_VISIBLE); }
 
-        inline virtual void SetState(const game::LoopState::Enum E)   { state_ = E; }
-        inline virtual game::LoopState::Enum  GetState() const        { return state_; }
+        inline virtual void SetState(const game::LoopState::Enum E)     { state_ = E; }
+        inline virtual game::LoopState::Enum  GetState() const          { return state_; }
 
         virtual void ConsumeEvents();
 
-        inline virtual void SetWillExitOnKeypress(const bool B)     { willExitOnKeypress_ = B; }
-        inline virtual void SetWillExitOnMouseclick(const bool B)   { willExitOnMouseclick_ = B; }
+        inline virtual void SetWillExitOnKeypress(const bool B)         { willExitOnKeypress_ = B; }
+        inline virtual void SetWillExitOnMouseclick(const bool B)       { willExitOnMouseclick_ = B; }
 
         virtual void RemoveFocus();
         virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR);//returns true if a stage was found owning the GuiEntity
 
-        inline virtual bool GetIgnoreMouse() const                  { return willIgnoreMouse_; }
-        inline virtual void SetIgnoreMouse(const bool B)            { willIgnoreMouse_ = B; }
+        inline virtual bool GetIgnoreMouse() const                      { return willIgnoreMouse_; }
+        inline virtual void SetIgnoreMouse(const bool B)                { willIgnoreMouse_ = B; }
 
-        inline virtual bool GetIgnoreKeystrokes() const             { return willIgnoreKeystrokes_; }
-        inline virtual void SetIgnoreKeystrokes(const bool B)       { willIgnoreKeystrokes_ = B; }
+        inline virtual bool GetIgnoreKeystrokes() const                 { return willIgnoreKeystrokes_; }
+        inline virtual void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
 
         virtual void AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
                                                     const game::PopupInfo &                 POPUP_INFO);
@@ -132,6 +132,7 @@ namespace sfml_util
         virtual void PerformNextTest();
         virtual void ProcessHoldTime();
         virtual void ProcessScreenshot();
+        virtual void ProcessFramerate();
 
     protected:
         static const float NO_HOLD_TIME_;
