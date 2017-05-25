@@ -37,6 +37,7 @@ namespace game
 namespace creature
 {
 
+    //Note:  Keep order in sync with game::creature::title::Warehouse::Fill()
     namespace Titles
     {
         enum Enum

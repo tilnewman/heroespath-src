@@ -113,7 +113,7 @@ int main()
         sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
         
         //load game assets Stage 1
-        game::creature::title::Warehouse::Setup();
+        game::creature::title::Warehouse::Fill();
         game::creature::condition::Warehouse::Setup();
         game::spell::Warehouse::Setup();
         
@@ -176,6 +176,9 @@ int main()
         {
             winSPtr->close();
         }
+
+        //release warehouse objects
+        game::creature::title::Warehouse::Empty();
 
         //release singleton/manager instances
         game::item::weapon::WeaponDetailLoader::Release();

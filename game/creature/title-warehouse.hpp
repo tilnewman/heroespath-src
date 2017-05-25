@@ -40,8 +40,8 @@ namespace creature
     //forward declarations
     class Title;
     using TitlePtr_t = Title *;
-    using TitleSPtr_t = std::shared_ptr<Title>;
-    using TitleSVec_t = std::vector<TitleSPtr_t>;
+    using TitleUPtr_t = std::unique_ptr<Title>;
+    using TitleUVec_t = std::vector<TitleUPtr_t>;
 
 namespace title
 {
@@ -49,12 +49,13 @@ namespace title
     class Warehouse
     {
     public:
-        static void Setup();
+        static void Fill();
+        static void Empty();
         static bool Test();
         static TitlePtr_t Get(const Titles::Enum);
 
     private:
-        static TitleSVec_t titleSVec_;
+        static TitleUVec_t titleUVec_;
     };
 
 }

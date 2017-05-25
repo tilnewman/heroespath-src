@@ -111,10 +111,6 @@ namespace creature
     using TitleCPtrC_t = const Title * const;
     using TitlePVec_t  = std::vector<TitlePtr_t>;
 
-    using TitleSPtr_t = std::shared_ptr<Title>;
-    using TitleSVec_t = std::vector<TitleSPtr_t>;
-
-
     bool operator<(const Title & L, const Title & R);
 
     bool operator==(const Title & L, const Title & R);
