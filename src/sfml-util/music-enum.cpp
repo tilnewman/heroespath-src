@@ -102,14 +102,14 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Theme:         { return "hp-theme"; }
-            case Wind:          { return "luke-rustltd"; }
+            case Theme:         { return "theme"; }
+            case Wind:          { return "wind"; }
             case Fire1:
             case Fire2:         { return "fire"; }
             case CombatIntro:   { return "combat-intro"; }
-            case PartyCreation:
-            case Credits1:      { return "marcelo-fernandez"; }
-            case Credits2:      { return "janne-hanhisuanto"; }
+            case PartyCreation: { return "party-creation"; }
+            case Credits1:
+            case Credits2:      { return "credits"; }
             case All:
             case None:
             {
@@ -192,10 +192,10 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Theme:         { return "(original work)"; }
+            case Theme:
             case Wind:
             case Fire1:
-            case Fire2:         { return "CC0-1.0(no copyright)"; }
+            case Fire2:         { return "CC0 1.0"; }
             case CombatIntro:   { return "(various)"; }
             case Credits2:      { return "CC-BY-SA 3.0"; }
             case Credits1:

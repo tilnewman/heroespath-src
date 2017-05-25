@@ -29,16 +29,20 @@
 //
 #include "logger.hpp"
 
+#include "misc/assertlogandthrow.hpp"
+
 
 namespace game
 {
 
-    LoggerSPtr_t Logger::instanceSPtr_;
+    std::unique_ptr<Logger> Logger::instanceUPtr_{ nullptr };
 
 
     Logger::Logger()
     :
-        LogBase(appbase::logbase::LogBase::FILE_NAME_DEFAULT, appbase::logbase::LogBase::FILE_NAME_EXT_DEFAULT, "")
+        LogBase(appbase::logbase::LogBase::FILE_NAME_DEFAULT,
+                appbase::logbase::LogBase::FILE_NAME_EXT_DEFAULT,
+                "")
     {}
 
 
@@ -46,12 +50,30 @@ namespace game
     {}
 
 
-    LoggerSPtr_t Logger::Instance()
+    Logger * Logger::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new Logger() );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void Logger::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new Logger);
+        }
+    }
+
+
+    void Logger::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::Logger::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 }

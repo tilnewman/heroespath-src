@@ -29,16 +29,13 @@
 //  A singleton logging class.
 //
 #include "logbase/logbase.hpp"
+
 #include <memory>
 #include <string>
 
 
 namespace game
 {
-
-    class Logger;
-    using LoggerSPtr_t = std::shared_ptr<Logger>;
-
 
     //Singleton class that logs to a file and std out
     class Logger : public appbase::logbase::LogBase
@@ -51,10 +48,12 @@ namespace game
     public:
         virtual ~Logger();
 
-        static LoggerSPtr_t Instance();
+        static Logger * Instance();
+        static void Acquire();
+        static void Release();
 
     private:
-        static LoggerSPtr_t instanceSPtr_;
+        static std::unique_ptr<Logger> instanceUPtr_;
     };
 
 }

@@ -212,9 +212,6 @@ namespace logbase
     }
 
 
-    using LogSPtr_t = std::shared_ptr<LogBase>;
-
-
 }//end of namespace logbase
 }//end of namespace appbase
 

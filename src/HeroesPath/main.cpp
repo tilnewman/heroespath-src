@@ -70,7 +70,8 @@ int main()
     const std::string APPLICATION_NAME{ "Heroes' Path" };
     std::cout << "Starting " << APPLICATION_NAME << "..." << std::endl;
 
-    game::LoggerSPtr_t logSPtr(game::Logger::Instance());
+    game::Logger::Acquire();
+    auto logPtr{ game::Logger::Instance() };
 
     try
     {
@@ -87,7 +88,7 @@ int main()
         //keep an instance of various singleton classes here to prevent thrashing
         sfml_util::Display::Acquire();
         //
-        M_LOG(*logSPtr, "Loading the Game Data file...");
+        M_LOG(*logPtr, "Loading the Game Data file...");
         game::GameDataFile::Acquire();
         auto gameDataFilePtr(game::GameDataFile::Instance());
 
@@ -163,12 +164,12 @@ int main()
         catch (const std::exception & E)
         {
             std::cout << APPLICATION_NAME << " threw exception(\"" << E.what() << "\")" << std::endl;
-            M_LOG(*logSPtr, APPLICATION_NAME << " threw exception(\"" << E.what() << "\")");
+            M_LOG(*logPtr, APPLICATION_NAME << " threw exception(\"" << E.what() << "\")");
         }
         catch (...)
         {
             std::cout << APPLICATION_NAME << " threw an unknown non-std exception." << std::endl;
-            M_LOG(*logSPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
+            M_LOG(*logPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
         }
 
         //ensure the window is closed before exiting
@@ -207,14 +208,16 @@ int main()
     }
     catch (const std::exception & E)
     {
-        M_LOG( * logSPtr, "Appication framework threw std::exception \"" << E.what() << "\"");
+        M_LOG( * logPtr, "Appication framework threw std::exception \"" << E.what() << "\"");
         return EXIT_FAILURE;
     }
     catch (...)
     {
-        M_LOG( * logSPtr, "Appication framework threw an unknown non-std exception." << std::endl);
+        M_LOG( * logPtr, "Appication framework threw an unknown non-std exception." << std::endl);
         return EXIT_FAILURE;
     }
+
+    game::Logger::Release();
 
     std::cout << "...Stopping " << APPLICATION_NAME << "." << std::endl;
     return EXIT_SUCCESS;
