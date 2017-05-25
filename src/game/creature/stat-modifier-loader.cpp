@@ -29,7 +29,7 @@
 //
 #include "stat-modifier-loader.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include "stringutil/stringhelp.hpp"
 

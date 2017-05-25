@@ -34,7 +34,7 @@
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/creature.hpp"
 
-#include "utilz/vectors.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <exception>
@@ -528,7 +528,7 @@ namespace combat
 
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
-            utilz::Vector::Append(NEXT_CREATURE_EFFECT.GetAllConditions(), conditionsVec);
+            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllConditions(), conditionsVec);
         }
 
         if (WILL_UNIUQE)

@@ -22,14 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_VECTOROPERATIONS_HPP_INCLUDED
-#define UTILZ_VECTOROPERATIONS_HPP_INCLUDED
+#ifndef MISC_VECTOROPERATIONS_HPP_INCLUDED
+#define MISC_VECTOROPERATIONS_HPP_INCLUDED
 //
 // vectors.hpp
 //  A set of helper functions for working with vectors
 //
-#include "utilz/random.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <vector>
 #include <sstream>
@@ -37,7 +37,7 @@
 #include <string>
 
 
-namespace utilz
+namespace misc
 {
 
     //simple wrapper for vector helper functions
@@ -136,14 +136,14 @@ namespace utilz
         template<typename T>
         static T SelectRandom(const std::vector<T> & V)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false), "utilz::Vector::SelectRandom() was given an empty vector.");
+            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false), "misc::Vector::SelectRandom() was given an empty vector.");
             if (V.size() == 1)
             {
                 return V[0];
             }
             else
             {
-                return V[static_cast<std::size_t>(utilz::random::Int(static_cast<int>(V.size()) - 1))];
+                return V[static_cast<std::size_t>(misc::random::Int(static_cast<int>(V.size()) - 1))];
             }
         }
 
@@ -268,4 +268,4 @@ namespace utilz
 
 }
 
-#endif //UTILZ_VECTOROPERATIONS_HPP_INCLUDED
+#endif //MISC_VECTOROPERATIONS_HPP_INCLUDED

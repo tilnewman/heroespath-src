@@ -46,7 +46,7 @@
 #else
 
 #include <sstream>
-#include "common/ilog.hpp"
+#include "ilog.hpp"
 #define M_LOG_PRI(log, pri, str_static)                   \
 {                                                         \
     (log).Log( (pri), __FILE__, __LINE__, (str_static) ); \

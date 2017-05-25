@@ -48,7 +48,8 @@
 #include "game/creature/creature.hpp"
 #include "game/spell/spell-base.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
+#include "misc/boost-string-includes.hpp"   
 
 #include <sstream>
 #include <random>
@@ -409,7 +410,7 @@ namespace sfml_util
             accentSprite1_.setTexture(*accentTexture1SPtr_);
 
             //scale the accent image
-            auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+            auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
             const float SCALE_VERT((textRegion_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height);
             accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
 
@@ -581,7 +582,7 @@ namespace sfml_util
                 accentTexture1SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
                 accentSprite1_.setTexture(*accentTexture1SPtr_);
 
-                auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+                auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
                 const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height);
                 accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
 
@@ -608,7 +609,7 @@ namespace sfml_util
                 accentTexture2SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
                 accentSprite2_.setTexture(*accentTexture2SPtr_);
 
-                auto const SIZE_RATIO{ utilz::random::Float(0.65f, 0.85f) };
+                auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
                 const float SCALE_VERT((pageRectRight_.height * SIZE_RATIO) / accentSprite2_.getLocalBounds().height);
                 accentSprite2_.setScale(SCALE_VERT, SCALE_VERT);
 

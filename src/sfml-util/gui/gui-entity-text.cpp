@@ -33,7 +33,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace sfml_util

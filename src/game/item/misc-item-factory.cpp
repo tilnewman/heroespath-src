@@ -29,7 +29,7 @@
 //
 #include "misc-item-factory.hpp"
 
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 
 #include "game/item/item.hpp"

@@ -32,7 +32,7 @@
 #include "game/creature/conditions.hpp"
 #include "game/loop-manager.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace game

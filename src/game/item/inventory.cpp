@@ -30,7 +30,7 @@
 #include "inventory.hpp"
 
 #include "game/item/item.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
 #include <sstream>

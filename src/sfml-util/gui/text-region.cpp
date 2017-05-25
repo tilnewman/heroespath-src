@@ -36,7 +36,7 @@
 
 #include "game/log-macros.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <algorithm>
 

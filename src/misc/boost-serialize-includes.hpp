@@ -22,14 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
-#define UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#ifndef MISC_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#define MISC_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
 //
 // boost-serialize-includes.hpp
 //
 
 //suppress warnings that are safe to ignore in boost
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
@@ -45,4 +45,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //UTILZ_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED
+#endif //MISC_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED

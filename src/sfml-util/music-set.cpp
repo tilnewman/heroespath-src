@@ -28,7 +28,7 @@
 // music-set.cpp
 //
 #include "music-set.hpp"
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 
 namespace sfml_util
@@ -116,7 +116,7 @@ namespace sfml_util
                 }
                 else
                 {
-                    return possibleVec[static_cast<std::size_t>(utilz::random::Int(0, static_cast<int>(NUM_POSSIBLE_SONGS) - 1))];
+                    return possibleVec[static_cast<std::size_t>(misc::random::Int(0, static_cast<int>(NUM_POSSIBLE_SONGS) - 1))];
                 }
             }
             else

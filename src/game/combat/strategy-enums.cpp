@@ -29,7 +29,7 @@
 //
 #include "strategy-enums.hpp"
 
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <sstream>
 #include <exception>

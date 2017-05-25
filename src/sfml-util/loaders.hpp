@@ -31,7 +31,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-audio.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 

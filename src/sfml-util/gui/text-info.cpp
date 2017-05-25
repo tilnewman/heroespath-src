@@ -29,11 +29,11 @@
 //
 #include "text-info.hpp"
 
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
 
@@ -111,7 +111,7 @@ namespace gui
 
     bool operator==(const TextInfo & L, const TextInfo & R)
     {
-        if (utilz::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        if (misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
             return false;
 
         return std::tie(L.text,

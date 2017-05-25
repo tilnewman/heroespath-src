@@ -31,7 +31,7 @@
 #include "sfml-util/display.hpp"
 
 //prevent boost warnings that can be ignored
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #endif

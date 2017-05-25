@@ -30,11 +30,11 @@
 #include "item-image-manager.hpp"
 
 #include "sfml-util/loaders.hpp"
-#include "utilz/random.hpp"
-#include "utilz/boost-string-includes.hpp"
+#include "misc/random.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
 #include "game/non-player/ownership-profile.hpp"
 
@@ -670,7 +670,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "amulet-" << utilz::random::Int(1, 23) << EXT_;
+                    ss << "amulet-" << misc::random::Int(1, 23) << EXT_;
                     return ss.str();
                 }
                 else
@@ -685,7 +685,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "bag-" << utilz::random::Int(1, 8) << EXT_;
+                    ss << "bag-" << misc::random::Int(1, 8) << EXT_;
                     return ss.str();
                 }
                 else
@@ -697,7 +697,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "book-" << utilz::random::Int(1, 5) << EXT_;
+                    ss << "book-" << misc::random::Int(1, 5) << EXT_;
                     return ss.str();
                 }
                 else
@@ -720,7 +720,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "crown-" << utilz::random::Int(1, 12) << EXT_;
+                    ss << "crown-" << misc::random::Int(1, 12) << EXT_;
                     return ss.str();
                 }
                 else
@@ -731,7 +731,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "doll-" << utilz::random::Int(1, 16) << EXT_;
+                    ss << "doll-" << misc::random::Int(1, 16) << EXT_;
                     return ss.str();
                 }
                 else
@@ -743,7 +743,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "potion-" << utilz::random::Int(1, 30) << EXT_;
+                    ss << "potion-" << misc::random::Int(1, 30) << EXT_;
                     return ss.str();
                 }
                     return "potion-13" + EXT_;
@@ -753,7 +753,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "goblet-" << utilz::random::Int(1, 8) << EXT_;
+                    ss << "goblet-" << misc::random::Int(1, 8) << EXT_;
                     return ss.str();
                 }
                 else
@@ -764,7 +764,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "herb-" << utilz::random::Int(1, 34) << EXT_;
+                    ss << "herb-" << misc::random::Int(1, 34) << EXT_;
                     return ss.str();
                 }
                     return "herb-26" + EXT_;
@@ -774,7 +774,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "hourglass-" << utilz::random::Int(1, 3) << EXT_;
+                    ss << "hourglass-" << misc::random::Int(1, 3) << EXT_;
                     return ss.str();
                 }
                 else
@@ -785,7 +785,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "key-" << utilz::random::Int(1, 11) << EXT_;
+                    ss << "key-" << misc::random::Int(1, 11) << EXT_;
                     return ss.str();
                 }
                 else
@@ -796,7 +796,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "lantern-" << utilz::random::Int(1, 18) << EXT_;
+                    ss << "lantern-" << misc::random::Int(1, 18) << EXT_;
                     return ss.str();
                 }
                 else
@@ -807,7 +807,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "torch-" << utilz::random::Int(1, 5) << EXT_;
+                    ss << "torch-" << misc::random::Int(1, 5) << EXT_;
                     return ss.str();
                 }
                     return "torch-1" + EXT_;
@@ -817,7 +817,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "lockbox-" << utilz::random::Int(1, 8) << EXT_;
+                    ss << "lockbox-" << misc::random::Int(1, 8) << EXT_;
                     return ss.str();
                 }
                 else
@@ -828,7 +828,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "chest-" << utilz::random::Int(1, 14) << EXT_;
+                    ss << "chest-" << misc::random::Int(1, 14) << EXT_;
                     return ss.str();
                 }
                 else
@@ -843,7 +843,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mask-" << utilz::random::Int(1, 6) << EXT_;
+                    ss << "mask-" << misc::random::Int(1, 6) << EXT_;
                     return ss.str();
                 }
                 else
@@ -854,7 +854,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mirror-" << utilz::random::Int(1, 10) << EXT_;
+                    ss << "mirror-" << misc::random::Int(1, 10) << EXT_;
                     return ss.str();
                 }
                 else
@@ -881,7 +881,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "scroll-" << utilz::random::Int(1, 13) << EXT_;
+                    ss << "scroll-" << misc::random::Int(1, 13) << EXT_;
                     return ss.str();
                 }
                 else
@@ -892,7 +892,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "orb-" << utilz::random::Int(1, 13) << EXT_;
+                    ss << "orb-" << misc::random::Int(1, 13) << EXT_;
                     return ss.str();
                 }
                 else
@@ -904,9 +904,9 @@ namespace gui
                 {
                     std::ostringstream ss;
                     if (IS_JEWELED)
-                        ss << "ring-jeweled-" << utilz::random::Int(1, 14) << EXT_;
+                        ss << "ring-jeweled-" << misc::random::Int(1, 14) << EXT_;
                     else
-                        ss << "ring-plain-" << utilz::random::Int(1, 2) << EXT_;
+                        ss << "ring-plain-" << misc::random::Int(1, 2) << EXT_;
                     return ss.str();
                 }
                 else
@@ -922,7 +922,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "skull-" << utilz::random::Int(1, 11) << EXT_;
+                    ss << "skull-" << misc::random::Int(1, 11) << EXT_;
                     return ss.str();
                 }
                 else
@@ -933,7 +933,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "shard-" << utilz::random::Int(1, 7) << EXT_;
+                    ss << "shard-" << misc::random::Int(1, 7) << EXT_;
                     return ss.str();
                 }
                 else
@@ -944,7 +944,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mortar-" << utilz::random::Int(1, 9) << EXT_;
+                    ss << "mortar-" << misc::random::Int(1, 9) << EXT_;
                     return ss.str();
                 }
                 else
@@ -955,7 +955,7 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "wand-" << utilz::random::Int(1, 9) << EXT_;
+                    ss << "wand-" << misc::random::Int(1, 9) << EXT_;
                     return ss.str();
                 }
                 else

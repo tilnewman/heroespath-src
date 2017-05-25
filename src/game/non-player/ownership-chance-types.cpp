@@ -130,7 +130,7 @@ namespace chance
         std::size_t i(0);
         while(i<MAX_ITERATIONS)
         {
-            if (utilz::IsRealClose(num_owned_map[++i], 0.0f))
+            if (misc::IsRealClose(num_owned_map[++i], 0.0f))
             {
                 num_owned_map[i] = 1.0f;
                 break;
@@ -165,7 +165,7 @@ namespace chance
 
         for (auto const & NEXT_CHANCE_PAIR : cover_map)
             if (NEXT_CHANCE_PAIR.second.IsOwned())
-                coverChanceMap[NEXT_CHANCE_PAIR.first] = utilz::random::Float();
+                coverChanceMap[NEXT_CHANCE_PAIR.first] = misc::random::Float();
 
         if (coverChanceMap.size() == 1)
         {

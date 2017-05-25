@@ -34,7 +34,7 @@
 
 #include "game/log-macros.hpp"
 
-#include "common/assertorthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 

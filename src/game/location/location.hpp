@@ -28,7 +28,7 @@
 // location.hpp
 //  A base class for all location objects.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/location/i-location.hpp"
 #include "game/location/map-enum.hpp"

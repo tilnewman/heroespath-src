@@ -29,12 +29,14 @@
 //
 #include "title.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/title.hpp"
 #include "game/creature/role.hpp"
 
 #include "sfml-util/gui/title-image-manager.hpp"
+
+#include "misc/boost-string-includes.hpp"
 
 #include <sstream>
 #include <tuple>

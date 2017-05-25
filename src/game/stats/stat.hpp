@@ -28,7 +28,7 @@
 // stat.hpp
 //  A base class for all stat classes
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/types.hpp"
 #include "game/stats/stat-enum.hpp"

@@ -35,7 +35,7 @@
 
 #include <sstream>
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace sfml_util

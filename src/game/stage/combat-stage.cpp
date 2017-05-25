@@ -67,9 +67,9 @@
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
 
-#include "utilz/real.hpp"
-#include "utilz/random.hpp"
-#include "utilz/vectors.hpp"
+#include "misc/real.hpp"
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <exception>
@@ -583,12 +583,12 @@ namespace stage
         player::PartySPtr_t partySPtr(new player::Party());
 
         {
-            const stats::StatSet KNIGHT_STATS(20 + utilz::random::Int(10),
-                                              15 + utilz::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                              0  + utilz::random::Int(6),
-                                              5  + utilz::random::Int(10),
-                                              15 + utilz::random::Int(10),
-                                              0  + utilz::random::Int(8));
+            const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
+                                              15 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              0  + misc::random::Int(6),
+                                              5  + misc::random::Int(10),
+                                              15 + misc::random::Int(10),
+                                              0  + misc::random::Int(8));
 
             const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "K") );
             auto knightSPtr( std::make_shared<player::Character>(KNIGHT_NAME,
@@ -603,12 +603,12 @@ namespace stage
         }
         /*
         {
-            const stats::StatSet FIREBRAND_STATS(20 + utilz::random::Int(10),
-                                                 15 + utilz::random::Int(10),
-                                                 0 + utilz::random::Int(6),
-                                                 5 + utilz::random::Int(10),
-                                                 0 + utilz::random::Int(10),
-                                                 10 + utilz::random::Int(8));
+            const stats::StatSet FIREBRAND_STATS(20 + misc::random::Int(10),
+                                                 15 + misc::random::Int(10),
+                                                 0 + misc::random::Int(6),
+                                                 5 + misc::random::Int(10),
+                                                 0 + misc::random::Int(10),
+                                                 10 + misc::random::Int(8));
 
             const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "F"));
 
@@ -619,12 +619,12 @@ namespace stage
                                                                      creature::Role(creature::role::Firebrand),
                                                                      FIREBRAND_STATS);
 
-            const stats::StatSet STATS_MOD(utilz::random::Int(2) * ((utilz::random::Bool()) ? -1 : 1),
-                                           utilz::random::Int(3) * ((utilz::random::Bool()) ? -1 : 1),
-                                           utilz::random::Int(4) * ((utilz::random::Bool()) ? -1 : 1),
-                                           utilz::random::Int(5) * ((utilz::random::Bool()) ? -1 : 1),
-                                           utilz::random::Int(6) * ((utilz::random::Bool()) ? -1 : 1),
-                                           utilz::random::Int(7) * ((utilz::random::Bool()) ? -1 : 1));
+            const stats::StatSet STATS_MOD(misc::random::Int(2) * ((misc::random::Bool()) ? -1 : 1),
+                                           misc::random::Int(3) * ((misc::random::Bool()) ? -1 : 1),
+                                           misc::random::Int(4) * ((misc::random::Bool()) ? -1 : 1),
+                                           misc::random::Int(5) * ((misc::random::Bool()) ? -1 : 1),
+                                           misc::random::Int(6) * ((misc::random::Bool()) ? -1 : 1),
+                                           misc::random::Int(7) * ((misc::random::Bool()) ? -1 : 1));
 
             firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
 
@@ -633,12 +633,12 @@ namespace stage
         }
         */
         {
-            const stats::StatSet ARCHER_STATS(15 + utilz::random::Int(10),
-                                              20 + utilz::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                              5  + utilz::random::Int(6),
-                                              10 + utilz::random::Int(10),
-                                              10 + utilz::random::Int(8),
-                                              5  + utilz::random::Int(6));
+            const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
+                                              20 + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              5  + misc::random::Int(6),
+                                              10 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              5  + misc::random::Int(6));
 
             const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "A"));
             player::CharacterSPtr_t archerSPtr(new player::Character(ARCHER_NAME,
@@ -653,12 +653,12 @@ namespace stage
         }
         /*
         {
-            const stats::StatSet WOLFEN_STATS(20 + utilz::random::Int(10),
-                                              20 + utilz::random::Int(10),
-                                              5  + utilz::random::Int(6),
-                                              5  + utilz::random::Int(10),
-                                              5  + utilz::random::Int(8),
-                                              5  + utilz::random::Int(6));
+            const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
+                                              20 + misc::random::Int(10),
+                                              5  + misc::random::Int(6),
+                                              5  + misc::random::Int(10),
+                                              5  + misc::random::Int(8),
+                                              5  + misc::random::Int(6));
 
             const std::string WOLFEN_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "W"));
             player::CharacterSPtr_t wolfenSPtr(new player::Character(WOLFEN_NAME,
@@ -673,12 +673,12 @@ namespace stage
         }
         */
         {
-            const stats::StatSet BARD_STATS(10 + utilz::random::Int(6),
-                                            10 + utilz::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                            10 + utilz::random::Int(6),
-                                            10 + utilz::random::Int(6),
-                                            10 + utilz::random::Int(6),
-                                            10 + utilz::random::Int(6));
+            const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
+                                            10 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                            10 + misc::random::Int(6),
+                                            10 + misc::random::Int(6),
+                                            10 + misc::random::Int(6),
+                                            10 + misc::random::Int(6));
 
             const std::string BARD_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "B"));
             player::CharacterSPtr_t bardSPtr(new player::Character(BARD_NAME,
@@ -693,12 +693,12 @@ namespace stage
         }
         /*
         {
-            const stats::StatSet BEASTMASTER_STATS(10 + utilz::random::Int(6),
-                                                   10 + utilz::random::Int(6),
-                                                   10 + utilz::random::Int(6),
-                                                   10 + utilz::random::Int(6),
-                                                   10 + utilz::random::Int(6),
-                                                   10 + utilz::random::Int(6));
+            const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
+                                                   10 + misc::random::Int(6),
+                                                   10 + misc::random::Int(6),
+                                                   10 + misc::random::Int(6),
+                                                   10 + misc::random::Int(6),
+                                                   10 + misc::random::Int(6));
 
             const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "G"));
             player::CharacterSPtr_t bmSPtr(new player::Character(BEASTMASTER_NAME,
@@ -713,12 +713,12 @@ namespace stage
         }
         */
         {
-            const stats::StatSet THEIF_STATS(5  + utilz::random::Int(10),
-                                             5  + utilz::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                             5  + utilz::random::Int(10),
-                                             15 + utilz::random::Int(15),
-                                             15 + utilz::random::Int(10),
-                                             5  + utilz::random::Int(8));
+            const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
+                                             5  + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                             5  + misc::random::Int(10),
+                                             15 + misc::random::Int(15),
+                                             15 + misc::random::Int(10),
+                                             5  + misc::random::Int(8));
 
             const std::string THEIF_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "T"));
             player::CharacterSPtr_t thiefSPtr(new player::Character(THEIF_NAME,
@@ -733,12 +733,12 @@ namespace stage
         }
 
         {
-            const stats::StatSet CLERIC_STATS(5  + utilz::random::Int(8),
-                                              5  + utilz::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                              15 + utilz::random::Int(10),
-                                              10 + utilz::random::Int(8),
-                                              25 + utilz::random::Int(8),
-                                              10 + utilz::random::Int(15));
+            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
+                                              5  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              15 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              25 + misc::random::Int(8),
+                                              10 + misc::random::Int(15));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "C"));
             player::CharacterSPtr_t clericSPtr(new player::Character(CLERIC_NAME,
@@ -754,12 +754,12 @@ namespace stage
         }
 
         {
-            const stats::StatSet SORCERER_STATS(0  + utilz::random::Int(8),
-                                                0  + utilz::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
-                                                5  + utilz::random::Int(8),
-                                                10 + utilz::random::Int(6),
-                                                50 + utilz::random::Int(6),
-                                                20 + utilz::random::Int(10));
+            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
+                                                0  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                                5  + misc::random::Int(8),
+                                                10 + misc::random::Int(6),
+                                                50 + misc::random::Int(6),
+                                                20 + misc::random::Int(10));
 
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
             player::CharacterSPtr_t sorcererSPtr(new player::Character(SORCERER_NAME,
@@ -775,12 +775,12 @@ namespace stage
         }
         /*
         {
-            const stats::StatSet SYLAVIN_STATS(20 + utilz::random::Int(8),
-                                               20 + utilz::random::Int(8),
-                                               5  + utilz::random::Int(8),
-                                               5  + utilz::random::Int(6),
-                                               50 + utilz::random::Int(6),
-                                               10 + utilz::random::Int(10));
+            const stats::StatSet SYLAVIN_STATS(20 + misc::random::Int(8),
+                                               20 + misc::random::Int(8),
+                                               5  + misc::random::Int(8),
+                                               5  + misc::random::Int(6),
+                                               50 + misc::random::Int(6),
+                                               10 + misc::random::Int(10));
 
             const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
             player::CharacterSPtr_t sylavinSPtr(new player::Character(SYLAVIN_NAME,
@@ -871,7 +871,7 @@ namespace stage
                 }
                 else
                 {
-                    if (utilz::random::Bool())
+                    if (misc::random::Bool())
                     {
                         projWeaponType = item::weapon::projectile_type::Longbow;
                     }
@@ -3018,14 +3018,14 @@ namespace stage
         }
 
         if ((turnCreaturePtr_->HasCondition(creature::Conditions::Dazed)) &&
-            (utilz::random::Int(100) < 75))
+            (misc::random::Int(100) < 75))
         {
             turnCreaturePtr_->ConditionRemove(creature::Conditions::Dazed);
             return "wakes from being dazed";
         }
 
         if ((turnCreaturePtr_->HasCondition(creature::Conditions::Frightened)) &&
-            (utilz::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
+            (misc::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
         {
             turnCreaturePtr_->ConditionRemove(creature::Conditions::Frightened);
             return "recovers from being frightened";

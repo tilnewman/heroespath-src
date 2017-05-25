@@ -29,8 +29,8 @@
 //
 #include "spell-base.hpp"
 
-#include "utilz/strings.hpp"
-#include "utilz/random.hpp"
+#include "misc/strings.hpp"
+#include "misc/random.hpp"
 
 #include <sstream>
 #include <algorithm>
@@ -79,7 +79,7 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss  << "A " << utilz::String::DecorateNumber(rank_) << " rank"
+        ss  << "A " << misc::String::DecorateNumber(rank_) << " rank"
             << " " << SpellType::Name(type_) << " spell"
             << " that can be cast during " << Phase::ToString(validPhases_, false)
             << ", targeting " << TargetType::Name(targetType_)
@@ -113,7 +113,7 @@ namespace spell
             x += std::min(RANK, RANK_MAX);
         }
 
-        x += utilz::random::Int(THE_RAND_MAX);
+        x += misc::random::Int(THE_RAND_MAX);
 
         return x;
     }

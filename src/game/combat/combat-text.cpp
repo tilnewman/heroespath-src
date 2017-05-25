@@ -38,7 +38,8 @@
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 
-#include "utilz/vectors.hpp"
+#include "misc/vectors.hpp"
+#include "misc/boost-string-includes.hpp"
 
 
 namespace game
@@ -283,9 +284,9 @@ namespace combat
             case combat::TurnAction::LandPounce:
             {
                 std::vector<std::string> strVec{ "surges", "charages", "leaps", "rushes", "springs" };
-                ss << strVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(strVec.size()) - 1)));
+                ss << strVec.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(strVec.size()) - 1)));
 
-                if (utilz::random::Bool())
+                if (misc::random::Bool())
                 {
                     ss << " forward";
                 }
@@ -432,7 +433,7 @@ namespace combat
         }
 
         strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
-        return strVec.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(strVec.size()) - 1)));
+        return strVec.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(strVec.size()) - 1)));
     }
 
 
@@ -744,7 +745,7 @@ namespace combat
         std::ostringstream ss;
 
         const std::size_t NUM_CONDITIONS_TO_LIST{ 3 };
-        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ utilz::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::Conditions::Dead) };
+        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ misc::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::Conditions::Dead) };
         auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
         if (NUM_CONDITIONS != 0)
         {
@@ -780,7 +781,7 @@ namespace combat
 
     const std::string Text::InitialCombatStatusMessagePrefix()
     {
-        switch (utilz::random::Int(4))
+        switch (misc::random::Int(4))
         {
             case 0:  { return "You face"; }
             case 1:  { return "Before you rage"; }

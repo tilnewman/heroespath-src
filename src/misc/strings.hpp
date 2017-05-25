@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_STRINGS_HPP_INCLUDED
-#define UTILZ_STRINGS_HPP_INCLUDED
+#ifndef MISC_STRINGS_HPP_INCLUDED
+#define MISC_STRINGS_HPP_INCLUDED
 //
 // strings.hpp
 //
@@ -31,7 +31,7 @@
 #include <sstream>
 
 
-namespace utilz
+namespace misc
 {
 
     struct String
@@ -67,4 +67,4 @@ namespace utilz
 
 }
 
-#endif //UTILZ_STRINGS_HPP_INCLUDED
+#endif //MISC_STRINGS_HPP_INCLUDED

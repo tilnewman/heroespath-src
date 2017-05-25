@@ -38,8 +38,8 @@
 #include "game/player/character.hpp"
 #include "game/state/game-state.hpp"
 
-#include "utilz/random.hpp"
-#include "utilz/vectors.hpp"
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <algorithm>
@@ -131,7 +131,7 @@ namespace creature
     {
         if (WILL_ADD_RACE_AND_ROLE)
         {
-            return utilz::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
+            return misc::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
                                                       WILL_WRAP,
                                                       WILL_APPEND_AND,
                                                       MAX_COUNT,
@@ -143,7 +143,7 @@ namespace creature
         }
         else
         {
-            return utilz::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
+            return misc::Vector::Join<CreaturePtr_t>(CREATURE_PVEC,
                                                       WILL_WRAP,
                                                       WILL_APPEND_AND,
                                                       MAX_COUNT,
@@ -250,7 +250,7 @@ namespace creature
         std::copy_if(tempPVec.begin(),
                      tempPVec.end(),
                      back_inserter(lowestHealthRatioVec),
-                     [LOWEST_HEALTH_RATIO] (CreatureCPtrC_t CPTRC) { return utilz::IsRealClose(CPTRC->HealthRatio(), LOWEST_HEALTH_RATIO); } );
+                     [LOWEST_HEALTH_RATIO] (CreatureCPtrC_t CPTRC) { return misc::IsRealClose(CPTRC->HealthRatio(), LOWEST_HEALTH_RATIO); } );
 
         return lowestHealthRatioVec;
     }

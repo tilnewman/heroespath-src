@@ -39,7 +39,7 @@
 #include "game/creature/creature.hpp"
 #include "game/popup-info.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <string>
 

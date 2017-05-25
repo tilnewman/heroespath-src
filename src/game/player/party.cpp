@@ -31,7 +31,7 @@
 
 #include "game/player/character.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>

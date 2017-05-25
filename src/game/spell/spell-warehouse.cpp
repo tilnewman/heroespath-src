@@ -32,7 +32,7 @@
 #include "game/loop-manager.hpp"
 #include "game/spell/spells.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <memory>
 

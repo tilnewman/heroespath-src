@@ -29,7 +29,7 @@
 //
 #include "weapon-info.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>

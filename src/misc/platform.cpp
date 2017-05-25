@@ -31,13 +31,13 @@
 
 #include "game/log-macros.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>
 
 
-namespace utilz
+namespace misc
 {
 
     const std::string platform_type::ToString(const platform_type::Enum E)
@@ -53,7 +53,7 @@ namespace utilz
             default:
             {
                 std::ostringstream ss;
-                ss << "utilz::Platform::ToString(" << E << ")_InvalidValueError.";
+                ss << "misc::Platform::ToString(" << E << ")_InvalidValueError.";
                 throw std::runtime_error(ss.str());
             }
         }
@@ -91,7 +91,7 @@ namespace utilz
 
     void Platform::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "utilz::Platform::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "misc::Platform::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 

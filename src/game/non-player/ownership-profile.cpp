@@ -33,7 +33,7 @@
 #include "game/item/item.hpp"
 #include "game/game-data-file.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -105,7 +105,7 @@ namespace ownership
         }
 
         float cumulative(0.0f);
-        const float RAND(utilz::random::Float());
+        const float RAND(misc::random::Float());
         for (auto const & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
         {
             if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
@@ -232,16 +232,16 @@ namespace ownership
 
         //determine
         collector_type::Enum collectorType(NoPreference);
-        if (utilz::random::Float() < chancePractical)
+        if (misc::random::Float() < chancePractical)
             collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
 
-        if (utilz::random::Float() < chanceCollector)
+        if (misc::random::Float() < chanceCollector)
             collectorType = static_cast<collector_type::Enum>(collectorType | Collector);
 
-        if (utilz::random::Float() < chanceMinimalist)
+        if (misc::random::Float() < chanceMinimalist)
             collectorType = static_cast<collector_type::Enum>(collectorType | Minimalist);
 
-        if ((utilz::random::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
+        if ((misc::random::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
             collectorType = static_cast<collector_type::Enum>(collectorType | Hoarder);
 
         return collectorType;
@@ -317,7 +317,7 @@ namespace ownership
         }
 
         //determine
-        const float RAND(utilz::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
+        const float RAND(misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
 
         if (RAND < chanceMagical)
             return Magical;

@@ -39,9 +39,10 @@
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
 
-#include "utilz/real.hpp"
-#include "utilz/assertlogandthrow.hpp"
-#include "utilz/vectors.hpp"
+#include "misc/real.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/vectors.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <algorithm>
 
@@ -222,7 +223,7 @@ namespace creature
         std::ostringstream ss;
 
         const float HEALTH_RATIO(HealthRatio());
-        if (utilz::IsRealClose(HEALTH_RATIO, 0.0f))
+        if (misc::IsRealClose(HEALTH_RATIO, 0.0f))
         {
             ss << "0";
         }

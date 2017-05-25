@@ -35,7 +35,7 @@
 #include "game/log-macros.hpp"
 #include "game/non-player/character.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <iterator>//for back_inserter
 #include <exception>
@@ -191,27 +191,27 @@ namespace ownership
         //TODO handle intentionally unequipped weapons
 
         std::pair<item::weapon::axe_type::Enum, float> RANDOM_SELECTED_AXE_PAIR(RandomSelectWeapon<item::weapon::axe_type::Enum>(WEAPON_CHANCES.axe_map));
-        if ((RANDOM_SELECTED_AXE_PAIR.first != item::weapon::axe_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_AXE_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_AXE_PAIR.first != item::weapon::axe_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_AXE_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::Axe] = std::make_pair(RANDOM_SELECTED_AXE_PAIR.first, RANDOM_SELECTED_AXE_PAIR.second);
 
         std::pair<item::weapon::bladedstaff_type::Enum, float> RANDOM_SELECTED_BLADEDSTAFF_PAIR(RandomSelectWeapon<item::weapon::bladedstaff_type::Enum>(WEAPON_CHANCES.bladedstaff_map));
-        if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first != item::weapon::bladedstaff_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_BLADEDSTAFF_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first != item::weapon::bladedstaff_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_BLADEDSTAFF_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::BladedStaff] = std::make_pair(RANDOM_SELECTED_BLADEDSTAFF_PAIR.first, RANDOM_SELECTED_BLADEDSTAFF_PAIR.second);
 
         std::pair<item::weapon::club_type::Enum, float> RANDOM_SELECTED_CLUB_PAIR(RandomSelectWeapon<item::weapon::club_type::Enum>(WEAPON_CHANCES.club_map));
-        if ((RANDOM_SELECTED_CLUB_PAIR.first != item::weapon::club_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_CLUB_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_CLUB_PAIR.first != item::weapon::club_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_CLUB_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::Club] = std::make_pair(RANDOM_SELECTED_CLUB_PAIR.first, RANDOM_SELECTED_CLUB_PAIR.second);
 
         std::pair<item::weapon::projectile_type::Enum, float> RANDOM_SELECTED_PROJECTILE_PAIR(RandomSelectWeapon<item::weapon::projectile_type::Enum>(WEAPON_CHANCES.projectile_map));
-        if ((RANDOM_SELECTED_PROJECTILE_PAIR.first != item::weapon::projectile_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_PROJECTILE_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_PROJECTILE_PAIR.first != item::weapon::projectile_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_PROJECTILE_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::Projectile] = std::make_pair(RANDOM_SELECTED_PROJECTILE_PAIR.first, RANDOM_SELECTED_PROJECTILE_PAIR.second);
 
         std::pair<item::weapon::sword_type::Enum, float> RANDOM_SELECTED_SWORD_PAIR(RandomSelectWeapon<item::weapon::sword_type::Enum>(WEAPON_CHANCES.sword_map));
-        if ((RANDOM_SELECTED_SWORD_PAIR.first != item::weapon::sword_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_SWORD_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_SWORD_PAIR.first != item::weapon::sword_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_SWORD_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::Sword] = std::make_pair(RANDOM_SELECTED_SWORD_PAIR.first, RANDOM_SELECTED_SWORD_PAIR.second);
 
         std::pair<item::weapon::whip_type::Enum, float> RANDOM_SELECTED_WHIP_PAIR(RandomSelectWeapon<item::weapon::whip_type::Enum>(WEAPON_CHANCES.whip_map));
-        if ((RANDOM_SELECTED_WHIP_PAIR.first != item::weapon::whip_type::Count) && (utilz::IsRealClose(RANDOM_SELECTED_WHIP_PAIR.second, 0.0f) == false))
+        if ((RANDOM_SELECTED_WHIP_PAIR.first != item::weapon::whip_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_WHIP_PAIR.second, 0.0f) == false))
             typeKindChanceMap[item::weapon_type::Whip] = std::make_pair(RANDOM_SELECTED_WHIP_PAIR.first, RANDOM_SELECTED_WHIP_PAIR.second);
 
         //knife/dagger
@@ -231,7 +231,7 @@ namespace ownership
         //random select weapon
         item::weapon_type::Enum randomSelectedWeaponType(typeKindChanceMap.begin()->first);
         float chanceCumulative(0.0f);
-        const float RAND_WEAPON_TYPE_CHANCE( utilz::random::Float() );
+        const float RAND_WEAPON_TYPE_CHANCE( misc::random::Float() );
         for (auto const & NEXT_TYPEKIND_PAIR : typeKindChanceMap)
         {
             chanceCumulative += NEXT_TYPEKIND_PAIR.second.second;
@@ -248,7 +248,7 @@ namespace ownership
             case item::weapon_type::Knife:
             {
                 //determine which size the knife/dagger will be
-                const float RAND(utilz::random::Float());
+                const float RAND(misc::random::Float());
                 sfml_util::Size::Enum knifeSize(sfml_util::Size::Large);
                 //
                 chance::SizeChanceMap_t::const_iterator CITER_SMALL(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small));
@@ -264,7 +264,7 @@ namespace ownership
                             knifeSize = sfml_util::Size::Medium;
                 }
 
-                const bool IS_DAGGER(utilz::random::Float() < WEAPON_CHANCES.knife.is_dagger);
+                const bool IS_DAGGER(misc::random::Float() < WEAPON_CHANCES.knife.is_dagger);
 
                 itemsSPtrVecPair.first.push_back( item::weapon::WeaponFactory::Instance()->Make_Knife(IS_DAGGER,
                                                                                                       knifeSize,
@@ -275,7 +275,7 @@ namespace ownership
             }
             case item::weapon_type::Staff:
             {
-                const bool IS_QUARTERSTAFF(utilz::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
+                const bool IS_QUARTERSTAFF(misc::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
                 itemsSPtrVecPair.first.push_back( item::weapon::WeaponFactory::Instance()->Make_Staff(IS_QUARTERSTAFF,
                                                                                                       WEAPON_CHANCES.staff.RandomMaterialPri(),
                                                                                                       WEAPON_CHANCES.staff.RandomMaterialSec()) );
@@ -491,7 +491,7 @@ namespace ownership
     item::Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
     {
         if (CHANCES.coins_min < CHANCES.coins_max)
-            return utilz::random::Int(CHANCES.coins_min, CHANCES.coins_max);
+            return misc::random::Int(CHANCES.coins_min, CHANCES.coins_max);
         else
             return CHANCES.coins_min;
     }

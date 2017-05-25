@@ -28,7 +28,7 @@
 // date-time.hpp
 //  Simple wrapper structs for holding date and time.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include <SFML/System/Time.hpp>
 

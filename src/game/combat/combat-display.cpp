@@ -51,7 +51,7 @@
 #include "game/creature/name-info.hpp"
 #include "game/state/game-state.hpp"
 
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 
 #include <sstream>
 #include <numeric>

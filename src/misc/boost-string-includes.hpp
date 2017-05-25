@@ -22,14 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED
-#define UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#ifndef MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#define MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
 //
 // boost-string-includes.hpp
 //
 
 //suppress warnings that are safe to ignore in boost
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -43,4 +43,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //UTILZ_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#endif //MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED

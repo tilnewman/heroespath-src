@@ -32,7 +32,7 @@
 #include "game/creature/creature.hpp"
 #include "game/player/character.hpp"
 #include "game/non-player/character.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace game

@@ -35,7 +35,7 @@
 #include "game/creature/title.hpp"
 #include "game/loop-manager.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <memory>
 #include <sstream>

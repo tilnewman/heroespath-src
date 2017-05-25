@@ -31,7 +31,7 @@
 #include "game/phase-enum.hpp"
 #include "game/creature/condition-enum.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <string>
 

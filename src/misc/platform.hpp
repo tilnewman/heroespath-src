@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_PLATFORM_INCLUDED
-#define UTILZ_PLATFORM_INCLUDED
+#ifndef MISC_PLATFORM_INCLUDED
+#define MISC_PLATFORM_INCLUDED
 //
 // platform.hpp
 //  Code that detects the platform and stores it.
@@ -59,7 +59,7 @@
 #endif
 
 
-namespace utilz
+namespace misc
 {
 
     //defines supported platforms
@@ -116,4 +116,4 @@ namespace utilz
     };
 
 }
-#endif //UTILZ_PLATFORM_INCLUDED
+#endif //MISC_PLATFORM_INCLUDED

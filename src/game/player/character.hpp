@@ -28,7 +28,7 @@
 // character.hpp (player)
 //  A character under the control of the user.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/spell/spell-enum.hpp"
 #include "game/creature/sex-enum.hpp"

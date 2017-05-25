@@ -28,7 +28,7 @@
 // line.cpp
 //
 #include "line.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "gui-elements.hpp"
 
 

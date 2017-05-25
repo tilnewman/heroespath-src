@@ -31,8 +31,8 @@
 
 #include "game/log-macros.hpp"
 
-#include "utilz/platform.hpp"
-#include "utilz/boost-string-includes.hpp"
+#include "misc/platform.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <memory>
 
@@ -150,7 +150,7 @@ namespace game
 
     const std::string GameDataFile::GetMediaBasePathStr() const
     {
-        const std::string MEDIA_BASE_PATH_KEY_STR((utilz::Platform::Instance()->IsWindows()) ? "system-media-dir-win" : "system-media-dir-linux");
+        const std::string MEDIA_BASE_PATH_KEY_STR((misc::Platform::Instance()->IsWindows()) ? "system-media-dir-win" : "system-media-dir-linux");
         const std::string MEDIA_BASE_PATH_STR( GetCopyStr(MEDIA_BASE_PATH_KEY_STR, "") );
         M_ASSERT_OR_LOGANDTHROW_SS((MEDIA_BASE_PATH_STR.empty() == false), "GameDataFile::GetMediaBasePathStr(key=\"" << MEDIA_BASE_PATH_KEY_STR << "\") failed to find that key in the config file.");
         return MEDIA_BASE_PATH_STR;

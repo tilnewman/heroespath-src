@@ -28,7 +28,7 @@
 // armor-info.hpp
 //  Code that completely describes a singl piece of armor.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/item/item-type-enum.hpp"
 #include "game/item/armor-types.hpp"

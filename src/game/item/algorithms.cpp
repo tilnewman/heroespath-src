@@ -29,8 +29,8 @@
 //
 #include "algorithms.hpp"
 
-#include "utilz/random.hpp"
-#include "utilz/vectors.hpp"
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 #include "game/item/item.hpp"
 
@@ -48,7 +48,7 @@ namespace item
                                         const std::size_t  MAX_COUNT,
                                         const bool         WILL_ELLIPSIS)
     {
-        return utilz::Vector::Join<ItemSPtr_t>(ITEM_SVEC,
+        return misc::Vector::Join<ItemSPtr_t>(ITEM_SVEC,
                                                WILL_WRAP,
                                                WILL_APPEND_AND,
                                                MAX_COUNT,

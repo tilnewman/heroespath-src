@@ -38,8 +38,8 @@
 
 #include "stringutil/stringhelp.hpp"
 
-#include "utilz/random.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -591,7 +591,7 @@ namespace sfml_util
 
     void SoundManager::MusicAcquire_CombatIntro(MusicInfo & musicInfo, MusicSPtr_t & musicSPtr)
     {
-        const std::size_t INDEX(static_cast<std::size_t>(utilz::random::Int(0, static_cast<int>(combatIntroMusicInfoVec_.size()) - 1)));
+        const std::size_t INDEX(static_cast<std::size_t>(misc::random::Int(0, static_cast<int>(combatIntroMusicInfoVec_.size()) - 1)));
         MusicAcquire_CombatIntro(musicInfo, musicSPtr, INDEX);
     }
 

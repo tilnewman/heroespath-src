@@ -31,9 +31,9 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-window.hpp"
 #include "sfml-util/handy-types.hpp"
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <string>
 #include <vector>

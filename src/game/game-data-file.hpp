@@ -29,7 +29,7 @@
 //  A singleton config file that contains game data
 //
 #include "configbase/configbase.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 

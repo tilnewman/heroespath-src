@@ -28,7 +28,7 @@
 // item.hpp
 //  A base class for all items.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/types.hpp"
 #include "game/item/types.hpp"

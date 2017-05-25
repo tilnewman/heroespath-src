@@ -62,8 +62,8 @@
 #include "game/player/character.hpp"
 #include "game/state/game-state-factory.hpp"
 
-#include "utilz/real.hpp"
-#include "utilz/random.hpp"
+#include "misc/real.hpp"
+#include "misc/random.hpp"
 
 #include <sstream>
 
@@ -218,9 +218,9 @@ namespace stage
         intDescTextRegionSPtr_  (),
         attrDescTextRegion_     (),
         sbInsTextRegionSPtr_    (),
-        sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
+        sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         nInsTextRegionSPtr_     (),
-        nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(utilz::random::Int(150, 255))),
+        nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         bottomSymbol_           (),
         selectedImageIndex_     (0)
     {}
@@ -2181,12 +2181,12 @@ namespace stage
         {
             //reset timer to random value
             animStatsTimeCounterSec_ = 0.0f;
-            animStatsDelayPerSec_ = utilz::random::Float(0.05f, 0.25f);
+            animStatsDelayPerSec_ = misc::random::Float(0.05f, 0.25f);
 
             sfml_util::gui::TextInfo textInfo(" ", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 40, sf::Color::White, sfml_util::Justified::Left);
-            const stats::Stat_t NEXT_VAL(utilz::random::Int(stats::Stat::VAL_MIN_ + 1, stats::Stat::VAL_MAX_INITIAL_));
+            const stats::Stat_t NEXT_VAL(misc::random::Int(stats::Stat::VAL_MIN_ + 1, stats::Stat::VAL_MAX_INITIAL_));
 
-            int numToUse(utilz::random::Int(1, 6));
+            int numToUse(misc::random::Int(1, 6));
             if (initialRollCounter_ <= 6)
                 numToUse = initialRollCounter_++;
 

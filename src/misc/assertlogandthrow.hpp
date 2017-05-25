@@ -22,12 +22,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED
-#define UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#ifndef MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#define MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
 //
 // assertlogandthrow.hpp
 //
-#include "common/logmacros.hpp"
+#include "logbase/macros.hpp"
 #include "game/logger.hpp"
 
 #include <exception>
@@ -105,4 +105,4 @@
 
 #endif //#if defined(MACRO_DISABLE_ALL) || defined(MACRO_DISABLE_ASSERTORTHROW)
 
-#endif //UTILZ_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#endif //MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED

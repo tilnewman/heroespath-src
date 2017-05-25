@@ -28,7 +28,7 @@
 // race.hpp
 //  A base class for all Race types
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/creature/race-enum.hpp"
 #include "game/stats/stat-set.hpp"

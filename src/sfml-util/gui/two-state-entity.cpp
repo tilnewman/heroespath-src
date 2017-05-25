@@ -32,7 +32,7 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace sfml_util

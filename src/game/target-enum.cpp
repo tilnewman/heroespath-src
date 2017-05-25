@@ -29,7 +29,7 @@
 //
 #include "target-enum.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <sstream>
 
@@ -83,7 +83,7 @@ namespace game
 
     const std::string TargetType::ActionPhrase(const Enum E)
     {
-        auto const PREAMBLE{ ((utilz::random::Bool()) ? "at " : "upon ") };
+        auto const PREAMBLE{ ((misc::random::Bool()) ? "at " : "upon ") };
 
         std::ostringstream ss;
         switch (E)

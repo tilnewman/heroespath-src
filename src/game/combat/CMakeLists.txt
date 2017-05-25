@@ -12,5 +12,5 @@ target_link_libraries(  ${PROJECT_NAME}
                         Game-NonPlayer
                         Game-Location
 				        Game-Spell
-                        Utilz
+                        Misc
                         ${Boost_LIBRARIES} )

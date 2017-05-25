@@ -32,7 +32,7 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <string>
 
@@ -45,7 +45,7 @@ namespace spell
     const std::string Sparks::ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
                                            creature::CreaturePtr_t effectedCreaturePtr) const
     {
-        auto const RANDOM_VALUE{ utilz::random::Int(3) };
+        auto const RANDOM_VALUE{ misc::random::Int(3) };
         if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " shoots sparks at " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
         else if (RANDOM_VALUE == 1) return effectedCreaturePtr->NameOrRaceAndRole() + " is sprayed with sparks.";
         else if (RANDOM_VALUE == 2) return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
@@ -63,7 +63,7 @@ namespace spell
     const std::string Bandage::ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
                                             creature::CreaturePtr_t effectedCreaturePtr) const
     {
-        auto const RANDOM_VALUE{ utilz::random::Int(3) };
+        auto const RANDOM_VALUE{ misc::random::Int(3) };
         if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
         else if (RANDOM_VALUE == 1) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds.";
         else if (RANDOM_VALUE == 2) return "Magical bandages wrap " + effectedCreaturePtr->NameOrRaceAndRole() + "'s injuries.";
@@ -253,7 +253,7 @@ namespace spell
         }
         else
         {
-            auto const RAND_CASTER{ utilz::random::Int(castingCreaturePtr->Stats().Int().CurrentReduced(),
+            auto const RAND_CASTER{ misc::random::Int(castingCreaturePtr->Stats().Int().CurrentReduced(),
                                                        castingCreaturePtr->Stats().Int().Current()) };
 
             //check for player character 'natural' success
@@ -265,7 +265,7 @@ namespace spell
                 return Spell::EFFECT_STR_SUCCESS_;
             }
 
-            auto const RAND_DEFENDER{ utilz::random::Int(effectedCreaturePtr->Stats().Int().CurrentReduced(),
+            auto const RAND_DEFENDER{ misc::random::Int(effectedCreaturePtr->Stats().Int().CurrentReduced(),
                                                          effectedCreaturePtr->Stats().Int().Current())};
 
             //check for 'normal' success

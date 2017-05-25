@@ -28,7 +28,7 @@
 // body-type.hpp
 //  Code that defines the body type of all creatures.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/creature/race-enum.hpp"
 #include "game/creature/role-enum.hpp"

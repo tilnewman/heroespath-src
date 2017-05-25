@@ -42,7 +42,7 @@
 #include "game/game-data-file.hpp"
 #include "game/creature/condition-algorithms.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 
 namespace game

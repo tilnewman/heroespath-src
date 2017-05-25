@@ -35,7 +35,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 

@@ -29,7 +29,7 @@
 //
 
 //prevent warnings that can be ignored in SFML
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"

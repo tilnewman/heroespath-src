@@ -30,7 +30,7 @@
 #include "summary-view.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"

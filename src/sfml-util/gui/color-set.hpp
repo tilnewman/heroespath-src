@@ -29,7 +29,7 @@
 //  Simple struct encapsulating a GuiEntity's color scheme.
 //
 //suppress warnings that are safe to ignore in boost
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif

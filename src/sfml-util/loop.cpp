@@ -39,7 +39,7 @@
 #include "game/loop-manager.hpp"
 #include "game/i-popup-callback.hpp"
 
-#include "utilz/vectors.hpp"
+#include "misc/vectors.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -199,7 +199,7 @@ namespace sfml_util
             }
 
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
-            const float STANDARD_DEVIATION(utilz::Vector::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
+            const float STANDARD_DEVIATION(misc::Vector::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
             M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION << ":  ");
         }
         else

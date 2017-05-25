@@ -33,7 +33,7 @@
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 
 #include <sstream>

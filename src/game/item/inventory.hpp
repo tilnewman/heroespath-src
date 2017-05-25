@@ -28,7 +28,7 @@
 // inventory.hpp
 //  A class that encapsolates a collection of Items.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/item/types.hpp"
 #include "game/item/item-type-enum.hpp"

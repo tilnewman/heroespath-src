@@ -30,11 +30,11 @@
 #include "background-image.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/game-data-file.hpp"
 
 
@@ -121,11 +121,11 @@ namespace gui
 
         const float WIDTH_DIFF(static_cast<float>(bgInfo_.textureSPtr->getSize().x) - bgInfo_.region.width);
         if (WIDTH_DIFF > 10.0f)
-            textRectLeftToUse = utilz::random::Float(0.0f, WIDTH_DIFF);
+            textRectLeftToUse = misc::random::Float(0.0f, WIDTH_DIFF);
 
         const float HEIGHT_DIFF(static_cast<float>(bgInfo_.textureSPtr->getSize().y) - bgInfo_.region.height);
         if (HEIGHT_DIFF > 10.0f)
-            textRectTopToUse = utilz::random::Float(0.0f, HEIGHT_DIFF);
+            textRectTopToUse = misc::random::Float(0.0f, HEIGHT_DIFF);
 
         const float SCALE_MULT(1.0f / IMAGE_SCALE);
         const sf::FloatRect TEXTURE_RECT(textRectLeftToUse, textRectTopToUse, bgInfo_.region.width * SCALE_MULT, bgInfo_.region.height * SCALE_MULT);

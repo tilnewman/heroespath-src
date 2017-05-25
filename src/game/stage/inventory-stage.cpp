@@ -55,8 +55,8 @@
 #include "game/creature/creature.hpp"
 #include "game/spell/spell-base.hpp"
 
-#include "utilz/real.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/real.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <vector>
 

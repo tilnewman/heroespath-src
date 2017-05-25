@@ -34,7 +34,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include <boost/serialization/export.hpp>
 
 #include "game/item/item.hpp"

@@ -22,13 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_RANDOM_HPP_INCLUDED
-#define UTILZ_RANDOM_HPP_INCLUDED
+#ifndef MISC_RANDOM_HPP_INCLUDED
+#define MISC_RANDOM_HPP_INCLUDED
 //
 // random.hpp
 //
-#include "utilz/real.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/real.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <algorithm>
 #include <random>
@@ -38,7 +38,7 @@
 #include <array>
 
 
-namespace utilz
+namespace misc
 {
 namespace random
 {
@@ -62,13 +62,13 @@ namespace random
     template<typename T>
     T Real(const T THE_MIN, const T THE_MAX)
     {
-        if (utilz::IsRealClose(THE_MIN, THE_MAX))
+        if (misc::IsRealClose(THE_MIN, THE_MAX))
         {
             return THE_MIN;
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "utilz::random::Real(min=" << THE_MIN << ", max=" << THE_MAX << ")  The min was not less than the max.");
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "misc::random::Real(min=" << THE_MIN << ", max=" << THE_MAX << ")  The min was not less than the max.");
 
             //uniform_real_distribution is [x,y) so the nextafter() call is needed
             std::uniform_real_distribution<T> uniform_dist(THE_MIN, std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
@@ -98,4 +98,4 @@ namespace random
 }
 }
 
-#endif //UTILZ_RANDOM_HPP_INCLUDED
+#endif //MISC_RANDOM_HPP_INCLUDED

@@ -136,10 +136,10 @@ namespace ownership
             }
 
             //if zero, then there was no chance of an item of this type
-            if (utilz::IsRealClose(chanceTotal, 0.0f))
+            if (misc::IsRealClose(chanceTotal, 0.0f))
                 return std::make_pair(T::Count, 0.0f);
 
-            const float RAND( utilz::random::Float(0.0f, chanceTotal) );
+            const float RAND( misc::random::Float(0.0f, chanceTotal) );
 
             //random selection of one of the items
             float chanceCumulative(0.0f);

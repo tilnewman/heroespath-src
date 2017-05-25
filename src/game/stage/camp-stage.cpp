@@ -50,8 +50,8 @@
 #include "game/player/character.hpp"
 #include "game/player/party.hpp"
 
-#include "utilz/vectors.hpp"
-#include "utilz/real.hpp"
+#include "misc/vectors.hpp"
+#include "misc/real.hpp"
 
 
 namespace game
@@ -97,9 +97,9 @@ namespace stage
         {
             const float CURRENT_VOLUME(musicOperatorSPtr->Volume());
             const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
-            if (utilz::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
+            if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
             {
-                if (utilz::IsRealClose(INTENDED_VOLUME, 0.0f))
+                if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
                     musicOperatorSPtr->VolumeFadeOut();
                 else
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
@@ -253,7 +253,7 @@ namespace stage
         auto const PLAYERS_PVEC( creature::Algorithms::Players() );
         auto humansAndGnomesPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Human) );
         auto const GNOMES_PVEC( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Gnome) );
-        utilz::Vector::Append(GNOMES_PVEC, humansAndGnomesPVec);
+        misc::Vector::Append(GNOMES_PVEC, humansAndGnomesPVec);
 
         if (humansAndGnomesPVec.empty() == false)
             ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
@@ -262,7 +262,7 @@ namespace stage
 
         auto pixiesAndBeastmastersPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie) );
         auto const BEASTMASTERS_PVEC( creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Beastmaster) );
-        utilz::Vector::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
+        misc::Vector::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
 
         if (pixiesAndBeastmastersPVec.empty() == false)
             ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
@@ -355,7 +355,7 @@ namespace stage
             << creature::sex::HimHerIt(charToUsePtr->Sex(), false) << ", but ";
 
         auto const BEAST_PVEC(creature::Algorithms::FindByBeast(PLAYERS_PVEC));
-        auto const NONLOAD_NONBEAST_PVEC( utilz::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) );
+        auto const NONLOAD_NONBEAST_PVEC( misc::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) );
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {

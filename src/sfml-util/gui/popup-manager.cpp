@@ -29,7 +29,7 @@
 //
 #include "popup-manager.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -427,9 +427,9 @@ namespace gui
     TextureSPtr_t PopupManager::LoadRandomAccentImage() const
     {
         TextureSPtr_t tempTextureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
+        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
 
-        if (utilz::random::Bool())
+        if (misc::random::Bool())
         {
             sfml_util::FlipHoriz(*tempTextureSPtr);
         }

@@ -31,7 +31,7 @@
 
 #include "sfml-util/sound-manager.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 
 namespace sfml_util
@@ -101,7 +101,7 @@ namespace sfml_util
         }
         else
         {
-            PlayAt(static_cast<std::size_t>(utilz::random::Int(static_cast<int>(enumVec_.size()) - 1)));
+            PlayAt(static_cast<std::size_t>(misc::random::Int(static_cast<int>(enumVec_.size()) - 1)));
         }
     }
 

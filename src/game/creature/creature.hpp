@@ -29,7 +29,7 @@
 //  A base class for all creatures
 //
 #include "sfml-util/date-time.hpp"
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/creature/condition-enum.hpp"
 #include "game/item/types.hpp"

@@ -31,10 +31,10 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
 
 #include <boost/filesystem.hpp>
@@ -303,7 +303,7 @@ namespace gui
 
         if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
         {
-            return filenameVec[static_cast<std::size_t>(utilz::random::Int(0, static_cast<int>(filenameVec.size()) - 1))];
+            return filenameVec[static_cast<std::size_t>(misc::random::Int(0, static_cast<int>(filenameVec.size()) - 1))];
         }
         else
         {

@@ -28,7 +28,6 @@
 // configbase.cpp
 //
 #include "configbase.hpp"
-#include "common/assertorthrow.hpp"
 
 #include <sstream>
 #include <fstream>

@@ -33,7 +33,7 @@
 #include "sfml-util/loaders.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>

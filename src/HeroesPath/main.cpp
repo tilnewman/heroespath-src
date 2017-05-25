@@ -30,9 +30,9 @@
 //
 #include "configbase/configbase.hpp"
 
-#include "common/logmacros.hpp"
+#include "logbase/macros.hpp"
 
-#include "utilz/platform.hpp"
+#include "misc/platform.hpp"
 #include "sfml-util/loop.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -62,7 +62,7 @@
 #include "game/item/armor-factory.hpp"
 #include "game/item/weapon-details.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 
 int main()
@@ -74,15 +74,15 @@ int main()
 
     try
     {
-        utilz::Platform::Acquire();
-        utilz::Platform::Instance()->DetectAndLog();
-        if (utilz::Platform::Instance()->IsSupported() == false)
+        misc::Platform::Acquire();
+        misc::Platform::Instance()->DetectAndLog();
+        if (misc::Platform::Instance()->IsSupported() == false)
         {
             throw std::runtime_error("This system (platform) is not supported.");
         }
 
         //seed the random number generator
-        utilz::random::MersenneTwister::Seed();
+        misc::random::MersenneTwister::Seed();
 
         //keep an instance of various singleton classes here to prevent thrashing
         sfml_util::Display::Acquire();
@@ -197,7 +197,7 @@ int main()
         sfml_util::gui::PopupManager::Release();
         game::GameDataFile::Release();
         sfml_util::Display::Release();
-        utilz::Platform::Release();
+        misc::Platform::Release();
 
         //release warehouse objects
         game::spell::Warehouse::Empty();

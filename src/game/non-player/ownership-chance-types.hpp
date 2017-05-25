@@ -32,10 +32,10 @@
 #include "game/item/armor-factory.hpp"
 #include "game/item/misc-item-factory.hpp"
 #include "game/item/types.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
@@ -75,9 +75,9 @@ namespace chance
         for (auto const & NEXT_MAP_PAIR : MAP)
             chanceSubTotal += NEXT_MAP_PAIR.second;
 
-        M_ASSERT_OR_LOGANDTHROW_SS((utilz::IsRealClose(chanceSubTotal, 0.0f) == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
+        M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(chanceSubTotal, 0.0f) == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
 
-        const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );
+        const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
 
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR : MAP)
@@ -114,7 +114,7 @@ namespace chance
 
         static inline ItemChances NoChance() { return ItemChances(); }
 
-        inline bool IsEquipped() const { return (utilz::random::Float() < chance_equipped); }
+        inline bool IsEquipped() const { return (misc::random::Float() < chance_equipped); }
 
         std::size_t CountOwned() const;
 
@@ -186,10 +186,10 @@ namespace chance
                 if (NEXT_MAP_PAIR_INNER.first > 0)
                     chanceSubTotal += NEXT_MAP_PAIR_INNER.second;
 
-        if (utilz::IsRealClose(chanceSubTotal, 0.0f))
+        if (misc::IsRealClose(chanceSubTotal, 0.0f))
             return std::make_pair(MAP.begin()->first, 0);
 
-        const float RAND( utilz::random::Float(0.0f, chanceSubTotal) );
+        const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
 
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
@@ -369,7 +369,7 @@ namespace chance
                                   const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),
                                   const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
 
-        inline item::Coin_t RandomCoins() const { return ((coins_max > coins_min) ? utilz::random::Int(coins_min, coins_max) : coins_min); }
+        inline item::Coin_t RandomCoins() const { return ((coins_max > coins_min) ? misc::random::Int(coins_min, coins_max) : coins_min); }
 
         item::Coin_t coins_min;
         item::Coin_t coins_max;

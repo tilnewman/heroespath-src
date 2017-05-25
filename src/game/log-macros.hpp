@@ -27,7 +27,7 @@
 //
 // log-macros.hpp
 //
-#include "common/logmacros.hpp"
+#include "logbase/macros.hpp"
 #include "game/logger.hpp"
 
 

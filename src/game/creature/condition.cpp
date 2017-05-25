@@ -29,7 +29,7 @@
 //
 #include "condition.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/creature/creature.hpp"
 
 #include <sstream>

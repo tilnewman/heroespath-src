@@ -30,7 +30,7 @@
 //
 #include "sfml-util/sliders.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <string>
@@ -79,7 +79,7 @@ namespace sfml_util
             isGrowing_ = WILL_GROW;
 
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "sfml_util::Shaker::Reset(" << Description() << ")  Given a min that was not less than the max.");
-            M_ASSERT_OR_LOGANDTHROW_SS((utilz::IsRealClose(THE_MIN, THE_MAX) == false), "sfml_util::Shaker::Reset(" << Description() << ")  Given a min and max that are too close.");
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(THE_MIN, THE_MAX) == false), "sfml_util::Shaker::Reset(" << Description() << ")  Given a min and max that are too close.");
             M_ASSERT_OR_LOGANDTHROW_SS((SPEED > T(0)), "sfml_util::Shaker::Reset(" << Description() << ")  Given a speed that is not greater than zero.");
             M_ASSERT_OR_LOGANDTHROW_SS(((THE_MIN <= START_AT) && (THE_MAX >= START_AT)), "sfml_util::Shaker::Reset(" << Description() << ")  start at value was not within [max, min].");
 

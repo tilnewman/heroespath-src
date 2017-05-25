@@ -28,7 +28,7 @@
 // world-state.hpp
 //  A class that represents the entire state of the game world.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include <memory>
 
 

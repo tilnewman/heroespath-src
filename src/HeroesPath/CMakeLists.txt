@@ -34,6 +34,7 @@ file(GLOB source_files *.?pp)
 add_executable(${PROJECT_NAME} ${source_files})
 
 target_link_libraries(  ${PROJECT_NAME}
+                        Misc
                         ConfigBase
                         LogBase
                         sfml-util

@@ -29,7 +29,7 @@
 //  Describes a specific or general weapon.
 //
 #include "sfml-util/size-enum.hpp"
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/item/weapon-types.hpp"
 #include "game/item/item-type-enum.hpp"

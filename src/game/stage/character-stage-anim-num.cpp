@@ -63,7 +63,7 @@ namespace stage
         isHeldDown_  (false),
         textInfo_    (TEXT_INFO),
         textObj_     (),
-        sliderX_     (utilz::random::Float(0.35f, 0.75f)),
+        sliderX_     (misc::random::Float(0.35f, 0.75f)),
         timerSec_    (0.0f),
         prevPosX_    (-1.0f) //any negative value will work here
     {
@@ -161,7 +161,7 @@ namespace stage
 
     bool AnimNum::UpdateTimer(const float ELAPSED_TIME_SEC)
     {
-        if (utilz::IsRealClose(prevPosX_, textObj_.getPosition().x))
+        if (misc::IsRealClose(prevPosX_, textObj_.getPosition().x))
             timerSec_ += ELAPSED_TIME_SEC;
         else
             timerSec_ = 0.0f;
@@ -176,14 +176,14 @@ namespace stage
     {
         return ((L.colorVal_ == R.colorVal_) &&
                 (L.color_ == R.color_) &&
-                (utilz::IsRealClose(L.distanceX_, R.distanceX_)) &&
-                (utilz::IsRealClose(L.distanceY_, R.distanceY_)) &&
-                (utilz::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
+                (misc::IsRealClose(L.distanceX_, R.distanceX_)) &&
+                (misc::IsRealClose(L.distanceY_, R.distanceY_)) &&
+                (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
                 (L.ignoreMe_ == R.ignoreMe_) &&
                 (L.isDoneFading_ == R.isDoneFading_) &&
                 (L.isDoneMoving_ == R.isDoneMoving_) &&
-                (utilz::IsRealClose(L.startLeft_, R.startLeft_)) &&
-                (utilz::IsRealClose(L.startTop_, R.startTop_)) &&
+                (misc::IsRealClose(L.startLeft_, R.startLeft_)) &&
+                (misc::IsRealClose(L.startTop_, R.startTop_)) &&
                 (L.textInfo_ == R.textInfo_) &&
                 (L.textObj_.getPosition() == R.textObj_.getPosition()) &&
                 (L.value_ == R.value_) &&

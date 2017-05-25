@@ -31,8 +31,34 @@
 //      finish making auto-compiler-gen member functions private etc.
 //      quit passing everything around and start using a simple struct that holds all the details of a log (msg/file/line/pri/time/etc) this could also move the timestamp closer to the actual time  of the event
 //
-#include "common/ilog.hpp"
-#include "common/boostinc.hpp"
+#include "ilog.hpp"
+
+//prevent warnings that can be ignored
+#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4512)
+#elif defined(__APPLE__) || defined(__MACH__)
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#pragma GCC diagnostic ignored "-Wnested-anon-types"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wundef"
+#endif
+
+#include <boost/filesystem.hpp>
+#include <boost/thread/recursive_mutex.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
+#pragma warning(default : 4244)
+#pragma warning(default : 4512)
+#elif defined(__APPLE__) || defined(__MACH__)
+#pragma GCC diagnostic warning "-Wswitch-enum"
+#pragma GCC diagnostic warning "-Wnested-anon-types"
+#pragma GCC diagnostic warning "-Wunused-parameter"
+#pragma GCC diagnostic warning "-Wshadow"
+#pragma GCC diagnostic warning "-Wundef"
+#endif
 
 #include <string>
 #include <sstream>

@@ -27,12 +27,12 @@
 //
 // strategy-chances.hpp
 //
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "game/combat/strategy-enums.hpp"
 #include "game/combat/strategy-info.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 #include <string>
 #include <map>
@@ -92,7 +92,7 @@ namespace strategy
             T e{ T::None }; //None is always zero
             for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
             {
-                if (utilz::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
+                if (misc::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
                 {
                     if (NEXT_ENUMCHANCE_PAIR.first == T::None)
                     {
@@ -125,7 +125,7 @@ namespace strategy
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                     total += NEXT_ENUMCHANCE_PAIR.second;
 
-                auto const RAND{ utilz::random::Float(0.0f, total) };
+                auto const RAND{ misc::random::Float(0.0f, total) };
 
                 auto subtotal{ 0.0f };
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)

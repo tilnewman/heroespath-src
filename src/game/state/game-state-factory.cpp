@@ -41,7 +41,8 @@
 #include "game/player/character.hpp"
 #include "game/log-macros.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 

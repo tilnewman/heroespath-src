@@ -31,7 +31,7 @@
 
 #include "game/state/game-state.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <memory>
 

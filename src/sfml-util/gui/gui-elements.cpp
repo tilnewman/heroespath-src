@@ -33,9 +33,7 @@
 
 #include "sfml-util/loaders.hpp"
 
-#include "common/assertorthrow.hpp"
-
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace sfml_util

@@ -28,7 +28,7 @@
 // stat-set.hpp
 //  The collection for of stats for all creatures
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/stat.hpp"
 #include "game/stats/stat-mult-set.hpp"

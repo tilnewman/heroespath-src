@@ -32,7 +32,7 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/title-warehouse.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef UTILZ_REALUTILS_HPP_INCLUDED
-#define UTILZ_REALUTILS_HPP_INCLUDED
+#ifndef MISC_REALUTILS_HPP_INCLUDED
+#define MISC_REALUTILS_HPP_INCLUDED
 //
 // real-utils.hpp
 //
@@ -31,7 +31,7 @@
 #include <limits> //for epsilon
 
 
-namespace utilz
+namespace misc
 {
 
     template<typename T>
@@ -52,4 +52,4 @@ namespace utilz
 
 }
 
-#endif //UTILZ_REALUTILS_HPP_INCLUDED
+#endif //MISC_REALUTILS_HPP_INCLUDED

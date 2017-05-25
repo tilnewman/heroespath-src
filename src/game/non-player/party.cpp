@@ -29,7 +29,7 @@
 //
 #include "party.hpp"
 
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "game/non-player/character.hpp"
 

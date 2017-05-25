@@ -29,13 +29,13 @@
 //
 #include "chance-factory.hpp"
 
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/weapon-details.hpp"
 #include "game/item/armor-details.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 #include "game/stats/types.hpp"
 #include "game/non-player/character.hpp"
@@ -287,10 +287,10 @@ namespace ownership
         for (auto const & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
             chanceCombined += NEXT_WEAPONINFO_CHANCE_PAIR.second;
 
-        if (utilz::IsRealClose(chanceCombined, 0.0f))
+        if (misc::IsRealClose(chanceCombined, 0.0f))
             return;
 
-        const float RAND(utilz::random::Float(0.0f, chanceCombined));
+        const float RAND(misc::random::Float(0.0f, chanceCombined));
 
         //Need to select WEAPON_SET.count weapons in WEAPON_SET.chanceMap, so
         //make a mapping of count to chance that has been selected already or not.
@@ -639,7 +639,7 @@ namespace ownership
             {
                 armorChanceVal = -1.0f;
             }
-            M_ASSERT_OR_LOGANDTHROW_SS((utilz::IsRealClose(-1.0f, armorChanceVal) == false), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CREATURE_SPTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\"" << ARMOR_CHANCE_STR << "\" which was unable to be parsed into a valid (!= -1) float.  (" << armorChanceVal << ")");
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(-1.0f, armorChanceVal) == false), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CREATURE_SPTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\"" << ARMOR_CHANCE_STR << "\" which was unable to be parsed into a valid (!= -1) float.  (" << armorChanceVal << ")");
 
             using namespace item::armor;
 
@@ -1092,7 +1092,7 @@ namespace ownership
 
         //final determination of which material will be secondary
         const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND(utilz::random::Float(0.0f, std::max(1.0f, SUBTOTAL)));
+        const float RAND(misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)));
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {
@@ -1195,7 +1195,7 @@ namespace ownership
 
         //final determination of which material will be secondary
         const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND( utilz::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) );
+        const float RAND( misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) );
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {
@@ -1238,7 +1238,7 @@ namespace ownership
             {
                 const float NEXT_VALUE_FLOAT(GameDataFile::Instance()->GetCopyFloat(PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX));
 
-                if (false == utilz::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
+                if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                 {
                     const float NEXT_CHANCE(1.0f / NEXT_VALUE_FLOAT);
                     materialChanceMap[NEXT_MATERIAL] = NEXT_CHANCE;

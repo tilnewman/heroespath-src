@@ -33,7 +33,7 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-warehouse.hpp"
 
-#include "utilz/vectors.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <algorithm>
@@ -63,7 +63,7 @@ namespace condition
             SortBySeverity(tempVec, true);
         }
 
-        return utilz::Vector::Join<Conditions::Enum>(tempVec,
+        return misc::Vector::Join<Conditions::Enum>(tempVec,
                                                      WILL_WRAP,
                                                      WILL_AND,
                                                      MAX_COUNT,

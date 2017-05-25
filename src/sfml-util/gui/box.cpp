@@ -32,7 +32,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 
 

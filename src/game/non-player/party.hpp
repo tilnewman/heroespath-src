@@ -28,7 +28,7 @@
 // party.hpp
 //  A collection of characters NOT under control of the user.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>

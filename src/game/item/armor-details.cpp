@@ -31,8 +31,8 @@
 
 #include "game/game-data-file.hpp"
 
-#include "utilz/boost-string-includes.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include "stringutil/stringhelp.hpp"
 

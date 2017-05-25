@@ -34,7 +34,7 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include "utilz/random.hpp"
+#include "misc/random.hpp"
 
 
 namespace sfml_util
@@ -67,7 +67,7 @@ namespace animation
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
-        sprite_.rotate(utilz::random::Float(360.0f));
+        sprite_.rotate(misc::random::Float(360.0f));
         //
         sprite_.setPosition(startPosV_);
         sprite_.setScale(startScale_, startScale_);
@@ -160,17 +160,17 @@ namespace animation
             emitTimerSec_ -= SEC_PER_EMIT_;
 
             auto const EMITTER_VERTICAL_SPAN{ (SPRAY_RATIO_MINOR_ * REGION_.height) };
-            auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f)) - (EMITTER_VERTICAL_SPAN * 0.5f)) + utilz::random::Float(EMITTER_VERTICAL_SPAN) };
+            auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f)) - (EMITTER_VERTICAL_SPAN * 0.5f)) + misc::random::Float(EMITTER_VERTICAL_SPAN) };
 
-            auto const EMITTER_HORIZ_OFFSET{ utilz::random::Float(SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
+            auto const EMITTER_HORIZ_OFFSET{ misc::random::Float(SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
             auto const START_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? REGION_.left + EMITTER_HORIZ_OFFSET : (REGION_.left + REGION_.width) - EMITTER_HORIZ_OFFSET) };
 
-            auto const TARGET_VERT_SPAN{ utilz::random::Float(REGION_.height * SPRAY_RATIO_MAJOR_) };
-            auto const END_POS_TOP{ ((utilz::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN : START_POS_TOP - TARGET_VERT_SPAN) };
+            auto const TARGET_VERT_SPAN{ misc::random::Float(REGION_.height * SPRAY_RATIO_MAJOR_) };
+            auto const END_POS_TOP{ ((misc::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN : START_POS_TOP - TARGET_VERT_SPAN) };
 
             auto const TARGET_HORIZ_SPAN_MIN{ (REGION_.width * SPRAY_RATIO_MINOR_) };
             auto const TARGET_HORIZ_SPAN_MAX{ (REGION_.width * SPRAY_RATIO_MAJOR_) };
-            auto const TARGET_HORIZ_SPAN{ utilz::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
+            auto const TARGET_HORIZ_SPAN{ misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
             auto const END_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
             sparkVec_.push_back( Spark( * sparkTextureSPtr_,
@@ -180,8 +180,8 @@ namespace animation
                                        ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_),
                                        0.001f,
                                        ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_),
-                                       sf::Color(255, 255, static_cast<sf::Uint8>(utilz::random::Int(255)), 255),
-                                       sf::Color(255, static_cast<sf::Uint8>(utilz::random::Int(192, 255)), static_cast<sf::Uint8>(utilz::random::Int(255)), static_cast<sf::Uint8>(utilz::random::Int(0, 127)))) );
+                                       sf::Color(255, 255, static_cast<sf::Uint8>(misc::random::Int(255)), 255),
+                                       sf::Color(255, static_cast<sf::Uint8>(misc::random::Int(192, 255)), static_cast<sf::Uint8>(misc::random::Int(255)), static_cast<sf::Uint8>(misc::random::Int(0, 127)))) );
         }
 
         for (auto & nextSpark : sparkVec_)
@@ -208,14 +208,14 @@ namespace animation
 
     float SparksAnimation::ValueWithRandomVariance(const float BASE, const float VARIANCE_RATIO) const
     {
-        if (utilz::IsRealZero(VARIANCE_RATIO))
+        if (misc::IsRealZero(VARIANCE_RATIO))
         {
             return BASE;
         }
         else
         {
             auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
-            return (BASE - (VARIATION_SPAN * 0.5f)) + utilz::random::Float(VARIATION_SPAN);
+            return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
         }
     }
 

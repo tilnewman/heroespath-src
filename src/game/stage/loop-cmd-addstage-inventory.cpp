@@ -30,7 +30,7 @@
 #include "loop-cmd-addstage.hpp"
 
 #include "game/stage/inventory-stage.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace game

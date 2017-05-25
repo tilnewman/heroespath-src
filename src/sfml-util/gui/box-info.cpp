@@ -29,7 +29,7 @@
 //
 #include "box-info.hpp"
 
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 
 #include <string>
 
@@ -132,7 +132,7 @@ namespace box
     {
         return ((L.color_set == R.color_set) &&
                 (L.gold_bars == R.gold_bars) &&
-                (utilz::IsRealClose(L.line_thickness, R.line_thickness) ) &&
+                (misc::IsRealClose(L.line_thickness, R.line_thickness) ) &&
                 (L.region == R.region) &&
                 (L.will_grow == R.will_grow) &&
                 (L.frame_lines == R.frame_lines) &&

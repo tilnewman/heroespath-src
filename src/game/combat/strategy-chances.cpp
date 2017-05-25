@@ -29,7 +29,7 @@
 //
 #include "strategy-chances.hpp"
 
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 
 #include <tuple>
 #include <utility>
@@ -231,7 +231,7 @@ namespace strategy
         for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
         {
             totalOfAllFreqTypes += NEXT_FREQCHANCE_PAIR.second;
-            if ((NEXT_FREQCHANCE_PAIR.second > 1.0f) || utilz::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
+            if ((NEXT_FREQCHANCE_PAIR.second > 1.0f) || misc::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
             {
                 cretainOrHigherChanceTotal += NEXT_FREQCHANCE_PAIR.second;
                 cretainOrHigherFreqTypeVec.push_back(NEXT_FREQCHANCE_PAIR);
@@ -246,7 +246,7 @@ namespace strategy
         else if (cretainOrHigherFreqTypeVec.size() > 1)
         {
             //if there are multipe FrequencyTypes that are certain or higher then choose randomly amoung them
-            auto const RAND( utilz::random::Float(0.0f, cretainOrHigherChanceTotal) );
+            auto const RAND( misc::random::Float(0.0f, cretainOrHigherChanceTotal) );
             auto subtotal{ 0.0f };
             for (auto const & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)
             {
@@ -259,12 +259,12 @@ namespace strategy
         }
         else
         {
-            auto const DO_CHANCES_TOTAL_ONE_OR_LESS{ ((totalOfAllFreqTypes < 1.0f) || utilz::IsRealOne(totalOfAllFreqTypes)) };
+            auto const DO_CHANCES_TOTAL_ONE_OR_LESS{ ((totalOfAllFreqTypes < 1.0f) || misc::IsRealOne(totalOfAllFreqTypes)) };
 
             //if there are no FrequencyTypes with certain or higher chance,
             //then random select from any with a non-zero chance...
             auto subtotal{ 0.0f };
-            auto const RAND{ utilz::random::Float(0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
+            auto const RAND{ misc::random::Float(0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
 
             for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
             {
@@ -306,7 +306,7 @@ namespace strategy
             auto total{ 0.0f };
             for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
             {
-                if (utilz::IsRealOne(NEXT_COUNTCHANCE_PAIR.second))
+                if (misc::IsRealOne(NEXT_COUNTCHANCE_PAIR.second))
                 {
                     if (alreadyFoundChanceOfOne)
                     {
@@ -321,7 +321,7 @@ namespace strategy
                 total += NEXT_COUNTCHANCE_PAIR.second;
             }
 
-            auto const RAND{ utilz::random::Float(0.0f, total) };
+            auto const RAND{ misc::random::Float(0.0f, total) };
 
             auto subtotal{ 0.0f };
             for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)

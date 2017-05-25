@@ -28,7 +28,7 @@
 // achievements.hpp
 //  A class that manages all the achievements (title statistics) for a creature
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/creature/achievement.hpp"
 #include "game/creature/title-enum.hpp"

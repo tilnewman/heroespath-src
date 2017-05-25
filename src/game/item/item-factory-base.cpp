@@ -29,7 +29,7 @@
 //
 #include "item-factory-base.hpp"
 
-#include "utilz/boost-string-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "game/item/item.hpp"
 

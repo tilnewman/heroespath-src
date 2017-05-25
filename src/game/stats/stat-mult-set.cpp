@@ -29,7 +29,7 @@
 //
 #include "stat-mult-set.hpp"
 
-#include "utilz/real.hpp"
+#include "misc/real.hpp"
 
 #include <tuple>
 #include <sstream>
@@ -79,12 +79,12 @@ namespace stats
 
     void StatMultSet::Invert()
     {
-        if (utilz::IsRealZero(str_)) str_ = 1.0f; else str_ = 1.0f / str_;
-        if (utilz::IsRealZero(acc_)) acc_ = 1.0f; else acc_ = 1.0f / acc_;
-        if (utilz::IsRealZero(cha_)) cha_ = 1.0f; else cha_ = 1.0f / cha_;
-        if (utilz::IsRealZero(lck_)) lck_ = 1.0f; else lck_ = 1.0f / lck_;
-        if (utilz::IsRealZero(spd_)) spd_ = 1.0f; else spd_ = 1.0f / spd_;
-        if (utilz::IsRealZero(int_)) int_ = 1.0f; else int_ = 1.0f / int_;
+        if (misc::IsRealZero(str_)) str_ = 1.0f; else str_ = 1.0f / str_;
+        if (misc::IsRealZero(acc_)) acc_ = 1.0f; else acc_ = 1.0f / acc_;
+        if (misc::IsRealZero(cha_)) cha_ = 1.0f; else cha_ = 1.0f / cha_;
+        if (misc::IsRealZero(lck_)) lck_ = 1.0f; else lck_ = 1.0f / lck_;
+        if (misc::IsRealZero(spd_)) spd_ = 1.0f; else spd_ = 1.0f / spd_;
+        if (misc::IsRealZero(int_)) int_ = 1.0f; else int_ = 1.0f / int_;
     }
 
 
@@ -112,12 +112,12 @@ namespace stats
 
     bool operator==(const StatMultSet & L, const StatMultSet & R)
     {
-        return (utilz::IsRealClose(L.str_, R.str_) &&
-                utilz::IsRealClose(L.acc_, R.acc_) &&
-                utilz::IsRealClose(L.cha_, R.cha_) &&
-                utilz::IsRealClose(L.lck_, R.lck_) &&
-                utilz::IsRealClose(L.spd_, R.spd_) &&
-                utilz::IsRealClose(L.int_, R.int_));
+        return (misc::IsRealClose(L.str_, R.str_) &&
+                misc::IsRealClose(L.acc_, R.acc_) &&
+                misc::IsRealClose(L.cha_, R.cha_) &&
+                misc::IsRealClose(L.lck_, R.lck_) &&
+                misc::IsRealClose(L.spd_, R.spd_) &&
+                misc::IsRealClose(L.int_, R.int_));
     }
 
 

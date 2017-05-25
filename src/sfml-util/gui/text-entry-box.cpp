@@ -33,7 +33,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 
 

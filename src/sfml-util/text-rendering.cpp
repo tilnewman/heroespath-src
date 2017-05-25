@@ -35,7 +35,7 @@
 #include "sfml-util/gui/sliderbar.hpp"
 
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <cctype>//for isDigit()
 
@@ -242,7 +242,7 @@ namespace text_render
             const float CURR_LINE_LEN(lineLengthVec[l]);
             if (TEXT_INFO_CHAR.justified == Justified::Center)
             {
-                if (utilz::IsRealClose(0.0f, REGION.width))
+                if (misc::IsRealClose(0.0f, REGION.width))
                     offset = ((longestLine * 0.5f) - (CURR_LINE_LEN * 0.5f));
                 else
                     offset = ((REGION.width * 0.5f) - (CURR_LINE_LEN * 0.5f));
@@ -251,7 +251,7 @@ namespace text_render
             {
                 if (TEXT_INFO_CHAR.justified == Justified::Right)
                 {
-                    if (utilz::IsRealClose(0.0f, REGION.width))
+                    if (misc::IsRealClose(0.0f, REGION.width))
                         offset = (longestLine - CURR_LINE_LEN);
                     else
                         offset = (REGION.width - CURR_LINE_LEN);
@@ -292,7 +292,7 @@ namespace text_render
 
         //if not specified use the screen width for maximum line length
         const float INVALID_WIDTH(Display::Instance()->GetWinWidth());
-        const float WIDTH_LIMIT_TO_USE( (utilz::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG);
+        const float WIDTH_LIMIT_TO_USE( (misc::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG);
         const std::size_t STR_LEN( TEXT_INFO_SET.text.size() );
 
         while((strIndex < STR_LEN) && (textPos.x <= WIDTH_LIMIT_TO_USE))

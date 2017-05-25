@@ -28,7 +28,7 @@
 // role.hpp
 //  The Role class for all creatures.
 //
-#include "utilz/boost-serialize-includes.hpp"
+#include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/types.hpp"
 #include "game/stats/stat-set.hpp"
