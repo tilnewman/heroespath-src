@@ -66,7 +66,7 @@ namespace game
             instanceUPtr_.reset(new Game);
         }
     }
-    
+
 
     void Game::Release()
     {

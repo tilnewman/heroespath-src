@@ -329,7 +329,7 @@ namespace combat
         {
             auto const NEXT_NODE_ID{ combatDisplayStagePtr_->CombatTreeObj().GetNodeId(nextCombatNodeCPtr) };
             auto const NEXT_NODE_SPTR{ combatDisplayStagePtr_->CombatTreeObj().GetNodeSPtr(NEXT_NODE_ID) };
-            
+
             //TODO WARN THIS INVALIDATES A CombatNodePtr that could be stored in CombatAnim::shakeAnimInfoMap_ etc.
             combatDisplayStagePtr_->CombatTreeObj().RemoveVertex(NEXT_NODE_ID, true);
             combatDisplayStagePtr_->RemoveCombatNode(NEXT_NODE_SPTR);

@@ -2633,7 +2633,7 @@ namespace stage
         creature::Achievements a(CREATURE_CPTRC->AchievementsCopy());
 
         const std::string NOMORE_TITLE_MSG_STR("  (There are no more titles to earn)");
-        
+
         creature::TitleCPtrC_t ENEMIESFACED_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::EnemiesFaced));
         creature::TitleCPtrC_t MELEEHITS_NEXT_TITLE_CPTR       (a.GetNextTitle(creature::AchievementType::MeleeHits));
         creature::TitleCPtrC_t BATTLESSURVIVED_NEXT_TITLE_CPTR (a.GetNextTitle(creature::AchievementType::BattlesSurvived));

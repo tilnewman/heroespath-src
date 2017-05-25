@@ -111,12 +111,12 @@ int main()
         sfml_util::gui::SpellImageManager::SetImagesDirectory(          gameDataFilePtr->GetMediaPath("media-images-spells-dir") );
         sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
         sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
-        
+
         //load game assets Stage 1 (warehouse objects)
         game::creature::title::Warehouse::Fill();
         game::creature::condition::Warehouse::Setup();
         game::spell::Warehouse::Setup();
-        
+
         //load game assets Stage 2
         sfml_util::FontManager::Acquire();
         sfml_util::gui::PopupManager::Acquire();

@@ -44,7 +44,7 @@
 
 namespace sfml_util
 {
-    
+
     using SoundBufferRefCountPair_t = std::pair<SoundBufferSPtr_t, std::size_t>;
     using SoundBufferRefCountVec_t = std::vector<SoundBufferRefCountPair_t>;
 
@@ -109,7 +109,7 @@ namespace sfml_util
         static SoundManager * Instance();
         static void Acquire();
         static void Release();
-        
+
         static void SetSoundsDirectory(const std::string & SOUND_DIR_PATH,
                                        const std::string & MUSIC_DIR_PATH);
 

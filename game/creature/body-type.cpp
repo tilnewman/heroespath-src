@@ -222,7 +222,7 @@ namespace creature
 
                 if (ROLE == role::Whelp)
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
-                
+
                 break;
             }
             case creature::race::Enum::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
@@ -257,7 +257,7 @@ namespace creature
 
                 if (ROLE == role::Wing)
                     return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
-                
+
                 break;
             }
             case creature::race::Enum::Griffin:

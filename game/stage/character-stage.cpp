@@ -1897,7 +1897,7 @@ namespace stage
         {
             const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
             const stats::Stat_t NEXT_STAT_VAL(statSetRace_.Get(NEXT_STAT_ENUM).Normal());
-            
+
             if ((NEXT_STAT_VAL != 0) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&
@@ -1921,7 +1921,7 @@ namespace stage
         {
             const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
             const stats::Stat_t NEXT_STAT_VAL(statSetRole_.Get(NEXT_STAT_ENUM).Normal());
-            
+
             if ((NEXT_STAT_VAL != 0) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
                 (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&

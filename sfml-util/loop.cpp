@@ -554,7 +554,7 @@ namespace sfml_util
 
             //establish the path
             const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
-            
+
             //create directory if missing
             if (false == bfs::exists(DIR_OBJ))
             {

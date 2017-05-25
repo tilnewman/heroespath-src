@@ -108,7 +108,7 @@ namespace gui
         static auto roleIndex { 0 };
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
-        
+
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
             auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
