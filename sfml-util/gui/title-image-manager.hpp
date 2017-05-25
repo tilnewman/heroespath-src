@@ -50,10 +50,6 @@ namespace sfml_util
 namespace gui
 {
 
-    class TitleImageManager;
-    using TitleImageManagerSPtr_t = std::shared_ptr<TitleImageManager>;
-
-
     //A class that loads, stores, and distributes creature images.
     class TitleImageManager
     {
@@ -67,9 +63,9 @@ namespace gui
         TitleImageManager();
 
     public:
-        virtual ~TitleImageManager();
-
-        static TitleImageManagerSPtr_t Instance();
+        static TitleImageManager * Instance();
+        static void Acquire();
+        static void Release();
         static void SetTitleImageDirectory(const std::string & PATH);
 
         inline static const std::string PlaceholderFileName()   { return "placeholder" + FileNameExt(); }
@@ -83,7 +79,7 @@ namespace gui
 
     private:
         static std::string imagesDirectoryPath_;
-        static TitleImageManagerSPtr_t instanceSPtr_;
+        static std::unique_ptr<TitleImageManager> instanceUPtr_;
         //
         boost::filesystem::path placeHlderFilePathObj_;
     };

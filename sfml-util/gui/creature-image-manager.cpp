@@ -48,8 +48,8 @@ namespace sfml_util
 namespace gui
 {
 
-    std::string                CreatureImageManager::imagesDirectoryPath_;
-    CreatureImageManagerSPtr_t CreatureImageManager::instanceSPtr_;
+    std::string CreatureImageManager::imagesDirectoryPath_;
+    std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_{ nullptr };
 
 
     CreatureImageManager::CreatureImageManager()
@@ -60,12 +60,30 @@ namespace gui
     {}
 
 
-    CreatureImageManagerSPtr_t CreatureImageManager::Instance()
+    CreatureImageManager * CreatureImageManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new CreatureImageManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void CreatureImageManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new CreatureImageManager);
+        }
+    }
+
+
+    void CreatureImageManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::CreatureImageManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

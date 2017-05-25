@@ -28,6 +28,7 @@
 // armor-factory.cpp
 //
 #include "armor-factory.hpp"
+
 #include "game/item/item.hpp"
 #include "game/item/armor-details.hpp"
 #include "game/item/weapon-info.hpp"
@@ -40,7 +41,7 @@ namespace item
 namespace armor
 {
 
-    ArmorFactorySPtr_t ArmorFactory::instance_(nullptr);
+    std::unique_ptr<ArmorFactory> ArmorFactory::instanceUPtr_{ nullptr };
 
 
     ArmorFactory::ArmorFactory()
@@ -51,12 +52,30 @@ namespace armor
     {}
 
 
-    ArmorFactorySPtr_t ArmorFactory::Instance()
+    ArmorFactory * ArmorFactory::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new ArmorFactory );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void ArmorFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new ArmorFactory);
+        }
+    }
+
+
+    void ArmorFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::item::armor::ArmorFactory::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

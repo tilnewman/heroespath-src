@@ -48,11 +48,6 @@ namespace non_player
 namespace combat
 {
 
-    //types required by the singleton implementation
-    class PartyFactory;
-    using PartyFactorySPtr_t = std::shared_ptr<PartyFactory>;
-
-
     //Creates partys of creatures that confront the player characters
     class PartyFactory
     {
@@ -66,8 +61,9 @@ namespace combat
         PartyFactory();
 
     public:
-        virtual ~PartyFactory();
-        static PartyFactorySPtr_t Instance();
+        static PartyFactory * Instance();
+        static void Acquire();
+        static void Release();
 
         non_player::PartySPtr_t MakeParty_FirstEncounter() const;
 
@@ -75,7 +71,7 @@ namespace combat
         non_player::CharacterSPtr_t MakeCreature_GoblinGrunt() const;
 
     private:
-        static PartyFactorySPtr_t instance_;
+        static std::unique_ptr<PartyFactory> instanceUPtr_;
     };
 
 }

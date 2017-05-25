@@ -72,11 +72,6 @@ namespace armor
     using ArmorDetailMap_t = std::map<std::string, ArmorDetails>;
 
 
-    //types required by the singleton implementation
-    class ArmorDetailLoader;
-    using ArmorDetailLoaderSPtr_t = std::shared_ptr<ArmorDetailLoader>;
-
-
     //A singleton class that loads detailed armor info from the GameDataFile.
     class ArmorDetailLoader
     {
@@ -90,8 +85,10 @@ namespace armor
         ArmorDetailLoader();
 
     public:
-        virtual ~ArmorDetailLoader();
-        static ArmorDetailLoaderSPtr_t Instance();
+        static ArmorDetailLoader * Instance();
+        static void Acquire();
+        static void Release();
+
         const ArmorDetails LookupArmorDetails(const std::string & NAME);
 
     private:
@@ -101,12 +98,12 @@ namespace armor
         const std::string CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
     private:
-        static ArmorDetailLoaderSPtr_t instance_;
+        static std::unique_ptr<ArmorDetailLoader> instanceUPtr_;
         ArmorDetailMap_t armorDetailsMap_;
     };
 
+}
+}
+}
 
-}
-}
-}
 #endif //GAME_ITEM_ARMORDETAILS_INCLUDED

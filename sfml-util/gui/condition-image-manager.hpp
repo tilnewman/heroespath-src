@@ -42,11 +42,6 @@ namespace sfml_util
 namespace gui
 {
 
-    //types required by the singleton implementation
-    class ConditionImageManager;
-    using ConditionImageManagerSPtr_t = std::shared_ptr<ConditionImageManager>;
-
-
     //Loads images and delivers sfml_util::TextureSPtr_ts to them on demand.
     class ConditionImageManager
     {
@@ -60,9 +55,10 @@ namespace gui
         ConditionImageManager();
 
     public:
-        virtual ~ConditionImageManager();
+        static ConditionImageManager * Instance();
+        static void Acquire();
+        static void Release();
 
-        static ConditionImageManagerSPtr_t Instance();
         inline static void SetImagesDirectory(const std::string & S)    { conditionImagesDirectory_ = S; }
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
@@ -74,7 +70,7 @@ namespace gui
         const boost::filesystem::path MakeFilepath(const game::creature::Conditions::Enum) const;
 
     private:
-        static ConditionImageManagerSPtr_t instance_;
+        static std::unique_ptr<ConditionImageManager> instanceUPtr_;
         static std::string conditionImagesDirectory_;
         static const std::string filenameExtension_;
     };

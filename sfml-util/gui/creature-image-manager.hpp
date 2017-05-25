@@ -48,10 +48,6 @@ namespace sfml_util
 namespace gui
 {
 
-    class CreatureImageManager;
-    using CreatureImageManagerSPtr_t = std::shared_ptr<CreatureImageManager>;
-
-
     //A class that loads, stores, and distributes creature images.
     class CreatureImageManager
     {
@@ -67,7 +63,9 @@ namespace gui
     public:
         virtual ~CreatureImageManager();
 
-        static CreatureImageManagerSPtr_t Instance();
+        static CreatureImageManager * Instance();
+        static void Acquire();
+        static void Release();
         static void SetCreatureImageDirectory(const std::string & PATH);
 
         static bool Test();
@@ -106,7 +104,7 @@ namespace gui
 
     private:
         static std::string imagesDirectoryPath_;
-        static CreatureImageManagerSPtr_t instanceSPtr_;
+        static std::unique_ptr<CreatureImageManager> instanceUPtr_;
     };
 
 }

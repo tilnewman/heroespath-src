@@ -55,11 +55,6 @@ namespace sfml_util
     };
 
 
-    //types required by the singleton implementation
-    class Display;
-    using DisplaySPtr_t = std::shared_ptr<Display>;
-
-
     //A singleton that retains details pertaining to an sfml application.
     class Display
     {
@@ -73,8 +68,9 @@ namespace sfml_util
         Display();
 
     public:
-        virtual ~Display();
-        static DisplaySPtr_t Instance();
+        static Display * Instance();
+        static void Acquire();
+        static void Release();
 
         inline WinSPtr_t GetWindow() const         { return winSPtr_; }
         inline void SetWindow(WinSPtr_t & winSPtr) { winSPtr_ = winSPtr; }
@@ -140,13 +136,13 @@ namespace sfml_util
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
     private:
-        static DisplaySPtr_t instanceSPtr_;
+        static std::unique_ptr<Display> instanceUPtr_;
         //
-        WinSPtr_t        winSPtr_;
-        std::string      winTitle_;
-        sf::Uint32       winStyle_;
-        int              frameRateLimit_;
-        bool             willVerticalSync_;
+        WinSPtr_t   winSPtr_;
+        std::string winTitle_;
+        sf::Uint32  winStyle_;
+        int         frameRateLimit_;
+        bool        willVerticalSync_;
     };
 
 }

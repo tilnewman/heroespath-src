@@ -44,8 +44,8 @@ namespace sfml_util
 namespace gui
 {
 
-    std::string             TitleImageManager::imagesDirectoryPath_;
-    TitleImageManagerSPtr_t TitleImageManager::instanceSPtr_;
+    std::string TitleImageManager::imagesDirectoryPath_;
+    std::unique_ptr<TitleImageManager> TitleImageManager::instanceUPtr_{ nullptr };
 
 
     TitleImageManager::TitleImageManager()
@@ -61,16 +61,30 @@ namespace gui
     }
 
 
-    TitleImageManager::~TitleImageManager()
-    {}
-
-
-    TitleImageManagerSPtr_t TitleImageManager::Instance()
+    TitleImageManager * TitleImageManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new TitleImageManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void TitleImageManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new TitleImageManager);
+        }
+    }
+
+
+    void TitleImageManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::TitleImageManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

@@ -59,15 +59,25 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset( new GameDataFile );
+            Acquire();
         }
 
         return instanceUPtr_.get();
     }
 
 
-    void GameDataFile::InstanceRelease()
+    void GameDataFile::Acquire()
     {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new GameDataFile);
+        }
+    }
+
+
+    void GameDataFile::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::GameDataFile::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 

@@ -46,11 +46,6 @@ namespace item
 namespace armor
 {
 
-    //types required by the singleton implementation
-    class ArmorFactory;
-    using ArmorFactorySPtr_t = std::shared_ptr<ArmorFactory>;
-
-
     //A singleton class responsible for creating armor objects.
     class ArmorFactory : public FactoryBase
     {
@@ -66,7 +61,9 @@ namespace armor
     public:
         virtual ~ArmorFactory();
 
-        static ArmorFactorySPtr_t Instance();
+        static ArmorFactory * Instance();
+        static void Acquire();
+        static void Release();
 
         //primary material can be wood, secondary material can be Nothing
         static ItemSPtr_t Make_Shield(const shield_type::Enum TYPE,
@@ -119,7 +116,7 @@ namespace armor
                                     const bool           IS_PIXIE_ITEM);
 
     private:
-        static ArmorFactorySPtr_t instance_;
+        static std::unique_ptr<ArmorFactory> instanceUPtr_;
     };
 
 }//namespace armor

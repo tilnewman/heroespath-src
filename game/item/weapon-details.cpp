@@ -29,9 +29,9 @@
 //
 #include "weapon-details.hpp"
 
-#include "utilz/boost-string-includes.hpp"
-
 #include "game/game-data-file.hpp"
+
+#include "utilz/boost-string-includes.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include "stringutil/stringhelp.hpp"
@@ -50,7 +50,7 @@ namespace item
 namespace weapon
 {
 
-    WeaponDetailLoaderSPtr_t WeaponDetailLoader::instance_(nullptr);
+    std::unique_ptr<WeaponDetailLoader> WeaponDetailLoader::instanceUPtr_{ nullptr };
 
 
     WeaponDetailLoader::WeaponDetailLoader()
@@ -61,16 +61,30 @@ namespace weapon
     }
 
 
-    WeaponDetailLoader::~WeaponDetailLoader()
-    {}
-
-
-    WeaponDetailLoaderSPtr_t WeaponDetailLoader::Instance()
+    WeaponDetailLoader * WeaponDetailLoader::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new WeaponDetailLoader );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void WeaponDetailLoader::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new WeaponDetailLoader);
+        }
+    }
+
+
+    void WeaponDetailLoader::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::item::weapon::WeaponDetailLoader::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

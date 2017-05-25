@@ -43,11 +43,6 @@ namespace sfml_util
 namespace gui
 {
 
-    //types required by singleton implementation
-    class ItemImageManager;
-    using ItemImageManagerSPtr_t = std::shared_ptr<ItemImageManager>;
-
-
     //A class that loads, stores, and distributes creature images.
     class ItemImageManager
     {
@@ -61,8 +56,9 @@ namespace gui
         ItemImageManager();
 
     public:
-        virtual ~ItemImageManager();
-        static ItemImageManagerSPtr_t Instance();
+        static ItemImageManager * Instance();
+        static void Acquire();
+        static void Release();
 
         static bool Test();
 
@@ -79,8 +75,8 @@ namespace gui
         const std::string GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
     private:
+        static std::unique_ptr<ItemImageManager> instanceUPtr_;
         static std::string imagesDirectoryPath_;
-        static ItemImageManagerSPtr_t instanceSPtr_;
         static const std::string EXT_;
     };
 

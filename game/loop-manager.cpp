@@ -39,14 +39,16 @@
 #include "game/creature/creature.hpp"
 #include "game/popup-info.hpp"
 
+#include "utilz/assertlogandthrow.hpp"
+
 #include <string>
 
 
 namespace game
 {
 
-    LoopManagerSPtr_t LoopManager::instanceSPtr_;
-    std::string       LoopManager::startupStage_(LoopState::ToString(LoopState::Intro));
+    std::unique_ptr<LoopManager> LoopManager::instanceUPtr_{ nullptr };
+    std::string LoopManager::startupStage_{ LoopState::ToString(LoopState::Intro) };
 
 
     LoopManager::LoopManager()
@@ -71,16 +73,30 @@ namespace game
     }
 
 
-    LoopManager::~LoopManager()
-    {}
-
-
-    LoopManagerSPtr_t LoopManager::Instance()
+    LoopManager * LoopManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new LoopManager() );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void LoopManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new LoopManager);
+        }
+    }
+
+
+    void LoopManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::LoopManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

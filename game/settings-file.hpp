@@ -29,17 +29,13 @@
 //  A singleton config file class that saves game settings.  (i.e. volume, resolution, etc.)
 //
 #include "configbase/configbase.hpp"
+
 #include <memory>
 #include <string>
 
 
 namespace game
 {
-
-    //types required by singleton implementation
-    class SettingsFile;
-    using SettingsFileSPtr_t = std::shared_ptr<SettingsFile>;
-
 
     //Singleton class that manages a simple configuration file
     class SettingsFile : public appbase::ConfigBase
@@ -55,7 +51,9 @@ namespace game
 
     public:
         virtual ~SettingsFile();
-        static SettingsFileSPtr_t Instance();
+        static SettingsFile * Instance();
+        static void Acquire();
+        static void Release();
 
         void AcquireAndSave();
         void LoadAndRestore();
@@ -70,7 +68,7 @@ namespace game
         static const std::string KEY_FRAMERATE_LIMIT_;
         static const std::string KEY_ANTIALIAS_LEVEL_;
     private:
-        static SettingsFileSPtr_t instanceSPtr_;
+        static std::unique_ptr<SettingsFile> instanceUPtr_;
     };
 
 }

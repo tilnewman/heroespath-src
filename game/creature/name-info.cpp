@@ -44,7 +44,7 @@ namespace game
 namespace creature
 {
 
-    NameInfoSPtr_t NameInfo::instance_(nullptr);
+    std::unique_ptr<NameInfo>  NameInfo::instanceUPtr_{ nullptr };
 
 
     NameInfo::NameInfo()
@@ -53,16 +53,30 @@ namespace creature
     {}
 
 
-    NameInfo::~NameInfo()
-    {}
-
-
-    NameInfoSPtr_t NameInfo::Instance()
+    NameInfo * NameInfo::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new NameInfo );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void NameInfo::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new NameInfo);
+        }
+    }
+
+
+    void NameInfo::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::NameInfo::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

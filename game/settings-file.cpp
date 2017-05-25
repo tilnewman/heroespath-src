@@ -34,13 +34,14 @@
 #include "sfml-util/display.hpp"
 
 #include "utilz/assertlogandthrow.hpp"
+
 #include "game/log-macros.hpp"
 
 
 namespace game
 {
 
-    SettingsFileSPtr_t SettingsFile::instanceSPtr_;
+    std::unique_ptr<SettingsFile> SettingsFile::instanceUPtr_{ nullptr };
     const std::string  SettingsFile::KEY_THEMEMUSIC_VOL_     ("volume_music");
     const std::string  SettingsFile::KEY_SOUNDEFFECTS_VOL_   ("volume_sound_effects");
     const std::string  SettingsFile::KEY_RESOLUTION_WIDTH_   ("display_width");
@@ -61,12 +62,30 @@ namespace game
     {}
 
 
-    SettingsFileSPtr_t SettingsFile::Instance()
+    SettingsFile * SettingsFile::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new SettingsFile );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void SettingsFile::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new SettingsFile);
+        }
+    }
+
+
+    void SettingsFile::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::SettingsFile::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 
@@ -83,8 +102,12 @@ namespace game
             SetInt(KEY_ANTIALIAS_LEVEL_, static_cast<int>(sfml_util::Display::Instance()->AntialiasLevel()));
 
             unsigned bitDepth(sfml_util::Display::Instance()->WinColorDepth());
+
             if (0 == bitDepth)
+            {
                 bitDepth = 32;
+            }
+
             SetInt(KEY_RESOLUTION_BITDEPTH_, static_cast<int>(bitDepth));
 
             M_ASSERT_OR_LOGANDTHROW_SS(Save(), "SettingsFile::AcquireAndSave() failed to Save().");

@@ -28,7 +28,11 @@
 // platform.cpp
 //
 #include "platform.hpp"
+
 #include "game/log-macros.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
+
 #include <exception>
 #include <sstream>
 
@@ -56,7 +60,7 @@ namespace utilz
     }
 
 
-    PlatformSPtr_t Platform::instance_(nullptr);
+    std::unique_ptr<Platform> Platform::instanceUPtr_{ nullptr };
 
 
     Platform::Platform()
@@ -65,16 +69,30 @@ namespace utilz
     {}
 
 
-    Platform::~Platform()
-    {}
-
-
-    PlatformSPtr_t Platform::Instance()
+    Platform * Platform::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new Platform );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void Platform::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new Platform);
+        }
+    }
+
+
+    void Platform::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "utilz::Platform::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

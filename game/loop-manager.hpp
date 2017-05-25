@@ -55,11 +55,6 @@ namespace game
     class PopupInfo;
 
 
-    //types required by singletom implementation
-    class LoopManager;
-    using LoopManagerSPtr_t = std::shared_ptr<LoopManager>;
-
-
     //Singleton class that keeps track of the game state
     class LoopManager
     {
@@ -73,8 +68,9 @@ namespace game
         LoopManager();
 
     public:
-        virtual ~LoopManager();
-        static LoopManagerSPtr_t Instance();
+        static LoopManager * Instance();
+        static void Acquire();
+        static void Release();
 
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME);
 
@@ -160,8 +156,8 @@ namespace game
                               const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
 
     private:
-        static LoopManagerSPtr_t  instanceSPtr_;
-        static std::string        startupStage_;
+        static std::unique_ptr<LoopManager> instanceUPtr_;
+        static std::string startupStage_;
         //
         LoopState::Enum           state_;
         sfml_util::CommandQueue   cmdQueue_;

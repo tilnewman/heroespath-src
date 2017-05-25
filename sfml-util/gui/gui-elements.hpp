@@ -38,11 +38,6 @@ namespace sfml_util
 namespace gui
 {
 
-    class GuiElements;
-    using GuiElementsSPtr_t = std::shared_ptr<GuiElements>;
-    using GuiElementsSVec_t = std::vector<GuiElementsSPtr_t>;
-
-
     //Manages a set of sprites relating to gui drawing elements.
     class GuiElements
     {
@@ -56,8 +51,9 @@ namespace gui
         GuiElements();
 
     public:
-        virtual ~GuiElements();
-        static GuiElementsSPtr_t Instance();
+        static GuiElements * Instance();
+        static void Acquire();
+        static void Release();
 
         //Managed textures
         //these textures are used so often that it saves resources to keep a single instance of them in memory
@@ -141,7 +137,7 @@ namespace gui
         inline const sf::IntRect GetRect_LineSmallTRight() const		 { return lineSmallTRightSpriteRect_; }
 
     private:
-        static GuiElementsSPtr_t instanceSPtr_;
+        static std::unique_ptr<GuiElements> instanceUPtr_;
         //
         TextureSPtr_t elementsTextureSPtr_;
         TextureSPtr_t woodBgTextureSPtr_;

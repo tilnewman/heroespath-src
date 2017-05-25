@@ -53,7 +53,7 @@ namespace game
 namespace state
 {
 
-    GameStateFactorySPtr_t GameStateFactory::instanceSPtr_;
+    std::unique_ptr<GameStateFactory> GameStateFactory::instanceUPtr_{ nullptr };
     //
     const std::string GameStateFactory::SAVED_GAME_DIR_NAME_("saved_games");
     const std::string GameStateFactory::SAVED_GAME_FILE_NAME_("game");
@@ -67,16 +67,30 @@ namespace state
     {}
 
 
-    GameStateFactory::~GameStateFactory()
-    {}
-
-
-    GameStateFactorySPtr_t GameStateFactory::Instance()
+    GameStateFactory * GameStateFactory::Instance()
     {
-        if (instanceSPtr_.get() == nullptr)
-            instanceSPtr_.reset( new GameStateFactory );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void GameStateFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new GameStateFactory);
+        }
+    }
+
+
+    void GameStateFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::GameStateFactory::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

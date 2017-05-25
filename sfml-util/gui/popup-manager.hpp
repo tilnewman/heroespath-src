@@ -84,7 +84,8 @@ namespace gui
 
     public:
         static PopupManager * Instance();
-        static void InstanceRelease();
+        static void Acquire();
+        static void Release();
         static void SetTexturesDirectoryPaths(const std::string & WINDOWS_PATH,
                                               const std::string & ACCENTS_PATH);
 

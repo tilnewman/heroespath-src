@@ -63,7 +63,7 @@ namespace sfml_util
     }
 
 
-    DisplaySPtr_t Display::instanceSPtr_;
+    std::unique_ptr<Display> Display::instanceUPtr_{ nullptr };
 
 
     Display::Display()
@@ -76,16 +76,30 @@ namespace sfml_util
     {}
 
 
-    Display::~Display()
-    {}
-
-
-    DisplaySPtr_t Display::Instance()
+    Display * Display::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new Display );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void Display::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new Display);
+        }
+    }
+
+
+    void Display::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::Display::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

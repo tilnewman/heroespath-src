@@ -75,15 +75,25 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new PopupManager);
+            Acquire();
         }
 
         return instanceUPtr_.get();
     }
 
 
-    void PopupManager::InstanceRelease()
+    void PopupManager::Acquire()
     {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new PopupManager);
+        }
+    }
+
+
+    void PopupManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 

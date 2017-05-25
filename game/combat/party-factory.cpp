@@ -29,13 +29,14 @@
 //
 #include "party-factory.hpp"
 
-#include "utilz/random.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-
 #include "game/stats/stat-set.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
 #include "game/non-player/inventory-factory.hpp"
+
+#include "sfml-util/gui/creature-image-manager.hpp"
+
+#include "utilz/random.hpp"
 
 
 namespace game
@@ -43,23 +44,37 @@ namespace game
 namespace combat
 {
 
-    PartyFactorySPtr_t PartyFactory::instance_(nullptr);
+    std::unique_ptr<PartyFactory> PartyFactory::instanceUPtr_{ nullptr };
 
 
     PartyFactory::PartyFactory()
     {}
 
 
-    PartyFactory::~PartyFactory()
-    {}
-
-
-    PartyFactorySPtr_t PartyFactory::Instance()
+    PartyFactory * PartyFactory::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new PartyFactory );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void PartyFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new PartyFactory);
+        }
+    }
+
+
+    void PartyFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::PartyFactory::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

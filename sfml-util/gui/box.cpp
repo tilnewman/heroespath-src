@@ -109,22 +109,22 @@ namespace box
             return;
 
         //setup gold bar sprites
-        const GuiElementsSPtr_t GE_SPTR{ GuiElements::Instance() };
+        auto const GE_PTR{ GuiElements::Instance() };
 
         //check the minimum width and height
         const float MIN_WIDTH(GetMinWidth_Box(BOX_INFO.will_grow));
         M_ASSERT_OR_LOGANDTHROW_SS((BOX_INFO.region.width >= MIN_WIDTH), entityName_ << "'s width of " << BOX_INFO.region.width << " was smaller than the minimum of " << MIN_WIDTH << ".  (will_grow=" << std::boolalpha << BOX_INFO.will_grow << ")");
-        const float HORIZ_MID_LEN(BOX_INFO.region.width - MIN_WIDTH + ((BOX_INFO.will_grow) ? ((GE_SPTR->GetLineSmallBoxPadLeft() + GE_SPTR->GetLineSmallBoxPadLeft()) * 2.0f) : (0.0f)));
+        const float HORIZ_MID_LEN(BOX_INFO.region.width - MIN_WIDTH + ((BOX_INFO.will_grow) ? ((GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadLeft()) * 2.0f) : (0.0f)));
 
         const float MIN_HEIGHT(GetMinHeight_Box(BOX_INFO.will_grow));
         M_ASSERT_OR_LOGANDTHROW_SS((BOX_INFO.region.height >= MIN_HEIGHT), entityName_ << "'s height of " << BOX_INFO.region.height << " was smaller than the minimum of " << MIN_HEIGHT << ".   (will_grow=" << std::boolalpha << BOX_INFO.will_grow << ")");
-        const float VERT_MID_LEN(BOX_INFO.region.height - MIN_HEIGHT + ((BOX_INFO.will_grow) ? ((GE_SPTR->GetLineSmallBoxPadTop() + GE_SPTR->GetLineSmallBoxPadBot()) * 2.0f) : (0.0f)));
+        const float VERT_MID_LEN(BOX_INFO.region.height - MIN_HEIGHT + ((BOX_INFO.will_grow) ? ((GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot()) * 2.0f) : (0.0f)));
 
         //establish position and size
-        const float LEFT_TO_USE  (GetEntityPos().x -       ((BOX_INFO.will_grow) ? (GE_SPTR->GetLineSmallBoxPadLeft()) : (0.0f)));
-        const float TOP_TO_USE   (GetEntityPos().y -       ((BOX_INFO.will_grow) ? (GE_SPTR->GetLineSmallBoxPadTop())  : (0.0f)));
-        const float WIDTH_TO_USE (BOX_INFO.region.width  + ((BOX_INFO.will_grow) ? (GE_SPTR->GetLineSmallBoxPadLeft() + GE_SPTR->GetLineSmallBoxPadRight()) : (0.0f)));
-        const float HEIGHT_TO_USE(BOX_INFO.region.height + ((BOX_INFO.will_grow) ? (GE_SPTR->GetLineSmallBoxPadTop() + GE_SPTR->GetLineSmallBoxPadBot()) : (0.0f)));
+        const float LEFT_TO_USE  (GetEntityPos().x -       ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadLeft()) : (0.0f)));
+        const float TOP_TO_USE   (GetEntityPos().y -       ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadTop())  : (0.0f)));
+        const float WIDTH_TO_USE (BOX_INFO.region.width  + ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadRight()) : (0.0f)));
+        const float HEIGHT_TO_USE(BOX_INFO.region.height + ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot()) : (0.0f)));
 
         SetEntityRegion(sf::FloatRect(LEFT_TO_USE, TOP_TO_USE, WIDTH_TO_USE, HEIGHT_TO_USE));
 
@@ -139,7 +139,7 @@ namespace box
 
         if (VERT_MID_LEN > 0)
         {
-            rightLine_.Setup((RIGHT + cTopRightSprite_.getLocalBounds().width) - static_cast<float>(GE_SPTR->GetRect_LineSmallVerticalRight().width), TOP_TO_USE + cTopRightSprite_.getLocalBounds().height, static_cast<std::size_t>(VERT_MID_LEN));
+            rightLine_.Setup((RIGHT + cTopRightSprite_.getLocalBounds().width) - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width), TOP_TO_USE + cTopRightSprite_.getLocalBounds().height, static_cast<std::size_t>(VERT_MID_LEN));
         }
 
         const float BOTTOM(TOP_TO_USE + cTopRightSprite_.getLocalBounds().height + VERT_MID_LEN);
@@ -147,7 +147,7 @@ namespace box
 
         if (HORIZ_MID_LEN > 0)
         {
-            botLine_.Setup(LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width, (BOTTOM + cBotRightSprite_.getLocalBounds().height) - static_cast<float>(GE_SPTR->GetRect_LineSmallHorizontalBot().height), static_cast<std::size_t>(HORIZ_MID_LEN));
+            botLine_.Setup(LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width, (BOTTOM + cBotRightSprite_.getLocalBounds().height) - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height), static_cast<std::size_t>(HORIZ_MID_LEN));
         }
 
         cBotLeftSprite_.setPosition(LEFT_TO_USE, BOTTOM);

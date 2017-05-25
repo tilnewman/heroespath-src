@@ -29,6 +29,7 @@
 //  Test SFML rendering to develop some gui classes.
 //
 #include "configbase/configbase.hpp"
+
 #include "common/logmacros.hpp"
 
 #include "utilz/platform.hpp"
@@ -54,18 +55,26 @@
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/condition-warehouse.hpp"
 #include "game/spell/spell-warehouse.hpp"
+#include "game/state/game-state-factory.hpp"
+#include "game/combat/party-factory.hpp"
+#include "game/creature/name-info.hpp"
+#include "game/item/armor-details.hpp"
+#include "game/item/armor-factory.hpp"
+#include "game/item/weapon-details.hpp"
 
 #include "utilz/random.hpp"
 
 
 int main()
 {
-    std::cout << "Starting Heroes Path..." << std::endl;
+    const std::string APPLICATION_NAME{ "Heroes' Path" };
+    std::cout << "Starting " << APPLICATION_NAME << "..." << std::endl;
 
     game::LoggerSPtr_t logSPtr(game::Logger::Instance());
 
     try
     {
+        utilz::Platform::Acquire();
         utilz::Platform::Instance()->DetectAndLog();
         if (utilz::Platform::Instance()->IsSupported() == false)
         {
@@ -76,9 +85,10 @@ int main()
         utilz::random::MersenneTwister::Seed();
 
         //keep an instance of various singleton classes here to prevent thrashing
-        sfml_util::DisplaySPtr_t displaySPtr(sfml_util::Display::Instance());
+        sfml_util::Display::Acquire();
         //
         M_LOG(*logSPtr, "Loading the Game Data file...");
+        game::GameDataFile::Acquire();
         auto gameDataFilePtr(game::GameDataFile::Instance());
 
         //set which stage will startup
@@ -87,7 +97,7 @@ int main()
         //setup the graphics display
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
-        sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow("Heroes' Path", sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
+        sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
         winSPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
         winSPtr->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
 
@@ -102,57 +112,63 @@ int main()
         sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
         sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
         
+        //load game assets Stage 1
+        game::creature::title::Warehouse::Setup();
+        game::creature::condition::Warehouse::Setup();
+        game::spell::Warehouse::Setup();
+        
+        //load game assets Stage 2
+        sfml_util::FontManager::Acquire();
+        sfml_util::gui::PopupManager::Acquire();
+        sfml_util::SoundManager::Acquire();
+        sfml_util::gui::GuiElements::Acquire();
+        sfml_util::gui::ItemImageManager::Acquire();
+        sfml_util::gui::CreatureImageManager::Acquire();
+        sfml_util::gui::TitleImageManager::Acquire();
+        sfml_util::gui::SpellImageManager::Acquire();
+        sfml_util::gui::ConditionImageManager::Acquire();
+        sfml_util::gui::CombatImageManager::Acquire();
+        game::Game::Acquire();
+        game::state::GameStateFactory::Acquire();
+        game::combat::PartyFactory::Acquire();
+        game::creature::NameInfo::Acquire();
+        game::item::armor::ArmorDetailLoader::Acquire();
+        game::item::armor::ArmorFactory::Acquire();
+        game::item::weapon::WeaponDetailLoader::Acquire();
+
         try
         {
-            //load game assets Stage 1
-            game::creature::title::Warehouse::Setup();
-            game::creature::condition::Warehouse::Setup();
-            game::spell::Warehouse::Setup();
-
-            //Call up an instance of the singleton classes here ensure they load
-            //now during startup and not at some other random time during play.
-            //Also, see below for the InstanceRelease() calls.
-            sfml_util::FontManager::Instance();
-            sfml_util::gui::PopupManager::Instance();
-            auto soundManagerSPtr         { sfml_util::SoundManager::Instance() };
-            auto guiElementsSPtr          { sfml_util::gui::GuiElements::Instance() };
-            auto itemImageManagerSPtr     { sfml_util::gui::ItemImageManager::Instance() };
-            auto creatureImageManagerSPtr { sfml_util::gui::CreatureImageManager::Instance() };
-            auto titleImageManagerSPtr    { sfml_util::gui::TitleImageManager::Instance() };
-            auto spellImageManagerSPtr    { sfml_util::gui::SpellImageManager::Instance() };
-            auto conditionImageManagerSPtr{ sfml_util::gui::ConditionImageManager::Instance() };
-            auto combatImageManagerSPtr   { sfml_util::gui::CombatImageManager::Instance() };
-            game::Game::Instance();
-
             //create/load/store the game settings file
-            auto settingsFileSPtr( game::SettingsFile::Instance() );
-            settingsFileSPtr->LoadAndRestore();
+            game::SettingsFile::Acquire();
+            game::SettingsFile::Instance()->LoadAndRestore();
 
             //load game assets Stage 3
-            //NOTE:  This must occur after SettingsFile::LoadAndRestore()
-            //       so that the sound effects created here have the correct
-            //       volume loaded from the settings file.
-            soundManagerSPtr->LoadSoundSets(); 
+            //NOTE:  LoadSoundSets() must occur after SettingsFile's
+            //       LoadAndRestore(), so that the sound effects created
+            //       here have the correct volume loaded from the settings
+            //       file.
+            sfml_util::SoundManager::Instance()->LoadSoundSets();
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
             sfml_util::gui::PopupManager::Instance()->LoadAssets();
 
-            //create the game state manager and run the game
-            game::LoopManagerSPtr_t gameStateSPtr(game::LoopManager::Instance());
-            gameStateSPtr->Execute();
+            //create the game loop manager and run the game
+            game::LoopManager::Acquire();
+            game::LoopManager::Instance()->Execute();
+            game::LoopManager::Release();
 
             //save settings
-            settingsFileSPtr->AcquireAndSave();
-            settingsFileSPtr.reset();
+            game::SettingsFile::Instance()->AcquireAndSave();
+            game::SettingsFile::Release();
         }
         catch (const std::exception & E)
         {
-            std::cout << "game threw std::exception(\"" << E.what() << "\")" << std::endl;
-            M_LOG(*logSPtr, "game threw std::exception(\"" << E.what() << "\")");
+            std::cout << APPLICATION_NAME << " threw exception(\"" << E.what() << "\")" << std::endl;
+            M_LOG(*logSPtr, APPLICATION_NAME << " threw exception(\"" << E.what() << "\")");
         }
         catch (...)
         {
-            std::cout << "game threw an unknown non-std exception." << std::endl;
-            M_LOG(*logSPtr, "game threw an unknown non-std exception.");
+            std::cout << APPLICATION_NAME << " threw an unknown non-std exception." << std::endl;
+            M_LOG(*logSPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
         }
 
         //ensure the window is closed before exiting
@@ -162,12 +178,26 @@ int main()
         }
 
         //release singleton/manager instances
-        game::Game::InstanceRelease();
-        sfml_util::FontManager::InstanceRelease();
-        sfml_util::gui::PopupManager::InstanceRelease();
-        game::GameDataFile::InstanceRelease();
-
-        M_LOG( * logSPtr, "Reached the end of main within the try-catch.");
+        game::item::weapon::WeaponDetailLoader::Release();
+        game::item::armor::ArmorFactory::Release();
+        game::item::armor::ArmorDetailLoader::Release();
+        game::creature::NameInfo::Release();
+        game::combat::PartyFactory::Release();
+        game::state::GameStateFactory::Release();
+        game::Game::Release();
+        sfml_util::gui::CombatImageManager::Release();
+        sfml_util::gui::ConditionImageManager::Release();
+        sfml_util::gui::SpellImageManager::Release();
+        sfml_util::gui::TitleImageManager::Release();
+        sfml_util::gui::CreatureImageManager::Release();
+        sfml_util::gui::ItemImageManager::Release();
+        sfml_util::gui::GuiElements::Release();
+        sfml_util::FontManager::Release();
+        sfml_util::SoundManager::Release();
+        sfml_util::gui::PopupManager::Release();
+        game::GameDataFile::Release();
+        sfml_util::Display::Release();
+        utilz::Platform::Release();
     }
     catch (const std::exception & E)
     {
@@ -180,6 +210,6 @@ int main()
         return EXIT_FAILURE;
     }
 
-    std::cout << "...Stopping Heroes Path." << std::endl;
+    std::cout << "...Stopping " << APPLICATION_NAME << "." << std::endl;
     return EXIT_SUCCESS;
 }

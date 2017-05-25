@@ -841,11 +841,11 @@ namespace map
                 const unsigned TILE_NUM_ADJ((TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1)); //This -1 comes from the Tiled app that starts tile ids at 1 instead of 0.
 
                 // get the texture/image this tile can be found in
-                const TilesImageSPtr_t TILES_IMAGE_SPTR(GetTileImageFromId(TILE_NUM_ADJ) );
-                mapLayerSPtr->tilesimage_svec.push_back(TILES_IMAGE_SPTR);
+                const TilesImageSPtr_t TILES_IMAGE_PTR(GetTileImageFromId(TILE_NUM_ADJ) );
+                mapLayerSPtr->tilesimage_svec.push_back(TILES_IMAGE_PTR);
 
                 // adjust the tile number to start at one
-                const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILES_IMAGE_SPTR->first_id)) + static_cast<unsigned int>(1));
+                const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILES_IMAGE_PTR->first_id)) + static_cast<unsigned int>(1));
 
                 // get a pointer to the current tile's quad
                 sf::Vertex * quad( & mapLayerSPtr->vert_array[(vertIndex++) * 4]);
@@ -863,7 +863,7 @@ namespace map
                 quad[3].position = sf::Vector2f(CURR_HORIZ_SIZE,                CURR_VERT_SIZE_PLUS_ONE_TILE);
 
                 // find its position in the tileset texture
-                const unsigned TEXTURE_TILE_COUNT_HORIZ(TILES_IMAGE_SPTR->texture_sptr->getSize().x / tileSizeWidth_);
+                const unsigned TEXTURE_TILE_COUNT_HORIZ(TILES_IMAGE_PTR->texture_sptr->getSize().x / tileSizeWidth_);
                 const float TU( static_cast<float>(TILE_NUM % TEXTURE_TILE_COUNT_HORIZ) );
                 const float TV( static_cast<float>(TILE_NUM / TEXTURE_TILE_COUNT_HORIZ) );
 

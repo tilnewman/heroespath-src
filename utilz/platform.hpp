@@ -62,11 +62,6 @@
 namespace utilz
 {
 
-    //types required by the singleton implementation
-    class Platform;
-    using PlatformSPtr_t = std::shared_ptr<Platform>;
-
-
     //defines supported platforms
     struct platform_type
     {
@@ -97,9 +92,9 @@ namespace utilz
         Platform();
 
     public:
-        virtual ~Platform();
-
-        static PlatformSPtr_t Instance();
+        static Platform * Instance();
+        static void Acquire();
+        static void Release();
 
         void DetectAndLog();
 
@@ -116,7 +111,7 @@ namespace utilz
         inline bool IsSupported() const { return (platform_type::Unknown != platform_) && (platform_type::Unsupported != platform_); }
 
     private:
-        static PlatformSPtr_t instance_;
+        static std::unique_ptr<Platform> instanceUPtr_;
         platform_type::Enum platform_;
     };
 

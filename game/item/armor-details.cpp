@@ -29,9 +29,9 @@
 //
 #include "armor-details.hpp"
 
-#include "utilz/boost-string-includes.hpp"
-
 #include "game/game-data-file.hpp"
+
+#include "utilz/boost-string-includes.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include "stringutil/stringhelp.hpp"
@@ -46,7 +46,7 @@ namespace item
 namespace armor
 {
 
-    ArmorDetailLoaderSPtr_t ArmorDetailLoader::instance_(nullptr);
+    std::unique_ptr<ArmorDetailLoader> ArmorDetailLoader::instanceUPtr_{ nullptr };
 
 
     ArmorDetailLoader::ArmorDetailLoader()
@@ -57,16 +57,30 @@ namespace armor
     }
 
 
-    ArmorDetailLoader::~ArmorDetailLoader()
-    {}
-
-
-    ArmorDetailLoaderSPtr_t ArmorDetailLoader::Instance()
+    ArmorDetailLoader * ArmorDetailLoader::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new ArmorDetailLoader );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void ArmorDetailLoader::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new ArmorDetailLoader);
+        }
+    }
+
+
+    void ArmorDetailLoader::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::item::armor::ArmorDetailLoader::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

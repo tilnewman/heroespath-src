@@ -74,11 +74,6 @@ namespace weapon
     using WeaponDetailMap_t = std::map<std::string, WeaponDetails>;
 
 
-    //types required by the singleton implementation
-    class WeaponDetailLoader;
-    using WeaponDetailLoaderSPtr_t = std::shared_ptr<WeaponDetailLoader>;
-
-
     //A singleton class that loads detailed weapon info from the GameDataFile.
     class WeaponDetailLoader
     {
@@ -92,8 +87,10 @@ namespace weapon
         WeaponDetailLoader();
 
     public:
-        virtual ~WeaponDetailLoader();
-        static WeaponDetailLoaderSPtr_t Instance();
+        static WeaponDetailLoader * Instance();
+        static void Acquire();
+        static void Release();
+
         const WeaponDetails LookupWeaponDetails(const std::string & NAME);
 
     private:
@@ -103,7 +100,7 @@ namespace weapon
         const std::string CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
     private:
-        static WeaponDetailLoaderSPtr_t instance_;
+        static std::unique_ptr<WeaponDetailLoader> instanceUPtr_;
         WeaponDetailMap_t weaponDetailsMap_;
     };
 

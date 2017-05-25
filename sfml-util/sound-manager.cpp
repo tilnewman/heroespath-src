@@ -50,9 +50,9 @@
 namespace sfml_util
 {
 
-    std::string        SoundManager::soundsDirectoryPath_("");
-    std::string        SoundManager::musicDirectoryPath_("");
-    SoundManagerSPtr_t SoundManager::instanceSPtr_;
+    std::string SoundManager::soundsDirectoryPath_("");
+    std::string SoundManager::musicDirectoryPath_("");
+    std::unique_ptr<SoundManager> SoundManager::instanceUPtr_{ nullptr };
 
 
     SoundManager::SoundManager()
@@ -92,28 +92,38 @@ namespace sfml_util
         soundEffectsToPlayVec_      (),
         soundEffectsSVec_           ()
     {
+        M_HP_LOG_DBG("sfml_util::SoundManager Constructor loading sound resources begin.");
         musicSVec_.resize(music::Count);
         soundEffectBufferPairVec_.resize(sound_effect::Count);
         CacheMusicInfo_CombatIntro();
         soundEffectsSVec_.resize(sound_effect::Count);
+        M_HP_LOG_DBG("sfml_util::SoundManager Constructor loading sound resources end.");
     }
 
 
-    SoundManager::~SoundManager()
-    {}
-
-
-    SoundManagerSPtr_t SoundManager::Instance()
+    SoundManager * SoundManager::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset(new SoundManager);
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::SoundManager::Instance() found instanceUPtr that was null.");
+        return instanceUPtr_.get();
+    }
 
-        return instanceSPtr_;
+
+    void SoundManager::Acquire()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() == nullptr), "sfml_util::SoundManager::Acquire() found instanceUPtr that was NOT null.");
+        instanceUPtr_.reset(new SoundManager);
+    }
+
+
+    void SoundManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 
     void SoundManager::SetSoundsDirectory(const std::string & SOUND_DIR_PATH,
-        const std::string & MUSIC_DIR_PATH)
+                                          const std::string & MUSIC_DIR_PATH)
     {
         soundsDirectoryPath_ = SOUND_DIR_PATH;
         musicDirectoryPath_ = MUSIC_DIR_PATH;

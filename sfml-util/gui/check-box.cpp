@@ -143,31 +143,31 @@ namespace gui
 
     void CheckBox::SetupSprites(const Brightness::Enum BRIGHTNESS)
     {
-        const GuiElementsSPtr_t GE_SPTR{ GuiElements::Instance() };
+        auto const GE_PTR{ GuiElements::Instance() };
 
-        guiImage_.GetUpSprite().setTexture( * GE_SPTR->GetTexture() );
-        guiImage_.GetDownSprite().setTexture( * GE_SPTR->GetTexture() );
+        guiImage_.GetUpSprite().setTexture( * GE_PTR->GetTexture() );
+        guiImage_.GetDownSprite().setTexture( * GE_PTR->GetTexture() );
 
         switch (BRIGHTNESS)
         {
             case Brightness::Dark:
             {
-                guiImage_.GetUpSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxDarkOff());
-                guiImage_.GetDownSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxDarkOn());
+                guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxDarkOff());
+                guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxDarkOn());
                 break;
             }
             case Brightness::Medium:
             {
-                guiImage_.GetUpSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxMedOff());
-                guiImage_.GetDownSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxMedOn());
+                guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxMedOff());
+                guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxMedOn());
                 break;
             }
             case Brightness::Bright:
             case Brightness::Count:
             default:
             {
-                guiImage_.GetUpSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxBrightOff());
-                guiImage_.GetDownSprite().setTextureRect(GE_SPTR->GetRect_CheckBoxBrightOn());
+                guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxBrightOff());
+                guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxBrightOn());
                 break;
             }
         }

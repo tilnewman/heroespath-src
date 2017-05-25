@@ -28,9 +28,14 @@
 // gui-elements.cpp
 //
 #include "gui-elements.hpp"
-#include "common/assertorthrow.hpp"
-#include "sfml-util/loaders.hpp"
+
 #include "game/game-data-file.hpp"
+
+#include "sfml-util/loaders.hpp"
+
+#include "common/assertorthrow.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
 
 
 namespace sfml_util
@@ -38,7 +43,7 @@ namespace sfml_util
 namespace gui
 {
 
-    GuiElementsSPtr_t GuiElements::instanceSPtr_;
+    std::unique_ptr<GuiElements> GuiElements::instanceUPtr_{ nullptr };
 
 
     GuiElements::GuiElements()
@@ -114,22 +119,36 @@ namespace gui
         lineSmallTBotSpriteRect_	        (sf::IntRect(114, 223, 26, 19)),
         lineSmallTRightSpriteRect_	        (sf::IntRect(141, 223, 19, 26))
     {
-        sfml_util::LoadImageOrTextureSPtr(elementsTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
-        sfml_util::LoadImageOrTextureSPtr(woodBgTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::LoadImageOrTextureSPtr(elementsTextureSPtr_,   game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
+        sfml_util::LoadImageOrTextureSPtr(woodBgTextureSPtr_,     game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
         sfml_util::LoadImageOrTextureSPtr(darkKnotBgTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
     }
 
 
-    GuiElements::~GuiElements()
-    {}
-
-
-    GuiElementsSPtr_t GuiElements::Instance()
+    GuiElements * GuiElements::Instance()
     {
-        if (nullptr == instanceSPtr_.get())
-            instanceSPtr_.reset( new GuiElements );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instanceSPtr_;
+        return instanceUPtr_.get();
+    }
+
+
+    void GuiElements::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new GuiElements);
+        }
+    }
+
+
+    void GuiElements::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::GuiElements::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 }

@@ -102,28 +102,28 @@ namespace gui
 
     void Line::SetupBaseSprites()
     {
-        const GuiElementsSPtr_t GE_SPTR{ GuiElements::Instance() };
+        auto const GE_PTR{ GuiElements::Instance() };
 
         //which spirtes to use, and the length calculations
         if (ORIENTATION_ == Orientation::Horiz)
         {
             if (SIDE_ == Side::Top)
-                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallHorizontalTop());
+                middleSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallHorizontalTop());
             else
-                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallHorizontalBot());
+                middleSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallHorizontalBot());
 
-            endTopOrLeftSprite_  = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndLeft());
-            endBotOrRightSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndRight());
+            endTopOrLeftSprite_  = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndLeft());
+            endBotOrRightSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndRight());
         }
         else
         {
             if (SIDE_ == Side::Left)
-                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallVerticalLeft());
+                middleSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallVerticalLeft());
             else
-                middleSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallVerticalRight());
+                middleSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallVerticalRight());
 
-            endTopOrLeftSprite_  = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndTop());
-            endBotOrRightSprite_ = sf::Sprite( * GE_SPTR->GetTexture(), GE_SPTR->GetRect_LineSmallEndBot());
+            endTopOrLeftSprite_  = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndTop());
+            endBotOrRightSprite_ = sf::Sprite( * GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndBot());
         }
     }
 

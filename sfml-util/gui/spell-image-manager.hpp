@@ -42,11 +42,6 @@ namespace sfml_util
 namespace gui
 {
 
-    //types required by the singleton implementation
-    class SpellImageManager;
-    using SpellImageManagerSPtr_t = std::shared_ptr<SpellImageManager>;
-
-
     //Loads images and delivers sfml_util::TextureSPtr_ts to them on demand.
     class SpellImageManager
     {
@@ -60,9 +55,10 @@ namespace gui
         SpellImageManager();
 
     public:
-        virtual ~SpellImageManager();
+        static SpellImageManager * Instance();
+        static void Acquire();
+        static void Release();
 
-        static SpellImageManagerSPtr_t Instance();
         inline static void SetImagesDirectory(const std::string & S)    { spellImagesDirectory_ = S; }
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
@@ -73,10 +69,11 @@ namespace gui
         const std::string MakeFilename(const game::spell::Spells::Enum) const;
         const boost::filesystem::path MakeFilepath(const game::spell::Spells::Enum) const;
     private:
-        static SpellImageManagerSPtr_t instance_;
+        static std::unique_ptr<SpellImageManager> instanceUPtr_;
         static std::string spellImagesDirectory_;
         static const std::string filenameExtension_;
     };
+
 }
 }
 

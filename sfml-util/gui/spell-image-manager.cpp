@@ -29,12 +29,13 @@
 //
 #include "spell-image-manager.hpp"
 
-#include "sfml-util/loaders.hpp"
-#include "utilz/boost-string-includes.hpp"
-
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
+
+#include "sfml-util/loaders.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -44,25 +45,39 @@ namespace sfml_util
 namespace gui
 {
 
-    SpellImageManagerSPtr_t SpellImageManager::instance_;
-    std::string             SpellImageManager::spellImagesDirectory_("");
-    const std::string       SpellImageManager::filenameExtension_   (".png");
+    std::unique_ptr<SpellImageManager> SpellImageManager::instanceUPtr_{ nullptr };
+    std::string SpellImageManager::spellImagesDirectory_{ "" };
+    const std::string SpellImageManager::filenameExtension_{ ".png" };
 
 
     SpellImageManager::SpellImageManager()
     {}
 
 
-    SpellImageManager::~SpellImageManager()
-    {}
-
-
-    SpellImageManagerSPtr_t SpellImageManager::Instance()
+    SpellImageManager * SpellImageManager::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new SpellImageManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void SpellImageManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new SpellImageManager);
+        }
+    }
+
+
+    void SpellImageManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::SpellImageManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 
@@ -75,14 +90,14 @@ namespace gui
             game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test() Starting Tests...");
         }
 
-        SpellImageManagerSPtr_t simSPtr{ SpellImageManager::Instance() };
+        auto simPtr{ SpellImageManager::Instance() };
 
         static auto spellIndex{ 0 };
         if (spellIndex < game::spell::Spells::Count)
         {
             auto const ENUM{ static_cast<game::spell::Spells::Enum>(spellIndex) };
             auto const ENUM_STR{ game::spell::Spells::ToString(ENUM) };
-            auto const TEXTURE_SPTR{ simSPtr->Get(ENUM) };
+            auto const TEXTURE_SPTR{ simPtr->Get(ENUM) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::SpellImageManager::Test()  Get(\"" << ENUM_STR << "\") returned a nullptr.");
             game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
             game::LoopManager::Instance()->TestingStrAppend("SpellImageManager Tested " + ENUM_STR);

@@ -43,11 +43,6 @@ namespace game
 namespace creature
 {
 
-    //types required by the singleton implementation
-    class NameInfo;
-    using NameInfoSPtr_t = std::shared_ptr<NameInfo>;
-
-
     //responsibel for data regarding creature names and their display characteristics
     class NameInfo
     {
@@ -65,9 +60,9 @@ namespace creature
         NameInfo();
 
     public:
-        virtual ~NameInfo();
-
-        static NameInfoSPtr_t Instance();
+        static NameInfo * Instance();
+        static void Acquire();
+        static void Release();
 
         inline std::size_t MaxCharacterCount() const            { return 13; }
 
@@ -98,7 +93,7 @@ namespace creature
         inline float Length() { return Length(MakeTextInfo(LargestName())); }
 
     private:
-        static NameInfoSPtr_t instance_;
+        static std::unique_ptr<NameInfo> instanceUPtr_;
         FontSizeToWidthMap_t  sizeMap_;
     };
 

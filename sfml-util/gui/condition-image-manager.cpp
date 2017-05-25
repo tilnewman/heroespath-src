@@ -29,12 +29,13 @@
 //
 #include "condition-image-manager.hpp"
 
-#include "sfml-util/loaders.hpp"
-#include "utilz/boost-string-includes.hpp"
-
 #include "game/log-macros.hpp"
-#include "utilz/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
+
+#include "sfml-util/loaders.hpp"
+
+#include "utilz/assertlogandthrow.hpp"
+#include "utilz/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -44,25 +45,39 @@ namespace sfml_util
 namespace gui
 {
 
-    ConditionImageManagerSPtr_t ConditionImageManager::instance_;
-    std::string                 ConditionImageManager::conditionImagesDirectory_("");
-    const std::string           ConditionImageManager::filenameExtension_       (".png");
+    std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_{ nullptr };
+    std::string ConditionImageManager::conditionImagesDirectory_{ "" };
+    const std::string ConditionImageManager::filenameExtension_{ ".png" };
 
 
     ConditionImageManager::ConditionImageManager()
     {}
 
 
-    ConditionImageManager::~ConditionImageManager()
-    {}
-
-
-    ConditionImageManagerSPtr_t ConditionImageManager::Instance()
+    ConditionImageManager * ConditionImageManager::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new ConditionImageManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void ConditionImageManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new ConditionImageManager);
+        }
+    }
+
+
+    void ConditionImageManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::ConditionImageManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 
@@ -75,14 +90,14 @@ namespace gui
             game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ConditionImageManager::Test()  Starting Tests...");
         }
 
-        ConditionImageManagerSPtr_t cimSPtr{ ConditionImageManager::Instance() };
+        auto cimPtr{ ConditionImageManager::Instance() };
 
         static auto condIndex{ 0 };
         if (condIndex < game::creature::Conditions::Count)
         {
             auto const ENUM{ static_cast<game::creature::Conditions::Enum>(condIndex) };
             auto const ENUM_STR{ game::creature::Conditions::ToString(ENUM) };
-            auto const TEXTURE_SPTR{ cimSPtr->Get(ENUM) };
+            auto const TEXTURE_SPTR{ cimPtr->Get(ENUM) };
             M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ConditionImageManager::Test()  Get(\"" << ENUM_STR << "\") returned a nullptr.");
             game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
             game::LoopManager::Instance()->TestingStrAppend("ConditionImageManager Tested " + ENUM_STR);

@@ -625,9 +625,9 @@ namespace sfml_util
         //reset exit variables
         willExit_ = false;
         fatalExitEvent_ = false;
-        mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winSPtr_));
-        sfml_util::SoundManagerSPtr_t soundManagerSPtr(sfml_util::SoundManager::Instance());
-        frameRateVec_.resize(256);
+        mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winSPtr_ ));
+        auto soundManagerPtr{ sfml_util::SoundManager::Instance() };
+        frameRateVec_.resize(1024);
 
         //consume pre-events
         ConsumeEvents();
@@ -646,7 +646,7 @@ namespace sfml_util
                 frameRateVec_.resize(frameRateSampleCount_ * 2);
             }
 
-            soundManagerSPtr->UpdateTime(elapsedTimeSec_);
+            soundManagerPtr->UpdateTime(elapsedTimeSec_);
 
             PerformNextTest();
             ProcessMouseHover();

@@ -29,11 +29,12 @@
 //
 #include "combat-image-manager.hpp"
 
+#include "game/loop-manager.hpp"
+
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include "game/loop-manager.hpp"
 #include "utilz/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
@@ -44,24 +45,38 @@ namespace sfml_util
 namespace gui
 {
 
-    CombatImageManagerSPtr_t CombatImageManager::instance_           (nullptr);
-    std::string              CombatImageManager::imagesDirectoryPath_("");
+    std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_{ nullptr };
+    std::string CombatImageManager::imagesDirectoryPath_{ "" };
 
 
     CombatImageManager::CombatImageManager()
     {}
 
 
-    CombatImageManager::~CombatImageManager()
-    {}
-
-
-    CombatImageManagerSPtr_t CombatImageManager::Instance()
+    CombatImageManager * CombatImageManager::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new CombatImageManager );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void CombatImageManager::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new CombatImageManager);
+        }
+    }
+
+
+    void CombatImageManager::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

@@ -44,11 +44,6 @@ namespace sfml_util
 namespace gui
 {
 
-    //types required by the singleton implementation
-    class CombatImageManager;
-    using CombatImageManagerSPtr_t = std::shared_ptr<CombatImageManager>;
-
-
     //singleton responsible for loading and dispensing combat image TextureSPtr_t
     class CombatImageManager
     {
@@ -62,9 +57,9 @@ namespace gui
         CombatImageManager();
 
     public:
-        virtual ~CombatImageManager();
-
-        static CombatImageManagerSPtr_t Instance();
+        static CombatImageManager * Instance();
+        static void Acquire();
+        static void Release();
 
         inline static void SetImagesDirectory(const std::string & S) { imagesDirectoryPath_ = S; }
 
@@ -73,7 +68,7 @@ namespace gui
         TextureSPtr_t Get(const CombatImageType::Enum, const bool WILL_FLIP_HORIZ = false) const;
 
     private:
-        static CombatImageManagerSPtr_t instance_;
+        static std::unique_ptr<CombatImageManager> instanceUPtr_;
         static std::string imagesDirectoryPath_;
     };
 

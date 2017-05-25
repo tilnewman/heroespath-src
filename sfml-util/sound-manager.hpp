@@ -44,9 +44,7 @@
 
 namespace sfml_util
 {
-    class SoundManager;
-    using SoundManagerSPtr_t = std::shared_ptr<SoundManager>;
-
+    
     using SoundBufferRefCountPair_t = std::pair<SoundBufferSPtr_t, std::size_t>;
     using SoundBufferRefCountVec_t = std::vector<SoundBufferRefCountPair_t>;
 
@@ -108,9 +106,10 @@ namespace sfml_util
         SoundManager();
 
     public:
-        virtual ~SoundManager();
-
-        static SoundManagerSPtr_t Instance();
+        static SoundManager * Instance();
+        static void Acquire();
+        static void Release();
+        
         static void SetSoundsDirectory(const std::string & SOUND_DIR_PATH,
                                        const std::string & MUSIC_DIR_PATH);
 
@@ -208,7 +207,7 @@ namespace sfml_util
     private:
         static std::string soundsDirectoryPath_;
         static std::string musicDirectoryPath_;
-        static SoundManagerSPtr_t instanceSPtr_;
+        static std::unique_ptr<SoundManager> instanceUPtr_;
         //
         float musicVolume_;
         float effectsVolume_;
@@ -245,9 +244,6 @@ namespace sfml_util
         SoundEffectEnumVec_t soundEffectsToPlayVec_;
         SoundEffectDataSVec_t soundEffectsSVec_;
     };
-
-    using SoundManagerPtr_t  = SoundManager *;
-    using SoundManagerSPtr_t = std::shared_ptr<SoundManager>;
 
 }
 #endif //SFMLUTIL_SOUNDMANAGER_INCLUDED

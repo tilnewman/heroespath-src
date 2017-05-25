@@ -58,11 +58,6 @@ namespace state
     using GameStateSSet_t = std::set<GameStateSPtr_t>;
 
 
-    //types required by singleton implementation
-    class GameStateFactory;
-    using GameStateFactorySPtr_t = std::shared_ptr<GameStateFactory>;
-
-
     //Creates game states either new or from a previous save to disc.
     class GameStateFactory
     {
@@ -76,8 +71,9 @@ namespace state
         GameStateFactory & operator=(const GameStateFactory &) =delete;
 
     public:
-        static GameStateFactorySPtr_t Instance();
-        virtual ~GameStateFactory();
+        static GameStateFactory * Instance();
+        static void Acquire();
+        static void Release();
 
         void NewGame(const player::PartySPtr_t & PARTY_SPTR) const;
         GameStateSSet_t LoadAllGames() const;
@@ -104,7 +100,7 @@ namespace state
         static const std::string SAVED_CHAR_DIR_NAME_;
         static const std::string SAVED_CHAR_FILE_EXT_;
         //
-        static GameStateFactorySPtr_t instanceSPtr_;
+        static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };
 
 }
