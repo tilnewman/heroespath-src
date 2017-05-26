@@ -77,8 +77,6 @@ namespace game
         const std::string CreateMediaPath(const std::string & PATH) const;
         const std::string GetMediaBasePathStr() const;
 
-        bool WillRunSystemTests() const;
-
     private:
         static std::unique_ptr<GameDataFile> instanceUPtr_;
     };

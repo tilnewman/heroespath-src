@@ -156,10 +156,4 @@ namespace game
         return MEDIA_BASE_PATH_STR;
     }
 
-
-    bool GameDataFile::WillRunSystemTests() const
-    {
-        return GetCopyBool("system-will-execute-tests", false);
-    }
-
 }

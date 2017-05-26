@@ -62,14 +62,7 @@ namespace game
         prevSettingsState_(LoopState::None),
         stateBeforeFade_  (LoopState::None)
     {
-        if (GameDataFile::Instance()->WillRunSystemTests())
-        {
-            TransitionTo(LoopState::Test);
-        }
-        else
-        {
-            TransitionTo(LoopState::FromString(startupStage_));
-        }
+        TransitionTo(LoopState::FromString(startupStage_));
     }
 
 
