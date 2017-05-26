@@ -173,8 +173,8 @@ namespace game
         cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_SetHoldTime(currentLoopSPtr_, 4.0f)) );
         cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_Execute(currentLoopSPtr_)) );
 
-        cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_ExitAfterKeypress(currentLoopSPtr_, false)) );
-        cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_ExitAfterMouseclick(currentLoopSPtr_, false)) );
+        cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_ExitAfterKeypress(currentLoopSPtr_, true)) );
+        cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_ExitAfterMouseclick(currentLoopSPtr_, true)) );
 
         cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_ExitAfterFade(currentLoopSPtr_)) );
         cmdQueue_.Push(sfml_util::ILoopCmdSPtr_t( new sfml_util::LoopCmd_FadeOut(currentLoopSPtr_, sf::Color::Black, 150.0f)) );

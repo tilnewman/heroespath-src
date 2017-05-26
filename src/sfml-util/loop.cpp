@@ -349,7 +349,9 @@ namespace sfml_util
                     ProcessMouseButtonLeftPressed(MOUSE_POS_V);
                 }
                 else
+                {
                     M_HP_LOG("Unsupported mouse button pressed: " << e.mouseButton.button);
+                }
             }
 
             if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseButtonReleased))
@@ -360,7 +362,9 @@ namespace sfml_util
                     ProcessMouseButtonLeftReleased(MOUSE_POS_V);
                 }
                 else
+                {
                     M_HP_LOG("Unsupported mouse button released: " << e.mouseButton.button);
+                }
             }
 
             if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseWheelMoved))
@@ -387,10 +391,14 @@ namespace sfml_util
         //allow screenshots even if keystrokes are ignored
         //take screenshot if F12 is pressed
         if (EVENT.key.code == sf::Keyboard::F12)
+        {
             takeScreenshot_ = true;
+        }
 
         if (willIgnoreKeystrokes_)
+        {
             return;
+        }
 
         //popup stages process exclusively when present
         if (nullptr == popupStageSPtr_.get())
@@ -399,17 +407,25 @@ namespace sfml_util
             for (auto & nextStageSPtr : stageSVec_)
             {
                 if (EVENT.type == sf::Event::KeyPressed)
+                {
                     nextStageSPtr->KeyPress(EVENT.key);
+                }
                 else
+                {
                     nextStageSPtr->KeyRelease(EVENT.key);
+                }
             }
         }
         else
         {
             if (EVENT.type == sf::Event::KeyPressed)
+            {
                 popupStageSPtr_->KeyPress(EVENT.key);
+            }
             else
+            {
                 popupStageSPtr_->KeyRelease(EVENT.key);
+            }
         }
 
         //...and to exit the app on escape keypresses

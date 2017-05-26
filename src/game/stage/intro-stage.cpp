@@ -30,13 +30,14 @@
 #include "intro-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/music-operator.hpp"
 
 #include "game/game-data-file.hpp"
+
+#include "misc/real.hpp"
 
 
 namespace game
@@ -65,9 +66,13 @@ namespace stage
             if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
             {
                 if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
+                {
                     musicOperatorSPtr->VolumeFadeOut();
+                }
                 else
+                {
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                }
             }
         }
     }

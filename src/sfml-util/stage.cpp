@@ -92,7 +92,6 @@ namespace sfml_util
     {
         for (auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::UpdateTime() encountered a null entitySPtr in entitySSet_.");
             entitySPtr->UpdateTime(ELAPSED_TIME_SECONDS);
         }
     }
@@ -102,7 +101,6 @@ namespace sfml_util
     {
         for (auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::UpdateMousePos() encountered a null entitySPtr in entitySSet_.");
             entitySPtr->UpdateMousePos(MOUSE_POS_V);
         }
     }
@@ -112,7 +110,6 @@ namespace sfml_util
     {
         for (auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::UpdateMouseDown() encountered a null entitySPtr in entitySSet_.");
             entitySPtr->MouseDown(MOUSE_POS_V);
         }
     }
@@ -124,8 +121,6 @@ namespace sfml_util
 
         for (auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::UpdateMouseUp() encountered a null entitySPtr in entitySSet_.");
-
             if (entitySPtr->MouseUp(MOUSE_POS_V))
             {
                 //can only find one entity with focus
@@ -146,7 +141,6 @@ namespace sfml_util
     {
         for (auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::UpdateMouseWheel() encountered a null entitySPtr in entitySSet_.");
             entitySPtr->UpdateMouseWheel(MOUSE_POS_V, MOUSEWHEEL_DELTA);
         }
     }
@@ -154,21 +148,13 @@ namespace sfml_util
 
     bool Stage::KeyPress(const sf::Event::KeyEvent & KE)
     {
-        if (entityWithFocusSPtr_.get() != nullptr)
-            if (entityWithFocusSPtr_->KeyPress(KE))
-                return true;
-
-        return false;
+        return ((entityWithFocusSPtr_.get() != nullptr) && (entityWithFocusSPtr_->KeyPress(KE)));
     }
 
 
     bool Stage::KeyRelease(const sf::Event::KeyEvent & KE)
     {
-        if (entityWithFocusSPtr_.get() != nullptr)
-            if (entityWithFocusSPtr_->KeyRelease(KE))
-                return true;
-
-        return false;
+        return ((entityWithFocusSPtr_.get() != nullptr) && (entityWithFocusSPtr_->KeyRelease(KE)));
     }
 
 
@@ -177,7 +163,9 @@ namespace sfml_util
         entityWithFocusSPtr_.reset();
 
         for (auto & entitySPtr : entitySSet_)
+        {
             entitySPtr->SetHasFocus(false);
+        }
     }
 
 
@@ -189,8 +177,6 @@ namespace sfml_util
 
         for(auto & entitySPtr : entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((entitySPtr.get() != nullptr), "Stage::SetFocus() encountered a null entitySPtr in entitySSet_.");
-
             //only need to confirm that ENTITY_SPTR is in entitySSet_
             if (ENTITY_SPTR.get() == entitySPtr.get())
             {
@@ -208,7 +194,6 @@ namespace sfml_util
     {
         for (auto const & ENTITY_SPTR: entitySSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((ENTITY_SPTR.get() != nullptr), "Stage::Draw() encountered a null entitySPtr in entitySSet_.");
             ENTITY_SPTR->draw(target, STATES);
         }
 
@@ -252,7 +237,9 @@ namespace sfml_util
         const std::size_t NEW_NUM_ENTITYS(entitySSet_.size());
 
         if (false == wereAnyRemoved)
-            wereAnyRemoved = ! (ORIG_NUM_ENTITYS == NEW_NUM_ENTITYS);
+        {
+            wereAnyRemoved = !(ORIG_NUM_ENTITYS == NEW_NUM_ENTITYS);
+        }
 
         return wereAnyRemoved;
     }
@@ -266,7 +253,9 @@ namespace sfml_util
 
             //check if focused entity is hovered first
             if ((entityWithFocusSPtr_.get() != nullptr) && (entityWithFocusSPtr_->GetEntityRegion().contains(MOUSE_POS_V)))
+            {
                 hoverText = entityWithFocusSPtr_->GetMouseHoverText(MOUSE_POS_V);
+            }
 
             //if focused entity is not hovered, then look for any entity the mouse is hoving over
             if (hoverText.empty())
@@ -287,7 +276,9 @@ namespace sfml_util
             if (hoverText.empty())
             {
                 if (hoverTextBoxSPtr_.get() != nullptr)
+                {
                     hoverTextBoxSPtr_.reset();
+                }
 
                 return;
             }
@@ -310,7 +301,9 @@ namespace sfml_util
                 region.left = SCREEN_WIDTH - region.width;
 
             if (region.left < 0.0f)
+            {
                 region.left = 0.0f;
+            }
 
             hoverSfText_.setPosition(region.left + 10.0f, region.top + 2.0f);
             const gui::BackgroundInfo BG_INFO(FontManager::Instance()->Color_Orange() - sf::Color(20,0,0,0));
@@ -322,7 +315,9 @@ namespace sfml_util
         else
         {
             if (hoverTextBoxSPtr_.get() != nullptr)
+            {
                 hoverTextBoxSPtr_.reset();
+            }
         }
     }
 
