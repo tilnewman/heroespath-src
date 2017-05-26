@@ -83,8 +83,17 @@ namespace stage
         bool TestImageSet();
 
         bool TestAnimations();
-        bool TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT);
-        bool TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT, const unsigned int FRAME_WIDTH, const unsigned int FRAME_HEIGHT, const unsigned int FRAME_COUNT);
+        bool TestMultiTextureAnimation(const std::string &  MEDIA_PATH_KEY_STR,
+                                       const bool           WILL_REBUILD_ANIMATION_OBJECT,
+                                       const sf::Color &    COLOR);
+
+        bool TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR,
+                                        const bool          WILL_REBUILD_ANIMATION_OBJECT,
+                                        const unsigned int  FRAME_WIDTH,
+                                        const unsigned int  FRAME_HEIGHT,
+                                        const unsigned int  FRAME_COUNT,
+                                        const sf::BlendMode BLEND_MODE,
+                                        const sf::Color &   COLOR);
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
@@ -97,6 +106,8 @@ namespace stage
         OuroborosSPtr_t ouroborosSPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;
+        sf::Texture animBGTexture_;
+        sf::Sprite animBGSprite_;
     };
 
 }

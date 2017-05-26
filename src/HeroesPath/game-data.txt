@@ -1,6 +1,6 @@
 system-startup-stage=Combat
 system-revision=alpha 0.1
-system-will-execute-tests=no
+system-will-execute-tests=yes
 
 #graphics settings
 system-window-sync=true
@@ -27,8 +27,10 @@ media-images-combat-dir=image/combat/
 media-anim-images-candleflame=      image/anim/candle-flame/candle-flame.png
 media-anim-images-dir-dualcharge=   image/anim/dual-charge_133x69_14/
 media-anim-images-dir-explosion=    image/anim/explosion_320x240x90/
+media-anim-images-explosion-small=  image/anim/explosion-small_128x128x64/explosion-small.png
 media-anim-images-dir-firesmall=    image/anim/fire-small_20x36x4/
 media-anim-image-firetorch=         image/anim/fire-torch/fire-torch.png
+media-anim-image-flash-sparkle=     image/anim/flash-sparkle_128x128x64/flash-sparkle.png
 media-anim-images-dir-inferno=      image/anim/inferno_256x256x50/
 media-anim-images-dir-lightningball=image/anim/lightning-ball_56x65x25/
 media-anim-images-dir-lightningbolt=image/anim/lightning-bolt_98x203x23/

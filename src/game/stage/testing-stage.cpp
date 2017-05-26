@@ -77,7 +77,9 @@ namespace stage
         textureSVec_       (),
         ouroborosSPtr_     (),
         testingBlurbsVec_  (),
-        sleepMilliseconds_ (0)
+        sleepMilliseconds_ (0),
+        animBGTexture_     (),
+        animBGSprite_      ()
     {}
 
 
@@ -89,6 +91,11 @@ namespace stage
     {
         ouroborosSPtr_.reset( new Ouroboros("TestingStage's") );
         EntityAdd(ouroborosSPtr_);
+
+        sfml_util::LoadImageOrTexture(animBGTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        animBGTexture_.setSmooth(true);
+        animBGSprite_.setTexture(animBGTexture_);
+        animBGSprite_.setPosition(0.0f, 0.0f);
     }
 
 
@@ -98,11 +105,13 @@ namespace stage
 
         if (multiTextureAnimSPtr_.get() != nullptr)
         {
+            target.draw(animBGSprite_, STATES);
             multiTextureAnimSPtr_->draw(target, STATES);
         }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
         {
+            target.draw(animBGSprite_, STATES);
             singleTextureAnimSPtr_->draw(target, STATES);
         }
 
@@ -655,59 +664,140 @@ namespace stage
             "media-anim-images-dir-whiteburst",
         };
 
+        const long ANIM_FRAME_SLEEP_MS{ 15 };
+
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
         {
             static auto isNewAnimation{ true };
-            if (TestMultiTextureAnimation(multiTexturedAnimPathKeyVec[multiTexturedAnimIndex], isNewAnimation) == false)
+
+            sf::Color color{ sf::Color::White };
+            if (0 == multiTexturedAnimIndex)       color = sf::Color::Red;
+            else if (6 == multiTexturedAnimIndex)  color = sf::Color::Green;
+            else if (7 == multiTexturedAnimIndex)  color = sf::Color::Yellow;
+            else if (8 == multiTexturedAnimIndex)  color = sf::Color::Cyan;
+            else if (11 == multiTexturedAnimIndex) color = sf::Color::Magenta;
+            else if (12 == multiTexturedAnimIndex) color = sf::Color::Cyan;
+
+            if (TestMultiTextureAnimation(multiTexturedAnimPathKeyVec[multiTexturedAnimIndex],
+                                          isNewAnimation,
+                                          color) == false)
             {
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewAnimation = false;
                 return false;
             }
-
-            isNewAnimation = true;
-            ++multiTexturedAnimIndex;
-            return false;
+            else
+            {
+                multiTextureAnimSPtr_.reset();
+                isNewAnimation = true;
+                ++multiTexturedAnimIndex;
+                return false;
+            }
         }
-
-        multiTextureAnimSPtr_.reset();
 
         static auto isNewSingleTextureAnimation{ true };
 
         static auto hasAnimationBeenTested_CandleFlame{ false };
         if (false == hasAnimationBeenTested_CandleFlame)
         {
-            if (TestSingleTextureAnimation("media-anim-images-candleflame", isNewSingleTextureAnimation, 128, 128, 64) == false)
+            if (TestSingleTextureAnimation("media-anim-images-candleflame",
+                                           isNewSingleTextureAnimation,
+                                           128,
+                                           128,
+                                           64,
+                                           sf::BlendAlpha,
+                                           sf::Color::White) == false)
             {
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
+            else
+            {
+                singleTextureAnimSPtr_.reset();
+                isNewSingleTextureAnimation = true;
+                hasAnimationBeenTested_CandleFlame = true;
+            }
+        }
 
-            isNewSingleTextureAnimation = true;
-            hasAnimationBeenTested_CandleFlame = true;
+        static auto hasAnimationBeenTested_ExplosionSmall{ false };
+        if (false == hasAnimationBeenTested_ExplosionSmall)
+        {
+            if (TestSingleTextureAnimation("media-anim-images-explosion-small",
+                                           isNewSingleTextureAnimation,
+                                           128,
+                                           128,
+                                           64,
+                                           sf::BlendAlpha,
+                                           sf::Color::White) == false)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                isNewSingleTextureAnimation = false;
+                return false;
+            }
+            else
+            {
+                singleTextureAnimSPtr_.reset();
+                isNewSingleTextureAnimation = true;
+                hasAnimationBeenTested_ExplosionSmall = true;
+            }
         }
 
         static auto hasAnimationBeenTested_FireTorch{ false };
         if (false == hasAnimationBeenTested_FireTorch)
         {
-            if (TestSingleTextureAnimation("media-anim-image-firetorch", isNewSingleTextureAnimation, 128, 256, 32) == false)
+            if (TestSingleTextureAnimation("media-anim-image-firetorch",
+                                           isNewSingleTextureAnimation,
+                                           128,
+                                           256,
+                                           32,
+                                           sf::BlendAlpha,
+                                           sf::Color::White) == false)
             {
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
-
-            isNewSingleTextureAnimation = true;
-            hasAnimationBeenTested_FireTorch = true;
+            else
+            {
+                singleTextureAnimSPtr_.reset();
+                isNewSingleTextureAnimation = true;
+                hasAnimationBeenTested_FireTorch = true;
+            }
         }
 
-        singleTextureAnimSPtr_.reset();
+        static auto hasAnimationBeenTested_FlashSparkle{ false };
+        if (false == hasAnimationBeenTested_FlashSparkle)
+        {
+            if (TestSingleTextureAnimation("media-anim-image-flash-sparkle",
+                                           isNewSingleTextureAnimation,
+                                           128,
+                                           128,
+                                           64,
+                                           sf::BlendAdd,
+                                           sf::Color::Cyan) == false)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                isNewSingleTextureAnimation = false;
+                return false;
+            }
+            else
+            {
+                singleTextureAnimSPtr_.reset();
+                isNewSingleTextureAnimation = true;
+                hasAnimationBeenTested_FlashSparkle = true;
+            }
+        }
 
         LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
         return true;
     }
 
 
-    bool TestingStage::TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT)
+    bool TestingStage::TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR,
+                                                 const bool          WILL_REBUILD_ANIMATION_OBJECT,
+                                                 const sf::Color &   COLOR)
     {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {
@@ -721,14 +811,21 @@ namespace stage
                                                                                        0.0f,
                                                                                        0.06f,
                                                                                        sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                       sfml_util::MapByRes(1.0f, 3.0f));
+                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
+                                                                                       COLOR);
         }
 
         return multiTextureAnimSPtr_->UpdateTime(0.02f);
     }
 
 
-    bool TestingStage::TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR, const bool WILL_REBUILD_ANIMATION_OBJECT, const unsigned int FRAME_WIDTH, const unsigned int FRAME_HEIGHT, const unsigned int FRAME_COUNT)
+    bool TestingStage::TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR,
+                                                  const bool          WILL_REBUILD_ANIMATION_OBJECT,
+                                                  const unsigned int  FRAME_WIDTH,
+                                                  const unsigned int  FRAME_HEIGHT,
+                                                  const unsigned int  FRAME_COUNT,
+                                                  const sf::BlendMode BLEND_MODE,
+                                                  const sf::Color &   COLOR)
     {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {
@@ -744,9 +841,10 @@ namespace stage
                                                                                          FRAME_HEIGHT,
                                                                                          0.06f,
                                                                                          FRAME_COUNT,
-                                                                                         sf::BlendAlpha,
+                                                                                         BLEND_MODE,
                                                                                          sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                         sfml_util::MapByRes(1.0f, 3.0f));
+                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
+                                                                                         COLOR);
         }
 
         return singleTextureAnimSPtr_->UpdateTime(0.02f);
