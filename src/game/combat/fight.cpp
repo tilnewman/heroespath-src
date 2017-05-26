@@ -42,12 +42,25 @@
 #include "misc/vectors.hpp"
 
 #include <string>
+#include <algorithm>
 
 
 namespace game
 {
 namespace combat
 {
+
+    const stats::Stat_t FightClub::STAT_HIGHER_THAN_AVERAGE_{ 20 };
+    const float FightClub::STAT_RATIO_AMAZING_{ 0.5f };
+
+
+    stats::Stat_t FightClub::IsValuetHigherThanRatioOfStat(const stats::Stat_t STAT_VALUE,
+                                                           const stats::Stat_t STAT_MAX,
+                                                           const float         RATIO)
+    {
+        return (STAT_VALUE >= static_cast<stats::Stat_t>(static_cast<float>(STAT_MAX) * RATIO));
+    }
+
 
     const FightResult FightClub::Fight(creature::CreaturePtrC_t creatureAttackingPtrC,
                                        creature::CreaturePtrC_t creatureDefendingPtrC,
@@ -219,124 +232,188 @@ namespace combat
     }
 
 
+    //Determine if attacking creature's accuracy overcomes the defending
+    //creature's speed to see if there was a hit.
     const HitInfo FightClub::AttackWithSingleWeapon(HitInfoVec_t &           hitInfoVec,
                                                     const item::ItemSPtr_t & WEAPON_SPTR,
                                                     creature::CreaturePtrC_t creatureAttackingPtrC,
                                                     creature::CreaturePtrC_t creatureDefendingPtrC,
                                                     const bool               WILL_FORCE_HIT)
     {
+        auto hasHitBeenDetermined{ false };
         auto wasHit{ false };
         auto hitType{ HitType::Count };
         auto dodgeType{ DodgeType::Count };
 
-        //determine if attacking creature's accuracy overcomes the defending creature's speed to see if there was a hit
-        auto const ATTACKING_ACCURACY{ creatureAttackingPtrC->Stats().Acc().Current() };
-        auto const ATTACKING_ACCURACY_RAND_MIN{ stats::Stat::Reduce(ATTACKING_ACCURACY) };
-        auto const ATTACKING_ACCURACY_RAND_MAX{ ATTACKING_ACCURACY };
-        auto const ATTACKING_ACCURACY_RAND{ misc::random::Int(ATTACKING_ACCURACY_RAND_MIN, ATTACKING_ACCURACY_RAND_MAX) };
+        auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Stats().Acc().Current() };
+        auto attackAccToUse{ ATTACK_ACC_RAW };
 
-        auto const DEFENDING_SPEED{ creatureDefendingPtrC->Stats().Spd().Current() };
-        auto const DEFENDING_SPEED_RAND_MIN{ stats::Stat::Reduce(DEFENDING_SPEED) };
-        auto const DEFENDING_SPEED_RAND_MAX{ DEFENDING_SPEED };
-        auto const DEFENDING_SPEED_RAND{ misc::random::Int(DEFENDING_SPEED_RAND_MIN, DEFENDING_SPEED_RAND_MAX) };
-
-        if ((ATTACKING_ACCURACY_RAND == ATTACKING_ACCURACY_RAND_MAX) && (DEFENDING_SPEED_RAND != DEFENDING_SPEED_RAND_MAX))
+        //If the attacking creature is an archer who is using a projectile weapon to attack with,
+        //then add a 20% accuracy bonus plus half the attacker's Rank.
+        if ((creatureAttackingPtrC->Role().Which() == creature::role::Archer) &&
+            (WEAPON_SPTR->WeaponType() & item::weapon_type::Projectile))
         {
-            //This case allows any attacker the rare chance to hit, even when the odds are overwhelmingly bad,
-            //such as when the attackers accuracy max is less than the defender's speed min
+            attackAccToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACK_ACC_RAW) *
+                STAT_RATIO_AMAZING_);
+            attackAccToUse += creatureAttackingPtrC->Rank() / 2;
+        }
+
+        auto const ATTACK_ACC_RAND_MIN{ stats::Stat::Reduce(attackAccToUse) };
+        auto const ATTACK_ACC_RAND_MAX{ std::max(ATTACK_ACC_RAW, attackAccToUse) };
+        auto const ATTACK_ACC_RAND{ misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
+
+        auto const IS_ATTACK_AMAZING_ACC{
+            (attackAccToUse >= STAT_HIGHER_THAN_AVERAGE_) &&
+            IsValuetHigherThanRatioOfStat(ATTACK_ACC_RAND, attackAccToUse, STAT_RATIO_AMAZING_)};
+
+        auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Stats().Spd().Current()};
+        auto defendSpdToUse{ DEFEND_SPD_RAW };
+
+        //If the defending creature is a Pixie then add 20% speed bonus plus half defender's rank.
+        if (creatureDefendingPtrC->IsPixie())
+        {
+            defendSpdToUse += static_cast<stats::Stat_t>(static_cast<float>(DEFEND_SPD_RAW) *
+                STAT_RATIO_AMAZING_);
+            defendSpdToUse += creatureDefendingPtrC->Rank() / 2;
+        }
+
+        auto const DEFEND_SPD_RAND_MIN{ stats::Stat::Reduce(defendSpdToUse) };
+        auto const DEFEND_SPD_RAND_MAX{ std::max(DEFEND_SPD_RAW, defendSpdToUse) };
+        auto const DEFEND_SPD_RAND{ misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
+        
+        auto const IS_DEFENSE_AMAZING_DODGE{
+            (defendSpdToUse >= STAT_HIGHER_THAN_AVERAGE_) &&
+            IsValuetHigherThanRatioOfStat(DEFEND_SPD_RAND, defendSpdToUse, STAT_RATIO_AMAZING_)};
+
+        if (IS_ATTACK_AMAZING_ACC && (IS_DEFENSE_AMAZING_DODGE == false))
+        {
+            //This case allows any attacker the rare chance to hit, even when the odds are
+            //overwhelmingly bad, such as when the attackers accuracy max is less than the
+            //defender's speed min.
             wasHit = true;
             hitType = HitType::AmazingAccuracy;
+            hasHitBeenDetermined = true;
         }
-        else if ((ATTACKING_ACCURACY_RAND != ATTACKING_ACCURACY_RAND_MAX) && (DEFENDING_SPEED_RAND == DEFENDING_SPEED_RAND_MAX))
+        else if ((IS_ATTACK_AMAZING_ACC == false) && IS_DEFENSE_AMAZING_DODGE)
         {
-            //This case allows any defender the rare chance to dodge even if the odds are overwhelmingly bad,
-            //such as when the defender's speed max is less then the attacker's accuracy min.
+            //This case allows any defender the rare chance to dodge even if the odds are
+            //overwhelmingly bad, such as when the defender's speed max is less then the
+            //attacker's accuracy min.
             wasHit = false;
             dodgeType = DodgeType::AmazingSpeed;
+            hasHitBeenDetermined = true;
         }
-        else if (((ATTACKING_ACCURACY_RAND + static_cast<int>(creatureAttackingPtrC->Rank())) == (DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) ||
-                 ((ATTACKING_ACCURACY_RAND == ATTACKING_ACCURACY_RAND_MAX) && (DEFENDING_SPEED_RAND == DEFENDING_SPEED_RAND_MAX)))
+
+        //In this case, either both the attacker and defending did their best and tied for
+        //"rolling" their highest possible rand/score or the rand "rolled" scores were equal.
+        //So the hit is determined by whose stat+rank is higher.
+        //This is the case most likely to decide if hit or miss.
+        if (false == hasHitBeenDetermined)
         {
-            //In this case, either both the attacker and defending did their best and tied for "rolling" their highest possible rand/score or the rand "rolled" scores were equal.
-            //So the hit is determined by whose stat is higher.
-            if (ATTACKING_ACCURACY > DEFENDING_SPEED)
+            auto const ATTACK_ACC_RANK_ADJ{ ATTACK_ACC_RAND +
+                static_cast<int>(creatureAttackingPtrC->Rank()) };
+
+            auto const DEFEND_SPD_RANK_ADJ{ DEFEND_SPD_RAND +
+                static_cast<int>(creatureDefendingPtrC->Rank()) };
+
+            if (ATTACK_ACC_RANK_ADJ > DEFEND_SPD_RANK_ADJ)
             {
                 wasHit = true;
                 hitType = HitType::Accuracy;
+                hasHitBeenDetermined = true;
             }
-            else if (ATTACKING_ACCURACY < DEFENDING_SPEED)
+            else if (ATTACK_ACC_RANK_ADJ < DEFEND_SPD_RANK_ADJ)
             {
                 wasHit = false;
                 dodgeType = DodgeType::Speed;
+                hasHitBeenDetermined = true;
+            }
+        }
+
+        //In this case both the rand "rolls" and the stat+rank are equal,
+        //so determine if the attack hit or miss based on luck.
+        if (false == hasHitBeenDetermined)
+        {
+            auto const ATTACK_LCK{ creatureAttackingPtrC->Stats().Lck().Current() };
+            auto const ATTACK_LCK_RAND_MIN{ stats::Stat::Reduce(ATTACK_LCK) };
+            auto const ATTACK_LCK_RAND_MAX{ ATTACK_LCK };
+            auto const ATTACK_LCK_RAND{ misc::random::Int(ATTACK_LCK_RAND_MIN,
+                                                            ATTACK_LCK_RAND_MAX) };
+
+            auto const IS_ATTACK_AMAZING_LCK{
+                (ATTACK_LCK >= STAT_HIGHER_THAN_AVERAGE_) &&
+                IsValuetHigherThanRatioOfStat(ATTACK_LCK_RAND,
+                                                ATTACK_LCK,
+                                                STAT_RATIO_AMAZING_) };
+
+            auto const DEFEND_LCK{ creatureDefendingPtrC->Stats().Lck().Current() };
+            auto const DEFEND_LCK_RAND_MIN{ stats::Stat::Reduce(DEFEND_LCK) };
+            auto const DEFEND_LCK_RAND_MAX{ DEFEND_LCK };
+            auto const DEFEND_LCK_RAND{ misc::random::Int(DEFEND_LCK_RAND_MIN,
+                                                            DEFEND_LCK_RAND_MAX) };
+
+            auto const IS_DEFEND_AMAZING_LCK{
+                (DEFEND_LCK >= STAT_HIGHER_THAN_AVERAGE_) &&
+                IsValuetHigherThanRatioOfStat(DEFEND_LCK_RAND,
+                                                DEFEND_LCK,
+                                                STAT_RATIO_AMAZING_) };
+
+            if (IS_ATTACK_AMAZING_LCK && (IS_DEFEND_AMAZING_LCK == false))
+            {
+                wasHit = true;
+                hitType = HitType::Luck;
+                hasHitBeenDetermined = true;
+            }
+            else if ((IS_ATTACK_AMAZING_LCK == false) && IS_DEFEND_AMAZING_LCK)
+            {
+                wasHit = false;
+                dodgeType = DodgeType::Luck;
+                hasHitBeenDetermined = true;
             }
             else
             {
-                //In this case both the rand "rolls" and the stat values are equal,
-                //so determine if the attack hit or miss based on luck
-                auto const ATTACKING_LUCK{ creatureAttackingPtrC->Stats().Lck().Current() };
-                auto const ATTACKING_LUCK_RAND_MIN{ stats::Stat::Reduce(ATTACKING_LUCK) };
-                auto const ATTACKING_LUCK_RAND_MAX{ ATTACKING_LUCK };
-                auto const ATTACKING_LUCK_RAND{ misc::random::Int(ATTACKING_LUCK_RAND_MIN, ATTACKING_LUCK_RAND_MAX) };
+                //In this case, neither attaker or defender had amazing luck,
+                //so the hit is determined by who has the greater lck+rank.
+                auto const ATTACK_LCK_RANK_ADJ{ ATTACK_LCK_RAND +
+                    static_cast<int>(creatureAttackingPtrC->Rank()) };
 
-                auto const DEFENDING_LUCK{ creatureDefendingPtrC->Stats().Lck().Current() };
-                auto const DEFENDING_LUCK_RAND_MIN{ stats::Stat::Reduce(DEFENDING_LUCK) };
-                auto const DEFENDING_LUCK_RAND_MAX{ DEFENDING_LUCK };
-                auto const DEFENDING_LUCK_RAND{ misc::random::Int(DEFENDING_LUCK_RAND_MIN, DEFENDING_LUCK_RAND_MAX) };
+                auto const DEFEND_LCK_RANK_ADJ{ DEFEND_LCK_RAND +
+                    static_cast<int>(creatureDefendingPtrC->Rank()) };
 
-                if (ATTACKING_LUCK_RAND > DEFENDING_LUCK_RAND)
+                if (ATTACK_LCK_RANK_ADJ > DEFEND_LCK_RANK_ADJ)
                 {
                     wasHit = true;
-                    hitType = HitType::Luck;
+                    hitType = HitType::Accuracy;
+                    hasHitBeenDetermined = true;
                 }
-                else if (ATTACKING_LUCK_RAND < DEFENDING_LUCK_RAND)
+                else if (ATTACK_LCK_RANK_ADJ < DEFEND_LCK_RANK_ADJ)
                 {
                     wasHit = false;
-                    dodgeType = DodgeType::Luck;
-                }
-                else
-                {
-                    //In this case, everything that could be equal WAS equal, so determine hit based on fair coin toss.
-                    if (misc::random::Bool())
-                    {
-                        wasHit = true;
-                        hitType = HitType::AmazingLuck;
-                    }
-                    else
-                    {
-                        wasHit = false;
-                        dodgeType = DodgeType::AmazingLuck;
-                    }
+                    dodgeType = DodgeType::Speed;
+                    hasHitBeenDetermined = true;
                 }
             }
         }
-        else
+
+        //In this case, everything that could be equal WAS equal, so determine hit
+        //based on 'fair coin toss'.
+        if (false == hasHitBeenDetermined)
         {
-            auto attackingAccuracyToUse{ ATTACKING_ACCURACY_RAND + static_cast<stats::Stat_t>(creatureAttackingPtrC->Rank()) };
-
-            //If the attacking creature is an archer who is using a projectile weapon to attack with,
-            //then add a 20% accuracy bonus plus half the attacker's Rank.
-            if ((creatureAttackingPtrC->Role().Which() == creature::role::Archer) &&
-                (WEAPON_SPTR->WeaponType() & item::weapon_type::Projectile))
-            {
-                attackingAccuracyToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACKING_ACCURACY) * 0.2f);
-                attackingAccuracyToUse += static_cast<stats::Stat_t>(static_cast<float>(creatureAttackingPtrC->Rank()) / 2.0f);
-            }
-
-            auto defendingSpeedToUse{ DEFENDING_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()) };
-
-            if ((attackingAccuracyToUse > defendingSpeedToUse) &&
-                ((creatureDefendingPtrC->Race().Which() != creature::race::Pixie) || (misc::random::Bool())))
+            if (misc::random::Bool())
             {
                 wasHit = true;
-                hitType = HitType::Accuracy;
+                hitType = HitType::AmazingLuck;
             }
             else
             {
                 wasHit = false;
-                dodgeType = DodgeType::Speed;
+                dodgeType = DodgeType::AmazingLuck;
             }
+
+            hasHitBeenDetermined = true;
         }
 
+        
         //handle forced hit
         if (WILL_FORCE_HIT && (false == wasHit))
         {
@@ -344,7 +421,11 @@ namespace combat
             dodgeType = DodgeType::Count;
 
             if (HitType::Count == hitType)
+            {
                 hitType = HitType::Accuracy;
+            }
+
+            hasHitBeenDetermined = true;
         }
 
         stats::Health_t damage{ 0 };
@@ -353,11 +434,23 @@ namespace combat
         creature::ConditionEnumVec_t conditionsVec;
         if (wasHit)
         {
-            damage = DetermineDamage(WEAPON_SPTR, creatureAttackingPtrC, creatureDefendingPtrC, isPowerHit, isCriticalHit);
+            damage = DetermineDamage(WEAPON_SPTR,
+                                     creatureAttackingPtrC,
+                                     creatureDefendingPtrC,
+                                     isPowerHit,
+                                     isCriticalHit);
+
             conditionsVec = HandleDamage(creatureDefendingPtrC, hitInfoVec, damage);
         }
 
-        return HitInfo(WEAPON_SPTR, hitType, dodgeType, damage, isCriticalHit, isPowerHit, conditionsVec, Text::WeaponActionVerb(WEAPON_SPTR, false));
+        return HitInfo(WEAPON_SPTR,
+                       hitType,
+                       dodgeType,
+                       damage,
+                       isCriticalHit,
+                       isPowerHit,
+                       conditionsVec,
+                       Text::WeaponActionVerb(WEAPON_SPTR, false));
     }
 
 
@@ -411,14 +504,14 @@ namespace combat
                                ((STRENGTH >= STAT_FLOOR) || (misc::random::Int(STAT_FLOOR / 2) == 0)));//low str can mean greater chance of power hit so compensate here
 
         //there is a rare chance of a critical hit for players
-        auto const ACCURACY{ creatureAttackingPtrC->Stats().Acc().Current() };
-        auto const ACCURACY_RAND_MIN{ stats::Stat::Reduce(ACCURACY) };
-        auto const ACCURACY_RAND_MAX{ ACCURACY };
-        auto const ACCURACY_RAND{ misc::random::Int(ACCURACY_RAND_MIN, ACCURACY_RAND_MAX) };
+        auto const ACC{ creatureAttackingPtrC->Stats().Acc().Current() };
+        auto const ACC_RAND_MIN{ stats::Stat::Reduce(ACC) };
+        auto const ACC_RAND_MAX{ ACC };
+        auto const ACC_RAND{ misc::random::Int(ACC_RAND_MIN, ACC_RAND_MAX) };
 
         isCriticalHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
-                                  (ACCURACY_RAND == ACCURACY_RAND_MAX) &&
-                                  ((ACCURACY >= STAT_FLOOR) || (misc::random::Int(STAT_FLOOR / 2) == 0)));//low acc can mean greater chance of critical hit so compensate here
+                                  (ACC_RAND == ACC_RAND_MAX) &&
+                                  ((ACC >= STAT_FLOOR) || (misc::random::Int(STAT_FLOOR / 2) == 0)));//low acc can mean greater chance of critical hit so compensate here
 
         stats::Health_t damageFinal{ DAMAGE_BASE };
 
@@ -517,38 +610,38 @@ namespace combat
     const FightResult FightClub::Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
-        auto const POUNCER_SPEED{ creaturePouncingPtrC->Stats().Spd().Current() };
-        auto const POUNCER_SPEED_RAND_MIN{ stats::Stat::Reduce(POUNCER_SPEED) };
-        auto const POUNCER_SPEED_RAND_MAX{ POUNCER_SPEED };
-        auto const POUNCER_SPEED_RAND{ misc::random::Int(POUNCER_SPEED_RAND_MIN, POUNCER_SPEED_RAND_MAX) };
+        auto const POUNCER_SPD{ creaturePouncingPtrC->Stats().Spd().Current() };
+        auto const POUNCER_SPD_RAND_MIN{ stats::Stat::Reduce(POUNCER_SPD) };
+        auto const POUNCER_SPD_RAND_MAX{ POUNCER_SPD };
+        auto const POUNCER_SPD_RAND{ misc::random::Int(POUNCER_SPD_RAND_MIN, POUNCER_SPD_RAND_MAX) };
 
-        auto const POUNCER_ACCURACY{ creaturePouncingPtrC->Stats().Acc().Current() };
-        auto const POUNCER_ACCURACY_RAND_MIN{ stats::Stat::Reduce(POUNCER_ACCURACY) };
-        auto const POUNCER_ACCURACY_RAND_MAX{ POUNCER_ACCURACY };
-        auto const POUNCER_ACCURACY_RAND{ misc::random::Int(POUNCER_ACCURACY_RAND_MIN, POUNCER_ACCURACY_RAND_MAX) };
+        auto const POUNCER_ACC{ creaturePouncingPtrC->Stats().Acc().Current() };
+        auto const POUNCER_ACC_RAND_MIN{ stats::Stat::Reduce(POUNCER_ACC) };
+        auto const POUNCER_ACC_RAND_MAX{ POUNCER_ACC };
+        auto const POUNCER_ACC_RAND{ misc::random::Int(POUNCER_ACC_RAND_MIN, POUNCER_ACC_RAND_MAX) };
 
         auto didPounce{ false };
 
-        if ((POUNCER_SPEED_RAND == POUNCER_SPEED_RAND_MAX) || (POUNCER_ACCURACY_RAND == POUNCER_ACCURACY_RAND_MAX))
+        if ((POUNCER_SPD_RAND == POUNCER_SPD_RAND_MAX) || (POUNCER_ACC_RAND == POUNCER_ACC_RAND_MAX))
         {
             //if either of the pouncer's attribute "rolls" were natural max then the pounce occurs
             didPounce = true;
         }
         else if ((creatureDefendingPtrC->HasConditionNotAThreatTemp() || creatureDefendingPtrC->HasConditionNotAThreatPerm()) &&
-                 (POUNCER_ACCURACY_RAND != POUNCER_ACCURACY_RAND_MIN))
+                 (POUNCER_ACC_RAND != POUNCER_ACC_RAND_MIN))
         {
             //if the defender is temp disabled then the pounce succeeds unless the accuracy "roll" was natural min
             didPounce = true;
         }
         else
         {
-            auto const DEFENDER_SPEED{ creatureDefendingPtrC->Stats().Spd().Current() };
-            auto const DEFENDER_SPEED_RAND_MIN{ stats::Stat::Reduce(DEFENDER_SPEED) };
-            auto const DEFENDER_SPEED_RAND_MAX{ DEFENDER_SPEED };
-            auto const DEFENDER_SPEED_RAND{ misc::random::Int(DEFENDER_SPEED_RAND_MIN, DEFENDER_SPEED_RAND_MAX) };
+            auto const DEFENDER_SPD{ creatureDefendingPtrC->Stats().Spd().Current() };
+            auto const DEFENDER_SPD_RAND_MIN{ stats::Stat::Reduce(DEFENDER_SPD) };
+            auto const DEFENDER_SPD_RAND_MAX{ DEFENDER_SPD };
+            auto const DEFENDER_SPD_RAND{ misc::random::Int(DEFENDER_SPD_RAND_MIN, DEFENDER_SPD_RAND_MAX) };
 
-            if (((POUNCER_SPEED_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) ||
-                ((POUNCER_ACCURACY_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPEED_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))))
+            if (((POUNCER_SPD_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPD_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) ||
+                ((POUNCER_ACC_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPD_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))))
             {
                 //if the pouncer's speed or accuracy "rolls" are greater than the defender's speed "roll" then the pouce occurs
                 didPounce = true;
@@ -584,29 +677,29 @@ namespace combat
         auto const ROARER_STRENGTH_RAND_MIN{ stats::Stat::Reduce(ROARER_STRENGTH) };
         auto const ROARER_STRENGTH_RAND_MAX{ ROARER_STRENGTH };
 
-        auto const ROARER_LUCK{ creatureRoaringPtrC->Stats().Lck().Current() };
-        auto const ROARER_LUCK_RAND_MIN_HALF((ROARER_LUCK / 5));
-        auto const ROARER_LUCK_RAND_MAX_HALF{ ROARER_LUCK / 2 };
+        auto const ROARER_LCK{ creatureRoaringPtrC->Stats().Lck().Current() };
+        auto const ROARER_LCK_RAND_MIN_HALF((ROARER_LCK / 5));
+        auto const ROARER_LCK_RAND_MAX_HALF{ ROARER_LCK / 2 };
 
         auto const IS_ROARING_CREATURE_FLYING{ Encounter::Instance()->GetTurnInfoCopy(creatureRoaringPtrC).GetIsFlying() };
 
-        auto const ROARING_FRIGHTEN_ROLL_MIN{ ROARER_STRENGTH_RAND_MIN + ROARER_LUCK_RAND_MIN_HALF };
-        auto const ROARING_FRIGHTEN_ROLL_MAX{ ROARER_STRENGTH_RAND_MAX + ROARER_LUCK_RAND_MAX_HALF };
+        auto const ROARING_FRIGHTEN_ROLL_MIN{ ROARER_STRENGTH_RAND_MIN + ROARER_LCK_RAND_MIN_HALF };
+        auto const ROARING_FRIGHTEN_ROLL_MAX{ ROARER_STRENGTH_RAND_MAX + ROARER_LCK_RAND_MAX_HALF };
         auto const ROARING_CREATURE_FRIGHTEN_ROLL{ misc::random::Int(ROARING_FRIGHTEN_ROLL_MIN, ROARING_FRIGHTEN_ROLL_MAX)};
 
         CreatureEffectVec_t creatureEffectsVec;
 
         //Give each defending creature a chance to resist being frightened.
         //The farther away each defending creature is the better chance of resisting he/she/it has.
-        for (auto const NEXT_DEFENDING_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
+        for (auto const NEXT_DEFEND_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
         {
-            if (NEXT_DEFENDING_CREATURE_PTR->HasCondition(creature::Conditions::Frightened))
+            if (NEXT_DEFEND_CREATURE_PTR->HasCondition(creature::Conditions::Frightened))
                 continue;
 
-            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(creatureRoaringPtrC, NEXT_DEFENDING_CREATURE_PTR)) };
+            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(creatureRoaringPtrC, NEXT_DEFEND_CREATURE_PTR)) };
 
             //if flying, then consider it farther away and less likely to be frightened
-            if (Encounter::Instance()->GetTurnInfoCopy(NEXT_DEFENDING_CREATURE_PTR).GetIsFlying() &&
+            if (Encounter::Instance()->GetTurnInfoCopy(NEXT_DEFEND_CREATURE_PTR).GetIsFlying() &&
                 (IS_ROARING_CREATURE_FLYING == false))
                 ++nextBlockingDisatnce;
 
@@ -616,31 +709,31 @@ namespace combat
             auto const DEFENDER_INTELLIGENCE_RAND_MIN{ stats::Stat::Reduce(DEFENDER_INTELLIGENCE) };
             auto const DEFENDER_INTELLIGENCE_RAND_MAX{ DEFENDER_INTELLIGENCE };
 
-            auto const DEFENDER_LUCK{ creatureRoaringPtrC->Stats().Lck().Current() };
-            auto const DEFENDER_LUCK_RAND_MIN_HALF((DEFENDER_LUCK / 5));
-            auto const DEFENDER_LUCK_RAND_MAX_HALF{ DEFENDER_LUCK / 2 };
+            auto const DEFENDER_LCK{ creatureRoaringPtrC->Stats().Lck().Current() };
+            auto const DEFENDER_LCK_RAND_MIN_HALF((DEFENDER_LCK / 5));
+            auto const DEFENDER_LCK_RAND_MAX_HALF{ DEFENDER_LCK / 2 };
 
-            auto const DEFENDING_FRIGHTEN_ROLL_MIN{ DEFENDER_INTELLIGENCE_RAND_MIN + DEFENDER_LUCK_RAND_MIN_HALF + DISATANCE_OFFSET };
-            auto const DEFENDING_FRIGHTEN_ROLL_MAX{ DEFENDER_INTELLIGENCE_RAND_MAX + DEFENDER_LUCK_RAND_MAX_HALF + DISATANCE_OFFSET };
-            auto const DEFENDING_CREATURE_FRIGHTEN_RESIST_ROLL{ misc::random::Int(DEFENDING_FRIGHTEN_ROLL_MIN, DEFENDING_FRIGHTEN_ROLL_MAX) };
+            auto const DEFEND_FRIGHTEN_ROLL_MIN{ DEFENDER_INTELLIGENCE_RAND_MIN + DEFENDER_LCK_RAND_MIN_HALF + DISATANCE_OFFSET };
+            auto const DEFEND_FRIGHTEN_ROLL_MAX{ DEFENDER_INTELLIGENCE_RAND_MAX + DEFENDER_LCK_RAND_MAX_HALF + DISATANCE_OFFSET };
+            auto const DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL{ misc::random::Int(DEFEND_FRIGHTEN_ROLL_MIN, DEFEND_FRIGHTEN_ROLL_MAX) };
 
             auto didFrighten{ false };
-            if ((ROARING_CREATURE_FRIGHTEN_ROLL == ROARING_FRIGHTEN_ROLL_MAX) && (DEFENDING_CREATURE_FRIGHTEN_RESIST_ROLL != DEFENDING_FRIGHTEN_ROLL_MAX))
+            if ((ROARING_CREATURE_FRIGHTEN_ROLL == ROARING_FRIGHTEN_ROLL_MAX) && (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL != DEFEND_FRIGHTEN_ROLL_MAX))
             {
                 //if the roaring creature's roll was max and the defending creature's was not, then frighten
                 didFrighten = true;
             }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL != ROARING_FRIGHTEN_ROLL_MAX) && (DEFENDING_CREATURE_FRIGHTEN_RESIST_ROLL == DEFENDING_FRIGHTEN_ROLL_MAX))
+            else if ((ROARING_CREATURE_FRIGHTEN_ROLL != ROARING_FRIGHTEN_ROLL_MAX) && (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL == DEFEND_FRIGHTEN_ROLL_MAX))
             {
                 //if the defending creature's roll was max and the roaring creature's was not, then don't frighten
                 didFrighten = false;
             }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) == (DEFENDING_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFENDING_CREATURE_PTR->Rank())))
+            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) == (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFEND_CREATURE_PTR->Rank())))
             {
                 //if rank offset rolls are equal, then decide if frightened by fair coint toss
                 didFrighten = misc::random::Bool();
             }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) > (DEFENDING_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFENDING_CREATURE_PTR->Rank())))
+            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) > (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFEND_CREATURE_PTR->Rank())))
             {
                 //if the roaring creature's rolls offset with rank was higher than the defending creature's rank offset roll, then frighten
                 didFrighten = true;
@@ -650,12 +743,12 @@ namespace combat
             {
                 auto const CONDITION_VEC{ creature::Conditions::Frightened };
 
-                NEXT_DEFENDING_CREATURE_PTR->ConditionAdd(CONDITION_VEC);
+                NEXT_DEFEND_CREATURE_PTR->ConditionAdd(CONDITION_VEC);
 
                 creature::ConditionEnumVec_t nonHitConditionsVec;
                 nonHitConditionsVec.push_back(CONDITION_VEC);
 
-                creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFENDING_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsVec) );
+                creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsVec) );
             }
         }
 
