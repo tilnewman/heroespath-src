@@ -47,7 +47,7 @@ namespace creature
     class NameInfo
     {
         //types used by NameInfo
-        using FontSizePair_t = std::pair<sfml_util::FontSPtr_t, unsigned int>;
+        using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
         using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
 
         //prevent copy construction
@@ -66,10 +66,10 @@ namespace creature
 
         inline std::size_t MaxCharacterCount() const            { return 13; }
 
-        inline float TextEntryBoxWidth(const sfml_util::FontSPtr_t & FONT_SPTR = NameInfo::Instance()->DefaultFont(),
-                                       const unsigned int            CHAR_SIZE = NameInfo::Instance()->DefaultSize()) const { return Length(std::string(MaxCharacterCount() + 1, LargestLetter()), FONT_SPTR, CHAR_SIZE); }//The +1 is to accomodate the TextEntryBox's padding and margins
+        inline float TextEntryBoxWidth(const sfml_util::FontPtr_t FONT_PTR  = NameInfo::Instance()->DefaultFont(),
+                                       const unsigned int         CHAR_SIZE = NameInfo::Instance()->DefaultSize()) const { return Length(std::string(MaxCharacterCount() + 1, LargestLetter()), FONT_PTR, CHAR_SIZE); }//The +1 is to accomodate the TextEntryBox's padding and margins
 
-        sfml_util::FontSPtr_t DefaultFont() const;
+        sfml_util::FontPtr_t DefaultFont() const;
 
         unsigned int DefaultSize() const;
 
@@ -83,10 +83,10 @@ namespace creature
                                                            const sf::Color &                COLOR = sf::Color::White,
                                                            const sfml_util::Justified::Enum JUSTIFICATION = sfml_util::Justified::Left) const { return sfml_util::gui::TextInfo(TEXT, NameInfo::Instance()->DefaultFont(), NameInfo::Instance()->DefaultSize(), COLOR, JUSTIFICATION); }
 
-        float LengthMax(const sfml_util::FontSPtr_t & FONT_SPTR = NameInfo::Instance()->DefaultFont(),
-                        const unsigned int            CHAR_SIZE = NameInfo::Instance()->DefaultSize());
+        float LengthMax(const sfml_util::FontPtr_t FONT_PTR  = NameInfo::Instance()->DefaultFont(),
+                        const unsigned int         CHAR_SIZE = NameInfo::Instance()->DefaultSize());
 
-        float Length(const std::string & TEXT, const sfml_util::FontSPtr_t & FONT_SPTR, const unsigned int CHAR_SIZE) const;
+        float Length(const std::string & TEXT, const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const;
 
         float Length(const sfml_util::gui::TextInfo & TEXT_INFO) const;
 
@@ -94,7 +94,7 @@ namespace creature
 
     private:
         static std::unique_ptr<NameInfo> instanceUPtr_;
-        FontSizeToWidthMap_t  sizeMap_;
+        FontSizeToWidthMap_t sizeMap_;
     };
 
 }

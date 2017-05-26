@@ -216,16 +216,16 @@ namespace gui
     {
         //validate TextInfo objects if text is given
         if (MOUSE_TEXT_INFO.up.text.empty() == false)
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (UP) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (UP) was given a null font pointer.");
 
         if (MOUSE_TEXT_INFO.down.text.empty() == false)
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text << "\") (DOWN) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text << "\") (DOWN) was given a null font pointer.");
 
         if (MOUSE_TEXT_INFO.over.text.empty() == false)
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text << "\") (OVER) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text << "\") (OVER) was given a null font pointer.");
 
         if (TEXT_INFO_DISABLED.text.empty() == false)
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO_DISABLED.fontSPtr.get() != nullptr), "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text << "\") (DISABLED) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO_DISABLED.fontPtr != nullptr), "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text << "\") (DISABLED) was given a null font pointer.");
 
         scale_           = SCALE;
         isDisabled_      = IS_DISABLED;
@@ -235,8 +235,10 @@ namespace gui
         textureDisabledSPtr_ = IMAGE_DISABLED;
 
         sf::FloatRect tempRect(POS_LEFT, POS_TOP, 0.0f, 0.0f);
-        if ((MOUSE_TEXT_INFO.up.fontSPtr.get() != nullptr) && (MOUSE_TEXT_INFO.up.text.empty() == false))
-            textRegionUpSPtr_.reset( new TextRegion(GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect) );
+        if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) && (MOUSE_TEXT_INFO.up.text.empty() == false))
+        {
+            textRegionUpSPtr_.reset(new TextRegion(GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect));
+        }
 
         if (textRegionUpSPtr_.get() != nullptr)
         {
@@ -256,17 +258,25 @@ namespace gui
             }
         }
 
-        if ((MOUSE_TEXT_INFO.down.fontSPtr.get() != nullptr) && (MOUSE_TEXT_INFO.down.text.empty() == false))
-            textRegionDownSPtr_.reset( new TextRegion(GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion()) );
+        if ((MOUSE_TEXT_INFO.down.fontPtr != nullptr) && (MOUSE_TEXT_INFO.down.text.empty() == false))
+        {
+            textRegionDownSPtr_.reset(new TextRegion(GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion()));
+        }
 
-        if ((MOUSE_TEXT_INFO.over.fontSPtr.get() != nullptr) && (MOUSE_TEXT_INFO.over.text.empty() == false))
-            textRegionOverSPtr_.reset( new TextRegion(GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion()) );
+        if ((MOUSE_TEXT_INFO.over.fontPtr != nullptr) && (MOUSE_TEXT_INFO.over.text.empty() == false))
+        {
+            textRegionOverSPtr_.reset(new TextRegion(GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion()));
+        }
 
-        if ((TEXT_INFO_DISABLED.fontSPtr.get() != nullptr) && (TEXT_INFO_DISABLED.text.empty() == false))
-            textRegionDisabledSPtr_.reset( new TextRegion(GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion()) );
+        if ((TEXT_INFO_DISABLED.fontPtr != nullptr) && (TEXT_INFO_DISABLED.text.empty() == false))
+        {
+            textRegionDisabledSPtr_.reset(new TextRegion(GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion()));
+        }
 
         if (WILL_BOX)
+        {
             boxSPtr_.reset(new box::Box("FourStateButton's", box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White), gui::BackgroundInfo())));
+        }
 
         SetMouseState(MouseState::Up);
         Reset();

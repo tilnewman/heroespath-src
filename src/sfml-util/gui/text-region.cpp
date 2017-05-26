@@ -157,7 +157,7 @@ namespace gui
                            const bool            WILL_ALLOW_SCROLLBAR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()), GetEntityName() << " TextRegion::Setup() was given a TEXT_INFO.up.text string that was empty.");
-        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.fontSPtr.get() != nullptr), GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.fontPtr != nullptr), GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a null font pointer.");
 
         regionOrig_ = REGION;
         textInfoOrig_ = TEXT_INFO;

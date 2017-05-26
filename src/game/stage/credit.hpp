@@ -79,7 +79,7 @@ namespace stage
 
         Credit(sf::FloatRect &               creditsRegion,
                const std::string &           TITLE,
-               const sfml_util::FontSPtr_t & FONT_SPTR,
+               const sfml_util::FontPtr_t    FONT_PTR,
                const std::string &           CONTENT_TEXT,
                const credit_media_type::Enum MEDIA_TYPE     = credit_media_type::Image,
                const std::string &           MEDIA_PATH     = "media-images-logos-openfontlicense",
@@ -87,7 +87,7 @@ namespace stage
 
         void Setup(sf::FloatRect &                  creditsRegion,
                    const std::string &              TITLE,
-                   const sfml_util::FontSPtr_t &    TITLE_FONT,
+                   const sfml_util::FontPtr_t       TITLE_FONT_PTR,
                    const unsigned int               TITLE_FONT_SIZE,
                    const std::string &              CONTENT_TEXT,
                    const credit_media_type::Enum    MEDIA_TYPE,

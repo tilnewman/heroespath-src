@@ -106,7 +106,6 @@ namespace combat
         POSITIONING_BETWEEN_SPACER_HORIZ_(sfml_util::MapByRes(5.0f,  200.0f)),
         POSITIONING_BETWEEN_SPACER_VERT_ (sfml_util::MapByRes(25.0f, 200.0f)),
         CELL_HEIGHT_                     (sfml_util::MapByRes(sfml_util::gui::CreatureImageManager::DimmensionMax() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_, sfml_util::gui::CreatureImageManager::DimmensionMax() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)),
-        NAME_FONT_SPTR_                  (creature::NameInfo::Instance()->DefaultFont()),
         NAME_CHAR_SIZE_ORIG_             (sfml_util::FontManager::Instance()->Size_Smallish()),
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
@@ -150,7 +149,7 @@ namespace combat
         const player::CharacterSVec_t PLAYER_CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
         for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
             EntityAdd(COMBAT_NODE_SPTR);
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
@@ -160,7 +159,7 @@ namespace combat
         const non_player::CharacterSVec_t NONPLAYER_CHAR_SVEC(Encounter::Instance()->NonPlayerParty()->Characters());
         for (auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, NAME_FONT_SPTR_, nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
             EntityAdd(COMBAT_NODE_SPTR);
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
@@ -422,7 +421,7 @@ namespace combat
             if (shoulderToShoulderMax < SHOULDER_TO_SHOULDER_COUNT)
                 shoulderToShoulderMax = SHOULDER_TO_SHOULDER_COUNT;
 
-            const float NEXT_NAME_WIDTH(creature::NameInfo::Instance()->Length(GetNodeTitle(NEXT_VERTEX.second.get()), NAME_FONT_SPTR_, nameCharSizeCurr_));
+            const float NEXT_NAME_WIDTH(creature::NameInfo::Instance()->Length(GetNodeTitle(NEXT_VERTEX.second.get()), creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
             if (maxNameWidth < NEXT_NAME_WIDTH)
                 maxNameWidth = NEXT_NAME_WIDTH;
         }

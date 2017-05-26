@@ -80,7 +80,7 @@ namespace creature
     }
 
 
-    sfml_util::FontSPtr_t NameInfo::DefaultFont() const
+    sfml_util::FontPtr_t NameInfo::DefaultFont() const
     {
         return sfml_util::FontManager::Instance()->Font_Default2();
     }
@@ -92,14 +92,14 @@ namespace creature
     }
 
 
-    float NameInfo::LengthMax(const sfml_util::FontSPtr_t & FONT_SPTR, const unsigned int CHAR_SIZE)
+    float NameInfo::LengthMax(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE)
     {
-        const FontSizePair_t FONT_SIZE_PAIR(std::make_pair(FONT_SPTR, CHAR_SIZE));
+        const FontSizePair_t FONT_SIZE_PAIR(std::make_pair(FONT_PTR, CHAR_SIZE));
         const float ORIG_WIDTH(sizeMap_[FONT_SIZE_PAIR]);
 
         if (ORIG_WIDTH < 1.0f)
         {
-            const sfml_util::gui::TextInfo TEXT_INFO(LargestName(), FONT_SPTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo TEXT_INFO(LargestName(), FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left);
             sfml_util::gui::TextRegion textRegion("CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
 
             const float NAME_WIDTH(textRegion.GetEntityRegion().width);
@@ -112,9 +112,9 @@ namespace creature
     }
 
 
-    float NameInfo::Length(const std::string & TEXT, const sfml_util::FontSPtr_t & FONT_SPTR, const unsigned int CHAR_SIZE) const
+    float NameInfo::Length(const std::string & TEXT, const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
     {
-        return Length(sfml_util::gui::TextInfo(TEXT, FONT_SPTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left));
+        return Length(sfml_util::gui::TextInfo(TEXT, FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left));
     }
 
 

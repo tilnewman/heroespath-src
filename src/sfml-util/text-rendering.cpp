@@ -188,7 +188,7 @@ namespace text_render
                 const Margins &       MARGINS)
     {
         gui::TextInfo numbersTextInfo(TEXT_INFO);
-        numbersTextInfo.fontSPtr = sfml_util::FontManager::Instance()->Font_NumbersDefault1();
+        numbersTextInfo.fontPtr = sfml_util::FontManager::Instance()->Font_NumbersDefault1();
 
         return Render(renderText, TEXT_INFO, numbersTextInfo, TEXT_INFO.text, REGION, MARGINS);
     }
@@ -202,8 +202,8 @@ namespace text_render
                 const Margins &       MARGINS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT.empty()), "TextRener::Render() was given an empty string.");
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO_CHAR.fontSPtr.get()), "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_CHAR with a null font pointer.");
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO_NUM.fontSPtr.get()),  "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_NUM with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO_CHAR.fontPtr), "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_CHAR with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO_NUM.fontPtr),  "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_NUM with a null font pointer.");
 
         std::size_t strIndex(0);
         float heightTracker(0.0f);

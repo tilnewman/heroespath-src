@@ -105,6 +105,9 @@ namespace sfml_util
             if ((FRAME_COUNT_ != 0) && (rects_.size() == FRAME_COUNT_))
                 break;
         };
+
+        sprite_.setTextureRect(rects_[0]);
+        sprite_.setColor(color_);
     }
 
 

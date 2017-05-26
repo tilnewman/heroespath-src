@@ -62,7 +62,7 @@ namespace gui
                       const sf::Color & COLOR_OVER);
 
         MouseTextInfo(const std::string & TEXT,
-                      const FontSPtr_t &  FONT,
+                      const FontPtr_t     FONT_PTR,
                       const unsigned int  SIZE,
                       const sf::Color &   COLOR_UP   = sf::Color(220,220,220),
                       const sf::Color &   COLOR_DOWN = sf::Color::White,

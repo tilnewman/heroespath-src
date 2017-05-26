@@ -55,7 +55,7 @@ namespace combat
 
     public:
         CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
-                   const sfml_util::FontSPtr_t &    FONT_SPTR,
+                   const sfml_util::FontPtr_t       FONT_PTR,
                    const unsigned int               FONT_CHAR_SIZE);
 
         virtual ~CombatNode();

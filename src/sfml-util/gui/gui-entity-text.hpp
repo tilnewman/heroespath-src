@@ -62,20 +62,20 @@ namespace gui
         //if this constructor is used, then Setup() must be called before any other functions
         explicit GuiText(const std::string & NAME,
                          const float         TEXT_WIDTH_LIMIT = 0.0f,
-                         const FontSPtr_t &  NUMBERS_FONTSPTR = FontSPtr_t());
+                         const FontPtr_t     NUMBERS_FONT_PTR = nullptr);
 
         GuiText(const std::string &   NAME,
                 const sf::FloatRect & REGION,
                 const MouseTextInfo & MOUSE_TEXT_INFO,
                 const float           TEXT_WIDTH_LIMIT = 0.0f,
-                const FontSPtr_t &    NUMBERS_FONTSPTR = FontSPtr_t());
+                const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
 
         GuiText(const std::string &   NAME,
                 const float           POS_LEFT,
                 const float           POS_TOP,
                 const MouseTextInfo & MOUSE_TEXT_INFO,
                 const float           TEXT_WIDTH_LIMIT = 0.0f,
-                const FontSPtr_t &    NUMBERS_FONTSPTR = FontSPtr_t());
+                const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
 
         virtual ~GuiText();
 
@@ -105,7 +105,7 @@ namespace gui
                    const float           POS_TOP,
                    const MouseTextInfo & MOUSE_TEXT_INFO,
                    const float           TEXT_WIDTH_LIMIT = 0.0f,
-                   const FontSPtr_t &    NUMBERS_FONTSPTR = FontSPtr_t());
+                   const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
 
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
@@ -119,7 +119,7 @@ namespace gui
         TextInfo       upTextInfo_;
         TextInfo       downTextInfo_;
         TextInfo       overTextInfo_;
-        FontSPtr_t     numberFontSPtr_;
+        FontPtr_t      numberFontPtr_;
         RendTextSPtr_t textureSPtr_;
         sf::Sprite     sprite_;
         float          textWidthLimit_;

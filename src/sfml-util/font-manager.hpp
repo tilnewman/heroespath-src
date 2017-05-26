@@ -51,10 +51,25 @@ namespace sfml_util
         //prevent non-singleton construction
         FontManager();
 
+        //Note:  Keep order in sync with FontManager constructor
+        enum class Fonts
+        {
+            Euler = 0,
+            GentiumPlus,
+            GoudyBookletter,
+            ModernAntiqua,
+            QueenCountry,
+            QuillSword,
+            ValleyForge,
+            Count
+        };
+
     public:
         static FontManager * Instance();
         static void Acquire();
         static void Release();
+        static void Fill();
+        static void Empty();
         static void SetFontsDirectory(const std::string & PATH);
 
         //colors
@@ -83,27 +98,27 @@ namespace sfml_util
 
         inline const std::string NumbersDefault1FamilyName() { return Font_NumbersDefault1()->getInfo().family; }
 
-        inline FontSPtr_t Font_NumbersDefault1()    { if (quillSword_fontSPtr_.get() == nullptr)        LoadFont("/quill-sword/quillsword.ttf", quillSword_fontSPtr_);            return quillSword_fontSPtr_; }
-        inline FontSPtr_t Font_NumbersTypical1()    { if (gentiumPlus_fontSPtr_.get() == nullptr)       LoadFont("/gentium-plus/gentium-plus.ttf", gentiumPlus_fontSPtr_);        return gentiumPlus_fontSPtr_; }
-        inline FontSPtr_t Font_NumbersTypical2()    { if (modernAntiqua_fontSPtr_.get() == nullptr)     LoadFont("/modern-antiqua/modern-antiqua.ttf", modernAntiqua_fontSPtr_);  return modernAntiqua_fontSPtr_; }
-        inline FontSPtr_t Font_NumbersSmall()       { if (modernAntiqua_fontSPtr_.get() == nullptr)     LoadFont("/modern-antiqua/modern-antiqua.ttf", modernAntiqua_fontSPtr_);  return modernAntiqua_fontSPtr_; }
+        inline FontPtr_t Font_NumbersDefault1() { return fontUVec_[static_cast<std::size_t>(Fonts::QuillSword)].get(); }
+        inline FontPtr_t Font_NumbersTypical1() { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
+        inline FontPtr_t Font_NumbersTypical2() { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
+        inline FontPtr_t Font_NumbersSmall()    { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
         //
-        inline FontSPtr_t Font_Default1()           { if (euler_fontSPtr_.get() == nullptr)             LoadFont("/euler/euler.otf", euler_fontSPtr_);                                   return euler_fontSPtr_; }
-        inline FontSPtr_t Font_Default2()           { if (gentiumPlus_fontSPtr_.get() == nullptr)       LoadFont("/gentium-plus/gentium-plus.ttf", gentiumPlus_fontSPtr_);               return gentiumPlus_fontSPtr_; }
-        inline FontSPtr_t Font_Typical()            { if (goudyBookletter_fontSPtr_.get() == nullptr)   LoadFont("/goudy-bookletter/goudy-bookletter.otf", goudyBookletter_fontSPtr_);   return goudyBookletter_fontSPtr_; }
+        inline FontPtr_t Font_Default1()        { return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get(); }
+        inline FontPtr_t Font_Default2()        { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
+        inline FontPtr_t Font_Typical()         { return fontUVec_[static_cast<std::size_t>(Fonts::GoudyBookletter)].get(); }
         //
-        inline FontSPtr_t Font_Dialog1()            { if (euler_fontSPtr_.get() == nullptr)             LoadFont("/euler/euler.otf", euler_fontSPtr_);                           return euler_fontSPtr_; }
-        inline FontSPtr_t Font_Dialog2()            { if (gentiumPlus_fontSPtr_.get() == nullptr)       LoadFont("/gentium-plus/gentium-plus.ttf", gentiumPlus_fontSPtr_);       return gentiumPlus_fontSPtr_; }
-        inline FontSPtr_t Font_Dialog3()            { if (modernAntiqua_fontSPtr_.get() == nullptr)     LoadFont("/modern-antiqua/modern-antiqua.ttf", modernAntiqua_fontSPtr_); return modernAntiqua_fontSPtr_; }
+        inline FontPtr_t Font_Dialog1()         { return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get(); }
+        inline FontPtr_t Font_Dialog2()         { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
+        inline FontPtr_t Font_Dialog3()         { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
         //
-        inline FontSPtr_t Font_BigFlavor1()         { if (modernAntiqua_fontSPtr_.get() == nullptr)     LoadFont("/modern-antiqua/modern-antiqua.ttf", modernAntiqua_fontSPtr_); return modernAntiqua_fontSPtr_; }
-        inline FontSPtr_t Font_BigFlavor2()         { if (valleyForge_fontSPtr_.get() == nullptr)       LoadFont("/valley-forge/valleyforge.ttf", valleyForge_fontSPtr_);        return valleyForge_fontSPtr_; }
-        inline FontSPtr_t Font_BigFlavor3()         { if (queenCountry_fontSPtr_.get() == nullptr)      LoadFont("/queen-country/queen-country.ttf", queenCountry_fontSPtr_);    return queenCountry_fontSPtr_; }
+        inline FontPtr_t Font_BigFlavor1()      { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
+        inline FontPtr_t Font_BigFlavor2()      { return fontUVec_[static_cast<std::size_t>(Fonts::ValleyForge)].get(); }
+        inline FontPtr_t Font_BigFlavor3()      { return fontUVec_[static_cast<std::size_t>(Fonts::QueenCountry)].get(); }
         //
-        inline FontSPtr_t Font_PopupButton()        { return Font_BigFlavor2(); }
+        inline FontPtr_t Font_PopupButton()     { return Font_BigFlavor2(); }
 
     private:
-        void LoadFont(const std::string & FONT_FILE_NAME, FontSPtr_t & fontSPtr) const;
+        static const sf::Font LoadFont(const std::string & FONT_FILE_NAME);
 
     public:
         static const unsigned int SIZE_LARGER_MAX_;
@@ -124,14 +139,7 @@ namespace sfml_util
     private:
         static std::string fontsDirectoryPath_;
         static std::unique_ptr<FontManager> instanceUPtr_;
-        //
-        FontSPtr_t euler_fontSPtr_;
-        FontSPtr_t gentiumPlus_fontSPtr_;
-        FontSPtr_t goudyBookletter_fontSPtr_;
-        FontSPtr_t modernAntiqua_fontSPtr_;
-        FontSPtr_t queenCountry_fontSPtr_;
-        FontSPtr_t quillSword_fontSPtr_;
-        FontSPtr_t valleyForge_fontSPtr_;
+        static FontUVec_t fontUVec_;
     };
 
 }

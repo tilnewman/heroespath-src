@@ -61,8 +61,9 @@ namespace sfml_util
     using RendTextSPtr_t = std::shared_ptr<sf::RenderTexture>;
     using RendTextSVec_t = std::vector<RendTextSPtr_t>;
     //
-    using FontSPtr_t = std::shared_ptr<sf::Font>;
-    using FontSVec_t = std::vector<FontSPtr_t>;
+    using FontPtr_t  = sf::Font *;
+    using FontUPtr_t = std::unique_ptr<sf::Font>;
+    using FontUVec_t = std::vector<FontUPtr_t>;
     //
     using FloatRectVec_t = std::vector<sf::FloatRect>;
     //

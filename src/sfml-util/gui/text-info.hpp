@@ -51,7 +51,7 @@ namespace gui
     {
     public:
         explicit TextInfo(const std::string &   TEXT              = "",
-                          const FontSPtr_t &    FONT              = FontSPtr_t(),
+                          const FontPtr_t       FONT_PTR          = nullptr,
                           const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
                           const sf::Color &     COLOR             = sf::Color::White,
                           const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
@@ -61,16 +61,16 @@ namespace gui
                           const float           OUTLINE_THICKNESS = 0.0f);
 
         TextInfo(const std::string &   TEXT,
-                 const FontSPtr_t &    FONT,
+                 const FontPtr_t       FONT_PTR,
                  const unsigned int    CHAR_SIZE,
                  const sf::Color &     COLOR,
                  const Justified::Enum JUSTIFIED);
 
         //returns true if there is non-empty text and a non-null font pointer
-        inline bool IsValid() const { return ((false == text.empty()) && (fontSPtr.get() != nullptr)); }
+        inline bool IsValid() const { return ((false == text.empty()) && (fontPtr != nullptr)); }
 
         std::string     text;
-        FontSPtr_t      fontSPtr;
+        FontPtr_t       fontPtr;
         unsigned int    charSize;
         sf::Color       color;
         sf::BlendMode   blendMode;

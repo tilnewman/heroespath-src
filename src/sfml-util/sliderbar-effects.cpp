@@ -95,13 +95,13 @@ namespace sfml_util
         {
             ss << "MUTE";
             textInfo.text = ss.str();
-            textInfo.fontSPtr = FontManager::Instance()->Font_Typical();
+            textInfo.fontPtr = FontManager::Instance()->Font_Typical();
         }
         else
         {
             ss << NEW_VALUE_INT;
             textInfo.text = ss.str();
-            textInfo.fontSPtr = FontManager::Instance()->Font_NumbersDefault1();
+            textInfo.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
         }
 
         sf::FloatRect r(textRegion_.GetEntityRegion());

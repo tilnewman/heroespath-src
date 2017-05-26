@@ -71,12 +71,12 @@ namespace combat
 
 
     CombatNode::CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
-                           const sfml_util::FontSPtr_t &    FONT_SPTR,
+                           const sfml_util::FontPtr_t       FONT_PTR,
                            const unsigned int               FONT_CHAR_SIZE)
     :
         GuiEntity            (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_         (CREATURE_SPTR->Name(), * FONT_SPTR, FONT_CHAR_SIZE),
-        condTextObj_         ("", * FONT_SPTR, FONT_CHAR_SIZE),
+        nameTextObj_         (CREATURE_SPTR->Name(), * FONT_PTR, FONT_CHAR_SIZE),
+        condTextObj_         ("", * FONT_PTR, FONT_CHAR_SIZE),
         blockingPos_         (0),
         healthLineColor_     (),//this initializer doesn't matter, see constructor body below
         healthLineColorRed_  (),// "

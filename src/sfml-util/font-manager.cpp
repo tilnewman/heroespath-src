@@ -66,17 +66,10 @@ namespace sfml_util
     //
     std::string FontManager::fontsDirectoryPath_;
     std::unique_ptr<FontManager> FontManager::instanceUPtr_{ nullptr };
+    FontUVec_t FontManager::fontUVec_;
 
 
     FontManager::FontManager()
-    :
-        euler_fontSPtr_          (),
-        gentiumPlus_fontSPtr_    (),
-        goudyBookletter_fontSPtr_(),
-        modernAntiqua_fontSPtr_  (),
-        queenCountry_fontSPtr_   (),
-        quillSword_fontSPtr_     (),
-        valleyForge_fontSPtr_    ()
     {}
 
 
@@ -104,6 +97,25 @@ namespace sfml_util
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::FontManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
+    }
+
+
+    void FontManager::Fill()
+    {
+        //Note:  Keep order in sync with enum FontManager::Fonts
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/euler/euler.otf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/gentium-plus/gentium-plus.ttf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/goudy-bookletter/goudy-bookletter.otf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/modern-antiqua/modern-antiqua.ttf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/queen-country/queen-country.ttf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/quill-sword/quillsword.ttf"))));
+        fontUVec_.push_back(std::unique_ptr<sf::Font>(new sf::Font(LoadFont("/valley-forge/valleyforge.ttf"))));
+    }
+
+
+    void FontManager::Empty()
+    {
+        fontUVec_.clear();
     }
 
 
@@ -155,11 +167,13 @@ namespace sfml_util
     }
 
 
-    void FontManager::LoadFont(const std::string & FONT_FILE_NAME, FontSPtr_t & fontSPtr) const
+    const sf::Font FontManager::LoadFont(const std::string & FONT_FILE_NAME)
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(fontsDirectoryPath_) / bfs::path(FONT_FILE_NAME)));
-        sfml_util::LoadFontSPtr(fontSPtr, PATH_OBJ.string());
+        sf::Font font;
+        sfml_util::LoadFont(font, PATH_OBJ.string());
+        return font;
     }
 
 }

@@ -82,7 +82,7 @@ namespace stage
 
     Credit::Credit(sf::FloatRect &                  creditsRegion,
                    const std::string &              TITLE,
-                   const sfml_util::FontSPtr_t &    FONT_SPTR,
+                   const sfml_util::FontPtr_t       FONT_PTR,
                    const std::string &              CONTENT_TEXT,
                    const credit_media_type::Enum    MEDIA_TYPE,
                    const std::string &              MEDIA_PATH,
@@ -100,7 +100,7 @@ namespace stage
     {
         Setup(creditsRegion,
               TITLE,
-              FONT_SPTR,
+              FONT_PTR,
               sfml_util::FontManager::Instance()->Size_Larger(),
               CONTENT_TEXT,
               MEDIA_TYPE,
@@ -116,7 +116,7 @@ namespace stage
 
     void Credit::Setup(sf::FloatRect &                  creditsRegion,
                        const std::string &              TITLE,
-                       const sfml_util::FontSPtr_t &    TITLE_FONT,
+                       const sfml_util::FontPtr_t       TITLE_FONT_PTR,
                        const unsigned int               TITLE_FONT_SIZE,
                        const std::string &              CONTENT_TEXT,
                        const credit_media_type::Enum    MEDIA_TYPE,
@@ -182,7 +182,7 @@ namespace stage
         }
 
         const sfml_util::gui::TextInfo TEXT_INFO_TITLE(TITLE,
-                                                       TITLE_FONT,
+                                                       TITLE_FONT_PTR,
                                                        TITLE_FONT_SIZE,
                                                        sf::Color(255, 255, 255, 200),
                                                        sfml_util::Justified::Center);

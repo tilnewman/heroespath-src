@@ -243,7 +243,6 @@ namespace combat
         const float                     POSITIONING_BETWEEN_SPACER_HORIZ_;
         const float                     POSITIONING_BETWEEN_SPACER_VERT_;
         const float                     CELL_HEIGHT_;
-        const sfml_util::FontSPtr_t     NAME_FONT_SPTR_;
         const unsigned int              NAME_CHAR_SIZE_ORIG_;
         const float                     SCREEN_WIDTH_;
         const float                     SCREEN_HEIGHT_;

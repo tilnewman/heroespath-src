@@ -44,7 +44,7 @@ namespace gui
 {
 
     TextInfo::TextInfo( const std::string &   TEXT,
-                        const FontSPtr_t &    FONT,
+                        const FontPtr_t       FONT_PTR,
                         const unsigned int    CHAR_SIZE,
                         const sf::Color &     COLOR,
                         const sf::BlendMode & BLEND_MODE,
@@ -54,7 +54,7 @@ namespace gui
                         const float           OUTLINE_THICKNESS)
     :
         text	        (TEXT),
-        fontSPtr	    (FONT),
+        fontPtr	        (FONT_PTR),
         charSize	    (CHAR_SIZE),
         color	        (COLOR),
         blendMode       (BLEND_MODE),
@@ -66,13 +66,13 @@ namespace gui
 
 
     TextInfo::TextInfo( const std::string &   TEXT,
-                        const FontSPtr_t &    FONT,
+                        const FontPtr_t       FONT_PTR,
                         const unsigned int    CHAR_SIZE,
                         const sf::Color &     COLOR,
                         const Justified::Enum JUSTIFIED )
     :
         text	        (TEXT),
-        fontSPtr	    (FONT),
+        fontPtr	        (FONT_PTR),
         charSize	    (CHAR_SIZE),
         color	        (COLOR),
         blendMode       (sf::BlendAlpha),
@@ -92,7 +92,7 @@ namespace gui
             return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
 
         return std::tie(L.text,
-                        L.fontSPtr,
+                        L.fontPtr,
                         L.charSize,
                         L.style,
                         L.justified,
@@ -100,7 +100,7 @@ namespace gui
                         L.outlineThickness)
                <
                std::tie(R.text,
-                        R.fontSPtr,
+                        R.fontPtr,
                         R.charSize,
                         R.style,
                         R.justified,
@@ -115,7 +115,7 @@ namespace gui
             return false;
 
         return std::tie(L.text,
-                        L.fontSPtr,
+                        L.fontPtr,
                         L.charSize,
                         L.color,
                         L.blendMode,
@@ -124,7 +124,7 @@ namespace gui
                         L.isOutlineOnly)
                ==
                std::tie(R.text,
-                        R.fontSPtr,
+                        R.fontPtr,
                         R.charSize,
                         R.color,
                         R.blendMode,
@@ -139,8 +139,8 @@ namespace gui
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()), "sfml_util::gui::SetupText() given a TEXT_INFO.string that was empty.");
         text.setString(TEXT_INFO.text);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO.fontSPtr.get()), "sfml_util::gui::SetupText(\"" << TEXT_INFO.text << "\") was given a null font pointer.");
-        text.setFont(*TEXT_INFO.fontSPtr);
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO.fontPtr), "sfml_util::gui::SetupText(\"" << TEXT_INFO.text << "\") was given a null font pointer.");
+        text.setFont( * TEXT_INFO.fontPtr);
         text.setStyle(TEXT_INFO.style);
         text.setCharacterSize(TEXT_INFO.charSize);
 

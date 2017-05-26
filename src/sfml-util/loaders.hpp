@@ -120,14 +120,6 @@ namespace sfml_util
     void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
 
-    void LoadFontSPtr(FontSPtr_t & fontSPtr, const std::string & PATH_STR);
-
-
-    //Returns the number loaded into the std::vector<> from DIR_STR.
-    std::size_t LoadAllFontsInDir(std::vector< FontSPtr_t > & fontSVec,
-                             const std::string &         DIR_STR = ".");
-
-
     void OpenMusicSPtr(MusicSPtr_t & musicSPtr, const std::string & PATH_STR);
 
 

@@ -86,9 +86,6 @@ int main()
         misc::random::MersenneTwister::Seed();
 
         //keep an instance of various singleton classes here to prevent thrashing
-        sfml_util::Display::Acquire();
-        //
-        M_LOG(*logPtr, "Loading the Game Data file...");
         game::GameDataFile::Acquire();
         auto gameDataFilePtr(game::GameDataFile::Instance());
 
@@ -96,6 +93,7 @@ int main()
         game::LoopManager::SetStartupStage( gameDataFilePtr->GetCopy<std::string>("system-startup-stage") );
 
         //setup the graphics display
+        sfml_util::Display::Acquire();
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
@@ -117,6 +115,7 @@ int main()
         game::creature::title::Warehouse::Fill();
         game::creature::condition::Warehouse::Fill();
         game::spell::Warehouse::Fill();
+        sfml_util::FontManager::Fill();
 
         //load game assets Stage 2
         sfml_util::FontManager::Acquire();
@@ -201,6 +200,7 @@ int main()
         misc::Platform::Release();
 
         //release warehouse objects
+        sfml_util::FontManager::Empty();
         game::spell::Warehouse::Empty();
         game::creature::condition::Warehouse::Empty();
         game::creature::title::Warehouse::Empty();

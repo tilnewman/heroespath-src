@@ -81,15 +81,15 @@ namespace gui
 
 
     MouseTextInfo::MouseTextInfo(const std::string & TEXT,
-                                 const FontSPtr_t &  FONT,
+                                 const FontPtr_t     FONT_PTR,
                                  const unsigned int  SIZE,
                                  const sf::Color &   COLOR_UP,
                                  const sf::Color &   COLOR_DOWN,
                                  const sf::Color &   COLOR_OVER)
     :
-        up  (TEXT, FONT, SIZE, COLOR_UP),
-        down(TEXT, FONT, SIZE, COLOR_DOWN),
-        over(TEXT, FONT, SIZE, COLOR_OVER)
+        up  (TEXT, FONT_PTR, SIZE, COLOR_UP),
+        down(TEXT, FONT_PTR, SIZE, COLOR_DOWN),
+        over(TEXT, FONT_PTR, SIZE, COLOR_OVER)
     {}
 
 

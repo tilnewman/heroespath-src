@@ -43,14 +43,14 @@ namespace gui
 
     GuiText::GuiText(const std::string & NAME,
                      const float         TEXT_WIDTH_LIMIT,
-                     const FontSPtr_t &  NUMBERS_FONTSPTR)
+                     const FontPtr_t     NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), 0.0f, 0.0f),
         text_            (""),
         upTextInfo_      (),
         downTextInfo_    (),
         overTextInfo_    (),
-        numberFontSPtr_  (NUMBERS_FONTSPTR),
+        numberFontPtr_   (NUMBERS_FONT_PTR),
         textureSPtr_     (),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
@@ -62,14 +62,14 @@ namespace gui
                      const sf::FloatRect &  REGION,
                      const MouseTextInfo &  MOUSE_TEXT_INFO,
                      const float            TEXT_WIDTH_LIMIT,
-                     const FontSPtr_t &     NUMBERS_FONTSPTR)
+                     const FontPtr_t        NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), REGION),
         text_            (""),
         upTextInfo_      (MOUSE_TEXT_INFO.up),
         downTextInfo_    (MOUSE_TEXT_INFO.down),
         overTextInfo_    (MOUSE_TEXT_INFO.over),
-        numberFontSPtr_  (NUMBERS_FONTSPTR),
+        numberFontPtr_   (NUMBERS_FONT_PTR),
         textureSPtr_     (),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
@@ -80,7 +80,7 @@ namespace gui
               REGION.top,
               MOUSE_TEXT_INFO,
               TEXT_WIDTH_LIMIT,
-              NUMBERS_FONTSPTR);
+              NUMBERS_FONT_PTR);
     }
 
 
@@ -89,14 +89,14 @@ namespace gui
                      const float           POS_TOP,
                      const MouseTextInfo & MOUSE_TEXT_INFO,
                      const float           TEXT_WIDTH_LIMIT,
-                     const FontSPtr_t &    NUMBERS_FONTSPTR)
+                     const FontPtr_t       NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), POS_LEFT, POS_TOP),
         text_            (""),
         upTextInfo_      (MOUSE_TEXT_INFO.up),
         downTextInfo_    (MOUSE_TEXT_INFO.down),
         overTextInfo_    (MOUSE_TEXT_INFO.over),
-        numberFontSPtr_  (NUMBERS_FONTSPTR),
+        numberFontPtr_   (NUMBERS_FONT_PTR),
         textureSPtr_     (),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
@@ -107,7 +107,7 @@ namespace gui
               POS_TOP,
               MOUSE_TEXT_INFO,
               TEXT_WIDTH_LIMIT,
-              NUMBERS_FONTSPTR);
+              NUMBERS_FONT_PTR);
     }
 
 
@@ -120,10 +120,10 @@ namespace gui
                         const float           POS_TOP,
                         const MouseTextInfo & MOUSE_TEXT_INFO,
                         const float           TEXT_WIDTH_LIMIT,
-                        const FontSPtr_t &    NUMBERS_FONTSPTR)
+                        const FontPtr_t       NUMBERS_FONT_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT.empty()), entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
-        M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontSPtr.get() != nullptr), entityName_ << " GuiText::Setup(\"" << TEXT << "\") was given an upTextInfo with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr), entityName_ << " GuiText::Setup(\"" << TEXT << "\") was given an upTextInfo with a null font pointer.");
 
         upTextInfo_ = MOUSE_TEXT_INFO.up;
         downTextInfo_ = MOUSE_TEXT_INFO.down;
@@ -135,27 +135,27 @@ namespace gui
         renderedTextSPtr_.reset(new text_render::RenderedText);
 
         TextInfo textInfoChar(MOUSE_TEXT_INFO.up);
-        if ((MouseState::Down == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.down.fontSPtr.get()))
+        if ((MouseState::Down == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.down.fontPtr))
             textInfoChar = MOUSE_TEXT_INFO.down;
         else
         {
-            if ((MouseState::Over == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.over.fontSPtr.get()))
+            if ((MouseState::Over == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.over.fontPtr))
                 textInfoChar = MOUSE_TEXT_INFO.over;
         }
 
         TextInfo textInfoNum(textInfoChar);
 
-        if (nullptr == NUMBERS_FONTSPTR.get())
+        if (nullptr == NUMBERS_FONT_PTR)
         {
-            if (nullptr == numberFontSPtr_.get())
-                textInfoNum.fontSPtr = FontManager::Instance()->Font_NumbersDefault1();
+            if (nullptr == numberFontPtr_)
+                textInfoNum.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
             else
-                textInfoNum.fontSPtr = numberFontSPtr_;
+                textInfoNum.fontPtr = numberFontPtr_;
         }
         else
         {
-            textInfoNum.fontSPtr = NUMBERS_FONTSPTR;
-            numberFontSPtr_ = NUMBERS_FONTSPTR;
+            textInfoNum.fontPtr = NUMBERS_FONT_PTR;
+            numberFontPtr_ = NUMBERS_FONT_PTR;
         }
 
         text_render::Render( * renderedTextSPtr_, textInfoChar, textInfoNum, text_, sf::FloatRect(0, 0, textWidthLimit_, 0));
@@ -201,7 +201,7 @@ namespace gui
               GetEntityPos().y,
               MouseTextInfo(upTextInfo_, downTextInfo_, overTextInfo_),
               textWidthLimit_,
-              numberFontSPtr_);
+              numberFontPtr_);
     }
 
 
