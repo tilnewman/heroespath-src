@@ -819,13 +819,13 @@ namespace stage
     }
 
 
-    bool TestingStage::TestSingleTextureAnimation(const std::string & MEDIA_PATH_KEY_STR,
-                                                  const bool          WILL_REBUILD_ANIMATION_OBJECT,
-                                                  const unsigned int  FRAME_WIDTH,
-                                                  const unsigned int  FRAME_HEIGHT,
-                                                  const unsigned int  FRAME_COUNT,
-                                                  const sf::BlendMode BLEND_MODE,
-                                                  const sf::Color &   COLOR)
+    bool TestingStage::TestSingleTextureAnimation(const std::string &   MEDIA_PATH_KEY_STR,
+                                                  const bool            WILL_REBUILD_ANIMATION_OBJECT,
+                                                  const unsigned int    FRAME_WIDTH,
+                                                  const unsigned int    FRAME_HEIGHT,
+                                                  const unsigned int    FRAME_COUNT,
+                                                  const sf::BlendMode & BLEND_MODE,
+                                                  const sf::Color &     COLOR)
     {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {

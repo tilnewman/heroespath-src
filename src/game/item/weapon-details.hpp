@@ -47,9 +47,9 @@ namespace weapon
     {
         WeaponDetails()
         :
-            name            (""),
-            image_filename  (""),
-            description     (""),
+            name            (),
+            image_filename  (),
+            description     (),
             price           (0),
             weight          (0),
             damage_min      (0),

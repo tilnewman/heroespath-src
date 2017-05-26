@@ -36,8 +36,8 @@
 
 //prevent warnings that can be ignored
 #if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4512)
+#pragma warning(push)
+#pragma warning(disable: 4244, 4512)
 #elif defined(__APPLE__) || defined(__MACH__)
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Wnested-anon-types"
@@ -54,8 +54,7 @@
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
-#pragma warning(default : 4244)
-#pragma warning(default : 4512)
+#pragma warning(pop)
 #elif defined(__APPLE__) || defined(__MACH__)
 #pragma GCC diagnostic warning "-Wswitch-enum"
 #pragma GCC diagnostic warning "-Wnested-anon-types"

@@ -1262,7 +1262,7 @@ namespace stage
 
         const creature::role::Enum WHICH_ROLE( ((static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
-        const stats::Stat_t STAT_VALUE(fixedStatsSVec_[WHICH_STAT]->Value());
+        const stats::Stat_t STAT_VALUE(fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value());
 
         std::ostringstream sss;
         sss << "Your current " << stats::stat::ToString(WHICH_STAT) << " is only " << STAT_VALUE << ".";
@@ -2371,9 +2371,9 @@ namespace stage
     void CharacterStage::SwapAttributes(const stats::stat::Enum A, const stats::stat::Enum B)
     {
         //swap the anim objects
-        AnimNumSPtr_t tempSPtr(fixedStatsSVec_[B]);
-        fixedStatsSVec_[B] = fixedStatsSVec_[A];
-        fixedStatsSVec_[A] = tempSPtr;
+        AnimNumSPtr_t tempSPtr(fixedStatsSVec_[static_cast<std::size_t>(B)]);
+        fixedStatsSVec_[static_cast<std::size_t>(B)] = fixedStatsSVec_[static_cast<std::size_t>(A)];
+        fixedStatsSVec_[static_cast<std::size_t>(A)] = tempSPtr;
 
         //swap the underlying stat values
         const stats::Stat_t TEMP_STAT(statSetBase_.Get(B).Normal());

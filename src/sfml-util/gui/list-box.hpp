@@ -132,7 +132,7 @@ namespace gui
                          const float               BETWEEN_PAD = 0.0f,
                          const box::Info &         BOX_INFO    = box::Info(),
                          const sf::Color &         LINE_COLOR  = sf::Color::Transparent,
-                         const int                 ITEM_LIMIT  = NO_LIMIT_,
+                         const std::size_t         ITEM_LIMIT  = NO_LIMIT_,
                          callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
         virtual ~ListBox();
@@ -144,7 +144,7 @@ namespace gui
                    const float               BETWEEN_PAD = 0.0f,
                    const box::Info &         BOX_INFO    = box::Info(),
                    const sf::Color &         LINE_COLOR  = sf::Color::Transparent,
-                   const int                 ITEM_LIMIT  = NO_LIMIT_,
+                   const std::size_t         ITEM_LIMIT  = NO_LIMIT_,
                    callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
         inline virtual const std::string HandlerName() const { return GetEntityName(); }
@@ -176,7 +176,7 @@ namespace gui
 
         inline std::size_t GetCount() const     { return list_.size(); }
         inline bool Empty() const               { return list_.empty(); }
-        inline std::size_t GetLimit() const     { return static_cast<std::size_t>(itemLimit_); }
+        inline std::size_t GetLimit() const     { return itemLimit_; }
 
         void Add(const ListBoxItemSPtr_t & THING_SPTR,
                  const bool                WILL_INC_CURRENT_SEL = false);
@@ -216,7 +216,7 @@ namespace gui
         bool MoveSelectionDown();
 
     public:
-        static const int NO_LIMIT_;
+        static const std::size_t NO_LIMIT_;
         static const sf::FloatRect ERROR_RECT_;
 
     protected:
@@ -231,7 +231,7 @@ namespace gui
         IStage *          stagePtr_;
         ListBoxItemSLst_t list_;
         ListBoxItemSPtr_t selectedSPtr_;
-        int               itemLimit_;
+        std::size_t       itemLimit_;
         float             imageSize_;
         ImageMap_t        imageMap_;
         sf::Color         imageColor_;

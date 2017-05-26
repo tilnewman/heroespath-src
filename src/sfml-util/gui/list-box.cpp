@@ -61,7 +61,7 @@ namespace gui
     }
 
 
-    const int           ListBox::NO_LIMIT_(0);
+    const std::size_t   ListBox::NO_LIMIT_(0);
     const sf::FloatRect ListBox::ERROR_RECT_(-1.0f, -1.0f, -1.0f, -1.0f);
 
 
@@ -73,7 +73,7 @@ namespace gui
                      const float               BETWEEN_PAD,
                      const box::Info &         BOX_INFO,
                      const sf::Color &         LINE_COLOR,
-                     const int                 ITEM_LIMIT,
+                     const std::size_t         ITEM_LIMIT,
                      callback::IListBoxCallbackHandler * const callbackPtr)
     :
         GuiEntity       (std::string(NAME).append("_ListBox"), REGION),
@@ -117,7 +117,7 @@ namespace gui
                         const float               BETWEEN_PAD,
                         const box::Info &         BOX_INFO,
                         const sf::Color &         LINE_COLOR,
-                        const int                 ITEM_LIMIT,
+                        const std::size_t         ITEM_LIMIT,
                         callback::IListBoxCallbackHandler * const callbackPtr)
     {
         SetEntityRegion(REGION);
@@ -217,7 +217,7 @@ namespace gui
         const float BOTTOM(entityRegion_.top + entityRegion_.height);
         float lastDrawnListPosY(entityRegion_.top);
         float lastDrawnEntityHeight(45.0f);
-        int itemCount(0);
+        std::size_t itemCount(0);
 
         for (std::size_t i(0); i<NUM_ENTITYS; ++i)
         {
@@ -271,9 +271,11 @@ namespace gui
                 const float LINE_POS_TOP(nextEntitySPtr->GetEntityRegion().top + nextEntitySPtr->GetEntityRegion().height + (betweenPad_ * 0.5f));
                 if (LINE_POS_TOP < BOTTOM)
                 {
-                    const int LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
+                    const std::size_t LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
                     if ((NO_LIMIT_ == itemLimit_) || (itemCount++ <= LIMIT))
+                    {
                         DrawLine(target, LINE_POS_TOP);
+                    }
 
                     lastDrawnListPosY = LINE_POS_TOP + lastDrawnEntityHeight;
                 }
@@ -287,10 +289,11 @@ namespace gui
         //draw lines in the rest of the box even though there are no more entitys
         while (lastDrawnListPosY < BOTTOM)
         {
-            const int LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
+            const std::size_t LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
             if ((NO_LIMIT_ == itemLimit_) || (itemCount++ <= LIMIT))
+            {
                 DrawLine(target, lastDrawnListPosY);
-
+            }
             lastDrawnListPosY += lastDrawnEntityHeight;
         }
     }

@@ -1428,9 +1428,11 @@ namespace stage
 
         if (ViewType::Items == view_)
         {
-            if ((unEquipListBoxSPtr_->GetSelected().get() != nullptr) &&
-                (unEquipListBoxSPtr_->GetSelected()->iitem_sptr.get() != nullptr) &&
-                (unEquipListBoxSPtr_->GetSelected()->iitem_sptr->Name().empty() == false))
+            auto selectedItemSPtr{ unEquipListBoxSPtr_->GetSelected() };
+
+            if ((selectedItemSPtr.get() != nullptr) &&
+                (selectedItemSPtr->iitem_sptr.get() != nullptr) &&
+                (selectedItemSPtr->iitem_sptr->Name().empty() == false))
             {
                 equipButtonSPtr_->SetIsDisabled(false);
                 equipButtonSPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxSPtr_->GetSelected()->iitem_sptr->Name() + ".");

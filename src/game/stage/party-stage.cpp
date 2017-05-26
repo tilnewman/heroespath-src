@@ -404,7 +404,7 @@ namespace stage
                                                              6.0f,
                                                              boxInfo,
                                                              sfml_util::FontManager::Instance()->Color_Orange(),
-                                                             static_cast<int>(player::Party::MAX_CHARACTER_COUNT_),
+                                                             player::Party::MAX_CHARACTER_COUNT_,
                                                              this) );
         EntityAdd(partyListBoxSPtr_);
 

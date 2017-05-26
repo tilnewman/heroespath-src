@@ -234,10 +234,11 @@ namespace sfml_util
             if (currentColorAlpha_ > 255.0f)
                 currentColorAlpha_ = 255.0f;
 
-        quad_[0].color.r = static_cast<sf::Uint8>(currentColorRed_);
-        quad_[0].color.g = static_cast<sf::Uint8>(currentColorGreen_);
-        quad_[0].color.b = static_cast<sf::Uint8>(currentColorBlue_);
-        quad_[0].color.a = static_cast<sf::Uint8>(currentColorAlpha_);
+        auto & quadZeroColor{ quad_[0].color };
+        quadZeroColor.r = static_cast<sf::Uint8>(currentColorRed_);
+        quadZeroColor.g = static_cast<sf::Uint8>(currentColorGreen_);
+        quadZeroColor.b = static_cast<sf::Uint8>(currentColorBlue_);
+        quadZeroColor.a = static_cast<sf::Uint8>(currentColorAlpha_);
 
         //set all quad corners to be the same color for a full solid color square that covers the whole region
         quad_[1].color = quad_[0].color;

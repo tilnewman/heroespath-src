@@ -353,9 +353,8 @@ namespace logbase
 
     void LogBase::AppendDate(ostream & stream) const
     {
-        const boost::posix_time::ptime         PTIME    ( boost::posix_time::microsec_clock::universal_time() );
-        const boost::gregorian::date::ymd_type DATE_INFO( PTIME.date().year_month_day() );
-
+        auto const DATE_INFO{ boost::posix_time::microsec_clock::universal_time().date().year_month_day() };
+        
         stream  << std::setfill('0')
                 << DATE_INFO.year
                 << "-"
@@ -367,13 +366,13 @@ namespace logbase
 
     void LogBase::AppendTime(ostream & stream) const
     {
-        const boost::posix_time::ptime PTIME( boost::posix_time::microsec_clock::local_time() );
+        auto const TIME_OF_DAY_DURATION{ boost::posix_time::microsec_clock::local_time().time_of_day() };
 
         stream << std::setfill('0')
-               << std::setw(2) << PTIME.time_of_day().hours() << ":"
-               << std::setw(2) << PTIME.time_of_day().minutes() << ":"
-               << std::setw(2) << PTIME.time_of_day().seconds() << ":"
-               << std::setw(6) << PTIME.time_of_day().fractional_seconds();
+               << std::setw(2) << TIME_OF_DAY_DURATION.hours() << ":"
+               << std::setw(2) << TIME_OF_DAY_DURATION.minutes() << ":"
+               << std::setw(2) << TIME_OF_DAY_DURATION.seconds() << ":"
+               << std::setw(6) << TIME_OF_DAY_DURATION.fractional_seconds();
     }
 
 

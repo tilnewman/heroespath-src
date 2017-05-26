@@ -436,7 +436,7 @@ namespace combat
             highestBlockingPos += BLOCKING_POS_MARGIN_;
             blockingPosMax_ = highestBlockingPos;
 
-            shoulderToShoulderMax += 2 * BLOCKING_POS_MARGIN_;
+            shoulderToShoulderMax += static_cast<std::size_t>(2 * BLOCKING_POS_MARGIN_);
         }
 
         const float CELL_WIDTH_MIN( sfml_util::MapByRes(sfml_util::gui::CreatureImageManager::DimmensionMax() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,

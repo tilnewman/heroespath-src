@@ -286,7 +286,7 @@ namespace map
 
             const sf::Uint8 * const PIXEL_PTR(srcImage.getPixelsPtr());
 
-            const std::size_t PIXEL_COUNT(srcImage.getSize().x * srcImage.getSize().y * 4);
+            const std::size_t PIXEL_COUNT(static_cast<std::size_t>(srcImage.getSize().x * srcImage.getSize().y * static_cast<unsigned int>(4)));
             for (std::size_t i(0); i < PIXEL_COUNT; i+=4)
             {
                 const sf::Uint8 RED  ( * (PIXEL_PTR + i + 0) );
@@ -837,7 +837,7 @@ namespace map
             {
                 // get the current tile number
                 const unsigned TILE_INDEX(x + (y * mapTileCountX_));
-                const unsigned TILE_NUM_ORIG(mapLayerSPtr->mapval_vec[TILE_INDEX]);
+                const unsigned TILE_NUM_ORIG(mapLayerSPtr->mapval_vec[static_cast<std::size_t>(TILE_INDEX)]);
                 const unsigned TILE_NUM_ADJ((TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1)); //This -1 comes from the Tiled app that starts tile ids at 1 instead of 0.
 
                 // get the texture/image this tile can be found in
@@ -848,7 +848,7 @@ namespace map
                 const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILES_IMAGE_PTR->first_id)) + static_cast<unsigned int>(1));
 
                 // get a pointer to the current tile's quad
-                sf::Vertex * quad( & mapLayerSPtr->vert_array[(vertIndex++) * 4]);
+                sf::Vertex * quad( & mapLayerSPtr->vert_array[static_cast<std::size_t>((vertIndex++) * 4)]);
 
                 // define its 4 corners on screen
                 const float CURR_HORIZ_SIZE               (static_cast<float>((x - TILE_OFFSETS.begin_x) * tileSizeWidth_));
