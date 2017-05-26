@@ -31,11 +31,13 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "misc/random.hpp"
 
 #include "game/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
 #include "game/loop-manager.hpp"
+#include "game/creature/body-type.hpp"
+
+#include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -126,6 +128,10 @@ namespace gui
                     auto const SEX_ENUM{ static_cast<game::creature::sex::Enum>(sexIndex) };
                     auto const SEX_STR { game::creature::sex::ToString(SEX_ENUM) };
 
+                    //test to ensure that BodyType maker will not throw
+                    auto const BODY_TYPE{ game::creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM) };
+
+                    //skip sex unknown for Gnomes and Dragons
                     if (SEX_ENUM == game::creature::sex::Unknown)
                     {
                         if ((RACE_ENUM == game::creature::race::Gnome) ||

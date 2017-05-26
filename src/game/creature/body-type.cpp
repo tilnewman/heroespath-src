@@ -197,10 +197,8 @@ namespace creature
                 if (ROLE == role::Wing)
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
 
-                if (ROLE == role::Grunt)
-                    return BodyType::Make_Humanoid(false, false, false);
-
-                break;
+                //Grunt
+                return BodyType::Make_Humanoid(false, false, false);
             }
             case creature::race::Enum::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
             case creature::race::Enum::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, false, true); }
@@ -220,10 +218,8 @@ namespace creature
                 if (ROLE == role::Tendrilus)
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 0, true, false, false, false, false, true, true, 8);
 
-                if (ROLE == role::Whelp)
-                    return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
-
-                break;
+                //Whelp
+                return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
             }
             case creature::race::Enum::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
             case creature::race::Enum::Skeleton:
@@ -237,6 +233,7 @@ namespace creature
                 if (ROLE == role::Mountain)
                     return BodyType(item::material::Bone, item::material::Fur, 1, 2, 2, 2, false, true, false, true, false, false, false);
 
+                //um...default skeleton
                 return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, false, false, false);
             }
             case creature::race::Enum::Beetle:  { return BodyType(item::material::Scale, item::material::Nothing, 1, 0, 4, 4, true, true, false, false, false, false, false); }
@@ -255,10 +252,8 @@ namespace creature
                 if (ROLE == role::Whelp)
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 8, 2, false, true, true, false, false, false, false);
 
-                if (ROLE == role::Wing)
-                    return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
-
-                break;
+                //Wing
+                return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
             }
             case creature::race::Enum::Griffin:
             {
