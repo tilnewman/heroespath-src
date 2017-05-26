@@ -93,12 +93,11 @@ int main()
         game::LoopManager::SetStartupStage( gameDataFilePtr->GetCopy<std::string>("system-startup-stage") );
 
         //setup the graphics display
-        sfml_util::Display::Acquire();
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
-        sfml_util::WinSPtr_t winSPtr{ sfml_util::Display::OpenRenderWindow(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/) };
-        winSPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
-        winSPtr->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
+        sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/);
+        sfml_util::Display::Instance()->GetWindow()->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
+        sfml_util::Display::Instance()->GetWindow()->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
 
         //set resource paths for manager classes
         sfml_util::FontManager::SetFontsDirectory(                      gameDataFilePtr->GetMediaPath("media-fonts-dir"));
@@ -171,10 +170,10 @@ int main()
             M_LOG(*logPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
         }
 
-        //ensure the window is closed before exiting
-        if (winSPtr->isOpen())
+        //Close the display window is closed before freeing resources.
+        if (sfml_util::Display::Instance()->GetWindow()->isOpen())
         {
-            winSPtr->close();
+            sfml_util::Display::Instance()->GetWindow()->close();
         }
 
         //release singleton/manager instances

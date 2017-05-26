@@ -84,7 +84,7 @@ namespace sfml_util
         inline void SetWillExitAfterFade(const bool B)                  { willExitAfterFade_ = B; }
         inline virtual void SetWillHoldFade(const bool NEW_VAL)         { willHoldFade_ = NEW_VAL; }
 
-        inline virtual void SetMouseVisibility(const bool IS_VISIBLE)   { winSPtr_->setMouseCursorVisible(IS_VISIBLE); }
+        inline virtual void SetMouseVisibility(const bool IS_VISIBLE)   { winPtr_->setMouseCursorVisible(IS_VISIBLE); }
 
         inline virtual void SetState(const game::LoopState::Enum E)     { state_ = E; }
         inline virtual game::LoopState::Enum  GetState() const          { return state_; }
@@ -142,7 +142,7 @@ namespace sfml_util
         IStageSVec_t          stageSVec_;
         sf::Clock             clock_;
         float                 oneSecondTimerSec_;
-        WinSPtr_t             winSPtr_;
+        WinPtr_t              winPtr_;
         Fade                  fader_;
         bool                  willHoldFade_;
         bool                  continueFading_;

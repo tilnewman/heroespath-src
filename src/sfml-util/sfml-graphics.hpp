@@ -67,7 +67,8 @@ namespace sfml_util
     //
     using FloatRectVec_t = std::vector<sf::FloatRect>;
     //
-    using WinSPtr_t = std::shared_ptr<sf::RenderWindow>;
+    using WinPtr_t  = sf::RenderWindow *;
+    using WinUPtr_t = std::unique_ptr<sf::RenderWindow>;
 
 }
 

@@ -69,12 +69,15 @@ namespace sfml_util
 
     public:
         static Display * Instance();
-        static void Acquire();
+
+        static void Acquire(const std::string & TITLE,
+                            const sf::Uint32    STYLE,
+                            const unsigned      ANTIALIAS_LEVEL);
+        
         static void Release();
 
-        inline WinSPtr_t GetWindow() const         { return winSPtr_; }
-        inline void SetWindow(WinSPtr_t & winSPtr) { winSPtr_ = winSPtr; }
-
+        inline WinPtr_t GetWindow() const { return winUPtr_.get(); }
+        
         float        GetWinWidth() const;
         float        GetWinHeight() const;
         unsigned int GetWinWidthu() const;
@@ -124,7 +127,11 @@ namespace sfml_util
 
         static const sf::VideoMode EstablishVideoMode();
 
-        static sfml_util::WinSPtr_t OpenRenderWindow(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL = 0);
+        void OpenRenderWindow(const std::string & TITLE,
+                              const sf::Uint32    STYLE,
+                              const unsigned      ANTIALIAS_LEVEL);
+
+        void CloseRenderWindow();
 
         static const sf::VideoMode GetCurrentVideoMode();
         static const Resolution    GetCurrentResolution();
@@ -138,7 +145,7 @@ namespace sfml_util
     private:
         static std::unique_ptr<Display> instanceUPtr_;
         //
-        WinSPtr_t   winSPtr_;
+        WinUPtr_t   winUPtr_;
         std::string winTitle_;
         sf::Uint32  winStyle_;
         int         frameRateLimit_;
