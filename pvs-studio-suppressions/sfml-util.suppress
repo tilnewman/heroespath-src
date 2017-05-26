@@ -1,0 +1,130 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sfml-util">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//sfml-util" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <sfml-util>
+    <FileName>fade.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3900768787</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>gradient.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2424325569</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'winSPtr-&gt;getSettings()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>225534947</CodeCurrent>
+    <CodeNext>328905760</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'textRegionSPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2783286626</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'POPUP_INFO_.Images()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1926392968</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'spellDetailsTextUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>1652530026</CodePrev>
+    <CodeCurrent>1280386734</CodeCurrent>
+    <CodeNext>2086659596</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sparks-animation.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>4169204177</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>text-rendering.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>652940337</CodePrev>
+    <CodeCurrent>2667145204</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V107</ErrorCode>
+    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>66920954</CodeCurrent>
+    <CodeNext>3421634589</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V107</ErrorCode>
+    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
+    <CodePrev>66920954</CodePrev>
+    <CodeCurrent>3421634589</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V109</ErrorCode>
+    <Message>Implicit type conversion of return value 'rank_' to memsize type.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2327452172</CodeCurrent>
+    <CodeNext>52101514</CodeNext>
+  </sfml-util>
+</NewDataSet>

@@ -1,0 +1,154 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="game-creature">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//game-creature" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>4068839140</CodeCurrent>
+    <CodeNext>2895036043</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>2895036043</CodePrev>
+    <CodeCurrent>676946444</CodeCurrent>
+    <CodeNext>3370895537</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>3370895537</CodePrev>
+    <CodeCurrent>4181903708</CodeCurrent>
+    <CodeNext>1447517905</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>1447517905</CodePrev>
+    <CodeCurrent>4068842684</CodeCurrent>
+    <CodeNext>2895035947</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>2895035947</CodePrev>
+    <CodeCurrent>2485970244</CodeCurrent>
+    <CodeNext>1685451084</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>dragon-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>1685451084</CodePrev>
+    <CodeCurrent>676982388</CodeCurrent>
+    <CodeNext>3370904495</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>wolfen-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>981831399</CodeCurrent>
+    <CodeNext>2893856395</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>wolfen-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>2893856395</CodePrev>
+    <CodeCurrent>3559702690</CodeCurrent>
+    <CodeNext>1676015666</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>wolfen-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>1676015666</CodePrev>
+    <CodeCurrent>981834647</CodeCurrent>
+    <CodeNext>2893856737</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>wolfen-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>2893856737</CodePrev>
+    <CodeCurrent>981834943</CodeCurrent>
+    <CodeNext>2893856299</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>wolfen-class-enum.cpp</FileName>
+    <ErrorCode>V104</ErrorCode>
+    <Message>Implicit conversion of 'RANK' to memsize type in an arithmetic expression.</Message>
+    <CodePrev>2893856299</CodePrev>
+    <CodeCurrent>3559712090</CodeCurrent>
+    <CodeNext>1676013900</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V107</ErrorCode>
+    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>66920954</CodeCurrent>
+    <CodeNext>3421634589</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V107</ErrorCode>
+    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
+    <CodePrev>66920954</CodePrev>
+    <CodeCurrent>3421634589</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>creature.hpp</FileName>
+    <ErrorCode>V109</ErrorCode>
+    <Message>Implicit type conversion of return value 'rank_' to memsize type.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2327452172</CodeCurrent>
+    <CodeNext>52101514</CodeNext>
+  </game-creature>
+</NewDataSet>
