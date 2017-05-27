@@ -321,11 +321,11 @@ namespace sfml_util
 
     void FlipHoriz(sf::Texture &);
 
-    TextureSPtr_t FlipHorizCopy(const sf::Texture &);
+    void FlipHorizCopy(const sf::Texture & ORIG_TEXTURE, sf::Texture & resultTexture);
 
     void FlipVert(sf::Texture &);
 
-    TextureSPtr_t FlipVertCopy(const sf::Texture &);
+    void FlipVertCopy(const sf::Texture & ORIG_TEXTURE, sf::Texture & resultTexture);
 
 
     void Invert(sf::Texture & texture, const bool WILL_INVERT_ALPHA = false);

@@ -97,9 +97,9 @@ namespace gui
         {
             auto const ENUM{ static_cast<game::creature::Conditions::Enum>(condIndex) };
             auto const ENUM_STR{ game::creature::Conditions::ToString(ENUM) };
-            auto const TEXTURE_SPTR{ cimPtr->Get(ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ConditionImageManager::Test()  Get(\"" << ENUM_STR << "\") returned a nullptr.");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            cimPtr->Get(texture, ENUM);
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrAppend("ConditionImageManager Tested " + ENUM_STR);
             ++condIndex;
             return false;
@@ -110,11 +110,9 @@ namespace gui
     }
 
 
-    sfml_util::TextureSPtr_t ConditionImageManager::Get(const game::creature::Conditions::Enum ENUM) const
+    void ConditionImageManager::Get(sf::Texture & texture, game::creature::Conditions::Enum ENUM) const
     {
-        sfml_util::TextureSPtr_t textureSPtr{ nullptr };
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, MakeFilepath(ENUM).string());
-        return textureSPtr;
+        sfml_util::LoadImageOrTexture(texture, MakeFilepath(ENUM).string());
     }
 
 

@@ -314,24 +314,10 @@ namespace appbase
         {
             return false;
         }
-
-        //only check if first char matches
-        if (commentStr_[0] == LINE[0])
+        else
         {
-            if (LINE.size() == 1)
-            {
-                return true;
-            }
-            else
-            {
-                if (0 == LINE.find(commentStr_))
-                {
-                    return true;
-                }
-            }
+            return (LINE.compare(0, commentStr_.length(), commentStr_) == 0);
         }
-
-        return false;
     }
 
 

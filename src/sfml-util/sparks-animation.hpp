@@ -122,7 +122,7 @@ namespace animation
         float emitTimerSec_;
         float durationTimerSec_;
         bool isFinished_;
-        TextureSPtr_t sparkTextureSPtr_;
+        sf::Texture sparkTexture_;
         SparkVec_t sparkVec_;
     };
 

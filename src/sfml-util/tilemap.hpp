@@ -46,7 +46,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <list>
 #include <tuple>
 
 
@@ -73,16 +73,19 @@ namespace map
 
 
     //holds all the info regarding an image file used by TileMap
-    struct TilesImage
+    struct TileImage
     {
-        explicit TilesImage(const std::string &   NAME          = "",
-                            const std::string &   RELATIVE_PATH = "",
-                            const std::size_t     FIRST_ID      = 0,
-                            const std::size_t     TILE_COUNT    = 1,
-                            const std::size_t     COLUMN_COUNT  = 1,
-                            const TextureSPtr_t & TEXTURE_SPTR  = TextureSPtr_t());
+        explicit TileImage(const std::string & NAME          = "",
+                           const std::string & RELATIVE_PATH = "",
+                           const std::size_t   FIRST_ID      = 0,
+                           const std::size_t   TILE_COUNT    = 1,
+                           const std::size_t   COLUMN_COUNT  = 1,
+                           const sf::Texture & TEXTURE       = sf::Texture());
 
-        inline bool OwnsId(const std::size_t ID) { return ((ID >= first_id) && (ID < (first_id + tile_count))); }
+        inline bool OwnsId(const std::size_t ID) const
+        {
+            return ((ID >= first_id) && (ID < (first_id + tile_count)));
+        }
 
         std::string             name;
         std::string             path_rel; //path string relative to the .tmx map path
@@ -90,15 +93,15 @@ namespace map
         std::size_t             first_id;
         std::size_t             tile_count;
         std::size_t             column_count;
-        TextureSPtr_t           texture_sptr;
+        sf::Texture             texture;
     };
 
-    bool operator==(const TilesImage & L, const TilesImage & R);
+    bool operator==(const TileImage & L, const TileImage & R);
 
-    bool operator!=(const TilesImage & L, const TilesImage & R);
+    bool operator!=(const TileImage & L, const TileImage & R);
 
-    using TilesImageSPtr_t = std::shared_ptr<TilesImage>;
-    using TilesImageSVec_t = std::vector<TilesImageSPtr_t>;
+    using TileImageVec_t = std::vector<TileImage>;
+
 
 
     //custom types
@@ -106,23 +109,24 @@ namespace map
     using MapValVec_t = std::vector<MapVal_t>;
 
 
+
     //encapsulates all the info about a layer of the tilemap
     struct MapLayer
     {
         MapLayer()
         :
-            vert_array     (),
-            tilesimage_svec(),
-            mapval_vec     ()
+            vert_array    (),
+            tilesimage_vec(),
+            mapval_vec    ()
         {}
 
-        sf::VertexArray   vert_array;
-        TilesImageSVec_t  tilesimage_svec;
-        MapValVec_t       mapval_vec;
+        sf::VertexArray vert_array;
+        TileImageVec_t  tilesimage_vec;
+        MapValVec_t     mapval_vec;
     };
 
-    using MapLayerSPtr_t = std::shared_ptr<MapLayer>;
-    using MapLayerSVec_t = std::vector<MapLayerSPtr_t>;
+    using MapLayerList_t = std::list<MapLayer>;
+
 
 
     //collision detection quad
@@ -139,6 +143,7 @@ namespace map
         FloatRectVec_t quad_rects_vec;
         std::vector<Quad> child_quads_vec;
     };
+
 
 
     //collision detection quad-tree
@@ -172,6 +177,7 @@ namespace map
         static const float MIN_QUAD_SIZE_;
         Quad headQuad_;
     };
+
 
 
     //Encapsulates a tiled map, along with the player's position.
@@ -213,7 +219,8 @@ namespace map
 
         void ParseCollisionsLayer(const boost::property_tree::ptree &);
 
-        void EstablishMapSubsection(MapLayerSPtr_t mapLayerSPtr, const TileOffsets & TILE_OFFSETS);
+        void EstablishMapSubsection(MapLayer &          mapLayerSPtr,
+                                    const TileOffsets & TILE_OFFSETS);
 
         const TileOffsets GetTileOffsets(const sf::Vector2f &) const;
         const TileOffsets GetTileOffsetsPlayerPos() const;
@@ -223,18 +230,19 @@ namespace map
 
         bool IsPointWithinCollision(const sf::Vector2f &) const;
 
-        const TilesImageSPtr_t GetTileImageFromId(const MapVal_t ID) const;
+        const TileImage & GetTileImageFromId(const MapVal_t ID) const;
 
         void SetupEmptyTexture();
 
         void DrawPlayer(sf::RenderTarget & target);
 
     public:
-        //this is how close the player position can get to the edge of the map before being forced to stop.
+        //This is how close the player position can get to
+        //the edge of the map before being forced to stop.
         static const float BORDER_PAD_;
 
         //the name of the fully transparent texture used to draw 'nothing' tiles
-        static const std::string TILES_IMAGE_NAME_EMPTY_;
+        static const std::string TILE_IMAGE_NAME_EMPTY_;
 
         //these are the names of XML nodes used in parsing the .tmx map files
         static const std::string XML_NODE_NAME_TILE_LAYER_;
@@ -250,7 +258,8 @@ namespace map
         //how many tiles to draw offscreen that are outside the visible map area
         static const unsigned EXTRA_OFFSCREEN_TILE_COUNT_;
 
-        //the tileset I found online uses this color as a background, so it needs to be changed to transparent
+        //The tileset I found online uses this color as a background,
+        //so it needs to be changed to transparen.t
         static const sf::Color DEFAULT_TRANSPARENT_MASK_;
 
         //the tileset I found online uses these magenta colors as shades for shadows
@@ -263,6 +272,7 @@ namespace map
         static const sf::Color SHADOW_COLOR1_;
         static const sf::Color SHADOW_COLOR2_;
         static const sf::Color SHADOW_COLOR3_;
+
     private:
         unsigned           tileSizeWidth_;
         unsigned           tileSizeHeight_;
@@ -280,8 +290,8 @@ namespace map
         sf::RenderTexture  offScreenTexture_;
         sf::RenderTexture  emptyRendText_;
         FloatRectVec_t     collisionsVec_;
-        MapLayerSVec_t     mapLayerSVec_;
-        TilesImageSVec_t   tilesImageSVec_;
+        MapLayerList_t     mapLayerList_;
+        TileImageVec_t     tilesImageVec_;
         const sf::Color    TRANSPARENT_MASK_;
         QuadTree           collisionTree_;
     };

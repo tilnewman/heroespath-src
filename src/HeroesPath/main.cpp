@@ -96,8 +96,9 @@ int main()
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/);
-        sfml_util::Display::Instance()->GetWindow()->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
-        sfml_util::Display::Instance()->GetWindow()->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
+        sfml_util::WinPtr_t winPtr{ sfml_util::Display::Instance()->GetWindow() };
+        winPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
+        winPtr->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
 
         //set resource paths for manager classes
         sfml_util::FontManager::SetFontsDirectory(                      gameDataFilePtr->GetMediaPath("media-fonts-dir"));
@@ -117,9 +118,9 @@ int main()
         sfml_util::FontManager::Fill();
 
         //load game assets Stage 2
+        sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
         sfml_util::gui::PopupManager::Acquire();
-        sfml_util::SoundManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
         sfml_util::gui::CreatureImageManager::Acquire();
@@ -176,7 +177,7 @@ int main()
             sfml_util::Display::Instance()->GetWindow()->close();
         }
 
-        //release singleton/manager instances
+        //unload stage 2
         game::item::weapon::WeaponDetailLoader::Release();
         game::item::armor::ArmorFactory::Release();
         game::item::armor::ArmorDetailLoader::Release();
@@ -192,13 +193,13 @@ int main()
         sfml_util::gui::ItemImageManager::Release();
         sfml_util::gui::GuiElements::Release();
         sfml_util::FontManager::Release();
-        sfml_util::SoundManager::Release();
         sfml_util::gui::PopupManager::Release();
+        sfml_util::SoundManager::Release();
         game::GameDataFile::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
 
-        //release warehouse objects
+        //unload stage 1
         sfml_util::FontManager::Empty();
         game::spell::Warehouse::Empty();
         game::creature::condition::Warehouse::Empty();

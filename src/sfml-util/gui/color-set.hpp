@@ -86,15 +86,9 @@ namespace gui
     };
 
 
-    using ColorSetSPtr_t = std::shared_ptr<ColorSet>;
-    using ColorSetSVec_t = std::vector<ColorSetSPtr_t>;
-
-
     bool operator<(const ColorSet & L, const ColorSet & R);
 
-
     bool operator==(const ColorSet & L, const ColorSet & R);
-
 
     inline bool operator!=(const ColorSet & L, const ColorSet & R)
     {

@@ -72,12 +72,12 @@ namespace sfml_util
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &   REGION,
                            const sf::FloatRect &   INNER_REGION,
-                           const TextureSPtr_t &   BG_TEXTURE_SPTR)
+                           const sf::Texture &     BG_TEXTURE)
     :
         Stage                      (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
         POPUP_INFO_                (POPUP_INFO),
-        backgroundSprite_          (),
-        backgroundTextureSPtr_     (),
+        backgroundSprite_          (BG_TEXTURE),
+        backgroundTexture_         (BG_TEXTURE),
         INNER_REGION_              (INNER_REGION),
         textRegionSPtr_            (),
         textRegion_                (),
@@ -86,9 +86,9 @@ namespace sfml_util
         box_                       ("PopupWindow's", gui::box::Info()),
         gradient_                  (),
         accentSprite1_             (),
-        accentTexture1SPtr_        (),
+        accentTexture1_            (),
         accentSprite2_             (),
-        accentTexture2SPtr_        (),
+        accentTexture2_            (),
         selectPopupButtonSPtr_     (),
         sliderbarSPtr_             (),
         sliderbarPosTop_           (0.0f),
@@ -119,7 +119,7 @@ namespace sfml_util
         beforeFadeTimerSec_        (0.0f),
         fadeAlpha_                 (0.0f),
         spellbookState_            (SpellbookState::Initial),
-        playerTextureSPtr_         (),
+        playerTexture_             (),
         playerSprite_              (),
         pageRectLeft_              (),
         pageRectRight_             (),
@@ -133,7 +133,7 @@ namespace sfml_util
         LISTBOX_COLORSET_          (LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
         LISTBOX_BG_INFO_           (LISTBOX_COLOR_BG_),
         listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
-        spellTextureSPtr_          (),
+        spellTexture_              (),
         spellSprite_               (),
         spellTitleTextRegionUPtr_  (),
         spellDetailsTextUPtr_      (),
@@ -151,12 +151,7 @@ namespace sfml_util
         spellWarnColorShaker_      (SPELL_UNABLE_TEXT_COLOR_, sf::Color::Transparent, 60.0f),
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
-        if (BG_TEXTURE_SPTR.get() != nullptr)
-        {
-            backgroundTextureSPtr_ = BG_TEXTURE_SPTR;
-            backgroundTextureSPtr_->setSmooth(true);
-            backgroundSprite_.setTexture( * BG_TEXTURE_SPTR);
-        }
+        backgroundTexture_.setSmooth(true);
     }
 
 
@@ -288,7 +283,7 @@ namespace sfml_util
 
         if (POPUP_INFO_.Image() == sfml_util::PopupImage::Spellbook)
         {
-            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTextureSPtr_->getSize().x));
+            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTexture_.getSize().x));
             backgroundSprite_.setScale(SCALE, SCALE);
             StageRegionSet( INNER_REGION_ );
         }
@@ -406,8 +401,8 @@ namespace sfml_util
         if (POPUP_INFO_.WillAddRandImage())
         {
             //load the first accent sprite
-            accentTexture1SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
-            accentSprite1_.setTexture(*accentTexture1SPtr_);
+            sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+            accentSprite1_.setTexture(accentTexture1_);
 
             //scale the accent image
             auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
@@ -530,21 +525,23 @@ namespace sfml_util
             const float IMAGE_REGION_TOP(textRegionSPtr_->GetEntityRegion().top + textRegionSPtr_->GetEntityRegion().height + IMAGE_PAD);
             const float IMAGE_REGION_HEIGHT((textRegion_.top + textRegion_.height) - IMAGE_REGION_TOP);
 
-            const sfml_util::TextureSVec_t textureSVec(POPUP_INFO_.Images());
+            auto const & textureVec(POPUP_INFO_.Images());
 
-            if (textureSVec.size() == 1)
+            if (textureVec.size() == 1)
             {
-                imageSpriteCurr_.setTexture( * POPUP_INFO_.Images().at(0));
+                imageSpriteCurr_.setTexture(POPUP_INFO_.Images().at(0));
             }
             else
             {
-                imageSpritePrev_.setTexture( * POPUP_INFO_.Images().at(0));
-                imageSpriteCurr_.setTexture( * POPUP_INFO_.Images().at(1));
+                imageSpritePrev_.setTexture(POPUP_INFO_.Images().at(0));
+                imageSpriteCurr_.setTexture(POPUP_INFO_.Images().at(1));
             }
 
             float newScale(1.0f);
             if (imageSpriteCurr_.getLocalBounds().height > IMAGE_REGION_HEIGHT)
+            {
                 newScale = IMAGE_REGION_HEIGHT / imageSpriteCurr_.getLocalBounds().height;
+            }
 
             //assume POPUP_INFO_.Images()[0] and POPUP_INFO_.Images()[1] are the same size
             imageSpritePrev_.setScale(newScale, newScale);
@@ -563,7 +560,7 @@ namespace sfml_util
             //setup regions
             auto const LEFT_PAGE_RECT_RAW { sfml_util::ConvertRect<int, float>(sfml_util::gui::PopupManager::Rect_Spellbook_PageLeft()) };
 
-            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTextureSPtr_->getSize().x));
+            auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTexture_.getSize().x));
 
             pageRectLeft_.left   = INNER_REGION_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
             pageRectLeft_.top    = INNER_REGION_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
@@ -579,8 +576,8 @@ namespace sfml_util
 
             //setup the left accent image
             {
-                accentTexture1SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
-                accentSprite1_.setTexture(*accentTexture1SPtr_);
+                sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+                accentSprite1_.setTexture(accentTexture1_);
 
                 auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
                 const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height);
@@ -606,8 +603,8 @@ namespace sfml_util
 
             //setup the right accent image
             {
-                accentTexture2SPtr_ = sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage();
-                accentSprite2_.setTexture(*accentTexture2SPtr_);
+                sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+                accentSprite2_.setTexture(accentTexture2_);
 
                 auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
                 const float SCALE_VERT((pageRectRight_.height * SIZE_RATIO) / accentSprite2_.getLocalBounds().height);
@@ -632,12 +629,12 @@ namespace sfml_util
             }
 
             //setup player image
-            playerTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
-            playerTextureSPtr_->setSmooth(true);
-            sfml_util::Invert( * playerTextureSPtr_);
-            sfml_util::Mask( * playerTextureSPtr_, sf::Color::White);
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_, POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
+            playerTexture_.setSmooth(true);
+            sfml_util::Invert(playerTexture_);
+            sfml_util::Mask(playerTexture_, sf::Color::White);
             //
-            playerSprite_.setTexture( * playerTextureSPtr_ );
+            playerSprite_.setTexture(playerTexture_ );
             auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
             playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
             playerSprite_.setColor(sf::Color(255, 255, 255, 127));
@@ -1254,9 +1251,8 @@ namespace sfml_util
 
             imageSpritePrev_ = imageSpriteCurr_;
 
-            POPUP_INFO_.Images()[newIndex]->setSmooth(true);
-            imageSpriteCurr_.setTexture( * POPUP_INFO_.Images()[newIndex] );
-            imageSpriteCurr_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(POPUP_INFO_.Images()[newIndex]->getSize().x), static_cast<int>(POPUP_INFO_.Images()[newIndex]->getSize().y)));
+            imageSpriteCurr_.setTexture(POPUP_INFO_.Images()[newIndex] );
+            imageSpriteCurr_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(POPUP_INFO_.Images()[newIndex].getSize().x), static_cast<int>(POPUP_INFO_.Images()[newIndex].getSize().y)));
             imageSpriteCurr_.setScale(1.0f, 1.0f);
 
             const float POS_LEFT(textRegion_.left + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f));
@@ -1419,10 +1415,10 @@ namespace sfml_util
         }
 
         //setup spell image
-        spellTextureSPtr_ = sfml_util::gui::SpellImageManager::Instance()->Get(SPELL_CPTRC->Which());
-        spellTextureSPtr_->setSmooth(true);
+        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_, SPELL_CPTRC->Which());
+        spellTexture_.setSmooth(true);
         //
-        spellSprite_.setTexture( * spellTextureSPtr_);
+        spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(spellColorImageCurrent_);

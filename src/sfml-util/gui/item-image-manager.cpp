@@ -106,9 +106,9 @@ namespace gui
             auto const STR { boost::algorithm::to_lower_copy(game::item::weapon::axe_type::ToString(ENUM)) };
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Axe, STR);
             wi.axe = ENUM;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++axeIndex;
             return false;
@@ -119,9 +119,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Bite, "bite");
             wi.is_bite = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"bite\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBite = true;
             return false;
@@ -134,9 +134,9 @@ namespace gui
             auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::bladedstaff_type::ToString(ENUM)) };
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::BladedStaff, STR);
             wi.bladedstaff = ENUM;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bladedStaffIndex;
             return false;
@@ -147,9 +147,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Breath, "breath");
             wi.is_breath = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"breath\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBreath = true;
             return false;
@@ -160,9 +160,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Claws, "claws");
             wi.is_claws = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"claws\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedClaws = true;
             return false;
@@ -175,9 +175,9 @@ namespace gui
             auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::club_type::ToString(ENUM)) };
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Club, STR);
             wi.club = ENUM;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++clubIndex;
             return false;
@@ -188,9 +188,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Fists, "fists");
             wi.is_fists = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"fists\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedFists = true;
             return false;
@@ -201,9 +201,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "knife");
             wi.is_knife = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"knife\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedKnife = true;
             return false;
@@ -214,9 +214,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "dagger");
             wi.is_dagger = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"dagger\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedDagger = true;
             return false;
@@ -229,9 +229,9 @@ namespace gui
             auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::projectile_type::ToString(ENUM)) };
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Projectile, STR);
             wi.projectile = ENUM;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++projIndex;
             return false;
@@ -242,9 +242,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "staff");
             wi.is_staff = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"staff\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedStaff = true;
             return false;
@@ -255,9 +255,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "quarterstaff");
             wi.is_quarterstaff = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"quarterstaff\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedQStaff = true;
             return false;
@@ -270,9 +270,9 @@ namespace gui
             auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::sword_type::ToString(ENUM)) };
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Sword, STR);
             wi.sword = ENUM;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"" << STR << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++swordIndex;
             return false;
@@ -283,9 +283,9 @@ namespace gui
         {
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Tendrils, "tendrils");
             wi.is_tendrils = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(wi, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() \"tendrils\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedTendrils = true;
             return false;
@@ -298,9 +298,9 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Aventail);
             ai.base = static_cast<game::item::armor::base_type::Enum>(aventailIndex);
             ai.is_aventail = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() aventail \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++aventailIndex;
             return false;
@@ -312,9 +312,9 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Boots);
             ai.base = static_cast<game::item::armor::base_type::Enum>(bootsIndex);
             ai.is_boots = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() boots \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bootsIndex;
             return false;
@@ -326,9 +326,9 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Bracer);
             ai.base = static_cast<game::item::armor::base_type::Enum>(bracerIndex);
             ai.is_bracer = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() bracer \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bracerIndex;
             return false;
@@ -339,9 +339,9 @@ namespace gui
         {
             game::item::armor::ArmorInfo ai(game::item::armor_type::Covering);
             ai.cover = static_cast<game::item::armor::cover_type::Enum>(coverIndex);
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() cover \"" << game::item::armor::cover_type::ToString(ai.cover) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++coverIndex;
             return false;
@@ -352,9 +352,9 @@ namespace gui
         {
             game::item::armor::ArmorInfo ai(game::item::armor_type::Helm);
             ai.helm = static_cast<game::item::armor::helm_type::Enum>(helmIndex);
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() helm \"" << game::item::armor::helm_type::ToString(ai.helm) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++helmIndex;
             return false;
@@ -366,9 +366,9 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Pants);
             ai.base = static_cast<game::item::armor::base_type::Enum>(pantIndex);
             ai.is_pants = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() pants \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++pantIndex;
             return false;
@@ -379,9 +379,9 @@ namespace gui
         {
             game::item::armor::ArmorInfo ai(game::item::armor_type::Sheild);
             ai.shield = static_cast<game::item::armor::shield_type::Enum>(shieldIndex);
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shield \"" << game::item::armor::shield_type::ToString(ai.shield) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shieldIndex;
             return false;
@@ -393,9 +393,9 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Shirt);
             ai.base = static_cast<game::item::armor::base_type::Enum>(shirtIndex);
             ai.is_shirt = true;
-            auto const TEXTURE_SPTR{ iimPtr->Load(iimPtr->GetImageFilename(ai, false, false)) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() shirt \"" << game::item::armor::base_type::ToString(ai.base) << "\"");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shirtIndex;
             return false;
@@ -410,16 +410,16 @@ namespace gui
             auto const ENUM{ static_cast<game::item::misc_type::Enum>(miscIndex) };
             auto const FILENAME_NONRAND{ iimPtr->GetImageFilename(ENUM, false, false) };
             M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_NONRAND.empty() == false), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
-            auto const TEXTURE_BASE_SPTR{ iimPtr->Load(FILENAME_NONRAND) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_BASE_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
-
+            sf::Texture textureBase;
+            iimPtr->Load(textureBase, FILENAME_NONRAND);
+            
             if (randIndex < RAND_REPEAT_COUNT)
             {
                 auto const FILENAME_RAND{ iimPtr->GetImageFilename(ENUM, false, true) };
                 M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_RAND.empty() == false),     "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
-                auto const TEXTURE_RAND_SPTR{ iimPtr->Load(FILENAME_RAND) };
-                M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_RAND_SPTR.get() != nullptr), "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImage() returned a nullptr texture.");
-                game::LoopManager::Instance()->TestingImageSet(TEXTURE_RAND_SPTR);
+                sf::Texture textureRand;
+                iimPtr->Load(textureRand, FILENAME_RAND);
+                game::LoopManager::Instance()->TestingImageSet(textureRand);
 
                 auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
 
@@ -514,20 +514,17 @@ namespace gui
     }
 
 
-    TextureSPtr_t ItemImageManager::Load(const std::string & IMAGE_FILE_NAME) const
+    void ItemImageManager::Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(IMAGE_FILE_NAME)));
-
-        TextureSPtr_t textureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
-        return textureSPtr;
+        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
     }
 
 
-    TextureSPtr_t ItemImageManager::Load(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
+    void ItemImageManager::Load(sf::Texture & texture, const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
     {
-        return Load( GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE) );
+        Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE) );
     }
 
 

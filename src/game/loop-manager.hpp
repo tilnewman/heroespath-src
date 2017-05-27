@@ -120,9 +120,9 @@ namespace game
         inline bool GetIgnoreMouse() const                        { return currentLoopSPtr_->GetIgnoreMouse(); }
         inline void SetIgnoreMouse(const bool B)                  { currentLoopSPtr_->SetIgnoreMouse(B); }
 
-        inline void TestingStrAppend(const std::string & S)             { currentLoopSPtr_->TestingStrAppend(S); }
-        inline void TestingStrIncrement(const std::string & S)          { currentLoopSPtr_->TestingStrIncrement(S); }
-        inline void TestingImageSet(const sfml_util::TextureSPtr_t & T) { currentLoopSPtr_->TestingImageSet(T); }
+        inline void TestingStrAppend(const std::string & S)       { currentLoopSPtr_->TestingStrAppend(S); }
+        inline void TestingStrIncrement(const std::string & S)    { currentLoopSPtr_->TestingStrIncrement(S); }
+        inline void TestingImageSet(const sf::Texture & T)        { currentLoopSPtr_->TestingImageSet(T); }
 
     protected:
         void TransitionTo_Intro();

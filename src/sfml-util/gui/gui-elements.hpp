@@ -57,9 +57,9 @@ namespace gui
 
         //Managed textures
         //these textures are used so often that it saves resources to keep a single instance of them in memory
-        inline const TextureSPtr_t GetTexture() const       { return elementsTextureSPtr_; }
-        inline const TextureSPtr_t GetTextureWood() const   { return woodBgTextureSPtr_; }
-        inline const TextureSPtr_t GetTextureKnot() const   { return darkKnotBgTextureSPtr_; }
+        inline const sf::Texture & GetTexture() const       { return elementsTexture_; }
+        inline const sf::Texture & GetTextureWood() const   { return woodBgTexture_; }
+        inline const sf::Texture & GetTextureKnot() const   { return darkKnotBgTexture_; }
 
         //If the small line box is going to grow to fit inner contents, then these values specity how to grow or shrink each side.
         inline float GetLineSmallBoxPadLeft() const         { return 8.0f; } //subtract this amount from left
@@ -139,9 +139,9 @@ namespace gui
     private:
         static std::unique_ptr<GuiElements> instanceUPtr_;
         //
-        TextureSPtr_t elementsTextureSPtr_;
-        TextureSPtr_t woodBgTextureSPtr_;
-        TextureSPtr_t darkKnotBgTextureSPtr_;
+        sf::Texture elementsTexture_;
+        sf::Texture woodBgTexture_;
+        sf::Texture darkKnotBgTexture_;
         //
         const sf::IntRect radioButtonBrightOffSpriteRect_;
         const sf::IntRect radioButtonBrightOnSpriteRect_;

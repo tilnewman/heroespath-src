@@ -51,10 +51,14 @@ namespace gui
     :
         GuiEntity              (std::string(NAME).append("_FourStateButton"), 0.0f, 0.0f),
         isDisabled_            (false),
-        textureUpSPtr_         (),
-        textureDownSPtr_       (),
-        textureOverSPtr_       (),
-        textureDisabledSPtr_   (),
+        textureUp_             (),
+        textureDown_           (),
+        textureOver_           (),
+        textureDisabled_       (),
+        hasUp_                 (false),
+        hasDown_               (false),
+        hasOver_               (false),
+        hasDisabled_           (false),
         buttonSprite_          (),
         textRegionCurrSPtr_    (),
         textRegionUpSPtr_      (),
@@ -82,10 +86,14 @@ namespace gui
     :
         GuiEntity              (std::string(NAME).append("_FourStateButton"), POS_LEFT, POS_TOP),
         isDisabled_            (IS_DISABLED),
-        textureUpSPtr_         (),
-        textureDownSPtr_       (),
-        textureOverSPtr_       (),
-        textureDisabledSPtr_   (),
+        textureUp_             (),
+        textureDown_           (),
+        textureOver_           (),
+        textureDisabled_       (),
+        hasUp_                 (false),
+        hasDown_               (false),
+        hasOver_               (false),
+        hasDisabled_           (false),
         buttonSprite_          (),
         textRegionCurrSPtr_    (),
         textRegionUpSPtr_      (),
@@ -113,10 +121,14 @@ namespace gui
     FourStateButton::FourStateButton(const std::string &   NAME,
                                      const float           POS_LEFT,
                                      const float           POS_TOP,
-                                     const TextureSPtr_t & IMAGE_UP,
-                                     const TextureSPtr_t & IMAGE_DOWN,
-                                     const TextureSPtr_t & IMAGE_OVER,
-                                     const TextureSPtr_t & IMAGE_DISABLED,
+                                     const sf::Texture &   IMAGE_UP,
+                                     const bool            HAS_IMAGE_UP,
+                                     const sf::Texture &   IMAGE_DOWN,
+                                     const bool            HAS_IMAGE_DOWN,
+                                     const sf::Texture &   IMAGE_OVER,
+                                     const bool            HAS_IMAGE_OVER,
+                                     const sf::Texture &   IMAGE_DISABLED,
+                                     const bool            HAS_IMAGE_DISABLED,
                                      const MouseTextInfo & MOUSE_TEXT_INFO,
                                      const TextInfo &      TEXT_INFO_DISABLED,
                                      const bool            WILL_BOX,
@@ -125,10 +137,14 @@ namespace gui
     :
         GuiEntity              (std::string(NAME).append("_FourStateButton"), POS_LEFT, POS_TOP),
         isDisabled_            (IS_DISABLED),
-        textureUpSPtr_         (),
-        textureDownSPtr_       (),
-        textureOverSPtr_       (),
-        textureDisabledSPtr_   (),
+        textureUp_             (),
+        textureDown_           (),
+        textureOver_           (),
+        textureDisabled_       (),
+        hasUp_                 (false),
+        hasDown_               (false),
+        hasOver_               (false),
+        hasDisabled_           (false),
         buttonSprite_          (),
         textRegionCurrSPtr_    (),
         textRegionUpSPtr_      (),
@@ -142,9 +158,13 @@ namespace gui
         Setup(POS_LEFT,
               POS_TOP,
               IMAGE_UP,
+              HAS_IMAGE_UP,
               IMAGE_DOWN,
+              HAS_IMAGE_DOWN,
               IMAGE_OVER,
+              HAS_IMAGE_OVER,
               IMAGE_DISABLED,
+              HAS_IMAGE_DISABLED,
               MOUSE_TEXT_INFO,
               TEXT_INFO_DISABLED,
               WILL_BOX,
@@ -169,31 +189,50 @@ namespace gui
                                 const float           SCALE,
                                 const bool            IS_DISABLED)
     {
-        TextureSPtr_t up;
-        TextureSPtr_t down;
-        TextureSPtr_t over;
-        TextureSPtr_t disabled;
+        sf::Texture up;
+        bool hasUp{ false };
+        sf::Texture down;
+        auto hasDown{ false };
+        sf::Texture over;
+        auto hasOver{ false };
+        sf::Texture disabled;
+        auto hasDisabled{ false };
 
         //up image is required
         if (IMAGE_PATH_UP.empty() == false)
-            sfml_util::LoadImageOrTextureSPtr<TextureSPtr_t>(up, IMAGE_PATH_UP);
-
+        {
+            sfml_util::LoadImageOrTexture(up, IMAGE_PATH_UP);
+            hasUp = true;
+        }
         //down, over, disabled images are not required
         if (IMAGE_PATH_DOWN.empty() == false)
-            sfml_util::LoadImageOrTextureSPtr<TextureSPtr_t>(down, IMAGE_PATH_DOWN);
+        {
+            sfml_util::LoadImageOrTexture(down, IMAGE_PATH_DOWN);
+            hasDown = true;
+        }
 
         if (IMAGE_PATH_OVER.empty() == false)
-            sfml_util::LoadImageOrTextureSPtr<TextureSPtr_t>(over, IMAGE_PATH_OVER);
+        {
+            sfml_util::LoadImageOrTexture(over, IMAGE_PATH_OVER);
+            hasOver = true;
+        }
 
         if (IMAGE_PATH_DISABLED.empty() == false)
-            sfml_util::LoadImageOrTextureSPtr<TextureSPtr_t>(disabled, IMAGE_PATH_DISABLED);
+        {
+            sfml_util::LoadImageOrTexture(disabled, IMAGE_PATH_DISABLED);
+            hasDisabled = true;
+        }
 
         Setup(POS_LEFT,
               POS_TOP,
               up,
+              hasUp,
               down,
+              hasDown,
               over,
+              hasOver,
               disabled,
+              hasDisabled,
               MOUSE_TEXT_INFO,
               TEXT_INFO_DISABLED,
               WILL_BOX,
@@ -204,10 +243,14 @@ namespace gui
 
     void FourStateButton::Setup(const float           POS_LEFT,
                                 const float           POS_TOP,
-                                const TextureSPtr_t & IMAGE_UP,
-                                const TextureSPtr_t & IMAGE_DOWN,
-                                const TextureSPtr_t & IMAGE_OVER,
-                                const TextureSPtr_t & IMAGE_DISABLED,
+                                const sf::Texture &   IMAGE_UP,
+                                const bool            HAS_IMAGE_UP,
+                                const sf::Texture &   IMAGE_DOWN,
+                                const bool            HAS_IMAGE_DOWN,
+                                const sf::Texture &   IMAGE_OVER,
+                                const bool            HAS_IMAGE_OVER,
+                                const sf::Texture &   IMAGE_DISABLED,
+                                const bool            HAS_IMAGE_DISABLED,
                                 const MouseTextInfo & MOUSE_TEXT_INFO,
                                 const TextInfo &      TEXT_INFO_DISABLED,
                                 const bool            WILL_BOX,
@@ -216,23 +259,36 @@ namespace gui
     {
         //validate TextInfo objects if text is given
         if (MOUSE_TEXT_INFO.up.text.empty() == false)
+        {
             M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (UP) was given a null font pointer.");
+        }
 
         if (MOUSE_TEXT_INFO.down.text.empty() == false)
+        {
             M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text << "\") (DOWN) was given a null font pointer.");
+        }
 
         if (MOUSE_TEXT_INFO.over.text.empty() == false)
+        {
             M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text << "\") (OVER) was given a null font pointer.");
+        }
 
         if (TEXT_INFO_DISABLED.text.empty() == false)
+        {
             M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO_DISABLED.fontPtr != nullptr), "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text << "\") (DISABLED) was given a null font pointer.");
+        }
 
         scale_           = SCALE;
         isDisabled_      = IS_DISABLED;
-        textureUpSPtr_   = IMAGE_UP;
-        textureDownSPtr_ = IMAGE_DOWN;
-        textureOverSPtr_ = IMAGE_OVER;
-        textureDisabledSPtr_ = IMAGE_DISABLED;
+        textureUp_       = IMAGE_UP;
+        textureDown_     = IMAGE_DOWN;
+        textureOver_     = IMAGE_OVER;
+        textureDisabled_ = IMAGE_DISABLED;
+
+        hasUp_ = HAS_IMAGE_UP;
+        hasDown_ = HAS_IMAGE_DOWN;
+        hasOver_ = HAS_IMAGE_OVER;
+        hasDisabled_ = HAS_IMAGE_DISABLED;
 
         sf::FloatRect tempRect(POS_LEFT, POS_TOP, 0.0f, 0.0f);
         if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) && (MOUSE_TEXT_INFO.up.text.empty() == false))
@@ -246,9 +302,9 @@ namespace gui
         }
         else
         {
-            if (textureUpSPtr_.get() != nullptr)
+            if (HAS_IMAGE_UP)
             {
-                SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, static_cast<float>(textureUpSPtr_->getSize().x), static_cast<float>(textureUpSPtr_->getSize().y)));
+                SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, static_cast<float>(textureUp_.getSize().x), static_cast<float>(textureUp_.getSize().y)));
             }
             else
             {
@@ -285,14 +341,16 @@ namespace gui
 
     void FourStateButton::SetScaleToRes()
     {
-        if (textureUpSPtr_.get() != nullptr)
+        if (hasUp_)
+        {
             SetScale(sfml_util::MapByRes(0.65f, 2.25f));
+        }
     }
 
 
     void FourStateButton::SetVertPositionToBottomOfScreenByRes(const float POS_LEFT)
     {
-        if (textureUpSPtr_.get() != nullptr)
+        if (hasUp_)
         {
             const float POS_TOP((sfml_util::Display::Instance()->GetWinHeight() - buttonSprite_.getGlobalBounds().height) - sfml_util::MapByRes(42.0f, 170.0f));
             buttonSprite_.setPosition(POS_LEFT, POS_TOP);
@@ -304,78 +362,116 @@ namespace gui
     void FourStateButton::Reset()
     {
         if (boxSPtr_.get() != nullptr)
-            boxSPtr_.reset( new box::Box("FourStateButton's", gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White))));
+        {
+            boxSPtr_.reset(new box::Box("FourStateButton's", gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White))));
+        }
 
         if (isDisabled_)
         {
             if (textRegionDisabledSPtr_.get() != nullptr)
+            {
                 textRegionCurrSPtr_ = textRegionDisabledSPtr_;
+            }
 
-            if (textureDisabledSPtr_.get() != nullptr)
-                buttonSprite_.setTexture( * textureDisabledSPtr_, true);
+            if (hasDisabled_)
+            {
+                buttonSprite_.setTexture(textureDisabled_, true);
+            }
         }
         else if (MouseState::Up == entityMouseState_)
         {
-            if (textureUpSPtr_.get() != nullptr)
-                buttonSprite_.setTexture( * textureUpSPtr_, true );
+            if (hasUp_)
+            {
+                buttonSprite_.setTexture(textureUp_, true);
+            }
 
             if (textRegionUpSPtr_.get() != nullptr)
+            {
                 textRegionCurrSPtr_ = textRegionUpSPtr_;
+            }
         }
         else
         {
-            if ((MouseState::Down == entityMouseState_) && (textureDownSPtr_.get() != nullptr))
-                buttonSprite_.setTexture( * textureDownSPtr_, true );
+            if ((MouseState::Down == entityMouseState_) && hasDown_)
+            {
+                buttonSprite_.setTexture(textureDown_, true);
+            }
 
-            if ((MouseState::Over == entityMouseState_) && (textureOverSPtr_.get() != nullptr))
-                buttonSprite_.setTexture( * textureOverSPtr_, true);
+            if ((MouseState::Over == entityMouseState_) && hasOver_)
+            {
+                buttonSprite_.setTexture(textureOver_, true);
+            }
 
-            if ((MouseState::Down == entityMouseState_) && (textRegionDownSPtr_.get() != nullptr))
+            if ((MouseState::Down == entityMouseState_) &&
+                (textRegionDownSPtr_.get() != nullptr))
+            {
                 textRegionCurrSPtr_ = textRegionDownSPtr_;
+            }
 
-            if ((MouseState::Over == entityMouseState_) && (textRegionOverSPtr_.get() != nullptr))
+            if ((MouseState::Over == entityMouseState_) &&
+                (textRegionOverSPtr_.get() != nullptr))
+            {
                 textRegionCurrSPtr_ = textRegionOverSPtr_;
+            }
         }
 
         buttonSprite_.setPosition( GetEntityPos() );
 
-        if (textureUpSPtr_.get() != nullptr)
-            textureUpSPtr_->setSmooth(true);
+        if (hasUp_)
+        {
+            textureUp_.setSmooth(true);
+        }
 
-        if (textureDownSPtr_.get() != nullptr)
-            textureDownSPtr_->setSmooth(true);
+        if (hasDown_)
+        {
+            textureDown_.setSmooth(true);
+        }
 
-        if (textureOverSPtr_.get() != nullptr)
-            textureOverSPtr_->setSmooth(true);
+        if (hasOver_)
+        {
+            textureOver_.setSmooth(true);
+        }
 
-        if (textureDisabledSPtr_.get() != nullptr)
-            textureDisabledSPtr_->setSmooth(true);
+        if (hasDisabled_)
+        {
+            textureDisabled_.setSmooth(true);
+        }
 
         SetScale(scale_);
 
         //center the text within the button image
         if (textRegionCurrSPtr_.get() != nullptr)
+        {
             textRegionCurrSPtr_->SetEntityPos(GetEntityRegion().left, GetEntityRegion().top);
+        }
     }
 
 
     void FourStateButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        if (textureUpSPtr_.get() != nullptr)
+        if (hasUp_)
+        {
             target.draw(buttonSprite_, states);
+        }
 
         if (textRegionCurrSPtr_.get() != nullptr)
+        {
             textRegionCurrSPtr_->draw(target, states);
+        }
 
         if (boxSPtr_.get() != nullptr)
-            target.draw( * boxSPtr_, states);
+        {
+            target.draw(*boxSPtr_, states);
+        }
     }
 
 
     bool FourStateButton::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isDisabled_)
+        {
             return false;
+        }
 
         const bool DID_STATE_CHANGE( GuiEntity::MouseUp(MOUSE_POS_V) );
 
@@ -392,7 +488,9 @@ namespace gui
     bool FourStateButton::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isDisabled_)
+        {
             return false;
+        }
 
         const bool DID_STATE_CHANGE(GuiEntity::MouseDown(MOUSE_POS_V));
 
@@ -409,16 +507,22 @@ namespace gui
     bool FourStateButton::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isDisabled_)
+        {
             return false;
+        }
 
         const bool DID_STATE_CHANGE(GuiEntity::UpdateMousePos(MOUSE_POS_V));
 
         if (DID_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
+            {
                 SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+            }
             else
+            {
                 SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
+            }
 
             Reset();
         }
@@ -466,7 +570,7 @@ namespace gui
 
     void FourStateButton::SetScale(const float NEW_SCALE)
     {
-        if (textureUpSPtr_.get() != nullptr)
+        if (hasUp_)
         {
             scale_ = NEW_SCALE;
             buttonSprite_.setScale(NEW_SCALE, NEW_SCALE);

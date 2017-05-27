@@ -86,10 +86,6 @@ namespace gui
         sf::Sprite overSprite_;
     };
 
-
-    using GuiImageSPtr_t = std::shared_ptr<GuiImage>;
-    using GuiImageSVec_t = std::vector<GuiImageSPtr_t>;
-
 }
 }
 

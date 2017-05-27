@@ -92,8 +92,6 @@ namespace gui
 
 
     using TextInfoUPtr_t = std::unique_ptr<TextInfo>;
-    using TextInfoSPtr_t = std::shared_ptr<TextInfo>;
-    using TextInfoSVec_t = std::vector<TextInfoSPtr_t>;
     using TextInfoVec_t  = std::vector<TextInfo>;
 
 

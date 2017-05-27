@@ -39,12 +39,10 @@ namespace sf
 }
 namespace sfml_util
 {
-    using TextureSPtr_t = std::shared_ptr<sf::Texture>;
-
 namespace gui
 {
 
-    //singleton responsible for loading and dispensing combat image TextureSPtr_t
+    //singleton responsible for loading and dispensing combat image sf::Textures
     class CombatImageManager
     {
         //prevent copy assignment
@@ -65,7 +63,9 @@ namespace gui
 
         bool Test();
 
-        TextureSPtr_t Get(const CombatImageType::Enum, const bool WILL_FLIP_HORIZ = false) const;
+        void Get(sf::Texture &,
+                 CombatImageType::Enum,
+                 const bool WILL_FLIP_HORIZ = false) const;
 
     private:
         static std::unique_ptr<CombatImageManager> instanceUPtr_;

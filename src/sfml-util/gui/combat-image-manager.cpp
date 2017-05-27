@@ -95,20 +95,20 @@ namespace gui
         {
             auto const ENUM{ static_cast<CombatImageType::Enum>(imageIndex) };
             auto const FILENAME{ CombatImageType::Filename(ENUM) };
-            auto textureSPtr{ Get(ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((textureSPtr.get() != nullptr), "sfml_util::gui::CombatImageManager::Test()  Get(\"" << FILENAME << "\") returned a nullptr.");
-
+            sf::Texture texture;
+            Get(texture, ENUM);
+            
             willFlip = ! willFlip;
 
             if (willFlip)
             {
-                sfml_util::FlipHoriz( * textureSPtr);
-                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
+                sfml_util::FlipHoriz(texture);
+                game::LoopManager::Instance()->TestingImageSet(texture);
                 game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
             }
             else
             {
-                game::LoopManager::Instance()->TestingImageSet(textureSPtr);
+                game::LoopManager::Instance()->TestingImageSet(texture);
                 game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
                 return false;
             }
@@ -122,18 +122,16 @@ namespace gui
     }
 
 
-    TextureSPtr_t CombatImageManager::Get(const CombatImageType::Enum E, const bool WILL_FLIP_HORIZ) const
+    void CombatImageManager::Get(sf::Texture & texture, CombatImageType::Enum E, const bool WILL_FLIP_HORIZ) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(CombatImageType::Filename(E))));
-
-        TextureSPtr_t textureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
+        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
 
         if (WILL_FLIP_HORIZ)
-            sfml_util::FlipHoriz( * textureSPtr);
-
-        return textureSPtr;
+        {
+            sfml_util::FlipHoriz(texture);
+        }
     }
 
 

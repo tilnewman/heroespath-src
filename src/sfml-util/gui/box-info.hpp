@@ -107,11 +107,13 @@ namespace box
         BackgroundInfo bg_info;
     };
 
+
     bool operator==(const Info & L, const Info & R);
 
-    bool operator!=(const Info & L, const Info & R);
-
-    using InfoSPtr_t = std::shared_ptr<Info>;
+    inline bool operator!=(const Info & L, const Info & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

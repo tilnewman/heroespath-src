@@ -141,10 +141,10 @@ namespace animation
         emitTimerSec_            (0.0f),
         durationTimerSec_        (0.0f),
         isFinished_              (false),
-        sparkTextureSPtr_        (),
+        sparkTexture_            (),
         sparkVec_                ()
     {
-        LoadImageOrTextureSPtr(sparkTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark"));
+        LoadImageOrTexture(sparkTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark"));
         sparkVec_.reserve(static_cast<std::size_t>(EMIT_RATE_PER_SEC * DURATION_SEC) + 2);
     }
 
@@ -173,7 +173,7 @@ namespace animation
             auto const TARGET_HORIZ_SPAN{ misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
             auto const END_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
-            sparkVec_.push_back( Spark( * sparkTextureSPtr_,
+            sparkVec_.push_back( Spark(sparkTexture_,
                                        sf::Vector2f(START_POS_LEFT, START_POS_TOP),
                                        sf::Vector2f(END_POS_LEFT, END_POS_TOP),
                                        ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),

@@ -61,10 +61,11 @@ namespace game
         inline float LowerPosition(const bool WILL_PAD = true) const { if (WILL_PAD) return Region().top + Region().height + LowerPad(); else return Region().top + Region().height; }
 
     private:
-        sfml_util::TextureSPtr_t symbolTextureSPtr_;
-        sf::Sprite               symbolSprite_;
-        sfml_util::TextureSPtr_t titleTextureSPtr_;
-        sf::Sprite               titleSprite_;
+        sf::Texture symbolTexture_;
+        sf::Sprite  symbolSprite_;
+        sf::Texture titleTexture_;
+        sf::Sprite  titleSprite_;
+        bool willDrawTitle_;
     };
 
 }

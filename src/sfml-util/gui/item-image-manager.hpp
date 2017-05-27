@@ -65,9 +65,9 @@ namespace gui
         static void SetItemImageDirectory(const std::string & PATH);
         static inline float GetMaxDimmension() { return 256.0f; }
 
-        TextureSPtr_t Load(const std::string & IMAGE_FILE_NAME) const;
-        inline TextureSPtr_t Load(const game::item::ItemSPtr_t & ITEM_SPTR) const { return Load(ITEM_SPTR->ImageFilename() + EXT_); }
-        TextureSPtr_t Load(const game::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
+        inline void Load(sf::Texture & texture, const game::item::ItemSPtr_t & ITEM_SPTR) const { return Load(texture, ITEM_SPTR->ImageFilename() + EXT_); }
+        void Load(sf::Texture & texture, const game::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(const game::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE = true) const;
         const std::string GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;

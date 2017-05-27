@@ -71,12 +71,12 @@ namespace map
     }
 
 
-    TilesImage::TilesImage(const std::string &   NAME,
+    TileImage::TileImage(const std::string &   NAME,
                            const std::string &   RELATIVE_PATH,
                            const std::size_t     FIRST_ID,
                            const std::size_t     TILE_COUNT,
                            const std::size_t     COLUMN_COUNT,
-                           const TextureSPtr_t & TEXTURE_SPTR)
+                           const sf::Texture &   TEXTURE)
     :
         name        (NAME),
         path_rel    (RELATIVE_PATH),
@@ -84,14 +84,14 @@ namespace map
         first_id    (FIRST_ID),
         tile_count  (TILE_COUNT),
         column_count(COLUMN_COUNT),
-        texture_sptr(TEXTURE_SPTR)
+        texture     (TEXTURE)
     {}
 
 
-    bool operator==(const TilesImage & L, const TilesImage & R)
+    bool operator==(const TileImage & L, const TileImage & R)
     {
         return ((L.first_id == R.first_id) &&
-                (L.texture_sptr == R.texture_sptr) &&
+                //(L.texture == R.texture) &&
                 (L.path_rel == R.path_rel) &&
                 (L.path_obj == R.path_obj) &&
                 (L.tile_count == R.tile_count) &&
@@ -100,7 +100,7 @@ namespace map
     }
 
 
-    bool operator!=(const TilesImage & L, const TilesImage & R)
+    bool operator!=(const TileImage & L, const TileImage & R)
     {
         return !(L == R);
     }
@@ -201,7 +201,7 @@ namespace map
 
 
     const float       TileMap::BORDER_PAD_                (75.0f);
-    const std::string TileMap::TILES_IMAGE_NAME_EMPTY_    ("Empty");
+    const std::string TileMap::TILE_IMAGE_NAME_EMPTY_     ("Empty");
     const std::string TileMap::XML_NODE_NAME_TILE_LAYER_  ("layer");
     const std::string TileMap::XML_NODE_NAME_OBJECT_LAYER_("objectgroup");
     const std::string TileMap::XML_NODE_NAME_TILESET_     ("tileset");
@@ -242,8 +242,8 @@ namespace map
         offScreenTexture_(),
         emptyRendText_   (),
         collisionsVec_   (),
-        mapLayerSVec_    (),
-        tilesImageSVec_  (),
+        mapLayerList_    (),
+        tilesImageVec_   (),
         TRANSPARENT_MASK_(TRANSPARENT_MASK),
         collisionTree_   ()
     {
@@ -275,13 +275,13 @@ namespace map
 
     void TileMap::ApplyColorMasksToHandleTransparency()
     {
-        for (auto const & NEXT_TI_SPTR: tilesImageSVec_)
+        for (auto & nextTileImage: tilesImageVec_)
         {
-            sf::Image srcImage(NEXT_TI_SPTR->texture_sptr->copyToImage());
+            sf::Image srcImage(nextTileImage.texture.copyToImage());
             sf::Image destImage(srcImage);
 
             namespace ba = boost::algorithm;
-            const bool IS_SHADOW_LAYER( ba::contains(ba::to_lower_copy(NEXT_TI_SPTR->name),
+            const bool IS_SHADOW_LAYER( ba::contains(ba::to_lower_copy(nextTileImage.name),
                                                      ba::to_lower_copy(XML_ATTRIB_NAME_SHADOWS_)) );
 
             const sf::Uint8 * const PIXEL_PTR(srcImage.getPixelsPtr());
@@ -326,7 +326,7 @@ namespace map
                 }
             }
 
-            NEXT_TI_SPTR->texture_sptr->update(destImage);
+            nextTileImage.texture.update(destImage);
         }
     }
 
@@ -489,16 +489,17 @@ namespace map
         if (prevTileOffsets_ != CURRENT_TILE_OFFSETS)
         {
             //clear away the existing tiles
-            const std::size_t NUM_LAYERS(mapLayerSVec_.size());
-            for (std::size_t i(0); i < NUM_LAYERS; ++i)
+            for(auto & nextMapLayer : mapLayerList_)
             {
-                mapLayerSVec_[i]->vert_array.clear();
-                mapLayerSVec_[i]->tilesimage_svec.clear();
+                nextMapLayer.vert_array.clear();
+                nextMapLayer.tilesimage_vec.clear();
             }
 
             //establish what new tiles to draw
-            for(std::size_t i(0); i<NUM_LAYERS; ++i)
-                EstablishMapSubsection(mapLayerSVec_[i], CURRENT_TILE_OFFSETS);
+            for (auto & nextMapLayer : mapLayerList_)
+            {
+                EstablishMapSubsection(nextMapLayer, CURRENT_TILE_OFFSETS);
+            }
 
             //adjust offScreenRect to keep the map from jumping every time the offsets change
             if (CURRENT_TILE_OFFSETS.begin_x > prevTileOffsets_.begin_x)
@@ -555,11 +556,10 @@ namespace map
 
         //draw all vertex arrays to the off-screen texture
         sf::VertexArray quads(sf::Quads, 4);
-        const std::size_t NUM_MAP_LAYERS(mapLayerSVec_.size());
-        for (std::size_t i(0); i < NUM_MAP_LAYERS; ++i)
+        for (auto const & NEXT_MAP_LAYER : mapLayerList_)
         {
             std::size_t tilesImageIndex(0);
-            const std::size_t NUM_VERTS(mapLayerSVec_[i]->vert_array.getVertexCount());
+            const std::size_t NUM_VERTS(NEXT_MAP_LAYER.vert_array.getVertexCount());
             for (std::size_t j(0); j < NUM_VERTS; )
             {
                 //draw player before objects that might be drawn on top of the player
@@ -567,7 +567,7 @@ namespace map
                 {
                     namespace ba = boost::algorithm;
 
-                    if (false == ba::contains(ba::to_lower_copy(mapLayerSVec_[i]->tilesimage_svec[tilesImageIndex]->name), XML_ATTRIB_NAME_GROUND_))
+                    if (false == ba::contains(ba::to_lower_copy(NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex].name), XML_ATTRIB_NAME_GROUND_))
                     {
                         offScreenTexture_.display();
                         target.draw(mapSprite_);
@@ -578,21 +578,21 @@ namespace map
                 }
 
                 //skip drawing empty tiles
-                if (mapLayerSVec_[i]->tilesimage_svec[tilesImageIndex]->name != TILES_IMAGE_NAME_EMPTY_)
+                if (NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex].name != TILE_IMAGE_NAME_EMPTY_)
                 {
-                    quads[0].position  = mapLayerSVec_[i]->vert_array[j].position;
-                    quads[0].texCoords = mapLayerSVec_[i]->vert_array[j++].texCoords;
+                    quads[0].position  = NEXT_MAP_LAYER.vert_array[j].position;
+                    quads[0].texCoords = NEXT_MAP_LAYER.vert_array[j++].texCoords;
 
-                    quads[1].position  = mapLayerSVec_[i]->vert_array[j].position;
-                    quads[1].texCoords = mapLayerSVec_[i]->vert_array[j++].texCoords;
+                    quads[1].position  = NEXT_MAP_LAYER.vert_array[j].position;
+                    quads[1].texCoords = NEXT_MAP_LAYER.vert_array[j++].texCoords;
 
-                    quads[2].position  = mapLayerSVec_[i]->vert_array[j].position;
-                    quads[2].texCoords = mapLayerSVec_[i]->vert_array[j++].texCoords;
+                    quads[2].position  = NEXT_MAP_LAYER.vert_array[j].position;
+                    quads[2].texCoords = NEXT_MAP_LAYER.vert_array[j++].texCoords;
 
-                    quads[3].position  = mapLayerSVec_[i]->vert_array[j].position;
-                    quads[3].texCoords = mapLayerSVec_[i]->vert_array[j++].texCoords;
+                    quads[3].position  = NEXT_MAP_LAYER.vert_array[j].position;
+                    quads[3].texCoords = NEXT_MAP_LAYER.vert_array[j++].texCoords;
 
-                    renderStates_.texture = mapLayerSVec_[i]->tilesimage_svec[tilesImageIndex++]->texture_sptr.get();
+                    renderStates_.texture = &NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture;
 
                     offScreenTexture_.draw(quads, renderStates_);
                 }
@@ -662,7 +662,7 @@ namespace map
             //calculate which tiles need to be drawn around the player position
             const TileOffsets CURRENT_TILE_OFFSETS( GetTileOffsetsPlayerPos() );
 
-            mapLayerSVec_.clear();
+            mapLayerList_.clear();
 
             //loop over all layers in the map file
             for(const boost::property_tree::ptree::value_type & CHILD : pt.get_child("map"))
@@ -707,14 +707,15 @@ namespace map
                 ssAll << RAW_CSV;
 
                 //create the next layer data structure
-                MapLayerSPtr_t mapLayerSPtr(new MapLayer);
-                mapLayerSVec_.push_back(mapLayerSPtr);
-
+                MapLayer mapLayer;
+                
                 //read in the next map layer
-                ParseTileLayer(mapLayerSPtr->mapval_vec, ssAll);
+                ParseTileLayer(mapLayer.mapval_vec, ssAll);
 
                 //establish which subsection of the map's tiles will be drawn to screen
-                EstablishMapSubsection(mapLayerSPtr, CURRENT_TILE_OFFSETS);
+                EstablishMapSubsection(mapLayer, CURRENT_TILE_OFFSETS);
+
+                mapLayerList_.push_back(mapLayer);
             }
         }
         catch (const std::exception & E)
@@ -737,17 +738,21 @@ namespace map
     {
         const boost::property_tree::ptree IMAGE_PT(TILESET_PT.get_child("image"));
 
-        TilesImageSPtr_t tiSPtr( new TilesImage(TILESET_PT.get<std::string>("<xmlattr>.name"),
-                                                IMAGE_PT.get<std::string>("<xmlattr>.source"),
-                                                TILESET_PT.get<std::size_t>("<xmlattr>.firstgid"),
-                                                TILESET_PT.get<std::size_t>("<xmlattr>.tilecount"),
-                                                TILESET_PT.get<std::size_t>("<xmlattr>.columns")) );
+        TileImage tileImage(TILESET_PT.get<std::string>("<xmlattr>.name"),
+                            IMAGE_PT.get<std::string>("<xmlattr>.source"),
+                            TILESET_PT.get<std::size_t>("<xmlattr>.firstgid"),
+                            TILESET_PT.get<std::size_t>("<xmlattr>.tilecount"),
+                            TILESET_PT.get<std::size_t>("<xmlattr>.columns"));
+
         namespace bfs = boost::filesystem;
-        tiSPtr->path_obj = bfs::system_complete((bfs::current_path() / bfs::path(MAP_PATH_STR)) / (bfs::path("..") / bfs::path(tiSPtr->path_rel)));
+        tileImage.path_obj = bfs::system_complete((bfs::current_path() /
+                                                   bfs::path(MAP_PATH_STR)) /
+                                                  (bfs::path("..") /
+                                                   bfs::path(tileImage.path_rel)));
 
-        sfml_util::LoadImageOrTextureSPtr(tiSPtr->texture_sptr, tiSPtr->path_obj.string());
+        sfml_util::LoadImageOrTexture(tileImage.texture, tileImage.path_obj.string());
 
-        tilesImageSVec_.push_back(tiSPtr);
+        tilesImageVec_.push_back(tileImage);
     }
 
 
@@ -779,7 +784,9 @@ namespace map
             std::getline(ssLayerData, nextLine, '\n');
 
             if (nextLine.empty())
+            {
                 continue;
+            }
 
             std::stringstream ssLine;
             ssLine << nextLine;
@@ -791,7 +798,9 @@ namespace map
                 std::getline(ssLine, nextVal, ',');
 
                 if (nextVal.empty())
+                {
                     continue;
+                }
 
                 try
                 {
@@ -800,17 +809,18 @@ namespace map
                 catch (const std::exception & E)
                 {
                     M_HP_LOG("TileMap::ParseMapLayer(" << nextLine << ") "
-                             << "boost::lexical_cast<" << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
+                             << "boost::lexical_cast<"
+                             << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
                              << "\"" << nextVal << "\") threw '"
                              << E.what() << "' exception.");
-
                     throw;
                 }
                 catch (...)
                 {
                     std::ostringstream ss;
                     ss << "TileMap::ParseMapLayer(" << nextLine << ") "
-                       << "boost::lexical_cast<" << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
+                       << "boost::lexical_cast<"
+                       << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
                        << "\"" << nextVal << "\") threw unknown exception.";
 
                     M_HP_LOG(ss.str());
@@ -821,13 +831,13 @@ namespace map
     }
 
 
-    void TileMap::EstablishMapSubsection(MapLayerSPtr_t mapLayerSPtr, const TileOffsets & TILE_OFFSETS)
+    void TileMap::EstablishMapSubsection(MapLayer & mapLayer, const TileOffsets & TILE_OFFSETS)
     {
         // resize the vertex array to fit the level size
         const unsigned TILE_WIDTH (TILE_OFFSETS.end_x - TILE_OFFSETS.begin_x);
         const unsigned TILE_HEIGHT(TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y);
-        mapLayerSPtr->vert_array.setPrimitiveType(sf::Quads);
-        mapLayerSPtr->vert_array.resize(TILE_WIDTH * TILE_HEIGHT * 4);
+        mapLayer.vert_array.setPrimitiveType(sf::Quads);
+        mapLayer.vert_array.resize(TILE_WIDTH * TILE_HEIGHT * 4);
 
         // populate the vertex array with one quad per tile
         unsigned vertIndex(0);
@@ -837,18 +847,18 @@ namespace map
             {
                 // get the current tile number
                 const unsigned TILE_INDEX(x + (y * mapTileCountX_));
-                const unsigned TILE_NUM_ORIG(mapLayerSPtr->mapval_vec[static_cast<std::size_t>(TILE_INDEX)]);
+                const unsigned TILE_NUM_ORIG(mapLayer.mapval_vec[static_cast<std::size_t>(TILE_INDEX)]);
                 const unsigned TILE_NUM_ADJ((TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1)); //This -1 comes from the Tiled app that starts tile ids at 1 instead of 0.
 
                 // get the texture/image this tile can be found in
-                const TilesImageSPtr_t TILES_IMAGE_PTR(GetTileImageFromId(TILE_NUM_ADJ) );
-                mapLayerSPtr->tilesimage_svec.push_back(TILES_IMAGE_PTR);
+                const TileImage & TILE_IMAGE(GetTileImageFromId(TILE_NUM_ADJ) );
+                mapLayer.tilesimage_vec.push_back(TILE_IMAGE);
 
                 // adjust the tile number to start at one
-                const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILES_IMAGE_PTR->first_id)) + static_cast<unsigned int>(1));
+                const unsigned TILE_NUM((TILE_NUM_ADJ - static_cast<unsigned int>(TILE_IMAGE.first_id)) + static_cast<unsigned int>(1));
 
                 // get a pointer to the current tile's quad
-                sf::Vertex * quad( & mapLayerSPtr->vert_array[static_cast<std::size_t>((vertIndex++) * 4)]);
+                sf::Vertex * quad( & mapLayer.vert_array[static_cast<std::size_t>((vertIndex++) * 4)]);
 
                 // define its 4 corners on screen
                 const float CURR_HORIZ_SIZE               (static_cast<float>((x - TILE_OFFSETS.begin_x) * tileSizeWidth_));
@@ -863,7 +873,7 @@ namespace map
                 quad[3].position = sf::Vector2f(CURR_HORIZ_SIZE,                CURR_VERT_SIZE_PLUS_ONE_TILE);
 
                 // find its position in the tileset texture
-                const unsigned TEXTURE_TILE_COUNT_HORIZ(TILES_IMAGE_PTR->texture_sptr->getSize().x / tileSizeWidth_);
+                const unsigned TEXTURE_TILE_COUNT_HORIZ(TILE_IMAGE.texture.getSize().x / tileSizeWidth_);
                 const float TU( static_cast<float>(TILE_NUM % TEXTURE_TILE_COUNT_HORIZ) );
                 const float TV( static_cast<float>(TILE_NUM / TEXTURE_TILE_COUNT_HORIZ) );
 
@@ -980,32 +990,23 @@ namespace map
 
     bool TileMap::IsPointWithinCollision(const sf::Vector2f & POS_V) const
     {
-        /*
-        for (auto const & NEXT_RECT: collisionsVec_)
-            if (NEXT_RECT.contains(POS_V))
-                return true;
-
-        return false;
-        */
         return collisionTree_.IsPointWithinCollisionRect(POS_V.x, POS_V.y);
     }
 
 
-    const TilesImageSPtr_t TileMap::GetTileImageFromId(const MapVal_t ID) const
+    const TileImage & TileMap::GetTileImageFromId(const MapVal_t ID) const
     {
-        TilesImageSPtr_t tiSPtr;
-
-        for (auto const & NEXT_TI_SPTR : tilesImageSVec_)
+        for (auto const & NEXT_TI : tilesImageVec_)
         {
-            if (NEXT_TI_SPTR->OwnsId(ID))
+            if (NEXT_TI.OwnsId(ID))
             {
-                tiSPtr = NEXT_TI_SPTR;
-                break;
+                return NEXT_TI;
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((tiSPtr->texture_sptr.get() != nullptr), "TileMap::GetTextureFromId(" << ID << ") failed to find an owning texture.");
-        return tiSPtr;
+        std::ostringstream ss;
+        ss << "sfml_util::map::TileMap::GetTileImageFromId(id=" << ID << ") failed to find the owning TileImage.";
+        throw std::runtime_error(ss.str());
     }
 
 
@@ -1016,12 +1017,8 @@ namespace map
         emptyRendText_.clear(sf::Color::Transparent);
         emptyRendText_.display();
 
-        TextureSPtr_t textureSPtr( new sf::Texture );
-        * textureSPtr = emptyRendText_.getTexture();
-
-        TilesImageSPtr_t tiSPtr( new TilesImage(TILES_IMAGE_NAME_EMPTY_, "", 0, 1, 1, textureSPtr) );
-
-        tilesImageSVec_.push_back(tiSPtr);
+        TileImage emptyTileImage(TILE_IMAGE_NAME_EMPTY_, "", 0, 1, 1, emptyRendText_.getTexture());
+        tilesImageVec_.push_back(emptyTileImage);
     }
 
 }

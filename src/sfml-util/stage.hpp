@@ -121,7 +121,7 @@ namespace sfml_util
 
         inline virtual void TestingStrAppend(const std::string &) {}
         inline virtual void TestingStrIncrement(const std::string &) {}
-        inline virtual void TestingImageSet(const sfml_util::TextureSPtr_t &) {}
+        inline virtual void TestingImageSet(const sf::Texture &) {}
         inline virtual void PerformNextTest() {}
 
     protected:

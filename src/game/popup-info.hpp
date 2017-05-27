@@ -65,7 +65,7 @@ namespace creature
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR         = sfml_util::PopupButtonColor::Dark,
                   const bool                              WILL_ADD_RAND_IMAGE  = true,
                   const std::vector<std::size_t> &        INVALID_NUM_VEC      = std::vector<std::size_t>(),
-                  const sfml_util::TextureSVec_t &        IMAGES_VEC           = sfml_util::TextureSVec_t(),
+                  const sfml_util::TextureVec_t &         TEXTURE_VEC          = sfml_util::TextureVec_t(),
                   const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_,
                   const creature::CreaturePtr_t           CREATURE_CPTR        = nullptr,
                   const std::size_t                       INITIAL_SELECTION    = 0);
@@ -85,7 +85,7 @@ namespace creature
         //use this constructor for image selection popups
         PopupInfo(const std::string &                     NAME,
                   const sfml_util::gui::TextInfo &        TEXT_INFO,
-                  const sfml_util::TextureSVec_t &        IMAGES_SVEC,
+                  const sfml_util::TextureVec_t &         TEXTURE_VEC,
                   const float                             IMAGE_SCALE,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR = sfml_util::PopupButtonColor::Dark);
@@ -114,7 +114,7 @@ namespace creature
         inline sfml_util::PopupButtonColor::Enum ButtonColor() const        { return buttonColor_; }
         inline bool                              WillAddRandImage() const   { return willAddRandImage_; }
         inline float                             ImageScale() const         { return imageScale_; }
-        inline const sfml_util::TextureSVec_t    Images() const             { return textureSVec_; }
+        inline const sfml_util::TextureVec_t &   Images() const             { return textureVec_; }
         inline std::size_t                       NumberSelMin() const       { return numberMin_; }
         inline std::size_t                       NumberSelMax() const       { return numberMax_; }
         inline const std::vector<std::size_t>    NumberSelInvVec() const    { return numberInvalidVec_; }
@@ -128,8 +128,6 @@ namespace creature
         inline static std::size_t ContentNum_MeteorShards()  { return 3; }
 
         bool IsNumberValid(const std::size_t) const;
-
-        friend bool operator==(const PopupInfo & L, const PopupInfo & R);
 
         const std::string ToStringShort(const bool WILL_WRAP = true) const;
         const std::string ToStringFull(const bool WILL_WRAP = true) const;
@@ -152,7 +150,7 @@ namespace creature
         sfml_util::PopupButtonColor::Enum buttonColor_;
         bool                              willAddRandImage_;
         float                             imageScale_;
-        sfml_util::TextureSVec_t          textureSVec_;
+        sfml_util::TextureVec_t           textureVec_;
         std::size_t                       numberMin_;
         std::size_t                       numberMax_;
         std::vector<std::size_t>          numberInvalidVec_;
@@ -161,13 +159,6 @@ namespace creature
         std::size_t                       initialSelection_;
     };
 
-
-    bool operator==(const PopupInfo & L, const PopupInfo & R);
-
-    inline bool operator!=(const PopupInfo & L, const PopupInfo & R)
-    {
-        return ! (L == R);
-    }
 
 }
 #endif //GAME_POPUPINFO_INCLUDED

@@ -97,9 +97,9 @@ namespace gui
         {
             auto const ENUM{ static_cast<game::spell::Spells::Enum>(spellIndex) };
             auto const ENUM_STR{ game::spell::Spells::ToString(ENUM) };
-            auto const TEXTURE_SPTR{ simPtr->Get(ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::SpellImageManager::Test()  Get(\"" << ENUM_STR << "\") returned a nullptr.");
-            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+            sf::Texture texture;
+            simPtr->Get(texture, ENUM);
+            game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrAppend("SpellImageManager Tested " + ENUM_STR);
             ++spellIndex;
             return false;
@@ -110,11 +110,9 @@ namespace gui
     }
 
 
-    sfml_util::TextureSPtr_t SpellImageManager::Get(const game::spell::Spells::Enum ENUM) const
+    void SpellImageManager::Get(sf::Texture & texture, game::spell::Spells::Enum ENUM) const
     {
-        sfml_util::TextureSPtr_t textureSPtr{ nullptr };
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, MakeFilepath(ENUM).string());
-        return textureSPtr;
+        sfml_util::LoadImageOrTexture(texture, MakeFilepath(ENUM).string());
     }
 
 

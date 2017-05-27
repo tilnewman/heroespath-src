@@ -55,7 +55,10 @@ namespace sfml_util
 
     bool operator==(const GradientInfo & L, const GradientInfo & R);
 
-    bool operator!=(const GradientInfo & L, const GradientInfo & R);
+    inline bool operator!=(const GradientInfo & L, const GradientInfo & R)
+    {
+        return ! (L == R);
+    }
 
 }
 #endif //SFMLUTIL_GRADIENTINFO_INCLUDED

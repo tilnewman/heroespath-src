@@ -32,6 +32,7 @@
 #include "misc/real.hpp"
 
 #include <string>
+#include <tuple>
 
 
 namespace sfml_util
@@ -130,19 +131,26 @@ namespace box
 
     bool operator==(const Info & L, const Info & R)
     {
-        return ((L.color_set == R.color_set) &&
-                (L.gold_bars == R.gold_bars) &&
-                (misc::IsRealClose(L.line_thickness, R.line_thickness) ) &&
-                (L.region == R.region) &&
-                (L.will_grow == R.will_grow) &&
-                (L.frame_lines == R.frame_lines) &&
-                (L.bg_info == R.bg_info));
-    }
-
-
-    bool operator!=(const Info & L, const Info & R)
-    {
-        return ! (L == R);
+        if (misc::IsRealClose(L.line_thickness, R.line_thickness) == false)
+        {
+            return false;
+        }
+        else
+        {
+            return std::tie(L.gold_bars,
+                            L.will_grow,
+                            L.frame_lines,
+                            L.color_set,
+                            L.region,
+                            L.bg_info)
+                   ==
+                   std::tie(R.gold_bars,
+                            R.will_grow,
+                            R.frame_lines,
+                            R.color_set,
+                            R.region,
+                            R.bg_info);
+        }
     }
 
 }

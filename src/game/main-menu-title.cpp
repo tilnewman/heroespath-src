@@ -28,7 +28,9 @@
 // main-menu-title.cpp
 //
 #include "main-menu-title.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 
@@ -41,10 +43,11 @@ namespace game
                                  const float         SYMBOL_SCALE_HORIZ,
                                  const float         SYMBOL_SCALE_VERT)
     :
-        symbolTextureSPtr_(),
-        symbolSprite_     (),
-        titleTextureSPtr_ (),
-        titleSprite_      ()
+        symbolTexture_(),
+        symbolSprite_ (),
+        titleTexture_ (),
+        titleSprite_  (),
+        willDrawTitle_(false)
     {
         Setup(TITLE_KEY_STR, WILL_INVERT_SYMBOL, SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
     }
@@ -60,17 +63,18 @@ namespace game
                               const float         SYMBOL_SCALE_VERT)
     {
         const std::string IMAGE_PATH_KEY((WILL_INVERT_SYMBOL) ? "media-images-gui-accents-symbol2-inv" : "media-images-gui-accents-symbol2");
-        sfml_util::LoadImageOrTextureSPtr<sfml_util::TextureSPtr_t>(symbolTextureSPtr_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));
+        sfml_util::LoadImageOrTexture<sf::Texture>(symbolTexture_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));
 
-        symbolTextureSPtr_->setSmooth(true);
-        symbolSprite_.setTexture( * symbolTextureSPtr_);
+        symbolTexture_.setSmooth(true);
+        symbolSprite_.setTexture( symbolTexture_);
 
         if (TITLE_IMAGE_FILENAME.empty() == false)
         {
+            willDrawTitle_ = true;
             const std::string TITLE_IMAGE_PATH(std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append(TITLE_IMAGE_FILENAME));
-            sfml_util::LoadImageOrTextureSPtr<sfml_util::TextureSPtr_t>(titleTextureSPtr_, TITLE_IMAGE_PATH);
-            titleTextureSPtr_->setSmooth(true);
-            titleSprite_.setTexture( * titleTextureSPtr_ );
+            sfml_util::LoadImageOrTexture<sf::Texture>(titleTexture_, TITLE_IMAGE_PATH);
+            titleTexture_.setSmooth(true);
+            titleSprite_.setTexture( titleTexture_ );
         }
 
         SetPositionAndSize(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
@@ -84,7 +88,7 @@ namespace game
         symbolSprite_.setScale(SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_HORIZ, SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_VERT);
         symbolSprite_.setPosition((sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (symbolSprite_.getGlobalBounds().width * 0.5f), sfml_util::MapByRes(10.0f, 30.0f));
 
-        if (titleTextureSPtr_.get() != nullptr)
+        if (willDrawTitle_)
         {
             const float TITLE_IMAGE_SCALE(sfml_util::MapByRes(1.0f, 3.25f));
             titleSprite_.setScale(TITLE_IMAGE_SCALE, TITLE_IMAGE_SCALE);
@@ -98,8 +102,10 @@ namespace game
     {
         target.draw(symbolSprite_, states);
 
-        if (titleTextureSPtr_.get() != nullptr)
+        if (willDrawTitle_)
+        {
             target.draw(titleSprite_, states);
+        }
     }
 
 }

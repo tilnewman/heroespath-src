@@ -155,7 +155,7 @@ namespace combat
         sf::Color                healthLineColor_;
         sf::Color                healthLineColorRed_;
         sf::Color                healthLineColorTick_;
-        sfml_util::TextureSPtr_t textureSPtr_;
+        sf::Texture              texture_;
         sf::Sprite               sprite_;
         sf::Color                creatureImageColor_;
         bool                     isSummaryView_;
@@ -163,7 +163,7 @@ namespace combat
         creature::CreaturePtr_t  creaturePtr_;
 
         //members that control the display of skull and crossbones
-        static sfml_util::TextureSPtr_t crossBonesTextureSPtr_;
+        static sf::Texture crossBonesTexture_;
         sf::Sprite crossBonesSprite_;
         bool willShowCrossBones_;
 
@@ -180,9 +180,9 @@ namespace combat
         bool isDead_;
 
         //members that control the flapping wing animation
-        static sfml_util::TextureSPtr_t       wingTextureSPtr_;
-        sf::Sprite                            wingSprite_;
-        bool                                  isFlying_;
+        static sf::Texture wingTexture_;
+        sf::Sprite         wingSprite_;
+        bool               isFlying_;
         sfml_util::sliders::ZeroSlider<float> wingFlapSlider_;
 
         //members that control the shake or image position offset

@@ -281,13 +281,11 @@ namespace sfml_util
     }
 
 
-    TextureSPtr_t FlipHorizCopy(const sf::Texture & TEXTURE)
+    void FlipHorizCopy(const sf::Texture & ORIG_TEXTURE, sf::Texture & resultTexture)
     {
-        sf::Image tempImage(TEXTURE.copyToImage());
+        sf::Image tempImage(ORIG_TEXTURE.copyToImage());
         tempImage.flipHorizontally();
-        TextureSPtr_t newTextureSPtr( new sf::Texture );
-        newTextureSPtr->loadFromImage(tempImage);
-        return newTextureSPtr;
+        resultTexture.loadFromImage(tempImage);
     }
 
 
@@ -299,13 +297,11 @@ namespace sfml_util
     }
 
 
-    TextureSPtr_t FlipVertCopy(const sf::Texture & TEXTURE)
+    void FlipVertCopy(const sf::Texture & ORIG_TEXTURE, sf::Texture & resultTexture)
     {
-        sf::Image tempImage(TEXTURE.copyToImage());
+        sf::Image tempImage(ORIG_TEXTURE.copyToImage());
         tempImage.flipVertically();
-        TextureSPtr_t newTextureSPtr( new sf::Texture );
-        newTextureSPtr->loadFromImage(tempImage);
-        return newTextureSPtr;
+        resultTexture.loadFromImage(tempImage);
     }
 
 

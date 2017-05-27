@@ -164,11 +164,11 @@ namespace sfml_util
     }
 
 
-    void Loop::TestingImageSet(const sfml_util::TextureSPtr_t & TEXTURE_SPTR)
+    void Loop::TestingImageSet(const sf::Texture & TEXTURE)
     {
         for (auto & nextStageSPtr : stageSVec_)
         {
-            nextStageSPtr->TestingImageSet(TEXTURE_SPTR);
+            nextStageSPtr->TestingImageSet(TEXTURE);
         }
     }
 

@@ -514,15 +514,20 @@ namespace stage
         sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec, RACE, ROLE, SEX);
 
         //load images
-        sfml_util::TextureSVec_t characterTextureSVec;
+        sfml_util::TextureVec_t characterTextureVec;
         for (auto const & NEXT_FILENAME_STR : characterImageFilenamesVec)
-            characterTextureSVec.push_back(sfml_util::gui::CreatureImageManager::Instance()->GetImage(NEXT_FILENAME_STR, true));
+        {
+            sf::Texture texture;
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, NEXT_FILENAME_STR, true);
+            texture.setSmooth(true);
+            characterTextureVec.push_back(texture);
+        }
 
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
         LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_IMAGE_SELECTION_,
                                                                                                                 ss.str(),
-                                                                                                                characterTextureSVec));
+                                                                                                                characterTextureVec));
 
         return true;
     }

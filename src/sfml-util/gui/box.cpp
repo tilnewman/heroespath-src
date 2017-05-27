@@ -74,10 +74,10 @@ namespace box
         rightLine_       (std::string(NAME).append("Box's_Right Line"), Orientation::Vert,  Side::Right, false),
         botLine_         (std::string(NAME).append("Box's_Bottom Line"), Orientation::Horiz,Side::Bottom,false),
         leftLine_        (std::string(NAME).append("Box's_Left Line"), Orientation::Vert,   Side::Left,  false),
-        cTopLeftSprite_  ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerTopLeft()),
-        cTopRightSprite_ ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerTopRight()),
-        cBotLeftSprite_  ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerBotLeft()),
-        cBotRightSprite_ ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerBotRight()),
+        cTopLeftSprite_  ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerTopLeft()),
+        cTopRightSprite_ ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerTopRight()),
+        cBotLeftSprite_  ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerBotLeft()),
+        cBotRightSprite_ ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCornerBotRight()),
         backgroundImage_ ()
     {
         SetupBox(BOX_INFO);

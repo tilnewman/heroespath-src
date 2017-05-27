@@ -75,22 +75,24 @@ namespace gui
         const std::string GetFilename(const game::creature::race::Enum         RACE,
                                       const game::creature::role::Enum         ROLE,
                                       const game::creature::sex::Enum          SEX,
-                                      const bool                                     WILL_PICK_RANDOM = true,
+                                      const bool                               WILL_PICK_RANDOM = true,
                                       const game::creature::wolfen_class::Enum WOLFEN_CLASS     = game::creature::wolfen_class::Pup,
                                       const game::creature::dragon_class::Enum DRAGON_CLASS     = game::creature::dragon_class::Hatchling) const;
 
-        const TextureSPtr_t GetImage(const game::creature::race::Enum         RACE,
-                                     const game::creature::role::Enum         ROLE,
-                                     const game::creature::sex::Enum          SEX              = game::creature::sex::Male,
-                                     const bool                                     WILL_PICK_RANDOM = true,
-                                     const bool                                     WILL_FACE_RIGHT  = false,
-                                     const game::creature::wolfen_class::Enum WOLFEN_CLASS     = game::creature::wolfen_class::Pup,
-                                     const game::creature::dragon_class::Enum DRAGON_CLASS     = game::creature::dragon_class::Hatchling) const;
+        void GetImage(sf::Texture & texture,
+                      const game::creature::race::Enum         RACE,
+                      const game::creature::role::Enum         ROLE,
+                      const game::creature::sex::Enum          SEX              = game::creature::sex::Male,
+                      const bool                               WILL_PICK_RANDOM = true,
+                      const bool                               WILL_FACE_RIGHT  = false,
+                      const game::creature::wolfen_class::Enum WOLFEN_CLASS     = game::creature::wolfen_class::Pup,
+                      const game::creature::dragon_class::Enum DRAGON_CLASS     = game::creature::dragon_class::Hatchling) const;
 
-        const TextureSPtr_t GetImage(const std::string & FILENAME,
-                                     const bool          WILL_FACE_RIGHT = false) const;
+        void GetImage(sf::Texture &       texture,
+                      const std::string & FILENAME,
+                      const bool          WILL_FACE_RIGHT = false) const;
 
-        void GetFilenames(std::vector<std::string> &                     outputVec,
+        void GetFilenames(std::vector<std::string> &               outputVec,
                           const game::creature::race::Enum         RACE,
                           const game::creature::role::Enum         ROLE,
                           const game::creature::sex::Enum          SEX,
@@ -98,9 +100,9 @@ namespace gui
                           const game::creature::dragon_class::Enum DRAGON_CLASS = game::creature::dragon_class::Hatchling) const;
 
     private:
-        //assumes there is no matching entry in textureMap_
-        TextureSPtr_t LoadImage(const std::string & IMAGE_FILE_NAME,
-                                const bool          WILL_FACE_RIGHT = false) const;
+        void LoadImage(sf::Texture &       texture,
+                       const std::string & IMAGE_FILE_NAME,
+                       const bool          WILL_FACE_RIGHT = false) const;
 
     private:
         static std::string imagesDirectoryPath_;

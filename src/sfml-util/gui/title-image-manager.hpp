@@ -68,14 +68,28 @@ namespace gui
         static void Release();
         static void SetTitleImageDirectory(const std::string & PATH);
 
-        inline static const std::string PlaceholderFileName()   { return "placeholder" + FileNameExt(); }
-        inline static float DimmensionMax()                     { return 256.0f; }
-        inline static const std::string FileNameExt()           { return ".png"; }
+        inline static const std::string PlaceholderFileName()
+        {
+            return "placeholder" + FileNameExt();
+        }
 
-        const TextureSPtr_t Get(game::creature::TitlePtr_t TITLE_PTR) const;
+        inline static float DimmensionMax()
+        {
+            return 256.0f;
+        }
+
+        inline static const std::string FileNameExt()
+        {
+            return ".png";
+        }
+
+        void Get(sf::Texture & texture, game::creature::TitlePtr_t TITLE_PTR) const;
 
         //this function will throw if the given enum is invalid
-        inline const TextureSPtr_t Get(const game::creature::Titles::Enum E) const { return Get(game::creature::title::Warehouse::Get(E)); }
+        inline void Get(sf::Texture & t, game::creature::Titles::Enum E) const
+        {
+            Get(t, game::creature::title::Warehouse::Get(E));
+        }
 
     private:
         static std::string imagesDirectoryPath_;

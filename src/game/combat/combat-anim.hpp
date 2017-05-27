@@ -183,7 +183,7 @@ namespace combat
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
         //members supporting the Projectile Shoot Animation
-        sfml_util::TextureSPtr_t projAnimTextureSPtr_;
+        sf::Texture projAnimTexture_;
         sf::Sprite projAnimSprite_;
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;

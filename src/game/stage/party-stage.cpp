@@ -96,7 +96,8 @@ namespace stage
         mouseOverPosV_          (),
         mouseOverSprite_        (),
         mouseOverCharSPtr_      (),
-        mouseOverTextureSPtr_   (),
+        mouseOverTexture_       (),
+        isMouseOverTexture_     (false),
         mouseOverTextRegionSPtr_(),
         mouseOverSlider_        (4.0f)
     {}
@@ -463,7 +464,7 @@ namespace stage
             target.draw(*warningTextRegionSPtr_, STATES);
         }
 
-        if (willShowMouseOverPopup_ && (mouseOverTextureSPtr_.get() != nullptr))
+        if (willShowMouseOverPopup_ && isMouseOverTexture_)
         {
             target.draw(mouseOverQuad_, STATES);
             target.draw(mouseOverSprite_, STATES);
@@ -522,7 +523,7 @@ namespace stage
         }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
-        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) && (mouseOverTextureSPtr_.get() == nullptr))
+        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) && (false == isMouseOverTexture_))
         {
             sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
 
@@ -537,10 +538,11 @@ namespace stage
 
                 mouseOverSlider_.Reset(MOUSE_OVER_SLIDER_SPEED_);
 
-                mouseOverTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(itemSPtr->character_sptr->ImageFilename());
-                mouseOverTextureSPtr_->setSmooth(true);
-                mouseOverSprite_.setTexture( * mouseOverTextureSPtr_ );
-                mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(mouseOverTextureSPtr_->getSize().x), static_cast<int>(mouseOverTextureSPtr_->getSize().y)) );
+                sfml_util::gui::CreatureImageManager::Instance()->GetImage(mouseOverTexture_, itemSPtr->character_sptr->ImageFilename());
+                isMouseOverTexture_ = true;
+                mouseOverTexture_.setSmooth(true);
+                mouseOverSprite_.setTexture(mouseOverTexture_ );
+                mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(mouseOverTexture_.getSize().x), static_cast<int>(mouseOverTexture_.getSize().y)) );
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
                 mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_ + sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() + game::creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);
@@ -548,7 +550,7 @@ namespace stage
             }
         }
 
-        if (mouseOverTextureSPtr_.get() != nullptr)
+        if (isMouseOverTexture_)
         {
             const float RATIO(mouseOverSlider_.Update(ELAPSED_TIME_SECONDS));
 
@@ -681,7 +683,7 @@ namespace stage
     void PartyStage::ResetMouseOverPopupState()
     {
         mouseOverPopupTimerSec_ = 0.0f;
-        mouseOverTextureSPtr_.reset();
+        isMouseOverTexture_ = false;
         mouseOverTextRegionSPtr_.reset();
     }
 

@@ -42,7 +42,7 @@ namespace sfml_util
 namespace gui
 {
 
-    //Loads images and delivers sfml_util::TextureSPtr_ts to them on demand.
+    //Loads images and delivers sf::Textures to them on demand.
     class ConditionImageManager
     {
         //prevent copy construction
@@ -59,11 +59,19 @@ namespace gui
         static void Acquire();
         static void Release();
 
-        inline static void SetImagesDirectory(const std::string & S)    { conditionImagesDirectory_ = S; }
-        inline static float Dimmension()                                { return 256.0f; }
+        inline static void SetImagesDirectory(const std::string & S)
+        {
+            conditionImagesDirectory_ = S;
+        }
+
+        inline static float Dimmension()
+        {
+            return 256.0f;
+        }
+
         static bool Test();
 
-        sfml_util::TextureSPtr_t Get(const game::creature::Conditions::Enum) const;
+        void Get(sf::Texture & texture, game::creature::Conditions::Enum) const;
 
     private:
         const std::string MakeFilename(const game::creature::Conditions::Enum) const;

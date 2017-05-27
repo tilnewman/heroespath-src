@@ -137,7 +137,8 @@ namespace stage
         sf::Vector2f    mouseOverPosV_;
         sf::Sprite      mouseOverSprite_;
         player::CharacterSPtr_t mouseOverCharSPtr_;
-        sfml_util::TextureSPtr_t mouseOverTextureSPtr_;
+        sf::Texture     mouseOverTexture_;
+        bool isMouseOverTexture_;
         sfml_util::gui::TextRegionSPtr_t mouseOverTextRegionSPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
     };

@@ -47,6 +47,7 @@
 #include "game/spell/spells.hpp"
 
 #include <vector>
+#include <algorithm>
 
 
 namespace sfml_util
@@ -235,7 +236,9 @@ namespace gui
                 rect.width = entityRegion_.width;
 
                 if (IMAGE_MAP_CITER != imageMap_.end())
+                {
                     rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
+                }
 
                 sfml_util::DrawRectangle<float>(target, states, rect, sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
             }
@@ -250,7 +253,9 @@ namespace gui
                 rect.width = entityRegion_.width;
 
                 if (IMAGE_MAP_CITER != imageMap_.end())
+                {
                     rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
+                }
 
                 sfml_util::DrawRectangle<float>(target, states, rect, sf::Color::Transparent, 0, highlightColor_);
             }
@@ -557,13 +562,19 @@ namespace gui
         const float DIFF_VERT(POS_TOP - GetEntityPos().y);
 
         for (auto & NEXT_ITEM_SPTR : list_)
+        {
             NEXT_ITEM_SPTR->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+        }
 
         for (auto & NEXT_IMAGE_PAIR : imageMap_)
+        {
             NEXT_IMAGE_PAIR.second.second.move(DIFF_HORIZ, DIFF_VERT);
+        }
 
         if (boxSPtr_.get() != nullptr)
+        {
             boxSPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+        }
 
         GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
     }
@@ -720,38 +731,48 @@ namespace gui
                                                    const bool                          IS_SELECTED_ITEM)
     {
         float newPosLeft(POS_LEFT_ORIG);
-        sfml_util::TextureSPtr_t textureSPtr;
+        sf::Texture texture;
+        auto didLoadTexture{ false };
 
         if (listBoxItemSPtr->iitem_sptr.get() != nullptr)
         {
-            textureSPtr = sfml_util::gui::ItemImageManager::Instance()->Load(listBoxItemSPtr->iitem_sptr);
+            sfml_util::gui::ItemImageManager::Instance()->Load(texture, listBoxItemSPtr->iitem_sptr);
+            didLoadTexture = true;
         }
         else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)
         {
-            textureSPtr = sfml_util::gui::TitleImageManager::Instance()->Get(listBoxItemSPtr->TITLE_CPTRC);
+            sfml_util::gui::TitleImageManager::Instance()->Get(texture, listBoxItemSPtr->TITLE_CPTRC);
+            didLoadTexture = true;
         }
         else if (listBoxItemSPtr->character_sptr.get() != nullptr)
         {
-            textureSPtr = sfml_util::gui::CreatureImageManager::Instance()->GetImage(listBoxItemSPtr->character_sptr->ImageFilename(), true);
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, listBoxItemSPtr->character_sptr->ImageFilename(), true);
+            didLoadTexture = true;
         }
         else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
         {
-            textureSPtr = sfml_util::gui::SpellImageManager::Instance()->Get(listBoxItemSPtr->SPELL_CPTRC->Which());
+            sfml_util::gui::SpellImageManager::Instance()->Get(texture, listBoxItemSPtr->SPELL_CPTRC->Which());
+            didLoadTexture = true;
         }
         else if (listBoxItemSPtr->COND_CPTRC != nullptr)
         {
-            textureSPtr = sfml_util::gui::ConditionImageManager::Instance()->Get(listBoxItemSPtr->COND_CPTRC->Which());
+            sfml_util::gui::ConditionImageManager::Instance()->Get(texture, listBoxItemSPtr->COND_CPTRC->Which());
+            didLoadTexture = true;
         }
 
-        if (textureSPtr.get() != nullptr)
+        if (didLoadTexture)
         {
-            textureSPtr->setSmooth(true);
-            sf::Sprite sprite( * textureSPtr);
+            texture.setSmooth(true);
+            sf::Sprite sprite(texture);
 
             if (IS_SELECTED_ITEM)
+            {
                 sprite.setColor(sf::Color::White);
+            }
             else
+            {
                 sprite.setColor(imageColor_);
+            }
 
             if (sprite.getLocalBounds().width > sprite.getLocalBounds().height)
             {
@@ -768,7 +789,8 @@ namespace gui
             const float SPRITE_POS_TOP((POS_TOP + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().height * 0.5f));
             sprite.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
 
-            imageMap_[listBoxItemSPtr] = std::make_pair(textureSPtr, sprite);
+            imageMap_[listBoxItemSPtr] = std::make_pair(texture, sprite);
+            imageMap_[listBoxItemSPtr].second.setTexture(imageMap_[listBoxItemSPtr].first);
             const float POS_LEFT_ADJ(imageSize_ + IMAGE_HORIZ_PAD_);
             newPosLeft += POS_LEFT_ADJ;
 

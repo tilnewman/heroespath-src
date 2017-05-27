@@ -86,7 +86,7 @@ namespace combat
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
         BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
         slider_                          (1.0f), //any value greater than zero will work temporarily here
-        projAnimTextureSPtr_             (),
+        projAnimTexture_                 (),
         projAnimSprite_                  (),
         projAnimBeginPosV_               (0.0f, 0.0f),
         projAnimEndPosV_                 (0.0f, 0.0f),
@@ -130,7 +130,7 @@ namespace combat
 
     void CombatAnimation::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        if (projAnimTextureSPtr_.get() != nullptr)
+        if (projAnimWillSpin_)
         {
             const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
             states.blendMode = sf::BlendAdd;
@@ -189,9 +189,9 @@ namespace combat
 
 
     void CombatAnimation::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-                                              creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                              const item::ItemSPtr_t &  WEAPON_SPTR,
-                                              const bool                WILL_HIT)
+                                                   creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+                                                   const item::ItemSPtr_t &  WEAPON_SPTR,
+                                                   const bool                WILL_HIT)
     {
         projAnimWillSpin_ = ! WILL_HIT;
 
@@ -216,7 +216,7 @@ namespace combat
         }
 
         //load the projectile image
-        sfml_util::LoadImageOrTextureSPtr(projAnimTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
+        sfml_util::LoadImageOrTexture(projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
         //establish the creature positions
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
@@ -238,7 +238,7 @@ namespace combat
             }
         }
 
-        projAnimSprite_.setTexture( * projAnimTextureSPtr_, true);
+        projAnimSprite_.setTexture(projAnimTexture_, true);
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
 
         //scale the sprite down to a reasonable size
@@ -300,7 +300,7 @@ namespace combat
 
     void CombatAnimation::ProjectileShootAnimStop()
     {
-        projAnimTextureSPtr_.reset();
+        projAnimWillSpin_ = false;
     }
 
 

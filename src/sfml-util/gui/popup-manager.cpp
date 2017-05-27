@@ -58,14 +58,14 @@ namespace gui
 
     PopupManager::PopupManager()
     :
-        BACKGROUND_IMAGE_SCALE_DEFAULT_ (sfml_util::MapByRes(0.05f, 6.666f)),
-        popupBannerTextureSPtr_         (),
-        popupRegularTextureSPtr_        (),
-        popupRegularSidebarTextureSPtr_ (),
-        popupLargeTextureSPtr_          (),
-        popupLargeSidebarTextueSPtr_    (),
-        popupSpellbookTextureSPtr_      (),
-        accentPathsVec_                 ()
+        BACKGROUND_IMAGE_SCALE_DEFAULT_(sfml_util::MapByRes(0.05f, 6.666f)),
+        popupBannerTexture_            (),
+        popupRegularTexture_           (),
+        popupRegularSidebarTexture_    (),
+        popupLargeTexture_             (),
+        popupLargeSidebarTextue_       (),
+        popupSpellbookTexture_         (),
+        accentPathsVec_                ()
     {
         fontColor_ = sfml_util::FontManager::Instance()->Color_GrayDarker();
     }
@@ -121,23 +121,23 @@ namespace gui
 
     void PopupManager::LoadAssets()
     {
-        LoadPopup("paper-banner.png", popupBannerTextureSPtr_);
-        LoadPopup("paper-regular.png", popupRegularTextureSPtr_);
-        LoadPopup("paper-regular-bar.png", popupRegularSidebarTextureSPtr_);
-        LoadPopup("paper-large.png", popupLargeTextureSPtr_);
-        LoadPopup("paper-large-bar.png", popupLargeSidebarTextueSPtr_);
-        LoadPopup("spellbook.png", popupSpellbookTextureSPtr_);
+        LoadPopup("paper-banner.png", popupBannerTexture_);
+        LoadPopup("paper-regular.png", popupRegularTexture_);
+        LoadPopup("paper-regular-bar.png", popupRegularSidebarTexture_);
+        LoadPopup("paper-large.png", popupLargeTexture_);
+        LoadPopup("paper-large-bar.png", popupLargeSidebarTextue_);
+        LoadPopup("spellbook.png", popupSpellbookTexture_);
 
         LoadAccentImagePaths();
     }
 
 
     void PopupManager::LoadPopup(const std::string & WINDOW_FILE_NAME,
-                                 TextureSPtr_t &     textureSPtr) const
+                                 sf::Texture &       texture) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) / bfs::path(WINDOW_FILE_NAME)));
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
+        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
     }
 
 
@@ -216,15 +216,15 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
-                                                        const std::string &              PROMPT_TEXT,
-                                                        const sfml_util::TextureSVec_t & IMAGES_SVEC,
-                                                        const sound_effect::Enum         SOUND_EFFECT,
-                                                        const unsigned int               FONT_SIZE)
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &             POPUP_NAME,
+                                                        const std::string &             PROMPT_TEXT,
+                                                        const sfml_util::TextureVec_t & TEXTURE_VEC,
+                                                        const sound_effect::Enum        SOUND_EFFECT,
+                                                        const unsigned int              FONT_SIZE)
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
-                               IMAGES_SVEC,
+                               TEXTURE_VEC,
                                BACKGROUND_IMAGE_SCALE_DEFAULT_,
                                SOUND_EFFECT);
     }
@@ -262,17 +262,17 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &              POPUP_NAME,
-                                                        const std::string &              PROMPT_TEXT,
-                                                        const sfml_util::TextureSPtr_t & FROM_IMAGE,
-                                                        const sfml_util::TextureSPtr_t & TO_IMAGE,
-                                                        const PopupButtons::Enum         BUTTONS,
-                                                        const unsigned int               FONT_SIZE,
-                                                        const sound_effect::Enum         SOUND_EFFECT)
+    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &      POPUP_NAME,
+                                                        const std::string &      PROMPT_TEXT,
+                                                        const sf::Texture &      FROM_IMAGE,
+                                                        const sf::Texture &      TO_IMAGE,
+                                                        const PopupButtons::Enum BUTTONS,
+                                                        const unsigned int       FONT_SIZE,
+                                                        const sound_effect::Enum SOUND_EFFECT)
     {
-        sfml_util::TextureSVec_t textureSVec;
-        textureSVec.push_back(FROM_IMAGE);
-        textureSVec.push_back(TO_IMAGE);
+        sfml_util::TextureVec_t textureVec;
+        textureVec.push_back(FROM_IMAGE);
+        textureVec.push_back(TO_IMAGE);
 
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
@@ -284,7 +284,7 @@ namespace gui
                                sfml_util::PopupButtonColor::Dark,
                                true,
                                std::vector<std::size_t>(),
-                               textureSVec,
+                               textureVec,
                                100.0f);
     }
 
@@ -303,23 +303,23 @@ namespace gui
                                sfml_util::PopupButtonColor::Dark,
                                false,
                                std::vector<std::size_t>(),
-                               sfml_util::TextureSVec_t(),
+                               sfml_util::TextureVec_t(),
                                game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
                                CREATURE_CPTR,
                                INITIAL_SELECTION);
     }
 
 
-    TextureSPtr_t PopupManager::Texture(const PopupImage::Enum PI) const
+    void PopupManager::Texture(const PopupImage::Enum PI, sf::Texture & texture) const
     {
         switch (PI)
         {
-            case PopupImage::Banner:         { return Texture_Banner(); }
-            case PopupImage::Regular:        { return Texture_Regular(); }
-            case PopupImage::RegularSidebar: { return Texture_RegularSidebar(); }
-            case PopupImage::Large:          { return Texture_Large(); }
-            case PopupImage::LargeSidebar:   { return Texture_LargeSidebar(); }
-            case PopupImage::Spellbook:      { return Texture_Spellbook(); }
+            case PopupImage::Banner:         { Texture_Banner(texture); break; }
+            case PopupImage::Regular:        { Texture_Regular(texture); break; }
+            case PopupImage::RegularSidebar: { Texture_RegularSidebar(texture); break; }
+            case PopupImage::Large:          { Texture_Large(texture); break; }
+            case PopupImage::LargeSidebar:   { Texture_LargeSidebar(texture); break; }
+            case PopupImage::Spellbook:      { Texture_Spellbook(texture); break; }
             case PopupImage::Custom:
             case PopupImage::Count:
             default:
@@ -377,11 +377,12 @@ namespace gui
         }
         else if (POPUP_INFO.Image() == sfml_util::PopupImage::Spellbook)
         {
-            sfml_util::TextureSPtr_t backgroundTextureSPtr( Texture(POPUP_INFO.Image()) );
+            sf::Texture backgroundTexture;
+            Texture(POPUP_INFO.Image(), backgroundTexture);
 
             //define the outer limits of the stage
             auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
-            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTextureSPtr->getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(backgroundTextureSPtr->getSize().x) };
+            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
 
             sf::FloatRect rect;
             rect.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
@@ -394,17 +395,18 @@ namespace gui
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         backgroundTextureSPtr) );
+                                                                         backgroundTexture) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
         else
         {
-            sfml_util::TextureSPtr_t backgroundTextureSPtr( Texture(POPUP_INFO.Image()) );
+            sf::Texture backgroundTexture;
+            Texture(POPUP_INFO.Image(), backgroundTexture);
 
             //define the outer limits of the stage
-            const float TEXTURE_WIDTH (static_cast<float>(backgroundTextureSPtr->getSize().x));
-            const float TEXTURE_HEIGHT(static_cast<float>(backgroundTextureSPtr->getSize().y));
+            const float TEXTURE_WIDTH (static_cast<float>(backgroundTexture.getSize().x));
+            const float TEXTURE_HEIGHT(static_cast<float>(backgroundTexture.getSize().y));
 
             sf::FloatRect rect;
             rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (TEXTURE_WIDTH * 0.5f);
@@ -417,26 +419,23 @@ namespace gui
             auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
                                                                          rect,
                                                                          INNER_RECT,
-                                                                         backgroundTextureSPtr) );
+                                                                         backgroundTexture) );
             popupStageSPtr->Setup();
             return popupStageSPtr;
         }
     }
 
 
-    TextureSPtr_t PopupManager::LoadRandomAccentImage() const
+    void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
-        TextureSPtr_t tempTextureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(tempTextureSPtr, accentPathsVec_.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
+        sfml_util::LoadImageOrTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
 
         if (misc::random::Bool())
         {
-            sfml_util::FlipHoriz(*tempTextureSPtr);
+            sfml_util::FlipHoriz(texture);
         }
 
-        tempTextureSPtr->setSmooth(true);
-
-        return tempTextureSPtr;
+        texture.setSmooth(true);
     }
 
 

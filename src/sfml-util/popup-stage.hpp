@@ -103,7 +103,7 @@ namespace sfml_util
         PopupStage(const game::PopupInfo & POPUP_INFO,
                    const sf::FloatRect &   REGION,
                    const sf::FloatRect &   INNER_REGION,
-                   const TextureSPtr_t &   BG_TEXTURE_SPTR = TextureSPtr_t());
+                   const sf::Texture &     BG_TEXTURE = sf::Texture());
 
         virtual ~PopupStage();
 
@@ -150,7 +150,7 @@ namespace sfml_util
         //
         const game::PopupInfo    POPUP_INFO_;
         sf::Sprite               backgroundSprite_;
-        TextureSPtr_t            backgroundTextureSPtr_;
+        sf::Texture              backgroundTexture_;
         const sf::FloatRect      INNER_REGION_;
         gui::TextRegionSPtr_t    textRegionSPtr_;
         sf::FloatRect            textRegion_;
@@ -159,9 +159,9 @@ namespace sfml_util
         gui::box::Box            box_;
         GradientRect             gradient_;
         sf::Sprite               accentSprite1_;
-        TextureSPtr_t            accentTexture1SPtr_;
+        sf::Texture              accentTexture1_;
         sf::Sprite               accentSprite2_;
-        TextureSPtr_t            accentTexture2SPtr_;
+        sf::Texture              accentTexture2_;
         PopupButton_SelectSPtr_t selectPopupButtonSPtr_;
 
         //members supporting the image select sliderbar
@@ -198,13 +198,13 @@ namespace sfml_util
 
         //members used to fade two images
         //imageSpritePrev_ and imageSpriteCurr_ are used to display the two fading images
-        //POPUP_INFO_.Images() holds the two sfml_util::TextureSPtr_ts of the two fading images
+        //POPUP_INFO_.Images() holds the two sf::Textures of the two fading images
         float beforeFadeTimerSec_;
         float fadeAlpha_;
 
         //members supporting the spellbook popup
         SpellbookState          spellbookState_;
-        TextureSPtr_t           playerTextureSPtr_;
+        sf::Texture             playerTexture_;
         sf::Sprite              playerSprite_;
         sf::FloatRect           pageRectLeft_;
         sf::FloatRect           pageRectRight_;
@@ -218,7 +218,7 @@ namespace sfml_util
         const gui::ColorSet     LISTBOX_COLORSET_;
         gui::BackgroundInfo     LISTBOX_BG_INFO_;
         gui::TextInfo           listBoxItemTextInfo_;
-        TextureSPtr_t           spellTextureSPtr_;
+        sf::Texture             spellTexture_;
         sf::Sprite              spellSprite_;
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
         gui::TextRegionUPtr_t   spellDetailsTextUPtr_;

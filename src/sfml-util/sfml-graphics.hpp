@@ -44,6 +44,7 @@
 
 #include <memory>
 #include <vector>
+#include <list>
 
 
 namespace sfml_util
@@ -52,9 +53,8 @@ namespace sfml_util
     using ImageSPtr_t = std::shared_ptr<sf::Image>;
     using ImageSVec_t = std::vector<ImageSPtr_t>;
     //
-    using TextureVec_t  = std::vector<sf::Texture>;
-    using TextureSPtr_t = std::shared_ptr<sf::Texture>;
-    using TextureSVec_t = std::vector<TextureSPtr_t>;
+    using TextureVec_t = std::vector<sf::Texture>;
+    using TextureLst_t = std::list<sf::Texture>;
     //
     using SpriteVec_t = std::vector<sf::Sprite>;
     //

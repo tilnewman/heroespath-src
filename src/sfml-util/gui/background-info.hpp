@@ -56,7 +56,7 @@ namespace gui
                                 const GradientInfo & GRADIENT_INFO = GradientInfo());
 
         //use this constructor when the sf::Texture of the background image already exists
-        explicit BackgroundInfo(const TextureSPtr_t & TEXTURESPTR,
+        explicit BackgroundInfo(const sf::Texture &   TEXTURE,
                                 const sf::FloatRect & REGION        = sf::FloatRect(),
                                 const sf::Color &     COLOR         = sf::Color::White,
                                 const GradientInfo &  GRADIENT_INFO = GradientInfo());
@@ -71,17 +71,20 @@ namespace gui
         inline bool IsValid() const { return ((region.width > 0.0f) && (region.height > 0.0f)); }
 
         sf::FloatRect region;
-        TextureSPtr_t textureSPtr;
+        sf::Texture   texture;
         sf::Color     color;
         std::string   path;
         GradientInfo  gradient_info;
+        bool          hasTexture;
     };
+
 
     bool operator==(const BackgroundInfo & L, const BackgroundInfo & R);
 
-    bool operator!=(const BackgroundInfo & L, const BackgroundInfo & R);
-
-    using BackgroundInfoSPtr_t = std::shared_ptr<BackgroundInfo>;
+    inline bool operator!=(const BackgroundInfo & L, const BackgroundInfo & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

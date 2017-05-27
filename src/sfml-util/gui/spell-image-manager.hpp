@@ -42,7 +42,7 @@ namespace sfml_util
 namespace gui
 {
 
-    //Loads images and delivers sfml_util::TextureSPtr_ts to them on demand.
+    //Loads images and delivers sf::Textures to them on demand.
     class SpellImageManager
     {
         //prevent copy construction
@@ -63,7 +63,7 @@ namespace gui
         inline static float Dimmension()                                { return 256.0f; }
         static bool Test();
 
-        sfml_util::TextureSPtr_t Get(const game::spell::Spells::Enum) const;
+        void Get(sf::Texture & texture, game::spell::Spells::Enum) const;
 
     private:
         const std::string MakeFilename(const game::spell::Spells::Enum) const;

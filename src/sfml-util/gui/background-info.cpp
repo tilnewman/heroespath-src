@@ -30,6 +30,7 @@
 #include "background-info.hpp"
 
 #include <string>
+#include <tuple>
 
 
 namespace sfml_util
@@ -40,10 +41,11 @@ namespace gui
     BackgroundInfo::BackgroundInfo()
     :
         region       (sf::FloatRect()),
-        textureSPtr  (),
+        texture      (),
         color        (sf::Color::Transparent),
         path         (""),
-        gradient_info()
+        gradient_info(),
+        hasTexture   (false)
     {}
 
 
@@ -51,23 +53,25 @@ namespace gui
                                    const GradientInfo & GRADIENT_INFO)
     :
         region       (sf::FloatRect()),
-        textureSPtr  (),
+        texture      (),
         color        (FILL_COLOR),
         path         (""),
-        gradient_info(GRADIENT_INFO)
+        gradient_info(GRADIENT_INFO),
+        hasTexture   (false)
     {}
 
 
-    BackgroundInfo::BackgroundInfo( const TextureSPtr_t & TEXTURESPTR,
+    BackgroundInfo::BackgroundInfo( const sf::Texture &   TEXTURE,
                                     const sf::FloatRect & REGION,
                                     const sf::Color &     COLOR,
                                     const GradientInfo &  GRADIENT_INFO )
     :
         region       (REGION),
-        textureSPtr  (TEXTURESPTR),
+        texture      (TEXTURE),
         color        (COLOR),
         path         (""),
-        gradient_info(GRADIENT_INFO)
+        gradient_info(GRADIENT_INFO),
+        hasTexture   (true)
     {}
 
 
@@ -77,26 +81,29 @@ namespace gui
                                     const GradientInfo &  GRADIENT_INFO)
     :
         region       (REGION),
-        textureSPtr  (),
+        texture      (),
         color        (COLOR),
         path         (TEXTURE_PATH),
-        gradient_info(GRADIENT_INFO)
+        gradient_info(GRADIENT_INFO),
+        hasTexture   (false)
     {}
 
 
     bool operator==(const BackgroundInfo & L, const BackgroundInfo & R)
     {
-        return ((L.region == R.region) &&
-                (L.textureSPtr.get() == R.textureSPtr.get()) &&
-                (L.color == R.color) &&
-                (L.path == R.path) &&
-                (L.gradient_info == R.gradient_info));
-    }
-
-
-    bool operator!=(const BackgroundInfo & L, const BackgroundInfo & R)
-    {
-        return ! (L == R);
+        return std::tie(L.region,
+                        //L.texture,
+                        L.color,
+                        L.path,
+                        L.gradient_info,
+                        L.hasTexture)
+                ==
+               std::tie(R.region,
+                        //R.texture,
+                        R.color,
+                        R.path,
+                        R.gradient_info,
+                        R.hasTexture);
     }
 
 }

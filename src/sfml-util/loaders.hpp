@@ -53,28 +53,14 @@ namespace sfml_util
         const bfs::path   PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
         const std::string PATH_OBJ_STR( PATH_OBJ.string() );
 
-        //check if the path even exists
+        //check if the path exists
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ), "LoadImageOrTexture(\"" << PATH_OBJ_STR << "\") failed because that file does not exist!");
 
-        //ignore subdirectories, etc.
+        //ignore subdirectories, irregulare files, etc.
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ), "LoadImageOrTexture(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file!");
 
         //verify the load()
         M_ASSERT_OR_LOGANDTHROW_SS(imageOrTexture.loadFromFile(PATH_OBJ_STR.c_str()), "During LoadImageOrTexture(), sf::(Image or Texture).loadFromFile(\"" << PATH_OBJ_STR << "\") failed!  Check console output for information.");
-
-        //std::cout << "LoadImageOrTexture \"" << PATH_OBJ_STR << "\"" << std::endl;
-    }
-
-
-    //ImageOrTextureSPtr_t must be ImageSPtr_t or TextureSPtr_t.
-    template<typename ImageOrTextureSPtr_t>
-    void LoadImageOrTextureSPtr(ImageOrTextureSPtr_t &  imageOrTextureSPtr,
-                                const std::string &     PATH_STR)
-    {
-        if (nullptr == imageOrTextureSPtr.get())
-            imageOrTextureSPtr.reset( new typename ImageOrTextureSPtr_t::element_type);
-
-        LoadImageOrTexture( * imageOrTextureSPtr, PATH_STR);
     }
 
 

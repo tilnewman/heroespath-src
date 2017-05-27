@@ -147,8 +147,8 @@ namespace gui
     {
         auto const GE_PTR{ GuiElements::Instance() };
 
-        guiImage_.GetUpSprite().setTexture( * GE_PTR->GetTexture());
-        guiImage_.GetDownSprite().setTexture( * GE_PTR->GetTexture());
+        guiImage_.GetUpSprite().setTexture(GE_PTR->GetTexture());
+        guiImage_.GetDownSprite().setTexture(GE_PTR->GetTexture());
 
         switch (BRIGHTNESS)
         {

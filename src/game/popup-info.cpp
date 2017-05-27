@@ -56,7 +56,7 @@ namespace game
                          const sfml_util::PopupButtonColor::Enum BUTTON_COLOR,
                          const bool                              WILL_ADD_RAND_IMAGE,
                          const std::vector<std::size_t> &        INVALID_CHAR_NUM_VEC,
-                         const sfml_util::TextureSVec_t &        IMAGES_VEC,
+                         const sfml_util::TextureVec_t &         TEXTURE_VEC,
                          const float                             IMAGE_FADE_SPEED,
                          const creature::CreaturePtr_t           CREATURE_CPTR,
                          const std::size_t                       INITIAL_SELECTION)
@@ -73,7 +73,7 @@ namespace game
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(WILL_ADD_RAND_IMAGE),
         imageScale_      (IMAGE_SCALE),
-        textureSVec_     (IMAGES_VEC),
+        textureVec_      (TEXTURE_VEC),
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(INVALID_CHAR_NUM_VEC),
@@ -82,7 +82,7 @@ namespace game
         initialSelection_(INITIAL_SELECTION)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupButtons::IsValid(BUTTONS)), "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given a BUTTONS value of " << BUTTONS << ", which is invalid.");
-        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),           "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
+        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),           "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupImage::IsValid(IMAGE)),     "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
         if ((game::Popup::Spellbook == type_) && (creatureCPtr_ == nullptr))
@@ -90,15 +90,17 @@ namespace game
             throw std::runtime_error("game::PopupInfo(type=Spellbook) constructor found spellbook popup with a creaturePtr that was null.");
         }
 
-        if ((imageFadeSpeed_ > 0.0f) && (textureSVec_.empty()))
+        if ((imageFadeSpeed_ > 0.0f) && (textureVec_.empty()))
         {
             std::ostringstream ss;
-            ss << "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an image fade speed of " << IMAGE_FADE_SPEED << " but there were no images in IMAGES_VEC, which makes no sense.  If there is a fade speed then there must be images to fade-in.";
+            ss << "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an image fade speed of " << IMAGE_FADE_SPEED << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade speed then there must be images to fade-in.";
             throw std::runtime_error(ss.str());
         }
 
         if (IMAGE == sfml_util::PopupImage::Banner)
+        {
             willAddRandImage_ = false;
+        }
     }
 
 
@@ -125,7 +127,7 @@ namespace game
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(WILL_ADD_RAND_IMAGE),
         imageScale_      (1.0f),
-        textureSVec_     (),
+        textureVec_      (),
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(),
@@ -137,7 +139,7 @@ namespace game
 
     PopupInfo::PopupInfo(const std::string &                     NAME,
                          const sfml_util::gui::TextInfo &        TEXT_INFO,
-                         const sfml_util::TextureSVec_t &        IMAGES_SVEC,
+                         const sfml_util::TextureVec_t &         TEXTURE_VEC,
                          const float                             IMAGE_SCALE,
                          const sfml_util::sound_effect::Enum     SOUND_EFFECT,
                          const sfml_util::PopupButtonColor::Enum BUTTON_COLOR)
@@ -154,7 +156,7 @@ namespace game
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(false),
         imageScale_      (IMAGE_SCALE),
-        textureSVec_     (IMAGES_SVEC),
+        textureVec_      (TEXTURE_VEC),
         numberMin_       (0),
         numberMax_       (0),
         numberInvalidVec_(),
@@ -182,7 +184,7 @@ namespace game
         buttonColor_     (sfml_util::PopupButtonColor::Dark),
         willAddRandImage_(true),
         imageScale_      (IMAGE_SCALE),
-        textureSVec_     (),
+        textureVec_      (),
         numberMin_       (THE_MIN),
         numberMax_       (THE_MAX),
         numberInvalidVec_(),
@@ -210,7 +212,7 @@ namespace game
         buttonColor_     (PI.buttonColor_),
         willAddRandImage_(PI.willAddRandImage_),
         imageScale_      (PI.imageScale_),
-        textureSVec_     (PI.textureSVec_),
+        textureVec_      (PI.textureVec_),
         numberMin_       (PI.numberMin_),
         numberMax_       (PI.numberMax_),
         numberInvalidVec_(PI.numberInvalidVec_),
@@ -240,7 +242,7 @@ namespace game
             buttonColor_      = PI.buttonColor_;
             willAddRandImage_ = PI.willAddRandImage_;
             imageScale_       = PI.imageScale_;
-            textureSVec_      = PI.textureSVec_;
+            textureVec_       = PI.textureVec_;
             numberMin_        = PI.numberMin_;
             numberMax_        = PI.numberMax_;
             numberInvalidVec_ = PI.numberInvalidVec_;
@@ -274,7 +276,9 @@ namespace game
         std::ostringstream ss;
 
         if (WILL_WRAP)
+        {
             ss << "(";
+        }
 
         ss << "\"" << name_ << "\", "
             << Popup::ToString(type_) << ", "
@@ -293,10 +297,16 @@ namespace game
             if (image_ == sfml_util::PopupImage::Custom)
             {
                 if (false == boxInfo_.bg_info.path.empty())
+                {
                     ss << ", bg_image=\"" << boxInfo_.bg_info.path << "\"";
+                }
                 else
-                    if (boxInfo_.bg_info.textureSPtr.get() == nullptr)
+                {
+                    if (false == boxInfo_.bg_info.hasTexture)
+                    {
                         ss << ", color=" << sfml_util::color::ColorToString(boxInfo_.bg_info.color);
+                    }
+                }
             }
         }
 
@@ -305,27 +315,43 @@ namespace game
         ss << ", sound_effect=" << sfml_util::sound_effect::ToString(soundEffect_);
 
         if (numberMin_ != numberMax_)
+        {
             ss << ", number_select=[" << numberMin_ << "," << numberMax_ << "]";
+        }
 
-        if (textureSVec_.size() > 0)
-            ss << ", images_count=" << textureSVec_.size();
+        if (textureVec_.size() > 0)
+        {
+            ss << ", images_count=" << textureVec_.size();
+        }
 
         if (imageFadeSpeed_ > 0.0f)
+        {
             ss << ", fade_speed=" << imageFadeSpeed_;
+        }
 
         if (creatureCPtr_ != nullptr)
+        {
             ss << ", creature=" << creatureCPtr_->Name();
+        }
 
         if (initialSelection_ != 0)
+        {
             ss << ", initial_selection=" << initialSelection_;
+        }
 
         if ((textInfo_.text.size() > 20) && (WILL_SHORTEN))
+        {
             ss << ", \"" << std::string(textInfo_.text.substr(0, 19).append("...")) << "\"";
+        }
         else
+        {
             ss << ", \"" << textInfo_.text << "\"";
+        }
 
         if (WILL_WRAP)
+        {
             ss << ")";
+        }
 
         return ss.str();
     }
@@ -341,29 +367,6 @@ namespace game
         {
             return (std::find(numberInvalidVec_.begin(), numberInvalidVec_.end(), NUM) == numberInvalidVec_.end());
         }
-    }
-
-
-    bool operator==(const PopupInfo & L, const PopupInfo & R)
-    {
-        return ((L.name_ == R.name_) &&
-                (L.image_ == R.image_) &&
-                (L.buttons_ == R.buttons_) &&
-                (L.textInfo_ == R.textInfo_) &&
-                (L.type_ == R.type_) &&
-                (L.soundEffect_ == R.soundEffect_) &&
-                (L.boxInfo_ == R.boxInfo_) &&
-                (misc::IsRealClose(L.ratioX_, R.ratioX_)) &&
-                (misc::IsRealClose(L.ratioY_, R.ratioY_)) &&
-                (L.willAddRandImage_ == R.willAddRandImage_) &&
-                (misc::IsRealClose(L.imageScale_, R.imageScale_)) &&
-                (L.textureSVec_ == R.textureSVec_) &&
-                (L.numberMin_ == R.numberMin_) &&
-                (L.numberMax_ == R.numberMax_) &&
-                (L.numberInvalidVec_ == R.numberInvalidVec_) &&
-                (misc::IsRealClose(L.imageFadeSpeed_, R.imageFadeSpeed_)) &&
-                (L.creatureCPtr_ == R.creatureCPtr_) &&
-                (L.initialSelection_ == R.initialSelection_));
     }
 
 }

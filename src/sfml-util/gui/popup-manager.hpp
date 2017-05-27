@@ -113,12 +113,12 @@ namespace gui
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 
         //get popup window textures based on the style name
-        inline TextureSPtr_t Texture_Banner() const         { return popupBannerTextureSPtr_; }
-        inline TextureSPtr_t Texture_Regular() const        { return popupRegularTextureSPtr_; }
-        inline TextureSPtr_t Texture_RegularSidebar() const { return popupRegularSidebarTextureSPtr_; }
-        inline TextureSPtr_t Texture_Large() const          { return popupLargeTextureSPtr_; }
-        inline TextureSPtr_t Texture_LargeSidebar() const   { return popupLargeSidebarTextueSPtr_; }
-        inline TextureSPtr_t Texture_Spellbook() const      { return popupSpellbookTextureSPtr_; }
+        inline void Texture_Banner(sf::Texture & t) const         { t = popupBannerTexture_; }
+        inline void Texture_Regular(sf::Texture & t) const        { t = popupRegularTexture_; }
+        inline void Texture_RegularSidebar(sf::Texture & t) const { t = popupRegularSidebarTexture_; }
+        inline void Texture_Large(sf::Texture & t) const          { t = popupLargeTexture_; }
+        inline void Texture_LargeSidebar(sf::Texture & t) const   { t = popupLargeSidebarTextue_; }
+        inline void Texture_Spellbook(sf::Texture & t) const      { t = popupSpellbookTexture_; }
 
         //TextInfo creation helper functions
         const sfml_util::gui::TextInfo TextInfoDefault(const std::string &              TEXT,
@@ -149,7 +149,7 @@ namespace gui
         //use this function to create image select popup windows
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                               const std::string &              PROMPT_TEXT,
-                                              const sfml_util::TextureSVec_t & IMAGES_SVEC,
+                                              const sfml_util::TextureVec_t &  TEXTURE_VEC,
                                               const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
                                               const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal());
 
@@ -167,13 +167,13 @@ namespace gui
                                               const unsigned int               FONT_SIZE = FontManager::Instance()->Size_Large());
 
         //use this function to make image fade/transition popup windows
-        const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
-                                              const std::string &              PROMPT_TEXT,
-                                              const sfml_util::TextureSPtr_t & FROM_IMAGE,
-                                              const sfml_util::TextureSPtr_t & TO_IMAGE,
-                                              const PopupButtons::Enum         BUTTONS      = PopupButtons::Okay,
-                                              const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal(),
-                                              const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric);
+        const game::PopupInfo CreatePopupInfo(const std::string &      POPUP_NAME,
+                                              const std::string &      PROMPT_TEXT,
+                                              const sf::Texture &      FROM_IMAGE,
+                                              const sf::Texture &      TO_IMAGE,
+                                              const PopupButtons::Enum BUTTONS      = PopupButtons::Okay,
+                                              const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Normal(),
+                                              const sound_effect::Enum SOUND_EFFECT = sound_effect::PromptGeneric);
 
         //use this function to make the spellbook popup window
         const game::PopupInfo CreateSpellbookPopupInfo(const std::string &                 POPUP_NAME,
@@ -181,15 +181,15 @@ namespace gui
                                                        const std::size_t                   INITIAL_SELECTION);
 
         //throws range error upon unknown enum value
-        TextureSPtr_t Texture(const PopupImage::Enum) const;
+        void Texture(const PopupImage::Enum, sf::Texture &) const;
 
         sfml_util::PopupStageSPtr_t CreatePopupStage(const game::PopupInfo &);
 
-        TextureSPtr_t LoadRandomAccentImage() const;
+        void LoadRandomAccentImage(sf::Texture &) const;
 
     private:
         void LoadPopup(const std::string & POPUP_FILE_NAME,
-                       TextureSPtr_t &     textureSPtr) const;
+                       sf::Texture &       texture) const;
 
         float GetScaleForImage(const PopupImage::Enum E) const;
 
@@ -203,12 +203,12 @@ namespace gui
         //
         const float BACKGROUND_IMAGE_SCALE_DEFAULT_;
         //
-        TextureSPtr_t popupBannerTextureSPtr_;
-        TextureSPtr_t popupRegularTextureSPtr_;
-        TextureSPtr_t popupRegularSidebarTextureSPtr_;
-        TextureSPtr_t popupLargeTextureSPtr_;
-        TextureSPtr_t popupLargeSidebarTextueSPtr_;
-        TextureSPtr_t popupSpellbookTextureSPtr_;
+        sf::Texture popupBannerTexture_;
+        sf::Texture popupRegularTexture_;
+        sf::Texture popupRegularSidebarTexture_;
+        sf::Texture popupLargeTexture_;
+        sf::Texture popupLargeSidebarTextue_;
+        sf::Texture popupSpellbookTexture_;
         //
         PathVec_t accentPathsVec_;
     };

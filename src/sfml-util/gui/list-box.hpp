@@ -65,7 +65,7 @@ namespace gui
     class ListBox;
     using ListBoxSPtr_t = std::shared_ptr<ListBox>;
 
-    using ImageMap_t      = std::map<ListBoxItemSPtr_t, std::pair<sfml_util::TextureSPtr_t, sf::Sprite> >;
+    using ImageMap_t      = std::map<ListBoxItemSPtr_t, std::pair<sf::Texture, sf::Sprite> >;
     using ImageMapIter_t  = ImageMap_t::iterator;
     using ImageMapCIter_t = ImageMap_t::const_iterator;
 

@@ -49,7 +49,7 @@ namespace combat
     ItemWithText::ItemWithText(const item::ItemSPtr_t & ITEM_SPTR)
     :
         sprite               (),
-        texture_sptr         (),
+        texture              (),
         name_text_region_sptr(),
         desc_text_region_sptr(),
         info_text_region_sptr(),
@@ -387,8 +387,8 @@ namespace combat
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            nextItemText.texture_sptr = sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.item_sptr);
-            nextItemText.sprite = sf::Sprite(*nextItemText.texture_sptr);
+            sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.texture, nextItemText.item_sptr);
+            nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
             itemListHeightAtDefaultScale += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
         }

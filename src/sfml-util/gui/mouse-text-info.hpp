@@ -78,8 +78,6 @@ namespace gui
 
 
     using MouseTextInfoUPtr_t = std::unique_ptr<MouseTextInfo>;
-    using MouseTextInfoSPtr_t = std::shared_ptr<MouseTextInfo>;
-    using MouseTextInfoSVec_t = std::vector<MouseTextInfoSPtr_t>;
     using MouseTextInfoVec_t  = std::vector<MouseTextInfo>;
 
 

@@ -98,7 +98,7 @@ namespace sfml_util
 
         virtual void TestingStrAppend(const std::string &) = 0;
         virtual void TestingStrIncrement(const std::string &) = 0;
-        virtual void TestingImageSet(const sfml_util::TextureSPtr_t &) = 0;
+        virtual void TestingImageSet(const sf::Texture &) = 0;
 
     protected:
         virtual void LogFrameRate() = 0;

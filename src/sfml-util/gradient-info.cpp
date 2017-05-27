@@ -53,10 +53,4 @@ namespace sfml_util
                 (L.color_to == R.color_to));
     }
 
-
-    bool operator!=(const GradientInfo & L, const GradientInfo & R)
-    {
-        return ! (L == R);
-    }
-
 }

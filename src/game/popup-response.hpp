@@ -51,33 +51,15 @@ namespace callback
             selection_(SELECTION)
         {}
 
-        virtual ~PopupResponse() {}
-
         inline const PopupInfo Info() const                 { return info_; }
         inline sfml_util::Response::Enum Response() const   { return response_; }
         inline std::size_t Selection() const                { return selection_; }
-
-        friend bool operator==(const PopupResponse & L, const PopupResponse & R);
 
     private:
         PopupInfo info_;
         sfml_util::Response::Enum response_;
         std::size_t selection_;
     };
-
-
-    inline bool operator==(const PopupResponse & L, const PopupResponse & R)
-    {
-        return ((L.info_ == R.info_) &&
-                (L.response_ == R.response_) &&
-                (L.selection_ == R.selection_));
-    }
-
-
-    inline bool operator!=(const PopupResponse & L, const PopupResponse & R)
-    {
-        return ! (L == R);
-    }
 
 }
 }

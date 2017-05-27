@@ -124,10 +124,10 @@ namespace stage
         listBoxItemTextInfo_    (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
         creaturePtr_            (creaturePtr),
         bottomSymbol_           (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
-        paperBgTextureSPtr_     (),
+        paperBgTexture_         (),
         paperBgSprite_          (),
         ouroborosSPtr_          (),
-        creatureTextureSPtr_    (),
+        creatureTexture_        (),
         creatureSprite_         (),
         view_                   (ViewType::Items),
         characterViewMap_       (),
@@ -200,7 +200,7 @@ namespace stage
         detailViewSourceRect_   (sfml_util::gui::ListBox::ERROR_RECT_),
         detailViewQuads_        (sf::Quads, 4),
         detailViewSprite_       (),
-        detailViewTextureSPtr_  (),
+        detailViewTexture_      (),
         detailViewTextSPtr_     (),
         detailViewSlider_       (DETAILVIEW_SLIDER_SPEED_)
     {
@@ -524,10 +524,10 @@ namespace stage
     void InventoryStage::Setup()
     {
         //paper background
-        sfml_util::LoadImageOrTextureSPtr<sfml_util::TextureSPtr_t>(paperBgTextureSPtr_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
-        paperBgTextureSPtr_->setSmooth(true);
-        paperBgSprite_.setTexture( * paperBgTextureSPtr_ );
-        paperBgSprite_.setScale(SCREEN_WIDTH_ / static_cast<float>(paperBgTextureSPtr_->getSize().x), SCREEN_HEIGHT_ / static_cast<float>(paperBgTextureSPtr_->getSize().y));
+        sfml_util::LoadImageOrTexture<sf::Texture>(paperBgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
+        paperBgTexture_.setSmooth(true);
+        paperBgSprite_.setTexture(paperBgTexture_ );
+        paperBgSprite_.setScale(SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x), SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
         //ouroboros
@@ -1746,12 +1746,12 @@ namespace stage
 
     void InventoryStage::SetupCreatureImage()
     {
-        creatureTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(creaturePtr_->ImageFilename(), true);
-        sfml_util::Invert( * creatureTextureSPtr_);
-        sfml_util::Mask( * creatureTextureSPtr_, sf::Color::White);
-        creatureTextureSPtr_->setSmooth(true);
-        creatureSprite_.setTexture( * creatureTextureSPtr_);
-        creatureSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(creatureTextureSPtr_->getSize().x), static_cast<int>(creatureTextureSPtr_->getSize().y)) );
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(creatureTexture_, creaturePtr_->ImageFilename(), true);
+        sfml_util::Invert(creatureTexture_);
+        sfml_util::Mask(creatureTexture_, sf::Color::White);
+        creatureTexture_.setSmooth(true);
+        creatureSprite_.setTexture(creatureTexture_);
+        creatureSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(creatureTexture_.getSize().x), static_cast<int>(creatureTexture_.getSize().y)) );
         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
         creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
         creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -2518,8 +2518,9 @@ namespace stage
 
     float InventoryStage::UpdateImageDetailsPosition()
     {
-        sfml_util::TextureSPtr_t textureSPtr( sfml_util::gui::CreatureImageManager::Instance()->GetImage(creaturePtr_->ImageFilename(), true) );
-        sf::Sprite sprite( * textureSPtr );
+        sf::Texture texture;
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, creaturePtr_->ImageFilename());
+        sf::Sprite sprite(texture);
         sprite.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
         detailsPosLeft_ = CREATURE_IMAGE_POS_LEFT_ + sprite.getGlobalBounds().width + CREATURE_IMAGE_RIGHT_PAD_;
         return sprite.getGlobalBounds().width;
@@ -2565,16 +2566,15 @@ namespace stage
     {
         if (IITEM_SPTR.get() == nullptr)
         {
-            detailViewTextureSPtr_.reset();
             detailViewTextSPtr_.reset();
             return;
         }
 
-        detailViewTextureSPtr_ = sfml_util::gui::ItemImageManager::Instance()->Load(IITEM_SPTR);
-        detailViewTextureSPtr_->setSmooth(true);
+        sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_SPTR);
+        detailViewTexture_.setSmooth(true);
 
-        detailViewSprite_.setTexture(*detailViewTextureSPtr_);
-        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTextureSPtr_->getSize().x), static_cast<int>(detailViewTextureSPtr_->getSize().y)));
+        detailViewSprite_.setTexture(detailViewTexture_);
+        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
         const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
         detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
@@ -2618,16 +2618,15 @@ namespace stage
     {
         if (CREATURE_CPTRC == nullptr)
         {
-            detailViewTextureSPtr_.reset();
             detailViewTextSPtr_.reset();
             return;
         }
 
-        detailViewTextureSPtr_ = sfml_util::gui::CreatureImageManager::Instance()->GetImage(CREATURE_CPTRC->ImageFilename(), true);
-        detailViewTextureSPtr_->setSmooth(true);
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(detailViewTexture_, CREATURE_CPTRC->ImageFilename(), true);
+        detailViewTexture_.setSmooth(true);
 
-        detailViewSprite_.setTexture( * detailViewTextureSPtr_);
-        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTextureSPtr_->getSize().x), static_cast<int>(detailViewTextureSPtr_->getSize().y)));
+        detailViewSprite_.setTexture(detailViewTexture_);
+        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
         detailViewSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
         detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::MapByRes(0.0f, 50.0f));
 

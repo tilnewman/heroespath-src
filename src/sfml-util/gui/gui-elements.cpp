@@ -46,9 +46,9 @@ namespace gui
 
     GuiElements::GuiElements()
     :
-        elementsTextureSPtr_                (),
-        woodBgTextureSPtr_                  (),
-        darkKnotBgTextureSPtr_              (),
+        elementsTexture_                    (),
+        woodBgTexture_                      (),
+        darkKnotBgTexture_                  (),
         radioButtonBrightOffSpriteRect_	    (sf::IntRect(0, 0, 20, 20)),
         radioButtonBrightOnSpriteRect_	    (sf::IntRect(20, 0, 20, 20)),
         radioButtonMedOffSpriteRect_	    (sf::IntRect(40, 0, 20, 20)),
@@ -117,9 +117,9 @@ namespace gui
         lineSmallTBotSpriteRect_	        (sf::IntRect(114, 223, 26, 19)),
         lineSmallTRightSpriteRect_	        (sf::IntRect(141, 223, 19, 26))
     {
-        sfml_util::LoadImageOrTextureSPtr(elementsTextureSPtr_,   game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
-        sfml_util::LoadImageOrTextureSPtr(woodBgTextureSPtr_,     game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
-        sfml_util::LoadImageOrTextureSPtr(darkKnotBgTextureSPtr_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
+        sfml_util::LoadImageOrTexture(elementsTexture_,   game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
+        sfml_util::LoadImageOrTexture(woodBgTexture_,     game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::LoadImageOrTexture(darkKnotBgTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
     }
 
 

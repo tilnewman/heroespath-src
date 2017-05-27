@@ -86,11 +86,11 @@ namespace box
         centerRightLine_  (std::string(NAME).append("CrossBox's Center Right Line"),  Orientation::Horiz, Side::Bottom, false),
         centerTopLine_    (std::string(NAME).append("CrossBox's Center Top Line"),    Orientation::Vert,  Side::Right,  false),
         centerBotLine_    (std::string(NAME).append("CrossBox's Center Bottom Line"), Orientation::Vert,  Side::Right,  false),
-        crossSprite_      ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCross()),
-        tJointLeftSprite_ ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTLeft()),
-        tJointRightSprite_( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTRight()),
-        tJointTopSprite_  ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTTop()),
-        tJointBotSprite_  ( * GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTBot())
+        crossSprite_      ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallCross()),
+        tJointLeftSprite_ ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTLeft()),
+        tJointRightSprite_( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTRight()),
+        tJointTopSprite_  ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTTop()),
+        tJointBotSprite_  ( GuiElements::Instance()->GetTexture(), GuiElements::Instance()->GetRect_LineSmallTBot())
     {
         SetupCrossBox(  SCREEN_POS_LEFT,
                         SCREEN_POS_TOP,

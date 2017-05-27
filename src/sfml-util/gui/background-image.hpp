@@ -90,16 +90,13 @@ namespace gui
 
         inline float ImageScale() const { return sprite_.getScale().x; }
 
-        inline bool IsTextureSmoothed() const { if (bgInfo_.textureSPtr.get() == nullptr) return false; else return true; }
+        inline bool IsTextureSmoothed() const { if (false == bgInfo_.hasTexture) return false; else return true; }
 
     protected:
         GradientRect gradient_;
         sfml_util::gui::BackgroundInfo bgInfo_;
         sf::Sprite sprite_;
     };
-
-
-    using BackgroundImageSPtr_t = std::shared_ptr<BackgroundImage>;
 
 }
 }

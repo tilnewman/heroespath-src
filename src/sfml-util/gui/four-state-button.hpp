@@ -90,10 +90,14 @@ namespace gui
         FourStateButton(const std::string &    NAME,
                          const float           POS_LEFT,
                          const float           POS_TOP,
-                         const TextureSPtr_t & IMAGE_UP,
-                         const TextureSPtr_t & IMAGE_DOWN         = TextureSPtr_t(),
-                         const TextureSPtr_t & IMAGE_OVER         = TextureSPtr_t(),
-                         const TextureSPtr_t & IMAGE_DISABLED     = TextureSPtr_t(),
+                         const sf::Texture &   IMAGE_UP,
+                         const bool            HAS_IMAGE_UP,
+                         const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
+                         const bool            HAS_IMAGE_DOWN     = false,
+                         const sf::Texture &   IMAGE_OVER         = sf::Texture(),
+                         const bool            HAS_IMAGE_OVER     = false,
+                         const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
+                         const bool            HAS_IMAGE_DISABLED = false,
                          const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
                          const TextInfo &      TEXT_INFO_DISABLED = TextInfo(),
                          const bool            WILL_BOX           = false,
@@ -116,15 +120,19 @@ namespace gui
 
         virtual void Setup(const float           POS_LEFT,
                            const float           POS_TOP,
-                           const TextureSPtr_t & IMAGE_UP,
-                           const TextureSPtr_t & IMAGE_DOWN        = TextureSPtr_t(),
-                           const TextureSPtr_t & IMAGE_OVER        = TextureSPtr_t(),
-                           const TextureSPtr_t & IMAGE_DISABLED    = TextureSPtr_t(),
-                           const MouseTextInfo & MOUSE_TEXT_INFO   = MouseTextInfo(),
-                           const TextInfo &      TEXT_INFODISABLED = TextInfo(),
-                           const bool            WILL_BOX          = false,
-                           const float           SCALE             = 1.0f,
-                           const bool            IS_DISABLED       = false);
+                           const sf::Texture &   IMAGE_UP,
+                           const bool            HAS_IMAGE_UP,
+                           const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
+                           const bool            HAS_IMAGE_DOWN     = false,
+                           const sf::Texture &   IMAGE_OVER         = sf::Texture(),
+                           const bool            HAS_IMAGE_OVER     = false,
+                           const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
+                           const bool            HAS_IMAGE_DISABLED = false,
+                           const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
+                           const TextInfo &      TEXT_INFODISABLED  = TextInfo(),
+                           const bool            WILL_BOX           = false,
+                           const float           SCALE              = 1.0f,
+                           const bool            IS_DISABLED        = false);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -151,10 +159,14 @@ namespace gui
 
     protected:
         bool             isDisabled_;
-        TextureSPtr_t    textureUpSPtr_;
-        TextureSPtr_t    textureDownSPtr_;
-        TextureSPtr_t    textureOverSPtr_;
-        TextureSPtr_t    textureDisabledSPtr_;
+        sf::Texture      textureUp_;
+        sf::Texture      textureDown_;
+        sf::Texture      textureOver_;
+        sf::Texture      textureDisabled_;
+        bool             hasUp_;
+        bool             hasDown_;
+        bool             hasOver_;
+        bool             hasDisabled_;
         sf::Sprite       buttonSprite_;
         TextRegionSPtr_t textRegionCurrSPtr_;
         TextRegionSPtr_t textRegionUpSPtr_;

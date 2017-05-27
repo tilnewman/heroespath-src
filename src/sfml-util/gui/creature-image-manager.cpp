@@ -158,10 +158,9 @@ namespace gui
 
                             if (i < filenamesVec.size())
                             {
-                                auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
-                                M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (wolfen_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", wolfen_class=" << CLASS_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
-
-                                game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+                                sf::Texture texture;
+                                cimSPtr->GetImage(texture, filenamesVec.at(i));
+                                game::LoopManager::Instance()->TestingImageSet(texture);
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
@@ -192,10 +191,9 @@ namespace gui
 
                                 if (i < filenamesVec.size())
                                 {
-                                    auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
-                                    M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
-
-                                    game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+                                    sf::Texture texture;
+                                    cimSPtr->GetImage(texture, filenamesVec.at(i));
+                                    game::LoopManager::Instance()->TestingImageSet(texture);
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
@@ -220,10 +218,9 @@ namespace gui
 
                         if (i < filenamesVec.size())
                         {
-                            auto const TEXTURE_SPTR{ cimSPtr->GetImage(filenamesVec.at(i)) };
-                            M_ASSERT_OR_LOGANDTHROW_SS((TEXTURE_SPTR.get() != nullptr), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", GetImage(\"" << filenamesVec.at(i) << "\") returned a nullptr texture.");
-
-                            game::LoopManager::Instance()->TestingImageSet(TEXTURE_SPTR);
+                            sf::Texture texture;
+                            cimSPtr->GetImage(texture, filenamesVec.at(i));
+                            game::LoopManager::Instance()->TestingImageSet(texture);
 
                             std::ostringstream ss;
                             ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(i);
@@ -256,40 +253,42 @@ namespace gui
     }
 
 
-    const TextureSPtr_t CreatureImageManager::GetImage(const std::string & FILENAME,
-                                                       const bool          WILL_FACE_RIGHT) const
+    void CreatureImageManager::GetImage(sf::Texture &       texture,
+                                        const std::string & FILENAME,
+                                        const bool          WILL_FACE_RIGHT) const
     {
-        return LoadImage(FILENAME, WILL_FACE_RIGHT);
+        return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
     }
 
 
-    const TextureSPtr_t CreatureImageManager::GetImage(const game::creature::race::Enum         RACE,
-                                                       const game::creature::role::Enum         ROLE,
-                                                       const game::creature::sex::Enum          SEX,
-                                                       const bool                                     WILL_PICK_RANDOM,
-                                                       const bool                                     WILL_FACE_RIGHT,
-                                                       const game::creature::wolfen_class::Enum WOLFEN_CLASS,
-                                                       const game::creature::dragon_class::Enum DRAGON_CLASS) const
+    void CreatureImageManager::GetImage(sf::Texture &                            texture,
+                                        const game::creature::race::Enum         RACE,
+                                        const game::creature::role::Enum         ROLE,
+                                        const game::creature::sex::Enum          SEX,
+                                        const bool                               WILL_PICK_RANDOM,
+                                        const bool                               WILL_FACE_RIGHT,
+                                        const game::creature::wolfen_class::Enum WOLFEN_CLASS,
+                                        const game::creature::dragon_class::Enum DRAGON_CLASS) const
     {
         const std::string FILENAME(GetFilename(RACE, ROLE, SEX, WILL_PICK_RANDOM, WOLFEN_CLASS, DRAGON_CLASS));
         M_ASSERT_OR_LOGANDTHROW_SS((FILENAME.empty() == false), "sfml_util::gui::CreatureImageManager::GetImage()  GetFilename() call return no filename.  (race=" << game::creature::race::ToString(RACE) << ", role=" << game::creature::role::ToString(ROLE) << ", sex=" << game::creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS << ")");
-        return LoadImage(FILENAME, WILL_FACE_RIGHT);
+        return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
     }
 
 
-    TextureSPtr_t CreatureImageManager::LoadImage(const std::string & IMAGE_FILE_NAME,
-                                                  const bool          WILL_FACE_RIGHT) const
+    void CreatureImageManager::LoadImage(sf::Texture &       texture,
+                                         const std::string & IMAGE_FILE_NAME,
+                                         const bool          WILL_FACE_RIGHT) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(IMAGE_FILE_NAME)));
 
-        TextureSPtr_t textureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, PATH_OBJ.string());
+        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
 
         if (WILL_FACE_RIGHT)
-            sfml_util::FlipHoriz( * textureSPtr );
-
-        return textureSPtr;
+        {
+            sfml_util::FlipHoriz(texture);
+        }
     }
 
 

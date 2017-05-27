@@ -70,7 +70,7 @@ namespace stage
 
         void TestingStrAppend(const std::string &);
         void TestingStrIncrement(const std::string &);
-        void TestingImageSet(const sfml_util::TextureSPtr_t &);
+        void TestingImageSet(const sf::Texture &);
 
         void PerformNextTest();
         void PerformStatsTests();
@@ -102,7 +102,7 @@ namespace stage
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
-        sfml_util::TextureSVec_t textureSVec_;
+        sfml_util::TextureLst_t textureList_;
         OuroborosSPtr_t ouroborosSPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;

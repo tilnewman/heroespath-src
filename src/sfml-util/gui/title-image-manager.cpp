@@ -94,7 +94,7 @@ namespace gui
     }
 
 
-    const TextureSPtr_t TitleImageManager::Get(game::creature::TitlePtr_t TITLE_PTR) const
+    void TitleImageManager::Get(sf::Texture & texture, game::creature::TitlePtr_t TITLE_PTR) const
     {
         namespace bfs = boost::filesystem;
         const bfs::path PATH_OBJ( bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(TITLE_PTR->ImageFilename())) );
@@ -106,9 +106,7 @@ namespace gui
             pathToUse = placeHlderFilePathObj_;
         }
 
-        TextureSPtr_t textureSPtr;
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr, pathToUse.string());
-        return textureSPtr;
+        sfml_util::LoadImageOrTexture(texture, pathToUse.string());
     }
 
 }

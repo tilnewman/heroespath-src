@@ -92,26 +92,32 @@ namespace sfml_util
         soundEffectsToPlayVec_      (),
         soundEffectsSVec_           ()
     {
-        M_HP_LOG_DBG("sfml_util::SoundManager Constructor loading sound resources begin.");
         musicSVec_.resize(music::Count);
         soundEffectBufferPairVec_.resize(sound_effect::Count);
         CacheMusicInfo_CombatIntro();
         soundEffectsSVec_.resize(sound_effect::Count);
-        M_HP_LOG_DBG("sfml_util::SoundManager Constructor loading sound resources end.");
     }
 
 
     SoundManager * SoundManager::Instance()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::SoundManager::Instance() found instanceUPtr that was null.");
+        //M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::SoundManager::Instance() found instanceUPtr that was null.");
+        
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
+
         return instanceUPtr_.get();
     }
 
 
     void SoundManager::Acquire()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() == nullptr), "sfml_util::SoundManager::Acquire() found instanceUPtr that was NOT null.");
-        instanceUPtr_.reset(new SoundManager);
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new SoundManager);
+        }
     }
 
 
@@ -547,12 +553,18 @@ namespace sfml_util
 
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        namespace bfs = boost::filesystem;
-
         //configure the path
-        const bfs::path   DIR_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) / bfs::path(music::Directory(music::CombatIntro))));
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ), "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \"" << DIR_OBJ.string() << "\" does not exist.");
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ), "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \"" << DIR_OBJ.string() << "\" exists but is not a directory.");
+        namespace bfs = boost::filesystem;
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) /
+            bfs::path(music::Directory(music::CombatIntro))));
+
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ),
+            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
+            << DIR_OBJ.string() << "\" does not exist.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ),
+            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
+            << DIR_OBJ.string() << "\" exists but is not a directory.");
 
         combatIntroMusicInfoVec_.clear();
 
@@ -562,29 +574,38 @@ namespace sfml_util
             const bfs::path NEXT_PATH_OBJ(iter->path());
 
             if (bfs::is_regular_file(NEXT_PATH_OBJ) == false)
+            {
                 continue;
+            }
 
-            const std::string NEXT_FILENAME(NEXT_PATH_OBJ.leaf().string());
+            auto const NEXT_FILENAME(NEXT_PATH_OBJ.leaf().string());
+
+            if ((boost::algorithm::icontains(NEXT_FILENAME, ".txt")) ||
+                (boost::algorithm::icontains(NEXT_FILENAME, ".DS_Store")))
+            {
+                continue;
+            }
 
             std::vector<std::string> filenamePartsVec;
             appbase::stringhelp::SplitByChar(NEXT_FILENAME, filenamePartsVec, '_', true, true);
             if (filenamePartsVec.size() != 4)
             {
-                M_HP_LOG("sfml_util::SoundManager::CacheMusicInfo_CombatIntro() failed to split filename \"" << NEXT_FILENAME << "\" by '_' into the required 4 parts.  Probably an incorrectly named combat intro music file.");
                 continue;
             }
 
             const std::string NEXT_ARTIST_NAME(filenamePartsVec.at(1));
             const std::string NEXT_TRACK_NAME(filenamePartsVec.at(2));
-            const std::string NEXT_LICENSE_NAME(boost::algorithm::erase_all_copy(filenamePartsVec.at(3), music::FileExt(music::CombatIntro)));
+
+            const std::string NEXT_LICENSE_NAME(boost::algorithm::erase_all_copy(
+                filenamePartsVec.at(3), music::FileExt(music::CombatIntro)));
 
             combatIntroMusicInfoVec_.push_back(MusicInfo(music::CombatIntro,
-                false,
-                NEXT_ARTIST_NAME,
-                NEXT_TRACK_NAME,
-                NEXT_LICENSE_NAME,
-                NEXT_FILENAME,
-                DIR_OBJ.string()));
+                                                         false,
+                                                         NEXT_ARTIST_NAME,
+                                                         NEXT_TRACK_NAME,
+                                                         NEXT_LICENSE_NAME,
+                                                         NEXT_FILENAME,
+                                                         DIR_OBJ.string()));
         }
     }
 

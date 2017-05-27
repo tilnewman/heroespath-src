@@ -74,7 +74,7 @@ namespace stage
         Stage              ("Testing"),
         SCREEN_WIDTH_      (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_     (sfml_util::Display::Instance()->GetWinHeight()),
-        textureSVec_       (),
+        textureList_       (),
         ouroborosSPtr_     (),
         testingBlurbsVec_  (),
         sleepMilliseconds_ (0),
@@ -119,21 +119,12 @@ namespace stage
         {
             std::size_t imageDrawCount{ 0 };
             auto posLeft{ SCREEN_WIDTH_ };
-            for (std::size_t i(textureSVec_.size() - 1); i < textureSVec_.size(); --i)
+
+            sfml_util::TextureLst_t::reverse_iterator rItr(textureList_.rbegin());
+            for (; rItr != textureList_.rend(); ++rItr)
             {
-                if (i >= textureSVec_.size())
-                {
-                    break;
-                }
-
-                auto const NEXT_TEXTURE_SPTR{ textureSVec_.at(i) };
-                if (NEXT_TEXTURE_SPTR.get() == nullptr)
-                {
-                    continue;
-                }
-
                 sf::Sprite sprite;
-                sprite.setTexture( * NEXT_TEXTURE_SPTR);
+                sprite.setTexture( * rItr );
 
                 //reduce size if any dimmension is greater than 256
                 auto const MAX_DIMMENSION{ 256.0f };
@@ -163,33 +154,32 @@ namespace stage
                 }
             }
 
-            while (textureSVec_.size() > imageDrawCount)
+            while (textureList_.size() > imageDrawCount)
             {
-                textureSVec_.erase(textureSVec_.begin());
+                textureList_.erase(textureList_.begin());
             }
         }
 
         {
             //find out how tall the text lines will be
-            sf::Text testText("M", * sfml_util::FontManager::Instance()->Font_Default1(), sfml_util::FontManager::Instance()->Size_Normal());
+            sf::Text testText("M",
+                              * sfml_util::FontManager::Instance()->Font_Default1(),
+                              sfml_util::FontManager::Instance()->Size_Normal());
+
             auto const TEXT_HEIGHT{ testText.getGlobalBounds().height + 10.0f };
 
             auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0 + TEXT_HEIGHT };
             auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
 
-            for (std::size_t i(testingBlurbsVec_.size() - 1); i < testingBlurbsVec_.size(); --i)
+            StrSizePairVec_t::reverse_iterator rItr(testingBlurbsVec_.rbegin());
+            for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
-                if (i >= testingBlurbsVec_.size())
-                {
-                    break;
-                }
-
                 std::ostringstream ss;
-                ss << testingBlurbsVec_.at(i).first;
+                ss << rItr->first;
 
-                if (testingBlurbsVec_.at(i).second > 0)
+                if (rItr->second > 0)
                 {
-                    ss << " " << testingBlurbsVec_.at(i).second;
+                    ss << " " << rItr->second;
                 }
 
                 sf::Text text(sf::String(ss.str()),
@@ -285,9 +275,9 @@ namespace stage
     }
 
 
-    void TestingStage::TestingImageSet(const sfml_util::TextureSPtr_t & TEXTURE_SPTR)
+    void TestingStage::TestingImageSet(const sf::Texture & TEXTURE)
     {
-        textureSVec_.push_back(TEXTURE_SPTR);
+        textureList_.push_back(TEXTURE);
     }
 
 
@@ -625,9 +615,9 @@ namespace stage
             ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
             LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            sfml_util::TextureSPtr_t textureSPtr;
-            sfml_util::LoadImageOrTextureSPtr(textureSPtr, GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
-            TestingImageSet(textureSPtr);
+            sf::Texture texture;
+            sfml_util::LoadImageOrTexture(texture, GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
+            TestingImageSet(texture);
 
             ++imageIndex;
             return false;

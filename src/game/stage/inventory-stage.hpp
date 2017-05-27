@@ -249,10 +249,10 @@ namespace stage
         sfml_util::gui::TextInfo    listBoxItemTextInfo_;
         creature::CreaturePtr_t     creaturePtr_;
         BottomSymbol                bottomSymbol_;
-        sfml_util::TextureSPtr_t    paperBgTextureSPtr_;
+        sf::Texture                 paperBgTexture_;
         sf::Sprite                  paperBgSprite_;
         OuroborosSPtr_t             ouroborosSPtr_;
-        sfml_util::TextureSPtr_t    creatureTextureSPtr_;
+        sf::Texture                 creatureTexture_;
         sf::Sprite                  creatureSprite_;
         ViewType                    view_;
         CharViewMap_t               characterViewMap_;
@@ -333,7 +333,7 @@ namespace stage
         sf::FloatRect   detailViewSourceRect_;
         sf::VertexArray detailViewQuads_;
         sf::Sprite      detailViewSprite_;
-        sfml_util::TextureSPtr_t detailViewTextureSPtr_;
+        sf::Texture     detailViewTexture_;
         sfml_util::gui::TextRegionSPtr_t detailViewTextSPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
     };
