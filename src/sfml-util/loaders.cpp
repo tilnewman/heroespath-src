@@ -71,24 +71,4 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS(musicSPtr->openFromFile(PATH_OBJ_STR.c_str()), "LoadMusic(\"" << PATH_OBJ_STR << "\"), sf::Music::OpenFromFile() returned false.  See console output for more information.");
     }
 
-
-    void LoadSoundBufferSPtr(SoundBufferSPtr_t & soundBufferSPtr, const std::string & PATH_STR)
-    {
-        namespace bfs = boost::filesystem;
-
-        const bfs::path   PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
-        const std::string PATH_OBJ_STR(PATH_OBJ.string());
-
-        //check if the path even exists
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ), "LoadSoundBufferSPtr(\"" << PATH_OBJ_STR << "\") failed because that file does not exist.");
-
-        //ignore directories, etc.
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ), "LoadSoundBufferSPtr(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file.");
-
-        soundBufferSPtr.reset( new sf::SoundBuffer );
-
-        //verify open success
-        M_ASSERT_OR_LOGANDTHROW_SS(soundBufferSPtr->loadFromFile(PATH_OBJ_STR.c_str()), "LoadSoundBuffer(\"" << PATH_OBJ_STR << "\"), sf::SoundBuffer::loadFromFile() returned false.  See console output for more information.");
-    }
-
 }

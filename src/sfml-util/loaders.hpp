@@ -127,8 +127,5 @@ namespace sfml_util
 
     void OpenMusicSPtr(MusicSPtr_t & musicSPtr, const std::string & PATH_STR);
 
-
-    void LoadSoundBufferSPtr(SoundBufferSPtr_t & soundBufferSPtr, const std::string & PATH_STR);
-
 }
 #endif //SFMLUTIL_LOADERS_INCLUDED

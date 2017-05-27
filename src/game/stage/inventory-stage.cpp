@@ -292,7 +292,7 @@ namespace stage
 
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemDrop()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemDrop().PlayRandom();
             creaturePtr_->ItemRemove(iItemToDropSPtr_);
             EndOfGiveShareGatherTasks();
             SetupDescBox(false);
@@ -400,7 +400,7 @@ namespace stage
                     }
                     else
                     {
-                        sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemGive()->PlayRandom();
+                        sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemGive().PlayRandom();
                         creaturePtr_->ItemRemove(IITEM_SPTR);
                         creatureToGiveToPtr_->ItemAdd(IITEM_SPTR);
                         SetupDescBox(false);
@@ -724,7 +724,7 @@ namespace stage
             (IsDetailViewFadingOrVisible() == false) &&
             (game::LoopManager::Instance()->IsFading() == false))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
+            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
 
             if (KEY_EVENT.code == sf::Keyboard::A)
                 return HandleAchievementDisplay();
@@ -1194,7 +1194,7 @@ namespace stage
 
                 if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+                    sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
                     detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
                     if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     {
@@ -2256,7 +2256,7 @@ namespace stage
 
     void InventoryStage::HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
 
         creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(COUNT) * -1);
         creatureToGiveToPtr->CoinsAdj(static_cast<item::Coin_t>(COUNT));
@@ -2269,7 +2269,7 @@ namespace stage
 
     void InventoryStage::HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
 
         creaturePtr_->GemsAdj(static_cast<item::Gem_t>(COUNT) * -1);
         creatureToGiveToPtr->GemsAdj(static_cast<item::Gem_t>(COUNT));
@@ -2282,7 +2282,7 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
 
         creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT) * -1);
         creatureToGiveToPtr->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT));
@@ -2295,7 +2295,7 @@ namespace stage
 
     void InventoryStage::HandleCoinsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
 
         std::size_t coinsOwnedByOtherPartyMembers(0);
         for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
@@ -2324,7 +2324,7 @@ namespace stage
 
     void InventoryStage::HandleGemsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
 
         std::size_t gemsOwnedByOtherPartyMembers(0);
         for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
@@ -2353,7 +2353,7 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
 
         std::size_t shardsOwnedByOtherPartyMembers(0);
         for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
@@ -2382,7 +2382,7 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
 
         HandleCoinsGather(false);
 
@@ -2423,7 +2423,7 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
 
         HandleGemsGather(false);
 
@@ -2464,7 +2464,7 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
 
         HandleMeteorShardsGather(false);
 
@@ -2944,7 +2944,7 @@ namespace stage
 
     void InventoryStage::StartDetailViewFadeOutTasks()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
+        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;

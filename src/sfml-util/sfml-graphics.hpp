@@ -50,9 +50,6 @@
 namespace sfml_util
 {
 
-    using ImageSPtr_t = std::shared_ptr<sf::Image>;
-    using ImageSVec_t = std::vector<ImageSPtr_t>;
-    //
     using TextureVec_t = std::vector<sf::Texture>;
     using TextureLst_t = std::list<sf::Texture>;
     //

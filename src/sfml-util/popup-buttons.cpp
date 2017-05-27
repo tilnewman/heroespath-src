@@ -46,7 +46,7 @@ namespace sfml_util
 
     void PopupButton_Yes::OnClick(const sf::Vector2f &)
     {
-        SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
     }
 
@@ -58,7 +58,7 @@ namespace sfml_util
 
     void PopupButton_No::OnClick(const sf::Vector2f &)
     {
-        SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         game::LoopManager::Instance()->PopupWaitEnd(Response::No);
     }
 
@@ -70,7 +70,7 @@ namespace sfml_util
 
     void PopupButton_Cancel::OnClick(const sf::Vector2f &)
     {
-        SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
     }
 
@@ -82,7 +82,7 @@ namespace sfml_util
 
     void PopupButton_Continue::OnClick(const sf::Vector2f &)
     {
-        SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
     }
 
@@ -94,7 +94,7 @@ namespace sfml_util
 
     void PopupButton_Okay::OnClick(const sf::Vector2f &)
     {
-        SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
     }
 
@@ -109,7 +109,7 @@ namespace sfml_util
     {
         if (selection_ >= 0)
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Select, static_cast<std::size_t>(selection_));
         }
     }

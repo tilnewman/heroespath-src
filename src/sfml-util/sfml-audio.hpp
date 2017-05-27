@@ -48,16 +48,7 @@
 
 namespace sfml_util
 {
-
-    using SoundSPtr_t = std::shared_ptr<sf::Sound>;
-    using SoundSVec_t = std::vector<SoundSPtr_t>;
-    //
-    using SoundBufferSPtr_t = std::shared_ptr<sf::SoundBuffer>;
-    using SoundBufferSVec_t = std::vector<SoundBufferSPtr_t>;
-    //
     using MusicSPtr_t = std::shared_ptr<sf::Music>;
-    using MusicSVec_t = std::vector<MusicSPtr_t>;
-
 }
 
 

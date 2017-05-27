@@ -40,9 +40,7 @@ namespace sfml_util
     SoundEffectsSet::SoundEffectsSet(const SoundEffectEnumVec_t & ENUM_VEC)
     :
         enumVec_(ENUM_VEC)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((enumVec_.empty() == false), "sfml_util::SoundEffectsSet::Constructor was given an empty ENUM_VEC.");
-    }
+    {}
 
 
     SoundEffectsSet::SoundEffectsSet(const sound_effect::Enum FIRST_SOUND_EFFECT_ENUM,
@@ -61,7 +59,7 @@ namespace sfml_util
     }
 
 
-    void SoundEffectsSet::Play(const sound_effect::Enum E)
+    void SoundEffectsSet::Play(const sound_effect::Enum E) const
     {
         if (E == sound_effect::Random)
         {
@@ -86,14 +84,14 @@ namespace sfml_util
     }
 
 
-    void SoundEffectsSet::PlayAt(const std::size_t INDEX)
+    void SoundEffectsSet::PlayAt(const std::size_t INDEX) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((INDEX < enumVec_.size()), "sfml_util::SoundEffectsSet::PlayAt(" << INDEX << ") was given an index out of range.");
         SoundManager::Instance()->SoundEffectPlay(enumVec_[INDEX]);
     }
 
 
-    void SoundEffectsSet::PlayRandom()
+    void SoundEffectsSet::PlayRandom() const
     {
         if (enumVec_.size() == 1)
         {

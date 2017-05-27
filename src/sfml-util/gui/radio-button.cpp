@@ -448,7 +448,7 @@ namespace gui
             {
                 if ((ORIGINAL_SELECTION != i) && (false == IsInvalid(i)))
                 {
-                    SoundManager::Instance()->SoundEffectsSet_Thock()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
                     currentSelection_ = i;
                     buttonSVec_[i]->SetIsInFirstState(false);
                     wasButtonClicked = true;
@@ -638,7 +638,7 @@ namespace gui
                 (currentSelection_ != i))
             {
                 if (buttonSVec_[i]->GetMouseState() != MouseState::Over)
-                    SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
 
                 buttonSVec_[i]->SetMouseState(MouseState::Over);
                 didStatesChange = true;

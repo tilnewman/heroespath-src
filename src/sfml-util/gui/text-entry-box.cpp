@@ -166,7 +166,7 @@ namespace gui
     bool TextEntryBox::KeyPress(const sf::Event::KeyEvent & KE)
     {
         if ((KE.code != sf::Keyboard::LShift) && (KE.code != sf::Keyboard::RShift))
-            SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
+            SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
 
         return true;
     }

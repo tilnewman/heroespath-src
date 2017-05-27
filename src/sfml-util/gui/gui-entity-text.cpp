@@ -233,9 +233,9 @@ namespace gui
         if (DID_MOUSE_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
-                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
             else
-                SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
 
             ResetText();
         }

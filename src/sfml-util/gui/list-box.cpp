@@ -352,7 +352,7 @@ namespace gui
         if (GetSelectedIndex() == NEW_INDEX)
             return false;
 
-        SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
 
         std::size_t indexCounter(0);
         float vertTracker(entityRegion_.height);
@@ -363,7 +363,7 @@ namespace gui
                 currentViewPos_ = (*itr)->GetEntityRegion().height + betweenPad_;
 
                 if (WILL_PLAY_SOUNDEFFECT)
-                    SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
 
                 selectedSPtr_ = *itr;
                 SetupList();
@@ -446,7 +446,7 @@ namespace gui
                 {
                     if (selectedSPtr_ != NEXT_ENTITY_SPTR)
                     {
-                        SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
+                        SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
                         selectedSPtr_ = NEXT_ENTITY_SPTR;
                         SetupList();
                         boxSPtr_->FakeColorSetAsIfFocusIs(true);
@@ -479,7 +479,7 @@ namespace gui
             return false;
         }
 
-        SoundManager::Instance()->SoundEffectsSet_Switch()->PlayRandom();
+        SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
 
         if (KEY_EVENT.code == sf::Keyboard::Return)
         {
@@ -817,7 +817,7 @@ namespace gui
                 if (vertTracker >= entityRegion_.height)
                     currentViewPos_ -= NEXT_HEIGHT;
 
-                SoundManager::Instance()->SoundEffectsSet_TickOn()->PlayRandom();
+                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
                 selectedSPtr_ = *itr;
                 SetupList();
                 return true;
@@ -848,7 +848,7 @@ namespace gui
                     if ((*itr)->GetEntityWillDraw() == false)
                         currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
 
-                    SoundManager::Instance()->SoundEffectsSet_TickOff()->PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
                     selectedSPtr_ = *itr;
                     SetupList();
                     return true;

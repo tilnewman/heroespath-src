@@ -78,10 +78,14 @@ namespace sfml_util
         sfml_util::Time duration_;
     };
 
-    using MusicInfoSVec_t = std::vector<MusicInfo>;
+    using MusicInfoVec_t = std::vector<MusicInfo>;
 
     bool operator==(const MusicInfo & L, const MusicInfo & R);
-    inline bool operator!=(const MusicInfo & L, const MusicInfo & R) { return !(L == R); }
+
+    inline bool operator!=(const MusicInfo & L, const MusicInfo & R)
+    {
+        return ! (L == R);
+    }
 
 }
 
