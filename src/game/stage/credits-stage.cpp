@@ -76,6 +76,7 @@ namespace stage
     CreditsStage::~CreditsStage()
     {
         sfml_util::SoundManager::Instance()->MusicStop(BG_MUSIC_SET_SPTR_);
+        ClearAllEntities();
     }
 
 

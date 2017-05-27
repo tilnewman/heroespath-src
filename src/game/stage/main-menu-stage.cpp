@@ -72,7 +72,9 @@ namespace stage
 
 
     MainMenuStage::~MainMenuStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool MainMenuStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
@@ -103,7 +105,7 @@ namespace stage
 
         //Ouroboros
         ouroborosSPtr_.reset( new game::Ouroboros("MainMenu's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //buttons
         resumeButtonSPtr_->SetScaleToRes();
@@ -121,18 +123,20 @@ namespace stage
         creditsButtonSPtr_->SetEntityPos ((SCREEN_WIDTH_ * 0.5f) - (creditsButtonSPtr_->GetEntityRegion().width  * 0.5f), settingsButtonSPtr_->GetEntityRegion().top + settingsButtonSPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
         exitButtonSPtr_->SetEntityPos    ((SCREEN_WIDTH_ * 0.5f) - (exitButtonSPtr_->GetEntityRegion().width     * 0.5f), creditsButtonSPtr_->GetEntityRegion().top  + creditsButtonSPtr_->GetEntityRegion().height  + SPACE_BETWEEN_BUTTONS);
         //
-        EntityAdd(resumeButtonSPtr_);
-        EntityAdd(createButtonSPtr_);
-        EntityAdd(settingsButtonSPtr_);
-        EntityAdd(creditsButtonSPtr_);
-        EntityAdd(exitButtonSPtr_);
+        EntityAdd(resumeButtonSPtr_.get());
+        EntityAdd(createButtonSPtr_.get());
+        EntityAdd(settingsButtonSPtr_.get());
+        EntityAdd(creditsButtonSPtr_.get());
+        EntityAdd(exitButtonSPtr_.get());
         //
         resumeButtonSPtr_->SetCallbackHandler(this);
 
         //determine if there are saved games to load
         const state::GameStateSSet_t GAMESTATE_SSET( state::GameStateFactory::Instance()->LoadAllGames() );
         if (GAMESTATE_SSET.empty())
+        {
             resumeButtonSPtr_->SetIsDisabled(true);
+        }
     }
 
 

@@ -79,7 +79,9 @@ namespace stage
 
 
     LoadGameStage::~LoadGameStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
@@ -105,7 +107,7 @@ namespace stage
     {
         //ouroboros
         ouroborosSPtr_.reset( new Ouroboros("LoadGameStage's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //back button
         const std::string BUTTONS_PATH(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"));
@@ -117,7 +119,7 @@ namespace stage
                                                                    std::string(BUTTONS_PATH).append("back_button_lit.png")) );
 
         backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_);
+        EntityAdd(backButtonSPtr_.get());
 
         //GameState ListBox
         //
@@ -182,7 +184,7 @@ namespace stage
                                                           sfml_util::FontManager::Instance()->Color_Orange(),
                                                           0,
                                                           this) );
-        EntityAdd(gsListBoxSPtr_);
+        EntityAdd(gsListBoxSPtr_.get());
 
         SetupGameInfoDisplay();
     }
@@ -192,13 +194,17 @@ namespace stage
     {
         //free any existing TextRegion objects
         for (auto const & NEXT_TEXTREGION_SPTR : charTextRegionSVec_)
-            EntityRemove(NEXT_TEXTREGION_SPTR);
+        {
+            EntityRemove(NEXT_TEXTREGION_SPTR.get());
+        }
 
         charTextRegionSVec_.clear();
 
         //establish which item is selected and get the player list from that GameState's Party object
         if (gsListBoxSPtr_->Empty())
+        {
             return;
+        }
 
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemSPtr(gsListBoxSPtr_->GetSelected());
         M_ASSERT_OR_LOGANDTHROW_SS((listBoxItemSPtr.get() != nullptr), "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected() returned a nullptr.");
@@ -220,7 +226,7 @@ namespace stage
         if (locTextRegionSPtr_.get() == nullptr)
         {
             locTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("LoadGameLocation"));
-            EntityAdd(locTextRegionSPtr_);
+            EntityAdd(locTextRegionSPtr_.get());
         }
         descTextInfo.text = std::string("Location:        ").append(gameStateSPtr->Location()->Name());
         const sf::FloatRect LOC_TEXT_RECT(CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);
@@ -230,7 +236,7 @@ namespace stage
         if (charLabelTextRegionSPtr_.get() == nullptr)
         {
             charLabelTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CharacterListLabel") );
-            EntityAdd(charLabelTextRegionSPtr_);
+            EntityAdd(charLabelTextRegionSPtr_.get());
         }
         descTextInfo.text = "Characters:";
         const sf::FloatRect CHAR_TEXT_RECT(CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 5.0f, 0.0f, 0.0f);
@@ -260,7 +266,7 @@ namespace stage
 
             sfml_util::gui::TextRegionSPtr_t textRegionSPtr( new sfml_util::gui::TextRegion(TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) );
             charTextRegionSVec_.push_back(textRegionSPtr);
-            EntityAdd(textRegionSPtr);
+            EntityAdd(textRegionSPtr.get());
 
             posY += textRegionSPtr->GetEntityRegion().height - 25.0f;
         }

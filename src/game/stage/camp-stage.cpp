@@ -105,17 +105,25 @@ namespace stage
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
             }
         }
+
+        ClearAllEntities();
     }
 
 
     bool CampStage::HandleCallback(const game::callback::PopupResponse & PACKAGE)
     {
         if (PACKAGE.Info().Name() == NEWGAME_POPUP_NAME1_)
+        {
             showNewGamePopup2_ = true;
+        }
         else if (PACKAGE.Info().Name() == NEWGAME_POPUP_NAME2_)
+        {
             showNewGamePopup3_ = true;
+        }
         else if (PACKAGE.Info().Name() == NEWGAME_POPUP_NAME3_)
+        {
             showNewGamePopup4_ = true;
+        }
 
         //if (PACKAGE.Info().Name() == NEWGAME_POPUP_NAME4_)
             //TODO goto fight encounter
@@ -128,7 +136,7 @@ namespace stage
     {
         //ouroboros
         ouroborosSPtr_.reset( new Ouroboros("CampStage's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //campfire background image
         sfml_util::LoadImageOrTexture<sf::Texture>(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
@@ -147,7 +155,7 @@ namespace stage
                                                                    1.20f,
                                                                    sf::Color::White,
                                                                    sf::BlendAdd) );
-        EntityAdd(fireAnim1SPtr_);
+        EntityAdd(fireAnim1SPtr_.get());
 
         //TEMP TODO REMOVE
         player::CharacterSPtr_t c1SPtr( new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );

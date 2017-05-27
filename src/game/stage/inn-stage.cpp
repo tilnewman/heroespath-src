@@ -67,7 +67,9 @@ namespace stage
 
 
     InnStage::~InnStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     void InnStage::Setup()
@@ -80,7 +82,7 @@ namespace stage
 
         //ouroboros
         ouroborosSPtr_.reset( new Ouroboros("InnStage's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //candle
         sfml_util::LoadImageOrTexture<sf::Texture>(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));
@@ -97,7 +99,7 @@ namespace stage
                                                                      0.05f,
                                                                      64,
                                                                      sf::BlendAdd) );
-        EntityAdd(candleAnimSPtr_);
+        EntityAdd(candleAnimSPtr_.get());
     }
 
 

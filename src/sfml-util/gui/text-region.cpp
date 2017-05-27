@@ -129,7 +129,20 @@ namespace gui
 
 
     TextRegion::~TextRegion()
-    {}
+    {
+        if (stagePtr_ != nullptr)
+        {
+            if (sliderBarSPtr_.get() != nullptr)
+            {
+                stagePtr_->EntityRemove(sliderBarSPtr_.get());
+            }
+
+            if (boxSPtr_.get() != nullptr)
+            {
+                stagePtr_->EntityRemove(boxSPtr_.get());
+            }
+        }
+    }
 
 
     void TextRegion::Setup(const TextInfo &      TEXT_INFO,
@@ -214,7 +227,7 @@ namespace gui
         {
             if (sliderBarSPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(sliderBarSPtr_);
+                stagePtr_->EntityRemove(sliderBarSPtr_.get());
                 sliderBarSPtr_.reset();
             }
 
@@ -223,7 +236,7 @@ namespace gui
                 sliderBarSPtr_ = newSliderBarSPtr;
                 sliderBarSPtr_->SetOnChangeHandler(this);
                 sliderBarSPtr_->SetCurrentValue(0.0f);
-                stagePtr_->EntityAdd(sliderBarSPtr_);
+                stagePtr_->EntityAdd(sliderBarSPtr_.get());
             }
         }
     }
@@ -246,12 +259,16 @@ namespace gui
             newRegion.height = entityRegion_.height + FIRST_LINE_HEIGHT;
 
             if (sliderBarSPtr_.get() != nullptr)
+            {
                 sliderBarSPtr_->MoveEntityPos(25.0f, 0.0f);
+            }
 
             boxInfo_.SetBoxAndBackgroundRegion(newRegion);
 
             if (boxSPtr_.get() != nullptr)
-                stagePtr_->EntityRemove(boxSPtr_);
+            {
+                stagePtr_->EntityRemove(boxSPtr_.get());
+            }
 
             boxSPtr_.reset( new box::Box("TextRegion's", boxInfo_) );
 
@@ -259,7 +276,7 @@ namespace gui
             //A: Because it is easier to let the Stage and its entitySSet_ handle all the mouse events that keep the focus and other features working.
             //Q: So what to do when the stage draws the box AFTER and on top of the text, such as the box's gradient covering the text?
             //A: Have whatever stage owns this TextRegion draw this TextRegion last.
-            stagePtr_->EntityAdd(boxSPtr_);
+            stagePtr_->EntityAdd(boxSPtr_.get());
         }
     }
 

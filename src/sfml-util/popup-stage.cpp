@@ -90,6 +90,11 @@ namespace sfml_util
         accentSprite2_             (),
         accentTexture2_            (),
         selectPopupButtonSPtr_     (),
+        buttonYesSPtr_             (),
+        buttonNoSPtr_              (),
+        buttonCancelSPtr_          (),
+        buttonContinueSPtr_        (),
+        buttonOkaySPtr_            (),
         sliderbarSPtr_             (),
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
@@ -152,11 +157,14 @@ namespace sfml_util
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_)
     {
         backgroundTexture_.setSmooth(true);
+        backgroundSprite_.setTexture(backgroundTexture_);
     }
 
 
     PopupStage::~PopupStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool PopupStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
@@ -313,42 +321,46 @@ namespace sfml_util
 
         if (POPUP_INFO_.Buttons() & Response::Yes)
         {
-            sfml_util::PopupButton_YesSPtr_t buttonYesSPtr(new sfml_util::PopupButton_Yes(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width / 4.0f) - 50.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonYesSPtr);
+            buttonYesSPtr_.reset(new sfml_util::PopupButton_Yes(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width / 4.0f) - 50.0f, BUTTON_POS_TOP));
+            EntityAdd(buttonYesSPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::No)
         {
-            sfml_util::PopupButton_NoSPtr_t buttonNoSPtr(new sfml_util::PopupButton_No(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (2.0f * (INNER_REGION_.width / 4.0f)) - 40.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonNoSPtr);
+            buttonNoSPtr_.reset(new sfml_util::PopupButton_No(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (2.0f * (INNER_REGION_.width / 4.0f)) - 40.0f, BUTTON_POS_TOP));
+            EntityAdd(buttonNoSPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Cancel)
         {
-            sfml_util::PopupButton_CancelSPtr_t buttonCancelSPtr(new sfml_util::PopupButton_Cancel(POPUP_INFO_, (StageRegionLeft() + INNER_REGION_.left + INNER_REGION_.width) - (INNER_REGION_.width / 3.0f) - 0.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonCancelSPtr);
+            buttonCancelSPtr_.reset(new sfml_util::PopupButton_Cancel(POPUP_INFO_, (StageRegionLeft() + INNER_REGION_.left + INNER_REGION_.width) - (INNER_REGION_.width / 3.0f) - 0.0f, BUTTON_POS_TOP));
+            EntityAdd(buttonCancelSPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Continue)
         {
             const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
-            sfml_util::PopupButton_ContinueSPtr_t buttonContinueSPtr(new sfml_util::PopupButton_Continue(POPUP_INFO_, MIDDLE - 30.0f, BUTTON_POS_TOP));
+            buttonContinueSPtr_.reset(new sfml_util::PopupButton_Continue(POPUP_INFO_, MIDDLE - 30.0f, BUTTON_POS_TOP));
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
-                buttonContinueSPtr->SetEntityPos(MIDDLE - (buttonContinueSPtr->GetEntityRegion().width * 0.5f), buttonContinueSPtr->GetEntityPos().y );
+            {
+                buttonContinueSPtr_->SetEntityPos(MIDDLE - (buttonContinueSPtr_->GetEntityRegion().width * 0.5f), buttonContinueSPtr_->GetEntityPos().y);
+            }
 
-            EntityAdd(buttonContinueSPtr);
+            EntityAdd(buttonContinueSPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Okay)
         {
             const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
-            sfml_util::PopupButton_OkaySPtr_t buttonOkaySPtr(new sfml_util::PopupButton_Okay(POPUP_INFO_, MIDDLE - 50.0f, BUTTON_POS_TOP));
+            buttonOkaySPtr_.reset(new sfml_util::PopupButton_Okay(POPUP_INFO_, MIDDLE - 50.0f, BUTTON_POS_TOP));
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
-                buttonOkaySPtr->SetEntityPos(MIDDLE - (buttonOkaySPtr->GetEntityRegion().width * 0.5f) - 10.0f, buttonOkaySPtr->GetEntityPos().y);
+            {
+                buttonOkaySPtr_->SetEntityPos(MIDDLE - (buttonOkaySPtr_->GetEntityRegion().width * 0.5f) - 10.0f, buttonOkaySPtr_->GetEntityPos().y);
+            }
 
-            EntityAdd(buttonOkaySPtr);
+            EntityAdd(buttonOkaySPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Select)
@@ -357,9 +369,11 @@ namespace sfml_util
             selectPopupButtonSPtr_.reset( new sfml_util::PopupButton_Select(POPUP_INFO_, MIDDLE - 100.0f, BUTTON_POS_TOP) );
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
+            {
                 selectPopupButtonSPtr_->SetEntityPos(MIDDLE - (selectPopupButtonSPtr_->GetEntityRegion().width * 0.5f) - 10.0f, selectPopupButtonSPtr_->GetEntityPos().y);
+            }
 
-            EntityAdd(selectPopupButtonSPtr_);
+            EntityAdd(selectPopupButtonSPtr_.get());
         }
 
         //establish text region
@@ -384,9 +398,9 @@ namespace sfml_util
             textRegionRect.height = textRegion_.height;
 
             textRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
-                                                              POPUP_INFO_.TextInfo(),
-                                                              textRegionRect,
-                                                              this) );
+                                                                  POPUP_INFO_.TextInfo(),
+                                                                  textRegionRect,
+                                                                  this) );
         }
 
         //setup gradient
@@ -439,7 +453,7 @@ namespace sfml_util
                                                                          SLIDERBAR_LENGTH,
                                                                          sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
                                                                          this);
-            EntityAdd(sliderbarSPtr_);
+            EntityAdd(sliderbarSPtr_.get());
         }
 
         if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
@@ -451,7 +465,7 @@ namespace sfml_util
                                                           Justified::Center);
 
             infoTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
-            EntityAdd(infoTextRegionSPtr_);
+            EntityAdd(infoTextRegionSPtr_.get());
             SetupInfoText("(type a number or use the slider below)");
 
             const float TEXTENTRY_BOX_WIDTH(textRegion_.width * 0.45f);
@@ -488,10 +502,10 @@ namespace sfml_util
                                                                       this) );
 
             textEntryBoxSPtr_->SetText(minNumSS.str());
-            EntityAdd(textEntryBoxSPtr_);
+            EntityAdd(textEntryBoxSPtr_.get());
 
             RemoveFocus();
-            SetFocus(textEntryBoxSPtr_);
+            SetFocus(textEntryBoxSPtr_.get());
             textEntryBoxSPtr_->SetHasFocus(true);
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
@@ -515,8 +529,8 @@ namespace sfml_util
                 region.height = 0.0f;
                 imageWrnTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectionion", TEXT_INFO, region) );
 
-                EntityAdd(imageWrnTextRegionSPtr_);
-                EntityRemove(sliderbarSPtr_);
+                EntityAdd(imageWrnTextRegionSPtr_.get());
+                EntityRemove(sliderbarSPtr_.get());
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
@@ -739,13 +753,13 @@ namespace sfml_util
                                                                sfml_util::gui::ListBox::NO_LIMIT_,
                                                                this);
 
-            EntityAdd(spellListBoxSPtr_);
+            EntityAdd(spellListBoxSPtr_.get());
             spellListBoxSPtr_->SetSelectedIndex(0);
             spellListBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
 
             //Force spell listbox to take focus so that user up/down
             //keystrokes work without having to click on the listbox.
-            SetFocus(spellListBoxSPtr_);
+            SetFocus(spellListBoxSPtr_.get());
 
             //Force spell listbox selection up and down to force
             //colors to correct.
@@ -1301,11 +1315,11 @@ namespace sfml_util
                                                       gui::PopupManager::Color_Font(),
                                                       sfml_util::Justified::Center);
 
-        EntityRemove(infoTextRegionSPtr_);
+        EntityRemove(infoTextRegionSPtr_.get());
 
         infoTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
 
-        EntityAdd(infoTextRegionSPtr_);
+        EntityAdd(infoTextRegionSPtr_.get());
 
         const float INFO_TEXT_POS_LEFT((textRegion_.left + (textRegion_.width * 0.5f)) - (infoTextRegionSPtr_->GetEntityRegion().width * 0.5f));
         const float INFO_TEXT_POS_TOP(sliderbarPosTop_ - (2.0f * infoTextRegionSPtr_->GetEntityRegion().height));

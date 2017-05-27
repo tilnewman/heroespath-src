@@ -75,6 +75,8 @@ namespace stage
                 }
             }
         }
+
+        ClearAllEntities();
     }
 
 

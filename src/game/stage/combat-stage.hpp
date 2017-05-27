@@ -189,7 +189,7 @@ namespace stage
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
-        virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         inline bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 
@@ -367,6 +367,7 @@ namespace stage
         sfml_util::gui::TextRegionSPtr_t infoTBoxTextRegionSPtr_;
         sfml_util::gui::TextRegionSPtr_t enemyActionTBoxRegionSPtr_;
         sfml_util::gui::TextRegionSPtr_t enemyCondsTBoxRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t zoomLabelTextRegionSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t attackTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t fightTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t castTBoxButtonSPtr_;

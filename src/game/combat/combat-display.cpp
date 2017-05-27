@@ -140,7 +140,9 @@ namespace combat
 
 
     CombatDisplay::~CombatDisplay()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     void CombatDisplay::Setup()
@@ -150,8 +152,8 @@ namespace combat
         for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
-            EntityAdd(COMBAT_NODE_SPTR);
-            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
+            EntityAdd(COMBAT_NODE_SPTR.get());
+            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
         InitialPlayerPartyCombatTreeSetup();
@@ -160,8 +162,8 @@ namespace combat
         for (auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
-            EntityAdd(COMBAT_NODE_SPTR);
-            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR;
+            EntityAdd(COMBAT_NODE_SPTR.get());
+            combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
         InitialNonPlayerPartyCombatTreeSetup();
@@ -342,7 +344,7 @@ namespace combat
     }
 
 
-    sfml_util::gui::IGuiEntitySPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {
@@ -351,7 +353,7 @@ namespace combat
         }
         else
         {
-            return sfml_util::gui::IGuiEntitySPtr_t();
+            return nullptr;
         }
     }
 

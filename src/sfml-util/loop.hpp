@@ -95,7 +95,7 @@ namespace sfml_util
         inline virtual void SetWillExitOnMouseclick(const bool B)       { willExitOnMouseclick_ = B; }
 
         virtual void RemoveFocus();
-        virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR);//returns true if a stage was found owning the GuiEntity
+        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);//returns true if a stage was found owning the GuiEntity
 
         inline virtual bool GetIgnoreMouse() const                      { return willIgnoreMouse_; }
         inline virtual void SetIgnoreMouse(const bool B)                { willIgnoreMouse_ = B; }
@@ -155,10 +155,10 @@ namespace sfml_util
         float                 holdTimeCounter_;
         bool                  willExitOnKeypress_;
         bool                  willExitOnMouseclick_;
-        gui::IGuiEntitySPtr_t entityWithFocusSPtr_;
+        gui::IGuiEntityPtr_t  entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        game::PopupInfo popupInfo_;
+        game::PopupInfo       popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;

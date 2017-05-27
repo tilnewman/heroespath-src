@@ -29,6 +29,7 @@
 //  Code that adds a popup Stage to a Loop object.
 //
 #include "sfml-util/loop-cmd.hpp"
+
 #include <memory>
 
 
@@ -44,8 +45,8 @@ namespace sfml_util
     class LoopCmd_AddStage_Popup : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Popup(sfml_util::ILoopSPtr_t &      iLoopSPtr,
-                               const game::PopupInfo & POPUP_INFO);
+        LoopCmd_AddStage_Popup(sfml_util::ILoopSPtr_t & iLoopSPtr,
+                               const game::PopupInfo &  POPUP_INFO);
 
         virtual ~LoopCmd_AddStage_Popup();
 

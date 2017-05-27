@@ -88,7 +88,9 @@ namespace stage
 
 
     SettingsStage::~SettingsStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool SettingsStage::HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t & PACKAGE)
@@ -174,7 +176,7 @@ namespace stage
         const float RES_RADIOBUTTONSET_POS_TOP (BOX_RECT.top + 50.0f);
         resRadioButtonSetSPtr_.reset( new gui_demo::RadioButtonSet_DisplayChange(RES_RADIOBUTTONSET_POS_LEFT, RES_RADIOBUTTONSET_POS_TOP, this) );
         resRadioButtonSetSPtr_->SetEntityColors(sfml_util::gui::ColorSet(sf::Color(180,180,180), sf::Color(0,0,0,60), sf::Color(180, 180, 180), sf::Color(0, 0, 0, 60)));
-        EntityAdd(resRadioButtonSetSPtr_);
+        EntityAdd(resRadioButtonSetSPtr_.get());
 
         resolutionTextRegionSPtr_->SetEntityPos((resRadioButtonSetSPtr_->GetEntityPos().x + (resRadioButtonSetSPtr_->GetEntityRegion().width * 0.5f)) - (resolutionTextRegionSPtr_->GetEntityRegion().width * 0.5f), resolutionTextRegionSPtr_->GetEntityPos().y);
 
@@ -207,7 +209,7 @@ namespace stage
                                                                                    SLIDER_LABEL_OFFSET_X,
                                                                                    SLIDER_LABEL_OFFSET_Y) );
 
-            EntityAdd(musicVolumeSliderBarSPtr_);
+            EntityAdd(musicVolumeSliderBarSPtr_.get());
         }
 
         //Sound Effects Volume label and sliderbar
@@ -238,7 +240,7 @@ namespace stage
                                                                                        0.5f,
                                                                                        SLIDER_LABEL_OFFSET_X,
                                                                                        SLIDER_LABEL_OFFSET_Y) );
-            EntityAdd(effectsVolumeSliderBarSPtr_);
+            EntityAdd(effectsVolumeSliderBarSPtr_.get());
             sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
         }
 
@@ -299,7 +301,7 @@ namespace stage
                                                                             sf::Color(180, 180, 180),
                                                                             sf::Color(0,   0,   0,  60)));
             aaRadioButtonSetSPtr_->CallbackHandlerAdd(this);
-            EntityAdd(aaRadioButtonSetSPtr_);
+            EntityAdd(aaRadioButtonSetSPtr_.get());
 
             //music info text region
             {
@@ -361,7 +363,7 @@ namespace stage
         //back button
         backButtonSPtr_->SetScaleToRes();
         backButtonSPtr_->SetVertPositionToBottomOfScreenByRes(GetBackButtonPosLeft());
-        EntityAdd(backButtonSPtr_);
+        EntityAdd(backButtonSPtr_.get());
 
         //revision number
         std::ostringstream ss;
@@ -374,7 +376,7 @@ namespace stage
 
         revisionTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("Version", REV_NUM_TEXTINFO, sf::FloatRect()) );
         revisionTextRegionSPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionSPtr_->GetEntityRegion().height));
-        EntityAdd(revisionTextRegionSPtr_);
+        EntityAdd(revisionTextRegionSPtr_.get());
     }
 
 

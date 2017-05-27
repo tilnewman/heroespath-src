@@ -162,7 +162,13 @@ namespace sfml_util
         sf::Texture              accentTexture1_;
         sf::Sprite               accentSprite2_;
         sf::Texture              accentTexture2_;
-        PopupButton_SelectSPtr_t selectPopupButtonSPtr_;
+        //
+        PopupButton_SelectSPtr_t    selectPopupButtonSPtr_;
+        PopupButton_YesSPtr_t       buttonYesSPtr_;
+        PopupButton_NoSPtr_t        buttonNoSPtr_;
+        PopupButton_CancelSPtr_t    buttonCancelSPtr_;
+        PopupButton_ContinueSPtr_t  buttonContinueSPtr_;
+        PopupButton_OkaySPtr_t      buttonOkaySPtr_;
 
         //members supporting the image select sliderbar
         gui::SliderBarSPtr_t sliderbarSPtr_;

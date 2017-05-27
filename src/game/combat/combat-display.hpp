@@ -92,7 +92,7 @@ namespace combat
     using BlockingMap_t = std::map<creature::UniqueTraits_t, int>;
 
 
-    using CombatNodeToIGuiEntityMap_t = std::map<CombatNodeSPtr_t, sfml_util::gui::IGuiEntitySPtr_t>;
+    using CombatNodeToIGuiEntityMap_t = std::map<CombatNodeSPtr_t, sfml_util::gui::IGuiEntityPtr_t>;
 
 
     //Handles drawing the combat tree
@@ -122,7 +122,7 @@ namespace combat
 
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         const sf::Vector2f GetCenterOfAllNodes() const;
 

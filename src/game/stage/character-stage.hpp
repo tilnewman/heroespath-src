@@ -42,7 +42,6 @@
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/gui/scroll-region.hpp"
 
 #include "game/main-menu-buttons.hpp"
 #include "game/stats/stat-set.hpp"
@@ -202,7 +201,7 @@ namespace stage
         float GetStatPosTop(const stats::stat::Enum STAT) const;
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual sfml_util::gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
 
         bool AreAnyAnimNumStillMoving() const;

@@ -108,7 +108,20 @@ namespace gui
 
 
     ListBox::~ListBox()
-    {}
+    {
+        if (stagePtr_ != nullptr)
+        {
+            if (boxSPtr_.get() != nullptr)
+            {
+                stagePtr_->EntityRemove(boxSPtr_.get());
+            }
+
+            if (sliderBarSPtr_.get() != nullptr)
+            {
+                stagePtr_->EntityRemove(sliderBarSPtr_.get());
+            }
+        }
+    }
 
 
     void ListBox::Setup(const sf::FloatRect &     REGION,
@@ -136,10 +149,12 @@ namespace gui
         if (boxSPtr_.get() == nullptr)
         {
             boxSPtr_.reset(new sfml_util::gui::box::Box("ListBox's", BOX_INFO));
-            stagePtr->EntityAdd(boxSPtr_);
+            stagePtr->EntityAdd(boxSPtr_.get());
         }
         else
+        {
             boxSPtr_->SetupBox(BOX_INFO);
+        }
 
         boxSPtr_->SetWillAcceptFocus(false);
 
@@ -151,14 +166,18 @@ namespace gui
                                                                 REGION.height - 20.0f,
                                                                 sfml_util::gui::SliderStyle(),
                                                                 this) );
-            stagePtr->EntityAdd(sliderBarSPtr_);
+            stagePtr->EntityAdd(sliderBarSPtr_.get());
         }
         else
+        {
             sliderBarSPtr_->SetCurrentValue(0.0f);
+        }
 
         //select the first entity in the list
         if (list_.empty() == false)
-            selectedSPtr_ = * list_.begin();
+        {
+            selectedSPtr_ = *list_.begin();
+        }
 
         SetupList();
     }

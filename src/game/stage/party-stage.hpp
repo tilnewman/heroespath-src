@@ -121,6 +121,8 @@ namespace stage
         sfml_util::gui::ListBoxSPtr_t characterListBoxSPtr_;
         sfml_util::gui::ListBoxSPtr_t partyListBoxSPtr_;
         sfml_util::gui::TextRegionSPtr_t insTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t upTextRegionSPtr_;
+        sfml_util::gui::TextRegionSPtr_t partyTextRegionSPtr_;
         sfml_util::gui::TextInfo warningTextInfo_;
         sfml_util::gui::TextRegionSPtr_t warningTextRegionSPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> warningTextSlider_;

@@ -72,7 +72,7 @@ namespace sfml_util
         holdTimeCounter_     (0.0f),
         willExitOnKeypress_  (false),
         willExitOnMouseclick_(false),
-        entityWithFocusSPtr_ (),
+        entityWithFocusSPtr_ (nullptr),
         willIgnoreMouse_     (false),
         willIgnoreKeystrokes_(false),
         popupInfo_           (" ", sfml_util::gui::TextInfo(" ")),//okay to be initially without meaningful values
@@ -104,7 +104,7 @@ namespace sfml_util
 
     void Loop::RemoveFocus()
     {
-        entityWithFocusSPtr_.reset();
+        entityWithFocusSPtr_ = nullptr;
 
         for (auto & nextStageSPtr : stageSVec_)
         {
@@ -113,15 +113,15 @@ namespace sfml_util
     }
 
 
-    bool Loop::SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR)
+    bool Loop::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
         bool foundStageOwningEntityWithFocus(false);
 
-        entityWithFocusSPtr_ = ENTITY_SPTR;
+        entityWithFocusSPtr_ = ENTITY_PTR;
 
         for (auto & nextStageSPtr : stageSVec_)
         {
-            if (nextStageSPtr->SetFocus(ENTITY_SPTR))
+            if (nextStageSPtr->SetFocus(ENTITY_PTR))
             {
                 foundStageOwningEntityWithFocus = true;
             }
@@ -194,7 +194,8 @@ namespace sfml_util
             auto max{ 0.0f };
             auto sum{ 0.0f };
 
-            //skip the first framerate number because that frame included logging the prev framerate
+            //Skip the first framerate number because it includes time spent
+            //logging the prev framerate.
             for (std::size_t i(1); i < frameRateSampleCount_; ++i)
             {
                 auto const NEXT_FRAMERATE{ frameRateVec_[i] };
@@ -520,32 +521,33 @@ namespace sfml_util
 
     void Loop::ProcessMouseButtonLeftReleased(const sf::Vector2f & MOUSE_POS_V)
     {
-        gui::IGuiEntitySPtr_t nextEntitySPtr;
-
         if (nullptr == popupStageSPtr_.get())
         {
             for (auto & nextStageSPtr : stageSVec_)
             {
-                nextEntitySPtr = nextStageSPtr->UpdateMouseUp(MOUSE_POS_V);
+                auto newEntityWithFocusPtr{ nextStageSPtr->UpdateMouseUp(MOUSE_POS_V) };
 
-                if (nextEntitySPtr.get() != nullptr)
+                if (newEntityWithFocusPtr != nullptr)
                 {
-                    M_HP_LOG("MouseButtonLeftReleased caused focus in stage \"" << nextStageSPtr->GetStageName() << "\" on entity \"" << nextEntitySPtr->GetEntityName() << "\"");
+                    M_HP_LOG("MouseButtonLeftReleased caused focus in stage \""
+                        << nextStageSPtr->GetStageName() << "\" on entity \""
+                        << newEntityWithFocusPtr->GetEntityName() << "\"");
+
                     RemoveFocus();
-                    nextEntitySPtr->SetHasFocus(true);
-                    SetFocus(nextEntitySPtr);
+                    newEntityWithFocusPtr->SetHasFocus(true);
+                    SetFocus(newEntityWithFocusPtr);
                 }
             }
         }
         else
         {
-            nextEntitySPtr = popupStageSPtr_->UpdateMouseUp(MOUSE_POS_V);
+            auto newEntityWithFocusPtr{ popupStageSPtr_->UpdateMouseUp(MOUSE_POS_V) };
 
-            if (nextEntitySPtr.get() != nullptr)
+            if (newEntityWithFocusPtr != nullptr)
             {
                 RemoveFocus();
-                nextEntitySPtr->SetHasFocus(true);
-                SetFocus(nextEntitySPtr);
+                newEntityWithFocusPtr->SetHasFocus(true);
+                SetFocus(newEntityWithFocusPtr);
             }
         }
     }
@@ -558,17 +560,23 @@ namespace sfml_util
         if (nullptr == popupStageSPtr_.get())
         {
             for (auto & nextStageSPtr : stageSVec_)
+            {
                 nextStageSPtr->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+            }
         }
         else
+        {
             popupStageSPtr_->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+        }
     }
 
 
     void Loop::ProcessPopupCallback()
     {
         if (popupCallbackPtr_ == nullptr)
+        {
             return;
+        }
 
         const sfml_util::Response::Enum POPUP_RESPONSE_ENUM(game::LoopManager::Instance()->GetPopupResponse());
         const std::size_t POPUP_SELECTION(game::LoopManager::Instance()->GetPopupSelection());
@@ -587,7 +595,9 @@ namespace sfml_util
             game::LoopManager::Instance()->ClearPopupResponse();
 
             if (WILL_RESET_CALLBACKHANDLER)
+            {
                 popupCallbackPtr_ = nullptr;
+            }
         }
     }
 

@@ -40,12 +40,12 @@
 namespace sfml_util
 {
 
-    //forward declaration
+    //forward declarations
     namespace gui
     {
         class IGuiEntity;
-        using IGuiEntitySPtr_t = std::shared_ptr<IGuiEntity>;
-        using IGuiEntitySSet_t = std::set<IGuiEntitySPtr_t>;
+        using IGuiEntityPtr_t  = IGuiEntity *;
+        using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
 
         namespace box
         {
@@ -95,14 +95,18 @@ namespace sfml_util
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
 
-        virtual gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE);
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
-        inline virtual gui::IGuiEntitySPtr_t GetEntityWithFocus() const  { return entityWithFocusSPtr_; }
+        inline virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const
+        {
+            return entityWithFocusPtr_;
+        }
+
         virtual void RemoveFocus();
-        virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR);
+        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
@@ -110,12 +114,10 @@ namespace sfml_util
         virtual void HandleResolutionChange() {}
 
         //throws if the entity to add was already there
-        virtual bool EntityAdd(const gui::IGuiEntitySPtr_t &);
+        virtual void EntityAdd(const gui::IGuiEntityPtr_t);
 
         //returns false if the entity to remove was not found
-        virtual bool EntityRemove(const gui::IGuiEntitySPtr_t &);
-
-        inline virtual const gui::IGuiEntitySSet_t EntitySetCopy() { return entitySSet_; }
+        virtual bool EntityRemove(const gui::IGuiEntityPtr_t);
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool);
 
@@ -124,14 +126,16 @@ namespace sfml_util
         inline virtual void TestingImageSet(const sf::Texture &) {}
         inline virtual void PerformNextTest() {}
 
+        virtual void ClearAllEntities();
+
     protected:
         void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
         const std::string     STAGE_NAME_;
         sf::FloatRect         stageRegion_;
-        gui::IGuiEntitySSet_t entitySSet_;
-        gui::IGuiEntitySPtr_t entityWithFocusSPtr_;
+        gui::IGuiEntityPVec_t entityPVec_;
+        gui::IGuiEntityPtr_t  entityWithFocusPtr_;//a copy of a ptr in entityPVec_
         gui::box::BoxSPtr_t   hoverTextBoxSPtr_;
         sf::Text              hoverSfText_;
     };

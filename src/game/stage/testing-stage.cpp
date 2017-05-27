@@ -84,13 +84,15 @@ namespace stage
 
 
     TestingStage::~TestingStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     void TestingStage::Setup()
     {
         ouroborosSPtr_.reset( new Ouroboros("TestingStage's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         sfml_util::LoadImageOrTexture(animBGTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
         animBGTexture_.setSmooth(true);

@@ -227,7 +227,9 @@ namespace stage
 
 
     CharacterStage::~CharacterStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool CharacterStage::HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t & RADIOBUTTON_WRAPPER)
@@ -662,25 +664,25 @@ namespace stage
         //help button
         helpButtonSPtr_->SetScaleToRes();
         helpButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - helpButtonSPtr_->GetEntityRegion().width - 180.0f);
-        EntityAdd(helpButtonSPtr_);
+        EntityAdd(helpButtonSPtr_.get());
         helpButtonSPtr_->SetOwningCharacterStage(this);
 
         //create button
         saveButtonSPtr_->SetScaleToRes();
         saveButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) + 180.0f);
-        EntityAdd(saveButtonSPtr_);
+        EntityAdd(saveButtonSPtr_.get());
         saveButtonSPtr_->SetOwningCharacterStage(this);
 
         //back button
         backButtonSPtr_->SetScaleToRes();
         backButtonSPtr_->SetVertPositionToBottomOfScreenByRes((((SCREEN_WIDTH_ * 0.5f) - backButtonSPtr_->GetEntityRegion().width) - 400.0f) - sfml_util::MapByRes(0.0f, 400.0f));
-        EntityAdd(backButtonSPtr_);
+        EntityAdd(backButtonSPtr_.get());
         backButtonSPtr_->SetOwningCharacterStage(this);
 
         //Next button
         nextButtonSPtr_->SetScaleToRes();
         nextButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) + 400.0f + sfml_util::MapByRes(0.0f, 400.0f));
-        EntityAdd(nextButtonSPtr_);
+        EntityAdd(nextButtonSPtr_.get());
         nextButtonSPtr_->SetOwningCharacterStage(this);
 
         //race selection RadioButtonSet
@@ -711,7 +713,7 @@ namespace stage
                                                                             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
                                                                             0.0f) );
             raceRadioButtonSPtr_->CallbackHandlerAdd(this);
-            EntityAdd(raceRadioButtonSPtr_);
+            EntityAdd(raceRadioButtonSPtr_.get());
         }
 
         //role selection RadioButtonSet
@@ -744,7 +746,7 @@ namespace stage
                                                                             -5.0f) );
 
             roleRadioButtonSPtr_->CallbackHandlerAdd(this);
-            EntityAdd(roleRadioButtonSPtr_);
+            EntityAdd(roleRadioButtonSPtr_.get());
         }
 
         SetupRaceDescriptionBox();
@@ -767,7 +769,7 @@ namespace stage
             nInsTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (nInsTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 45.0f,
                                               nInsTextRegionSPtr_->GetEntityPos().y);
 
-            EntityAdd(nInsTextRegionSPtr_);
+            EntityAdd(nInsTextRegionSPtr_.get());
         }
 
         //name text entry box
@@ -786,7 +788,7 @@ namespace stage
                                                                           creature::NameInfo::Instance()->MakeTextInfo(" ", DESC_TEXT_COLOR_),
                                                                           LIGHT_TEXT_COLOR_,
                                                                           BOX_INFO) );
-            EntityAdd(nameTextEntryBoxSPtr_);
+            EntityAdd(nameTextEntryBoxSPtr_.get());
         }
 
         //sex selection RadioButtonSet
@@ -820,7 +822,7 @@ namespace stage
             sexRadioButtonSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sexRadioButtonSPtr_->GetEntityRegion().width * 0.5f),
                                               nameTextEntryBoxSPtr_->GetEntityPos().y + nameTextEntryBoxSPtr_->GetEntityRegion().height + sfml_util::MapByRes(25.0f, 70.0f));
 
-            EntityAdd(sexRadioButtonSPtr_);
+            EntityAdd(sexRadioButtonSPtr_.get());
         }
 
         //spacebar instruction text
@@ -839,7 +841,7 @@ namespace stage
 
             sbInsTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sbInsTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 100.0f,
                                                sexRadioButtonSPtr_->GetEntityRegion().top + sexRadioButtonSPtr_->GetEntityRegion().height + sfml_util::MapByRes(30.0f, 90.0f));
-            EntityAdd(sbInsTextRegionSPtr_);
+            EntityAdd(sbInsTextRegionSPtr_.get());
         }
 
         //Stat BackgroundBox
@@ -861,7 +863,7 @@ namespace stage
                                               BG_INFO);
 
             statsBoxSPtr_.reset( new sfml_util::gui::box::Box("CharacterStageStats", boxInfo) );
-            EntityAdd(statsBoxSPtr_);
+            EntityAdd(statsBoxSPtr_.get());
         }
 
         //Stat Labels
@@ -950,7 +952,7 @@ namespace stage
                                                                   0.035f,
                                                                   ANIM_SCALE,
                                                                   ANIM_SCALE));
-        EntityAdd(smokeAnimSPtr_);
+        EntityAdd(smokeAnimSPtr_.get());
 
         //setup initial config of radio buttons
         AdjustRoleRadioButtonsForRace(static_cast<game::creature::race::Enum>(0));
@@ -998,7 +1000,7 @@ namespace stage
                                                                           REGION,
                                                                           this,
                                                                           SMALL_FONT_SIZE_));
-            EntityAdd(racetDescTextRegionSPtr_);
+            EntityAdd(racetDescTextRegionSPtr_.get());
         }
         else
             racetDescTextRegionSPtr_->Setup(raceDescTextInfo,
@@ -1032,13 +1034,15 @@ namespace stage
                                                                           REGION,
                                                                           this,
                                                                           SMALL_FONT_SIZE_));
-            EntityAdd(roletDescTextRegionSPtr_);
+            EntityAdd(roletDescTextRegionSPtr_.get());
         }
         else
+        {
             roletDescTextRegionSPtr_->Setup(roleDescTextInfo,
                                             REGION,
                                             this,
                                             SMALL_FONT_SIZE_);
+        }
     }
 
 
@@ -1233,13 +1237,17 @@ namespace stage
                                                                       descTextInfo,
                                                                       REGION,
                                                                       this) );
-            EntityAdd(attrDescTextRegion_);
+            EntityAdd(attrDescTextRegion_.get());
         }
         else
+        {
             attrDescTextRegion_->Setup(descTextInfo, REGION, this);
-        //
+        }
+
         for (auto const & NEXT_TR_SPTR : textRegionSVec)
-            attrDescTextRegion_->Append( * NEXT_TR_SPTR );
+        {
+            attrDescTextRegion_->Append( * NEXT_TR_SPTR);
+        }
     }
 
 
@@ -1804,7 +1812,9 @@ namespace stage
     bool CharacterStage::KeyRelease(const sf::Event::KeyEvent & KE)
     {
         if (Stage::KeyRelease(KE))
+        {
             return true;
+        }
 
         if (nameTextEntryBoxSPtr_->HasFocus())
         {
@@ -1812,7 +1822,7 @@ namespace stage
             {
                 nameTextEntryBoxSPtr_->SetHasFocus(false);
                 statsBoxSPtr_->SetHasFocus(true);
-                Stage::SetFocus(statsBoxSPtr_);
+                Stage::SetFocus(statsBoxSPtr_.get());
             }
 
             return true;
@@ -1825,7 +1835,9 @@ namespace stage
             return true;
         }
         else
+        {
             return HandleMenuNavigationKeyRelease(KE);
+        }
     }
 
 
@@ -2012,15 +2024,15 @@ namespace stage
     }
 
 
-    sfml_util::gui::IGuiEntitySPtr_t CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    sfml_util::gui::IGuiEntityPtr_t CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        sfml_util::gui::IGuiEntitySPtr_t entityWithFocusSPtr;
-
         if (AreAnyAnimNumStillMoving())
-            return entityWithFocusSPtr;
+        {
+            return nullptr;
+        }
 
         //process MouseUp() on all other entitys
-        entityWithFocusSPtr = Stage::UpdateMouseUp(MOUSE_POS_V);
+        auto entityWithFocusPtr{ Stage::UpdateMouseUp(MOUSE_POS_V) };
 
         //remove animations that are finished from the vector
         animStatsSVec_.clear();
@@ -2040,7 +2052,9 @@ namespace stage
         for (std::size_t i(0); i < stats::stat::Count; ++i)
         {
             if (fixedStatsSVec_[i]->IsHeldDown())
+            {
                 wereAnyHeldDown = true;
+            }
 
             fixedStatsSVec_[i]->MouseUp();
         }
@@ -2052,7 +2066,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
         }
 
-        return entityWithFocusSPtr;
+        return entityWithFocusPtr;
     }
 
 

@@ -29,7 +29,6 @@
 //  Interface for all Stage objects.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/gui/i-gui-entity.hpp"
 
 #include <memory>
 #include <string>
@@ -38,6 +37,14 @@
 
 namespace sfml_util
 {
+
+    //forward declarations
+    namespace gui
+    {
+        class IGuiEntity;
+        using IGuiEntityPtr_t = IGuiEntity *;
+    }
+
 
     //interface for all Stage classes
     class IStage
@@ -62,26 +69,24 @@ namespace sfml_util
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) = 0;
         virtual void UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) = 0;
 
-        virtual gui::IGuiEntitySPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
+        virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE) = 0;
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE) = 0;
 
-        virtual gui::IGuiEntitySPtr_t GetEntityWithFocus() const = 0;
+        virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const = 0;
         virtual void RemoveFocus() = 0;
-        virtual bool SetFocus(const gui::IGuiEntitySPtr_t & ENTITY_SPTR) = 0;
+        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR) = 0;
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
 
         virtual void HandleResolutionChange() = 0;
 
         //throws if the entity to add was already there
-        virtual bool EntityAdd(const gui::IGuiEntitySPtr_t &) = 0;
+        virtual void EntityAdd(const gui::IGuiEntityPtr_t) = 0;
 
         //returns false if the entity to remove was not found
-        virtual bool EntityRemove(const gui::IGuiEntitySPtr_t &) = 0;
-
-        virtual const gui::IGuiEntitySSet_t EntitySetCopy() = 0;
+        virtual bool EntityRemove(const gui::IGuiEntityPtr_t) = 0;
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool) = 0;
 
@@ -89,6 +94,8 @@ namespace sfml_util
         virtual void TestingStrIncrement(const std::string &) = 0;
         virtual void TestingImageSet(const sf::Texture &) = 0;
         virtual void PerformNextTest() = 0;
+
+        virtual void ClearAllEntities() = 0;
     };
 
     using IStageSPtr_t = std::shared_ptr<IStage>;

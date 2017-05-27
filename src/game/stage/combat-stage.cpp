@@ -185,6 +185,7 @@ namespace stage
         infoTBoxTextRegionSPtr_     (),
         enemyActionTBoxRegionSPtr_  (),
         enemyCondsTBoxRegionSPtr_   (),
+        zoomLabelTextRegionSPtr_    (),
         attackTBoxButtonSPtr_       (),
         fightTBoxButtonSPtr_        (),
         castTBoxButtonSPtr_         (),
@@ -209,7 +210,9 @@ namespace stage
 
 
     CombatStage::~CombatStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
@@ -283,7 +286,9 @@ namespace stage
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -368,7 +373,7 @@ namespace stage
                                                           this) );
 
         statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
-        EntityAdd(statusBoxSPtr_);
+        EntityAdd(statusBoxSPtr_.get());
 
         //command box
         const float COMMAND_REGION_HORIZ_SPACER(25.0f);
@@ -479,7 +484,7 @@ namespace stage
         attackTBoxButtonSPtr_->SetCallbackHandler(this);
         attackTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
         attackTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(attackTBoxButtonSPtr_);
+        EntityAdd(attackTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(F)ight";
         turnButtonTextInfoDisabled.text = "(F)ight";
@@ -488,7 +493,7 @@ namespace stage
         fightTBoxButtonSPtr_->SetCallbackHandler(this);
         fightTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
         fightTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(fightTBoxButtonSPtr_);
+        EntityAdd(fightTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(C)ast";
         turnButtonTextInfoDisabled.text = "(C)ast";
@@ -497,7 +502,7 @@ namespace stage
         castTBoxButtonSPtr_->SetCallbackHandler(this);
         castTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
         castTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(castTBoxButtonSPtr_);
+        EntityAdd(castTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "Advance";
         turnButtonTextInfoDisabled.text = "Advance";
@@ -506,7 +511,7 @@ namespace stage
         advanceTBoxButtonSPtr_->SetCallbackHandler(this);
         advanceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
         advanceTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(advanceTBoxButtonSPtr_);
+        EntityAdd(advanceTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "Retreat";
         turnButtonTextInfoDisabled.text = "Retreat";
@@ -515,7 +520,7 @@ namespace stage
         retreatTBoxButtonSPtr_->SetCallbackHandler(this);
         retreatTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
         retreatTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(retreatTBoxButtonSPtr_);
+        EntityAdd(retreatTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(B)lock";
         turnButtonTextInfoDisabled.text = "(B)lock";
@@ -524,7 +529,7 @@ namespace stage
         blockTBoxButtonSPtr_->SetCallbackHandler(this);
         blockTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
         blockTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(blockTBoxButtonSPtr_);
+        EntityAdd(blockTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(S)kip";
         turnButtonTextInfoDisabled.text = "(S)kip";
@@ -533,7 +538,7 @@ namespace stage
         skipTBoxButtonSPtr_->SetCallbackHandler(this);
         skipTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
         skipTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(skipTBoxButtonSPtr_);
+        EntityAdd(skipTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "Fl(y)";
         turnButtonTextInfoDisabled.text = "Fl(y)";
@@ -542,7 +547,7 @@ namespace stage
         flyTBoxButtonSPtr_->SetCallbackHandler(this);
         flyTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
         flyTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(flyTBoxButtonSPtr_);
+        EntityAdd(flyTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(L)and";
         turnButtonTextInfoDisabled.text = "(L)and";
@@ -551,7 +556,7 @@ namespace stage
         landTBoxButtonSPtr_->SetCallbackHandler(this);
         landTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
         landTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(landTBoxButtonSPtr_);
+        EntityAdd(landTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(R)oar";
         turnButtonTextInfoDisabled.text = "(R)oar";
@@ -560,7 +565,7 @@ namespace stage
         roarTBoxButtonSPtr_->SetCallbackHandler(this);
         roarTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
         roarTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(roarTBoxButtonSPtr_);
+        EntityAdd(roarTBoxButtonSPtr_.get());
 
         turnButtonTextInfo.text = "(P)ounce";
         turnButtonTextInfoDisabled.text = "(P)ounce";
@@ -569,13 +574,13 @@ namespace stage
         pounceTBoxButtonSPtr_->SetCallbackHandler(this);
         pounceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
         pounceTBoxButtonSPtr_->MoveEntityOffScreen();
-        EntityAdd(pounceTBoxButtonSPtr_);
+        EntityAdd(pounceTBoxButtonSPtr_.get());
 
         //settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
         settingsButtonSPtr_->SetEntityPos(COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH - settingsButtonSPtr_->GetEntityRegion().width - COMMAND_REGION_PAD, COMMAND_REGION_TOP + COMMAND_REGION_PAD);
         settingsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(settingsButtonSPtr_);
+        EntityAdd(settingsButtonSPtr_.get());
 
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
@@ -928,28 +933,25 @@ namespace stage
         //
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
         //
-        sfml_util::gui::TextRegionSPtr_t zoomSliderLabelTextRegionSPtr( new sfml_util::gui::TextRegion("ZoomSlider's",
-                                                                                                        ZOOMSLIDER_LABEL_TEXT_INFO,
-                                                                                                        ZOOMSLIDER_LABEL_RECT) );
+        zoomLabelTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("ZoomSlider's",
+                                                                       ZOOMSLIDER_LABEL_TEXT_INFO,
+                                                                       ZOOMSLIDER_LABEL_RECT) );
         //
         zoomSliderBarSPtr_.reset(new sfml_util::gui::SliderBar("CombatStageZoom",
                                                                COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
-                                                               zoomSliderLabelTextRegionSPtr->GetEntityRegion().top + zoomSliderLabelTextRegionSPtr->GetEntityRegion().height,
+                                                               zoomLabelTextRegionSPtr_->GetEntityRegion().top + zoomLabelTextRegionSPtr_->GetEntityRegion().height,
                                                                (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) - (COMMAND_REGION_PAD * 2.0f),
                                                                sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
         zoomSliderBarSPtr_->SetCurrentValue(1.0f);
-        zoomSliderLabelTextRegionSPtr->SetEntityPos((zoomSliderBarSPtr_->GetEntityPos().x + (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) - (zoomSliderLabelTextRegionSPtr->GetEntityRegion().width * 0.5f),
-                                                    zoomSliderLabelTextRegionSPtr->GetEntityPos().y);
+        zoomLabelTextRegionSPtr_->SetEntityPos((zoomSliderBarSPtr_->GetEntityPos().x + (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) - (zoomLabelTextRegionSPtr_->GetEntityRegion().width * 0.5f),
+                                                zoomLabelTextRegionSPtr_->GetEntityPos().y);
         //
-        EntityAdd(zoomSliderLabelTextRegionSPtr);
-        EntityAdd(zoomSliderBarSPtr_);
+        EntityAdd(zoomLabelTextRegionSPtr_.get());
+        EntityAdd(zoomSliderBarSPtr_.get());
 
         MoveTurnBoxObjectsOffScreen(true);
         restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
-
-        //TODO TEMP REMOVE -testing sparks animation
-
     }
 
 
@@ -1266,7 +1268,7 @@ namespace stage
     }
 
 
-    sfml_util::gui::IGuiEntitySPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    sfml_util::gui::IGuiEntityPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
         isMouseHeldDown_ = false;
@@ -2246,7 +2248,9 @@ namespace stage
         pounceTBoxButtonSPtr_->MoveEntityOffScreen();
 
         if (WILL_MOVE_SKIP_BUTTON)
+        {
             skipTBoxButtonSPtr_->MoveEntityOffScreen();
+        }
     }
 
 

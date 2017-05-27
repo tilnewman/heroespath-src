@@ -82,6 +82,8 @@ namespace stage
         characterListBoxSPtr_ (),
         partyListBoxSPtr_     (),
         insTextRegionSPtr_    (),
+        upTextRegionSPtr_     (),
+        partyTextRegionSPtr_  (),
         warningTextInfo_      (),
         warningTextRegionSPtr_(),
         warningTextSlider_    (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
@@ -104,7 +106,9 @@ namespace stage
 
 
     PartyStage::~PartyStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool PartyStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
@@ -281,25 +285,25 @@ namespace stage
     {
         //ouroboros
         ouroborosSPtr_.reset( new Ouroboros("PartyStage's") );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //back button
         backButtonSPtr_->SetScaleToRes();
         backButtonSPtr_->SetVertPositionToBottomOfScreenByRes(sfml_util::MapByRes(75.0f, 800.0f));
         backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_);
+        EntityAdd(backButtonSPtr_.get());
 
         //start game button
         startButtonSPtr_->SetScaleToRes();
         startButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) + 110.0f);
         startButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(startButtonSPtr_);
+        EntityAdd(startButtonSPtr_.get());
 
         //delete game button
         deleteButtonSPtr_->SetScaleToRes();
         deleteButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - 325.0f);
         deleteButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(deleteButtonSPtr_);
+        EntityAdd(deleteButtonSPtr_.get());
 
         //top instruction text
         {
@@ -313,7 +317,7 @@ namespace stage
 
             insTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("Instructions", insTextInfo, sf::FloatRect()) );
             insTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 125.0f, mainMenuTitle_.LowerPosition() - 45.0f);
-            EntityAdd(insTextRegionSPtr_);
+            EntityAdd(insTextRegionSPtr_.get());
         }
 
         //load all players not yet assigned to a party/started game
@@ -383,7 +387,7 @@ namespace stage
                                                                  sfml_util::FontManager::Instance()->Color_Orange(),
                                                                  sfml_util::gui::ListBox::NO_LIMIT_,
                                                                  this) );
-        EntityAdd(characterListBoxSPtr_);
+        EntityAdd(characterListBoxSPtr_.get());
 
         //party list box
         const float PARTY_LIST_POS_LEFT ((SCREEN_WIDTH_ * 0.55f) - 25.0f);
@@ -407,7 +411,7 @@ namespace stage
                                                              sfml_util::FontManager::Instance()->Color_Orange(),
                                                              player::Party::MAX_CHARACTER_COUNT_,
                                                              this) );
-        EntityAdd(partyListBoxSPtr_);
+        EntityAdd(partyListBoxSPtr_.get());
 
         //unplayed character label text
         {
@@ -416,9 +420,9 @@ namespace stage
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
                                                    sfml_util::FontManager::Instance()->Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            sfml_util::gui::TextRegionSPtr_t labelTextRegionSPtr( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
-            labelTextRegionSPtr->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - labelTextRegionSPtr->GetEntityRegion().height));
-            EntityAdd(labelTextRegionSPtr);
+            upTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
+            upTextRegionSPtr_->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - upTextRegionSPtr_->GetEntityRegion().height));
+            EntityAdd(upTextRegionSPtr_.get());
         }
 
         //party label text
@@ -428,9 +432,9 @@ namespace stage
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
                                                    sfml_util::FontManager::Instance()->Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            sfml_util::gui::TextRegionSPtr_t labelTextRegionSPtr( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
-            labelTextRegionSPtr->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - labelTextRegionSPtr->GetEntityRegion().height));
-            EntityAdd(labelTextRegionSPtr);
+            partyTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
+            partyTextRegionSPtr_->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - partyTextRegionSPtr_->GetEntityRegion().height));
+            EntityAdd(partyTextRegionSPtr_.get());
         }
 
         //warning instruction text

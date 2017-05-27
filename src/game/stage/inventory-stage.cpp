@@ -213,7 +213,9 @@ namespace stage
 
 
     InventoryStage::~InventoryStage()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool InventoryStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
@@ -532,7 +534,7 @@ namespace stage
 
         //ouroboros
         ouroborosSPtr_.reset( new Ouroboros("InventoryStage's", true) );
-        EntityAdd(ouroborosSPtr_);
+        EntityAdd(ouroborosSPtr_.get());
 
         //instruction text
         const sfml_util::gui::TextInfo INSTR_TEXT_INFO("(use arrows or numbers to change characters, press 'a' to see achievements)",
@@ -545,40 +547,40 @@ namespace stage
 
         insTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sInstruction", INSTR_TEXT_INFO, sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f)) );
         insTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionSPtr_->GetEntityPos().y);
-        EntityAdd(insTextRegionSPtr_);
+        EntityAdd(insTextRegionSPtr_.get());
 
         //player character image in the top left corner
         SetupCreatureImage();
 
         //details text
         SetupCreatureDetails(true);
-        EntityAdd(detailsTextRegionSPtr_);
+        EntityAdd(detailsTextRegionSPtr_.get());
 
         //stats text
         SetupCreatureStats();
-        EntityAdd(statsTextRegionSPtr_);
+        EntityAdd(statsTextRegionSPtr_.get());
 
         //coins, gems, meteor shards, total weight carried
         SetupCenterText();
-        EntityAdd(centerTextRegionSPtr_);
+        EntityAdd(centerTextRegionSPtr_.get());
 
         //equipped item list box
         SetupListBox();
-        EntityAdd(equippedListBoxSPtr_);
+        EntityAdd(equippedListBoxSPtr_.get());
 
         //UnEquipped item list box
         SetupDescBox(false);
-        EntityAdd(unEquipListBoxSPtr_);
+        EntityAdd(unEquipListBoxSPtr_.get());
 
         //first listbox title text
         SetupFirstListBoxTitle();
-        EntityAdd(eqTitleTextRegionSPtr_);
+        EntityAdd(eqTitleTextRegionSPtr_.get());
 
         //descbox title text
         SetupDescBoxTitle();
-        EntityAdd(unEqTitleTextRegionSPtr_);
-        EntityAdd(descTextRegionSPtr_);
-        EntityAdd(descBoxSPtr_);
+        EntityAdd(unEqTitleTextRegionSPtr_.get());
+        EntityAdd(descTextRegionSPtr_.get());
+        EntityAdd(descBoxSPtr_.get());
 
         //buttons
         sfml_util::gui::TextInfo buttonTextInfo(" ",
@@ -599,7 +601,7 @@ namespace stage
         backButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled));
         backButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonSPtr_->GetEntityRegion().height * 0.5f));
         backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_);
+        EntityAdd(backButtonSPtr_.get());
 
         buttonTextInfo.text = "(I)tems";
         buttonTextInfoDisabled.text = "(I)tems";
@@ -607,7 +609,7 @@ namespace stage
         itemsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled));
         itemsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonSPtr_->GetEntityRegion().height * 0.5f));
         itemsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(itemsButtonSPtr_);
+        EntityAdd(itemsButtonSPtr_.get());
 
         buttonTextInfo.text = "(T)itles";
         buttonTextInfoDisabled.text = "(T)itles";
@@ -615,7 +617,7 @@ namespace stage
         titlesButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled));
         titlesButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonSPtr_->GetEntityRegion().height * 0.5f));
         titlesButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(titlesButtonSPtr_);
+        EntityAdd(titlesButtonSPtr_.get());
 
         buttonTextInfo.text = "(C)onditions";
         buttonTextInfoDisabled.text = "(C)onditions";
@@ -623,7 +625,7 @@ namespace stage
         condsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled));
         condsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonSPtr_->GetEntityRegion().height * 0.5f));
         condsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(condsButtonSPtr_);
+        EntityAdd(condsButtonSPtr_.get());
 
         buttonTextInfo.text = "(S)pells";
         buttonTextInfoDisabled.text = "(S)pells";
@@ -631,7 +633,7 @@ namespace stage
         spellsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled));
         spellsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonSPtr_->GetEntityRegion().height * 0.5f));
         spellsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(spellsButtonSPtr_);
+        EntityAdd(spellsButtonSPtr_.get());
 
         buttonTextInfo.text = "(G)ive";
         buttonTextInfoDisabled.text = "(G)ive";
@@ -639,7 +641,7 @@ namespace stage
         giveButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled));
         giveButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonSPtr_->GetEntityRegion().height * 0.5f));
         giveButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(giveButtonSPtr_);
+        EntityAdd(giveButtonSPtr_.get());
 
         buttonTextInfo.text = "S(h)are";
         buttonTextInfoDisabled.text = "S(h)are";
@@ -647,7 +649,7 @@ namespace stage
         shareButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled));
         shareButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonSPtr_->GetEntityRegion().height * 0.5f));
         shareButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(shareButtonSPtr_);
+        EntityAdd(shareButtonSPtr_.get());
 
         buttonTextInfo.text = "Gathe(r)";
         buttonTextInfoDisabled.text = "Gathe(r)";
@@ -655,7 +657,7 @@ namespace stage
         gatherButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled));
         gatherButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonSPtr_->GetEntityRegion().height * 0.5f));
         gatherButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(gatherButtonSPtr_);
+        EntityAdd(gatherButtonSPtr_.get());
 
         buttonTextInfo.text = "(E)quip";
         buttonTextInfoDisabled.text = "(E)quip";
@@ -663,7 +665,7 @@ namespace stage
         equipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled));
         equipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonSPtr_->GetEntityRegion().height * 0.5f));
         equipButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(equipButtonSPtr_);
+        EntityAdd(equipButtonSPtr_.get());
 
         buttonTextInfo.text = "(U)nequip";
         buttonTextInfoDisabled.text = "(U)nequip";
@@ -671,7 +673,7 @@ namespace stage
         unequipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled));
         unequipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonSPtr_->GetEntityRegion().height * 0.5f));
         unequipButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(unequipButtonSPtr_);
+        EntityAdd(unequipButtonSPtr_.get());
 
         buttonTextInfo.text = "(D)rop";
         buttonTextInfoDisabled.text = "(D)rop";
@@ -679,7 +681,7 @@ namespace stage
         dropButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled));
         dropButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonSPtr_->GetEntityRegion().height * 0.5f));
         dropButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(dropButtonSPtr_);
+        EntityAdd(dropButtonSPtr_.get());
 
         SetupButtons();
 
@@ -1961,7 +1963,9 @@ namespace stage
         const bool IS_ALREADY_INSTANTIATED(equippedListBoxSPtr_.get() != nullptr);
 
         if (IS_ALREADY_INSTANTIATED)
-            EntityRemove(equippedListBoxSPtr_);
+        {
+            EntityRemove(equippedListBoxSPtr_.get());
+        }
 
         equippedListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sLeftListBox",
                                                                 LISTBOX_REGION_,
@@ -1974,7 +1978,9 @@ namespace stage
                                                                 sfml_util::gui::ListBox::NO_LIMIT_,
                                                                 this) );
         if (IS_ALREADY_INSTANTIATED)
-            EntityAdd(equippedListBoxSPtr_);
+        {
+            EntityAdd(equippedListBoxSPtr_.get());
+        }
 
         equippedListBoxSPtr_->SetSelectedIndex(0);
         equippedListBoxSPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
@@ -2010,7 +2016,7 @@ namespace stage
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
             origPosV = unEquipListBoxSPtr_->GetEntityPos();
-            EntityRemove(unEquipListBoxSPtr_);
+            EntityRemove(unEquipListBoxSPtr_.get());
         }
 
         unEquipListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sUnEquipped",
@@ -2025,7 +2031,9 @@ namespace stage
                                                                 this) );
 
         if (IS_EQ_ALREADY_INSTANTIATED)
-            EntityAdd(unEquipListBoxSPtr_);
+        {
+            EntityAdd(unEquipListBoxSPtr_.get());
+        }
 
         unEquipListBoxSPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
         unEquipListBoxSPtr_->SetSelectedIndex(0);
@@ -2033,13 +2041,19 @@ namespace stage
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
             if (WILL_MOVE_OFFSCREEN)
+            {
                 unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
+            }
             else
+            {
                 unEquipListBoxSPtr_->SetEntityPos(origPosV.x, origPosV.y);
+            }
         }
 
         if (descBoxSPtr_.get() == nullptr)
-            descBoxSPtr_.reset( new sfml_util::gui::box::Box("InventoryStage'sDesc", LISTBOX_BOX_INFO) );
+        {
+            descBoxSPtr_.reset(new sfml_util::gui::box::Box("InventoryStage'sDesc", LISTBOX_BOX_INFO));
+        }
 
         sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
         descTextInfo.color = DESCBOX_TEXT_COLOR_;
@@ -2048,7 +2062,9 @@ namespace stage
         const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionSPtr_.get() != nullptr);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
-            EntityRemove(descTextRegionSPtr_);
+        {
+            EntityRemove(descTextRegionSPtr_.get());
+        }
 
         descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
                                                                   descTextInfo,
@@ -2057,7 +2073,9 @@ namespace stage
                                                                   sfml_util::gui::box::Info(),
                                                                   DESCBOX_MARGINS_) );
         if (IS_DTR_ALREADY_INSTANTIATED)
-            EntityAdd(descTextRegionSPtr_);
+        {
+            EntityAdd(descTextRegionSPtr_.get());
+        }
 
         descTextRegionSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionSPtr_->GetEntityPos().y);
         descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
@@ -2154,7 +2172,9 @@ namespace stage
         const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionSPtr_.get() != nullptr);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
-            EntityRemove(descTextRegionSPtr_);
+        {
+            EntityRemove(descTextRegionSPtr_.get());
+        }
 
         descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
                                                                   descTextInfo,
@@ -2165,7 +2185,9 @@ namespace stage
                                                                   DESCBOX_MARGINS_) );
 
         if (IS_DTR_ALREADY_INSTANTIATED)
-            EntityAdd(descTextRegionSPtr_);
+        {
+            EntityAdd(descTextRegionSPtr_.get());
+        }
     }
 
 

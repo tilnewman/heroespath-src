@@ -57,7 +57,9 @@ namespace gui_demo
     {
         //handle case where there are too many resolutions to display
         if (resolutionVec_.size() > MAX_NUM_RES_DISPLAYABLE_)
+        {
             resolutionVec_.resize(MAX_NUM_RES_DISPLAYABLE_);
+        }
 
         //compose the radiobutton text fields
         sfml_util::gui::MouseTextInfoVec_t mouseTextInfoVec;
