@@ -79,40 +79,59 @@ namespace sfml_util
 
 
     //Returns the number loaded into the std::vector<> from DIR_STR.
-    template<typename ImageOrTextureSPtr_t>
-    std::size_t LoadAllImageOrTextureInDir(std::vector< ImageOrTextureSPtr_t > & imageOrTextureSVec,
-                                           const std::string &                   DIR_STR = ".")
+    template<typename ImageOrTexture_t>
+    std::size_t LoadAllImageOrTextureInDir(std::vector< ImageOrTexture_t > &
+        imageOrTextureVec,
+        const std::string & DIR_STR)
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path   DIR_OBJ    (bfs::system_complete(bfs::path(DIR_STR)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::path(DIR_STR)));
         const std::string DIR_OBJ_STR(DIR_OBJ.string());
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ), "LoadAllImageOrTextureInDir(\"" << DIR_OBJ_STR << "\") failed because that path does not exist!");
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ), "LoadAllImageOrTextureInDir(\""
+            << DIR_OBJ_STR << "\") failed because that path does not exist!");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ), "LoadAllImageOrTextureInDir(\"" << DIR_OBJ_STR << "\") failed because that is not a directory.");
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ), "LoadAllImageOrTextureInDir(\""
+            << DIR_OBJ_STR << "\") failed because that is not a directory.");
 
-        const std::size_t ORIG_SIZE(imageOrTextureSVec.size());
+        const std::size_t ORIG_SIZE(imageOrTextureVec.size());
 
         bfs::directory_iterator endItr;
         for (bfs::directory_iterator dirItr(DIR_OBJ); endItr != dirItr; ++dirItr)
         {
             auto const DIR_PATH_STR{ dirItr->path().string() };
 
-            //ignore non-regular files, files with the extension .txt, and files named "sample.gif"
-            if ((bfs::is_regular_file(dirItr->status())) &&
-                (boost::algorithm::iends_with(DIR_PATH_STR, ".txt") == false) &&
-                (boost::algorithm::iends_with(DIR_PATH_STR, ".DS_Store") == false) &&
-                (boost::algorithm::icontains(DIR_PATH_STR, "sample.gif") == false))
+            if (bfs::is_regular_file(dirItr->status()) == false)
             {
-                ImageOrTextureSPtr_t tempImageOrTextureSPtr(new typename ImageOrTextureSPtr_t::element_type);
-                LoadImageOrTexture(*tempImageOrTextureSPtr, DIR_PATH_STR);
-                imageOrTextureSVec.push_back(tempImageOrTextureSPtr);
+                continue;
             }
+
+            const std::vector<std::string> INVALID_TEXT_VEC = { ".txt",
+                                                                ".DS_Store",
+                                                                "sample.gif" };
+
+            auto didFindInvalid{ false };
+            for (auto const & NEXT_INVALID_STRING : INVALID_TEXT_VEC)
+            {
+                if (boost::algorithm::icontains(DIR_PATH_STR, NEXT_INVALID_STRING))
+                {
+                    didFindInvalid = true;
+                    break;
+                }
+            }
+
+            if (didFindInvalid)
+            {
+                continue;
+            }
+
+            ImageOrTexture_t tempImageOrTexture;
+            LoadImageOrTexture(tempImageOrTexture, DIR_PATH_STR);
+            imageOrTextureVec.push_back(tempImageOrTexture);
         }
 
-        const std::size_t TOTAL_ADDED(imageOrTextureSVec.size() - ORIG_SIZE);
-        //std::cout << "LoadAllImageOrTextureInDirectory(\"" << DIR_OBJ_STR << "\") found " << TOTAL_ADDED << "." << std::endl;
+        const std::size_t TOTAL_ADDED(imageOrTextureVec.size() - ORIG_SIZE);
         return TOTAL_ADDED;
     }
 

@@ -63,24 +63,24 @@ namespace sfml_util
         BLEND_MODE_             (BLEND_MODE),
         timeBetweenFrames_      (TIME_BETWEEN_FRAMES),
         sprite_                 (),
-        textureSPtr_            (),
+        texture_                (),
         rects_                  (),
         currentFrame_           (0),
         frameTimerSec_          (0.0f),
         color_                  (COLOR)
     {
-        sfml_util::LoadImageOrTextureSPtr(textureSPtr_, TEXTURE_FILE_PATH);
-        textureSPtr_->setSmooth(true);
+        sfml_util::LoadImageOrTexture(texture_, TEXTURE_FILE_PATH);
+        texture_.setSmooth(true);
 
-        sprite_.setTexture( * textureSPtr_ );
+        sprite_.setTexture(texture_);
         sprite_.setPosition(SCREEN_POS_LEFT, SCREEN_POS_TOP);
         sprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         sprite_.setColor(color_);
 
         SetEntityRegion( sf::FloatRect(SCREEN_POS_LEFT, SCREEN_POS_TOP, static_cast<float>(FRAME_WIDTH), static_cast<float>(FRAME_HEIGHT)) );
 
-        auto const TEXTURE_WIDTH (textureSPtr_->getSize().x);
-        auto const TEXTURE_HEIGHT(textureSPtr_->getSize().y);
+        auto const TEXTURE_WIDTH (texture_.getSize().x);
+        auto const TEXTURE_HEIGHT(texture_.getSize().y);
 
         auto posX(FIRST_FRAME_POS_LEFT_);
         auto posY(FIRST_FRAME_POS_TOP_);
@@ -187,17 +187,22 @@ namespace sfml_util
         BLEND_MODE_         (BLEND_MODE),
         timeBetweenFrames_  (TIME_BETWEEN_FRAMES),
         sprite_             (),
-        textureSVec_        (),
+        textureVec_         (),
         currentFrame_       (0),
         frameTimerSec_      (0.0f),
         color_              (COLOR)
     {
-        sfml_util::LoadAllImageOrTextureInDir(textureSVec_, TEXTURES_DIRECTORY);
+        sfml_util::LoadAllImageOrTextureInDir(textureVec_, TEXTURES_DIRECTORY);
 
-        for (auto nextTextureSPtr : textureSVec_)
-            nextTextureSPtr->setSmooth(true);
+        M_ASSERT_OR_LOGANDTHROW_SS((textureVec_.empty() == false),
+            "sfml_util::MultiTextureAnimation constructor failed to find any images to load.");
 
-        sprite_.setTexture( * textureSVec_[0] );
+        for (auto & nextTexture : textureVec_)
+        {
+            nextTexture.setSmooth(true);
+        }
+
+        sprite_.setTexture( textureVec_[0] );
         sprite_.setPosition(SCREEN_POS_LEFT, SCREEN_POS_TOP);
         sprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         sprite_.setColor(color_);
@@ -240,13 +245,13 @@ namespace sfml_util
         if (frameTimerSec_ > timeBetweenFrames_)
         {
             frameTimerSec_ -= timeBetweenFrames_;
-            if (++currentFrame_ >= (textureSVec_.size() - 1))
+            if (++currentFrame_ >= (textureVec_.size() - 1))
             {
                 currentFrame_ = 0;
                 didReachEndOfFrames = true;
             }
 
-            sprite_.setTexture( * textureSVec_[currentFrame_] );
+            sprite_.setTexture(textureVec_[currentFrame_]);
             sprite_.setColor(color_);
         }
 

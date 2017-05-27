@@ -103,7 +103,7 @@ namespace sfml_util
         const sf::BlendMode      BLEND_MODE_;
         float                    timeBetweenFrames_;
         sf::Sprite               sprite_;
-        TextureSPtr_t            textureSPtr_;
+        sf::Texture              texture_;
         std::vector<sf::IntRect> rects_;//the size of this vector acts as a total frame count.
         std::size_t              currentFrame_;//counts up to 'total frame count' then restarts at zero
         float                    frameTimerSec_;
@@ -149,7 +149,7 @@ namespace sfml_util
         virtual bool UpdateTime(const float SECONDS);
 
         inline std::size_t CurrentFrame() const             { return currentFrame_; }
-        inline std::size_t FrameCount() const               { return textureSVec_.size(); }
+        inline std::size_t FrameCount() const               { return textureVec_.size(); }
 
         virtual void MovePosition(const float HORIZ, const float VERT);
         virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
@@ -165,7 +165,7 @@ namespace sfml_util
         const sf::BlendMode BLEND_MODE_;
         float               timeBetweenFrames_;
         sf::Sprite          sprite_;
-        TextureSVec_t       textureSVec_;//the size of this vec acts as a total frame count
+        TextureVec_t        textureVec_;//the size of this vec acts as a total frame count
         std::size_t         currentFrame_;//counts up to 'total frame count' then restarts at zero
         float               frameTimerSec_;
         sf::Color           color_;
