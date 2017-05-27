@@ -36,7 +36,8 @@
 //prevent warnings that can be ignored
 #if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
 #pragma warning(push)
-#pragma warning(disable: 4244 4512)
+#pragma warning(disable: 4244)
+#pragma warning(disable: 4512)
 #elif defined(__APPLE__) || defined(__MACH__)
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Wnested-anon-types"

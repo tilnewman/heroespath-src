@@ -52,14 +52,13 @@ namespace sfml_util
     using ImageSPtr_t = std::shared_ptr<sf::Image>;
     using ImageSVec_t = std::vector<ImageSPtr_t>;
     //
+    using TextureVec_t  = std::vector<sf::Texture>;
     using TextureSPtr_t = std::shared_ptr<sf::Texture>;
     using TextureSVec_t = std::vector<TextureSPtr_t>;
     //
-    using SpriteSPtr_t = std::shared_ptr<sf::Sprite>;
-    using SpriteSVec_t = std::vector<SpriteSPtr_t>;
+    using SpriteVec_t = std::vector<sf::Sprite>;
     //
     using RendTextSPtr_t = std::shared_ptr<sf::RenderTexture>;
-    using RendTextSVec_t = std::vector<RendTextSPtr_t>;
     //
     using FontPtr_t  = sf::Font *;
     using FontUPtr_t = std::unique_ptr<sf::Font>;

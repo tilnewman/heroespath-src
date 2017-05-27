@@ -28,8 +28,11 @@
 // line.cpp
 //
 #include "line.hpp"
+
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+
 #include "misc/assertlogandthrow.hpp"
-#include "gui-elements.hpp"
 
 
 namespace sfml_util
@@ -45,18 +48,18 @@ namespace gui
                 const Side::Enum    SIDE,
                 const bool          WILL_CAP_ENDS )
     :
-        GuiEntity           (std::string(NAME).append("_Line"), POS_LEFT, POS_TOP),
-        length_             (LENGTH),
-        ORIENTATION_        (ORIENTATION),
-        SIDE_               (SIDE),
-        WILL_CAP_ENDS_      (WILL_CAP_ENDS),
-        pixelsOfMiddleToUse_(0),
-        middleCount_        (0),
-        middleSprite_       (),
-        endTopOrLeftSprite_ (),
-        endBotOrRightSprite_(),
-        finalSprite_        (),
-        offScreenTexture_   ()
+        GuiEntity            (std::string(NAME).append("_Line"), POS_LEFT, POS_TOP),
+        length_              (LENGTH),
+        ORIENTATION_         (ORIENTATION),
+        SIDE_                (SIDE),
+        WILL_CAP_ENDS_       (WILL_CAP_ENDS),
+        pixelsOfMiddleToUse_ (0),
+        middleCount_         (0),
+        middleSprite_        (),
+        endTopOrLeftSprite_  (),
+        endBotOrRightSprite_ (),
+        finalSprite_         (),
+        offScreenTextureSPtr_()
     {
         Setup(POS_LEFT, POS_TOP, LENGTH);
         SetWillAcceptFocus(false);
@@ -68,18 +71,18 @@ namespace gui
                 const Side::Enum    SIDE,
                 const bool          WILL_CAP_ENDS )
     :
-        GuiEntity           (NAME, 0.0f, 0.0f),//position and length values not yet known, see Setup()
-        length_             (0),
-        ORIENTATION_        (ORIENTATION),
-        SIDE_               (SIDE),
-        WILL_CAP_ENDS_      (WILL_CAP_ENDS),
-        pixelsOfMiddleToUse_(0),
-        middleCount_        (0),
-        middleSprite_       (),
-        endTopOrLeftSprite_ (),
-        endBotOrRightSprite_(),
-        finalSprite_        (),
-        offScreenTexture_   ()
+        GuiEntity            (NAME, 0.0f, 0.0f),//position and length values not yet known, see Setup()
+        length_              (0),
+        ORIENTATION_         (ORIENTATION),
+        SIDE_                (SIDE),
+        WILL_CAP_ENDS_       (WILL_CAP_ENDS),
+        pixelsOfMiddleToUse_ (0),
+        middleCount_         (0),
+        middleSprite_        (),
+        endTopOrLeftSprite_  (),
+        endBotOrRightSprite_ (),
+        finalSprite_         (),
+        offScreenTextureSPtr_()
     {
         SetWillAcceptFocus(false);
     }
@@ -185,22 +188,31 @@ namespace gui
 
     void Line::SetupOffScreenTexture()
     {
+        unsigned int width{ 0 };
+        unsigned int height{ 0 };
+
         if (ORIENTATION_ == Orientation::Horiz)
         {
             //create
             unsigned int createWidthToUse(static_cast<unsigned int>(length_));
             if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
-                createWidthToUse = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().width + endBotOrRightSprite_.getLocalBounds().width);
+            {
+                createWidthToUse = static_cast<unsigned int>(
+                    endTopOrLeftSprite_.getLocalBounds().width +
+                    endBotOrRightSprite_.getLocalBounds().width);
+            }
 
-            offScreenTexture_.create(createWidthToUse, static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().height));
-            offScreenTexture_.clear(sf::Color::Transparent);
+            width = createWidthToUse;
+            height = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().height);
+            offScreenTextureSPtr_ = sfml_util::CreateRenderTextureAtPowerOf2Size(width, height);
+            offScreenTextureSPtr_->clear(sf::Color::Transparent);
 
             float posX(0.0);
 
             if (WILL_CAP_ENDS_)
             {
                 endTopOrLeftSprite_.setPosition(0.0f, 0.0f);
-                offScreenTexture_.draw(endTopOrLeftSprite_);
+                offScreenTextureSPtr_->draw(endTopOrLeftSprite_);
                 posX += endTopOrLeftSprite_.getLocalBounds().width;
             }
 
@@ -209,7 +221,7 @@ namespace gui
             for (std::size_t i(0); i < middleCount_; ++i)
             {
                 middleSprite_.setPosition(INITIAL_POS_X + (static_cast<float>(i) * middleSprite_.getLocalBounds().width), 0.0f);
-                offScreenTexture_.draw(middleSprite_);
+                offScreenTextureSPtr_->draw(middleSprite_);
                 posX += middleSprite_.getLocalBounds().width;
             }
 
@@ -220,14 +232,14 @@ namespace gui
                 const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
                 middleSprite_.setTextureRect( sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, static_cast<int>(pixelsOfMiddleToUse_), ORIG_RECT.height) );
                 middleSprite_.setPosition(posX, 0.0f);
-                offScreenTexture_.draw(middleSprite_);
+                offScreenTextureSPtr_->draw(middleSprite_);
                 posX += static_cast<float>(pixelsOfMiddleToUse_);
             }
 
             if (WILL_CAP_ENDS_)
             {
                 endBotOrRightSprite_.setPosition(posX, 0.0f);
-                offScreenTexture_.draw(endBotOrRightSprite_);
+                offScreenTextureSPtr_->draw(endBotOrRightSprite_);
                 //posX += endBotOrRightSprite_.getLocalBounds().width;//posX is not used again so this addition is pointless
             }
 
@@ -241,17 +253,22 @@ namespace gui
             //create off-screen texture
             unsigned int createHeightToUse(static_cast<unsigned int>(length_));
             if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
+            {
                 createHeightToUse = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().height + endBotOrRightSprite_.getLocalBounds().height);
+            }
 
-            offScreenTexture_.create(static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().width), createHeightToUse);
-            offScreenTexture_.clear(sf::Color::Transparent);
+            width = static_cast<unsigned int>(endTopOrLeftSprite_.getLocalBounds().width);
+            height = createHeightToUse;
+
+            offScreenTextureSPtr_ = sfml_util::CreateRenderTextureAtPowerOf2Size(width, height);
+            offScreenTextureSPtr_->clear(sf::Color::Transparent);
 
             float posY(0.0);
 
             if (WILL_CAP_ENDS_)
             {
                 endTopOrLeftSprite_.setPosition(0.0f, 0.0f);
-                offScreenTexture_.draw(endTopOrLeftSprite_);
+                offScreenTextureSPtr_->draw(endTopOrLeftSprite_);
                 posY += endTopOrLeftSprite_.getLocalBounds().height;
             }
 
@@ -260,7 +277,7 @@ namespace gui
             for (std::size_t i(0); i < middleCount_; ++i)
             {
                 middleSprite_.setPosition(0.0f, INITIAL_POS_Y + (static_cast<float>(i) * middleSprite_.getLocalBounds().height));
-                offScreenTexture_.draw(middleSprite_);
+                offScreenTextureSPtr_->draw(middleSprite_);
                 posY += middleSprite_.getLocalBounds().height;
             }
 
@@ -270,14 +287,14 @@ namespace gui
                 const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
                 middleSprite_.setTextureRect(sf::IntRect(ORIG_RECT.left, ORIG_RECT.top, ORIG_RECT.width, static_cast<int>(pixelsOfMiddleToUse_)));
                 middleSprite_.setPosition(0.0f, posY);
-                offScreenTexture_.draw(middleSprite_);
+                offScreenTextureSPtr_->draw(middleSprite_);
                 posY += static_cast<float>(pixelsOfMiddleToUse_);
             }
 
             if (WILL_CAP_ENDS_)
             {
                 endBotOrRightSprite_.setPosition(0.0f, posY);
-                offScreenTexture_.draw(endBotOrRightSprite_);
+                offScreenTextureSPtr_->draw(endBotOrRightSprite_);
                 //posY += endBotOrRightSprite_.getLocalBounds().height;//posY is not used again so this addition is pointless
             }
 
@@ -288,8 +305,9 @@ namespace gui
         }
 
         //finalize the off-screen texture and setup the final sprite used in the draw() calls
-        offScreenTexture_.display();
-        finalSprite_.setTexture(offScreenTexture_.getTexture());
+        offScreenTextureSPtr_->display();
+        finalSprite_.setTexture(offScreenTextureSPtr_->getTexture());
+        finalSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(width), static_cast<int>(height)) );
         finalSprite_.setPosition(GetEntityPos());
     }
 

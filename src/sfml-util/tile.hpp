@@ -109,23 +109,25 @@ namespace sfml_util
     //Must call .display() on the renderTarget after.
     template<typename RenderTarget_t>
     void TileFromVec(const sf::FloatRect & RECT,
-                     SpriteSVec_t &        spriteSVec,
+                     SpriteVec_t &         spriteVec,
                      RenderTarget_t &      renderTarget,
                      const bool            WILL_RANDOM_ORDER = false)
     {
-        if (spriteSVec.empty())
+        if (spriteVec.empty())
         {
             std::cout << "sfml-util::TileFromVec() was given an empty vector!" << std::endl;
             return;
         }
 
         if (WILL_RANDOM_ORDER)
-            misc::Vector::ShuffleVec(spriteSVec);
+        {
+            misc::Vector::ShuffleVec(spriteVec);
+        }
 
-        const std::size_t SPRITE_COUNT(spriteSVec.size());
+        const std::size_t SPRITE_COUNT(spriteVec.size());
 
-        const float SPRITE_WIDTH (spriteSVec[0]->getLocalBounds().width);
-        const float SPRITE_HEIGHT(spriteSVec[0]->getLocalBounds().height);
+        const float SPRITE_WIDTH (spriteVec[0].getLocalBounds().width);
+        const float SPRITE_HEIGHT(spriteVec[0].getLocalBounds().height);
 
         const std::size_t COUNT_X(static_cast<std::size_t>(RECT.width / SPRITE_WIDTH));
         const std::size_t COUNT_Y(static_cast<std::size_t>(RECT.height / SPRITE_HEIGHT));
@@ -135,35 +137,45 @@ namespace sfml_util
         {
             for (std::size_t y(0); y < COUNT_Y; ++y)
             {
-                const float POS_X((static_cast<float>(x) * SPRITE_WIDTH)  + static_cast<float>(RECT.left));
-                const float POS_Y((static_cast<float>(y) * SPRITE_HEIGHT) + static_cast<float>(RECT.top));
+                auto const POS_X{ (static_cast<float>(x) * SPRITE_WIDTH)
+                    + static_cast<float>(RECT.left) };
 
-                spriteSVec[spriteVecIndex]->setPosition(POS_X, POS_Y);
+                auto const POS_Y{ (static_cast<float>(y) * SPRITE_HEIGHT) +
+                    static_cast<float>(RECT.top) };
 
-                renderTarget.draw( * spriteSVec[spriteVecIndex] );
+                spriteVec[spriteVecIndex].setPosition(POS_X, POS_Y);
+
+                renderTarget.draw( spriteVec[spriteVecIndex] );
 
                 if (++spriteVecIndex >= SPRITE_COUNT)
                 {
                     spriteVecIndex = 0;
 
                     if (WILL_RANDOM_ORDER)
-                        misc::Vector::ShuffleVec(spriteSVec);
+                    {
+                        misc::Vector::ShuffleVec(spriteVec);
+                    }
                 }
             }
         }
     }
+
+
     //See comments above
     template<typename RenderTarget_t>
     void TileFromVec(const sf::FloatRect & RECT,
-                     TextureSVec_t &       textureSVec,
+                     TextureVec_t &        textureVec,
                      RenderTarget_t &      renderTarget,
                      const bool            WILL_RANDOM_ORDER = false)
     {
-        SpriteSVec_t spriteSVec;
-        for (auto const & NEXT_TEXTURE_SPTR : textureSVec)
-            spriteSVec.push_back( std::shared_ptr<sf::Sprite>(new sf::Sprite( * NEXT_TEXTURE_SPTR)) );
+        SpriteVec_t spriteVec;
+        spriteVec.reserve(textureVec.size());
+        for (auto const & NEXT_TEXTURE : textureVec)
+        {
+            spriteVec.push_back( sf::Sprite(NEXT_TEXTURE) );
+        }
 
-        TileFromVec(RECT, spriteSVec, renderTarget, WILL_RANDOM_ORDER);
+        TileFromVec(RECT, spriteVec, renderTarget, WILL_RANDOM_ORDER);
     }
 
 }

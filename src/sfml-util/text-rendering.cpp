@@ -136,11 +136,10 @@ namespace text_render
 
     RendTextSPtr_t RenderAndDraw(RenderedText & renderedText)
     {
-        RendTextSPtr_t renderedTextureSPtr(new sf::RenderTexture);
-
-        renderedTextureSPtr->create(FindPowerOf2GreaterThan<float, unsigned int>(renderedText.longest_line),
-                                    FindPowerOf2GreaterThan<float, unsigned int>(renderedText.total_height));
-
+        auto renderedTextureSPtr{ sfml_util::CreateRenderTextureAtPowerOf2Size(
+            renderedText.longest_line,
+            renderedText.total_height) };
+        
         renderedTextureSPtr->clear(sf::Color::Transparent);
 
         sf::RenderStates states;

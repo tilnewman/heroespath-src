@@ -100,7 +100,7 @@ namespace gui
         sf::Sprite              endTopOrLeftSprite_;
         sf::Sprite              endBotOrRightSprite_;
         sf::Sprite              finalSprite_;//used to draw to screen
-        sf::RenderTexture       offScreenTexture_;
+        RendTextSPtr_t          offScreenTextureSPtr_;
     };
 
 

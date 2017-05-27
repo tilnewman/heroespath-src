@@ -350,13 +350,18 @@ namespace sfml_util
                                const sf::RenderStates & RENDER_STATES,
                                const bool               WILL_DISPLAY)
     {
-        renderTexture.create(static_cast<unsigned int>(sprite.getGlobalBounds().width), static_cast<unsigned int>(sprite.getGlobalBounds().height));
+        auto const WIDTH{ static_cast<unsigned int>(sprite.getGlobalBounds().width) };
+        auto const HEIGHT{ static_cast<unsigned int>(sprite.getGlobalBounds().height) };
+        renderTexture.create(WIDTH, HEIGHT);
+
         const sf::Vector2f ORIG_POS(sprite.getPosition());
         sprite.setPosition(0.0f, 0.0f);
         renderTexture.draw(sprite, RENDER_STATES);
 
         if (WILL_DISPLAY)
+        {
             renderTexture.display();
+        }
 
         sprite.setPosition(ORIG_POS);
     }

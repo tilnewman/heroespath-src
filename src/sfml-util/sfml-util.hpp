@@ -31,8 +31,10 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-window.hpp"
 #include "sfml-util/handy-types.hpp"
-#include "misc/real.hpp"
 
+#include "game/log-macros.hpp"
+
+#include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <string>
@@ -186,30 +188,59 @@ namespace sfml_util
     template<typename Given_t, typename Return_t>
     Return_t FindPowerOf2GreaterThan(const Given_t A)
     {
-        int x( static_cast<int>(A) );
-        int y( static_cast<int>(A) );
+        auto x{ static_cast<int>(A) };
+        auto y{ x };
 
         while (x &= (x ^ (~x + 1)))
+        {
             y = x << 1;
+        }
 
         return static_cast<Return_t>(y);
     }
 
-
     template<typename T>
-    RendTextSPtr_t CreateRenderTextureAtPowerOf2Size(const T WIDTH, const T HEIGHT)
+    RendTextSPtr_t CreateRenderTextureAtPowerOf2Size(const T ORIG_WIDTH,
+                                                     const T ORIG_HEIGHT)
     {
-        sf::RenderTexture r;
-        RendTextSPtr_t sptr(new sf::RenderTexture );
+        auto const NEW_WIDTH { FindPowerOf2GreaterThan<T, unsigned>(ORIG_WIDTH)  };
+        auto const NEW_HEIGHT{ FindPowerOf2GreaterThan<T, unsigned>(ORIG_HEIGHT) };
 
-        const unsigned int NEW_WIDTH ( FindPowerOf2GreaterThan<T, unsigned int>(WIDTH)  );
-        const unsigned int NEW_HEIGHT( FindPowerOf2GreaterThan<T, unsigned int>(HEIGHT) );
+        auto renderTextureSPtr = std::make_shared<sf::RenderTexture>();
 
-        const bool RESULT( sptr->create(NEW_WIDTH, NEW_HEIGHT) );
+        if (renderTextureSPtr->create(NEW_WIDTH, NEW_HEIGHT) == false)
+        {
+            std::ostringstream ss1;
+            ss1 << "sfml_util::CreateRenderTextureAtPowerOf2Size("
+                << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") resized to power of 2 fit=" 
+                << NEW_WIDTH << "x" << NEW_HEIGHT << " and failed on the create() call."
+                << "  See console output for details.  Will ignore this error and attempt to call"
+                << " create() at original size...";
+            M_HP_LOG_ERR(ss1.str());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((RESULT == true), "sfml_util::CreateRenderTextureAtPowerOf2Size(" << WIDTH << "," << HEIGHT << ") resized to sf::RenderTexture::create(" << NEW_WIDTH << "," << NEW_HEIGHT << ") failed.  See console output for details." );
+            if (renderTextureSPtr->create(static_cast<unsigned>(ORIG_WIDTH),
+                static_cast<unsigned>(ORIG_HEIGHT)) == false)
+            {
+                const unsigned int DEFAULT_SIZE{ 256 };
 
-        return sptr;
+                std::ostringstream ss2;
+                ss2 << "sfml_util::CreateRenderTextureAtPowerOf2Size("
+                    << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") create() after resized to fit power"
+                    << " of 2 failed, and then create() at the original size also failed.  Using"
+                    << " default size of " << DEFAULT_SIZE << "x" << DEFAULT_SIZE
+                    << " that will probably not dispay right, but is better than crashing...";
+                M_HP_LOG(ss2.str());
+
+                M_ASSERT_OR_LOGANDTHROW_SS((renderTextureSPtr->create(DEFAULT_SIZE, DEFAULT_SIZE)),
+                    "sfml_util::CreateRenderTextureAtPowerOf2Size("
+                    << ORIG_WIDTH << "x" << ORIG_HEIGHT << ")...okay, failed to create() at "
+                    << "the resize to fit power of 2, then failed to create() at the original "
+                    << "size, and then failed to create() at the default size.  Probably an out of"
+                    << " video memory situation.  Bail.");
+            }
+        }
+        
+        return renderTextureSPtr;
     }
 
 

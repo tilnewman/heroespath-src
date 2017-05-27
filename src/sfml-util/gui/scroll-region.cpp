@@ -155,21 +155,16 @@ namespace gui
 
     void ScrollRegion::SetupOffScreenTexture()
     {
-        //new up an off-screen texture
-        renderTextureSPtr_.reset(new sf::RenderTexture);
-
         if (list_.empty())
         {
-            renderTextureSPtr_->clear(sf::Color::Transparent);
-            sprite_.setTexture(renderTextureSPtr_->getTexture());
             return;
         }
 
-        //create()
-        renderTextureSPtr_->create(static_cast<unsigned>(entityRegion_.width),
-                                   static_cast<unsigned>(GetTotalContentHeight()));
+        auto const WIDTH{ static_cast<unsigned>(entityRegion_.width) };
+        auto const HEIGHT{ static_cast<unsigned>(GetTotalContentHeight()) };
 
-        //make fully transparent
+        renderTextureSPtr_ = sfml_util::CreateRenderTextureAtPowerOf2Size(WIDTH, HEIGHT);
+
         renderTextureSPtr_->clear(sf::Color::Transparent);
 
         //draw all entitys to the off-screen texture
@@ -184,8 +179,14 @@ namespace gui
 
         renderTextureSPtr_->display();
 
-        //setup the sprite
         sprite_.setTexture(renderTextureSPtr_->getTexture());
+
+        //limit the sprite texture rect to the intended rather than the power of 2 size
+        sprite_.setTextureRect( sf::IntRect(0,
+                                            0,
+                                            static_cast<int>(WIDTH),
+                                            static_cast<int>(HEIGHT)) );
+
         sprite_.setPosition(entityRegion_.left, entityRegion_.top);
 
         PositionSprite();
