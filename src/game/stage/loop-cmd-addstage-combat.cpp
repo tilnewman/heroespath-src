@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Combat::Execute()
     {
-        sfml_util::IStageSPtr_t combatStageSPtr( new game::stage::CombatStage() );
-        combatStageSPtr->Setup();
-        iLoopSPtr_->AddStage(combatStageSPtr);
+        auto combatStagePtr( new game::stage::CombatStage() );
+        combatStagePtr->Setup();
+        iLoopSPtr_->AddStage(combatStagePtr);
         return true;
     }
 

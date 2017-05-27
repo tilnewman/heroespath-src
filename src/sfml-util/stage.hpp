@@ -140,8 +140,5 @@ namespace sfml_util
         sf::Text              hoverSfText_;
     };
 
-    using StageSPtr_t = std::shared_ptr<Stage>;
-    using StageSVec_t = std::vector<StageSPtr_t>;
-
 }
 #endif //SFMLUTIL_STAGE_INCLUDED

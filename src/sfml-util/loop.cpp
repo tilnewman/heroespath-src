@@ -56,7 +56,7 @@ namespace sfml_util
     Loop::Loop(const std::string & NAME)
     :
         NAME_                (std::string(NAME).append("_Loop")),
-        stageSVec_           (),
+        stagePVec_           (),
         clock_               (),
         oneSecondTimerSec_   (0.0f),
         winPtr_              (Display::Instance()->GetWindow()),
@@ -65,7 +65,7 @@ namespace sfml_util
         continueFading_      (false),
         willExitAfterFade_   (false),
         willExit_            (false),
-        popupStageSPtr_      (),
+        popupStagePtr_       (),
         elapsedTimeSec_      (0.0f),
         fatalExitEvent_      (false),
         holdTime_            (NO_HOLD_TIME_),
@@ -91,7 +91,9 @@ namespace sfml_util
 
 
     Loop::~Loop()
-    {}
+    {
+        FreeAllStages();
+    }
 
 
     void Loop::ConsumeEvents()
@@ -106,9 +108,9 @@ namespace sfml_util
     {
         entityWithFocusSPtr_ = nullptr;
 
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->RemoveFocus();
+            nextStagePtr->RemoveFocus();
         }
     }
 
@@ -119,9 +121,9 @@ namespace sfml_util
 
         entityWithFocusSPtr_ = ENTITY_PTR;
 
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            if (nextStageSPtr->SetFocus(ENTITY_PTR))
+            if (nextStagePtr->SetFocus(ENTITY_PTR))
             {
                 foundStageOwningEntityWithFocus = true;
             }
@@ -148,40 +150,63 @@ namespace sfml_util
 
     void Loop::TestingStrAppend(const std::string & S)
     {
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->TestingStrAppend(S);
+            nextStagePtr->TestingStrAppend(S);
         }
     }
 
 
     void Loop::TestingStrIncrement(const std::string & S)
     {
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->TestingStrIncrement(S);
+            nextStagePtr->TestingStrIncrement(S);
         }
     }
 
 
     void Loop::TestingImageSet(const sf::Texture & TEXTURE)
     {
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->TestingImageSet(TEXTURE);
+            nextStagePtr->TestingImageSet(TEXTURE);
         }
     }
 
 
-    void Loop::AddStage(IStageSPtr_t & stageSPtr)
+    void Loop::AddStage(IStagePtr_t stageSPtr)
     {
-        stageSVec_.push_back(stageSPtr);
+        stagePVec_.push_back(stageSPtr);
     }
 
 
-    void Loop::RemoveAllStages()
+    void Loop::FreeAllStages()
     {
-        stageSVec_.clear();
+        auto const NUM_STAGES{ stagePVec_.size() };
+        for (std::size_t i(0); i<NUM_STAGES; ++i)
+        {
+
+            if (stagePVec_[i] != nullptr)
+            {
+                delete stagePVec_[i];
+                stagePVec_[i] = nullptr;
+            }
+        }
+
+        stagePVec_.clear();
+
+        FreePopupStage();
+    }
+
+
+    void Loop::FreePopupStage()
+    {
+        if (popupStagePtr_ != nullptr)
+        {
+            delete popupStagePtr_;
+            popupStagePtr_ = nullptr;
+        }
     }
 
 
@@ -248,16 +273,16 @@ namespace sfml_util
                 isMouseHovering_ = true;
 
                 //popup stages process exclusively when present
-                if (nullptr == popupStageSPtr_.get())
+                if (nullptr == popupStagePtr_)
                 {
-                    for (auto & nextStageSPtr : stageSVec_)
+                    for (auto & nextStagePtr : stagePVec_)
                     {
-                        nextStageSPtr->SetMouseHover(MOUSE_POS_NEW_V, true);
+                        nextStagePtr->SetMouseHover(MOUSE_POS_NEW_V, true);
                     }
                 }
                 else
                 {
-                    popupStageSPtr_->SetMouseHover(MOUSE_POS_NEW_V, true);
+                    popupStagePtr_->SetMouseHover(MOUSE_POS_NEW_V, true);
                 }
             }
             else
@@ -282,16 +307,16 @@ namespace sfml_util
                 mousePosV_ = MOUSE_POS_NEW_V;
 
                 //popup stages process exclusively when present
-                if (nullptr == popupStageSPtr_.get())
+                if (nullptr == popupStagePtr_)
                 {
-                    for (auto & nextStageSPtr : stageSVec_)
+                    for (auto & nextStagePtr : stagePVec_)
                     {
-                        nextStageSPtr->SetMouseHover(MOUSE_POS_NEW_V, false);
+                        nextStagePtr->SetMouseHover(MOUSE_POS_NEW_V, false);
                     }
                 }
                 else
                 {
-                    popupStageSPtr_->SetMouseHover(MOUSE_POS_NEW_V, false);
+                    popupStagePtr_->SetMouseHover(MOUSE_POS_NEW_V, false);
                 }
             }
         }
@@ -337,12 +362,12 @@ namespace sfml_util
 
     void Loop::ProcessPopup()
     {
-        if (nullptr != popupStageSPtr_.get())
+        if (nullptr != popupStagePtr_)
         {
-            popupStageSPtr_->UpdateTime(elapsedTimeSec_);
+            popupStagePtr_->UpdateTime(elapsedTimeSec_);
 
             sf::RenderStates states;
-            popupStageSPtr_->Draw( * winPtr_, states);
+            popupStagePtr_->Draw( * winPtr_, states);
         }
     }
 
@@ -432,18 +457,18 @@ namespace sfml_util
         }
 
         //popup stages process exclusively when present
-        if (nullptr == popupStageSPtr_.get())
+        if (nullptr == popupStagePtr_)
         {
             //give event to stages for processing
-            for (auto & nextStageSPtr : stageSVec_)
+            for (auto & nextStagePtr : stagePVec_)
             {
                 if (EVENT.type == sf::Event::KeyPressed)
                 {
-                    nextStageSPtr->KeyPress(EVENT.key);
+                    nextStagePtr->KeyPress(EVENT.key);
                 }
                 else
                 {
-                    nextStageSPtr->KeyRelease(EVENT.key);
+                    nextStagePtr->KeyRelease(EVENT.key);
                 }
             }
         }
@@ -451,11 +476,11 @@ namespace sfml_util
         {
             if (EVENT.type == sf::Event::KeyPressed)
             {
-                popupStageSPtr_->KeyPress(EVENT.key);
+                popupStagePtr_->KeyPress(EVENT.key);
             }
             else
             {
-                popupStageSPtr_->KeyRelease(EVENT.key);
+                popupStagePtr_->KeyRelease(EVENT.key);
             }
         }
 
@@ -482,32 +507,32 @@ namespace sfml_util
     {
         const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
 
-        if (nullptr == popupStageSPtr_.get())
+        if (nullptr == popupStagePtr_)
         {
-            for (auto & nextStageSPtr : stageSVec_)
+            for (auto & nextStagePtr : stagePVec_)
             {
-                nextStageSPtr->UpdateMousePos(MOUSE_POS_V);
+                nextStagePtr->UpdateMousePos(MOUSE_POS_V);
             }
         }
         else
         {
-            popupStageSPtr_->UpdateMousePos(MOUSE_POS_V);
+            popupStagePtr_->UpdateMousePos(MOUSE_POS_V);
         }
     }
 
 
     void Loop::ProcessMouseButtonLeftPressed(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (nullptr == popupStageSPtr_.get())
+        if (nullptr == popupStagePtr_)
         {
-            for (auto & nextStageSPtr : stageSVec_)
+            for (auto & nextStagePtr : stagePVec_)
             {
-                nextStageSPtr->UpdateMouseDown(MOUSE_POS_V);
+                nextStagePtr->UpdateMouseDown(MOUSE_POS_V);
             }
         }
         else
         {
-            popupStageSPtr_->UpdateMouseDown(MOUSE_POS_V);
+            popupStagePtr_->UpdateMouseDown(MOUSE_POS_V);
         }
 
         if (willExitOnMouseclick_)
@@ -521,16 +546,16 @@ namespace sfml_util
 
     void Loop::ProcessMouseButtonLeftReleased(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (nullptr == popupStageSPtr_.get())
+        if (nullptr == popupStagePtr_)
         {
-            for (auto & nextStageSPtr : stageSVec_)
+            for (auto & nextStagePtr : stagePVec_)
             {
-                auto newEntityWithFocusPtr{ nextStageSPtr->UpdateMouseUp(MOUSE_POS_V) };
+                auto newEntityWithFocusPtr{ nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
 
                 if (newEntityWithFocusPtr != nullptr)
                 {
                     M_HP_LOG("MouseButtonLeftReleased caused focus in stage \""
-                        << nextStageSPtr->GetStageName() << "\" on entity \""
+                        << nextStagePtr->GetStageName() << "\" on entity \""
                         << newEntityWithFocusPtr->GetEntityName() << "\"");
 
                     RemoveFocus();
@@ -541,7 +566,7 @@ namespace sfml_util
         }
         else
         {
-            auto newEntityWithFocusPtr{ popupStageSPtr_->UpdateMouseUp(MOUSE_POS_V) };
+            auto newEntityWithFocusPtr{ popupStagePtr_->UpdateMouseUp(MOUSE_POS_V) };
 
             if (newEntityWithFocusPtr != nullptr)
             {
@@ -557,16 +582,16 @@ namespace sfml_util
     {
         const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
 
-        if (nullptr == popupStageSPtr_.get())
+        if (nullptr == popupStagePtr_)
         {
-            for (auto & nextStageSPtr : stageSVec_)
+            for (auto & nextStagePtr : stagePVec_)
             {
-                nextStageSPtr->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+                nextStagePtr->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
             }
         }
         else
         {
-            popupStageSPtr_->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+            popupStagePtr_->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
         }
     }
 
@@ -702,28 +727,28 @@ namespace sfml_util
 
     void Loop::ProcessTimeUpdate()
     {
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->UpdateTime(elapsedTimeSec_);
+            nextStagePtr->UpdateTime(elapsedTimeSec_);
         }
     }
 
 
     void Loop::ProcessDrawing()
     {
-        for (auto & nextStageSPtr : stageSVec_)
-        {
-            sf::RenderStates states;
-            nextStageSPtr->Draw( * winPtr_, states);
+        sf::RenderStates states;
+        for (auto & nextStagePtr : stagePVec_)
+        {   
+            nextStagePtr->Draw( * winPtr_, states);
         }
     }
 
 
     void Loop::PerformNextTest()
     {
-        for (auto & nextStageSPtr : stageSVec_)
+        for (auto & nextStagePtr : stagePVec_)
         {
-            nextStageSPtr->PerformNextTest();
+            nextStagePtr->PerformNextTest();
         }
     }
 

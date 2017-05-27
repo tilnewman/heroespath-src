@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Test::Execute()
     {
-        sfml_util::IStageSPtr_t testStageSPtr( new game::stage::TestingStage() );
-        testStageSPtr->Setup();
-        iLoopSPtr_->AddStage(testStageSPtr);
+        auto testStagePtr( new game::stage::TestingStage() );
+        testStagePtr->Setup();
+        iLoopSPtr_->AddStage(testStagePtr);
         return true;
     }
 

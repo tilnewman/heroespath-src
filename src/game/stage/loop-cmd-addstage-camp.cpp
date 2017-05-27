@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Camp::Execute()
     {
-        sfml_util::IStageSPtr_t campStageSPtr( new game::stage::CampStage() );
-        campStageSPtr->Setup();
-        iLoopSPtr_->AddStage(campStageSPtr);
+        auto campStagePtr( new game::stage::CampStage() );
+        campStagePtr->Setup();
+        iLoopSPtr_->AddStage(campStagePtr);
         return true;
     }
 

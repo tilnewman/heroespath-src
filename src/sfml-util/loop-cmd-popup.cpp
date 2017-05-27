@@ -54,8 +54,8 @@ namespace sfml_util
 
     bool LoopCmd_AddStage_Popup::Execute()
     {
-        sfml_util::IStageSPtr_t popupStageSPtr( sfml_util::gui::PopupManager::Instance()->CreatePopupStage(POPUP_INFO_) );
-        iLoopSPtr_->SetPopup(popupStageSPtr);
+        auto popupStagePtr( sfml_util::gui::PopupManager::Instance()->CreatePopupStage(POPUP_INFO_) );
+        iLoopSPtr_->SetPopup(popupStagePtr);
         return true;
     }
 
@@ -72,8 +72,7 @@ namespace sfml_util
 
     bool LoopCmd_RemoveStage_Popup::Execute()
     {
-        sfml_util::IStageSPtr_t emptyStageSPtr;
-        iLoopSPtr_->SetPopup(emptyStageSPtr);
+        iLoopSPtr_->FreePopupStage();
         return true;
     }
 

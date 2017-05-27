@@ -44,7 +44,7 @@ namespace sfml_util
 
     //forward declarations
     class IStage;
-    using IStageSPtr_t = std::shared_ptr<IStage>;
+    using IStagePtr_t = IStage *;
 
 
     //interface class for all Loops
@@ -55,8 +55,9 @@ namespace sfml_util
 
         virtual bool Execute() = 0;
         virtual void Exit() = 0;
-        virtual void AddStage(IStageSPtr_t &) = 0;
-        virtual void RemoveAllStages() = 0;
+        virtual void AddStage(IStagePtr_t) = 0;
+        virtual void FreeAllStages() = 0;
+        virtual void FreePopupStage() = 0;
 
         virtual void FadeOut(const sf::Color & FADE_TO_COLOR,
                              const float       SPEED_MULT     = 200.0f,
@@ -66,7 +67,7 @@ namespace sfml_util
                             const float       SPEED_MULT      = 200.0f,
                             const bool        WILL_HOLD_FADE  = false) = 0;
 
-        virtual void SetPopup(IStageSPtr_t & popupStageSPtr) = 0;
+        virtual void SetPopup(IStagePtr_t) = 0;
         virtual void SetHoldTime(const float SECONDS) = 0;
         virtual void SetWillHoldFade(const bool) = 0;
         virtual void SetWillExitAfterFade(const bool) = 0;

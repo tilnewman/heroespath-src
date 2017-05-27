@@ -332,7 +332,7 @@ namespace gui
     }
 
 
-    sfml_util::PopupStageSPtr_t PopupManager::CreatePopupStage(const game::PopupInfo & POPUP_INFO)
+    PopupStagePtr_t PopupManager::CreatePopupStage(const game::PopupInfo & POPUP_INFO)
     {
         if (POPUP_INFO.Image() == sfml_util::PopupImage::Custom)
         {
@@ -369,11 +369,11 @@ namespace gui
             innerRegion.top    = PAD;
             innerRegion.top   -= PAD;
 
-            auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(NEW_POPUP_INFO,
-                                                                         REGION,
-                                                                         innerRegion) );
-            popupStageSPtr->Setup();
-            return popupStageSPtr;
+            auto popupStagePtr( new PopupStage(NEW_POPUP_INFO,
+                                               REGION,
+                                               innerRegion) );
+            popupStagePtr->Setup();
+            return popupStagePtr;
         }
         else if (POPUP_INFO.Image() == sfml_util::PopupImage::Spellbook)
         {
@@ -392,12 +392,12 @@ namespace gui
 
             auto const INNER_RECT{ rect };
 
-            auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
-                                                                         rect,
-                                                                         INNER_RECT,
-                                                                         backgroundTexture) );
-            popupStageSPtr->Setup();
-            return popupStageSPtr;
+            auto popupStagePtr( new PopupStage(POPUP_INFO,
+                                               rect,
+                                               INNER_RECT,
+                                               backgroundTexture) );
+            popupStagePtr->Setup();
+            return popupStagePtr;
         }
         else
         {
@@ -416,12 +416,12 @@ namespace gui
 
             const sf::FloatRect INNER_RECT(sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(), POPUP_INFO.ImageScale())));
 
-            auto popupStageSPtr( std::make_shared<sfml_util::PopupStage>(POPUP_INFO,
-                                                                         rect,
-                                                                         INNER_RECT,
-                                                                         backgroundTexture) );
-            popupStageSPtr->Setup();
-            return popupStageSPtr;
+            auto popupStagePtr( new PopupStage(POPUP_INFO,
+                                               rect,
+                                               INNER_RECT,
+                                               backgroundTexture) );
+            popupStagePtr->Setup();
+            return popupStagePtr;
         }
     }
 

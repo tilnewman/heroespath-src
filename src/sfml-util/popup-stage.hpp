@@ -243,7 +243,7 @@ namespace sfml_util
         sliders::ZeroSliderOnce<float> spellColorSlider_;
     };
 
-    using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
+    using PopupStagePtr_t = PopupStage *;
 
 }
 #endif //SFMLUTIL_POPUPSTAGE_INCLUDED

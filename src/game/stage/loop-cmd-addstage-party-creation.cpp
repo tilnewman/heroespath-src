@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Party_Creation::Execute()
     {
-        sfml_util::IStageSPtr_t characterCreationStageSPtr( new game::stage::PartyStage() );
-        characterCreationStageSPtr->Setup();
-        iLoopSPtr_->AddStage(characterCreationStageSPtr);
+        auto characterCreationStagePtr( new game::stage::PartyStage() );
+        characterCreationStagePtr->Setup();
+        iLoopSPtr_->AddStage(characterCreationStagePtr);
         return true;
     }
 

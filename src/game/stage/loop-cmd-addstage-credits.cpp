@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Credits::Execute()
     {
-        sfml_util::IStageSPtr_t creditsStageSPtr( new game::stage::CreditsStage() );
-        creditsStageSPtr->Setup();
-        iLoopSPtr_->AddStage(creditsStageSPtr);
+        auto creditsStagePtr( new game::stage::CreditsStage() );
+        creditsStagePtr->Setup();
+        iLoopSPtr_->AddStage(creditsStagePtr);
         return true;
     }
 

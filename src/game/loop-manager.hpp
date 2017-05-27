@@ -115,7 +115,7 @@ namespace game
 
         void FakeMouseClick(const sf::Vector2f &);
 
-        inline void AddStage(sfml_util::IStageSPtr_t & stageSPtr) { currentLoopSPtr_->AddStage(stageSPtr); }
+        inline void AddStage(sfml_util::IStagePtr_t stagePtr)     { currentLoopSPtr_->AddStage(stagePtr); }
         inline bool IsFading() const                              { return currentLoopSPtr_->IsFading(); }
         inline bool GetIgnoreMouse() const                        { return currentLoopSPtr_->GetIgnoreMouse(); }
         inline void SetIgnoreMouse(const bool B)                  { currentLoopSPtr_->SetIgnoreMouse(B); }

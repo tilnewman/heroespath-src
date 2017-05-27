@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Inn::Execute()
     {
-        sfml_util::IStageSPtr_t innStageSPtr( new game::stage::InnStage() );
-        innStageSPtr->Setup();
-        iLoopSPtr_->AddStage(innStageSPtr);
+        auto innStagePtr( new game::stage::InnStage() );
+        innStagePtr->Setup();
+        iLoopSPtr_->AddStage(innStagePtr);
         return true;
     }
 

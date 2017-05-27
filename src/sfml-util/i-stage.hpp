@@ -98,8 +98,8 @@ namespace sfml_util
         virtual void ClearAllEntities() = 0;
     };
 
-    using IStageSPtr_t = std::shared_ptr<IStage>;
-    using IStageSVec_t = std::vector<IStageSPtr_t>;
+    using IStagePtr_t = IStage *;
+    using IStagePVec_t = std::vector<IStagePtr_t>;
 
 }
 

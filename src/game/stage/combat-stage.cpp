@@ -904,8 +904,7 @@ namespace stage
         combat::CombatAnimation::GiveCombatDisplay(combatDisplayStagePtr_);
 
         //give control of the CombatDisplay object lifetime to the Loop class
-        sfml_util::IStageSPtr_t combatDisplayStageSPtr(combatDisplayStagePtr_);
-        LoopManager::Instance()->AddStage(combatDisplayStageSPtr);
+        LoopManager::Instance()->AddStage(combatDisplayStagePtr_);
 
         if (restoreInfo_.HasRestored() == false)
         {

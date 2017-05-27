@@ -46,7 +46,6 @@
 namespace sfml_util
 {
     class IStage;
-    using IStageSPtr_t = std::shared_ptr<IStage>;
 
 namespace gui
 {

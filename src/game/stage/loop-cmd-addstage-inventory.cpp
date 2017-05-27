@@ -53,9 +53,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Inventory::Execute()
     {
-        sfml_util::IStageSPtr_t inventoryStageSPtr( new game::stage::InventoryStage(creaturePtr_) );
-        inventoryStageSPtr->Setup();
-        iLoopSPtr_->AddStage(inventoryStageSPtr);
+        auto inventoryStagePtr( new game::stage::InventoryStage(creaturePtr_) );
+        inventoryStagePtr->Setup();
+        iLoopSPtr_->AddStage(inventoryStagePtr);
         return true;
     }
 

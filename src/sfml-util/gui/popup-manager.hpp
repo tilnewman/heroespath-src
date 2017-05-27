@@ -56,7 +56,7 @@ namespace creature
 namespace sfml_util
 {
     class PopupStage;
-    using PopupStageSPtr_t = std::shared_ptr<PopupStage>;
+    using PopupStagePtr_t = PopupStage *;
 
 namespace gui
 {
@@ -183,7 +183,7 @@ namespace gui
         //throws range error upon unknown enum value
         void Texture(const PopupImage::Enum, sf::Texture &) const;
 
-        sfml_util::PopupStageSPtr_t CreatePopupStage(const game::PopupInfo &);
+        PopupStagePtr_t CreatePopupStage(const game::PopupInfo &);
 
         void LoadRandomAccentImage(sf::Texture &) const;
 

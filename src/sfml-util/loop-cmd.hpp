@@ -62,6 +62,7 @@ namespace sfml_util
     using ILoopCmdSVec_t = std::vector<ILoopCmdSPtr_t>;
 
 
+
     //A type that performs some action on a Loop
     class LoopCmd : public ILoopCmd
     {
@@ -266,8 +267,7 @@ namespace sfml_util
 
         virtual bool Execute()
         {
-            sfml_util::IStageSPtr_t stageSPtr( new Stage("Default") );
-            iLoopSPtr_->AddStage( stageSPtr );
+            iLoopSPtr_->AddStage( new Stage("Default") );
             return true;
         }
     };
@@ -320,7 +320,7 @@ namespace sfml_util
 
         virtual bool Execute()
         {
-            iLoopSPtr_->RemoveAllStages();
+            iLoopSPtr_->FreeAllStages();
             return true;
         }
     };

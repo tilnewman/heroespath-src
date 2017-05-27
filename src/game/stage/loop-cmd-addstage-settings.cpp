@@ -47,9 +47,9 @@ namespace stage
 
     bool LoopCmd_AddStage_Settings::Execute()
     {
-        sfml_util::IStageSPtr_t settingsStageSPtr( new game::stage::SettingsStage() );
-        settingsStageSPtr->Setup();
-        iLoopSPtr_->AddStage(settingsStageSPtr);
+        auto settingsStagePtr( new game::stage::SettingsStage() );
+        settingsStagePtr->Setup();
+        iLoopSPtr_->AddStage(settingsStagePtr);
         return true;
     }
 

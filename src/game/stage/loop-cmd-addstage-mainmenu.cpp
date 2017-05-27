@@ -48,9 +48,9 @@ namespace stage
 
     bool LoopCmd_AddStage_MainMenu::Execute()
     {
-        sfml_util::IStageSPtr_t mainMenuStageSPtr( new game::stage::MainMenuStage );
-        mainMenuStageSPtr->Setup();
-        iLoopSPtr_->AddStage(mainMenuStageSPtr);
+        auto mainMenuStagePtr( new game::stage::MainMenuStage );
+        mainMenuStagePtr->Setup();
+        iLoopSPtr_->AddStage(mainMenuStagePtr);
         return true;
     }
 

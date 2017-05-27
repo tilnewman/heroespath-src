@@ -45,8 +45,8 @@ namespace sfml_util
 
     //forward declaration
     class IStage;
-    using IStageSPtr_t = std::shared_ptr<IStage>;
-    using IStageSVec_t = std::vector<IStageSPtr_t>;
+    using IStagePtr_t  = IStage *;
+    using IStagePVec_t = std::vector<IStagePtr_t>;
 
 
     //A type that manages an event/draw loop
@@ -64,8 +64,9 @@ namespace sfml_util
 
         inline virtual void Exit() { willExit_ = true; }
 
-        virtual void AddStage(IStageSPtr_t & stageSPtr);
-        virtual void RemoveAllStages();
+        virtual void AddStage(IStagePtr_t);
+        virtual void FreeAllStages();
+        virtual void FreePopupStage();
 
         //returns false if the window closed or some other fatal event stopped the loop
         virtual bool Execute();
@@ -78,7 +79,7 @@ namespace sfml_util
                             const float       SPEED_MULT     = 200.0f,
                             const bool        WILL_HOLD_FADE = false);
 
-        inline virtual void SetPopup(IStageSPtr_t & popupStageSPtr)     { popupStageSPtr_ = popupStageSPtr; }
+        inline virtual void SetPopup(IStagePtr_t popupStagePtr)         { popupStagePtr_ = popupStagePtr; }
         inline virtual void SetHoldTime(const float SECONDS)            { holdTimeCounter_ = 0.0f; holdTime_ = SECONDS; }
 
         inline void SetWillExitAfterFade(const bool B)                  { willExitAfterFade_ = B; }
@@ -139,7 +140,7 @@ namespace sfml_util
         static const float INVALID_MUSIC_FADE_VALUE_;
         //
         const std::string     NAME_;
-        IStageSVec_t          stageSVec_;
+        IStagePVec_t          stagePVec_;
         sf::Clock             clock_;
         float                 oneSecondTimerSec_;
         WinPtr_t              winPtr_;
@@ -148,7 +149,7 @@ namespace sfml_util
         bool                  continueFading_;
         bool                  willExitAfterFade_;
         bool                  willExit_;
-        IStageSPtr_t          popupStageSPtr_;
+        IStagePtr_t           popupStagePtr_;
         float                 elapsedTimeSec_;
         bool                  fatalExitEvent_;
         float                 holdTime_;
@@ -171,9 +172,6 @@ namespace sfml_util
         std::size_t           frameRateSampleCount_;
         bool                  willLogFrameRate_;
     };
-
-    using LoopSPtr_t = std::shared_ptr<Loop>;
-    using LoopSVec_t = std::vector<LoopSPtr_t>;
 
 }
 #endif //SFMLUTIL_LOOP_INCLUDED
