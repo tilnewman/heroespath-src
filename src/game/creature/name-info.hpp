@@ -60,6 +60,8 @@ namespace creature
         NameInfo();
 
     public:
+        ~NameInfo();
+
         static NameInfo * Instance();
         static void Acquire();
         static void Release();

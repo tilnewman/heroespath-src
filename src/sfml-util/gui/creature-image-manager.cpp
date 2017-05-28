@@ -55,17 +55,22 @@ namespace gui
 
 
     CreatureImageManager::CreatureImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: CreatureImageManager");
+    }
 
 
     CreatureImageManager::~CreatureImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: CreatureImageManager");
+    }
 
 
     CreatureImageManager * CreatureImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): CreatureImageManager");
             Acquire();
         }
 
@@ -78,6 +83,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new CreatureImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: CreatureImageManager");
         }
     }
 

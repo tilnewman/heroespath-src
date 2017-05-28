@@ -30,6 +30,7 @@
 #include "game.hpp"
 
 #include "game/state/game-state.hpp"
+#include "game/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -45,13 +46,22 @@ namespace game
     Game::Game()
     :
         stateSPtr_()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: Game");
+    }
+
+
+    Game::~Game()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: Game");
+    }
 
 
     Game * Game::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Game");
             Acquire();
         }
 
@@ -64,6 +74,10 @@ namespace game
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new Game);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: Game");
         }
     }
 

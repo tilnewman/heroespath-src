@@ -71,6 +71,8 @@ namespace state
         GameStateFactory & operator=(const GameStateFactory &) =delete;
 
     public:
+        ~GameStateFactory();
+
         static GameStateFactory * Instance();
         static void Acquire();
         static void Release();

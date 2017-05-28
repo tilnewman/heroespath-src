@@ -47,18 +47,22 @@ namespace game
     :
         ConfigBase("game-data.txt", "=", "#")
     {
+        M_HP_LOG_DBG("Singleton Construction: GameDataFile");
         Load();
     }
 
 
     GameDataFile::~GameDataFile()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
+    }
 
 
     GameDataFile * GameDataFile::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): GameDataFile");
             Acquire();
         }
 
@@ -71,6 +75,10 @@ namespace game
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new GameDataFile);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: GameDataFile");
         }
     }
 

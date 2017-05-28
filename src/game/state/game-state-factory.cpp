@@ -65,13 +65,22 @@ namespace state
 
 
     GameStateFactory::GameStateFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: GameStateFactory");
+    }
+
+
+    GameStateFactory::~GameStateFactory()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: GameStateFactory");
+    }
 
 
     GameStateFactory * GameStateFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): GameStateFactory");
             Acquire();
         }
 
@@ -84,6 +93,10 @@ namespace state
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new GameStateFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: GameStateFactory");
         }
     }
 

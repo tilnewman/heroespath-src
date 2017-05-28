@@ -67,7 +67,14 @@ namespace gui
         popupSpellbookTexture_         (),
         accentPathsVec_                ()
     {
-        fontColor_ = sfml_util::FontManager::Instance()->Color_GrayDarker();
+        M_HP_LOG_DBG("Singleton Construction: PopupManager");
+        fontColor_ = sfml_util::FontManager::Color_GrayDarker();
+    }
+
+
+    PopupManager::~PopupManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: PopupManager");
     }
 
 
@@ -75,6 +82,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): PopupManager");
             Acquire();
         }
 
@@ -87,6 +95,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new PopupManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: PopupManager");
         }
     }
 

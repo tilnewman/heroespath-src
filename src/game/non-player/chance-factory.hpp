@@ -68,11 +68,6 @@ namespace ownership
     }
 
 
-    //types required by the singeton implementation
-    class ChanceFactory;
-    using ChanceFactorySPtr_t = std::shared_ptr<ChanceFactory>;
-
-
     //A singleton class that is responsible for creating sets of items that will equip non-player characters.
     class ChanceFactory
     {
@@ -101,9 +96,11 @@ namespace ownership
         ChanceFactory();
 
     public:
-        virtual ~ChanceFactory();
+        ~ChanceFactory();
 
-        static ChanceFactorySPtr_t Instance();
+        static ChanceFactory * Instance();
+        static void Acquire();
+        static void Release();
 
         static const chance::InventoryChances Make(const non_player::CharacterSPtr_t & CREATURE_SPTR);
 
@@ -286,7 +283,7 @@ namespace ownership
         static const float CHANCE_WEAPON_ENUM_POS_ADJ_SET_;
         static const float CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_;
 
-        static ChanceFactorySPtr_t instance_;
+        static std::unique_ptr<ChanceFactory> instanceUPtr_;
 
         static chance::MaterialChanceMap_t materialChanceMapCool_;
         static chance::MaterialChanceMap_t materialChanceMapMetal_;

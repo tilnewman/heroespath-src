@@ -85,6 +85,8 @@ namespace armor
         ArmorDetailLoader();
 
     public:
+        ~ArmorDetailLoader();
+
         static ArmorDetailLoader * Instance();
         static void Acquire();
         static void Release();

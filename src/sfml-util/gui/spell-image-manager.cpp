@@ -51,13 +51,22 @@ namespace gui
 
 
     SpellImageManager::SpellImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: SpellImageManager");
+    }
+
+
+    SpellImageManager::~SpellImageManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: SpellImageManager");
+    }
 
 
     SpellImageManager * SpellImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): SpellImageManager");
             Acquire();
         }
 
@@ -70,6 +79,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new SpellImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton ACquire() after Construction: SpellImageManager");
         }
     }
 

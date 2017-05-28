@@ -51,6 +51,8 @@ namespace gui
         GuiElements();
 
     public:
+        ~GuiElements();
+
         static GuiElements * Instance();
         static void Acquire();
         static void Release();

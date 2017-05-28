@@ -64,6 +64,7 @@
 #include "game/item/item-warehouse.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/non-player/inventory-factory.hpp"
+#include "game/combat/encounter.hpp"
 
 #include "misc/random.hpp"
 
@@ -141,6 +142,7 @@ int main()
         game::item::armor::ArmorFactory::Acquire();
         game::item::weapon::WeaponDetailLoader::Acquire();
         game::non_player::ownership::InventoryFactory::Acquire();
+        game::combat::Encounter::Acquire();
 
         try
         {
@@ -184,6 +186,7 @@ int main()
         }
 
         //unload stage 2
+        game::combat::Encounter::Release();
         game::non_player::ownership::InventoryFactory::Release();
         game::item::weapon::WeaponDetailLoader::Release();
         game::item::armor::ArmorFactory::Release();

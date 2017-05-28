@@ -83,6 +83,8 @@ namespace gui
         PopupManager();
 
     public:
+        ~PopupManager();
+
         static PopupManager * Instance();
         static void Acquire();
         static void Release();

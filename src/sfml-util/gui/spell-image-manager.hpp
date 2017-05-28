@@ -55,6 +55,8 @@ namespace gui
         SpellImageManager();
 
     public:
+        ~SpellImageManager();
+
         static SpellImageManager * Instance();
         static void Acquire();
         static void Release();

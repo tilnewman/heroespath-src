@@ -70,13 +70,22 @@ namespace sfml_util
 
 
     FontManager::FontManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: FontManager");
+    }
+
+
+    FontManager::~FontManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: FontManager");
+    }
 
 
     FontManager * FontManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): FontManager");
             Acquire();
         }
 
@@ -89,6 +98,10 @@ namespace sfml_util
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new FontManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: FontManager");
         }
     }
 

@@ -48,13 +48,22 @@ namespace combat
 
 
     PartyFactory::PartyFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: PartyFactory");
+    }
+
+
+    PartyFactory::~PartyFactory()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: PartyFactory");
+    }
 
 
     PartyFactory * PartyFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): PartyFactory");
             Acquire();
         }
 
@@ -67,6 +76,10 @@ namespace combat
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new PartyFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: PartyFactory");
         }
     }
 

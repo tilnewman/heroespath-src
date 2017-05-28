@@ -57,13 +57,22 @@ namespace gui
 
 
     ItemImageManager::ItemImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ItemImageManager");
+    }
+
+
+    ItemImageManager::~ItemImageManager()
+    {
+        M_HP_LOG_DBG("Singleton Construction: ItemImageManager");
+    }
 
 
     ItemImageManager * ItemImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ItemImageManager");
             Acquire();
         }
 
@@ -76,6 +85,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ItemImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ItemImageManager");
         }
     }
 

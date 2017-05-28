@@ -56,6 +56,8 @@ namespace item
         ItemWarehouse();
 
     public:
+        ~ItemWarehouse();
+
         static ItemWarehouse * Instance();
         static void Acquire();
         static void Release();

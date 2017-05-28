@@ -92,6 +92,8 @@ namespace misc
         Platform();
 
     public:
+        ~Platform();
+
         static Platform * Instance();
         static void Acquire();
         static void Release();

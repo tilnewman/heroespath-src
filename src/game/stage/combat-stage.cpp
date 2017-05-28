@@ -121,9 +121,9 @@ namespace stage
     const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_      { SLIDER_SPEED_FASTEST_ };
     const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_        { SLIDER_SPEED_FASTEST_ * 3.0f };
     //
-    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) };
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    { (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20) };
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_{ (sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40) };
+    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_{ (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40) };
     const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_     { sf::Color::White };
     const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_  { sf::Color(150, 150, 150) };
     const sf::Color CombatStage::LISTBOX_LINE_COLOR_         { sf::Color(255, 255, 255, 25) };
@@ -138,11 +138,10 @@ namespace stage
         SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
         commandBoxSPtr_            (),
         statusBoxSPtr_             (),
-        statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Instance()->Color_Orange(), sfml_util::Justified::Left),
+        statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
         zoomSliderBarSPtr_         (),
         turnBoxSPtr_               (),
         turnBoxRegion_             (),
-        encounterSPtr_             (combat::Encounter::Instance()),
         combatSoundEffects_        (),
         turnPhase_                 (TurnPhase::NotATurn),
         preTurnPhase_              (PreTurnPhase::Start),
@@ -261,7 +260,7 @@ namespace stage
         {
             auto isSkyPounce(false);
             if ((TurnPhase::NotATurn != turnPhase_) && (turnCreaturePtr_ != nullptr))
-                isSkyPounce = encounterSPtr_->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying();
+                isSkyPounce = combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying();
 
             return HandlePounce(isSkyPounce);
         }
@@ -405,7 +404,7 @@ namespace stage
         const sfml_util::gui::TextInfo TURNBOXTITLE_TEXT_INFO(" ",
                                                               sfml_util::FontManager::Instance()->Font_BigFlavor1(),
                                                               sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                              sfml_util::FontManager::Instance()->Color_Light(),
+                                                              sfml_util::FontManager::Color_Light(),
                                                               sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
@@ -415,7 +414,7 @@ namespace stage
         const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(" ",
                                                              sfml_util::FontManager::Instance()->Font_Default2(),
                                                              sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                             sfml_util::FontManager::Instance()->Color_GrayLight(),
+                                                             sfml_util::FontManager::Color_GrayLight(),
                                                              sfml_util::Justified::Left);
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
@@ -424,7 +423,7 @@ namespace stage
         const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(" ",
                                                                     sfml_util::FontManager::Instance()->Font_Default2(),
                                                                     sfml_util::FontManager::Instance()->Size_Normal(),
-                                                                    sfml_util::FontManager::Instance()->Color_Light(),
+                                                                    sfml_util::FontManager::Color_Light(),
                                                                     sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
@@ -439,7 +438,7 @@ namespace stage
         const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(" ",
                                                                    sfml_util::FontManager::Instance()->Font_Default2(),
                                                                    sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                                   sfml_util::FontManager::Instance()->Color_GrayLight(),
+                                                                   sfml_util::FontManager::Color_GrayLight(),
                                                                    sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
@@ -448,7 +447,7 @@ namespace stage
         sfml_util::gui::TextInfo turnBoxWeaponTextInfo(" ",
                                                        sfml_util::FontManager::Instance()->Font_Default2(),
                                                        sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                       sfml_util::FontManager::Instance()->Color_GrayLight(),
+                                                       sfml_util::FontManager::Color_GrayLight(),
                                                        sfml_util::Justified::Center);
 
         weaponTBoxTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion) );
@@ -460,13 +459,13 @@ namespace stage
         sfml_util::gui::TextInfo turnButtonTextInfo(" ",
                                                     sfml_util::FontManager::Instance()->Font_Default2(),
                                                     sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                    sfml_util::FontManager::Instance()->Color_Orange(),
+                                                    sfml_util::FontManager::Color_Orange(),
                                                     sfml_util::Justified::Left);
 
         const sfml_util::gui::TextInfo TESTING_TEXT_INFO(" ",
                                                          sfml_util::FontManager::Instance()->Font_Default2(),
                                                          sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                         sfml_util::FontManager::Instance()->Color_GrayLight(),
+                                                         sfml_util::FontManager::Color_GrayLight(),
                                                          sfml_util::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
@@ -474,7 +473,7 @@ namespace stage
         testingTextRegion.top += (testingTextRegion.height - 400.0f);
         testingTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
 
-        const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(0, 0, 0, 176));
+        const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
         turnButtonTextInfoDisabled.color = TURNBUTTON_DISABLED_COLOR;
 
@@ -805,10 +804,10 @@ namespace stage
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partySPtr);
 
-            encounterSPtr_->StartTasks();
+            combat::Encounter::Instance()->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
+            combat::Encounter::Instance()->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
         }
 
         //combat display
@@ -842,7 +841,7 @@ namespace stage
         const sfml_util::gui::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO("Zoom",
                                                                   sfml_util::FontManager::Instance()->Font_Default1(),
                                                                   sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                                  sfml_util::FontManager::Instance()->Color_Light(),
+                                                                  sfml_util::FontManager::Color_Light(),
                                                                   sfml_util::Justified::Left);
         //
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
@@ -1126,7 +1125,7 @@ namespace stage
         }
 
         //handle creature turn start hook, catches the start of a new turn
-        if ((encounterSPtr_->HasStarted()) &&
+        if ((combat::Encounter::Instance()->HasStarted()) &&
             (IsPaused() == false) &&
             (turnCreaturePtr_ == nullptr) &&
             (TurnPhase::NotATurn == turnPhase_) &&
@@ -1350,7 +1349,7 @@ namespace stage
 
                 if (KE.code == sf::Keyboard::P)
                 {
-                    return HandlePounce(encounterSPtr_->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying());
+                    return HandlePounce(combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying());
                 }
             }
         }
@@ -1378,7 +1377,7 @@ namespace stage
     void CombatStage::AppendInitialStatus()
     {
         std::ostringstream ss;
-        ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << encounterSPtr_->NonPlayerParty()->Summary() << "!";
+        ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << combat::Encounter::Instance()->NonPlayerParty()->Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
         statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
@@ -1630,7 +1629,7 @@ namespace stage
     void CombatStage::HandleEnemyTurnStep1_Decide()
     {
         turnActionInfo_ = combat::TurnDecider::Decide(turnCreaturePtr_, combatDisplayStagePtr_);
-        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         SetupTurnBox();
     }
 
@@ -1734,7 +1733,7 @@ namespace stage
     {
         zoomSliderOrigPos_ = zoomSliderBarSPtr_->GetCurrentValue();
 
-        turnCreaturePtr_ = encounterSPtr_->CurrentTurnCreature();
+        turnCreaturePtr_ = combat::Encounter::Instance()->CurrentTurnCreature();
 
         SetTurnPhase(TurnPhase::CenterAndZoomIn);
         combatAnimationPtr_->CenteringStart(turnCreaturePtr_);
@@ -1800,7 +1799,7 @@ namespace stage
 
         if (restoreInfo_.CanTurnAdvance())
         {
-            encounterSPtr_->IncrementTurn();
+            combat::Encounter::Instance()->IncrementTurn();
             restoreInfo_.CanTurnAdvance(false);
         }
 
@@ -1923,7 +1922,7 @@ namespace stage
 
         combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesToCastUponPVec);
         turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_, creaturesToCastUponPVec);
-        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Cast(spellBeingCastPtr_, turnCreaturePtr_, creaturesToCastUponPVec);
         SetTurnActionPhase(TurnActionPhase::Cast);
 
@@ -1950,7 +1949,7 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Advance);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             SetTurnActionPhase(TurnActionPhase::Advance);
             StartPerformAnim();
             return true;
@@ -1971,7 +1970,7 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Retreat);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             SetTurnActionPhase(TurnActionPhase::Retreat);
             StartPerformAnim();
             return true;
@@ -1992,7 +1991,7 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Block);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
             //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
@@ -2009,7 +2008,7 @@ namespace stage
         SetUserActionAllowed(false);
 
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Nothing);
-        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
         //no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
         AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
@@ -2030,8 +2029,8 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Fly);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            encounterSPtr_->SetIsFlying(turnCreaturePtr_, true);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetIsFlying(turnCreaturePtr_, true);
 
             combatDisplayStagePtr_->HandleFlyingChange(turnCreaturePtr_, true);
 
@@ -2055,8 +2054,8 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Land);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            encounterSPtr_->SetIsFlying(turnCreaturePtr_, false);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetIsFlying(turnCreaturePtr_, false);
 
             combatDisplayStagePtr_->HandleFlyingChange(turnCreaturePtr_, false);
 
@@ -2080,7 +2079,7 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Roar);
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
             fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
             SetTurnActionPhase(TurnActionPhase::Roar);
@@ -2105,7 +2104,7 @@ namespace stage
             SetUserActionAllowed(false);
 
             turnActionInfo_ = combat::TurnActionInfo(((IS_SKY_POUNCE) ? combat::TurnAction::SkyPounce : combat::TurnAction::LandPounce));
-            encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
             //not implemented yet so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), true);
@@ -2117,7 +2116,7 @@ namespace stage
     bool CombatStage::HandleWeaponChange()
     {
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::ChangeWeapon);
-        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         turnCreaturePtr_->CurrentWeaponsInc();
         SetupTurnBox();
         return true;
@@ -2834,7 +2833,7 @@ namespace stage
             //handle other misc killed tasks
             if (nextKilledCreaturePtr->IsPlayerCharacter() == false)
             {
-                encounterSPtr_->HandleKilledCreature(nextKilledCreaturePtr);
+                combat::Encounter::Instance()->HandleKilledCreature(nextKilledCreaturePtr);
             }
         }
     }
@@ -2872,7 +2871,7 @@ namespace stage
         SetUserActionAllowed(false);
 
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Attack, creatureToAttackPtr);
-        encounterSPtr_->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+        combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
         SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));
 

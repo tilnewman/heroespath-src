@@ -50,13 +50,22 @@ namespace gui
 
 
     CombatImageManager::CombatImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: CombatImageManager");
+    }
+
+
+    CombatImageManager::~CombatImageManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: CombatImageManager");
+    }
 
 
     CombatImageManager * CombatImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): CombatImageManager");
             Acquire();
         }
 
@@ -69,6 +78,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new CombatImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: CombatImageManager");
         }
     }
 

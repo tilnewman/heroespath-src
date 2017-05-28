@@ -65,9 +65,16 @@ namespace sfml_util
         soundEffectsToPlayVec_      (),
         soundEffectsVec_           ()
     {
+        M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
         soundEffectsVec_.resize(static_cast<std::size_t>(sound_effect::Count));
         soundEffectsSetVec_.resize(static_cast<std::size_t>(SfxSet::Count));
+    }
+
+
+    SoundManager::~SoundManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: SoundManager");
     }
 
 
@@ -75,6 +82,7 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): SoundManager");
             Acquire();
         }
 
@@ -87,6 +95,10 @@ namespace sfml_util
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new SoundManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: SoundManager");
         }
     }
 

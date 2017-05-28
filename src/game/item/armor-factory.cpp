@@ -46,17 +46,22 @@ namespace armor
 
 
     ArmorFactory::ArmorFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ArmorFactory");
+    }
 
 
     ArmorFactory::~ArmorFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: ArmorFactory");
+    }
 
 
     ArmorFactory * ArmorFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ArmorFactory");
             Acquire();
         }
 
@@ -69,6 +74,10 @@ namespace armor
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ArmorFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ArmorFactory");
         }
     }
 

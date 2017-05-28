@@ -68,6 +68,8 @@ namespace game
         LoopManager();
 
     public:
+        ~LoopManager();
+
         static LoopManager * Instance();
         static void Acquire();
         static void Release();

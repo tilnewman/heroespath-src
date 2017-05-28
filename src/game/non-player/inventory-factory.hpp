@@ -75,6 +75,8 @@ namespace ownership
         InventoryFactory();
 
     public:
+        ~InventoryFactory();
+
         static InventoryFactory * Instance();
         static void Acquire();
         static void Release();

@@ -55,6 +55,8 @@ namespace gui
         CombatImageManager();
 
     public:
+        ~CombatImageManager();
+
         static CombatImageManager * Instance();
         static void Acquire();
         static void Release();

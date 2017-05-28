@@ -60,11 +60,6 @@ namespace non_player
 namespace combat
 {
 
-    //types required by singleton implementation
-    class Encounter;
-    using EncounterSPtr_t = std::shared_ptr<Encounter>;
-
-
     //Manages an encounter with the player party
     class Encounter
     {
@@ -78,9 +73,11 @@ namespace combat
         Encounter();
 
     public:
-        virtual ~Encounter();
+        ~Encounter();
 
-        static EncounterSPtr_t Instance();
+        static Encounter * Instance();
+        static void Acquire();
+        static void Release();
 
         inline non_player::PartySPtr_t NonPlayerParty() { return enemyPartySPtr_; }
         inline std::size_t GetRoundCount()              { return roundCounter_; }
@@ -107,7 +104,7 @@ namespace combat
         void SortAndSetTurnCreature();
 
     private:
-        static EncounterSPtr_t instance_;
+        static std::unique_ptr<Encounter> instanceUPtr_;
         //
         non_player::PartySPtr_t  enemyPartySPtr_;
         non_player::PartySPtr_t  deadEnemyPartySPtr_;

@@ -65,6 +65,8 @@ namespace sfml_util
         };
 
     public:
+        ~FontManager();
+
         static FontManager * Instance();
         static void Acquire();
         static void Release();

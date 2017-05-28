@@ -55,17 +55,22 @@ namespace game
     SettingsFile::SettingsFile()
     :
         ConfigBase("settings.dat", "=", "#")
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: SettingsFile");
+    }
 
 
     SettingsFile::~SettingsFile()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: SettingsFile");
+    }
 
 
     SettingsFile * SettingsFile::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): SettingsFile");
             Acquire();
         }
 
@@ -78,6 +83,10 @@ namespace game
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new SettingsFile);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: SettingsFile");
         }
     }
 

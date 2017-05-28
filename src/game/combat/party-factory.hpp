@@ -61,6 +61,8 @@ namespace combat
         PartyFactory();
 
     public:
+        ~PartyFactory();
+
         static PartyFactory * Instance();
         static void Acquire();
         static void Release();

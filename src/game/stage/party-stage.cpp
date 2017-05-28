@@ -310,7 +310,7 @@ namespace stage
             sfml_util::gui::TextInfo insTextInfo("(double-click or use the arrow keys and enter to move characters back and forth)",
                                                  sfml_util::FontManager::Instance()->Font_Typical(),
                                                  sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                 sfml_util::FontManager::Instance()->Color_GrayLight(),
+                                                 sfml_util::FontManager::Color_GrayLight(),
                                                  sf::BlendAlpha,
                                                  sf::Text::Italic,
                                                  sfml_util::Justified::Left);
@@ -366,14 +366,14 @@ namespace stage
                                            CHAR_LIST_WIDTH,
                                            CHAR_LIST_HEIGHT);
         //
-        const sf::Color BG_COLOR(sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 220));
+        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
         sfml_util::gui::BackgroundInfo bgInfo(BG_COLOR);
         sfml_util::gui::box::Info boxInfo(1,
                                           true,
                                           CHAR_LIST_RECT,
-                                          sfml_util::gui::ColorSet(sfml_util::FontManager::Instance()->Color_Orange(),
+                                          sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
                                                                    BG_COLOR,
-                                                                   sfml_util::FontManager::Instance()->Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                                                                   sfml_util::FontManager::Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
                                                                    BG_COLOR - sf::Color(40,40,40,0)),
                                           bgInfo);
         //
@@ -384,7 +384,7 @@ namespace stage
                                                                  10.0f,
                                                                  6.0f,
                                                                  boxInfo,
-                                                                 sfml_util::FontManager::Instance()->Color_Orange(),
+                                                                 sfml_util::FontManager::Color_Orange(),
                                                                  sfml_util::gui::ListBox::NO_LIMIT_,
                                                                  this) );
         EntityAdd(characterListBoxSPtr_.get());
@@ -408,7 +408,7 @@ namespace stage
                                                              10.0f,
                                                              6.0f,
                                                              boxInfo,
-                                                             sfml_util::FontManager::Instance()->Color_Orange(),
+                                                             sfml_util::FontManager::Color_Orange(),
                                                              player::Party::MAX_CHARACTER_COUNT_,
                                                              this) );
         EntityAdd(partyListBoxSPtr_.get());
@@ -418,7 +418,7 @@ namespace stage
             sfml_util::gui::TextInfo labelTextInfo("Unplayed Characters",
                                                    sfml_util::FontManager::Instance()->Font_Default2(),
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                   sfml_util::FontManager::Instance()->Color_Orange() + sf::Color(0, 30, 30, 0));
+                                                   sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
             upTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
             upTextRegionSPtr_->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - upTextRegionSPtr_->GetEntityRegion().height));
@@ -430,7 +430,7 @@ namespace stage
             sfml_util::gui::TextInfo labelTextInfo("New Party",
                                                    sfml_util::FontManager::Instance()->Font_Default2(),
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                   sfml_util::FontManager::Instance()->Color_Orange() + sf::Color(0, 30, 30, 0));
+                                                   sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
             partyTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
             partyTextRegionSPtr_->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - partyTextRegionSPtr_->GetEntityRegion().height));
@@ -603,7 +603,7 @@ namespace stage
                 const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
                                                          sfml_util::FontManager::Instance()->Font_Typical(),
                                                          sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                         sfml_util::FontManager::Instance()->Color_Light(),
+                                                         sfml_util::FontManager::Color_Light(),
                                                          sfml_util::Justified::Left);
 
                 mouseOverTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PartyStage'sMouseOverPopup", TEXT_INFO, TEXT_RECT) );

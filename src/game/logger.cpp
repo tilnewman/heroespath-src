@@ -29,6 +29,8 @@
 //
 #include "logger.hpp"
 
+#include "game/log-macros.hpp"
+
 #include "misc/assertlogandthrow.hpp"
 
 

@@ -166,14 +166,14 @@ namespace stage
         listBoxItemSLst.sort();
         //
         //establish the boxing options
-        const sf::Color BG_COLOR(sfml_util::FontManager::Instance()->Color_Orange() - sf::Color(100, 100, 100, 220));
+        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
         const sfml_util::gui::BackgroundInfo BG_INFO(BG_COLOR);
         const sfml_util::gui::box::Info BOX_INFO(1,
                                                  true,
                                                  GS_LB_RECT,
-                                                 sfml_util::gui::ColorSet(sfml_util::FontManager::Instance()->Color_Orange(),
+                                                 sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
                                                                           BG_COLOR,
-                                                                          sfml_util::FontManager::Instance()->Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                                                                          sfml_util::FontManager::Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
                                                                           BG_COLOR - sf::Color(40,40,40,0)),
                                                  BG_INFO);
         //reate the ListBox
@@ -184,7 +184,7 @@ namespace stage
                                                           10.0f,
                                                           6.0f,
                                                           BOX_INFO,
-                                                          sfml_util::FontManager::Instance()->Color_Orange(),
+                                                          sfml_util::FontManager::Color_Orange(),
                                                           0,
                                                           this) );
         EntityAdd(gsListBoxSPtr_.get());

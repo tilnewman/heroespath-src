@@ -50,13 +50,22 @@ namespace creature
     NameInfo::NameInfo()
     :
         sizeMap_()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: NameInfo");
+    }
+
+
+    NameInfo::~NameInfo()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: NameInfo");
+    }
 
 
     NameInfo * NameInfo::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): NameInfo");
             Acquire();
         }
 
@@ -69,6 +78,10 @@ namespace creature
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new NameInfo);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: NameInfo");
         }
     }
 

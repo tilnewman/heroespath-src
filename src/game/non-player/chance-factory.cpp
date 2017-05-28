@@ -29,16 +29,17 @@
 //
 #include "chance-factory.hpp"
 
-#include "misc/boost-string-includes.hpp"
-
 #include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/weapon-details.hpp"
 #include "game/item/armor-details.hpp"
-#include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 #include "game/stats/types.hpp"
 #include "game/non-player/character.hpp"
+#include "game/log-macros.hpp"
+
+#include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include "stringutil/stringhelp.hpp"
 
@@ -60,30 +61,59 @@ namespace non_player
 namespace ownership
 {
 
-    const float                 ChanceFactory::CHANCE_MINIMUM_(0.001f);
-    const float                 ChanceFactory::CHANCE_MAXIMUM_(0.999f);
-    const float                 ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_SET_(0.5f);
-    const float                 ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_(0.1f);
-    ChanceFactorySPtr_t         ChanceFactory::instance_(nullptr);
-    chance::MaterialChanceMap_t ChanceFactory::materialChanceMapCool_;
-    chance::MaterialChanceMap_t ChanceFactory::materialChanceMapMetal_;
-    chance::MaterialChanceMap_t ChanceFactory::materialChanceMapPrecious_;
+    const float                    ChanceFactory::CHANCE_MINIMUM_{ 0.001f };
+    const float                    ChanceFactory::CHANCE_MAXIMUM_{ 0.999f };
+    const float                    ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_SET_{ 0.5f };
+    const float                    ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_{ 0.1f };
+    std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_{ nullptr };
+    chance::MaterialChanceMap_t    ChanceFactory::materialChanceMapCool_;
+    chance::MaterialChanceMap_t    ChanceFactory::materialChanceMapMetal_;
+    chance::MaterialChanceMap_t    ChanceFactory::materialChanceMapPrecious_;
 
 
     ChanceFactory::ChanceFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ChanceFactory");
+    }
 
 
     ChanceFactory::~ChanceFactory()
-    {}
-
-
-    ChanceFactorySPtr_t ChanceFactory::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new ChanceFactory );
+        M_HP_LOG_DBG("Singleton Destruction: ChanceFactory");
+    }
 
-        return instance_;
+
+    ChanceFactory * ChanceFactory::Instance()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ChanceFactory");
+            Acquire();
+        }
+
+        return instanceUPtr_.get();
+    }
+
+
+    void ChanceFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new ChanceFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ChanceFactory");
+        }
+    }
+
+
+    void ChanceFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::non_player::ownership::ChanceFactory::Release() "
+            << "found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

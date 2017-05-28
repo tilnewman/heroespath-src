@@ -68,6 +68,8 @@ namespace sfml_util
         Display();
 
     public:
+        ~Display();
+
         static Display * Instance();
 
         static void Acquire(const std::string & TITLE,

@@ -112,7 +112,7 @@ namespace stage
         //box
         {
             const sf::FloatRect BOX_RECT(CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
-            sfml_util::gui::box::Info boxInfo(true, BOX_RECT, sfml_util::gui::ColorSet(sfml_util::FontManager::Instance()->Color_GrayLight(), sf::Color::Transparent, sfml_util::FontManager::Instance()->Color_GrayLight(), sf::Color::Transparent));
+            sfml_util::gui::box::Info boxInfo(true, BOX_RECT, sfml_util::gui::ColorSet(sfml_util::FontManager::Color_GrayLight(), sf::Color::Transparent, sfml_util::FontManager::Color_GrayLight(), sf::Color::Transparent));
             box_.SetupBox(boxInfo);
         }
 

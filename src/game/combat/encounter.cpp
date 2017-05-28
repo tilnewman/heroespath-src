@@ -57,7 +57,7 @@ namespace game
 namespace combat
 {
 
-    EncounterSPtr_t Encounter::instance_(nullptr);
+    std::unique_ptr<Encounter> Encounter::instanceUPtr_{ nullptr };
 
 
     Encounter::Encounter()
@@ -70,19 +70,46 @@ namespace combat
         turnIndex_         (0),
         turnInfoMap_       (),
         turnCreaturePtr_   ()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: Encounter");
+    }
 
 
     Encounter::~Encounter()
-    {}
-
-
-    EncounterSPtr_t Encounter::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset(new Encounter);
+        M_HP_LOG_DBG("Singleton Destruction: Encounter");
+    }
 
-        return instance_;
+
+    Encounter * Encounter::Instance()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Encounter");
+            Acquire();
+        }
+
+        return instanceUPtr_.get();
+    }
+
+
+    void Encounter::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new Encounter);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: Encounter");
+        }
+    }
+
+
+    void Encounter::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::combat::Encounter::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
     }
 
 

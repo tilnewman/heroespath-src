@@ -132,6 +132,8 @@ namespace sfml_util
         };
 
     public:
+        ~SoundManager();
+
         static SoundManager * Instance();
         static void Acquire();
         static void Release();

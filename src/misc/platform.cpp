@@ -66,13 +66,22 @@ namespace misc
     Platform::Platform()
     :
         platform_(platform_type::Unknown)
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: Platform");
+    }
+
+
+    Platform::~Platform()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: Platform");
+    }
 
 
     Platform * Platform::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Platform");
             Acquire();
         }
 
@@ -85,6 +94,10 @@ namespace misc
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new Platform);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Constructor: Platform");
         }
     }
 

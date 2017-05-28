@@ -319,7 +319,7 @@ namespace sfml_util
             hoverSfText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
             const gui::BackgroundInfo BG_INFO(
-                FontManager::Instance()->Color_Orange() - sf::Color(20,0,0,0));
+                FontManager::Color_Orange() - sf::Color(20,0,0,0));
 
             const gui::box::Info BOX_INFO(1, true, region, gui::ColorSet(), BG_INFO);
 

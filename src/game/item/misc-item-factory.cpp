@@ -33,6 +33,7 @@
 
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
+#include "game/log-macros.hpp"
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -52,17 +53,22 @@ namespace misc
 
 
     ItemFactory::ItemFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ItemFactory");
+    }
 
 
     ItemFactory::~ItemFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: ItemFactory");
+    }
 
 
     ItemFactory * ItemFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ItemFactory");
             Acquire();
         }
 
@@ -75,6 +81,10 @@ namespace misc
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ItemFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ItemFactory");
         }
     }
 

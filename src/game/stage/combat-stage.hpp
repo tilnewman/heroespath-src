@@ -85,7 +85,7 @@ namespace combat
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
 
     class Encounter;
-    using EncounterSPtr_t = std::shared_ptr<Encounter>;
+    using EncounterPtr_t = Encounter *;
 
     class CombatAnimation;
     using CombatAnimationPtr_t = CombatAnimation *;
@@ -321,7 +321,6 @@ namespace stage
         sfml_util::gui::SliderBarSPtr_t  zoomSliderBarSPtr_;
         sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
         sf::FloatRect                    turnBoxRegion_;
-        combat::EncounterSPtr_t          encounterSPtr_;
         combat::CombatSoundEffects       combatSoundEffects_;
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;

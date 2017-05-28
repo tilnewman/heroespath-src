@@ -55,6 +55,8 @@ namespace gui
         ConditionImageManager();
 
     public:
+        ~ConditionImageManager();
+
         static ConditionImageManager * Instance();
         static void Acquire();
         static void Release();

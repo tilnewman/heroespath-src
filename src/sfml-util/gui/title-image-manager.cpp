@@ -52,6 +52,7 @@ namespace gui
     :
         placeHlderFilePathObj_( boost::filesystem::system_complete(boost::filesystem::path(imagesDirectoryPath_) / PlaceholderFileName()) )
     {
+        M_HP_LOG_DBG("Singleton Construction: TitleImageManager");
         if (boost::filesystem::exists(placeHlderFilePathObj_) == false)
         {
             std::ostringstream ss;
@@ -61,10 +62,17 @@ namespace gui
     }
 
 
+    TitleImageManager::~TitleImageManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: TitleImageManager");
+    }
+
+
     TitleImageManager * TitleImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): TitleImageManager");
             Acquire();
         }
 
@@ -77,6 +85,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new TitleImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: TitleImageManager");
         }
     }
 

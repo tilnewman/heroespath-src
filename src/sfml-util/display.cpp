@@ -73,7 +73,15 @@ namespace sfml_util
         winStyle_        (0),
         frameRateLimit_  (0),
         willVerticalSync_(false)
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: Display");
+    }
+
+
+    Display::~Display()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: Display");
+    }
 
 
     Display * Display::Instance()
@@ -91,6 +99,10 @@ namespace sfml_util
         {
             instanceUPtr_.reset(new Display);
             instanceUPtr_->OpenRenderWindow(TITLE, STYLE, ANTIALIAS_LEVEL);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: Display");
         }
     }
 

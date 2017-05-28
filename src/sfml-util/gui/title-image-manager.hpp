@@ -63,6 +63,8 @@ namespace gui
         TitleImageManager();
 
     public:
+        ~TitleImageManager();
+
         static TitleImageManager * Instance();
         static void Acquire();
         static void Release();

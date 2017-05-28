@@ -52,17 +52,22 @@ namespace weapon
 
 
     WeaponFactory::WeaponFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: WeaponFactory");
+    }
 
 
     WeaponFactory::~WeaponFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Destruction: WeaponFactory");
+    }
 
 
     WeaponFactory * WeaponFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): WeaponFactory");
             Acquire();
         }
 
@@ -75,6 +80,10 @@ namespace weapon
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new WeaponFactory);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: WeaponFactory");
         }
     }
 

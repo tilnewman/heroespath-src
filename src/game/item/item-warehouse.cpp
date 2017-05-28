@@ -30,6 +30,7 @@
 #include "item-warehouse.hpp"
 
 #include "game/item/item.hpp"
+#include "game/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -48,13 +49,22 @@ namespace item
     ItemWarehouse::ItemWarehouse()
     :
         itemUVec_()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ItemWarehouse");
+    }
+
+
+    ItemWarehouse::~ItemWarehouse()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: ItemWarehouse");
+    }
 
 
     ItemWarehouse * ItemWarehouse::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ItemWarehouse");
             Acquire();
         }
 
@@ -67,6 +77,10 @@ namespace item
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ItemWarehouse);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ItemWarehouse");
         }
     }
 

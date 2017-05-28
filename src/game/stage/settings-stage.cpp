@@ -371,7 +371,7 @@ namespace stage
         const sfml_util::gui::TextInfo REV_NUM_TEXTINFO(ss.str(),
                                                         sfml_util::FontManager::Instance()->Font_Default1(),
                                                         26,
-                                                        sfml_util::FontManager::Instance()->Color_Light(),
+                                                        sfml_util::FontManager::Color_Light(),
                                                         sfml_util::Justified::Left);
 
         revisionTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("Version", REV_NUM_TEXTINFO, sf::FloatRect()) );

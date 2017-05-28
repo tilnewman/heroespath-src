@@ -87,6 +87,8 @@ namespace weapon
         WeaponDetailLoader();
 
     public:
+        ~WeaponDetailLoader();
+
         static WeaponDetailLoader * Instance();
         static void Acquire();
         static void Release();

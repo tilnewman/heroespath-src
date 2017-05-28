@@ -51,13 +51,22 @@ namespace gui
 
 
     ConditionImageManager::ConditionImageManager()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: ConditionImageManager");
+    }
+
+
+    ConditionImageManager::~ConditionImageManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: ConditionImageManager");
+    }
 
 
     ConditionImageManager * ConditionImageManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ConditionImageManager");
             Acquire();
         }
 
@@ -70,6 +79,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ConditionImageManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ConditionImageManager");
         }
     }
 

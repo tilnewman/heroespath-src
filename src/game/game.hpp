@@ -55,6 +55,8 @@ namespace game
         Game();
 
     public:
+        ~Game();
+
         static Game * Instance();
         static void Acquire();
         static void Release();

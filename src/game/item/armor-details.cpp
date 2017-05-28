@@ -53,7 +53,14 @@ namespace armor
     :
         armorDetailsMap_()
     {
+        M_HP_LOG_DBG("Singleton Construction: ArmorDetailLoader");
         LoadArmorDeatilsFromGameDataFile();
+    }
+
+
+    ArmorDetailLoader::~ArmorDetailLoader()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: ArmorDetailLoader");
     }
 
 
@@ -61,6 +68,7 @@ namespace armor
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ArmorDetailLoader");
             Acquire();
         }
 
@@ -73,6 +81,10 @@ namespace armor
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new ArmorDetailLoader);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: ArmorDetailLoader");
         }
     }
 

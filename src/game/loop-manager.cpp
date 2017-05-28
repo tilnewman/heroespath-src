@@ -62,7 +62,14 @@ namespace game
         prevSettingsState_(LoopState::None),
         stateBeforeFade_  (LoopState::None)
     {
+        M_HP_LOG_DBG("Singleton Construction: LoopManager");
         TransitionTo(LoopState::FromString(startupStage_));
+    }
+
+
+    LoopManager::~LoopManager()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: LoopManager");
     }
 
 
@@ -70,6 +77,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): LoopManager");
             Acquire();
         }
 
@@ -82,6 +90,10 @@ namespace game
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new LoopManager);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: LoopManager");
         }
     }
 

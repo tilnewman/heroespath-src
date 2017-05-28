@@ -30,6 +30,7 @@
 #include "gui-elements.hpp"
 
 #include "game/game-data-file.hpp"
+#include "game/log-macros.hpp"
 
 #include "sfml-util/loaders.hpp"
 
@@ -117,9 +118,16 @@ namespace gui
         lineSmallTBotSpriteRect_	        (sf::IntRect(114, 223, 26, 19)),
         lineSmallTRightSpriteRect_	        (sf::IntRect(141, 223, 19, 26))
     {
+        M_HP_LOG_DBG("Singleton Construction: GuiElements");
         sfml_util::LoadImageOrTexture(elementsTexture_,   game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
         sfml_util::LoadImageOrTexture(woodBgTexture_,     game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
         sfml_util::LoadImageOrTexture(darkKnotBgTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
+    }
+
+
+    GuiElements::~GuiElements()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: GuiElements");
     }
 
 
@@ -127,6 +135,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): GuiElements");
             Acquire();
         }
 
@@ -139,6 +148,10 @@ namespace gui
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new GuiElements);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton ACquire() after Construction: GuiElements");
         }
     }
 

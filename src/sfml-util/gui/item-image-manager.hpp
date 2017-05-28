@@ -65,6 +65,8 @@ namespace gui
         ItemImageManager();
 
     public:
+        ~ItemImageManager();
+
         static ItemImageManager * Instance();
         static void Acquire();
         static void Release();

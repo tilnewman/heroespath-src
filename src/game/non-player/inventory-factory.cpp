@@ -57,13 +57,22 @@ namespace ownership
 
 
     InventoryFactory::InventoryFactory()
-    {}
+    {
+        M_HP_LOG_DBG("Singleton Construction: InventoryFactory");
+    }
+
+
+    InventoryFactory::~InventoryFactory()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: InventoryFactory");
+    }
 
 
     InventoryFactory * InventoryFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): InventoryFactory");
             Acquire();
         }
 
@@ -77,13 +86,18 @@ namespace ownership
         {
             instanceUPtr_.reset(new InventoryFactory);
         }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: InventoryFactory");
+        }
     }
 
 
     void InventoryFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::non_player::ownership::InventoryFactory::Release() found instanceUPtr that was null.");
+            "game::non_player::ownership::InventoryFactory::Release() found "
+            << "instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

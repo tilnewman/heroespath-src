@@ -57,7 +57,14 @@ namespace weapon
     :
         weaponDetailsMap_()
     {
+        M_HP_LOG_DBG("Singleton Construction: WeaponDetailLoader");
         LoadWeaponDeatilsFromGameDataFile();
+    }
+
+
+    WeaponDetailLoader::~WeaponDetailLoader()
+    {
+        M_HP_LOG_DBG("Singleton Destruction: WeaponDetailLoader");
     }
 
 
@@ -65,6 +72,7 @@ namespace weapon
     {
         if (instanceUPtr_.get() == nullptr)
         {
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): WeaponDetailLoader");
             Acquire();
         }
 
@@ -77,6 +85,10 @@ namespace weapon
         if (instanceUPtr_.get() == nullptr)
         {
             instanceUPtr_.reset(new WeaponDetailLoader);
+        }
+        else
+        {
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: WeaponDetailLoader");
         }
     }
 
