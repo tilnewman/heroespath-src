@@ -71,33 +71,33 @@ namespace combat
 
 
     CombatNode::CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
-        const sfml_util::FontPtr_t       FONT_PTR,
-        const unsigned int               FONT_CHAR_SIZE)
-        :
-        GuiEntity(std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_(CREATURE_SPTR->Name(), *FONT_PTR, FONT_CHAR_SIZE),
-        condTextObj_("", *FONT_PTR, FONT_CHAR_SIZE),
-        blockingPos_(0),
-        healthLineColor_(),//this initializer doesn't matter, see constructor body below
-        healthLineColorRed_(),// "
-        healthLineColorTick_(),// "
-        texture_(),
-        sprite_(),
-        creatureImageColor_(),
-        isSummaryView_(false),
-        isMoving_(false),
-        creaturePtr_(CREATURE_SPTR.get()),
-        crossBonesSprite_(),
-        willShowCrossBones_(false),
+                           const sfml_util::FontPtr_t       FONT_PTR,
+                           const unsigned int               FONT_CHAR_SIZE)
+    :
+        GuiEntity            (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
+        nameTextObj_         (CREATURE_SPTR->Name(), *FONT_PTR, FONT_CHAR_SIZE),
+        condTextObj_         ("", *FONT_PTR, FONT_CHAR_SIZE),
+        blockingPos_         (0),
+        healthLineColor_     (),//this initializer doesn't matter, see constructor body below
+        healthLineColorRed_  (),// "
+        healthLineColorTick_ (),// "
+        texture_             (),
+        sprite_              (),
+        creatureImageColor_  (),
+        isSummaryView_       (false),
+        isMoving_            (false),
+        creaturePtr_         (CREATURE_SPTR.get()),
+        crossBonesSprite_    (),
+        willShowCrossBones_  (false),
         healthRatioDisplayed_(0.0f),
-        isDead_(false),
-        wingSprite_(),
-        isFlying_(false),
-        wingFlapSlider_(WING_IMAGE_ANIM_SPEED_),
-        imagePosV_(0.0f, 0.0f),
-        imagePosOffsetV_(0.0f, 0.0f),
-        willShowSelectAnim_(false),
-        selectAnimSprite_()
+        isDead_              (false),
+        wingSprite_          (),
+        isFlying_            (false),
+        wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
+        imagePosV_           (0.0f, 0.0f),
+        imagePosOffsetV_     (0.0f, 0.0f),
+        willShowSelectAnim_  (false),
+        selectAnimSprite_    ()
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -126,7 +126,7 @@ namespace combat
         //wing image
         sfml_util::gui::CombatImageManager::Instance()->Get(wingTexture_,
                                                             sfml_util::gui::CombatImageType::Wing,
-                                                            ! creaturePtr_->IsPlayerCharacter());
+                                                            creaturePtr_->IsPlayerCharacter());
 
         //um...This was the only way I could get it to work...zTn 2017-4-6
         IsFlying(true);
