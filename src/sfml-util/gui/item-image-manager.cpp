@@ -414,7 +414,7 @@ namespace gui
             M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_NONRAND.empty() == false), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
             sf::Texture textureBase;
             iimPtr->Load(textureBase, FILENAME_NONRAND);
-            
+
             if (randIndex < RAND_REPEAT_COUNT)
             {
                 auto const FILENAME_RAND{ iimPtr->GetImageFilename(ENUM, false, true) };

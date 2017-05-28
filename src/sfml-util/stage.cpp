@@ -245,7 +245,7 @@ namespace sfml_util
 
             entityPVec_.erase(std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR),
                 entityPVec_.end());
-            
+
             const std::size_t NEW_NUM_ENTITYS(entityPVec_.size());
             return ! (ORIG_NUM_ENTITYS == NEW_NUM_ENTITYS);
         }

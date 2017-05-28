@@ -50,7 +50,7 @@ namespace combat
     {
         M_ASSERT_OR_LOGANDTHROW_SS((WEAPON_PTR != nullptr),
             "game::combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_PTR.");
-            
+
         auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
         if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))

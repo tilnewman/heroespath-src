@@ -212,7 +212,7 @@ namespace sfml_util
         {
             std::ostringstream ss1;
             ss1 << "sfml_util::CreateRenderTextureAtPowerOf2Size("
-                << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") resized to power of 2 fit=" 
+                << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") resized to power of 2 fit="
                 << NEW_WIDTH << "x" << NEW_HEIGHT << " and failed on the create() call."
                 << "  See console output for details.  Will ignore this error and attempt to call"
                 << " create() at original size...";
@@ -239,7 +239,7 @@ namespace sfml_util
                     << " video memory situation.  Bail.");
             }
         }
-        
+
         return renderTextureSPtr;
     }
 

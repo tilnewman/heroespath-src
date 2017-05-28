@@ -42,7 +42,7 @@ namespace appbase
         virtual ~IConfigBase() {}
         //
         virtual bool Load() = 0;
-        
+
         //Pass a string to override the default which uses the member fileNameStr.
         virtual bool Save(const std::string & FILENAME = "") const = 0;
         //
@@ -72,7 +72,7 @@ namespace appbase
         virtual void SetDouble(const std::string & KEY, const double VALUE) = 0;
 
         virtual void Dump(std::ostream &) = 0;
-        
+
         virtual const std::string GetFileNameStr() const = 0;
         virtual const std::string GetFileNameFullPathStr() const = 0;
         virtual const std::string GetSeparatorStr() const = 0;

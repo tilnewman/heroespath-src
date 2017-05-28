@@ -73,11 +73,11 @@ namespace sfml_util
         static void Acquire(const std::string & TITLE,
                             const sf::Uint32    STYLE,
                             const unsigned      ANTIALIAS_LEVEL);
-        
+
         static void Release();
 
         inline WinPtr_t GetWindow() const { return winUPtr_.get(); }
-        
+
         float        GetWinWidth() const;
         float        GetWinHeight() const;
         unsigned int GetWinWidthu() const;

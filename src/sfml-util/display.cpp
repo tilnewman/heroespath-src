@@ -356,7 +356,7 @@ namespace sfml_util
         M_HP_LOG("Window open " << winUPtr_->getSize().x << "x"
                                 << winUPtr_->getSize().y << " with color depth reported as "
                                 << winUPtr_->getSettings().depthBits
-                                << ((0 == winUPtr_->getSettings().depthBits) ? "(which is really 32...), " : ", " ) 
+                                << ((0 == winUPtr_->getSettings().depthBits) ? "(which is really 32...), " : ", " )
                                 << "AA=" << winUPtr_->getSettings().antialiasingLevel
                                 << ".");
 

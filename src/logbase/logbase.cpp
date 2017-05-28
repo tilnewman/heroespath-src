@@ -354,7 +354,7 @@ namespace logbase
     void LogBase::AppendDate(ostream & stream) const
     {
         auto const DATE_INFO{ boost::posix_time::microsec_clock::universal_time().date().year_month_day() };
-        
+
         stream  << std::setfill('0')
                 << DATE_INFO.year
                 << "-"

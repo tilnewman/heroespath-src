@@ -642,7 +642,7 @@ namespace sfml_util
                     << "returned false. Unable to take screenshot.");
                 return;
             }
-        
+
             texture.update( * Display::Instance()->GetWindow());
 
             const sf::Image SCREENSHOT_IMAGE(texture.copyToImage());
@@ -738,7 +738,7 @@ namespace sfml_util
     {
         sf::RenderStates states;
         for (auto & nextStagePtr : stagePVec_)
-        {   
+        {
             nextStagePtr->Draw( * winPtr_, states);
         }
     }

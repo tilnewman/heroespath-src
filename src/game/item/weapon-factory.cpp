@@ -524,7 +524,7 @@ namespace weapon
             default:
             {
                 std::ostringstream ss;
-                ss << "herospath::item::WeaponFactory::Make_Whip(whip_type=" 
+                ss << "herospath::item::WeaponFactory::Make_Whip(whip_type="
                     << WHIP_TYPE << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
@@ -660,7 +660,7 @@ namespace weapon
 
         return ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_Desc(std::string("A ").append(DETAILS.name), 
+            Make_Desc(std::string("A ").append(DETAILS.name),
                       MATERIAL_PRI,
                       MATERIAL_SEC,
                       "",
@@ -710,7 +710,7 @@ namespace weapon
             spearWeapon = weapon_type::Spear;
 
         std::ostringstream ssDesc;
-        ssDesc << "A " << DETAILS.name << " made of " 
+        ssDesc << "A " << DETAILS.name << " made of "
             << material::ToReadableString(MATERIAL_PRI);
 
         if ((MATERIAL_SEC != MATERIAL_PRI) && (MATERIAL_SEC != material::Nothing))

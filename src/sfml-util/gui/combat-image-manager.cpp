@@ -97,7 +97,7 @@ namespace gui
             auto const FILENAME{ CombatImageType::Filename(ENUM) };
             sf::Texture texture;
             Get(texture, ENUM);
-            
+
             willFlip = ! willFlip;
 
             if (willFlip)

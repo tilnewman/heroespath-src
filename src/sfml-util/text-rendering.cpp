@@ -139,7 +139,7 @@ namespace text_render
         auto renderedTextureSPtr{ sfml_util::CreateRenderTextureAtPowerOf2Size(
             renderedText.longest_line,
             renderedText.total_height) };
-        
+
         renderedTextureSPtr->clear(sf::Color::Transparent);
 
         sf::RenderStates states;

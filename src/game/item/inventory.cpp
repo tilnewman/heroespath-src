@@ -446,6 +446,6 @@ namespace item
                         R.itemsPVec_,
                         R.equippedItemsPVec_);
     }
- 
+
 }
 }

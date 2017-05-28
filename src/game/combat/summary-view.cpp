@@ -484,12 +484,12 @@ namespace combat
             {
                 infoSS << "(Magical)";
             }
-            
+
             if (nextItemText.item_ptr->Category() & item::category::QuestItem)
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "(Quest Item)";
             }
-            
+
             if (nextItemText.item_ptr->IsWeapon())
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Damage: "
@@ -506,7 +506,7 @@ namespace combat
             {
                 infoSS << " ";
             }
-            
+
             const sfml_util::gui::TextInfo INFO_TEXT_INFO(infoSS.str(),
                                                           sfml_util::FontManager::Instance()->Font_Default1(),
                                                           sfml_util::FontManager::Instance()->Size_Small(),

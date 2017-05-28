@@ -185,7 +185,7 @@ namespace item
     using ItemPtr_t  = Item *;
     using ItemUPtr_t = std::unique_ptr<Item>;
     using ItemUVec_t = std::vector<ItemUPtr_t>;
-    
+
 
     bool operator<(const Item & L, const Item & R);
 

@@ -449,7 +449,7 @@ namespace sfml_util
     {
         for (auto & nextSongsObj : songsVec_)
         {
-            if ((nextSongsObj.operator_sptr.get() != nullptr) && 
+            if ((nextSongsObj.operator_sptr.get() != nullptr) &&
                 ((nextSongsObj.operator_sptr->Info().Which() == WHICH) || (WHICH == music::All)))
             {
                 nextSongsObj.operator_sptr->VolumeFadeOut(FADE_MULT, true);

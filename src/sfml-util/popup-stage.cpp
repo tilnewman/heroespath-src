@@ -49,7 +49,7 @@
 #include "game/spell/spell-base.hpp"
 
 #include "misc/random.hpp"
-#include "misc/boost-string-includes.hpp"   
+#include "misc/boost-string-includes.hpp"
 
 #include <sstream>
 #include <random>

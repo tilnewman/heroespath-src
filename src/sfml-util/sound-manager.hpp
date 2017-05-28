@@ -177,76 +177,76 @@ namespace sfml_util
 
         inline const SoundEffectsSet & SoundEffectsSet_Prompt() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Prompt)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_Switch() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Switch)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_TickOn() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::TickOn)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_TickOff() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::TickOff)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_Thock() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Thock)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_Coin() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Coin)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_Gem() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Gem)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_MeteorShard() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::MeteorShard)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ItemGive() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ItemGive)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ItemDrop() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ItemDrop)]; }
 
         inline const SoundEffectsSet & SoundEffectsSet_BlowpipeShoot() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::BlowpipeShoot)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_BlowpipeHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::BlowpipeHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ArrowShoot() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ArrowShoot)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ArrowHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ArrowHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ProjectileMiss() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ProjectileMiss)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_MeleeMiss() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::MeleeMiss)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_FistHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::FistHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_BreathHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::BreathHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_TendrilHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::TendrilHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_WhipHit() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::WhipHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_WhipMiss() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::WhipMiss)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_MaterialHitMetal() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::MaterialHitMetal)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_MaterialHitMisc() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::MaterialHitMisc)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_ClawTear() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::ClawHit)]; }
-        
+
         inline const SoundEffectsSet & SoundEffectsSet_Wind() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Wind)]; }
 

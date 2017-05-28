@@ -48,7 +48,7 @@ namespace condition
     void Warehouse::Fill()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty()), "game::creature::condition::Warehouse::Setup() was called twice.");
-        
+
         //Note:  Keep order in sync with game::creature::Conditions::Enum
         conditionsUVec_.push_back( std::unique_ptr<Good>( new Good() ) );
         conditionsUVec_.push_back( std::unique_ptr<Frightened>( new Frightened() ) );

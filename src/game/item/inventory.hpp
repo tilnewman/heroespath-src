@@ -110,7 +110,7 @@ namespace item
         const std::string ToString() const;
 
         void StoreItemsInWarehouseAfterLoad();
-        
+
         friend bool operator==(const Inventory & L, const Inventory & R);
 
     protected:

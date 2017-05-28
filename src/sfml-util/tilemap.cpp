@@ -708,7 +708,7 @@ namespace map
 
                 //create the next layer data structure
                 MapLayer mapLayer;
-                
+
                 //read in the next map layer
                 ParseTileLayer(mapLayer.mapval_vec, ssAll);
 
