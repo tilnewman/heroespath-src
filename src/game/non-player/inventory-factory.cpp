@@ -30,12 +30,13 @@
 #include "inventory-factory.hpp"
 
 #include "game/item/item.hpp"
-#include "game/non-player/chance-factory.hpp"
-#include "game/creature/creature.hpp"
 #include "game/log-macros.hpp"
+#include "game/creature/creature.hpp"
 #include "game/non-player/character.hpp"
+#include "game/non-player/chance-factory.hpp"
 
 #include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <iterator>//for back_inserter
 #include <exception>
@@ -52,23 +53,39 @@ namespace non_player
 namespace ownership
 {
 
-    InventoryFactorySPtr_t InventoryFactory::instance_(nullptr);
+    std::unique_ptr<InventoryFactory> InventoryFactory::instanceUPtr_{ nullptr };
 
 
     InventoryFactory::InventoryFactory()
     {}
 
 
-    InventoryFactory::~InventoryFactory()
-    {}
-
-
-    InventoryFactorySPtr_t InventoryFactory::Instance()
+    InventoryFactory * InventoryFactory::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new InventoryFactory );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
+    }
+
+
+    void InventoryFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new InventoryFactory);
+        }
+    }
+
+
+    void InventoryFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::non_player::ownership::InventoryFactory::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
     }
 
 
@@ -78,67 +95,69 @@ namespace ownership
         creatureSPtr->CoinsAdj( Make_Coins(INVENTORY_CHANCES) );
 
         //.first is for equipped items and .second is for unequipped items
-        const IItemSVecPair_t ITEM_SVEC_PAIR( MakeItemSet(INVENTORY_CHANCES, creatureSPtr) );
-        for (auto const & NEXT_ITEM_SPTR : ITEM_SVEC_PAIR.first)
+        auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, creatureSPtr) };
+        for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
         {
-            const std::string ITEM_ADD_RESULT( creatureSPtr->ItemAdd(NEXT_ITEM_SPTR) );
+            const std::string ITEM_ADD_RESULT( creatureSPtr->ItemAdd(NEXT_ITEM_PTR) );
             if (ITEM_ADD_RESULT.empty() == false)
             {
-                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - add step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_SPTR->Name() << "\" \"" << NEXT_ITEM_SPTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - add step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
             }
             else
             {
-                if (NEXT_ITEM_SPTR->Category() & item::category::Equippable)
+                if (NEXT_ITEM_PTR->Category() & item::category::Equippable)
                 {
-                    const std::string ITEM_EQUIP_RESULT(creatureSPtr->ItemEquip(NEXT_ITEM_SPTR));
+                    const std::string ITEM_EQUIP_RESULT(creatureSPtr->ItemEquip(NEXT_ITEM_PTR));
                     if (ITEM_EQUIP_RESULT.empty() == false)
-                        M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - equip step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_SPTR->Name() << "\" \"" << NEXT_ITEM_SPTR->Desc() << "\"with reported error \"" << ITEM_EQUIP_RESULT << "\".  Proceeding...");
+                    {
+                        M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - equip step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\"with reported error \"" << ITEM_EQUIP_RESULT << "\".  Proceeding...");
+                    }
                 }
             }
         }
 
-        for (auto const & NEXT_ITEM_SPTR : ITEM_SVEC_PAIR.second)
+        for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.second)
         {
-            const std::string ITEM_ADD_RESULT(creatureSPtr->ItemAdd(NEXT_ITEM_SPTR));
+            const std::string ITEM_ADD_RESULT(creatureSPtr->ItemAdd(NEXT_ITEM_PTR));
             if (ITEM_ADD_RESULT.empty() == false)
-                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[not to equip](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_SPTR->Name() << "\" \"" << NEXT_ITEM_SPTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[not to equip](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
         }
     }
 
 
-    const IItemSVecPair_t InventoryFactory::MakeItemSet(const chance::InventoryChances &    CHANCES,
+    const IItemPVecPair_t InventoryFactory::MakeItemSet(const chance::InventoryChances &    CHANCES,
                                                         const non_player::CharacterSPtr_t & CREATURE_SPTR)
     {
-        IItemSVecPair_t itemsSPtrVecPair;
+        IItemPVecPair_t itemsSPtrVecPair;
 
-        const IItemSVecPair_t CLOTHING_ITEMS_SVEC_PAIR( MakeItemSet_Clothing(CHANCES.clothes) );
-        std::copy(CLOTHING_ITEMS_SVEC_PAIR.first.begin(),  CLOTHING_ITEMS_SVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(CLOTHING_ITEMS_SVEC_PAIR.second.begin(), CLOTHING_ITEMS_SVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
+        const IItemPVecPair_t CLOTHING_ITEMS_PVEC_PAIR( MakeItemSet_Clothing(CHANCES.clothes) );
+        std::copy(CLOTHING_ITEMS_PVEC_PAIR.first.begin(),  CLOTHING_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
+        std::copy(CLOTHING_ITEMS_PVEC_PAIR.second.begin(), CLOTHING_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
 
-        const IItemSVecPair_t WEAPON_ITEMS_SVEC_PAIR( MakeItemSet_Weapons(CHANCES.weapon, CREATURE_SPTR) );
-        std::copy(WEAPON_ITEMS_SVEC_PAIR.first.begin(),  WEAPON_ITEMS_SVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(WEAPON_ITEMS_SVEC_PAIR.second.begin(), WEAPON_ITEMS_SVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
+        const IItemPVecPair_t WEAPON_ITEMS_PVEC_PAIR( MakeItemSet_Weapons(CHANCES.weapon, CREATURE_SPTR) );
+        std::copy(WEAPON_ITEMS_PVEC_PAIR.first.begin(),  WEAPON_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
+        std::copy(WEAPON_ITEMS_PVEC_PAIR.second.begin(), WEAPON_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
 
-        const bool HAS_TWOHANDED_WEAPON_EQUIPPED( ContainsTwoHandedWeapon(WEAPON_ITEMS_SVEC_PAIR.first));
+        const bool HAS_TWOHANDED_WEAPON_EQUIPPED( ContainsTwoHandedWeapon(WEAPON_ITEMS_PVEC_PAIR.first));
 
-        const item::ItemSVec_t BODY_WEAPON_ITEMS_SVEC(MakeItemSet_BodyWeapons(CHANCES.weapon, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
-        std::copy(BODY_WEAPON_ITEMS_SVEC.begin(), BODY_WEAPON_ITEMS_SVEC.end(), back_inserter(itemsSPtrVecPair.first));
+        const item::ItemPVec_t BODY_WEAPON_ITEMS_PVEC(MakeItemSet_BodyWeapons(CHANCES.weapon, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
+        std::copy(BODY_WEAPON_ITEMS_PVEC.begin(), BODY_WEAPON_ITEMS_PVEC.end(), back_inserter(itemsSPtrVecPair.first));
 
-        const IItemSVecPair_t ARMOR_ITEMS_SVEC_PAIR(MakeItemSet_Armor(CHANCES.armor, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
-        std::copy(ARMOR_ITEMS_SVEC_PAIR.first.begin(),  ARMOR_ITEMS_SVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(ARMOR_ITEMS_SVEC_PAIR.second.begin(), ARMOR_ITEMS_SVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
+        const IItemPVecPair_t ARMOR_ITEMS_PVEC_PAIR(MakeItemSet_Armor(CHANCES.armor, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
+        std::copy(ARMOR_ITEMS_PVEC_PAIR.first.begin(),  ARMOR_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
+        std::copy(ARMOR_ITEMS_PVEC_PAIR.second.begin(), ARMOR_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
 
         return itemsSPtrVecPair;
     }
 
 
-    const IItemSVecPair_t InventoryFactory::MakeItemSet_Clothing(const chance::ClothingChances & CHANCES)
+    const IItemPVecPair_t InventoryFactory::MakeItemSet_Clothing(const chance::ClothingChances & CHANCES)
     {
         //Assume there is only one of each article of clothing.
 
         //TODO enchantments
 
-        IItemSVecPair_t itemsSPtrVecPair;
+        IItemPVecPair_t itemsSPtrVecPair;
 
         if (CHANCES.boots.IsOwned())
             itemsSPtrVecPair.first.push_back( item::armor::ArmorFactory::Make_Boots(item::armor::base_type::Plain,
@@ -177,10 +196,10 @@ namespace ownership
     }
 
 
-    const IItemSVecPair_t InventoryFactory::MakeItemSet_Weapons(const chance::WeaponChances &       WEAPON_CHANCES,
+    const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(const chance::WeaponChances &       WEAPON_CHANCES,
                                                                 const non_player::CharacterSPtr_t & CREATURE_SPTR)
     {
-        IItemSVecPair_t itemsSPtrVecPair;
+        IItemPVecPair_t itemsSPtrVecPair;
 
         using KindChancePair_t = std::pair<int, float>;
         using TypeKindChanceMap_t = std::map<item::weapon_type::Enum, KindChancePair_t>;
@@ -384,13 +403,13 @@ namespace ownership
     }
 
 
-    const IItemSVecPair_t InventoryFactory::MakeItemSet_Armor(const chance::ArmorChances &        CHANCES,
+    const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(const chance::ArmorChances &        CHANCES,
                                                               const non_player::CharacterSPtr_t & CREATURE_SPTR,
                                                               const bool                          HAS_TWO_HANDED_WEAPON)
     {
         using namespace item::armor;
 
-        IItemSVecPair_t itemsSPtrVecPair;
+        IItemPVecPair_t itemsSPtrVecPair;
 
         if (CHANCES.aventail.IsOwned())
             itemsSPtrVecPair.first.push_back( ArmorFactory::Instance()->Make_Aventail(CHANCES.aventail.RandomArmorBaseType(),
@@ -463,11 +482,11 @@ namespace ownership
     }
 
 
-    const item::ItemSVec_t InventoryFactory::MakeItemSet_BodyWeapons(const chance::WeaponChances &       CHANCES,
+    const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(const chance::WeaponChances &       CHANCES,
                                                                      const non_player::CharacterSPtr_t & CREATURE_SPTR,
                                                                      const bool                          HAS_TWO_HANDED_WEAPON_EQUIPPED)
     {
-        item::ItemSVec_t bodyWeaponsSVec;
+        item::ItemPVec_t bodyWeaponsSVec;
 
         if (CHANCES.has_bite)
             bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Bite(CREATURE_SPTR.get()) );
@@ -497,11 +516,15 @@ namespace ownership
     }
 
 
-    bool InventoryFactory::ContainsTwoHandedWeapon(const item::ItemSVec_t & WEAPON_SVEC)
+    bool InventoryFactory::ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_PVEC)
     {
-        for (auto const & NEXT_WEAPON_SPTR : WEAPON_SVEC)
+        for (auto const NEXT_WEAPON_SPTR : WEAPON_PVEC)
+        {
             if (NEXT_WEAPON_SPTR->IsTwoHanded())
+            {
                 return true;
+            }
+        }
 
         return false;
     }

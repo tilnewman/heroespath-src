@@ -182,14 +182,10 @@ namespace item
         }
     };
 
-
-    using ItemSPtr_t = std::shared_ptr<Item>;
-    using ItemSVec_t = std::vector<ItemSPtr_t>;
-    using ItemSVecVec_t = std::vector<ItemSVec_t>;
-
-    using ItemSVecIter_t = ItemSVec_t::iterator;
-    using ItemSVecCIter_t = ItemSVec_t::const_iterator;
-
+    using ItemPtr_t  = Item *;
+    using ItemUPtr_t = std::unique_ptr<Item>;
+    using ItemUVec_t = std::vector<ItemUPtr_t>;
+    
 
     bool operator<(const Item & L, const Item & R);
 

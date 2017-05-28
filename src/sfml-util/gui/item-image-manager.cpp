@@ -30,13 +30,15 @@
 #include "item-image-manager.hpp"
 
 #include "sfml-util/loaders.hpp"
-#include "misc/random.hpp"
-#include "misc/boost-string-includes.hpp"
 
 #include "game/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
+#include "game/item/item.hpp"
 #include "game/loop-manager.hpp"
 #include "game/non-player/ownership-profile.hpp"
+
+#include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -522,32 +524,50 @@ namespace gui
     }
 
 
-    void ItemImageManager::Load(sf::Texture & texture, const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
+    void ItemImageManager::Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const
+    {
+        return Load(texture, ITEM_PTR->ImageFilename() + EXT_);
+    }
+
+
+    void ItemImageManager::Load(sf::Texture &                     texture,
+                                const game::item::misc_type::Enum ITEM_ENUM,
+                                const bool                        IS_JEWELED,
+                                const bool                        WILL_RANDOMIZE) const
     {
         Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE) );
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const game::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE) const
+    const std::string ItemImageManager::GetImageFilename(const game::item::ItemPtr_t ITEM_PTR,
+                                                         const bool                  WILL_RANDOMIZE) const
     {
         using namespace game::item;
 
-        if (ITEM_SPTR->IsWeapon() && (ITEM_SPTR->Weapon_Info().type != weapon_type::NotAWeapon))
+        if (ITEM_PTR->IsWeapon() && (ITEM_PTR->Weapon_Info().type != weapon_type::NotAWeapon))
         {
-            return GetImageFilename(ITEM_SPTR->Weapon_Info(), ITEM_SPTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
         }
-        else if (ITEM_SPTR->IsArmor() && (ITEM_SPTR->Armor_Info().type != armor_type::NotArmor))
+        else if (ITEM_PTR->IsArmor() && (ITEM_PTR->Armor_Info().type != armor_type::NotArmor))
         {
-            return GetImageFilename(ITEM_SPTR->Armor_Info(), ITEM_SPTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->Armor_Info(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
         }
-        else if (ITEM_SPTR->MiscType() != misc_type::NotMisc)
+        else if (ITEM_PTR->MiscType() != misc_type::NotMisc)
         {
-            return GetImageFilename(ITEM_SPTR->MiscType(), ITEM_SPTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->MiscType(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
         }
         else
         {
             std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(item->Name()=" << ITEM_SPTR->Name() << ", item->Category=" << category::ToString(ITEM_SPTR->Category(), false) << ", desc=\"" <<  ITEM_SPTR->Desc() << "\") failed to be categorized.  (IsWeapon=" << std::boolalpha << ITEM_SPTR->IsWeapon() << ", WeaponInfo.type=" << weapon_type::ToString(ITEM_SPTR->Weapon_Info().type, false) << ", IsArmor=" << std::boolalpha << ITEM_SPTR->IsArmor() << ", ArmorInfo.type=" << armor_type::ToString(ITEM_SPTR->Armor_Info().type, false) << ", MiscType()=" << ITEM_SPTR->MiscType() << ")";
+            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(item->Name()=" << ITEM_PTR->Name()
+                << ", item->Category=" << category::ToString(ITEM_PTR->Category(), false) << ", desc=\""
+                <<  ITEM_PTR->Desc() << "\") failed to be categorized.  (IsWeapon=" << std::boolalpha
+                << ITEM_PTR->IsWeapon() << ", WeaponInfo.type="
+                << weapon_type::ToString(ITEM_PTR->Weapon_Info().type, false) << ", IsArmor="
+                << std::boolalpha << ITEM_PTR->IsArmor() << ", ArmorInfo.type="
+                << armor_type::ToString(ITEM_PTR->Armor_Info().type, false) << ", MiscType()="
+                << ITEM_PTR->MiscType() << ")";
+
             throw std::runtime_error(ss.str());
         }
     }

@@ -40,7 +40,7 @@ namespace game
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 
 namespace misc
 {
@@ -58,11 +58,6 @@ namespace misc
     }
 
 
-    //types required by singleton implementation
-    class ItemFactory;
-    using ItemFactorySPtr_t = std::shared_ptr<ItemFactory>;
-
-
     //A singleton class responsible for making misc item objects.
     class ItemFactory : public FactoryBase
     {
@@ -78,21 +73,23 @@ namespace misc
     public:
         virtual ~ItemFactory();
 
-        static ItemFactorySPtr_t Instance();
+        static ItemFactory * Instance();
+        static void Acquire();
+        static void Release();
 
-        static ItemSPtr_t Make_Ring(const material::Enum MATERIAL_PRI,
-                                    const material::Enum MATERIAL_SEC,
-                                    const bool           IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Ring(const material::Enum MATERIAL_PRI,
+                                   const material::Enum MATERIAL_SEC,
+                                   const bool           IS_PIXIE_ITEM = false);
 
-        static ItemSPtr_t Make_Wand(const material::Enum MATERIAL_PRI,
-                                    const material::Enum MATERIAL_SEC,
-                                    const bool           IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Wand(const material::Enum MATERIAL_PRI,
+                                   const material::Enum MATERIAL_SEC,
+                                   const bool           IS_PIXIE_ITEM = false);
 
-        static ItemSPtr_t Make_Instrument(const instrument_type::Enum TYPE,
-                                          const bool                  IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Instrument(const instrument_type::Enum TYPE,
+                                         const bool                  IS_PIXIE_ITEM = false);
 
     private:
-        static ItemFactorySPtr_t instance_;
+        static std::unique_ptr<ItemFactory> instanceUPtr_;
     };
 
 }

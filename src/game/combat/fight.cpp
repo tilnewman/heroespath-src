@@ -208,20 +208,21 @@ namespace combat
     {
         HitInfoVec_t hitInfoVec;
 
-        auto const WEAPONS_SVEC( creatureAttackingPtrC->CurrentWeaponsCopy() );
-        for (auto const & NEXT_ITEM_SPTR : WEAPONS_SVEC)
+        auto const WEAPONS_PVEC{ creatureAttackingPtrC->CurrentWeaponsCopy() };
+        for (auto const NEXT_ITEM_PTR : WEAPONS_PVEC)
         {
-            if (NEXT_ITEM_SPTR->IsWeapon())
+            if (NEXT_ITEM_PTR->IsWeapon())
             {
                 auto const NEXT_HIT_INFO{ AttackWithSingleWeapon(hitInfoVec,
-                                                                 NEXT_ITEM_SPTR,
+                                                                 NEXT_ITEM_PTR,
                                                                  creatureAttackingPtrC,
                                                                  creatureDefendingPtrC,
                                                                  WILL_FORCE_HIT) };
 
                 hitInfoVec.push_back(NEXT_HIT_INFO);
 
-                if (NEXT_HIT_INFO.ContainsCondition(creature::Conditions::Dead) || creatureDefendingPtrC->HasCondition(creature::Conditions::Dead))
+                if (NEXT_HIT_INFO.ContainsCondition(creature::Conditions::Dead) ||
+                    creatureDefendingPtrC->HasCondition(creature::Conditions::Dead))
                 {
                     break;
                 }
@@ -235,7 +236,7 @@ namespace combat
     //Determine if attacking creature's accuracy overcomes the defending
     //creature's speed to see if there was a hit.
     const HitInfo FightClub::AttackWithSingleWeapon(HitInfoVec_t &           hitInfoVec,
-                                                    const item::ItemSPtr_t & WEAPON_SPTR,
+                                                    const item::ItemPtr_t    WEAPON_PTR,
                                                     creature::CreaturePtrC_t creatureAttackingPtrC,
                                                     creature::CreaturePtrC_t creatureDefendingPtrC,
                                                     const bool               WILL_FORCE_HIT)
@@ -251,7 +252,7 @@ namespace combat
         //If the attacking creature is an archer who is using a projectile weapon to attack with,
         //then add a 20% accuracy bonus plus half the attacker's Rank.
         if ((creatureAttackingPtrC->Role().Which() == creature::role::Archer) &&
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Projectile))
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
             attackAccToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACK_ACC_RAW) *
                 STAT_RATIO_AMAZING_);
@@ -434,7 +435,7 @@ namespace combat
         creature::ConditionEnumVec_t conditionsVec;
         if (wasHit)
         {
-            damage = DetermineDamage(WEAPON_SPTR,
+            damage = DetermineDamage(WEAPON_PTR,
                                      creatureAttackingPtrC,
                                      creatureDefendingPtrC,
                                      isPowerHit,
@@ -443,14 +444,14 @@ namespace combat
             conditionsVec = HandleDamage(creatureDefendingPtrC, hitInfoVec, damage);
         }
 
-        return HitInfo(WEAPON_SPTR,
+        return HitInfo(WEAPON_PTR,
                        hitType,
                        dodgeType,
                        damage,
                        isCriticalHit,
                        isPowerHit,
                        conditionsVec,
-                       Text::WeaponActionVerb(WEAPON_SPTR, false));
+                       Text::WeaponActionVerb(WEAPON_PTR, false));
     }
 
 
@@ -472,13 +473,13 @@ namespace combat
     }
 
 
-    stats::Health_t FightClub::DetermineDamage(const item::ItemSPtr_t & WEAPON_SPTR,
+    stats::Health_t FightClub::DetermineDamage(const item::ItemPtr_t    WEAPON_PTR,
                                                creature::CreaturePtrC_t creatureAttackingPtrC,
                                                creature::CreaturePtrC_t creatureDefendingPtrC,
                                                bool &                   isPowerHit_OutParam,
                                                bool &                   isCriticalHit_OutParam)
     {
-        const stats::Health_t DAMAGE_FROM_WEAPON{ misc::random::Int(WEAPON_SPTR->DamageMin(), WEAPON_SPTR->DamageMax()) };
+        const stats::Health_t DAMAGE_FROM_WEAPON{ misc::random::Int(WEAPON_PTR->DamageMin(), WEAPON_PTR->DamageMax()) };
 
         //add extra damage based on rank
         auto const RANK_DIVISOR{ 3 };

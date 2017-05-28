@@ -51,8 +51,9 @@ namespace item
 {
     //forward declarations
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
+
 namespace combat
 {
 
@@ -64,14 +65,14 @@ namespace combat
     //wraps an image with text for display on the screen
     struct ItemWithText
     {
-        explicit ItemWithText(const item::ItemSPtr_t & ITEM_SPTR = item::ItemSPtr_t());
+        explicit ItemWithText(const item::ItemPtr_t ITEM_PTR = nullptr);
 
         sf::Sprite sprite;
         sf::Texture texture;
         sfml_util::gui::TextRegionSPtr_t name_text_region_sptr;
         sfml_util::gui::TextRegionSPtr_t desc_text_region_sptr;
         sfml_util::gui::TextRegionSPtr_t info_text_region_sptr;
-        item::ItemSPtr_t item_sptr;
+        item::ItemPtr_t item_ptr;
     };
 
     using ItemWithTextVec_t = std::vector<ItemWithText>;

@@ -61,6 +61,9 @@
 #include "game/item/armor-details.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/weapon-details.hpp"
+#include "game/item/item-warehouse.hpp"
+#include "game/item/weapon-factory.hpp"
+#include "game/non-player/inventory-factory.hpp"
 
 #include "misc/random.hpp"
 
@@ -118,6 +121,8 @@ int main()
         sfml_util::FontManager::Fill();
 
         //load game assets Stage 2
+        game::item::ItemWarehouse::Acquire();
+        game::item::weapon::WeaponFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
         sfml_util::gui::PopupManager::Acquire();
@@ -135,6 +140,7 @@ int main()
         game::item::armor::ArmorDetailLoader::Acquire();
         game::item::armor::ArmorFactory::Acquire();
         game::item::weapon::WeaponDetailLoader::Acquire();
+        game::non_player::ownership::InventoryFactory::Acquire();
 
         try
         {
@@ -178,6 +184,7 @@ int main()
         }
 
         //unload stage 2
+        game::non_player::ownership::InventoryFactory::Release();
         game::item::weapon::WeaponDetailLoader::Release();
         game::item::armor::ArmorFactory::Release();
         game::item::armor::ArmorDetailLoader::Release();
@@ -196,6 +203,8 @@ int main()
         sfml_util::gui::PopupManager::Release();
         sfml_util::SoundManager::Release();
         game::GameDataFile::Release();
+        game::item::weapon::WeaponFactory::Release();
+        game::item::ItemWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
 
@@ -204,7 +213,6 @@ int main()
         game::spell::Warehouse::Empty();
         game::creature::condition::Warehouse::Empty();
         game::creature::title::Warehouse::Empty();
-        
     }
     catch (const std::exception & E)
     {

@@ -190,7 +190,7 @@ namespace combat
 
     void CombatAnimation::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
                                                    creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                                   const item::ItemSPtr_t &  WEAPON_SPTR,
+                                                   const item::ItemPtr_t     WEAPON_PTR,
                                                    const bool                WILL_HIT)
     {
         projAnimWillSpin_ = ! WILL_HIT;
@@ -198,25 +198,26 @@ namespace combat
         //establish the game data file path key to the projectile image
         const std::string PATH_KEY_BASE_STR{"media-images-combat-"};
         std::string pathKey{ PATH_KEY_BASE_STR + "dart" };
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Bow)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
         {
             std::ostringstream ss;
             ss << PATH_KEY_BASE_STR << "arrow" << misc::random::Int(1, 3);
             pathKey = ss.str();
         }
-        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
+        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
         {
             std::ostringstream ss;
             ss << PATH_KEY_BASE_STR << "stone" << misc::random::Int(1, 4);
             pathKey = ss.str();
         }
-        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow)
+        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow)
         {
             pathKey = PATH_KEY_BASE_STR + "arrow4";
         }
 
         //load the projectile image
-        sfml_util::LoadImageOrTexture(projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
+        sfml_util::LoadImageOrTexture(projAnimTexture_,
+                                      game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
         //establish the creature positions
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
@@ -244,17 +245,19 @@ namespace combat
         //scale the sprite down to a reasonable size
         projAnimSprite_.setOrigin(0.0f, 0.0f);
         auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };//this is the scale for Sling projectiles (stones)
-        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) || (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
         {
             scale = sfml_util::MapByRes(0.3f, 2.0f);
         }
-        else if (WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe)
+        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
         {
             scale = sfml_util::MapByRes(0.05f, 1.0f);
         }
         projAnimSprite_.setScale(scale, scale);
 
-        projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f, projAnimSprite_.getLocalBounds().height * 0.5f);
+        projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f,
+                                  projAnimSprite_.getLocalBounds().height * 0.5f);
 
         projAnimBeginPosV_ = creatureAttackingCenterPosV;
 
@@ -264,26 +267,38 @@ namespace combat
         }
         else
         {
-            projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(creatureAttackingCenterPosV,
-                                                              creatureDefendingCenterPosV,
-                                                              sf::Vector2f(projAnimSprite_.getGlobalBounds().width, projAnimSprite_.getGlobalBounds().height));
+            projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(
+                creatureAttackingCenterPosV,
+                creatureDefendingCenterPosV,
+                sf::Vector2f(projAnimSprite_.getGlobalBounds().width,
+                             projAnimSprite_.getGlobalBounds().height));
         }
 
-        projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
-        projAnimSprite_.setRotation( sfml_util::GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_) );
+        projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f,
+                                  projAnimSprite_.getGlobalBounds().height * 0.5f);
+
+        projAnimSprite_.setRotation( sfml_util::GetAngleInDegrees(projAnimBeginPosV_,
+                                                                  projAnimEndPosV_) );
+
         projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
 
 
     void CombatAnimation::ProjectileShootAnimUpdate(const float SLIDER_POS)
     {
-        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
-        auto const SPRITE_POS_VERT { projAnimBeginPosV_.y + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
+        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x +
+            ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
+
+        auto const SPRITE_POS_VERT { projAnimBeginPosV_.y +
+            ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
+
         projAnimSprite_.setPosition(SPRITE_POS_HORIZ, SPRITE_POS_VERT);
 
         if (projAnimWillSpin_)
         {
-            projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f, projAnimSprite_.getGlobalBounds().height * 0.5f);
+            projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f,
+                                      projAnimSprite_.getGlobalBounds().height * 0.5f);
+
             projAnimSprite_.rotate(3.0f);
             projAnimSprite_.setOrigin(0.0f, 0.0f);
         }

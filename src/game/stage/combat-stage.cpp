@@ -61,6 +61,7 @@
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/algorithms.hpp"
@@ -808,92 +809,6 @@ namespace stage
 
             //TODO TEMP REMOVE -test create that can't take action
             encounterSPtr_->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
-
-            //TODO TEMP REMOVE -test projectile animations by forcing all enemy creatures to have projectile weapons
-            /*auto projIndex{ 0 };
-            for (auto & nextCharacterSPtr : encounterSPtr_->NonPlayerParty()->Characters())
-            {
-                for (auto const & NEXT_ITEM_SPTR : nextCharacterSPtr->Inventory().ItemsEquipped())
-                {
-                    if (NEXT_ITEM_SPTR->IsWeapon() && (NEXT_ITEM_SPTR->IsBodypart() == false))
-                    {
-                        nextCharacterSPtr->ItemUnEquip(NEXT_ITEM_SPTR);
-                        nextCharacterSPtr->ItemRemove(NEXT_ITEM_SPTR);
-                    }
-                }
-
-                item::weapon::projectile_type::Enum projWeaponEnum{ item::weapon::projectile_type::Blowpipe };
-                if (projIndex == 1)
-                {
-                    projWeaponEnum = item::weapon::projectile_type::Longbow;
-                }
-                else if (projIndex == 2)
-                {
-                    projWeaponEnum = item::weapon::projectile_type::Crossbow;
-                }
-
-                if (++projIndex > 2)
-                    projIndex = 0;
-
-                auto const PROJ_WEAPON_SPTR{ game::item::weapon::WeaponFactory::Instance()->Make_Projectile(projWeaponEnum, item::material::Nothing) };
-                auto const ITEM_ADD_STR{ nextCharacterSPtr->ItemAdd(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "Unable to ItemAdd() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_ADD_STR << "\"");
-                auto const ITEM_EQUIP_STR{ nextCharacterSPtr->ItemEquip(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
-
-                nextCharacterSPtr->SetCurrentWeaponsToBest();
-
-                nextCharacterSPtr->Stats().Get(stats::stat::Accuracy).ModifyCurrent(100);
-            }*/
-
-            /*//TODO TEMP REMOVE -test projectile animations by forcing all player characters to have projectile weapons
-            for (auto & nextCharacterSPtr : game::Game::Instance()->State()->Party()->Characters())
-            {
-                if ((nextCharacterSPtr->Role().Which() == creature::role::Cleric) ||
-                    (nextCharacterSPtr->Role().Which() == creature::role::Sorcerer))
-                {
-                    continue;
-                }
-
-                for (auto const & NEXT_ITEM_SPTR : nextCharacterSPtr->Inventory().ItemsEquipped())
-                {
-                    if (NEXT_ITEM_SPTR->IsWeapon() && (NEXT_ITEM_SPTR->IsBodypart() == false))
-                    {
-                        nextCharacterSPtr->ItemUnEquip(NEXT_ITEM_SPTR);
-                        nextCharacterSPtr->ItemRemove(NEXT_ITEM_SPTR);
-                    }
-                }
-
-                if (nextCharacterSPtr->IsBeast())
-                {
-                    continue;
-                }
-
-                auto projWeaponType{ item::weapon::projectile_type::Blowpipe };
-                if (nextCharacterSPtr->Role().Which() == creature::role::Thief)
-                {
-                    projWeaponType = item::weapon::projectile_type::Sling;
-                }
-                else
-                {
-                    if (misc::random::Bool())
-                    {
-                        projWeaponType = item::weapon::projectile_type::Longbow;
-                    }
-                    else
-                    {
-                        projWeaponType = item::weapon::projectile_type::Crossbow;
-                    }
-                }
-
-                auto const PROJ_WEAPON_SPTR{ game::item::weapon::WeaponFactory::Instance()->Make_Projectile(projWeaponType, item::material::Nothing) };
-                auto const ITEM_ADD_STR{ nextCharacterSPtr->ItemAdd(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_ADD_STR.empty()), "Unable to ItemAdd() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_ADD_STR << "\"");
-                auto const ITEM_EQUIP_STR{ nextCharacterSPtr->ItemEquip(PROJ_WEAPON_SPTR) };
-                M_ASSERT_OR_LOGANDTHROW_SS((ITEM_EQUIP_STR.empty()), "Unable to ItemEquip() for " << nextCharacterSPtr->Name() << " because : \"" << ITEM_EQUIP_STR << "\"");
-
-                nextCharacterSPtr->SetCurrentWeaponsToBest();
-            }*/
         }
 
         //combat display
@@ -2717,13 +2632,13 @@ namespace stage
                 if (fightResult_.GetHitInfo(hitInfo))
                 {
                     //at this point we are guaranteed fightResult_ contains at least one CreatureEffect and one HitInfo
-                    auto const WEAPON_SPTR{ hitInfo.Weapon() };
-                    if (WEAPON_SPTR.get() != nullptr)
+                    auto const WEAPON_PTR{ hitInfo.Weapon() };
+                    if (WEAPON_PTR != nullptr)
                     {
-                        combatSoundEffects_.PlayShoot(WEAPON_SPTR);
+                        combatSoundEffects_.PlayShoot(WEAPON_PTR);
                         combatAnimationPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
                                                                       fightResult_.Effects()[0].GetCreature(),
-                                                                      WEAPON_SPTR,
+                                                                      WEAPON_PTR,
                                                                       fightResult_.WasHit());
 
                         slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
@@ -2859,18 +2774,18 @@ namespace stage
     }
 
 
-    CombatStage::TurnActionPhase CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemSPtr_t & WEAPON_SPTR) const
+    CombatStage::TurnActionPhase CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t WEAPON_PTR) const
     {
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
         {
             return TurnActionPhase::ShootSling;
         }
-        else if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) ||
-                 (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow))
+        else if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
+                 (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
         {
             return TurnActionPhase::ShootArrow;
         }
-        else if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe))
+        else if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe))
         {
             return TurnActionPhase::ShootBlowpipe;
         }
@@ -2887,10 +2802,10 @@ namespace stage
         combat::HitInfo hitInfo;
         if (FIGHT_RESULT.GetHitInfo(hitInfo))
         {
-            auto const WEAPON_SPTR{ hitInfo.Weapon() };
-            if (WEAPON_SPTR.get() != nullptr)
+            auto const WEAPON_PTR{ hitInfo.Weapon() };
+            if (WEAPON_PTR != nullptr)
             {
-                return GetTurnActionPhaseFromWeaponType(WEAPON_SPTR);
+                return GetTurnActionPhaseFromWeaponType(WEAPON_PTR);
             }
         }
 

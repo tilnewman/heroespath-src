@@ -52,8 +52,9 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
+
 namespace combat
 {
 
@@ -94,7 +95,7 @@ namespace combat
     {
     public:
         //use this constructor when a weapon is used to hit
-        explicit HitInfo(const item::ItemSPtr_t &             ITEM_SPTR       = item::ItemSPtr_t(),
+        explicit HitInfo(const item::ItemPtr_t                ITEM_PTR        = nullptr,
                          const HitType::Enum                  HIT_TYPE        = HitType::Count,
                          const DodgeType::Enum                DODGE_TYPE      = DodgeType::Count,
                          const stats::Health_t                DAMAGE          = 0,
@@ -116,14 +117,14 @@ namespace combat
         inline bool              WasHit() const      { return hitType_ != HitType::Count; }
         inline HitType::Enum     HitKind() const     { return hitType_; }
         inline DodgeType::Enum   DodgeKind() const   { return dodgeType_; }
-        inline item::ItemSPtr_t  Weapon() const      { return weaponSPtr_; }
+        inline item::ItemPtr_t   Weapon() const      { return weaponPtr_; }
         inline stats::Health_t   Damage() const      { return damage_; }
         inline bool              IsCritical() const  { return isCritical_; }
         inline bool              IsPowerHit() const  { return isPower_; }
         inline const std::string ActionVerb() const  { return actionVerb_; }
         inline spell::SpellPtr_t SpellPtr() const    { return spellPtr_; }
         inline bool              IsSpell() const     { return (spellPtr_ != nullptr); }
-        inline bool              IsWeapon() const    { return (weaponSPtr_.get() != nullptr); }
+        inline bool              IsWeapon() const    { return (weaponPtr_ != nullptr); }
         inline const std::string SpellEffect() const { return spellEffectStr_; }
 
         inline const creature::ConditionEnumVec_t Conditions() const { return conditionsVec_; }
@@ -139,7 +140,7 @@ namespace combat
     private:
         HitType::Enum hitType_;
         DodgeType::Enum dodgeType_;
-        item::ItemSPtr_t weaponSPtr_;
+        item::ItemPtr_t weaponPtr_;
         stats::Health_t damage_;
         bool isCritical_;
         bool isPower_;

@@ -55,7 +55,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
 namespace state
 {
@@ -106,7 +106,7 @@ namespace gui
         //used by the inventory stage to list items
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const game::item::ItemSPtr_t &   IITEM_SPTR,
+                    const game::item::ItemPtr_t      ITEM_PTR,
                     const bool                       IS_VALID = true);
 
         //used by the inventory stage to list conditions
@@ -129,7 +129,7 @@ namespace gui
 
         game::player::CharacterSPtr_t         character_sptr;
         game::state::GameStateSPtr_t          gamestate_sptr;
-        game::item::ItemSPtr_t                iitem_sptr;
+        const game::item::ItemPtr_t           ITEM_CPTR;
         const game::creature::ConditionPtrC_t COND_CPTRC;
         const game::creature::TitlePtrC_t     TITLE_CPTRC;
         const game::spell::SpellPtrC_t        SPELL_CPTRC;

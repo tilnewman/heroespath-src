@@ -41,7 +41,7 @@ namespace game
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
 namespace creature
 {
@@ -104,7 +104,7 @@ namespace combat
 
         void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
                                       creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                      const item::ItemSPtr_t &  WEAPON_SPTR,
+                                      const item::ItemPtr_t     WEAPON_PTR,
                                       const bool                WILL_HIT);
 
         void ProjectileShootAnimUpdate(const float SLIDER_POS);

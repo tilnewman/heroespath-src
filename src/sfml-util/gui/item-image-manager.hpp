@@ -30,13 +30,22 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
+#include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/armor-info.hpp"
-#include "game/item/item.hpp"
 
 #include <memory>
 #include <string>
 
+
+namespace game
+{
+namespace item
+{
+    class Item;
+    using ItemPtr_t = Item *;
+}
+}
 
 namespace sfml_util
 {
@@ -66,10 +75,10 @@ namespace gui
         static inline float GetMaxDimmension() { return 256.0f; }
 
         void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
-        inline void Load(sf::Texture & texture, const game::item::ItemSPtr_t & ITEM_SPTR) const { return Load(texture, ITEM_SPTR->ImageFilename() + EXT_); }
+        void Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const;
         void Load(sf::Texture & texture, const game::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
-        const std::string GetImageFilename(const game::item::ItemSPtr_t & ITEM_SPTR, const bool WILL_RANDOMIZE = true) const;
+        const std::string GetImageFilename(const game::item::ItemPtr_t, const bool WILL_RANDOMIZE = true) const;
         const std::string GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
         const std::string GetImageFilename(const game::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
         const std::string GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;

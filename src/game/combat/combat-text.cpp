@@ -332,18 +332,18 @@ namespace combat
     }
 
 
-    const std::string Text::WeaponActionVerb(const item::ItemSPtr_t & WEAPON_SPTR, const bool WILL_APPEND_ING)
+    const std::string Text::WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR, const bool WILL_APPEND_ING)
     {
         std::vector<std::string> strVec;
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Axe)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Axe)
         {
             if (WILL_APPEND_ING) strVec.push_back("chopping"); else strVec.push_back("chops");
             if (WILL_APPEND_ING) strVec.push_back("hacking"); else strVec.push_back("hacks");
             if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Bite)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Bite)
         {
             if (WILL_APPEND_ING) strVec.push_back("bitting"); else strVec.push_back("bites");
             if (WILL_APPEND_ING) strVec.push_back("snapping"); else strVec.push_back("snaps");
@@ -351,10 +351,10 @@ namespace combat
             if (WILL_APPEND_ING) strVec.push_back("chewing"); else strVec.push_back("chews");
         }
 
-        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Bladed) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::BladedStaff) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Knife) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Sword))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bladed) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Knife) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Sword))
         {
             if (WILL_APPEND_ING) strVec.push_back("slicing"); else strVec.push_back("slices");
             if (WILL_APPEND_ING) strVec.push_back("slashing"); else strVec.push_back("slashes");
@@ -362,36 +362,36 @@ namespace combat
             if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
         }
 
-        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::BladedStaff) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Pointed) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Knife) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Spear))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Pointed) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Knife) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Spear))
         {
             if (WILL_APPEND_ING) strVec.push_back("stabbing"); else strVec.push_back("stabs");
             if (WILL_APPEND_ING) strVec.push_back("thrusting"); else strVec.push_back("thrusts");
             if (WILL_APPEND_ING) strVec.push_back("jabbing"); else strVec.push_back("jabs");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
         {
             if (WILL_APPEND_ING) strVec.push_back("darting"); else strVec.push_back("darts");
         }
 
-        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Blowpipe) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Bow) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Crossbow) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Projectile))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
             if (WILL_APPEND_ING) strVec.push_back("shooting"); else strVec.push_back("shoots");
             if (WILL_APPEND_ING) strVec.push_back("firing"); else strVec.push_back("fires");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Breath)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Breath)
         {
             if (WILL_APPEND_ING) strVec.push_back("breathing"); else strVec.push_back("breathes");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Claws)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Claws)
         {
             if (WILL_APPEND_ING) strVec.push_back("tearing"); else strVec.push_back("tears");
             if (WILL_APPEND_ING) strVec.push_back("slashing"); else strVec.push_back("slashes");
@@ -399,8 +399,8 @@ namespace combat
             if (WILL_APPEND_ING) strVec.push_back("ripping"); else strVec.push_back("rips");
         }
 
-        if ((WEAPON_SPTR->WeaponType() & item::weapon_type::Club) ||
-            (WEAPON_SPTR->WeaponType() & item::weapon_type::Staff))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Club) ||
+            (WEAPON_PTR->WeaponType() & item::weapon_type::Staff))
         {
             if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
             if (WILL_APPEND_ING) strVec.push_back("bashing"); else strVec.push_back("bashes");
@@ -409,17 +409,17 @@ namespace combat
             if (WILL_APPEND_ING) strVec.push_back("crushing"); else strVec.push_back("crushes");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Sling)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
         {
             if (WILL_APPEND_ING) strVec.push_back("slinging"); else strVec.push_back("slings");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Whip)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Whip)
         {
             if (WILL_APPEND_ING) strVec.push_back("whipping"); else strVec.push_back("whips");
         }
 
-        if (WEAPON_SPTR->WeaponType() & item::weapon_type::Tendrils)
+        if (WEAPON_PTR->WeaponType() & item::weapon_type::Tendrils)
         {
             if (WILL_APPEND_ING) strVec.push_back("whipping"); else strVec.push_back("whips");
             if (WILL_APPEND_ING) strVec.push_back("sliming"); else strVec.push_back("slimes");

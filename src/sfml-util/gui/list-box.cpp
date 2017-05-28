@@ -45,6 +45,7 @@
 #include "game/player/character.hpp"
 #include "game/creature/condition.hpp"
 #include "game/spell/spells.hpp"
+#include "game/item/item.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -753,9 +754,9 @@ namespace gui
         sf::Texture texture;
         auto didLoadTexture{ false };
 
-        if (listBoxItemSPtr->iitem_sptr.get() != nullptr)
+        if (listBoxItemSPtr->ITEM_CPTR != nullptr)
         {
-            sfml_util::gui::ItemImageManager::Instance()->Load(texture, listBoxItemSPtr->iitem_sptr);
+            sfml_util::gui::ItemImageManager::Instance()->Load(texture, listBoxItemSPtr->ITEM_CPTR);
             didLoadTexture = true;
         }
         else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)

@@ -30,7 +30,6 @@
 #include "summary-view.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
@@ -39,6 +38,9 @@
 #include "game/log-macros.hpp"
 #include "game/creature/creature.hpp"
 #include "game/combat/combat-node.hpp"
+#include "game/item/item.hpp"
+
+#include "misc/real.hpp"
 
 
 namespace game
@@ -46,14 +48,14 @@ namespace game
 namespace combat
 {
 
-    ItemWithText::ItemWithText(const item::ItemSPtr_t & ITEM_SPTR)
+    ItemWithText::ItemWithText(const item::ItemPtr_t ITEM_PTR)
     :
         sprite               (),
         texture              (),
         name_text_region_sptr(),
         desc_text_region_sptr(),
         info_text_region_sptr(),
-        item_sptr            (ITEM_SPTR)
+        item_ptr             (ITEM_PTR)
     {}
 
 
@@ -326,52 +328,66 @@ namespace combat
         //populate the enemy equipped item list with the following priority: weapons first, then armor, then misc, then plain clothes
 
         //first weapons
-        item::ItemSVec_t weaponItemsToDisplay;
-        item::ItemSVec_t weaponItemsToIgnore;
-        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
-            if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart() == false))
-                weaponItemsToDisplay.push_back(NEXT_ITEM_SPTR);
+        item::ItemPVec_t weaponItemsToDisplay;
+        item::ItemPVec_t weaponItemsToIgnore;
+        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        {
+            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
+            {
+                weaponItemsToDisplay.push_back(NEXT_ITEM_PTR);
+            }
+        }
 
         //only list bodypart weapons if there are not any others equipped
         if (weaponItemsToDisplay.empty())
         {
-            for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
-                if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart()))
-                    weaponItemsToDisplay.push_back(NEXT_ITEM_SPTR);
+            for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                    weaponItemsToDisplay.push_back(NEXT_ITEM_PTR);
         }
         else
         {
-            for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
-                if ((NEXT_ITEM_SPTR->IsWeapon()) && (NEXT_ITEM_SPTR->IsBodypart()))
-                    weaponItemsToIgnore.push_back(NEXT_ITEM_SPTR);
+            for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                    weaponItemsToIgnore.push_back(NEXT_ITEM_PTR);
         }
 
-        for(auto const & NEXT_ITEM_SPTR : weaponItemsToDisplay)
-            itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
+        for(auto const NEXT_ITEM_PTR : weaponItemsToDisplay)
+            itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
 
         //then armor
-        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
-            if (NEXT_ITEM_SPTR->IsArmor())
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
+        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            if (NEXT_ITEM_PTR->IsArmor())
+                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
 
         //then misc
-        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
-            if (NEXT_ITEM_SPTR->MiscType() != item::misc_type::NotMisc)
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
+        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
+                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
 
         //then everything else (clothes, etc)
-        for (auto const & NEXT_ITEM_SPTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
         {
-            const ItemWithTextVecCIter_t IWTV_CITER(std::find_if(itemWithTextVec_.begin(),
-                                                                 itemWithTextVec_.end(),
-                                                                 [&NEXT_ITEM_SPTR] (const ItemWithText & IWT) { return IWT.item_sptr == NEXT_ITEM_SPTR; }));
+            auto const IWTV_CITER{ std::find_if(itemWithTextVec_.begin(),
+                                                itemWithTextVec_.end(),
+                                                [NEXT_ITEM_PTR]
+                                                (const ItemWithText & IWT)
+                                                {
+                                                    return IWT.item_ptr == NEXT_ITEM_PTR;
+                                                }) };
 
-            const item::ItemSVecCIter_t IV_CITER(std::find_if(weaponItemsToIgnore.begin(),
-                                                              weaponItemsToIgnore.end(),
-                                                              [&NEXT_ITEM_SPTR] (const item::ItemSPtr_t & ITEM_SPTR_FROM_TOIGNORE) { return ITEM_SPTR_FROM_TOIGNORE == NEXT_ITEM_SPTR; }));
+            auto const IV_CITER{ std::find_if(weaponItemsToIgnore.begin(),
+                                              weaponItemsToIgnore.end(),
+                                              [NEXT_ITEM_PTR]
+                                              (const item::ItemPtr_t ITEM_PTR_FROM_TOIGNORE)
+                                              {
+                                                return ITEM_PTR_FROM_TOIGNORE == NEXT_ITEM_PTR;
+                                              }) };
 
             if ((IV_CITER == weaponItemsToIgnore.end()) && (IWTV_CITER == itemWithTextVec_.end()))
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_SPTR));
+            {
+                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+            }
         }
 
         const float ITEM_IMAGE_HORIZ_MARGIN(sfml_util::MapByRes(45.0f, 150.0f));
@@ -387,7 +403,7 @@ namespace combat
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.texture, nextItemText.item_sptr);
+            sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.texture, nextItemText.item_ptr);
             nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
             itemListHeightAtDefaultScale += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
@@ -417,14 +433,18 @@ namespace combat
                         itemWithTextVec_.push_back(NEXT_ITEM_TEXT);
                     }
                     else
+                    {
                         break;
+                    }
                 }
             }
         }
 
-        //at this point, itemWithTextVec_ contains a list of equipped item images that will fit vertically in the combat window
+        //at this point, itemWithTextVec_ contains a list of equipped item images that will
+        //fit vertically in the combat window
 
-        //set the item list image alpha values and positions, populate itemWithTextVec_ with text, and find the total width and height of the list
+        //set the item list image alpha values and positions, populate itemWithTextVec_ with text,
+        //and find the total width and height of the list
         float longestItemHorizExtent(0.0f);
         float itemListHeight(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
@@ -433,7 +453,7 @@ namespace combat
 
             nextItemText.sprite.setPosition(ITEM_IMAGE_POS_LEFT, ITEM_IMAGE_POS_TOP_START + itemListHeight);
 
-            const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(nextItemText.item_sptr->Name(),
+            const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(nextItemText.item_ptr->Name(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
                                                                sfml_util::FontManager::Instance()->Size_Small(),
                                                                sfml_util::FontManager::Color_Light(),
@@ -444,9 +464,9 @@ namespace combat
                                                0.0f,
                                                0.0f);
 
-            nextItemText.name_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_sptr->Name(), ITEM_NAME_TEXT_INFO, ITEM_NAME_RECT));
+            nextItemText.name_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_ptr->Name(), ITEM_NAME_TEXT_INFO, ITEM_NAME_RECT));
 
-            const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(nextItemText.item_sptr->Desc(),
+            const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(nextItemText.item_ptr->Desc(),
                                                                sfml_util::FontManager::Instance()->Font_Default1(),
                                                                sfml_util::FontManager::Instance()->Size_Small(),
                                                                sfml_util::FontManager::Color_Light(),
@@ -457,29 +477,36 @@ namespace combat
                                                0.0f,
                                                0.0f);
 
-            nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_sptr->Name(), ITEM_DESC_TEXT_INFO, ITEM_DESC_RECT));
+            nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_ptr->Name(), ITEM_DESC_TEXT_INFO, ITEM_DESC_RECT));
 
             std::ostringstream infoSS;
-            if (nextItemText.item_sptr->IsMagical())
+            if (nextItemText.item_ptr->IsMagical())
             {
                 infoSS << "(Magical)";
             }
-            if (nextItemText.item_sptr->Category() & item::category::QuestItem)
+            
+            if (nextItemText.item_ptr->Category() & item::category::QuestItem)
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "(Quest Item)";
             }
-            if (nextItemText.item_sptr->IsWeapon())
+            
+            if (nextItemText.item_ptr->IsWeapon())
             {
-                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Damage: " << nextItemText.item_sptr->DamageMin() << "-" << nextItemText.item_sptr->DamageMax();
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Damage: "
+                       << nextItemText.item_ptr->DamageMin() << "-"
+                       << nextItemText.item_ptr->DamageMax();
             }
-            else if (nextItemText.item_sptr->IsArmor() || (nextItemText.item_sptr->ArmorRating() > 0))
+            else if (nextItemText.item_ptr->IsArmor() || (nextItemText.item_ptr->ArmorRating() > 0))
             {
-                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: " << nextItemText.item_sptr->ArmorRating();
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: "
+                       << nextItemText.item_ptr->ArmorRating();
             }
+
             if (infoSS.str().empty())
             {
                 infoSS << " ";
             }
+            
             const sfml_util::gui::TextInfo INFO_TEXT_INFO(infoSS.str(),
                                                           sfml_util::FontManager::Instance()->Font_Default1(),
                                                           sfml_util::FontManager::Instance()->Size_Small(),
@@ -491,11 +518,13 @@ namespace combat
                                           0.0f,
                                           0.0f);
 
-            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_sptr->Name(), INFO_TEXT_INFO, INFO_RECT) );
+            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_ptr->Name(), INFO_TEXT_INFO, INFO_RECT) );
 
             const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_ + nextItemText.desc_text_region_sptr->GetEntityRegion().width);
             if (longestItemHorizExtent < CURR_ITEM_HORIZ_EXTENT)
+            {
                 longestItemHorizExtent = CURR_ITEM_HORIZ_EXTENT;
+            }
 
             const float CURR_ITEM_VERT_TEXT_EXTENT{ ((infoSS.str() == " ") ? (ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight) : (INFO_RECT.top + nextItemText.info_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight)) };
 

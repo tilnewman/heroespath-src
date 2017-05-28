@@ -34,7 +34,6 @@
 #include "game/creature/condition-enum.hpp"
 #include "game/item/types.hpp"
 #include "game/item/inventory.hpp"
-#include "game/item/item.hpp"
 #include "game/creature/role.hpp"
 #include "game/creature/race.hpp"
 #include "game/creature/rank.hpp"
@@ -62,6 +61,13 @@ namespace spell
     class Spell;
     using SpellPtr_t  = Spell *;
     using SpellPVec_t = std::vector<SpellPtr_t>;
+}
+namespace item
+{
+    class Item;
+    using ItemPtr_t = Item *;
+    using ItemPVec_t = std::vector<ItemPtr_t>;
+    using ItemPVecVec_t = std::vector<ItemPVec_t>;
 }
 
 namespace creature
@@ -208,22 +214,22 @@ namespace creature
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.
-        const std::string ItemAdd(const item::ItemSPtr_t & ITEM_SPTR);
-        const std::string ItemIsAddAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
-        const std::string ItemEquip(const item::ItemSPtr_t & ITEM_SPTR);
-        const std::string ItemIsEquipAllowed(const item::ItemSPtr_t & ITEM_SPTR) const;
-        const std::string ItemIsEquipAllowedByRole(const item::ItemSPtr_t & ITEM_SPTR) const;
+        const std::string ItemAdd(const item::ItemPtr_t);
+        const std::string ItemIsAddAllowed(const item::ItemPtr_t) const;
+        const std::string ItemEquip(const item::ItemPtr_t);
+        const std::string ItemIsEquipAllowed(const item::ItemPtr_t) const;
+        const std::string ItemIsEquipAllowedByRole(const item::ItemPtr_t) const;
 
         //This function will not remove an equipped item.  Unequip first.
-        void ItemRemove(const item::ItemSPtr_t & ITEM_SPTR);
+        void ItemRemove(const item::ItemPtr_t);
 
-        const std::string ItemUnEquip(const item::ItemSPtr_t & ITEM_SPTR);
-        const std::string IsItemUnqeuipAllowed(const item::ItemSPtr_t & ITEM_SPTR);
+        const std::string ItemUnEquip(const item::ItemPtr_t);
+        const std::string IsItemUnqeuipAllowed(const item::ItemPtr_t);
 
-        const item::ItemSVec_t CurrentWeaponsInc();
+        const item::ItemPVec_t CurrentWeaponsInc();
         void SetCurrentWeaponsToBest();
         void SetCurrentWeaponsToBestIfInvalidated();
-        inline const item::ItemSVec_t CurrentWeaponsCopy() const{ return currWeaponsSVec_; }
+        inline const item::ItemPVec_t CurrentWeaponsCopy() const{ return currWeaponsPVec_; }
         std::size_t WeaponsCount() const;
         inline bool HasWeapons() const                          { return WeaponsCount() > 0; }
         inline bool HasWeaponsHeld() const                      { return CurrentWeaponsCopy().empty() == false; }
@@ -267,11 +273,14 @@ namespace creature
         inline void ManaNormalSet(const stats::Mana_t M)        { manaNormal_ = M; }
         void ManaNormalAdj(const stats::Mana_t ADJ);
 
+        //should only be called after loading a saved game
+        void StoreItemsInWarehouseAfterLoad();
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
     protected:
-        const item::ItemSVecVec_t ComposeWeaponsList() const;
+        const item::ItemPVecVec_t ComposeWeaponsList() const;
 
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
@@ -296,7 +305,7 @@ namespace creature
         sfml_util::DateTime dateTimeCreated_;
         spell::SpellVec_t   spellsVec_;
         Achievements        achievements_;
-        item::ItemSVec_t    currWeaponsSVec_;
+        item::ItemPVec_t    currWeaponsPVec_;
         stats::Mana_t       manaCurrent_;
         stats::Mana_t       manaNormal_;
 
@@ -323,6 +332,7 @@ namespace creature
             ar & dateTimeCreated_;
             ar & spellsVec_;
             ar & achievements_;
+            ar & currWeaponsPVec_;
             ar & manaCurrent_;
             ar & manaNormal_;
         }

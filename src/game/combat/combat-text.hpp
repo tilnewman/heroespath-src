@@ -41,7 +41,7 @@ namespace game
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
 namespace creature
 {
@@ -98,8 +98,8 @@ namespace combat
                                             const std::size_t         EFFECT_INDEX = 0,
                                             const std::size_t         HIT_INDEX = 0);
 
-        static const std::string WeaponActionVerb(const item::ItemSPtr_t & WEAPON_SPTR,
-                                                  const bool               WILL_APPEND_ING = false);
+        static const std::string WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR,
+                                                  const bool            WILL_APPEND_ING = false);
 
         static const std::string HitDescription(const HitInfo & HIT_INFO);
 

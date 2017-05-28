@@ -43,7 +43,7 @@ namespace spell
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
 namespace creature
 {
@@ -101,7 +101,7 @@ namespace combat
                                                        const bool               WILL_FORCE_HIT = false);
 
         static const HitInfo AttackWithSingleWeapon(HitInfoVec_t &           hitInfoVec,
-                                                    const item::ItemSPtr_t & WEAPON_SPTR,
+                                                    const item::ItemPtr_t    WEAPON_PTR,
                                                     creature::CreaturePtrC_t creatureAttackingPtrC,
                                                     creature::CreaturePtrC_t creatureDefendingPtrC,
                                                     const bool               WILL_FORCE_HIT = false);
@@ -113,7 +113,7 @@ namespace combat
                                                   const stats::Health_t                HEALTH_ADJ,
                                                   const creature::ConditionEnumVec_t & CONDITIONS_VEC);
 
-        static stats::Health_t DetermineDamage(const item::ItemSPtr_t & WEAPON_SPTR,
+        static stats::Health_t DetermineDamage(const item::ItemPtr_t    WEAPON_PTR,
                                                creature::CreaturePtrC_t creatureAttackingPtrC,
                                                creature::CreaturePtrC_t creatureDefendingPtrC,
                                                bool &                   isPowerHit_OutParam,

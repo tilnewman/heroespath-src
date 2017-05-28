@@ -85,7 +85,7 @@ namespace combat
     }
 
 
-    HitInfo::HitInfo(const item::ItemSPtr_t &             ITEM_SPTR,
+    HitInfo::HitInfo(const item::ItemPtr_t                ITEM_PTR,
                      const HitType::Enum                  HIT_TYPE,
                      const DodgeType::Enum                DODGE_TYPE,
                      const stats::Health_t                DAMAGE,
@@ -96,7 +96,7 @@ namespace combat
     :
         hitType_       (HIT_TYPE),
         dodgeType_     (DODGE_TYPE),
-        weaponSPtr_    (ITEM_SPTR),
+        weaponPtr_     (ITEM_PTR),
         damage_        (DAMAGE),
         isCritical_    (IS_CRITICAL_HIT),
         isPower_       (IS_POWER_HIT),
@@ -115,7 +115,7 @@ namespace combat
     :
         hitType_       (HitType::Spell),
         dodgeType_     (DodgeType::Count),
-        weaponSPtr_    (),
+        weaponPtr_     (),
         damage_        (DAMAGE),
         isCritical_    (false),
         isPower_       (false),
@@ -130,7 +130,11 @@ namespace combat
     :
         hitType_      (HI.hitType_),
         dodgeType_    (HI.dodgeType_),
-        weaponSPtr_   (HI.weaponSPtr_),
+
+        //The lifetime of this object is not managed by this class.
+        //Usage is short-term observation only, so ptr copying is safe.
+        weaponPtr_    (HI.weaponPtr_),
+
         damage_       (HI.damage_),
         isCritical_   (HI.isCritical_),
         isPower_      (HI.isPower_),
@@ -151,7 +155,10 @@ namespace combat
         {
             hitType_        = HI.hitType_;
             dodgeType_      = HI.dodgeType_;
-            weaponSPtr_     = HI.weaponSPtr_;
+
+            //see copy constructor comment regarding this pointer
+            weaponPtr_      = HI.weaponPtr_;
+
             damage_         = HI.damage_;
             isCritical_     = HI.isCritical_;
             isPower_        = HI.isPower_;
@@ -170,8 +177,12 @@ namespace combat
     bool HitInfo::ContainsCondition(const creature::Conditions::Enum E) const
     {
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -182,14 +193,20 @@ namespace combat
         creature::ConditionEnumVec_t condsToRemoveVec;
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+            }
+        }
 
         auto const WILL_REMOVE_A_CONDITION{ ! condsToRemoveVec.empty() };
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
+            conditionsVec_.erase(std::remove(conditionsVec_.begin(),
+                                             conditionsVec_.end(),
+                                             NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return WILL_REMOVE_A_CONDITION;
@@ -199,13 +216,20 @@ namespace combat
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
         auto lConditionsVec{ L.conditionsVec_ };
+        if (lConditionsVec.empty() == false)
+        {
+            std::sort(lConditionsVec.begin(), lConditionsVec.end());
+        }
+
         auto rConditionsVec{ R.conditionsVec_ };
-        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
-        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+        if (rConditionsVec.empty() == false)
+        {
+            std::sort(rConditionsVec.begin(), rConditionsVec.end());
+        }
 
         return std::tie(L.hitType_,
                         L.dodgeType_,
-                        L.weaponSPtr_,
+                        L.weaponPtr_,
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
@@ -216,7 +240,7 @@ namespace combat
                <
                std::tie(R.hitType_,
                         R.dodgeType_,
-                        R.weaponSPtr_,
+                        R.weaponPtr_,
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,
@@ -236,7 +260,7 @@ namespace combat
 
         return std::tie(L.hitType_,
                         L.dodgeType_,
-                        L.weaponSPtr_,
+                        L.weaponPtr_,
                         L.damage_,
                         L.isCritical_,
                         L.isPower_,
@@ -247,7 +271,7 @@ namespace combat
                ==
                std::tie(R.hitType_,
                         R.dodgeType_,
-                        R.weaponSPtr_,
+                        R.weaponPtr_,
                         R.damage_,
                         R.isCritical_,
                         R.isPower_,

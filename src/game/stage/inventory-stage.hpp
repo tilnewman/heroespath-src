@@ -75,7 +75,7 @@ namespace game
     namespace item
     {
         class Item;
-        using ItemSPtr_t = std::shared_ptr<Item>;
+        using ItemPtr_t = Item *;
     }
 
 namespace stage
@@ -185,10 +185,10 @@ namespace stage
         float UpdateImageDetailsPosition();//returns the sprite width
         inline bool IsDetailViewFading() const { return (isDetailViewFadingIn_ || isDetailViewFadingOut_); }
         inline bool IsDetailViewFadingOrVisible() const { return (IsDetailViewFading() || isDetailViewDoneFading_); }
-        item::ItemSPtr_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
+        item::ItemPtr_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
-        void SetupDetailView(const item::ItemSPtr_t & IITEM_SPTR);
-        void SetupDetailView(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        void SetupDetailViewItem(const item::ItemPtr_t);
+        void SetupDetailViewCreature(creature::CreatureCPtrC_t CREATURE_CPTRC);
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
         ViewType EstablishViewToUse() const;
@@ -318,7 +318,7 @@ namespace stage
         ContentType                       contentType_;
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
         creature::CreaturePtr_t           creatureToGiveToPtr_;
-        item::ItemSPtr_t                  iItemToDropSPtr_;
+        item::ItemPtr_t                   iItemToDropPtr_;
 
         //members that manage the item detail view
         bool            isDetailViewFadingIn_;

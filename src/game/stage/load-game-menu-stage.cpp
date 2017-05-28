@@ -98,6 +98,9 @@ namespace stage
 
     bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
     {
+        //TODO Handle selection of a game to load and then load it,
+        //including a call to all creature::StoreItemsInWarehouseAfterLoad()
+
         SetupGameInfoDisplay();
         return true;
     }
@@ -272,6 +275,7 @@ namespace stage
         }
     }
 
+
     void LoadGameStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundImage_, STATES);
@@ -295,7 +299,9 @@ namespace stage
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 }

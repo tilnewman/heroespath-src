@@ -53,7 +53,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
 
 namespace spell
@@ -106,7 +106,7 @@ namespace spell
 
         //Allows the spell to change the target item.
         virtual const std::string EffectItem(creature::CreaturePtr_t,   //creatureCasting
-                                             item::ItemSPtr_t &) const  //itemCastUpon
+                                             item::ItemPtr_t) const  //itemCastUpon
         {
             return Spell::EFFECT_STR_NOTHING_TO_DO_;
         }

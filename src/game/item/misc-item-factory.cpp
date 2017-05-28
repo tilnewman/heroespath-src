@@ -29,10 +29,13 @@
 //
 #include "misc-item-factory.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 
 #include "game/item/item.hpp"
+#include "game/item/item-warehouse.hpp"
+
+#include "misc/boost-string-includes.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>
@@ -45,7 +48,7 @@ namespace item
 namespace misc
 {
 
-    ItemFactorySPtr_t ItemFactory::instance_(nullptr);
+    std::unique_ptr<ItemFactory> ItemFactory::instanceUPtr_{ nullptr };
 
 
     ItemFactory::ItemFactory()
@@ -56,18 +59,37 @@ namespace misc
     {}
 
 
-    ItemFactorySPtr_t ItemFactory::Instance()
+    ItemFactory * ItemFactory::Instance()
     {
-        if (instance_.get() == nullptr)
-            instance_.reset( new ItemFactory );
+        if (instanceUPtr_.get() == nullptr)
+        {
+            Acquire();
+        }
 
-        return instance_;
+        return instanceUPtr_.get();
     }
 
 
-    ItemSPtr_t ItemFactory::Make_Ring(const material::Enum MATERIAL_PRI,
-                                       const material::Enum MATERIAL_SEC,
-                                       const bool           IS_PIXIE_ITEM)
+    void ItemFactory::Acquire()
+    {
+        if (instanceUPtr_.get() == nullptr)
+        {
+            instanceUPtr_.reset(new ItemFactory);
+        }
+    }
+
+
+    void ItemFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::item::misc::ItemFactory::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
+    }
+
+
+    ItemPtr_t ItemFactory::Make_Ring(const material::Enum MATERIAL_PRI,
+                                     const material::Enum MATERIAL_SEC,
+                                     const bool           IS_PIXIE_ITEM)
     {
         Coin_t price(5);
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
@@ -77,32 +99,35 @@ namespace misc
 
         std::string imageFilename("ring-plain");
         if (material::IsPrecious(MATERIAL_SEC))
+        {
             imageFilename = "ring-jeweled";
+        }
 
-        return ItemSPtr_t( new Item(Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(category::Equippable | category::Wearable),
-                                     misc_type::Ring,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::NotArmor,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     imageFilename,
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     0,
-                                     creature::role::Count,
-                                     weapon::WeaponInfo(),
-                                     armor::ArmorInfo(),
-                                     IS_PIXIE_ITEM) );
+        return ItemWarehouse::Instance()->Store( new Item(
+            Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+            static_cast<category::Enum>(category::Equippable | category::Wearable),
+            misc_type::Ring,
+            weapon_type::NotAWeapon,
+            armor_type::NotArmor,
+            MATERIAL_PRI,
+            MATERIAL_SEC,
+            imageFilename,
+            price,
+            weight,
+            0,
+            0,
+            0,
+            creature::role::Count,
+            weapon::WeaponInfo(),
+            armor::ArmorInfo(),
+            IS_PIXIE_ITEM) );
     }
 
 
-    ItemSPtr_t ItemFactory::Make_Wand(const material::Enum MATERIAL_PRI,
-                                       const material::Enum MATERIAL_SEC,
-                                       const bool           IS_PIXIE_ITEM)
+    ItemPtr_t ItemFactory::Make_Wand(const material::Enum MATERIAL_PRI,
+                                     const material::Enum MATERIAL_SEC,
+                                     const bool           IS_PIXIE_ITEM)
     {
         Coin_t price(437);
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
@@ -110,28 +135,34 @@ namespace misc
         Weight_t weight(40);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemSPtr_t( new Item(Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-                                     Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                                     static_cast<category::Enum>(category::Equippable | category::Magical | category::EnchantsOnlyWhenEquipped),
-                                     misc_type::Wand,
-                                     weapon_type::NotAWeapon,
-                                     armor_type::NotArmor,
-                                     MATERIAL_PRI,
-                                     MATERIAL_SEC,
-                                     boost::algorithm::erase_all_copy(sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(item::misc_type::Wand, material::IsJewel(MATERIAL_SEC), true), ".gif"),
-                                     price,
-                                     weight,
-                                     0,
-                                     0,
-                                     0,
-                                     creature::role::Count,
-                                     weapon::WeaponInfo(),
-                                     armor::ArmorInfo(),
-                                     IS_PIXIE_ITEM) );
+        return ItemWarehouse::Instance()->Store( new Item(
+            Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+            static_cast<category::Enum>(category::Equippable |
+                                        category::Magical |
+                                        category::EnchantsOnlyWhenEquipped),
+            misc_type::Wand,
+            weapon_type::NotAWeapon,
+            armor_type::NotArmor,
+            MATERIAL_PRI,
+            MATERIAL_SEC,
+            boost::algorithm::erase_all_copy(
+                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(
+                    item::misc_type::Wand, material::IsJewel(MATERIAL_SEC), true), ".gif"),
+            price,
+            weight,
+            0,
+            0,
+            0,
+            creature::role::Count,
+            weapon::WeaponInfo(),
+            armor::ArmorInfo(),
+            IS_PIXIE_ITEM) );
     }
 
 
-    ItemSPtr_t ItemFactory::Make_Instrument(const instrument_type::Enum TYPE, const bool IS_PIXIE_ITEM)
+    ItemPtr_t ItemFactory::Make_Instrument(const instrument_type::Enum TYPE,
+                                           const bool                  IS_PIXIE_ITEM)
     {
         Coin_t price(0);
         Weight_t weight(0);
@@ -191,7 +222,8 @@ namespace misc
             default:
             {
                 std::ostringstream ss;
-                ss << "herospath::item::ItemFactory::Make_Instrument(" << TYPE << ") -but that type is invalid.";
+                ss << "herospath::item::ItemFactory::Make_Instrument("
+                    << TYPE << ") -but that type is invalid.";
                 throw std::range_error(ss.str());
             }
         }
@@ -199,24 +231,25 @@ namespace misc
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);
 
-        return ItemSPtr_t(new Item(Make_Name(name, material::Wood, material::Rope, IS_PIXIE_ITEM),
-                                    Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
-                                    static_cast<category::Enum>(category::Equippable | category::Useable | categoryHanded),
-                                    miscType,
-                                    weapon_type::NotAWeapon,
-                                    armor_type::NotArmor,
-                                    material::Wood,
-                                    material::Rope,
-                                    imageFilename,
-                                    price,
-                                    weight,
-                                    0,
-                                    0,
-                                    0,
-                                    creature::role::Bard,
-                                    weapon::WeaponInfo(),
-                                    armor::ArmorInfo(),
-                                    IS_PIXIE_ITEM));
+        return ItemWarehouse::Instance()->Store( new Item(
+            Make_Name(name, material::Wood, material::Rope, IS_PIXIE_ITEM),
+            Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
+            static_cast<category::Enum>(category::Equippable | category::Useable | categoryHanded),
+            miscType,
+            weapon_type::NotAWeapon,
+            armor_type::NotArmor,
+            material::Wood,
+            material::Rope,
+            imageFilename,
+            price,
+            weight,
+            0,
+            0,
+            0,
+            creature::role::Bard,
+            weapon::WeaponInfo(),
+            armor::ArmorInfo(),
+            IS_PIXIE_ITEM));
     }
 
 }

@@ -46,8 +46,8 @@ namespace item
 
     //foward declarations
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
-    using ItemSVec_t = std::vector<ItemSPtr_t>;
+    using ItemPtr_t = Item *;
+    using ItemPVec_t = std::vector<ItemPtr_t>;
 
 
     //A class that encapsolates a collection of Items.
@@ -57,10 +57,10 @@ namespace item
         explicit Inventory(const Coin_t       COINS               = 0,
                            const Meteor_t     METEOR_SHARDS       = 0,
                            const Gem_t        GEMS                = 0,
-                           const ItemSVec_t & ITEMS_SVEC          = ItemSVec_t(),
-                           const ItemSVec_t & EQUIPPED_ITEMS_SVEC = ItemSVec_t());
+                           const ItemPVec_t & ITEMS_PVEC          = ItemPVec_t(),
+                           const ItemPVec_t & EQUIPPED_ITEMS_PVEC = ItemPVec_t());
 
-        virtual ~Inventory();
+        ~Inventory();
 
         inline Coin_t Coins() const             { return coins_; }
         inline Meteor_t MeteorShards() const    { return meteorShards_; }
@@ -71,19 +71,19 @@ namespace item
         bool MeteorShardsAdj(const Meteor_t A);
         bool GemsAdj(const Gem_t A);
 
-        inline const ItemSVec_t Items() const          { return itemsSVec_; }
-        inline const ItemSVec_t ItemsEquipped() const   { return equippedItemsSVec_; }
+        inline const ItemPVec_t Items() const           { return itemsPVec_; }
+        inline const ItemPVec_t ItemsEquipped() const   { return equippedItemsPVec_; }
 
-        void ItemAdd(const ItemSPtr_t & ITEM_SPTR);
-        void ItemRemove(const ItemSPtr_t & ITEM_SPTR);
+        void ItemAdd(const ItemPtr_t);
+        void ItemRemove(const ItemPtr_t);
 
         //moves the item from itemsSVec_ to equippedItemsSVec_
-        void ItemEquip(const ItemSPtr_t & ITEM_SPTR);
+        void ItemEquip(const ItemPtr_t);
 
         //moves the item from equippedItemsSVec_ to itemsSVec_
-        void ItemUnEquip(const ItemSPtr_t & ITEM_SPTR);
+        void ItemUnEquip(const ItemPtr_t);
 
-        bool ContainsItem(const ItemSPtr_t & ITEM_SPTR) const;
+        bool ContainsItem(const ItemPtr_t) const;
 
         Weight_t Weight() const;
 
@@ -107,16 +107,22 @@ namespace item
 
         stats::Armor_t ArmorRating() const;
 
-        virtual const std::string ToString() const;
+        const std::string ToString() const;
 
+        void StoreItemsInWarehouseAfterLoad();
+        
         friend bool operator==(const Inventory & L, const Inventory & R);
+
+    protected:
+        void StoreItemPVecInWarehouse(ItemPVec_t &) const;
+        void FreeAllItemsFromWarehouse();
 
     private:
         Coin_t     coins_;
         Meteor_t   meteorShards_;
         Gem_t      gems_;
-        ItemSVec_t itemsSVec_;
-        ItemSVec_t equippedItemsSVec_;
+        ItemPVec_t itemsPVec_;
+        ItemPVec_t equippedItemsPVec_;
 
     private:
         friend class boost::serialization::access;
@@ -126,15 +132,18 @@ namespace item
             ar & coins_;
             ar & meteorShards_;
             ar & gems_;
-            ar & itemsSVec_;
-            ar & equippedItemsSVec_;
+            ar & itemsPVec_;
+            ar & equippedItemsPVec_;
         }
     };
 
 
     bool operator==(const Inventory & L, const Inventory & R);
 
-    bool operator!=(const Inventory & L, const Inventory & R);
+    inline bool operator!=(const Inventory & L, const Inventory & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

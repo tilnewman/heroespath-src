@@ -34,6 +34,8 @@
 #include "game/item/item.hpp"
 #include "game/log-macros.hpp"
 
+#include "misc/assertlogandthrow.hpp"
+
 
 namespace game
 {
@@ -44,15 +46,12 @@ namespace combat
     {}
 
 
-    void CombatSoundEffects::PlayShoot(const item::ItemSPtr_t & WEAPON_SPTR)
+    void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR)
     {
-        if (WEAPON_SPTR.get() == nullptr)
-        {
-            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_SPTR.");
-            return;
-        }
-
-        auto const WEAPON_TYPE{ WEAPON_SPTR->WeaponType() };
+        M_ASSERT_OR_LOGANDTHROW_SS((WEAPON_PTR != nullptr),
+            "game::combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_PTR.");
+            
+        auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
         if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))
         {
@@ -64,21 +63,24 @@ namespace combat
         }
         else
         {
-            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayShoot(weapon=\"" << WEAPON_SPTR->Name() << "\", category=\"" << item::category::ToString(WEAPON_SPTR->Category(), false) << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false) << ") Unable to find a 'shoot' sound effect to fit that weapon_type.");
+            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayShoot(weapon=\"" << WEAPON_PTR->Name()
+                << "\", category=\"" << item::category::ToString(WEAPON_PTR->Category(), false)
+                << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
+                << ") Unable to find a 'shoot' sound effect to fit that weapon_type.");
         }
     }
 
 
     void CombatSoundEffects::PlayHitOrMiss(const HitInfo & HIT_INFO)
     {
-        auto const WEAPON_SPTR{ HIT_INFO.Weapon() };
-        if (WEAPON_SPTR.get() == nullptr)
+        auto const WEAPON_PTR{ HIT_INFO.Weapon() };
+        if (WEAPON_PTR == nullptr)
         {
-            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss() was given a nullptr WEAPON_SPTR.");
+            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss() was given a nullptr WEAPON_PTR.");
             return;
         }
 
-        auto const WEAPON_TYPE{ WEAPON_SPTR->WeaponType() };
+        auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
         if (HIT_INFO.WasHit())
         {
@@ -112,7 +114,7 @@ namespace combat
             }
             else
             {
-                switch (WEAPON_SPTR->MaterialPrimary())
+                switch (WEAPON_PTR->MaterialPrimary())
                 {
 
                     case item::material::Wood:              { return sfml_util::SoundManager::Instance()->SoundEffectsSet_MaterialHitMisc().Play(sfml_util::sound_effect::MaterialHitWood); }
@@ -191,7 +193,7 @@ namespace combat
             }
             else
             {
-                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss(weapon=\"" << WEAPON_SPTR->Name() << "\", category=\"" << item::category::ToString(WEAPON_SPTR->Category(), false) << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false) << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
+                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss(weapon=\"" << WEAPON_PTR->Name() << "\", category=\"" << item::category::ToString(WEAPON_PTR->Category(), false) << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false) << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
             }
         }
     }

@@ -248,7 +248,7 @@ namespace stage
         inline void SetAnimPhase(const AnimPhase AP)                { animPhase_ = AP; UpdateTestingText(); }
         inline void SetTurnActionPhase(const TurnActionPhase TAP)   { turnActionPhase_ = TAP; UpdateTestingText(); }
 
-        TurnActionPhase GetTurnActionPhaseFromWeaponType(const item::ItemSPtr_t &) const;
+        TurnActionPhase GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t) const;
         TurnActionPhase GetTurnActionPhaseFromFightResult(const combat::FightResult &) const;
 
         void SetUserActionAllowed(const bool IS_ALLOWED);

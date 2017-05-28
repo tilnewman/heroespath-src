@@ -37,12 +37,14 @@ namespace game
 namespace item
 {
     class Item;
-    using ItemSPtr_t = std::shared_ptr<Item>;
+    using ItemPtr_t = Item *;
 }
+
 namespace combat
 {
 
-    //Stores combat sound effects in memory and provides a simple interface to play them.
+    //Stores combat sound effects in memory and provides a simple
+    //interface to play them.
     class CombatSoundEffects
     {
         //prevent copy assignment
@@ -54,7 +56,7 @@ namespace combat
     public:
         CombatSoundEffects();
 
-        void PlayShoot(const item::ItemSPtr_t &);
+        void PlayShoot(const item::ItemPtr_t);
         void PlayHitOrMiss(const HitInfo &);
     };
 

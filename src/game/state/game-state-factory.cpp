@@ -115,16 +115,20 @@ namespace state
         namespace bfs = boost::filesystem;
 
         //configure the path
-        const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_GAME_DIR_NAME_)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_GAME_DIR_NAME_)));
 
         GameStateSSet_t gameStateSSet;
 
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
+        {
             return gameStateSSet;
+        }
 
         if (false == bfs::is_directory(DIR_OBJ))
+        {
             return gameStateSSet;
+        }
 
         //create a vector of paths to saved games
         std::vector<bfs::path> pathVec;

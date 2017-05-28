@@ -30,6 +30,8 @@
 #include "inventory.hpp"
 
 #include "game/item/item.hpp"
+#include "game/item/item-warehouse.hpp"
+
 #include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
@@ -44,19 +46,21 @@ namespace item
     Inventory::Inventory(const Coin_t       COINS,
                          const Meteor_t     METEOR_SHARDS,
                          const Gem_t        GEMS,
-                         const ItemSVec_t & ITEMS_SVEC,
-                         const ItemSVec_t & EQUIPPED_ITEMS_SVEC)
+                         const ItemPVec_t & ITEMS_SVEC,
+                         const ItemPVec_t & EQUIPPED_ITEMS_SVEC)
     :
         coins_           (COINS),
         meteorShards_    (METEOR_SHARDS),
         gems_            (GEMS),
-        itemsSVec_       (ITEMS_SVEC),
-        equippedItemsSVec_(EQUIPPED_ITEMS_SVEC)
+        itemsPVec_       (ITEMS_SVEC),
+        equippedItemsPVec_(EQUIPPED_ITEMS_SVEC)
     {}
 
 
     Inventory::~Inventory()
-    {}
+    {
+        FreeAllItemsFromWarehouse();
+    }
 
 
     bool Inventory::CoinsAdj(const Coin_t A)
@@ -69,7 +73,9 @@ namespace item
             return false;
         }
         else
+        {
             return true;
+        }
     }
 
 
@@ -83,7 +89,9 @@ namespace item
             return false;
         }
         else
+        {
             return true;
+        }
     }
 
 
@@ -97,7 +105,9 @@ namespace item
             return false;
         }
         else
+        {
             return true;
+        }
     }
 
 
@@ -105,11 +115,15 @@ namespace item
     {
         Weight_t totalWeight(0);
 
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            totalWeight += NEXT_ITEM_SPTR->Weight();
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            totalWeight += NEXT_ITEM_PTR->Weight();
+        }
 
-        for (auto const & NEXT_EQUIPPED_ITEM_SPTR : equippedItemsSVec_)
-            totalWeight += NEXT_EQUIPPED_ITEM_SPTR->Weight();
+        for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        {
+            totalWeight += NEXT_EQUIPPED_ITEM_PTR->Weight();
+        }
 
         return totalWeight;
     }
@@ -117,7 +131,7 @@ namespace item
 
     std::size_t Inventory::Count() const
     {
-        return itemsSVec_.size() + equippedItemsSVec_.size();
+        return itemsPVec_.size() + equippedItemsPVec_.size();
     }
 
 
@@ -130,9 +144,13 @@ namespace item
     std::size_t Inventory::CountItemOfArmorTypeHeld(const item::armor_type::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            if (NEXT_ITEM_SPTR->ArmorType() & ARMOR_TYPE)
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -141,9 +159,13 @@ namespace item
     std::size_t Inventory::CountItemOfArmorTypeEquipped(const item::armor_type::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : equippedItemsSVec_)
-            if (NEXT_ITEM_SPTR->ArmorType() & ARMOR_TYPE)
+        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -158,9 +180,13 @@ namespace item
     std::size_t Inventory::CountItemOfWeaponTypeHeld(const item::armor_type::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            if (NEXT_ITEM_SPTR->WeaponType() & WEAPON_TYPE)
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -169,9 +195,13 @@ namespace item
     std::size_t Inventory::CountItemOfWeaponTypeEquipped(const item::armor_type::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : equippedItemsSVec_)
-            if (NEXT_ITEM_SPTR->WeaponType() & WEAPON_TYPE)
+        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -187,9 +217,13 @@ namespace item
     {
         std::size_t count(0);
 
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            if (NEXT_ITEM_SPTR->Category() & ITEM_CATEGORY)
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -199,9 +233,13 @@ namespace item
     {
         std::size_t count(0);
 
-        for (auto const & NEXT_ITEM_SPTR : equippedItemsSVec_)
-            if (NEXT_ITEM_SPTR->Category() & ITEM_CATEGORY)
+        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -216,9 +254,13 @@ namespace item
     std::size_t Inventory::CountItemOfMiscTypeHeld(const item::misc_type::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            if (NEXT_ITEM_SPTR->MiscType() & MISC_TYPE)
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
@@ -227,61 +269,87 @@ namespace item
     std::size_t Inventory::CountItemOfMiscTypeEquipped(const item::misc_type::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_ITEM_SPTR : equippedItemsSVec_)
-            if (NEXT_ITEM_SPTR->MiscType() & MISC_TYPE)
+        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        {
+            if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
+            {
                 ++count;
+            }
+        }
 
         return count;
     }
 
-    void Inventory::ItemAdd(const ItemSPtr_t & ITEM_SPTR)
+
+    void Inventory::ItemAdd(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemAdd(nullptr) was given a null ITEM_SPTR.");
-        itemsSVec_.push_back(ITEM_SPTR);
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
+            "Inventory::ItemAdd(nullptr) was given a null ITEM_PTR.");
+
+        itemsPVec_.push_back(ITEM_PTR);
     }
 
 
-    void Inventory::ItemRemove(const ItemSPtr_t & ITEM_SPTR)
+    void Inventory::ItemRemove(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemRemove(nullptr) was given a null ITEM_SPTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
+            "Inventory::ItemRemove(nullptr) was given a null ITEM_PTR.");
 
-        const ItemSVecCIter_t FOUND_CITER( std::find(itemsSVec_.begin(), itemsSVec_.end(), ITEM_SPTR) );
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_CITER != itemsSVec_.end()), "Inventory::ItemRemove(\"" << ITEM_SPTR->Name() << "\") did not find the item in the unequipped inventory.");
+        auto const FOUND_CITER( std::find(itemsPVec_.begin(), itemsPVec_.end(), ITEM_PTR) );
 
-        itemsSVec_.erase(FOUND_CITER);
+        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_CITER != itemsPVec_.end()),
+            "Inventory::ItemRemove(\"" << ITEM_PTR->Name()
+            << "\") did not find the item in the unequipped inventory.");
+
+        itemsPVec_.erase(FOUND_CITER);
     }
 
 
-    void Inventory::ItemEquip(const ItemSPtr_t & ITEM_SPTR)
+    void Inventory::ItemEquip(const ItemPtr_t ITEM_PTR)
     {
-        ItemRemove(ITEM_SPTR);
-        equippedItemsSVec_.push_back(ITEM_SPTR);
+        ItemRemove(ITEM_PTR);
+        equippedItemsPVec_.push_back(ITEM_PTR);
     }
 
 
-    void Inventory::ItemUnEquip(const ItemSPtr_t & ITEM_SPTR)
+    void Inventory::ItemUnEquip(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ItemUnequip(nullptr) was given a null ITEM_SPTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
+            "Inventory::ItemUnequip(nullptr) was given a null ITEM_PTR.");
 
-        const ItemSVecCIter_t FOUND_CITER(std::find(equippedItemsSVec_.begin(), equippedItemsSVec_.end(), ITEM_SPTR));
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_CITER != equippedItemsSVec_.end()), "Inventory::ItemUnEquip(\"" << ITEM_SPTR->Name() << "\") did not find the item in the equipped inventory.");
+        auto const FOUND_CITER(std::find(equippedItemsPVec_.begin(),
+                                         equippedItemsPVec_.end(),
+                                         ITEM_PTR));
 
-        equippedItemsSVec_.erase(FOUND_CITER);
-        ItemAdd(ITEM_SPTR);
+        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_CITER != equippedItemsPVec_.end()),
+            "Inventory::ItemUnEquip(\"" << ITEM_PTR->Name()
+            << "\") did not find the item in the equipped inventory.");
+
+        equippedItemsPVec_.erase(FOUND_CITER);
+        ItemAdd(ITEM_PTR);
     }
 
 
-    bool Inventory::ContainsItem(const ItemSPtr_t & ITEM_SPTR) const
+    bool Inventory::ContainsItem(const ItemPtr_t ITEM_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_SPTR.get() != nullptr), "Inventory::ContainsItem(nullptr) was given a null ITEM_SPTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
+            "Inventory::ContainsItem(nullptr) was given a null ITEM_PTR.");
 
-        const ItemSVecCIter_t FOUND_CITER(std::find(itemsSVec_.begin(), itemsSVec_.end(), ITEM_SPTR));
-        if (FOUND_CITER != itemsSVec_.end())
+        auto const FOUND_CITER(std::find(itemsPVec_.begin(), itemsPVec_.end(), ITEM_PTR));
+
+        if (FOUND_CITER != itemsPVec_.end())
+        {
             return true;
+        }
 
-        const ItemSVecCIter_t FOUND_EQUIPPED_CITER(std::find(equippedItemsSVec_.begin(), equippedItemsSVec_.end(), ITEM_SPTR));
-        if (FOUND_EQUIPPED_CITER != equippedItemsSVec_.end())
+        auto const FOUND_EQUIPPED_CITER(std::find(equippedItemsPVec_.begin(),
+                                                  equippedItemsPVec_.end(),
+                                                  ITEM_PTR));
+
+        if (FOUND_EQUIPPED_CITER != equippedItemsPVec_.end())
+        {
             return true;
+        }
 
         return false;
     }
@@ -291,8 +359,10 @@ namespace item
     {
         stats::Armor_t armorRating(0);
 
-        for (auto const & NEXT_EQUIPPED_ITEM_SPTR : equippedItemsSVec_)
-            armorRating += NEXT_EQUIPPED_ITEM_SPTR->ArmorRating();
+        for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        {
+            armorRating += NEXT_EQUIPPED_ITEM_PTR->ArmorRating();
+        }
 
         return armorRating;
     }
@@ -307,17 +377,58 @@ namespace item
             << ", gems=" << gems_
             << ", itms_held=";
 
-        for (auto const & NEXT_ITEM_SPTR : itemsSVec_)
-            ss << NEXT_ITEM_SPTR->Name() << ",";
+        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        {
+            ss << NEXT_ITEM_PTR->Name() << ",";
+        }
 
         ss << ", items_equipped=";
 
-        for (auto const & NEXT_EQ_ITEM_SPTR : equippedItemsSVec_)
-            ss << NEXT_EQ_ITEM_SPTR->Name() << ",";
+        for (auto const NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
+        {
+            ss << NEXT_EQ_ITEM_PTR->Name() << ",";
+        }
 
         ss << "]";
 
         return ss.str();
+    }
+
+
+    void Inventory::StoreItemsInWarehouseAfterLoad()
+    {
+        StoreItemPVecInWarehouse(itemsPVec_);
+        StoreItemPVecInWarehouse(equippedItemsPVec_);
+    }
+
+
+    void Inventory::StoreItemPVecInWarehouse(ItemPVec_t & itemPVec) const
+    {
+        auto const ITEMS_PVEC_COPY{ itemPVec };
+        itemPVec.clear();
+        auto itemWarehousePtr{ ItemWarehouse::Instance() };
+        for (auto const NEXT_ITEM_PTR : ITEMS_PVEC_COPY)
+        {
+            itemPVec.push_back( itemWarehousePtr->Store(NEXT_ITEM_PTR) );
+        }
+    }
+
+
+    void Inventory::FreeAllItemsFromWarehouse()
+    {
+        auto itemWarehousePtr{ ItemWarehouse::Instance() };
+
+        for (auto & nextItemPtr : itemsPVec_)
+        {
+            itemWarehousePtr->Free(nextItemPtr);
+        }
+        itemsPVec_.clear();
+
+        for (auto & nextItemPtr : equippedItemsPVec_)
+        {
+            itemWarehousePtr->Free(nextItemPtr);
+        }
+        equippedItemsPVec_.clear();
     }
 
 
@@ -326,21 +437,15 @@ namespace item
         return std::tie(L.coins_,
                         L.meteorShards_,
                         L.gems_,
-                        L.itemsSVec_,
-                        L.equippedItemsSVec_)
+                        L.itemsPVec_,
+                        L.equippedItemsPVec_)
                ==
                std::tie(R.coins_,
                         R.meteorShards_,
                         R.gems_,
-                        R.itemsSVec_,
-                        R.equippedItemsSVec_);
+                        R.itemsPVec_,
+                        R.equippedItemsPVec_);
     }
-
-
-    bool operator!=(const Inventory & L, const Inventory & R)
-    {
-        return ! (L == R);
-    }
-
+ 
 }
 }

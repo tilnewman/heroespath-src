@@ -86,138 +86,138 @@ namespace player
 
         if (characterPtrC->Role().Which() == creature::role::Knight)
         {
-            ItemSPtr_t cutlassSPtr(weapon::WeaponFactory::Make_Sword(weapon::sword_type::Cutlass, material::Steel, material::Wood));
-            characterPtrC->ItemAdd(cutlassSPtr);
-            characterPtrC->ItemEquip(cutlassSPtr);
+            ItemPtr_t cutlassPtr(weapon::WeaponFactory::Make_Sword(weapon::sword_type::Cutlass, material::Steel, material::Wood));
+            characterPtrC->ItemAdd(cutlassPtr);
+            characterPtrC->ItemEquip(cutlassPtr);
 
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::HardLeather));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::HardLeather));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
-            ItemSPtr_t helmSPtr(armor::ArmorFactory::Make_Helm(armor::helm_type::Great, material::HardLeather, material::Nothing));
-            characterPtrC->ItemAdd(helmSPtr);
-            characterPtrC->ItemEquip(helmSPtr);
+            ItemPtr_t helmPtr(armor::ArmorFactory::Make_Helm(armor::helm_type::Great, material::HardLeather, material::Nothing));
+            characterPtrC->ItemAdd(helmPtr);
+            characterPtrC->ItemEquip(helmPtr);
 
             return;
         }
 
         if (characterPtrC->Role().Which() == creature::role::Beastmaster)
         {
-            ItemSPtr_t shortswordSPtr(weapon::WeaponFactory::Make_Sword(weapon::sword_type::Shortsword, material::Steel, material::Wood));
-            characterPtrC->ItemAdd(shortswordSPtr);
-            characterPtrC->ItemEquip(shortswordSPtr);
+            ItemPtr_t shortswordPtr(weapon::WeaponFactory::Make_Sword(weapon::sword_type::Shortsword, material::Steel, material::Wood));
+            characterPtrC->ItemAdd(shortswordPtr);
+            characterPtrC->ItemEquip(shortswordPtr);
 
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::HardLeather));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::HardLeather));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
-            ItemSPtr_t wandSPtr(misc::ItemFactory::Make_Wand(material::Wood, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(wandSPtr);
-            characterPtrC->ItemEquip(wandSPtr);
+            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(material::Wood, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(wandPtr);
+            characterPtrC->ItemEquip(wandPtr);
 
             return;
         }
 
         if (characterPtrC->Role().Which() == creature::role::Archer)
         {
-            ItemSPtr_t longbowSPtr(weapon::WeaponFactory::Make_Projectile(weapon::projectile_type::Longbow, material::Nothing));
-            characterPtrC->ItemAdd(longbowSPtr);
-            characterPtrC->ItemEquip(longbowSPtr);
+            ItemPtr_t longbowPtr(weapon::WeaponFactory::Make_Projectile(weapon::projectile_type::Longbow, material::Nothing));
+            characterPtrC->ItemAdd(longbowPtr);
+            characterPtrC->ItemEquip(longbowPtr);
 
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::SoftLeather));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::SoftLeather));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
             return;
         }
 
         if (characterPtrC->Role().Which() == creature::role::Bard)
         {
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain,
-                                                                 material::SoftLeather,
-                                                                 material::Nothing,
-                                                                 characterPtrC->IsPixie()));
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain,
+                                                               material::SoftLeather,
+                                                               material::Nothing,
+                                                               characterPtrC->IsPixie()));
 
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
-            ItemSPtr_t panfluteSPtr(misc::ItemFactory::Make_Instrument(misc::instrument_type::Panflute, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(panfluteSPtr);
-            characterPtrC->ItemEquip(panfluteSPtr);
+            ItemPtr_t panflutePtr(misc::ItemFactory::Make_Instrument(misc::instrument_type::Panflute, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(panflutePtr);
+            characterPtrC->ItemEquip(panflutePtr);
 
             return;
         }
 
         if (characterPtrC->Role().Which() == creature::role::Thief)
         {
-            ItemSPtr_t daggerSPtr(weapon::WeaponFactory::Make_Knife(true, sfml_util::Size::Small, material::Steel, material::Wood, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(daggerSPtr);
-            characterPtrC->ItemEquip(daggerSPtr);
+            ItemPtr_t daggerPtr(weapon::WeaponFactory::Make_Knife(true, sfml_util::Size::Small, material::Steel, material::Wood, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(daggerPtr);
+            characterPtrC->ItemEquip(daggerPtr);
 
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
             return;
         }
 
         if (characterPtrC->Role().Which() == creature::role::Cleric)
         {
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
-            ItemSPtr_t wandSPtr(misc::ItemFactory::Make_Wand(material::Glass, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(wandSPtr);
-            characterPtrC->ItemEquip(wandSPtr);
+            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(material::Glass, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(wandPtr);
+            characterPtrC->ItemEquip(wandPtr);
 
             characterPtrC->SpellAdd(spell::Spells::Awaken);
             characterPtrC->SpellAdd(spell::Spells::Bandage);
@@ -231,21 +231,21 @@ namespace player
 
         if (characterPtrC->Role().Which() == creature::role::Sorcerer)
         {
-            ItemSPtr_t bootsSPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(bootsSPtr);
-            characterPtrC->ItemEquip(bootsSPtr);
+            ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(armor::base_type::Plain, material::SoftLeather, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(bootsPtr);
+            characterPtrC->ItemEquip(bootsPtr);
 
-            ItemSPtr_t shirtSPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(shirtSPtr);
-            characterPtrC->ItemEquip(shirtSPtr);
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(shirtPtr);
+            characterPtrC->ItemEquip(shirtPtr);
 
-            ItemSPtr_t pantsSPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(pantsSPtr);
-            characterPtrC->ItemEquip(pantsSPtr);
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(pantsPtr);
+            characterPtrC->ItemEquip(pantsPtr);
 
-            ItemSPtr_t wandSPtr(misc::ItemFactory::Make_Wand(material::Wood, material::Nothing, characterPtrC->IsPixie()));
-            characterPtrC->ItemAdd(wandSPtr);
-            characterPtrC->ItemEquip(wandSPtr);
+            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(material::Wood, material::Nothing, characterPtrC->IsPixie()));
+            characterPtrC->ItemAdd(wandPtr);
+            characterPtrC->ItemEquip(wandPtr);
 
             characterPtrC->SpellAdd(spell::Spells::Daze);
             characterPtrC->SpellAdd(spell::Spells::Frighten);
@@ -264,9 +264,9 @@ namespace player
             (characterPtrC->Role().Which() == creature::role::Sylavin) ||
             (characterPtrC->Role().Which() == creature::role::Firebrand))
         {
-            auto const SKIN_ITEM_SPTR{ item::armor::ArmorFactory::Instance()->Make_Skin(((characterPtrC->Role().Which() == creature::role::Wolfen) ? item::material::Hide : item::material::Scale), 1, false) };
-            characterPtrC->ItemAdd(SKIN_ITEM_SPTR);
-            characterPtrC->ItemEquip(SKIN_ITEM_SPTR);
+            auto const SKIN_ITEM_PTR{ item::armor::ArmorFactory::Instance()->Make_Skin(((characterPtrC->Role().Which() == creature::role::Wolfen) ? item::material::Hide : item::material::Scale), 1, false) };
+            characterPtrC->ItemAdd(SKIN_ITEM_PTR);
+            characterPtrC->ItemEquip(SKIN_ITEM_PTR);
             return;
         }
 
@@ -281,30 +281,30 @@ namespace player
     {
         if (characterPtrC->Body().HasBreath())
         {
-            auto const BREATH_WEAPON_ITEM_SPTR(item::weapon::WeaponFactory::Instance()->Make_Breath(characterPtrC));
-            characterPtrC->ItemAdd(BREATH_WEAPON_ITEM_SPTR);
-            characterPtrC->ItemEquip(BREATH_WEAPON_ITEM_SPTR);
+            auto const BREATH_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Breath(characterPtrC));
+            characterPtrC->ItemAdd(BREATH_WEAPON_ITEM_PTR);
+            characterPtrC->ItemEquip(BREATH_WEAPON_ITEM_PTR);
         }
 
         if (characterPtrC->Body().HasClaws())
         {
-            auto const CLAWS_WEAPON_ITEM_SPTR(item::weapon::WeaponFactory::Instance()->Make_Claws(characterPtrC));
-            characterPtrC->ItemAdd(CLAWS_WEAPON_ITEM_SPTR);
-            characterPtrC->ItemEquip(CLAWS_WEAPON_ITEM_SPTR);
+            auto const CLAWS_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Claws(characterPtrC));
+            characterPtrC->ItemAdd(CLAWS_WEAPON_ITEM_PTR);
+            characterPtrC->ItemEquip(CLAWS_WEAPON_ITEM_PTR);
         }
 
         if (characterPtrC->Body().HasBite())
         {
-            auto const BITE_WEAPON_ITEM_SPTR(item::weapon::WeaponFactory::Instance()->Make_Bite(characterPtrC));
-            characterPtrC->ItemAdd(BITE_WEAPON_ITEM_SPTR);
-            characterPtrC->ItemEquip(BITE_WEAPON_ITEM_SPTR);
+            auto const BITE_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Bite(characterPtrC));
+            characterPtrC->ItemAdd(BITE_WEAPON_ITEM_PTR);
+            characterPtrC->ItemEquip(BITE_WEAPON_ITEM_PTR);
         }
 
         if ((characterPtrC->Body().IsHumanoid()) && (characterPtrC->IsPixie() == false))
         {
-            auto const FISTS_WEAPON_ITEM_SPTR(item::weapon::WeaponFactory::Instance()->Make_Fists());
-            characterPtrC->ItemAdd(FISTS_WEAPON_ITEM_SPTR);
-            characterPtrC->ItemEquip(FISTS_WEAPON_ITEM_SPTR);
+            auto const FISTS_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Fists());
+            characterPtrC->ItemAdd(FISTS_WEAPON_ITEM_PTR);
+            characterPtrC->ItemEquip(FISTS_WEAPON_ITEM_PTR);
         }
     }
 
