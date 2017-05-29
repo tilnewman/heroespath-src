@@ -188,7 +188,9 @@ namespace text_render
             for (std::size_t c(0); c < NUM_SNIPPETS; ++c)
             {
                 if (WILL_MOVE)
+                {
                     renderedText.vec_vec[l][c].sf_text.move(0.0f, MOVE_VERT);
+                }
 
                 target.draw(renderedText.vec_vec[l][c].sf_text, states);
             }
