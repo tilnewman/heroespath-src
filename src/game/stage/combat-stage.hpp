@@ -360,13 +360,13 @@ namespace stage
         bool willRedColorShakeWeaponText_;
 
         //members displaying a player character's turn
-        sfml_util::gui::TextRegionSPtr_t titleTBoxTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t weaponTBoxTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t armorTBoxTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t infoTBoxTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t enemyActionTBoxRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t enemyCondsTBoxRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t zoomLabelTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t titleTBoxTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t weaponTBoxTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t armorTBoxTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t infoTBoxTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t enemyActionTBoxRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t enemyCondsTBoxRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t zoomLabelTextRegionUPtr_;
         sfml_util::gui::FourStateButtonSPtr_t attackTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t fightTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t castTBoxButtonSPtr_;
@@ -386,7 +386,7 @@ namespace stage
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
 
         //testing display members
-        sfml_util::gui::TextRegionSPtr_t testingTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
 
         sfml_util::animation::SparksAnimationUPtr_t sparksAnimUPtr_;

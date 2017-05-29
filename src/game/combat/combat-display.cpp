@@ -36,6 +36,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/text-region.hpp"
 
 #include "game/game.hpp"
 #include "game/log-macros.hpp"
@@ -50,6 +51,7 @@
 #include "game/creature/algorithms.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/state/game-state.hpp"
+#include "game/combat/summary-view.hpp"
 
 #include "misc/real.hpp"
 
@@ -120,7 +122,7 @@ namespace combat
         combatTree_                (),
         prevScrollPosVert_         (0.0f),
         prevScrollPosHoriz_        (0.0f),
-        summaryView_               (),
+        summaryViewUPtr_           (std::make_unique<SummaryView>()),
         isSummaryViewAllowed_      (false),
         isScrollAllowed_           (false),
         battlefieldWidth_          (0.0f),
@@ -209,7 +211,7 @@ namespace combat
         target.draw(offScreenSprite_, STATES);
         target.draw( * boxSPtr_, STATES);
         Stage::Draw(target, STATES);
-        summaryView_.Draw(target, STATES);
+        summaryViewUPtr_->Draw(target, STATES);
     }
 
 
@@ -230,7 +232,7 @@ namespace combat
             //stop shaking a creature image if mouse-over will start transitioning to summary view
             CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
 
-            summaryView_.SetupAndStartTransition(combatNodePtr, battlefieldRect_);
+            summaryViewUPtr_->SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
         }
         else
@@ -946,7 +948,7 @@ namespace combat
 
     void CombatDisplay::CancelSummaryViewAndStartTransitionBack()
     {
-        summaryView_.StartTransitionBack();
+        summaryViewUPtr_->StartTransitionBack();
     }
 
 
@@ -1175,18 +1177,18 @@ namespace combat
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        summaryView_.UpdateTime(ELAPSED_TIME_SECONDS);
+        summaryViewUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
 
-        if (summaryView_.MovingDir() == sfml_util::Moving::Toward)
+        if (summaryViewUPtr_->MovingDir() == sfml_util::Moving::Toward)
         {
-            CreatureToneDown(summaryView_.GetTransitionStatus());
+            CreatureToneDown(summaryViewUPtr_->GetTransitionStatus());
         }
-        else if (summaryView_.MovingDir() == sfml_util::Moving::Away)
+        else if (summaryViewUPtr_->MovingDir() == sfml_util::Moving::Away)
         {
-            CreatureToneDown(1.0f - summaryView_.GetTransitionStatus());
+            CreatureToneDown(1.0f - summaryViewUPtr_->GetTransitionStatus());
 
             if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
-                (summaryView_.GetTransitionStatus() > 0.99))
+                (summaryViewUPtr_->GetTransitionStatus() > 0.99))
             {
                 CombatAnimation::Instance()->ShakeAnimRestart();
                 SetIsSummaryViewInProgress(false);
@@ -1202,8 +1204,13 @@ namespace combat
         combatTree_.GetCombatNodes(combatNodesPVec);
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
-            if ((summaryView_.CombatNodePtr() != nullptr) && (summaryView_.CombatNodePtr() != nextCombatNodePtrC))
+        {
+            if ((summaryViewUPtr_->CombatNodePtr() != nullptr) &&
+                (summaryViewUPtr_->CombatNodePtr() != nextCombatNodePtrC))
+            {
                 nextCombatNodePtrC->SetToneDown(TONE_DOWN_VAL);
+            }
+        }
     }
 
 

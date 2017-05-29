@@ -179,13 +179,13 @@ namespace stage
         turnActionInfo_             (),
         fightResult_                (),
         willRedColorShakeWeaponText_(false),
-        titleTBoxTextRegionSPtr_    (),
-        weaponTBoxTextRegionSPtr_   (),
-        armorTBoxTextRegionSPtr_    (),
-        infoTBoxTextRegionSPtr_     (),
-        enemyActionTBoxRegionSPtr_  (),
-        enemyCondsTBoxRegionSPtr_   (),
-        zoomLabelTextRegionSPtr_    (),
+        titleTBoxTextRegionUPtr_    (),
+        weaponTBoxTextRegionUPtr_   (),
+        armorTBoxTextRegionUPtr_    (),
+        infoTBoxTextRegionUPtr_     (),
+        enemyActionTBoxRegionUPtr_  (),
+        enemyCondsTBoxRegionUPtr_   (),
+        zoomLabelTextRegionUPtr_    (),
         attackTBoxButtonSPtr_       (),
         fightTBoxButtonSPtr_        (),
         castTBoxButtonSPtr_         (),
@@ -201,7 +201,7 @@ namespace stage
         tBoxBeastButtonSVec_        (),
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
-        testingTextRegionSPtr_      (),
+        testingTextRegionUPtr_      (),
         pauseTitle_                 (""),
         sparksAnimUPtr_             (nullptr)
     {
@@ -409,22 +409,28 @@ namespace stage
 
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
         turnBoxTitleTextRegion.height = 0.0f;
-        titleTBoxTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion) );
 
-        const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(" ",
-                                                             sfml_util::FontManager::Instance()->Font_Default2(),
-                                                             sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                             sfml_util::FontManager::Color_GrayLight(),
-                                                             sfml_util::Justified::Left);
+        titleTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion) );
+
+        const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Justified::Left);
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
-        infoTBoxTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion) );
 
-        const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(" ",
-                                                                    sfml_util::FontManager::Instance()->Font_Default2(),
-                                                                    sfml_util::FontManager::Instance()->Size_Normal(),
-                                                                    sfml_util::FontManager::Color_Light(),
-                                                                    sfml_util::Justified::Center);
+        infoTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion) );
+
+        const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sfml_util::FontManager::Color_Light(),
+            sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
 
@@ -433,45 +439,59 @@ namespace stage
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 
-        enemyActionTBoxRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTurnEnemyAction", TURNBOXENEMYACTION_TEXT_INFO, turnBoxEnemyActionTextRegion) );
+        enemyActionTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "CombatStage'sTurnEnemyAction",
+            TURNBOXENEMYACTION_TEXT_INFO,
+            turnBoxEnemyActionTextRegion) );
 
-        const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(" ",
-                                                                   sfml_util::FontManager::Instance()->Font_Default2(),
-                                                                   sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                                   sfml_util::FontManager::Color_GrayLight(),
-                                                                   sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
-        enemyCondsTBoxRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTurnEnemyConds", TURNBOXENEMYCONDS_TEXT_INFO, turnBoxEnemyCondsTextRegion) );
+        enemyCondsTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "CombatStage'sTurnEnemyConds",
+            TURNBOXENEMYCONDS_TEXT_INFO,
+            turnBoxEnemyCondsTextRegion) );
 
-        sfml_util::gui::TextInfo turnBoxWeaponTextInfo(" ",
-                                                       sfml_util::FontManager::Instance()->Font_Default2(),
-                                                       sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                       sfml_util::FontManager::Color_GrayLight(),
-                                                       sfml_util::Justified::Center);
+        sfml_util::gui::TextInfo turnBoxWeaponTextInfo(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Justified::Center);
 
-        weaponTBoxTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion) );
+        weaponTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion) );
 
         sfml_util::gui::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
 
-        armorTBoxTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("TurnBox'sArmor", turnBoxWeaponTextInfo, turnBoxTitleTextRegion));
+        armorTBoxTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
+            "TurnBox'sArmor", turnBoxWeaponTextInfo, turnBoxTitleTextRegion));
 
-        sfml_util::gui::TextInfo turnButtonTextInfo(" ",
-                                                    sfml_util::FontManager::Instance()->Font_Default2(),
-                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                    sfml_util::FontManager::Color_Orange(),
-                                                    sfml_util::Justified::Left);
+        sfml_util::gui::TextInfo turnButtonTextInfo(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Largeish(),
+            sfml_util::FontManager::Color_Orange(),
+            sfml_util::Justified::Left);
 
-        const sfml_util::gui::TextInfo TESTING_TEXT_INFO(" ",
-                                                         sfml_util::FontManager::Instance()->Font_Default2(),
-                                                         sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                         sfml_util::FontManager::Color_GrayLight(),
-                                                         sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo TESTING_TEXT_INFO(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
         testingTextRegion.left += testingTextRegion.width - 50.0f;
         testingTextRegion.top += (testingTextRegion.height - 400.0f);
-        testingTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
+
+        testingTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+            "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
@@ -846,20 +866,27 @@ namespace stage
         //
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
         //
-        zoomLabelTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("ZoomSlider's",
+        zoomLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("ZoomSlider's",
                                                                        ZOOMSLIDER_LABEL_TEXT_INFO,
                                                                        ZOOMSLIDER_LABEL_RECT) );
         //
-        zoomSliderBarSPtr_.reset(new sfml_util::gui::SliderBar("CombatStageZoom",
-                                                               COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
-                                                               zoomLabelTextRegionSPtr_->GetEntityRegion().top + zoomLabelTextRegionSPtr_->GetEntityRegion().height,
-                                                               (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) - (COMMAND_REGION_PAD * 2.0f),
-                                                               sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
+        zoomSliderBarSPtr_.reset(new sfml_util::gui::SliderBar(
+            "CombatStageZoom",
+            COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
+            zoomLabelTextRegionUPtr_->GetEntityRegion().top +
+            zoomLabelTextRegionUPtr_->GetEntityRegion().height,
+            (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) -
+                (COMMAND_REGION_PAD * 2.0f),
+            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
+
         zoomSliderBarSPtr_->SetCurrentValue(1.0f);
-        zoomLabelTextRegionSPtr_->SetEntityPos((zoomSliderBarSPtr_->GetEntityPos().x + (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) - (zoomLabelTextRegionSPtr_->GetEntityRegion().width * 0.5f),
-                                                zoomLabelTextRegionSPtr_->GetEntityPos().y);
+        zoomLabelTextRegionUPtr_->SetEntityPos(
+            (zoomSliderBarSPtr_->GetEntityPos().x + 
+                (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) -
+            (zoomLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f),
+            zoomLabelTextRegionUPtr_->GetEntityPos().y);
         //
-        EntityAdd(zoomLabelTextRegionSPtr_.get());
+        EntityAdd(zoomLabelTextRegionUPtr_.get());
         EntityAdd(zoomSliderBarSPtr_.get());
 
         MoveTurnBoxObjectsOffScreen(true);
@@ -884,12 +911,12 @@ namespace stage
         {
             turnBoxSPtr_->draw(target, STATES);
 
-            titleTBoxTextRegionSPtr_->draw(target, STATES);
-            weaponTBoxTextRegionSPtr_->draw(target, STATES);
-            armorTBoxTextRegionSPtr_->draw(target, STATES);
-            infoTBoxTextRegionSPtr_->draw(target, STATES);
-            enemyActionTBoxRegionSPtr_->draw(target, STATES);
-            enemyCondsTBoxRegionSPtr_->draw(target, STATES);
+            titleTBoxTextRegionUPtr_->draw(target, STATES);
+            weaponTBoxTextRegionUPtr_->draw(target, STATES);
+            armorTBoxTextRegionUPtr_->draw(target, STATES);
+            infoTBoxTextRegionUPtr_->draw(target, STATES);
+            enemyActionTBoxRegionUPtr_->draw(target, STATES);
+            enemyCondsTBoxRegionUPtr_->draw(target, STATES);
 
             attackTBoxButtonSPtr_->draw(target, STATES);
             fightTBoxButtonSPtr_->draw(target, STATES);
@@ -906,7 +933,7 @@ namespace stage
 
         combatAnimationPtr_->Draw(target, STATES);
         DrawHoverText(target, STATES);
-        testingTextRegionSPtr_->draw(target, STATES);
+        testingTextRegionUPtr_->draw(target, STATES);
     }
 
 
@@ -923,18 +950,18 @@ namespace stage
 
         if (willRedColorShakeWeaponText_)
         {
-            weaponTBoxTextRegionSPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
+            weaponTBoxTextRegionUPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            titleTBoxTextRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+            titleTBoxTextRegionUPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() &&
             ((TurnPhase::CenterAndZoomOut == turnPhase_) || (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
         {
-            enemyActionTBoxRegionSPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+            enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         //allow progress of the pause timer even if IsStatusMessageAnimating(), because they work together
@@ -2135,12 +2162,12 @@ namespace stage
 
     void CombatStage::MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON)
     {
-        titleTBoxTextRegionSPtr_->MoveEntityOffScreen();
-        weaponTBoxTextRegionSPtr_->MoveEntityOffScreen();
-        armorTBoxTextRegionSPtr_->MoveEntityOffScreen();
-        infoTBoxTextRegionSPtr_->MoveEntityOffScreen();
-        enemyActionTBoxRegionSPtr_->MoveEntityOffScreen();
-        enemyCondsTBoxRegionSPtr_->MoveEntityOffScreen();
+        titleTBoxTextRegionUPtr_->MoveEntityOffScreen();
+        weaponTBoxTextRegionUPtr_->MoveEntityOffScreen();
+        armorTBoxTextRegionUPtr_->MoveEntityOffScreen();
+        infoTBoxTextRegionUPtr_->MoveEntityOffScreen();
+        enemyActionTBoxRegionUPtr_->MoveEntityOffScreen();
+        enemyCondsTBoxRegionUPtr_->MoveEntityOffScreen();
 
         MoveTurnBoxButtonsOffScreen(WILL_MOVE_SKIP_BUTTON);
     }
@@ -2533,47 +2560,47 @@ namespace stage
         }
 
         auto const VERT_POS_SHIFT(sfml_util::MapByRes(0.0f, 16.0f));
-        titleTBoxTextRegionSPtr_->SetText(titleSS.str());
-        titleTBoxTextRegionSPtr_->SetEntityPos(turnBoxRegion_.left,
-                                               (turnBoxRegion_.top + (titleTBoxTextRegionSPtr_->GetEntityRegion().height * 0.5f)) - VERT_POS_SHIFT);
+        titleTBoxTextRegionUPtr_->SetText(titleSS.str());
+        titleTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left,
+                                               (turnBoxRegion_.top + (titleTBoxTextRegionUPtr_->GetEntityRegion().height * 0.5f)) - VERT_POS_SHIFT);
 
-        weaponTBoxTextRegionSPtr_->SetText(weaponHoldingSS.str());
-        weaponTBoxTextRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (weaponTBoxTextRegionSPtr_->GetEntityRegion().width * 0.5f),
-                                                (titleTBoxTextRegionSPtr_->GetEntityRegion().top + titleTBoxTextRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
+        weaponTBoxTextRegionUPtr_->SetText(weaponHoldingSS.str());
+        weaponTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (weaponTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f),
+                                                (titleTBoxTextRegionUPtr_->GetEntityRegion().top + titleTBoxTextRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
 
-        auto const WEAPON_TBOXTEXT_REGION{ weaponTBoxTextRegionSPtr_->GetEntityRegion() };
-        armorTBoxTextRegionSPtr_->SetText(armorSS.str());
-        armorTBoxTextRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (armorTBoxTextRegionSPtr_->GetEntityRegion().width * 0.5f),
+        auto const WEAPON_TBOXTEXT_REGION{ weaponTBoxTextRegionUPtr_->GetEntityRegion() };
+        armorTBoxTextRegionUPtr_->SetText(armorSS.str());
+        armorTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (armorTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f),
                                                (WEAPON_TBOXTEXT_REGION.top + WEAPON_TBOXTEXT_REGION.height) - VERT_POS_SHIFT);
 
-        enemyCondsTBoxRegionSPtr_->SetText(enemyCondsSS.str());
-        enemyCondsTBoxRegionSPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyCondsTBoxRegionSPtr_->GetEntityRegion().width * 0.5f),
-                                                (armorTBoxTextRegionSPtr_->GetEntityRegion().top + armorTBoxTextRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
+        enemyCondsTBoxRegionUPtr_->SetText(enemyCondsSS.str());
+        enemyCondsTBoxRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyCondsTBoxRegionUPtr_->GetEntityRegion().width * 0.5f),
+                                                (armorTBoxTextRegionUPtr_->GetEntityRegion().top + armorTBoxTextRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
 
-        auto enemyActionPosLeft{ (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyActionTBoxRegionSPtr_->GetEntityRegion().width * 0.5f) };
-        auto enemyActionPosTop{ (enemyCondsTBoxRegionSPtr_->GetEntityRegion().top + enemyCondsTBoxRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT };
+        auto enemyActionPosLeft{ (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyActionTBoxRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        auto enemyActionPosTop{ (enemyCondsTBoxRegionUPtr_->GetEntityRegion().top + enemyCondsTBoxRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT };
 
         if (enemyCondsSS.str() == EMPTY_STR)
         {
-            enemyActionPosTop = (armorTBoxTextRegionSPtr_->GetEntityRegion().top + armorTBoxTextRegionSPtr_->GetEntityRegion().height) - VERT_POS_SHIFT;
+            enemyActionPosTop = (armorTBoxTextRegionUPtr_->GetEntityRegion().top + armorTBoxTextRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT;
         }
 
-        enemyActionTBoxRegionSPtr_->SetText(preambleSS.str());
+        enemyActionTBoxRegionUPtr_->SetText(preambleSS.str());
 
         if (isPreambleShowing ||
             ((TurnPhase::PerformReport == turnPhase_) ||
              (TurnPhase::PostPerformPause == turnPhase_) ||
              (TurnPhase::PerformAnim == turnPhase_)))
         {
-            enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionSPtr_->GetEntityPos().y);
+            enemyActionTBoxRegionUPtr_->SetEntityPos(enemyActionPosLeft, weaponTBoxTextRegionUPtr_->GetEntityPos().y);
         }
         else
         {
-            enemyActionTBoxRegionSPtr_->SetEntityPos(enemyActionPosLeft, enemyActionPosTop);
+            enemyActionTBoxRegionUPtr_->SetEntityPos(enemyActionPosLeft, enemyActionPosTop);
         }
 
-        infoTBoxTextRegionSPtr_->SetText(infoSS.str());
-        infoTBoxTextRegionSPtr_->SetEntityPos(turnBoxRegion_.left, turnBoxRegion_.top);
+        infoTBoxTextRegionUPtr_->SetText(infoSS.str());
+        infoTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left, turnBoxRegion_.top);
 
         if (willDrawTurnBoxButtons)
         {
@@ -2769,7 +2796,8 @@ namespace stage
             << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A")
             << ", " << TurnActionPhaseToString(turnActionPhase_)
             << ", " << AnimPhaseToString(animPhase_);
-        testingTextRegionSPtr_->SetText(ss.str());
+
+        testingTextRegionUPtr_->SetText(ss.str());
     }
 
 
@@ -2825,8 +2853,12 @@ namespace stage
         creature::CreaturePVec_t killedCreaturesPVec;
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+        {
             if (NEXT_CREATURE_EFFECT.WasKill())
+            {
                 killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+            }
+        }
 
         for (auto nextKilledCreaturePtr : killedCreaturesPVec)
         {
@@ -2845,8 +2877,12 @@ namespace stage
         creature::CreaturePVec_t killedCreaturesPVec;
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+        {
             if (NEXT_CREATURE_EFFECT.WasKill())
+            {
                 killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+            }
+        }
 
         //remove all conditions except for stone and dead from the killed creature
         for (auto nextKilledCreaturePtr : killedCreaturesPVec)

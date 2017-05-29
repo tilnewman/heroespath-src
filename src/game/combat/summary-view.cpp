@@ -76,11 +76,11 @@ namespace combat
         itemWithTextVec_     (),
         bgQuads_             (sf::Quads, 4),
         combatNodePtr_       (),
-        nameTextRegionSPtr_  (),
-        healthTextRegionSPtr_(),
-        descTextRegionSPtr_  (),
-        condTextRegionSPtr_  (),
-        armorTextRegionSPtr_ (),
+        nameTextRegionUPtr_  (),
+        healthTextRegionUPtr_(),
+        descTextRegionUPtr_  (),
+        condTextRegionUPtr_  (),
+        armorTextRegionUPtr_ (),
         slider_              (),
         preventNextTrans_    (false)
     {}
@@ -89,10 +89,14 @@ namespace combat
     void SummaryView::StartTransitionBack()
     {
         if (sfml_util::Moving::Away == movingDir_)
+        {
             return;
+        }
 
         if ((sfml_util::Moving::Still == movingDir_) && (false == isTransToComplete_))
+        {
             return;
+        }
 
         if (combatNodePtr_ != nullptr)
         {
@@ -183,22 +187,23 @@ namespace combat
 
     void SummaryView::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        //always draw the background since it needs to be drawn during transitions and is an inexpensive vertex array operation
+        //always draw the background since it needs to be drawn during transitions
+        //and is an inexpensive vertex array operation
         target.draw(bgQuads_, states);
 
         if (isTransToComplete_ && (combatNodePtr_ != nullptr))
         {
-            nameTextRegionSPtr_->draw(target, states);
-            healthTextRegionSPtr_->draw(target, states);
-            condTextRegionSPtr_->draw(target, states);
+            nameTextRegionUPtr_->draw(target, states);
+            healthTextRegionUPtr_->draw(target, states);
+            condTextRegionUPtr_->draw(target, states);
 
             if (combatNodePtr_->Creature()->IsPlayerCharacter())
             {
-                armorTextRegionSPtr_->draw(target, states);
+                armorTextRegionUPtr_->draw(target, states);
             }
             else
             {
-                descTextRegionSPtr_->draw(target, states);
+                descTextRegionUPtr_->draw(target, states);
             }
 
             sf::RenderStates statesBlendMode(states);
@@ -222,16 +227,24 @@ namespace combat
         if (sfml_util::Moving::Away == movingDir_)
         {
             if (slider_.UpdateTime(ELAPSED_TIME_SECONDS))
+            {
                 BackgroundColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * (1.0f - slider_.CurrentAverage()))));
+            }
             else
+            {
                 SetTransitionBackComplete();
+            }
         }
-        else if (sfml_util::Moving::Toward ==  movingDir_)
+        else if (sfml_util::Moving::Toward == movingDir_)
         {
             if (slider_.UpdateTime(ELAPSED_TIME_SECONDS))
+            {
                 BackgroundColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * slider_.CurrentAverage())));
+            }
             else
+            {
                 SetTransitionToComplete();
+            }
         }
     }
 
@@ -242,64 +255,92 @@ namespace combat
 
         std::ostringstream ss;
         if (combatNodePtr->Creature()->Name() != combatNodePtr->Creature()->Race().Name())
+        {
             ss << combatNodePtr->Creature()->Name() << "\n";
+        }
 
         ss << combatNodePtr->Creature()->Race().Name();
 
         if (combatNodePtr->Creature()->Role().Which() != creature::role::Wolfen)
+        {
             ss << ", " + combatNodePtr->Creature()->Role().Name();
+        }
 
-        const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(ss.str(),
-                                                               sfml_util::FontManager::Instance()->Font_Default1(),
-                                                               sfml_util::FontManager::Instance()->Size_Small(),
-                                                               sfml_util::FontManager::Color_Light());
+        const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light());
 
-        nameTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect()) );
+        nameTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sName",
+                                                                  CREATURE_NAME_TEXT_INFO,
+                                                                  sf::FloatRect()) );
 
         std::ostringstream healthSS;
         healthSS << "Health: ";
         if (combatNodePtr->Creature()->IsPlayerCharacter())
         {
-            healthSS << combatNodePtr->Creature()->HealthCurrent() << "/" << combatNodePtr->Creature()->HealthNormal();
+            healthSS << combatNodePtr->Creature()->HealthCurrent() << "/" 
+                     << combatNodePtr->Creature()->HealthNormal();
         }
         else
         {
             healthSS << combatNodePtr->Creature()->HealthPercentStr();
         }
-        const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(healthSS.str(),
-                                                                 sfml_util::FontManager::Instance()->Font_Default1(),
-                                                                 sfml_util::FontManager::Instance()->Size_Small(),
-                                                                 sfml_util::FontManager::Color_Light());
-        healthTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect()) );
+
+        const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
+            healthSS.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light());
+
+        healthTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sHealth",
+                                                                    CREATURE_HEALTH_TEXT_INFO,
+                                                                    sf::FloatRect()) );
 
         std::ostringstream armorRatingSS;
         armorRatingSS << "Armor Rating: " << combatNodePtr->Creature()->ArmorRating();
-        const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(armorRatingSS.str(),
-                                                                      sfml_util::FontManager::Instance()->Font_Default1(),
-                                                                      sfml_util::FontManager::Instance()->Size_Small(),
-                                                                      sfml_util::FontManager::Color_Light());
-        armorTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect()) );
 
-        const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(combatNodePtr->Creature()->Body().ToString(),
-                                                               sfml_util::FontManager::Instance()->Font_Default1(),
-                                                               sfml_util::FontManager::Instance()->Size_Small(),
-                                                               sfml_util::FontManager::Color_Light(),
-                                                               sf::BlendAlpha,
-                                                               sf::Text::Italic);
-        descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect()) );
+        const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
+            armorRatingSS.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light());
+
+        armorTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sArmorRating",
+                                                                   CREATURE_ARMORRATING_TEXT_INFO,
+                                                                   sf::FloatRect()) );
+
+        const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(
+            combatNodePtr->Creature()->Body().ToString(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light(),
+            sf::BlendAlpha,
+            sf::Text::Italic);
+
+        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sDesc",
+                                                                  CREATURE_DESC_TEXT_INFO,
+                                                                  sf::FloatRect()) );
 
         std::ostringstream condSS;
         condSS << "Condition:  " << combatNodePtr->Creature()->ConditionNames(6);
-        const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(condSS.str(),
-                                                                     sfml_util::FontManager::Instance()->Font_Default1(),
-                                                                     sfml_util::FontManager::Instance()->Size_Small(),
-                                                                     sfml_util::FontManager::Color_Light());
-        condTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect()) );
+
+        const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
+            condSS.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light());
+
+        condTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sCondition",
+                                                                  CREATURE_CONDITIONS_TEXT_INFO,
+                                                                  sf::FloatRect()) );
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
         const float IMAGE_WIDTH(combatNodePtr->GetEntityRegion().width);
-        const float IMAGE_HEIGHT(combatNodePtr->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
+        const float IMAGE_HEIGHT(combatNodePtr->GetEntityRegion().height +
+            sfml_util::MapByRes(20.0f, 60.0f));
 
         const float BETWEEN_TEXT_SPACER(0.0f);
         const float TOP_TEXT_SPACER(sfml_util::MapByRes(10.0f, 25.0f));
@@ -307,25 +348,59 @@ namespace combat
 
         if (combatNodePtr->Creature()->IsPlayerCharacter())
         {
-            nameTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, IMAGE_POS_TOP + TOP_TEXT_SPACER);
-            healthTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, nameTextRegionSPtr_->GetEntityRegion().top + nameTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
-            armorTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, healthTextRegionSPtr_->GetEntityRegion().top + healthTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
-            condTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, armorTextRegionSPtr_->GetEntityRegion().top + armorTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
-            descTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, condTextRegionSPtr_->GetEntityRegion().top + condTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
+            nameTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                IMAGE_POS_TOP + TOP_TEXT_SPACER);
+
+            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                nameTextRegionUPtr_->GetEntityRegion().top +
+                nameTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+            
+            armorTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                healthTextRegionUPtr_->GetEntityRegion().top +
+                healthTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            condTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                armorTextRegionUPtr_->GetEntityRegion().top +
+                armorTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            descTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                condTextRegionUPtr_->GetEntityRegion().top +
+                condTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
         }
         else
         {
-            nameTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, IMAGE_POS_TOP + TOP_TEXT_SPACER);
-            healthTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, nameTextRegionSPtr_->GetEntityRegion().top + nameTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
-            condTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, healthTextRegionSPtr_->GetEntityRegion().top + healthTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
-            descTextRegionSPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT, condTextRegionSPtr_->GetEntityRegion().top + condTextRegionSPtr_->GetEntityRegion().height + BETWEEN_TEXT_SPACER);
+            nameTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                IMAGE_POS_TOP + TOP_TEXT_SPACER);
+
+            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                nameTextRegionUPtr_->GetEntityRegion().top +
+                nameTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            condTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                healthTextRegionUPtr_->GetEntityRegion().top +
+                healthTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            descTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                condTextRegionUPtr_->GetEntityRegion().top +
+                condTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
         }
 
-        //find the longest horizontal and vertical length so we know how big to make the dark background, start by considering the enemy creature description
-        float enemyDetailsDisplayExtentHoriz(CREATURE_TEXT_POS_LEFT + descTextRegionSPtr_->GetEntityRegion().width);
+        //Find the longest horizontal and vertical length so we know how big to make
+        //the dark background, start by considering the enemy creature description.
+        float enemyDetailsDisplayExtentHoriz(CREATURE_TEXT_POS_LEFT +
+            descTextRegionUPtr_->GetEntityRegion().width);
+
         float enemyDetailsDisplayExtentVert(0.0f);
 
-        //populate the enemy equipped item list with the following priority: weapons first, then armor, then misc, then plain clothes
+        //populate the enemy equipped item list with the following priority: 
+        //weapons first, then armor, then misc, then plain clothes
 
         //first weapons
         item::ItemPVec_t weaponItemsToDisplay;
@@ -342,28 +417,46 @@ namespace combat
         if (weaponItemsToDisplay.empty())
         {
             for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                {
                     weaponItemsToDisplay.push_back(NEXT_ITEM_PTR);
+                }
+            }
         }
         else
         {
             for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                {
                     weaponItemsToIgnore.push_back(NEXT_ITEM_PTR);
+                }
+            }
         }
 
-        for(auto const NEXT_ITEM_PTR : weaponItemsToDisplay)
+        for (auto const NEXT_ITEM_PTR : weaponItemsToDisplay)
+        {
             itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+        }
 
         //then armor
         for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        {
             if (NEXT_ITEM_PTR->IsArmor())
+            {
                 itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+            }
+        }
 
         //then misc
         for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
+            {
                 itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+            }
+        }
 
         //then everything else (clothes, etc)
         for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
@@ -393,7 +486,9 @@ namespace combat
         const float ITEM_IMAGE_HORIZ_MARGIN(sfml_util::MapByRes(45.0f, 150.0f));
         const float ITEM_IMAGE_POS_LEFT(IMAGE_POS_LEFT + ITEM_IMAGE_HORIZ_MARGIN);
         const float ITEM_IMAGE_POS_TOP_START_MARGIN(sfml_util::MapByRes(25.0f, 50.0f));
-        const float ITEM_IMAGE_POS_TOP_START(IMAGE_POS_TOP + IMAGE_HEIGHT + ITEM_IMAGE_POS_TOP_START_MARGIN);
+        const float ITEM_IMAGE_POS_TOP_START(IMAGE_POS_TOP + IMAGE_HEIGHT +
+            ITEM_IMAGE_POS_TOP_START_MARGIN);
+
         const float VERT_SPACE_FOR_ITEMLIST(COMBAT_REGION.height - ITEM_IMAGE_POS_TOP_START);
 
         const float ITEM_IMAGE_SCALE_MIN(0.25f);
@@ -403,10 +498,13 @@ namespace combat
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.texture, nextItemText.item_ptr);
+            sfml_util::gui::ItemImageManager::Instance()->Load(nextItemText.texture,
+                                                               nextItemText.item_ptr);
+
             nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
-            itemListHeightAtDefaultScale += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
+            itemListHeightAtDefaultScale +=
+                nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
         }
 
         //if too tall to fit, then try using the minimum scale
@@ -416,10 +514,12 @@ namespace combat
             for (auto & nextItemText : itemWithTextVec_)
             {
                 nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_MIN, ITEM_IMAGE_SCALE_MIN);
-                itemListHeightAtMinScale += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
+                itemListHeightAtMinScale += nextItemText.sprite.getGlobalBounds().height +
+                    IMAGE_BETWEEN_PAD_;
             }
 
-            //if the item list is still too long/tall to fit, then only display a subset of the items in the priority above
+            //if the item list is still too long/tall to fit, then only display a subset of the
+            //items in the priority above
             if (itemListHeightAtMinScale > VERT_SPACE_FOR_ITEMLIST)
             {
                 ItemWithTextVec_t itemWithTextVec_Copy(itemWithTextVec_);
@@ -427,9 +527,14 @@ namespace combat
                 float height(0.0f);
                 for (auto const & NEXT_ITEM_TEXT : itemWithTextVec_Copy)
                 {
-                    if ((height + NEXT_ITEM_TEXT.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_) < VERT_SPACE_FOR_ITEMLIST)
+                    if ((height +
+                        NEXT_ITEM_TEXT.sprite.getGlobalBounds().height +
+                        IMAGE_BETWEEN_PAD_) <
+                            VERT_SPACE_FOR_ITEMLIST)
                     {
-                        height += (NEXT_ITEM_TEXT.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_);
+                        height += (NEXT_ITEM_TEXT.sprite.getGlobalBounds().height +
+                            IMAGE_BETWEEN_PAD_);
+
                         itemWithTextVec_.push_back(NEXT_ITEM_TEXT);
                     }
                     else
@@ -451,33 +556,46 @@ namespace combat
         {
             nextItemText.sprite.setColor(sf::Color(255, 255, 255, IMAGE_COLOR_ALPHA_));
 
-            nextItemText.sprite.setPosition(ITEM_IMAGE_POS_LEFT, ITEM_IMAGE_POS_TOP_START + itemListHeight);
+            nextItemText.sprite.setPosition(ITEM_IMAGE_POS_LEFT,
+                ITEM_IMAGE_POS_TOP_START + itemListHeight);
 
-            const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(nextItemText.item_ptr->Name(),
-                                                               sfml_util::FontManager::Instance()->Font_Default1(),
-                                                               sfml_util::FontManager::Instance()->Size_Small(),
-                                                               sfml_util::FontManager::Color_Light(),
-                                                               sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(
+                nextItemText.item_ptr->Name(),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                sfml_util::FontManager::Color_Light(),
+                sfml_util::Justified::Left);
 
-            const sf::FloatRect ITEM_NAME_RECT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
-                                               ITEM_IMAGE_POS_TOP_START + itemListHeight,
-                                               0.0f,
-                                               0.0f);
+            const sf::FloatRect ITEM_NAME_RECT(
+               ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
+               ITEM_IMAGE_POS_TOP_START + itemListHeight,
+               0.0f,
+               0.0f);
 
-            nextItemText.name_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_ptr->Name(), ITEM_NAME_TEXT_INFO, ITEM_NAME_RECT));
+            nextItemText.name_text_region_sptr.reset( new sfml_util::gui::TextRegion(
+                "CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_ptr->Name(),
+                ITEM_NAME_TEXT_INFO,
+                ITEM_NAME_RECT));
 
-            const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(nextItemText.item_ptr->Desc(),
-                                                               sfml_util::FontManager::Instance()->Font_Default1(),
-                                                               sfml_util::FontManager::Instance()->Size_Small(),
-                                                               sfml_util::FontManager::Color_Light(),
-                                                               sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(
+                nextItemText.item_ptr->Desc(),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                sfml_util::FontManager::Color_Light(),
+                sfml_util::Justified::Left);
 
-            const sf::FloatRect ITEM_DESC_RECT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
-                                               ITEM_NAME_RECT.top + nextItemText.name_text_region_sptr->GetEntityRegion().height,
-                                               0.0f,
-                                               0.0f);
+            const sf::FloatRect ITEM_DESC_RECT(
+                ITEM_IMAGE_POS_LEFT +
+                    nextItemText.sprite.getGlobalBounds().width +
+                    IMAGE_EDGE_PAD_,
+                ITEM_NAME_RECT.top + nextItemText.name_text_region_sptr->GetEntityRegion().height,
+                0.0f,
+                0.0f);
 
-            nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_ptr->Name(), ITEM_DESC_TEXT_INFO, ITEM_DESC_RECT));
+            nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion(
+                "CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_ptr->Name(),
+                ITEM_DESC_TEXT_INFO,
+                ITEM_DESC_RECT));
 
             std::ostringstream infoSS;
             if (nextItemText.item_ptr->IsMagical())
@@ -496,7 +614,8 @@ namespace combat
                        << nextItemText.item_ptr->DamageMin() << "-"
                        << nextItemText.item_ptr->DamageMax();
             }
-            else if (nextItemText.item_ptr->IsArmor() || (nextItemText.item_ptr->ArmorRating() > 0))
+            else if (nextItemText.item_ptr->IsArmor() ||
+                    (nextItemText.item_ptr->ArmorRating() > 0))
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: "
                        << nextItemText.item_ptr->ArmorRating();
@@ -507,35 +626,51 @@ namespace combat
                 infoSS << " ";
             }
 
-            const sfml_util::gui::TextInfo INFO_TEXT_INFO(infoSS.str(),
-                                                          sfml_util::FontManager::Instance()->Font_Default1(),
-                                                          sfml_util::FontManager::Instance()->Size_Small(),
-                                                          sfml_util::FontManager::Color_Light(),
-                                                          sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo INFO_TEXT_INFO(
+                infoSS.str(),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                sfml_util::FontManager::Color_Light(),
+                sfml_util::Justified::Left);
 
-            const sf::FloatRect INFO_RECT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_,
-                                          ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height,
-                                          0.0f,
-                                          0.0f);
+            const sf::FloatRect INFO_RECT(
+                ITEM_IMAGE_POS_LEFT +
+                    nextItemText.sprite.getGlobalBounds().width +
+                    IMAGE_EDGE_PAD_,
+                ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height,
+                0.0f,
+                0.0f);
 
-            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion("CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_ptr->Name(), INFO_TEXT_INFO, INFO_RECT) );
+            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion(
+                "CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_ptr->Name(),
+                INFO_TEXT_INFO, INFO_RECT) );
 
-            const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT + nextItemText.sprite.getGlobalBounds().width + IMAGE_EDGE_PAD_ + nextItemText.desc_text_region_sptr->GetEntityRegion().width);
+            const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT +
+                nextItemText.sprite.getGlobalBounds().width +
+                IMAGE_EDGE_PAD_ +
+                nextItemText.desc_text_region_sptr->GetEntityRegion().width);
+
             if (longestItemHorizExtent < CURR_ITEM_HORIZ_EXTENT)
             {
                 longestItemHorizExtent = CURR_ITEM_HORIZ_EXTENT;
             }
 
-            const float CURR_ITEM_VERT_TEXT_EXTENT{ ((infoSS.str() == " ") ? (ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight) : (INFO_RECT.top + nextItemText.info_text_region_sptr->GetEntityRegion().height) - (ITEM_IMAGE_POS_TOP_START + itemListHeight)) };
+            const float CURR_ITEM_VERT_TEXT_EXTENT{ ((infoSS.str() == " ") ?
+              (ITEM_DESC_RECT.top + nextItemText.desc_text_region_sptr->GetEntityRegion().height) -
+                    (ITEM_IMAGE_POS_TOP_START + itemListHeight) :
+              (INFO_RECT.top + nextItemText.info_text_region_sptr->GetEntityRegion().height) -
+              (ITEM_IMAGE_POS_TOP_START + itemListHeight)) };
 
             if (CURR_ITEM_VERT_TEXT_EXTENT < nextItemText.sprite.getGlobalBounds().height)
             {
-                itemListHeight += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
+                itemListHeight +=
+                    nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
             }
             else
             {
                 itemListHeight += CURR_ITEM_VERT_TEXT_EXTENT + IMAGE_BETWEEN_PAD_;
-                nextItemText.sprite.move(0.0f, (CURR_ITEM_VERT_TEXT_EXTENT - nextItemText.sprite.getGlobalBounds().height) * 0.5f);
+                nextItemText.sprite.move(0.0f, (CURR_ITEM_VERT_TEXT_EXTENT -
+                    nextItemText.sprite.getGlobalBounds().height) * 0.5f);
             }
         }
 
@@ -547,7 +682,11 @@ namespace combat
 
         //final setup call
         const sf::Vector2f IMAGE_DEST_POS_V(IMAGE_POS_LEFT, IMAGE_POS_TOP);
-        const sf::FloatRect SUMMARYVIEW_DISPLAY_REGION(COMBAT_REGION.left, COMBAT_REGION.top, (enemyDetailsDisplayExtentHoriz - COMBAT_REGION.left) + IMAGE_BETWEEN_PAD_, (enemyDetailsDisplayExtentVert - COMBAT_REGION.top) + IMAGE_BETWEEN_PAD_);
+
+        const sf::FloatRect SUMMARYVIEW_DISPLAY_REGION(COMBAT_REGION.left, COMBAT_REGION.top,
+            (enemyDetailsDisplayExtentHoriz - COMBAT_REGION.left) + IMAGE_BETWEEN_PAD_,
+            (enemyDetailsDisplayExtentVert - COMBAT_REGION.top) + IMAGE_BETWEEN_PAD_);
+
         StartTransitionTo(combatNodePtr, IMAGE_DEST_POS_V, SUMMARYVIEW_DISPLAY_REGION);
     }
 

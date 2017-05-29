@@ -34,7 +34,6 @@
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 
-#include "game/combat/summary-view.hpp"
 #include "game/creature/creature.hpp"
 #include "game/combat/combat-tree.hpp"
 
@@ -65,6 +64,9 @@ namespace combat
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
+
+    class SummaryView;
+    using SummaryViewUPtr_t = std::unique_ptr<SummaryView>;
 
 
     //Assists with delayed position shifting of creature images on the battlefield,
@@ -258,7 +260,7 @@ namespace combat
         combat::CombatTree              combatTree_;
         float                           prevScrollPosVert_;
         float                           prevScrollPosHoriz_;
-        SummaryView                     summaryView_;
+        SummaryViewUPtr_t               summaryViewUPtr_;
         bool                            isSummaryViewAllowed_;
         bool                            isScrollAllowed_;
         float                           battlefieldWidth_;

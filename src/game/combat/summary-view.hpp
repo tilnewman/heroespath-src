@@ -41,15 +41,14 @@ namespace sfml_util
 namespace gui
 {
     class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
     using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
 }
 }
-
 namespace game
 {
 namespace item
 {
-    //forward declarations
     class Item;
     using ItemPtr_t = Item *;
 }
@@ -57,7 +56,6 @@ namespace item
 namespace combat
 {
 
-    //forward declarations
     class CombatNode;
     using CombatNodePtr_t = CombatNode *;
 
@@ -76,9 +74,7 @@ namespace combat
     };
 
     using ItemWithTextVec_t = std::vector<ItemWithText>;
-    using ItemWithTextVecIter_t = ItemWithTextVec_t::iterator;
-    using ItemWithTextVecCIter_t = ItemWithTextVec_t::const_iterator;
-
+    
 
     //the infomation that displays when the mouse cursor is held over an enemy
     class SummaryView
@@ -109,7 +105,8 @@ namespace combat
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        void SetupAndStartTransition(CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMABT_REGION);
+        void SetupAndStartTransition(CombatNodePtr_t       combatNodePtr,
+                                     const sf::FloatRect & COMABT_REGION);
 
         inline float GetTransitionStatus() const                { return slider_.CurrentAverage(); }
 
@@ -120,8 +117,6 @@ namespace combat
         inline void MovingDir(const sfml_util::Moving::Enum E)  { movingDir_ = E; }
 
         inline CombatNodePtr_t CombatNodePtr()                  { return combatNodePtr_; }
-
-        inline sfml_util::gui::TextRegionSPtr_t DescTextRegion(){ return descTextRegionSPtr_; }
 
         inline bool WillPreventNextTransition() const           { return preventNextTrans_; }
         inline void WillPreventNextTransition(const bool B)     { preventNextTrans_ = B; }
@@ -144,11 +139,11 @@ namespace combat
         ItemWithTextVec_t                itemWithTextVec_;
         sf::VertexArray                  bgQuads_;
         CombatNodePtr_t                  combatNodePtr_;
-        sfml_util::gui::TextRegionSPtr_t nameTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t healthTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t descTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t condTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t armorTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t healthTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t armorTextRegionUPtr_;
         sfml_util::gui::GuiEntitySlider  slider_;
         bool                             preventNextTrans_;
     };
