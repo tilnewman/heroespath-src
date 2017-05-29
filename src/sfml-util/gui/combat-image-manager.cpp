@@ -135,10 +135,12 @@ namespace gui
     }
 
 
-    void CombatImageManager::Get(sf::Texture & texture, CombatImageType::Enum E, const bool WILL_FLIP_HORIZ) const
+    void CombatImageManager::Get(sf::Texture & texture, const CombatImageType::Enum E, const bool WILL_FLIP_HORIZ) const
     {
         namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(CombatImageType::Filename(E))));
+        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) /
+            bfs::path(CombatImageType::Filename(E))));
+
         sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
 
         if (WILL_FLIP_HORIZ)
@@ -146,7 +148,6 @@ namespace gui
             sfml_util::FlipHoriz(texture);
         }
     }
-
 
 }
 }

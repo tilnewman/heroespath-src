@@ -66,7 +66,7 @@ namespace gui
         bool Test();
 
         void Get(sf::Texture &,
-                 CombatImageType::Enum,
+                 const CombatImageType::Enum,
                  const bool WILL_FLIP_HORIZ = false) const;
 
     private:
