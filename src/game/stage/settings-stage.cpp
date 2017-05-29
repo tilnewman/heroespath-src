@@ -168,7 +168,8 @@ namespace stage
         resolutionTitleTextInfo.text = "Change Resolution";
         resolutionTitleTextInfo.justified = sfml_util::Justified::Center;
         resolutionTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("ResolutionChangeSetting", resolutionTitleTextInfo, resRect, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
-        
+        EntityAdd(resolutionTextRegionUPtr_.get());
+
         //resolution radiobuttonset
         const float RES_RADIOBUTTONSET_POS_LEFT(BOX_RECT_INNER.left);
         const float RES_RADIOBUTTONSET_POS_TOP (BOX_RECT.top + 50.0f);
@@ -192,6 +193,7 @@ namespace stage
             musicVolumeTitleTextInfo.text = "Music\nVolume";
             musicVolumeTitleTextInfo.justified = sfml_util::Justified::Center;
             musicVolumeTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("MusicVolumeSetting", musicVolumeTitleTextInfo, r) );
+            EntityAdd(musicVolumeTextRegionUPtr_.get());
             //
             sfml_util::gui::MouseTextInfo threeTextInfos("", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 16, sf::Color::White, sf::Color(255,200,200));
             const float SLIDER_POS_LEFT(musicVolumeTextRegionUPtr_->GetEntityPos().x + (musicVolumeTextRegionUPtr_->GetEntityRegion().width  * 0.5f) - 13.0f);
@@ -222,6 +224,7 @@ namespace stage
             effectsVolumeTitleTextInfo.text = "Sound Effects\nVolume";
             effectsVolumeTitleTextInfo.justified = sfml_util::Justified::Center;
             effectsVolumeTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("EffectsVolumeSetting", effectsVolumeTitleTextInfo, r, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
+            EntityAdd(effectsVolumeTextRegionUPtr_.get());
             //
             //
             sfml_util::gui::MouseTextInfo threeTextInfos("", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 16, sf::Color::White, sf::Color(255, 200, 200));
@@ -249,6 +252,7 @@ namespace stage
             aaLabelTextInfo.text = "Anti-\nAliasing";
             aaLabelTextInfo.justified = sfml_util::Justified::Center;
             aaTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("AntiAliasSettingLabel", aaLabelTextInfo, AA_TEXT_REGION_RECT) );
+            EntityAdd(aaTextRegionUPtr_.get());
             //
             const float AA_POS_LEFT(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + ANTIALIAS_HORIZ_POS_);
             const float AA_POS_TOP(aaTextRegionUPtr_->GetEntityPos().y + aaTextRegionUPtr_->GetEntityRegion().height + 5.0f);
@@ -314,7 +318,8 @@ namespace stage
                                                                         sfml_util::Justified::Center);
 
                 musicInfoLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("MusicInfoLabel", MUSICINFO_LABEL_TEXTINFO, MUSICINFO_TEXT_REGION) );
-                
+                EntityAdd(musicInfoLabelTextRegionUPtr_.get());
+
                 const sfml_util::MusicOperatorSLst_t MUSIC_OPERAOTR_SLIST(sfml_util::SoundManager::Instance()->MusicOperators());
                 std::ostringstream ss;
                 for (auto const & NEXT_MUSIC_OPERATOR_SPTR : MUSIC_OPERAOTR_SLIST)
@@ -349,6 +354,7 @@ namespace stage
                                                                                this,
                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
                                                                                MUSICINFO_BOXINFO) );
+                EntityAdd(musicInfoTextRegionUPtr_.get());
             }
         }
 

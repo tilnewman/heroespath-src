@@ -642,15 +642,17 @@ namespace game
     }
 
 
-    sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(sfml_util::IStage * const                     currentStagePtr_,
+    sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(sfml_util::IStage * const               currentStagePtr_,
                                                                        game::callback::IPopupHandler_t * const HANDLER_PTR,
-                                                                       const sfml_util::Resolution &                 NEW_RES,
-                                                                       const unsigned                                ANTIALIAS_LEVEL)
+                                                                       const sfml_util::Resolution &           NEW_RES,
+                                                                       const unsigned                          ANTIALIAS_LEVEL)
     {
         const sfml_util::DisplayChangeResult::Enum RESULT(sfml_util::Display::ChangeVideoMode(NEW_RES, ANTIALIAS_LEVEL));
 
         if (currentStagePtr_ != nullptr)
+        {
             currentStagePtr_->HandleResolutionChange();
+        }
 
         game::Popup::Enum whichPopup(game::Popup::ResolutionChange);
 
