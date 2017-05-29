@@ -57,15 +57,6 @@
 #include <vector>
 
 
-namespace sfml_util
-{
-namespace gui
-{
-    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-    using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
-}
-}
-
 namespace game
 {
 namespace stage
@@ -313,24 +304,17 @@ namespace stage
         stats::stat::Enum closestDragStat_;
         //
         sfml_util::gui::RadioButtonSetSPtr_t raceRadioButtonSPtr_;
-        sfml_util::gui::TextRegionSPtr_t     racetDescTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t     racetDescTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetSPtr_t roleRadioButtonSPtr_;
-        sfml_util::gui::TextRegionSPtr_t     roletDescTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t     roletDescTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetSPtr_t sexRadioButtonSPtr_;
         sfml_util::gui::TextEntryBoxSPtr_t   nameTextEntryBoxSPtr_;
         //
-        sfml_util::gui::TextRegionSPtr_t strDescTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t accDescTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t chaDescTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t lckDescTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t spdDescTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t intDescTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //
-        sfml_util::gui::TextRegionSPtr_t attrDescTextRegion_;
-        //
-        sfml_util::gui::TextRegionSPtr_t              sbInsTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t              sbInsTextRegionUPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> sbInsTextSlider_;
-        sfml_util::gui::TextRegionSPtr_t              nInsTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t              nInsTextRegionUPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> nInsTextSlider_;
         //
         BottomSymbol bottomSymbol_;

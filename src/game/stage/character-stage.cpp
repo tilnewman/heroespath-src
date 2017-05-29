@@ -205,21 +205,15 @@ namespace stage
         dragStartY_             (-1.0f),
         closestDragStat_        (stats::stat::Count),
         raceRadioButtonSPtr_    (),
-        racetDescTextRegionSPtr_(),
+        racetDescTextRegionUPtr_(),
         roleRadioButtonSPtr_    (),
-        roletDescTextRegionSPtr_(),
+        roletDescTextRegionUPtr_(),
         sexRadioButtonSPtr_     (),
         nameTextEntryBoxSPtr_   (),
-        strDescTextRegionSPtr_  (),
-        accDescTextRegionSPtr_  (),
-        chaDescTextRegionSPtr_  (),
-        lckDescTextRegionSPtr_  (),
-        spdDescTextRegionSPtr_  (),
-        intDescTextRegionSPtr_  (),
-        attrDescTextRegion_     (),
-        sbInsTextRegionSPtr_    (),
+        attrDescTextRegionUPtr_ (),
+        sbInsTextRegionUPtr_    (),
         sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
-        nInsTextRegionSPtr_     (),
+        nInsTextRegionUPtr_     (),
         nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         bottomSymbol_           (),
         selectedImageIndex_     (0)
@@ -764,12 +758,12 @@ namespace stage
                                                                 sf::BlendAlpha,
                                                                 sf::Text::Italic);
 
-            nInsTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("NameLabel", NAME_LABEL_TEXT_INFO, REGION) );
+            nInsTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("NameLabel", NAME_LABEL_TEXT_INFO, REGION) );
 
-            nInsTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (nInsTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 45.0f,
-                                              nInsTextRegionSPtr_->GetEntityPos().y);
+            nInsTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 45.0f,
+                                              nInsTextRegionUPtr_->GetEntityPos().y);
 
-            EntityAdd(nInsTextRegionSPtr_.get());
+            EntityAdd(nInsTextRegionUPtr_.get());
         }
 
         //name text entry box
@@ -777,7 +771,7 @@ namespace stage
             const float WIDTH(creature::NameInfo::Instance()->TextEntryBoxWidth());
 
             const sf::FloatRect REGION((SCREEN_WIDTH_ * 0.5f) - (WIDTH * 0.5f),
-                                       nInsTextRegionSPtr_->GetEntityRegion().top + nInsTextRegionSPtr_->GetEntityRegion().height,
+                                       nInsTextRegionUPtr_->GetEntityRegion().top + nInsTextRegionUPtr_->GetEntityRegion().height,
                                        WIDTH,
                                        55.0f);
 
@@ -835,17 +829,18 @@ namespace stage
                                                  sf::Text::Italic,
                                                  sfml_util::Justified::Center);
 
-            sbInsTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("SpacebarInstructions",
+            sbInsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("SpacebarInstructions",
                                                                       insTextInfo,
                                                                       sf::FloatRect()));
 
-            sbInsTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sbInsTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 100.0f,
+            sbInsTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sbInsTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 100.0f,
                                                sexRadioButtonSPtr_->GetEntityRegion().top + sexRadioButtonSPtr_->GetEntityRegion().height + sfml_util::MapByRes(30.0f, 90.0f));
-            EntityAdd(sbInsTextRegionSPtr_.get());
+            
+            EntityAdd(sbInsTextRegionUPtr_.get());
         }
 
         //Stat BackgroundBox
-        const float STATBOX_POS_TOP(sbInsTextRegionSPtr_->GetEntityRegion().top + sbInsTextRegionSPtr_->GetEntityRegion().height + 8.0f);
+        const float STATBOX_POS_TOP(sbInsTextRegionUPtr_->GetEntityRegion().top + sbInsTextRegionUPtr_->GetEntityRegion().height + 8.0f);
         {
             const sf::FloatRect RECT(STATBOX_POS_LEFT_,
                                      STATBOX_POS_TOP,
@@ -993,20 +988,22 @@ namespace stage
                                                     DESC_TEXT_COLOR_,
                                                     sfml_util::Justified::Left );
 
-        if (racetDescTextRegionSPtr_.get() == nullptr)
+        if (racetDescTextRegionUPtr_.get() == nullptr)
         {
-            racetDescTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("RaceDescription",
+            racetDescTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("RaceDescription",
                                                                           raceDescTextInfo,
                                                                           REGION,
                                                                           this,
                                                                           SMALL_FONT_SIZE_));
-            EntityAdd(racetDescTextRegionSPtr_.get());
+            EntityAdd(racetDescTextRegionUPtr_.get());
         }
         else
-            racetDescTextRegionSPtr_->Setup(raceDescTextInfo,
+        {
+            racetDescTextRegionUPtr_->Setup(raceDescTextInfo,
                                             REGION,
                                             this,
                                             SMALL_FONT_SIZE_);
+        }
     }
 
 
@@ -1027,18 +1024,18 @@ namespace stage
                                                   DESC_TEXT_COLOR_,
                                                   sfml_util::Justified::Left);
 
-        if (roletDescTextRegionSPtr_.get() == nullptr)
+        if (roletDescTextRegionUPtr_.get() == nullptr)
         {
-            roletDescTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("RoleDescription",
+            roletDescTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("RoleDescription",
                                                                           roleDescTextInfo,
                                                                           REGION,
                                                                           this,
                                                                           SMALL_FONT_SIZE_));
-            EntityAdd(roletDescTextRegionSPtr_.get());
+            EntityAdd(roletDescTextRegionUPtr_.get());
         }
         else
         {
-            roletDescTextRegionSPtr_->Setup(roleDescTextInfo,
+            roletDescTextRegionUPtr_->Setup(roleDescTextInfo,
                                             REGION,
                                             this,
                                             SMALL_FONT_SIZE_);
@@ -1070,183 +1067,196 @@ namespace stage
 
         sf::Color helpStrColor;
         sfml_util::gui::TextInfo helpTextInfo(descTextInfo);
-        sfml_util::gui::TextRegionSVec_t textRegionSVec;
+        sfml_util::gui::TextRegionUVec_t textRegionUVec;
 
         //strength
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Strength) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Strength") << "\n\n";
-        descTextInfo.text = ss.str();
-        if (strDescTextRegionSPtr_.get() == nullptr)
-            strDescTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("StrStatDesc",
-                                                                         descTextInfo,
-                                                                         REGION,
-                                                                         sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                         sfml_util::gui::box::Info(),
-                                                                         sfml_util::Margins()) );
-        //see below, will add explicitly
-        //textRegionSVec.push_back(strDescTextRegionSPtr_);
+        ss << stats::stat::Name(stats::stat::Strength)
+           << PAD
+           << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Strength")
+           << "\n\n";
 
+        //see below, will add explicitly
+        auto const STRENGTH_BASE_TEXT{ ss.str() };
+        
         //strength help text
         GetStatHelpText(stats::stat::Strength, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSPtr( new sfml_util::gui::TextRegion("StrAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSPtr);
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "StrAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //Accuracy
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Accuracy) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Accuracy") << "\n\n";
+        ss << stats::stat::Name(stats::stat::Accuracy)
+            << PAD
+            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Accuracy")
+            << "\n\n";
+
         descTextInfo.text = ss.str();
-        if (accDescTextRegionSPtr_.get() == nullptr)
-            accDescTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("AccStatDesc",
-                                                                        descTextInfo,
-                                                                        REGION,
-                                                                        sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                        sfml_util::gui::box::Info(),
-                                                                        sfml_util::Margins()));
-        textRegionSVec.push_back(accDescTextRegionSPtr_);
+        textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            "AccStatDesc",
+            descTextInfo,
+            REGION,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            sfml_util::Margins()) );
 
         //Accuracy help text
         GetStatHelpText(stats::stat::Accuracy, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSPtr( new sfml_util::gui::TextRegion("AccAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSPtr);
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "AccAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //Charm
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Charm) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Charm") << "\n\n";
+        ss << stats::stat::Name(stats::stat::Charm)
+            << PAD
+            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Charm")
+            << "\n\n";
+
         descTextInfo.text = ss.str();
-        if (chaDescTextRegionSPtr_.get() == nullptr)
-            chaDescTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("ChaStatDesc",
-                                                                         descTextInfo,
-                                                                         REGION,
-                                                                         sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                         sfml_util::gui::box::Info(),
-                                                                         sfml_util::Margins()) );
-        textRegionSVec.push_back(chaDescTextRegionSPtr_);
+        textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            "ChaStatDesc",
+            descTextInfo,
+            REGION,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            sfml_util::Margins()) );
 
         //charm help text
         GetStatHelpText(stats::stat::Charm, helpTextInfo);
         if (false == helpTextInfo.text.empty())
-        {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSPtr( new sfml_util::gui::TextRegion("ChaAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSPtr);
+        {   
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "ChaAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //Luck
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Luck) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Luck") << "\n\n";
+        ss << stats::stat::Name(stats::stat::Luck)
+            << PAD
+            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Luck")
+            << "\n\n";
+
         descTextInfo.text = ss.str();
-        if (lckDescTextRegionSPtr_.get() == nullptr)
-            lckDescTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("LckStatDesc",
-                                                                         descTextInfo,
-                                                                         REGION,
-                                                                         sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                         sfml_util::gui::box::Info(),
-                                                                         sfml_util::Margins()) );
-        textRegionSVec.push_back(lckDescTextRegionSPtr_);
+        textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            "LckStatDesc",
+            descTextInfo,
+            REGION,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            sfml_util::Margins()) );
 
         //Luck help text
         GetStatHelpText(stats::stat::Luck, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSPtr( new sfml_util::gui::TextRegion("LuckAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSPtr);
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "LuckAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //Speed
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Speed) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Speed") << "\n\n";
+        ss << stats::stat::Name(stats::stat::Speed)
+            << PAD
+            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Speed")
+            << "\n\n";
+
         descTextInfo.text = ss.str();
-        if (spdDescTextRegionSPtr_.get() == nullptr)
-            spdDescTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SpdStatDesc",
-                                                                         descTextInfo,
-                                                                         REGION,
-                                                                         sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                         sfml_util::gui::box::Info(),
-                                                                         sfml_util::Margins()) );
-        textRegionSVec.push_back(spdDescTextRegionSPtr_);
+        textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            "SpdStatDesc",
+            descTextInfo,
+            REGION,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            sfml_util::Margins()) );
 
         //Speed help text
         GetStatHelpText(stats::stat::Speed, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSptr( new sfml_util::gui::TextRegion("SpdAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSptr);
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "SpdAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //Intelligence
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Intelligence) << PAD << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Intelligence") << "\n\n";
+        ss << stats::stat::Name(stats::stat::Intelligence)
+            << PAD
+            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Intelligence")
+            << "\n\n";
+
         descTextInfo.text = ss.str();
-        if (intDescTextRegionSPtr_.get() == nullptr)
-            intDescTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("IntStatDesc",
-                                                                         descTextInfo,
-                                                                         REGION,
-                                                                         sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                         sfml_util::gui::box::Info(),
-                                                                         sfml_util::Margins()) );
-        textRegionSVec.push_back(intDescTextRegionSPtr_);
+        textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            "IntStatDesc",
+            descTextInfo,
+            REGION,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            sfml_util::Margins()) );
 
         //Intelligence help text
         GetStatHelpText(stats::stat::Intelligence, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
-            sfml_util::gui::TextRegionSPtr_t helpTextRegionSPtr( new sfml_util::gui::TextRegion("IntAttrDesc",
-                                                                                                helpTextInfo,
-                                                                                                 REGION,
-                                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                                                sfml_util::gui::box::Info(),
-                                                                                                sfml_util::Margins()) );
-            textRegionSVec.push_back(helpTextRegionSPtr);
+            textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+                "IntAttrDesc",
+                helpTextInfo,
+                REGION,
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info(),
+                sfml_util::Margins()) );
         }
 
         //setup the final TextRegion that will be drawn to the screen
-        descTextInfo.text = strDescTextRegionSPtr_->GetText();
-        if (attrDescTextRegion_.get() == nullptr)
+        descTextInfo.text = STRENGTH_BASE_TEXT;
+        if (attrDescTextRegionUPtr_.get() == nullptr)
         {
-            attrDescTextRegion_.reset( new sfml_util::gui::TextRegion("AttributeDescription",
-                                                                      descTextInfo,
-                                                                      REGION,
-                                                                      this) );
-            EntityAdd(attrDescTextRegion_.get());
+            attrDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "AttributeDescription",
+                descTextInfo,
+                REGION,
+                this);
+
+            EntityAdd(attrDescTextRegionUPtr_.get());
         }
         else
         {
-            attrDescTextRegion_->Setup(descTextInfo, REGION, this);
+            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, this);
         }
 
-        for (auto const & NEXT_TR_SPTR : textRegionSVec)
+        for (auto const & NEXT_TR_UPTR : textRegionUVec)
         {
-            attrDescTextRegion_->Append( * NEXT_TR_SPTR);
+            attrDescTextRegionUPtr_->Append( * NEXT_TR_UPTR );
         }
     }
 
@@ -1660,15 +1670,15 @@ namespace stage
         {
             const sf::Uint8 NEW_COLOR_VAL( static_cast<sf::Uint8>(sbInsTextSlider_.Update(ELAPSED_TIME_SECONDS)) );
 
-            sf::Color color(sbInsTextRegionSPtr_->GetEntityColorForeground());
+            sf::Color color(sbInsTextRegionUPtr_->GetEntityColorForeground());
             color.r = 255;
             color.g = NEW_COLOR_VAL;
             color.b = NEW_COLOR_VAL;
-            sbInsTextRegionSPtr_->SetEntityColorFgBoth(color);
+            sbInsTextRegionUPtr_->SetEntityColorFgBoth(color);
         }
         else
         {
-            sbInsTextRegionSPtr_->SetEntityColorFgBoth(sf::Color::White);
+            sbInsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::White);
         }
 
         //oscillate the spacebar instruction text's color to help players know what to do initially
@@ -1677,14 +1687,16 @@ namespace stage
         {
             const sf::Uint8 NEW_COLOR_VAL(static_cast<sf::Uint8>(nInsTextSlider_.Update(ELAPSED_TIME_SECONDS)));
 
-            sf::Color color(nInsTextRegionSPtr_->GetEntityColorForeground());
+            sf::Color color(nInsTextRegionUPtr_->GetEntityColorForeground());
             color.r = 255;
             color.g = NEW_COLOR_VAL;
             color.b = NEW_COLOR_VAL;
-            nInsTextRegionSPtr_->SetEntityColorFgBoth(color);
+            nInsTextRegionUPtr_->SetEntityColorFgBoth(color);
         }
         else
-            nInsTextRegionSPtr_->SetEntityColorFgBoth(sf::Color::White);
+        {
+            nInsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::White);
+        }
 
         //drift the position of the smoke anim
         smokeAnimSPtr_->SetEntityPos(smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS), smokeAnimDrifterY_.Update(ELAPSED_TIME_SECONDS));
@@ -1693,12 +1705,16 @@ namespace stage
         if (isAnimStats_)
         {
             if (smokeAnimSPtr_->TimeBetweenFrames() >= 0.01f)
+            {
                 smokeAnimSPtr_->TimeBetweenFramesAdj(ELAPSED_TIME_SECONDS * 0.02f * -1.0f);
+            }
         }
         else
         {
             if (smokeAnimSPtr_->TimeBetweenFrames() <= 0.05f)
+            {
                 smokeAnimSPtr_->TimeBetweenFramesAdj(ELAPSED_TIME_SECONDS * 0.01f);
+            }
         }
 
         ProduceAnimatingDigits(ELAPSED_TIME_SECONDS);
@@ -1715,7 +1731,9 @@ namespace stage
         else
         {
             if (AreAnyAnimNumStillMoving())
+            {
                 willDrawStatModText_ = false;
+            }
         }
 
         HandleStuckAnims(ELAPSED_TIME_SECONDS);
@@ -2379,8 +2397,12 @@ namespace stage
         //update each active animating number
         const std::size_t NUM_DIGITS(animStatsSVec_.size());
         for (std::size_t i(0); i < NUM_DIGITS; ++i)
+        {
             if (false == animStatsSVec_[i]->IsDoneFading())
+            {
                 animStatsSVec_[i]->UpdateTime(ELAPSED_TIME_SECONDS);
+            }
+        }
 
         if (areAnyFixedStillMoving)
             isWaitingForStats_ = true;

@@ -63,26 +63,42 @@ namespace stage
         //returns true once the target is reached
         bool UpdateTime(const float ELAPSED_TIME_SEC);
 
-        inline bool IsDoneMoving() const                  { return isDoneMoving_; }
-        inline bool IsDoneFading() const                  { return isDoneFading_; }
-        inline bool WillFade() const                      { return willFade_; }
-        inline void WillFadeSet(const bool B)             { willFade_ = B; }
-        inline bool IgnoreMe() const                      { return ignoreMe_; }
-        inline void SetIgnoreMe()                         { ignoreMe_ = true; }
-        inline stats::stat::Enum Which() const            { return whichStat_; }
-        inline stats::Stat_t Value() const                { return value_; }
-        inline void ValueSet(const stats::Stat_t NEW_VAL) { value_ = NEW_VAL; }
-        inline bool IsHeldDown() const                    { return isHeldDown_; }
-        inline void MouseUp()                             { isHeldDown_ = false; }
-        inline void SetPosY(const float TOP)              { textObj_.setPosition(textObj_.getPosition().x, TOP); }
-        inline const sf::Vector2f GetPos() const              { return sf::Vector2f(textObj_.getPosition().x, textObj_.getPosition().y); }
-        inline void SetPos(const float LEFT, const float TOP) { textObj_.setPosition(LEFT, TOP); }
+        inline bool IsDoneMoving() const            { return isDoneMoving_; }
+        inline bool IsDoneFading() const            { return isDoneFading_; }
+        inline bool WillFade() const                { return willFade_; }
+        inline void WillFadeSet(const bool B)       { willFade_ = B; }
+        inline bool IgnoreMe() const                { return ignoreMe_; }
+        inline void SetIgnoreMe()                   { ignoreMe_ = true; }
+        inline stats::stat::Enum Which() const      { return whichStat_; }
+        inline stats::Stat_t Value() const          { return value_; }
+        inline void ValueSet(const stats::Stat_t S) { value_ = S; }
+        inline bool IsHeldDown() const              { return isHeldDown_; }
+        inline void MouseUp()                       { isHeldDown_ = false; }
+
+        inline void SetPosY(const float TOP)
+        {
+            textObj_.setPosition(textObj_.getPosition().x, TOP);
+        }
+
+        inline const sf::Vector2f GetPos() const
+        {
+            return sf::Vector2f(textObj_.getPosition().x, textObj_.getPosition().y);
+        }
+
+        inline void SetPos(const float LEFT, const float TOP)
+        {
+            textObj_.setPosition(LEFT, TOP);
+        }
 
         bool MouseDown(const float POS_LEFT, const float POS_TOP);
 
         bool UpdateTimer(const float ELAPSED_TIME_SEC);
 
-        inline virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const { target.draw(textObj_, states); }
+        inline virtual void draw(sf::RenderTarget & target,
+                                 sf::RenderStates states) const
+        {
+            target.draw(textObj_, states);
+        }
 
         friend bool operator==(const AnimNum & L, const AnimNum & R);
 

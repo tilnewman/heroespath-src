@@ -149,6 +149,8 @@ namespace gui
     };
 
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
+
     using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
     using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
 
