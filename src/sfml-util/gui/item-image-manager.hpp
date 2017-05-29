@@ -75,6 +75,7 @@ namespace gui
 
         static void SetItemImageDirectory(const std::string & PATH);
         static inline float GetMaxDimmension() { return 256.0f; }
+        static inline const std::string FileExtension() { return FILE_EXT_STR_; }
 
         void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
         void Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const;
@@ -88,7 +89,7 @@ namespace gui
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;
         static std::string imagesDirectoryPath_;
-        static const std::string EXT_;
+        static const std::string FILE_EXT_STR_;
     };
 
 }

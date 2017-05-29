@@ -158,7 +158,8 @@ namespace misc
             MATERIAL_SEC,
             boost::algorithm::erase_all_copy(
                 sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(
-                    item::misc_type::Wand, material::IsJewel(MATERIAL_SEC), true), ".gif"),
+                    item::misc_type::Wand, material::IsJewel(MATERIAL_SEC), true),
+                sfml_util::gui::ItemImageManager::FileExtension()),
             price,
             weight,
             0,

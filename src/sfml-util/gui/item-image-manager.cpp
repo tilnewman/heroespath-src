@@ -52,8 +52,8 @@ namespace gui
 {
 
     std::unique_ptr<ItemImageManager> ItemImageManager::instanceUPtr_{ nullptr };
-    std::string ItemImageManager::imagesDirectoryPath_{ "" };
-    const std::string ItemImageManager::EXT_{ ".png" };
+    std::string ItemImageManager::imagesDirectoryPath_               { "" };
+    const std::string ItemImageManager::FILE_EXT_STR_                { ".png" };
 
 
     ItemImageManager::ItemImageManager()
@@ -539,7 +539,7 @@ namespace gui
 
     void ItemImageManager::Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const
     {
-        return Load(texture, ITEM_PTR->ImageFilename() + EXT_);
+        return Load(texture, ITEM_PTR->ImageFilename() + FILE_EXT_STR_);
     }
 
 
@@ -591,54 +591,54 @@ namespace gui
         using namespace game::item;
 
         if ((WEAPON_INFO.type & weapon_type::Sword) != 0)
-            return weapon::sword_type::ToString(WEAPON_INFO.sword) + EXT_;
+            return weapon::sword_type::ToString(WEAPON_INFO.sword) + FILE_EXT_STR_;
 
         if ((WEAPON_INFO.type & weapon_type::Axe) != 0)
-            return weapon::axe_type::ToString(WEAPON_INFO.axe) + EXT_;
+            return weapon::axe_type::ToString(WEAPON_INFO.axe) + FILE_EXT_STR_;
 
         if ((WEAPON_INFO.type & weapon_type::Club) != 0)
-            return weapon::club_type::ToString(WEAPON_INFO.club) + EXT_;
+            return weapon::club_type::ToString(WEAPON_INFO.club) + FILE_EXT_STR_;
 
         if ((WEAPON_INFO.type & weapon_type::Whip) != 0)
-            return weapon::whip_type::ToString(WEAPON_INFO.whip) + EXT_;
+            return weapon::whip_type::ToString(WEAPON_INFO.whip) + FILE_EXT_STR_;
 
         if ((WEAPON_INFO.type & weapon_type::Projectile) != 0)
-            return weapon::projectile_type::ToString(WEAPON_INFO.projectile) + EXT_;
+            return weapon::projectile_type::ToString(WEAPON_INFO.projectile) + FILE_EXT_STR_;
 
         if ((WEAPON_INFO.type & weapon_type::BladedStaff) != 0)
-            return weapon::bladedstaff_type::ToString(WEAPON_INFO.bladedstaff) + EXT_;
+            return weapon::bladedstaff_type::ToString(WEAPON_INFO.bladedstaff) + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_bite)
-            return "bite" + EXT_;
+            return "bite" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_breath)
-            return "breath" + EXT_;
+            return "breath" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_claws)
-            return "claws" + EXT_;
+            return "claws" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_dagger)
-            return "dagger" + EXT_;
+            return "dagger" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_fists)
-            return "fists" + EXT_;
+            return "fists" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_knife)
-            return "knife" + EXT_;
+            return "knife" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_quarterstaff)
-            return "quarter-staff" + EXT_;
+            return "quarter-staff" + FILE_EXT_STR_;
 
         if (WEAPON_INFO.is_staff)
         {
             if (IS_JEWELED)
-                return "staff-special-2" + EXT_;
+                return "staff-special-2" + FILE_EXT_STR_;
             else
-                return "staff-plain" + EXT_;
+                return "staff-plain" + FILE_EXT_STR_;
         }
 
         if (WEAPON_INFO.is_tendrils)
-            return "tendrils" + EXT_;
+            return "tendrils" + FILE_EXT_STR_;
 
         std::ostringstream ss;
         ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type=" << weapon_type::ToString(WEAPON_INFO.type, false) << ") failed to resolve a filename.";
@@ -651,36 +651,36 @@ namespace gui
         using namespace game::item;
 
         if ((ARMOR_INFO.type & armor_type::Aventail) != 0)
-            return "aventail" + EXT_;
+            return "aventail" + FILE_EXT_STR_;
 
         if ((ARMOR_INFO.type & armor_type::Boots) != 0)
-            return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + EXT_;
+            return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
 
         if (((ARMOR_INFO.type & armor_type::Bracer) != 0) || (ARMOR_INFO.is_bracer))
-            return "bracer" + EXT_;
+            return "bracer" + FILE_EXT_STR_;
 
         if ((ARMOR_INFO.type & armor_type::Covering) != 0)
-            return armor::cover_type::ToString(ARMOR_INFO.cover) + EXT_;
+            return armor::cover_type::ToString(ARMOR_INFO.cover) + FILE_EXT_STR_;
 
         if (((ARMOR_INFO.type & armor_type::Gauntlets) != 0) || (ARMOR_INFO.is_gauntlets))
         {
             if (ARMOR_INFO.base == armor::base_type::Plain)
-                return "gloves" + EXT_;
+                return "gloves" + FILE_EXT_STR_;
             else
-                return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base) + EXT_;
+                return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
         }
 
         if ((ARMOR_INFO.type & armor_type::Helm) != 0)
-            return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + EXT_;
+            return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + FILE_EXT_STR_;
 
         if (((ARMOR_INFO.type & armor_type::Pants) != 0) || (ARMOR_INFO.is_pants))
-            return "pants" + EXT_;
+            return "pants" + FILE_EXT_STR_;
 
         if ((ARMOR_INFO.type & armor_type::Sheild) != 0)
-            return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + EXT_;
+            return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + FILE_EXT_STR_;
 
         if (((ARMOR_INFO.type & armor_type::Shirt) != 0) || (ARMOR_INFO.is_shirt))
-            return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + EXT_;
+            return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
 
         std::ostringstream ss;
         ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type=" << armor_type::ToString(ARMOR_INFO.type, false) << ") failed to resolve a filename.";
@@ -688,7 +688,10 @@ namespace gui
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool WILL_RANDOMIZE) const
+    const std::string ItemImageManager::GetImageFilename(
+        const game::item::misc_type::Enum ITEM_ENUM,
+        const bool                        IS_JEWELED, 
+        const bool                        WILL_RANDOMIZE) const
     {
         switch (ITEM_ENUM)
         {
@@ -700,26 +703,26 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "amulet-" << misc::random::Int(1, 23) << EXT_;
+                    ss << "amulet-" << misc::random::Int(1, 23) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "amulet-20" + EXT_;
+                    return "amulet-20" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Necklas:
             {
-                return "necklas-1" + EXT_;
+                return "necklas-1" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Bag:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "bag-" << misc::random::Int(1, 8) << EXT_;
+                    ss << "bag-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "bag-2" + EXT_;
+                    return "bag-2" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Tome:
             case game::item::misc_type::Book:
@@ -727,45 +730,45 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "book-" << misc::random::Int(1, 5) << EXT_;
+                    ss << "book-" << misc::random::Int(1, 5) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "book-2" + EXT_;
+                    return "book-2" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Cape:
             {
-                return "cape" + EXT_;
+                return "cape" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Cloak:
             {
-                return "cloak" + EXT_;
+                return "cloak" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Robe:
             {
-                return "robe" + EXT_;
+                return "robe" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Crown:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "crown-" << misc::random::Int(1, 12) << EXT_;
+                    ss << "crown-" << misc::random::Int(1, 12) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "crown-5" + EXT_;
+                    return "crown-5" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Doll:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "doll-" << misc::random::Int(1, 16) << EXT_;
+                    ss << "doll-" << misc::random::Int(1, 16) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "doll-1" + EXT_;
+                    return "doll-1" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Drink:
             case game::item::misc_type::Potion:
@@ -773,160 +776,160 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "potion-" << misc::random::Int(1, 30) << EXT_;
+                    ss << "potion-" << misc::random::Int(1, 30) << FILE_EXT_STR_;
                     return ss.str();
                 }
-                    return "potion-13" + EXT_;
+                    return "potion-13" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Goblet:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "goblet-" << misc::random::Int(1, 8) << EXT_;
+                    ss << "goblet-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "goblet-5" + EXT_;
+                    return "goblet-5" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Herbs:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "herb-" << misc::random::Int(1, 34) << EXT_;
+                    ss << "herb-" << misc::random::Int(1, 34) << FILE_EXT_STR_;
                     return ss.str();
                 }
-                    return "herb-26" + EXT_;
+                    return "herb-26" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Hourglass:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "hourglass-" << misc::random::Int(1, 3) << EXT_;
+                    ss << "hourglass-" << misc::random::Int(1, 3) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "hourglass-1" + EXT_;
+                    return "hourglass-1" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Key:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "key-" << misc::random::Int(1, 11) << EXT_;
+                    ss << "key-" << misc::random::Int(1, 11) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "key-2" + EXT_;
+                    return "key-2" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Lantern:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "lantern-" << misc::random::Int(1, 18) << EXT_;
+                    ss << "lantern-" << misc::random::Int(1, 18) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "lantern-10" + EXT_;
+                    return "lantern-10" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Torch:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "torch-" << misc::random::Int(1, 5) << EXT_;
+                    ss << "torch-" << misc::random::Int(1, 5) << FILE_EXT_STR_;
                     return ss.str();
                 }
-                    return "torch-1" + EXT_;
+                    return "torch-1" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Lockbox:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "lockbox-" << misc::random::Int(1, 8) << EXT_;
+                    ss << "lockbox-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "lockbox-2" + EXT_;
+                    return "lockbox-2" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Chest:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "chest-" << misc::random::Int(1, 14) << EXT_;
+                    ss << "chest-" << misc::random::Int(1, 14) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "chest-4" + EXT_;
+                    return "chest-4" + FILE_EXT_STR_;
             }
             case game::item::misc_type::LockPicks:
             {
-                return "lockpicks" + EXT_;
+                return "lockpicks" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Mask:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mask-" << misc::random::Int(1, 6) << EXT_;
+                    ss << "mask-" << misc::random::Int(1, 6) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "mask-3" + EXT_;
+                    return "mask-3" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Mirror:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mirror-" << misc::random::Int(1, 10) << EXT_;
+                    ss << "mirror-" << misc::random::Int(1, 10) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "mirror-7" + EXT_;
+                    return "mirror-7" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Lute:
             {
-                return "lute" + EXT_;
+                return "lute" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Panflute:
             {
-                return "panflute" + EXT_;
+                return "panflute" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Flute:
             {
-                return "flute" + EXT_;
+                return "flute" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Sitar:
             {
-                return "sitar" + EXT_;
+                return "sitar" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Scroll:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "scroll-" << misc::random::Int(1, 13) << EXT_;
+                    ss << "scroll-" << misc::random::Int(1, 13) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "scroll-6" + EXT_;
+                    return "scroll-6" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Orb:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "orb-" << misc::random::Int(1, 13) << EXT_;
+                    ss << "orb-" << misc::random::Int(1, 13) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "orb-4" + EXT_;
+                    return "orb-4" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Ring:
             {
@@ -934,17 +937,17 @@ namespace gui
                 {
                     std::ostringstream ss;
                     if (IS_JEWELED)
-                        ss << "ring-jeweled-" << misc::random::Int(1, 14) << EXT_;
+                        ss << "ring-jeweled-" << misc::random::Int(1, 14) << FILE_EXT_STR_;
                     else
-                        ss << "ring-plain-" << misc::random::Int(1, 2) << EXT_;
+                        ss << "ring-plain-" << misc::random::Int(1, 2) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
                 {
                     if (IS_JEWELED)
-                        return "ring-jeweled-4" + EXT_;
+                        return "ring-jeweled-4" + FILE_EXT_STR_;
                     else
-                        return "ring-plain-2" + EXT_;
+                        return "ring-plain-2" + FILE_EXT_STR_;
                 }
             }
             case game::item::misc_type::Skull:
@@ -952,44 +955,44 @@ namespace gui
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "skull-" << misc::random::Int(1, 11) << EXT_;
+                    ss << "skull-" << misc::random::Int(1, 11) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "skull-3" + EXT_;
+                    return "skull-3" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Shard:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "shard-" << misc::random::Int(1, 7) << EXT_;
+                    ss << "shard-" << misc::random::Int(1, 7) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "shard-1" + EXT_;
+                    return "shard-1" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Salve:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "mortar-" << misc::random::Int(1, 9) << EXT_;
+                    ss << "mortar-" << misc::random::Int(1, 9) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "mortar-3" + EXT_;
+                    return "mortar-3" + FILE_EXT_STR_;
             }
             case game::item::misc_type::Wand:
             {
                 if (WILL_RANDOMIZE)
                 {
                     std::ostringstream ss;
-                    ss << "wand-" << misc::random::Int(1, 9) << EXT_;
+                    ss << "wand-" << misc::random::Int(1, 9) << FILE_EXT_STR_;
                     return ss.str();
                 }
                 else
-                    return "wand-7" + EXT_;
+                    return "wand-7" + FILE_EXT_STR_;
             }
             case game::item::misc_type::NotMisc:
             case game::item::misc_type::Count:
