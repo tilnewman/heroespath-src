@@ -256,7 +256,8 @@ namespace combat
         {
             attackAccToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACK_ACC_RAW) *
                 STAT_RATIO_AMAZING_);
-            attackAccToUse += creatureAttackingPtrC->Rank() / 2;
+
+            attackAccToUse += static_cast<int>(creatureAttackingPtrC->Rank()) / 2;
         }
 
         auto const ATTACK_ACC_RAND_MIN{ stats::Stat::Reduce(attackAccToUse) };
@@ -275,7 +276,8 @@ namespace combat
         {
             defendSpdToUse += static_cast<stats::Stat_t>(static_cast<float>(DEFEND_SPD_RAW) *
                 STAT_RATIO_AMAZING_);
-            defendSpdToUse += creatureDefendingPtrC->Rank() / 2;
+
+            defendSpdToUse += static_cast<int>(creatureDefendingPtrC->Rank()) / 2;
         }
 
         auto const DEFEND_SPD_RAND_MIN{ stats::Stat::Reduce(defendSpdToUse) };
