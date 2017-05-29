@@ -120,6 +120,15 @@ namespace gui
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
 
+        
+        static int totalTestCount{ static_cast<int>(
+            (static_cast<float>(game::creature::race::Count) *
+             static_cast<float>(game::creature::role::Count) *
+             static_cast<float>(game::creature::sex::Count))  *
+            1.5f) };
+
+        static int totalTestIndex{ 0 };
+
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
             auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
@@ -149,6 +158,7 @@ namespace gui
                             i = 0;
                             classIndex = 0;
                             ++sexIndex;
+                            ++totalTestIndex;
                             return false;
                         }
                     }
@@ -172,7 +182,7 @@ namespace gui
                                 game::LoopManager::Instance()->TestingImageSet(texture);
 
                                 std::ostringstream ss;
-                                ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
+                                ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
                                 game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                                 ++i;
@@ -181,6 +191,7 @@ namespace gui
 
                             i = 0;
                             ++classIndex;
+                            ++totalTestIndex;
                             return false;
                         }
                     }
@@ -205,7 +216,7 @@ namespace gui
                                     game::LoopManager::Instance()->TestingImageSet(texture);
 
                                     std::ostringstream ss;
-                                    ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
+                                    ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                                     ++i;
@@ -214,6 +225,7 @@ namespace gui
 
                                 i = 0;
                                 ++classIndex;
+                                ++totalTestIndex;
                                 return false;
                             }
                         }
@@ -232,7 +244,7 @@ namespace gui
                             game::LoopManager::Instance()->TestingImageSet(texture);
 
                             std::ostringstream ss;
-                            ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(i);
+                            ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(i);
                             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                             ++i;
@@ -243,17 +255,20 @@ namespace gui
                     i = 0;
                     classIndex = 0;
                     ++sexIndex;
+                    ++totalTestIndex;
                     return false;
                 }
 
                 sexIndex = 0;
                 ++roleIndex;
+                ++totalTestIndex;
                 return false;
             }
 
             sexIndex = 0;
             roleIndex = 0;
             ++raceIndex;
+            ++totalTestIndex;
             return false;
         }
 
