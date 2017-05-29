@@ -44,6 +44,7 @@ namespace sfml_util
 namespace gui
 {
 
+    //forward declarations
     namespace box
     {
         class Box;
@@ -51,7 +52,7 @@ namespace gui
     }
 
     class TextRegion;
-    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
     class FourStateButton;
     namespace callback
@@ -168,11 +169,11 @@ namespace gui
         bool             hasOver_;
         bool             hasDisabled_;
         sf::Sprite       buttonSprite_;
-        TextRegionSPtr_t textRegionCurrSPtr_;
-        TextRegionSPtr_t textRegionUpSPtr_;
-        TextRegionSPtr_t textRegionDownSPtr_;
-        TextRegionSPtr_t textRegionOverSPtr_;
-        TextRegionSPtr_t textRegionDisabledSPtr_;
+        TextRegion *     textRegionCurrPtr_;
+        TextRegionUPtr_t textRegionUpUPtr_;
+        TextRegionUPtr_t textRegionDownUPtr_;
+        TextRegionUPtr_t textRegionOverUPtr_;
+        TextRegionUPtr_t textRegionDisabledUPtr_;
         box::BoxSPtr_t   boxSPtr_;
         float            scale_;
         callback::IFourStateButtonCallbackHandler_t * callbackHandlerPtr_;

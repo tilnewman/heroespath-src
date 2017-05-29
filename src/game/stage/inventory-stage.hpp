@@ -49,7 +49,7 @@ namespace sfml_util
 namespace gui
 {
     class TextRegion;
-    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
     namespace box
     {
@@ -290,16 +290,16 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> listBoxSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> descBoxSlider_;
 
-        sfml_util::gui::TextRegionSPtr_t detailsTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t statsTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t eqTitleTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t unEqTitleTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t detailsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
         sfml_util::gui::ListBoxSPtr_t    equippedListBoxSPtr_;
         sfml_util::gui::ListBoxSPtr_t    unEquipListBoxSPtr_;
-        sfml_util::gui::TextRegionSPtr_t insTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t descTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::box::BoxSPtr_t   descBoxSPtr_;
-        sfml_util::gui::TextRegionSPtr_t centerTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t centerTextRegionUPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t itemsButtonSPtr_;
@@ -334,7 +334,7 @@ namespace stage
         sf::VertexArray detailViewQuads_;
         sf::Sprite      detailViewSprite_;
         sf::Texture     detailViewTexture_;
-        sfml_util::gui::TextRegionSPtr_t detailViewTextSPtr_;
+        sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
     };
 

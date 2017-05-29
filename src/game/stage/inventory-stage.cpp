@@ -164,16 +164,16 @@ namespace stage
         statsSlider_            (VIEW_CHANGE_SLIDER_SPEED_),
         listBoxSlider_          (VIEW_CHANGE_SLIDER_SPEED_),
         descBoxSlider_          (VIEW_CHANGE_SLIDER_SPEED_),
-        detailsTextRegionSPtr_  (),
-        statsTextRegionSPtr_    (),
-        eqTitleTextRegionSPtr_  (),
-        unEqTitleTextRegionSPtr_(),
+        detailsTextRegionUPtr_  (),
+        statsTextRegionUPtr_    (),
+        eqTitleTextRegionUPtr_  (),
+        unEqTitleTextRegionUPtr_(),
         equippedListBoxSPtr_    (),
         unEquipListBoxSPtr_     (),
-        insTextRegionSPtr_      (),
-        descTextRegionSPtr_     (),
+        insTextRegionUPtr_      (),
+        descTextRegionUPtr_     (),
         descBoxSPtr_            (),
-        centerTextRegionSPtr_   (),
+        centerTextRegionUPtr_   (),
         backButtonSPtr_         (),
         itemsButtonSPtr_        (),
         titlesButtonSPtr_       (),
@@ -203,7 +203,7 @@ namespace stage
         detailViewQuads_        (sf::Quads, 4),
         detailViewSprite_       (),
         detailViewTexture_      (),
-        detailViewTextSPtr_     (),
+        detailViewTextUPtr_     (),
         detailViewSlider_       (DETAILVIEW_SLIDER_SPEED_)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr), "game::stage::InventoryStage::InventoryStage() was given a null creature shared pointer.");
@@ -550,24 +550,24 @@ namespace stage
                                                        sf::Text::Italic,
                                                        sfml_util::Justified::Left);
 
-        insTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sInstruction", INSTR_TEXT_INFO, sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f)) );
-        insTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionSPtr_->GetEntityPos().y);
-        EntityAdd(insTextRegionSPtr_.get());
+        insTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sInstruction", INSTR_TEXT_INFO, sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f)) );
+        insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
+        EntityAdd(insTextRegionUPtr_.get());
 
         //player character image in the top left corner
         SetupCreatureImage();
 
         //details text
         SetupCreatureDetails(true);
-        EntityAdd(detailsTextRegionSPtr_.get());
+        EntityAdd(detailsTextRegionUPtr_.get());
 
         //stats text
         SetupCreatureStats();
-        EntityAdd(statsTextRegionSPtr_.get());
+        EntityAdd(statsTextRegionUPtr_.get());
 
         //coins, gems, meteor shards, total weight carried
         SetupCenterText();
-        EntityAdd(centerTextRegionSPtr_.get());
+        EntityAdd(centerTextRegionUPtr_.get());
 
         //equipped item list box
         SetupListBox();
@@ -579,12 +579,12 @@ namespace stage
 
         //first listbox title text
         SetupFirstListBoxTitle();
-        EntityAdd(eqTitleTextRegionSPtr_.get());
+        EntityAdd(eqTitleTextRegionUPtr_.get());
 
         //descbox title text
         SetupDescBoxTitle();
-        EntityAdd(unEqTitleTextRegionSPtr_.get());
-        EntityAdd(descTextRegionSPtr_.get());
+        EntityAdd(unEqTitleTextRegionUPtr_.get());
+        EntityAdd(descTextRegionUPtr_.get());
         EntityAdd(descBoxSPtr_.get());
 
         //buttons
@@ -717,10 +717,10 @@ namespace stage
         //always draw because it is a fast operation and will be fully transparent when should not be drawn
         target.draw(detailViewQuads_, STATES);
 
-        if (detailViewTextSPtr_.get() != nullptr)
+        if (detailViewTextUPtr_.get() != nullptr)
         {
             target.draw(detailViewSprite_, STATES);
-            detailViewTextSPtr_->draw(target, STATES);
+            detailViewTextUPtr_->draw(target, STATES);
         }
     }
 
@@ -922,10 +922,10 @@ namespace stage
                         //sometimes the new creature image is wider than the last, so the details text needs to move with the new image to avoid overlap
                         const float SPRITE_WIDTH(UpdateImageDetailsPosition());
                         const float NEW_DETAILSTEXT_POS_LEFT_EDGE((NEW_POS_LEFT + SPRITE_WIDTH + CREATURE_IMAGE_RIGHT_PAD_));
-                        if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionSPtr_->GetEntityPos().x)
+                        if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionUPtr_->GetEntityPos().x)
                         {
                             detailsPosLeft_ = NEW_DETAILSTEXT_POS_LEFT_EDGE;
-                            detailsTextRegionSPtr_->SetEntityPos(NEW_DETAILSTEXT_POS_LEFT_EDGE, detailsTextRegionSPtr_->GetEntityPos().y);
+                            detailsTextRegionUPtr_->SetEntityPos(NEW_DETAILSTEXT_POS_LEFT_EDGE, detailsTextRegionUPtr_->GetEntityPos().y);
                         }
                     }
 
@@ -945,15 +945,19 @@ namespace stage
                     const float RATIO(detailsSlider_.Update(ELAPSED_TIME_SECONDS));
 
                     if (isSlidingLeft_)
-                        detailsTextRegionSPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
+                    }
                     else
-                        detailsTextRegionSPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
+                    }
 
                     if (detailsSlider_.GetIsDone())
                     {
                         UpdateImageDetailsPosition();
                         SetupCreatureDetails(true);
-                        detailsTextRegionSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, detailsTextRegionSPtr_->GetEntityPos().y);
+                        detailsTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, detailsTextRegionUPtr_->GetEntityPos().y);
                         hasDetailsChanged_ = true;
                         detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -963,9 +967,13 @@ namespace stage
                     const float RATIO((1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)));
 
                     if (isSlidingLeft_)
-                        detailsTextRegionSPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
+                    }
                     else
-                        detailsTextRegionSPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
+                    }
 
                     if (detailsSlider_.GetIsDone())
                     {
@@ -982,18 +990,22 @@ namespace stage
                 {
                     const float RATIO(centerSlider_.Update(ELAPSED_TIME_SECONDS));
 
-                    if (centerTextRegionSPtr_->GetEntityPos().x < SCREEN_WIDTH_)
+                    if (centerTextRegionUPtr_->GetEntityPos().x < SCREEN_WIDTH_)
                     {
                         if (isSlidingLeft_)
-                            centerTextRegionSPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionSPtr_->GetEntityPos().y);
+                        {
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                        }
                         else
-                            centerTextRegionSPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionSPtr_->GetEntityPos().y);
+                        {
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                        }
                     }
 
                     if (detailsSlider_.GetIsDone())
                     {
                         SetupCenterText();
-                        centerTextRegionSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionSPtr_->GetEntityPos().y);
+                        centerTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
                         hasCenterChanged_ = true;
                         centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -1005,9 +1017,13 @@ namespace stage
                         const float RATIO((1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)));
 
                         if (isSlidingLeft_)
-                            centerTextRegionSPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionSPtr_->GetEntityPos().y);
+                        {
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                        }
                         else
-                            centerTextRegionSPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionSPtr_->GetEntityPos().y);
+                        {
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                        }
                     }
 
                     if (centerSlider_.GetIsDone() || creaturePtr_->IsBeast())
@@ -1026,14 +1042,18 @@ namespace stage
                     const float RATIO(statsSlider_.Update(ELAPSED_TIME_SECONDS));
 
                     if (isSlidingLeft_)
-                        statsTextRegionSPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
+                    }
                     else
-                        statsTextRegionSPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
+                    }
 
                     if (statsSlider_.GetIsDone())
                     {
                         SetupCreatureStats();
-                        statsTextRegionSPtr_->SetEntityPos(OUT_OF_SIGHT_POS_, statsTextRegionSPtr_->GetEntityPos().y);
+                        statsTextRegionUPtr_->SetEntityPos(OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
                         hasStatsChanged_ = true;
                         statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -1043,9 +1063,13 @@ namespace stage
                     const float RATIO((1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)));
 
                     if (isSlidingLeft_)
-                        statsTextRegionSPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
+                    }
                     else
-                        statsTextRegionSPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionSPtr_->GetEntityPos().y);
+                    {
+                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
+                    }
 
                     if (statsSlider_.GetIsDone())
                     {
@@ -1112,12 +1136,12 @@ namespace stage
                     {
                         if (isSlidingLeft_)
                         {
-                            descTextRegionSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionSPtr_->GetEntityPos().y);
+                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
                             descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
                         }
                         else
                         {
-                            descTextRegionSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionSPtr_->GetEntityPos().y);
+                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
                             descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
                         }
                     }
@@ -1126,7 +1150,7 @@ namespace stage
                     {
                         SetupDescBox(true);
                         unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
-                        descTextRegionSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionSPtr_->GetEntityPos().y);
+                        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
                         descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
                         hasDescBoxChanged_ = true;
                         descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1149,12 +1173,12 @@ namespace stage
                     {
                         if (isSlidingLeft_)
                         {
-                            descTextRegionSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionSPtr_->GetEntityPos().y);
+                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
                             descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
                         }
                         else
                         {
-                            descTextRegionSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionSPtr_->GetEntityPos().y);
+                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
                             descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
                         }
                     }
@@ -1802,17 +1826,23 @@ namespace stage
                                       0.0f,
                                       0.0f);
 
-        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionSPtr_.get() != nullptr))
-            detailsTextRect.left = detailsTextRegionSPtr_->GetEntityPos().x;
+        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionUPtr_.get() != nullptr))
+        {
+            detailsTextRect.left = detailsTextRegionUPtr_->GetEntityPos().x;
+        }
 
         detailsPosLeft_ = detailsTextRect.left;
 
-        if (detailsTextRegionSPtr_.get() == nullptr)
-            detailsTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect) );
+        if (detailsTextRegionUPtr_.get() == nullptr)
+        {
+            detailsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect));
+        }
         else
-            detailsTextRegionSPtr_->SetText(ss.str());
+        {
+            detailsTextRegionUPtr_->SetText(ss.str());
+        }
 
-        detailsTextRegionSPtr_->SetEntityPos(detailsPosLeft_, detailsTextRegionSPtr_->GetEntityPos().y);
+        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_, detailsTextRegionUPtr_->GetEntityPos().y);
     }
 
 
@@ -1847,12 +1877,15 @@ namespace stage
                                             0.0f,
                                             0.0f);
 
-        if (statsTextRegionSPtr_.get() == nullptr)
-            statsTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT) );
+        if (statsTextRegionUPtr_.get() == nullptr)
+        {
+            statsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT));
+        }
         else
-            statsTextRegionSPtr_->SetText(ss.str());
+        {
+            statsTextRegionUPtr_->SetText(ss.str());
+        }
     }
-
 
     void InventoryStage::SetupCenterText()
     {
@@ -1876,15 +1909,19 @@ namespace stage
                                              0.0f,
                                              0.0f);
 
-        const bool WAS_ALREADY_INSTANTIATED(centerTextRegionSPtr_.get() != nullptr);
+        const bool WAS_ALREADY_INSTANTIATED(centerTextRegionUPtr_.get() != nullptr);
 
         if (WAS_ALREADY_INSTANTIATED == false)
-            centerTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT) );
+        {
+            centerTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT));
+        }
         else
-            centerTextRegionSPtr_->SetText(ss.str());
+        {
+            centerTextRegionUPtr_->SetText(ss.str());
+        }
 
         const float POS_LEFT(((WAS_ALREADY_INSTANTIATED == false) && (creaturePtr_->IsBeast())) ? (SCREEN_WIDTH_ + 1.0f) : (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f));
-        centerTextRegionSPtr_->SetEntityPos(POS_LEFT, centerTextRegionSPtr_->GetEntityPos().y);
+        centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
         centerPosLeft_ = POS_LEFT;
     }
 
@@ -2064,14 +2101,14 @@ namespace stage
         descTextInfo.color = DESCBOX_TEXT_COLOR_;
         descTextInfo.text = " ";
 
-        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionSPtr_.get() != nullptr);
+        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
-            EntityRemove(descTextRegionSPtr_.get());
+            EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
+        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
                                                                   descTextInfo,
                                                                   DESCBOX_REGION_,
                                                                   sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
@@ -2079,10 +2116,10 @@ namespace stage
                                                                   DESCBOX_MARGINS_) );
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
-            EntityAdd(descTextRegionSPtr_.get());
+            EntityAdd(descTextRegionUPtr_.get());
         }
 
-        descTextRegionSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionSPtr_->GetEntityPos().y);
+        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
         descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
     }
 
@@ -2108,14 +2145,18 @@ namespace stage
 
         const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
-        if (eqTitleTextRegionSPtr_.get() == nullptr)
-            eqTitleTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sEquippedListBoxTitle",
+        if (eqTitleTextRegionUPtr_.get() == nullptr)
+        {
+            eqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sEquippedListBoxTitle",
                                                                         LISTBOX_TEXT_INFO,
                                                                         LISTBOX_TEXT_RECT) );
+        }
         else
-            eqTitleTextRegionSPtr_->Setup(LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
+        {
+            eqTitleTextRegionUPtr_->Setup(LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
+        }
 
-        eqTitleTextRegionSPtr_->SetEntityPos(eqTitleTextRegionSPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - eqTitleTextRegionSPtr_->GetEntityRegion().height);
+        eqTitleTextRegionUPtr_->SetEntityPos(eqTitleTextRegionUPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - eqTitleTextRegionUPtr_->GetEntityRegion().height);
     }
 
 
@@ -2131,14 +2172,18 @@ namespace stage
 
         const sf::FloatRect DESC_TEXT_RECT(SECOND_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
-        if (unEqTitleTextRegionSPtr_.get() == nullptr)
-            unEqTitleTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sUnequippedListBoxTitle",
+        if (unEqTitleTextRegionUPtr_.get() == nullptr)
+        {
+            unEqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sUnequippedListBoxTitle",
                                                                            DESC_TEXT_INFO,
                                                                            DESC_TEXT_RECT) );
+        }
         else
-            unEqTitleTextRegionSPtr_->Setup(DESC_TEXT_INFO, DESC_TEXT_RECT);
+        {
+            unEqTitleTextRegionUPtr_->Setup(DESC_TEXT_INFO, DESC_TEXT_RECT);
+        }
 
-        unEqTitleTextRegionSPtr_->SetEntityPos(unEqTitleTextRegionSPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - unEqTitleTextRegionSPtr_->GetEntityRegion().height);
+        unEqTitleTextRegionUPtr_->SetEntityPos(unEqTitleTextRegionUPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - unEqTitleTextRegionUPtr_->GetEntityRegion().height);
     }
 
 
@@ -2174,14 +2219,14 @@ namespace stage
         descTextInfo.charSize = DESCBOX_TEXT_SIZE_;
         descTextInfo.text = TEXT;
 
-        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionSPtr_.get() != nullptr);
+        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
-            EntityRemove(descTextRegionSPtr_.get());
+            EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
+        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
                                                                   descTextInfo,
                                                                   DESCBOX_REGION_,
                                                                   this,
@@ -2191,7 +2236,7 @@ namespace stage
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
-            EntityAdd(descTextRegionSPtr_.get());
+            EntityAdd(descTextRegionUPtr_.get());
         }
     }
 
@@ -2206,10 +2251,16 @@ namespace stage
         std::vector<std::size_t> invalidCharacterNumVec;
         const std::size_t NUM_CHARACTERS(6);
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
             if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State()->Party()->GetAtOrderPos(i)->Body().IsHumanoid()))
+            {
                 ss << "(" << i + 1 << ") " << Game::Instance()->State()->Party()->GetAtOrderPos(i)->Name() << "\n";
+            }
             else
+            {
                 invalidCharacterNumVec.push_back(i);
+            }
+        }
 
         const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CHAR_SELECT_,
                                                                                              ss.str(),
@@ -2595,7 +2646,7 @@ namespace stage
     {
         if (IITEM_PTR == nullptr)
         {
-            detailViewTextSPtr_.reset();
+            detailViewTextUPtr_.reset();
             return;
         }
 
@@ -2639,7 +2690,7 @@ namespace stage
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT) );
     }
 
 
@@ -2647,7 +2698,7 @@ namespace stage
     {
         if (CREATURE_CPTRC == nullptr)
         {
-            detailViewTextSPtr_.reset();
+            detailViewTextUPtr_.reset();
             return;
         }
 
@@ -2967,7 +3018,7 @@ namespace stage
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextSPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT) );
     }
 
 

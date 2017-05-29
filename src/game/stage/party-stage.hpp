@@ -45,6 +45,15 @@
 #include <string>
 
 
+namespace sfml_util
+{
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+}
+}
+
 namespace game
 {
     namespace player
@@ -120,11 +129,11 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t deleteButtonSPtr_;
         sfml_util::gui::ListBoxSPtr_t characterListBoxSPtr_;
         sfml_util::gui::ListBoxSPtr_t partyListBoxSPtr_;
-        sfml_util::gui::TextRegionSPtr_t insTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t upTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t partyTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t upTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t partyTextRegionUPtr_;
         sfml_util::gui::TextInfo warningTextInfo_;
-        sfml_util::gui::TextRegionSPtr_t warningTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t warningTextRegionUPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> warningTextSlider_;
         OuroborosSPtr_t ouroborosSPtr_;
         BottomSymbol bottomSymbol_;
@@ -141,10 +150,11 @@ namespace stage
         player::CharacterSPtr_t mouseOverCharSPtr_;
         sf::Texture     mouseOverTexture_;
         bool isMouseOverTexture_;
-        sfml_util::gui::TextRegionSPtr_t mouseOverTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
     };
 
 }
 }
+
 #endif //GAME_PARTYSTAGE_INCLUDED

@@ -45,7 +45,7 @@ namespace gui
 {
 
     class TextRegion;
-    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
 
     class TextEntryBox;
@@ -107,7 +107,7 @@ namespace gui
         sf::FloatRect    cursorRect_;
         sf::Color        cursorColor_;
         sf::FloatRect    innerRegion_;
-        TextRegionSPtr_t textRegionSPtr_;
+        TextRegionUPtr_t textRegionUPtr_;
         bool             willDrawCursor_;
         float            cursorBlinkTimer_;
         callback::ITextEntryBoxCallbackHandler_t * callbackHandlerPtr_;

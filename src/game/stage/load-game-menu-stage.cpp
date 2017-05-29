@@ -66,9 +66,9 @@ namespace stage
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
         backButtonSPtr_         (),
         gsListBoxSPtr_          (),
-        locTextRegionSPtr_      (),
-        charTextRegionSVec_     (),
-        charLabelTextRegionSPtr_(),
+        locTextRegionUPtr_      (),
+        charTextRegionUVec_     (),
+        charLabelTextRegionUPtr_(),
         gsListBoxPosLeft_       (0.0f),
         gsListBoxPosTop_        (0.0f),
         gsListBoxPosWidth_      (0.0f),
@@ -196,12 +196,12 @@ namespace stage
     void LoadGameStage::SetupGameInfoDisplay()
     {
         //free any existing TextRegion objects
-        for (auto const & NEXT_TEXTREGION_SPTR : charTextRegionSVec_)
+        for (auto const & NEXT_TEXTREGION_UPTR : charTextRegionUVec_)
         {
-            EntityRemove(NEXT_TEXTREGION_SPTR.get());
+            EntityRemove(NEXT_TEXTREGION_UPTR.get());
         }
 
-        charTextRegionSVec_.clear();
+        charTextRegionUVec_.clear();
 
         //establish which item is selected and get the player list from that GameState's Party object
         if (gsListBoxSPtr_->Empty())
@@ -226,24 +226,24 @@ namespace stage
         const float CHAR_LIST_POS_TOP(gsListBoxPosTop_ + 100.0f);
 
         //setup location text
-        if (locTextRegionSPtr_.get() == nullptr)
+        if (locTextRegionUPtr_.get() == nullptr)
         {
-            locTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("LoadGameLocation"));
-            EntityAdd(locTextRegionSPtr_.get());
+            locTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
+            EntityAdd(locTextRegionUPtr_.get());
         }
         descTextInfo.text = std::string("Location:        ").append(gameStateSPtr->Location()->Name());
         const sf::FloatRect LOC_TEXT_RECT(CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);
-        locTextRegionSPtr_->Setup(descTextInfo, LOC_TEXT_RECT);
+        locTextRegionUPtr_->Setup(descTextInfo, LOC_TEXT_RECT);
 
         //setup character list label text
-        if (charLabelTextRegionSPtr_.get() == nullptr)
+        if (charLabelTextRegionUPtr_.get() == nullptr)
         {
-            charLabelTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CharacterListLabel") );
-            EntityAdd(charLabelTextRegionSPtr_.get());
+            charLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("CharacterListLabel");
+            EntityAdd(charLabelTextRegionUPtr_.get());
         }
         descTextInfo.text = "Characters:";
         const sf::FloatRect CHAR_TEXT_RECT(CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 5.0f, 0.0f, 0.0f);
-        charLabelTextRegionSPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
+        charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
         //setup characters list
         player::PartySPtr_t partySPtr(gameStateSPtr->Party());
@@ -267,11 +267,10 @@ namespace stage
 
             const sf::FloatRect RECT(CHAR_LIST_POS_LEFT + 25.0f, posY, 0.0f, 0.0f);
 
-            sfml_util::gui::TextRegionSPtr_t textRegionSPtr( new sfml_util::gui::TextRegion(TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) );
-            charTextRegionSVec_.push_back(textRegionSPtr);
-            EntityAdd(textRegionSPtr.get());
-
-            posY += textRegionSPtr->GetEntityRegion().height - 25.0f;
+            auto textRegionUPtr{ std::make_unique<sfml_util::gui::TextRegion>(TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
+            EntityAdd(textRegionUPtr.get());
+            posY += textRegionUPtr->GetEntityRegion().height - 25.0f;
+            charTextRegionUVec_.push_back( std::move(textRegionUPtr) );
         }
     }
 

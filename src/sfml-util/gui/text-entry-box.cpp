@@ -55,7 +55,7 @@ namespace gui
         cursorRect_         (),
         cursorColor_        (),
         innerRegion_        (),
-        textRegionSPtr_     (),
+        textRegionUPtr_     (),
         willDrawCursor_     (false),
         cursorBlinkTimer_   (0.0f),
         callbackHandlerPtr_ (nullptr)
@@ -75,7 +75,7 @@ namespace gui
         cursorRect_         (),
         cursorColor_        (CURSOR_COLOR),
         innerRegion_        (),
-        textRegionSPtr_     (),
+        textRegionUPtr_     (),
         willDrawCursor_     (false),
         cursorBlinkTimer_   (0.0f),
         callbackHandlerPtr_ (CHANGE_HANDLER_PTR)
@@ -117,11 +117,13 @@ namespace gui
         {
             sf::FloatRect r(innerRegion_);
             r.width = 0.0f;
-            textRegionSPtr_.reset( new TextRegion(std::string(GetEntityName()).append("'s"), textInfo_, r, gui::TextRegion::DEFAULT_NO_RESIZE_, gui::box::Info()) );
-            cursorRect_.left = innerRegion_.left + textRegionSPtr_->GetEntityRegion().width + 3.0f;
+            textRegionUPtr_.reset( new TextRegion(std::string(GetEntityName()).append("'s"), textInfo_, r, gui::TextRegion::DEFAULT_NO_RESIZE_, gui::box::Info()) );
+            cursorRect_.left = innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f;
         }
         else
-            textRegionSPtr_.reset();
+        {
+            textRegionUPtr_.reset();
+        }
 
         if (callbackHandlerPtr_ != nullptr)
         {
@@ -134,11 +136,15 @@ namespace gui
     {
         target.draw(box_, states);
 
-        if (textRegionSPtr_.get() != nullptr)
-            textRegionSPtr_->draw(target, states);
+        if (textRegionUPtr_.get() != nullptr)
+        {
+            textRegionUPtr_->draw(target, states);
+        }
 
         if (willDrawCursor_ && HasFocus())
+        {
             sfml_util::DrawRectangle<float>(target, states, cursorRect_, cursorColor_, 1, cursorColor_);
+        }
     }
 
 
@@ -147,19 +153,27 @@ namespace gui
         textInfo_.text = NEW_TEXT;
         UpdateText();
 
-        if (textRegionSPtr_.get() == nullptr)
+        if (textRegionUPtr_.get() == nullptr)
+        {
             cursorRect_.left = innerRegion_.left;
+        }
         else
-            cursorRect_.left = innerRegion_.left + textRegionSPtr_->GetEntityRegion().width;
+        {
+            cursorRect_.left = innerRegion_.left + textRegionUPtr_->GetEntityRegion().width;
+        }
     }
 
 
     const std::string TextEntryBox::GetText() const
     {
-        if (textRegionSPtr_.get() == nullptr)
+        if (textRegionUPtr_.get() == nullptr)
+        {
             return "";
+        }
         else
-            return textRegionSPtr_->GetText();
+        {
+            return textRegionUPtr_->GetText();
+        }
     }
 
 
@@ -292,10 +306,16 @@ namespace gui
         }
 
         bool isWithinBounds(true);
-        if (textRegionSPtr_.get() != nullptr)
-            if (false == textRegionSPtr_->GetText().empty())
-                if ((textRegionSPtr_->GetEntityRegion().width > (innerRegion_.width - 30.0f)))
+        if (textRegionUPtr_.get() != nullptr)
+        {
+            if (false == textRegionUPtr_->GetText().empty())
+            {
+                if ((textRegionUPtr_->GetEntityRegion().width > (innerRegion_.width - 30.0f)))
+                {
                     isWithinBounds = false;
+                }
+            }
+        }
 
         if ((charToAppend != 0) && isWithinBounds)
         {
@@ -304,7 +324,9 @@ namespace gui
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -319,7 +341,9 @@ namespace gui
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 

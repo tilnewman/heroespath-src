@@ -37,12 +37,13 @@
 
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-    }
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 }
+}
+
 namespace game
 {
 namespace stage
@@ -81,9 +82,9 @@ namespace stage
                const std::string &           TITLE,
                const sfml_util::FontPtr_t    FONT_PTR,
                const std::string &           CONTENT_TEXT,
-               const credit_media_type::Enum MEDIA_TYPE     = credit_media_type::Image,
-               const std::string &           MEDIA_PATH     = "media-images-logos-openfontlicense",
-               const float                   MEDIA_SCALE    = sfml_util::MapByRes(1.5f, 5.75f));
+               const credit_media_type::Enum MEDIA_TYPE  = credit_media_type::Image,
+               const std::string &           MEDIA_PATH  = "media-images-logos-openfontlicense",
+               const float                   MEDIA_SCALE = sfml_util::MapByRes(1.5f, 5.75f));
 
         void Setup(sf::FloatRect &                  creditsRegion,
                    const std::string &              TITLE,
@@ -110,8 +111,8 @@ namespace stage
                                          const sf::Vector2f &  POS_ADJUSTMENTS);
 
     private:
-        sfml_util::gui::TextRegionSPtr_t titleTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t contentTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t contentTextRegionUPtr_;
         credit_media_type::Enum          contentType_;
         std::string                      path_;
         sf::Vector2f                     posAdj_;

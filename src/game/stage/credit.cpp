@@ -54,8 +54,8 @@ namespace stage
                    const unsigned int               ANIM_FRAME_SIZE_HORIZ,
                    const unsigned int               ANIM_FRAME_SIZE_VERT)
     :
-        titleTextRegionSPtr_  (),
-        contentTextRegionSPtr_(),
+        titleTextRegionUPtr_  (),
+        contentTextRegionUPtr_(),
         contentType_          (MEDIA_TYPE),
         path_                 (MEDIA_PATH),
         posAdj_               (MEDIA_POS_ADJUSTMENT),
@@ -88,8 +88,8 @@ namespace stage
                    const std::string &              MEDIA_PATH,
                    const float                      MEDIA_SCALE)
     :
-        titleTextRegionSPtr_  (),
-        contentTextRegionSPtr_(),
+        titleTextRegionUPtr_  (),
+        contentTextRegionUPtr_(),
         contentType_          (MEDIA_TYPE),
         path_                 (MEDIA_PATH),
         posAdj_               (sf::Vector2f(0.0f, 0.0f)),
@@ -187,16 +187,21 @@ namespace stage
                                                        sf::Color(255, 255, 255, 200),
                                                        sfml_util::Justified::Center);
 
-        titleTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("CreditTitle_" + TITLE, TEXT_INFO_TITLE, creditsRegion));
+        titleTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
+            "CreditTitle_" + TITLE, TEXT_INFO_TITLE, creditsRegion));
 
         if (TITLE != " ")
-            creditsRegion.top += titleTextRegionSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
+        {
+            creditsRegion.top += titleTextRegionUPtr_->
+                GetEntityRegion().height + VERT_PAD_SMALL;
+        }
 
-        sfml_util::gui::TextInfo textInfoContent(CONTENT_TEXT,
-                                                 sfml_util::FontManager::Instance()->Font_Typical(),
-                                                 sfml_util::FontManager::Instance()->Size_Normal(),
-                                                 sf::Color::White,
-                                                 sfml_util::Justified::Center);
+        sfml_util::gui::TextInfo textInfoContent(
+            CONTENT_TEXT,
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sf::Color::White,
+            sfml_util::Justified::Center);
 
         //if there is a lot of text (multi-lined), reduce the size to look better
         if (boost::algorithm::icontains(CONTENT_TEXT, "\n"))
@@ -204,8 +209,10 @@ namespace stage
             textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 50));
         }
 
-        contentTextRegionSPtr_.reset(new sfml_util::gui::TextRegion("CreditContent", textInfoContent, creditsRegion));
-        creditsRegion.top += contentTextRegionSPtr_->GetEntityRegion().height;
+        contentTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
+            "CreditContent", textInfoContent, creditsRegion));
+
+        creditsRegion.top += contentTextRegionUPtr_->GetEntityRegion().height;
 
         const float SPACE_BETWEEN_CREDITS(sfml_util::MapByRes(100.0f, 200.0f));
         creditsRegion.top += SPACE_BETWEEN_CREDITS;
@@ -214,54 +221,70 @@ namespace stage
 
     void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        if (titleTextRegionSPtr_.get() != nullptr)
+        if (titleTextRegionUPtr_.get() != nullptr)
         {
-            target.draw( * titleTextRegionSPtr_, states);
-            //sfml_util::DrawRectangle(target, states, titleTextRegionSPtr_->GetEntityRegion());
+            target.draw( * titleTextRegionUPtr_, states);
         }
 
-        if (contentTextRegionSPtr_.get() != nullptr)
+        if (contentTextRegionUPtr_.get() != nullptr)
         {
-            target.draw( * contentTextRegionSPtr_, states);
-            //sfml_util::DrawRectangle(target, states, contentTextRegionSPtr_->GetEntityRegion());
+            target.draw( * contentTextRegionUPtr_, states);
         }
 
         if (multiTextureAnimSPtr_.get() != nullptr)
+        {
             multiTextureAnimSPtr_->draw(target, states);
+        }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
+        {
             singleTextureAnimSPtr_->draw(target, states);
+        }
 
         if (credit_media_type::Image == contentType_)
+        {
             target.draw(sprite_, states);
+        }
     }
 
 
     void Credit::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         if (multiTextureAnimSPtr_.get() != nullptr)
+        {
             multiTextureAnimSPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
+        }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
+        {
             singleTextureAnimSPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
+        }
     }
 
 
     void Credit::Move(const float ADJ_HORIZ, const float ADJ_VERT)
     {
-        if (titleTextRegionSPtr_.get() != nullptr)
-            titleTextRegionSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+        if (titleTextRegionUPtr_.get() != nullptr)
+        {
+            titleTextRegionUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+        }
 
-        if (contentTextRegionSPtr_.get() != nullptr)
-            contentTextRegionSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+        if (contentTextRegionUPtr_.get() != nullptr)
+        {
+            contentTextRegionUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+        }
 
         sprite_.move(ADJ_HORIZ, ADJ_VERT);
 
         if (multiTextureAnimSPtr_.get() != nullptr)
+        {
             multiTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+        }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
+        {
             singleTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+        }
     }
 
 

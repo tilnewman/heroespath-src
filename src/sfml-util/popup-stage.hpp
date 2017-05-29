@@ -69,7 +69,6 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
     }
 
 
@@ -152,7 +151,7 @@ namespace sfml_util
         sf::Sprite               backgroundSprite_;
         sf::Texture              backgroundTexture_;
         const sf::FloatRect      INNER_REGION_;
-        gui::TextRegionSPtr_t    textRegionSPtr_;
+        gui::TextRegionUPtr_t    textRegionUPtr_;
         sf::FloatRect            textRegion_;
         float                    elapsedTimeCounter_;
         std::size_t              secondCounter_;
@@ -177,7 +176,7 @@ namespace sfml_util
         bool willTextBoxUpdate_;
 
         //number selection members
-        gui::TextRegionSPtr_t   infoTextRegionSPtr_;
+        gui::TextRegionUPtr_t   infoTextRegionUPtr_;
         gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
 
         //members needed to animate image select
@@ -189,8 +188,8 @@ namespace sfml_util
         bool                  areImagesMoving_;
         bool                  areImagesMovingLeft_;
         sf::FloatRect         imagesRect_;
-        gui::TextRegionSPtr_t imageWrnTextRegionSPtr_;
-        gui::TextRegionSPtr_t imageNumTextRegionSPtr_;
+        gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
+        gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
         std::size_t           imageIndex_;
         std::size_t           imageIndexLastSoundOn_;
         std::size_t           imageIndexLastSoundOff_;

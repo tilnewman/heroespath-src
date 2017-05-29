@@ -79,7 +79,7 @@ namespace sfml_util
         backgroundSprite_          (BG_TEXTURE),
         backgroundTexture_         (BG_TEXTURE),
         INNER_REGION_              (INNER_REGION),
-        textRegionSPtr_            (),
+        textRegionUPtr_            (),
         textRegion_                (),
         elapsedTimeCounter_        (0.0f),
         secondCounter_             (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
@@ -99,7 +99,7 @@ namespace sfml_util
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
         willTextBoxUpdate_         (true),
-        infoTextRegionSPtr_        (),
+        infoTextRegionUPtr_        (),
         textEntryBoxSPtr_          (),
         isImageProcAllowed_        (false),
         isInitialAnimation_        (true),
@@ -109,8 +109,8 @@ namespace sfml_util
         areImagesMoving_           (false),
         areImagesMovingLeft_       (false),
         imagesRect_                (),
-        imageWrnTextRegionSPtr_    (),
-        imageNumTextRegionSPtr_    (),
+        imageWrnTextRegionUPtr_    (),
+        imageNumTextRegionUPtr_    (),
         imageIndex_                (0),
         imageIndexLastSoundOn_     (0),
         imageIndexLastSoundOff_    (0),
@@ -388,16 +388,16 @@ namespace sfml_util
 
         //setup and render actual text
         //Note:  Spellbook popup has no 'typical' central text, so only " " is rendered here.
-        textRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
+        textRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
                                                               POPUP_INFO_.TextInfo(),
                                                               textRegionRect,
                                                               this) );
 
-        if ((textRegionSPtr_->GetEntityRegion().top + textRegionSPtr_->GetEntityRegion().height) > (textRegion_.top + textRegion_.height))
+        if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height) > (textRegion_.top + textRegion_.height))
         {
             textRegionRect.height = textRegion_.height;
 
-            textRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
+            textRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage's",
                                                                   POPUP_INFO_.TextInfo(),
                                                                   textRegionRect,
                                                                   this) );
@@ -464,13 +464,13 @@ namespace sfml_util
                                                           gui::PopupManager::Color_Font(),
                                                           Justified::Center);
 
-            infoTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
-            EntityAdd(infoTextRegionSPtr_.get());
+            infoTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
+            EntityAdd(infoTextRegionUPtr_.get());
             SetupInfoText("(type a number or use the slider below)");
 
             const float TEXTENTRY_BOX_WIDTH(textRegion_.width * 0.45f);
             const float TEXTENTRY_BOX_POS_LEFT(textRegion_.left + ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f));
-            const float TEXTENTRY_BOX_POS_TOP(infoTextRegionSPtr_->GetEntityPos().y - 115.0f);//this spacer value of 115 found to look good by experiment
+            const float TEXTENTRY_BOX_POS_TOP(infoTextRegionUPtr_->GetEntityPos().y - 115.0f);//this spacer value of 115 found to look good by experiment
             const float TEXTENTRY_BOX_HEIGHT(55.0f);//this is the minimum height a textbox can be, and fits pretty well here with the font size being "large"
 
             const sf::FloatRect TEXTENTRY_REGION(TEXTENTRY_BOX_POS_LEFT,
@@ -511,7 +511,7 @@ namespace sfml_util
         else if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
             imagesRect_ = textRegion_;
-            imagesRect_.top = textRegionSPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);//added is a pad so the text does not touch the images
+            imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);//added is a pad so the text does not touch the images
             imagesRect_.height = (sliderbarPosTop_ - (POPUPBUTTON_TEXT_HEIGHT * 2.0f)) - imagesRect_.top;
             isImageProcAllowed_ = ! POPUP_INFO_.Images().empty();
             imageMoveQueue_.push(0);
@@ -527,16 +527,16 @@ namespace sfml_util
                 sf::FloatRect region(textRegion_);
                 region.top = sliderbarPosTop_;
                 region.height = 0.0f;
-                imageWrnTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectionion", TEXT_INFO, region) );
+                imageWrnTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectionion", TEXT_INFO, region) );
 
-                EntityAdd(imageWrnTextRegionSPtr_.get());
+                EntityAdd(imageWrnTextRegionUPtr_.get());
                 EntityRemove(sliderbarSPtr_.get());
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
             const float IMAGE_PAD(10.0f);
-            const float IMAGE_REGION_TOP(textRegionSPtr_->GetEntityRegion().top + textRegionSPtr_->GetEntityRegion().height + IMAGE_PAD);
+            const float IMAGE_REGION_TOP(textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD);
             const float IMAGE_REGION_HEIGHT((textRegion_.top + textRegion_.height) - IMAGE_REGION_TOP);
 
             auto const & textureVec(POPUP_INFO_.Images());
@@ -793,7 +793,7 @@ namespace sfml_util
             target.draw(accentSprite1_, STATES);
         }
 
-        textRegionSPtr_->draw(target, STATES);
+        textRegionUPtr_->draw(target, STATES);
 
         if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
         {
@@ -804,9 +804,9 @@ namespace sfml_util
                 target.draw(imageSpritePrev_, STATES);
             }
 
-            if (willShowImageCount_ && (imageNumTextRegionSPtr_.get() != nullptr))
+            if (willShowImageCount_ && (imageNumTextRegionUPtr_.get() != nullptr))
             {
-                imageNumTextRegionSPtr_->draw(target, STATES);
+                imageNumTextRegionUPtr_->draw(target, STATES);
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
@@ -898,7 +898,7 @@ namespace sfml_util
                 ss << textInfo.text << "\n" << secondCounter_;
                 textInfo.text = ss.str();
 
-                textRegionSPtr_->Setup(textInfo,
+                textRegionUPtr_->Setup(textInfo,
                                        textRegion_,
                                        this);
             }
@@ -957,7 +957,9 @@ namespace sfml_util
             const float PREV_POS_TOP((imagesRect_.top + (imagesRect_.height * 0.5f)) - (imageSpritePrev_.getGlobalBounds().height * 0.5f));
 
             if (willShowImageCount_)
-                imageNumTextRegionSPtr_->SetEntityPos(imageNumTextRegionSPtr_->GetEntityPos().x, CURR_POS_TOP - imageNumTextRegionSPtr_->GetEntityRegion().height);
+            {
+                imageNumTextRegionUPtr_->SetEntityPos(imageNumTextRegionUPtr_->GetEntityPos().x, CURR_POS_TOP - imageNumTextRegionUPtr_->GetEntityRegion().height);
+            }
 
             if (areImagesMovingLeft_)
             {
@@ -1259,7 +1261,7 @@ namespace sfml_util
                                                      Justified::Center);
             sf::FloatRect imageCountTextRect(textRegion_);
             imageCountTextRect.height = 0.0f;
-            imageNumTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectNumber", TEXT_INFO, imageCountTextRect) );
+            imageNumTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectNumber", TEXT_INFO, imageCountTextRect) );
 
             imageSlider_.Reset(SLIDER_SPEED);
 
@@ -1315,15 +1317,15 @@ namespace sfml_util
                                                       gui::PopupManager::Color_Font(),
                                                       sfml_util::Justified::Center);
 
-        EntityRemove(infoTextRegionSPtr_.get());
+        EntityRemove(infoTextRegionUPtr_.get());
 
-        infoTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
+        infoTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
 
-        EntityAdd(infoTextRegionSPtr_.get());
+        EntityAdd(infoTextRegionUPtr_.get());
 
-        const float INFO_TEXT_POS_LEFT((textRegion_.left + (textRegion_.width * 0.5f)) - (infoTextRegionSPtr_->GetEntityRegion().width * 0.5f));
-        const float INFO_TEXT_POS_TOP(sliderbarPosTop_ - (2.0f * infoTextRegionSPtr_->GetEntityRegion().height));
-        infoTextRegionSPtr_->SetEntityPos(INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2), INFO_TEXT_POS_TOP);
+        const float INFO_TEXT_POS_LEFT((textRegion_.left + (textRegion_.width * 0.5f)) - (infoTextRegionUPtr_->GetEntityRegion().width * 0.5f));
+        const float INFO_TEXT_POS_TOP(sliderbarPosTop_ - (2.0f * infoTextRegionUPtr_->GetEntityRegion().height));
+        infoTextRegionUPtr_->SetEntityPos(INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2), INFO_TEXT_POS_TOP);
     }
 
 

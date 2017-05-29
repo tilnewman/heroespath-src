@@ -48,13 +48,14 @@
 
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-        using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
-    }
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
 }
+}
+
 namespace game
 {
     class Ouroboros;
@@ -100,9 +101,9 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
         sfml_util::gui::ListBoxSPtr_t gsListBoxSPtr_;
         //
-        sfml_util::gui::TextRegionSPtr_t locTextRegionSPtr_;
-        sfml_util::gui::TextRegionSVec_t charTextRegionSVec_;
-        sfml_util::gui::TextRegionSPtr_t charLabelTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t locTextRegionUPtr_;
+        sfml_util::gui::TextRegionUVec_t charTextRegionUVec_;
+        sfml_util::gui::TextRegionUPtr_t charLabelTextRegionUPtr_;
         //
         float gsListBoxPosLeft_;
         float gsListBoxPosTop_;

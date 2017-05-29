@@ -60,6 +60,9 @@ namespace gui
 {
     class Box;
     using BoxSPtr_t = std::shared_ptr<Box>;
+
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 }
 }
 

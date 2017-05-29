@@ -57,6 +57,15 @@
 #include <vector>
 
 
+namespace sfml_util
+{
+namespace gui
+{
+    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+    using TextRegionSVec_t = std::vector<TextRegionSPtr_t>;
+}
+}
+
 namespace game
 {
 namespace stage

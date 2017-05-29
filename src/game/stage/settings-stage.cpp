@@ -69,21 +69,20 @@ namespace stage
         backgroundImage_             ("media-images-backgrounds-tile-darkknot"),
         mainMenuTitle_               ("settings_button_normal.png"),
         box_                         ("SettingsStage"),
-        textRegionSVec_              (),
         resRadioButtonSetSPtr_       (),
-        resolutionTextRegionSPtr_    (),
-        musicVolumeTextRegionSPtr_   (),
+        resolutionTextRegionUPtr_    (),
+        musicVolumeTextRegionUPtr_   (),
         musicVolumeSliderBarSPtr_    (),
-        effectsVolumeTextRegionSPtr_ (),
+        effectsVolumeTextRegionUPtr_ (),
         effectsVolumeSliderBarSPtr_  (),
         backButtonSPtr_              (new main_menu_buttons::BackButton(0.0f, 0.0f, 1.0f, false)),
-        revisionTextRegionSPtr_      (),
+        revisionTextRegionUPtr_      (),
         aaRadioButtonSetSPtr_        (),
-        aaTextRegionSPtr_            (),
+        aaTextRegionUPtr_            (),
         prevAALevel_                 (sfml_util::Display::Instance()->AntialiasLevel()),
         bottomSymbol_                (),
-        musicInfoLabelTextRegionSPtr_(),
-        musicInfoTextRegionSPtr_     ()
+        musicInfoLabelTextRegionUPtr_(),
+        musicInfoTextRegionUPtr_     ()
     {}
 
 
@@ -168,9 +167,8 @@ namespace stage
         sfml_util::gui::TextInfo resolutionTitleTextInfo(settingsTextInfoTitle);
         resolutionTitleTextInfo.text = "Change Resolution";
         resolutionTitleTextInfo.justified = sfml_util::Justified::Center;
-        resolutionTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("ResolutionChangeSetting", resolutionTitleTextInfo, resRect, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
-        textRegionSVec_.push_back(resolutionTextRegionSPtr_);
-
+        resolutionTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("ResolutionChangeSetting", resolutionTitleTextInfo, resRect, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
+        
         //resolution radiobuttonset
         const float RES_RADIOBUTTONSET_POS_LEFT(BOX_RECT_INNER.left);
         const float RES_RADIOBUTTONSET_POS_TOP (BOX_RECT.top + 50.0f);
@@ -178,7 +176,7 @@ namespace stage
         resRadioButtonSetSPtr_->SetEntityColors(sfml_util::gui::ColorSet(sf::Color(180,180,180), sf::Color(0,0,0,60), sf::Color(180, 180, 180), sf::Color(0, 0, 0, 60)));
         EntityAdd(resRadioButtonSetSPtr_.get());
 
-        resolutionTextRegionSPtr_->SetEntityPos((resRadioButtonSetSPtr_->GetEntityPos().x + (resRadioButtonSetSPtr_->GetEntityRegion().width * 0.5f)) - (resolutionTextRegionSPtr_->GetEntityRegion().width * 0.5f), resolutionTextRegionSPtr_->GetEntityPos().y);
+        resolutionTextRegionUPtr_->SetEntityPos((resRadioButtonSetSPtr_->GetEntityPos().x + (resRadioButtonSetSPtr_->GetEntityRegion().width * 0.5f)) - (resolutionTextRegionUPtr_->GetEntityRegion().width * 0.5f), resolutionTextRegionUPtr_->GetEntityPos().y);
 
         const float SLIDER_LABEL_OFFSET_X(0.0f);
         const float SLIDER_LABEL_OFFSET_Y(165.0f);
@@ -193,12 +191,11 @@ namespace stage
             sfml_util::gui::TextInfo musicVolumeTitleTextInfo(settingsTextInfoTitle);
             musicVolumeTitleTextInfo.text = "Music\nVolume";
             musicVolumeTitleTextInfo.justified = sfml_util::Justified::Center;
-            musicVolumeTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("MusicVolumeSetting", musicVolumeTitleTextInfo, r) );
-            textRegionSVec_.push_back(musicVolumeTextRegionSPtr_);
+            musicVolumeTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("MusicVolumeSetting", musicVolumeTitleTextInfo, r) );
             //
             sfml_util::gui::MouseTextInfo threeTextInfos("", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 16, sf::Color::White, sf::Color(255,200,200));
-            const float SLIDER_POS_LEFT(musicVolumeTextRegionSPtr_->GetEntityPos().x + (musicVolumeTextRegionSPtr_->GetEntityRegion().width  * 0.5f) - 13.0f);
-            const float SLIDER_POS_TOP (musicVolumeTextRegionSPtr_->GetEntityPos().y +  musicVolumeTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float SLIDER_POS_LEFT(musicVolumeTextRegionUPtr_->GetEntityPos().x + (musicVolumeTextRegionUPtr_->GetEntityRegion().width  * 0.5f) - 13.0f);
+            const float SLIDER_POS_TOP (musicVolumeTextRegionUPtr_->GetEntityPos().y +  musicVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             musicVolumeSliderBarSPtr_.reset( new sfml_util::SliderBarLabeled_Music("MusicVolume",
                                                                                    SLIDER_POS_LEFT,
                                                                                    SLIDER_POS_TOP,
@@ -224,13 +221,12 @@ namespace stage
             sfml_util::gui::TextInfo effectsVolumeTitleTextInfo(settingsTextInfoTitle);
             effectsVolumeTitleTextInfo.text = "Sound Effects\nVolume";
             effectsVolumeTitleTextInfo.justified = sfml_util::Justified::Center;
-            effectsVolumeTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("EffectsVolumeSetting", effectsVolumeTitleTextInfo, r, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
-            textRegionSVec_.push_back(effectsVolumeTextRegionSPtr_);
+            effectsVolumeTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("EffectsVolumeSetting", effectsVolumeTitleTextInfo, r, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, sfml_util::gui::box::Info()) );
             //
             //
             sfml_util::gui::MouseTextInfo threeTextInfos("", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 16, sf::Color::White, sf::Color(255, 200, 200));
-            const float SLIDER_POS_LEFT(effectsVolumeTextRegionSPtr_->GetEntityPos().x + (effectsVolumeTextRegionSPtr_->GetEntityRegion().width  * 0.5f) - 13.0f);
-            const float SLIDER_POS_TOP (effectsVolumeTextRegionSPtr_->GetEntityPos().y +  effectsVolumeTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float SLIDER_POS_LEFT(effectsVolumeTextRegionUPtr_->GetEntityPos().x + (effectsVolumeTextRegionUPtr_->GetEntityRegion().width  * 0.5f) - 13.0f);
+            const float SLIDER_POS_TOP (effectsVolumeTextRegionUPtr_->GetEntityPos().y +  effectsVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             effectsVolumeSliderBarSPtr_.reset( new sfml_util::SliderBarLabeled_Effects("EffectsVolume",
                                                                                        SLIDER_POS_LEFT,
                                                                                        SLIDER_POS_TOP,
@@ -252,11 +248,10 @@ namespace stage
             sfml_util::gui::TextInfo aaLabelTextInfo(settingsTextInfoTitle);
             aaLabelTextInfo.text = "Anti-\nAliasing";
             aaLabelTextInfo.justified = sfml_util::Justified::Center;
-            aaTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("AntiAliasSettingLabel", aaLabelTextInfo, AA_TEXT_REGION_RECT) );
-            textRegionSVec_.push_back(aaTextRegionSPtr_);
+            aaTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("AntiAliasSettingLabel", aaLabelTextInfo, AA_TEXT_REGION_RECT) );
             //
             const float AA_POS_LEFT(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + ANTIALIAS_HORIZ_POS_);
-            const float AA_POS_TOP(aaTextRegionSPtr_->GetEntityPos().y + aaTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float AA_POS_TOP(aaTextRegionUPtr_->GetEntityPos().y + aaTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             const sfml_util::gui::TextInfo AA_TEXT_INFO(" ", sfml_util::FontManager::Instance()->Font_Default1(), 20);
             const std::vector<std::string> AA_LABEL_VEC = { "0   ", "1   ", "2   ", "4   ", "8   ", "16  " };
             const sfml_util::GradientInfo AA_GRADIENT_INFO(sf::Color(0, 0, 0, 150), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
@@ -318,9 +313,8 @@ namespace stage
                                                                         sf::Color::White,
                                                                         sfml_util::Justified::Center);
 
-                musicInfoLabelTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("MusicInfoLabel", MUSICINFO_LABEL_TEXTINFO, MUSICINFO_TEXT_REGION) );
-                textRegionSVec_.push_back(musicInfoLabelTextRegionSPtr_);
-
+                musicInfoLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("MusicInfoLabel", MUSICINFO_LABEL_TEXTINFO, MUSICINFO_TEXT_REGION) );
+                
                 const sfml_util::MusicOperatorSLst_t MUSIC_OPERAOTR_SLIST(sfml_util::SoundManager::Instance()->MusicOperators());
                 std::ostringstream ss;
                 for (auto const & NEXT_MUSIC_OPERATOR_SPTR : MUSIC_OPERAOTR_SLIST)
@@ -340,7 +334,7 @@ namespace stage
                                                                   sfml_util::Justified::Center);
 
                 const float MUSICINFO_POS_LEFT(aaRadioButtonSetSPtr_->GetEntityRegion().left);
-                const float MUSICINFO_POS_TOP(musicInfoLabelTextRegionSPtr_ ->GetEntityRegion().top + musicInfoLabelTextRegionSPtr_->GetEntityRegion().height + 30.0f);
+                const float MUSICINFO_POS_TOP(musicInfoLabelTextRegionUPtr_ ->GetEntityRegion().top + musicInfoLabelTextRegionUPtr_->GetEntityRegion().height + 30.0f);
                 const float MUSICINFO_WIDTH(((BOX_RECT_INNER.left + BOX_RECT_INNER.width) - MUSICINFO_POS_LEFT) - MUSICINFO_RIGHT_PAD);
                 const float MUSICINFO_HEIGHT((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - MUSICINFO_POS_TOP);
                 const sf::FloatRect MUSICINFO_REGION(MUSICINFO_POS_LEFT, MUSICINFO_POS_TOP, MUSICINFO_WIDTH, MUSICINFO_HEIGHT);
@@ -349,14 +343,12 @@ namespace stage
                 const sfml_util::gui::BackgroundInfo MUSICINFO_BACKGROUNDINFO(sf::Color(0, 0, 0, 60), MUSICINFO_GRADIENTINFO);
                 const sfml_util::gui::box::Info MUSICINFO_BOXINFO(1.0f, true, MUSICINFO_REGION, sfml_util::gui::ColorSet(sf::Color(180, 180, 180)), MUSICINFO_BACKGROUNDINFO);
 
-                musicInfoTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("SettingsStageMusicInfo",
+                musicInfoTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SettingsStageMusicInfo",
                                                                                MUSICINFO_TEXTINFO,
                                                                                MUSICINFO_REGION,
                                                                                this,
                                                                                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
                                                                                MUSICINFO_BOXINFO) );
-
-                textRegionSVec_.push_back(musicInfoTextRegionSPtr_);
             }
         }
 
@@ -374,9 +366,9 @@ namespace stage
                                                         sfml_util::FontManager::Color_Light(),
                                                         sfml_util::Justified::Left);
 
-        revisionTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("Version", REV_NUM_TEXTINFO, sf::FloatRect()) );
-        revisionTextRegionSPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionSPtr_->GetEntityRegion().height));
-        EntityAdd(revisionTextRegionSPtr_.get());
+        revisionTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("Version", REV_NUM_TEXTINFO, sf::FloatRect()) );
+        revisionTextRegionUPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionUPtr_->GetEntityRegion().height));
+        EntityAdd(revisionTextRegionUPtr_.get());
     }
 
 
@@ -402,7 +394,7 @@ namespace stage
         sfml_util::gui::TextInfo settingsTextInfoTitle("", sfml_util::FontManager::Instance()->Font_Typical(), 30, sf::Color(255, 255, 255, 200));
 
         //change resolution label
-        resolutionTextRegionSPtr_->SetEntityPos(BOX_RECT_INNER.left + 50.0f, BOX_RECT_INNER.top - 10.0f);
+        resolutionTextRegionUPtr_->SetEntityPos(BOX_RECT_INNER.left + 50.0f, BOX_RECT_INNER.top - 10.0f);
 
         //resolution radio button
         const float RES_RADIOBUTTONSET_POS_LEFT(BOX_RECT_INNER.left);
@@ -411,20 +403,20 @@ namespace stage
 
         //Music Volume label and sliderbar
         {
-            musicVolumeTextRegionSPtr_->SetEntityPos(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + MUSIC_VOLUME_HORIZ_POS_, BOX_RECT_INNER.top - 5.0f);
+            musicVolumeTextRegionUPtr_->SetEntityPos(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + MUSIC_VOLUME_HORIZ_POS_, BOX_RECT_INNER.top - 5.0f);
             //
-            const float SLIDER_POS_LEFT(musicVolumeTextRegionSPtr_->GetEntityPos().x + (musicVolumeTextRegionSPtr_->GetEntityRegion().width * 0.5f) - 13.0f);
-            const float SLIDER_POS_TOP(musicVolumeTextRegionSPtr_->GetEntityPos().y + musicVolumeTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float SLIDER_POS_LEFT(musicVolumeTextRegionUPtr_->GetEntityPos().x + (musicVolumeTextRegionUPtr_->GetEntityRegion().width * 0.5f) - 13.0f);
+            const float SLIDER_POS_TOP(musicVolumeTextRegionUPtr_->GetEntityPos().y + musicVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             musicVolumeSliderBarSPtr_->SetEntityPos(SLIDER_POS_LEFT, SLIDER_POS_TOP);
         }
 
         //Sound Effects Volume label and sliderbar
         {
             sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
-            effectsVolumeTextRegionSPtr_->SetEntityPos(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + SOUNDEFFECTS_VOLUME_HORIZ_POS_, BOX_RECT_INNER.top - 5.0f);
+            effectsVolumeTextRegionUPtr_->SetEntityPos(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + SOUNDEFFECTS_VOLUME_HORIZ_POS_, BOX_RECT_INNER.top - 5.0f);
             //
-            const float SLIDER_POS_LEFT(effectsVolumeTextRegionSPtr_->GetEntityPos().x + (effectsVolumeTextRegionSPtr_->GetEntityRegion().width * 0.5f) - 13.0f);
-            const float SLIDER_POS_TOP(effectsVolumeTextRegionSPtr_->GetEntityPos().y + effectsVolumeTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float SLIDER_POS_LEFT(effectsVolumeTextRegionUPtr_->GetEntityPos().x + (effectsVolumeTextRegionUPtr_->GetEntityRegion().width * 0.5f) - 13.0f);
+            const float SLIDER_POS_TOP(effectsVolumeTextRegionUPtr_->GetEntityPos().y + effectsVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             effectsVolumeSliderBarSPtr_->SetEntityPos(SLIDER_POS_LEFT, SLIDER_POS_TOP);
             sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
         }
@@ -433,10 +425,10 @@ namespace stage
         {
             const float AA_LABEL_POS_LEFT(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + 65.0f);
             const float AA_LABEL_POS_TOP(BOX_RECT_INNER.top - 5.0f);
-            aaTextRegionSPtr_->SetEntityPos(AA_LABEL_POS_LEFT, AA_LABEL_POS_TOP);
+            aaTextRegionUPtr_->SetEntityPos(AA_LABEL_POS_LEFT, AA_LABEL_POS_TOP);
             //
             const float AA_POS_LEFT(resRadioButtonSetSPtr_->GetEntityRegion().left + resRadioButtonSetSPtr_->GetEntityRegion().width + ANTIALIAS_HORIZ_POS_ - 15.0f);
-            const float AA_POS_TOP(aaTextRegionSPtr_->GetEntityPos().y + aaTextRegionSPtr_->GetEntityRegion().height + 5.0f);
+            const float AA_POS_TOP(aaTextRegionUPtr_->GetEntityPos().y + aaTextRegionUPtr_->GetEntityRegion().height + 5.0f);
             aaRadioButtonSetSPtr_->SetEntityPos(AA_POS_LEFT, AA_POS_TOP);
         }
 
@@ -445,11 +437,11 @@ namespace stage
             const float MUSICINFO_RIGHT_PAD(30.0f);
             const float MUSICINFO_LABEL_POS_LEFT((aaRadioButtonSetSPtr_->GetEntityRegion().left - MUSICINFO_RIGHT_PAD) - BOX_INNER_PAD_);
             const float MUSICINFO_LABEL_POS_TOP(aaRadioButtonSetSPtr_->GetEntityRegion().top + aaRadioButtonSetSPtr_->GetEntityRegion().height + 30.0f);
-            musicInfoLabelTextRegionSPtr_->SetEntityPos(MUSICINFO_LABEL_POS_LEFT, MUSICINFO_LABEL_POS_TOP);
+            musicInfoLabelTextRegionUPtr_->SetEntityPos(MUSICINFO_LABEL_POS_LEFT, MUSICINFO_LABEL_POS_TOP);
 
             const float MUSICINFO_POS_LEFT(aaRadioButtonSetSPtr_->GetEntityRegion().left);
-            const float MUSICINFO_POS_TOP(musicInfoLabelTextRegionSPtr_->GetEntityRegion().top + musicInfoLabelTextRegionSPtr_->GetEntityRegion().height + 30.0f);
-            musicInfoTextRegionSPtr_->SetEntityPos(MUSICINFO_POS_LEFT, MUSICINFO_POS_TOP);
+            const float MUSICINFO_POS_TOP(musicInfoLabelTextRegionUPtr_->GetEntityRegion().top + musicInfoLabelTextRegionUPtr_->GetEntityRegion().height + 30.0f);
+            musicInfoTextRegionUPtr_->SetEntityPos(MUSICINFO_POS_LEFT, MUSICINFO_POS_TOP);
         }
 
         //back button
@@ -457,7 +449,7 @@ namespace stage
         backButtonSPtr_->SetVertPositionToBottomOfScreenByRes(GetBackButtonPosLeft());
 
         //revision number
-        revisionTextRegionSPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionSPtr_->GetEntityRegion().height));
+        revisionTextRegionUPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionUPtr_->GetEntityRegion().height));
 
         //symbols at the bottom of the screen
         bottomSymbol_.Setup(1.0f, false, StageRegionWidth(), StageRegionHeight());
@@ -471,11 +463,6 @@ namespace stage
         bottomSymbol_.Draw(target, STATES);
         target.draw(box_, STATES);
         Stage::Draw(target, STATES);
-
-        for (auto const & NEXT_TEXTREGION_SPTR : textRegionSVec_)
-        {
-            NEXT_TEXTREGION_SPTR->draw(target, STATES);
-        }
     }
 
 

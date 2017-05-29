@@ -95,21 +95,20 @@ namespace stage
         sfml_util::gui::BackgroundImage           backgroundImage_;
         MainMenuTitle                             mainMenuTitle_;
         sfml_util::gui::box::Box                  box_;
-        sfml_util::gui::TextRegionSVec_t          textRegionSVec_;
         sfml_util::gui::RadioButtonSetSPtr_t      resRadioButtonSetSPtr_;
-        sfml_util::gui::TextRegionSPtr_t          resolutionTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t          musicVolumeTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t          resolutionTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t          musicVolumeTextRegionUPtr_;
         sfml_util::SliderBarLabeled_MusicSPtr_t   musicVolumeSliderBarSPtr_;
-        sfml_util::gui::TextRegionSPtr_t          effectsVolumeTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t          effectsVolumeTextRegionUPtr_;
         sfml_util::SliderBarLabeled_EffectsSPtr_t effectsVolumeSliderBarSPtr_;
         main_menu_buttons::BackButtonSPtr_t       backButtonSPtr_;
-        sfml_util::gui::TextRegionSPtr_t          revisionTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t          revisionTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetSPtr_t      aaRadioButtonSetSPtr_;
-        sfml_util::gui::TextRegionSPtr_t          aaTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t          aaTextRegionUPtr_;
         unsigned                                  prevAALevel_;
         BottomSymbol bottomSymbol_;
-        sfml_util::gui::TextRegionSPtr_t musicInfoLabelTextRegionSPtr_;
-        sfml_util::gui::TextRegionSPtr_t musicInfoTextRegionSPtr_;
+        sfml_util::gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t musicInfoTextRegionUPtr_;
     };
 
 }

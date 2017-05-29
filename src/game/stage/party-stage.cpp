@@ -81,11 +81,11 @@ namespace stage
         deleteButtonSPtr_     ( new sfml_util::gui::FourStateButton("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
         characterListBoxSPtr_ (),
         partyListBoxSPtr_     (),
-        insTextRegionSPtr_    (),
-        upTextRegionSPtr_     (),
-        partyTextRegionSPtr_  (),
+        insTextRegionUPtr_    (),
+        upTextRegionUPtr_     (),
+        partyTextRegionUPtr_  (),
         warningTextInfo_      (),
-        warningTextRegionSPtr_(),
+        warningTextRegionUPtr_(),
         warningTextSlider_    (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         ouroborosSPtr_        (),
         bottomSymbol_         (),
@@ -100,7 +100,7 @@ namespace stage
         mouseOverCharSPtr_      (),
         mouseOverTexture_       (),
         isMouseOverTexture_     (false),
-        mouseOverTextRegionSPtr_(),
+        mouseOverTextRegionUPtr_(),
         mouseOverSlider_        (4.0f)
     {}
 
@@ -315,9 +315,9 @@ namespace stage
                                                  sf::Text::Italic,
                                                  sfml_util::Justified::Left);
 
-            insTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("Instructions", insTextInfo, sf::FloatRect()) );
-            insTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 125.0f, mainMenuTitle_.LowerPosition() - 45.0f);
-            EntityAdd(insTextRegionSPtr_.get());
+            insTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("Instructions", insTextInfo, sf::FloatRect()) );
+            insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 125.0f, mainMenuTitle_.LowerPosition() - 45.0f);
+            EntityAdd(insTextRegionUPtr_.get());
         }
 
         //load all players not yet assigned to a party/started game
@@ -420,9 +420,9 @@ namespace stage
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
                                                    sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            upTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
-            upTextRegionSPtr_->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - upTextRegionSPtr_->GetEntityRegion().height));
-            EntityAdd(upTextRegionSPtr_.get());
+            upTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
+            upTextRegionUPtr_->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - upTextRegionUPtr_->GetEntityRegion().height));
+            EntityAdd(upTextRegionUPtr_.get());
         }
 
         //party label text
@@ -432,9 +432,9 @@ namespace stage
                                                    sfml_util::FontManager::Instance()->Size_Largeish(),
                                                    sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            partyTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
-            partyTextRegionSPtr_->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - partyTextRegionSPtr_->GetEntityRegion().height));
-            EntityAdd(partyTextRegionSPtr_.get());
+            partyTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
+            partyTextRegionUPtr_->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - partyTextRegionUPtr_->GetEntityRegion().height));
+            EntityAdd(partyTextRegionUPtr_.get());
         }
 
         //warning instruction text
@@ -449,9 +449,9 @@ namespace stage
                                                         sf::Text::Italic,
                                                         sfml_util::Justified::Left);
 
-            warningTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("WarningsText", warningTextInfo_, sf::FloatRect()) );
-            warningTextRegionSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (warningTextRegionSPtr_->GetEntityRegion().width * 0.5f) + 110.0f,
-                                                 (insTextRegionSPtr_->GetEntityRegion().top + insTextRegionSPtr_->GetEntityRegion().height) - sfml_util::MapByRes(0.0f, 20.0f));
+            warningTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("WarningsText", warningTextInfo_, sf::FloatRect()) );
+            warningTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 110.0f,
+                                                 (insTextRegionUPtr_->GetEntityRegion().top + insTextRegionUPtr_->GetEntityRegion().height) - sfml_util::MapByRes(0.0f, 20.0f));
         }
     }
 
@@ -465,7 +465,7 @@ namespace stage
 
         if (willDisplayCharacterCountWarningText_)
         {
-            target.draw(*warningTextRegionSPtr_, STATES);
+            target.draw(*warningTextRegionUPtr_, STATES);
         }
 
         if (willShowMouseOverPopup_ && isMouseOverTexture_)
@@ -473,9 +473,9 @@ namespace stage
             target.draw(mouseOverQuad_, STATES);
             target.draw(mouseOverSprite_, STATES);
 
-            if (mouseOverTextRegionSPtr_.get() != nullptr)
+            if (mouseOverTextRegionUPtr_.get() != nullptr)
             {
-                mouseOverTextRegionSPtr_->draw(target, STATES);
+                mouseOverTextRegionUPtr_->draw(target, STATES);
             }
         }
     }
@@ -519,11 +519,11 @@ namespace stage
         if (willDisplayCharacterCountWarningText_)
         {
             const sf::Uint8 NEW_COLOR_VAL(static_cast<sf::Uint8>(warningTextSlider_.Update(ELAPSED_TIME_SECONDS)));
-            sf::Color color(warningTextRegionSPtr_->GetEntityColorForeground());
+            sf::Color color(warningTextRegionUPtr_->GetEntityColorForeground());
             color.r = 255;
             color.g = NEW_COLOR_VAL;
             color.b = NEW_COLOR_VAL;
-            warningTextRegionSPtr_->SetEntityColorFgBoth(color);
+            warningTextRegionUPtr_->SetEntityColorFgBoth(color);
         }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
@@ -606,7 +606,7 @@ namespace stage
                                                          sfml_util::FontManager::Color_Light(),
                                                          sfml_util::Justified::Left);
 
-                mouseOverTextRegionSPtr_.reset( new sfml_util::gui::TextRegion("PartyStage'sMouseOverPopup", TEXT_INFO, TEXT_RECT) );
+                mouseOverTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PartyStage'sMouseOverPopup", TEXT_INFO, TEXT_RECT) );
             }
         }
     }
@@ -688,7 +688,7 @@ namespace stage
     {
         mouseOverPopupTimerSec_ = 0.0f;
         isMouseOverTexture_ = false;
-        mouseOverTextRegionSPtr_.reset();
+        mouseOverTextRegionUPtr_.reset();
     }
 
 }

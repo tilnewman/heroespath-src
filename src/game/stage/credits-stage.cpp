@@ -30,15 +30,17 @@
 #include "credits-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+
+#include "misc/real.hpp"
 
 
 namespace game

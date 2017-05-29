@@ -60,11 +60,11 @@ namespace gui
         hasOver_               (false),
         hasDisabled_           (false),
         buttonSprite_          (),
-        textRegionCurrSPtr_    (),
-        textRegionUpSPtr_      (),
-        textRegionDownSPtr_    (),
-        textRegionOverSPtr_    (),
-        textRegionDisabledSPtr_(),
+        textRegionCurrPtr_     (nullptr),
+        textRegionUpUPtr_      (),
+        textRegionDownUPtr_    (),
+        textRegionOverUPtr_    (),
+        textRegionDisabledUPtr_(),
         boxSPtr_               (),
         scale_                 (1.0f),
         callbackHandlerPtr_    (nullptr)
@@ -95,11 +95,11 @@ namespace gui
         hasOver_               (false),
         hasDisabled_           (false),
         buttonSprite_          (),
-        textRegionCurrSPtr_    (),
-        textRegionUpSPtr_      (),
-        textRegionDownSPtr_    (),
-        textRegionOverSPtr_    (),
-        textRegionDisabledSPtr_(),
+        textRegionCurrPtr_     (nullptr),
+        textRegionUpUPtr_      (),
+        textRegionDownUPtr_    (),
+        textRegionOverUPtr_    (),
+        textRegionDisabledUPtr_(),
         boxSPtr_               (),
         scale_                 (SCALE),
         callbackHandlerPtr_    (nullptr)
@@ -146,11 +146,11 @@ namespace gui
         hasOver_               (false),
         hasDisabled_           (false),
         buttonSprite_          (),
-        textRegionCurrSPtr_    (),
-        textRegionUpSPtr_      (),
-        textRegionDownSPtr_    (),
-        textRegionOverSPtr_    (),
-        textRegionDisabledSPtr_(),
+        textRegionCurrPtr_     (nullptr),
+        textRegionUpUPtr_      (),
+        textRegionDownUPtr_    (),
+        textRegionOverUPtr_    (),
+        textRegionDisabledUPtr_(),
         boxSPtr_               (),
         scale_                 (SCALE),
         callbackHandlerPtr_    (nullptr)
@@ -293,12 +293,12 @@ namespace gui
         sf::FloatRect tempRect(POS_LEFT, POS_TOP, 0.0f, 0.0f);
         if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) && (MOUSE_TEXT_INFO.up.text.empty() == false))
         {
-            textRegionUpSPtr_.reset(new TextRegion(GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect));
+            textRegionUpUPtr_.reset(new TextRegion(GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect));
         }
 
-        if (textRegionUpSPtr_.get() != nullptr)
+        if (textRegionUpUPtr_.get() != nullptr)
         {
-            SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, textRegionUpSPtr_->GetEntityRegion().width, textRegionUpSPtr_->GetEntityRegion().height) );
+            SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, textRegionUpUPtr_->GetEntityRegion().width, textRegionUpUPtr_->GetEntityRegion().height) );
         }
         else
         {
@@ -316,17 +316,17 @@ namespace gui
 
         if ((MOUSE_TEXT_INFO.down.fontPtr != nullptr) && (MOUSE_TEXT_INFO.down.text.empty() == false))
         {
-            textRegionDownSPtr_.reset(new TextRegion(GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion()));
+            textRegionDownUPtr_.reset(new TextRegion(GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion()));
         }
 
         if ((MOUSE_TEXT_INFO.over.fontPtr != nullptr) && (MOUSE_TEXT_INFO.over.text.empty() == false))
         {
-            textRegionOverSPtr_.reset(new TextRegion(GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion()));
+            textRegionOverUPtr_.reset(new TextRegion(GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion()));
         }
 
         if ((TEXT_INFO_DISABLED.fontPtr != nullptr) && (TEXT_INFO_DISABLED.text.empty() == false))
         {
-            textRegionDisabledSPtr_.reset(new TextRegion(GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion()));
+            textRegionDisabledUPtr_.reset(new TextRegion(GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion()));
         }
 
         if (WILL_BOX)
@@ -368,9 +368,9 @@ namespace gui
 
         if (isDisabled_)
         {
-            if (textRegionDisabledSPtr_.get() != nullptr)
+            if (textRegionDisabledUPtr_.get() != nullptr)
             {
-                textRegionCurrSPtr_ = textRegionDisabledSPtr_;
+                textRegionCurrPtr_ = textRegionDisabledUPtr_.get();
             }
 
             if (hasDisabled_)
@@ -385,9 +385,9 @@ namespace gui
                 buttonSprite_.setTexture(textureUp_, true);
             }
 
-            if (textRegionUpSPtr_.get() != nullptr)
+            if (textRegionUpUPtr_.get() != nullptr)
             {
-                textRegionCurrSPtr_ = textRegionUpSPtr_;
+                textRegionCurrPtr_ = textRegionUpUPtr_.get();
             }
         }
         else
@@ -403,15 +403,15 @@ namespace gui
             }
 
             if ((MouseState::Down == entityMouseState_) &&
-                (textRegionDownSPtr_.get() != nullptr))
+                (textRegionDownUPtr_.get() != nullptr))
             {
-                textRegionCurrSPtr_ = textRegionDownSPtr_;
+                textRegionCurrPtr_ = textRegionDownUPtr_.get();
             }
 
             if ((MouseState::Over == entityMouseState_) &&
-                (textRegionOverSPtr_.get() != nullptr))
+                (textRegionOverUPtr_.get() != nullptr))
             {
-                textRegionCurrSPtr_ = textRegionOverSPtr_;
+                textRegionCurrPtr_ = textRegionOverUPtr_.get();
             }
         }
 
@@ -440,9 +440,9 @@ namespace gui
         SetScale(scale_);
 
         //center the text within the button image
-        if (textRegionCurrSPtr_.get() != nullptr)
+        if (textRegionCurrPtr_ != nullptr)
         {
-            textRegionCurrSPtr_->SetEntityPos(GetEntityRegion().left, GetEntityRegion().top);
+            textRegionCurrPtr_->SetEntityPos(GetEntityRegion().left, GetEntityRegion().top);
         }
     }
 
@@ -454,9 +454,9 @@ namespace gui
             target.draw(buttonSprite_, states);
         }
 
-        if (textRegionCurrSPtr_.get() != nullptr)
+        if (textRegionCurrPtr_ != nullptr)
         {
-            textRegionCurrSPtr_->draw(target, states);
+            textRegionCurrPtr_->draw(target, states);
         }
 
         if (boxSPtr_.get() != nullptr)
