@@ -50,8 +50,10 @@
 namespace sfml_util
 {
 
-    using TextureVec_t = std::vector<sf::Texture>;
-    using TextureLst_t = std::list<sf::Texture>;
+    using TextureVec_t  = std::vector<sf::Texture>;
+    using TextureLst_t  = std::list<sf::Texture>;
+    using TextureUPtr_t = std::unique_ptr<sf::Texture>;
+    using TextureUVec_t = std::vector<TextureUPtr_t>;
     //
     using SpriteVec_t = std::vector<sf::Sprite>;
     //

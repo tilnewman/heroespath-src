@@ -65,39 +65,38 @@ namespace combat
     const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_             (0.333f);
     const float     CombatNode::WING_IMAGE_ANIM_SPEED_               (8.0f);
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_             (-90.0f);
-    //
-    sf::Texture CombatNode::crossBonesTexture_;
-    sf::Texture CombatNode::wingTexture_;
-
+    
 
     CombatNode::CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
                            const sfml_util::FontPtr_t       FONT_PTR,
                            const unsigned int               FONT_CHAR_SIZE)
     :
-        GuiEntity            (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_         (CREATURE_SPTR->Name(), *FONT_PTR, FONT_CHAR_SIZE),
-        condTextObj_         ("", *FONT_PTR, FONT_CHAR_SIZE),
-        blockingPos_         (0),
-        healthLineColor_     (),//this initializer doesn't matter, see constructor body below
-        healthLineColorRed_  (),// "
-        healthLineColorTick_ (),// "
-        texture_             (),
-        sprite_              (),
-        creatureImageColor_  (),
-        isSummaryView_       (false),
-        isMoving_            (false),
-        creaturePtr_         (CREATURE_SPTR.get()),
-        crossBonesSprite_    (),
-        willShowCrossBones_  (false),
-        healthRatioDisplayed_(0.0f),
-        isDead_              (false),
-        wingSprite_          (),
-        isFlying_            (false),
-        wingFlapSlider_      (WING_IMAGE_ANIM_SPEED_),
-        imagePosV_           (0.0f, 0.0f),
-        imagePosOffsetV_     (0.0f, 0.0f),
-        willShowSelectAnim_  (false),
-        selectAnimSprite_    ()
+        GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
+        nameTextObj_          (CREATURE_SPTR->Name(), *FONT_PTR, FONT_CHAR_SIZE),
+        condTextObj_          ("", *FONT_PTR, FONT_CHAR_SIZE),
+        blockingPos_          (0),
+        healthLineColor_      (),//this initializer doesn't matter, see constructor body below
+        healthLineColorRed_   (),// "
+        healthLineColorTick_  (),// "
+        texture_              (),
+        sprite_               (),
+        creatureImageColor_   (),
+        isSummaryView_        (false),
+        isMoving_             (false),
+        creaturePtr_          (CREATURE_SPTR.get()),
+        crossBonesTextureUPtr_(),
+        crossBonesSprite_     (),
+        willShowCrossBones_   (false),
+        healthRatioDisplayed_ (0.0f),
+        isDead_               (false),
+        wingTextureUPtr_      (),
+        wingSprite_           (),
+        isFlying_             (false),
+        wingFlapSlider_       (WING_IMAGE_ANIM_SPEED_),
+        imagePosV_            (0.0f, 0.0f),
+        imagePosOffsetV_      (0.0f, 0.0f),
+        willShowSelectAnim_   (false),
+        selectAnimSprite_     ()
     {
         const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -122,11 +121,6 @@ namespace combat
         }
 
         sprite_.setColor(creatureImageColor_);
-
-        //wing image
-        sfml_util::gui::CombatImageManager::Instance()->Get(wingTexture_,
-                                                            sfml_util::gui::CombatImageType::Wing,
-                                                            creaturePtr_->IsPlayerCharacter());
 
         //um...This was the only way I could get it to work...zTn 2017-4-6
         IsFlying(true);
@@ -342,13 +336,26 @@ namespace combat
     {
         if (IS_FLYING)
         {
-            wingSprite_.setTexture(wingTexture_, true);
+            if (wingTextureUPtr_.get() == nullptr)
+            {
+                wingTextureUPtr_ = std::make_unique<sf::Texture>();
+                sfml_util::gui::CombatImageManager::Instance()->Get(
+                    * wingTextureUPtr_,
+                    sfml_util::gui::CombatImageType::Wing,
+                    creaturePtr_->IsPlayerCharacter());
+            }
+
+            wingSprite_.setTexture( * wingTextureUPtr_, true);
             wingSprite_.setColor(sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_));
             wingSprite_.setRotation(0.0f);
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
 
             wingFlapSlider_.Reset(WING_IMAGE_ANIM_SPEED_);
+        }
+        else
+        {
+            wingTextureUPtr_.reset();
         }
 
         isFlying_ = IS_FLYING;
@@ -523,8 +530,15 @@ namespace combat
 
     void CombatNode::SetupSkullAndCrossBones()
     {
-        sfml_util::LoadImageOrTexture(crossBonesTexture_, GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
-        crossBonesSprite_.setTexture(crossBonesTexture_, true);
+        if (crossBonesTextureUPtr_.get() == nullptr)
+        {
+            crossBonesTextureUPtr_ = std::make_unique<sf::Texture>();
+
+            sfml_util::LoadImageOrTexture( * crossBonesTextureUPtr_,
+                GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
+        }
+
+        crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);
         crossBonesSprite_.setColor( sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_) );
         SetCrossBonesImageScale();
     }

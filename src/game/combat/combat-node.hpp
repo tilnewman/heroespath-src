@@ -163,7 +163,7 @@ namespace combat
         creature::CreaturePtr_t  creaturePtr_;
 
         //members that control the display of skull and crossbones
-        static sf::Texture crossBonesTexture_;
+        sfml_util::TextureUPtr_t crossBonesTextureUPtr_;
         sf::Sprite crossBonesSprite_;
         bool willShowCrossBones_;
 
@@ -180,9 +180,9 @@ namespace combat
         bool isDead_;
 
         //members that control the flapping wing animation
-        static sf::Texture wingTexture_;
-        sf::Sprite         wingSprite_;
-        bool               isFlying_;
+        sfml_util::TextureUPtr_t wingTextureUPtr_;
+        sf::Sprite wingSprite_;
+        bool isFlying_;
         sfml_util::sliders::ZeroSlider<float> wingFlapSlider_;
 
         //members that control the shake or image position offset
