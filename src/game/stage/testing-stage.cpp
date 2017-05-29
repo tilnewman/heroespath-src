@@ -656,7 +656,7 @@ namespace stage
             "media-anim-images-dir-whiteburst",
         };
 
-        const long ANIM_FRAME_SLEEP_MS{ 15 };
+        //const long ANIM_FRAME_SLEEP_MS{ 15 };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
@@ -675,7 +675,7 @@ namespace stage
                                           isNewAnimation,
                                           color) == false)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewAnimation = false;
                 return false;
             }
@@ -701,7 +701,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -724,7 +724,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -747,7 +747,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -770,7 +770,7 @@ namespace stage
                                            sf::BlendAdd,
                                            sf::Color::Cyan) == false)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
