@@ -25,7 +25,7 @@
 #ifndef GAME_NONPLAYER_PARTY_INCLUDED
 #define GAME_NONPLAYER_PARTY_INCLUDED
 //
-// party.hpp
+// party.hpp (non-player)
 //  A collection of characters NOT under control of the user.
 //
 #include "misc/boost-serialize-includes.hpp"
@@ -50,8 +50,8 @@ namespace non_player
 
     //forward declarations
     class Character;
-    using CharacterSPtr_t = std::shared_ptr<Character>;
-    using CharacterSVec_t = std::vector<CharacterSPtr_t>;
+    using CharacterPtr_t = Character *;
+    using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
 
     //encapsulates a set of Characters under control of the user
@@ -64,28 +64,28 @@ namespace non_player
         Party & operator=(const Party &) =delete;
 
     public:
-        explicit Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
+        explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
         virtual ~Party();
 
-        inline const CharacterSVec_t Characters() const { return charactersSVec_; }
+        inline const CharacterPVec_t Characters() const { return charactersPVec_; }
 
-        bool Add(const CharacterSPtr_t & CHARACTER_SPTR);
-        bool Remove(const CharacterSPtr_t & CHARACTER_SPTR);
-        inline void Clear() { charactersSVec_.clear(); }
+        void Add(const CharacterPtr_t, const bool WILL_STORE = true);
+        bool Remove(CharacterPtr_t, const bool WILL_FREE = true);
+        inline void Clear() { charactersPVec_.clear(); }
 
-        CharacterSPtr_t FindByCreaturePtr(creature::CreatureCPtrC_t) const;
+        CharacterPtr_t FindByCreaturePtr(creature::CreatureCPtrC_t) const;
 
         const std::string Summary() const;
 
     private:
-        CharacterSVec_t charactersSVec_;
+        CharacterPVec_t charactersPVec_;
 
     private:
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & charactersSVec_;
+            ar & charactersPVec_;
         }
     };
 

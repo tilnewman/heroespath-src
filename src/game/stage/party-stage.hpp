@@ -56,11 +56,11 @@ namespace gui
 
 namespace game
 {
-    namespace player
-    {
-        class Character;
-        using CharacterSPtr_t = std::shared_ptr<Character>;
-    }
+namespace player
+{
+    class Character;
+    using CharacterPtr_t = Character *;
+}
 
 namespace stage
 {
@@ -96,7 +96,7 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
-        virtual player::CharacterSPtr_t GetSelectedCharacter() const;
+        virtual player::CharacterPtr_t GetSelectedCharacter() const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -147,7 +147,7 @@ namespace stage
         float           mouseOverBoxHeight_;
         sf::Vector2f    mouseOverPosV_;
         sf::Sprite      mouseOverSprite_;
-        player::CharacterSPtr_t mouseOverCharSPtr_;
+        player::CharacterPtr_t mouseOverCharPtr_;
         sf::Texture     mouseOverTexture_;
         bool isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;

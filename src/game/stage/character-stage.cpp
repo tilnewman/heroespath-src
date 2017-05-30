@@ -66,6 +66,7 @@
 #include "misc/random.hpp"
 
 #include <sstream>
+#include <memory>
 
 
 namespace game
@@ -285,40 +286,45 @@ namespace stage
             sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
 
             //create the new character
-            player::CharacterSPtr_t newCharacterSPtr( new player::Character(NAME,
-                                                                            SEX_ENUM,
-                                                                            creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
-                                                                            creature::Race(RACE_ENUM),
-                                                                            creature::Role(ROLE_ENUM),
-                                                                            statSetFinal,
-                                                                            0,
-                                                                            1,
-                                                                            0,
-                                                                            game::creature::ConditionEnumVec_t(),
-                                                                            game::creature::TitleEnumVec_t(),
-                                                                            game::item::Inventory(),
-                                                                            sfml_util::DateTime::CurrentDateTime(),
-                                                                            characterImageFilenamesVec[selectedImageIndex_]) );
+            auto newCharacterUPtr = std::make_unique<player::Character>(
+                NAME,
+                SEX_ENUM,
+                creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
+                creature::Race(RACE_ENUM),
+                creature::Role(ROLE_ENUM),
+                statSetFinal,
+                0,
+                1,
+                0,
+                game::creature::ConditionEnumVec_t(),
+                game::creature::TitleEnumVec_t(),
+                game::item::Inventory(),
+                sfml_util::DateTime::CurrentDateTime(),
+                characterImageFilenamesVec[selectedImageIndex_]);
 
             //setup the new character with initial health and inventory
-            player::Initial::Setup(newCharacterSPtr.get());
+            player::Initial::Setup(newCharacterUPtr.get());
 
             //save the character to disc
-            game::state::GameStateFactory::Instance()->SaveCharacter(newCharacterSPtr);
+            game::state::GameStateFactory::Instance()->SaveCharacter(newCharacterUPtr.get());
 
             //confirm popup
             std::ostringstream sss;
             sss << "\n"
-                << newCharacterSPtr->Name()
-                << " the " << creature::sex::ToString(newCharacterSPtr->Sex())
-                << " " << newCharacterSPtr->Race().Name();
+                << newCharacterUPtr->Name()
+                << " the " << creature::sex::ToString(newCharacterUPtr->Sex())
+                << " " << newCharacterUPtr->Race().Name();
 
-            if (creature::race::Wolfen != newCharacterSPtr->Race().Which())
-                sss << " " << newCharacterSPtr->Role().Name();
+            if (creature::race::Wolfen != newCharacterUPtr->Race().Which())
+            {
+                sss << " " << newCharacterUPtr->Role().Name();
+            }
 
             sss  << " saved.";
 
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo("Test After", sss.str()));
+            LoopManager::Instance()->PopupWaitBegin(
+                this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    "Test After", sss.str()));
 
             ResetForNewCharacterCreation();
             return true;
@@ -326,14 +332,18 @@ namespace stage
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
         {
             if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::MainMenu);
+            }
 
             return true;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
         {
             if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::PartyCreation);
+            }
 
             return true;
         }
@@ -401,7 +411,9 @@ namespace stage
                 ss << creature::race::Name(RACE) << " ";
 
                 if (RACE != creature::race::Wolfen)
+                {
                     ss << creature::role::Name(ROLE);
+                }
             }
 
             //const std::string PAD(" ");

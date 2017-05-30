@@ -108,7 +108,9 @@ namespace combat
 
     void Encounter::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::combat::Encounter::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::combat::Encounter::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -121,11 +123,15 @@ namespace combat
 
     const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t P) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((P != nullptr), "game::combat::Encounter::GetTurnInfoCopy() was given a nullptr creature::CreaturePtr_t.");
+        M_ASSERT_OR_LOGANDTHROW_SS((P != nullptr),
+            "game::combat::Encounter::GetTurnInfoCopy() was given a nullptr"
+            << " creature::CreaturePtr_t.");
 
         auto const FOUND_ITER{ turnInfoMap_.find(P) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != turnInfoMap_.end()), "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << P->Name() << ") was not found in the turnInfoMap_.");
+        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != turnInfoMap_.end()),
+            "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << P->Name()
+            << ") was not found in the turnInfoMap_.");
 
         return FOUND_ITER->second;
     }
@@ -139,7 +145,9 @@ namespace combat
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
 
         if (Game::Instance()->State()->IsNewGame())
+        {
             GenerateFirstEncounter();
+        }
 
         PopulateTurnInfoMap();
         SortAndSetTurnCreature();
@@ -169,9 +177,9 @@ namespace combat
         //no need to null out turnCreaturePtr_
 
         //move from the enemyParty to the deadEnemyParty for later loot collection
-        auto const KILLED_NONPLAYER_CHARACTER_SPTR{ enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-        enemyPartySPtr_->Remove(KILLED_NONPLAYER_CHARACTER_SPTR);
-        deadEnemyPartySPtr_->Add(KILLED_NONPLAYER_CHARACTER_SPTR);
+        auto killedCharacterPtr{ enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+        enemyPartySPtr_->Remove(killedCharacterPtr, false);
+        deadEnemyPartySPtr_->Add(killedCharacterPtr, false);
     }
 
 
@@ -180,9 +188,12 @@ namespace combat
         ++roundCounter_;
 
         if (turnCreaturePtr_ != nullptr)
+        {
             turnOverPVec_.push_back(turnCreaturePtr_);
+        }
 
-        //re-sort by speed every turn because spells/conditions/etc could have changed creature speed during any given turn
+        //re-sort by speed every turn because spells/conditions/etc could have changed
+        //creature speed during any given turn
         SortAndSetTurnCreature();
     }
 
@@ -197,16 +208,20 @@ namespace combat
     {
         turnInfoMap_.clear();
 
-        for (auto const & NEXT_CHAR_SPTR : enemyPartySPtr_->Characters())
+        for (auto const NEXT_CHAR_PTR : enemyPartySPtr_->Characters())
         {
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
-            turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(NEXT_CHAR_SPTR->Race().Which(), NEXT_CHAR_SPTR->Role().Which()).Make() );
-            turnInfoMap_[NEXT_CHAR_SPTR.get()] = turnInfo;
+            turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(
+                NEXT_CHAR_PTR->Race().Which(), NEXT_CHAR_PTR->Role().Which()).Make() );
+
+            turnInfoMap_[NEXT_CHAR_PTR] = turnInfo;
         }
 
-        for (auto const & NEXT_CHAR_SPTR : Game::Instance()->State()->Party()->Characters())
-            turnInfoMap_[NEXT_CHAR_SPTR.get()] = TurnInfo();
+        for (auto const NEXT_CHAR_PTR : Game::Instance()->State()->Party()->Characters())
+        {
+            turnInfoMap_[NEXT_CHAR_PTR] = TurnInfo();
+        }
     }
 
 
@@ -221,18 +236,29 @@ namespace combat
             turnOverPVec_.clear();
         }
 
-        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(misc::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
+        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(
+            misc::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false), "game::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false),
+            "game::combat::Encounter::SortAndSetTurnCreature("
+            << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name())
+            << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 
         if (creaturesThatHaveNotTakenTurnYetPVec.size() > 1)
+        {
             std::sort(creaturesThatHaveNotTakenTurnYetPVec.begin(),
                       creaturesThatHaveNotTakenTurnYetPVec.end(),
-                      [](const creature::CreaturePtr_t A, const creature::CreaturePtr_t B) { return A->Stats().Spd().Current() > B->Stats().Spd().Current(); });
+                      []
+                      (const creature::CreaturePtr_t A, const creature::CreaturePtr_t B)
+                      { return A->Stats().Spd().Current() > B->Stats().Spd().Current(); });
+        }
 
         turnCreaturePtr_ = creaturesThatHaveNotTakenTurnYetPVec.at(0);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "game::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in a nullptr turnCreaturePtr_.");
+        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
+            "game::combat::Encounter::SortAndSetTurnCreature("
+            << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name())
+            << ") resulted in a nullptr turnCreaturePtr_.");
     }
 
 }

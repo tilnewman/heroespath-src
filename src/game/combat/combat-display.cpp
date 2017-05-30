@@ -150,20 +150,28 @@ namespace combat
     void CombatDisplay::Setup()
     {
         //create CombatNodes and add them into the combateTree_
-        const player::CharacterSVec_t PLAYER_CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
+        auto const PLAYER_CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+        for (auto const NEXT_CHARACTER_PTR : PLAYER_CHAR_PVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
+                std::make_shared<combat::CombatNode>(NEXT_CHARACTER_PTR,
+                                                     creature::NameInfo::Instance()->DefaultFont(),
+                                                     nameCharSizeCurr_) );
+
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
         InitialPlayerPartyCombatTreeSetup();
         //
-        const non_player::CharacterSVec_t NONPLAYER_CHAR_SVEC(Encounter::Instance()->NonPlayerParty()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
+        auto const NONPLAYER_CHAR_PVEC( Encounter::Instance()->NonPlayerParty()->Characters() );
+        for (auto const NEXT_CHARACTER_PTR : NONPLAYER_CHAR_PVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
+                std::make_shared<combat::CombatNode>(NEXT_CHARACTER_PTR,
+                                                     creature::NameInfo::Instance()->DefaultFont(),
+                                                     nameCharSizeCurr_) );
+
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
@@ -1094,12 +1102,12 @@ namespace combat
         else
         {
             //place player characters in the blocking order saved in blockingMap_
-            const player::CharacterSVec_t CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-            for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+            auto const CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+            for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
             {
-                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_SPTR->UniqueTraits());
+                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_PTR->UniqueTraits());
                 const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
                 combatTree_.ConnectAllAtPosition(NEXT_POSITION, combat::EdgeType::ShoulderToShoulder);
             }
@@ -1107,12 +1115,12 @@ namespace combat
 
         //whatever blocking order pattern, leave the disabled characters farthest behind
         const int DISABLED_CREATURES_POSITION(position - 1);
-        const player::CharacterSVec_t CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+        auto const CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+        for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
         {
-            if (NEXT_CHARACTER_SPTR->CanTakeAction() == false)
+            if (NEXT_CHARACTER_PTR->CanTakeAction() == false)
             {
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
             }
         }

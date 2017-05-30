@@ -49,7 +49,7 @@ namespace gui
                              const bool          IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemBase")),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -64,7 +64,7 @@ namespace gui
                              const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTextOnly"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -74,13 +74,13 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                   NAME,
-                             const sfml_util::gui::TextInfo &      TEXT_INFO,
-                             const game::player::CharacterSPtr_t & CHARACTER_SPTR,
-                             const bool                            IS_VALID)
+    ListBoxItem::ListBoxItem(const std::string &                NAME,
+                             const sfml_util::gui::TextInfo &   TEXT_INFO,
+                             const game::player::CharacterPtr_t CHARACTER_PTR,
+                             const bool                         IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemPlayerCharacter"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(CHARACTER_SPTR),
+            CHARACTER_CPTR(CHARACTER_PTR),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -96,7 +96,7 @@ namespace gui
                              const bool                           IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(GAMESTATE_SPTR),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -112,7 +112,7 @@ namespace gui
                              const bool                           IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (CONDITION_CPTRC_PARAM),
@@ -128,7 +128,7 @@ namespace gui
                              const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (ITEM_PTR),
             COND_CPTRC    (nullptr),
@@ -144,7 +144,7 @@ namespace gui
                              const bool                        IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -160,7 +160,7 @@ namespace gui
                              const bool                       IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect()),
-            character_sptr(),
+            CHARACTER_CPTR(nullptr),
             gamestate_sptr(),
             ITEM_CPTR     (nullptr),
             COND_CPTRC    (nullptr),
@@ -172,7 +172,7 @@ namespace gui
 
     bool operator==(const ListBoxItem & L, const ListBoxItem & R)
     {
-        return std::tie(L.character_sptr,
+        return std::tie(L.CHARACTER_CPTR,
                         L.gamestate_sptr,
                         L.ITEM_CPTR,
                         L.COND_CPTRC,
@@ -180,7 +180,7 @@ namespace gui
                         L.SPELL_CPTRC,
                         L.is_valid)
                ==
-               std::tie(R.character_sptr,
+               std::tie(R.CHARACTER_CPTR,
                         R.gamestate_sptr,
                         R.ITEM_CPTR,
                         R.COND_CPTRC,
@@ -192,7 +192,7 @@ namespace gui
 
     bool operator<(const ListBoxItem & L, const ListBoxItem & R)
     {
-        return std::tie(L.character_sptr,
+        return std::tie(L.CHARACTER_CPTR,
                         L.gamestate_sptr,
                         L.ITEM_CPTR,
                         L.COND_CPTRC,
@@ -200,7 +200,7 @@ namespace gui
                         L.SPELL_CPTRC,
                         L.is_valid)
                <
-               std::tie(R.character_sptr,
+               std::tie(R.CHARACTER_CPTR,
                         R.gamestate_sptr,
                         R.ITEM_CPTR,
                         R.COND_CPTRC,

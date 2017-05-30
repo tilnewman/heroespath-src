@@ -40,13 +40,11 @@
 
 namespace game
 {
-namespace creature
-{
-    class Creature;
-    using CreatureSPtr_t = std::shared_ptr<Creature>;
-}
 namespace non_player
 {
+    class Character;
+    using CharacterPtr_t = Character *;
+
 namespace ownership
 {
 
@@ -68,7 +66,7 @@ namespace ownership
         static const std::string ToString(const wealth_type::Enum);
         static wealth_type::Enum FromRankType(const creature::rank_class::Enum RANK_TYPE);
         static wealth_type::Enum FromRank(const stats::Rank_t RANK_VALUE);
-        static wealth_type::Enum FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        static wealth_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 
 
@@ -77,15 +75,24 @@ namespace ownership
     {
         enum Enum : unsigned int
         {
-            NoPreference = 0,      //pure random chance to carry items, should not be used
-            Minimalist   = 1 << 0, //rarely carries duplicates, usually only carries essential items
-            Practical    = 1 << 1, //often carries items that can be used (torche/lantern/healingherbs/etc.)
-            Collector    = 1 << 2, //often carries rare items or items of unique/cool materials
-            Hoarder      = 1 << 3  //often carries duplicates, especially items that cannot be used
+            //pure random chance to carry items, should not be used
+            NoPreference = 0,
+
+            //rarely carries duplicates, usually only carries essential items
+            Minimalist = 1 << 0,
+
+            //often carries items that can be used (torche/lantern/healingherbs/etc.)
+            Practical = 1 << 1,
+
+            //often carries rare items or items of unique/cool materials
+            Collector = 1 << 2,
+
+            //often carries duplicates, especially items that cannot be used
+            Hoarder = 1 << 3
         };
 
         static const std::string ToString(const collector_type::Enum);
-        static collector_type::Enum FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        static collector_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 
 
@@ -100,7 +107,7 @@ namespace ownership
             Count
         };
 
-        static owns_magic_type::Enum FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        static owns_magic_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 
 
@@ -109,16 +116,25 @@ namespace ownership
     {
         enum Enum
         {
-            Animal = 0, //...nothing really
-            Simple,    //shortbow/longbow/blowpipe, rings, leather/stone/bone/obsidian/lapis/horn/hide/tooth materials only
-            Moderate, //composite bow, medallion, scale material, iron/steel/tin metals only
-            Complex, //crossbow, lantern, necklas, work with all metals
+            //...nothing really
+            Animal = 0,
+
+            //shortbow/longbow/blowpipe, rings,
+            //leather/stone/bone/obsidian/lapis/horn/hide/tooth materials only
+            Simple,
+
+            //composite bow, medallion, scale material, iron/steel/tin metals only
+            Moderate,
+
+            //crossbow, lantern, necklas, work with all metals
+            Complex,
+
             Count
         };
 
         static const std::string ToString(const complexity_type::Enum);
         static complexity_type::Enum FromString(const std::string &);
-        static complexity_type::Enum FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        static complexity_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 
 
@@ -130,7 +146,7 @@ namespace ownership
                 const owns_magic_type::Enum MAGIC_OWN_TYPE,
                 const complexity_type::Enum COMPLEXITY_TYPE);
 
-        static const Profile Make_FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR);
+        static const Profile Make_FromCreature( const CharacterPtr_t CHARACTER_PTR);
 
         wealth_type::Enum     wealthType;
         collector_type::Enum  collectorType;
@@ -141,4 +157,5 @@ namespace ownership
 }
 }
 }
+
 #endif //GAME_NONPLAYER_OWNERSHIPPROFILE_INCLUDED

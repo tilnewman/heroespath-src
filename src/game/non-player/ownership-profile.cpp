@@ -29,7 +29,7 @@
 //
 #include "ownership-profile.hpp"
 
-#include "game/creature/creature.hpp"
+#include "game/non-player/character.hpp"
 #include "game/item/item.hpp"
 #include "game/game-data-file.hpp"
 
@@ -65,7 +65,9 @@ namespace ownership
             default:
             {
                 std::ostringstream ss;
-                ss << "game::non_player::ownership::wealth_type::ToString(" << E << ")_InvalidValueError.";
+                ss << "game::non_player::ownership::wealth_type::ToString("
+                    << E << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -85,11 +87,17 @@ namespace ownership
         {
             const wealth_type::Enum NEXT_WEALTH_TYPE( static_cast<wealth_type::Enum>(i) );
             const std::string NEXT_WEALTH_TYPE_NAME( wealth_type::ToString(NEXT_WEALTH_TYPE) );
+
             std::ostringstream ss;
-            ss << "heroespath-wealthtype-chance-" << RANK_TYPE_STR << "-" << NEXT_WEALTH_TYPE_NAME << "-one-in";
+            ss << "heroespath-wealthtype-chance-" << RANK_TYPE_STR << "-" 
+                << NEXT_WEALTH_TYPE_NAME << "-one-in";
+            
             const std::string NEXT_VALUE_STR( GameDataFile::Instance()->GetCopyStr(ss.str()) );
+
             if (NEXT_VALUE_STR == "remaining")
+            {
                 wealthTypeChanceRemaining = NEXT_WEALTH_TYPE;
+            }
 
             float nextChanceValue(0.0f);
             try
@@ -101,7 +109,8 @@ namespace ownership
                 nextChanceValue = -1.0f;
             }
 
-            wealthChanceMap[NEXT_WEALTH_TYPE] = ((nextChanceValue > 0.0f) ? (1.0f / nextChanceValue) : (0.0f));
+            wealthChanceMap[NEXT_WEALTH_TYPE] = ((nextChanceValue > 0.0f) ?
+                (1.0f / nextChanceValue) : (0.0f));
         }
 
         float cumulative(0.0f);
@@ -111,8 +120,11 @@ namespace ownership
             if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
             {
                 cumulative += NEXT_TYPECHANCE_PAIR.second;
+
                 if (RAND < cumulative)
+                {
                     return NEXT_TYPECHANCE_PAIR.first;
+                }
             }
         }
 
@@ -126,9 +138,9 @@ namespace ownership
     }
 
 
-    wealth_type::Enum wealth_type::FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR)
+    wealth_type::Enum wealth_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
     {
-        return FromRank(CREATURE_SPTR->Rank());
+        return FromRank(CHARACTER_PTR->Rank());
     }
 
 
@@ -151,7 +163,9 @@ namespace ownership
         if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "game::non_player::ownership::collector_type::ToString(" << E << ")_InvalidValueError";
+            ssErr << "game::non_player::ownership::collector_type::ToString("
+                << E << ")_InvalidValueError";
+
             throw std::range_error(ssErr.str());
         }
 
@@ -159,75 +173,102 @@ namespace ownership
     }
 
 
-    collector_type::Enum collector_type::FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR)
+    collector_type::Enum collector_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
     {
         //adjust for race
-        const std::string RACE_STR( creature::race::ToString(CREATURE_SPTR->Race().Which()) );
-        const float CHANCE_BASE( GameDataFile::Instance()->GetCopyFloat("heroespath-nonplayer-ownershipprofile-collectortype-chance-base") );
+        const std::string RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
+        const float CHANCE_BASE( GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-nonplayer-ownershipprofile-collectortype-chance-base") );
 
         std::ostringstream ss;
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Minimalist-chance-adjustment-race-" << RACE_STR;
         float chanceMinimalist(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Practical-chance-adjustment-race-" << RACE_STR;
         float chancePractical(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Collector-chance-adjustment-race-" << RACE_STR;
         float chanceCollector(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Hoarder-chance-adjustment-race-" << RACE_STR;
         float chanceHoarder(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
 
         //adjust for roles
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Minimalist-chance-adjustment-race-" << RACE_STR;
         chanceMinimalist += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Practical-chance-adjustment-race-" << RACE_STR;
         chancePractical += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Collector-chance-adjustment-race-" << RACE_STR;
         chanceCollector += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
         ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-" << RACE_STR;
+        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
+            << "Hoarder-chance-adjustment-race-" << RACE_STR;
         chanceHoarder += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
         //enforce min
         {
-            const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat("heroespath-nonplayer-ownershipprofile-collectortype-chance-minimum"));
+            const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-nonplayer-ownershipprofile-collectortype-chance-minimum"));
             if (chanceMinimalist < CHANCE_MIN)
+            {
                 chanceMinimalist = CHANCE_MIN;
+            }
 
             if (chancePractical < CHANCE_MIN)
+            {
                 chancePractical = CHANCE_MIN;
+            }
 
             if (chanceCollector < CHANCE_MIN)
+            {
                 chanceCollector = CHANCE_MIN;
+            }
 
             if (chanceHoarder < CHANCE_MIN)
+            {
                 chanceHoarder = CHANCE_MIN;
+            }
         }
 
         //enforce max
         {
-            const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat("heroespath-nonplayer-ownershipprofile-collectortype-chance-maximum"));
+            const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-nonplayer-ownershipprofile-collectortype-chance-maximum"));
             if (chanceMinimalist > CHANCE_MAX)
+            {
                 chanceMinimalist = CHANCE_MAX;
+            }
 
             if (chancePractical > CHANCE_MAX)
+            {
                 chancePractical = CHANCE_MAX;
+            }
 
             if (chanceCollector > CHANCE_MAX)
+            {
                 chanceCollector = CHANCE_MAX;
+            }
 
             if (chanceHoarder > CHANCE_MAX)
+            {
                 chanceHoarder = CHANCE_MAX;
+            }
         }
 
         //determine
@@ -248,7 +289,7 @@ namespace ownership
     }
 
 
-    owns_magic_type::Enum owns_magic_type::FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR)
+    owns_magic_type::Enum owns_magic_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
     {
         float chanceRarely(0.0f);
         float chanceReligous(0.0f);
@@ -256,77 +297,109 @@ namespace ownership
 
         //adjust for race
         {
-            const std::string RACE_STR( creature::race::ToString(CREATURE_SPTR->Race().Which()) );
+            const std::string RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
 
             std::ostringstream ss;
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-" << RACE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-Rarely-race-" << RACE_STR;
+
             chanceRarely += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
             ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-" << RACE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-Religous-race-" << RACE_STR;
+
             chanceReligous += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
             ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-" << RACE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-Magical-race-" << RACE_STR;
+
             chanceMagical += GameDataFile::Instance()->GetCopyFloat(ss.str());
         }
 
         //adjust for role
         {
-            const std::string ROLE_STR( creature::role::ToString(CREATURE_SPTR->Role().Which()) );
+            const std::string ROLE_STR( creature::role::ToString(CHARACTER_PTR->Role().Which()) );
 
             std::ostringstream ss;
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
+
             chanceRarely += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
             ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-Religous-role-" << ROLE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-adjustment-Religous-role-" << ROLE_STR;
+
             chanceReligous += GameDataFile::Instance()->GetCopyFloat(ss.str());
 
             ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-Magical-role-" << ROLE_STR;
+            ss << "heroespath-nonplayer-ownershipprofile-"
+                << "ownsmagictype-chance-adjustment-Magical-role-" << ROLE_STR;
+
             chanceMagical += GameDataFile::Instance()->GetCopyFloat(ss.str());
         }
 
         //enforce min
         {
-            const float MIN(GameDataFile::Instance()->GetCopyFloat("heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-min"));
+            const float MIN(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-min"));
 
             if (chanceRarely < MIN)
+            {
                 chanceRarely = MIN;
+            }
 
             if (chanceReligous < MIN)
+            {
                 chanceReligous = MIN;
+            }
 
             if (chanceMagical < MIN)
+            {
                 chanceMagical = MIN;
+            }
         }
 
         //enforce max
         {
-            const float MAX(GameDataFile::Instance()->GetCopyFloat("heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-max"));
+            const float MAX(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-max"));
 
             if (chanceRarely > MAX)
+            {
                 chanceRarely = MAX;
+            }
 
             if (chanceReligous > MAX)
+            {
                 chanceReligous = MAX;
+            }
 
             if (chanceMagical > MAX)
+            {
                 chanceMagical = MAX;
+            }
         }
 
         //determine
         const float RAND(misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
 
         if (RAND < chanceMagical)
+        {
             return Magical;
+        }
         else
         {
             if (RAND < (chanceMagical + chanceReligous))
+            {
                 return Religous;
+            }
             else
+            {
                 return Rarely;
+            }
         }
     }
 
@@ -343,7 +416,9 @@ namespace ownership
             default:
             {
                 std::ostringstream ss;
-                ss << "game::non_player::ownership::complexity_type::ToString(" << E << ")_InvalidValueError.";
+                ss << "game::non_player::ownership::complexity_type::ToString("
+                    << E << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -361,14 +436,23 @@ namespace ownership
     }
 
 
-    complexity_type::Enum complexity_type::FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR)
+    complexity_type::Enum complexity_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
     {
-        const complexity_type::Enum COMPLEXITY_BASED_ON_RACE( FromString(GameDataFile::Instance()->GetCopyStr("heroespath-nonplayer-ownershipprofile-complexitytype-race-" + creature::race::ToString(CREATURE_SPTR->Race().Which()))) );
+        const complexity_type::Enum COMPLEXITY_BASED_ON_RACE(
+            FromString(GameDataFile::Instance()->GetCopyStr(
+                "heroespath-nonplayer-ownershipprofile-complexitytype-race-" +
+                creature::race::ToString(CHARACTER_PTR->Race().Which()))) );
 
         if (COMPLEXITY_BASED_ON_RACE != complexity_type::Count)
+        {
             return COMPLEXITY_BASED_ON_RACE;
+        }
         else
-            return FromString( GameDataFile::Instance()->GetCopyStr("heroespath-nonplayer-ownershipprofile-complexitytype-role-" + creature::role::ToString(CREATURE_SPTR->Role().Which())) );
+        {
+            return FromString( GameDataFile::Instance()->GetCopyStr(
+                "heroespath-nonplayer-ownershipprofile-complexitytype-role-" +
+                creature::role::ToString(CHARACTER_PTR->Role().Which())) );
+        }
     }
 
 
@@ -384,12 +468,12 @@ namespace ownership
     {}
 
 
-    const Profile Profile::Make_FromCreature(const creature::CreatureSPtr_t & CREATURE_SPTR)
+    const Profile Profile::Make_FromCreature(const CharacterPtr_t CHARACTER_PTR)
     {
-        return Profile(wealth_type::FromCreature(CREATURE_SPTR),
-                       collector_type::FromCreature(CREATURE_SPTR),
-                       owns_magic_type::FromCreature(CREATURE_SPTR),
-                       complexity_type::FromCreature(CREATURE_SPTR));
+        return Profile(wealth_type::FromCreature(CHARACTER_PTR),
+                       collector_type::FromCreature(CHARACTER_PTR),
+                       owns_magic_type::FromCreature(CHARACTER_PTR),
+                       complexity_type::FromCreature(CHARACTER_PTR));
     }
 
 }

@@ -65,7 +65,7 @@ namespace state
 namespace player
 {
     class Character;
-    using CharacterSPtr_t = std::shared_ptr<Character>;
+    using CharacterPtr_t = Character *;
 }
 }
 namespace sfml_util
@@ -92,10 +92,10 @@ namespace gui
                     const bool                       IS_VALID = true);
 
         //used by the Party Stage for a ListBox of Characters
-        ListBoxItem(const std::string &                   NAME,
-                    const sfml_util::gui::TextInfo &      TEXT_INFO,
-                    const game::player::CharacterSPtr_t & CHARACTER_SPTR,
-                    const bool                            IS_VALID = true);
+        ListBoxItem(const std::string &                NAME,
+                    const sfml_util::gui::TextInfo &   TEXT_INFO,
+                    const game::player::CharacterPtr_t CHARACTER_PTR,
+                    const bool                         IS_VALID = true);
 
         //used by the LoadGame Stage for a ListBox of GameStates
         ListBoxItem(const std::string &                  NAME,
@@ -127,7 +127,7 @@ namespace gui
                     const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
                     const bool                       IS_VALID = true);
 
-        game::player::CharacterSPtr_t         character_sptr;
+        const game::player::CharacterPtr_t    CHARACTER_CPTR;
         game::state::GameStateSPtr_t          gamestate_sptr;
         const game::item::ItemPtr_t           ITEM_CPTR;
         const game::creature::ConditionPtrC_t COND_CPTRC;

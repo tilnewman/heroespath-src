@@ -54,7 +54,7 @@ namespace game
 namespace stage
 {
 
-    //A Stage class that allows camping characters
+    //A Stage class that allows the party to camp for resting and healing
     class CampStage
     :
         public sfml_util::Stage,

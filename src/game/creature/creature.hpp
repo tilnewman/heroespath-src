@@ -350,13 +350,9 @@ namespace creature
     using CreaturePtrC_t  = Creature * const;
     using CreatureCPtr_t  = const Creature *;
     using CreatureCPtrC_t = const Creature * const;
-    using CreatureSPtr_t  = std::shared_ptr<Creature>;
-
-    using CreaturePVec_t     = std::vector<CreaturePtr_t>;
-    using CreatureSVec_t     = std::vector<CreatureSPtr_t>;
-    using CreatureSVecIter_t = CreatureSVec_t::iterator;
-    using CreatureSVecCIter_ = CreatureSVec_t::const_iterator;
-
+    using CreatureUPtr_t  = std::unique_ptr<Creature>;
+    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+    
 }
 }
 #endif //GAME_CREATURE_INCLUDED

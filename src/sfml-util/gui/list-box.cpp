@@ -756,27 +756,43 @@ namespace gui
 
         if (listBoxItemSPtr->ITEM_CPTR != nullptr)
         {
-            sfml_util::gui::ItemImageManager::Instance()->Load(texture, listBoxItemSPtr->ITEM_CPTR);
+            sfml_util::gui::ItemImageManager::Instance()->Load(
+                texture,
+                listBoxItemSPtr->ITEM_CPTR);
+
             didLoadTexture = true;
         }
         else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)
         {
-            sfml_util::gui::TitleImageManager::Instance()->Get(texture, listBoxItemSPtr->TITLE_CPTRC);
+            sfml_util::gui::TitleImageManager::Instance()->Get(
+                texture,
+                listBoxItemSPtr->TITLE_CPTRC);
+
             didLoadTexture = true;
         }
-        else if (listBoxItemSPtr->character_sptr.get() != nullptr)
+        else if (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
         {
-            sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, listBoxItemSPtr->character_sptr->ImageFilename(), true);
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+                texture,
+                listBoxItemSPtr->CHARACTER_CPTR->ImageFilename(),
+                true);
+
             didLoadTexture = true;
         }
         else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
         {
-            sfml_util::gui::SpellImageManager::Instance()->Get(texture, listBoxItemSPtr->SPELL_CPTRC->Which());
+            sfml_util::gui::SpellImageManager::Instance()->Get(
+                texture,
+                listBoxItemSPtr->SPELL_CPTRC->Which());
+
             didLoadTexture = true;
         }
         else if (listBoxItemSPtr->COND_CPTRC != nullptr)
         {
-            sfml_util::gui::ConditionImageManager::Instance()->Get(texture, listBoxItemSPtr->COND_CPTRC->Which());
+            sfml_util::gui::ConditionImageManager::Instance()->Get(
+                texture,
+                listBoxItemSPtr->COND_CPTRC->Which());
+
             didLoadTexture = true;
         }
 

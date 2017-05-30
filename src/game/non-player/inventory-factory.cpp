@@ -103,28 +103,37 @@ namespace ownership
     }
 
 
-    void InventoryFactory::PopulateCreatureInventory(non_player::CharacterSPtr_t & creatureSPtr)
+    void InventoryFactory::PopulateCreatureInventory(non_player::CharacterPtr_t creaturePtr)
     {
-        const chance::InventoryChances INVENTORY_CHANCES( ChanceFactory::Make(creatureSPtr) );
-        creatureSPtr->CoinsAdj( Make_Coins(INVENTORY_CHANCES) );
+        const chance::InventoryChances INVENTORY_CHANCES( ChanceFactory::Make(creaturePtr) );
+        creaturePtr->CoinsAdj( Make_Coins(INVENTORY_CHANCES) );
 
         //.first is for equipped items and .second is for unequipped items
-        auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, creatureSPtr) };
+        auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, creaturePtr) };
         for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
         {
-            const std::string ITEM_ADD_RESULT( creatureSPtr->ItemAdd(NEXT_ITEM_PTR) );
+            const std::string ITEM_ADD_RESULT( creaturePtr->ItemAdd(NEXT_ITEM_PTR) );
             if (ITEM_ADD_RESULT.empty() == false)
             {
-                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - add step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory"
+                    << "[to equip - add step](creature=\"" << creaturePtr->ToString()
+                    << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \""
+                    << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT
+                    << "\".  Proceeding...");
             }
             else
             {
                 if (NEXT_ITEM_PTR->Category() & item::category::Equippable)
                 {
-                    const std::string ITEM_EQUIP_RESULT(creatureSPtr->ItemEquip(NEXT_ITEM_PTR));
+                    const std::string ITEM_EQUIP_RESULT(creaturePtr->ItemEquip(NEXT_ITEM_PTR));
                     if (ITEM_EQUIP_RESULT.empty() == false)
                     {
-                        M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[to equip - equip step](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\"with reported error \"" << ITEM_EQUIP_RESULT << "\".  Proceeding...");
+                        M_HP_LOG("game::non-player::ownership::InventoryFactory::"
+                            << "PopulateCreatureInventory[to equip - equip step](creature=\""
+                            << creaturePtr->ToString() << "\") unable to add the item \""
+                            << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
+                            << "\"with reported error \"" << ITEM_EQUIP_RESULT
+                            << "\".  Proceeding...");
                     }
                 }
             }
@@ -132,34 +141,70 @@ namespace ownership
 
         for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.second)
         {
-            const std::string ITEM_ADD_RESULT(creatureSPtr->ItemAdd(NEXT_ITEM_PTR));
+            const std::string ITEM_ADD_RESULT(creaturePtr->ItemAdd(NEXT_ITEM_PTR));
             if (ITEM_ADD_RESULT.empty() == false)
-                M_HP_LOG("game::non-player::ownership::InventoryFactory::PopulateCreatureInventory[not to equip](creature=\"" << creatureSPtr->ToString() << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+            {
+                M_HP_LOG("game::non-player::ownership::InventoryFactory::"
+                    << "PopulateCreatureInventory[not to equip](creature=\""
+                    << creaturePtr->ToString() << "\") unable to add the item \""
+                    << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
+                    << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+            }
         }
     }
 
 
-    const IItemPVecPair_t InventoryFactory::MakeItemSet(const chance::InventoryChances &    CHANCES,
-                                                        const non_player::CharacterSPtr_t & CREATURE_SPTR)
+    const IItemPVecPair_t InventoryFactory::MakeItemSet(
+        const chance::InventoryChances & CHANCES,
+        const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         IItemPVecPair_t itemsSPtrVecPair;
 
         const IItemPVecPair_t CLOTHING_ITEMS_PVEC_PAIR( MakeItemSet_Clothing(CHANCES.clothes) );
-        std::copy(CLOTHING_ITEMS_PVEC_PAIR.first.begin(),  CLOTHING_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(CLOTHING_ITEMS_PVEC_PAIR.second.begin(), CLOTHING_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
 
-        const IItemPVecPair_t WEAPON_ITEMS_PVEC_PAIR( MakeItemSet_Weapons(CHANCES.weapon, CREATURE_SPTR) );
-        std::copy(WEAPON_ITEMS_PVEC_PAIR.first.begin(),  WEAPON_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(WEAPON_ITEMS_PVEC_PAIR.second.begin(), WEAPON_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
+        std::copy(CLOTHING_ITEMS_PVEC_PAIR.first.begin(),
+                  CLOTHING_ITEMS_PVEC_PAIR.first.end(),
+                  back_inserter(itemsSPtrVecPair.first));
 
-        const bool HAS_TWOHANDED_WEAPON_EQUIPPED( ContainsTwoHandedWeapon(WEAPON_ITEMS_PVEC_PAIR.first));
+        std::copy(CLOTHING_ITEMS_PVEC_PAIR.second.begin(),
+                  CLOTHING_ITEMS_PVEC_PAIR.second.end(),
+                  back_inserter(itemsSPtrVecPair.second));
 
-        const item::ItemPVec_t BODY_WEAPON_ITEMS_PVEC(MakeItemSet_BodyWeapons(CHANCES.weapon, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
-        std::copy(BODY_WEAPON_ITEMS_PVEC.begin(), BODY_WEAPON_ITEMS_PVEC.end(), back_inserter(itemsSPtrVecPair.first));
+        const IItemPVecPair_t WEAPON_ITEMS_PVEC_PAIR(
+            MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR) );
 
-        const IItemPVecPair_t ARMOR_ITEMS_PVEC_PAIR(MakeItemSet_Armor(CHANCES.armor, CREATURE_SPTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
-        std::copy(ARMOR_ITEMS_PVEC_PAIR.first.begin(),  ARMOR_ITEMS_PVEC_PAIR.first.end(),  back_inserter(itemsSPtrVecPair.first));
-        std::copy(ARMOR_ITEMS_PVEC_PAIR.second.begin(), ARMOR_ITEMS_PVEC_PAIR.second.end(), back_inserter(itemsSPtrVecPair.second));
+        std::copy(WEAPON_ITEMS_PVEC_PAIR.first.begin(),
+                  WEAPON_ITEMS_PVEC_PAIR.first.end(),
+                  back_inserter(itemsSPtrVecPair.first));
+
+        std::copy(WEAPON_ITEMS_PVEC_PAIR.second.begin(),
+                  WEAPON_ITEMS_PVEC_PAIR.second.end(),
+                  back_inserter(itemsSPtrVecPair.second));
+
+        const bool HAS_TWOHANDED_WEAPON_EQUIPPED(
+            ContainsTwoHandedWeapon(WEAPON_ITEMS_PVEC_PAIR.first));
+
+        const item::ItemPVec_t BODY_WEAPON_ITEMS_PVEC( MakeItemSet_BodyWeapons(
+            CHANCES.weapon,
+            CHARACTER_PTR,
+            HAS_TWOHANDED_WEAPON_EQUIPPED));
+        
+        std::copy(BODY_WEAPON_ITEMS_PVEC.begin(),
+                  BODY_WEAPON_ITEMS_PVEC.end(),
+                  back_inserter(itemsSPtrVecPair.first));
+
+        const IItemPVecPair_t ARMOR_ITEMS_PVEC_PAIR( MakeItemSet_Armor(
+            CHANCES.armor,
+            CHARACTER_PTR,
+            HAS_TWOHANDED_WEAPON_EQUIPPED));
+
+        std::copy(ARMOR_ITEMS_PVEC_PAIR.first.begin(),
+                  ARMOR_ITEMS_PVEC_PAIR.first.end(),
+                  back_inserter(itemsSPtrVecPair.first));
+
+        std::copy(ARMOR_ITEMS_PVEC_PAIR.second.begin(),
+                  ARMOR_ITEMS_PVEC_PAIR.second.end(),
+                  back_inserter(itemsSPtrVecPair.second));
 
         return itemsSPtrVecPair;
     }
@@ -210,8 +255,9 @@ namespace ownership
     }
 
 
-    const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(const chance::WeaponChances &       WEAPON_CHANCES,
-                                                                const non_player::CharacterSPtr_t & CREATURE_SPTR)
+    const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(
+        const chance::WeaponChances &    WEAPON_CHANCES,
+        const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         IItemPVecPair_t itemsSPtrVecPair;
 
@@ -318,41 +364,72 @@ namespace ownership
             {
                 const item::weapon::axe_type::Enum AXE_TYPE( static_cast<item::weapon::axe_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first) );
                 const chance::AxeChanceMap_t::const_iterator CITER( WEAPON_CHANCES.axe_map.find(AXE_TYPE) );
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.axe_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.axe_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
+                    << "(creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
 
                 //if the primary material is wood, make sure there is a valid secondary material
                 const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
                 item::material::Enum materialSec(CITER->second.RandomMaterialSec());
-                if ((MATERIAL_PRI == item::material::Wood) && (item::material::Nothing == materialSec))
+                if ((MATERIAL_PRI == item::material::Wood) &&
+                    (item::material::Nothing == materialSec))
+                {
                     materialSec = item::material::Steel;
+                }
 
-                itemsSPtrVecPair.first.push_back( item::weapon::WeaponFactory::Instance()->Make_Axe(AXE_TYPE,
-                                                                                                    MATERIAL_PRI,
-                                                                                                    materialSec) );
+                itemsSPtrVecPair.first.push_back(
+                    item::weapon::WeaponFactory::Instance()->Make_Axe(AXE_TYPE,
+                                                                      MATERIAL_PRI,
+                                                                      materialSec) );
                 break;
             }
             case item::weapon_type::BladedStaff:
             {
                 const item::weapon::bladedstaff_type::Enum BLADEDSTAFF_TYPE(static_cast<item::weapon::bladedstaff_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first));
                 const chance::BladedStaffChanceMap_t::const_iterator CITER(WEAPON_CHANCES.bladedstaff_map.find(BLADEDSTAFF_TYPE));
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.bladedstaff_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.bladedstaff_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
+                    << "(creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\""
+                    << item::weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
 
                 //if the primary material is wood, make sure there is a valid secondary material
                 const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
                 item::material::Enum materialSec(CITER->second.RandomMaterialSec());
-                if ((MATERIAL_PRI == item::material::Wood) && (item::material::Nothing == materialSec))
-                    materialSec = item::material::Steel;
 
-                itemsSPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->Make_BladedStaff(BLADEDSTAFF_TYPE,
-                                                                                                           MATERIAL_PRI,
-                                                                                                           materialSec));
+                if ((MATERIAL_PRI == item::material::Wood) &&
+                    (item::material::Nothing == materialSec))
+                {
+                    materialSec = item::material::Steel;
+                }
+
+                itemsSPtrVecPair.first.push_back(
+                    item::weapon::WeaponFactory::Instance()->Make_BladedStaff(BLADEDSTAFF_TYPE,
+                                                                              MATERIAL_PRI,
+                                                                              materialSec));
                 break;
             }
             case item::weapon_type::Club:
             {
                 const item::weapon::club_type::Enum CLUB_TYPE(static_cast<item::weapon::club_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first));
                 const chance::ClubChanceMap_t::const_iterator CITER(WEAPON_CHANCES.club_map.find(CLUB_TYPE));
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.club_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.club_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    << "creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
 
                 //if the primary material is wood, make sure there is a valid secondary material
                 const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
@@ -360,16 +437,25 @@ namespace ownership
                 if ((MATERIAL_PRI == item::material::Wood) && (item::material::Nothing == materialSec))
                     materialSec = item::material::Steel;
 
-                itemsSPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->Make_Club(CLUB_TYPE,
-                                                                                                    MATERIAL_PRI,
-                                                                                                    materialSec));
+                itemsSPtrVecPair.first.push_back(
+                    item::weapon::WeaponFactory::Instance()->Make_Club(CLUB_TYPE,
+                                                                       MATERIAL_PRI,
+                                                                       materialSec));
                 break;
             }
             case item::weapon_type::Projectile:
             {
                 const item::weapon::projectile_type::Enum PROJECTILE_TYPE(static_cast<item::weapon::projectile_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first));
                 const chance::ProjectileChanceMap_t::const_iterator CITER(WEAPON_CHANCES.projectile_map.find(PROJECTILE_TYPE));
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.projectile_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::projectile_type::ToString(PROJECTILE_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.projectile_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    << "creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\"" << item::weapon::projectile_type::ToString(PROJECTILE_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+
                 itemsSPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->Make_Projectile(PROJECTILE_TYPE, CITER->second.RandomMaterialSec()));
                 break;
             }
@@ -377,7 +463,15 @@ namespace ownership
             {
                 const item::weapon::sword_type::Enum SWORD_TYPE(static_cast<item::weapon::sword_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first));
                 const chance::SwordChanceMap_t::const_iterator CITER(WEAPON_CHANCES.sword_map.find(SWORD_TYPE));
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.sword_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.sword_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    << "creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
                 itemsSPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->Make_Sword(SWORD_TYPE,
                                                                                                      CITER->second.RandomMaterialPri(),
                                                                                                      CITER->second.RandomMaterialSec()));
@@ -387,7 +481,15 @@ namespace ownership
             {
                 const item::weapon::whip_type::Enum WHIP_TYPE(static_cast<item::weapon::whip_type::Enum>(typeKindChanceMap[randomSelectedWeaponType].first));
                 const chance::WhipChanceMap_t::const_iterator CITER(WEAPON_CHANCES.whip_map.find(WHIP_TYPE));
-                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.whip_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") randomly selected weapon type=\"" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE) << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.whip_map.end()),
+                    "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    << "creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") randomly selected weapon type=\""
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false)
+                    << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
+                    << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
+                
                 itemsSPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->Make_Whip(WHIP_TYPE, CITER->second.RandomMaterialSec()));
                 break;
             }
@@ -408,7 +510,11 @@ namespace ownership
             default:
             {
                 std::ostringstream ss;
-                ss << "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons(creature_name=\"" << CREATURE_SPTR->Name() << "\") failed to find a valid random selected weapon.  (weapon_type=" << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\")";
+                ss << "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    << "creature_name=\"" << CHARACTER_PTR->Name()
+                    << "\") failed to find a valid random selected weapon.  (weapon_type="
+                    << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\")";
+
                 throw std::runtime_error(ss.str());
             }
         }
@@ -417,9 +523,9 @@ namespace ownership
     }
 
 
-    const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(const chance::ArmorChances &        CHANCES,
-                                                              const non_player::CharacterSPtr_t & CREATURE_SPTR,
-                                                              const bool                          HAS_TWO_HANDED_WEAPON)
+    const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(const chance::ArmorChances &     CHANCES,
+                                                              const non_player::CharacterPtr_t CHARACTER_PTR,
+                                                              const bool                       HAS_TWO_HANDED_WEAPON)
     {
         using namespace item::armor;
 
@@ -458,7 +564,7 @@ namespace ownership
         if (COVER_PAIR.second > 0)
         {
             const chance::CoverChanceMap_t::const_iterator COVER_CITER(CHANCES.cover_map.find(COVER_PAIR.first));
-            M_ASSERT_OR_LOGANDTHROW_SS((COVER_CITER != CHANCES.cover_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CREATURE_SPTR->Name() << "\") ARMOR_CHANCES.RandomCover() returned \"" << cover_type::ToString(COVER_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
+            M_ASSERT_OR_LOGANDTHROW_SS((COVER_CITER != CHANCES.cover_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomCover() returned \"" << cover_type::ToString(COVER_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
             itemsSPtrVecPair.first.push_back( ArmorFactory::Instance()->Make_Cover(COVER_PAIR.first,
                                                                                     COVER_CITER->second.RandomMaterialPri(),
                                                                                     COVER_CITER->second.RandomMaterialSec()) );
@@ -469,7 +575,7 @@ namespace ownership
         if (HELM_PAIR.second > 0)
         {
             const chance::HelmChanceMap_t::const_iterator HELM_CITER(CHANCES.helm_map.find(HELM_PAIR.first));
-            M_ASSERT_OR_LOGANDTHROW_SS((HELM_CITER != CHANCES.helm_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CREATURE_SPTR->Name() << "\") ARMOR_CHANCES.RandomHelm() returned \"" << helm_type::ToString(HELM_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
+            M_ASSERT_OR_LOGANDTHROW_SS((HELM_CITER != CHANCES.helm_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomHelm() returned \"" << helm_type::ToString(HELM_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
             itemsSPtrVecPair.first.push_back( ArmorFactory::Instance()->Make_Helm(HELM_PAIR.first,
                                                                                   HELM_CITER->second.RandomMaterialPri(),
                                                                                   HELM_CITER->second.RandomMaterialSec()) );
@@ -481,7 +587,7 @@ namespace ownership
         if (SHIELD_PAIR.second > 0)
         {
             const chance::ShieldChanceMap_t::const_iterator SHIELD_CITER(CHANCES.shield_map.find(SHIELD_PAIR.first));
-            M_ASSERT_OR_LOGANDTHROW_SS((SHIELD_CITER != CHANCES.shield_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CREATURE_SPTR->Name() << "\") ARMOR_CHANCES.RandomShield() returned \"" << shield_type::ToString(SHIELD_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
+            M_ASSERT_OR_LOGANDTHROW_SS((SHIELD_CITER != CHANCES.shield_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\"" << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomShield() returned \"" << shield_type::ToString(SHIELD_PAIR.first) << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
             if (HAS_TWO_HANDED_WEAPON)
                 itemsSPtrVecPair.second.push_back(ArmorFactory::Instance()->Make_Shield(SHIELD_PAIR.first,
                                                                                         SHIELD_CITER->second.RandomMaterialPri(),
@@ -496,26 +602,43 @@ namespace ownership
     }
 
 
-    const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(const chance::WeaponChances &       CHANCES,
-                                                                     const non_player::CharacterSPtr_t & CREATURE_SPTR,
-                                                                     const bool                          HAS_TWO_HANDED_WEAPON_EQUIPPED)
+    const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(
+        const chance::WeaponChances &    CHANCES,
+        const non_player::CharacterPtr_t CHARACTER_PTR,
+        const bool                       HAS_TWO_HANDED_WEAPON_EQUIPPED)
     {
         item::ItemPVec_t bodyWeaponsSVec;
 
         if (CHANCES.has_bite)
-            bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Bite(CREATURE_SPTR.get()) );
+        {
+            bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->
+                Make_Bite(CHARACTER_PTR));
+        }
 
         if (CHANCES.has_claws && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
-            bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Claws(CREATURE_SPTR.get()) );
+        {
+            bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->
+                Make_Claws(CHARACTER_PTR));
+        }
 
-        if (CHANCES.has_fists && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false) && (CHANCES.has_claws == false))
-            bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Fists() );
+        if (CHANCES.has_fists && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false) &&
+            (CHANCES.has_claws == false))
+        {
+            bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->
+                Make_Fists());
+        }
 
         if (CHANCES.has_tendrils && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
-            bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Tendrils(CREATURE_SPTR.get()) );
+        {
+            bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->
+                Make_Tendrils(CHARACTER_PTR));
+        }
 
         if (CHANCES.has_breath)
-            bodyWeaponsSVec.push_back( item::weapon::WeaponFactory::Instance()->Make_Breath(CREATURE_SPTR.get()) );
+        {
+            bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->
+                Make_Breath(CHARACTER_PTR));
+        }
 
         return bodyWeaponsSVec;
     }
@@ -524,9 +647,13 @@ namespace ownership
     item::Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
     {
         if (CHANCES.coins_min < CHANCES.coins_max)
+        {
             return misc::random::Int(CHANCES.coins_min, CHANCES.coins_max);
+        }
         else
+        {
             return CHANCES.coins_min;
+        }
     }
 
 

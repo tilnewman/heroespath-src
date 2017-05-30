@@ -157,22 +157,22 @@ namespace stage
                                                                    sf::BlendAdd) );
         EntityAdd(fireAnim1SPtr_.get());
 
-        //TEMP TODO REMOVE
-        player::CharacterSPtr_t c1SPtr( new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c2SPtr( new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c3SPtr( new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c4SPtr( new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) );
-        player::CharacterSPtr_t c5SPtr( new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) );
-        player::CharacterSPtr_t c6SPtr( new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) );
-        player::PartySPtr_t partySPtr( new player::Party() );
+        //TEMP TODO REMOVE -make a party to test this stage with
+        auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c2Ptr{ new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c3Ptr{ new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) };
+        auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) };
+        auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) };
+        auto partySPtr = std::make_shared<player::Party>();
         std::string errMsgIgnored{ "" };
-        partySPtr->Add(c1SPtr, errMsgIgnored);
-        partySPtr->Add(c2SPtr, errMsgIgnored);
-        partySPtr->Add(c3SPtr, errMsgIgnored);
-        partySPtr->Add(c4SPtr, errMsgIgnored);
-        partySPtr->Add(c5SPtr, errMsgIgnored);
-        partySPtr->Add(c6SPtr, errMsgIgnored);
-        state::GameStateSPtr_t gameStateSPtr( new state::GameState(partySPtr) );
+        partySPtr->Add(c1Ptr, errMsgIgnored);
+        partySPtr->Add(c2Ptr, errMsgIgnored);
+        partySPtr->Add(c3Ptr, errMsgIgnored);
+        partySPtr->Add(c4Ptr, errMsgIgnored);
+        partySPtr->Add(c5Ptr, errMsgIgnored);
+        partySPtr->Add(c6Ptr, errMsgIgnored);
+        auto gameStateSPtr = std::make_shared<state::GameState>(partySPtr);
         gameStateSPtr->IsNewGameSet(true);
         Game::Instance()->StateSet(gameStateSPtr);
 

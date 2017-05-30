@@ -70,10 +70,6 @@ namespace player
                                                                                                       true));
 
              characterPtrC->ImageFilename(FILENAME);
-
-             std::ostringstream ss;
-             ss << "game::player::Initial::EnsureValidImageFilename() for \"" << characterPtrC->Name() << "\", race=" << characterPtrC->Race().Name() << ", role=" << characterPtrC->Role().Name() << ", sex=" << characterPtrC->SexName() << " found no image filename yet assigned.  Setting the randomly chosen image filename: \"" << FILENAME << "\"";
-             M_HP_LOG(ss.str());
         }
     }
 

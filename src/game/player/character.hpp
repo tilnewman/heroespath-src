@@ -117,9 +117,8 @@ namespace player
     using CharacterPtrC_t = Character * const;
     using CharacerCPtrC_t = const Character * const;
 
-    using CharacterSPtr_t = std::shared_ptr<Character>;
-    using CharacterSVec_t = std::vector<CharacterSPtr_t>;
-    using CharacterSSet_t = std::set<CharacterSPtr_t>;
+    using CharacterPVec_t = std::vector<CharacterPtr_t>;
+    using CharacterPSet_t = std::set<CharacterPtr_t>;
 
 
     bool operator==(const Character & L, const Character & R);
@@ -130,6 +129,7 @@ namespace player
     }
 
     bool operator<(const Character & L, const Character & R);
+
 }
 }
 

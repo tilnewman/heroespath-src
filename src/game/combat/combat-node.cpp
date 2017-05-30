@@ -67,13 +67,13 @@ namespace combat
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_             (-90.0f);
     
 
-    CombatNode::CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
-                           const sfml_util::FontPtr_t       FONT_PTR,
-                           const unsigned int               FONT_CHAR_SIZE)
+    CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR,
+                           const sfml_util::FontPtr_t    FONT_PTR,
+                           const unsigned int            FONT_CHAR_SIZE)
     :
-        GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_SPTR->Name()).append("\""), sf::FloatRect()),
-        nameTextObj_          (CREATURE_SPTR->Name(), *FONT_PTR, FONT_CHAR_SIZE),
-        condTextObj_          ("", *FONT_PTR, FONT_CHAR_SIZE),
+        GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""), sf::FloatRect()),
+        nameTextObj_          (CREATURE_PTR->Name(), * FONT_PTR, FONT_CHAR_SIZE),
+        condTextObj_          ("", * FONT_PTR, FONT_CHAR_SIZE),
         blockingPos_          (0),
         healthLineColor_      (),//this initializer doesn't matter, see constructor body below
         healthLineColorRed_   (),// "
@@ -83,7 +83,7 @@ namespace combat
         creatureImageColor_   (),
         isSummaryView_        (false),
         isMoving_             (false),
-        creaturePtr_          (CREATURE_SPTR.get()),
+        creaturePtr_          (CREATURE_PTR),
         crossBonesTextureUPtr_(),
         crossBonesSprite_     (),
         willShowCrossBones_   (false),
@@ -98,7 +98,9 @@ namespace combat
         willShowSelectAnim_   (false),
         selectAnimSprite_     ()
     {
-        const sf::Color NAME_COLOR((CREATURE_SPTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+        const sf::Color NAME_COLOR((CREATURE_PTR->IsPlayerCharacter()) ?
+            PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+
         sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
 
         UpdateConditionText();
@@ -106,12 +108,16 @@ namespace combat
 
         HealthChangeTasks();
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture_, CREATURE_SPTR->ImageFilename(), CREATURE_SPTR->IsPlayerCharacter());
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+            texture_,
+            CREATURE_PTR->ImageFilename(),
+            CREATURE_PTR->IsPlayerCharacter());
+
         texture_.setSmooth(true);
         sprite_.setTexture(texture_);
 
         //sprite color
-        if (CREATURE_SPTR->IsPlayerCharacter())
+        if (CREATURE_PTR->IsPlayerCharacter())
         {
             creatureImageColor_ = CREATURE_IMAGE_COLOR_PLAYER_;
         }
@@ -138,7 +144,9 @@ namespace combat
         ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ? "Player " : "NonPlayer ") << creaturePtr_->Race().Name() << " " << creaturePtr_->Role().Name();
 
         if (creaturePtr_->IsPlayerCharacter())
+        {
             ss << " \"" << creaturePtr_->Name() << "\"";
+        }
 
         ss << " blocking_pos=" << blockingPos_;
 

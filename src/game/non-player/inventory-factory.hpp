@@ -48,7 +48,7 @@ namespace item
 namespace non_player
 {
     class Character;
-    using CharacterSPtr_t = std::shared_ptr<Character>;
+    using CharacterPtr_t = Character *;
 
 namespace ownership
 {
@@ -81,34 +81,43 @@ namespace ownership
         static void Acquire();
         static void Release();
 
-        static void PopulateCreatureInventory(non_player::CharacterSPtr_t & creatureSPtr);
+        static void PopulateCreatureInventory(
+            non_player::CharacterPtr_t creaturePtr);
 
-        static const IItemPVecPair_t MakeItemSet(const chance::InventoryChances &    CHANCES,
-                                                 const non_player::CharacterSPtr_t & CREATURE_SPTR);
+        static const IItemPVecPair_t MakeItemSet(
+            const chance::InventoryChances & CHANCES,
+            const non_player::CharacterPtr_t CHARACTER_PTR);
 
     private:
-        static const IItemPVecPair_t MakeItemSet_Clothing(const chance::ClothingChances & CHANCES);
+        static const IItemPVecPair_t MakeItemSet_Clothing(
+            const chance::ClothingChances & CHANCES);
 
-        static const IItemPVecPair_t MakeItemSet_Weapons(const chance::WeaponChances &       CHANCES,
-                                                         const non_player::CharacterSPtr_t & CREATURE_SPTR);
+        static const IItemPVecPair_t MakeItemSet_Weapons(
+            const chance::WeaponChances &    CHANCES,
+            const non_player::CharacterPtr_t CHARACTER_PTR);
 
-        static const IItemPVecPair_t MakeItemSet_Armor(const chance::ArmorChances &        CHANCES,
-                                                       const non_player::CharacterSPtr_t & CREATURE_SPTR,
-                                                       const bool                          HAS_TWO_HANDED_WEAPON_EQUIPPED);
+        static const IItemPVecPair_t MakeItemSet_Armor(
+            const chance::ArmorChances &     CHANCES,
+            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const bool                       HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
-        static const item::ItemPVec_t MakeItemSet_BodyWeapons(const chance::WeaponChances &       CHANCES,
-                                                               const non_player::CharacterSPtr_t & CREATURE_SPTR,
-                                                               const bool                          HAS_TWO_HANDED_WEAPON_EQUIPPED);
+        static const item::ItemPVec_t MakeItemSet_BodyWeapons(
+            const chance::WeaponChances &    CHANCES,
+            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const bool                       HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
         static item::Coin_t Make_Coins(const chance::InventoryChances & CHANCES);
 
         static bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC);
 
-        //Returns the chanceTotal so that the weapon type can be compared to other types based on the total chance instead of the specific chance.
-        //For example, the chance that one particular kind of sword will be chosen among other kinds of swords is selected here, but we return the
-        //chance for all swords totaled together so that this selected sword can be selected among other weapon types, such as axes/clubs/whips/etc.
+        //Returns the chanceTotal so that the weapon type can be compared to other types based
+        //on the total chance instead of the specific chance.  For example, the chance that one
+        //particular kind of sword will be chosen among other kinds of swords is selected here,
+        //but we return the chance for all swords totaled together so that this selected sword
+        //can be selected among other weapon types, such as axes/clubs/whips/etc.
         template<typename T>
-        static const std::pair<T, float> RandomSelectWeapon(const std::map<T, chance::ItemChances> & MAP)
+        static const std::pair<T, float> RandomSelectWeapon(
+            const std::map<T, chance::ItemChances> & MAP)
         {
             //TOOD handle multiple weapons
 
@@ -121,7 +130,8 @@ namespace ownership
             for (auto const & NEXT_CHANCE_PAIR : MAP)
             {
                 float nextChanceVal(0.0f);
-                chance::CountChanceMap_t::const_iterator CITER( NEXT_CHANCE_PAIR.second.num_owned_map.find(1));
+                auto CITER{ NEXT_CHANCE_PAIR.second.num_owned_map.find(1) };
+
                 if (CITER != NEXT_CHANCE_PAIR.second.num_owned_map.end())
                 {
                     nextChanceVal = CITER->second;
@@ -148,7 +158,9 @@ namespace ownership
             for (auto const & NEXT_CHANCE_PAIR : MAP)
             {
                 float nextChanceVal(0.0f);
-                chance::CountChanceMap_t::const_iterator CITER(NEXT_CHANCE_PAIR.second.num_owned_map.find(1));
+                chance::CountChanceMap_t::const_iterator CITER(
+                    NEXT_CHANCE_PAIR.second.num_owned_map.find(1));
+
                 if (CITER != NEXT_CHANCE_PAIR.second.num_owned_map.end())
                 {
                     nextChanceVal = CITER->second;

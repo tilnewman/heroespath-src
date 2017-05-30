@@ -609,22 +609,26 @@ namespace stage
 
         {
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
-                                              15 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              15 + misc::random::Int(6) + 100,
                                               0  + misc::random::Int(6),
                                               5  + misc::random::Int(10),
                                               15 + misc::random::Int(10),
                                               0  + misc::random::Int(8));
 
-            const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "K") );
-            auto knightSPtr( std::make_shared<player::Character>(KNIGHT_NAME,
-                                                                 creature::sex::Male,
-                                                                 creature::BodyType::Make_Humanoid(),
-                                                                 creature::Race(creature::race::Human),
-                                                                 creature::Role(creature::role::Knight),
-                                                                 KNIGHT_STATS) );
+            const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "K") );
 
-            player::Initial::Setup(knightSPtr.get());
-            partySPtr->Add(knightSPtr, errMsgIgnored);
+            auto knightPtr{ new player::Character(KNIGHT_NAME,
+                                                  creature::sex::Male,
+                                                  creature::BodyType::Make_Humanoid(),
+                                                  creature::Race(creature::race::Human),
+                                                  creature::Role(creature::role::Knight),
+                                                  KNIGHT_STATS) };
+
+            player::Initial::Setup(knightPtr);
+            partySPtr->Add(knightPtr, errMsgIgnored);
         }
         /*
         {
@@ -659,22 +663,26 @@ namespace stage
         */
         {
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
-                                              20 + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              20 + misc::random::Int(10) + 100,
                                               5  + misc::random::Int(6),
                                               10 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
                                               5  + misc::random::Int(6));
 
-            const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "A"));
-            player::CharacterSPtr_t archerSPtr(new player::Character(ARCHER_NAME,
-                                                                     creature::sex::Female,
-                                                                     creature::BodyType::Make_Humanoid(),
-                                                                     creature::Race(creature::race::Human),
-                                                                     creature::Role(creature::role::Archer),
-                                                                     ARCHER_STATS));
+            const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "A"));
 
-            player::Initial::Setup(archerSPtr.get());
-            partySPtr->Add(archerSPtr, errMsgIgnored);
+            auto archerPtr{ new player::Character(ARCHER_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Humanoid(),
+                                                  creature::Race(creature::race::Human),
+                                                  creature::Role(creature::role::Archer),
+                                                  ARCHER_STATS) };
+
+            player::Initial::Setup(archerPtr);
+            partySPtr->Add(archerPtr, errMsgIgnored);
         }
         /*
         {
@@ -699,22 +707,26 @@ namespace stage
         */
         {
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                            10 + misc::random::Int(6) + 100,
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6));
 
-            const std::string BARD_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "B"));
-            player::CharacterSPtr_t bardSPtr(new player::Character(BARD_NAME,
-                                                                   creature::sex::Male,
-                                                                   creature::BodyType::Make_Humanoid(),
-                                                                   creature::Race(creature::race::Human),
-                                                                   creature::Role(creature::role::Bard),
-                                                                   BARD_STATS));
+            const std::string BARD_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "B"));
 
-            player::Initial::Setup(bardSPtr.get());
-            partySPtr->Add(bardSPtr, errMsgIgnored);
+            auto bardPtr{ new player::Character(BARD_NAME,
+                                                creature::sex::Male,
+                                                creature::BodyType::Make_Humanoid(),
+                                                creature::Race(creature::race::Human),
+                                                creature::Role(creature::role::Bard),
+                                                BARD_STATS) };
+
+            player::Initial::Setup(bardPtr);
+            partySPtr->Add(bardPtr, errMsgIgnored);
         }
         /*
         {
@@ -739,64 +751,76 @@ namespace stage
         */
         {
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
-                                             5  + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                             5  + misc::random::Int(10) + 100,
                                              5  + misc::random::Int(10),
                                              15 + misc::random::Int(15),
                                              15 + misc::random::Int(10),
                                              5  + misc::random::Int(8));
 
-            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "T"));
-            player::CharacterSPtr_t thiefSPtr(new player::Character(THEIF_NAME,
-                                                                    creature::sex::Male,
-                                                                    creature::BodyType::Make_Humanoid(),
-                                                                    creature::Race(creature::race::Gnome),
-                                                                    creature::Role(creature::role::Thief),
-                                                                    THEIF_STATS));
+            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "T"));
 
-            player::Initial::Setup(thiefSPtr.get());
-            partySPtr->Add(thiefSPtr, errMsgIgnored);
+            auto thiefPtr{ new player::Character(THEIF_NAME,
+                                                 creature::sex::Male,
+                                                 creature::BodyType::Make_Humanoid(),
+                                                 creature::Race(creature::race::Gnome),
+                                                 creature::Role(creature::role::Thief),
+                                                 THEIF_STATS) };
+
+            player::Initial::Setup(thiefPtr);
+            partySPtr->Add(thiefPtr, errMsgIgnored);
         }
 
         {
             const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              5  + misc::random::Int(8) + 100,
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
                                               25 + misc::random::Int(8),
                                               10 + misc::random::Int(15));
 
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "C"));
-            player::CharacterSPtr_t clericSPtr(new player::Character(CLERIC_NAME,
-                                                                     creature::sex::Female,
-                                                                     creature::BodyType::Make_Pixie(),
-                                                                     creature::Race(creature::race::Pixie),
-                                                                     creature::Role(creature::role::Cleric),
-                                                                     CLERIC_STATS));
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C"));
 
-            player::Initial::Setup(clericSPtr.get());
-            clericSPtr->ManaCurrentSet(1);
-            partySPtr->Add(clericSPtr, errMsgIgnored);
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(1);
+            partySPtr->Add(clericPtr, errMsgIgnored);
         }
 
         {
             const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                                0  + misc::random::Int(8) + 100,
                                                 5  + misc::random::Int(8),
                                                 10 + misc::random::Int(6),
                                                 50 + misc::random::Int(6),
                                                 20 + misc::random::Int(10));
 
-            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
-            player::CharacterSPtr_t sorcererSPtr(new player::Character(SORCERER_NAME,
-                                                                       creature::sex::Male,
-                                                                       creature::BodyType::Make_Pixie(),
-                                                                       creature::Race(creature::race::Pixie),
-                                                                       creature::Role(creature::role::Sorcerer),
-                                                                       SORCERER_STATS));
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S"));
 
-            player::Initial::Setup(sorcererSPtr.get());
-            sorcererSPtr->ManaCurrentSet(1);
-            partySPtr->Add(sorcererSPtr, errMsgIgnored);
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(1);
+            partySPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
         {

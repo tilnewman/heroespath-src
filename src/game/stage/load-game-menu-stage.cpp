@@ -99,8 +99,10 @@ namespace stage
     bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
     {
         //TODO Handle selection of a game to load and then load it,
-        //including a call to all creature::StoreItemsInWarehouseAfterLoad()
+        //including a call to all creature::StoreItemsInWarehouseAfterLoad(),
+        //and Party::
 
+        //TODO Handle 
         SetupGameInfoDisplay();
         return true;
     }
@@ -247,27 +249,32 @@ namespace stage
 
         //setup characters list
         player::PartySPtr_t partySPtr(gameStateSPtr->Party());
-        M_ASSERT_OR_LOGANDTHROW_SS((partySPtr.get() != nullptr), "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected() returned a null Party object.");
+        M_ASSERT_OR_LOGANDTHROW_SS((partySPtr.get() != nullptr),
+            "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
+            << " returned a null Party object.");
 
-        const player::CharacterSVec_t CHAR_SVEC(partySPtr->Characters());
+        auto const CHAR_PVEC( partySPtr->Characters() );
 
-        const std::size_t NUM_CHARS(CHAR_SVEC.size());
+        const std::size_t NUM_CHARS(CHAR_PVEC.size());
         float posY(CHAR_LIST_POS_TOP + 30.0f);
         for (std::size_t i(0); i<NUM_CHARS; ++i)
         {
             std::ostringstream ss;
-            ss << "CharList_" << i << "_" << CHAR_SVEC[i]->Name();
+            ss << "CharList_" << i << "_" << CHAR_PVEC[i]->Name();
             const std::string TEXT_REGION_ENTITY_NAME(ss.str());
 
             ss.str("");
-            ss  << CHAR_SVEC[i]->Name()
-                << ", " << CHAR_SVEC[i]->Role().Name()
-                << ", rank: " << CHAR_SVEC[i]->Rank();
+            ss  << CHAR_PVEC[i]->Name()
+                << ", " << CHAR_PVEC[i]->Role().Name()
+                << ", rank: " << CHAR_PVEC[i]->Rank();
+
             descTextInfo.text = ss.str();
 
             const sf::FloatRect RECT(CHAR_LIST_POS_LEFT + 25.0f, posY, 0.0f, 0.0f);
 
-            auto textRegionUPtr{ std::make_unique<sfml_util::gui::TextRegion>(TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
+            auto textRegionUPtr{ std::make_unique<sfml_util::gui::TextRegion>(
+                TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
+
             EntityAdd(textRegionUPtr.get());
             posY += textRegionUPtr->GetEntityRegion().height - 25.0f;
             charTextRegionUVec_.push_back( std::move(textRegionUPtr) );

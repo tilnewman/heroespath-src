@@ -38,16 +38,16 @@
 
 namespace game
 {
-    namespace player
-    {
-        class Party;
-        using PartySPtr_t = std::shared_ptr<Party>;
-        using PartySSet_t = std::set<PartySPtr_t>;
+namespace player
+{
+    class Party;
+    using PartySPtr_t = std::shared_ptr<Party>;
+    using PartySSet_t = std::set<PartySPtr_t>;
 
-        class Character;
-        using CharacterSPtr_t = std::shared_ptr<Character>;
-        using CharacterSSet_t = std::set<CharacterSPtr_t>;
-    }
+    class Character;
+    using CharacterPtr_t = Character *;
+    using CharacterPSet_t = std::set<CharacterPtr_t>;
+}
 
 namespace state
 {
@@ -81,19 +81,19 @@ namespace state
         GameStateSSet_t LoadAllGames() const;
         void SaveGame(const GameStateSPtr_t & GAME_SPTR) const;
 
-        player::CharacterSSet_t LoadAllCompanions() const;
-        void SaveCharacter(const player::CharacterSPtr_t &) const;
-        bool DeleteCharacter(const player::CharacterSPtr_t &) const;
+        player::CharacterPSet_t LoadAllCompanions() const;
+        void SaveCharacter(const player::CharacterPtr_t) const;
+        bool DeleteCharacter(const player::CharacterPtr_t) const;
 
     private:
         //hack'ish function that saves either the game or the character
         //depending on which pointer is null...because can't include the
         //boost serializer includes here in this header file...grumble...zTn 2016-10-26
-        void Save(const GameStateSPtr_t &         GAME_SPTR,
-                  const player::CharacterSPtr_t & CHARACTER_SPTR,
-                  const std::string &             DIR_STR,
-                  const std::string &             FILE_STR,
-                  const std::string &             EXT_STR) const;
+        void Save(const GameStateSPtr_t &      GAME_SPTR,
+                  const player::CharacterPtr_t CHARACTER_PTR,
+                  const std::string &          DIR_STR,
+                  const std::string &          FILE_STR,
+                  const std::string &          EXT_STR) const;
 
         static const std::string SAVED_GAME_DIR_NAME_;
         static const std::string SAVED_GAME_FILE_NAME_;

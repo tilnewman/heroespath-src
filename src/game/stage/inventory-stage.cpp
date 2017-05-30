@@ -379,7 +379,7 @@ namespace stage
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
-            creatureToGiveToPtr_ = Game::Instance()->State()->Party()->GetAtOrderPos(POPUP_RESPONSE.Selection()).get();
+            creatureToGiveToPtr_ = Game::Instance()->State()->Party()->GetAtOrderPos(POPUP_RESPONSE.Selection());
 
             if (creatureToGiveToPtr_ == nullptr)
             {
@@ -1689,20 +1689,32 @@ namespace stage
     bool InventoryStage::HandlePlayerChangeBeforeOrAfter(const bool IS_NEXT_CREATURE_AFTER)
     {
         if (IS_NEXT_CREATURE_AFTER)
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetNextInOrderAfter(creaturePtr_).get(), true);
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+                GetNextInOrderAfter(creaturePtr_), true);
+        }
         else
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetNextInOrderBefore(creaturePtr_).get(), false);
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+                GetNextInOrderBefore(creaturePtr_), false);
+        }
     }
 
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        const std::size_t CURR_INDEX(Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_));
+        const std::size_t CURR_INDEX(Game::Instance()->State()->Party()->
+            GetOrderNum(creaturePtr_));
 
         if (CURR_INDEX == CHARACTER_NUM)
+        {
             return false;
+        }
         else
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetAtOrderPos(CHARACTER_NUM).get(), (CURR_INDEX < CHARACTER_NUM));
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+                GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
+        }
     }
 
 
@@ -2376,15 +2388,15 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
 
         std::size_t coinsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreatureSPtr->Inventory().Coins());
+                const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreaturePtr->Inventory().Coins());
                 if (NEXT_CREATURE_COINS_OWNED > 0)
                 {
                     coinsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_COINS_OWNED);
-                    nextCreatureSPtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
+                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
                 }
             }
         }
@@ -2394,7 +2406,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers << " gems from the rest of the party, and now has " << creaturePtr_->Inventory().Coins() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers
+                << " gems from the rest of the party, and now has "
+                << creaturePtr_->Inventory().Coins() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2405,15 +2420,15 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
 
         std::size_t gemsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreatureSPtr->Inventory().Gems());
+                const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreaturePtr->Inventory().Gems());
                 if (NEXT_CREATURE_GEMS_OWNED > 0)
                 {
                     gemsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_GEMS_OWNED);
-                    nextCreatureSPtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
+                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
                 }
             }
         }
@@ -2423,7 +2438,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers << " gems from the rest of the party, and now has " << creaturePtr_->Inventory().Gems() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers
+                << " gems from the rest of the party, and now has "
+                << creaturePtr_->Inventory().Gems() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2434,15 +2452,15 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
 
         std::size_t shardsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreatureSPtr->Inventory().MeteorShards());
+                const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreaturePtr->Inventory().MeteorShards());
                 if (NEXT_CREATURE_SHARDS_OWNED > 0)
                 {
                     shardsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_SHARDS_OWNED);
-                    nextCreatureSPtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
+                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
                 }
             }
         }
@@ -2452,7 +2470,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers << " Meteor Shards from the rest of the party, and now has " << creaturePtr_->Inventory().MeteorShards() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers
+                << " Meteor Shards from the rest of the party, and now has "
+                << creaturePtr_->Inventory().MeteorShards() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2465,23 +2486,30 @@ namespace stage
         HandleCoinsGather(false);
 
         const item::Coin_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
-        const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+
+        const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(
+            Game::Instance()->State()->Party()->GetNumHumanoid()));
+
         const item::Coin_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
         const item::Coin_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->CoinsAdj(nextCreatureSPtr->Inventory().Coins() * -1);
-                nextCreatureSPtr->CoinsAdj(COINS_TO_SHARE);
+                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * -1);
+                nextCreaturePtr->CoinsAdj(COINS_TO_SHARE);
             }
         }
 
         item::Coin_t toHandOut(COINS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->CoinsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->CoinsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (COINS_TO_SHARE > 0)
@@ -2489,10 +2517,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << COINS_TO_SHARE;
 
             if (COINS_LEFT_OVER > 0)
+            {
                 ss << " or " << COINS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << COINS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " coins.";
         PopupDoneWindow(ss.str(), false);
@@ -2510,19 +2542,23 @@ namespace stage
         const item::Gem_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
         const item::Gem_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->GemsAdj(nextCreatureSPtr->Inventory().Gems() * -1);
-                nextCreatureSPtr->GemsAdj(GEMS_TO_SHARE);
+                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * -1);
+                nextCreaturePtr->GemsAdj(GEMS_TO_SHARE);
             }
         }
 
         item::Gem_t toHandOut(GEMS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->GemsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->GemsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (GEMS_TO_SHARE > 0)
@@ -2530,10 +2566,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << GEMS_TO_SHARE;
 
             if (GEMS_LEFT_OVER > 0)
+            {
                 ss << " or " << GEMS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << GEMS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " gems.";
         PopupDoneWindow(ss.str(), false);
@@ -2551,19 +2591,23 @@ namespace stage
         const item::Meteor_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
         const item::Meteor_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->MeteorShardsAdj(nextCreatureSPtr->Inventory().MeteorShards() * -1);
-                nextCreatureSPtr->MeteorShardsAdj(METEORSHARDS_TO_SHARE);
+                nextCreaturePtr->MeteorShardsAdj(nextCreaturePtr->Inventory().MeteorShards() * -1);
+                nextCreaturePtr->MeteorShardsAdj(METEORSHARDS_TO_SHARE);
             }
         }
 
         item::Gem_t toHandOut(METEORSHARDS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->MeteorShardsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->MeteorShardsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (METEORSHARDS_TO_SHARE > 0)
@@ -2571,10 +2615,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << METEORSHARDS_TO_SHARE;
 
             if (METEORSHARDS_LEFT_OVER > 0)
+            {
                 ss << " or " << METEORSHARDS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << METEORSHARDS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " Meteor Shards.";
         PopupDoneWindow(ss.str(), false);
@@ -2612,9 +2660,13 @@ namespace stage
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
             if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 listBoxItemPtr = unEquipListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+            }
             else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 listBoxItemPtr = equippedListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+            }
 
             if (listBoxItemPtr.get() != nullptr)
             {
@@ -2633,9 +2685,13 @@ namespace stage
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
             if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 return unEquipListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+            }
             else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 return equippedListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+            }
         }
 
         return sfml_util::gui::ListBox::ERROR_RECT_;
@@ -2665,7 +2721,9 @@ namespace stage
             << item::category::ToString(IITEM_PTR->Category(), true) << "\n";
 
         if (IITEM_PTR->ExclusiveRole() != creature::role::Count)
+        {
             ss << "(can only be used by " << creature::role::ToString(IITEM_PTR->ExclusiveRole()) << "s)\n";
+        }
 
         ss << "\n";
 
@@ -2673,9 +2731,13 @@ namespace stage
             << "worth about " << IITEM_PTR->Price() << " coins\n";
 
         if (IITEM_PTR->IsWeapon())
+        {
             ss << "Damage:  " << IITEM_PTR->DamageMin() << "-" << IITEM_PTR->DamageMax();
+        }
         else if (IITEM_PTR->IsArmor())
+        {
             ss << "Armor Bonus:  " << IITEM_PTR->ArmorRating();
+        }
 
         ss << "\n\n";
 
@@ -3012,7 +3074,9 @@ namespace stage
                                                  sfml_util::FontManager::Instance()->Size_Smallish(),
                                                  sf::Color::White,
                                                  sfml_util::Justified::Left);
+
         auto const DETAILVIEW_BOUNDS{ detailViewSprite_.getGlobalBounds() };
+
         const sf::FloatRect TEXT_RECT(DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
                                       DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height - 20.0f,
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
