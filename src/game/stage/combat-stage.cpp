@@ -203,7 +203,7 @@ namespace stage
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         testingTextRegionUPtr_      (),
         pauseTitle_                 (""),
-        sparksAnimUPtr_             (nullptr)
+        sparksAnimUPtr_             ()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -1796,12 +1796,13 @@ namespace stage
     void CombatStage::StartTurn_Step2()
     {
         //TODO TEMP REMOVE -testing sparks animation
-        sparksAnimUPtr_ = std::make_unique<sfml_util::animation::SparksAnimation>(true,
-                                                                                  combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_)->GetEntityRegion(),
-                                                                                  0.25f,
-                                                                                  sfml_util::MapByRes(0.15f, 0.45f),
-                                                                                  0.75f);
-
+        /*sparksAnimUPtr_ = std::make_unique<sfml_util::animation::SparksAnimation>(
+            true,
+            combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_)->GetEntityRegion(),
+            0.33f,
+            sfml_util::MapByRes(0.15f, 0.45f),
+            0.75f);
+        */
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
@@ -1845,9 +1846,6 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
-        //TODO TEMP REMOVE
-        sparksAnimUPtr_.reset();
-
         if (restoreInfo_.CanTurnAdvance())
         {
             combat::Encounter::Instance()->IncrementTurn();
