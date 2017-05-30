@@ -350,7 +350,7 @@ namespace combat
                 sfml_util::gui::CombatImageManager::Instance()->Get(
                     * wingTextureUPtr_,
                     sfml_util::gui::CombatImageType::Wing,
-                    creaturePtr_->IsPlayerCharacter());
+                    ! creaturePtr_->IsPlayerCharacter());
             }
 
             wingSprite_.setTexture( * wingTextureUPtr_, true);
