@@ -68,8 +68,6 @@ namespace state
         }
     };
 
-    using WorldStateSPtr_t = std::shared_ptr<WorldState>;
-
 }
 }
 #endif //GAME_STATE_WORLDSTATE_INCLUDED

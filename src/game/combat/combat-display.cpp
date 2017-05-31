@@ -150,7 +150,7 @@ namespace combat
     void CombatDisplay::Setup()
     {
         //create CombatNodes and add them into the combateTree_
-        auto const PLAYER_CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+        auto const PLAYER_CHAR_PVEC( game::Game::Instance()->State().Party()->Characters() );
         for (auto const NEXT_CHARACTER_PTR : PLAYER_CHAR_PVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
@@ -1102,7 +1102,7 @@ namespace combat
         else
         {
             //place player characters in the blocking order saved in blockingMap_
-            auto const CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+            auto const CHAR_PVEC( game::Game::Instance()->State().Party()->Characters() );
             for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
             {
                 const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_PTR->UniqueTraits());
@@ -1115,7 +1115,7 @@ namespace combat
 
         //whatever blocking order pattern, leave the disabled characters farthest behind
         const int DISABLED_CREATURES_POSITION(position - 1);
-        auto const CHAR_PVEC( game::Game::Instance()->State()->Party()->Characters() );
+        auto const CHAR_PVEC( game::Game::Instance()->State().Party()->Characters() );
         for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
         {
             if (NEXT_CHARACTER_PTR->CanTakeAction() == false)

@@ -140,11 +140,11 @@ namespace combat
     void Encounter::StartTasks()
     {
         roundCounter_ = 0;
-        Game::Instance()->State()->World()->EncoundterCountInc();
+        Game::Instance()->State().World()->EncoundterCountInc();
 
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
 
-        if (Game::Instance()->State()->IsNewGame())
+        if (Game::Instance()->State().IsNewGame())
         {
             GenerateFirstEncounter();
         }
@@ -218,7 +218,7 @@ namespace combat
             turnInfoMap_[NEXT_CHAR_PTR] = turnInfo;
         }
 
-        for (auto const NEXT_CHAR_PTR : Game::Instance()->State()->Party()->Characters())
+        for (auto const NEXT_CHAR_PTR : Game::Instance()->State().Party()->Characters())
         {
             turnInfoMap_[NEXT_CHAR_PTR] = TurnInfo();
         }

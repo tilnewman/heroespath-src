@@ -113,19 +113,19 @@ namespace state
     void GameStateFactory::NewGame(const player::PartySPtr_t & PARTY_SPTR) const
     {
         auto const WORLDSTATE_SPTR = std::make_shared<WorldState>();
-        auto gameStateSPtr = std::make_shared<GameState>(PARTY_SPTR, WORLDSTATE_SPTR);
-        gameStateSPtr->IsNewGameSet(true);
-        gameStateSPtr->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());
+        auto gameStatePtr = new GameState(PARTY_SPTR, WORLDSTATE_SPTR);
+        gameStatePtr->IsNewGameSet(true);
+        gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
 
-        auto locationSPtr = std::make_shared<location::Location>(location::map::Thornberry);
-        gameStateSPtr->LocationSet( locationSPtr );
+        gameStatePtr->LocationSet(
+            std::make_shared<location::Location>(location::map::Thornberry) );
 
-        Game::Instance()->StateSet(gameStateSPtr);
-        SaveGame(gameStateSPtr);
+        Game::Instance()->StateStore(gameStatePtr);
+        SaveGame(gameStatePtr);
     }
 
 
-    GameStateSSet_t GameStateFactory::LoadAllGames() const
+    GameStatePSet_t GameStateFactory::LoadAllGames() const
     {
         namespace bfs = boost::filesystem;
 
@@ -133,17 +133,17 @@ namespace state
         const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
             bfs::path(SAVED_GAME_DIR_NAME_)));
 
-        GameStateSSet_t gameStateSSet;
+        GameStatePSet_t gameStatePSet;
 
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
         {
-            return gameStateSSet;
+            return gameStatePSet;
         }
 
         if (false == bfs::is_directory(DIR_OBJ))
         {
-            return gameStateSSet;
+            return gameStatePSet;
         }
 
         //create a vector of paths to saved games
@@ -162,15 +162,14 @@ namespace state
         //try and load each game file
         for (auto const & NEXT_PATH_OBJ : pathVec)
         {
-            auto nextGameStateSPtr = std::make_shared<GameState>();
+            GameStatePtr_t nextGameStatePtr{ new GameState() };
 
             try
             {
                 std::ifstream ifs(NEXT_PATH_OBJ.string());
                 boost::archive::text_iarchive ia(ifs);
-                ia >> * nextGameStateSPtr;
-
-                gameStateSSet.insert(nextGameStateSPtr);
+                ia >> * nextGameStatePtr;
+                gameStatePSet.insert(nextGameStatePtr);
             }
             catch (const std::exception & E)
             {
@@ -186,13 +185,13 @@ namespace state
             }
         }
 
-        return gameStateSSet;
+        return gameStatePSet;
     }
 
 
-    void GameStateFactory::SaveGame(const GameStateSPtr_t & GAME_SPTR) const
+    void GameStateFactory::SaveGame(const GameStatePtr_t GAME_PTR) const
     {
-        Save(GAME_SPTR,
+        Save(GAME_PTR,
              nullptr,
              SAVED_GAME_DIR_NAME_,
              SAVED_GAME_FILE_NAME_,
@@ -267,7 +266,7 @@ namespace state
 
     void GameStateFactory::SaveCharacter(const player::CharacterPtr_t CHARACTER_PTR) const
     {
-        Save(GameStateSPtr_t(),
+        Save(nullptr,
              CHARACTER_PTR,
              SAVED_CHAR_DIR_NAME_,
              CHARACTER_PTR->Name(),
@@ -357,7 +356,7 @@ namespace state
     }
 
 
-    void GameStateFactory::Save(const GameStateSPtr_t &      GAME_SPTR,
+    void GameStateFactory::Save(const GameStatePtr_t         GAME_PTR,
                                 const player::CharacterPtr_t CHARACTER_PTR,
                                 const std::string &          DIR_STR,
                                 const std::string &          FILE_STR,
@@ -399,9 +398,9 @@ namespace state
         }
 
         //set the date and time of last save
-        if (GAME_SPTR.get() != nullptr)
+        if (GAME_PTR != nullptr)
         {
-            GAME_SPTR->DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
+            GAME_PTR->DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
         }
 
         try
@@ -410,9 +409,9 @@ namespace state
             boost::archive::text_oarchive oa(ofs);
 
             //save either, not both
-            if (GAME_SPTR.get() != nullptr)
+            if (GAME_PTR != nullptr)
             {
-                oa << *GAME_SPTR;
+                oa << * GAME_PTR;
             }
             else
             {

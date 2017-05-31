@@ -29,12 +29,14 @@
 //
 #include "game.hpp"
 
-#include "game/state/game-state.hpp"
 #include "game/log-macros.hpp"
+#include "game/state/game-state.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
 #include <memory>
+#include <sstream>
+#include <exception>
 
 
 namespace game
@@ -45,7 +47,7 @@ namespace game
 
     Game::Game()
     :
-        stateSPtr_()
+        stateUPtr_()
     {
         M_HP_LOG_DBG("Singleton Construction: Game");
     }
@@ -84,8 +86,36 @@ namespace game
 
     void Game::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::Game::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::Game::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
+    }
+
+
+    state::GameState & Game::State() const
+    {
+        if (stateUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::Game::State() was called when there was no state.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * stateUPtr_.get();
+        }
+    }
+
+
+    void Game::StateStore(const state::GameStatePtr_t STATE_PTR)
+    {
+        if (stateUPtr_.get() != nullptr)
+        {
+            M_HP_LOG_WRN("game::Game::StateSet() is going to free an old game state"
+                << " and replace it with a new one.");
+        }
+
+        stateUPtr_.reset(STATE_PTR);
     }
 
 }

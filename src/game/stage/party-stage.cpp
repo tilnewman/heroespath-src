@@ -30,7 +30,6 @@
 #include "party-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
@@ -41,6 +40,7 @@
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/state/game-state-factory.hpp"
 #include "game/loop-manager.hpp"
@@ -48,6 +48,9 @@
 #include "game/creature/name-info.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
+#include "game/player/character-warehouse.hpp"
+
+#include "misc/real.hpp"
 
 #include <sstream>
 #include <string>
@@ -101,13 +104,24 @@ namespace stage
         mouseOverTexture_       (),
         isMouseOverTexture_     (false),
         mouseOverTextRegionUPtr_(),
-        mouseOverSlider_        (4.0f)
+        mouseOverSlider_        (4.0f),
+        charactersPSet_         ()
     {}
 
 
     PartyStage::~PartyStage()
     {
         ClearAllEntities();
+
+        for (auto & nextCharacterPtr : charactersPSet_)
+        {
+            if (nextCharacterPtr != nullptr)
+            {
+                delete nextCharacterPtr;
+            }
+        }
+
+        charactersPSet_.clear();
     }
 
 
@@ -117,7 +131,9 @@ namespace stage
 
         //if this event was not triggered by a double-click then exit
         if (PACKAGE.gui_event != sfml_util::GuiEvent::DoubleClick)
+        {
             return false;
+        }
 
         //handle double-clicks by moving items from one ListBox to the other
 
@@ -172,17 +188,25 @@ namespace stage
         ResetMouseOverPopupState();
         willShowMouseOverPopup_ = true;
 
-        if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) && (PACKAGE.Response() == sfml_util::Response::Yes))
+        if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) &&
+            (PACKAGE.Response() == sfml_util::Response::Yes))
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
-            if (selectedItemSPtr.get() != nullptr)
+            if ((selectedItemSPtr.get() != nullptr) &&
+                (selectedItemSPtr->CHARACTER_CPTR != nullptr))
             {
-                if (state::GameStateFactory::Instance()->DeleteCharacter(selectedItemSPtr->CHARACTER_CPTR))
+                auto characterPtr{ selectedItemSPtr->CHARACTER_CPTR };
+
+                if (state::GameStateFactory::Instance()->DeleteCharacter(characterPtr) == false)
                 {
-                    characterListBoxSPtr_->Remove(selectedItemSPtr);
-                    partyListBoxSPtr_->Remove(selectedItemSPtr);
+                    M_HP_LOG_ERR("game::stage::PartyStage::HandleCallback(delete confirm popup)"
+                        << " unable to delete character \"" << characterPtr->Name() << "\" file.");
                 }
+                
+                characterListBoxSPtr_->Remove(selectedItemSPtr);
+                partyListBoxSPtr_->Remove(selectedItemSPtr);
+                //actual Character object will be free'd when the PartyStage object is destroyed
             }
         }
 
@@ -253,7 +277,7 @@ namespace stage
                     << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
                     << " have a Beastmaster.";
 
-                const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                const PopupInfo POP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                     ss.str(),
                     sfml_util::PopupButtons::Okay,
@@ -261,7 +285,7 @@ namespace stage
                     sfml_util::Justified::Left,
                     sfml_util::sound_effect::PromptWarn));
 
-                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
                 return false;
             }
 
@@ -335,7 +359,7 @@ namespace stage
         }
 
         //load all players not yet assigned to a party/started game
-        auto charactersPSet{ game::state::GameStateFactory::Instance()->LoadAllCompanions() };
+        charactersPSet_ = game::state::GameStateFactory::Instance()->LoadAllCompanions();
 
         //fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSLst_t itemSList;
@@ -347,7 +371,7 @@ namespace stage
 
         std::ostringstream ssCharText;
         std::ostringstream ssTitle;
-        for (auto const NEXT_CHAR_PTR : charactersPSet)
+        for (auto const NEXT_CHAR_PTR : charactersPSet_)
         {
             ssCharText.str("");
             ssCharText << NEXT_CHAR_PTR->Name() << "'s_CharacterListing";
@@ -487,7 +511,7 @@ namespace stage
 
         if (willDisplayCharacterCountWarningText_)
         {
-            target.draw(*warningTextRegionUPtr_, STATES);
+            target.draw( * warningTextRegionUPtr_, STATES);
         }
 
         if (willShowMouseOverPopup_ && isMouseOverTexture_)
@@ -553,12 +577,15 @@ namespace stage
         }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
-        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) && (false == isMouseOverTexture_))
+        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) &&
+            (false == isMouseOverTexture_))
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
+            auto itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
 
             if (itemSPtr.get() == nullptr)
+            {
                 itemSPtr = partyListBoxSPtr_->GetItemAtLocation(mouseOverPosV_);
+            }
 
             if ((itemSPtr.get() != nullptr) &&
                 (itemSPtr->CHARACTER_CPTR != nullptr) &&
@@ -653,9 +680,20 @@ namespace stage
         //create a new party structure
         player::CharacterPVec_t charPVec;
         {
-            for (std::size_t i(0); i < player::Party::MAX_CHARACTER_COUNT_; ++i)
+            for (std::size_t i(0); i < partyListBoxSPtr_->GetCount(); ++i)
             {
-                charPVec.push_back( partyListBoxSPtr_->At(i)->CHARACTER_CPTR );
+                auto characterPtr{ partyListBoxSPtr_->At(i)->CHARACTER_CPTR };
+                charPVec.push_back(characterPtr);
+                
+                charactersPSet_.erase(characterPtr);
+
+                if (state::GameStateFactory::Instance()->
+                    DeleteCharacter(characterPtr) == false)
+                {
+                    M_HP_LOG_ERR("PartyStage::HandleCallback_StartButton() while trying to game::state::"
+                        << "GameStateFactory::DeleteCharacter(\"" << characterPtr->Name()
+                        << "\") failed.");
+                }
             }
         }
 
@@ -663,17 +701,6 @@ namespace stage
 
         //create a new GameState with the given party and then save it
         state::GameStateFactory::Instance()->NewGame(partySPtr);
-
-        //remove the players from the un-played roster (delete from unplayed folder on disc)
-        for (std::size_t i(0); i < player::Party::MAX_CHARACTER_COUNT_; ++i)
-        {
-            const std::string NEXT_CHAR_NAME(partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Name());
-
-            M_ASSERT_OR_LOGANDTHROW_SS(state::GameStateFactory::Instance()->
-                DeleteCharacter(partyListBoxSPtr_->At(i)->CHARACTER_CPTR),
-                "PartyStage::HandleCallback_StartButton() while trying to game::state::"
-                << "GameStateFactory::DeleteCharacter(\"" << NEXT_CHAR_NAME << "\") failed.");
-        }
 
         //Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning 

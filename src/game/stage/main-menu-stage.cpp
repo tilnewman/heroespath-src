@@ -30,7 +30,6 @@
 #include "main-menu-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -42,7 +41,10 @@
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+#include "game/state/game-state.hpp"
 #include "game/state/game-state-factory.hpp"
+
+#include "misc/real.hpp"
 
 
 namespace game
@@ -132,10 +134,21 @@ namespace stage
         resumeButtonSPtr_->SetCallbackHandler(this);
 
         //determine if there are saved games to load
-        const state::GameStateSSet_t GAMESTATE_SSET( state::GameStateFactory::Instance()->LoadAllGames() );
-        if (GAMESTATE_SSET.empty())
+        auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
+        if (GAMESTATE_PSET.empty())
         {
             resumeButtonSPtr_->SetIsDisabled(true);
+        }
+        else
+        {
+            //free all of the loaded games
+            for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
+            {
+                if (NEXT_GAMESTATE_PTR != nullptr)
+                {
+                    delete NEXT_GAMESTATE_PTR;
+                }
+            }
         }
     }
 

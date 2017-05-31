@@ -379,7 +379,7 @@ namespace stage
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
-            creatureToGiveToPtr_ = Game::Instance()->State()->Party()->GetAtOrderPos(POPUP_RESPONSE.Selection());
+            creatureToGiveToPtr_ = Game::Instance()->State().Party()->GetAtOrderPos(POPUP_RESPONSE.Selection());
 
             if (creatureToGiveToPtr_ == nullptr)
             {
@@ -1359,7 +1359,7 @@ namespace stage
             isViewForcedToItems_ = false;
         }
 
-        characterViewMap_[Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_)] = view_;
+        characterViewMap_[Game::Instance()->State().Party()->GetOrderNum(creaturePtr_)] = view_;
 
         if (ViewType::Items != view_)
             SetDescBoxTextFromListBoxItem(equippedListBoxSPtr_->GetSelected());
@@ -1690,12 +1690,12 @@ namespace stage
     {
         if (IS_NEXT_CREATURE_AFTER)
         {
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+            return HandlePlayerChangeTo(Game::Instance()->State().Party()->
                 GetNextInOrderAfter(creaturePtr_), true);
         }
         else
         {
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+            return HandlePlayerChangeTo(Game::Instance()->State().Party()->
                 GetNextInOrderBefore(creaturePtr_), false);
         }
     }
@@ -1703,7 +1703,7 @@ namespace stage
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        const std::size_t CURR_INDEX(Game::Instance()->State()->Party()->
+        const std::size_t CURR_INDEX(Game::Instance()->State().Party()->
             GetOrderNum(creaturePtr_));
 
         if (CURR_INDEX == CHARACTER_NUM)
@@ -1712,7 +1712,7 @@ namespace stage
         }
         else
         {
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->
+            return HandlePlayerChangeTo(Game::Instance()->State().Party()->
                 GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
         }
     }
@@ -1804,7 +1804,7 @@ namespace stage
     void InventoryStage::SetupCreatureDetails(const bool WILL_UPDATE_POSITION)
     {
         std::ostringstream ss;
-        ss << "Character # " << game::Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_) + 1 << "\n"
+        ss << "Character # " << game::Game::Instance()->State().Party()->GetOrderNum(creaturePtr_) + 1 << "\n"
             << creaturePtr_->Name() << "\n"
             << creaturePtr_->SexName() << "\n"
             << creaturePtr_->Race().Name();
@@ -2258,15 +2258,15 @@ namespace stage
         std::ostringstream ss;
         ss << PROMPT_TEXT << "  Select a character by pressing the number key:\n\n";
 
-        const std::size_t CURRENT_CREATURE_ORDER_NUM(Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_));
+        const std::size_t CURRENT_CREATURE_ORDER_NUM(Game::Instance()->State().Party()->GetOrderNum(creaturePtr_));
 
         std::vector<std::size_t> invalidCharacterNumVec;
         const std::size_t NUM_CHARACTERS(6);
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State()->Party()->GetAtOrderPos(i)->Body().IsHumanoid()))
+            if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State().Party()->GetAtOrderPos(i)->Body().IsHumanoid()))
             {
-                ss << "(" << i + 1 << ") " << Game::Instance()->State()->Party()->GetAtOrderPos(i)->Name() << "\n";
+                ss << "(" << i + 1 << ") " << Game::Instance()->State().Party()->GetAtOrderPos(i)->Name() << "\n";
             }
             else
             {
@@ -2388,7 +2388,7 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
 
         std::size_t coinsOwnedByOtherPartyMembers(0);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
@@ -2420,7 +2420,7 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
 
         std::size_t gemsOwnedByOtherPartyMembers(0);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
@@ -2452,7 +2452,7 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
 
         std::size_t shardsOwnedByOtherPartyMembers(0);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
@@ -2488,12 +2488,12 @@ namespace stage
         const item::Coin_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
 
         const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(
-            Game::Instance()->State()->Party()->GetNumHumanoid()));
+            Game::Instance()->State().Party()->GetNumHumanoid()));
 
         const item::Coin_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
         const item::Coin_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
 
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -2503,7 +2503,7 @@ namespace stage
         }
 
         item::Coin_t toHandOut(COINS_LEFT_OVER);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
@@ -2538,11 +2538,11 @@ namespace stage
         HandleGemsGather(false);
 
         const item::Gem_t GEMS_TOTAL(creaturePtr_->Inventory().Gems());
-        const item::Gem_t HUMANOID_COUNT(static_cast<item::Gem_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+        const item::Gem_t HUMANOID_COUNT(static_cast<item::Gem_t>(Game::Instance()->State().Party()->GetNumHumanoid()));
         const item::Gem_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
         const item::Gem_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
 
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -2552,7 +2552,7 @@ namespace stage
         }
 
         item::Gem_t toHandOut(GEMS_LEFT_OVER);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
@@ -2587,11 +2587,11 @@ namespace stage
         HandleMeteorShardsGather(false);
 
         const item::Meteor_t METEORSHARDS_TOTAL(creaturePtr_->Inventory().MeteorShards());
-        const item::Meteor_t HUMANOID_COUNT(static_cast<item::Meteor_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+        const item::Meteor_t HUMANOID_COUNT(static_cast<item::Meteor_t>(Game::Instance()->State().Party()->GetNumHumanoid()));
         const item::Meteor_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
         const item::Meteor_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
 
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -2601,7 +2601,7 @@ namespace stage
         }
 
         item::Gem_t toHandOut(METEORSHARDS_LEFT_OVER);
-        for (auto nextCreaturePtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party()->Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {

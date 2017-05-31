@@ -74,21 +74,55 @@ namespace state
 
         virtual ~GameState();
 
-        inline WorldStateSPtr_t World()         { return worldStateSPtr_; }
+        inline WorldStateSPtr_t World()
+        {
+            return worldStateSPtr_;
+        }
 
-        inline player::PartySPtr_t Party()      { return partySPtr_; }
+        inline player::PartySPtr_t Party()
+        {
+            return partySPtr_;
+        }
 
-        inline bool IsNewGame() const           { return isGameNew_; }
-        inline void IsNewGameSet(const bool B)  { isGameNew_ = B; }
+        inline bool IsNewGame() const
+        {
+            return isGameNew_;
+        }
 
-        inline const sfml_util::DateTime DateTimeStarted() const            { return dateTimeStarted_; }
-        inline void DateTimeStartedSet(const sfml_util::DateTime & DT)      { dateTimeStarted_ = DT; }
+        inline void IsNewGameSet(const bool B)
+        {
+            isGameNew_ = B;
+        }
 
-        inline const sfml_util::DateTime DateTimeOfLastSave() const         { return dateTimeLastSave_; }
-        inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)   { dateTimeLastSave_ = DT; }
+        inline const sfml_util::DateTime DateTimeStarted() const
+        {
+            return dateTimeStarted_;
+        }
 
-        inline const location::LocationSPtr_t Location() const              { return locationSPtr_; }
-        inline void LocationSet(const location::LocationSPtr_t & L_SPTR)    { locationSPtr_ = L_SPTR; }
+        inline void DateTimeStartedSet(const sfml_util::DateTime & DT)
+        {
+            dateTimeStarted_ = DT;
+        }
+
+        inline const sfml_util::DateTime DateTimeOfLastSave() const
+        {
+            return dateTimeLastSave_;
+        }
+
+        inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)
+        {
+            dateTimeLastSave_ = DT;
+        }
+
+        inline const location::LocationSPtr_t Location() const
+        {
+            return locationSPtr_;
+        }
+
+        inline void LocationSet(const location::LocationSPtr_t & L_SPTR)
+        {
+            locationSPtr_ = L_SPTR;
+        }
 
         friend bool operator<(const GameState & L, const GameState & R);
         friend bool operator==(const GameState & L, const GameState & R);
@@ -116,9 +150,8 @@ namespace state
     };
 
 
-    using GameStateSPtr_t = std::shared_ptr<GameState>;
-    using GameStateSVec_t = std::vector<GameStateSPtr_t>;
-    using GameStateSSet_t = std::set<GameStateSPtr_t>;
+    using GameStatePtr_t  = GameState *;
+    using GameStatePSet_t = std::set<GameStatePtr_t>;
 
 
     bool operator<(const GameState & L, const GameState & R);

@@ -172,11 +172,11 @@ namespace stage
         partySPtr->Add(c4Ptr, errMsgIgnored);
         partySPtr->Add(c5Ptr, errMsgIgnored);
         partySPtr->Add(c6Ptr, errMsgIgnored);
-        auto gameStateSPtr = std::make_shared<state::GameState>(partySPtr);
-        gameStateSPtr->IsNewGameSet(true);
-        Game::Instance()->StateSet(gameStateSPtr);
+        auto gameStatePtr = new state::GameState(partySPtr);
+        gameStatePtr->IsNewGameSet(true);
+        Game::Instance()->StateStore(gameStatePtr);
 
-        showNewGamePopup1_ = game::Game::Instance()->State()->IsNewGame();
+        showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
 
 

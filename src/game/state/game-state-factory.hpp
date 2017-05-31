@@ -54,8 +54,8 @@ namespace state
 
     //forward declarations
     class GameState;
-    using GameStateSPtr_t = std::shared_ptr<GameState>;
-    using GameStateSSet_t = std::set<GameStateSPtr_t>;
+    using GameStatePtr_t = GameState *;
+    using GameStatePSet_t = std::set<GameStatePtr_t>;
 
 
     //Creates game states either new or from a previous save to disc.
@@ -78,10 +78,16 @@ namespace state
         static void Release();
 
         void NewGame(const player::PartySPtr_t & PARTY_SPTR) const;
-        GameStateSSet_t LoadAllGames() const;
-        void SaveGame(const GameStateSPtr_t & GAME_SPTR) const;
 
+        //Caller is responsible for the lifetime of the returned GameState objects.
+        GameStatePSet_t LoadAllGames() const;
+        
+        void SaveGame(const GameStatePtr_t) const;
+
+        //Loaded Characters are not stored in player::CharacterWarehouse,
+        //so the caller is responsible for the lifetime of the returned objects.
         player::CharacterPSet_t LoadAllCompanions() const;
+        
         void SaveCharacter(const player::CharacterPtr_t) const;
         bool DeleteCharacter(const player::CharacterPtr_t) const;
 
@@ -89,7 +95,7 @@ namespace state
         //hack'ish function that saves either the game or the character
         //depending on which pointer is null...because can't include the
         //boost serializer includes here in this header file...grumble...zTn 2016-10-26
-        void Save(const GameStateSPtr_t &      GAME_SPTR,
+        void Save(const GameStatePtr_t         GAME_PTR,
                   const player::CharacterPtr_t CHARACTER_PTR,
                   const std::string &          DIR_STR,
                   const std::string &          FILE_STR,

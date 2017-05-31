@@ -43,6 +43,7 @@
 
 #include <memory>
 #include <string>
+#include <set>
 
 
 namespace sfml_util
@@ -60,6 +61,7 @@ namespace player
 {
     class Character;
     using CharacterPtr_t = Character *;
+    using CharacterPSet_t = std::set<CharacterPtr_t>;
 }
 
 namespace stage
@@ -149,9 +151,12 @@ namespace stage
         sf::Sprite      mouseOverSprite_;
         player::CharacterPtr_t mouseOverCharPtr_;
         sf::Texture     mouseOverTexture_;
-        bool isMouseOverTexture_;
+        bool            isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
+
+        //
+        game::player::CharacterPSet_t charactersPSet_;
     };
 
 }
