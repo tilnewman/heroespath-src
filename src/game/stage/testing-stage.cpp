@@ -368,6 +368,13 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_ItemImageManager{ false };
+        if (false == hasTestingCompleted_ItemImageManager)
+        {
+            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
+            return;
+        }
+
         static auto hasTestingCompleted_SoundManager{ false };
         if (false == hasTestingCompleted_SoundManager)
         {
@@ -379,13 +386,6 @@ namespace stage
         if (false == hasTestingCompleted_CreatureImageManager)
         {
             hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemImageManager{ false };
-        if (false == hasTestingCompleted_ItemImageManager)
-        {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
             return;
         }
 
