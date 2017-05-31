@@ -120,8 +120,10 @@ namespace player
         }
     };
 
-    using PartySPtr_t = std::shared_ptr<Party>;
+    using PartyPtr_t  = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
 }
 }
+
 #endif //GAME_PLAYER_PARTY_INCLUDED

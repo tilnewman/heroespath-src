@@ -88,20 +88,21 @@ namespace combat
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
             "game::PartyFactory::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
 
-    non_player::PartySPtr_t PartyFactory::MakeParty_FirstEncounter() const
+    non_player::PartyPtr_t PartyFactory::MakeParty_FirstEncounter() const
     {
-        auto partySPtr = std::make_shared<non_player::Party>();
+        non_player::PartyPtr_t partyPtr{ new non_player::Party() };
 
         for (std::size_t i(0); i < 10; ++i)
         {
-            partySPtr->Add( MakeCreature_GoblinGrunt() );
+            partyPtr->Add( MakeCreature_GoblinGrunt() );
         }
 
-        return partySPtr;
+        return partyPtr;
     }
 
 

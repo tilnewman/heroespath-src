@@ -89,8 +89,10 @@ namespace non_player
         }
     };
 
-    using PartySPtr_t = std::shared_ptr<non_player::Party>;
+    using PartyPtr_t = non_player::Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
 }
 }
+
 #endif //GAME_NONPLAYER_PARTY_INCLUDED

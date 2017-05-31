@@ -605,7 +605,7 @@ namespace stage
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
         std::string errMsgIgnored{ "" };
-        player::PartySPtr_t partySPtr(new player::Party());
+        player::PartyPtr_t partyPtr{ new player::Party() };
 
         {
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
@@ -628,7 +628,7 @@ namespace stage
                                                   KNIGHT_STATS) };
 
             player::Initial::Setup(knightPtr);
-            partySPtr->Add(knightPtr, errMsgIgnored);
+            partyPtr->Add(knightPtr, errMsgIgnored);
         }
         /*
         {
@@ -658,7 +658,7 @@ namespace stage
             firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
 
             player::Initial::Setup(firebrandSPtr.get());
-            partySPtr->Add(firebrandSPtr, errMsgIgnored);
+            partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
         {
@@ -682,7 +682,7 @@ namespace stage
                                                   ARCHER_STATS) };
 
             player::Initial::Setup(archerPtr);
-            partySPtr->Add(archerPtr, errMsgIgnored);
+            partyPtr->Add(archerPtr, errMsgIgnored);
         }
         /*
         {
@@ -702,7 +702,7 @@ namespace stage
                                                                      WOLFEN_STATS));
 
             player::Initial::Setup(wolfenSPtr.get());
-            partySPtr->Add(wolfenSPtr, errMsgIgnored);
+            partyPtr->Add(wolfenSPtr, errMsgIgnored);
         }
         */
         {
@@ -726,7 +726,7 @@ namespace stage
                                                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
-            partySPtr->Add(bardPtr, errMsgIgnored);
+            partyPtr->Add(bardPtr, errMsgIgnored);
         }
         /*
         {
@@ -746,7 +746,7 @@ namespace stage
                                                                  BEASTMASTER_STATS));
 
             player::Initial::Setup(bmSPtr.get());
-            partySPtr->Add(bmSPtr, errMsgIgnored);
+            partyPtr->Add(bmSPtr, errMsgIgnored);
         }
         */
         {
@@ -770,7 +770,7 @@ namespace stage
                                                  THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
-            partySPtr->Add(thiefPtr, errMsgIgnored);
+            partyPtr->Add(thiefPtr, errMsgIgnored);
         }
 
         {
@@ -795,7 +795,7 @@ namespace stage
 
             player::Initial::Setup(clericPtr);
             clericPtr->ManaCurrentSet(1);
-            partySPtr->Add(clericPtr, errMsgIgnored);
+            partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
         {
@@ -820,7 +820,7 @@ namespace stage
 
             player::Initial::Setup(sorcererPtr);
             sorcererPtr->ManaCurrentSet(1);
-            partySPtr->Add(sorcererPtr, errMsgIgnored);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
         {
@@ -840,18 +840,18 @@ namespace stage
                                                                       SYLAVIN_STATS));
 
             player::Initial::Setup(sylavinSPtr.get());
-            partySPtr->Add(sylavinSPtr, errMsgIgnored);
+            partyPtr->Add(sylavinSPtr, errMsgIgnored);
         }
         */
         if (restoreInfo_.HasRestored() == false)
         {
             //TEMP TODO REMOVE create new game and player party object
-            state::GameStateFactory::Instance()->NewGame(partySPtr);
+            state::GameStateFactory::Instance()->NewGame(partyPtr);
 
             combat::Encounter::Instance()->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            combat::Encounter::Instance()->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
+            combat::Encounter::Instance()->NonPlayerParty().Characters()[0]->ConditionAdd(creature::Conditions::Stone);
         }
 
         //combat display
@@ -1428,10 +1428,12 @@ namespace stage
     void CombatStage::AppendInitialStatus()
     {
         std::ostringstream ss;
-        ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << combat::Encounter::Instance()->NonPlayerParty()->Summary() << "!";
+        ss << combat::Text::InitialCombatStatusMessagePrefix() << " "
+            << combat::Encounter::Instance()->NonPlayerParty().Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
+        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+            "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         MoveTurnBoxObjectsOffScreen(true);
         statusMsgAnimColorShaker_.Reset();
@@ -1446,7 +1448,8 @@ namespace stage
     void CombatStage::AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM)
     {
         statusBoxTextInfo_.text = MSG_STR;
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
+        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+            "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         if (WILL_ANIM)
         {
@@ -1473,7 +1476,8 @@ namespace stage
     {
         UpdateTestingText();
 
-        pauseElapsedSec_ = pauseDurationSec_ + 1.0f;//anything greater than pauseDurationSec_ will work here
+        //anything greater than pauseDurationSec_ will work here
+        pauseElapsedSec_ = pauseDurationSec_ + 1.0f;
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::FinalPause == animPhase_))
@@ -1543,13 +1547,15 @@ namespace stage
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             StartPerformAnim();
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
             if (tempConditionsWakeStr_.empty() == false)
@@ -1565,16 +1571,23 @@ namespace stage
 
             if (turnActionInfo_.Action() == combat::TurnAction::Nothing)
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
                 SetTurnPhase(TurnPhase::PostTurnPause);
                 StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
             }
             else
             {
-                //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
+                //also do the perform step here so that the TurnBox can display the non-player
+                //creature's intent before showing the result
                 SetTurnActionPhase( HandleEnemyTurnStep2_Perform() );
 
-                //collect a list of all attacking and targeted creatures that need to be centered on the screen
+                //collect a list of all attacking and targeted creatures that need to be
+                //centered on the screen
                 creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
 
@@ -1594,7 +1607,8 @@ namespace stage
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             //See above for call to HandleEnemyTurnStep2_Perform()
             StartPerformAnim();
@@ -1607,7 +1621,9 @@ namespace stage
             auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
             if (performReportEffectIndex_ < CREATURE_EFFECTS_VEC.size())
             {
-                auto const HIT_INFO_VEC_SIZE{ CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().size() };
+                auto const HIT_INFO_VEC_SIZE{ CREATURE_EFFECTS_VEC.at(
+                    performReportEffectIndex_).GetHitInfoVec().size() };
+
                 if ((HIT_INFO_VEC_SIZE > 0) && (performReportHitIndex_ <  (HIT_INFO_VEC_SIZE - 1)))
                 {
                     ++performReportHitIndex_;
@@ -1624,7 +1640,9 @@ namespace stage
                     }
                 }
 
-                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
+                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(
+                    performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
+
                 SetupTurnBox();
                 StartPause(PERFORM_REPORT_PAUSE_SEC_, "PerformReport");
                 return;
@@ -1641,8 +1659,13 @@ namespace stage
             creature::CreaturePVec_t killedNonPlayerCreaturesPVec;
             auto const CREATURE_EFFECTS{ fightResult_.Effects() };
             for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
-                if ((NEXT_CREATURE_EFFECT.WasKill()) && (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
+            {
+                if ((NEXT_CREATURE_EFFECT.WasKill()) &&
+                    (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
+                {
                     killedNonPlayerCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                }
+            }
 
             if (killedNonPlayerCreaturesPVec.empty())
             {
@@ -1705,7 +1728,9 @@ namespace stage
 
             case combat::TurnAction::Attack:
             {
-                fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, turnActionInfo_.Target());
+                fightResult_ = combat::FightClub::Fight(turnCreaturePtr_,
+                                                        turnActionInfo_.Target());
+
                 SetupTurnBox();
                 return GetTurnActionPhaseFromFightResult(fightResult_);
             }

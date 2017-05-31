@@ -164,15 +164,15 @@ namespace stage
         auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) };
         auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) };
         auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) };
-        auto partySPtr = std::make_shared<player::Party>();
+        player::PartyPtr_t partyPtr{ new player::Party() };
         std::string errMsgIgnored{ "" };
-        partySPtr->Add(c1Ptr, errMsgIgnored);
-        partySPtr->Add(c2Ptr, errMsgIgnored);
-        partySPtr->Add(c3Ptr, errMsgIgnored);
-        partySPtr->Add(c4Ptr, errMsgIgnored);
-        partySPtr->Add(c5Ptr, errMsgIgnored);
-        partySPtr->Add(c6Ptr, errMsgIgnored);
-        auto gameStatePtr = new state::GameState(partySPtr);
+        partyPtr->Add(c1Ptr, errMsgIgnored);
+        partyPtr->Add(c2Ptr, errMsgIgnored);
+        partyPtr->Add(c3Ptr, errMsgIgnored);
+        partyPtr->Add(c4Ptr, errMsgIgnored);
+        partyPtr->Add(c5Ptr, errMsgIgnored);
+        partyPtr->Add(c6Ptr, errMsgIgnored);
+        auto gameStatePtr = new state::GameState(partyPtr);
         gameStatePtr->IsNewGameSet(true);
         Game::Instance()->StateStore(gameStatePtr);
 

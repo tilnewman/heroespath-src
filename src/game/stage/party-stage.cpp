@@ -697,10 +697,8 @@ namespace stage
             }
         }
 
-        auto partySPtr = std::make_shared<player::Party>(charPVec);
-
         //create a new GameState with the given party and then save it
-        state::GameStateFactory::Instance()->NewGame(partySPtr);
+        state::GameStateFactory::Instance()->NewGame( new player::Party(charPVec) );
 
         //Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning 

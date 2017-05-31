@@ -41,8 +41,7 @@ namespace game
 namespace player
 {
     class Party;
-    using PartySPtr_t = std::shared_ptr<Party>;
-    using PartySSet_t = std::set<PartySPtr_t>;
+    using PartyPtr_t = Party *;
 
     class Character;
     using CharacterPtr_t = Character *;
@@ -77,7 +76,7 @@ namespace state
         static void Acquire();
         static void Release();
 
-        void NewGame(const player::PartySPtr_t & PARTY_SPTR) const;
+        void NewGame(const player::PartyPtr_t) const;
 
         //Caller is responsible for the lifetime of the returned GameState objects.
         GameStatePSet_t LoadAllGames() const;

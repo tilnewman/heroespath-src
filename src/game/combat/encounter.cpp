@@ -62,8 +62,8 @@ namespace combat
 
     Encounter::Encounter()
     :
-        enemyPartySPtr_    (),
-        deadEnemyPartySPtr_(std::make_shared<non_player::Party>()),
+        enemyPartyUPtr_    (),
+        deadEnemyPartyUPtr_(std::make_unique<non_player::Party>()),
         roundCounter_      (0),
         hasStarted_        (false),
         turnOverPVec_      (),
@@ -115,9 +115,39 @@ namespace combat
     }
 
 
+    non_player::Party & Encounter::NonPlayerParty()
+    {
+        if (enemyPartyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::combat::Encounter::NonPlayerParty() called when ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * enemyPartyUPtr_.get();
+        }
+    }
+
+
+    non_player::Party & Encounter::DeadNonPlayerParty()
+    {
+        if (deadEnemyPartyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::combat::Encounter::DeadNonPlayerParty() called when ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * deadEnemyPartyUPtr_.get();
+        }
+    }
+
+
     void Encounter::Setup_First()
     {
-        enemyPartySPtr_ = PartyFactory::Instance()->MakeParty_FirstEncounter();
+        enemyPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
     }
 
 
@@ -159,7 +189,7 @@ namespace combat
     {
         turnOverPVec_.clear();
         turnInfoMap_.clear();
-        enemyPartySPtr_.reset();
+        enemyPartyUPtr_.reset();
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;
@@ -170,16 +200,18 @@ namespace combat
     {
         //make sure no TurnInfo objects refer to a killed creature
         for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
+        {
             nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
+        }
 
         //no need to remove from turnOverPVec_
 
         //no need to null out turnCreaturePtr_
 
         //move from the enemyParty to the deadEnemyParty for later loot collection
-        auto killedCharacterPtr{ enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-        enemyPartySPtr_->Remove(killedCharacterPtr, false);
-        deadEnemyPartySPtr_->Add(killedCharacterPtr, false);
+        auto killedCharacterPtr{ enemyPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+        enemyPartyUPtr_->Remove(killedCharacterPtr, false);
+        deadEnemyPartyUPtr_->Add(killedCharacterPtr, false);
     }
 
 
@@ -208,7 +240,7 @@ namespace combat
     {
         turnInfoMap_.clear();
 
-        for (auto const NEXT_CHAR_PTR : enemyPartySPtr_->Characters())
+        for (auto const NEXT_CHAR_PTR : enemyPartyUPtr_->Characters())
         {
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
@@ -218,7 +250,7 @@ namespace combat
             turnInfoMap_[NEXT_CHAR_PTR] = turnInfo;
         }
 
-        for (auto const NEXT_CHAR_PTR : Game::Instance()->State().Party()->Characters())
+        for (auto const NEXT_CHAR_PTR : Game::Instance()->State().Party().Characters())
         {
             turnInfoMap_[NEXT_CHAR_PTR] = TurnInfo();
         }

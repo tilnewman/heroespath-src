@@ -280,13 +280,7 @@ namespace stage
         charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
         //setup characters list
-        player::PartySPtr_t partySPtr(gameStatePtr->Party());
-        M_ASSERT_OR_LOGANDTHROW_SS((partySPtr.get() != nullptr),
-            "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
-            << " returned a null Party object.");
-
-        auto const CHAR_PVEC( partySPtr->Characters() );
-
+        auto const CHAR_PVEC( gameStatePtr->Party().Characters() );
         const std::size_t NUM_CHARS(CHAR_PVEC.size());
         float posY(CHAR_LIST_POS_TOP + 30.0f);
         for (std::size_t i(0); i<NUM_CHARS; ++i)

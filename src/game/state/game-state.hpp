@@ -41,7 +41,8 @@ namespace game
     namespace player
     {
         class Party;
-        using PartySPtr_t = std::shared_ptr<Party>;
+        using PartyPtr_t  = Party *;
+        using PartyUPtr_t = std::unique_ptr<Party>;
     }
 
     namespace location
@@ -69,7 +70,7 @@ namespace state
         GameState & operator=(const GameState &) =delete;
 
     public:
-        explicit GameState(const player::PartySPtr_t &      PARTY_SPTR      = player::PartySPtr_t(),
+        explicit GameState(const player::PartyPtr_t         PARTY_PTR       = nullptr,
                            const WorldStatePtr_t            WORLD_STATE_PTR = nullptr,
                            const location::LocationSPtr_t & LOCATION_SPTR   = location::LocationSPtr_t());
 
@@ -77,10 +78,7 @@ namespace state
 
         WorldState & World();
 
-        inline player::PartySPtr_t Party()
-        {
-            return partySPtr_;
-        }
+        player::Party & Party();
 
         inline bool IsNewGame() const
         {
@@ -126,7 +124,7 @@ namespace state
         friend bool operator==(const GameState & L, const GameState & R);
 
     private:
-        player::PartySPtr_t      partySPtr_;
+        player::PartyUPtr_t      partyUPtr_;
         WorldStateUPtr_t         worldStateUPtr_;
         bool                     isGameNew_;
         sfml_util::DateTime      dateTimeStarted_;
@@ -138,7 +136,7 @@ namespace state
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & partySPtr_;
+            ar & partyUPtr_;
             ar & worldStateUPtr_;
             ar & isGameNew_;
             ar & dateTimeStarted_;

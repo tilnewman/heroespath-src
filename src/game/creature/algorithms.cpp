@@ -58,7 +58,7 @@ namespace creature
 
     std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam, const bool LIVING_ONLY)
     {
-        auto const PLAYERS_PVEC( Game::Instance()->State().Party()->Characters() );
+        auto const PLAYERS_PVEC( Game::Instance()->State().Party().Characters() );
 
         std::size_t count{ 0 };
         for (auto const NEXT_PLAYER_PTR : PLAYERS_PVEC)
@@ -84,7 +84,7 @@ namespace creature
 
     std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam, const bool LIVING_ONLY)
     {
-        auto const NONPLAYERS_PVEC(combat::Encounter::Instance()->NonPlayerParty()->Characters());
+        auto const NONPLAYERS_PVEC(combat::Encounter::Instance()->NonPlayerParty().Characters());
 
         std::size_t count{ 0 };
         for (auto const NEXT_NONPLAYER_PTR : NONPLAYERS_PVEC)

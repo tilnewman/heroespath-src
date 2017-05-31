@@ -40,7 +40,7 @@ namespace game
 namespace non_player
 {
     class Party;
-    using PartySPtr_t = std::shared_ptr<Party>;
+    using PartyPtr_t = Party *;
 
     class Character;
     using CharacterPtr_t = Character *;
@@ -67,7 +67,7 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        non_player::PartySPtr_t MakeParty_FirstEncounter() const;
+        non_player::PartyPtr_t MakeParty_FirstEncounter() const;
 
     private:
         non_player::CharacterPtr_t MakeCreature_GoblinGrunt() const;

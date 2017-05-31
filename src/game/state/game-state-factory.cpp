@@ -110,9 +110,9 @@ namespace state
     }
 
 
-    void GameStateFactory::NewGame(const player::PartySPtr_t & PARTY_SPTR) const
+    void GameStateFactory::NewGame(const player::PartyPtr_t PARTY_PTR) const
     {
-        auto gameStatePtr = new GameState(PARTY_SPTR, new WorldState());
+        auto gameStatePtr = new GameState(PARTY_PTR, new WorldState());
         gameStatePtr->IsNewGameSet(true);
         gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
 
