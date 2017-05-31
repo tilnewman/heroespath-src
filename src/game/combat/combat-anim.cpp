@@ -91,6 +91,7 @@ namespace combat
         projAnimBeginPosV_               (0.0f, 0.0f),
         projAnimEndPosV_                 (0.0f, 0.0f),
         projAnimWillSpin_                (false),
+        projAnimWillDraw_                (false),
         deadAnimNodesPVec_               (),
         centeringAnimCombatNodePtr_      (nullptr),
         centeringAnimCreaturesPVec_      (),
@@ -130,7 +131,7 @@ namespace combat
 
     void CombatAnimation::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        if (projAnimWillSpin_)
+        if (projAnimWillDraw_)
         {
             const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
             states.blendMode = sf::BlendAdd;
@@ -193,6 +194,7 @@ namespace combat
                                                    const item::ItemPtr_t     WEAPON_PTR,
                                                    const bool                WILL_HIT)
     {
+        projAnimWillDraw_ = true;
         projAnimWillSpin_ = ! WILL_HIT;
 
         //establish the game data file path key to the projectile image
@@ -315,7 +317,7 @@ namespace combat
 
     void CombatAnimation::ProjectileShootAnimStop()
     {
-        projAnimWillSpin_ = false;
+        projAnimWillDraw_ = false;
     }
 
 

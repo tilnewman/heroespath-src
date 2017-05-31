@@ -188,6 +188,7 @@ namespace combat
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;
         bool projAnimWillSpin_;
+        bool projAnimWillDraw_;
 
         //members supporting the Death Animation
         CombatNodePVec_t deadAnimNodesPVec_;
