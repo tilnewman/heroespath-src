@@ -235,7 +235,7 @@ namespace combat
             (combatNodePtr->GetEntityWillDraw() == true) &&
             (false == isMouseHeldDownInBF_) &&
             isPlayerTurn_ &&
-            (false == GetIsStatusMessageAnimating()))
+            (GetIsStatusMessageAnimating() == false))
         {
             //stop shaking a creature image if mouse-over will start transitioning to summary view
             CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
@@ -1195,11 +1195,14 @@ namespace combat
         {
             CreatureToneDown(1.0f - summaryViewUPtr_->GetTransitionStatus());
 
-            if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
-                (summaryViewUPtr_->GetTransitionStatus() > 0.99))
+            if (summaryViewUPtr_->GetTransitionStatus() > 0.98)
             {
-                CombatAnimation::Instance()->ShakeAnimRestart();
                 SetIsSummaryViewInProgress(false);
+
+                if (CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr)
+                {
+                    CombatAnimation::Instance()->ShakeAnimRestart();
+                }
             }
         }
     }
