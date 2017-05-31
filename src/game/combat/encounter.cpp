@@ -140,7 +140,7 @@ namespace combat
     void Encounter::StartTasks()
     {
         roundCounter_ = 0;
-        Game::Instance()->State().World()->EncoundterCountInc();
+        Game::Instance()->State().World().EncoundterCountInc();
 
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
 

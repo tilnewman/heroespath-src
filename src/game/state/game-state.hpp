@@ -55,7 +55,8 @@ namespace state
 
     //forward declarations
     class WorldState;
-    using WorldStateSPtr_t = std::shared_ptr<WorldState>;
+    using WorldStatePtr_t  = WorldState *;
+    using WorldStateUPtr_t = std::unique_ptr<WorldState>;
 
 
     //Encapsulates everything about a saved game.
@@ -68,16 +69,13 @@ namespace state
         GameState & operator=(const GameState &) =delete;
 
     public:
-        explicit GameState(const player::PartySPtr_t &      PARTY_SPTR       = player::PartySPtr_t(),
-                           const WorldStateSPtr_t &         WORLD_STATE_SPTR = WorldStateSPtr_t(),
-                           const location::LocationSPtr_t & LOCATION_SPTR    = location::LocationSPtr_t());
+        explicit GameState(const player::PartySPtr_t &      PARTY_SPTR      = player::PartySPtr_t(),
+                           const WorldStatePtr_t            WORLD_STATE_PTR = nullptr,
+                           const location::LocationSPtr_t & LOCATION_SPTR   = location::LocationSPtr_t());
 
         virtual ~GameState();
 
-        inline WorldStateSPtr_t World()
-        {
-            return worldStateSPtr_;
-        }
+        WorldState & World();
 
         inline player::PartySPtr_t Party()
         {
@@ -129,7 +127,7 @@ namespace state
 
     private:
         player::PartySPtr_t      partySPtr_;
-        WorldStateSPtr_t         worldStateSPtr_;
+        WorldStateUPtr_t         worldStateUPtr_;
         bool                     isGameNew_;
         sfml_util::DateTime      dateTimeStarted_;
         sfml_util::DateTime      dateTimeLastSave_;
@@ -141,7 +139,7 @@ namespace state
         void serialize(Archive & ar, const unsigned int)
         {
             ar & partySPtr_;
-            ar & worldStateSPtr_;
+            ar & worldStateUPtr_;
             ar & isGameNew_;
             ar & dateTimeStarted_;
             ar & dateTimeLastSave_;

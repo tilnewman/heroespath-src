@@ -112,8 +112,7 @@ namespace state
 
     void GameStateFactory::NewGame(const player::PartySPtr_t & PARTY_SPTR) const
     {
-        auto const WORLDSTATE_SPTR = std::make_shared<WorldState>();
-        auto gameStatePtr = new GameState(PARTY_SPTR, WORLDSTATE_SPTR);
+        auto gameStatePtr = new GameState(PARTY_SPTR, new WorldState());
         gameStatePtr->IsNewGameSet(true);
         gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
 

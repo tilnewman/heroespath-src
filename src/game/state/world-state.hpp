@@ -29,6 +29,7 @@
 //  A class that represents the entire state of the game world.
 //
 #include "misc/boost-serialize-includes.hpp"
+
 #include <memory>
 
 
@@ -67,6 +68,9 @@ namespace state
             ar & encounterCount_;
         }
     };
+
+    using WorldStatePtr_t  = WorldState *;
+    using WorldStateUPtr_t = std::unique_ptr<WorldState>;
 
 }
 }
