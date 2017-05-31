@@ -43,6 +43,7 @@
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/box.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
@@ -195,7 +196,7 @@ namespace stage
         statsLckPosTop_         (0.0f),
         statsSpdPosTop_         (0.0f),
         statsIntPosTop_         (0.0f),
-        statsBoxSPtr_           (),
+        statsBoxUPtr_           (),
         isAnimStats_            (false),
         isWaitingForStats_      (false),
         animStatsDelayPerSec_   (0.0f),
@@ -869,8 +870,8 @@ namespace stage
                                                                        sf::Color(180, 180, 180)),
                                               BG_INFO);
 
-            statsBoxSPtr_.reset( new sfml_util::gui::box::Box("CharacterStageStats", boxInfo) );
-            EntityAdd(statsBoxSPtr_.get());
+            statsBoxUPtr_.reset( new sfml_util::gui::box::Box("CharacterStageStats", boxInfo) );
+            EntityAdd(statsBoxUPtr_.get());
         }
 
         //Stat Labels
@@ -1851,8 +1852,8 @@ namespace stage
             if ((KE.code == sf::Keyboard::Return) || (KE.code == sf::Keyboard::Tab))
             {
                 nameTextEntryBoxSPtr_->SetHasFocus(false);
-                statsBoxSPtr_->SetHasFocus(true);
-                Stage::SetFocus(statsBoxSPtr_.get());
+                statsBoxUPtr_->SetHasFocus(true);
+                Stage::SetFocus(statsBoxUPtr_.get());
             }
 
             return true;

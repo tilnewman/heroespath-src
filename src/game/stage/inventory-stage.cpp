@@ -172,7 +172,7 @@ namespace stage
         unEquipListBoxSPtr_     (),
         insTextRegionUPtr_      (),
         descTextRegionUPtr_     (),
-        descBoxSPtr_            (),
+        descBoxUPtr_            (),
         centerTextRegionUPtr_   (),
         backButtonSPtr_         (),
         itemsButtonSPtr_        (),
@@ -585,7 +585,7 @@ namespace stage
         SetupDescBoxTitle();
         EntityAdd(unEqTitleTextRegionUPtr_.get());
         EntityAdd(descTextRegionUPtr_.get());
-        EntityAdd(descBoxSPtr_.get());
+        EntityAdd(descBoxUPtr_.get());
 
         //buttons
         sfml_util::gui::TextInfo buttonTextInfo(" ",
@@ -1137,12 +1137,12 @@ namespace stage
                         if (isSlidingLeft_)
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
                         }
                     }
 
@@ -1151,7 +1151,7 @@ namespace stage
                         SetupDescBox(true);
                         unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
                         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
-                        descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
+                        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
                         hasDescBoxChanged_ = true;
                         descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -1174,12 +1174,12 @@ namespace stage
                         if (isSlidingLeft_)
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
                         }
                     }
 
@@ -2104,9 +2104,9 @@ namespace stage
             }
         }
 
-        if (descBoxSPtr_.get() == nullptr)
+        if (descBoxUPtr_.get() == nullptr)
         {
-            descBoxSPtr_.reset(new sfml_util::gui::box::Box("InventoryStage'sDesc", LISTBOX_BOX_INFO));
+            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("InventoryStage'sDesc", LISTBOX_BOX_INFO);
         }
 
         sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
@@ -2132,7 +2132,7 @@ namespace stage
         }
 
         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
-        descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
+        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
     }
 
 

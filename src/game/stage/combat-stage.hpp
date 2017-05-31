@@ -58,8 +58,11 @@ namespace sfml_util
 {
 namespace gui
 {
-    class Box;
-    using BoxSPtr_t = std::shared_ptr<Box>;
+    namespace box
+    {
+        class Box;
+        using BoxUPtr_t = std::unique_ptr<Box>;
+    }
 
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
@@ -318,11 +321,11 @@ namespace stage
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         //
-        sfml_util::gui::box::BoxSPtr_t   commandBoxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t   commandBoxUPtr_;
         sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
         sfml_util::gui::TextInfo         statusBoxTextInfo_;
         sfml_util::gui::SliderBarUPtr_t  zoomSliderBarUPtr_;
-        sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;
         sf::FloatRect                    turnBoxRegion_;
         combat::CombatSoundEffects       combatSoundEffects_;
         TurnPhase                        turnPhase_;

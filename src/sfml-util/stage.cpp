@@ -53,7 +53,7 @@ namespace sfml_util
                                             Display::Instance()->GetWinHeight()) ),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
+        hoverTextBoxUPtr_   (),
         hoverSfText_        ()
     {}
 
@@ -65,7 +65,7 @@ namespace sfml_util
         stageRegion_        (REGION),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
+        hoverTextBoxUPtr_   (),
         hoverSfText_        ()
     {}
 
@@ -83,7 +83,7 @@ namespace sfml_util
                                             REGION_HEIGHT) ),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
+        hoverTextBoxUPtr_   (),
         hoverSfText_        ()
     {}
 
@@ -284,9 +284,9 @@ namespace sfml_util
 
             if (hoverText.empty())
             {
-                if (hoverTextBoxSPtr_.get() != nullptr)
+                if (hoverTextBoxUPtr_.get() != nullptr)
                 {
-                    hoverTextBoxSPtr_.reset();
+                    hoverTextBoxUPtr_.reset();
                 }
 
                 return;
@@ -323,13 +323,13 @@ namespace sfml_util
 
             const gui::box::Info BOX_INFO(1, true, region, gui::ColorSet(), BG_INFO);
 
-            hoverTextBoxSPtr_.reset( new gui::box::Box(GetStageName() + "'sHoverText", BOX_INFO) );
+            hoverTextBoxUPtr_ = std::make_unique<gui::box::Box>(GetStageName() + "'sHoverText", BOX_INFO);
         }
         else
         {
-            if (hoverTextBoxSPtr_.get() != nullptr)
+            if (hoverTextBoxUPtr_.get() != nullptr)
             {
-                hoverTextBoxSPtr_.reset();
+                hoverTextBoxUPtr_.reset();
             }
         }
     }
@@ -344,9 +344,9 @@ namespace sfml_util
 
     void Stage::DrawHoverText(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        if (hoverTextBoxSPtr_.get() != nullptr)
+        if (hoverTextBoxUPtr_.get() != nullptr)
         {
-            target.draw( * hoverTextBoxSPtr_, STATES);
+            target.draw( * hoverTextBoxUPtr_, STATES);
             target.draw(hoverSfText_, STATES);
         }
     }

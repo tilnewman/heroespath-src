@@ -53,7 +53,7 @@ namespace gui
     namespace box
     {
         class Box;
-        using BoxSPtr_t = std::shared_ptr<Box>;
+        using BoxUPtr_t = std::unique_ptr<Box>;
     }
 
     class ListBoxItem;
@@ -220,7 +220,7 @@ namespace gui
 
     protected:
         const float       IMAGE_HORIZ_PAD_;
-        box::BoxSPtr_t    boxSPtr_;
+        box::BoxUPtr_t    boxUPtr_;
         SliderBarUPtr_t   sliderbarUPtr_;
         sf::Color         lineColor_;
         sf::Color         highlightColor_;

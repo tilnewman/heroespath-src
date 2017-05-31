@@ -113,7 +113,7 @@ namespace combat
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
         nameCharSizeCurr_          (NAME_CHAR_SIZE_ORIG_),
         battlefieldRect_           (),
-        boxSPtr_                   (),
+        boxUPtr_                   (),
         bgTexture_                 (),
         offScreenTexture_          (),
         offScreenSprite_           (),
@@ -186,7 +186,7 @@ namespace combat
 
         //battlefield bounding box
         const sfml_util::gui::box::Info BOX_INFO(true, battlefieldRect_, sfml_util::gui::ColorSet(sf::Color::White, sf::Color::Transparent));
-        boxSPtr_.reset( new sfml_util::gui::box::Box("CombatDisplay's'", BOX_INFO) );
+        boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatDisplay's'", BOX_INFO);
 
         //load background texture
         sfml_util::LoadImageOrTexture<sf::Texture>(bgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkpaper"));
@@ -217,7 +217,7 @@ namespace combat
     void CombatDisplay::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(offScreenSprite_, STATES);
-        target.draw( * boxSPtr_, STATES);
+        target.draw( * boxUPtr_, STATES);
         Stage::Draw(target, STATES);
         summaryViewUPtr_->Draw(target, STATES);
     }

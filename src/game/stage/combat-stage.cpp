@@ -136,11 +136,11 @@ namespace stage
         Stage                      ("Combat"),
         SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
-        commandBoxSPtr_            (),
+        commandBoxUPtr_            (),
         statusBoxSPtr_             (),
         statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
         zoomSliderBarUPtr_         (),
-        turnBoxSPtr_               (),
+        turnBoxUPtr_               (),
         turnBoxRegion_             (),
         combatSoundEffects_        (),
         turnPhase_                 (TurnPhase::NotATurn),
@@ -388,7 +388,7 @@ namespace stage
                                            COMMAND_REGION_HEIGHT);
         const sfml_util::gui::BackgroundInfo COMMAND_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), COMMAND_REGION);
         const sfml_util::gui::box::Info COMMAND_REGION_BOXINFO(true, COMMAND_REGION, sfml_util::gui::ColorSet(), COMMAND_BACKGROUNDINFO);
-        commandBoxSPtr_.reset( new sfml_util::gui::box::Box("CombatStage'sCommand", COMMAND_REGION_BOXINFO) );
+        commandBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatStage'sCommand", COMMAND_REGION_BOXINFO);
 
         //turn box
         turnBoxRegion_ = sf::FloatRect(STATUS_REGION_LEFT,
@@ -398,7 +398,7 @@ namespace stage
 
         const sfml_util::gui::BackgroundInfo TURNBOX_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), turnBoxRegion_);
         const sfml_util::gui::box::Info TURNBOX_REGION_BOXINFO(true, turnBoxRegion_, sfml_util::gui::ColorSet(), TURNBOX_BACKGROUNDINFO);
-        turnBoxSPtr_.reset(new sfml_util::gui::box::Box("CombatStage'sTurnBox", TURNBOX_REGION_BOXINFO));
+        turnBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatStage'sTurnBox", TURNBOX_REGION_BOXINFO);
 
         //turnbox title text region
         const sfml_util::gui::TextInfo TURNBOXTITLE_TEXT_INFO(" ",
@@ -921,7 +921,7 @@ namespace stage
 
     void CombatStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw( * commandBoxSPtr_, STATES);
+        target.draw( * commandBoxUPtr_, STATES);
         Stage::Draw(target, STATES);
         statusBoxSPtr_->draw(target, STATES);
 
@@ -933,7 +933,7 @@ namespace stage
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
             (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
-            turnBoxSPtr_->draw(target, STATES);
+            turnBoxUPtr_->draw(target, STATES);
 
             titleTBoxTextRegionUPtr_->draw(target, STATES);
             weaponTBoxTextRegionUPtr_->draw(target, STATES);

@@ -50,7 +50,7 @@ namespace sfml_util
         namespace box
         {
             class Box;
-            using BoxSPtr_t = std::shared_ptr<Box>;
+            using BoxUPtr_t = std::unique_ptr<Box>;
         }
     }
 
@@ -136,7 +136,7 @@ namespace sfml_util
         sf::FloatRect         stageRegion_;
         gui::IGuiEntityPVec_t entityPVec_;
         gui::IGuiEntityPtr_t  entityWithFocusPtr_;//a copy of a ptr in entityPVec_
-        gui::box::BoxSPtr_t   hoverTextBoxSPtr_;
+        gui::box::BoxUPtr_t   hoverTextBoxUPtr_;
         sf::Text              hoverSfText_;
     };
 

@@ -73,7 +73,7 @@ namespace state
         }
         else
         {
-            return * worldStateUPtr_.get();
+            return * worldStateUPtr_;
         }
     }
 
@@ -88,7 +88,7 @@ namespace state
         }
         else
         {
-            return * partyUPtr_.get();
+            return * partyUPtr_;
         }
     }
 

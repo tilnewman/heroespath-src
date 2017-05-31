@@ -80,7 +80,7 @@ namespace gui
     :
         GuiEntity       (std::string(NAME).append("_ListBox"), REGION),
         IMAGE_HORIZ_PAD_(10.0f),
-        boxSPtr_        (),
+        boxUPtr_        (),
         sliderbarUPtr_  (),
         lineColor_      (LINE_COLOR),
         highlightColor_ (BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20)),
@@ -112,9 +112,9 @@ namespace gui
     {
         if (stagePtr_ != nullptr)
         {
-            if (boxSPtr_.get() != nullptr)
+            if (boxUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(boxSPtr_.get());
+                stagePtr_->EntityRemove(boxUPtr_.get());
             }
 
             if (sliderbarUPtr_.get() != nullptr)
@@ -147,17 +147,17 @@ namespace gui
         itemLimit_ = ITEM_LIMIT;
         callbackPtr_ = callbackPtr;
 
-        if (boxSPtr_.get() == nullptr)
+        if (boxUPtr_.get() == nullptr)
         {
-            boxSPtr_.reset(new sfml_util::gui::box::Box("ListBox's", BOX_INFO));
-            stagePtr->EntityAdd(boxSPtr_.get());
+            boxUPtr_.reset(new sfml_util::gui::box::Box("ListBox's", BOX_INFO));
+            stagePtr->EntityAdd(boxUPtr_.get());
         }
         else
         {
-            boxSPtr_->SetupBox(BOX_INFO);
+            boxUPtr_->SetupBox(BOX_INFO);
         }
 
-        boxSPtr_->SetWillAcceptFocus(false);
+        boxUPtr_->SetWillAcceptFocus(false);
 
         if (sliderbarUPtr_.get() == nullptr)
         {
@@ -233,7 +233,9 @@ namespace gui
     {
         //use the ListBox's entityWillDraw_ to control whether ListBox is responsible for drawing its entitys
         if (false == entityWillDraw_)
+        {
             return;
+        }
 
         typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
         const std::size_t NUM_ENTITYS(list_.size());
@@ -245,7 +247,9 @@ namespace gui
         for (std::size_t i(0); i<NUM_ENTITYS; ++i)
         {
             if (itr == list_.end())
+            {
                 break;
+            }
 
             const ListBoxItemSPtr_t nextEntitySPtr( * itr );
             const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(nextEntitySPtr));
@@ -307,7 +311,9 @@ namespace gui
                     lastDrawnListPosY = LINE_POS_TOP + lastDrawnEntityHeight;
                 }
                 else
+                {
                     break;
+                }
             }
 
             ++itr;
@@ -321,6 +327,7 @@ namespace gui
             {
                 DrawLine(target, lastDrawnListPosY);
             }
+
             lastDrawnListPosY += lastDrawnEntityHeight;
         }
     }
@@ -329,7 +336,9 @@ namespace gui
     ListBoxItemSPtr_t ListBox::GetAtPosition(const sf::Vector2f & POS_V)
     {
         for (auto const & NEXT_ENTITY_SPTR : list_)
+        {
             if (NEXT_ENTITY_SPTR->GetEntityWillDraw())
+            {
                 if ((POS_V.x >= entityRegion_.left) &&
                     (POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
                     (POS_V.y >= NEXT_ENTITY_SPTR->GetEntityRegion().top) &&
@@ -337,6 +346,8 @@ namespace gui
                 {
                     return NEXT_ENTITY_SPTR;
                 }
+            }
+        }
 
         return ListBoxItemSPtr_t();
     }
@@ -346,10 +357,16 @@ namespace gui
     {
         std::size_t index(0);
         for (auto const & NEXT_ENTITY_SPTR : list_)
+        {
             if (NEXT_ENTITY_SPTR == selectedSPtr_)
+            {
                 return index;
+            }
             else
+            {
                 ++index;
+            }
+        }
 
         return list_.size() + 1;//return invalid index, anything that will cause IsIndexValid() to return false will work here
     }
@@ -358,21 +375,31 @@ namespace gui
     bool ListBox::IsIndexValid(const std::size_t INDEX) const
     {
         if (list_.empty())
+        {
             return false;
+        }
         else if (INDEX >= list_.size())
+        {
             return false;
+        }
         else
+        {
             return true;
+        }
     }
 
 
     bool ListBox::SetSelectedIndex(const std::size_t NEW_INDEX, const bool WILL_PLAY_SOUNDEFFECT)
     {
         if (IsIndexValid(NEW_INDEX) == false)
+        {
             return false;
+        }
 
         if (GetSelectedIndex() == NEW_INDEX)
+        {
             return false;
+        }
 
         SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
 
@@ -385,7 +412,9 @@ namespace gui
                 currentViewPos_ = (*itr)->GetEntityRegion().height + betweenPad_;
 
                 if (WILL_PLAY_SOUNDEFFECT)
+                {
                     SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                }
 
                 selectedSPtr_ = *itr;
                 SetupList();
@@ -395,7 +424,9 @@ namespace gui
             else
             {
                 if ((*itr)->GetEntityWillDraw())
+                {
                     vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
+                }
             }
         }
 
@@ -442,10 +473,14 @@ namespace gui
         typename ListBoxItemSLst_t::iterator FOUND_ITR(std::find(list_.begin(), list_.end(), THING_SPTR));
 
         if (FOUND_ITR == list_.end())
+        {
             return false;
+        }
 
         if (*FOUND_ITR == selectedSPtr_)
+        {
             selectedSPtr_.reset();
+        }
 
         list_.erase(FOUND_ITR);
         SetupList();
@@ -471,7 +506,7 @@ namespace gui
                         SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
                         selectedSPtr_ = NEXT_ENTITY_SPTR;
                         SetupList();
-                        boxSPtr_->FakeColorSetAsIfFocusIs(true);
+                        boxUPtr_->FakeColorSetAsIfFocusIs(true);
 
                         if (callbackPtr_ != nullptr)
                         {
@@ -486,7 +521,7 @@ namespace gui
             }
         }
 
-        boxSPtr_->FakeColorSetAsIfFocusIs(DID_STATE_CHANGE);
+        boxUPtr_->FakeColorSetAsIfFocusIs(DID_STATE_CHANGE);
 
         return DID_STATE_CHANGE;
     }
@@ -593,9 +628,9 @@ namespace gui
             NEXT_IMAGE_PAIR.second.second.move(DIFF_HORIZ, DIFF_VERT);
         }
 
-        if (boxSPtr_.get() != nullptr)
+        if (boxUPtr_.get() != nullptr)
         {
-            boxSPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+            boxUPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
         }
 
         GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
@@ -686,7 +721,9 @@ namespace gui
             PopulateImageMapAndAdjustLeftPos(firstVisibleEntitySPtr, entityRegion_.left + margin_, entityPosY, true);
 
             if (itr != list_.end())
+            {
                 ++itr;
+            }
 
             entityPosY += firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_;
         }
@@ -699,10 +736,12 @@ namespace gui
         else
         {
             if ((list_.empty() == false) && (selectedSPtr_ != firstVisibleEntitySPtr))
+            {
                 PopulateImageMapAndAdjustLeftPos(firstVisibleEntitySPtr,
                                                  entityRegion_.left + margin_,
                                                  entityPosY - (firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_),
                                                  false);
+            }
         }
 
         //establish the visible set of entitys in the box
@@ -728,7 +767,9 @@ namespace gui
         if (list_.empty() == false)
         {
             for (; itr != list_.end(); ++itr)
+            {
                 (*itr)->SetEntityWillDraw(false);
+            }
         }
     }
 
@@ -738,10 +779,14 @@ namespace gui
         float totalHeight(0.0f);
 
         for (auto const & NEXT_ENTITY_SPTR : list_)
+        {
             totalHeight += NEXT_ENTITY_SPTR->GetEntityRegion().height + betweenPad_;
+        }
 
         if (totalHeight > 0.0f)
+        {
             totalHeight -= betweenPad_;
+        }
 
         return totalHeight;
     }

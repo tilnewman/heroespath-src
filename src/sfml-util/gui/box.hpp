@@ -93,10 +93,10 @@ namespace box
         BackgroundImage backgroundImage_;
     };
 
-    using BoxSPtr_t = std::shared_ptr<Box>;
-    using BoxSVec_t = std::vector<BoxSPtr_t>;
+    using BoxUPtr_t = std::unique_ptr<Box>;
 
 }
 }
 }
+
 #endif //SFMLUTIL_BOX_INCLUDED

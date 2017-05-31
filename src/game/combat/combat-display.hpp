@@ -48,8 +48,11 @@ namespace sfml_util
 {
 namespace gui
 {
-    class Box;
-    using BoxSPtr_t = std::shared_ptr<Box>;
+    namespace box
+    {
+        class Box;
+        using BoxUPtr_t = std::unique_ptr<Box>;
+    }
 
     class IGuiEntity;
 }
@@ -251,7 +254,7 @@ namespace combat
         //
         unsigned int                    nameCharSizeCurr_;
         sf::FloatRect                   battlefieldRect_;
-        sfml_util::gui::box::BoxSPtr_t  boxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t  boxUPtr_;
         sf::Texture                     bgTexture_;
         sf::RenderTexture               offScreenTexture_;
         sf::Sprite                      offScreenSprite_;

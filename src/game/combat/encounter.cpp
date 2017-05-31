@@ -125,7 +125,7 @@ namespace combat
         }
         else
         {
-            return * enemyPartyUPtr_.get();
+            return * enemyPartyUPtr_;
         }
     }
 
@@ -140,7 +140,7 @@ namespace combat
         }
         else
         {
-            return * deadEnemyPartyUPtr_.get();
+            return * deadEnemyPartyUPtr_;
         }
     }
 

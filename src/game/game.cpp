@@ -102,7 +102,7 @@ namespace game
         }
         else
         {
-            return * stateUPtr_.get();
+            return * stateUPtr_;
         }
     }
 
