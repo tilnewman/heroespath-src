@@ -191,7 +191,10 @@ namespace item
 
     bool operator==(const Item & L, const Item & R);
 
-    bool operator!=(const Item & L, const Item & R);
+    inline bool operator!=(const Item & L, const Item & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

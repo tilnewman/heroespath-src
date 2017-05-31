@@ -189,11 +189,5 @@ namespace item
                         R.isPixie_);
     }
 
-
-    bool operator!=(const Item & L, const Item & R)
-    {
-        return ! (L == R);
-    }
-
 }
 }

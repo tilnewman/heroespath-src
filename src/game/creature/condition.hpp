@@ -87,12 +87,8 @@ namespace creature
         stats::StatMultSet  statMultSet_;
     };
 
-
     using ConditionPtr_t = Condition *;
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
-
-    using ConditionSPtr_t = std::shared_ptr<Condition>;
-    using ConditionSVec_t = std::vector<ConditionSPtr_t>;
 
 
     bool operator<(const Condition & L, const Condition & R);

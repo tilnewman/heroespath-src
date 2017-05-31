@@ -379,11 +379,6 @@ namespace strategy
                         R.standPounceFreqChanceMap_);
     }
 
-
-    bool operator!=(const Chances & L, const Chances & R)
-    {
-        return ! (L == R);
-    }
 }
 }
 }

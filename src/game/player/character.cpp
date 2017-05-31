@@ -40,6 +40,8 @@
 #include "game/creature/condition.hpp"
 #include "game/item/inventory.hpp"
 
+#include "misc/vectors.hpp"
+
 
 namespace game
 {
@@ -88,25 +90,22 @@ namespace player
 
     bool operator==(const Character & L, const Character & R)
     {
-        return std::tie(L.name_,
-                        L.imageFilename_,
-                        L.sex_,
-                        L.bodyType_,
-                        L.race_,
-                        L.role_,
-                        L.stats_,
-                        L.serialNumber_,
-                        L.healthCurrent_,
-                        L.healthNormal_,
-                        L.rank_,
-                        L.experience_,
-                        L.dateTimeCreated_,
-                        L.titlesVec_,
-                        L.conditionsVec_,
-                        L.spellsVec_,
-                        L.achievements_,
-                        L.manaCurrent_,
-                        L.manaNormal_)
+        if ( std::tie(L.name_,
+                      L.imageFilename_,
+                      L.sex_,
+                      L.bodyType_,
+                      L.race_,
+                      L.role_,
+                      L.stats_,
+                      L.serialNumber_,
+                      L.healthCurrent_,
+                      L.healthNormal_,
+                      L.rank_,
+                      L.experience_,
+                      L.dateTimeCreated_,
+                      L.achievements_,
+                      L.manaCurrent_,
+                      L.manaNormal_)
                 ==
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -121,36 +120,45 @@ namespace player
                          R.rank_,
                          R.experience_,
                          R.dateTimeCreated_,
-                         R.titlesVec_,
-                         R.conditionsVec_,
-                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
-                         R.manaNormal_);
+                         R.manaNormal_) == false)
+        {
+            return false;
+        }
+
+        if (misc::Vector::OrderlessCompareEqual(L.titlesVec_, R.titlesVec_) == false)
+        {
+            return false;
+        }
+
+        if (misc::Vector::OrderlessCompareEqual(L.conditionsVec_, R.conditionsVec_) == false)
+        {
+            return false;
+        }
+
+        return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
 
     bool operator<(const Character & L, const Character & R)
     {
-        return std::tie(L.name_,
-                        L.imageFilename_,
-                        L.sex_,
-                        L.bodyType_,
-                        L.race_,
-                        L.role_,
-                        L.stats_,
-                        L.serialNumber_,
-                        L.healthCurrent_,
-                        L.healthNormal_,
-                        L.rank_,
-                        L.experience_,
-                        L.dateTimeCreated_,
-                        L.titlesVec_,
-                        L.conditionsVec_,
-                        L.spellsVec_,
-                        L.achievements_,
-                        L.manaCurrent_,
-                        L.manaNormal_)
+        if ( std::tie(L.name_,
+                      L.imageFilename_,
+                      L.sex_,
+                      L.bodyType_,
+                      L.race_,
+                      L.role_,
+                      L.stats_,
+                      L.serialNumber_,
+                      L.healthCurrent_,
+                      L.healthNormal_,
+                      L.rank_,
+                      L.experience_,
+                      L.dateTimeCreated_,
+                      L.achievements_,
+                      L.manaCurrent_,
+                      L.manaNormal_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -165,12 +173,24 @@ namespace player
                          R.rank_,
                          R.experience_,
                          R.dateTimeCreated_,
-                         R.titlesVec_,
-                         R.conditionsVec_,
-                         R.spellsVec_,
                          R.achievements_,
                          R.manaCurrent_,
-                         R.manaNormal_);
+                         R.manaNormal_) == true)
+        {
+            return true;
+        }
+
+        if (misc::Vector::OrderlessCompareLess(L.titlesVec_, R.titlesVec_) == true)
+        {
+            return true;
+        }
+
+        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        {
+            return true;
+        }
+
+        return misc::Vector::OrderlessCompareLess(L.spellsVec_, R.spellsVec_);
     }
 
 }

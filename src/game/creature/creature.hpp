@@ -341,7 +341,10 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R);
 
-    bool operator!=(const Creature & L, const Creature & R);
+    inline bool operator!=(const Creature & L, const Creature & R)
+    {
+        return ! (L == R);
+    }
 
     bool operator<(const Creature & L, const Creature & R);
 

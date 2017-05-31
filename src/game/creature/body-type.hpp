@@ -156,7 +156,10 @@ namespace creature
 
     bool operator==(const BodyType & L, const BodyType & R);
 
-    inline bool operator!=(const BodyType & L, const BodyType & R) { return ! (L == R); }
+    inline bool operator!=(const BodyType & L, const BodyType & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

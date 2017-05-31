@@ -80,9 +80,20 @@ namespace creature
         }
     };
 
-    inline bool operator<(const Achievements & L, const Achievements & R)  { return L.map_ < R.map_; }
-    inline bool operator==(const Achievements & L, const Achievements & R) { return L.map_ == R.map_; }
-    inline bool operator!=(const Achievements & L, const Achievements & R) { return ! (L == R); }
+    inline bool operator<(const Achievements & L, const Achievements & R)
+    {
+        return L.map_ < R.map_;
+    }
+
+    inline bool operator==(const Achievements & L, const Achievements & R)
+    {
+        return L.map_ == R.map_;
+    }
+
+    inline bool operator!=(const Achievements & L, const Achievements & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

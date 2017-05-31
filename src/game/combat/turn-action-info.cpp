@@ -28,7 +28,11 @@
 // turn-action-info.hpp
 //
 #include "turn-action-info.hpp"
+
+#include "misc/vectors.hpp"
+
 #include <tuple>
+#include <algorithm>
 
 
 namespace game
@@ -95,17 +99,27 @@ namespace combat
 
     bool operator<(const TurnActionInfo & L, const TurnActionInfo & R)
     {
-        return std::tie(L.actionType_, L.targetsPVec_, L.spellPtr_)
+        if (misc::Vector::OrderlessCompareLess(L.targetsPVec_, R.targetsPVec_) == true)
+        {
+            return true;
+        }
+
+        return std::tie(L.actionType_, L.spellPtr_)
                <
-               std::tie(R.actionType_, R.targetsPVec_, R.spellPtr_);
+               std::tie(R.actionType_, R.spellPtr_);
     }
 
 
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R)
     {
-        return std::tie(L.actionType_, L.targetsPVec_, L.spellPtr_)
+        if (misc::Vector::OrderlessCompareEqual(L.targetsPVec_, R.targetsPVec_) == false)
+        {
+            return false;
+        }
+
+        return std::tie(L.actionType_, L.spellPtr_)
                ==
-               std::tie(R.actionType_, R.targetsPVec_, R.spellPtr_);
+               std::tie(R.actionType_, R.spellPtr_);
     }
 
 }

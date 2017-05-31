@@ -129,7 +129,10 @@ namespace stage
 
     bool operator==(const AnimNum & L, const AnimNum & R);
 
-    bool operator!=(const AnimNum & L, const AnimNum & R);
+    inline bool operator!=(const AnimNum & L, const AnimNum & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

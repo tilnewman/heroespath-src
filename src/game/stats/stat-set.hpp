@@ -148,6 +148,7 @@ namespace stats
 
     inline bool operator==(const StatSet & L, const StatSet & R)
     {
+        //statVec_ is ordered so simple comparison works
         return (L.statVec_ == R.statVec_);
     }
 
@@ -160,6 +161,7 @@ namespace stats
 
     inline bool operator<(const StatSet & L, const StatSet & R)
     {
+        //statVec_ is ordered so simple comparison works
         return (L.statVec_ < R.statVec_);
     }
 

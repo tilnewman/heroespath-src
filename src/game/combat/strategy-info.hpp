@@ -84,8 +84,13 @@ namespace strategy
 
 
     bool operator<(const Info & L, const Info & R);
+
     bool operator==(const Info & L, const Info & R);
-    bool operator!=(const Info & L, const Info & R);
+    
+    inline bool operator!=(const Info & L, const Info & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

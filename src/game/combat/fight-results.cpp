@@ -215,16 +215,9 @@ namespace combat
 
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
-        auto lConditionsVec{ L.conditionsVec_ };
-        if (lConditionsVec.empty() == false)
+        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
         {
-            std::sort(lConditionsVec.begin(), lConditionsVec.end());
-        }
-
-        auto rConditionsVec{ R.conditionsVec_ };
-        if (rConditionsVec.empty() == false)
-        {
-            std::sort(rConditionsVec.begin(), rConditionsVec.end());
+            return true;
         }
 
         return std::tie(L.hitType_,
@@ -235,8 +228,7 @@ namespace combat
                         L.isPower_,
                         L.actionVerb_,
                         L.spellPtr_,
-                        L.spellEffectStr_,
-                        lConditionsVec)
+                        L.spellEffectStr_)
                <
                std::tie(R.hitType_,
                         R.dodgeType_,
@@ -246,17 +238,16 @@ namespace combat
                         R.isPower_,
                         R.actionVerb_,
                         R.spellPtr_,
-                        R.spellEffectStr_,
-                        rConditionsVec);
+                        R.spellEffectStr_);
     }
 
 
     bool operator==(const HitInfo & L, const HitInfo & R)
     {
-        auto lConditionsVec{ L.conditionsVec_ };
-        auto rConditionsVec{ R.conditionsVec_ };
-        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
-        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+        if (misc::Vector::OrderlessCompareEqual(L.conditionsVec_, R.conditionsVec_) == false)
+        {
+            return false;
+        }
 
         return std::tie(L.hitType_,
                         L.dodgeType_,
@@ -266,8 +257,7 @@ namespace combat
                         L.isPower_,
                         L.actionVerb_,
                         L.spellPtr_,
-                        L.spellEffectStr_,
-                        lConditionsVec)
+                        L.spellEffectStr_)
                ==
                std::tie(R.hitType_,
                         R.dodgeType_,
@@ -277,8 +267,7 @@ namespace combat
                         R.isPower_,
                         R.actionVerb_,
                         R.spellPtr_,
-                        R.spellEffectStr_,
-                        rConditionsVec);
+                        R.spellEffectStr_);
     }
 
 
@@ -330,8 +319,12 @@ namespace combat
     bool CreatureEffect::GetWasHit() const
     {
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        {
             if (NEXT_HIT_INFO.WasHit())
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -342,7 +335,9 @@ namespace combat
         stats::Health_t damageTotal{ 0 };
 
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        {
             damageTotal += NEXT_HIT_INFO.Damage();
+        }
 
         return damageTotal;
     }
@@ -372,12 +367,20 @@ namespace combat
         auto const HIT_CONDITIONS_VEC{ GetHitConditions() };
 
         if (HIT_CONDITIONS_VEC.empty() == false)
-            std::copy(HIT_CONDITIONS_VEC.begin(), HIT_CONDITIONS_VEC.end(), back_inserter(allConditionsVec));
+        {
+            std::copy(HIT_CONDITIONS_VEC.begin(),
+                      HIT_CONDITIONS_VEC.end(),
+                      back_inserter(allConditionsVec));
+        }
 
         auto const NON_HIT_CONDITIONS_VEC{ GetNonHitConditions() };
 
         if (NON_HIT_CONDITIONS_VEC.empty() == false)
-            std::copy(NON_HIT_CONDITIONS_VEC.begin(), NON_HIT_CONDITIONS_VEC.end(), back_inserter(allConditionsVec));
+        {
+            std::copy(NON_HIT_CONDITIONS_VEC.begin(),
+                      NON_HIT_CONDITIONS_VEC.end(),
+                      back_inserter(allConditionsVec));
+        }
 
         return allConditionsVec;
     }
@@ -388,8 +391,12 @@ namespace combat
         const auto CONDITIONS_VEC{ GetAllConditions() };
 
         for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -400,14 +407,22 @@ namespace combat
         auto wasCondRemoved{ false };
 
         for (auto & nextHitInfo : hitInfoVec_)
+        {
             if (nextHitInfo.RemoveCondition(E))
+            {
                 wasCondRemoved = true;
+            }
+        }
 
         creature::ConditionEnumVec_t condsToRemoveVec;
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+            }
+        }
 
         if (condsToRemoveVec.empty() == false)
         {
@@ -416,7 +431,9 @@ namespace combat
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
+            conditionsVec_.erase(std::remove(conditionsVec_.begin(),
+                                             conditionsVec_.end(),
+                                             NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return wasCondRemoved;
@@ -425,43 +442,39 @@ namespace combat
 
     bool operator<(const CreatureEffect & L, const CreatureEffect & R)
     {
-        auto lConditionsVec{ L.conditionsVec_ };
-        auto rConditionsVec{ R.conditionsVec_ };
-        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
-        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        {
+            return true;
+        }
 
         return std::tie(L.hitInfoVec_,
                         L.spellPtr_,
                         L.creaturePtr_,
-                        L.wasPounced_,
-                        lConditionsVec)
+                        L.wasPounced_)
                <
                std::tie(R.hitInfoVec_,
                         R.spellPtr_,
                         R.creaturePtr_,
-                        R.wasPounced_,
-                        rConditionsVec);
+                        R.wasPounced_);
     }
 
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R)
     {
-        auto lConditionsVec{ L.conditionsVec_ };
-        auto rConditionsVec{ R.conditionsVec_ };
-        if (lConditionsVec.empty() == false) std::sort(lConditionsVec.begin(), lConditionsVec.end());
-        if (rConditionsVec.empty() == false) std::sort(rConditionsVec.begin(), rConditionsVec.end());
+        if (misc::Vector::OrderlessCompareEqual(L.conditionsVec_, R.conditionsVec_) == false)
+        {
+            return false;
+        }
 
         return std::tie(L.hitInfoVec_,
                         L.spellPtr_,
                         L.creaturePtr_,
-                        L.wasPounced_,
-                        lConditionsVec)
+                        L.wasPounced_)
                ==
                std::tie(R.hitInfoVec_,
                         R.spellPtr_,
                         R.creaturePtr_,
-                        R.wasPounced_,
-                        rConditionsVec);
+                        R.wasPounced_);
     }
 
 
@@ -482,7 +495,9 @@ namespace combat
         if (creatureEffectVec_.empty())
         {
             std::ostringstream ss;
-            ss << "game::combat::FightResult::FirstEffect() called when the creatureEffectVec_ is empty.";
+            ss << "game::combat::FightResult::FirstEffect() called when the creatureEffectVec_"
+                << " is empty.";
+
             throw std::runtime_error(ss.str());
         }
         else
@@ -497,7 +512,9 @@ namespace combat
         if (creatureEffectVec_.empty())
         {
             std::ostringstream ss;
-            ss << "game::combat::FightResult::FirstCreature() called when the creatureEffectVec_ is empty.";
+            ss << "game::combat::FightResult::FirstCreature() called when the"
+                << " creatureEffectVec_ is empty.";
+
             throw std::runtime_error(ss.str());
         }
         else
@@ -512,7 +529,9 @@ namespace combat
         stats::Health_t damageTotal{ 0 };
 
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
+        {
             damageTotal += NEXT_CREATURE_EFFECT.GetDamageTotal();
+        }
 
         return damageTotal;
     }
@@ -521,8 +540,12 @@ namespace combat
     bool FightResult::WasHit() const
     {
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
+        {
             if (NEXT_CREATURE_EFFECT.GetWasHit())
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -557,7 +580,9 @@ namespace combat
 
         if (WILL_UNIUQE)
         {
-            conditionsVec.erase(std::unique(conditionsVec.begin(), conditionsVec.end()), conditionsVec.end());
+            conditionsVec.erase(std::unique(conditionsVec.begin(),
+                                            conditionsVec.end()),
+                                            conditionsVec.end());
         }
 
         return conditionsVec;
@@ -582,10 +607,13 @@ namespace combat
     }
 
 
-    std::size_t FightResult::EffectedCreatures(creature::CreaturePVec_t & CreaturePVec_OutParam) const
+    std::size_t FightResult::EffectedCreatures(
+        creature::CreaturePVec_t & CreaturePVec_OutParam) const
     {
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
+        {
             CreaturePVec_OutParam.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+        }
 
         return creatureEffectVec_.size();
     }

@@ -65,12 +65,6 @@ namespace map
     }
 
 
-    inline bool operator!=(const TileOffsets & L, const TileOffsets & R)
-    {
-        return ! (L == R);
-    }
-
-
     TileImage::TileImage(const std::string &   NAME,
                            const std::string &   RELATIVE_PATH,
                            const std::size_t     FIRST_ID,
@@ -97,12 +91,6 @@ namespace map
                 (L.tile_count == R.tile_count) &&
                 (L.column_count == R.column_count) &&
                 (L.name == R.name));
-    }
-
-
-    bool operator!=(const TileImage & L, const TileImage & R)
-    {
-        return !(L == R);
     }
 
 

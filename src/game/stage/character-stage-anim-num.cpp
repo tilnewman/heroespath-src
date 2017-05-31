@@ -32,6 +32,7 @@
 #include "sfml-util/sfml-util.hpp"
 
 #include <sstream>
+#include <tuple>
 
 
 namespace game
@@ -83,9 +84,13 @@ namespace stage
         textInfo_.text = ss.str();
 
         if (textInfo_.text == "0")
+        {
             textInfo_.color = sf::Color(255, 200, 200);
+        }
         else
+        {
             textInfo_.color = sf::Color::White;
+        }
 
         sfml_util::gui::SetupText(textObj_, textInfo_);
     }
@@ -142,7 +147,9 @@ namespace stage
                 }
             }
             else
+            {
                 return true;
+            }
         }
     }
 
@@ -155,16 +162,22 @@ namespace stage
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
     bool AnimNum::UpdateTimer(const float ELAPSED_TIME_SEC)
     {
         if (misc::IsRealClose(prevPosX_, textObj_.getPosition().x))
+        {
             timerSec_ += ELAPSED_TIME_SEC;
+        }
         else
+        {
             timerSec_ = 0.0f;
+        }
 
         prevPosX_ = textObj_.getPosition().x;
 
@@ -174,27 +187,39 @@ namespace stage
 
     bool operator==(const AnimNum & L, const AnimNum & R)
     {
-        return ((L.colorVal_ == R.colorVal_) &&
-                (L.color_ == R.color_) &&
-                (misc::IsRealClose(L.distanceX_, R.distanceX_)) &&
-                (misc::IsRealClose(L.distanceY_, R.distanceY_)) &&
-                (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
-                (L.ignoreMe_ == R.ignoreMe_) &&
-                (L.isDoneFading_ == R.isDoneFading_) &&
-                (L.isDoneMoving_ == R.isDoneMoving_) &&
-                (misc::IsRealClose(L.startLeft_, R.startLeft_)) &&
-                (misc::IsRealClose(L.startTop_, R.startTop_)) &&
-                (L.textInfo_ == R.textInfo_) &&
-                (L.textObj_.getPosition() == R.textObj_.getPosition()) &&
-                (L.value_ == R.value_) &&
-                (L.whichStat_ == R.whichStat_) &&
-                (L.willFade_ == R.willFade_));
-    }
+        if (((misc::IsRealClose(L.startLeft_, R.startLeft_)) &&
+             (misc::IsRealClose(L.startTop_, R.startTop_)) &&
+             (misc::IsRealClose(L.distanceX_, R.distanceX_)) &&
+             (misc::IsRealClose(L.distanceY_, R.distanceY_)) &&
+             (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
+             (misc::IsRealClose(L.timerSec_, R.timerSec_)) &&
+             (misc::IsRealClose(L.prevPosX_, R.prevPosX_)) &&
+             (misc::IsRealClose(L.sliderX_.GetCur(), R.sliderX_.GetCur()))) == false)
+        {
+            return false;
+        }
 
-
-    bool operator!=(const AnimNum & L, const AnimNum & R)
-    {
-        return ! (L == R);
+        return std::tie(L.value_,
+                        L.whichStat_,
+                        L.ignoreMe_,
+                        L.colorVal_,
+                        L.color_,
+                        L.isDoneMoving_,
+                        L.isDoneFading_,
+                        L.willFade_,
+                        L.isHeldDown_,
+                        L.textInfo_)
+            ==
+            std::tie(R.value_,
+                     R.whichStat_,
+                     R.ignoreMe_,
+                     R.colorVal_,
+                     R.color_,
+                     R.isDoneMoving_,
+                     R.isDoneFading_,
+                     R.willFade_,
+                     R.isHeldDown_,
+                     R.textInfo_);
     }
 
 }
