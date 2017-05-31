@@ -111,9 +111,8 @@ namespace gui
         callback::ISliderBarCallbackHandler_t * changeHandlerPtr_;
     };
 
-
-    using SliderBarSPtr_t = std::shared_ptr<SliderBar>;
-    using SliderBarSVec_t = std::vector<SliderBarSPtr_t>;
+    using SliderBarPtr_t = SliderBar *;
+    using SliderBarUPtr_t = std::unique_ptr<SliderBar>;
 
 }
 }

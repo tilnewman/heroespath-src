@@ -95,7 +95,7 @@ namespace sfml_util
         buttonCancelSPtr_          (),
         buttonContinueSPtr_        (),
         buttonOkaySPtr_            (),
-        sliderbarSPtr_             (),
+        sliderbarUPtr_             (),
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
         willTextBoxUpdate_         (true),
@@ -174,7 +174,7 @@ namespace sfml_util
             if (isImageProcAllowed_)
             {
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                std::size_t index(static_cast<std::size_t>(sliderbarSPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
+                std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
 
                 if (index >= POPUP_INFO_.Images().size())
                     index = POPUP_INFO_.Images().size() - 1;
@@ -447,13 +447,13 @@ namespace sfml_util
         sliderbarPosTop_ = (BUTTON_POS_TOP - (POPUPBUTTON_TEXT_HEIGHT * 3.0f));
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) || (POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
-            sliderbarSPtr_ = std::make_shared<sfml_util::gui::SliderBar>("PopupStage's",
+            sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>("PopupStage's",
                                                                          SLIDERBAR_POS_LEFT,
                                                                          sliderbarPosTop_,
                                                                          SLIDERBAR_LENGTH,
                                                                          sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
                                                                          this);
-            EntityAdd(sliderbarSPtr_.get());
+            EntityAdd(sliderbarUPtr_.get());
         }
 
         if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
@@ -530,7 +530,7 @@ namespace sfml_util
                 imageWrnTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectionion", TEXT_INFO, region) );
 
                 EntityAdd(imageWrnTextRegionUPtr_.get());
-                EntityRemove(sliderbarSPtr_.get());
+                EntityRemove(sliderbarUPtr_.get());
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
@@ -1097,7 +1097,7 @@ namespace sfml_util
                 --index;
 
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarSPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
 
                 imageMoveQueue_.push(index);
                 return true;
@@ -1116,14 +1116,14 @@ namespace sfml_util
                 ++index;
 
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarSPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
 
                 //if already at the end, then make sure the sliderbar is all the way to the right
                 if (index >= (POPUP_INFO_.Images().size() - 1))
                 {
                     //prevent processing and adding to the imageMoveQueue_ or calling SetupSelectImage() when setting the sliderbar value here.
                     isImageProcAllowed_ = false;
-                    sliderbarSPtr_->SetCurrentValue(1.0f);
+                    sliderbarUPtr_->SetCurrentValue(1.0f);
                     isImageProcAllowed_ = true;
                 }
 
@@ -1383,14 +1383,19 @@ namespace sfml_util
         {
             SetupInfoText("");
 
-            if (sliderbarSPtr_.get() != nullptr)
+            if (sliderbarUPtr_.get() != nullptr)
             {
                 willSliderbarUpdate_ = false;
 
                 if (NUM == static_cast<int>(POPUP_INFO_.NumberSelMin()))
-                    sliderbarSPtr_->SetCurrentValue(0.0f);
+                {
+                    sliderbarUPtr_->SetCurrentValue(0.0f);
+                }
                 else
-                    sliderbarSPtr_->SetCurrentValue(static_cast<float>(NUM) / static_cast<float>(POPUP_INFO_.NumberSelMax()));
+                {
+                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NUM) /
+                        static_cast<float>(POPUP_INFO_.NumberSelMax()));
+                }
 
                 willSliderbarUpdate_ = true;
             }

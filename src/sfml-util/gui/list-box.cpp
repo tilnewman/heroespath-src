@@ -81,7 +81,7 @@ namespace gui
         GuiEntity       (std::string(NAME).append("_ListBox"), REGION),
         IMAGE_HORIZ_PAD_(10.0f),
         boxSPtr_        (),
-        sliderBarSPtr_  (),
+        sliderbarUPtr_  (),
         lineColor_      (LINE_COLOR),
         highlightColor_ (BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20)),
         currentViewPos_ (0.0f),
@@ -117,9 +117,9 @@ namespace gui
                 stagePtr_->EntityRemove(boxSPtr_.get());
             }
 
-            if (sliderBarSPtr_.get() != nullptr)
+            if (sliderbarUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(sliderBarSPtr_.get());
+                stagePtr_->EntityRemove(sliderbarUPtr_.get());
             }
         }
     }
@@ -159,19 +159,21 @@ namespace gui
 
         boxSPtr_->SetWillAcceptFocus(false);
 
-        if (sliderBarSPtr_.get() == nullptr)
+        if (sliderbarUPtr_.get() == nullptr)
         {
-            sliderBarSPtr_.reset( new sfml_util::gui::SliderBar("ListBox's",
-                                                                REGION.left + REGION.width + 10.0f,
-                                                                REGION.top + 10.0f,
-                                                                REGION.height - 20.0f,
-                                                                sfml_util::gui::SliderStyle(),
-                                                                this) );
-            stagePtr->EntityAdd(sliderBarSPtr_.get());
+            sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
+                "ListBox's",
+                REGION.left + REGION.width + 10.0f,
+                REGION.top + 10.0f,
+                REGION.height - 20.0f,
+                sfml_util::gui::SliderStyle(),
+                this);
+
+            stagePtr->EntityAdd(sliderbarUPtr_.get());
         }
         else
         {
-            sliderBarSPtr_->SetCurrentValue(0.0f);
+            sliderbarUPtr_->SetCurrentValue(0.0f);
         }
 
         //select the first entity in the list

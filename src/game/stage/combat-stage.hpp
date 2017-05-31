@@ -321,7 +321,7 @@ namespace stage
         sfml_util::gui::box::BoxSPtr_t   commandBoxSPtr_;
         sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
         sfml_util::gui::TextInfo         statusBoxTextInfo_;
-        sfml_util::gui::SliderBarSPtr_t  zoomSliderBarSPtr_;
+        sfml_util::gui::SliderBarUPtr_t  zoomSliderBarUPtr_;
         sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
         sf::FloatRect                    turnBoxRegion_;
         combat::CombatSoundEffects       combatSoundEffects_;

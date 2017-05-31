@@ -139,7 +139,7 @@ namespace stage
         commandBoxSPtr_            (),
         statusBoxSPtr_             (),
         statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
-        zoomSliderBarSPtr_         (),
+        zoomSliderBarUPtr_         (),
         turnBoxSPtr_               (),
         turnBoxRegion_             (),
         combatSoundEffects_        (),
@@ -278,7 +278,7 @@ namespace stage
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((PACKAGE.PTR_ == zoomSliderBarSPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
+        if ((PACKAGE.PTR_ == zoomSliderBarUPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
         {
             //only zoom out half the distance that the slider actually shows
             auto const HALF_ZOOM_DIFFERENCE{ 1.0f - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
@@ -894,24 +894,24 @@ namespace stage
                                                                        ZOOMSLIDER_LABEL_TEXT_INFO,
                                                                        ZOOMSLIDER_LABEL_RECT) );
         //
-        zoomSliderBarSPtr_.reset(new sfml_util::gui::SliderBar(
+        zoomSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
             "CombatStageZoom",
             COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
             zoomLabelTextRegionUPtr_->GetEntityRegion().top +
             zoomLabelTextRegionUPtr_->GetEntityRegion().height,
             (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) -
                 (COMMAND_REGION_PAD * 2.0f),
-            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
+            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this);
 
-        zoomSliderBarSPtr_->SetCurrentValue(1.0f);
+        zoomSliderBarUPtr_->SetCurrentValue(1.0f);
         zoomLabelTextRegionUPtr_->SetEntityPos(
-            (zoomSliderBarSPtr_->GetEntityPos().x + 
-                (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) -
+            (zoomSliderBarUPtr_->GetEntityPos().x + 
+                (zoomSliderBarUPtr_->GetEntityRegion().width * 0.5f)) -
             (zoomLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f),
             zoomLabelTextRegionUPtr_->GetEntityPos().y);
         //
         EntityAdd(zoomLabelTextRegionUPtr_.get());
-        EntityAdd(zoomSliderBarSPtr_.get());
+        EntityAdd(zoomSliderBarUPtr_.get());
 
         MoveTurnBoxObjectsOffScreen(true);
         restoreInfo_.Restore(combatDisplayStagePtr_);
@@ -1075,7 +1075,7 @@ namespace stage
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
-            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
             combatAnimationPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
@@ -1130,7 +1130,7 @@ namespace stage
             if (combatAnimationPtr_->CenteringUpdate(SLIDER_POS))
             {
                 auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
-                zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+                zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
             }
 
             if (slider_.GetIsDone())
@@ -1164,7 +1164,7 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
             auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
-            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
             if (slider_.GetIsDone())
             {
@@ -1187,7 +1187,7 @@ namespace stage
         }
 
         //initial hook for taking action before the first turn (pre-turn logic)
-        if ((zoomSliderBarSPtr_.get() != nullptr) &&
+        if ((zoomSliderBarUPtr_.get() != nullptr) &&
             (combatDisplayStagePtr_ != nullptr) &&
             (game::LoopManager::Instance()->IsFading() == false) &&
             (TurnPhase::NotATurn == turnPhase_) &&
@@ -1807,7 +1807,7 @@ namespace stage
     //start centering anim
     void CombatStage::StartTurn_Step1()
     {
-        zoomSliderOrigPos_ = zoomSliderBarSPtr_->GetCurrentValue();
+        zoomSliderOrigPos_ = zoomSliderBarUPtr_->GetCurrentValue();
 
         turnCreaturePtr_ = combat::Encounter::Instance()->CurrentTurnCreature();
 

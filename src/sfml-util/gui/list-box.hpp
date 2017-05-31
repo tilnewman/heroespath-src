@@ -221,7 +221,7 @@ namespace gui
     protected:
         const float       IMAGE_HORIZ_PAD_;
         box::BoxSPtr_t    boxSPtr_;
-        SliderBarSPtr_t   sliderBarSPtr_;
+        SliderBarUPtr_t   sliderbarUPtr_;
         sf::Color         lineColor_;
         sf::Color         highlightColor_;
         float             currentViewPos_;

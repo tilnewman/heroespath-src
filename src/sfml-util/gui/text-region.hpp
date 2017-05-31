@@ -52,7 +52,7 @@ namespace gui
     namespace box
     {
         class Box;
-        using BoxSPtr_t = std::shared_ptr<Box>;
+        using BoxUPtr_t = std::unique_ptr<Box>;
     }
 
 
@@ -105,7 +105,7 @@ namespace gui
                     const Margins &         MARGINS              = Margins(),
                     const bool              WILL_ALLOW_SCROLLBAR = true);
 
-        void HandleSliderBar(sfml_util::gui::SliderBarSPtr_t & newSliderBarSPtr);
+        void HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr);
         void HandleBox(const box::Info & BOX_INFO);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
@@ -135,8 +135,8 @@ namespace gui
 
     protected:
         box::Info                 boxInfo_;
-        box::BoxSPtr_t            boxSPtr_;
-        gui::SliderBarSPtr_t      sliderBarSPtr_;
+        box::BoxUPtr_t            boxUPtr_;
+        gui::SliderBarUPtr_t      sliderBarUPtr_;
         IStage *                  stagePtr_;
         std::string               text_;
         text_render::RenderedText renderedText_;
