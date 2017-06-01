@@ -110,7 +110,7 @@ namespace stage
         :
             value(VAL),
             stat(STAT),
-            text_region_sptr( new sfml_util::gui::TextRegion(std::string(NAME).append("StatModText")) )
+            text_region_sptr( std::make_shared<sfml_util::gui::TextRegion>(std::string(NAME).append("StatModText")) )
         {
             const sf::Int8 COLOR_BASE(100);
             sf::Color color(COLOR_BASE, 255, COLOR_BASE);

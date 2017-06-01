@@ -130,44 +130,44 @@ namespace stage
         trackingRect.width  -= (CREDIT_BOX_INNER_PAD_ * 2.0f);
         trackingRect.height = 0.0f;
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect, "Game Design", "Ziesche Til Newman")));
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect, "Game Design", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect, "Programming", "Ziesche Til Newman")));
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect, "Programming", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       " ",
                                                       "Special thanks to Laurent Gomila for the superb SFML\n(Simple Fast Multimedia Library)\nused under the terms and conditions of the zlib/png license.\nwww.opensource.org/licenses/zlib\n\nThis project came together quickly thanks to the completeness\n and simplicity of this library.\n\nwww.sfml-dev.org",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sfml",
-                                                      sfml_util::MapByRes(0.5f, 1.5f))));
+                                                      sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect, "Art", "Ziesche Til Newman")));
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect, "Art", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect, "Rune Symbols and Other Designs", "Angela Diegel")));
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect, "Rune Symbols and Other Designs", "Angela Diegel"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "User Interface Art",
-                                                       "RPG GUI Construction Kit v1.0\nPosted on OpenGameArt.org by Lamoot\nwww.opengameart.org/users/lamoot\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nTouch-up work was done to the images provided.\nThis excellent artwork is the foundation\nof this game's GUI look and feel.")));
+                                                       "RPG GUI Construction Kit v1.0\nPosted on OpenGameArt.org by Lamoot\nwww.opengameart.org/users/lamoot\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nTouch-up work was done to the images provided.\nThis excellent artwork is the foundation\nof this game's GUI look and feel."));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Smoke Animation",
                                                       "Posted on OpenGameArt.org by MrBeast\nwww.opengameart.org/users/mrbeast\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0",
                                                       credit_media_type::AnimMultiTexture,
                                                       "media-anim-images-dir-smoke",
                                                       sfml_util::MapByRes(1.0f, 3.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
-                                                      0.05f)));
+                                                      0.05f));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Inferno Animation",
                                                       "Posted on OpenGameArt.org by Retimer\nWrath Games Studio\nwww.wrathgames.com/blog\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0",
                                                       credit_media_type::AnimMultiTexture,
                                                       "media-anim-images-dir-inferno",
                                                       sfml_util::MapByRes(0.7f, 2.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
-                                                      0.05f)));
+                                                      0.05f));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Candle Flame Animation",
                                                       "Posted on OpenGameArt.org by Para\nwww.opengameart.org/users/para\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0",
                                                       credit_media_type::AnimSingleTexture,
@@ -177,181 +177,181 @@ namespace stage
                                                       0.05f,
                                                       64,
                                                       128,
-                                                      128)));
+                                                      128));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Various Spell Animations",
                                                       "Posted on OpenGameArt.org by Mikodrak\nwww.opengameart.org/users/Mikodrak\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0\nCreated by Martin Jelinek\njelinek.cz@gmail.com\nwww.nyrthos.com",
                                                       credit_media_type::AnimMultiTexture,
                                                       "media-anim-images-dir-lightningbolt",
                                                       sfml_util::MapByRes(1.0f, 3.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
-                                                      0.75f)));
+                                                      0.75f));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Terrain Art",
                                                       "Daniel Cook\nA beautiful (and free!) (for any use) set of tiles.\nwww.lostgarden.com",
                                                       credit_media_type::Image,
                                                       "media-images-logos-terrain",
-                                                      sfml_util::MapByRes(0.75f, 2.0f))));
+                                                      sfml_util::MapByRes(0.75f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Whispers of Avalon Grassland Tileset",
                                                       "Posted on OpenGameArt.org by Leonard Pabin\nwww.opengameart.org/users/leonard-pabin\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nTouch-ups and shading was performed on the original artwork.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-avalontrees",
-                                                      sfml_util::MapByRes(0.75f, 1.75f))));
+                                                      sfml_util::MapByRes(0.75f, 1.75f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Manaworld Trees Tileset",
                                                       "Posted on OpenGameArt.org by Leonard Pabin\nwww.opengameart.org/users/leonard-pabin\nUnder the GPL 2.0 License\nwww.gnu.org/licenses/old-licenses/gpl-2.0.html\nPixel touch-up work was done to the original artwork.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-manaworldtrees",
-                                                      sfml_util::MapByRes(0.5f, 1.5f))));
+                                                      sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Bleed's Rendered Trees",
                                                       "Posted on OpenGameArt.org by Bleed as Tree Collection v2.6\nwww.opengameart.org/users/bleed\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nShadows in the original artwork were changed.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-renderedtrees",
-                                                      sfml_util::MapByRes(0.5f, 1.5f))));
+                                                      sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Hi-Res Paper Textures",
                                                       "Posted on OpenGameArt.org by qubodup, Created by darkwood\nwwww.opengameart.org/users/qubodup\nUnder the Attribution Unported License\nwww.creativecommons.org/licenses/by/3.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-darkwoodpaper",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Map Editing Software",
                                                       "Thorbjorn Lindeijer for Tiled\nAn incredible free mapping utility.\nwww.mapeditor.org",
                                                       credit_media_type::Image,
                                                       "media-images-logos-tiled",
-                                                      sfml_util::MapByRes(0.75f, 1.5f))));
+                                                      sfml_util::MapByRes(0.75f, 1.5f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Inventory Sound Effects",
                                                       "Posted on OpenGameArt.org by Hansjorg Malthaner\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Inventory Sound Effects",
                                                       "Posted on OpenGameArt.org as 'Little Robot Sound Factory'\nwww.littlerobotsoundfactory.com\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "User Interface Sound Effects",
                                                       "Posted on OpenGameArt.org as 'UI SFX Set' by Kenney Vleugels\nwww.kenney.nl\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Wind Gust Sound Effects",
                                                       "Posted on OpenGameArt.org by IgnasD\nwww.crystalgames.space\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Storm Winds Sound Effects",
                                                       "Posted on OpenGameArt.org by Luke\nwww.rustltd.com\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Battle\"\n\"Castlecall\"\n\"Deal with the Devil\"\n\"Menu Loop\"\n\"Mini Epic Theme\"\n\"Runaway\"\n\"Steeps of Destiny\"\n\"Treasures of Ancient Dungeon\"\n\"We Are So Close\"",
                                                       "Alexandr Zhelanov\nwww.soundcloud.com/alexandr-zhelanov\n\nUnder the Attribution 3.0 Unported License\nwwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Old Crypt\"\n\"Dramatic Event 2\"\n\"Radakan Menu\"",
                                                       "Janne Hanhisuanto for Radakan\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Omens\"\n\"The Plot Thickens\"",
                                                       "Eliot Corley from Chaos is Harmony\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Almost Out\"\n\"Assassin's Assault\"\n\"Unforgiving Lands\"",
                                                       "Posted on OpenGameArt.org by HorrorPen\nwww.opengameart.org/users/horrorpen\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"DrumLoop 1\"\n\"DrumLoop 1 64BPM\"",
                                                       "Written and produced by Ove Melaa\nOmsofware@hotmail.com\nPosted on OpenGameArt.org by OveMelaa\nas 'Ove's Essential Game Audio Pack Collection'\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Regular Battle\"",
                                                       "Posted on OpenGameArt.org by Telaron\nwww.opengameart.org/users/telaron\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Something is Near\"\n\"Intro of Dragons\"\n\"Small Epic\"\n\"PYC\"",
                                                       "Music by Marcelo Fernandez\nwww.marcelofernandezmusic.com\nwww.soundcloud.com/marcelofernandezmusic\nFound at www.opengameart.org/users/marcelofg55\nUnder the Attribution Unported 4.0 License\nwww.creativecommons.org/licenses/by/4.0\nThe original music was trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
-                                                      sfml_util::MapByRes(1.0f, 2.0f))));
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Neo Euler\"",
                                                       sfml_util::FontManager::Instance()->Font_Default1(),
-                                                      "Copyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL")));
+                                                      "Copyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Goudy Bookletter 1911 \"",
                                                       sfml_util::FontManager::Instance()->Font_Typical(),
                                                       "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)",
-                                                      credit_media_type::None)));
+                                                      credit_media_type::None));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Gentium Plus\"",
                                                       sfml_util::FontManager::Instance()->Font_Default2(),
-                                                      "Copyright (c) SIL International, 2003-2014\nwww.scripts.sil.org/Gentium\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL")));
+                                                      "Copyright (c) SIL International, 2003-2014\nwww.scripts.sil.org/Gentium\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Modern Antiqua\"",
                                                       sfml_util::FontManager::Instance()->Font_BigFlavor1(),
-                                                      "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL")));
+                                                      "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Queen & Country\"",
                                                       sfml_util::FontManager::Instance()->Font_BigFlavor3(),
                                                       "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.  If you like it,\nplease e-mail the author at iconian@aol.com.",
-                                                      credit_media_type::None)));
+                                                      credit_media_type::None));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Valley Forge\"",
                                                       sfml_util::FontManager::Instance()->Font_BigFlavor2(),
                                                       "by Daniel Zadorozny\n2008 Iconian Fonts\nwww.iconian.com\n\"free for all non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the author at iconian@aol.com.",
-                                                      credit_media_type::None)));
+                                                      credit_media_type::None));
 
-        creditSVec_.push_back(CreditSPtr_t(new Credit(trackingRect,
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Font \"Quill Sword\"",
                                                       sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
                                                       "by Daniel Zadorozny\n2015 Iconian Fonts\nwww.iconian.com\n\"free for all non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the author at iconian@aol.com.",
-                                                      credit_media_type::None)));
+                                                      credit_media_type::None));
 
         totalHeight_ = trackingRect.top;
 

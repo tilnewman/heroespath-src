@@ -550,8 +550,12 @@ namespace stage
                                                        sf::Text::Italic,
                                                        sfml_util::Justified::Left);
 
-        insTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sInstruction", INSTR_TEXT_INFO, sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f)) );
-        insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
+        insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sInstruction",
+            INSTR_TEXT_INFO,
+            sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f));
+        
+            insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
         EntityAdd(insTextRegionUPtr_.get());
 
         //player character image in the top left corner
@@ -603,7 +607,7 @@ namespace stage
         buttonTextInfo.text = "(B)ack";
         buttonTextInfoDisabled.text = "(B)ack";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        backButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled));
+        backButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
         backButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonSPtr_->GetEntityRegion().height * 0.5f));
         backButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(backButtonSPtr_.get());
@@ -611,7 +615,7 @@ namespace stage
         buttonTextInfo.text = "(I)tems";
         buttonTextInfoDisabled.text = "(I)tems";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_ITEMS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        itemsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled));
+        itemsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
         itemsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonSPtr_->GetEntityRegion().height * 0.5f));
         itemsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(itemsButtonSPtr_.get());
@@ -619,7 +623,7 @@ namespace stage
         buttonTextInfo.text = "(T)itles";
         buttonTextInfoDisabled.text = "(T)itles";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_TITLES(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        titlesButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled));
+        titlesButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
         titlesButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonSPtr_->GetEntityRegion().height * 0.5f));
         titlesButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(titlesButtonSPtr_.get());
@@ -627,7 +631,7 @@ namespace stage
         buttonTextInfo.text = "(C)onditions";
         buttonTextInfoDisabled.text = "(C)onditions";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_CONDITIONS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        condsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled));
+        condsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
         condsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonSPtr_->GetEntityRegion().height * 0.5f));
         condsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(condsButtonSPtr_.get());
@@ -635,7 +639,7 @@ namespace stage
         buttonTextInfo.text = "(S)pells";
         buttonTextInfoDisabled.text = "(S)pells";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SPELLS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        spellsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled));
+        spellsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
         spellsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonSPtr_->GetEntityRegion().height * 0.5f));
         spellsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(spellsButtonSPtr_.get());
@@ -643,7 +647,7 @@ namespace stage
         buttonTextInfo.text = "(G)ive";
         buttonTextInfoDisabled.text = "(G)ive";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GIVE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        giveButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled));
+        giveButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
         giveButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonSPtr_->GetEntityRegion().height * 0.5f));
         giveButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(giveButtonSPtr_.get());
@@ -651,7 +655,7 @@ namespace stage
         buttonTextInfo.text = "S(h)are";
         buttonTextInfoDisabled.text = "S(h)are";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SHARE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        shareButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled));
+        shareButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
         shareButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonSPtr_->GetEntityRegion().height * 0.5f));
         shareButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(shareButtonSPtr_.get());
@@ -659,7 +663,7 @@ namespace stage
         buttonTextInfo.text = "Gathe(r)";
         buttonTextInfoDisabled.text = "Gathe(r)";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GATHER(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        gatherButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled));
+        gatherButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
         gatherButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonSPtr_->GetEntityRegion().height * 0.5f));
         gatherButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(gatherButtonSPtr_.get());
@@ -667,7 +671,7 @@ namespace stage
         buttonTextInfo.text = "(E)quip";
         buttonTextInfoDisabled.text = "(E)quip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_EQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        equipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled));
+        equipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
         equipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonSPtr_->GetEntityRegion().height * 0.5f));
         equipButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(equipButtonSPtr_.get());
@@ -675,7 +679,7 @@ namespace stage
         buttonTextInfo.text = "(U)nequip";
         buttonTextInfoDisabled.text = "(U)nequip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_UNEQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        unequipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled));
+        unequipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
         unequipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonSPtr_->GetEntityRegion().height * 0.5f));
         unequipButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(unequipButtonSPtr_.get());
@@ -683,7 +687,7 @@ namespace stage
         buttonTextInfo.text = "(D)rop";
         buttonTextInfoDisabled.text = "(D)rop";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_DROP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        dropButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled));
+        dropButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
         dropButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonSPtr_->GetEntityRegion().height * 0.5f));
         dropButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(dropButtonSPtr_.get());
@@ -1847,7 +1851,8 @@ namespace stage
 
         if (detailsTextRegionUPtr_.get() == nullptr)
         {
-            detailsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect));
+            detailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
         }
         else
         {
@@ -1891,7 +1896,8 @@ namespace stage
 
         if (statsTextRegionUPtr_.get() == nullptr)
         {
-            statsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT));
+            statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
         }
         else
         {
@@ -1925,7 +1931,8 @@ namespace stage
 
         if (WAS_ALREADY_INSTANTIATED == false)
         {
-            centerTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT));
+            centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
         }
         else
         {
@@ -1964,9 +1971,11 @@ namespace stage
                 for (auto const & NEXT_CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_CONDITION_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_CONDITION_PTR) );
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_CONDITION_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -1977,9 +1986,12 @@ namespace stage
                 for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().ItemsEquipped())
                 {
                     listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_ITEM_SPTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_ITEM_SPTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -1990,9 +2002,12 @@ namespace stage
                 for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_SPELL_PTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_SPELL_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -2005,9 +2020,12 @@ namespace stage
                 for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_TITLE_PTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_TITLE_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -2021,16 +2039,18 @@ namespace stage
             EntityRemove(equippedListBoxSPtr_.get());
         }
 
-        equippedListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sLeftListBox",
-                                                                LISTBOX_REGION_,
-                                                                listBoxItemsSList,
-                                                                this,
-                                                                10.0f,
-                                                                6.0f,
-                                                                LISTBOX_BOX_INFO,
-                                                                LISTBOX_COLOR_LINE_,
-                                                                sfml_util::gui::ListBox::NO_LIMIT_,
-                                                                this) );
+        equippedListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "InventoryStage'sLeftListBox",
+            LISTBOX_REGION_,
+            listBoxItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
         if (IS_ALREADY_INSTANTIATED)
         {
             EntityAdd(equippedListBoxSPtr_.get());
@@ -2051,9 +2071,10 @@ namespace stage
 
             listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
 
-            const sfml_util::gui::ListBoxItemSPtr_t EQUIPPED_LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(itemEntryNameSS.str(),
-                                                                                                               listBoxItemTextInfo_,
-                                                                                                               NEXT_ITEM_SPTR) );
+            auto const EQUIPPED_LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                itemEntryNameSS.str(),
+                listBoxItemTextInfo_,
+                NEXT_ITEM_SPTR);
 
             unEquipItemsSList.push_back(EQUIPPED_LISTBOXITEM_SPTR);
         }
@@ -2073,16 +2094,17 @@ namespace stage
             EntityRemove(unEquipListBoxSPtr_.get());
         }
 
-        unEquipListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sUnEquipped",
-                                                                DESCBOX_REGION_,
-                                                                unEquipItemsSList,
-                                                                this,
-                                                                10.0f,
-                                                                6.0f,
-                                                                LISTBOX_BOX_INFO,
-                                                                LISTBOX_COLOR_LINE_,
-                                                                sfml_util::gui::ListBox::NO_LIMIT_,
-                                                                this) );
+        unEquipListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "InventoryStage'sUnEquipped",
+            DESCBOX_REGION_,
+            unEquipItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
 
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
@@ -2120,12 +2142,14 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
-                                                                  descTextInfo,
-                                                                  DESCBOX_REGION_,
-                                                                  sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                  sfml_util::gui::box::Info(),
-                                                                  DESCBOX_MARGINS_) );
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDescription",
+            descTextInfo,
+            DESCBOX_REGION_,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            DESCBOX_MARGINS_);
+
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
             EntityAdd(descTextRegionUPtr_.get());
@@ -2159,9 +2183,10 @@ namespace stage
 
         if (eqTitleTextRegionUPtr_.get() == nullptr)
         {
-            eqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sEquippedListBoxTitle",
-                                                                        LISTBOX_TEXT_INFO,
-                                                                        LISTBOX_TEXT_RECT) );
+            eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sEquippedListBoxTitle",
+                LISTBOX_TEXT_INFO,
+                LISTBOX_TEXT_RECT);
         }
         else
         {
@@ -2186,9 +2211,10 @@ namespace stage
 
         if (unEqTitleTextRegionUPtr_.get() == nullptr)
         {
-            unEqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sUnequippedListBoxTitle",
-                                                                           DESC_TEXT_INFO,
-                                                                           DESC_TEXT_RECT) );
+            unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sUnequippedListBoxTitle",
+                DESC_TEXT_INFO,
+                DESC_TEXT_RECT);
         }
         else
         {
@@ -2219,7 +2245,9 @@ namespace stage
             }
 
             if (ss.str().empty() == false)
+            {
                 SetDescBoxText(ss.str());
+            }
         }
     }
 
@@ -2238,13 +2266,14 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
-                                                                  descTextInfo,
-                                                                  DESCBOX_REGION_,
-                                                                  this,
-                                                                  sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                  sfml_util::gui::box::Info(),
-                                                                  DESCBOX_MARGINS_) );
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDescription",
+            descTextInfo,
+            DESCBOX_REGION_,
+            this,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            DESCBOX_MARGINS_);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -2752,7 +2781,8 @@ namespace stage
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT);
     }
 
 
@@ -3082,7 +3112,8 @@ namespace stage
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT);
     }
 
 

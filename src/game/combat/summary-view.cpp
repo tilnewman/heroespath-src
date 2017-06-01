@@ -305,9 +305,10 @@ namespace combat
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
-        nameTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sName",
-                                                                  CREATURE_NAME_TEXT_INFO,
-                                                                  sf::FloatRect()) );
+        nameTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sName",
+            CREATURE_NAME_TEXT_INFO,
+            sf::FloatRect() );
 
         std::ostringstream healthSS;
         healthSS << "Health: ";
@@ -327,9 +328,10 @@ namespace combat
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
-        healthTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sHealth",
-                                                                    CREATURE_HEALTH_TEXT_INFO,
-                                                                    sf::FloatRect()) );
+        healthTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sHealth",
+            CREATURE_HEALTH_TEXT_INFO,
+            sf::FloatRect() );
 
         std::ostringstream armorRatingSS;
         armorRatingSS << "Armor Rating: " << combatNodePtr->Creature()->ArmorRating();
@@ -340,9 +342,10 @@ namespace combat
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
-        armorTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sArmorRating",
-                                                                   CREATURE_ARMORRATING_TEXT_INFO,
-                                                                   sf::FloatRect()) );
+        armorTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sArmorRating",
+            CREATURE_ARMORRATING_TEXT_INFO,
+            sf::FloatRect() );
 
         const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(
             combatNodePtr->Creature()->Body().ToString(),
@@ -352,9 +355,10 @@ namespace combat
             sf::BlendAlpha,
             sf::Text::Italic);
 
-        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sDesc",
-                                                                  CREATURE_DESC_TEXT_INFO,
-                                                                  sf::FloatRect()) );
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sDesc",
+            CREATURE_DESC_TEXT_INFO,
+            sf::FloatRect() );
 
         std::ostringstream condSS;
         condSS << "Condition:  " << combatNodePtr->Creature()->ConditionNames(6);
@@ -365,9 +369,10 @@ namespace combat
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
-        condTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("SummaryView'sCondition",
-                                                                  CREATURE_CONDITIONS_TEXT_INFO,
-                                                                  sf::FloatRect()) );
+        condTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sCondition",
+            CREATURE_CONDITIONS_TEXT_INFO,
+            sf::FloatRect() );
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
@@ -605,10 +610,10 @@ namespace combat
                0.0f,
                0.0f);
 
-            nextItemText.name_text_region_sptr.reset( new sfml_util::gui::TextRegion(
+            nextItemText.name_text_region_sptr = std::make_shared<sfml_util::gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemName_" + nextItemText.item_ptr->Name(),
                 ITEM_NAME_TEXT_INFO,
-                ITEM_NAME_RECT));
+                ITEM_NAME_RECT);
 
             const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(
                 nextItemText.item_ptr->Desc(),
@@ -625,10 +630,10 @@ namespace combat
                 0.0f,
                 0.0f);
 
-            nextItemText.desc_text_region_sptr.reset(new sfml_util::gui::TextRegion(
+            nextItemText.desc_text_region_sptr = std::make_shared<sfml_util::gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + nextItemText.item_ptr->Name(),
                 ITEM_DESC_TEXT_INFO,
-                ITEM_DESC_RECT));
+                ITEM_DESC_RECT);
 
             std::ostringstream infoSS;
             if (nextItemText.item_ptr->IsMagical())
@@ -674,9 +679,9 @@ namespace combat
                 0.0f,
                 0.0f);
 
-            nextItemText.info_text_region_sptr.reset( new sfml_util::gui::TextRegion(
+            nextItemText.info_text_region_sptr = std::make_shared<sfml_util::gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + nextItemText.item_ptr->Name(),
-                INFO_TEXT_INFO, INFO_RECT) );
+                INFO_TEXT_INFO, INFO_RECT);
 
             const float CURR_ITEM_HORIZ_EXTENT(ITEM_IMAGE_POS_LEFT +
                 nextItemText.sprite.getGlobalBounds().width +

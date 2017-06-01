@@ -90,15 +90,17 @@ namespace stage
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 
         //candle anim
-        candleAnimSPtr_.reset( new sfml_util::SingleTextureAnimation("Candle",
-                                                                     GameDataFile::Instance()->GetMediaPath("media-anim-images-candleflame"),
-                                                                     SCREEN_WIDTH_ - 225.0f,
-                                                                     SCREEN_HEIGHT_ - 290.0f,
-                                                                     128,
-                                                                     128,
-                                                                     0.05f,
-                                                                     64,
-                                                                     sf::BlendAdd) );
+        candleAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
+            "Candle",
+            GameDataFile::Instance()->GetMediaPath("media-anim-images-candleflame"),
+            SCREEN_WIDTH_ - 225.0f,
+            SCREEN_HEIGHT_ - 290.0f,
+            128,
+            128,
+            0.05f,
+            64,
+            sf::BlendAdd);
+
         EntityAdd(candleAnimSPtr_.get());
     }
 

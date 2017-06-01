@@ -133,43 +133,32 @@ namespace stage
 
     CombatStage::CombatStage()
     :
-        Stage                      ("Combat"),
-        SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
-        commandBoxUPtr_            (),
-        statusBoxSPtr_             (),
-        statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
-        zoomSliderBarUPtr_         (),
-        turnBoxUPtr_               (),
-        turnBoxRegion_             (),
-        combatSoundEffects_        (),
-        turnPhase_                 (TurnPhase::NotATurn),
-        preTurnPhase_              (PreTurnPhase::Start),
-        turnActionPhase_           (TurnActionPhase::None),
-        animPhase_                 (AnimPhase::NotAnimating),
-        spellBeingCastPtr_         (nullptr),
-        performReportEffectIndex_  (0),
-        performReportHitIndex_     (0),
-        zoomSliderOrigPos_         (0.0f),
-        willClrShkInitStatusMsg_   (false),
-        isMouseHeldDown_           (false),
-        isMouseHeldDownAndMoving_  (false),
-        tempConditionsWakeStr_     (""),
-        slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
-        combatDisplayStagePtr_     (new combat::CombatDisplay()),
-        combatAnimationPtr_        (combat::CombatAnimation::Instance()),
-        settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
-                                                                        0.0f,
-                                                                        0.0f,
-                                                                        std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui")).append("gears1_normal.png"),
-                                                                        "",
-                                                                        std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui")).append("gears1_lit.png"),
-                                                                        "",
-                                                                        sfml_util::gui::MouseTextInfo(),
-                                                                        sfml_util::gui::TextInfo(),
-                                                                        false,
-                                                                        sfml_util::MapByRes(0.6f, 2.0f),
-                                                                        false)),
+        Stage                       ("Combat"),
+        SCREEN_WIDTH_               (sfml_util::Display::Instance()->GetWinWidth()),
+        SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
+        commandBoxUPtr_             (),
+        statusBoxSPtr_              (),
+        statusBoxTextInfo_          (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
+        zoomSliderBarUPtr_          (),
+        turnBoxUPtr_                (),
+        turnBoxRegion_              (),
+        combatSoundEffects_         (),
+        turnPhase_                  (TurnPhase::NotATurn),
+        preTurnPhase_               (PreTurnPhase::Start),
+        turnActionPhase_            (TurnActionPhase::None),
+        animPhase_                  (AnimPhase::NotAnimating),
+        spellBeingCastPtr_          (nullptr),
+        performReportEffectIndex_   (0),
+        performReportHitIndex_      (0),
+        zoomSliderOrigPos_          (0.0f),
+        willClrShkInitStatusMsg_    (false),
+        isMouseHeldDown_            (false),
+        isMouseHeldDownAndMoving_   (false),
+        tempConditionsWakeStr_      (""),
+        slider_                     (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
+        combatDisplayStagePtr_      (new combat::CombatDisplay()),
+        combatAnimationPtr_         (combat::CombatAnimation::Instance()),
+        settingsButtonSPtr_         (),
         pauseDurationSec_           (0.0f),
         pauseElapsedSec_            (pauseDurationSec_ + 1.0f),//anything greater than pauseTimeDurationSecs_ will work here
         isPauseCanceled_            (false),
@@ -361,16 +350,18 @@ namespace stage
         const sfml_util::gui::BackgroundInfo STATUS_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), STATUS_REGION, LISTBOX_BACKGROUND_COLOR_);
         const sfml_util::gui::ColorSet STATUS_COLORSET(LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
         const sfml_util::gui::box::Info STATUS_BOX_INFO(true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
-        statusBoxSPtr_.reset( new sfml_util::gui::ListBox("ComabtStage'sStatus",
-                                                          STATUS_REGION,
-                                                          sfml_util::gui::ListBoxItemSLst_t(),
-                                                          this,
-                                                          15.0f,
-                                                          0.0f,
-                                                          STATUS_BOX_INFO,
-                                                          LISTBOX_LINE_COLOR_,
-                                                          sfml_util::gui::ListBox::NO_LIMIT_,
-                                                          this) );
+        
+        statusBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "ComabtStage'sStatus",
+            STATUS_REGION,
+            sfml_util::gui::ListBoxItemSLst_t(),
+            this,
+            15.0f,
+            0.0f,
+            STATUS_BOX_INFO,
+            LISTBOX_LINE_COLOR_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
 
         statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
         EntityAdd(statusBoxSPtr_.get());
@@ -410,8 +401,8 @@ namespace stage
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
         turnBoxTitleTextRegion.height = 0.0f;
 
-        titleTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion) );
+        titleTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(
             " ",
@@ -422,8 +413,8 @@ namespace stage
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
 
-        infoTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion) );
+        infoTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
             " ",
@@ -439,10 +430,10 @@ namespace stage
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 
-        enemyActionTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+        enemyActionTBoxRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatStage'sTurnEnemyAction",
             TURNBOXENEMYACTION_TEXT_INFO,
-            turnBoxEnemyActionTextRegion) );
+            turnBoxEnemyActionTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
             " ",
@@ -452,10 +443,10 @@ namespace stage
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
-        enemyCondsTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+        enemyCondsTBoxRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatStage'sTurnEnemyConds",
             TURNBOXENEMYCONDS_TEXT_INFO,
-            turnBoxEnemyCondsTextRegion) );
+            turnBoxEnemyCondsTextRegion);
 
         sfml_util::gui::TextInfo turnBoxWeaponTextInfo(
             " ",
@@ -464,8 +455,8 @@ namespace stage
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Center);
 
-        weaponTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion) );
+        weaponTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion);
 
         sfml_util::gui::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
 
@@ -490,8 +481,8 @@ namespace stage
         testingTextRegion.left += testingTextRegion.width - 50.0f;
         testingTextRegion.top += (testingTextRegion.height - 400.0f);
 
-        testingTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
+        testingTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion);
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
@@ -500,7 +491,17 @@ namespace stage
         turnButtonTextInfo.text = "(A)ttack";
         turnButtonTextInfoDisabled.text = "(A)ttack";
         const sfml_util::gui::MouseTextInfo ATTACKBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        attackTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAttack", 0.0f, 0.0f, "", "", "", "", ATTACKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        attackTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAttack",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            ATTACKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled);
+
         attackTBoxButtonSPtr_->SetCallbackHandler(this);
         attackTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
         attackTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -509,7 +510,18 @@ namespace stage
         turnButtonTextInfo.text = "(F)ight";
         turnButtonTextInfoDisabled.text = "(F)ight";
         const sfml_util::gui::MouseTextInfo FIGHTBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        fightTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAttack", 0.0f, 0.0f, "", "", "", "", FIGHTBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        fightTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAttack",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            FIGHTBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+
         fightTBoxButtonSPtr_->SetCallbackHandler(this);
         fightTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
         fightTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -518,7 +530,18 @@ namespace stage
         turnButtonTextInfo.text = "(C)ast";
         turnButtonTextInfoDisabled.text = "(C)ast";
         const sfml_util::gui::MouseTextInfo CASTBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        castTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sCast", 0.0f, 0.0f, "", "", "", "", CASTBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        castTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sCast",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            CASTBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         castTBoxButtonSPtr_->SetCallbackHandler(this);
         castTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
         castTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -527,7 +550,18 @@ namespace stage
         turnButtonTextInfo.text = "Advance";
         turnButtonTextInfoDisabled.text = "Advance";
         const sfml_util::gui::MouseTextInfo ADVANCEBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        advanceTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAdvance", 0.0f, 0.0f, "", "", "", "", ADVANCEBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        advanceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAdvance",
+            0.0f,
+            0.0f,
+            "", 
+            "", 
+            "",
+            "",
+            ADVANCEBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         advanceTBoxButtonSPtr_->SetCallbackHandler(this);
         advanceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
         advanceTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -536,7 +570,18 @@ namespace stage
         turnButtonTextInfo.text = "Retreat";
         turnButtonTextInfoDisabled.text = "Retreat";
         const sfml_util::gui::MouseTextInfo RETREATBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        retreatTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sRetreat", 0.0f, 0.0f, "", "", "", "", RETREATBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        retreatTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sRetreat",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            RETREATBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         retreatTBoxButtonSPtr_->SetCallbackHandler(this);
         retreatTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
         retreatTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -545,7 +590,18 @@ namespace stage
         turnButtonTextInfo.text = "(B)lock";
         turnButtonTextInfoDisabled.text = "(B)lock";
         const sfml_util::gui::MouseTextInfo BLOCKBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        blockTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sBlock", 0.0f, 0.0f, "", "", "", "", BLOCKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        blockTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sBlock",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            BLOCKBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         blockTBoxButtonSPtr_->SetCallbackHandler(this);
         blockTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
         blockTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -554,7 +610,18 @@ namespace stage
         turnButtonTextInfo.text = "(S)kip";
         turnButtonTextInfoDisabled.text = "(S)kip";
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        skipTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sSkip", 0.0f, 0.0f, "", "", "", "", SKIPBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        skipTBoxButtonSPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
+            "CombatStage'sSkip",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            SKIPBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         skipTBoxButtonSPtr_->SetCallbackHandler(this);
         skipTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
         skipTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -563,7 +630,18 @@ namespace stage
         turnButtonTextInfo.text = "Fl(y)";
         turnButtonTextInfoDisabled.text = "Fl(y)";
         const sfml_util::gui::MouseTextInfo FLYBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        flyTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sFly", 0.0f, 0.0f, "", "", "", "", FLYBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        flyTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sFly",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            FLYBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         flyTBoxButtonSPtr_->SetCallbackHandler(this);
         flyTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
         flyTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -572,7 +650,18 @@ namespace stage
         turnButtonTextInfo.text = "(L)and";
         turnButtonTextInfoDisabled.text = "(L)and";
         const sfml_util::gui::MouseTextInfo LANDBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        landTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sLand", 0.0f, 0.0f, "", "", "", "", LANDBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        landTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sLand",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            LANDBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         landTBoxButtonSPtr_->SetCallbackHandler(this);
         landTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
         landTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -581,7 +670,18 @@ namespace stage
         turnButtonTextInfo.text = "(R)oar";
         turnButtonTextInfoDisabled.text = "(R)oar";
         const sfml_util::gui::MouseTextInfo ROARBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        roarTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sRoar", 0.0f, 0.0f, "", "", "", "", ROARBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        roarTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sRoar",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            ROARBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         roarTBoxButtonSPtr_->SetCallbackHandler(this);
         roarTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
         roarTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -590,7 +690,18 @@ namespace stage
         turnButtonTextInfo.text = "(P)ounce";
         turnButtonTextInfoDisabled.text = "(P)ounce";
         const sfml_util::gui::MouseTextInfo POUNCEBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        pounceTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sPounce", 0.0f, 0.0f, "", "", "", "", POUNCEBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        pounceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sPounce",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            POUNCEBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         pounceTBoxButtonSPtr_->SetCallbackHandler(this);
         pounceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
         pounceTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -598,6 +709,22 @@ namespace stage
 
         //settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
+        settingsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sSettingsGears",
+            0.0f,
+            0.0f,
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-gui")).append("gears1_normal.png"),
+            "",
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-gui")).append("gears1_lit.png"),
+            "",
+            sfml_util::gui::MouseTextInfo(),
+            sfml_util::gui::TextInfo(),
+            false,
+            sfml_util::MapByRes(0.6f, 2.0f),
+            false);
+
         settingsButtonSPtr_->SetEntityPos(COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH - settingsButtonSPtr_->GetEntityRegion().width - COMMAND_REGION_PAD, COMMAND_REGION_TOP + COMMAND_REGION_PAD);
         settingsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(settingsButtonSPtr_.get());
@@ -890,9 +1017,10 @@ namespace stage
         //
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
         //
-        zoomLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("ZoomSlider's",
-                                                                       ZOOMSLIDER_LABEL_TEXT_INFO,
-                                                                       ZOOMSLIDER_LABEL_RECT) );
+        zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "ZoomSlider's",
+            ZOOMSLIDER_LABEL_TEXT_INFO,
+            ZOOMSLIDER_LABEL_RECT);
         //
         zoomSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
             "CombatStageZoom",

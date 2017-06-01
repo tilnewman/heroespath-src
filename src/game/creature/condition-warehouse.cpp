@@ -50,16 +50,16 @@ namespace condition
         M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty()), "game::creature::condition::Warehouse::Setup() was called twice.");
 
         //Note:  Keep order in sync with game::creature::Conditions::Enum
-        conditionsUVec_.push_back( std::unique_ptr<Good>( new Good() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Frightened>( new Frightened() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Dazed>( new Dazed() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Tripped>( new Tripped() ) );
-        conditionsUVec_.push_back( std::unique_ptr<AsleepNatural>( new AsleepNatural() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Poisoned>( new Poisoned() ) );
-        conditionsUVec_.push_back( std::unique_ptr<AsleepMagical>( new AsleepMagical() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Unconscious>( new Unconscious() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Stone>( new Stone() ) );
-        conditionsUVec_.push_back( std::unique_ptr<Dead>( new Dead() ) );
+        conditionsUVec_.push_back( std::make_unique<Good>() );
+        conditionsUVec_.push_back( std::make_unique<Frightened>() );
+        conditionsUVec_.push_back( std::make_unique<Dazed>() );
+        conditionsUVec_.push_back( std::make_unique<Tripped>() );
+        conditionsUVec_.push_back( std::make_unique<AsleepNatural>() );
+        conditionsUVec_.push_back( std::make_unique<Poisoned>() );
+        conditionsUVec_.push_back( std::make_unique<AsleepMagical>() );
+        conditionsUVec_.push_back( std::make_unique<Unconscious>() );
+        conditionsUVec_.push_back( std::make_unique<Stone>() );
+        conditionsUVec_.push_back( std::make_unique<Dead>() );
     }
 
 
