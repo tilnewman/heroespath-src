@@ -137,7 +137,7 @@ namespace stage
         sfml_util::gui::TextInfo warningTextInfo_;
         sfml_util::gui::TextRegionUPtr_t warningTextRegionUPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> warningTextSlider_;
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
 

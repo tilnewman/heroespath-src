@@ -71,6 +71,9 @@ namespace box
 
 namespace game
 {
+    class Ouroboros;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
+
 namespace stage
 {
 
@@ -254,6 +257,8 @@ namespace stage
         const float STATBOX_HEIGHT_;
         const float STATBOX_POS_LEFT_;
         const float STATS_POS_LEFT_;
+        //
+        OuroborosUPtr_t ouroborosUPtr_;
         //
         MainMenuTitle mainMenuTitle_;
         //

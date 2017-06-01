@@ -66,7 +66,7 @@ namespace game
         sfml_util::sliders::Drifter<float> rotSpeedDrifter_;
     };
 
-    using OuroborosSPtr_t = std::shared_ptr<Ouroboros>;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
 }
 #endif //GAME_OUROBOROS_INCLUDED

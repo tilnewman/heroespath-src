@@ -47,7 +47,7 @@ namespace sfml_util
 namespace game
 {
     class Ouroboros;
-    using OuroborosSPtr_t = std::shared_ptr<Ouroboros>;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
 namespace stage
 {
@@ -80,7 +80,7 @@ namespace stage
         sf::Texture candleTexture_;
         sf::Sprite  candleSprite_;
         sfml_util::SingleTextureAnimationSPtr_t candleAnimSPtr_;
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol bottomSymbol_;
     };
 

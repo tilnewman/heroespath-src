@@ -61,7 +61,7 @@ namespace gui
 namespace game
 {
     class Ouroboros;
-    using OuroborosSPtr_t = std::shared_ptr<Ouroboros>;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
     namespace creature
     {
@@ -251,7 +251,7 @@ namespace stage
         BottomSymbol                bottomSymbol_;
         sf::Texture                 paperBgTexture_;
         sf::Sprite                  paperBgSprite_;
-        OuroborosSPtr_t             ouroborosSPtr_;
+        OuroborosUPtr_t             ouroborosUPtr_;
         sf::Texture                 creatureTexture_;
         sf::Sprite                  creatureSprite_;
         ViewType                    view_;

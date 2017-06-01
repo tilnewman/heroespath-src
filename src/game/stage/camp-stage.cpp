@@ -49,6 +49,7 @@
 #include "game/creature/body-type.hpp"
 #include "game/player/character.hpp"
 #include "game/player/party.hpp"
+#include "game/ouroboros.hpp"
 
 #include "misc/vectors.hpp"
 #include "misc/real.hpp"
@@ -79,7 +80,7 @@ namespace stage
         showNewGamePopup2_ (false),
         showNewGamePopup3_ (false),
         showNewGamePopup4_ (false),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         botSymbol_         ()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Fire1);
@@ -100,9 +101,13 @@ namespace stage
             if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
             {
                 if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
+                {
                     musicOperatorSPtr->VolumeFadeOut();
+                }
                 else
+                {
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                }
             }
         }
 
@@ -135,8 +140,8 @@ namespace stage
     void CampStage::Setup()
     {
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("CampStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("CampStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //campfire background image
         sfml_util::LoadImageOrTexture<sf::Texture>(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));

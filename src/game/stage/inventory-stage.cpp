@@ -128,7 +128,7 @@ namespace stage
         bottomSymbol_           (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
         paperBgTexture_         (),
         paperBgSprite_          (),
-        ouroborosSPtr_          (),
+        ouroborosUPtr_          (),
         creatureTexture_        (),
         creatureSprite_         (),
         view_                   (ViewType::Items),
@@ -538,8 +538,8 @@ namespace stage
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("InventoryStage's", true) );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("InventoryStage's", true);
+        EntityAdd(ouroborosUPtr_.get());
 
         //instruction text
         const sfml_util::gui::TextInfo INSTR_TEXT_INFO("(use arrows or numbers to change characters, press 'a' to see achievements)",

@@ -59,7 +59,7 @@ namespace sfml_util
 namespace game
 {
     class Ouroboros;
-    using OuroborosSPtr_t = std::shared_ptr<Ouroboros>;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
     namespace state
     {
@@ -117,7 +117,7 @@ namespace stage
         float gsListBoxPosWidth_;
         float gsListBoxPosHeight_;
         //
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol bottomSymbol_;
         //
         state::GameStatePSet_t gamestatePSet_;

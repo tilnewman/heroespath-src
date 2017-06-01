@@ -86,7 +86,7 @@ namespace stage
         main_menu_buttons::SettingsButtonSPtr_t         settingsButtonSPtr_;
         main_menu_buttons::CreditsButtonSPtr_t          creditsButtonSPtr_;
         main_menu_buttons::ExitButtonSPtr_t             exitButtonSPtr_;
-        OuroborosSPtr_t                                 ouroborosSPtr_;
+        OuroborosUPtr_t                                 ouroborosUPtr_;
         BottomSymbol                                    bottomSymbol_;
         sfml_util::gui::BackgroundImage                 backgroundImage_;
     };

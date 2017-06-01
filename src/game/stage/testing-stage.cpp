@@ -75,7 +75,7 @@ namespace stage
         SCREEN_WIDTH_      (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_     (sfml_util::Display::Instance()->GetWinHeight()),
         textureList_       (),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         testingBlurbsVec_  (),
         sleepMilliseconds_ (0),
         animBGTexture_     (),
@@ -91,10 +91,12 @@ namespace stage
 
     void TestingStage::Setup()
     {
-        ouroborosSPtr_.reset( new Ouroboros("TestingStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("TestingStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
-        sfml_util::LoadImageOrTexture(animBGTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::LoadImageOrTexture(animBGTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+
         animBGTexture_.setSmooth(true);
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
@@ -254,7 +256,9 @@ namespace stage
         testingBlurbsVec_.push_back( std::make_pair(S, 0) );
 
         if (testingBlurbsVec_.size() > TEXT_LINES_COUNT_MAX_)
+        {
             testingBlurbsVec_.erase(testingBlurbsVec_.begin());
+        }
     }
 
 
@@ -273,7 +277,9 @@ namespace stage
         }
 
         if (false == foundMatch)
+        {
             TestingStrAppend(S);
+        }
     }
 
 
@@ -288,7 +294,9 @@ namespace stage
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (LoopManager::Instance()->IsFading())
+        {
             return;
+        }
 
         static auto hasPromptStart{ false };
         if (false == hasPromptStart)
@@ -526,10 +534,14 @@ namespace stage
             auto const NEXT_ENUM{ static_cast<stats::stat::Enum>(i) };
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Current() != EXPECTED.GetCopy(NEXT_ENUM).Current())
+            {
                 isMismatchCurrent = true;
+            }
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Normal() != EXPECTED.GetCopy(NEXT_ENUM).Normal())
+            {
                 isMismatchNormal = true;
+            }
         }
 
         std::ostringstream ss;

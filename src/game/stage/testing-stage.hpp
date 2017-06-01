@@ -103,7 +103,7 @@ namespace stage
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         sfml_util::TextureLst_t textureList_;
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;
         sf::Texture animBGTexture_;

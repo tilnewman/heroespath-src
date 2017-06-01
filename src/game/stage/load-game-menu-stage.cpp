@@ -75,7 +75,7 @@ namespace stage
         gsListBoxPosTop_        (0.0f),
         gsListBoxPosWidth_      (0.0f),
         gsListBoxPosHeight_     (0.0f),
-        ouroborosSPtr_          (),
+        ouroborosUPtr_          (),
         bottomSymbol_           (),
         gamestatePSet_          ()
     {}
@@ -124,8 +124,8 @@ namespace stage
     void LoadGameStage::Setup()
     {
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("LoadGameStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("LoadGameStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //back button
         const std::string BUTTONS_PATH(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"));
@@ -168,11 +168,13 @@ namespace stage
                 << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
                 << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
 
-            const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
-                                                     sfml_util::FontManager::Instance()->Font_Default2(),
-                                                     28,
-                                                     sf::Color::White,
-                                                     sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo TEXT_INFO(
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_Default2(),
+                28,
+                sf::Color::White,
+                sfml_util::Justified::Left);
+
             ss.str("");
             ss << ++gameStateCount;
             auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>
@@ -183,16 +185,20 @@ namespace stage
         listBoxItemSLst.sort();
         //
         //establish the boxing options
-        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
+        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() -
+            sf::Color(100, 100, 100, 220));
+
         const sfml_util::gui::BackgroundInfo BG_INFO(BG_COLOR);
-        const sfml_util::gui::box::Info BOX_INFO(1,
-                                                 true,
-                                                 GS_LB_RECT,
-                                                 sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
-                                                                          BG_COLOR,
-                                                                          sfml_util::FontManager::Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
-                                                                          BG_COLOR - sf::Color(40,40,40,0)),
-                                                 BG_INFO);
+        const sfml_util::gui::box::Info BOX_INFO(
+            1,
+            true,
+            GS_LB_RECT,
+            sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
+                                     BG_COLOR,
+                                     sfml_util::FontManager::Color_Orange() -
+                                        sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                                     BG_COLOR - sf::Color(40,40,40,0)),
+            BG_INFO);
         //reate the ListBox
         gsListBoxSPtr_.reset( new sfml_util::gui::ListBox("GameStateToLoad",
                                                           GS_LB_RECT,

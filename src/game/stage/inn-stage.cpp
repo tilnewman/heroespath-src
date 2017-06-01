@@ -61,7 +61,7 @@ namespace stage
         candleTexture_     (),
         candleSprite_      (),
         candleAnimSPtr_    (),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         bottomSymbol_      ()
     {}
 
@@ -81,8 +81,8 @@ namespace stage
         titleSymbolSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
 
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("InnStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("InnStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //candle
         sfml_util::LoadImageOrTexture<sf::Texture>(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));

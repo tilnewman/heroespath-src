@@ -47,6 +47,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
+#include "game/ouroboros.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/creature/race.hpp"
@@ -157,6 +158,7 @@ namespace stage
         STATBOX_HEIGHT_         (290.0f),
         STATBOX_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (STATBOX_WIDTH_ * 0.5f)),
         STATS_POS_LEFT_         (STATBOX_POS_LEFT_ + 10.0f),
+        ouroborosUPtr_          (),
         mainMenuTitle_          ("create_char_button_normal.png"),
         attribVertOffset1_      (0.0f),
         attribVertOffset2_      (0.0f),
@@ -668,6 +670,9 @@ namespace stage
 
     void CharacterStage::Setup()
     {
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("CharacterStage's");
+        EntityAdd(ouroborosUPtr_.get());
+
         //help button
         helpButtonSPtr_->SetScaleToRes();
         helpButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - helpButtonSPtr_->GetEntityRegion().width - 180.0f);

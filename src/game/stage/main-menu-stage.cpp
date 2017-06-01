@@ -67,7 +67,7 @@ namespace stage
         settingsButtonSPtr_( new main_menu_buttons::SettingsButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
         creditsButtonSPtr_ ( new main_menu_buttons::CreditsButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
         exitButtonSPtr_    ( new main_menu_buttons::ExitButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         bottomSymbol_      (),
         backgroundImage_   ("media-images-backgrounds-tile-darkknot")
     {}
@@ -106,8 +106,8 @@ namespace stage
         gradient_.Setup(SCREEN_RECT_, sfml_util::GradientInfo(sf::Color(0,0,0,200), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight) );
 
         //Ouroboros
-        ouroborosSPtr_.reset( new game::Ouroboros("MainMenu's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<game::Ouroboros>("MainMenu's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //buttons
         resumeButtonSPtr_->SetScaleToRes();

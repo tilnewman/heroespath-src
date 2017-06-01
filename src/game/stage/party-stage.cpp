@@ -90,7 +90,7 @@ namespace stage
         warningTextInfo_        (),
         warningTextRegionUPtr_  (),
         warningTextSlider_      (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
-        ouroborosSPtr_          (),
+        ouroborosUPtr_          (),
         bottomSymbol_           (),
         willDisplayCharacterCountWarningText_(false),
         willShowMouseOverPopup_ (true),
@@ -322,8 +322,8 @@ namespace stage
     void PartyStage::Setup()
     {
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("PartyStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_.reset( new Ouroboros("PartyStage's") );
+        EntityAdd(ouroborosUPtr_.get());
 
         //back button
         backButtonSPtr_->SetScaleToRes();

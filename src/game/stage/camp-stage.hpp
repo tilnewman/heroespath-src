@@ -36,7 +36,6 @@
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-buttons.hpp"
 #include "game/i-popup-callback.hpp"
-#include "game/ouroboros.hpp"
 #include "game/main-menu-title.hpp"
 
 #include <memory>
@@ -51,6 +50,9 @@ namespace sfml_util
 
 namespace game
 {
+    class Ouroboros;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
+
 namespace stage
 {
 
@@ -94,14 +96,14 @@ namespace stage
         const float SCREEN_HEIGHT_;
         MainMenuTitle mainMenuTitle_;
         sf::Texture campfireTexture_;
-        sf::Sprite  campfireSprite_;
+        sf::Sprite campfireSprite_;
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::MultiTextureAnimationSPtr_t fireAnim1SPtr_;
         bool showNewGamePopup1_;
         bool showNewGamePopup2_;
         bool showNewGamePopup3_;
         bool showNewGamePopup4_;
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol botSymbol_;
     };
 
