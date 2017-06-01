@@ -127,7 +127,7 @@ namespace animation
     };
 
     using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
-
+    using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
 
 }
 }

@@ -1022,7 +1022,7 @@ namespace sfml_util
             {
                 if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
                 {
-                    SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                    SoundManager::Instance()->SoundEffectsSet_SpellSelect().PlayRandom();
                     game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
                     return true;
                 }

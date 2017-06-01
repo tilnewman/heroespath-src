@@ -389,6 +389,14 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Wind)] =
             SoundEffectsSet(WIND_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t SPELLSELECT_SOUNDS_ENUM_VEC = {
+            sound_effect::SpellSelect1,
+            sound_effect::SpellSelect2,
+            sound_effect::SpellSelect3 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellSelect)] =
+            SoundEffectsSet(SPELLSELECT_SOUNDS_ENUM_VEC);
     }
 
 

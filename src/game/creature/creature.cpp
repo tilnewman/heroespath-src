@@ -29,6 +29,7 @@
 //
 #include "creature.hpp"
 
+#include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
 #include "game/spell/spell-warehouse.hpp"
 #include "game/spell/spell-base.hpp"
@@ -196,6 +197,21 @@ namespace creature
         {
             return rank_class::ToString(RankClass());
         }
+    }
+
+
+    float Creature::RankRatio() const
+    {
+        const float GRANDMASTER_RANK(GameDataFile::Instance()->
+            GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f);
+
+        auto rankRatio{ static_cast<float>(rank_) / GRANDMASTER_RANK };
+        if (rankRatio > 1.0f)
+        {
+            rankRatio = 1.0f;
+        }
+
+        return rankRatio;
     }
 
 

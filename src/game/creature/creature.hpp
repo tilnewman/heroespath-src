@@ -149,6 +149,7 @@ namespace creature
         inline std::size_t Rank() const                         { return rank_; }
         inline rank_class::Enum RankClass() const               { return rank_class::FromRank(rank_); }
         const std::string RankClassName() const;
+        float RankRatio() const;
 
         inline void IncreaseRank(const stats::Rank_t R)         { rank_ += R; }
         inline stats::Exp_t Exp() const                         { return experience_; }

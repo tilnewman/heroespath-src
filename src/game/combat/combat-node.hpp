@@ -201,7 +201,7 @@ namespace combat
     using CombatNodeCPtrC_t = const CombatNode * const;
     using CombatNodeSPtr_t  = std::shared_ptr<CombatNode>;
 
-    using CombatNodeSVec_t  = std::vector<CombatNodePtr_t>;
+    using CombatNodePVec_t  = std::vector<CombatNodePtr_t>;
 
 }
 }

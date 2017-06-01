@@ -71,6 +71,9 @@ namespace combat
     class SummaryView;
     using SummaryViewUPtr_t = std::unique_ptr<SummaryView>;
 
+    class CombatAnimation;
+    using CombatAnimationPtr_t = CombatAnimation *;
+
 
     //Assists with delayed position shifting of creature images on the battlefield,
     //allowing creature images on the battlefield to animate to new positions instead
@@ -215,6 +218,8 @@ namespace combat
 
         inline NodePosTrackerMap_t NodePositionTrackerMap()                     { return nodePosTrackerMap_; }
 
+        inline void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr)       { combatAnimationPtr_ = ptr; }
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
@@ -277,6 +282,7 @@ namespace combat
         bool                            isStatusMessageAnim_;
         bool                            isSummaryViewInProgress_;
         CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
+        CombatAnimationPtr_t            combatAnimationPtr_;
 
         //members to manage node position shifting, put another way,
         //members that allow on battlefield creature images to slide

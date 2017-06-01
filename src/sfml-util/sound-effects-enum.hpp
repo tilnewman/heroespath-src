@@ -191,6 +191,10 @@ namespace sfml_util
             MaterialHitMisc,
             ClawTear,
             Magic1,
+            SpellSelect1,
+            SpellSelect2,
+            SpellSelect3,
+            SpellSparks,
             Count,
             None,
             Random

@@ -136,6 +136,7 @@ namespace combat
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),
         combatNodeToGuiEntityMap_  (),
+        combatAnimationPtr_        (nullptr),
         nodePosTrackerMap_         (),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
@@ -238,7 +239,10 @@ namespace combat
             (GetIsStatusMessageAnimating() == false))
         {
             //stop shaking a creature image if mouse-over will start transitioning to summary view
-            CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
+            M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+                "game::combat::CombatDisplay::SetMouseHover() found combatAnimationPtr_ "
+                << "to be null.");
+            combatAnimationPtr_->ShakeAnimTemporaryStop(combatNodePtr->Creature());
 
             summaryViewUPtr_->SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
@@ -962,7 +966,9 @@ namespace combat
 
     void CombatDisplay::HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "game::combat::CombatDisplay::HandleFlyingChange(nullptr, is_flying=" << std::boolalpha << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
+            "game::combat::CombatDisplay::HandleFlyingChange(nullptr, is_flying=" << std::boolalpha
+            << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
         combatTree_.GetNode(CREATURE_CPTRC)->IsFlying(IS_FLYING);
     }
 
@@ -972,7 +978,10 @@ namespace combat
         UpdateHealthTasks();
 
         //stop all creature image shaking
-        CombatAnimation::Instance()->ShakeAnimStop(nullptr);
+        M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+            "game::combat::CombatDisplay::HandleEndOfTurnTasks() found combatAnimationPtr_ "
+            << "to be null.");
+        combatAnimationPtr_->ShakeAnimStop(nullptr);
     }
 
 
@@ -983,18 +992,26 @@ namespace combat
         combatTree_.GetCombatNodes(combatNodesPVec);
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
+        {
             nextCombatNodePtrC->HealthChangeTasks();
+        }
     }
 
 
     bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "game::combat::CombatDisplay::IsCreatureVisible(nullptr) was given a CREATURE_CPTRC that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
+            "game::combat::CombatDisplay::IsCreatureVisible(nullptr) was given a CREATURE_CPTR"
+            << " that was null.");
 
         if (CREATURE_CPTRC == nullptr)
+        {
             return false;
+        }
         else
+        {
             return combatTree_.GetNode(CREATURE_CPTRC)->GetEntityWillDraw();
+        }
     }
 
 
@@ -1199,9 +1216,13 @@ namespace combat
             {
                 SetIsSummaryViewInProgress(false);
 
-                if (CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr)
+                M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+                    "game::combat::CombatDisplay::UpdateTime() found combatAnimationPtr_ "
+                    << "to be null.");
+
+                if (combatAnimationPtr_->ShakeAnimCreatureCPtr() != nullptr)
                 {
-                    CombatAnimation::Instance()->ShakeAnimRestart();
+                    combatAnimationPtr_->ShakeAnimRestart();
                 }
             }
         }

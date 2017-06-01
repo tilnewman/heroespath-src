@@ -32,6 +32,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/sparks-animation.hpp"
 
 #include "game/combat/combat-display.hpp"
 #include "game/combat/combat-text.hpp"
@@ -39,6 +40,7 @@
 #include "game/item/item.hpp"
 #include "game/creature/creature.hpp"
 #include "game/game-data-file.hpp"
+#include "game/spell/spell-base.hpp"
 
 #include <string>
 
@@ -75,16 +77,15 @@ namespace combat
     }
 
 
-    CombatAnimation *   CombatAnimation::instance_                  { nullptr };
-    CombatDisplayPtr_t  CombatAnimation::combatDisplayStagePtr_     { nullptr };
     const float         CombatAnimation::SELECT_ANIM_SLIDER_SPEED_  { 8.0f };
 
 
-    CombatAnimation::CombatAnimation()
+    CombatAnimation::CombatAnimation(const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     :
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
         BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
+        combatDisplayStagePtr_           (COMBAT_DISPLAY_PTR),
         slider_                          (1.0f), //any value greater than zero will work temporarily here
         projAnimTexture_                 (),
         projAnimSprite_                  (),
@@ -104,39 +105,23 @@ namespace combat
         shakeAnimCreatureWasCPtr_        (nullptr),
         shakeAnimCreatureWasSpeed_       (0.0f),
         shakeAnimInfoMap_                (),
-        selectAnimCombatNodePtr_         (nullptr)
+        selectAnimCombatNodePtr_         (nullptr),
+        sparksAnimUVec_                  ()
     {}
 
 
-    CombatAnimation::~CombatAnimation()
-    {}
-
-
-    void CombatAnimation::GiveCombatDisplay(CombatDisplayPtr_t combatDisplayPtr)
-    {
-        combatDisplayStagePtr_ = combatDisplayPtr;
-    }
-
-
-    CombatAnimation * CombatAnimation::Instance()
-    {
-        if (nullptr == instance_)
-        {
-            instance_ = new CombatAnimation();
-        }
-
-        return instance_;
-    }
-
-
-    void CombatAnimation::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void CombatAnimation::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         if (projAnimWillDraw_)
         {
-            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
-            states.blendMode = sf::BlendAdd;
-            target.draw(projAnimSprite_, states);
-            states.blendMode = ORIG_BLEND_MODE;
+            sf::RenderStates tempStates(STATES);
+            tempStates.blendMode = sf::BlendAdd;
+            target.draw(projAnimSprite_, tempStates);
+        }
+
+        for (auto const & NEXT_SPARKSANIM_UPTR : sparksAnimUVec_)
+        {
+            NEXT_SPARKSANIM_UPTR->draw(target, STATES);
         }
     }
 
@@ -632,6 +617,98 @@ namespace combat
             selectAnimCombatNodePtr_->SelectAnimStop();
             selectAnimCombatNodePtr_ = nullptr;
         }
+    }
+
+
+    void CombatAnimation::SpellAnimStart(const spell::SpellPtr_t          SPELL_PTR,
+                                         const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                                         const combat::CombatNodePVec_t & TARGETS_PVEC)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((TARGETS_PVEC.empty() == false),
+            "game::combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
+            << ", caster=" << CASTING_CREATURE_CPTRC->Name()
+            << ") was given an empty targets vec.");
+
+        if (SPELL_PTR->Which() == spell::Spells::Sparks)
+        {
+            SparksAnimStart(CASTING_CREATURE_CPTRC, TARGETS_PVEC);
+            return;
+        }
+
+        M_HP_LOG_ERR("game::combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
+            << ", caster=" << CASTING_CREATURE_CPTRC->Name() << ", targets=" << TARGETS_PVEC.size()
+            << ") failed to trigger the start of any animation.");
+    }
+
+
+    bool CombatAnimation::SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
+                                          const float             ELAPSED_TIME_SEC)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_PTR != nullptr),
+            "game::combat::CombatAnimation::SpellAnimUpdate() "
+            << "was given a null SPELL_PTR.");
+
+        if (SPELL_PTR->Which() == spell::Spells::Sparks)
+        {
+            return SparksAnimUpdate(ELAPSED_TIME_SEC);
+        }
+
+        return true;
+    }
+
+
+    void CombatAnimation::SpellAnimStop(const spell::SpellPtr_t SPELL_PTR)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_PTR != nullptr),
+            "game::combat::CombatAnimation::SpellAnimStop() "
+            << "was given a null SPELL_PTR.");
+
+        if (SPELL_PTR->Which() == spell::Spells::Sparks)
+        {
+            SparksAnimStop();
+            return;
+        }
+    }
+
+
+    void CombatAnimation::SparksAnimStart(const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                                          const combat::CombatNodePVec_t & COMBAT_NODE_PVEC)
+    {
+        sparksAnimUVec_.clear();
+
+        for (auto const NEXT_COMBATNODE_PTR : COMBAT_NODE_PVEC)
+        {
+            sparksAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparksAnimation>(
+                ! NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
+                NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                0.33f,
+                sfml_util::MapByRes(0.15f, 0.45f),
+                0.9f,
+                CASTING_CREATURE_CPTRC->RankRatio(),
+                1.25f) );
+        }
+    }
+
+
+    bool CombatAnimation::SparksAnimUpdate(const float ELAPSED_TIME_SEC)
+    {
+        auto areAllSparksAnimFinished{ true };
+        for (auto & nextSparksAnimUPtr : sparksAnimUVec_)
+        {
+            if (nextSparksAnimUPtr->IsFinished() == false)
+            {
+                areAllSparksAnimFinished = false;
+                nextSparksAnimUPtr->Update(ELAPSED_TIME_SEC);
+            }
+        }
+
+        return areAllSparksAnimFinished;
+    }
+
+
+    void CombatAnimation::SparksAnimStop()
+    {
+        sparksAnimUVec_.clear();
     }
 
 }

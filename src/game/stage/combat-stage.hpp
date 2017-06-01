@@ -38,7 +38,6 @@
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/sparks-animation.hpp"
 
 #include "game/i-popup-callback.hpp"
 #include "game/horiz-symbol.hpp"
@@ -94,8 +93,9 @@ namespace combat
     using EncounterPtr_t = Encounter *;
 
     class CombatAnimation;
-    using CombatAnimationPtr_t = CombatAnimation *;
+    using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
 }
+
 namespace stage
 {
 
@@ -175,6 +175,8 @@ namespace stage
             Impact,
             PostImpactPause,
             MoveBack,
+            Spell,
+            PostSpellPause,
             FinalPause,
             Count
         };
@@ -219,7 +221,7 @@ namespace stage
         bool HandleAttack();
         bool HandleFight();
         bool HandleCast_Step1_ValidateCastAndSelectSpell();
-        void HandleCast_Step2_SelectTargetOrPerformOnAll(spell::SpellPtr_t);
+        void HandleCast_Step2_SelectTargetOrPerformOnAll();
         void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
         bool HandleAdvance();
         bool HandleRetreat();
@@ -289,6 +291,7 @@ namespace stage
         static const float POST_MELEEMOVE_ANIM_PAUSE_SEC_;
         static const float POST_IMPACT_ANIM_PAUSE_SEC_;
         static const float CONDITION_WAKE_PAUSE_SEC_;
+        static const float POST_SPELL_ANIM_PAUSE_SEC_;
         //
         static const float SLIDER_SPEED_SLOWEST_;
         static const float SLIDER_SPEED_SLOW_;
@@ -348,7 +351,7 @@ namespace stage
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
 
         //this member controls combat related animations
-        combat::CombatAnimationPtr_t combatAnimationPtr_;
+        combat::CombatAnimationUPtr_t combatAnimationUPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 
@@ -394,10 +397,9 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
-
-        sfml_util::animation::SparksAnimationUPtr_t sparksAnimUPtr_;
     };
 
 }
 }
+
 #endif //GAME_COMBATSTAGE_INCLUDED

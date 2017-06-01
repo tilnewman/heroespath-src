@@ -568,22 +568,27 @@ namespace combat
                                       creature::CreaturePtrC_t         creatureCastingPtr,
                                       const creature::CreaturePVec_t & creaturesCastUponPVec)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false), "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
-                                                                             << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
-                                                                             << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false),
+            "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name() << ", creature_casting="
+            << creatureCastingPtr->NameAndRaceAndRole() << ", creatures_cast_upon=empty) was "
+            << "given an empty creaturesCastUponPVec.");
 
-        if (((SPELL_CPTR->Target() == TargetType::SingleCompanion) || (SPELL_CPTR->Target() == TargetType::SingleOpponent)) && (creaturesCastUponPVec.size() > 1))
+        if (((SPELL_CPTR->Target() == TargetType::SingleCompanion) ||
+            (SPELL_CPTR->Target() == TargetType::SingleOpponent)) &&
+                (creaturesCastUponPVec.size() > 1))
         {
             std::ostringstream ssErr;
             ssErr << "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
                   << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
-                  << ", creatures_cast_upon=\"" << misc::Vector::Join<creature::CreaturePtr_t>(creaturesCastUponPVec,
-                                                                                                false,
-                                                                                                false,
-                                                                                                0,
-                                                                                                false,
-                                                                                                [](const creature::CreaturePtr_t CPTR) -> const std::string
-                                                                                                  { return CPTR->NameAndRaceAndRole(); })
+                  << ", creatures_cast_upon=\"" << misc::Vector::Join<creature::CreaturePtr_t>(
+                      creaturesCastUponPVec,
+                      false,
+                      false,
+                      0,
+                      false,
+                      []
+                      (const creature::CreaturePtr_t CPTR) -> const std::string
+                      { return CPTR->NameAndRaceAndRole(); })
                   << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
@@ -594,8 +599,13 @@ namespace combat
         for (auto nextCreatureCastUpon : creaturesCastUponPVec)
         {
             creature::ConditionEnumVec_t conditionsVec;
-            auto const HEALTH_ADJ{ SPELL_CPTR->HealthAdj(creatureCastingPtr, nextCreatureCastUpon) };
-            auto const SPELL_RESULT_STR{ SPELL_CPTR->EffectCreature(creatureCastingPtr, nextCreatureCastUpon, conditionsVec) };
+            auto const HEALTH_ADJ{ SPELL_CPTR->HealthAdj(creatureCastingPtr,
+                                                         nextCreatureCastUpon) };
+
+            auto const SPELL_RESULT_STR{ SPELL_CPTR->EffectCreature(creatureCastingPtr,
+                                                                    nextCreatureCastUpon,
+                                                                    conditionsVec) };
+
             creatureEffectVec.push_back( CastSpellUpon(SPELL_CPTR,
                                                        SPELL_RESULT_STR,
                                                        creatureCastingPtr,

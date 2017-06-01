@@ -128,6 +128,7 @@ namespace sfml_util
             MaterialHitMisc,
             ClawHit,
             Wind,
+            SpellSelect,
             Count
         };
 
@@ -251,6 +252,9 @@ namespace sfml_util
 
         inline const SoundEffectsSet & SoundEffectsSet_Wind() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Wind)]; }
+
+        inline const SoundEffectsSet & SoundEffectsSet_SpellSelect() const
+            { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellSelect)]; }
 
         void SoundEffectPlay(const sound_effect::Enum);
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);

@@ -33,6 +33,7 @@
 
 #include "game/item/item.hpp"
 #include "game/log-macros.hpp"
+#include "game/spell/spell-base.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -194,6 +195,36 @@ namespace combat
             else
             {
                 M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss(weapon=\"" << WEAPON_PTR->Name() << "\", category=\"" << item::category::ToString(WEAPON_PTR->Category(), false) << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false) << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
+            }
+        }
+    }
+
+
+    void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR)
+    {
+        switch (SPELL_PTR->Which())
+        {
+            case spell::Spells::Sparks:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellSparks);
+                break;
+            }
+            case spell::Spells::Bandage:
+            case spell::Spells::Sleep:
+            case spell::Spells::Awaken:
+            case spell::Spells::Trip:
+            case spell::Spells::Lift:
+            case spell::Spells::Daze:
+            case spell::Spells::Frighten:
+            case spell::Spells::ClearMind:
+            case spell::Spells::Poison:
+            case spell::Spells::Antidote:
+            case spell::Spells::PoisonCloud:
+            case spell::Spells::Count:
+            default:
+            {
+                M_HP_LOG_ERR("game::combat::CombatSoundEffects(" << SPELL_PTR->Name() << ") failed to play a sound effect.");
             }
         }
     }

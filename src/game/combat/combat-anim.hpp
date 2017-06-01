@@ -35,6 +35,15 @@
 #include <memory>
 #include <map>
 
+namespace sfml_util
+{
+namespace animation
+{
+    class SparksAnimation;
+    using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
+    using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
+}
+}
 
 namespace game
 {
@@ -42,6 +51,11 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
+}
+namespace spell
+{
+    class Spell;
+    using SpellPtr_t = Spell *;
 }
 namespace creature
 {
@@ -89,16 +103,10 @@ namespace combat
         //prevent copy assignment
         CombatAnimation & operator=(const CombatAnimation &) =delete;
 
-        //prevent non-singleton construction
-        CombatAnimation();
-
     public:
-        virtual ~CombatAnimation();
+        CombatAnimation(const CombatDisplayPtr_t);
 
-        static void GiveCombatDisplay(CombatDisplayPtr_t);
-        static CombatAnimation * Instance();
-
-        void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -170,15 +178,30 @@ namespace combat
         void SelectAnimStart(creature::CreatureCPtrC_t);
         void SelectAnimStop();
 
-    private:
-        static CombatAnimation * instance_;
-        static CombatDisplayPtr_t combatDisplayStagePtr_;
+        void SpellAnimStart(const spell::SpellPtr_t          SPELL_PTR,
+                            const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                            const combat::CombatNodePVec_t & TARGETS_PVEC);
 
+        bool SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
+                             const float             ELAPSED_TIME_SEC);
+
+        void SpellAnimStop(const spell::SpellPtr_t SPELL_PTR);
+
+        void SparksAnimStart(const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                             const combat::CombatNodePVec_t & TARGETS_PVEC);
+
+        bool SparksAnimUpdate(const float ELAPSED_TIME_SEC);
+
+        void SparksAnimStop();
+
+    private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
 
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
+
+        CombatDisplayPtr_t combatDisplayStagePtr_;
 
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
@@ -214,9 +237,12 @@ namespace combat
 
         //members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
+
+        //members that control the sparks animation
+        sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
     };
 
-    using CombatAnimationPtr_t = CombatAnimation *;
+    using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
 
 }
 }
