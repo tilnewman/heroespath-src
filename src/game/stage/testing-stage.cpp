@@ -671,7 +671,7 @@ namespace stage
             "media-anim-images-dir-whiteburst",
         };
 
-        //const long ANIM_FRAME_SLEEP_MS{ 15 };
+        const long ANIM_FRAME_SLEEP_MS{ 15 };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
@@ -690,7 +690,7 @@ namespace stage
                                           isNewAnimation,
                                           color) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewAnimation = false;
                 return false;
             }
@@ -716,7 +716,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -739,7 +739,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -762,7 +762,7 @@ namespace stage
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -785,7 +785,7 @@ namespace stage
                                            sf::BlendAdd,
                                            sf::Color::Cyan) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -816,10 +816,10 @@ namespace stage
                                                                                        game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
                                                                                        0.0f,
                                                                                        0.0f,
-                                                                                       0.06f,
-                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                       COLOR);
+                                                                                       0.06f);
+
+            multiTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
+            multiTextureAnimSPtr_->SetTargetSize(512.0f, 512.0f);
         }
 
         return multiTextureAnimSPtr_->UpdateTime(0.02f);
@@ -848,10 +848,10 @@ namespace stage
                                                                                          FRAME_HEIGHT,
                                                                                          0.06f,
                                                                                          FRAME_COUNT,
-                                                                                         BLEND_MODE,
-                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                         COLOR);
+                                                                                         BLEND_MODE);
+
+            singleTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
+            singleTextureAnimSPtr_->SetTargetSize(512.0f, 512.0f);
         }
 
         return singleTextureAnimSPtr_->UpdateTime(0.02f);

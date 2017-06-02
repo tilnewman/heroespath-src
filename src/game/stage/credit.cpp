@@ -159,7 +159,7 @@ namespace stage
                 ANIM_FRAME_TIME_SEC,
                 ANIM_FRAME_COUNT);
 
-            singleTextureAnimSPtr_->MovePosition((singleTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
+            singleTextureAnimSPtr_->MoveEntityPos((singleTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
 
             creditsRegion.top += singleTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
         }
@@ -178,7 +178,7 @@ namespace stage
                 MEDIA_SCALE,
                 MEDIA_SCALE);
 
-            multiTextureAnimSPtr_->MovePosition((multiTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
+            multiTextureAnimSPtr_->MoveEntityPos((multiTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
 
             creditsRegion.top += multiTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
         }
@@ -280,12 +280,12 @@ namespace stage
 
         if (multiTextureAnimSPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+            multiTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
         {
-            singleTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+            singleTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
     }
 
