@@ -35,10 +35,6 @@
 namespace sfml_util
 {
 
-    const std::string sound_effect::FILE_EXTENSION_OGG(".ogg");
-    const std::string sound_effect::FILE_EXTENSION_FLAC(".flac");
-
-
     const std::string sound_effect::ToString(const sound_effect::Enum E)
     {
         switch (E)
@@ -199,6 +195,19 @@ namespace sfml_util
             case SpellSelect2:      { return "deep-pulse-b"; }
             case SpellSelect3:      { return "deep-pulse-c"; }
             case SpellSparks:       { return "soft-sparks"; }
+            case SpellBandage1:     { return "magic-glitter-a"; }
+            case SpellBandage2:     { return "magic-glitter-b"; }
+            case SpellBandage3:     { return "magic-glitter-c"; }
+            case SpellBandage4:     { return "magic-glitter-d"; }
+            case SpellAwaken:       { return "spacey-gong"; }
+            case SpellClearMind:    { return "ahh-tadada"; }
+            case SpellAntidote:     { return "sparkly-doing"; }
+            case SpellLift:         { return "sha-sparkle-short-b"; }
+            case SpellSleep:        { return "spacey-wind-short"; }
+            case SpellTrip:         { return "sha-sparkle-short-a"; }
+            case SpellDaze:         { return "sliding-shimmer-short-a"; }
+            case SpellPoison:       { return "worble-warp"; }
+            case SpellFrighten:     { return "fright"; }
             case None:              { return "None"; }
             case Count:
             case Random:
@@ -212,16 +221,10 @@ namespace sfml_util
     }
 
 
-    const std::string sound_effect::FileExt(const sound_effect::Enum)
-    {
-        return sound_effect::FILE_EXTENSION_OGG;
-    }
-
-
     const std::string sound_effect::Filename(const sound_effect::Enum E)
     {
         std::ostringstream ss;
-        ss << ToString(E) << FileExt(E);
+        ss << ToString(E) << ".ogg";
         return ss.str();
     }
 
@@ -385,7 +388,20 @@ namespace sfml_util
             case SpellSelect1:
             case SpellSelect2:
             case SpellSelect3:
-            case SpellSparks:           { return "sound-effects/spells"; }
+            case SpellSparks:
+            case SpellBandage1:
+            case SpellBandage2:
+            case SpellBandage3:
+            case SpellBandage4:
+            case SpellAwaken:
+            case SpellClearMind:
+            case SpellAntidote:
+            case SpellLift:
+            case SpellSleep:
+            case SpellTrip:
+            case SpellDaze:
+            case SpellPoison:
+            case SpellFrighten:         { return "sound-effects/spells"; }
             case Count:
             case None:
             case Random:

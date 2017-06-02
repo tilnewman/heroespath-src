@@ -426,7 +426,7 @@ namespace stage
             isKeyHeldDown_ = true;
         else
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             LoopManager::Instance()->Goto_MainMenu();
         }
 

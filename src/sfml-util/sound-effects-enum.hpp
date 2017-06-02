@@ -195,16 +195,26 @@ namespace sfml_util
             SpellSelect2,
             SpellSelect3,
             SpellSparks,
+            SpellBandage1,
+            SpellBandage2,
+            SpellBandage3,
+            SpellBandage4,
+            SpellAwaken,
+            SpellClearMind,
+            SpellAntidote,
+            SpellLift,
+            SpellSleep,
+            SpellTrip,
+            SpellDaze,
+            SpellPoison,
+            SpellFrighten,
             Count,
             None,
             Random
         };
 
-        static const std::string FILE_EXTENSION_OGG;
-        static const std::string FILE_EXTENSION_FLAC;
 
         static const std::string ToString(const sound_effect::Enum);
-        static const std::string FileExt(const sound_effect::Enum);
         static const std::string Filename(const sound_effect::Enum);
         static const std::string Directory(const sound_effect::Enum);
     };

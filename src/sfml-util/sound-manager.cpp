@@ -397,6 +397,15 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellSelect)] =
             SoundEffectsSet(SPELLSELECT_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t SPELLBANDAGE_SOUNDS_ENUM_VEC = {
+            sound_effect::SpellBandage1,
+            sound_effect::SpellBandage2,
+            sound_effect::SpellBandage3,
+            sound_effect::SpellBandage4 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellBandage)] =
+            SoundEffectsSet(SPELLBANDAGE_SOUNDS_ENUM_VEC);
     }
 
 

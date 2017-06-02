@@ -104,11 +104,11 @@ namespace stage
         {
             if (GetMouseState() == sfml_util::MouseState::Over)
             {
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
             }
             else
             {
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
             }
 
             if (stagePtr_ == nullptr)
@@ -1765,7 +1765,7 @@ namespace stage
         {
             willDrawStatModText_ = true;
             HandleChangedStatModifiers("after anim stopped");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
         }
         else
         {
@@ -1853,7 +1853,7 @@ namespace stage
             (false == isAnimStats_) &&
             (false == nameTextEntryBoxSPtr_->HasFocus()))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Wind().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Wind).PlayRandom();
             animStatsTimeCounterSec_ = 0.0f;
             animStatsDelayPerSec_ = 0.01f;//any fraction of a second will work here
             isAnimStats_ = true;
@@ -2098,7 +2098,7 @@ namespace stage
         const stats::stat::Enum HELD_DOWN_STAT( GetHeldDownStat() );
         if (HELD_DOWN_STAT != stats::stat::Count)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             fixedStatsSVec_[HELD_DOWN_STAT]->SetPosY(GetStatPosTop(HELD_DOWN_STAT));
         }
 
@@ -2120,7 +2120,7 @@ namespace stage
         {
             UndoAndClearStatModifierChanges();
             HandleChangedStatModifiers("after mouse up");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
         }
 
         return entityWithFocusPtr;
@@ -2460,7 +2460,7 @@ namespace stage
         statSetBase_.Get(B).ResetAll(statSetBase_.Get(A).Normal());
         statSetBase_.Get(A).ResetAll(TEMP_STAT);
 
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
     }
 
 
@@ -2487,28 +2487,28 @@ namespace stage
         if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_BackButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             saveButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_SaveButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::N)
         {
             nextButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_NextButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::H)
         {
             helpButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_HelpButton();
             return true;
         }

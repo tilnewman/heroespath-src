@@ -401,7 +401,7 @@ namespace gui
             return false;
         }
 
-        SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
 
         std::size_t indexCounter(0);
         float vertTracker(entityRegion_.height);
@@ -413,7 +413,7 @@ namespace gui
 
                 if (WILL_PLAY_SOUNDEFFECT)
                 {
-                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                 }
 
                 selectedSPtr_ = *itr;
@@ -503,7 +503,7 @@ namespace gui
                 {
                     if (selectedSPtr_ != NEXT_ENTITY_SPTR)
                     {
-                        SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+                        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
                         selectedSPtr_ = NEXT_ENTITY_SPTR;
                         SetupList();
                         boxUPtr_->FakeColorSetAsIfFocusIs(true);
@@ -536,7 +536,7 @@ namespace gui
             return false;
         }
 
-        SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
 
         if (KEY_EVENT.code == sf::Keyboard::Return)
         {
@@ -900,7 +900,7 @@ namespace gui
                 if (vertTracker >= entityRegion_.height)
                     currentViewPos_ -= NEXT_HEIGHT;
 
-                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                 selectedSPtr_ = *itr;
                 SetupList();
                 return true;
@@ -931,7 +931,7 @@ namespace gui
                     if ((*itr)->GetEntityWillDraw() == false)
                         currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
 
-                    SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                     selectedSPtr_ = *itr;
                     SetupList();
                     return true;

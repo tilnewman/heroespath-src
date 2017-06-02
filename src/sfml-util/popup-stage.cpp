@@ -283,7 +283,7 @@ namespace sfml_util
         //sound effect
         if (POPUP_INFO_.SoundEffect() != sound_effect::None)
         {
-            SoundManager::Instance()->SoundEffectsSet_Prompt().Play(POPUP_INFO_.SoundEffect());
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(POPUP_INFO_.SoundEffect());
         }
 
         //darken the box gold bars a bit
@@ -922,7 +922,7 @@ namespace sfml_util
                     willShowImageCount_ = true;
 
                     if (imageIndexLastSoundOff_ != imageIndex_)
-                        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
 
                     imageIndexLastSoundOff_ = imageIndex_;
                 }
@@ -937,7 +937,7 @@ namespace sfml_util
                 willShowImageCount_ = false;
 
                 if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
-                    sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();
 
@@ -1012,7 +1012,7 @@ namespace sfml_util
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                 (KEY_EVENT.code == sf::Keyboard::Space))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
                 return true;
             }
@@ -1022,13 +1022,13 @@ namespace sfml_util
             {
                 if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
                 {
-                    SoundManager::Instance()->SoundEffectsSet_SpellSelect().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
                     game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
                     return true;
                 }
                 else
                 {
-                    SoundManager::Instance()->SoundEffectsSet_Prompt().Play(sound_effect::PromptWarn);
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
                     if (SpellbookState::Waiting == spellbookState_)
                     {
                         spellbookState_ = SpellbookState::Warning;
@@ -1050,25 +1050,25 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::I) && (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Item());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::C)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Coins());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::G)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Gems());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::M)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_MeteorShards());
                 return true;
             }
@@ -1079,7 +1079,7 @@ namespace sfml_util
         {
             if (ProcessSelectNumber())
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, static_cast<std::size_t>(GetSelectNumber()));
                 return true;
             }
@@ -1140,7 +1140,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::Space) ||
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
                 return true;
             }
@@ -1152,7 +1152,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::O) ||
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
                 return true;
             }
@@ -1160,7 +1160,7 @@ namespace sfml_util
 
         if ((POPUP_INFO_.Buttons() & Response::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
             return true;
         }
@@ -1168,7 +1168,7 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::No) &&
             ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::No);
             return true;
         }
@@ -1179,7 +1179,7 @@ namespace sfml_util
                 ((KEY_EVENT.code == sf::Keyboard::C) && ((POPUP_INFO_.Type() != game::Popup::ContentSelectionWithItem) && (POPUP_INFO_.Type() != game::Popup::ContentSelectionWithoutItem))) ||
                 ((KEY_EVENT.code == sf::Keyboard::Return) && (POPUP_INFO_.Buttons() == sfml_util::PopupButtons::Cancel)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
                 return true;
             }
@@ -1188,7 +1188,7 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::Select) &&
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
             return true;
         }
@@ -1197,37 +1197,37 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::Num1) && (POPUP_INFO_.IsNumberValid(0)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (POPUP_INFO_.IsNumberValid(1)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (POPUP_INFO_.IsNumberValid(2)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (POPUP_INFO_.IsNumberValid(3)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (POPUP_INFO_.IsNumberValid(4)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (POPUP_INFO_.IsNumberValid(5)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
                 return true;
             }
