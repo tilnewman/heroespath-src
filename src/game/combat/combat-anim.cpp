@@ -33,6 +33,7 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/sparks-animation.hpp"
+#include "sfml-util/cloud-animation.hpp"
 
 #include "game/combat/combat-display.hpp"
 #include "game/combat/combat-text.hpp"
@@ -106,7 +107,8 @@ namespace combat
         shakeAnimCreatureWasSpeed_       (0.0f),
         shakeAnimInfoMap_                (),
         selectAnimCombatNodePtr_         (nullptr),
-        sparksAnimUVec_                  ()
+        sparksAnimUVec_                  (),
+        cloudAnimUVec_                   ()
     {}
 
 
@@ -634,6 +636,11 @@ namespace combat
             SparksAnimStart(CASTING_CREATURE_CPTRC, TARGETS_PVEC);
             return;
         }
+        else if (SPELL_PTR->Which() == spell::Spells::PoisonCloud)
+        {
+            PoisonCloudAnimStart(TARGETS_PVEC);
+            return;
+        }
 
         M_HP_LOG_ERR("game::combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
             << ", caster=" << CASTING_CREATURE_CPTRC->Name() << ", targets=" << TARGETS_PVEC.size()
@@ -644,10 +651,6 @@ namespace combat
     bool CombatAnimation::SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
                                           const float             ELAPSED_TIME_SEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_PTR != nullptr),
-            "game::combat::CombatAnimation::SpellAnimUpdate() "
-            << "was given a null SPELL_PTR.");
-
         if (SPELL_PTR->Which() == spell::Spells::Sparks)
         {
             return SparksAnimUpdate(ELAPSED_TIME_SEC);
@@ -659,10 +662,6 @@ namespace combat
 
     void CombatAnimation::SpellAnimStop(const spell::SpellPtr_t SPELL_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_PTR != nullptr),
-            "game::combat::CombatAnimation::SpellAnimStop() "
-            << "was given a null SPELL_PTR.");
-
         if (SPELL_PTR->Which() == spell::Spells::Sparks)
         {
             SparksAnimStop();
@@ -709,6 +708,52 @@ namespace combat
     void CombatAnimation::SparksAnimStop()
     {
         sparksAnimUVec_.clear();
+    }
+
+
+    void CombatAnimation::PoisonCloudAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
+    {
+        sparksAnimUVec_.clear();
+
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
+        {
+            cloudAnimUVec_.push_back( std::make_unique<sfml_util::animation::CloudAnimation>(
+                NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                0.33f,
+                sfml_util::MapByRes(0.5f, 2.0f),
+                0.2f,
+                sfml_util::MapByRes(1.0f, 2.25f),
+                0.2f,
+                4.5f,
+                0.75f,
+                5.0f,
+                2.0f,
+                0.5f,
+                1.0f,
+                0.2f) );
+        }
+    }
+
+
+    bool CombatAnimation::PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC)
+    {
+        auto areAllCloudAnimFinished{ true };
+        for (auto & nextCloudAnimUPtr : cloudAnimUVec_)
+        {
+            if (nextCloudAnimUPtr->IsFinished() == false)
+            {
+                areAllCloudAnimFinished = false;
+                nextCloudAnimUPtr->Update(ELAPSED_TIME_SEC);
+            }
+        }
+
+        return areAllCloudAnimFinished;
+    }
+
+
+    void CombatAnimation::PoisonCloudAnimStop()
+    {
+        cloudAnimUVec_.clear();
     }
 
 }

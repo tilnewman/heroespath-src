@@ -619,7 +619,10 @@ namespace stage
             "media-images-combat-stone3",
             "media-images-combat-stone4",
             "media-images-combat-crossbones",
-            "media-images-misc-spark"
+            "media-images-misc-spark",
+            "media-images-misc-cloud1",
+            "media-images-misc-cloud2",
+            "media-images-misc-cloud3"
         };
 
         static std::size_t imageIndex{ 0 };

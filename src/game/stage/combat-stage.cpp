@@ -37,6 +37,7 @@
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/sparks-animation.hpp"
+#include "sfml-util/cloud-animation.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game.hpp"
@@ -2032,7 +2033,8 @@ namespace stage
 
     void CombatStage::PositionSlideStartTasks()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
+            "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
         combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
         combatAnimationUPtr_->ShakeAnimStop(turnCreaturePtr_);
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
@@ -2041,7 +2043,9 @@ namespace stage
 
     bool CombatStage::HandleAttack()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayStagePtr_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_,
+                                                                       combatDisplayStagePtr_) );
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -2049,7 +2053,8 @@ namespace stage
         }
         else
         {
-            HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayStagePtr_) );
+            HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(
+                turnCreaturePtr_, combatDisplayStagePtr_) );
             return true;
         }
     }
@@ -2057,7 +2062,9 @@ namespace stage
 
     bool CombatStage::HandleFight()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(turnCreaturePtr_, combatDisplayStagePtr_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(
+            turnCreaturePtr_, combatDisplayStagePtr_) );
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -2065,7 +2072,8 @@ namespace stage
         }
         else
         {
-            //can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because the player must select which non_player creature to fight first
+            //can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because the player
+            //must select which non_player creature to fight first
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
             combatDisplayStagePtr_->SetScrollingAllowed(true);
             SetTurnPhase(TurnPhase::TargetSelect);

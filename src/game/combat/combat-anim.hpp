@@ -42,6 +42,10 @@ namespace animation
     class SparksAnimation;
     using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
     using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
+
+    class CloudAnimation;
+    using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
+    using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
 }
 }
 
@@ -194,6 +198,10 @@ namespace combat
 
         void SparksAnimStop();
 
+        void PoisonCloudAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
+        bool PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC);
+        void PoisonCloudAnimStop();
+
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
 
@@ -232,14 +240,17 @@ namespace combat
 
         //members to shake a creature image on the battlefield
         creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
-        float                    shakeAnimCreatureWasSpeed_;
-        SakeInfoMap_t            shakeAnimInfoMap_;
+        float shakeAnimCreatureWasSpeed_;
+        SakeInfoMap_t shakeAnimInfoMap_;
 
         //members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
 
         //members that control the sparks animation
         sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
+
+        //members that control the poison cloud animation
+        sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
