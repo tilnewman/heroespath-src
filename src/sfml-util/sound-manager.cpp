@@ -57,13 +57,13 @@ namespace sfml_util
 
     SoundManager::SoundManager()
     :
-        musicVolume_                (0.0f),
-        effectsVolume_              (0.0f),
-        soundEffectsSetVec_         (),
-        combatIntroMusicInfoVec_    (),
-        songsVec_                   (),
-        soundEffectsToPlayVec_      (),
-        soundEffectsVec_           ()
+        musicVolume_            (0.0f),
+        effectsVolume_          (0.0f),
+        soundEffectsSetVec_     (),
+        combatIntroMusicInfoVec_(),
+        songsVec_               (),
+        soundEffectsToPlayVec_  (),
+        soundEffectsVec_        ()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
@@ -577,7 +577,7 @@ namespace sfml_util
                             songsVec_.end());
         }
 
-        SoundEffectsUpdate();
+        SoundEffectsUpdate(ELAPSED_TIME_SECONDS);
     }
 
 
@@ -606,9 +606,10 @@ namespace sfml_util
     }
 
 
-    void SoundManager::SoundEffectPlay(const sound_effect::Enum E)
+    void SoundManager::SoundEffectPlay(const sound_effect::Enum E,
+                                       const float              PRE_DELAY_SEC)
     {
-        soundEffectsToPlayVec_.push_back(E);
+        soundEffectsToPlayVec_.push_back( std::make_pair(E, PRE_DELAY_SEC) );
     }
 
 
@@ -940,25 +941,35 @@ namespace sfml_util
     }
 
 
-    void SoundManager::SoundEffectsUpdate()
+    void SoundManager::SoundEffectsUpdate(const float ELAPSED_TIME_SEC)
     {
-        for (auto const NEXT_SOUNDEFFECT_TO_PLAY_ENUM : soundEffectsToPlayVec_)
+        for (auto & nextSfxDelayPair : soundEffectsToPlayVec_)
         {
-            SoundEffectData & sfxData{ soundEffectsVec_[NEXT_SOUNDEFFECT_TO_PLAY_ENUM] };
-            if (sfxData.sound.getStatus() == sf::SoundSource::Playing)
+            nextSfxDelayPair.second -= ELAPSED_TIME_SEC;
+
+            if (nextSfxDelayPair.second < 0.0f)
             {
-                //This restarts play from the beginning
-                sfxData.sound.play();
-            }
-            else
-            {
-                LoadSound(NEXT_SOUNDEFFECT_TO_PLAY_ENUM, sfxData);
-                sfxData.sound.setVolume(SoundEffectVolume());
-                sfxData.sound.play();
+                SoundEffectData & sfxData{ soundEffectsVec_[nextSfxDelayPair.first] };
+                if (sfxData.sound.getStatus() == sf::SoundSource::Playing)
+                {
+                    //This restarts play from the beginning
+                    sfxData.sound.play();
+                }
+                else
+                {
+                    LoadSound(nextSfxDelayPair.first, sfxData);
+                    sfxData.sound.setVolume(SoundEffectVolume());
+                    sfxData.sound.play();
+                }
             }
         }
 
-        soundEffectsToPlayVec_.clear();
+        soundEffectsToPlayVec_.erase(
+            std::remove_if( soundEffectsToPlayVec_.begin(), soundEffectsToPlayVec_.end(),
+                []
+                (const std::pair<sound_effect::Enum, float> & PAIR)
+                { return (PAIR.second < 0.0f); }),
+            soundEffectsToPlayVec_.end() );
     }
 
 
@@ -979,6 +990,11 @@ namespace sfml_util
                 nextSoundEffectData.sound.setBuffer(nextSoundEffectData.buffer);
             }
         }
+
+        if (WILL_STOP_PLAYING_SFX)
+        {
+            soundEffectsToPlayVec_.clear();
+        }
     }
 
 
@@ -992,21 +1008,21 @@ namespace sfml_util
             bfs::path(sound_effect::Filename(ENUM))));
 
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ),
-            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            "sfml_util::SoundManager::LoadSound("
             << sound_effect::ToString(ENUM)
-            << ", attempting path=\"" << PATH_OBJ.string()
+            << "), attempting path=\"" << PATH_OBJ.string()
             << "\", failed because that file does not exist.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ),
-            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            "sfml_util::SoundManager::LoadSound("
             << sound_effect::ToString(ENUM)
-            << ", attempting path=\"" << PATH_OBJ.string()
+            << "), attempting path=\"" << PATH_OBJ.string()
             << "\", failed because that is not a regular file.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(soundEffectData.buffer.loadFromFile(PATH_OBJ.string().c_str()),
-            "sfml_util::SoundManager::SoundEffectsUpdate() with sound_effect_enum="
+            "sfml_util::SoundManager::LoadSound("
             << sound_effect::ToString(ENUM)
-            << ", attempting path=\"" << PATH_OBJ.string()
+            << "), attempting path=\"" << PATH_OBJ.string()
             << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
             << " for more information.");
 

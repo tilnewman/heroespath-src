@@ -45,6 +45,10 @@
 namespace sfml_util
 {
 
+    using SoundEffectDelayPair = std::pair<sound_effect::Enum, float>;
+    using SoundEffectDelayVec_t = std::vector<SoundEffectDelayPair>;
+
+
     struct SoundEffectData
     {
         explicit SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
@@ -256,7 +260,9 @@ namespace sfml_util
         inline const SoundEffectsSet & SoundEffectsSet_SpellSelect() const
             { return soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellSelect)]; }
 
-        void SoundEffectPlay(const sound_effect::Enum);
+        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM,
+                             const float              PRE_DELAY_SEC = 0.0f);
+
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);
 
     private:
@@ -280,7 +286,7 @@ namespace sfml_util
                                 const float           FADE_MULT,
                                 const float           VOLUME);
 
-        void SoundEffectsUpdate();
+        void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         void LoadSound(const sound_effect::Enum,
                        SoundEffectData &) const;
@@ -295,7 +301,7 @@ namespace sfml_util
         SoundEffectsSetVec_t soundEffectsSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
         SongsVec_t songsVec_;
-        SoundEffectEnumVec_t soundEffectsToPlayVec_;
+        SoundEffectDelayVec_t soundEffectsToPlayVec_;
         SoundEffectDataVec_t soundEffectsVec_;
     };
 
