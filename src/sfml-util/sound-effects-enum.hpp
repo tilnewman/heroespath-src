@@ -191,6 +191,7 @@ namespace sfml_util
             MaterialHitMisc,
             ClawTear,
             Magic1,
+            Trip,
             SpellSelect1,
             SpellSelect2,
             SpellSelect3,
@@ -208,6 +209,7 @@ namespace sfml_util
             SpellDaze,
             SpellPoison,
             SpellFrighten,
+            SpellPoisonCloud,
             Count,
             None,
             Random

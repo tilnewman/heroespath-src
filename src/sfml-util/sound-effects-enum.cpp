@@ -191,6 +191,7 @@ namespace sfml_util
             case MaterialHitMisc:   { return "material-hit-misc"; }
             case ClawTear:          { return "claw-tear";  }
             case Magic1:            { return "magic1"; }
+            case Trip:              { return "trip-and-fall"; }
             case SpellSelect1:      { return "deep-pulse-a"; }
             case SpellSelect2:      { return "deep-pulse-b"; }
             case SpellSelect3:      { return "deep-pulse-c"; }
@@ -208,6 +209,7 @@ namespace sfml_util
             case SpellDaze:         { return "sliding-shimmer-short-a"; }
             case SpellPoison:       { return "worble-warp"; }
             case SpellFrighten:     { return "fright"; }
+            case SpellPoisonCloud:  { return "bluam-long"; }
             case None:              { return "None"; }
             case Count:
             case Random:
@@ -385,6 +387,7 @@ namespace sfml_util
             case MaterialHitMisc:       { return "sound-effects/combat/material-hit"; }
             case ClawTear:              { return "sound-effects/combat/claw-tear"; }
             case Magic1:                { return "sound-effects/misc"; }
+            case Trip:                  { return "sound-effects/combat"; }
             case SpellSelect1:
             case SpellSelect2:
             case SpellSelect3:
@@ -401,7 +404,8 @@ namespace sfml_util
             case SpellTrip:
             case SpellDaze:
             case SpellPoison:
-            case SpellFrighten:         { return "sound-effects/spells"; }
+            case SpellFrighten:
+            case SpellPoisonCloud:      { return "sound-effects/spells"; }
             case Count:
             case None:
             case Random:

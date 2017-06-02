@@ -211,16 +211,74 @@ namespace combat
                 break;
             }
             case spell::Spells::Bandage:
+            {
+                sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::SpellBandage).PlayRandom();
+                break;
+            }
             case spell::Spells::Sleep:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellSleep);
+                break;
+            }
             case spell::Spells::Awaken:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellAwaken);
+                break;
+            }
             case spell::Spells::Trip:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellTrip);
+
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::Trip, 1.0f);
+                break;
+            }
             case spell::Spells::Lift:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellLift);
+                break;
+            }
             case spell::Spells::Daze:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellDaze);
+                break;
+            }
             case spell::Spells::Frighten:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellFrighten);
+                break;
+            }
             case spell::Spells::ClearMind:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellClearMind);
+                break;
+            }
             case spell::Spells::Poison:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellPoison);
+                break;
+            }
             case spell::Spells::Antidote:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellAntidote);
+                break;
+            }
             case spell::Spells::PoisonCloud:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SpellPoisonCloud);
+                break;
+            }
             case spell::Spells::Count:
             default:
             {
