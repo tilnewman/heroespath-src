@@ -135,6 +135,8 @@ namespace sfml_util
         bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
         bool CanCastSpell(const game::spell::SpellPtrC_t) const;
 
+        bool HandleSpellCast();
+
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:

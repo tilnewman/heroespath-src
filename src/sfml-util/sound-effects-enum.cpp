@@ -200,7 +200,7 @@ namespace sfml_util
             case SpellBandage2:     { return "magic-glitter-b"; }
             case SpellBandage3:     { return "magic-glitter-c"; }
             case SpellBandage4:     { return "magic-glitter-d"; }
-            case SpellAwaken:       { return "spacey-gong"; }
+            case SpellAwaken:       { return "gong-spacey"; }
             case SpellClearMind:    { return "ahh-tadada"; }
             case SpellAntidote:     { return "sparkly-doing"; }
             case SpellLift:         { return "sha-sparkle-short-b"; }

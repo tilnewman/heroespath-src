@@ -91,7 +91,6 @@ namespace stage
                                         const bool            WILL_REBUILD_ANIMATION_OBJECT,
                                         const unsigned int    FRAME_WIDTH,
                                         const unsigned int    FRAME_HEIGHT,
-                                        const unsigned int    FRAME_COUNT,
                                         const sf::BlendMode & BLEND_MODE,
                                         const sf::Color &     COLOR);
 

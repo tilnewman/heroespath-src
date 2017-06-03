@@ -346,11 +346,15 @@ namespace combat
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
 
-            auto const COMBAT_NODE_CLICKED_ON_PTR{ combatTree_.GetNode(MOUSE_POS_V.x, MOUSE_POS_V.y) };
+            auto const COMBAT_NODE_CLICKED_ON_PTR{
+                combatTree_.GetNode(MOUSE_POS_V.x, MOUSE_POS_V.y) };
+
             if (COMBAT_NODE_CLICKED_ON_PTR == nullptr)
             {
                 if (battlefieldRect_.contains(MOUSE_POS_V))
+                {
                     isMouseHeldDownInBF_ = true;
+                }
             }
         }
 
@@ -358,7 +362,8 @@ namespace combat
     }
 
 
-    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(
+        const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {
@@ -397,16 +402,24 @@ namespace combat
             else
             {
                 if (NEXT_REGION.left < posHorizMin)
+                {
                     posHorizMin = NEXT_REGION.left;
+                }
 
                 if ((NEXT_REGION.left + NEXT_REGION.width) > posHorizMax)
+                {
                     posHorizMax = NEXT_REGION.left + NEXT_REGION.width;
+                }
 
                 if (NEXT_REGION.top < posVertMin)
+                {
                     posVertMin = NEXT_REGION.top;
+                }
 
                 if ((NEXT_REGION.top + NEXT_REGION.height) > posVertMax)
+                {
                     posVertMax = NEXT_REGION.top + NEXT_REGION.height;
+                }
             }
         }
 

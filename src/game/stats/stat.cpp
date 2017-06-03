@@ -198,7 +198,8 @@ namespace stats
 
     Stat_t Stat::Reduce(const Stat_t VAL)
     {
-        return static_cast<Stat_t>((static_cast<float>(VAL) * REDUCE_MULTIPLIER_) / REDUCE_DIVISOR_);
+        return static_cast<Stat_t>((static_cast<float>(VAL) * REDUCE_MULTIPLIER_) /
+            REDUCE_DIVISOR_);
     }
 
 }

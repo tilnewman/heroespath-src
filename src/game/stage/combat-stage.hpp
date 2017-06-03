@@ -196,7 +196,6 @@ namespace stage
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         inline bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
@@ -276,6 +275,7 @@ namespace stage
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
         static const float PAUSE_SHORT_SEC_;
+        static const float PAUSE_SHORTER_SEC_;
         static const float PAUSE_ZERO_SEC_;
         static const float POST_PAN_PAUSE_SEC_;
         static const float POST_ZOOMOUT_PAUSE_SEC_;
@@ -340,9 +340,8 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willClrShkInitStatusMsg_;
-        bool                             isMouseHeldDown_;
-        bool                             isMouseHeldDownAndMoving_;
         std::string                      tempConditionsWakeStr_;
+        bool                             isShortPostZoomOutPause_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;

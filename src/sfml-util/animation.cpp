@@ -75,7 +75,8 @@ namespace sfml_util
         colorFrom_              (COLOR),
         colorTo_                (COLOR),
         origSizeHoriz_          (static_cast<float>(FRAME_WIDTH)),
-        origSizeVert_           (static_cast<float>(FRAME_HEIGHT))
+        origSizeVert_           (static_cast<float>(FRAME_HEIGHT)),
+        isFinished_             (false)
     {
         sfml_util::LoadImageOrTexture(texture_, TEXTURE_FILE_PATH);
         texture_.setSmooth(true);
@@ -162,8 +163,6 @@ namespace sfml_util
 
     bool SingleTextureAnimation::UpdateTime(const float ELAPSED_TIME_SEC)
     {
-        auto didReachEndOfFrames{ false };
-
         frameTimerSec_ += ELAPSED_TIME_SEC;
         while (frameTimerSec_ > timeBetweenFrames_)
         {
@@ -171,7 +170,7 @@ namespace sfml_util
             if (++currentFrame_ >= (rects_.size() - 1))
             {
                 currentFrame_ = 0;
-                didReachEndOfFrames = true;
+                isFinished_ = true;
             }
 
             sprite_.setTextureRect( rects_[currentFrame_] );
@@ -190,7 +189,7 @@ namespace sfml_util
                 entityRegion_.height / origSizeVert_);
         }
 
-        return didReachEndOfFrames;
+        return isFinished_;
     }
 
 
@@ -223,7 +222,8 @@ namespace sfml_util
         colorFrom_          (COLOR),
         colorTo_            (COLOR),
         origSizeHoriz_      (0.0f),
-        origSizeVert_       (0.0f)
+        origSizeVert_       (0.0f),
+        isFinished_         (false)
     {
         sfml_util::LoadAllImageOrTextureInDir(textureVec_, TEXTURES_DIRECTORY);
 
@@ -277,8 +277,6 @@ namespace sfml_util
 
     bool MultiTextureAnimation::UpdateTime(const float SECONDS)
     {
-        auto didReachEndOfFrames{ false };
-
         frameTimerSec_ += SECONDS;
         while (frameTimerSec_ > timeBetweenFrames_)
         {
@@ -286,7 +284,7 @@ namespace sfml_util
             if (++currentFrame_ >= (textureVec_.size() - 1))
             {
                 currentFrame_ = 0;
-                didReachEndOfFrames = true;
+                isFinished_ = true;
             }
 
             sprite_.setTexture(textureVec_[currentFrame_]);
@@ -305,7 +303,7 @@ namespace sfml_util
                 entityRegion_.height / origSizeVert_);
         }
 
-        return didReachEndOfFrames;
+        return isFinished_;
     }
 
 

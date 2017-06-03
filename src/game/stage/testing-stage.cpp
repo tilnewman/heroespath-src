@@ -712,7 +712,6 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
@@ -735,7 +734,6 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
@@ -758,7 +756,6 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            256,
-                                           32,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
@@ -781,7 +778,6 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAdd,
                                            sf::Color::Cyan) == false)
             {
@@ -819,7 +815,7 @@ namespace stage
                                                                                        0.06f);
 
             multiTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
-            multiTextureAnimSPtr_->SetTargetSize(512.0f, 512.0f);
+            multiTextureAnimSPtr_->SetTargetSize( sf::Vector2f(512.0f, 512.0f) );
         }
 
         return multiTextureAnimSPtr_->UpdateTime(0.02f);
@@ -830,7 +826,6 @@ namespace stage
                                                   const bool            WILL_REBUILD_ANIMATION_OBJECT,
                                                   const unsigned int    FRAME_WIDTH,
                                                   const unsigned int    FRAME_HEIGHT,
-                                                  const unsigned int    FRAME_COUNT,
                                                   const sf::BlendMode & BLEND_MODE,
                                                   const sf::Color &     COLOR)
     {
@@ -847,11 +842,11 @@ namespace stage
                                                                                          FRAME_WIDTH,
                                                                                          FRAME_HEIGHT,
                                                                                          0.06f,
-                                                                                         FRAME_COUNT,
+                                                                                         0,
                                                                                          BLEND_MODE);
 
             singleTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
-            singleTextureAnimSPtr_->SetTargetSize(512.0f, 512.0f);
+            singleTextureAnimSPtr_->SetTargetSize(sf::Vector2f(512.0f, 512.0f) );
         }
 
         return singleTextureAnimSPtr_->UpdateTime(0.02f);

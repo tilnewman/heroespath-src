@@ -46,17 +46,34 @@ namespace spell
                                            creature::CreaturePtr_t effectedCreaturePtr) const
     {
         auto const RANDOM_VALUE{ misc::random::Int(3) };
-        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " shoots sparks at " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
-        else if (RANDOM_VALUE == 1) return effectedCreaturePtr->NameOrRaceAndRole() + " is sprayed with sparks.";
-        else if (RANDOM_VALUE == 2) return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
-        else                        return "Sparks shower upon " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+
+        if (RANDOM_VALUE == 0)
+        {
+            return castingCreaturePtr->NameOrRaceAndRole() + " shoots sparks at " +
+                effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        }
+        else if (RANDOM_VALUE == 1)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is sprayed with sparks.";
+        }
+        else if (RANDOM_VALUE == 2)
+        {
+            return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        }
+        else
+        {
+            return "Sparks shower upon " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        }
     }
 
 
     stats::Health_t Sparks::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
                                       creature::CreaturePtr_t) const
     {
-        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, static_cast<int>(castingCreaturePtr->Rank()), 10);
+        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5),
+                                        6,
+                                        static_cast<int>(castingCreaturePtr->Rank()),
+                                        10);
     }
 
 
@@ -64,23 +81,43 @@ namespace spell
                                             creature::CreaturePtr_t effectedCreaturePtr) const
     {
         auto const RANDOM_VALUE{ misc::random::Int(3) };
-        if      (RANDOM_VALUE == 0) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
-        else if (RANDOM_VALUE == 1) return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " + effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds.";
-        else if (RANDOM_VALUE == 2) return "Magical bandages wrap " + effectedCreaturePtr->NameOrRaceAndRole() + "'s injuries.";
-        else                        return effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds are magically bandaged.";
+
+        if (RANDOM_VALUE == 0)
+        {
+            return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " +
+                effectedCreaturePtr->NameOrRaceAndRole() + ".";
+        }
+        else if (RANDOM_VALUE == 1)
+        {
+            return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " +
+                effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds.";
+        }
+        else if (RANDOM_VALUE == 2)
+        {
+            return "Magical bandages wrap " +
+                effectedCreaturePtr->NameOrRaceAndRole() + "'s injuries.";
+        }
+        else
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds are magically bandaged.";
+        }
     }
 
 
     stats::Health_t Bandage::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
                                        creature::CreaturePtr_t) const
     {
-        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5), 6, static_cast<int>(castingCreaturePtr->Rank()), 10);
+        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5),
+                                    6,
+                                    static_cast<int>(castingCreaturePtr->Rank()),
+                                    10);
     }
 
 
-    const std::string Sleep::EffectCreature(creature::CreaturePtr_t,
-                                            creature::CreaturePtr_t        effectedCreaturePtr,
-                                            creature::ConditionEnumVec_t & conditionsAddedVec) const
+    const std::string Sleep::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t        effectedCreaturePtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural) ||
             effectedCreaturePtr->HasCondition(creature::Conditions::AsleepMagical))
@@ -172,13 +209,15 @@ namespace spell
     }
 
 
-    const std::string Frighten::EffectCreature(creature::CreaturePtr_t,
-                                               creature::CreaturePtr_t        effectedCreaturePtr,
-                                               creature::ConditionEnumVec_t & conditionsAddedVec) const
+    const std::string Frighten::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t        effectedCreaturePtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "frightened";
+            return effectedCreaturePtr->NameOrRaceAndRole() +
+                EFFECT_STR_IS_ALREADY_ + "frightened";
         }
         else
         {
@@ -210,9 +249,10 @@ namespace spell
     }
 
 
-    const std::string Poison::EffectCreature(creature::CreaturePtr_t,
-                                             creature::CreaturePtr_t        effectedCreaturePtr,
-                                             creature::ConditionEnumVec_t & conditionsAddedVec) const
+    const std::string Poison::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t        effectedCreaturePtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
@@ -243,9 +283,10 @@ namespace spell
     }
 
 
-    const std::string PoisonCloud::EffectCreature(creature::CreaturePtr_t        castingCreaturePtr,
-                                                  creature::CreaturePtr_t        effectedCreaturePtr,
-                                                  creature::ConditionEnumVec_t & conditionsAddedVec) const
+    const std::string PoisonCloud::EffectCreature(
+        creature::CreaturePtr_t        castingCreaturePtr,
+        creature::CreaturePtr_t        effectedCreaturePtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
@@ -253,8 +294,9 @@ namespace spell
         }
         else
         {
-            auto const RAND_CASTER{ misc::random::Int(castingCreaturePtr->Stats().Int().CurrentReduced(),
-                                                       castingCreaturePtr->Stats().Int().Current()) };
+            auto const RAND_CASTER{ misc::random::Int(
+                castingCreaturePtr->Stats().Int().CurrentReduced(),
+                castingCreaturePtr->Stats().Int().Current()) };
 
             //check for player character 'natural' success
             if ((castingCreaturePtr->IsPlayerCharacter()) &&
@@ -265,12 +307,17 @@ namespace spell
                 return Spell::EFFECT_STR_SUCCESS_;
             }
 
-            auto const RAND_DEFENDER{ misc::random::Int(effectedCreaturePtr->Stats().Int().CurrentReduced(),
-                                                         effectedCreaturePtr->Stats().Int().Current())};
+            auto const RAND_DEFENDER{ misc::random::Int(
+                effectedCreaturePtr->Stats().Int().CurrentReduced(),
+                effectedCreaturePtr->Stats().Int().Current())};
 
             //check for 'normal' success
-            auto const CHANCE_VAL_CASTER{ RAND_CASTER + static_cast<int>(castingCreaturePtr->Rank()) };
-            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER + static_cast<int>(effectedCreaturePtr->Rank()) };
+            auto const CHANCE_VAL_CASTER{ RAND_CASTER +
+                static_cast<int>(castingCreaturePtr->Rank()) };
+
+            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER +
+                static_cast<int>(effectedCreaturePtr->Rank()) };
+
             if (CHANCE_VAL_CASTER >= CHANCE_VAL_DEFENDER)
             {
                 effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);

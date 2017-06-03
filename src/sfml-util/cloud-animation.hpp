@@ -87,19 +87,19 @@ namespace animation
         CloudAnimation & operator=(const CloudAnimation &);
 
     public:
-        CloudAnimation(const sf::FloatRect & REGION,
-                       const float           CENTER_VARATION_RATIO          = 0.33f,
-                       const float           START_SCALE_BASE               = 0.5f,
-                       const float           START_SCALE_VARIATION_RATIO    = 0.25f,
-                       const float           END_SCALE_BASE                 = 0.75f,
-                       const float           END_SCALE_VARIATION_RATIO      = 0.25f,
-                       const float           EMIT_RATE_BASE_PER_SEC         = 3.0f,
-                       const float           EMIT_RATE_VARATION_RATIO       = 0.75f,
-                       const float           DURATION_SEC                   = 6.0f,
-                       const float           SPEED_BASE                     = 2.0f,
-                       const float           SPEED_VARIATION_RATIO          = 0.5f,
-                       const float           ROTATION_SPEED_BASE            = 2.0f,
-                       const float           ROTATION_SPEED_VARIATION_RATIO = 0.5f);
+        explicit CloudAnimation(const sf::FloatRect & REGION,
+                                const float           CENTER_VARATION_RATIO          = 0.33f,
+                                const float           START_SCALE_BASE               = 0.5f,
+                                const float           START_SCALE_VARIATION_RATIO    = 0.25f,
+                                const float           END_SCALE_BASE                 = 0.75f,
+                                const float           END_SCALE_VARIATION_RATIO      = 0.25f,
+                                const float           EMIT_RATE_BASE_PER_SEC         = 3.0f,
+                                const float           EMIT_RATE_VARATION_RATIO       = 0.75f,
+                                const float           DURATION_SEC                   = 6.0f,
+                                const float           SPEED_BASE                     = 2.0f,
+                                const float           SPEED_VARIATION_RATIO          = 0.5f,
+                                const float           ROTATION_SPEED_BASE            = 2.0f,
+                                const float           ROTATION_SPEED_VARIATION_RATIO = 0.5f);
 
         inline bool IsFinished() const { return isFinished_; }
         void Update(const float ELAPSED_TIME_SEC);

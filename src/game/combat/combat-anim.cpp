@@ -34,6 +34,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/animation.hpp"
 
 #include "game/combat/combat-display.hpp"
 #include "game/combat/combat-text.hpp"
@@ -58,14 +59,19 @@ namespace combat
     ShakeAnimInfo::ShakeAnimInfo()
     :
         slider(),
-        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f), //anything larger than PAUSE_DURATION_SEC will work here
-        shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f) //anything larger than SHAKE_DURATION_SEC will work here
+
+        //anything larger than PAUSE_DURATION_SEC will work here
+        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f),
+
+        //anything larger than SHAKE_DURATION_SEC will work here
+        shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f)
     {}
 
 
     void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
-        auto const SHAKE_DISTANCE{ CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+        auto const SHAKE_DISTANCE{
+            CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
 
         slider.Reset(0.0f,
                      SHAKE_DISTANCE,
@@ -73,21 +79,38 @@ namespace combat
                      (SHAKE_DISTANCE * 0.5f),
                      misc::random::Bool());
 
-        pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;//anything larger than PAUSE_DURATION_SEC will work here
+        //anything larger than PAUSE_DURATION_SEC will work here
+        pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;
+
         shake_duration_timer_sec = 0.0f;
     }
 
 
-    const float         CombatAnimation::SELECT_ANIM_SLIDER_SPEED_  { 8.0f };
+    const float       CombatAnimation::SELECT_ANIM_SLIDER_SPEED_        { 8.0f };
+    const float       CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_{ 0.06f };
+
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_
+    { "media-anim-image-flash-sparkle" };
+
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_
+    { "media-anim-images-dir-shimmer" };
+
+    const sf::Uint8   CombatAnimation::ANIM_COLOR_ALT_VAL_              { 232 };
 
 
     CombatAnimation::CombatAnimation(const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     :
         SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
-        BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),//found by experiment to be good speeds
+
+        //found by experiment to be good speeds
+        BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),
+
         combatDisplayStagePtr_           (COMBAT_DISPLAY_PTR),
-        slider_                          (1.0f), //any value greater than zero will work temporarily here
+
+        //any value greater than zero will work temporarily here
+        slider_                          (1.0f),
+
         projAnimTexture_                 (),
         projAnimSprite_                  (),
         projAnimBeginPosV_               (0.0f, 0.0f),
@@ -108,8 +131,13 @@ namespace combat
         shakeAnimInfoMap_                (),
         selectAnimCombatNodePtr_         (nullptr),
         sparksAnimUVec_                  (),
-        cloudAnimUVec_                   ()
-    {}
+        cloudAnimUVec_                   (),
+        singleTextureAnimUVec_           (),
+        multiTextureAnimUVec_            (),
+        singleTextureSizeMap_            ()
+    {
+        singleTextureSizeMap_[ANIM_MEDIA_PATH_KEY_STR_SPARKLE_] = sf::Vector2f(128.0f, 128.0f);
+    }
 
 
     void CombatAnimation::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -125,6 +153,27 @@ namespace combat
         {
             NEXT_SPARKSANIM_UPTR->draw(target, STATES);
         }
+
+        for (auto const & NEXT_CLOUDANIM_UPTR : cloudAnimUVec_)
+        {
+            NEXT_CLOUDANIM_UPTR->draw(target, STATES);
+        }
+
+        for (auto const & NEXT_SINGLETEXTANIM_UPTR : singleTextureAnimUVec_)
+        {
+            if (NEXT_SINGLETEXTANIM_UPTR->IsFinished() == false)
+            {
+                NEXT_SINGLETEXTANIM_UPTR->draw(target, STATES);
+            }
+        }
+
+        for (auto const & NEXT_MULTITEXTANIM_UPTR : multiTextureAnimUVec_)
+        {
+            if (NEXT_MULTITEXTANIM_UPTR->IsFinished() == false)
+            {
+                NEXT_MULTITEXTANIM_UPTR->draw(target, STATES);
+            }
+        }
     }
 
 
@@ -139,24 +188,31 @@ namespace combat
                 continue;
             }
 
-            if (nextShakeInfoPair.second.shake_duration_timer_sec < ShakeAnimInfo::SHAKE_DURATION_SEC)
+            if (nextShakeInfoPair.second.shake_duration_timer_sec <
+                ShakeAnimInfo::SHAKE_DURATION_SEC)
             {
                 nextShakeInfoPair.second.shake_duration_timer_sec += ELAPSED_TIME_SECONDS;
-                nextShakeInfoPair.first->SetImagePosOffset((ShakeAnimDistance(false) * -0.5f) + nextShakeInfoPair.second.slider.Update(ELAPSED_TIME_SECONDS), 0.0f);
+                nextShakeInfoPair.first->SetImagePosOffset((ShakeAnimDistance(false) * -0.5f) +
+                    nextShakeInfoPair.second.slider.Update(ELAPSED_TIME_SECONDS), 0.0f);
 
-                if (nextShakeInfoPair.second.shake_duration_timer_sec > ShakeAnimInfo::SHAKE_DURATION_SEC)
+                if (nextShakeInfoPair.second.shake_duration_timer_sec >
+                    ShakeAnimInfo::SHAKE_DURATION_SEC)
                 {
                     nextShakeInfoPair.second.pause_duration_timer_sec = 0.0f;
                     nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
                 }
             }
 
-            if (nextShakeInfoPair.second.pause_duration_timer_sec < ShakeAnimInfo::PAUSE_DURATION_SEC)
+            if (nextShakeInfoPair.second.pause_duration_timer_sec <
+                ShakeAnimInfo::PAUSE_DURATION_SEC)
             {
                 nextShakeInfoPair.second.pause_duration_timer_sec += ELAPSED_TIME_SECONDS;
 
-                if (nextShakeInfoPair.second.pause_duration_timer_sec > ShakeAnimInfo::PAUSE_DURATION_SEC)
+                if (nextShakeInfoPair.second.pause_duration_timer_sec >
+                    ShakeAnimInfo::PAUSE_DURATION_SEC)
+                {
                     nextShakeInfoPair.second.shake_duration_timer_sec = 0.0f;
+                }
             }
         }
 
@@ -176,10 +232,11 @@ namespace combat
     }
 
 
-    void CombatAnimation::ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-                                                   creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                                   const item::ItemPtr_t     WEAPON_PTR,
-                                                   const bool                WILL_HIT)
+    void CombatAnimation::ProjectileShootAnimStart(
+        creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
+        creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+        const item::ItemPtr_t     WEAPON_PTR,
+        const bool                WILL_HIT)
     {
         projAnimWillDraw_ = true;
         projAnimWillSpin_ = ! WILL_HIT;
@@ -233,7 +290,10 @@ namespace combat
 
         //scale the sprite down to a reasonable size
         projAnimSprite_.setOrigin(0.0f, 0.0f);
-        auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };//this is the scale for Sling projectiles (stones)
+
+        //this is the scale for Sling projectiles (stones)
+        auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };
+        
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
             (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
         {
@@ -294,8 +354,11 @@ namespace combat
 
         auto const PROJ_ANIM_SPRITE_GBOUNDS{ projAnimSprite_.getGlobalBounds() };
 
-        if ((combatDisplayStagePtr_->BattlefieldRect().contains(PROJ_ANIM_SPRITE_GBOUNDS.left,  PROJ_ANIM_SPRITE_GBOUNDS.top) == false) ||
-            (combatDisplayStagePtr_->BattlefieldRect().contains(PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width, PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height) == false))
+        if ((combatDisplayStagePtr_->BattlefieldRect().contains(
+            PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top) == false) ||
+            (combatDisplayStagePtr_->BattlefieldRect().contains(
+                PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width,
+                PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height) == false))
         {
             ProjectileShootAnimStop();
         }
@@ -310,7 +373,8 @@ namespace combat
 
     void CombatAnimation::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        auto combatNodesPVec{ combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+        auto combatNodesPVec{
+            combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
             nextCombatNodePtrC->SetDead(true);
@@ -331,10 +395,14 @@ namespace combat
         //remove non-player nodes from combat tree and prepare for sliding animation
         for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
         {
-            auto const NEXT_NODE_ID{ combatDisplayStagePtr_->CombatTreeObj().GetNodeId(nextCombatNodeCPtr) };
-            auto const NEXT_NODE_SPTR{ combatDisplayStagePtr_->CombatTreeObj().GetNodeSPtr(NEXT_NODE_ID) };
+            auto const NEXT_NODE_ID{
+                combatDisplayStagePtr_->CombatTreeObj().GetNodeId(nextCombatNodeCPtr) };
 
-            //TODO WARN THIS INVALIDATES A CombatNodePtr that could be stored in CombatAnim::shakeAnimInfoMap_ etc.
+            auto const NEXT_NODE_SPTR{
+                combatDisplayStagePtr_->CombatTreeObj().GetNodeSPtr(NEXT_NODE_ID) };
+
+            //TODO WARN THIS INVALIDATES A CombatNodePtr that could be stored in
+            //CombatAnim::shakeAnimInfoMap_ etc.
             combatDisplayStagePtr_->CombatTreeObj().RemoveVertex(NEXT_NODE_ID, true);
             combatDisplayStagePtr_->RemoveCombatNode(NEXT_NODE_SPTR);
         }
@@ -347,7 +415,9 @@ namespace combat
 
     void CombatAnimation::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTreeObj().GetNode(CREATURE_CPTRC);
+        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->
+            CombatTreeObj().GetNode(CREATURE_CPTRC);
+
         centeringAnimCreaturesPVec_.clear();
         centeringAnimWillZoomOut_ = false;
     }
@@ -367,12 +437,18 @@ namespace combat
     }
 
 
-    void CombatAnimation::CenteringStart(const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
+    void CombatAnimation::CenteringStart(
+        const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
     {
         centeringAnimCreaturesPVec_ = CREATURES_TO_CENTER_ON_PVEC;
-        auto const CENTER_POS_V{ combatDisplayStagePtr_->FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+
+        auto const CENTER_POS_V{ combatDisplayStagePtr_->
+            FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+
         CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
-        centeringAnimWillZoomOut_ = combatDisplayStagePtr_->IsZoomOutRequired(centeringAnimCreaturesPVec_);
+
+        centeringAnimWillZoomOut_ = combatDisplayStagePtr_->
+            IsZoomOutRequired(centeringAnimCreaturesPVec_);
     }
 
 
@@ -385,8 +461,12 @@ namespace combat
         }
         else
         {
-            auto const TARGET_POS_X(centeringAnimCombatNodePtr_->GetEntityPos().x + (centeringAnimCombatNodePtr_->GetEntityRegion().width  * 0.5f));
-            auto const TARGET_POS_Y(centeringAnimCombatNodePtr_->GetEntityPos().y + (centeringAnimCombatNodePtr_->GetEntityRegion().height * 0.5f));
+            auto const TARGET_POS_X(centeringAnimCombatNodePtr_->GetEntityPos().x +
+                (centeringAnimCombatNodePtr_->GetEntityRegion().width  * 0.5f));
+
+            auto const TARGET_POS_Y(centeringAnimCombatNodePtr_->GetEntityPos().y +
+                (centeringAnimCombatNodePtr_->GetEntityRegion().height * 0.5f));
+
             targetPosV = sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
         }
 
@@ -394,15 +474,18 @@ namespace combat
 
         auto const DIFF_X((BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x);
         auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f *
+            SLIDER_POS, WILL_MOVE_BACKGROUND);
 
         auto const DIFF_Y((BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y);
         auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
-        combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f *
+            SLIDER_POS, WILL_MOVE_BACKGROUND);
 
         if (centeringAnimCombatNodePtr_ == nullptr)
         {
-            return (centeringAnimWillZoomOut_ && (combatDisplayStagePtr_->AreAllCreaturesVisible(centeringAnimCreaturesPVec_) == false));
+            return (centeringAnimWillZoomOut_ && (combatDisplayStagePtr_->
+                AreAllCreaturesVisible(centeringAnimCreaturesPVec_) == false));
         }
         else
         {
@@ -431,14 +514,20 @@ namespace combat
         auto nodePositionTrackerMap{ combatDisplayStagePtr_->NodePositionTrackerMap() };
         for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
         {
-            const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
-            const float NEW_POS_VERT(NEXT_NODEPOSTRACK_PAIR.second.posVertOrig + (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
+            const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig +
+                (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
+
+            const float NEW_POS_VERT(NEXT_NODEPOSTRACK_PAIR.second.posVertOrig +
+                (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
+
             NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
         }
 
         creature::CreaturePVec_t creaturePVec{ repositionAnimCreaturePtr_ };
         CenteringStart(creaturePVec);
-        CenteringUpdate(10.0f, false); //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
+
+        //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
+        CenteringUpdate(10.0f, false);
 
         combatDisplayStagePtr_->UpdateWhichNodesWillDraw();
     }
@@ -452,29 +541,39 @@ namespace combat
 
 
     void CombatAnimation::MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
-                                              creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC)
+                                                   creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC)
     {
-        meleeMoveAnimMovingCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_MOVING_CPTRC);
+        meleeMoveAnimMovingCombatNodePtr_ = combatDisplayStagePtr_->
+            GetCombatNodeForCreature(CREATURE_MOVING_CPTRC);
+
         meleeMoveAnimOrigPosV_ = meleeMoveAnimMovingCombatNodePtr_->GetEntityPos();
 
-        meleeMoveAnimTargetCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_TARGET_CPTRC);
+        meleeMoveAnimTargetCombatNodePtr_ = combatDisplayStagePtr_->
+            GetCombatNodeForCreature(CREATURE_TARGET_CPTRC);
+
         meleeMoveAnimTargetPosV_ = meleeMoveAnimTargetCombatNodePtr_->GetEntityPos();
 
         if (meleeMoveAnimOrigPosV_.x < meleeMoveAnimTargetPosV_.x)
         {
-            meleeMoveAnimTargetPosV_.x -= (meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
+            meleeMoveAnimTargetPosV_.x -= (
+                meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
         }
         else
         {
-            meleeMoveAnimTargetPosV_.x += (meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
+            meleeMoveAnimTargetPosV_.x += (
+                meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
         }
     }
 
 
     void CombatAnimation::MeleeMoveTowardAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
-        auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x +
+            ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
+
+        auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y +
+            ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+
         meleeMoveAnimMovingCombatNodePtr_->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
 
@@ -493,8 +592,12 @@ namespace combat
 
     void CombatAnimation::MeleeMoveBackAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
-        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x +
+            ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
+
+        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y +
+            ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+
         meleeMoveAnimMovingCombatNodePtr_->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
 
@@ -566,7 +669,8 @@ namespace combat
         for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
         {
             //if given a nullptr then stop all shaking
-            if ((CREATURE_CPTRC == nullptr) || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
+            if ((CREATURE_CPTRC == nullptr) ||
+                (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
             {
                 nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
                 combatNodesToErasePVec.push_back(nextShakeInfoPair.first);
@@ -603,7 +707,9 @@ namespace combat
 
     void CombatAnimation::SelectAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        selectAnimCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC);
+        selectAnimCombatNodePtr_ = combatDisplayStagePtr_->
+            GetCombatNodeForCreature(CREATURE_CPTRC);
+
         if (selectAnimCombatNodePtr_ != nullptr)
         {
             selectAnimCombatNodePtr_->SelectAnimStart();
@@ -631,15 +737,125 @@ namespace combat
             << ", caster=" << CASTING_CREATURE_CPTRC->Name()
             << ") was given an empty targets vec.");
 
-        if (SPELL_PTR->Which() == spell::Spells::Sparks)
+        switch (SPELL_PTR->Which())
         {
-            SparksAnimStart(CASTING_CREATURE_CPTRC, TARGETS_PVEC);
-            return;
-        }
-        else if (SPELL_PTR->Which() == spell::Spells::PoisonCloud)
-        {
-            PoisonCloudAnimStart(TARGETS_PVEC);
-            return;
+            case spell::Spells::Sparks:
+            {
+                SparksAnimStart(CASTING_CREATURE_CPTRC, TARGETS_PVEC);
+                return;
+            }
+
+            case spell::Spells::Bandage:
+            {
+                SetupSingleTextureAnims(TARGETS_PVEC,
+                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
+                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                        sf::Color::White,
+                                        sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::Sleep:
+            {
+                SetupMultiTextureAnims(TARGETS_PVEC,
+                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
+                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                                       sf::Color::White,
+                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                return;
+            }
+            
+            case spell::Spells::Awaken:
+            {
+                SetupSingleTextureAnims(TARGETS_PVEC,
+                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
+                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                        sf::Color::White,
+                                        sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::Trip:
+            {
+                SetupMultiTextureAnims(TARGETS_PVEC,
+                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
+                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
+                                       sf::Color::White,
+                                       sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::Lift:
+            {
+                SetupSingleTextureAnims(TARGETS_PVEC,
+                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
+                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                        sf::Color::White,
+                                        sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
+                return;
+            }
+            
+            case spell::Spells::Daze:
+            {
+                SetupMultiTextureAnims(TARGETS_PVEC,
+                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
+                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                       sf::Color::White,
+                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::Frighten:
+            {
+                SetupMultiTextureAnims(TARGETS_PVEC,
+                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
+                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                       sf::Color::White,
+                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                return;
+            }
+            
+            case spell::Spells::ClearMind:
+            {
+                SetupSingleTextureAnims(TARGETS_PVEC,
+                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
+                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
+                                        sf::Color::White,
+                                        sf::Color::White);
+                return;
+            }
+            
+            case spell::Spells::Poison:
+            {
+                SetupMultiTextureAnims(TARGETS_PVEC,
+                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
+                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                                       sf::Color::White,
+                                       sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::Antidote:
+            {
+                SetupSingleTextureAnims(TARGETS_PVEC,
+                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
+                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                        sf::Color::White,
+                                        sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                return;
+            }
+            
+            case spell::Spells::PoisonCloud:
+            {
+                PoisonCloudAnimStart(TARGETS_PVEC);
+                return;
+            }
+
+            case spell::Spells::Count:
+            default:
+            {
+                break;
+            }
         }
 
         M_HP_LOG_ERR("game::combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
@@ -655,8 +871,33 @@ namespace combat
         {
             return SparksAnimUpdate(ELAPSED_TIME_SEC);
         }
+        else if (SPELL_PTR->Which() == spell::Spells::PoisonCloud)
+        {
+            return PoisonCloudAnimUpdate(ELAPSED_TIME_SEC);
+        }
+        else
+        {
+            auto areAllAnimsFinished{ true };
+            for (auto & nextSingleTextAnimUPtr : singleTextureAnimUVec_)
+            {
+                if (nextSingleTextAnimUPtr->IsFinished() == false)
+                {
+                    areAllAnimsFinished = false;
+                    nextSingleTextAnimUPtr->UpdateTime(ELAPSED_TIME_SEC);
+                }
+            }
 
-        return true;
+            for (auto & nextMultiTextAnimUPtr : multiTextureAnimUVec_)
+            {
+                if (nextMultiTextAnimUPtr->IsFinished() == false)
+                {
+                    areAllAnimsFinished = false;
+                    nextMultiTextAnimUPtr->UpdateTime(ELAPSED_TIME_SEC);
+                }
+            }
+
+            return areAllAnimsFinished;
+        }
     }
 
 
@@ -665,7 +906,15 @@ namespace combat
         if (SPELL_PTR->Which() == spell::Spells::Sparks)
         {
             SparksAnimStop();
-            return;
+        }
+        else if (SPELL_PTR->Which() == spell::Spells::PoisonCloud)
+        {
+            PoisonCloudAnimStop();
+        }
+        else
+        {
+            singleTextureAnimUVec_.clear();
+            multiTextureAnimUVec_.clear();
         }
     }
 
@@ -677,14 +926,17 @@ namespace combat
 
         for (auto const NEXT_COMBATNODE_PTR : COMBAT_NODE_PVEC)
         {
-            sparksAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparksAnimation>(
-                ! NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
-                NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                0.33f,
-                sfml_util::MapByRes(0.15f, 0.45f),
-                0.9f,
-                CASTING_CREATURE_CPTRC->RankRatio(),
-                1.25f) );
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
+            {
+                sparksAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparksAnimation>(
+                    ! NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
+                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                    0.33f,
+                    sfml_util::MapByRes(0.15f, 0.45f),
+                    0.9f,
+                    CASTING_CREATURE_CPTRC->RankRatio(),
+                    1.25f) );
+            }
         }
     }
 
@@ -713,24 +965,27 @@ namespace combat
 
     void CombatAnimation::PoisonCloudAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        sparksAnimUVec_.clear();
+        cloudAnimUVec_.clear();
 
         for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            cloudAnimUVec_.push_back( std::make_unique<sfml_util::animation::CloudAnimation>(
-                NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                0.33f,
-                sfml_util::MapByRes(0.5f, 2.0f),
-                0.2f,
-                sfml_util::MapByRes(1.0f, 2.25f),
-                0.2f,
-                4.5f,
-                0.75f,
-                5.0f,
-                2.0f,
-                0.5f,
-                1.0f,
-                0.2f) );
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
+            {
+                cloudAnimUVec_.push_back( std::make_unique<sfml_util::animation::CloudAnimation>(
+                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                    0.12f,
+                    sfml_util::MapByRes(0.1f, 0.35f),
+                    0.2f,
+                    sfml_util::MapByRes(0.4f, 1.2f),
+                    0.2f,
+                    4.0f,
+                    0.75f,
+                    3.0f,
+                    1.0f,
+                    0.5f,
+                    1.0f,
+                    0.0f) );
+            }
         }
     }
 
@@ -754,6 +1009,121 @@ namespace combat
     void CombatAnimation::PoisonCloudAnimStop()
     {
         cloudAnimUVec_.clear();
+    }
+
+
+    void CombatAnimation::SetupSingleTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                                  const std::string &              MEDIA_PATH_KEY,
+                                                  const float                      FRAME_DELAY_SEC,
+                                                  const sf::Color &                COLOR_FROM,
+                                                  const sf::Color &                COLOR_TO)
+    {
+        singleTextureAnimUVec_.clear();
+
+        sf::Vector2f sizeV(128.0f, 128.0f);
+        auto const FOUND_ITR{ singleTextureSizeMap_.find(MEDIA_PATH_KEY) };
+        if (FOUND_ITR != singleTextureSizeMap_.end())
+        {
+            sizeV = FOUND_ITR->second;
+        }
+
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
+        {
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            {
+                continue;
+            }
+
+            auto const REGION{ MakeMinimalSquareAndCenter(
+                NEXT_COMBATNODE_PTR->GetEntityRegion()) };
+
+            singleTextureAnimUVec_.push_back(std::make_unique<sfml_util::SingleTextureAnimation>(
+                "CombatAnimation's_" + MEDIA_PATH_KEY,
+                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY),
+                REGION.left,
+                REGION.top,
+                sizeV.x,
+                sizeV.y,
+                FRAME_DELAY_SEC,
+                0,
+                sf::BlendAdd) );
+
+            singleTextureAnimUVec_[singleTextureAnimUVec_.size() - 1]->
+                ColorTransition(COLOR_FROM, COLOR_TO);
+
+            singleTextureAnimUVec_[singleTextureAnimUVec_.size() - 1]->
+                SetTargetSize( sf::Vector2f(REGION.width, REGION.height) );
+        }
+    }
+
+
+    void CombatAnimation::SetupMultiTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                                 const std::string &              MEDIA_PATH_KEY,
+                                                 const float                      FRAME_DELAY_SEC,
+                                                 const sf::Color &                COLOR_FROM,
+                                                 const sf::Color &                COLOR_TO)
+    {
+        multiTextureAnimUVec_.clear();
+
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
+        {
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            {
+                continue;
+            }
+
+            auto region{ MakeMinimalSquareAndCenter(
+                NEXT_COMBATNODE_PTR->GetEntityRegion()) };
+
+            //grow the shimmer animation to better cover the creature image
+            if (MEDIA_PATH_KEY == ANIM_MEDIA_PATH_KEY_STR_SHIMMER_)
+            {
+                auto const ADJ{ sfml_util::MapByRes(40.0f, 120.0f) };
+                region.left -= ADJ * 0.5f;
+                region.top -= ADJ * 1.25f;
+                region.width += ADJ * 2.0f;
+                region.height += ADJ * 2.0f;
+            }
+
+            multiTextureAnimUVec_.push_back( std::make_unique<sfml_util::MultiTextureAnimation>(
+                "CombatAnimation's_" + MEDIA_PATH_KEY,
+                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY),
+                region.left,
+                region.top,
+                FRAME_DELAY_SEC,
+                1.0f,
+                1.0f,
+                sf::Color::White,
+                sf::BlendAdd) );
+
+            multiTextureAnimUVec_[multiTextureAnimUVec_.size() - 1]->
+                ColorTransition(COLOR_FROM, COLOR_TO);
+
+            multiTextureAnimUVec_[multiTextureAnimUVec_.size() - 1]->
+                SetTargetSize( sf::Vector2f(region.width, region.height) );
+        }
+    }
+
+
+    const sf::FloatRect CombatAnimation::MakeMinimalSquareAndCenter(
+        const sf::FloatRect & REGION) const
+    {
+        auto width{ REGION.width };
+        auto height{ REGION.height };
+
+        if (REGION.width < REGION.height)
+        {
+            height = REGION.width;
+        }
+        else
+        {
+            width = REGION.height;
+        }
+        
+        auto const POS_LEFT{ (REGION.left + (REGION.width * 0.5f)) - (width * 0.5f) };
+        auto const POS_TOP{ (REGION.top + (REGION.height * 0.5f)) - (height * 0.5f) };
+
+        return sf::FloatRect(POS_LEFT, POS_TOP, width, height);
     }
 
 }

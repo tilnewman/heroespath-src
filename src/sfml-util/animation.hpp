@@ -99,10 +99,15 @@ namespace sfml_util
             colorTo_ = TO;
         }
 
-        inline void SetTargetSize(const float HORIZ, const float VERT)
+        inline void SetTargetSize(const sf::Vector2f & SIZE_V)
         {
-            entityRegion_ = sf::FloatRect(entityRegion_.left, entityRegion_.top, HORIZ, VERT);
+            entityRegion_ = sf::FloatRect(entityRegion_.left,
+                                          entityRegion_.top,
+                                          SIZE_V.x,
+                                          SIZE_V.y);
         }
+
+        inline bool IsFinished() const { return isFinished_; }
     
     protected:
         const unsigned int FRAME_WIDTH_;
@@ -124,8 +129,11 @@ namespace sfml_util
         sf::Color                colorTo_;
         float                    origSizeHoriz_;
         float                    origSizeVert_;
+        bool                     isFinished_;
     };
 
+    using SingleTextureAnimationUPtr_t = std::unique_ptr<SingleTextureAnimation>;
+    using SingleTextureAnimationUVec_t = std::vector<SingleTextureAnimationUPtr_t>;
     using SingleTextureAnimationSPtr_t = std::shared_ptr<SingleTextureAnimation>;
     using SingleTextureAnimationSVec_t = std::vector<SingleTextureAnimationSPtr_t>;
 
@@ -180,10 +188,15 @@ namespace sfml_util
             colorTo_ = TO;
         }
 
-        inline void SetTargetSize(const float HORIZ, const float VERT)
+        inline void SetTargetSize(const sf::Vector2f & SIZE_V)
         {
-            entityRegion_ = sf::FloatRect(entityRegion_.left, entityRegion_.top, HORIZ, VERT);
+            entityRegion_ = sf::FloatRect(entityRegion_.left,
+                                          entityRegion_.top,
+                                          SIZE_V.x,
+                                          SIZE_V.y);
         }
+
+        inline bool IsFinished() const { return isFinished_; }
 
     protected:
         const sf::BlendMode BLEND_MODE_;
@@ -196,8 +209,11 @@ namespace sfml_util
         sf::Color           colorTo_;
         float               origSizeHoriz_;
         float               origSizeVert_;
+        bool                isFinished_;
     };
 
+    using MultiTextureAnimationUPtr_t = std::unique_ptr<MultiTextureAnimation>;
+    using MultiTextureAnimationUVec_t = std::vector<MultiTextureAnimationUPtr_t>;
     using MultiTextureAnimationSPtr_t = std::shared_ptr<MultiTextureAnimation>;
     using MultiTextureAnimationSVec_t = std::vector<MultiTextureAnimationSPtr_t>;
 

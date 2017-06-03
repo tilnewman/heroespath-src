@@ -605,7 +605,8 @@ namespace combat
                 }
                 else
                 {
-                    ss << " and causes " << creature::condition::Algorithms::Names(CONDITIONS_VEC, false, true);
+                    ss << " and causes " 
+                        << creature::condition::Algorithms::Names(CONDITIONS_VEC, false, true);
                 }
             }
         }
@@ -618,12 +619,14 @@ namespace combat
     }
 
 
-    const std::string Text::CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
+    const std::string Text::CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO,
+                                                         const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
 
         auto const SPELL_PTR{ TURN_ACTION_INFO.Spell() };
-        ss << "casts the " << SPELL_PTR->Name() << "spell " << TargetType::ActionPhrase(SPELL_PTR->Target());
+        ss << "casts the " << SPELL_PTR->Name() << " spell "
+            << TargetType::ActionPhrase(SPELL_PTR->Target());
 
         if ((SPELL_PTR->Target() == TargetType::AllCompanions) ||
             (SPELL_PTR->Target() == TargetType::AllOpponents))
@@ -640,7 +643,7 @@ namespace combat
                                                            const FightResult &    FIGHT_RESULT)
     {
         std::ostringstream ss;
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << "spell ";
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << " spell ";
         if (FIGHT_RESULT.Count() == 1)
         {
             ss << "on ";
@@ -683,7 +686,7 @@ namespace combat
     {
         std::ostringstream ss;
 
-        ss << "CastDescription TODO.";
+        ss << "Cast Description TODO.";
 
         return ss.str();
     }

@@ -230,7 +230,9 @@ namespace sfml_util
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -266,11 +268,10 @@ namespace sfml_util
                     return false;
                 }
             }
-            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
+                     (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
-                //TODO handle spell cast decision
-                //PACKAGE.package.PTR_->GetSelected()
-                return true;
+                return HandleSpellCast();
             }
         }
 
@@ -763,11 +764,13 @@ namespace sfml_util
 
             //Force spell listbox selection up and down to force
             //colors to correct.
+            spellListBoxSPtr_->WillPlaySoundEffects(false);
             sf::Event::KeyEvent keyEvent;
             keyEvent.code = sf::Keyboard::Down;
             spellListBoxSPtr_->KeyRelease(keyEvent);
             keyEvent.code = sf::Keyboard::Up;
             spellListBoxSPtr_->KeyRelease(keyEvent);
+            spellListBoxSPtr_->WillPlaySoundEffects(true);
 
             //setup initial values for spellbook page right text and colors
             spellCurrentPtr_ = spellListBoxSPtr_->At(0)->SPELL_CPTRC;
@@ -884,7 +887,9 @@ namespace sfml_util
         }
 
         if (secondCounter_ > 0)
+        {
             elapsedTimeCounter_ += ELAPSED_TIME_SECONDS;
+        }
 
         if ((secondCounter_ > 0) && (elapsedTimeCounter_ > 1.0f))
         {
@@ -1020,22 +1025,7 @@ namespace sfml_util
                      ((KEY_EVENT.code == sf::Keyboard::Return) ||
                      (KEY_EVENT.code == sf::Keyboard::C)))
             {
-                if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
-                {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
-                    game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
-                    return true;
-                }
-                else
-                {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
-                    if (SpellbookState::Waiting == spellbookState_)
-                    {
-                        spellbookState_ = SpellbookState::Warning;
-                        spellWarningTimerSec_ = 0.0f;
-                    }
-                    return false;
-                }
+                return HandleSpellCast();
             }
         }
 
@@ -1647,6 +1637,27 @@ namespace sfml_util
     bool PopupStage::CanCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
     {
         return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) && CanCastSpellInPhase(SPELL_CPTRC));
+    }
+
+
+    bool PopupStage::HandleSpellCast()
+    {
+        if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
+            return true;
+        }
+        else
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
+            if (SpellbookState::Waiting == spellbookState_)
+            {
+                spellbookState_ = SpellbookState::Warning;
+                spellWarningTimerSec_ = 0.0f;
+            }
+            return false;
+        }
     }
 
 }

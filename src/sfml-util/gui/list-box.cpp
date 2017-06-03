@@ -94,6 +94,7 @@ namespace gui
         imageSize_      (sfml_util::MapByRes(50.0f, 150.0f)),
         imageMap_       (),
         imageColor_     (sf::Color::White),
+        willPlaySfx_    (true),
         callbackPtr_    (callbackPtr)
     {
         Setup(REGION,
@@ -401,7 +402,10 @@ namespace gui
             return false;
         }
 
-        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+        if (willPlaySfx_)
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+        }
 
         std::size_t indexCounter(0);
         float vertTracker(entityRegion_.height);
@@ -411,7 +415,7 @@ namespace gui
             {
                 currentViewPos_ = (*itr)->GetEntityRegion().height + betweenPad_;
 
-                if (WILL_PLAY_SOUNDEFFECT)
+                if (willPlaySfx_ && WILL_PLAY_SOUNDEFFECT)
                 {
                     SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                 }
@@ -497,13 +501,20 @@ namespace gui
             if (NEXT_ENTITY_SPTR->GetEntityWillDraw())
             {
                 if ((MOUSE_POS_V.x >= entityRegion_.left) &&
-                    (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
+                    (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width -
+                        (2.0f * margin_)) &&
                     (MOUSE_POS_V.y >= NEXT_ENTITY_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top + NEXT_ENTITY_SPTR->GetEntityRegion().height))
+                    (MOUSE_POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top +
+                        NEXT_ENTITY_SPTR->GetEntityRegion().height))
                 {
                     if (selectedSPtr_ != NEXT_ENTITY_SPTR)
                     {
-                        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+                        if (willPlaySfx_)
+                        {
+                            SoundManager::Instance()->GetSfxSet(
+                                sfml_util::SfxSet::Switch).PlayRandom();
+                        }
+
                         selectedSPtr_ = NEXT_ENTITY_SPTR;
                         SetupList();
                         boxUPtr_->FakeColorSetAsIfFocusIs(true);
@@ -511,7 +522,8 @@ namespace gui
                         if (callbackPtr_ != nullptr)
                         {
                             const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-                            const callback::ListBoxEventPackage PACKAGE(PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
+                            const callback::ListBoxEventPackage PACKAGE(
+                                PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
                             callbackPtr_->HandleCallback(PACKAGE);
                         }
 
@@ -536,10 +548,13 @@ namespace gui
             return false;
         }
 
-        SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
-
         if (KEY_EVENT.code == sf::Keyboard::Return)
         {
+            if (willPlaySfx_)
+            {
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+            }
+
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
             return true;
         }
@@ -547,12 +562,24 @@ namespace gui
         if (KEY_EVENT.code == sf::Keyboard::Up)
         {
             auto const WILL_RETURN_TRUE{ MoveSelectionUp() };
+
+            if (willPlaySfx_ && WILL_RETURN_TRUE)
+            {
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+            }
+
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
             return WILL_RETURN_TRUE;
         }
         else if (KEY_EVENT.code == sf::Keyboard::Down)
         {
             auto const WILL_RETURN_TRUE{ MoveSelectionDown() };
+
+            if (willPlaySfx_ && WILL_RETURN_TRUE)
+            {
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+            }
+
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
             return WILL_RETURN_TRUE;
         }
@@ -898,9 +925,10 @@ namespace gui
             if (*nextItr == selectedSPtr_)
             {
                 if (vertTracker >= entityRegion_.height)
+                {
                     currentViewPos_ -= NEXT_HEIGHT;
+                }
 
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                 selectedSPtr_ = *itr;
                 SetupList();
                 return true;
@@ -908,7 +936,9 @@ namespace gui
             else
             {
                 if ((*itr)->GetEntityWillDraw())
+                {
                     vertTracker -= NEXT_HEIGHT;
+                }
             }
         }
 
@@ -929,9 +959,10 @@ namespace gui
                 if (*prevItr == selectedSPtr_)
                 {
                     if ((*itr)->GetEntityWillDraw() == false)
+                    {
                         currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
+                    }
 
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                     selectedSPtr_ = *itr;
                     SetupList();
                     return true;
@@ -939,7 +970,9 @@ namespace gui
             }
 
             if ((*itr)->GetEntityWillDraw())
+            {
                 vertTracker += CURRENT_HEIGHT + betweenPad_;
+            }
         }
 
         return false;

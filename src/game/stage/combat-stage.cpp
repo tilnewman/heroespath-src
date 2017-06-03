@@ -38,6 +38,7 @@
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/animation.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game.hpp"
@@ -90,6 +91,7 @@ namespace stage
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
     const float CombatStage::PAUSE_SHORT_SEC_               { 1.5f };
+    const float CombatStage::PAUSE_SHORTER_SEC_             { 0.75f };
     const float CombatStage::PAUSE_ZERO_SEC_                { 0.1f };
     const float CombatStage::POST_PAN_PAUSE_SEC_            { PAUSE_SHORT_SEC_ };
     const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_        { PAUSE_SHORT_SEC_ };
@@ -155,9 +157,8 @@ namespace stage
         performReportHitIndex_      (0),
         zoomSliderOrigPos_          (0.0f),
         willClrShkInitStatusMsg_    (false),
-        isMouseHeldDown_            (false),
-        isMouseHeldDownAndMoving_   (false),
         tempConditionsWakeStr_      (""),
+        isShortPostZoomOutPause_    (false),
         slider_                     (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
         combatDisplayStagePtr_      (new combat::CombatDisplay()),
         combatAnimationUPtr_        ( std::make_unique<combat::CombatAnimation>(combatDisplayStagePtr_) ),
@@ -740,7 +741,7 @@ namespace stage
         std::string errMsgIgnored{ "" };
         player::PartyPtr_t partyPtr{ new player::Party() };
 
-        {
+        /*{
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
                                               15 + misc::random::Int(6) + 100,
                                               0  + misc::random::Int(6),
@@ -762,7 +763,7 @@ namespace stage
 
             player::Initial::Setup(knightPtr);
             partyPtr->Add(knightPtr, errMsgIgnored);
-        }
+        }*/
         /*
         {
             const stats::StatSet FIREBRAND_STATS(20 + misc::random::Int(10),
@@ -794,7 +795,7 @@ namespace stage
             partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
                                               20 + misc::random::Int(10) + 100,
                                               5  + misc::random::Int(6),
@@ -816,7 +817,7 @@ namespace stage
 
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
-        }
+        }*/
         /*
         {
             const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
@@ -838,7 +839,7 @@ namespace stage
             partyPtr->Add(wolfenSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
                                             10 + misc::random::Int(6) + 100,
                                             10 + misc::random::Int(6),
@@ -860,7 +861,7 @@ namespace stage
 
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
-        }
+        }*/
         /*
         {
             const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
@@ -882,7 +883,7 @@ namespace stage
             partyPtr->Add(bmSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
                                              5  + misc::random::Int(10) + 100,
                                              5  + misc::random::Int(10),
@@ -904,8 +905,7 @@ namespace stage
 
             player::Initial::Setup(thiefPtr);
             partyPtr->Add(thiefPtr, errMsgIgnored);
-        }
-
+        }*/
         {
             const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
                                               5  + misc::random::Int(8) + 100,
@@ -917,7 +917,7 @@ namespace stage
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
                 creature::NameInfo::Instance()->LargestLetterString(),
-                "C"));
+                "C1"));
 
             auto clericPtr{ new player::Character(CLERIC_NAME,
                                                   creature::sex::Female,
@@ -927,7 +927,7 @@ namespace stage
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
-            clericPtr->ManaCurrentSet(1);
+            clericPtr->ManaCurrentSet(10);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
@@ -942,7 +942,7 @@ namespace stage
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
                 creature::NameInfo::Instance()->LargestLetterString(),
-                "S"));
+                "S1"));
 
             auto sorcererPtr{ new player::Character(SORCERER_NAME,
                                                     creature::sex::Male,
@@ -952,7 +952,105 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ManaCurrentSet(1);
+            sorcererPtr->ManaCurrentSet(10);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
+        }
+        {
+            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
+                                              5  + misc::random::Int(8) + 100,
+                                              15 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              25 + misc::random::Int(8),
+                                              10 + misc::random::Int(15));
+
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C2"));
+
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(10);
+            partyPtr->Add(clericPtr, errMsgIgnored);
+        }
+
+        {
+            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
+                                                0  + misc::random::Int(8) + 100,
+                                                5  + misc::random::Int(8),
+                                                10 + misc::random::Int(6),
+                                                50 + misc::random::Int(6),
+                                                20 + misc::random::Int(10));
+
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S2"));
+
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(10);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
+        }
+        {
+            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
+                                              5  + misc::random::Int(8) + 100,
+                                              15 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              25 + misc::random::Int(8),
+                                              10 + misc::random::Int(15));
+
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C3"));
+
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(10);
+            partyPtr->Add(clericPtr, errMsgIgnored);
+        }
+
+        {
+            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
+                                                0  + misc::random::Int(8) + 100,
+                                                5  + misc::random::Int(8),
+                                                10 + misc::random::Int(6),
+                                                50 + misc::random::Int(6),
+                                                20 + misc::random::Int(10));
+
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S3"));
+
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(10);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
@@ -1169,6 +1267,7 @@ namespace stage
             if (combatAnimationUPtr_->SpellAnimUpdate(spellBeingCastPtr_, ELAPSED_TIME_SEC))
             {
                 combatAnimationUPtr_->SpellAnimStop(spellBeingCastPtr_);
+                HandleApplyDamageTasks();
                 SetAnimPhase(AnimPhase::PostSpellPause);
                 StartPause(POST_SPELL_ANIM_PAUSE_SEC_, "PostSpell");
             }
@@ -1269,7 +1368,17 @@ namespace stage
             {
                 combatAnimationUPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
-                StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
+                
+                if (isShortPostZoomOutPause_)
+                {
+                    isShortPostZoomOutPause_ = false;
+                    StartPause(PAUSE_SHORTER_SEC_, "PostZoomOut");
+                }
+                else
+                {
+                    StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
+                }
+
                 SetupTurnBox();
             }
             return;
@@ -1335,108 +1444,106 @@ namespace stage
 
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        isMouseHeldDown_ = true;
-
+        Stage::UpdateMouseDown(MOUSE_POS_V);
+        
         //cancel summary view if visible or even just starting
         if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
         {
             combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
+            isMouseHeldDown_ = false;
         }
-        else if ((TurnPhase::Determine == turnPhase_) || (TurnPhase::TargetSelect == turnPhase_))
+        else if ((TurnPhase::Determine != turnPhase_) &&
+                 (TurnPhase::TargetSelect != turnPhase_))
         {
-            Stage::UpdateMouseDown(MOUSE_POS_V);
+            isMouseHeldDown_ = false;
         }
-    }
-
-
-    void CombatStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
-    {
-        if (isMouseHeldDown_)
-        {
-            isMouseHeldDownAndMoving_ = true;
-        }
-        else
-        {
-            isMouseHeldDownAndMoving_ = false;
-        }
-
-        Stage::UpdateMousePos(MOUSE_POS_V);
     }
 
 
     sfml_util::gui::IGuiEntityPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
-        isMouseHeldDown_ = false;
-        isMouseHeldDownAndMoving_ = false;
+        
+        auto const GUI_ENTITY_WITH_FOCUS{ Stage::UpdateMouseUp(MOUSE_POS_V) };
+
+        if (WAS_MOUSE_HELD_DOWN_AND_MOVING)
+        {
+            return GUI_ENTITY_WITH_FOCUS;
+        }
 
         creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
-        if (WAS_MOUSE_HELD_DOWN_AND_MOVING == false)
+        if (creatureAtPosPtr == nullptr)
         {
-            if (creatureAtPosPtr == nullptr)
+            HandleMiscCancelTasks();
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if ((TurnPhase::Determine == turnPhase_) &&
+            creatureAtPosPtr->IsPlayerCharacter() &&
+            (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
+        {
+            restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+            game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if (TurnPhase::TargetSelect != turnPhase_)
+        {
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if (nullptr == spellBeingCastPtr_)
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter())
             {
-                HandleMiscCancelTasks();
+                QuickSmallPopup(std::string("That is one of your player characters,").append(
+                    "who cannot be attacked.  Click on an enemy creature instead."), false, true);
             }
             else
             {
-                if ((TurnPhase::Determine == turnPhase_) &&
-                    creatureAtPosPtr->IsPlayerCharacter() &&
-                    (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
+                if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_,
+                                                                           creatureAtPosPtr))
                 {
-                    restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                    game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+                    combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                    HandleAttackTasks(creatureAtPosPtr);
                 }
-                else if (TurnPhase::TargetSelect == turnPhase_)
+                else
                 {
-                    if (nullptr == spellBeingCastPtr_)
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter())
-                        {
-                            QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", false, true);
-                        }
-                        else
-                        {
-                            if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
-                            {
-                                combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
-                                HandleAttackTasks(creatureAtPosPtr);
-                            }
-                            else
-                            {
-                                QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", false, true);
-                            }
-                        }
-                    }
-                    else if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter())
-                        {
-                            QuickSmallPopup("That is one of your player characters, not an enemy.  Click on an enemy creature instead.", false, true);
-                        }
-                        else
-                        {
-                            combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
-                        }
-                    }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->Target() == TargetType::SingleCompanion))
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter() == false)
-                        {
-                            QuickSmallPopup("That is and enemy, not one of your character.  Click on one of your characters instead.", false, true);
-                        }
-                        else
-                        {
-                            combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
-                        }
-                    }
+                    QuickSmallPopup(std::string("That creature is not close enough to fight.").
+                        append("  Try clicking on another creature."), false, true);
                 }
             }
         }
-
-        return Stage::UpdateMouseUp(MOUSE_POS_V);
+        else if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter())
+            {
+                QuickSmallPopup(std::string("That is one of your player characters,").
+                    append(" not an enemy.  Click on an enemy creature instead."), false, true);
+            }
+            else
+            {
+                combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
+            }
+        }
+        else if ((nullptr != spellBeingCastPtr_) &&
+                 (spellBeingCastPtr_->Target() == TargetType::SingleCompanion))
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter() == false)
+            {
+                QuickSmallPopup(std::string("That is and enemy, not one of your character.").
+                    append("  Click on one of your characters instead."), false, true);
+            }
+            else
+            {
+                combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
+            }
+        }
+        
+        return GUI_ENTITY_WITH_FOCUS;
     }
 
 
@@ -2150,6 +2257,7 @@ namespace stage
         SetTurnActionPhase(TurnActionPhase::Cast);
 
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
+        isShortPostZoomOutPause_ = true;
         auto creaturesToCenterOnPVec{ creaturesToCastUponPVec };
         creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
         combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);

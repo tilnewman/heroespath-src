@@ -36,6 +36,8 @@
 
 #include "misc/random.hpp"
 
+#include <algorithm>
+
 
 namespace sfml_util
 {
@@ -63,7 +65,7 @@ namespace animation
         endColor_     (END_COLOR),
 
         //start half way so everything moves fast at first and then slows down
-        slider_       (BASE_SPEED, 0.5f)
+        slider_       (std::max(1.0f, BASE_SPEED), 0.5f)
     {
         //set initial sprite values (initial rotation is random)
         sprite_.setPosition(0.0f, 0.0f);
@@ -73,8 +75,10 @@ namespace animation
                           sprite_.getLocalBounds().height * 0.5f);
 
         sprite_.rotate(misc::random::Float(360.0f));
-        //
-        //sprite_.setPosition(startPosV_);
+        
+        sprite_.setOrigin(0.0f, 0.0f);
+
+        sprite_.setPosition(startPosV_);
         sprite_.setScale(startScale_, startScale_);
         sprite_.setColor(startColor_);
     }
@@ -86,7 +90,7 @@ namespace animation
         {
             return true;
         }
-
+        
         auto const SLIDER_POS{ (slider_.Update(ELAPSED_TIME_SEC) - 0.5f) * 2.0f };
 
         //set rotation (must preset position and scale prior to rotating...grumble)
@@ -109,7 +113,7 @@ namespace animation
                                                             SLIDER_POS) );
 
         //set scale
-        auto const SCALE{ startScale_  - ((endScale_ - startScale_) * (1.0f - SLIDER_POS)) };
+        auto const SCALE{ startScale_  + ((endScale_ - startScale_) * SLIDER_POS) };
         sprite_.setScale(SCALE, SCALE);
         
         //check if done animating

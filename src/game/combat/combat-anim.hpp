@@ -35,8 +35,17 @@
 #include <memory>
 #include <map>
 
+
 namespace sfml_util
 {
+    class SingleTextureAnimation;
+    using SingleTextureAnimationUPtr_t = std::unique_ptr<SingleTextureAnimation>;
+    using SingleTextureAnimationUVec_t = std::vector<SingleTextureAnimationUPtr_t>;
+
+    class MultiTextureAnimation;
+    using MultiTextureAnimationUPtr_t = std::unique_ptr<MultiTextureAnimation>;
+    using MultiTextureAnimationUVec_t = std::vector<MultiTextureAnimationUPtr_t>;
+
 namespace animation
 {
     class SparksAnimation;
@@ -78,6 +87,9 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
+
+
+    using MediaPathSizeMap_t = std::map<std::string, sf::Vector2f>;
 
 
     //All the info required to shake a creature image on the battlefield.
@@ -202,9 +214,28 @@ namespace combat
         bool PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC);
         void PoisonCloudAnimStop();
 
+        void SetupSingleTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                     const std::string &              MEDIA_PATH_KEY,
+                                     const float                      FRAME_DELAY_SEC,
+                                     const sf::Color &                COLOR_FROM,
+                                     const sf::Color &                COLOR_TO);
+
+        void SetupMultiTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                    const std::string &              MEDIA_PATH_KEY,
+                                    const float                      FRAME_DELAY_SEC,
+                                    const sf::Color &                COLOR_FROM,
+                                    const sf::Color &                COLOR_TO);
+
+        private:
+            const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect &) const;
+
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
-
+        static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;
+        static const std::string ANIM_MEDIA_PATH_KEY_STR_SPARKLE_;
+        static const std::string ANIM_MEDIA_PATH_KEY_STR_SHIMMER_;
+        static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
+        
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
@@ -251,6 +282,11 @@ namespace combat
 
         //members that control the poison cloud animation
         sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
+
+        //members that control animations in general
+        sfml_util::SingleTextureAnimationUVec_t singleTextureAnimUVec_;
+        sfml_util::MultiTextureAnimationUVec_t multiTextureAnimUVec_;
+        MediaPathSizeMap_t singleTextureSizeMap_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;

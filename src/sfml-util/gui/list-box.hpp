@@ -199,6 +199,9 @@ namespace gui
         inline const sf::Color GetHighlightColor() const { return highlightColor_; }
         inline void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
 
+        inline bool WillPlaySoundEffects() const { return willPlaySfx_; }
+        inline void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
+
     protected:
         void CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX);
         void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
@@ -234,6 +237,7 @@ namespace gui
         float             imageSize_;
         ImageMap_t        imageMap_;
         sf::Color         imageColor_;
+        bool              willPlaySfx_;
         callback::IListBoxCallbackHandler * callbackPtr_;
     };
 
