@@ -63,7 +63,15 @@ namespace game
         stateBeforeFade_  (LoopState::None)
     {
         M_HP_LOG_DBG("Singleton Construction: LoopManager");
-        TransitionTo(LoopState::FromString(startupStage_));
+
+        if (startupStage_.empty())
+        {
+            TransitionTo(LoopState::Intro);
+        }
+        else
+        {
+            TransitionTo(LoopState::FromString(startupStage_));
+        }
     }
 
 
@@ -104,12 +112,6 @@ namespace game
             "game::LoopManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
-    }
-
-
-    void LoopManager::SetStartupStage(const std::string & STARTUP_STAGE_NAME)
-    {
-        startupStage_ = STARTUP_STAGE_NAME;
     }
 
 

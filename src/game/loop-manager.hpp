@@ -74,7 +74,10 @@ namespace game
         static void Acquire();
         static void Release();
 
-        static void SetStartupStage(const std::string & STARTUP_STAGE_NAME);
+        inline static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
+        {
+            startupStage_ = STARTUP_STAGE_NAME;
+        }
 
         inline LoopState::Enum GetState() const                     { return state_; }
         inline LoopState::Enum GetPrevState() const                 { return prevState_; }

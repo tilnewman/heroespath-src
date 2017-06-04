@@ -71,10 +71,24 @@
 #include "misc/random.hpp"
 
 
-int main()
+int main(int argc, char * argv[])
 {
     const std::string APPLICATION_NAME{ "Heroes' Path" };
     std::cout << "Starting " << APPLICATION_NAME << "..." << std::endl;
+
+    if (argc > 1)
+    {
+        std::cout << "Will attempt to start in stage: " << argv[1] << std::endl;
+        game::LoopManager::SetStartupStage(argv[1]);
+
+        if (argc >= 2)
+        {
+            for (int i(2); i < argc; ++i)
+            {
+                std::cout << "Ignoring extra command line argument: " << argv[i] << std::endl;
+            }
+        }
+    }
 
     game::Logger::Acquire();
     auto logPtr{ game::Logger::Instance() };
@@ -94,9 +108,6 @@ int main()
         //keep an instance of various singleton classes here to prevent thrashing
         game::GameDataFile::Acquire();
         auto gameDataFilePtr(game::GameDataFile::Instance());
-
-        //set which stage will startup
-        game::LoopManager::SetStartupStage( gameDataFilePtr->GetCopy<std::string>("system-startup-stage") );
 
         //setup the graphics display
         sfml_util::Display::LogAllFullScreenVideoModes();

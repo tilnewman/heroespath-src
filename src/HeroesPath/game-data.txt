@@ -1,4 +1,3 @@
-system-startup-stage=Combat
 system-revision=alpha 0.1
 
 #graphics settings
