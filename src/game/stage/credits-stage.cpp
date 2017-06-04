@@ -186,7 +186,7 @@ namespace stage
                                                       "media-anim-images-dir-lightningbolt",
                                                       sfml_util::MapByRes(1.0f, 3.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
-                                                      0.75f));
+                                                      0.075f));
 
         creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "Terrain Art",
@@ -275,6 +275,27 @@ namespace stage
         creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                       "\"Old Crypt\"\n\"Dramatic Event 2\"\n\"Radakan Menu\"",
                                                       "Janne Hanhisuanto for Radakan\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was trimmed and normalized.",
+                                                      credit_media_type::Image,
+                                                      "media-images-logos-sound",
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
+  
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
+                                                      "\"spell.ogg\"\n\"curse.ogg\"\n\"enchant.ogg\"\n\"freeze2.ogg\"\n\"heal.ogg\"\n\"magicfail.ogg\"\n\"water.ogg\"",
+                                                      "These and other sound effects posted on OpenGameArt.org by p0ss\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original sound effects were trimmed and normalized.",
+                                                      credit_media_type::Image,
+                                                      "media-images-logos-sound",
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
+
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
+                                                      "\"spell1_0.wav\"\n\"spell2.wav\"\n\"spell3.wav\"\n\"whoosh1.wav\"\n\"whoosh2.wav\"\n\"foom_0.wav\"",
+                                                      "These and other sound effects posted on OpenGameArt.org by bart (Bart Kelsey)\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original sound effects were trimmed and normalized.",
+                                                      credit_media_type::Image,
+                                                      "media-images-logos-sound",
+                                                      sfml_util::MapByRes(1.0f, 2.0f)));
+
+        creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
+                                                      "\"spell_00.wav\"\n\"spell_02.wav\"\n\"spell_03.wav\"\n\"Slide_Soft_00.wav\"",
+                                                      "These and other sound effects posted on OpenGameArt.org by \"Little Robot Sound Factory\"\nUnder the Attribution Unported 3.0 License\nwww.creativecommons.org/licenses/by/3.0\nThe original sound effects were trimmed and normalized.",
                                                       credit_media_type::Image,
                                                       "media-images-logos-sound",
                                                       sfml_util::MapByRes(1.0f, 2.0f)));
