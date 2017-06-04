@@ -1,0 +1,162 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
+// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from
+// the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+//  1. The origin of this software must not be misrepresented; you must not
+//     claim that you wrote the original software.  If you use this software
+//     in a product, an acknowledgment in the product documentation would be
+//     appreciated but is not required.
+//
+//  2. Altered source versions must be plainly marked as such, and must not
+//     be misrepresented as being the original software.
+//
+//  3. This notice may not be removed or altered from any source distribution.
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_COMBAT_HITINFO_HPP_INCLUDED
+#define GAME_COMBAT_HITINFO_HPP_INCLUDED
+//
+// hit-info.hpp
+//
+#include "game/stats/types.hpp"
+#include "game/creature/condition-enum.hpp"
+
+#include <string>
+#include <memory>
+#include <vector>
+
+
+namespace game
+{
+namespace spell
+{
+    class Spell;
+    using SpellPtr_t = Spell *;
+}
+namespace item
+{
+    class Item;
+    using ItemPtr_t = Item *;
+}
+
+namespace combat
+{
+
+    struct DodgeType
+    {
+        enum Enum
+        {
+            Speed = 0,
+            AmazingSpeed,
+            Luck,
+            AmazingLuck,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+    };
+
+
+    struct HitType
+    {
+        enum Enum
+        {
+            Accuracy = 0,
+            AmazingAccuracy,
+            Luck,
+            AmazingLuck,
+            Spell,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+    };
+
+
+    //Everything required to describe a how a creature's health was reduced.
+    //Note:  It is possible to hit with a weapon and cause no damage.
+    class HitInfo
+    {
+    public:
+        //use this constructor when a weapon is used to hit
+        explicit HitInfo(
+            const item::ItemPtr_t                ITEM_PTR        = nullptr,
+            const HitType::Enum                  HIT_TYPE        = HitType::Count,
+            const DodgeType::Enum                DODGE_TYPE      = DodgeType::Count,
+            const stats::Health_t                DAMAGE          = 0,
+            const bool                           IS_CRITICAL_HIT = false,
+            const bool                           IS_POWER_HIT    = false,
+            const creature::ConditionEnumVec_t & CONDITIONS_VEC  = creature::ConditionEnumVec_t(),
+            const std::string &                  ACTION_VERB     = "");
+
+        //use this constructor when a spell adds or removes health
+        HitInfo(const spell::SpellPtr_t              SPELL_CPTR,
+                const std::string &                  EFFECT_STR,
+                const stats::Health_t                DAMAGE,
+                const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                const std::string &                  ACTION_PHRASE);
+
+        HitInfo(const HitInfo &);
+        HitInfo & operator=(const HitInfo &);
+
+        inline bool              WasHit() const      { return hitType_ != HitType::Count; }
+        inline HitType::Enum     HitKind() const     { return hitType_; }
+        inline DodgeType::Enum   DodgeKind() const   { return dodgeType_; }
+        inline item::ItemPtr_t   Weapon() const      { return weaponPtr_; }
+        inline stats::Health_t   Damage() const      { return damage_; }
+        inline bool              IsCritical() const  { return isCritical_; }
+        inline bool              IsPowerHit() const  { return isPower_; }
+        inline const std::string ActionVerb() const  { return actionVerb_; }
+        inline spell::SpellPtr_t SpellPtr() const    { return spellPtr_; }
+        inline bool              IsSpell() const     { return (spellPtr_ != nullptr); }
+        inline bool              IsWeapon() const    { return (weaponPtr_ != nullptr); }
+        inline const std::string SpellEffect() const { return spellEffectStr_; }
+
+        inline const creature::ConditionEnumVec_t Conditions() const { return conditionsVec_; }
+
+        bool ContainsCondition(const creature::Conditions::Enum) const;
+        bool RemoveCondition(const creature::Conditions::Enum);
+
+        inline bool WasKill() const { return ContainsCondition(creature::Conditions::Dead); }
+
+        friend bool operator<(const HitInfo & L, const HitInfo & R);
+        friend bool operator==(const HitInfo & L, const HitInfo & R);
+
+    private:
+        HitType::Enum hitType_;
+        DodgeType::Enum dodgeType_;
+        item::ItemPtr_t weaponPtr_;
+        stats::Health_t damage_;
+        bool isCritical_;
+        bool isPower_;
+        creature::ConditionEnumVec_t conditionsVec_;
+        std::string actionVerb_;
+        spell::SpellPtr_t spellPtr_;
+        std::string spellEffectStr_;
+    };
+
+    using HitInfoVec_t = std::vector<HitInfo>;
+
+
+    bool operator<(const HitInfo & L, const HitInfo & R);
+
+    bool operator==(const HitInfo & L, const HitInfo & R);
+
+    inline bool operator!=(const HitInfo & L, const HitInfo & R)
+    {
+        return ! (L == R);
+    }
+
+}
+}
+
+#endif //GAME_COMBAT_HITINFO_HPP_INCLUDED
