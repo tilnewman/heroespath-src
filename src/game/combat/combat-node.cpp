@@ -414,7 +414,10 @@ namespace combat
 
     const sf::Color CombatNode::HealthColor() const
     {
-        sf::Color c(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
+        sf::Color c(255,
+                    static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)),
+                    static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
+
         c.g = static_cast<sf::Uint8>(static_cast<float>(c.g) * healthRatioDisplayed_);
         c.b = static_cast<sf::Uint8>(static_cast<float>(c.b) * healthRatioDisplayed_);
         return c;
@@ -423,13 +426,15 @@ namespace combat
 
     const sf::Color CombatNode::HealthColorRed() const
     {
-        return sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
+        return sf::Color(255,
+                         static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)),
+                         static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
     }
 
 
     const sf::Color CombatNode::HealthColorTick() const
     {
-        return sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)));
+        return HealthColorRed();
     }
 
 

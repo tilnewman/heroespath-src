@@ -77,8 +77,8 @@ namespace sfml_util
 
     const Date Date::CurrentDate()
     {
-        const boost::posix_time::ptime PTIME(boost::posix_time::microsec_clock::local_time());
-        return Date(PTIME.date().year(), PTIME.date().month(), PTIME.date().day());
+        auto const DATE{ boost::posix_time::microsec_clock::local_time().date() };
+        return Date(DATE.year(), DATE.month(), DATE.day());
     }
 
 
@@ -135,8 +135,8 @@ namespace sfml_util
 
     const Time Time::CurrentTime()
     {
-        const boost::posix_time::ptime PTIME(boost::posix_time::microsec_clock::local_time());
-        return Time(PTIME.time_of_day().hours(), PTIME.time_of_day().minutes(), PTIME.time_of_day().seconds());
+        auto const TOD{ boost::posix_time::microsec_clock::local_time().time_of_day() };
+        return Time(TOD.hours(), TOD.minutes(), TOD.seconds());
     }
 
 

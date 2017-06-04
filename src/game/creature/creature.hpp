@@ -146,7 +146,7 @@ namespace creature
         inline dragon_class::Enum DragonClass() const           { return dragon_class::ClassFromRank( Rank() ); }
         inline wolfen_class::Enum WolfenClass() const           { return wolfen_class::ClassFromRank( Rank() ); }
 
-        inline std::size_t Rank() const                         { return rank_; }
+        inline stats::Rank_t Rank() const                       { return rank_; }
         inline rank_class::Enum RankClass() const               { return rank_class::FromRank(rank_); }
         const std::string RankClassName() const;
         float RankRatio() const;

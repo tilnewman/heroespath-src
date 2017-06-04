@@ -105,7 +105,7 @@ namespace stringhelp
     //Since boost::algorithm::join() only works on containers of strings,
     //this function works with std::ostringstream << allowing vector<int> etc.
     template<typename T>
-    const std::string Join(const T & CONTAINER, const std::string & SEP_STR = ",");
+    const std::string Join(const T & CONTAINER, const std::string & SEP_STR = ", ");
 
 
     //numbers to std::string
@@ -234,19 +234,16 @@ namespace stringhelp
     const std::string Join(const T & CONTAINER, const std::string & SEP_STR)
     {
         std::ostringstream ss;
-        try
+        for(typename T::const_iterator i(CONTAINER.begin()); i != (CONTAINER.end()); ++i)
         {
-            for(typename T::const_iterator i(CONTAINER.begin()); i != (CONTAINER.end()); ++i)
+            if (i != CONTAINER.begin())
             {
-                if (i != CONTAINER.begin())
-                    ss << SEP_STR;
-
-                ss << * i;
+                ss << SEP_STR;
             }
-        }
-        catch(...)
-        {}
 
+            ss << * i;
+        }
+        
         return ss.str();
     }
 
@@ -262,9 +259,10 @@ namespace stringhelp
             return true;
         }
         catch(...)
-        {}
+        {
+            outStr = DEFAULT;
+        }
 
-        outStr = DEFAULT;
         return false;
     }
 

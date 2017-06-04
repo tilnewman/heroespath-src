@@ -40,6 +40,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 
 namespace sfml_util

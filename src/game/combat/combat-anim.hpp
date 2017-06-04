@@ -33,6 +33,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 #include <map>
 
 
@@ -120,7 +121,7 @@ namespace combat
         CombatAnimation & operator=(const CombatAnimation &) =delete;
 
     public:
-        CombatAnimation(const CombatDisplayPtr_t);
+        explicit CombatAnimation(const CombatDisplayPtr_t);
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 

@@ -186,7 +186,6 @@ namespace sfml_util
         auto const NUM_STAGES{ stagePVec_.size() };
         for (std::size_t i(0); i<NUM_STAGES; ++i)
         {
-
             if (stagePVec_[i] != nullptr)
             {
                 delete stagePVec_[i];

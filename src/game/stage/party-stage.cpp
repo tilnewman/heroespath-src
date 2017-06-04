@@ -115,10 +115,7 @@ namespace stage
 
         for (auto & nextCharacterPtr : charactersPSet_)
         {
-            if (nextCharacterPtr != nullptr)
-            {
-                delete nextCharacterPtr;
-            }
+            delete nextCharacterPtr;
         }
 
         charactersPSet_.clear();

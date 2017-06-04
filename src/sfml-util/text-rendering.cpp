@@ -306,23 +306,25 @@ namespace text_render
             const std::size_t NUM_CHARS(textSnippetVecVec[l].size());
             for (std::size_t c(0); c < NUM_CHARS; ++c)
             {
+                auto & sfText{ textSnippetVecVec[l][c].sf_text };
+
                 //adjust positions to fall within in the REGION given
-                textSnippetVecVec[l][c].sf_text.setPosition(
-                    textSnippetVecVec[l][c].sf_text.getPosition().x + REGION.left,
-                    textSnippetVecVec[l][c].sf_text.getPosition().y + REGION.top + MARGINS.top);
+                sfText.setPosition(
+                    sfText.getPosition().x + REGION.left,
+                    sfText.getPosition().y + REGION.top + MARGINS.top);
 
                 //adjust position for the justification given
-                textSnippetVecVec[l][c].sf_text.setPosition(
-                    textSnippetVecVec[l][c].sf_text.getPosition().x + offset,
-                    textSnippetVecVec[l][c].sf_text.getPosition().y);
+                sfText.setPosition(
+                    sfText.getPosition().x + offset,
+                    sfText.getPosition().y);
 
                 //adjust for left margin
-                textSnippetVecVec[l][c].sf_text.setPosition(
-                    textSnippetVecVec[l][c].sf_text.getPosition().x + MARGINS.left,
-                    textSnippetVecVec[l][c].sf_text.getPosition().y);
+                sfText.setPosition(
+                    sfText.getPosition().x + MARGINS.left,
+                    sfText.getPosition().y);
 
-                const float RIGHT_EDGE(textSnippetVecVec[l][c].sf_text.getPosition().x +
-                    textSnippetVecVec[l][c].sf_text.getLocalBounds().width);
+                const float RIGHT_EDGE(sfText.getPosition().x +
+                    sfText.getLocalBounds().width);
                 
                 if (longestLine < RIGHT_EDGE)
                 {
@@ -430,9 +432,8 @@ namespace text_render
 
             for (std::size_t i(1); i < NUM_SNIPPETS; ++i)
             {
-                textSnippetVec[i].sf_text.setPosition(
-                    textSnippetVec[i].sf_text.getPosition().x - ADJ,
-                    textSnippetVec[i].sf_text.getPosition().y);
+                auto & sfText{ textSnippetVec[i].sf_text };
+                sfText.setPosition(sfText.getPosition().x - ADJ, sfText.getPosition().y);
             }
         }
 

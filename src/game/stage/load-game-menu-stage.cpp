@@ -87,10 +87,7 @@ namespace stage
 
         for (auto & nextGameStatePtr : gamestatePSet_)
         {
-            if (nextGameStatePtr != nullptr)
-            {
-                delete nextGameStatePtr;
-            }
+            delete nextGameStatePtr;
         }
 
         gamestatePSet_.clear();

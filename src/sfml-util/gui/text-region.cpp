@@ -242,10 +242,7 @@ namespace gui
         }
         else
         {
-            if (newSliderBarPtr != nullptr)
-            {
-                delete newSliderBarPtr;
-            }
+            delete newSliderBarPtr;
         }
     }
 

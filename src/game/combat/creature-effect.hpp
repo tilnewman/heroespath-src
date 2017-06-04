@@ -22,6 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
+#define GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
 //
 // creature-effect.hpp
 //
@@ -29,6 +31,8 @@
 
 #include "game/stats/types.hpp"
 #include "game/creature/condition-enum.hpp"
+
+#include <vector>
 
 
 namespace game
@@ -104,3 +108,5 @@ namespace combat
 
 }
 }
+
+#endif //GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED

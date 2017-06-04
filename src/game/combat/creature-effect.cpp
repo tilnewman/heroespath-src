@@ -35,6 +35,9 @@
 
 #include "misc/vectors.hpp"
 
+#include <algorithm>
+
+#include <boost/algorithm/string.hpp>
 
 namespace game
 {

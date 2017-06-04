@@ -30,6 +30,8 @@
 #include "hit-info.hpp"
 #include "creature-effect.hpp"
 
+#include <vector>
+
 
 namespace game
 {

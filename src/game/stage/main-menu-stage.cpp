@@ -144,10 +144,7 @@ namespace stage
             //free all of the loaded games
             for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
             {
-                if (NEXT_GAMESTATE_PTR != nullptr)
-                {
-                    delete NEXT_GAMESTATE_PTR;
-                }
+                delete NEXT_GAMESTATE_PTR;
             }
         }
     }

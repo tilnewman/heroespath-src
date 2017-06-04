@@ -1261,12 +1261,19 @@ namespace combat
 
     const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "game::combat::CombatDisplay::GetNodeTitle(nullptr) was given a COMBAT_NODE_PTR that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr),
+            "game::combat::CombatDisplay::GetNodeTitle(nullptr) was given a COMBAT_NODE_PTR"
+            << " that was null.");
 
-        if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
-            return COMBAT_NODE_PTR->Creature()->Name();
+        auto creaturePtr{ COMBAT_NODE_PTR->Creature() };
+        if (creaturePtr->IsPlayerCharacter())
+        {
+            return creaturePtr->Name();
+        }
         else
-            return COMBAT_NODE_PTR->Creature()->Name() + " " + COMBAT_NODE_PTR->Creature()->Role().Name();
+        {
+            return creaturePtr->Name() + " " + creaturePtr->Role().Name();
+        }
     }
 
 

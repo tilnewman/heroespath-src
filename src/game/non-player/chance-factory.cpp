@@ -36,7 +36,6 @@
 #include "game/log-macros.hpp"
 #include "game/stats/types.hpp"
 #include "game/non-player/character.hpp"
-#include "game/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"

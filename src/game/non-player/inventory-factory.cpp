@@ -245,10 +245,12 @@ namespace ownership
         if (COVER_TYPE != item::armor::cover_type::Count)
         {
             chance::CoverChanceMap_t::const_iterator ITER( CHANCES.cover_map.find(COVER_TYPE) );
-            M_ASSERT_OR_LOGANDTHROW_SS((ITER != CHANCES.cover_map.end()), "game::non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to find \"" << COVER_TYPE << "\".");
-            itemsSPtrVecPair.first.push_back( item::armor::ArmorFactory::Make_Cover(COVER_TYPE,
-                                                                                    ITER->second.RandomMaterialPri(),
-                                                                                    ITER->second.RandomMaterialSec()) );
+            M_ASSERT_OR_LOGANDTHROW_SS((ITER != CHANCES.cover_map.end()),
+                "game::non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
+                << " find \"" << COVER_TYPE << "\".");
+
+            itemsSPtrVecPair.first.push_back( item::armor::ArmorFactory::Make_Cover(
+                COVER_TYPE, ITER->second.RandomMaterialPri(), ITER->second.RandomMaterialSec()) );
         }
 
         return itemsSPtrVecPair;
@@ -269,43 +271,88 @@ namespace ownership
 
         //TODO handle intentionally unequipped weapons
 
-        std::pair<item::weapon::axe_type::Enum, float> RANDOM_SELECTED_AXE_PAIR(RandomSelectWeapon<item::weapon::axe_type::Enum>(WEAPON_CHANCES.axe_map));
-        if ((RANDOM_SELECTED_AXE_PAIR.first != item::weapon::axe_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_AXE_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::Axe] = std::make_pair(RANDOM_SELECTED_AXE_PAIR.first, RANDOM_SELECTED_AXE_PAIR.second);
+        auto const RANDOM_SELECTED_AXE_PAIR(
+            RandomSelectWeapon<item::weapon::axe_type::Enum>(WEAPON_CHANCES.axe_map));
 
-        std::pair<item::weapon::bladedstaff_type::Enum, float> RANDOM_SELECTED_BLADEDSTAFF_PAIR(RandomSelectWeapon<item::weapon::bladedstaff_type::Enum>(WEAPON_CHANCES.bladedstaff_map));
-        if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first != item::weapon::bladedstaff_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_BLADEDSTAFF_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::BladedStaff] = std::make_pair(RANDOM_SELECTED_BLADEDSTAFF_PAIR.first, RANDOM_SELECTED_BLADEDSTAFF_PAIR.second);
+        if ((RANDOM_SELECTED_AXE_PAIR.first != item::weapon::axe_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_AXE_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::Axe] =
+                std::make_pair(RANDOM_SELECTED_AXE_PAIR.first, RANDOM_SELECTED_AXE_PAIR.second);
+        }
 
-        std::pair<item::weapon::club_type::Enum, float> RANDOM_SELECTED_CLUB_PAIR(RandomSelectWeapon<item::weapon::club_type::Enum>(WEAPON_CHANCES.club_map));
-        if ((RANDOM_SELECTED_CLUB_PAIR.first != item::weapon::club_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_CLUB_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::Club] = std::make_pair(RANDOM_SELECTED_CLUB_PAIR.first, RANDOM_SELECTED_CLUB_PAIR.second);
+        auto const RANDOM_SELECTED_BLADEDSTAFF_PAIR(
+            RandomSelectWeapon<item::weapon::bladedstaff_type::Enum>(
+                WEAPON_CHANCES.bladedstaff_map));
 
-        std::pair<item::weapon::projectile_type::Enum, float> RANDOM_SELECTED_PROJECTILE_PAIR(RandomSelectWeapon<item::weapon::projectile_type::Enum>(WEAPON_CHANCES.projectile_map));
-        if ((RANDOM_SELECTED_PROJECTILE_PAIR.first != item::weapon::projectile_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_PROJECTILE_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::Projectile] = std::make_pair(RANDOM_SELECTED_PROJECTILE_PAIR.first, RANDOM_SELECTED_PROJECTILE_PAIR.second);
+        if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first != item::weapon::bladedstaff_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_BLADEDSTAFF_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::BladedStaff] =
+                std::make_pair(RANDOM_SELECTED_BLADEDSTAFF_PAIR.first,
+                               RANDOM_SELECTED_BLADEDSTAFF_PAIR.second);
+        }
 
-        std::pair<item::weapon::sword_type::Enum, float> RANDOM_SELECTED_SWORD_PAIR(RandomSelectWeapon<item::weapon::sword_type::Enum>(WEAPON_CHANCES.sword_map));
-        if ((RANDOM_SELECTED_SWORD_PAIR.first != item::weapon::sword_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_SWORD_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::Sword] = std::make_pair(RANDOM_SELECTED_SWORD_PAIR.first, RANDOM_SELECTED_SWORD_PAIR.second);
+        auto const RANDOM_SELECTED_CLUB_PAIR(
+            RandomSelectWeapon<item::weapon::club_type::Enum>(WEAPON_CHANCES.club_map));
 
-        std::pair<item::weapon::whip_type::Enum, float> RANDOM_SELECTED_WHIP_PAIR(RandomSelectWeapon<item::weapon::whip_type::Enum>(WEAPON_CHANCES.whip_map));
-        if ((RANDOM_SELECTED_WHIP_PAIR.first != item::weapon::whip_type::Count) && (misc::IsRealClose(RANDOM_SELECTED_WHIP_PAIR.second, 0.0f) == false))
-            typeKindChanceMap[item::weapon_type::Whip] = std::make_pair(RANDOM_SELECTED_WHIP_PAIR.first, RANDOM_SELECTED_WHIP_PAIR.second);
+        if ((RANDOM_SELECTED_CLUB_PAIR.first != item::weapon::club_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_CLUB_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::Club] =
+                std::make_pair(RANDOM_SELECTED_CLUB_PAIR.first, RANDOM_SELECTED_CLUB_PAIR.second);
+        }
+
+        auto const RANDOM_SELECTED_PROJECTILE_PAIR(
+           RandomSelectWeapon<item::weapon::projectile_type::Enum>(WEAPON_CHANCES.projectile_map));
+
+        if ((RANDOM_SELECTED_PROJECTILE_PAIR.first != item::weapon::projectile_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_PROJECTILE_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::Projectile] =
+                std::make_pair(RANDOM_SELECTED_PROJECTILE_PAIR.first,
+                               RANDOM_SELECTED_PROJECTILE_PAIR.second);
+        }
+
+        auto const RANDOM_SELECTED_SWORD_PAIR(
+            RandomSelectWeapon<item::weapon::sword_type::Enum>(WEAPON_CHANCES.sword_map));
+
+        if ((RANDOM_SELECTED_SWORD_PAIR.first != item::weapon::sword_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_SWORD_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::Sword] =
+               std::make_pair(RANDOM_SELECTED_SWORD_PAIR.first, RANDOM_SELECTED_SWORD_PAIR.second);
+        }
+
+        auto const RANDOM_SELECTED_WHIP_PAIR(
+            RandomSelectWeapon<item::weapon::whip_type::Enum>(WEAPON_CHANCES.whip_map));
+
+        if ((RANDOM_SELECTED_WHIP_PAIR.first != item::weapon::whip_type::Count) &&
+            (misc::IsRealClose(RANDOM_SELECTED_WHIP_PAIR.second, 0.0f) == false))
+        {
+            typeKindChanceMap[item::weapon_type::Whip] =
+                std::make_pair(RANDOM_SELECTED_WHIP_PAIR.first, RANDOM_SELECTED_WHIP_PAIR.second);
+        }
 
         //knife/dagger
-        chance::CountChanceMap_t::const_iterator KNIFE_ITER(WEAPON_CHANCES.knife.num_owned_map.find(1));
+        auto const KNIFE_ITER(WEAPON_CHANCES.knife.num_owned_map.find(1));
         if (KNIFE_ITER != chance::CountChanceMap_t::const_iterator())
+        {
             typeKindChanceMap[item::weapon_type::Knife] = std::make_pair(0, KNIFE_ITER->second);
+        }
 
         //staff/quarterstaff
-        chance::CountChanceMap_t::const_iterator STAFF_ITER(WEAPON_CHANCES.staff.num_owned_map.find(1));
+        auto const STAFF_ITER(WEAPON_CHANCES.staff.num_owned_map.find(1));
         if (STAFF_ITER != chance::CountChanceMap_t::const_iterator())
+        {
             typeKindChanceMap[item::weapon_type::Staff] = std::make_pair(0, STAFF_ITER->second);
+        }
 
         //check for no-weapon case
         if (typeKindChanceMap.empty())
+        {
             return itemsSPtrVecPair;
+        }
 
         //random select weapon
         item::weapon_type::Enum randomSelectedWeaponType(typeKindChanceMap.begin()->first);
@@ -332,15 +379,23 @@ namespace ownership
                 //
                 chance::SizeChanceMap_t::const_iterator CITER_SMALL(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small));
                 if (CITER_SMALL != chance::SizeChanceMap_t::const_iterator())
+                {
                     if (RAND < CITER_SMALL->second)
+                    {
                         knifeSize = sfml_util::Size::Small;
+                    }
+                }
                 //
                 if (knifeSize != sfml_util::Size::Small)
                 {
                     chance::SizeChanceMap_t::const_iterator CITER_MED(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Medium));
                     if (CITER_MED != chance::SizeChanceMap_t::const_iterator())
+                    {
                         if (RAND < (CITER_SMALL->second + CITER_MED->second))
+                        {
                             knifeSize = sfml_util::Size::Medium;
+                        }
+                    }
                 }
 
                 const bool IS_DAGGER(misc::random::Float() < WEAPON_CHANCES.knife.is_dagger);

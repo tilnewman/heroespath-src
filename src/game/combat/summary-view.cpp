@@ -286,17 +286,18 @@ namespace combat
     {
         itemWithTextVec_.clear();
 
+        auto creaturePtr{ combatNodePtr->Creature() };
         std::ostringstream ss;
-        if (combatNodePtr->Creature()->Name() != combatNodePtr->Creature()->Race().Name())
+        if (creaturePtr->Name() != creaturePtr->Race().Name())
         {
-            ss << combatNodePtr->Creature()->Name() << "\n";
+            ss << creaturePtr->Name() << "\n";
         }
 
-        ss << combatNodePtr->Creature()->Race().Name();
+        ss << creaturePtr->Race().Name();
 
-        if (combatNodePtr->Creature()->Role().Which() != creature::role::Wolfen)
+        if (creaturePtr->Role().Which() != creature::role::Wolfen)
         {
-            ss << ", " + combatNodePtr->Creature()->Role().Name();
+            ss << ", " + creaturePtr->Role().Name();
         }
 
         const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(
@@ -312,14 +313,14 @@ namespace combat
 
         std::ostringstream healthSS;
         healthSS << "Health: ";
-        if (combatNodePtr->Creature()->IsPlayerCharacter())
+        if (creaturePtr->IsPlayerCharacter())
         {
-            healthSS << combatNodePtr->Creature()->HealthCurrent() << "/" 
-                     << combatNodePtr->Creature()->HealthNormal();
+            healthSS << creaturePtr->HealthCurrent() << "/" 
+                     << creaturePtr->HealthNormal();
         }
         else
         {
-            healthSS << combatNodePtr->Creature()->HealthPercentStr();
+            healthSS << creaturePtr->HealthPercentStr();
         }
 
         const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
@@ -334,7 +335,7 @@ namespace combat
             sf::FloatRect() );
 
         std::ostringstream armorRatingSS;
-        armorRatingSS << "Armor Rating: " << combatNodePtr->Creature()->ArmorRating();
+        armorRatingSS << "Armor Rating: " << creaturePtr->ArmorRating();
 
         const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
             armorRatingSS.str(),
@@ -348,7 +349,7 @@ namespace combat
             sf::FloatRect() );
 
         const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(
-            combatNodePtr->Creature()->Body().ToString(),
+            creaturePtr->Body().ToString(),
             sfml_util::FontManager::Instance()->Font_Default1(),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light(),
@@ -361,7 +362,7 @@ namespace combat
             sf::FloatRect() );
 
         std::ostringstream condSS;
-        condSS << "Condition:  " << combatNodePtr->Creature()->ConditionNames(6);
+        condSS << "Condition:  " << creaturePtr->ConditionNames(6);
 
         const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
             condSS.str(),
@@ -384,7 +385,7 @@ namespace combat
         const float TOP_TEXT_SPACER(sfml_util::MapByRes(10.0f, 25.0f));
         const float CREATURE_TEXT_POS_LEFT(IMAGE_POS_LEFT + IMAGE_WIDTH + IMAGE_EDGE_PAD_);
 
-        if (combatNodePtr->Creature()->IsPlayerCharacter())
+        if (creaturePtr->IsPlayerCharacter())
         {
             nameTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 IMAGE_POS_TOP + TOP_TEXT_SPACER);
@@ -443,7 +444,9 @@ namespace combat
         //first weapons
         item::ItemPVec_t weaponItemsToDisplay;
         item::ItemPVec_t weaponItemsToIgnore;
-        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+
+        auto const ITEMS_EQUIPPED_VEC{ creaturePtr->Inventory().ItemsEquipped() };
+        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
@@ -454,7 +457,7 @@ namespace combat
         //only list bodypart weapons if there are not any others equipped
         if (weaponItemsToDisplay.empty())
         {
-            for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -464,7 +467,7 @@ namespace combat
         }
         else
         {
-            for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+            for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -479,7 +482,7 @@ namespace combat
         }
 
         //then armor
-        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->IsArmor())
             {
@@ -488,7 +491,7 @@ namespace combat
         }
 
         //then misc
-        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
             {
@@ -497,7 +500,7 @@ namespace combat
         }
 
         //then everything else (clothes, etc)
-        for (auto const NEXT_ITEM_PTR : combatNodePtr->Creature()->Inventory().ItemsEquipped())
+        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             auto const IWTV_CITER{ std::find_if(itemWithTextVec_.begin(),
                                                 itemWithTextVec_.end(),

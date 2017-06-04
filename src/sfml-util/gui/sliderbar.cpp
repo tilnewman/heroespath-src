@@ -315,15 +315,21 @@ namespace gui
         if (IsInEntityRegion(MOUSE_POS_V))
         {
             if (WHEEL_MOTION < 0.0f)
+            {
                 currentVal_ -= 0.02f;
+            }
             else
+            {
                 currentVal_ += 0.02f;
+            }
 
             SetupAllPositions();
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -356,10 +362,16 @@ namespace gui
     void SliderBar::SetPadPosition()
     {
         if (currentVal_ > 1.0f)
+        {
             currentVal_ = 1.0f;
+        }
         else
+        {
             if (currentVal_ < 0.0f)
+            {
                 currentVal_ = 0.0f;
+            }
+        }
 
         const sf::Vector2f POS_V(GetEntityPos());
 
