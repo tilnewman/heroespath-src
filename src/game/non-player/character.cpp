@@ -90,39 +90,39 @@ namespace non_player
 
     bool operator==(const Character & L, const Character & R)
     {
-        if ( std::tie(L.name_,
-                      L.imageFilename_,
-                      L.sex_,
-                      L.bodyType_,
-                      L.race_,
-                      L.role_,
-                      L.stats_,
-                      L.serialNumber_,
-                      L.healthCurrent_,
-                      L.healthNormal_,
-                      L.rank_,
-                      L.experience_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.manaCurrent_,
-                      L.manaNormal_)
-                ==
-                std::tie(R.name_,
-                         R.imageFilename_,
-                         R.sex_,
-                         R.bodyType_,
-                         R.race_,
-                         R.role_,
-                         R.stats_,
-                         R.serialNumber_,
-                         R.healthCurrent_,
-                         R.healthNormal_,
-                         R.rank_,
-                         R.experience_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.manaCurrent_,
-                         R.manaNormal_) == false)
+        if (std::tie(L.name_,
+                     L.imageFilename_,
+                     L.sex_,
+                     L.bodyType_,
+                     L.race_,
+                     L.role_,
+                     L.stats_,
+                     L.serialNumber_,
+                     L.healthCurrent_,
+                     L.healthNormal_,
+                     L.rank_,
+                     L.experience_,
+                     L.dateTimeCreated_,
+                     L.achievements_,
+                     L.manaCurrent_,
+                     L.manaNormal_)
+               !=
+               std::tie(R.name_,
+                        R.imageFilename_,
+                        R.sex_,
+                        R.bodyType_,
+                        R.race_,
+                        R.role_,
+                        R.stats_,
+                        R.serialNumber_,
+                        R.healthCurrent_,
+                        R.healthNormal_,
+                        R.rank_,
+                        R.experience_,
+                        R.dateTimeCreated_,
+                        R.achievements_,
+                        R.manaCurrent_,
+                        R.manaNormal_))
         {
             return false;
         }
@@ -143,7 +143,7 @@ namespace non_player
 
     bool operator<(const Character & L, const Character & R)
     {
-        if ( std::tie(L.name_,
+        if ((std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -175,7 +175,7 @@ namespace non_player
                          R.dateTimeCreated_,
                          R.achievements_,
                          R.manaCurrent_,
-                         R.manaNormal_) == true)
+                         R.manaNormal_)) == true)
         {
             return true;
         }
