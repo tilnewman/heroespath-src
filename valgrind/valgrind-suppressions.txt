@@ -56,4 +56,21 @@
    fun:_ZNK2sf4Font13findGlyphRectERNS0_4PageEjj
    ...
 }
+{
+   SFMLBug4_LeakingTinyAmount
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.12.2.0.41591
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.12.2.0.41591
+   fun:glXCreateContext
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-window.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-window.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-window.so.2.3.2
+   fun:_ZN2sf10GlResourceC1Ev
+   fun:_ZN2sf6WindowC1Ev
+   fun:_ZN2sf12RenderWindowC1ENS_9VideoModeERKNS_6StringEjRKNS_15ContextSettingsE
+   fun:_ZSt11make_uniqueIN2sf12RenderWindowEIRKNS0_9VideoModeERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKjRNS0_15ContextSettingsEEENSt9_MakeUniqIT_E15__single_objectEDpOT0_
+   fun:_ZN9sfml_util7Display16OpenRenderWindowERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEjj
+}
 
