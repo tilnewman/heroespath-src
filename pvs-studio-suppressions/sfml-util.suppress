@@ -127,4 +127,388 @@
     <CodeCurrent>2327452172</CodeCurrent>
     <CodeNext>52101514</CodeNext>
   </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'winUPtr_-&gt;getSettings()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>450340680</CodeCurrent>
+    <CodeNext>321472032</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'textRegionUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2783311266</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V537</ErrorCode>
+    <Message>Consider reviewing the correctness of 'x' item's usage.</Message>
+    <CodePrev>531326507</CodePrev>
+    <CodeCurrent>447444523</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'accentSprite__.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2115438035</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'accentSprite__.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>846869903</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2141703245</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2141703245</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1480449690</CodeCurrent>
+    <CodeNext>407926401</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1480449690</CodeCurrent>
+    <CodeNext>407926401</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'playerSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3066932618</CodeCurrent>
+    <CodeNext>3917136761</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'POPUP_INFO_.Images()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1359151158</CodeCurrent>
+    <CodeNext>2019415326</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>date-time.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'PTIME.date()' expression repeatedly.</Message>
+    <CodePrev>237077128</CodePrev>
+    <CodeCurrent>460712855</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>date-time.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'PTIME.time_of_day()' expression repeatedly.</Message>
+    <CodePrev>237077128</CodePrev>
+    <CodeCurrent>2703338716</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1480449690</CodeCurrent>
+    <CodeNext>407926401</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>4085663185</CodeCurrent>
+    <CodeNext>2044390581</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1480449690</CodeCurrent>
+    <CodeNext>407926401</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>4085663185</CodeCurrent>
+    <CodeNext>2044390581</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'spellSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>1512520965</CodePrev>
+    <CodeCurrent>508667871</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>text-rendering.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'textSnippetVec[i].sf_text' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3177741578</CodeCurrent>
+    <CodeNext>1759321037</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>113</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2611340669</CodeCurrent>
+    <CodeNext>2340706172</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...cale, _, _, _, _, true, t...</Message>
+    <CodePrev>2611340669</CodePrev>
+    <CodeCurrent>2340706172</CodeCurrent>
+    <CodeNext>3129711703</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t i(_); i &lt; _; ++i).</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1798866621</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...signed int&gt;(_)));.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>467462050</CodeCurrent>
+    <CodeNext>3296329284</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...L_COUNT; i+=_).</Message>
+    <CodePrev>467462050</CodePrev>
+    <CodeCurrent>3296329284</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t&lt;unsigned&gt;(_)) % destIma...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>531326507</CodeCurrent>
+    <CodeNext>447444523</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t&lt;unsigned&gt;(_)) / destIma...</Message>
+    <CodePrev>531326507</CodePrev>
+    <CodeCurrent>447444523</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...(sf::Quads, _);.</Message>
+    <CodePrev>1337975057</CodePrev>
+    <CodeCurrent>3573032244</CodeCurrent>
+    <CodeNext>629943052</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: j += _;.</Message>
+    <CodePrev>5550207</CodePrev>
+    <CodeCurrent>1887</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...LE_HEIGHT * _);.</Message>
+    <CodePrev>518471223</CodePrev>
+    <CodeCurrent>2544677292</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V106</ErrorCode>
+    <Message>Implicit type conversion first argument 'TILE_WIDTH * TILE_HEIGHT * _' of function 'resize' to memsize type.</Message>
+    <CodePrev>518471223</CodePrev>
+    <CodeCurrent>2544677292</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>tilemap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tIndex++) * _)]);.</Message>
+    <CodePrev>4042596297</CodePrev>
+    <CodeCurrent>1785416454</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...PerPixel) ? _ : DESKTOP_R...</Message>
+    <CodePrev>2697102064</CodePrev>
+    <CodeCurrent>753001550</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...sPerPixel = _;.</Message>
+    <CodePrev>715893917</CodePrev>
+    <CodeCurrent>1432187348</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...epthBits) ? _ : winPtr-&gt;g...</Message>
+    <CodePrev>4132464837</CodePrev>
+    <CodeCurrent>2026937618</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...PerPixel) ? _ : VM_PARAM....</Message>
+    <CodePrev>2176218482</CodePrev>
+    <CodeCurrent>4119950306</CodeCurrent>
+    <CodeNext>2491526452</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _); }.</Message>
+    <CodePrev>3644747448</CodePrev>
+    <CodeCurrent>1285054201</CodeCurrent>
+    <CodeNext>810179834</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>1285054201</CodePrev>
+    <CodeCurrent>810179834</CodeCurrent>
+    <CodeNext>2905522806</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _); }.</Message>
+    <CodePrev>810179834</CodePrev>
+    <CodeCurrent>2905522806</CodeCurrent>
+    <CodeNext>4076033200</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ _ };.</Message>
+    <CodePrev>249459209</CodePrev>
+    <CodeCurrent>2367083790</CodeCurrent>
+    <CodeNext>191973204</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Color(_, _, _) };.</Message>
+    <CodePrev>2367083790</CodePrev>
+    <CodeCurrent>191973204</CodeCurrent>
+    <CodeNext>3182147129</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...NumberValid(_))).</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>1055481579</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...se::Select, _);.</Message>
+    <CodePrev>2934378610</CodePrev>
+    <CodeCurrent>1475259273</CodeCurrent>
+    <CodeNext>88117</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>resolution.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: &lt;&lt; std::setw(_) &lt;&lt; width.</Message>
+    <CodePrev>541037173</CodePrev>
+    <CodeCurrent>58306856</CodeCurrent>
+    <CodeNext>634</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>resolution.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: &lt;&lt; std::setw(_) &lt;&lt; height.</Message>
+    <CodePrev>634</CodePrev>
+    <CodeCurrent>116613408</CodeCurrent>
+    <CodeNext>766</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sound-manager.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...c.size() != _).</Message>
+    <CodePrev>3934571526</CodePrev>
+    <CodeCurrent>117529958</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>text-rendering.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sfText.getPosition()' expression repeatedly.</Message>
+    <CodePrev>24540960</CodePrev>
+    <CodeCurrent>3610363650</CodeCurrent>
+    <CodeNext>510061026</CodeNext>
+  </sfml-util>
 </NewDataSet>

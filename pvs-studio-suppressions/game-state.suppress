@@ -63,4 +63,36 @@
     <CodeCurrent>2327452172</CodeCurrent>
     <CodeNext>52101514</CodeNext>
   </game-state>
+  <game-state>
+    <FileName>game-state-factory.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'itr-&gt;path()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>857688883</CodeCurrent>
+    <CodeNext>1403610541</CodeNext>
+  </game-state>
+  <game-state>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </game-state>
+  <game-state>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2611340669</CodeCurrent>
+    <CodeNext>2340706172</CodeNext>
+  </game-state>
+  <game-state>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...cale, _, _, _, _, true, t...</Message>
+    <CodePrev>2611340669</CodePrev>
+    <CodeCurrent>2340706172</CodeCurrent>
+    <CodeNext>3129711703</CodeNext>
+  </game-state>
 </NewDataSet>
