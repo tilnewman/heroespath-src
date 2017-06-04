@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
         {
             for (int i(2); i < argc; ++i)
             {
-                std::cout << "Ignoring extra command line argument: " << argv[i] << std::endl;
+                std::cout << "Ignoring extra command line argument: \"" << argv[i] << "\"" << std::endl;
             }
         }
     }
@@ -97,6 +97,7 @@ int main(int argc, char * argv[])
     {
         misc::Platform::Acquire();
         misc::Platform::Instance()->DetectAndLog();
+
         if (misc::Platform::Instance()->IsSupported() == false)
         {
             throw std::runtime_error("This system (platform) is not supported.");
@@ -112,21 +113,44 @@ int main(int argc, char * argv[])
         //setup the graphics display
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
-        sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0/*default to antialiasing disabled*/);
+        sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
         sfml_util::WinPtr_t winPtr{ sfml_util::Display::Instance()->GetWindow() };
-        winPtr->setFramerateLimit(static_cast<unsigned int>(gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
-        winPtr->setVerticalSyncEnabled( gameDataFilePtr->GetCopyBool("system-window-sync", true) );
 
+        winPtr->setFramerateLimit(static_cast<unsigned int>(
+            gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
+        
+        winPtr->setVerticalSyncEnabled(
+            gameDataFilePtr->GetCopyBool("system-window-sync", true) );
+        
         //set resource paths for manager classes
-        sfml_util::FontManager::SetFontsDirectory(                      gameDataFilePtr->GetMediaPath("media-fonts-dir"));
-        sfml_util::gui::PopupManager::SetTexturesDirectoryPaths(        gameDataFilePtr->GetMediaPath("media-images-backgrounds-popup-dir"), gameDataFilePtr->GetMediaPath("media-images-accents-dir"));
-        sfml_util::SoundManager::SetSoundsDirectory(                    gameDataFilePtr->GetMediaPath("media-sounds-dir"), gameDataFilePtr->GetMediaPath("media-music-dir"));
-        sfml_util::gui::ItemImageManager::SetItemImageDirectory(        gameDataFilePtr->GetMediaPath("media-images-items-dir"));
-        sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(gameDataFilePtr->GetMediaPath("media-images-creatures-dir") );
-        sfml_util::gui::TitleImageManager::SetTitleImageDirectory(      gameDataFilePtr->GetMediaPath("media-images-titles-dir") );
-        sfml_util::gui::SpellImageManager::SetImagesDirectory(          gameDataFilePtr->GetMediaPath("media-images-spells-dir") );
-        sfml_util::gui::ConditionImageManager::SetImagesDirectory(      gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
-        sfml_util::gui::CombatImageManager::SetImagesDirectory(         gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
+        sfml_util::FontManager::SetFontsDirectory(
+            gameDataFilePtr->GetMediaPath("media-fonts-dir"));
+
+        sfml_util::gui::PopupManager::SetTexturesDirectoryPaths(
+            gameDataFilePtr->GetMediaPath("media-images-backgrounds-popup-dir"),
+            gameDataFilePtr->GetMediaPath("media-images-accents-dir"));
+
+        sfml_util::SoundManager::SetSoundsDirectory(
+            gameDataFilePtr->GetMediaPath("media-sounds-dir"),
+            gameDataFilePtr->GetMediaPath("media-music-dir"));
+
+        sfml_util::gui::ItemImageManager::SetItemImageDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-items-dir"));
+
+        sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-creatures-dir") );
+
+        sfml_util::gui::TitleImageManager::SetTitleImageDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-titles-dir") );
+
+        sfml_util::gui::SpellImageManager::SetImagesDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-spells-dir") );
+
+        sfml_util::gui::ConditionImageManager::SetImagesDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
+
+        sfml_util::gui::CombatImageManager::SetImagesDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-combat-dir") );
 
         //load game assets Stage 1 (warehouse objects)
         game::creature::title::Warehouse::Fill();
@@ -185,13 +209,17 @@ int main(int argc, char * argv[])
         }
         catch (const std::exception & E)
         {
-            std::cout << APPLICATION_NAME << " threw exception(\"" << E.what() << "\")" << std::endl;
-            M_LOG(*logPtr, APPLICATION_NAME << " threw exception(\"" << E.what() << "\")");
+            std::cout << APPLICATION_NAME << " threw exception(\""
+                << E.what() << "\")" << std::endl;
+
+            M_LOG( * logPtr, APPLICATION_NAME << " threw exception(\"" << E.what() << "\")");
         }
         catch (...)
         {
-            std::cout << APPLICATION_NAME << " threw an unknown non-std exception." << std::endl;
-            M_LOG(*logPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
+            std::cout << APPLICATION_NAME << " threw an unknown non-std exception."
+                << std::endl;
+
+            M_LOG( * logPtr, APPLICATION_NAME << " threw an unknown non-std exception.");
         }
 
         //Close the display window is closed before freeing resources.

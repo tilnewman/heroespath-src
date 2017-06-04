@@ -86,7 +86,9 @@ namespace sfml_util
 
     Display * Display::Instance()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::Display::Instance() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::Display::Instance() found instanceUPtr that was null.");
+
         return instanceUPtr_.get();
     }
 
@@ -109,7 +111,9 @@ namespace sfml_util
 
     void Display::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::Display::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::Display::Release() found instanceUPtr that was null.");
+
         Display::Instance()->CloseRenderWindow();
         instanceUPtr_.reset();
     }
@@ -275,15 +279,20 @@ namespace sfml_util
         bool isCurrentVideoModeListed(false);
         const sf::VideoMode CURRENT_VIDEO_MODE( GetCurrentVideoMode() );
 
-        std::vector<sf::VideoMode> fullScreenSupportedModesVec( sf::VideoMode::getFullscreenModes() );
+        std::vector<sf::VideoMode> fullScreenSupportedModesVec(
+            sf::VideoMode::getFullscreenModes() );
+
         for (auto const & NEXT_VIDEO_MODE : fullScreenSupportedModesVec)
         {
             const Resolution R( ConvertVideoModeToReslution(NEXT_VIDEO_MODE) );
             if (IsResolutionSupported(R))
                 vec.push_back(R);
 
-            if ((CURRENT_VIDEO_MODE.width == R.width) && (CURRENT_VIDEO_MODE.height == R.height))
+            if ((CURRENT_VIDEO_MODE.width == R.width) &&
+                (CURRENT_VIDEO_MODE.height == R.height))
+            {
                 isCurrentVideoModeListed = true;
+            }
         }
 
         //add the current video mode if supported and not already listed
@@ -299,16 +308,20 @@ namespace sfml_util
         M_HP_LOG("Listing all SUPPORTED full-screen video modes this display is capable of:");
 
         ResolutionVec_t supportedFullScreenResolutionsVec;
-        const std::size_t NUM_SUPPORTED_RESOLUTIONS( ComposeSupportedFullScreenVideoModesVec(supportedFullScreenResolutionsVec) );
+        const std::size_t NUM_SUPPORTED_RESOLUTIONS(
+            ComposeSupportedFullScreenVideoModesVec(supportedFullScreenResolutionsVec) );
 
         if (0 == NUM_SUPPORTED_RESOLUTIONS)
         {
-            M_HP_LOG("THERE ARE NO SUPPORTED MODES!  Minimum resolution required is " << GetWinWidthMin() << "x" << GetWinHeightMin() << ".");
+            M_HP_LOG("THERE ARE NO SUPPORTED MODES!  Minimum resolution required is "
+                << GetWinWidthMin() << "x" << GetWinHeightMin() << ".");
         }
         else
         {
             for (std::size_t i(0); i < NUM_SUPPORTED_RESOLUTIONS; ++i)
+            {
                 M_HP_LOG("\t" << supportedFullScreenResolutionsVec[i].ToString());
+            }
         }
 
         return NUM_SUPPORTED_RESOLUTIONS;
@@ -320,28 +333,47 @@ namespace sfml_util
         sf::VideoMode videoMode;
 
         const sf::VideoMode DESKTOP_REPORTED_MODE(sf::VideoMode::getDesktopMode());
-        const sf::VideoMode CURR_VIDEO_MODE(DESKTOP_REPORTED_MODE.width, DESKTOP_REPORTED_MODE.height, ((0 == DESKTOP_REPORTED_MODE.bitsPerPixel) ? 32 : DESKTOP_REPORTED_MODE.bitsPerPixel));
+        const sf::VideoMode CURR_VIDEO_MODE(
+            DESKTOP_REPORTED_MODE.width,
+            DESKTOP_REPORTED_MODE.height,
+            ((0 == DESKTOP_REPORTED_MODE.bitsPerPixel) ? 32 : DESKTOP_REPORTED_MODE.bitsPerPixel));
 
         if (IsCurrentDesktopResolutionSupported())
         {
-            M_HP_LOG("Current video mode " << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString() << " is supported, and will be used.");
+            M_HP_LOG("Current video mode "
+                << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString()
+                << " is supported, and will be used.");
+
             videoMode = CURR_VIDEO_MODE;
         }
         else
         {
-            M_HP_LOG("Current video mode " << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString() << " is NOT supported.  The resolution must be greater, at least " << GetWinWidthMin() << "x" << GetWinHeightMin() << ".  Below is a list of supported modes you can use instead.");
+            M_HP_LOG("Current video mode "
+                << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString()
+                << " is NOT supported.  The resolution must be greater, at least "
+                << GetWinWidthMin() << "x" << GetWinHeightMin()
+                << ".  Below is a list of supported modes you can use instead.");
+
             LogAllSupportedFullScreenVideoModes();
 
             ResolutionVec_t supportedResolutionsVec;
-            const std::size_t NUM_SUPPORTED(ComposeSupportedFullScreenVideoModesVec(supportedResolutionsVec));
+            const std::size_t NUM_SUPPORTED(
+                ComposeSupportedFullScreenVideoModesVec(supportedResolutionsVec));
+
             if (0 == NUM_SUPPORTED)
             {
-                M_HP_LOG("No valid video modes found that are supported by this system.  See above for a list of supported video modes.  Attempt to increase your resolution to one of these.");
-                throw std::runtime_error("No valid video modes found that are supported by this system.");
+                M_HP_LOG("No valid video modes found that are supported by this system.  "
+                    << "See above for a list of supported video modes.  Attempt to increase "
+                    << "your resolution to one of these.");
+
+                throw std::runtime_error(
+                    "No valid video modes found that are supported by this system.");
             }
             else
             {
-                M_HP_LOG("Anoter supported video mode " << supportedResolutionsVec[0].ToString() << " was found to be compatible with your hardware, and will be used.");
+                M_HP_LOG("Anoter supported video mode " << supportedResolutionsVec[0].ToString()
+                    << " was found to be compatible with your hardware, and will be used.");
+
                 videoMode.width        = supportedResolutionsVec[0].width;
                 videoMode.height       = supportedResolutionsVec[0].height;
                 videoMode.bitsPerPixel = CURR_VIDEO_MODE.bitsPerPixel;
@@ -352,9 +384,12 @@ namespace sfml_util
     }
 
 
-    void Display::OpenRenderWindow(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
+    void Display::OpenRenderWindow(const std::string & TITLE,
+                                   const sf::Uint32    STYLE,
+                                   const unsigned      ANTIALIAS_LEVEL)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((winUPtr_.get() == nullptr), "sfml_util::Display::OpenRenderWindow() called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS((winUPtr_.get() == nullptr),
+            "sfml_util::Display::OpenRenderWindow() called twice.");
 
         const sf::VideoMode VIDEO_MODE(EstablishVideoMode());
 
@@ -363,18 +398,19 @@ namespace sfml_util
 
         winUPtr_ = std::make_unique<sf::RenderWindow>(VIDEO_MODE, TITLE, STYLE, contextSettings);
 
-        M_ASSERT_OR_LOGANDTHROW_SS(winUPtr_->isOpen(), "Unable to open render window.  Check console for explanation.  Bail.");
+        M_ASSERT_OR_LOGANDTHROW_SS(winUPtr_->isOpen(),
+            "Unable to open render window.  Check console for explanation.  Bail.");
 
-        M_HP_LOG("Window open " << winUPtr_->getSize().x << "x"
-                                << winUPtr_->getSize().y << " with color depth reported as "
-                                << winUPtr_->getSettings().depthBits
-                                << ((0 == winUPtr_->getSettings().depthBits) ? "(which is really 32...), " : ", " )
-                                << "AA=" << winUPtr_->getSettings().antialiasingLevel
-                                << ".");
+        M_HP_LOG("Window open " << winUPtr_->getSize().x << "x" << winUPtr_->getSize().y
+            << " with color depth reported as " << winUPtr_->getSettings().depthBits
+            << ((0 == winUPtr_->getSettings().depthBits) ? "(which is really 32...), " : ", " )
+            << "AA=" << winUPtr_->getSettings().antialiasingLevel
+            << ".");
 
         if (winUPtr_->getSettings().antialiasingLevel != ANTIALIAS_LEVEL)
         {
-            M_HP_LOG("Window antialias level changed automatically from requested " << ANTIALIAS_LEVEL << " to " << winUPtr_->getSettings().antialiasingLevel << ".");
+            M_HP_LOG("Window antialias level changed automatically from requested "
+                << ANTIALIAS_LEVEL << " to " << winUPtr_->getSettings().antialiasingLevel << ".");
         }
 
         SetWindowTitle(TITLE);
@@ -384,7 +420,9 @@ namespace sfml_util
 
     void Display::CloseRenderWindow()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((winUPtr_.get() != nullptr), "sfml_util::Display::CloseRenderWindow() called before OpenRenderWindow().");
+        M_ASSERT_OR_LOGANDTHROW_SS((winUPtr_.get() != nullptr),
+            "sfml_util::Display::CloseRenderWindow() called before OpenRenderWindow().");
+
         winUPtr_->close();
         winUPtr_.reset();
     }
@@ -394,9 +432,12 @@ namespace sfml_util
     {
         sf::VideoMode currentVideoMode(sf::VideoMode::getDesktopMode());
 
-        //for some reason SFML seems to have the bpp set to zero when it is really 32... zTn 2016-10-10
+        //for some reason SFML seems to have the bpp set to zero
+        //when it is really 32... zTn 2016-10-10
         if (0 == currentVideoMode.bitsPerPixel)
+        {
             currentVideoMode.bitsPerPixel = 32;
+        }
 
         return currentVideoMode;
     }
@@ -408,42 +449,66 @@ namespace sfml_util
     }
 
 
-    DisplayChangeResult::Enum Display::ChangeVideoMode(const Resolution & RES_PARAM, const unsigned ANTIALIAS_LEVEL)
+    DisplayChangeResult::Enum Display::ChangeVideoMode(const Resolution & RES_PARAM,
+                                                       const unsigned ANTIALIAS_LEVEL)
     {
         Resolution resToUse(RES_PARAM);
         SetResolutionNameAndRatio(resToUse);
         auto winPtr{ Instance()->GetWindow() };
-        return ChangeVideoMode(sf::VideoMode(resToUse.width, resToUse.height, ((0 == winPtr->getSettings().depthBits) ? 32 : winPtr->getSettings().depthBits)), ANTIALIAS_LEVEL);
+        return ChangeVideoMode(
+            sf::VideoMode(
+                resToUse.width,
+                resToUse.height,
+                ((0 == winPtr->getSettings().depthBits) ? 32 : winPtr->getSettings().depthBits)),
+                ANTIALIAS_LEVEL);
     }
 
 
-    DisplayChangeResult::Enum Display::ChangeVideoMode(const sf::VideoMode & VM_PARAM, const unsigned ANTIALIAS_LEVEL_PARAM)
+    DisplayChangeResult::Enum Display::ChangeVideoMode(const sf::VideoMode & VM_PARAM,
+                                                       const unsigned ANTIALIAS_LEVEL_PARAM)
     {
         //verify window pointer
         auto winPtr{ Instance()->GetWindow() };
-        M_ASSERT_OR_LOGANDTHROW_SS((winPtr != nullptr), "sfml_util::Display::ChangeVideoMode(to=\"" << ConvertVideoModeToReslution(VM_PARAM).ToString() << "\", AA=" << ANTIALIAS_LEVEL_PARAM << ") was called while there was a null window pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((winPtr != nullptr),
+            "sfml_util::Display::ChangeVideoMode(to=\""
+            << ConvertVideoModeToReslution(VM_PARAM).ToString() << "\", AA="
+            << ANTIALIAS_LEVEL_PARAM << ") was called while there was a null window pointer.");
 
         //construct the intended video mode with 32bpp if the bpp was originally zero
-        const sf::VideoMode INTENDED_VIDEO_MODE(VM_PARAM.width, VM_PARAM.height, ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
+        const sf::VideoMode INTENDED_VIDEO_MODE(
+            VM_PARAM.width,
+            VM_PARAM.height,
+            ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
+
         const unsigned INTENDED_ANTIALIAS_LEVEL(ANTIALIAS_LEVEL_PARAM);
 
         //save original video mode for later comparrison
         const sf::VideoMode ORIG_VIDEO_MODE( GetCurrentVideoMode() );
         const unsigned ORIG_ANTIALIAS_LEVEL(winPtr->getSettings().antialiasingLevel );
 
-        if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE) && (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
+        if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE) &&
+            (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
         {
-            M_HP_LOG("Asked to change to a resolution and AA that matches the current resolution and AA.  Ignoring...");
+            M_HP_LOG("Asked to change to a resolution and AA that matches the current"
+                << "resolution and AA.  Ignoring...");
+
             return DisplayChangeResult::Success;
         }
 
-        M_HP_LOG("Changing resolution from " << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString() << " AA=" << ORIG_ANTIALIAS_LEVEL << " to " << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA=" << INTENDED_ANTIALIAS_LEVEL << ".");
+        M_HP_LOG("Changing resolution from "
+            << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString()
+            << " AA=" << ORIG_ANTIALIAS_LEVEL << " to "
+            << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
+            << " AA=" << INTENDED_ANTIALIAS_LEVEL << ".");
 
         winPtr->close();
 
         //re-open
         sf::ContextSettings contextSettings(0, 0, ANTIALIAS_LEVEL_PARAM);
-        winPtr->create(INTENDED_VIDEO_MODE, Instance()->GetWindowTitle(), Instance()->GetWindowStyle(), contextSettings);
+        winPtr->create(INTENDED_VIDEO_MODE,
+                       Instance()->GetWindowTitle(),
+                       Instance()->GetWindowStyle(),
+                       contextSettings);
 
         const bool WAS_SUCCESS(winPtr->isOpen());
         if (WAS_SUCCESS)
@@ -451,31 +516,59 @@ namespace sfml_util
             const sf::VideoMode NEW_VIDEO_MODE( GetCurrentVideoMode() );
             const unsigned NEW_ANTIALIAS_LEVEL( winPtr->getSettings().antialiasingLevel );
 
-            //for some reason sfml is finiky on some hardware and has a habit of switching back to the original video mode without warning or error
-            if ((NEW_VIDEO_MODE == ORIG_VIDEO_MODE) && (NEW_ANTIALIAS_LEVEL == ORIG_ANTIALIAS_LEVEL))
+            //for some reason sfml is finiky on some hardware and has a habit of switching
+            //back to the original video mode without warning or error
+            if ((NEW_VIDEO_MODE == ORIG_VIDEO_MODE) &&
+                (NEW_ANTIALIAS_LEVEL == ORIG_ANTIALIAS_LEVEL))
             {
-                M_HP_LOG("Failed to change video mode to the intended " << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA=" << INTENDED_ANTIALIAS_LEVEL << ", and for some reason SFML switched back to the original video mode of " << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString() << " AA=" << ORIG_ANTIALIAS_LEVEL << ".");
+                M_HP_LOG("Failed to change video mode to the intended "
+                    << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
+                    << " AA=" << INTENDED_ANTIALIAS_LEVEL
+                    << ", and for some reason SFML switched back to the original video mode of "
+                    << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString() << " AA="
+                    << ORIG_ANTIALIAS_LEVEL << ".");
+
                 return DisplayChangeResult::FailNoChange;
             }
             else
             {
-                if ((NEW_VIDEO_MODE == INTENDED_VIDEO_MODE) && (NEW_ANTIALIAS_LEVEL == INTENDED_ANTIALIAS_LEVEL))
+                if ((NEW_VIDEO_MODE == INTENDED_VIDEO_MODE) &&
+                    (NEW_ANTIALIAS_LEVEL == INTENDED_ANTIALIAS_LEVEL))
                 {
-                    M_HP_LOG("Changed video mode to " << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString() << " AA=" << NEW_ANTIALIAS_LEVEL);
+                    M_HP_LOG("Changed video mode to "
+                        << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString()
+                        << " AA=" << NEW_ANTIALIAS_LEVEL);
+
                     return DisplayChangeResult::Success;
                 }
                 else
                 {
-                    M_HP_LOG("Failed to change video mode to " << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA=" << NEW_ANTIALIAS_LEVEL << ".  For some unknown reason (ahem) SFML switched to a new video mode of " << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString() << " AA=" << NEW_ANTIALIAS_LEVEL << ".");
+                    M_HP_LOG("Failed to change video mode to "
+                        << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
+                        << " AA=" << NEW_ANTIALIAS_LEVEL
+                        << ". For some unknown reason (ahem) SFML switched to a new video mode of "
+                        << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString() << " AA="
+                        << NEW_ANTIALIAS_LEVEL << ".");
+
                     return DisplayChangeResult::FailChange;
                 }
             }
         }
         else
         {
-            M_HP_LOG("Failed to change video mode to " << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA=" << INTENDED_ANTIALIAS_LEVEL << ".  Reverting back to original video mode of " << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString() << " AA=" << ORIG_ANTIALIAS_LEVEL << " instead.");
+            M_HP_LOG("Failed to change video mode to "
+                << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
+                << " AA=" << INTENDED_ANTIALIAS_LEVEL
+                << ".  Reverting back to original video mode of "
+                << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString()
+                << " AA=" << ORIG_ANTIALIAS_LEVEL << " instead.");
+
             contextSettings.antialiasingLevel = ORIG_ANTIALIAS_LEVEL;
-            winPtr->create(ORIG_VIDEO_MODE,Instance()->GetWindowTitle(), Instance()->GetWindowStyle(), contextSettings);
+            winPtr->create(ORIG_VIDEO_MODE,
+                           Instance()->GetWindowTitle(),
+                           Instance()->GetWindowStyle(),
+                           contextSettings);
+
             return DisplayChangeResult::FailThenRevert;
         }
     }

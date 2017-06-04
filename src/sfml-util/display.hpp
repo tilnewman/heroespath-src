@@ -44,10 +44,18 @@ namespace sfml_util
     {
         enum Enum
         {
-            Success = 0,     //the new video mode was achieved
-            FailThenRevert, //failed to set new video mode so reverted back to the original
-            FailNoChange,  //failed to set new video mode and SFML set the mode back to what it was automatically
-            FailChange,   //failed to set new video mode and SFML set the mode to something completely different
+            //the new video mode was achieved
+            Success = 0,
+
+            //failed to set new video mode so reverted back to the original
+            FailThenRevert,
+
+            //failed to set new video mode and SFML set the mode back to what it was automatically
+            FailNoChange,
+            
+            //failed to set new video mode and SFML set the mode to something completely different
+            FailChange,
+
             Count
         };
 
@@ -87,8 +95,18 @@ namespace sfml_util
         unsigned int WinColorDepth() const;
         unsigned int AntialiasLevel() const;
 
-        inline const sf::FloatRect FullScreenRect() const   { return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight()); }
-        inline const sf::IntRect FullScreenRecti() const    { return sf::IntRect(0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight())); }
+        inline const sf::FloatRect FullScreenRect() const
+        {
+            return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight());
+        }
+
+        inline const sf::IntRect FullScreenRecti() const
+        {
+            return sf::IntRect(0,
+                               0,
+                               static_cast<int>(GetWinWidth()),
+                               static_cast<int>(GetWinHeight()));
+        }
 
         inline void SetWindowTitle(const std::string & TITLE_STR)   { winTitle_ = TITLE_STR; }
         inline const std::string GetWindowTitle() const             { return winTitle_; }
@@ -105,7 +123,8 @@ namespace sfml_util
         inline static float GetWinWidthMin()    { return 1280.0f; }
         inline static float GetWinHeightMin()   { return 900.0f;  }
 
-        //These are not enfoced.  They exist only to aid in setting screen positions that are relative to min/max sizes.
+        //These are not enfoced.  They exist only to aid in setting screen positions
+        //that are relative to min/max sizes.
         inline static float GetWinWidthMax()    { return 7680.0f; }
         inline static float GetWinHeightMax()   { return 4800.0f; }
 
@@ -114,10 +133,22 @@ namespace sfml_util
 
         static bool SetResolutionNameAndRatio(Resolution & res);
 
-        //Decided to allow resolutions that are equal or greater than the min required res.  zTn 2016-10-10
-        inline static bool IsVideoModeSupported(const sf::VideoMode & V)    { return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin())); }
-        inline static bool IsResolutionSupported(const Resolution & R)      { return ((R.width >= GetWinWidthMin()) && (R.height >= GetWinHeightMin())); }
-        inline static bool IsCurrentDesktopResolutionSupported()            { return IsVideoModeSupported(sf::VideoMode::getDesktopMode()); }
+        //Decided to allow resolutions that are equal or greater than the
+        //min required res.  zTn 2016-10-10
+        inline static bool IsVideoModeSupported(const sf::VideoMode & V)
+        {
+            return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin()));
+        }
+
+        inline static bool IsResolutionSupported(const Resolution & R)
+        {
+            return ((R.width >= GetWinWidthMin()) && (R.height >= GetWinHeightMin()));
+        }
+
+        inline static bool IsCurrentDesktopResolutionSupported()
+        {
+            return IsVideoModeSupported(sf::VideoMode::getDesktopMode());
+        }
 
         static void LogAllFullScreenVideoModes();
 
@@ -138,9 +169,11 @@ namespace sfml_util
         static const sf::VideoMode GetCurrentVideoMode();
         static const Resolution    GetCurrentResolution();
 
-        static DisplayChangeResult::Enum ChangeVideoMode(const Resolution & RES, const unsigned ANTIALIAS_LEVEL);
+        static DisplayChangeResult::Enum ChangeVideoMode(const Resolution & RES,
+                                                         const unsigned ANTIALIAS_LEVEL);
 
-        static DisplayChangeResult::Enum ChangeVideoMode(const sf::VideoMode & VM, const unsigned ANTIALIAS_LEVEL);
+        static DisplayChangeResult::Enum ChangeVideoMode(const sf::VideoMode & VM,
+                                                         const unsigned ANTIALIAS_LEVEL);
 
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
