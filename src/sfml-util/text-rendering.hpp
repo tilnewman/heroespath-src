@@ -42,7 +42,7 @@ namespace sfml_util
     namespace gui
     {
         class SliderBar;
-        using SliderBarSPtr_t = std::shared_ptr<SliderBar>;
+        using SliderBarPtr_t = SliderBar *;
     }
 
 namespace text_render
@@ -188,7 +188,9 @@ namespace text_render
             for (std::size_t c(0); c < NUM_SNIPPETS; ++c)
             {
                 if (WILL_MOVE)
+                {
                     renderedText.vec_vec[l][c].sf_text.move(0.0f, MOVE_VERT);
+                }
 
                 target.draw(renderedText.vec_vec[l][c].sf_text, states);
             }
@@ -197,19 +199,19 @@ namespace text_render
         states.blendMode = ORIG_BLEND_MODE;
     }
 
-    void RenderToArea(const std::string &    NAME,
-                      const gui::TextInfo &  TEXT_INFO,
-                      gui::SliderBarSPtr_t & sliderBarSPtr,
-                      RenderedText &         renderedText,
-                      const sf::FloatRect &  REGION,
-                      const unsigned int     SMALLER_FONT_SIZE    = 0,//zero means don't resize the font
-                      const Margins &        MARGINS              = Margins(),
-                      const bool             WILL_ALLOW_SCROLLBAR = true);
+    //The caller is responsible for the sliderBarPtr that may new'd and returned.
+    gui::SliderBarPtr_t RenderToArea(const std::string &   NAME,
+                                     const gui::TextInfo & TEXT_INFO,
+                                     RenderedText &        renderedText,
+                                     const sf::FloatRect & REGION,
+                                     const unsigned int    SMALLER_FONT_SIZE    = 0,
+                                     const Margins &       MARGINS              = Margins(),
+                                     const bool            WILL_ALLOW_SCROLLBAR = true);
 
-    void ApplyToArea(const std::string &    NAME,
-                     gui::SliderBarSPtr_t & sliderBarSPtr,
-                     const RenderedText &   RENDERED_TEXT,
-                     const sf::FloatRect &  REGION);
+    //The caller is responsible for the sliderBarPtr that may new'd and returned.
+    gui::SliderBarPtr_t ApplyToArea(const std::string &   NAME,
+                                    const RenderedText &  RENDERED_TEXT,
+                                    const sf::FloatRect & REGION);
 
     RendTextSPtr_t RenderAndDraw(RenderedText & renderedText);
 

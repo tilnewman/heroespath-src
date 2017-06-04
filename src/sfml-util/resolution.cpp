@@ -28,8 +28,11 @@
 // resolution.cpp
 //
 #include "resolution.hpp"
+
 #include <sstream>
 #include <iomanip>
+#include <tuple>
+
 
 namespace sfml_util
 {
@@ -78,41 +81,36 @@ namespace sfml_util
 
     bool operator==(const Resolution & L, const Resolution & R)
     {
-        return ((L.name == R.name)     &&
-                (L.width == R.width)   &&
-                (L.height == R.height) &&
-                (L.bits_per_pixel == R.bits_per_pixel) &&
-                (L.aspect_ratio == R.aspect_ratio));
-    }
-
-
-    bool operator!=(const Resolution & L, const Resolution & R)
-    {
-        return ! (L == R);
+        return std::tie(L.name,
+                        L.width,
+                        L.height,
+                        L.aspect_ratio,
+                        L.bits_per_pixel)
+            ==
+            std::tie(R.name,
+                     R.width,
+                     R.height,
+                     R.aspect_ratio,
+                     R.bits_per_pixel);
     }
 
 
     bool operator==(const Resolution & R, const sf::VideoMode & V)
     {
-        return ((R.width == V.width) && (R.height == V.height) && (R.bits_per_pixel == V.bitsPerPixel));
-    }
-
-
-    bool operator!=(const Resolution & R, const sf::VideoMode & V)
-    {
-        return ! (R == V);
+        //ignore aspect ratio and name
+        return std::tie(R.width,
+                        R.height,
+                        R.bits_per_pixel)
+            ==
+            std::tie(V.width,
+                     V.height,
+                     V.bitsPerPixel);
     }
 
 
     bool operator==(const sf::VideoMode & V, const Resolution & R)
     {
         return (R == V);
-    }
-
-
-    bool operator!=(const sf::VideoMode & V, const Resolution & R)
-    {
-        return (R != V);
     }
 
 }

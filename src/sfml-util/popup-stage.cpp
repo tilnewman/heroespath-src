@@ -95,7 +95,7 @@ namespace sfml_util
         buttonCancelSPtr_          (),
         buttonContinueSPtr_        (),
         buttonOkaySPtr_            (),
-        sliderbarSPtr_             (),
+        sliderbarUPtr_             (),
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
         willTextBoxUpdate_         (true),
@@ -174,7 +174,7 @@ namespace sfml_util
             if (isImageProcAllowed_)
             {
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                std::size_t index(static_cast<std::size_t>(sliderbarSPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
+                std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
 
                 if (index >= POPUP_INFO_.Images().size())
                     index = POPUP_INFO_.Images().size() - 1;
@@ -230,7 +230,9 @@ namespace sfml_util
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -266,11 +268,10 @@ namespace sfml_util
                     return false;
                 }
             }
-            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
+                     (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
-                //TODO handle spell cast decision
-                //PACKAGE.package.PTR_->GetSelected()
-                return true;
+                return HandleSpellCast();
             }
         }
 
@@ -283,7 +284,7 @@ namespace sfml_util
         //sound effect
         if (POPUP_INFO_.SoundEffect() != sound_effect::None)
         {
-            SoundManager::Instance()->SoundEffectsSet_Prompt().Play(POPUP_INFO_.SoundEffect());
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(POPUP_INFO_.SoundEffect());
         }
 
         //darken the box gold bars a bit
@@ -447,13 +448,13 @@ namespace sfml_util
         sliderbarPosTop_ = (BUTTON_POS_TOP - (POPUPBUTTON_TEXT_HEIGHT * 3.0f));
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) || (POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
-            sliderbarSPtr_ = std::make_shared<sfml_util::gui::SliderBar>("PopupStage's",
+            sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>("PopupStage's",
                                                                          SLIDERBAR_POS_LEFT,
                                                                          sliderbarPosTop_,
                                                                          SLIDERBAR_LENGTH,
                                                                          sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
                                                                          this);
-            EntityAdd(sliderbarSPtr_.get());
+            EntityAdd(sliderbarUPtr_.get());
         }
 
         if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
@@ -530,7 +531,7 @@ namespace sfml_util
                 imageWrnTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sImageSelectionion", TEXT_INFO, region) );
 
                 EntityAdd(imageWrnTextRegionUPtr_.get());
-                EntityRemove(sliderbarSPtr_.get());
+                EntityRemove(sliderbarUPtr_.get());
             }
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
@@ -763,11 +764,13 @@ namespace sfml_util
 
             //Force spell listbox selection up and down to force
             //colors to correct.
+            spellListBoxSPtr_->WillPlaySoundEffects(false);
             sf::Event::KeyEvent keyEvent;
             keyEvent.code = sf::Keyboard::Down;
             spellListBoxSPtr_->KeyRelease(keyEvent);
             keyEvent.code = sf::Keyboard::Up;
             spellListBoxSPtr_->KeyRelease(keyEvent);
+            spellListBoxSPtr_->WillPlaySoundEffects(true);
 
             //setup initial values for spellbook page right text and colors
             spellCurrentPtr_ = spellListBoxSPtr_->At(0)->SPELL_CPTRC;
@@ -884,7 +887,9 @@ namespace sfml_util
         }
 
         if (secondCounter_ > 0)
+        {
             elapsedTimeCounter_ += ELAPSED_TIME_SECONDS;
+        }
 
         if ((secondCounter_ > 0) && (elapsedTimeCounter_ > 1.0f))
         {
@@ -922,7 +927,7 @@ namespace sfml_util
                     willShowImageCount_ = true;
 
                     if (imageIndexLastSoundOff_ != imageIndex_)
-                        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
 
                     imageIndexLastSoundOff_ = imageIndex_;
                 }
@@ -937,7 +942,7 @@ namespace sfml_util
                 willShowImageCount_ = false;
 
                 if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
-                    sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();
 
@@ -1012,7 +1017,7 @@ namespace sfml_util
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                 (KEY_EVENT.code == sf::Keyboard::Space))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
                 return true;
             }
@@ -1020,22 +1025,7 @@ namespace sfml_util
                      ((KEY_EVENT.code == sf::Keyboard::Return) ||
                      (KEY_EVENT.code == sf::Keyboard::C)))
             {
-                if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
-                {
-                    SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
-                    game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
-                    return true;
-                }
-                else
-                {
-                    SoundManager::Instance()->SoundEffectsSet_Prompt().Play(sound_effect::PromptWarn);
-                    if (SpellbookState::Waiting == spellbookState_)
-                    {
-                        spellbookState_ = SpellbookState::Warning;
-                        spellWarningTimerSec_ = 0.0f;
-                    }
-                    return false;
-                }
+                return HandleSpellCast();
             }
         }
 
@@ -1050,25 +1040,25 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::I) && (POPUP_INFO_.Type() == game::Popup::ContentSelectionWithItem))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Item());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::C)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Coins());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::G)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_Gems());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::M)
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, game::PopupInfo::ContentNum_MeteorShards());
                 return true;
             }
@@ -1079,7 +1069,7 @@ namespace sfml_util
         {
             if (ProcessSelectNumber())
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, static_cast<std::size_t>(GetSelectNumber()));
                 return true;
             }
@@ -1097,7 +1087,7 @@ namespace sfml_util
                 --index;
 
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarSPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
 
                 imageMoveQueue_.push(index);
                 return true;
@@ -1116,14 +1106,14 @@ namespace sfml_util
                 ++index;
 
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarSPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
 
                 //if already at the end, then make sure the sliderbar is all the way to the right
                 if (index >= (POPUP_INFO_.Images().size() - 1))
                 {
                     //prevent processing and adding to the imageMoveQueue_ or calling SetupSelectImage() when setting the sliderbar value here.
                     isImageProcAllowed_ = false;
-                    sliderbarSPtr_->SetCurrentValue(1.0f);
+                    sliderbarUPtr_->SetCurrentValue(1.0f);
                     isImageProcAllowed_ = true;
                 }
 
@@ -1140,7 +1130,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::Space) ||
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
                 return true;
             }
@@ -1152,7 +1142,7 @@ namespace sfml_util
                 (KEY_EVENT.code == sf::Keyboard::O) ||
                 (KEY_EVENT.code == sf::Keyboard::Return))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
                 return true;
             }
@@ -1160,7 +1150,7 @@ namespace sfml_util
 
         if ((POPUP_INFO_.Buttons() & Response::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
             return true;
         }
@@ -1168,7 +1158,7 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::No) &&
             ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::No);
             return true;
         }
@@ -1179,7 +1169,7 @@ namespace sfml_util
                 ((KEY_EVENT.code == sf::Keyboard::C) && ((POPUP_INFO_.Type() != game::Popup::ContentSelectionWithItem) && (POPUP_INFO_.Type() != game::Popup::ContentSelectionWithoutItem))) ||
                 ((KEY_EVENT.code == sf::Keyboard::Return) && (POPUP_INFO_.Buttons() == sfml_util::PopupButtons::Cancel)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
                 return true;
             }
@@ -1188,7 +1178,7 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::Select) &&
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
-            SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
             return true;
         }
@@ -1197,37 +1187,37 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::Num1) && (POPUP_INFO_.IsNumberValid(0)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (POPUP_INFO_.IsNumberValid(1)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (POPUP_INFO_.IsNumberValid(2)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (POPUP_INFO_.IsNumberValid(3)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (POPUP_INFO_.IsNumberValid(4)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
                 return true;
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (POPUP_INFO_.IsNumberValid(5)))
             {
-                SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
                 return true;
             }
@@ -1383,14 +1373,19 @@ namespace sfml_util
         {
             SetupInfoText("");
 
-            if (sliderbarSPtr_.get() != nullptr)
+            if (sliderbarUPtr_.get() != nullptr)
             {
                 willSliderbarUpdate_ = false;
 
                 if (NUM == static_cast<int>(POPUP_INFO_.NumberSelMin()))
-                    sliderbarSPtr_->SetCurrentValue(0.0f);
+                {
+                    sliderbarUPtr_->SetCurrentValue(0.0f);
+                }
                 else
-                    sliderbarSPtr_->SetCurrentValue(static_cast<float>(NUM) / static_cast<float>(POPUP_INFO_.NumberSelMax()));
+                {
+                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NUM) /
+                        static_cast<float>(POPUP_INFO_.NumberSelMax()));
+                }
 
                 willSliderbarUpdate_ = true;
             }
@@ -1642,6 +1637,27 @@ namespace sfml_util
     bool PopupStage::CanCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
     {
         return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) && CanCastSpellInPhase(SPELL_CPTRC));
+    }
+
+
+    bool PopupStage::HandleSpellCast()
+    {
+        if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
+            return true;
+        }
+        else
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
+            if (SpellbookState::Waiting == spellbookState_)
+            {
+                spellbookState_ = SpellbookState::Warning;
+                spellWarningTimerSec_ = 0.0f;
+            }
+            return false;
+        }
     }
 
 }

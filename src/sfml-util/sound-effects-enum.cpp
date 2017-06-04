@@ -35,10 +35,6 @@
 namespace sfml_util
 {
 
-    const std::string sound_effect::FILE_EXTENSION_OGG(".ogg");
-    const std::string sound_effect::FILE_EXTENSION_FLAC(".flac");
-
-
     const std::string sound_effect::ToString(const sound_effect::Enum E)
     {
         switch (E)
@@ -195,6 +191,25 @@ namespace sfml_util
             case MaterialHitMisc:   { return "material-hit-misc"; }
             case ClawTear:          { return "claw-tear";  }
             case Magic1:            { return "magic1"; }
+            case Trip:              { return "trip-and-fall"; }
+            case SpellSelect1:      { return "deep-pulse-a"; }
+            case SpellSelect2:      { return "deep-pulse-b"; }
+            case SpellSelect3:      { return "deep-pulse-c"; }
+            case SpellSparks:       { return "soft-sparks"; }
+            case SpellBandage1:     { return "magic-glitter-a"; }
+            case SpellBandage2:     { return "magic-glitter-b"; }
+            case SpellBandage3:     { return "magic-glitter-c"; }
+            case SpellBandage4:     { return "magic-glitter-d"; }
+            case SpellAwaken:       { return "gong-spacey"; }
+            case SpellClearMind:    { return "ahh-tadada"; }
+            case SpellAntidote:     { return "sparkly-doing"; }
+            case SpellLift:         { return "sha-sparkle-short-b"; }
+            case SpellSleep:        { return "spacey-wind-short"; }
+            case SpellTrip:         { return "sha-sparkle-short-a"; }
+            case SpellDaze:         { return "sliding-shimmer-short-a"; }
+            case SpellPoison:       { return "worble-warp"; }
+            case SpellFrighten:     { return "fright"; }
+            case SpellPoisonCloud:  { return "bluam-long"; }
             case None:              { return "None"; }
             case Count:
             case Random:
@@ -208,16 +223,10 @@ namespace sfml_util
     }
 
 
-    const std::string sound_effect::FileExt(const sound_effect::Enum)
-    {
-        return sound_effect::FILE_EXTENSION_OGG;
-    }
-
-
     const std::string sound_effect::Filename(const sound_effect::Enum E)
     {
         std::ostringstream ss;
-        ss << ToString(E) << FileExt(E);
+        ss << ToString(E) << ".ogg";
         return ss.str();
     }
 
@@ -378,6 +387,25 @@ namespace sfml_util
             case MaterialHitMisc:       { return "sound-effects/combat/material-hit"; }
             case ClawTear:              { return "sound-effects/combat/claw-tear"; }
             case Magic1:                { return "sound-effects/misc"; }
+            case Trip:                  { return "sound-effects/combat"; }
+            case SpellSelect1:
+            case SpellSelect2:
+            case SpellSelect3:
+            case SpellSparks:
+            case SpellBandage1:
+            case SpellBandage2:
+            case SpellBandage3:
+            case SpellBandage4:
+            case SpellAwaken:
+            case SpellClearMind:
+            case SpellAntidote:
+            case SpellLift:
+            case SpellSleep:
+            case SpellTrip:
+            case SpellDaze:
+            case SpellPoison:
+            case SpellFrighten:
+            case SpellPoisonCloud:      { return "sound-effects/spells"; }
             case Count:
             case None:
             case Random:

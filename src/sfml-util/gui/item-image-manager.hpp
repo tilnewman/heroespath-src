@@ -36,6 +36,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 
 namespace game
@@ -78,13 +79,34 @@ namespace gui
         static inline const std::string FileExtension() { return FILE_EXT_STR_; }
 
         void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
+        
         void Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const;
-        void Load(sf::Texture & texture, const game::item::misc_type::Enum, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
 
-        const std::string GetImageFilename(const game::item::ItemPtr_t, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const game::item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const game::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
-        const std::string GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool IS_JEWELED = false, const bool WILL_RANDOMIZE = true) const;
+        void Load(
+            sf::Texture &                     texture,
+            const game::item::misc_type::Enum ITEM_ENUM,
+            const bool                        IS_JEWELED = false,
+            const bool                        WILL_RANDOMIZE = true) const;
+
+        const std::string GetImageFilename(
+            const game::item::ItemPtr_t ITEM_PTR,
+            const bool                  WILL_RANDOMIZE = true) const;
+
+        const std::string GetImageFilename(
+            const game::item::weapon::WeaponInfo & WEAPON_INFO,
+            const bool                             IS_JEWELED = false) const;
+
+        const std::string GetImageFilename(
+            const game::item::armor::ArmorInfo & ARMOR_INFO) const;
+
+        const std::string GetImageFilename(
+            const game::item::misc_type::Enum ITEM_ENUM,
+            const bool                        IS_JEWELED = false,
+            const bool                        WILL_RANDOMIZE = false) const;
+
+        const std::vector<std::string> GetImageFilenames(
+            const game::item::misc_type::Enum ITEM_ENUM,
+            const bool                        IS_JEWELED = false) const;
 
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;

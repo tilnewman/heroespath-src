@@ -128,7 +128,7 @@ namespace stage
         bottomSymbol_           (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
         paperBgTexture_         (),
         paperBgSprite_          (),
-        ouroborosSPtr_          (),
+        ouroborosUPtr_          (),
         creatureTexture_        (),
         creatureSprite_         (),
         view_                   (ViewType::Items),
@@ -172,7 +172,7 @@ namespace stage
         unEquipListBoxSPtr_     (),
         insTextRegionUPtr_      (),
         descTextRegionUPtr_     (),
-        descBoxSPtr_            (),
+        descBoxUPtr_            (),
         centerTextRegionUPtr_   (),
         backButtonSPtr_         (),
         itemsButtonSPtr_        (),
@@ -296,7 +296,7 @@ namespace stage
 
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemDrop().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::ItemDrop).PlayRandom();
             creaturePtr_->ItemRemove(iItemToDropPtr_);
             item::ItemWarehouse::Instance()->Free(iItemToDropPtr_);
             EndOfGiveShareGatherTasks();
@@ -379,7 +379,7 @@ namespace stage
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
-            creatureToGiveToPtr_ = Game::Instance()->State()->Party()->GetAtOrderPos(POPUP_RESPONSE.Selection()).get();
+            creatureToGiveToPtr_ = Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
 
             if (creatureToGiveToPtr_ == nullptr)
             {
@@ -407,7 +407,7 @@ namespace stage
                     }
                     else
                     {
-                        sfml_util::SoundManager::Instance()->SoundEffectsSet_ItemGive().PlayRandom();
+                        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::ItemGive).PlayRandom();
                         creaturePtr_->ItemRemove(IITEM_PTR);
                         creatureToGiveToPtr_->ItemAdd(IITEM_PTR);
                         SetupDescBox(false);
@@ -538,8 +538,8 @@ namespace stage
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("InventoryStage's", true) );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("InventoryStage's", true);
+        EntityAdd(ouroborosUPtr_.get());
 
         //instruction text
         const sfml_util::gui::TextInfo INSTR_TEXT_INFO("(use arrows or numbers to change characters, press 'a' to see achievements)",
@@ -550,8 +550,12 @@ namespace stage
                                                        sf::Text::Italic,
                                                        sfml_util::Justified::Left);
 
-        insTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sInstruction", INSTR_TEXT_INFO, sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f)) );
-        insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
+        insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sInstruction",
+            INSTR_TEXT_INFO,
+            sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f));
+        
+            insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
         EntityAdd(insTextRegionUPtr_.get());
 
         //player character image in the top left corner
@@ -585,7 +589,7 @@ namespace stage
         SetupDescBoxTitle();
         EntityAdd(unEqTitleTextRegionUPtr_.get());
         EntityAdd(descTextRegionUPtr_.get());
-        EntityAdd(descBoxSPtr_.get());
+        EntityAdd(descBoxUPtr_.get());
 
         //buttons
         sfml_util::gui::TextInfo buttonTextInfo(" ",
@@ -603,7 +607,7 @@ namespace stage
         buttonTextInfo.text = "(B)ack";
         buttonTextInfoDisabled.text = "(B)ack";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        backButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled));
+        backButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
         backButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonSPtr_->GetEntityRegion().height * 0.5f));
         backButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(backButtonSPtr_.get());
@@ -611,7 +615,7 @@ namespace stage
         buttonTextInfo.text = "(I)tems";
         buttonTextInfoDisabled.text = "(I)tems";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_ITEMS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        itemsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled));
+        itemsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
         itemsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonSPtr_->GetEntityRegion().height * 0.5f));
         itemsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(itemsButtonSPtr_.get());
@@ -619,7 +623,7 @@ namespace stage
         buttonTextInfo.text = "(T)itles";
         buttonTextInfoDisabled.text = "(T)itles";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_TITLES(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        titlesButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled));
+        titlesButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
         titlesButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonSPtr_->GetEntityRegion().height * 0.5f));
         titlesButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(titlesButtonSPtr_.get());
@@ -627,7 +631,7 @@ namespace stage
         buttonTextInfo.text = "(C)onditions";
         buttonTextInfoDisabled.text = "(C)onditions";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_CONDITIONS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        condsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled));
+        condsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
         condsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonSPtr_->GetEntityRegion().height * 0.5f));
         condsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(condsButtonSPtr_.get());
@@ -635,7 +639,7 @@ namespace stage
         buttonTextInfo.text = "(S)pells";
         buttonTextInfoDisabled.text = "(S)pells";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SPELLS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        spellsButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled));
+        spellsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
         spellsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonSPtr_->GetEntityRegion().height * 0.5f));
         spellsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(spellsButtonSPtr_.get());
@@ -643,7 +647,7 @@ namespace stage
         buttonTextInfo.text = "(G)ive";
         buttonTextInfoDisabled.text = "(G)ive";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GIVE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        giveButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled));
+        giveButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
         giveButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonSPtr_->GetEntityRegion().height * 0.5f));
         giveButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(giveButtonSPtr_.get());
@@ -651,7 +655,7 @@ namespace stage
         buttonTextInfo.text = "S(h)are";
         buttonTextInfoDisabled.text = "S(h)are";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SHARE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        shareButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled));
+        shareButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
         shareButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonSPtr_->GetEntityRegion().height * 0.5f));
         shareButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(shareButtonSPtr_.get());
@@ -659,7 +663,7 @@ namespace stage
         buttonTextInfo.text = "Gathe(r)";
         buttonTextInfoDisabled.text = "Gathe(r)";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GATHER(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        gatherButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled));
+        gatherButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
         gatherButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonSPtr_->GetEntityRegion().height * 0.5f));
         gatherButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(gatherButtonSPtr_.get());
@@ -667,7 +671,7 @@ namespace stage
         buttonTextInfo.text = "(E)quip";
         buttonTextInfoDisabled.text = "(E)quip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_EQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        equipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled));
+        equipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
         equipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonSPtr_->GetEntityRegion().height * 0.5f));
         equipButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(equipButtonSPtr_.get());
@@ -675,7 +679,7 @@ namespace stage
         buttonTextInfo.text = "(U)nequip";
         buttonTextInfoDisabled.text = "(U)nequip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_UNEQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        unequipButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled));
+        unequipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
         unequipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonSPtr_->GetEntityRegion().height * 0.5f));
         unequipButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(unequipButtonSPtr_.get());
@@ -683,7 +687,7 @@ namespace stage
         buttonTextInfo.text = "(D)rop";
         buttonTextInfoDisabled.text = "(D)rop";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_DROP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        dropButtonSPtr_.reset(new sfml_util::gui::FourStateButton("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled));
+        dropButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
         dropButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonSPtr_->GetEntityRegion().height * 0.5f));
         dropButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(dropButtonSPtr_.get());
@@ -731,7 +735,7 @@ namespace stage
             (IsDetailViewFadingOrVisible() == false) &&
             (game::LoopManager::Instance()->IsFading() == false))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
 
             if (KEY_EVENT.code == sf::Keyboard::A)
                 return HandleAchievementDisplay();
@@ -1137,12 +1141,12 @@ namespace stage
                         if (isSlidingLeft_)
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
                         }
                     }
 
@@ -1151,7 +1155,7 @@ namespace stage
                         SetupDescBox(true);
                         unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
                         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
-                        descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
+                        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
                         hasDescBoxChanged_ = true;
                         descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -1174,12 +1178,12 @@ namespace stage
                         if (isSlidingLeft_)
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
                             descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxSPtr_->GetEntityPos().y);
+                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
                         }
                     }
 
@@ -1225,7 +1229,7 @@ namespace stage
 
                 if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                     detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
                     if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     {
@@ -1359,7 +1363,7 @@ namespace stage
             isViewForcedToItems_ = false;
         }
 
-        characterViewMap_[Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_)] = view_;
+        characterViewMap_[Game::Instance()->State().Party().GetOrderNum(creaturePtr_)] = view_;
 
         if (ViewType::Items != view_)
             SetDescBoxTextFromListBoxItem(equippedListBoxSPtr_->GetSelected());
@@ -1689,20 +1693,32 @@ namespace stage
     bool InventoryStage::HandlePlayerChangeBeforeOrAfter(const bool IS_NEXT_CREATURE_AFTER)
     {
         if (IS_NEXT_CREATURE_AFTER)
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetNextInOrderAfter(creaturePtr_).get(), true);
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State().Party().
+                GetNextInOrderAfter(creaturePtr_), true);
+        }
         else
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetNextInOrderBefore(creaturePtr_).get(), false);
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State().Party().
+                GetNextInOrderBefore(creaturePtr_), false);
+        }
     }
 
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        const std::size_t CURR_INDEX(Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_));
+        const std::size_t CURR_INDEX(Game::Instance()->State().Party().
+            GetOrderNum(creaturePtr_));
 
         if (CURR_INDEX == CHARACTER_NUM)
+        {
             return false;
+        }
         else
-            return HandlePlayerChangeTo(Game::Instance()->State()->Party()->GetAtOrderPos(CHARACTER_NUM).get(), (CURR_INDEX < CHARACTER_NUM));
+        {
+            return HandlePlayerChangeTo(Game::Instance()->State().Party().
+                GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
+        }
     }
 
 
@@ -1792,7 +1808,7 @@ namespace stage
     void InventoryStage::SetupCreatureDetails(const bool WILL_UPDATE_POSITION)
     {
         std::ostringstream ss;
-        ss << "Character # " << game::Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_) + 1 << "\n"
+        ss << "Character # " << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
             << creaturePtr_->Name() << "\n"
             << creaturePtr_->SexName() << "\n"
             << creaturePtr_->Race().Name();
@@ -1835,7 +1851,8 @@ namespace stage
 
         if (detailsTextRegionUPtr_.get() == nullptr)
         {
-            detailsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect));
+            detailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
         }
         else
         {
@@ -1879,7 +1896,8 @@ namespace stage
 
         if (statsTextRegionUPtr_.get() == nullptr)
         {
-            statsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT));
+            statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
         }
         else
         {
@@ -1913,7 +1931,8 @@ namespace stage
 
         if (WAS_ALREADY_INSTANTIATED == false)
         {
-            centerTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT));
+            centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
         }
         else
         {
@@ -1952,9 +1971,11 @@ namespace stage
                 for (auto const & NEXT_CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_CONDITION_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_CONDITION_PTR) );
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_CONDITION_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -1965,9 +1986,12 @@ namespace stage
                 for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().ItemsEquipped())
                 {
                     listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_ITEM_SPTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_ITEM_SPTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -1978,9 +2002,12 @@ namespace stage
                 for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_SPELL_PTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_SPELL_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -1993,9 +2020,12 @@ namespace stage
                 for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
-                    const sfml_util::gui::ListBoxItemSPtr_t LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
-                                                                                                              listBoxItemTextInfo_,
-                                                                                                              NEXT_TITLE_PTR) );
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_TITLE_PTR);
+
                     listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
@@ -2009,16 +2039,18 @@ namespace stage
             EntityRemove(equippedListBoxSPtr_.get());
         }
 
-        equippedListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sLeftListBox",
-                                                                LISTBOX_REGION_,
-                                                                listBoxItemsSList,
-                                                                this,
-                                                                10.0f,
-                                                                6.0f,
-                                                                LISTBOX_BOX_INFO,
-                                                                LISTBOX_COLOR_LINE_,
-                                                                sfml_util::gui::ListBox::NO_LIMIT_,
-                                                                this) );
+        equippedListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "InventoryStage'sLeftListBox",
+            LISTBOX_REGION_,
+            listBoxItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
         if (IS_ALREADY_INSTANTIATED)
         {
             EntityAdd(equippedListBoxSPtr_.get());
@@ -2039,9 +2071,10 @@ namespace stage
 
             listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
 
-            const sfml_util::gui::ListBoxItemSPtr_t EQUIPPED_LISTBOXITEM_SPTR( new sfml_util::gui::ListBoxItem(itemEntryNameSS.str(),
-                                                                                                               listBoxItemTextInfo_,
-                                                                                                               NEXT_ITEM_SPTR) );
+            auto const EQUIPPED_LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                itemEntryNameSS.str(),
+                listBoxItemTextInfo_,
+                NEXT_ITEM_SPTR);
 
             unEquipItemsSList.push_back(EQUIPPED_LISTBOXITEM_SPTR);
         }
@@ -2061,16 +2094,17 @@ namespace stage
             EntityRemove(unEquipListBoxSPtr_.get());
         }
 
-        unEquipListBoxSPtr_.reset( new sfml_util::gui::ListBox("InventoryStage'sUnEquipped",
-                                                                DESCBOX_REGION_,
-                                                                unEquipItemsSList,
-                                                                this,
-                                                                10.0f,
-                                                                6.0f,
-                                                                LISTBOX_BOX_INFO,
-                                                                LISTBOX_COLOR_LINE_,
-                                                                sfml_util::gui::ListBox::NO_LIMIT_,
-                                                                this) );
+        unEquipListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "InventoryStage'sUnEquipped",
+            DESCBOX_REGION_,
+            unEquipItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
 
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
@@ -2092,9 +2126,9 @@ namespace stage
             }
         }
 
-        if (descBoxSPtr_.get() == nullptr)
+        if (descBoxUPtr_.get() == nullptr)
         {
-            descBoxSPtr_.reset(new sfml_util::gui::box::Box("InventoryStage'sDesc", LISTBOX_BOX_INFO));
+            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("InventoryStage'sDesc", LISTBOX_BOX_INFO);
         }
 
         sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
@@ -2108,19 +2142,21 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
-                                                                  descTextInfo,
-                                                                  DESCBOX_REGION_,
-                                                                  sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                  sfml_util::gui::box::Info(),
-                                                                  DESCBOX_MARGINS_) );
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDescription",
+            descTextInfo,
+            DESCBOX_REGION_,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            DESCBOX_MARGINS_);
+
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
             EntityAdd(descTextRegionUPtr_.get());
         }
 
         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
-        descBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxSPtr_->GetEntityPos().y);
+        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
     }
 
 
@@ -2147,9 +2183,10 @@ namespace stage
 
         if (eqTitleTextRegionUPtr_.get() == nullptr)
         {
-            eqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sEquippedListBoxTitle",
-                                                                        LISTBOX_TEXT_INFO,
-                                                                        LISTBOX_TEXT_RECT) );
+            eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sEquippedListBoxTitle",
+                LISTBOX_TEXT_INFO,
+                LISTBOX_TEXT_RECT);
         }
         else
         {
@@ -2174,9 +2211,10 @@ namespace stage
 
         if (unEqTitleTextRegionUPtr_.get() == nullptr)
         {
-            unEqTitleTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sUnequippedListBoxTitle",
-                                                                           DESC_TEXT_INFO,
-                                                                           DESC_TEXT_RECT) );
+            unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sUnequippedListBoxTitle",
+                DESC_TEXT_INFO,
+                DESC_TEXT_RECT);
         }
         else
         {
@@ -2207,7 +2245,9 @@ namespace stage
             }
 
             if (ss.str().empty() == false)
+            {
                 SetDescBoxText(ss.str());
+            }
         }
     }
 
@@ -2226,13 +2266,14 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDescription",
-                                                                  descTextInfo,
-                                                                  DESCBOX_REGION_,
-                                                                  this,
-                                                                  sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                                                                  sfml_util::gui::box::Info(),
-                                                                  DESCBOX_MARGINS_) );
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDescription",
+            descTextInfo,
+            DESCBOX_REGION_,
+            this,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            DESCBOX_MARGINS_);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -2246,15 +2287,15 @@ namespace stage
         std::ostringstream ss;
         ss << PROMPT_TEXT << "  Select a character by pressing the number key:\n\n";
 
-        const std::size_t CURRENT_CREATURE_ORDER_NUM(Game::Instance()->State()->Party()->GetOrderNum(creaturePtr_));
+        const std::size_t CURRENT_CREATURE_ORDER_NUM(Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
         std::vector<std::size_t> invalidCharacterNumVec;
         const std::size_t NUM_CHARACTERS(6);
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State()->Party()->GetAtOrderPos(i)->Body().IsHumanoid()))
+            if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State().Party().GetAtOrderPos(i)->Body().IsHumanoid()))
             {
-                ss << "(" << i + 1 << ") " << Game::Instance()->State()->Party()->GetAtOrderPos(i)->Name() << "\n";
+                ss << "(" << i + 1 << ") " << Game::Instance()->State().Party().GetAtOrderPos(i)->Name() << "\n";
             }
             else
             {
@@ -2334,7 +2375,7 @@ namespace stage
 
     void InventoryStage::HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Coin).PlayRandom();
 
         creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(COUNT) * -1);
         creatureToGiveToPtr->CoinsAdj(static_cast<item::Coin_t>(COUNT));
@@ -2347,7 +2388,7 @@ namespace stage
 
     void InventoryStage::HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Gem).PlayRandom();
 
         creaturePtr_->GemsAdj(static_cast<item::Gem_t>(COUNT) * -1);
         creatureToGiveToPtr->GemsAdj(static_cast<item::Gem_t>(COUNT));
@@ -2360,7 +2401,7 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::MeteorShard).PlayRandom();
 
         creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT) * -1);
         creatureToGiveToPtr->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT));
@@ -2373,18 +2414,18 @@ namespace stage
 
     void InventoryStage::HandleCoinsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Coin).PlayRandom();
 
         std::size_t coinsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreatureSPtr->Inventory().Coins());
+                const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreaturePtr->Inventory().Coins());
                 if (NEXT_CREATURE_COINS_OWNED > 0)
                 {
                     coinsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_COINS_OWNED);
-                    nextCreatureSPtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
+                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
                 }
             }
         }
@@ -2394,7 +2435,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers << " gems from the rest of the party, and now has " << creaturePtr_->Inventory().Coins() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers
+                << " gems from the rest of the party, and now has "
+                << creaturePtr_->Inventory().Coins() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2402,18 +2446,18 @@ namespace stage
 
     void InventoryStage::HandleGemsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Gem).PlayRandom();
 
         std::size_t gemsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreatureSPtr->Inventory().Gems());
+                const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreaturePtr->Inventory().Gems());
                 if (NEXT_CREATURE_GEMS_OWNED > 0)
                 {
                     gemsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_GEMS_OWNED);
-                    nextCreatureSPtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
+                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
                 }
             }
         }
@@ -2423,7 +2467,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers << " gems from the rest of the party, and now has " << creaturePtr_->Inventory().Gems() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers
+                << " gems from the rest of the party, and now has "
+                << creaturePtr_->Inventory().Gems() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2431,18 +2478,18 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::MeteorShard).PlayRandom();
 
         std::size_t shardsOwnedByOtherPartyMembers(0);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr.get() != creaturePtr_)
+            if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreatureSPtr->Inventory().MeteorShards());
+                const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreaturePtr->Inventory().MeteorShards());
                 if (NEXT_CREATURE_SHARDS_OWNED > 0)
                 {
                     shardsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_SHARDS_OWNED);
-                    nextCreatureSPtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
+                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
                 }
             }
         }
@@ -2452,7 +2499,10 @@ namespace stage
         if (WILL_POPUP)
         {
             std::ostringstream ss;
-            ss << "\n\n" << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers << " Meteor Shards from the rest of the party, and now has " << creaturePtr_->Inventory().MeteorShards() << ".";
+            ss << "\n\n" << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers
+                << " Meteor Shards from the rest of the party, and now has "
+                << creaturePtr_->Inventory().MeteorShards() << ".";
+
             PopupDoneWindow(ss.str(), false);
         }
     }
@@ -2460,28 +2510,35 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Coin().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Coin).PlayRandom();
 
         HandleCoinsGather(false);
 
         const item::Coin_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
-        const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+
+        const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(
+            Game::Instance()->State().Party().GetNumHumanoid()));
+
         const item::Coin_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
         const item::Coin_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->CoinsAdj(nextCreatureSPtr->Inventory().Coins() * -1);
-                nextCreatureSPtr->CoinsAdj(COINS_TO_SHARE);
+                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * -1);
+                nextCreaturePtr->CoinsAdj(COINS_TO_SHARE);
             }
         }
 
         item::Coin_t toHandOut(COINS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->CoinsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->CoinsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (COINS_TO_SHARE > 0)
@@ -2489,10 +2546,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << COINS_TO_SHARE;
 
             if (COINS_LEFT_OVER > 0)
+            {
                 ss << " or " << COINS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << COINS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " coins.";
         PopupDoneWindow(ss.str(), false);
@@ -2501,28 +2562,32 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_Gem().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Gem).PlayRandom();
 
         HandleGemsGather(false);
 
         const item::Gem_t GEMS_TOTAL(creaturePtr_->Inventory().Gems());
-        const item::Gem_t HUMANOID_COUNT(static_cast<item::Gem_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+        const item::Gem_t HUMANOID_COUNT(static_cast<item::Gem_t>(Game::Instance()->State().Party().GetNumHumanoid()));
         const item::Gem_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
         const item::Gem_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->GemsAdj(nextCreatureSPtr->Inventory().Gems() * -1);
-                nextCreatureSPtr->GemsAdj(GEMS_TO_SHARE);
+                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * -1);
+                nextCreaturePtr->GemsAdj(GEMS_TO_SHARE);
             }
         }
 
         item::Gem_t toHandOut(GEMS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->GemsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->GemsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (GEMS_TO_SHARE > 0)
@@ -2530,10 +2595,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << GEMS_TO_SHARE;
 
             if (GEMS_LEFT_OVER > 0)
+            {
                 ss << " or " << GEMS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << GEMS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " gems.";
         PopupDoneWindow(ss.str(), false);
@@ -2542,28 +2611,32 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsShare()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_MeteorShard().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::MeteorShard).PlayRandom();
 
         HandleMeteorShardsGather(false);
 
         const item::Meteor_t METEORSHARDS_TOTAL(creaturePtr_->Inventory().MeteorShards());
-        const item::Meteor_t HUMANOID_COUNT(static_cast<item::Meteor_t>(Game::Instance()->State()->Party()->GetNumHumanoid()));
+        const item::Meteor_t HUMANOID_COUNT(static_cast<item::Meteor_t>(Game::Instance()->State().Party().GetNumHumanoid()));
         const item::Meteor_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
         const item::Meteor_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
 
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
-            if (nextCreatureSPtr->Body().IsHumanoid())
+            if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreatureSPtr->MeteorShardsAdj(nextCreatureSPtr->Inventory().MeteorShards() * -1);
-                nextCreatureSPtr->MeteorShardsAdj(METEORSHARDS_TO_SHARE);
+                nextCreaturePtr->MeteorShardsAdj(nextCreaturePtr->Inventory().MeteorShards() * -1);
+                nextCreaturePtr->MeteorShardsAdj(METEORSHARDS_TO_SHARE);
             }
         }
 
         item::Gem_t toHandOut(METEORSHARDS_LEFT_OVER);
-        for (auto & nextCreatureSPtr : Game::Instance()->State()->Party()->Characters())
-            if (nextCreatureSPtr->Body().IsHumanoid() && (toHandOut-- > 0))
-                nextCreatureSPtr->MeteorShardsAdj(1);
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                nextCreaturePtr->MeteorShardsAdj(1);
+            }
+        }
 
         std::ostringstream ss;
         if (METEORSHARDS_TO_SHARE > 0)
@@ -2571,10 +2644,14 @@ namespace stage
             ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << METEORSHARDS_TO_SHARE;
 
             if (METEORSHARDS_LEFT_OVER > 0)
+            {
                 ss << " or " << METEORSHARDS_TO_SHARE + 1;
+            }
         }
         else
+        {
             ss << "\n\nThere were only " << METEORSHARDS_TO_SHARE << ", so not every character received";
+        }
 
         ss << " Meteor Shards.";
         PopupDoneWindow(ss.str(), false);
@@ -2612,9 +2689,13 @@ namespace stage
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
             if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 listBoxItemPtr = unEquipListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+            }
             else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 listBoxItemPtr = equippedListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+            }
 
             if (listBoxItemPtr.get() != nullptr)
             {
@@ -2633,9 +2714,13 @@ namespace stage
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
             if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 return unEquipListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+            }
             else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            {
                 return equippedListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+            }
         }
 
         return sfml_util::gui::ListBox::ERROR_RECT_;
@@ -2665,7 +2750,9 @@ namespace stage
             << item::category::ToString(IITEM_PTR->Category(), true) << "\n";
 
         if (IITEM_PTR->ExclusiveRole() != creature::role::Count)
+        {
             ss << "(can only be used by " << creature::role::ToString(IITEM_PTR->ExclusiveRole()) << "s)\n";
+        }
 
         ss << "\n";
 
@@ -2673,9 +2760,13 @@ namespace stage
             << "worth about " << IITEM_PTR->Price() << " coins\n";
 
         if (IITEM_PTR->IsWeapon())
+        {
             ss << "Damage:  " << IITEM_PTR->DamageMin() << "-" << IITEM_PTR->DamageMax();
+        }
         else if (IITEM_PTR->IsArmor())
+        {
             ss << "Armor Bonus:  " << IITEM_PTR->ArmorRating();
+        }
 
         ss << "\n\n";
 
@@ -2690,7 +2781,8 @@ namespace stage
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT);
     }
 
 
@@ -3012,19 +3104,22 @@ namespace stage
                                                  sfml_util::FontManager::Instance()->Size_Smallish(),
                                                  sf::Color::White,
                                                  sfml_util::Justified::Left);
+
         auto const DETAILVIEW_BOUNDS{ detailViewSprite_.getGlobalBounds() };
+
         const sf::FloatRect TEXT_RECT(DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
                                       DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height - 20.0f,
                                       DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
                                       (DETAILVIEW_HEIGHT_ - (DETAILVIEW_BOUNDS.top + DETAILVIEW_BOUNDS.height)) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextUPtr_.reset( new sfml_util::gui::TextRegion("InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT) );
+        detailViewTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT);
     }
 
 
     void InventoryStage::StartDetailViewFadeOutTasks()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;

@@ -39,6 +39,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/base_object.hpp>
 
 #ifdef PLATFORM_DETECTED_IS_APPLE

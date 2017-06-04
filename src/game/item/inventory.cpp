@@ -33,6 +33,7 @@
 #include "game/item/item-warehouse.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/vectors.hpp"
 
 #include <tuple>
 #include <sstream>
@@ -434,17 +435,23 @@ namespace item
 
     bool operator==(const Inventory & L, const Inventory & R)
     {
-        return std::tie(L.coins_,
-                        L.meteorShards_,
-                        L.gems_,
-                        L.itemsPVec_,
-                        L.equippedItemsPVec_)
+        if ( std::tie(L.coins_,
+                      L.meteorShards_,
+                      L.gems_)
                ==
                std::tie(R.coins_,
                         R.meteorShards_,
-                        R.gems_,
-                        R.itemsPVec_,
-                        R.equippedItemsPVec_);
+                        R.gems_) == false)
+        {
+            return false;
+        }
+
+        if (misc::Vector::OrderlessCompareEqual(L.itemsPVec_, R.itemsPVec_) == false)
+        {
+            return false;
+        }
+        
+        return misc::Vector::OrderlessCompareEqual(L.equippedItemsPVec_, R.equippedItemsPVec_);
     }
 
 }

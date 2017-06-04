@@ -266,7 +266,7 @@ namespace stats
             case stat::Charm:
             case stat::Luck:
             case stat::Speed:
-            case stat::Intelligence: { return statVec_[E]; }
+            case stat::Intelligence: { return statVec_[static_cast<std::size_t>(E)]; }
             case stat::Count:
             default:
             {
@@ -287,7 +287,7 @@ namespace stats
             case stat::Charm:
             case stat::Luck:
             case stat::Speed:
-            case stat::Intelligence: { return statVec_[E]; }
+            case stat::Intelligence: { return statVec_[static_cast<std::size_t>(E)]; }
             case stat::Count:
             default:
             {

@@ -152,6 +152,11 @@ namespace weapon
                      R.bladedstaff);
     }
 
+    inline bool operator!=(const WeaponInfo & L, const WeaponInfo & R)
+    {
+        return ! (L == R);
+    }
+
     inline bool operator<(const WeaponInfo & L, const WeaponInfo & R)
     {
         return std::tie(L.name,

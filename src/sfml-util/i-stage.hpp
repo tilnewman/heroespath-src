@@ -96,6 +96,10 @@ namespace sfml_util
         virtual void PerformNextTest() = 0;
 
         virtual void ClearAllEntities() = 0;
+
+        virtual bool IsMouseHeldDown() const = 0;
+        virtual bool IsMouseHeldDownAndMoving() const = 0;
+        virtual const sf::Vector2f MouseDownPosV() const = 0;
     };
 
     using IStagePtr_t = IStage *;

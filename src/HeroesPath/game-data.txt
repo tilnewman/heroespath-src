@@ -78,6 +78,9 @@ media-images-combat-stone3=                 image/combat/stone3.gif
 media-images-combat-stone4=                 image/combat/stone4.gif
 media-images-combat-crossbones=             image/combat/crossbones.gif
 media-images-misc-spark=                    image/misc/spark.png
+media-images-misc-cloud1=                   image/misc/cloud1.png
+media-images-misc-cloud2=                   image/misc/cloud2.png
+media-images-misc-cloud3=                   image/misc/cloud3.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

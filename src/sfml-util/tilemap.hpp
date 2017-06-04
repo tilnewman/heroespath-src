@@ -68,7 +68,10 @@ namespace map
 
     bool operator==(const TileOffsets & L, const TileOffsets & R);
 
-    inline bool operator!=(const TileOffsets & L, const TileOffsets & R);
+    inline bool operator!=(const TileOffsets & L, const TileOffsets & R)
+    {
+        return ! (L == R);
+    }
 
 
 
@@ -98,7 +101,10 @@ namespace map
 
     bool operator==(const TileImage & L, const TileImage & R);
 
-    bool operator!=(const TileImage & L, const TileImage & R);
+    inline bool operator!=(const TileImage & L, const TileImage & R)
+    {
+        return !(L == R);
+    }
 
     using TileImageVec_t = std::vector<TileImage>;
 

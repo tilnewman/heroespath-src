@@ -89,10 +89,10 @@ namespace animation
     public:
         explicit SparksAnimation(const bool            WILL_EMIT_RIGHT,
                                  const sf::FloatRect & REGION,
-                                 const float           SPRAY_RATIO                    = 0.25f,
+                                 const float           SPRAY_RATIO                    = 0.33f,
                                  const float           SCALE_BASE                     = 1.0f,
                                  const float           SCALE_VARIATION_RATIO          = 0.25f,
-                                 const float           EMIT_RATE_PER_SEC              = 200.0f,
+                                 const float           EMIT_RATE_RATIO                = 0.0f,
                                  const float           DURATION_SEC                   = 3.0f,
                                  const float           SPEED_BASE                     = 4.0f,
                                  const float           SPEED_VARIATION_RATIO          = 0.25f,
@@ -127,7 +127,7 @@ namespace animation
     };
 
     using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
-
+    using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
 
 }
 }

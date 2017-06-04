@@ -132,15 +132,21 @@ namespace gui
         text_ = TEXT;
         textWidthLimit_ = TEXT_WIDTH_LIMIT;
 
-        renderedTextSPtr_.reset(new text_render::RenderedText);
+        renderedTextSPtr_ = std::make_shared<text_render::RenderedText>();
 
         TextInfo textInfoChar(MOUSE_TEXT_INFO.up);
-        if ((MouseState::Down == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.down.fontPtr))
+        if ((MouseState::Down == entityMouseState_) &&
+            (nullptr != MOUSE_TEXT_INFO.down.fontPtr))
+        {
             textInfoChar = MOUSE_TEXT_INFO.down;
+        }
         else
         {
-            if ((MouseState::Over == entityMouseState_) && (nullptr != MOUSE_TEXT_INFO.over.fontPtr))
+            if ((MouseState::Over == entityMouseState_) &&
+                (nullptr != MOUSE_TEXT_INFO.over.fontPtr))
+            {
                 textInfoChar = MOUSE_TEXT_INFO.over;
+            }
         }
 
         TextInfo textInfoNum(textInfoChar);
@@ -148,9 +154,13 @@ namespace gui
         if (nullptr == NUMBERS_FONT_PTR)
         {
             if (nullptr == numberFontPtr_)
+            {
                 textInfoNum.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
+            }
             else
+            {
                 textInfoNum.fontPtr = numberFontPtr_;
+            }
         }
         else
         {
@@ -158,11 +168,21 @@ namespace gui
             numberFontPtr_ = NUMBERS_FONT_PTR;
         }
 
-        text_render::Render( * renderedTextSPtr_, textInfoChar, textInfoNum, text_, sf::FloatRect(0, 0, textWidthLimit_, 0));
+        text_render::Render( * renderedTextSPtr_,
+                            textInfoChar,
+                            textInfoNum,
+                            text_,
+                            sf::FloatRect(0, 0, textWidthLimit_, 0));
 
         textureSPtr_ = text_render::RenderAndDraw( * renderedTextSPtr_ );
+        
         sprite_.setTexture(textureSPtr_->getTexture());
-        sprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(renderedTextSPtr_->longest_line), static_cast<int>(renderedTextSPtr_->total_height)));
+        
+        sprite_.setTextureRect( sf::IntRect(0,
+                                            0,
+                                            static_cast<int>(renderedTextSPtr_->longest_line),
+                                            static_cast<int>(renderedTextSPtr_->total_height)));
+
         sprite_.setPosition(POS_LEFT, POS_TOP);
 
         SetEntityRegion(sprite_.getGlobalBounds());
@@ -233,9 +253,9 @@ namespace gui
         if (DID_MOUSE_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
-                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
             else
-                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
 
             ResetText();
         }

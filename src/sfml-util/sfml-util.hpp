@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cmath>
 
 
 namespace sfml_util
@@ -58,6 +59,15 @@ namespace sfml_util
         const T M(MagnitudeSFML<T>(v));
         if (M > static_cast<T>(0))
             v /= M;
+    }
+
+
+    template<typename T>
+    T Distance(const sf::Vector2<T> & A, const sf::Vector2<T> & B)
+    {
+        auto const DIST_HORIZ{ static_cast<float>(B.x) - static_cast<float>(A.x) };
+        auto const DIST_VERT{ static_cast<float>(B.y) - static_cast<float>(A.y) };
+        return static_cast<T>( std::sqrt( (DIST_HORIZ * DIST_HORIZ) + (DIST_VERT * DIST_VERT) ) );
     }
 
 

@@ -75,7 +75,7 @@ namespace stage
         SCREEN_WIDTH_      (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_     (sfml_util::Display::Instance()->GetWinHeight()),
         textureList_       (),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         testingBlurbsVec_  (),
         sleepMilliseconds_ (0),
         animBGTexture_     (),
@@ -91,10 +91,12 @@ namespace stage
 
     void TestingStage::Setup()
     {
-        ouroborosSPtr_.reset( new Ouroboros("TestingStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("TestingStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
-        sfml_util::LoadImageOrTexture(animBGTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::LoadImageOrTexture(animBGTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+
         animBGTexture_.setSmooth(true);
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
@@ -254,7 +256,9 @@ namespace stage
         testingBlurbsVec_.push_back( std::make_pair(S, 0) );
 
         if (testingBlurbsVec_.size() > TEXT_LINES_COUNT_MAX_)
+        {
             testingBlurbsVec_.erase(testingBlurbsVec_.begin());
+        }
     }
 
 
@@ -273,7 +277,9 @@ namespace stage
         }
 
         if (false == foundMatch)
+        {
             TestingStrAppend(S);
+        }
     }
 
 
@@ -288,7 +294,9 @@ namespace stage
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (LoopManager::Instance()->IsFading())
+        {
             return;
+        }
 
         static auto hasPromptStart{ false };
         if (false == hasPromptStart)
@@ -368,6 +376,13 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_ItemImageManager{ false };
+        if (false == hasTestingCompleted_ItemImageManager)
+        {
+            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
+            return;
+        }
+
         static auto hasTestingCompleted_SoundManager{ false };
         if (false == hasTestingCompleted_SoundManager)
         {
@@ -379,13 +394,6 @@ namespace stage
         if (false == hasTestingCompleted_CreatureImageManager)
         {
             hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemImageManager{ false };
-        if (false == hasTestingCompleted_ItemImageManager)
-        {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
             return;
         }
 
@@ -526,10 +534,14 @@ namespace stage
             auto const NEXT_ENUM{ static_cast<stats::stat::Enum>(i) };
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Current() != EXPECTED.GetCopy(NEXT_ENUM).Current())
+            {
                 isMismatchCurrent = true;
+            }
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Normal() != EXPECTED.GetCopy(NEXT_ENUM).Normal())
+            {
                 isMismatchNormal = true;
+            }
         }
 
         std::ostringstream ss;
@@ -607,7 +619,10 @@ namespace stage
             "media-images-combat-stone3",
             "media-images-combat-stone4",
             "media-images-combat-crossbones",
-            "media-images-misc-spark"
+            "media-images-misc-spark",
+            "media-images-misc-cloud1",
+            "media-images-misc-cloud2",
+            "media-images-misc-cloud3"
         };
 
         static std::size_t imageIndex{ 0 };
@@ -656,7 +671,7 @@ namespace stage
             "media-anim-images-dir-whiteburst",
         };
 
-        //const long ANIM_FRAME_SLEEP_MS{ 15 };
+        const long ANIM_FRAME_SLEEP_MS{ 15 };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
@@ -675,7 +690,7 @@ namespace stage
                                           isNewAnimation,
                                           color) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewAnimation = false;
                 return false;
             }
@@ -697,11 +712,10 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -720,11 +734,10 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -743,11 +756,10 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            256,
-                                           32,
                                            sf::BlendAlpha,
                                            sf::Color::White) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -766,11 +778,10 @@ namespace stage
                                            isNewSingleTextureAnimation,
                                            128,
                                            128,
-                                           64,
                                            sf::BlendAdd,
                                            sf::Color::Cyan) == false)
             {
-                //std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
+                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
                 isNewSingleTextureAnimation = false;
                 return false;
             }
@@ -801,10 +812,10 @@ namespace stage
                                                                                        game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
                                                                                        0.0f,
                                                                                        0.0f,
-                                                                                       0.06f,
-                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                       sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                       COLOR);
+                                                                                       0.06f);
+
+            multiTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
+            multiTextureAnimSPtr_->SetTargetSize( sf::Vector2f(512.0f, 512.0f) );
         }
 
         return multiTextureAnimSPtr_->UpdateTime(0.02f);
@@ -815,7 +826,6 @@ namespace stage
                                                   const bool            WILL_REBUILD_ANIMATION_OBJECT,
                                                   const unsigned int    FRAME_WIDTH,
                                                   const unsigned int    FRAME_HEIGHT,
-                                                  const unsigned int    FRAME_COUNT,
                                                   const sf::BlendMode & BLEND_MODE,
                                                   const sf::Color &     COLOR)
     {
@@ -832,11 +842,11 @@ namespace stage
                                                                                          FRAME_WIDTH,
                                                                                          FRAME_HEIGHT,
                                                                                          0.06f,
-                                                                                         FRAME_COUNT,
-                                                                                         BLEND_MODE,
-                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                         sfml_util::MapByRes(1.0f, 3.0f),
-                                                                                         COLOR);
+                                                                                         0,
+                                                                                         BLEND_MODE);
+
+            singleTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
+            singleTextureAnimSPtr_->SetTargetSize(sf::Vector2f(512.0f, 512.0f) );
         }
 
         return singleTextureAnimSPtr_->UpdateTime(0.02f);

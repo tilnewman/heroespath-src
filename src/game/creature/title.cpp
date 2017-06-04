@@ -37,6 +37,7 @@
 #include "sfml-util/gui/title-image-manager.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <tuple>
@@ -68,16 +69,49 @@ namespace creature
         fileName_        (""),
         healthBonus_     (HEALTH_BONUS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((TITLE != Titles::Count),                                                               "game::creature::Title::Title(title_enum=role::Count"           << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles=" << Role::CharacterRoleString(ROLES_VEC) << ") was given an invalid TITLE enum.");
-        M_ASSERT_OR_LOGANDTHROW_SS((Titles::ToString(TITLE).empty() == false),                                            "game::creature::Title::Title(title_enum=" << TITLE             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles=" << Role::CharacterRoleString(ROLES_VEC) << ") was given an invalid TITLE.");
-        M_ASSERT_OR_LOGANDTHROW_SS((ROLES_VEC.empty() == false),                                                         "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles=" << Role::CharacterRoleString(ROLES_VEC) << ") was given an empty role vector.");
-        M_ASSERT_OR_LOGANDTHROW_SS((ACHIEVEMENT_TYPE != AchievementType::Count),                                         "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles=" << Role::CharacterRoleString(ROLES_VEC) << ") was given an AchievementType of 'Count'.");
-        M_ASSERT_OR_LOGANDTHROW_SS((((ACHIEVEMENT_TYPE != AchievementType::None) && (ACHIEVEMENT_COUNT == 0)) == false), "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles=" << Role::CharacterRoleString(ROLES_VEC) << ") was given a valid AchievementType but the achievement count was zero.");
+        M_ASSERT_OR_LOGANDTHROW_SS((TITLE != Titles::Count),
+            "game::creature::Title::Title(title_enum=role::Count" 
+            << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
+            << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
+            << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
+            << Role::CharacterRoleString(ROLES_VEC) << ") was given an invalid TITLE enum.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((Titles::ToString(TITLE).empty() == false),
+            "game::creature::Title::Title(title_enum=" << TITLE << ", ach_enum="
+            << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
+            << STATS_BONUS.ToStringCurrent(true, true, true)
+            << ", roles=" << Role::CharacterRoleString(ROLES_VEC)
+            << ") was given an invalid TITLE.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ROLES_VEC.empty() == false),
+            "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum="
+            << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
+            << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
+            << Role::CharacterRoleString(ROLES_VEC) << ") was given an empty role vector.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ACHIEVEMENT_TYPE != AchievementType::Count),
+            "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum="
+            << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
+            << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
+            << Role::CharacterRoleString(ROLES_VEC)
+            << ") was given an AchievementType of 'Count'.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((((ACHIEVEMENT_TYPE != AchievementType::None) &&
+            (ACHIEVEMENT_COUNT == 0)) == false), "game::creature::Title::Title(title="
+            << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
+            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus="
+            << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true)
+            << ", roles=" << Role::CharacterRoleString(ROLES_VEC)
+            << ") was given a valid AchievementType but the achievement count was zero.");
 
         //construct filename
         std::ostringstream ss;
 
-        if ((ACHIEVEMENT_TYPE == AchievementType::Count) || (ACHIEVEMENT_TYPE == AchievementType::None))
+        if ((ACHIEVEMENT_TYPE == AchievementType::Count) ||
+            (ACHIEVEMENT_TYPE == AchievementType::None))
         {
             ss << Titles::ToString(TITLE);
         }
@@ -115,7 +149,9 @@ namespace creature
 
             std::ostringstream rolesSS;
             for (auto const & NEXT_ROLE : rolesVec_)
+            {
                 rolesSS << role::Name(NEXT_ROLE) << SEP_STR;
+            }
 
             ss << boost::algorithm::erase_last_copy(rolesSS.str(), SEP_STR);
         }
@@ -123,20 +159,31 @@ namespace creature
         ss << SEP_STR;
 
         if (AchievementType::None != achievementType_)
-            ss << "granted after " << achievementCount_ << " " << AchievementType::Name(achievementType_) << SEP_STR;
+        {
+            ss << "granted after " << achievementCount_ << " "
+                << AchievementType::Name(achievementType_) << SEP_STR;
+        }
 
         if (0 != rankBonus_)
+        {
             ss << "rank_bonus=" << rankBonus_ << SEP_STR;
+        }
 
         if (0 != expBonus_)
+        {
             ss << "exp_bonus=" << expBonus_ << SEP_STR;
+        }
 
         if (0 != healthBonus_)
+        {
             ss << "health_bonus=" << healthBonus_ << SEP_STR;
+        }
 
         const std::string STATS_STR(statBonus_.ToStringNormal(true, true, true, true));
         if (STATS_STR.empty() == false)
+        {
             ss << "stat_bonuses=" << STATS_STR;
+        }
 
         if (boost::algorithm::ends_with(ss.str(), SEP_STR))
         {
@@ -167,35 +214,52 @@ namespace creature
 
             std::ostringstream rolesSS;
             for (auto const & NEXT_ROLE : rolesVec_)
+            {
                 rolesSS << role::Name(NEXT_ROLE) << ", ";
+            }
 
             ss << rolesSS.str();//keep the last ", " intentionally
         }
 
         if (AchievementType::None != achievementType_)
-            ss << ", and is granted after " << achievementCount_ << " " << AchievementType::Name(achievementType_);
+        {
+            ss << ", and is granted after " << achievementCount_ << " "
+                << AchievementType::Name(achievementType_);
+        }
 
         ss << ".  ";
 
         if (0 == rankBonus_)
+        {
             ss << "This does not increase your rank";
+        }
         else
+        {
             ss << "This increases your rank by " << rankBonus_;
+        }
 
         ss << ", your health by " << healthBonus_ << ", ";
 
         if (0 == expBonus_)
+        {
             ss << "and does not increase your experience";
+        }
         else
+        {
             ss << "and increases your experience by " << expBonus_;
+        }
 
         ss << ".  ";
 
         const std::string STATS_STR(statBonus_.ToStringNormal(false, false, true, true));
         if (STATS_STR.empty())
+        {
             ss << "Stats are not modified by this title.";
+        }
         else
+        {
             ss << "Stats undergo the following changes:  " << STATS_STR << ".";
+        }
 
         return ss.str();
     }
@@ -203,32 +267,34 @@ namespace creature
 
     bool operator<(const Title & L, const Title & R)
     {
-        return std::tie(L.title_,
-                        L.achievementCount_,
-                        L.achievementIndex_,
-                        L.rolesVec_,
-                        L.rankBonus_,
-                        L.expBonus_,
-                        L.statBonus_,
-                        L.fileName_)
+        if ( std::tie(L.title_,
+                      L.achievementCount_,
+                      L.achievementIndex_,
+                      L.rankBonus_,
+                      L.expBonus_,
+                      L.statBonus_,
+                      L.fileName_)
                <
                std::tie(R.title_,
                         R.achievementCount_,
                         R.achievementIndex_,
-                        R.rolesVec_,
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_);
+                        R.fileName_) == true)
+        {
+            return true;
+        }
+
+        return misc::Vector::OrderlessCompareLess(L.rolesVec_, R.rolesVec_);
     }
 
 
     bool operator==(const Title & L, const Title & R)
     {
-        return std::tie(L.title_,
+        if ( std::tie(L.title_,
                         L.achievementCount_,
                         L.achievementIndex_,
-                        L.rolesVec_,
                         L.rankBonus_,
                         L.expBonus_,
                         L.statBonus_,
@@ -237,17 +303,23 @@ namespace creature
                std::tie(R.title_,
                         R.achievementCount_,
                         R.achievementIndex_,
-                        R.rolesVec_,
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_);
+                        R.fileName_) == false)
+        {
+            return false;
+        }
+
+        return misc::Vector::OrderlessCompareEqual(L.rolesVec_, R.rolesVec_);
     }
 
 
     void Title::Change(Creature * const creaturePtr) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr), "Title::Change(creaturePtr==nullptr)  title=\"" << Titles::ToString(title_) << "\"  was given a null creaturePtr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr),
+            "Title::Change(creaturePtr==nullptr)  title=\"" << Titles::ToString(title_)
+            << "\"  was given a null creaturePtr.");
 
         //titles are permenant, so they effect both the normal and current stat values
         creaturePtr->Stats().ModifyNormal(statBonus_);

@@ -162,7 +162,7 @@ namespace combat
                 return NEXT_VERTEX.first;
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(CREATURE_SPTR=" << CREATURE_CPTRC->Name() << ") -but that creature sptr was not found";
+        ss << "CombatTree::GetNodeId(CREATURE_CPTRC=" << CREATURE_CPTRC->Name() << ") -but that creature sptr was not found";
         throw std::logic_error(ss.str());
     }
 

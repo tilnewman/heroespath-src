@@ -50,7 +50,7 @@ namespace sfml_util
         namespace box
         {
             class Box;
-            using BoxSPtr_t = std::shared_ptr<Box>;
+            using BoxUPtr_t = std::unique_ptr<Box>;
         }
     }
 
@@ -128,16 +128,26 @@ namespace sfml_util
 
         virtual void ClearAllEntities();
 
+        inline virtual bool IsMouseHeldDown() const { return isMouseHeldDown_; }
+        inline virtual bool IsMouseHeldDownAndMoving() const { return isMouseHeldDownAndMoving_; }
+        inline virtual const sf::Vector2f MouseDownPosV() const { return mouseDownPosV_; }
+
     protected:
         void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
+        static const float    MOUSE_DRAG_MIN_DISTANCE_;
+        //
         const std::string     STAGE_NAME_;
         sf::FloatRect         stageRegion_;
         gui::IGuiEntityPVec_t entityPVec_;
         gui::IGuiEntityPtr_t  entityWithFocusPtr_;//a copy of a ptr in entityPVec_
-        gui::box::BoxSPtr_t   hoverTextBoxSPtr_;
+        gui::box::BoxUPtr_t   hoverTextBoxUPtr_;
         sf::Text              hoverSfText_;
+    protected:
+        bool                  isMouseHeldDown_;
+        bool                  isMouseHeldDownAndMoving_;
+        sf::Vector2f          mouseDownPosV_;
     };
 
 }

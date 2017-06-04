@@ -54,9 +54,9 @@ namespace combat
         CombatNode & operator=(const CombatNode &) =delete;
 
     public:
-        CombatNode(const creature::CreatureSPtr_t & CREATURE_SPTR,
-                   const sfml_util::FontPtr_t       FONT_PTR,
-                   const unsigned int               FONT_CHAR_SIZE);
+        CombatNode(const creature::CreaturePtr_t CREATURE_PTR,
+                   const sfml_util::FontPtr_t    FONT_PTR,
+                   const unsigned int            FONT_CHAR_SIZE);
 
         virtual ~CombatNode();
 
@@ -201,7 +201,7 @@ namespace combat
     using CombatNodeCPtrC_t = const CombatNode * const;
     using CombatNodeSPtr_t  = std::shared_ptr<CombatNode>;
 
-    using CombatNodeSVec_t  = std::vector<CombatNodePtr_t>;
+    using CombatNodePVec_t  = std::vector<CombatNodePtr_t>;
 
 }
 }

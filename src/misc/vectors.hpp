@@ -265,6 +265,53 @@ namespace misc
             return std::sqrt(deviationSum / static_cast<T>(COUNT - 1));
         }
 
+
+        template<typename T>
+        static bool OrderlessCompareEqual(const std::vector<T> & A,
+                                          const std::vector<T> & B)
+        {
+            if (A.size() != B.size())
+            {
+                return false;
+            }
+
+            for (auto const & NEXT : A)
+            {
+                if (std::find(B.begin(), B.end(), NEXT) == B.end())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        template<typename T>
+        static bool OrderlessCompareLess(const std::vector<T> & A,
+                                         const std::vector<T> & B)
+        {
+            if (A.size() != B.size())
+            {
+                return A.size() < B.size();
+            }
+
+            auto a( A );
+            auto b( B );
+
+            if (a.empty() == false)
+            {
+                std::sort(a.begin(), a.end());
+            }
+
+            if (b.empty() == false)
+            {
+                std::sort(b.begin(), b.end());
+            }
+
+            return a < b;
+        }
+
     };
 
 }

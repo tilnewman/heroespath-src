@@ -25,7 +25,7 @@
 #ifndef GAME_PLAYER_PARTY_INCLUDED
 #define GAME_PLAYER_PARTY_INCLUDED
 //
-// party.hpp
+// party.hpp (player)
 //  A collection of characters under control of the user.
 //
 #include "misc/boost-serialize-includes.hpp"
@@ -37,22 +37,20 @@
 
 namespace game
 {
-    namespace creature
-    {
-        class Creature;
-        using CreatureSPtr_t  = std::shared_ptr<Creature>;
-        using CreaturePtr_t   = Creature *;
-        using CreatureCPtrC_t = const Creature * const;
-        using CreatureSVec_t  = std::vector<CreatureSPtr_t>;
-    }
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t   = Creature *;
+    using CreatureCPtrC_t = const Creature * const;
+}
 
 namespace player
 {
 
     //forward declarations
     class Character;
-    using CharacterSPtr_t = std::shared_ptr<Character>;
-    using CharacterSVec_t = std::vector<CharacterSPtr_t>;
+    using CharacterPtr_t  = Character *;
+    using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
 
     //encapsulates a set of Characters under control of the user
@@ -65,51 +63,67 @@ namespace player
         Party & operator=(const Party &) =delete;
 
     public:
-        explicit Party(const CharacterSVec_t & CHARACTER_SVEC = CharacterSVec_t());
+        explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
         virtual ~Party();
 
-        inline const CharacterSVec_t Characters() const { return charactersSVec_; }
+        inline const CharacterPVec_t Characters() const { return charactersPVec_; }
 
-        //Sets error_msg to a message describing why upon failure, otherwise error_msg is not changed.
-        bool Add(const CharacterSPtr_t & CHARACTER_SPTR, std::string & error_msg);
+        //Sets error_msg to a message describing why upon failure,
+        //otherwise error_msg is not changed.
+        bool Add(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
 
-        bool IsAddAllowed(const CharacterSPtr_t & CHARACTER_SPTR, std::string & error_msg);
+        bool IsAddAllowed(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
 
         //returns true if the character existed in the charactersSVec_ and was removed.
-        bool Remove(const CharacterSPtr_t & CHARACTER_SPTR);
+        bool Remove(CharacterPtr_t);
 
-        inline creature::CreatureSPtr_t GetNextInOrderAfter(const creature::CreatureSPtr_t & CREATURE_SPTR) { return GetNextInOrder(CREATURE_SPTR, true); }
-        inline creature::CreatureSPtr_t GetNextInOrderAfter(creature::CreatureCPtrC_t CREATURE_CPTRC)       { return GetNextInOrder(CREATURE_CPTRC, true); }
+        inline creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
+        {
+            return GetNextInOrder(C_PTR, true);
+        }
 
-        inline creature::CreatureSPtr_t GetNextInOrderBefore(const creature::CreatureSPtr_t & CREATURE_SPTR){ return GetNextInOrder(CREATURE_SPTR, false); }
-        inline creature::CreatureSPtr_t GetNextInOrderBefore(creature::CreatureCPtrC_t CREATURE_CPTRC)      { return GetNextInOrder(CREATURE_CPTRC, false); }
+        inline creature::CreaturePtr_t GetNextInOrderAfter(creature::CreatureCPtrC_t C_CPTRC)
+        {
+            return GetNextInOrder(C_CPTRC, true);
+        }
 
-        creature::CreatureSPtr_t GetNextInOrder(const creature::CreatureSPtr_t &, const bool);
-        creature::CreatureSPtr_t GetNextInOrder(creature::CreatureCPtrC_t, const bool);
+        inline creature::CreaturePtr_t GetNextInOrderBefore(const creature::CreaturePtr_t C_PTR)
+        {
+            return GetNextInOrder(C_PTR, false);
+        }
 
-        creature::CreatureSPtr_t GetAtOrderPos(const std::size_t);//zero indexed
+        inline creature::CreaturePtr_t GetNextInOrderBefore(creature::CreatureCPtrC_t C_CPTRC)
+        {
+            return GetNextInOrder(C_CPTRC, false);
+        }
 
-        std::size_t GetOrderNum(const creature::CreatureSPtr_t &) const;//zero indexed
+        creature::CreaturePtr_t GetNextInOrder(creature::CreatureCPtrC_t, const bool);
+
+        creature::CreaturePtr_t GetAtOrderPos(const std::size_t);//zero indexed
+
         std::size_t GetOrderNum(creature::CreatureCPtrC_t) const;//zero indexed
 
         std::size_t GetNumHumanoid() const;
 
     public:
         static const std::size_t MAX_CHARACTER_COUNT_;
+
     private:
-        CharacterSVec_t charactersSVec_;
+        CharacterPVec_t charactersPVec_;
 
     private:
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & charactersSVec_;
+            ar & charactersPVec_;
         }
     };
 
-    using PartySPtr_t = std::shared_ptr<Party>;
+    using PartyPtr_t  = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
 }
 }
+
 #endif //GAME_PLAYER_PARTY_INCLUDED

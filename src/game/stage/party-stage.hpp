@@ -43,6 +43,7 @@
 
 #include <memory>
 #include <string>
+#include <set>
 
 
 namespace sfml_util
@@ -56,11 +57,12 @@ namespace gui
 
 namespace game
 {
-    namespace player
-    {
-        class Character;
-        using CharacterSPtr_t = std::shared_ptr<Character>;
-    }
+namespace player
+{
+    class Character;
+    using CharacterPtr_t = Character *;
+    using CharacterPSet_t = std::set<CharacterPtr_t>;
+}
 
 namespace stage
 {
@@ -96,7 +98,7 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
-        virtual player::CharacterSPtr_t GetSelectedCharacter() const;
+        virtual player::CharacterPtr_t GetSelectedCharacter() const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -135,7 +137,7 @@ namespace stage
         sfml_util::gui::TextInfo warningTextInfo_;
         sfml_util::gui::TextRegionUPtr_t warningTextRegionUPtr_;
         sfml_util::sliders::Slider2<sf::Uint8, float> warningTextSlider_;
-        OuroborosSPtr_t ouroborosSPtr_;
+        OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
 
@@ -147,11 +149,14 @@ namespace stage
         float           mouseOverBoxHeight_;
         sf::Vector2f    mouseOverPosV_;
         sf::Sprite      mouseOverSprite_;
-        player::CharacterSPtr_t mouseOverCharSPtr_;
+        player::CharacterPtr_t mouseOverCharPtr_;
         sf::Texture     mouseOverTexture_;
-        bool isMouseOverTexture_;
+        bool            isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
+
+        //
+        game::player::CharacterPSet_t charactersPSet_;
     };
 
 }

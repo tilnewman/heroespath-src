@@ -38,7 +38,6 @@
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/sparks-animation.hpp"
 
 #include "game/i-popup-callback.hpp"
 #include "game/horiz-symbol.hpp"
@@ -58,8 +57,11 @@ namespace sfml_util
 {
 namespace gui
 {
-    class Box;
-    using BoxSPtr_t = std::shared_ptr<Box>;
+    namespace box
+    {
+        class Box;
+        using BoxUPtr_t = std::unique_ptr<Box>;
+    }
 
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
@@ -91,8 +93,9 @@ namespace combat
     using EncounterPtr_t = Encounter *;
 
     class CombatAnimation;
-    using CombatAnimationPtr_t = CombatAnimation *;
+    using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
 }
+
 namespace stage
 {
 
@@ -172,6 +175,8 @@ namespace stage
             Impact,
             PostImpactPause,
             MoveBack,
+            Spell,
+            PostSpellPause,
             FinalPause,
             Count
         };
@@ -191,7 +196,6 @@ namespace stage
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         inline bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
@@ -216,7 +220,7 @@ namespace stage
         bool HandleAttack();
         bool HandleFight();
         bool HandleCast_Step1_ValidateCastAndSelectSpell();
-        void HandleCast_Step2_SelectTargetOrPerformOnAll(spell::SpellPtr_t);
+        void HandleCast_Step2_SelectTargetOrPerformOnAll();
         void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
         bool HandleAdvance();
         bool HandleRetreat();
@@ -271,6 +275,7 @@ namespace stage
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
         static const float PAUSE_SHORT_SEC_;
+        static const float PAUSE_SHORTER_SEC_;
         static const float PAUSE_ZERO_SEC_;
         static const float POST_PAN_PAUSE_SEC_;
         static const float POST_ZOOMOUT_PAUSE_SEC_;
@@ -286,6 +291,7 @@ namespace stage
         static const float POST_MELEEMOVE_ANIM_PAUSE_SEC_;
         static const float POST_IMPACT_ANIM_PAUSE_SEC_;
         static const float CONDITION_WAKE_PAUSE_SEC_;
+        static const float POST_SPELL_ANIM_PAUSE_SEC_;
         //
         static const float SLIDER_SPEED_SLOWEST_;
         static const float SLIDER_SPEED_SLOW_;
@@ -318,11 +324,11 @@ namespace stage
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         //
-        sfml_util::gui::box::BoxSPtr_t   commandBoxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t   commandBoxUPtr_;
         sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
         sfml_util::gui::TextInfo         statusBoxTextInfo_;
-        sfml_util::gui::SliderBarSPtr_t  zoomSliderBarSPtr_;
-        sfml_util::gui::box::BoxSPtr_t   turnBoxSPtr_;
+        sfml_util::gui::SliderBarUPtr_t  zoomSliderBarUPtr_;
+        sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;
         sf::FloatRect                    turnBoxRegion_;
         combat::CombatSoundEffects       combatSoundEffects_;
         TurnPhase                        turnPhase_;
@@ -334,9 +340,8 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willClrShkInitStatusMsg_;
-        bool                             isMouseHeldDown_;
-        bool                             isMouseHeldDownAndMoving_;
         std::string                      tempConditionsWakeStr_;
+        bool                             isShortPostZoomOutPause_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
@@ -345,7 +350,7 @@ namespace stage
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
 
         //this member controls combat related animations
-        combat::CombatAnimationPtr_t combatAnimationPtr_;
+        combat::CombatAnimationUPtr_t combatAnimationUPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
 
@@ -391,10 +396,9 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
-
-        sfml_util::animation::SparksAnimationUPtr_t sparksAnimUPtr_;
     };
 
 }
 }
+
 #endif //GAME_COMBATSTAGE_INCLUDED

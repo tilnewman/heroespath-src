@@ -43,9 +43,11 @@
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/box.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
+#include "game/ouroboros.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/creature/race.hpp"
@@ -66,6 +68,7 @@
 #include "misc/random.hpp"
 
 #include <sstream>
+#include <memory>
 
 
 namespace game
@@ -101,11 +104,11 @@ namespace stage
         {
             if (GetMouseState() == sfml_util::MouseState::Over)
             {
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
             }
             else
             {
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
             }
 
             if (stagePtr_ == nullptr)
@@ -155,6 +158,7 @@ namespace stage
         STATBOX_HEIGHT_         (290.0f),
         STATBOX_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (STATBOX_WIDTH_ * 0.5f)),
         STATS_POS_LEFT_         (STATBOX_POS_LEFT_ + 10.0f),
+        ouroborosUPtr_          (),
         mainMenuTitle_          ("create_char_button_normal.png"),
         attribVertOffset1_      (0.0f),
         attribVertOffset2_      (0.0f),
@@ -163,10 +167,10 @@ namespace stage
         smokeAnimDrifterY_      (0.0f, 300.0f, 0.05f, 0.5f),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
         smokeAnimSPtr_          (),
-        backButtonSPtr_         ( new MenuButton("Back", "back_button_normal.png", "back_button_lit.png") ),
-        saveButtonSPtr_         ( new MenuButton("Save", "save_button_normal.png", "save_button_lit.png") ),
-        helpButtonSPtr_         ( new MenuButton("Help", "help_button_normal.png", "help_button_lit.png") ),
-        nextButtonSPtr_         ( new MenuButton("Next", "next_button_normal.png", "next_button_lit.png") ),
+        backButtonSPtr_         ( std::make_shared<MenuButton>("Back", "back_button_normal.png", "back_button_lit.png") ),
+        saveButtonSPtr_         ( std::make_shared<MenuButton>("Save", "save_button_normal.png", "save_button_lit.png") ),
+        helpButtonSPtr_         ( std::make_shared<MenuButton>("Help", "help_button_normal.png", "help_button_lit.png") ),
+        nextButtonSPtr_         ( std::make_shared<MenuButton>("Next", "next_button_normal.png", "next_button_lit.png") ),
         statSetBase_            (),
         statSetRace_            (),
         statSetRole_            (),
@@ -194,7 +198,7 @@ namespace stage
         statsLckPosTop_         (0.0f),
         statsSpdPosTop_         (0.0f),
         statsIntPosTop_         (0.0f),
-        statsBoxSPtr_           (),
+        statsBoxUPtr_           (),
         isAnimStats_            (false),
         isWaitingForStats_      (false),
         animStatsDelayPerSec_   (0.0f),
@@ -285,40 +289,45 @@ namespace stage
             sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
 
             //create the new character
-            player::CharacterSPtr_t newCharacterSPtr( new player::Character(NAME,
-                                                                            SEX_ENUM,
-                                                                            creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
-                                                                            creature::Race(RACE_ENUM),
-                                                                            creature::Role(ROLE_ENUM),
-                                                                            statSetFinal,
-                                                                            0,
-                                                                            1,
-                                                                            0,
-                                                                            game::creature::ConditionEnumVec_t(),
-                                                                            game::creature::TitleEnumVec_t(),
-                                                                            game::item::Inventory(),
-                                                                            sfml_util::DateTime::CurrentDateTime(),
-                                                                            characterImageFilenamesVec[selectedImageIndex_]) );
+            auto newCharacterUPtr = std::make_unique<player::Character>(
+                NAME,
+                SEX_ENUM,
+                creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
+                creature::Race(RACE_ENUM),
+                creature::Role(ROLE_ENUM),
+                statSetFinal,
+                0,
+                1,
+                0,
+                game::creature::ConditionEnumVec_t(),
+                game::creature::TitleEnumVec_t(),
+                game::item::Inventory(),
+                sfml_util::DateTime::CurrentDateTime(),
+                characterImageFilenamesVec[selectedImageIndex_]);
 
             //setup the new character with initial health and inventory
-            player::Initial::Setup(newCharacterSPtr.get());
+            player::Initial::Setup(newCharacterUPtr.get());
 
             //save the character to disc
-            game::state::GameStateFactory::Instance()->SaveCharacter(newCharacterSPtr);
+            game::state::GameStateFactory::Instance()->SaveCharacter(newCharacterUPtr.get());
 
             //confirm popup
             std::ostringstream sss;
             sss << "\n"
-                << newCharacterSPtr->Name()
-                << " the " << creature::sex::ToString(newCharacterSPtr->Sex())
-                << " " << newCharacterSPtr->Race().Name();
+                << newCharacterUPtr->Name()
+                << " the " << creature::sex::ToString(newCharacterUPtr->Sex())
+                << " " << newCharacterUPtr->Race().Name();
 
-            if (creature::race::Wolfen != newCharacterSPtr->Race().Which())
-                sss << " " << newCharacterSPtr->Role().Name();
+            if (creature::race::Wolfen != newCharacterUPtr->Race().Which())
+            {
+                sss << " " << newCharacterUPtr->Role().Name();
+            }
 
             sss  << " saved.";
 
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo("Test After", sss.str()));
+            LoopManager::Instance()->PopupWaitBegin(
+                this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    "Test After", sss.str()));
 
             ResetForNewCharacterCreation();
             return true;
@@ -326,14 +335,18 @@ namespace stage
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
         {
             if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::MainMenu);
+            }
 
             return true;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
         {
             if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::PartyCreation);
+            }
 
             return true;
         }
@@ -401,7 +414,9 @@ namespace stage
                 ss << creature::race::Name(RACE) << " ";
 
                 if (RACE != creature::race::Wolfen)
+                {
                     ss << creature::role::Name(ROLE);
+                }
             }
 
             //const std::string PAD(" ");
@@ -655,6 +670,9 @@ namespace stage
 
     void CharacterStage::Setup()
     {
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("CharacterStage's");
+        EntityAdd(ouroborosUPtr_.get());
+
         //help button
         helpButtonSPtr_->SetScaleToRes();
         helpButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - helpButtonSPtr_->GetEntityRegion().width - 180.0f);
@@ -695,17 +713,19 @@ namespace stage
             const sfml_util::gui::BackgroundInfo BG_INFO(sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
             const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
-            raceRadioButtonSPtr_.reset( new sfml_util::gui::RadioButtonSet("RaceSelection",
-                                                                            REGION.left,
-                                                                            REGION.top,
-                                                                            raceRadioButtonSetTextInfo,
-                                                                            raceNameVec,
-                                                                            0,
-                                                                            sfml_util::Brightness::Bright,
-                                                                            sfml_util::IndexVec_t(),
-                                                                            BOX_INFO,
-                                                                            sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
-                                                                            0.0f) );
+            raceRadioButtonSPtr_ = std::make_shared<sfml_util::gui::RadioButtonSet>(
+                "RaceSelection",
+                REGION.left,
+                REGION.top,
+                raceRadioButtonSetTextInfo,
+                raceNameVec,
+                0,
+                sfml_util::Brightness::Bright,
+                sfml_util::IndexVec_t(),
+                BOX_INFO,
+                sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
+                0.0f);
+
             raceRadioButtonSPtr_->CallbackHandlerAdd(this);
             EntityAdd(raceRadioButtonSPtr_.get());
         }
@@ -727,17 +747,18 @@ namespace stage
             const sfml_util::gui::BackgroundInfo BG_INFO(sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
             const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
-            roleRadioButtonSPtr_.reset( new sfml_util::gui::RadioButtonSet("RoleSelection",
-                                                                            REGION.left,
-                                                                            REGION.top,
-                                                                            roleRadioButtonSetTextInfo,
-                                                                            roleNameVec,
-                                                                            0,
-                                                                            sfml_util::Brightness::Bright,
-                                                                            sfml_util::IndexVec_t(),
-                                                                            BOX_INFO,
-                                                                            sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
-                                                                            -5.0f) );
+            roleRadioButtonSPtr_ = std::make_shared<sfml_util::gui::RadioButtonSet>(
+                "RoleSelection",
+                REGION.left,
+                REGION.top,
+                roleRadioButtonSetTextInfo,
+                roleNameVec,
+                0,
+                sfml_util::Brightness::Bright,
+                sfml_util::IndexVec_t(),
+                BOX_INFO,
+                sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
+                -5.0f);
 
             roleRadioButtonSPtr_->CallbackHandlerAdd(this);
             EntityAdd(roleRadioButtonSPtr_.get());
@@ -749,16 +770,21 @@ namespace stage
 
         //name label
         {
-            const sf::FloatRect REGION((SCREEN_WIDTH_ * 0.5f) - 150.0f, mainMenuTitle_.LowerPosition() - 20.0f, 0.0f, 0.0f);
+            const sf::FloatRect REGION((SCREEN_WIDTH_ * 0.5f) - 150.0f,
+                mainMenuTitle_.LowerPosition() - 20.0f, 0.0f, 0.0f);
 
-            const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO("(name your character here)",
-                                                                sfml_util::FontManager::Instance()->Font_Default2(),
-                                                                sfml_util::FontManager::Instance()->Size_Small(),
-                                                                LIGHT_TEXT_COLOR_,
-                                                                sf::BlendAlpha,
-                                                                sf::Text::Italic);
+            const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO(
+                "(name your character here)",
+                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                LIGHT_TEXT_COLOR_,
+                sf::BlendAlpha,
+                sf::Text::Italic);
 
-            nInsTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("NameLabel", NAME_LABEL_TEXT_INFO, REGION) );
+            nInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "NameLabel",
+                NAME_LABEL_TEXT_INFO,
+                REGION);
 
             nInsTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 45.0f,
                                               nInsTextRegionUPtr_->GetEntityPos().y);
@@ -777,11 +803,14 @@ namespace stage
 
             const sfml_util::gui::BackgroundInfo BG_INFO(sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
             const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
-            nameTextEntryBoxSPtr_.reset( new sfml_util::gui::TextEntryBox("CharacterName",
-                                                                          REGION,
-                                                                          creature::NameInfo::Instance()->MakeTextInfo(" ", DESC_TEXT_COLOR_),
-                                                                          LIGHT_TEXT_COLOR_,
-                                                                          BOX_INFO) );
+            
+            nameTextEntryBoxSPtr_ = std::make_shared<sfml_util::gui::TextEntryBox>(
+                "CharacterName",
+                REGION,
+                creature::NameInfo::Instance()->MakeTextInfo(" ", DESC_TEXT_COLOR_),
+                LIGHT_TEXT_COLOR_,
+                BOX_INFO);
+
             EntityAdd(nameTextEntryBoxSPtr_.get());
         }
 
@@ -801,17 +830,18 @@ namespace stage
             const sfml_util::gui::BackgroundInfo BG_INFO(sfml_util::gui::GuiElements::Instance()->GetTextureWood(), TEMP_REGION);
             const sfml_util::gui::box::Info BOX_INFO(true, TEMP_REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
-            sexRadioButtonSPtr_.reset( new sfml_util::gui::RadioButtonSet("SexSelection",
-                                                                          0.0f,
-                                                                          0.0f,
-                                                                          sexRadioButtonSetTextInfo,
-                                                                          sexNameVec,
-                                                                          0,
-                                                                          sfml_util::Brightness::Bright,
-                                                                          sfml_util::IndexVec_t(),
-                                                                          BOX_INFO,
-                                                                          5.0f,
-                                                                          0.0f) );
+            sexRadioButtonSPtr_ = std::make_shared<sfml_util::gui::RadioButtonSet>(
+                "SexSelection",
+                0.0f,
+                0.0f,
+                sexRadioButtonSetTextInfo,
+                sexNameVec,
+                0,
+                sfml_util::Brightness::Bright,
+                sfml_util::IndexVec_t(),
+                BOX_INFO,
+                5.0f,
+                0.0f);
 
             sexRadioButtonSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sexRadioButtonSPtr_->GetEntityRegion().width * 0.5f),
                                               nameTextEntryBoxSPtr_->GetEntityPos().y + nameTextEntryBoxSPtr_->GetEntityRegion().height + sfml_util::MapByRes(25.0f, 70.0f));
@@ -829,9 +859,10 @@ namespace stage
                                                  sf::Text::Italic,
                                                  sfml_util::Justified::Center);
 
-            sbInsTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("SpacebarInstructions",
-                                                                      insTextInfo,
-                                                                      sf::FloatRect()));
+            sbInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "SpacebarInstructions",
+                insTextInfo,
+                sf::FloatRect());
 
             sbInsTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sbInsTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 100.0f,
                                                sexRadioButtonSPtr_->GetEntityRegion().top + sexRadioButtonSPtr_->GetEntityRegion().height + sfml_util::MapByRes(30.0f, 90.0f));
@@ -857,8 +888,10 @@ namespace stage
                                                                        sf::Color(180, 180, 180)),
                                               BG_INFO);
 
-            statsBoxSPtr_.reset( new sfml_util::gui::box::Box("CharacterStageStats", boxInfo) );
-            EntityAdd(statsBoxSPtr_.get());
+            statsBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
+                "CharacterStageStats", boxInfo);
+
+            EntityAdd(statsBoxUPtr_.get());
         }
 
         //Stat Labels
@@ -940,13 +973,15 @@ namespace stage
         //smoke animation
         //Note:  Keep this last to be added to the enitySVec_ in this function
         const float ANIM_SCALE(sfml_util::MapByRes(1.0f, 3.0f));
-        smokeAnimSPtr_.reset(new sfml_util::MultiTextureAnimation("Smoke",
-                                                                  GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-smoke"),
-                                                                  200.0f,
-                                                                  200.0f,
-                                                                  0.035f,
-                                                                  ANIM_SCALE,
-                                                                  ANIM_SCALE));
+        smokeAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
+            "Smoke",
+            GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-smoke"),
+            200.0f,
+            200.0f,
+            0.035f,
+            ANIM_SCALE,
+            ANIM_SCALE);
+
         EntityAdd(smokeAnimSPtr_.get());
 
         //setup initial config of radio buttons
@@ -990,11 +1025,13 @@ namespace stage
 
         if (racetDescTextRegionUPtr_.get() == nullptr)
         {
-            racetDescTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("RaceDescription",
-                                                                          raceDescTextInfo,
-                                                                          REGION,
-                                                                          this,
-                                                                          SMALL_FONT_SIZE_));
+            racetDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "RaceDescription",
+                raceDescTextInfo,
+                REGION,
+                this,
+                SMALL_FONT_SIZE_);
+
             EntityAdd(racetDescTextRegionUPtr_.get());
         }
         else
@@ -1026,11 +1063,13 @@ namespace stage
 
         if (roletDescTextRegionUPtr_.get() == nullptr)
         {
-            roletDescTextRegionUPtr_.reset(new sfml_util::gui::TextRegion("RoleDescription",
-                                                                          roleDescTextInfo,
-                                                                          REGION,
-                                                                          this,
-                                                                          SMALL_FONT_SIZE_));
+            roletDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "RoleDescription",
+                roleDescTextInfo,
+                REGION,
+                this,
+                SMALL_FONT_SIZE_);
+
             EntityAdd(roletDescTextRegionUPtr_.get());
         }
         else
@@ -1726,7 +1765,7 @@ namespace stage
         {
             willDrawStatModText_ = true;
             HandleChangedStatModifiers("after anim stopped");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
         }
         else
         {
@@ -1814,7 +1853,7 @@ namespace stage
             (false == isAnimStats_) &&
             (false == nameTextEntryBoxSPtr_->HasFocus()))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Wind().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Wind).PlayRandom();
             animStatsTimeCounterSec_ = 0.0f;
             animStatsDelayPerSec_ = 0.01f;//any fraction of a second will work here
             isAnimStats_ = true;
@@ -1839,8 +1878,8 @@ namespace stage
             if ((KE.code == sf::Keyboard::Return) || (KE.code == sf::Keyboard::Tab))
             {
                 nameTextEntryBoxSPtr_->SetHasFocus(false);
-                statsBoxSPtr_->SetHasFocus(true);
-                Stage::SetFocus(statsBoxSPtr_.get());
+                statsBoxUPtr_->SetHasFocus(true);
+                Stage::SetFocus(statsBoxUPtr_.get());
             }
 
             return true;
@@ -2059,7 +2098,7 @@ namespace stage
         const stats::stat::Enum HELD_DOWN_STAT( GetHeldDownStat() );
         if (HELD_DOWN_STAT != stats::stat::Count)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             fixedStatsSVec_[HELD_DOWN_STAT]->SetPosY(GetStatPosTop(HELD_DOWN_STAT));
         }
 
@@ -2081,7 +2120,7 @@ namespace stage
         {
             UndoAndClearStatModifierChanges();
             HandleChangedStatModifiers("after mouse up");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Thock().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
         }
 
         return entityWithFocusPtr;
@@ -2235,13 +2274,13 @@ namespace stage
             {
             case 1:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Strength,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsStrPosTop_,
-                                                textInfo) );
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Strength,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsStrPosTop_,
+                                                      textInfo);
                 animStatsSVec_.push_back( ansp );
 
                 AnimNumSPtr_t toFadeSPtr(fixedStatsSVec_[stats::stat::Strength]);
@@ -2259,12 +2298,12 @@ namespace stage
 
             case 2:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Accuracy,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsAccPosTop_, textInfo));
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Accuracy,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsAccPosTop_, textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
@@ -2283,13 +2322,13 @@ namespace stage
 
             case 3:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Charm,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsChaPosTop_,
-                                                textInfo));
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Charm,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsChaPosTop_,
+                                                      textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
@@ -2308,13 +2347,13 @@ namespace stage
 
             case 4:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Luck,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsLckPosTop_,
-                                                textInfo));
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Luck,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsLckPosTop_,
+                                                      textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
@@ -2333,13 +2372,13 @@ namespace stage
 
             case 5:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Speed,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsSpdPosTop_,
-                                                textInfo));
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Speed,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsSpdPosTop_,
+                                                      textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
@@ -2359,13 +2398,13 @@ namespace stage
             case 6:
             default:
             {
-                AnimNumSPtr_t ansp(new AnimNum(NEXT_VAL,
-                                                stats::stat::Intelligence,
-                                                SMOKE_ANIM_MID_X,
-                                                SMOKE_ANIM_MID_Y,
-                                                ANIM_NUM_TARGET_X,
-                                                statsIntPosTop_,
-                                                textInfo));
+                auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
+                                                      stats::stat::Intelligence,
+                                                      SMOKE_ANIM_MID_X,
+                                                      SMOKE_ANIM_MID_Y,
+                                                      ANIM_NUM_TARGET_X,
+                                                      statsIntPosTop_,
+                                                      textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
@@ -2421,7 +2460,7 @@ namespace stage
         statSetBase_.Get(B).ResetAll(statSetBase_.Get(A).Normal());
         statSetBase_.Get(A).ResetAll(TEMP_STAT);
 
-        sfml_util::SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
     }
 
 
@@ -2448,28 +2487,28 @@ namespace stage
         if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_BackButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             saveButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_SaveButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::N)
         {
             nextButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_NextButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::H)
         {
             helpButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             HandleCallback_HelpButton();
             return true;
         }

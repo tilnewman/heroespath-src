@@ -29,6 +29,7 @@
 //
 #include "stage.hpp"
 
+#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -44,6 +45,9 @@
 namespace sfml_util
 {
 
+    const float Stage::MOUSE_DRAG_MIN_DISTANCE_{ 3.0f };
+
+
     Stage::Stage(const std::string & NAME)
     :
         STAGE_NAME_         (std::string(NAME).append("_Stage")),
@@ -53,8 +57,11 @@ namespace sfml_util
                                             Display::Instance()->GetWinHeight()) ),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
-        hoverSfText_        ()
+        hoverTextBoxUPtr_   (),
+        hoverSfText_        (),
+        isMouseHeldDown_    (false),
+        isMouseHeldDownAndMoving_(false),
+        mouseDownPosV_      (0.0f, 0.0f)
     {}
 
 
@@ -65,8 +72,11 @@ namespace sfml_util
         stageRegion_        (REGION),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
-        hoverSfText_        ()
+        hoverTextBoxUPtr_   (),
+        hoverSfText_        (),
+        isMouseHeldDown_    (false),
+        isMouseHeldDownAndMoving_(false),
+        mouseDownPosV_      (0.0f, 0.0f)
     {}
 
 
@@ -83,8 +93,11 @@ namespace sfml_util
                                             REGION_HEIGHT) ),
         entityPVec_         (),
         entityWithFocusPtr_ (),
-        hoverTextBoxSPtr_   (),
-        hoverSfText_        ()
+        hoverTextBoxUPtr_   (),
+        hoverSfText_        (),
+        isMouseHeldDown_    (false),
+        isMouseHeldDownAndMoving_(false),
+        mouseDownPosV_      (0.0f, 0.0f)
     {}
 
 
@@ -105,6 +118,9 @@ namespace sfml_util
 
     void Stage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
+        isMouseHeldDownAndMoving_ = (isMouseHeldDown_ &&
+            (sfml_util::Distance(mouseDownPosV_, MOUSE_POS_V) > MOUSE_DRAG_MIN_DISTANCE_));
+
         for (auto entityPtr : entityPVec_)
         {
             entityPtr->UpdateMousePos(MOUSE_POS_V);
@@ -114,6 +130,9 @@ namespace sfml_util
 
     void Stage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
+        isMouseHeldDown_ = true;
+        mouseDownPosV_ = MOUSE_POS_V;
+
         for (auto entityPtr : entityPVec_)
         {
             entityPtr->MouseDown(MOUSE_POS_V);
@@ -123,6 +142,9 @@ namespace sfml_util
 
     gui::IGuiEntityPtr_t Stage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
+        isMouseHeldDown_ = false;
+        isMouseHeldDownAndMoving_ = false;
+
         bool foundFocus(false);
 
         for (auto entityPtr : entityPVec_)
@@ -284,9 +306,9 @@ namespace sfml_util
 
             if (hoverText.empty())
             {
-                if (hoverTextBoxSPtr_.get() != nullptr)
+                if (hoverTextBoxUPtr_.get() != nullptr)
                 {
-                    hoverTextBoxSPtr_.reset();
+                    hoverTextBoxUPtr_.reset();
                 }
 
                 return;
@@ -323,13 +345,13 @@ namespace sfml_util
 
             const gui::box::Info BOX_INFO(1, true, region, gui::ColorSet(), BG_INFO);
 
-            hoverTextBoxSPtr_.reset( new gui::box::Box(GetStageName() + "'sHoverText", BOX_INFO) );
+            hoverTextBoxUPtr_ = std::make_unique<gui::box::Box>(GetStageName() + "'sHoverText", BOX_INFO);
         }
         else
         {
-            if (hoverTextBoxSPtr_.get() != nullptr)
+            if (hoverTextBoxUPtr_.get() != nullptr)
             {
-                hoverTextBoxSPtr_.reset();
+                hoverTextBoxUPtr_.reset();
             }
         }
     }
@@ -344,9 +366,9 @@ namespace sfml_util
 
     void Stage::DrawHoverText(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        if (hoverTextBoxSPtr_.get() != nullptr)
+        if (hoverTextBoxUPtr_.get() != nullptr)
         {
-            target.draw( * hoverTextBoxSPtr_, STATES);
+            target.draw( * hoverTextBoxUPtr_, STATES);
             target.draw(hoverSfText_, STATES);
         }
     }

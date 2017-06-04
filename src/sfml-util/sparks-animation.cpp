@@ -119,7 +119,7 @@ namespace animation
                                      const float           SPRAY_RATIO,
                                      const float           SCALE_BASE,
                                      const float           SCALE_VARIATION_RATIO,
-                                     const float           EMIT_RATE_PER_SEC,
+                                     const float           EMIT_RATE_RATIO,
                                      const float           DURATION_SEC,
                                      const float           SPEED_BASE,
                                      const float           SPEED_VARIATION_RATIO,
@@ -132,7 +132,7 @@ namespace animation
         SPRAY_RATIO_MAJOR_       (1.0f - SPRAY_RATIO),
         SCALE_BASE_              (SCALE_BASE),
         SCALE_VAR_RATIO_         (SCALE_VARIATION_RATIO),
-        SEC_PER_EMIT_            (1.0f / EMIT_RATE_PER_SEC),
+        SEC_PER_EMIT_            (1.0f / (50.0f + (EMIT_RATE_RATIO * 150.0f))),
         DURATION_SEC_            (DURATION_SEC),
         SPEED_BASE_              (SPEED_BASE),
         SPEED_VAR_RATIO_         (SPEED_VARIATION_RATIO),
@@ -145,7 +145,7 @@ namespace animation
         sparkVec_                ()
     {
         LoadImageOrTexture(sparkTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark"));
-        sparkVec_.reserve(static_cast<std::size_t>(EMIT_RATE_PER_SEC * DURATION_SEC) + 2);
+        sparkVec_.reserve(static_cast<std::size_t>((1.0f / SEC_PER_EMIT_) * DURATION_SEC) + 2);
     }
 
 
@@ -173,15 +173,19 @@ namespace animation
             auto const TARGET_HORIZ_SPAN{ misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
             auto const END_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
-            sparkVec_.push_back( Spark(sparkTexture_,
-                                       sf::Vector2f(START_POS_LEFT, START_POS_TOP),
-                                       sf::Vector2f(END_POS_LEFT, END_POS_TOP),
-                                       ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
-                                       ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_),
-                                       0.001f,
-                                       ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_),
-                                       sf::Color(255, 255, static_cast<sf::Uint8>(misc::random::Int(255)), 255),
-                                       sf::Color(255, static_cast<sf::Uint8>(misc::random::Int(192, 255)), static_cast<sf::Uint8>(misc::random::Int(255)), static_cast<sf::Uint8>(misc::random::Int(0, 127)))) );
+            sparkVec_.push_back( Spark(
+                sparkTexture_,
+                sf::Vector2f(START_POS_LEFT, START_POS_TOP),
+                sf::Vector2f(END_POS_LEFT, END_POS_TOP),
+                ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
+                ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_),
+                0.001f,
+                ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_),
+                sf::Color(255,
+                          255,
+                          static_cast<sf::Uint8>(misc::random::Int(255)),
+                          static_cast<sf::Uint8>(misc::random::Int(0, 127))),
+                sf::Color(255, 255, static_cast<sf::Uint8>(misc::random::Int(255)), 255) ) );
         }
 
         for (auto & nextSpark : sparkVec_)

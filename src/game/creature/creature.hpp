@@ -146,9 +146,10 @@ namespace creature
         inline dragon_class::Enum DragonClass() const           { return dragon_class::ClassFromRank( Rank() ); }
         inline wolfen_class::Enum WolfenClass() const           { return wolfen_class::ClassFromRank( Rank() ); }
 
-        inline std::size_t Rank() const                         { return rank_; }
+        inline stats::Rank_t Rank() const                       { return rank_; }
         inline rank_class::Enum RankClass() const               { return rank_class::FromRank(rank_); }
         const std::string RankClassName() const;
+        float RankRatio() const;
 
         inline void IncreaseRank(const stats::Rank_t R)         { rank_ += R; }
         inline stats::Exp_t Exp() const                         { return experience_; }
@@ -341,7 +342,10 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R);
 
-    bool operator!=(const Creature & L, const Creature & R);
+    inline bool operator!=(const Creature & L, const Creature & R)
+    {
+        return ! (L == R);
+    }
 
     bool operator<(const Creature & L, const Creature & R);
 
@@ -350,13 +354,9 @@ namespace creature
     using CreaturePtrC_t  = Creature * const;
     using CreatureCPtr_t  = const Creature *;
     using CreatureCPtrC_t = const Creature * const;
-    using CreatureSPtr_t  = std::shared_ptr<Creature>;
-
-    using CreaturePVec_t     = std::vector<CreaturePtr_t>;
-    using CreatureSVec_t     = std::vector<CreatureSPtr_t>;
-    using CreatureSVecIter_t = CreatureSVec_t::iterator;
-    using CreatureSVecCIter_ = CreatureSVec_t::const_iterator;
-
+    using CreatureUPtr_t  = std::unique_ptr<Creature>;
+    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+    
 }
 }
 #endif //GAME_CREATURE_INCLUDED

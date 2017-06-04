@@ -29,9 +29,7 @@
 //
 #include "turn-decider.hpp"
 
-#include "misc/random.hpp"
-#include "misc/vectors.hpp"
-
+#include "game/log-macros.hpp"
 #include "game/combat/turn-info.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/combat/combat-display.hpp"
@@ -41,9 +39,13 @@
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
 
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
+
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <sstream>
 
 
 namespace game
@@ -51,24 +53,38 @@ namespace game
 namespace combat
 {
 
-    const spell::SpellTypeVec_t TurnDecider::COMBAT_SPELLS_VEC_     { spell::SpellType::Attack, spell::SpellType::EnchantCreatureHelpful, spell::SpellType::EnchantCreatureHarmful };
-    const spell::SpellTypeVec_t TurnDecider::AFFLICTION_SPELLS_VEC_ { spell::SpellType::Attack, spell::SpellType::EnchantCreatureHarmful };
-    const spell::SpellTypeVec_t TurnDecider::BENEFICIAL_SPELLS_VEC_ { spell::SpellType::Heal, spell::SpellType::EnchantCreatureHelpful };
+    const spell::SpellTypeVec_t TurnDecider::COMBAT_SPELLS_VEC_
+        { spell::SpellType::Attack,
+          spell::SpellType::EnchantCreatureHelpful,
+          spell::SpellType::EnchantCreatureHarmful };
+
+    const spell::SpellTypeVec_t TurnDecider::AFFLICTION_SPELLS_VEC_
+        { spell::SpellType::Attack,
+          spell::SpellType::EnchantCreatureHarmful };
+
+    const spell::SpellTypeVec_t TurnDecider::BENEFICIAL_SPELLS_VEC_
+        { spell::SpellType::Heal,
+          spell::SpellType::EnchantCreatureHelpful };
 
 
-    const TurnActionInfo TurnDecider::Decide(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                             CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+    const TurnActionInfo TurnDecider::Decide(
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
         //only do 'Nothing' if can't take any action
         if (CREATURE_DECIDING_CPTRC->CanTakeAction() == false)
+        {
             return TurnActionInfo(TurnAction::Nothing);
+        }
 
         auto const TURN_INFO{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC) };
 
         //decide if flying
         auto const FLY_TURN_ACTION_INFO{ DecideIfFlying(TURN_INFO, CREATURE_DECIDING_CPTRC) };
-        if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Count)
+        if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+        {
             return FLY_TURN_ACTION_INFO;
+        }
 
         creature::CreaturePVec_t playersInMeleeRangePVec;
         COMBAT_DISPLAY_CPTRC->FindCreaturesAllRoundOfType(playersInMeleeRangePVec, CREATURE_DECIDING_CPTRC, true);
@@ -83,8 +99,10 @@ namespace combat
                                                                 playersInMeleeRangePVec.size(),
                                                                 fellowEnemiesInMeleeRangePVec.size()) };
 
-        if (RETREAT_TURN_ACTION_INFO.Action() != TurnAction::Count)
+        if (RETREAT_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+        {
             return RETREAT_TURN_ACTION_INFO;
+        }
 
         const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC{ FindMostDesiredTarget(TURN_INFO,
                                                                                         CREATURE_DECIDING_CPTRC,
@@ -92,8 +110,10 @@ namespace combat
 
         //decide if casting a spell
         auto const CASTING_TURN_ACTION_INFO{ DecideIfCasting(TURN_INFO, CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC) };
-        if ((CASTING_TURN_ACTION_INFO.Action() != TurnAction::Count) && (CASTING_TURN_ACTION_INFO.Spell() != nullptr))
+        if ((CASTING_TURN_ACTION_INFO.Action() != TurnAction::Nothing) && (CASTING_TURN_ACTION_INFO.Spell() != nullptr))
+        {
             return CASTING_TURN_ACTION_INFO;
+        }
 
         creature::CreaturePVec_t playersInAttackRangePVec;
         COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(playersInAttackRangePVec, CREATURE_DECIDING_CPTRC, true);
@@ -115,8 +135,10 @@ namespace combat
                                                                                         playersInAttackRangePVec.size(),
                                                                                         CAN_ATTACK_MOST_DESIRED_TARGET_WITH) };
 
-        if (MOVE_TOWARD_TURN_ACTION_INFO.Action() != TurnAction::Count)
+        if (MOVE_TOWARD_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+        {
             return MOVE_TOWARD_TURN_ACTION_INFO;
+        }
 
         //decide if taking beast specific actions (roar, fly, pounce, etc.)
         if (CREATURE_DECIDING_CPTRC->IsBeast())
@@ -127,8 +149,10 @@ namespace combat
                                                                         playersInMeleeRangePVec,
                                                                         MOST_DESIRED_TARGET_DISTANCE) };
 
-            if (BEAST_TURN_ACTION_INFO.Action() != TurnAction::Count)
+            if (BEAST_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+            {
                 return BEAST_TURN_ACTION_INFO;
+            }
         }
 
         //attack most desired target if possible
@@ -171,7 +195,7 @@ namespace combat
         if (CREATURE_DECIDING_CPTRC->CanCastSpells())
         {
             auto const SPELL_CAST_TURN_ACTION_INFO{ ForcePickSpellToCast(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC) };
-            if ((SPELL_CAST_TURN_ACTION_INFO.Action() != TurnAction::Count) && (SPELL_CAST_TURN_ACTION_INFO.Spell() != nullptr))
+            if ((SPELL_CAST_TURN_ACTION_INFO.Action() != TurnAction::Nothing) && (SPELL_CAST_TURN_ACTION_INFO.Spell() != nullptr))
                 return SPELL_CAST_TURN_ACTION_INFO;
         }
 
@@ -184,7 +208,7 @@ namespace combat
         }
 
         //Okay, so we are reaching this end point in the logic tree much more
-        //often than anticipated, so try and attacking here if possible.
+        //often than anticipated, so try and attack here if possible.
         if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
             (playersInAttackRangePVec.empty() == false))
         {
@@ -196,29 +220,41 @@ namespace combat
     }
 
 
-    creature::CreaturePtr_t TurnDecider::FindMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                               const creature::CreaturePtrC_t CREATURE_CPTRC,
-                                                               CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+    creature::CreaturePtr_t TurnDecider::FindMostDesiredTarget(
+        const TurnInfo &               TURN_INFO,
+        const creature::CreaturePtrC_t CREATURE_CPTRC,
+        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
         //pick (select) favorite targets by type
-        const creature::CreaturePVec_t SELECT_TARGETS_PVEC { FindSelectedTargets(TURN_INFO) };
+        const creature::CreaturePVec_t SELECT_TARGETS_PVEC {
+            FindSelectedTargets(TURN_INFO) };
 
         //eliminate (refine) targets by conditions/AI/etc.
-        const creature::CreaturePVec_t REFINED_TARGETS_PVEC{ RefineTargets(SELECT_TARGETS_PVEC, TURN_INFO) };
+        const creature::CreaturePVec_t REFINED_TARGETS_PVEC{
+            RefineTargets(SELECT_TARGETS_PVEC, TURN_INFO) };
 
         if (REFINED_TARGETS_PVEC.empty())
         {
             if (SELECT_TARGETS_PVEC.empty())
             {
-                //if no refined or select targets, then choose the closest player, avoiding those permenantly not a threat, at random
-                auto const CLOSEST_PLAYERS_PVEC{ COMBAT_DISPLAY_CPTRC->FindClosestLivingByType(CREATURE_CPTRC, true) };
+                //if no refined or select targets, then choose the closest player,
+                //avoiding those permenantly not a threat, at random
+                auto const CLOSEST_PLAYERS_PVEC{
+                    COMBAT_DISPLAY_CPTRC->FindClosestLivingByType(CREATURE_CPTRC, true) };
 
                 if (CLOSEST_PLAYERS_PVEC.size() == 1)
+                {
                     return * CLOSEST_PLAYERS_PVEC.begin();
+                }
 
-                auto const CLOSEST_PLAYERS_STILL_A_THREAT_PVEC{ creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(CLOSEST_PLAYERS_PVEC, false) };
+                auto const CLOSEST_PLAYERS_STILL_A_THREAT_PVEC{
+                    creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
+                        CLOSEST_PLAYERS_PVEC, false) };
 
-                auto const CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH{ ((TURN_INFO.GetIsFlying()) ? CLOSEST_PLAYERS_STILL_A_THREAT_PVEC : creature::Algorithms::FindByFlying(CLOSEST_PLAYERS_STILL_A_THREAT_PVEC, false)) };
+                auto const CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH{ ((TURN_INFO.GetIsFlying()) ?
+                    CLOSEST_PLAYERS_STILL_A_THREAT_PVEC :
+                    creature::Algorithms::FindByFlying(
+                        CLOSEST_PLAYERS_STILL_A_THREAT_PVEC, false)) };
 
                 if (CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH.empty())
                 {
@@ -239,13 +275,15 @@ namespace combat
             else
             {
                 //select the closest of the select targets at random
-                return misc::Vector::SelectRandom( COMBAT_DISPLAY_CPTRC->FindClosestLiving(CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
+                return misc::Vector::SelectRandom( COMBAT_DISPLAY_CPTRC->FindClosestLiving(
+                    CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
             }
         }
         else
         {
             //select the closest of the refined targets at random
-            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(CREATURE_CPTRC, REFINED_TARGETS_PVEC));
+            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(
+                CREATURE_CPTRC, REFINED_TARGETS_PVEC));
         }
     }
 
@@ -370,7 +408,9 @@ namespace combat
                 auto const CANT_ACT_BUT_NOT_PERM_PVEC{ creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(cantTakeActionPVec, false) };
 
                 if (CANT_ACT_BUT_NOT_PERM_PVEC.empty() == false)
+                {
                     std::copy(CANT_ACT_BUT_NOT_PERM_PVEC.begin(), CANT_ACT_BUT_NOT_PERM_PVEC.end(), back_inserter(refinedTargetsPVec));
+                }
             }
         }
 
@@ -379,12 +419,16 @@ namespace combat
             if (REFINE_TYPE_ENUM & strategy::RefineType::LastTo)
             {
                 if (TURN_INFO.GetLastHitByCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetLastHitByCreature());
+                }
             }
             else
             {
                 if (TURN_INFO.GetFirstHitByCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetFirstHitByCreature());
+                }
             }
         }
 
@@ -393,12 +437,16 @@ namespace combat
             if (REFINE_TYPE_ENUM & strategy::RefineType::LastTo)
             {
                 if (TURN_INFO.GetLastAttackedByCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetLastAttackedByCreature());
+                }
             }
             else
             {
                 if (TURN_INFO.GetFirstAttackedByCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetFirstAttackedByCreature());
+                }
             }
         }
 
@@ -407,12 +455,16 @@ namespace combat
             if (REFINE_TYPE_ENUM & strategy::RefineType::LastTo)
             {
                 if (TURN_INFO.GetLastToMakeMusicCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetLastToMakeMusicCreature());
+                }
             }
             else
             {
                 if (TURN_INFO.GetFirstToMakeMusicCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetFirstToMakeMusicCreature());
+                }
             }
         }
 
@@ -421,30 +473,42 @@ namespace combat
             if (REFINE_TYPE_ENUM & strategy::RefineType::LastTo)
             {
                 if (TURN_INFO.GetLastToCastCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetLastToCastCreature());
+                }
             }
             else
             {
                 if (TURN_INFO.GetFirstToCastCreature() != nullptr)
+                {
                     refinedTargetsPVec.push_back(TURN_INFO.GetFirstToCastCreature());
+                }
             }
         }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Enchanted)
+        {
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
                          [] (const creature::CreaturePtr_t CCPTR) { return CCPTR->HasMagicalCondition(); });
+        }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::NotEnchanted)
+        {
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
                          [] (const creature::CreaturePtr_t CCPTR) { return (CCPTR->HasMagicalCondition() == false); });
+        }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::MostDamage)
+        {
             if (TURN_INFO.GetMostDamageCreature().second != nullptr)
+            {
                 refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreature().second);
+            }
+        }
 
         if (refinedTargetsPVec.size() > 1)
         {
@@ -488,7 +552,7 @@ namespace combat
             {
                 //fly to evade sometimes
                 auto const FLY_TURN_ACTION_INFO{ DecideIfFlying(TURN_INFO, CREATURE_DECIDING_CPTRC) };
-                if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Count)
+                if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
                 {
                     return FLY_TURN_ACTION_INFO;
                 }
@@ -555,29 +619,37 @@ namespace combat
     }
 
 
-    const TurnActionInfo TurnDecider::DecideIfMovingTowardsMostDesiredTarget(const TurnInfo &               TURN_INFO,
-                                                                             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                                             CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC,
-                                                                             const int                      MOST_DESIRED_TARGET_DISTANCE,
-                                                                             const bool                     NUM_PLAYERS_IN_ATTACK_RANGE,
-                                                                             const bool                     CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
+    const TurnActionInfo TurnDecider::DecideIfMovingTowardsMostDesiredTarget(
+        const TurnInfo &               TURN_INFO,
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC,
+        const int                      MOST_DESIRED_TARGET_DISTANCE,
+        const bool                     NUM_PLAYERS_IN_ATTACK_RANGE,
+        const bool                     CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
     {
         auto const ADV_TYPE{ TURN_INFO.GetStrategyInfo().Advance() };
+
         if ((ADV_TYPE != strategy::AdvanceType::Cowardly) && (MOST_DESIRED_TARGET_DISTANCE != 0))
         {
-            if (((ADV_TYPE == strategy::AdvanceType::None) && (NUM_PLAYERS_IN_ATTACK_RANGE == 0)) ||
+            if (((ADV_TYPE == strategy::AdvanceType::None) &&(NUM_PLAYERS_IN_ATTACK_RANGE == 0)) ||
                 (ADV_TYPE == strategy::AdvanceType::Charger) ||
-                ((ADV_TYPE == strategy::AdvanceType::Hesitant) && (TURN_INFO.GetWasHitLastTurn() && (CAN_ATTACK_MOST_DESIRED_TARGET_WITH == false))))
+                ((ADV_TYPE == strategy::AdvanceType::Hesitant) &&
+                    (TURN_INFO.GetWasHitLastTurn() &&
+                    (CAN_ATTACK_MOST_DESIRED_TARGET_WITH == false))))
             {
                 if (MOST_DESIRED_TARGET_DISTANCE < 0)
                 {
                     if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, true).empty())
+                    {
                         return TurnActionInfo(TurnAction::Advance);
+                    }
                 }
                 else
                 {
                     if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, false).empty())
+                    {
                         return TurnActionInfo(TurnAction::Retreat);
+                    }
                 }
             }
         }

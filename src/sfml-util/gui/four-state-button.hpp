@@ -48,7 +48,7 @@ namespace gui
     namespace box
     {
         class Box;
-        using BoxSPtr_t = std::shared_ptr<Box>;
+        using BoxUPtr_t = std::unique_ptr<Box>;
     }
 
     class TextRegion;
@@ -174,7 +174,7 @@ namespace gui
         TextRegionUPtr_t textRegionDownUPtr_;
         TextRegionUPtr_t textRegionOverUPtr_;
         TextRegionUPtr_t textRegionDisabledUPtr_;
-        box::BoxSPtr_t   boxSPtr_;
+        box::BoxUPtr_t   boxUPtr_;
         float            scale_;
         callback::IFourStateButtonCallbackHandler_t * callbackHandlerPtr_;
     };

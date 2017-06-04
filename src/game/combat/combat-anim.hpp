@@ -33,8 +33,31 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 #include <map>
 
+
+namespace sfml_util
+{
+    class SingleTextureAnimation;
+    using SingleTextureAnimationUPtr_t = std::unique_ptr<SingleTextureAnimation>;
+    using SingleTextureAnimationUVec_t = std::vector<SingleTextureAnimationUPtr_t>;
+
+    class MultiTextureAnimation;
+    using MultiTextureAnimationUPtr_t = std::unique_ptr<MultiTextureAnimation>;
+    using MultiTextureAnimationUVec_t = std::vector<MultiTextureAnimationUPtr_t>;
+
+namespace animation
+{
+    class SparksAnimation;
+    using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
+    using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
+
+    class CloudAnimation;
+    using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
+    using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
+}
+}
 
 namespace game
 {
@@ -42,6 +65,11 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
+}
+namespace spell
+{
+    class Spell;
+    using SpellPtr_t = Spell *;
 }
 namespace creature
 {
@@ -60,6 +88,9 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
+
+
+    using MediaPathSizeMap_t = std::map<std::string, sf::Vector2f>;
 
 
     //All the info required to shake a creature image on the battlefield.
@@ -89,16 +120,10 @@ namespace combat
         //prevent copy assignment
         CombatAnimation & operator=(const CombatAnimation &) =delete;
 
-        //prevent non-singleton construction
-        CombatAnimation();
-
     public:
-        virtual ~CombatAnimation();
+        explicit CombatAnimation(const CombatDisplayPtr_t);
 
-        static void GiveCombatDisplay(CombatDisplayPtr_t);
-        static CombatAnimation * Instance();
-
-        void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -170,15 +195,53 @@ namespace combat
         void SelectAnimStart(creature::CreatureCPtrC_t);
         void SelectAnimStop();
 
+        void SpellAnimStart(const spell::SpellPtr_t          SPELL_PTR,
+                            const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                            const combat::CombatNodePVec_t & TARGETS_PVEC);
+
+        bool SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
+                             const float             ELAPSED_TIME_SEC);
+
+        void SpellAnimStop(const spell::SpellPtr_t SPELL_PTR);
+
+        void SparksAnimStart(const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
+                             const combat::CombatNodePVec_t & TARGETS_PVEC);
+
+        bool SparksAnimUpdate(const float ELAPSED_TIME_SEC);
+
+        void SparksAnimStop();
+
+        void PoisonCloudAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
+        bool PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC);
+        void PoisonCloudAnimStop();
+
+        void SetupSingleTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                     const std::string &              MEDIA_PATH_KEY,
+                                     const float                      FRAME_DELAY_SEC,
+                                     const sf::Color &                COLOR_FROM,
+                                     const sf::Color &                COLOR_TO);
+
+        void SetupMultiTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
+                                    const std::string &              MEDIA_PATH_KEY,
+                                    const float                      FRAME_DELAY_SEC,
+                                    const sf::Color &                COLOR_FROM,
+                                    const sf::Color &                COLOR_TO);
+
+        private:
+            const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect &) const;
+
     private:
-        static CombatAnimation * instance_;
-        static CombatDisplayPtr_t combatDisplayStagePtr_;
-
         static const float SELECT_ANIM_SLIDER_SPEED_;
-
+        static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;
+        static const std::string ANIM_MEDIA_PATH_KEY_STR_SPARKLE_;
+        static const std::string ANIM_MEDIA_PATH_KEY_STR_SHIMMER_;
+        static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
+        
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
+
+        CombatDisplayPtr_t combatDisplayStagePtr_;
 
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
@@ -188,6 +251,7 @@ namespace combat
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;
         bool projAnimWillSpin_;
+        bool projAnimWillDraw_;
 
         //members supporting the Death Animation
         CombatNodePVec_t deadAnimNodesPVec_;
@@ -208,14 +272,25 @@ namespace combat
 
         //members to shake a creature image on the battlefield
         creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
-        float                    shakeAnimCreatureWasSpeed_;
-        SakeInfoMap_t            shakeAnimInfoMap_;
+        float shakeAnimCreatureWasSpeed_;
+        SakeInfoMap_t shakeAnimInfoMap_;
 
         //members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
+
+        //members that control the sparks animation
+        sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
+
+        //members that control the poison cloud animation
+        sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
+
+        //members that control animations in general
+        sfml_util::SingleTextureAnimationUVec_t singleTextureAnimUVec_;
+        sfml_util::MultiTextureAnimationUVec_t multiTextureAnimUVec_;
+        MediaPathSizeMap_t singleTextureSizeMap_;
     };
 
-    using CombatAnimationPtr_t = CombatAnimation *;
+    using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
 
 }
 }

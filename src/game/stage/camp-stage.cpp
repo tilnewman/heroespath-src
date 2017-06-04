@@ -49,6 +49,7 @@
 #include "game/creature/body-type.hpp"
 #include "game/player/character.hpp"
 #include "game/player/party.hpp"
+#include "game/ouroboros.hpp"
 
 #include "misc/vectors.hpp"
 #include "misc/real.hpp"
@@ -79,7 +80,7 @@ namespace stage
         showNewGamePopup2_ (false),
         showNewGamePopup3_ (false),
         showNewGamePopup4_ (false),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         botSymbol_         ()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Fire1);
@@ -100,9 +101,13 @@ namespace stage
             if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
             {
                 if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
+                {
                     musicOperatorSPtr->VolumeFadeOut();
+                }
                 else
+                {
                     musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                }
             }
         }
 
@@ -135,8 +140,8 @@ namespace stage
     void CampStage::Setup()
     {
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("CampStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("CampStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //campfire background image
         sfml_util::LoadImageOrTexture<sf::Texture>(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
@@ -157,26 +162,26 @@ namespace stage
                                                                    sf::BlendAdd) );
         EntityAdd(fireAnim1SPtr_.get());
 
-        //TEMP TODO REMOVE
-        player::CharacterSPtr_t c1SPtr( new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c2SPtr( new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c3SPtr( new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) );
-        player::CharacterSPtr_t c4SPtr( new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) );
-        player::CharacterSPtr_t c5SPtr( new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) );
-        player::CharacterSPtr_t c6SPtr( new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) );
-        player::PartySPtr_t partySPtr( new player::Party() );
+        //TEMP TODO REMOVE -make a party to test this stage with
+        auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c2Ptr{ new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c3Ptr{ new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
+        auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) };
+        auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) };
+        auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) };
+        player::PartyPtr_t partyPtr{ new player::Party() };
         std::string errMsgIgnored{ "" };
-        partySPtr->Add(c1SPtr, errMsgIgnored);
-        partySPtr->Add(c2SPtr, errMsgIgnored);
-        partySPtr->Add(c3SPtr, errMsgIgnored);
-        partySPtr->Add(c4SPtr, errMsgIgnored);
-        partySPtr->Add(c5SPtr, errMsgIgnored);
-        partySPtr->Add(c6SPtr, errMsgIgnored);
-        state::GameStateSPtr_t gameStateSPtr( new state::GameState(partySPtr) );
-        gameStateSPtr->IsNewGameSet(true);
-        Game::Instance()->StateSet(gameStateSPtr);
+        partyPtr->Add(c1Ptr, errMsgIgnored);
+        partyPtr->Add(c2Ptr, errMsgIgnored);
+        partyPtr->Add(c3Ptr, errMsgIgnored);
+        partyPtr->Add(c4Ptr, errMsgIgnored);
+        partyPtr->Add(c5Ptr, errMsgIgnored);
+        partyPtr->Add(c6Ptr, errMsgIgnored);
+        auto gameStatePtr = new state::GameState(partyPtr);
+        gameStatePtr->IsNewGameSet(true);
+        Game::Instance()->StateStore(gameStatePtr);
 
-        showNewGamePopup1_ = game::Game::Instance()->State()->IsNewGame();
+        showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
 
 

@@ -36,6 +36,9 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/sparks-animation.hpp"
+#include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/animation.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game.hpp"
@@ -88,6 +91,7 @@ namespace stage
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
     const float CombatStage::PAUSE_SHORT_SEC_               { 1.5f };
+    const float CombatStage::PAUSE_SHORTER_SEC_             { 0.75f };
     const float CombatStage::PAUSE_ZERO_SEC_                { 0.1f };
     const float CombatStage::POST_PAN_PAUSE_SEC_            { PAUSE_SHORT_SEC_ };
     const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_        { PAUSE_SHORT_SEC_ };
@@ -103,6 +107,7 @@ namespace stage
     const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
     const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_    { PAUSE_ZERO_SEC_ };
     const float CombatStage::CONDITION_WAKE_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
+    const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_     { PAUSE_SHORT_SEC_ };
     //
     const float CombatStage::SLIDER_SPEED_SLOWEST_                  { 1.0f };
     const float CombatStage::SLIDER_SPEED_SLOW_                     { SLIDER_SPEED_SLOWEST_ * 2.0f };
@@ -133,43 +138,31 @@ namespace stage
 
     CombatStage::CombatStage()
     :
-        Stage                      ("Combat"),
-        SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
-        commandBoxSPtr_            (),
-        statusBoxSPtr_             (),
-        statusBoxTextInfo_         (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
-        zoomSliderBarSPtr_         (),
-        turnBoxSPtr_               (),
-        turnBoxRegion_             (),
-        combatSoundEffects_        (),
-        turnPhase_                 (TurnPhase::NotATurn),
-        preTurnPhase_              (PreTurnPhase::Start),
-        turnActionPhase_           (TurnActionPhase::None),
-        animPhase_                 (AnimPhase::NotAnimating),
-        spellBeingCastPtr_         (nullptr),
-        performReportEffectIndex_  (0),
-        performReportHitIndex_     (0),
-        zoomSliderOrigPos_         (0.0f),
-        willClrShkInitStatusMsg_   (false),
-        isMouseHeldDown_           (false),
-        isMouseHeldDownAndMoving_  (false),
-        tempConditionsWakeStr_     (""),
-        slider_                    (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
-        combatDisplayStagePtr_     (new combat::CombatDisplay()),
-        combatAnimationPtr_        (combat::CombatAnimation::Instance()),
-        settingsButtonSPtr_        (new sfml_util::gui::FourStateButton("CombatStage'sSettingsGears",
-                                                                        0.0f,
-                                                                        0.0f,
-                                                                        std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui")).append("gears1_normal.png"),
-                                                                        "",
-                                                                        std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui")).append("gears1_lit.png"),
-                                                                        "",
-                                                                        sfml_util::gui::MouseTextInfo(),
-                                                                        sfml_util::gui::TextInfo(),
-                                                                        false,
-                                                                        sfml_util::MapByRes(0.6f, 2.0f),
-                                                                        false)),
+        Stage                       ("Combat"),
+        SCREEN_WIDTH_               (sfml_util::Display::Instance()->GetWinWidth()),
+        SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
+        commandBoxUPtr_             (),
+        statusBoxSPtr_              (),
+        statusBoxTextInfo_          (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
+        zoomSliderBarUPtr_          (),
+        turnBoxUPtr_                (),
+        turnBoxRegion_              (),
+        combatSoundEffects_         (),
+        turnPhase_                  (TurnPhase::NotATurn),
+        preTurnPhase_               (PreTurnPhase::Start),
+        turnActionPhase_            (TurnActionPhase::None),
+        animPhase_                  (AnimPhase::NotAnimating),
+        spellBeingCastPtr_          (nullptr),
+        performReportEffectIndex_   (0),
+        performReportHitIndex_      (0),
+        zoomSliderOrigPos_          (0.0f),
+        willClrShkInitStatusMsg_    (false),
+        tempConditionsWakeStr_      (""),
+        isShortPostZoomOutPause_    (false),
+        slider_                     (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
+        combatDisplayStagePtr_      (new combat::CombatDisplay()),
+        combatAnimationUPtr_        ( std::make_unique<combat::CombatAnimation>(combatDisplayStagePtr_) ),
+        settingsButtonSPtr_         (),
         pauseDurationSec_           (0.0f),
         pauseElapsedSec_            (pauseDurationSec_ + 1.0f),//anything greater than pauseTimeDurationSecs_ will work here
         isPauseCanceled_            (false),
@@ -202,8 +195,7 @@ namespace stage
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         testingTextRegionUPtr_      (),
-        pauseTitle_                 (""),
-        sparksAnimUPtr_             (nullptr)
+        pauseTitle_                 ("")
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -278,7 +270,7 @@ namespace stage
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((PACKAGE.PTR_ == zoomSliderBarSPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
+        if ((PACKAGE.PTR_ == zoomSliderBarUPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
         {
             //only zoom out half the distance that the slider actually shows
             auto const HALF_ZOOM_DIFFERENCE{ 1.0f - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
@@ -319,7 +311,9 @@ namespace stage
                 }
 
                 restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
-                HandleCast_Step2_SelectTargetOrPerformOnAll(spellPtr);
+
+                spellBeingCastPtr_ = spellPtr;
+                HandleCast_Step2_SelectTargetOrPerformOnAll();
                 return true;
             }
             else
@@ -334,6 +328,8 @@ namespace stage
 
     void CombatStage::Setup()
     {
+        combatDisplayStagePtr_->SetCombatAnimationPtr(combatAnimationUPtr_.get());
+
         //define combat region
         const float COMBAT_REGION_MARGIN(25.0f);
         const float COMBAT_REGION_TOP(COMBAT_REGION_MARGIN);
@@ -361,16 +357,18 @@ namespace stage
         const sfml_util::gui::BackgroundInfo STATUS_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), STATUS_REGION, LISTBOX_BACKGROUND_COLOR_);
         const sfml_util::gui::ColorSet STATUS_COLORSET(LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
         const sfml_util::gui::box::Info STATUS_BOX_INFO(true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
-        statusBoxSPtr_.reset( new sfml_util::gui::ListBox("ComabtStage'sStatus",
-                                                          STATUS_REGION,
-                                                          sfml_util::gui::ListBoxItemSLst_t(),
-                                                          this,
-                                                          15.0f,
-                                                          0.0f,
-                                                          STATUS_BOX_INFO,
-                                                          LISTBOX_LINE_COLOR_,
-                                                          sfml_util::gui::ListBox::NO_LIMIT_,
-                                                          this) );
+        
+        statusBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+            "ComabtStage'sStatus",
+            STATUS_REGION,
+            sfml_util::gui::ListBoxItemSLst_t(),
+            this,
+            15.0f,
+            0.0f,
+            STATUS_BOX_INFO,
+            LISTBOX_LINE_COLOR_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
 
         statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
         EntityAdd(statusBoxSPtr_.get());
@@ -388,7 +386,7 @@ namespace stage
                                            COMMAND_REGION_HEIGHT);
         const sfml_util::gui::BackgroundInfo COMMAND_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), COMMAND_REGION);
         const sfml_util::gui::box::Info COMMAND_REGION_BOXINFO(true, COMMAND_REGION, sfml_util::gui::ColorSet(), COMMAND_BACKGROUNDINFO);
-        commandBoxSPtr_.reset( new sfml_util::gui::box::Box("CombatStage'sCommand", COMMAND_REGION_BOXINFO) );
+        commandBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatStage'sCommand", COMMAND_REGION_BOXINFO);
 
         //turn box
         turnBoxRegion_ = sf::FloatRect(STATUS_REGION_LEFT,
@@ -398,7 +396,7 @@ namespace stage
 
         const sfml_util::gui::BackgroundInfo TURNBOX_BACKGROUNDINFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"), turnBoxRegion_);
         const sfml_util::gui::box::Info TURNBOX_REGION_BOXINFO(true, turnBoxRegion_, sfml_util::gui::ColorSet(), TURNBOX_BACKGROUNDINFO);
-        turnBoxSPtr_.reset(new sfml_util::gui::box::Box("CombatStage'sTurnBox", TURNBOX_REGION_BOXINFO));
+        turnBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatStage'sTurnBox", TURNBOX_REGION_BOXINFO);
 
         //turnbox title text region
         const sfml_util::gui::TextInfo TURNBOXTITLE_TEXT_INFO(" ",
@@ -410,8 +408,8 @@ namespace stage
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
         turnBoxTitleTextRegion.height = 0.0f;
 
-        titleTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion) );
+        titleTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(
             " ",
@@ -422,8 +420,8 @@ namespace stage
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
 
-        infoTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion) );
+        infoTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
             " ",
@@ -439,10 +437,10 @@ namespace stage
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 
-        enemyActionTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+        enemyActionTBoxRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatStage'sTurnEnemyAction",
             TURNBOXENEMYACTION_TEXT_INFO,
-            turnBoxEnemyActionTextRegion) );
+            turnBoxEnemyActionTextRegion);
 
         const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
             " ",
@@ -452,10 +450,10 @@ namespace stage
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
-        enemyCondsTBoxRegionUPtr_.reset( new sfml_util::gui::TextRegion(
+        enemyCondsTBoxRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatStage'sTurnEnemyConds",
             TURNBOXENEMYCONDS_TEXT_INFO,
-            turnBoxEnemyCondsTextRegion) );
+            turnBoxEnemyCondsTextRegion);
 
         sfml_util::gui::TextInfo turnBoxWeaponTextInfo(
             " ",
@@ -464,8 +462,8 @@ namespace stage
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Center);
 
-        weaponTBoxTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion) );
+        weaponTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion);
 
         sfml_util::gui::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
 
@@ -490,8 +488,8 @@ namespace stage
         testingTextRegion.left += testingTextRegion.width - 50.0f;
         testingTextRegion.top += (testingTextRegion.height - 400.0f);
 
-        testingTextRegionUPtr_.reset( new sfml_util::gui::TextRegion(
-            "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion) );
+        testingTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion);
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
@@ -500,7 +498,17 @@ namespace stage
         turnButtonTextInfo.text = "(A)ttack";
         turnButtonTextInfoDisabled.text = "(A)ttack";
         const sfml_util::gui::MouseTextInfo ATTACKBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        attackTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAttack", 0.0f, 0.0f, "", "", "", "", ATTACKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        attackTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAttack",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            ATTACKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled);
+
         attackTBoxButtonSPtr_->SetCallbackHandler(this);
         attackTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
         attackTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -509,7 +517,18 @@ namespace stage
         turnButtonTextInfo.text = "(F)ight";
         turnButtonTextInfoDisabled.text = "(F)ight";
         const sfml_util::gui::MouseTextInfo FIGHTBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        fightTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAttack", 0.0f, 0.0f, "", "", "", "", FIGHTBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        fightTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAttack",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            FIGHTBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+
         fightTBoxButtonSPtr_->SetCallbackHandler(this);
         fightTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
         fightTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -518,7 +537,18 @@ namespace stage
         turnButtonTextInfo.text = "(C)ast";
         turnButtonTextInfoDisabled.text = "(C)ast";
         const sfml_util::gui::MouseTextInfo CASTBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        castTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sCast", 0.0f, 0.0f, "", "", "", "", CASTBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        castTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sCast",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            CASTBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         castTBoxButtonSPtr_->SetCallbackHandler(this);
         castTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
         castTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -527,7 +557,18 @@ namespace stage
         turnButtonTextInfo.text = "Advance";
         turnButtonTextInfoDisabled.text = "Advance";
         const sfml_util::gui::MouseTextInfo ADVANCEBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        advanceTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sAdvance", 0.0f, 0.0f, "", "", "", "", ADVANCEBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        advanceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sAdvance",
+            0.0f,
+            0.0f,
+            "", 
+            "", 
+            "",
+            "",
+            ADVANCEBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         advanceTBoxButtonSPtr_->SetCallbackHandler(this);
         advanceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
         advanceTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -536,7 +577,18 @@ namespace stage
         turnButtonTextInfo.text = "Retreat";
         turnButtonTextInfoDisabled.text = "Retreat";
         const sfml_util::gui::MouseTextInfo RETREATBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        retreatTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sRetreat", 0.0f, 0.0f, "", "", "", "", RETREATBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        retreatTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sRetreat",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            RETREATBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         retreatTBoxButtonSPtr_->SetCallbackHandler(this);
         retreatTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
         retreatTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -545,7 +597,18 @@ namespace stage
         turnButtonTextInfo.text = "(B)lock";
         turnButtonTextInfoDisabled.text = "(B)lock";
         const sfml_util::gui::MouseTextInfo BLOCKBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        blockTBoxButtonSPtr_.reset( new sfml_util::gui::FourStateButton("CombatStage'sBlock", 0.0f, 0.0f, "", "", "", "", BLOCKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled) );
+        
+        blockTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sBlock",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            BLOCKBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         blockTBoxButtonSPtr_->SetCallbackHandler(this);
         blockTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
         blockTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -554,7 +617,18 @@ namespace stage
         turnButtonTextInfo.text = "(S)kip";
         turnButtonTextInfoDisabled.text = "(S)kip";
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        skipTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sSkip", 0.0f, 0.0f, "", "", "", "", SKIPBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        skipTBoxButtonSPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
+            "CombatStage'sSkip",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            SKIPBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         skipTBoxButtonSPtr_->SetCallbackHandler(this);
         skipTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
         skipTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -563,7 +637,18 @@ namespace stage
         turnButtonTextInfo.text = "Fl(y)";
         turnButtonTextInfoDisabled.text = "Fl(y)";
         const sfml_util::gui::MouseTextInfo FLYBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        flyTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sFly", 0.0f, 0.0f, "", "", "", "", FLYBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        flyTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sFly",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            FLYBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         flyTBoxButtonSPtr_->SetCallbackHandler(this);
         flyTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
         flyTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -572,7 +657,18 @@ namespace stage
         turnButtonTextInfo.text = "(L)and";
         turnButtonTextInfoDisabled.text = "(L)and";
         const sfml_util::gui::MouseTextInfo LANDBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        landTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sLand", 0.0f, 0.0f, "", "", "", "", LANDBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        landTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sLand",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            LANDBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         landTBoxButtonSPtr_->SetCallbackHandler(this);
         landTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
         landTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -581,7 +677,18 @@ namespace stage
         turnButtonTextInfo.text = "(R)oar";
         turnButtonTextInfoDisabled.text = "(R)oar";
         const sfml_util::gui::MouseTextInfo ROARBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        roarTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sRoar", 0.0f, 0.0f, "", "", "", "", ROARBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        roarTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sRoar",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            ROARBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         roarTBoxButtonSPtr_->SetCallbackHandler(this);
         roarTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
         roarTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -590,7 +697,18 @@ namespace stage
         turnButtonTextInfo.text = "(P)ounce";
         turnButtonTextInfoDisabled.text = "(P)ounce";
         const sfml_util::gui::MouseTextInfo POUNCEBUTTON_MOUSETEXTINFO(turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
-        pounceTBoxButtonSPtr_.reset(new sfml_util::gui::FourStateButton("CombatStage'sPounce", 0.0f, 0.0f, "", "", "", "", POUNCEBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled));
+        
+        pounceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sPounce",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            POUNCEBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+        
         pounceTBoxButtonSPtr_->SetCallbackHandler(this);
         pounceTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
         pounceTBoxButtonSPtr_->MoveEntityOffScreen();
@@ -598,6 +716,22 @@ namespace stage
 
         //settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
+        settingsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sSettingsGears",
+            0.0f,
+            0.0f,
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-gui")).append("gears1_normal.png"),
+            "",
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-gui")).append("gears1_lit.png"),
+            "",
+            sfml_util::gui::MouseTextInfo(),
+            sfml_util::gui::TextInfo(),
+            false,
+            sfml_util::MapByRes(0.6f, 2.0f),
+            false);
+
         settingsButtonSPtr_->SetEntityPos(COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH - settingsButtonSPtr_->GetEntityRegion().width - COMMAND_REGION_PAD, COMMAND_REGION_TOP + COMMAND_REGION_PAD);
         settingsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(settingsButtonSPtr_.get());
@@ -605,27 +739,31 @@ namespace stage
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
         std::string errMsgIgnored{ "" };
-        player::PartySPtr_t partySPtr(new player::Party());
+        player::PartyPtr_t partyPtr{ new player::Party() };
 
-        {
+        /*{
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
-                                              15 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              15 + misc::random::Int(6) + 100,
                                               0  + misc::random::Int(6),
                                               5  + misc::random::Int(10),
                                               15 + misc::random::Int(10),
                                               0  + misc::random::Int(8));
 
-            const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "K") );
-            auto knightSPtr( std::make_shared<player::Character>(KNIGHT_NAME,
-                                                                 creature::sex::Male,
-                                                                 creature::BodyType::Make_Humanoid(),
-                                                                 creature::Race(creature::race::Human),
-                                                                 creature::Role(creature::role::Knight),
-                                                                 KNIGHT_STATS) );
+            const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "K") );
 
-            player::Initial::Setup(knightSPtr.get());
-            partySPtr->Add(knightSPtr, errMsgIgnored);
-        }
+            auto knightPtr{ new player::Character(KNIGHT_NAME,
+                                                  creature::sex::Male,
+                                                  creature::BodyType::Make_Humanoid(),
+                                                  creature::Race(creature::race::Human),
+                                                  creature::Role(creature::role::Knight),
+                                                  KNIGHT_STATS) };
+
+            player::Initial::Setup(knightPtr);
+            partyPtr->Add(knightPtr, errMsgIgnored);
+        }*/
         /*
         {
             const stats::StatSet FIREBRAND_STATS(20 + misc::random::Int(10),
@@ -654,28 +792,32 @@ namespace stage
             firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
 
             player::Initial::Setup(firebrandSPtr.get());
-            partySPtr->Add(firebrandSPtr, errMsgIgnored);
+            partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
-                                              20 + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              20 + misc::random::Int(10) + 100,
                                               5  + misc::random::Int(6),
                                               10 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
                                               5  + misc::random::Int(6));
 
-            const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "A"));
-            player::CharacterSPtr_t archerSPtr(new player::Character(ARCHER_NAME,
-                                                                     creature::sex::Female,
-                                                                     creature::BodyType::Make_Humanoid(),
-                                                                     creature::Race(creature::race::Human),
-                                                                     creature::Role(creature::role::Archer),
-                                                                     ARCHER_STATS));
+            const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "A"));
 
-            player::Initial::Setup(archerSPtr.get());
-            partySPtr->Add(archerSPtr, errMsgIgnored);
-        }
+            auto archerPtr{ new player::Character(ARCHER_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Humanoid(),
+                                                  creature::Race(creature::race::Human),
+                                                  creature::Role(creature::role::Archer),
+                                                  ARCHER_STATS) };
+
+            player::Initial::Setup(archerPtr);
+            partyPtr->Add(archerPtr, errMsgIgnored);
+        }*/
         /*
         {
             const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
@@ -694,28 +836,32 @@ namespace stage
                                                                      WOLFEN_STATS));
 
             player::Initial::Setup(wolfenSPtr.get());
-            partySPtr->Add(wolfenSPtr, errMsgIgnored);
+            partyPtr->Add(wolfenSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                            10 + misc::random::Int(6) + 100,
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6));
 
-            const std::string BARD_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "B"));
-            player::CharacterSPtr_t bardSPtr(new player::Character(BARD_NAME,
-                                                                   creature::sex::Male,
-                                                                   creature::BodyType::Make_Humanoid(),
-                                                                   creature::Race(creature::race::Human),
-                                                                   creature::Role(creature::role::Bard),
-                                                                   BARD_STATS));
+            const std::string BARD_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "B"));
 
-            player::Initial::Setup(bardSPtr.get());
-            partySPtr->Add(bardSPtr, errMsgIgnored);
-        }
+            auto bardPtr{ new player::Character(BARD_NAME,
+                                                creature::sex::Male,
+                                                creature::BodyType::Make_Humanoid(),
+                                                creature::Race(creature::race::Human),
+                                                creature::Role(creature::role::Bard),
+                                                BARD_STATS) };
+
+            player::Initial::Setup(bardPtr);
+            partyPtr->Add(bardPtr, errMsgIgnored);
+        }*/
         /*
         {
             const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
@@ -734,69 +880,178 @@ namespace stage
                                                                  BEASTMASTER_STATS));
 
             player::Initial::Setup(bmSPtr.get());
-            partySPtr->Add(bmSPtr, errMsgIgnored);
+            partyPtr->Add(bmSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
-                                             5  + misc::random::Int(10) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                             5  + misc::random::Int(10) + 100,
                                              5  + misc::random::Int(10),
                                              15 + misc::random::Int(15),
                                              15 + misc::random::Int(10),
                                              5  + misc::random::Int(8));
 
-            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "T"));
-            player::CharacterSPtr_t thiefSPtr(new player::Character(THEIF_NAME,
-                                                                    creature::sex::Male,
-                                                                    creature::BodyType::Make_Humanoid(),
-                                                                    creature::Race(creature::race::Gnome),
-                                                                    creature::Role(creature::role::Thief),
-                                                                    THEIF_STATS));
+            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "T"));
 
-            player::Initial::Setup(thiefSPtr.get());
-            partySPtr->Add(thiefSPtr, errMsgIgnored);
-        }
+            auto thiefPtr{ new player::Character(THEIF_NAME,
+                                                 creature::sex::Male,
+                                                 creature::BodyType::Make_Humanoid(),
+                                                 creature::Race(creature::race::Gnome),
+                                                 creature::Role(creature::role::Thief),
+                                                 THEIF_STATS) };
 
+            player::Initial::Setup(thiefPtr);
+            partyPtr->Add(thiefPtr, errMsgIgnored);
+        }*/
         {
             const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                              5  + misc::random::Int(8) + 100,
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
                                               25 + misc::random::Int(8),
                                               10 + misc::random::Int(15));
 
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "C"));
-            player::CharacterSPtr_t clericSPtr(new player::Character(CLERIC_NAME,
-                                                                     creature::sex::Female,
-                                                                     creature::BodyType::Make_Pixie(),
-                                                                     creature::Race(creature::race::Pixie),
-                                                                     creature::Role(creature::role::Cleric),
-                                                                     CLERIC_STATS));
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C1"));
 
-            player::Initial::Setup(clericSPtr.get());
-            clericSPtr->ManaCurrentSet(1);
-            partySPtr->Add(clericSPtr, errMsgIgnored);
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(10);
+            partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
         {
             const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8) + 100,//TEMP TODO REMOVE Testing combat damage and combat over scenarios
+                                                0  + misc::random::Int(8) + 100,
                                                 5  + misc::random::Int(8),
                                                 10 + misc::random::Int(6),
                                                 50 + misc::random::Int(6),
                                                 20 + misc::random::Int(10));
 
-            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
-            player::CharacterSPtr_t sorcererSPtr(new player::Character(SORCERER_NAME,
-                                                                       creature::sex::Male,
-                                                                       creature::BodyType::Make_Pixie(),
-                                                                       creature::Race(creature::race::Pixie),
-                                                                       creature::Role(creature::role::Sorcerer),
-                                                                       SORCERER_STATS));
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S1"));
 
-            player::Initial::Setup(sorcererSPtr.get());
-            sorcererSPtr->ManaCurrentSet(1);
-            partySPtr->Add(sorcererSPtr, errMsgIgnored);
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(10);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
+        }
+        {
+            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
+                                              5  + misc::random::Int(8) + 100,
+                                              15 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              25 + misc::random::Int(8),
+                                              10 + misc::random::Int(15));
+
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C2"));
+
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(10);
+            partyPtr->Add(clericPtr, errMsgIgnored);
+        }
+
+        {
+            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
+                                                0  + misc::random::Int(8) + 100,
+                                                5  + misc::random::Int(8),
+                                                10 + misc::random::Int(6),
+                                                50 + misc::random::Int(6),
+                                                20 + misc::random::Int(10));
+
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S2"));
+
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(10);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
+        }
+        {
+            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
+                                              5  + misc::random::Int(8) + 100,
+                                              15 + misc::random::Int(10),
+                                              10 + misc::random::Int(8),
+                                              25 + misc::random::Int(8),
+                                              10 + misc::random::Int(15));
+
+            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "C3"));
+
+            auto clericPtr{ new player::Character(CLERIC_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Pixie(),
+                                                  creature::Race(creature::race::Pixie),
+                                                  creature::Role(creature::role::Cleric),
+                                                  CLERIC_STATS) };
+
+            player::Initial::Setup(clericPtr);
+            clericPtr->ManaCurrentSet(10);
+            partyPtr->Add(clericPtr, errMsgIgnored);
+        }
+
+        {
+            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
+                                                0  + misc::random::Int(8) + 100,
+                                                5  + misc::random::Int(8),
+                                                10 + misc::random::Int(6),
+                                                50 + misc::random::Int(6),
+                                                20 + misc::random::Int(10));
+
+            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S3"));
+
+            auto sorcererPtr{ new player::Character(SORCERER_NAME,
+                                                    creature::sex::Male,
+                                                    creature::BodyType::Make_Pixie(),
+                                                    creature::Race(creature::race::Pixie),
+                                                    creature::Role(creature::role::Sorcerer),
+                                                    SORCERER_STATS) };
+
+            player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ManaCurrentSet(10);
+            partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
         {
@@ -816,26 +1071,23 @@ namespace stage
                                                                       SYLAVIN_STATS));
 
             player::Initial::Setup(sylavinSPtr.get());
-            partySPtr->Add(sylavinSPtr, errMsgIgnored);
+            partyPtr->Add(sylavinSPtr, errMsgIgnored);
         }
         */
         if (restoreInfo_.HasRestored() == false)
         {
             //TEMP TODO REMOVE create new game and player party object
-            state::GameStateFactory::Instance()->NewGame(partySPtr);
+            state::GameStateFactory::Instance()->NewGame(partyPtr);
 
             combat::Encounter::Instance()->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            combat::Encounter::Instance()->NonPlayerParty()->Characters()[0]->ConditionAdd(creature::Conditions::Stone);
+            combat::Encounter::Instance()->NonPlayerParty().Characters()[0]->ConditionAdd(creature::Conditions::Stone);
         }
 
         //combat display
         combatDisplayStagePtr_->StageRegionSet(COMBAT_REGION);
         combatDisplayStagePtr_->Setup();
-
-        //combat animations
-        combat::CombatAnimation::GiveCombatDisplay(combatDisplayStagePtr_);
 
         //give control of the CombatDisplay object lifetime to the Loop class
         LoopManager::Instance()->AddStage(combatDisplayStagePtr_);
@@ -866,28 +1118,29 @@ namespace stage
         //
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
         //
-        zoomLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("ZoomSlider's",
-                                                                       ZOOMSLIDER_LABEL_TEXT_INFO,
-                                                                       ZOOMSLIDER_LABEL_RECT) );
+        zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "ZoomSlider's",
+            ZOOMSLIDER_LABEL_TEXT_INFO,
+            ZOOMSLIDER_LABEL_RECT);
         //
-        zoomSliderBarSPtr_.reset(new sfml_util::gui::SliderBar(
+        zoomSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
             "CombatStageZoom",
             COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
             zoomLabelTextRegionUPtr_->GetEntityRegion().top +
             zoomLabelTextRegionUPtr_->GetEntityRegion().height,
             (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) -
                 (COMMAND_REGION_PAD * 2.0f),
-            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this));
+            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this);
 
-        zoomSliderBarSPtr_->SetCurrentValue(1.0f);
+        zoomSliderBarUPtr_->SetCurrentValue(1.0f);
         zoomLabelTextRegionUPtr_->SetEntityPos(
-            (zoomSliderBarSPtr_->GetEntityPos().x + 
-                (zoomSliderBarSPtr_->GetEntityRegion().width * 0.5f)) -
+            (zoomSliderBarUPtr_->GetEntityPos().x + 
+                (zoomSliderBarUPtr_->GetEntityRegion().width * 0.5f)) -
             (zoomLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f),
             zoomLabelTextRegionUPtr_->GetEntityPos().y);
         //
         EntityAdd(zoomLabelTextRegionUPtr_.get());
-        EntityAdd(zoomSliderBarSPtr_.get());
+        EntityAdd(zoomSliderBarUPtr_.get());
 
         MoveTurnBoxObjectsOffScreen(true);
         restoreInfo_.Restore(combatDisplayStagePtr_);
@@ -897,19 +1150,14 @@ namespace stage
 
     void CombatStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw( * commandBoxSPtr_, STATES);
+        target.draw( * commandBoxUPtr_, STATES);
         Stage::Draw(target, STATES);
         statusBoxSPtr_->draw(target, STATES);
-
-        if (sparksAnimUPtr_.get() != nullptr)
-        {
-            sparksAnimUPtr_->draw(target, STATES);
-        }
 
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
             (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
-            turnBoxSPtr_->draw(target, STATES);
+            turnBoxUPtr_->draw(target, STATES);
 
             titleTBoxTextRegionUPtr_->draw(target, STATES);
             weaponTBoxTextRegionUPtr_->draw(target, STATES);
@@ -931,7 +1179,7 @@ namespace stage
             pounceTBoxButtonSPtr_->draw(target, STATES);
         }
 
-        combatAnimationPtr_->Draw(target, STATES);
+        combatAnimationUPtr_->Draw(target, STATES);
         DrawHoverText(target, STATES);
         testingTextRegionUPtr_->draw(target, STATES);
     }
@@ -941,12 +1189,7 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
 
-        if (sparksAnimUPtr_.get() != nullptr)
-        {
-            sparksAnimUPtr_->Update(ELAPSED_TIME_SEC);
-        }
-
-        combatAnimationPtr_->UpdateTime(ELAPSED_TIME_SEC);
+        combatAnimationUPtr_->UpdateTime(ELAPSED_TIME_SEC);
 
         if (willRedColorShakeWeaponText_)
         {
@@ -977,11 +1220,11 @@ namespace stage
 
         if (TurnPhase::DeathAnim == turnPhase_)
         {
-            combatAnimationPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
                 SetTurnPhase(TurnPhase::PostDeathAnimSlide);
-                combatAnimationPtr_->DeathAnimStop();
+                combatAnimationUPtr_->DeathAnimStop();
                 PositionSlideStartTasks();
             }
             return;
@@ -990,11 +1233,11 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::ProjectileShoot == animPhase_))
         {
-            combatAnimationPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
+            combatAnimationUPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
             if (slider_.GetIsDone())
             {
                 HandleApplyDamageTasks();
-                combatAnimationPtr_->ProjectileShootAnimStop();
+                combatAnimationUPtr_->ProjectileShootAnimStop();
                 SetTurnPhase(TurnPhase::PerformReport);
                 SetAnimPhase(AnimPhase::NotAnimating);
                 SetupTurnBox();
@@ -1006,10 +1249,10 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::Impact == animPhase_))
         {
-            combatAnimationPtr_->ImpactAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->ImpactAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->ImpactAnimStop();
+                combatAnimationUPtr_->ImpactAnimStop();
                 HandleApplyDamageTasks();
                 SetAnimPhase(AnimPhase::PostImpactPause);
                 StartPause(POST_IMPACT_ANIM_PAUSE_SEC_, "PostImpact");
@@ -1019,12 +1262,24 @@ namespace stage
         }
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (AnimPhase::Spell == animPhase_))
+        {
+            if (combatAnimationUPtr_->SpellAnimUpdate(spellBeingCastPtr_, ELAPSED_TIME_SEC))
+            {
+                combatAnimationUPtr_->SpellAnimStop(spellBeingCastPtr_);
+                HandleApplyDamageTasks();
+                SetAnimPhase(AnimPhase::PostSpellPause);
+                StartPause(POST_SPELL_ANIM_PAUSE_SEC_, "PostSpell");
+            }
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::MoveToward == animPhase_))
         {
-            combatAnimationPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->MeleeMoveTowardAnimStop();
+                combatAnimationUPtr_->MeleeMoveTowardAnimStop();
                 SetAnimPhase(AnimPhase::PostMoveTowardPause);
                 StartPause(POST_MELEEMOVE_ANIM_PAUSE_SEC_, "PostMoveToward");
                 SetupTurnBox();
@@ -1035,10 +1290,10 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::MoveBack == animPhase_))
         {
-            combatAnimationPtr_->MeleeMoveBackAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->MeleeMoveBackAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->MeleeMoveBackAnimStop();
+                combatAnimationUPtr_->MeleeMoveBackAnimStop();
                 SetAnimPhase(AnimPhase::FinalPause);
                 StartPause(POST_MELEEMOVE_ANIM_PAUSE_SEC_, "Final");
                 SetupTurnBox();
@@ -1051,9 +1306,9 @@ namespace stage
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
             auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
-            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
-            combatAnimationPtr_->CenteringUpdate(SLIDER_POS);
+            combatAnimationUPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
             {
                 StartTurn_Step2();
@@ -1066,10 +1321,10 @@ namespace stage
               (AnimPhase::AdvanceOrRetreat == animPhase_) &&
               ((TurnActionPhase::Advance == turnActionPhase_) || (TurnActionPhase::Retreat == turnActionPhase_))) )
         {
-            combatAnimationPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->RepositionAnimStop();
+                combatAnimationUPtr_->RepositionAnimStop();
                 SetTurnPhase(TurnPhase::PostTurnPause);
                 StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
             }
@@ -1103,17 +1358,27 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
-            if (combatAnimationPtr_->CenteringUpdate(SLIDER_POS))
+            if (combatAnimationUPtr_->CenteringUpdate(SLIDER_POS))
             {
                 auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
-                zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+                zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
             }
 
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->CenteringStop();
+                combatAnimationUPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
-                StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
+                
+                if (isShortPostZoomOutPause_)
+                {
+                    isShortPostZoomOutPause_ = false;
+                    StartPause(PAUSE_SHORTER_SEC_, "PostZoomOut");
+                }
+                else
+                {
+                    StartPause(POST_ZOOM_TURN_PAUSE_SEC_, "PostZoomOut");
+                }
+
                 SetupTurnBox();
             }
             return;
@@ -1126,10 +1391,10 @@ namespace stage
             if (sliderPosAdj > 1.0f)
                 sliderPosAdj = 1.0f;
 
-            combatAnimationPtr_->CenteringUpdate(sliderPosAdj);
+            combatAnimationUPtr_->CenteringUpdate(sliderPosAdj);
             if (slider_.GetIsDone())
             {
-                combatAnimationPtr_->CenteringStop();
+                combatAnimationUPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
                 StartPause(POST_PAN_PAUSE_SEC_, "PostPan");
             }
@@ -1140,7 +1405,7 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
             auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
-            zoomSliderBarSPtr_->SetCurrentValue(ZOOM_CURR_VAL);
+            zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
             if (slider_.GetIsDone())
             {
@@ -1163,7 +1428,7 @@ namespace stage
         }
 
         //initial hook for taking action before the first turn (pre-turn logic)
-        if ((zoomSliderBarSPtr_.get() != nullptr) &&
+        if ((zoomSliderBarUPtr_.get() != nullptr) &&
             (combatDisplayStagePtr_ != nullptr) &&
             (game::LoopManager::Instance()->IsFading() == false) &&
             (TurnPhase::NotATurn == turnPhase_) &&
@@ -1171,7 +1436,7 @@ namespace stage
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
             slider_.Reset(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
-            combatAnimationPtr_->CenteringStartTargetCenterOfBatllefield();
+            combatAnimationUPtr_->CenteringStartTargetCenterOfBatllefield();
             return;
         }
     }
@@ -1179,108 +1444,106 @@ namespace stage
 
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        isMouseHeldDown_ = true;
-
+        Stage::UpdateMouseDown(MOUSE_POS_V);
+        
         //cancel summary view if visible or even just starting
         if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
         {
             combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
+            isMouseHeldDown_ = false;
         }
-        else if ((TurnPhase::Determine == turnPhase_) || (TurnPhase::TargetSelect == turnPhase_))
+        else if ((TurnPhase::Determine != turnPhase_) &&
+                 (TurnPhase::TargetSelect != turnPhase_))
         {
-            Stage::UpdateMouseDown(MOUSE_POS_V);
+            isMouseHeldDown_ = false;
         }
-    }
-
-
-    void CombatStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
-    {
-        if (isMouseHeldDown_)
-        {
-            isMouseHeldDownAndMoving_ = true;
-        }
-        else
-        {
-            isMouseHeldDownAndMoving_ = false;
-        }
-
-        Stage::UpdateMousePos(MOUSE_POS_V);
     }
 
 
     sfml_util::gui::IGuiEntityPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
-        isMouseHeldDown_ = false;
-        isMouseHeldDownAndMoving_ = false;
+        
+        auto const GUI_ENTITY_WITH_FOCUS{ Stage::UpdateMouseUp(MOUSE_POS_V) };
+
+        if (WAS_MOUSE_HELD_DOWN_AND_MOVING)
+        {
+            return GUI_ENTITY_WITH_FOCUS;
+        }
 
         creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
-        if (WAS_MOUSE_HELD_DOWN_AND_MOVING == false)
+        if (creatureAtPosPtr == nullptr)
         {
-            if (creatureAtPosPtr == nullptr)
+            HandleMiscCancelTasks();
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if ((TurnPhase::Determine == turnPhase_) &&
+            creatureAtPosPtr->IsPlayerCharacter() &&
+            (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
+        {
+            restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+            game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if (TurnPhase::TargetSelect != turnPhase_)
+        {
+            return GUI_ENTITY_WITH_FOCUS;
+        }
+
+        if (nullptr == spellBeingCastPtr_)
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter())
             {
-                HandleMiscCancelTasks();
+                QuickSmallPopup(std::string("That is one of your player characters,").append(
+                    "who cannot be attacked.  Click on an enemy creature instead."), false, true);
             }
             else
             {
-                if ((TurnPhase::Determine == turnPhase_) &&
-                    creatureAtPosPtr->IsPlayerCharacter() &&
-                    (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
+                if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_,
+                                                                           creatureAtPosPtr))
                 {
-                    restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                    game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+                    combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                    HandleAttackTasks(creatureAtPosPtr);
                 }
-                else if (TurnPhase::TargetSelect == turnPhase_)
+                else
                 {
-                    if (nullptr == spellBeingCastPtr_)
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter())
-                        {
-                            QuickSmallPopup("That is one of your player characters, who cannot be attacked.  Click on an enemy creature instead.", false, true);
-                        }
-                        else
-                        {
-                            if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(turnCreaturePtr_, creatureAtPosPtr))
-                            {
-                                combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
-                                HandleAttackTasks(creatureAtPosPtr);
-                            }
-                            else
-                            {
-                                QuickSmallPopup("That creature is not close enough to fight.  Try clicking on another creature.", false, true);
-                            }
-                        }
-                    }
-                    else if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter())
-                        {
-                            QuickSmallPopup("That is one of your player characters, not an enemy.  Click on an enemy creature instead.", false, true);
-                        }
-                        else
-                        {
-                            combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
-                        }
-                    }
-                    else if ((nullptr != spellBeingCastPtr_) && (spellBeingCastPtr_->Target() == TargetType::SingleCompanion))
-                    {
-                        if (creatureAtPosPtr->IsPlayerCharacter() == false)
-                        {
-                            QuickSmallPopup("That is and enemy, not one of your character.  Click on one of your characters instead.", false, true);
-                        }
-                        else
-                        {
-                            combatAnimationPtr_->SelectAnimStart(creatureAtPosPtr);
-                            HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
-                        }
-                    }
+                    QuickSmallPopup(std::string("That creature is not close enough to fight.").
+                        append("  Try clicking on another creature."), false, true);
                 }
             }
         }
-
-        return Stage::UpdateMouseUp(MOUSE_POS_V);
+        else if (spellBeingCastPtr_->Target() == TargetType::SingleOpponent)
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter())
+            {
+                QuickSmallPopup(std::string("That is one of your player characters,").
+                    append(" not an enemy.  Click on an enemy creature instead."), false, true);
+            }
+            else
+            {
+                combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
+            }
+        }
+        else if ((nullptr != spellBeingCastPtr_) &&
+                 (spellBeingCastPtr_->Target() == TargetType::SingleCompanion))
+        {
+            if (creatureAtPosPtr->IsPlayerCharacter() == false)
+            {
+                QuickSmallPopup(std::string("That is and enemy, not one of your character.").
+                    append("  Click on one of your characters instead."), false, true);
+            }
+            else
+            {
+                combatAnimationUPtr_->SelectAnimStart(creatureAtPosPtr);
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
+            }
+        }
+        
+        return GUI_ENTITY_WITH_FOCUS;
     }
 
 
@@ -1404,10 +1667,12 @@ namespace stage
     void CombatStage::AppendInitialStatus()
     {
         std::ostringstream ss;
-        ss << combat::Text::InitialCombatStatusMessagePrefix() << " " << combat::Encounter::Instance()->NonPlayerParty()->Summary() << "!";
+        ss << combat::Text::InitialCombatStatusMessagePrefix() << " "
+            << combat::Encounter::Instance()->NonPlayerParty().Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
+        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+            "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         MoveTurnBoxObjectsOffScreen(true);
         statusMsgAnimColorShaker_.Reset();
@@ -1422,7 +1687,8 @@ namespace stage
     void CombatStage::AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM)
     {
         statusBoxTextInfo_.text = MSG_STR;
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>("CombatStageStatusMsg", statusBoxTextInfo_), true);
+        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+            "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         if (WILL_ANIM)
         {
@@ -1449,7 +1715,8 @@ namespace stage
     {
         UpdateTestingText();
 
-        pauseElapsedSec_ = pauseDurationSec_ + 1.0f;//anything greater than pauseDurationSec_ will work here
+        //anything greater than pauseDurationSec_ will work here
+        pauseElapsedSec_ = pauseDurationSec_ + 1.0f;
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::FinalPause == animPhase_))
@@ -1466,8 +1733,18 @@ namespace stage
         {
             SetAnimPhase(AnimPhase::MoveBack);
             SetupTurnBox();
-            combatAnimationPtr_->MeleeMoveBackAnimStart();
+            combatAnimationUPtr_->MeleeMoveBackAnimStart();
             slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+            return;
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (AnimPhase::PostSpellPause == animPhase_))
+        {
+            SetAnimPhase(AnimPhase::NotAnimating);
+            SetTurnPhase(TurnPhase::PerformReport);
+            StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostPerformAnim)");
+            SetupTurnBox();
             return;
         }
 
@@ -1476,7 +1753,7 @@ namespace stage
         {
             SetAnimPhase(AnimPhase::Impact);
             SetupTurnBox();
-            combatAnimationPtr_->ImpactAnimStart(ANIM_IMPACT_SHAKE_SLIDER_SPEED_);
+            combatAnimationUPtr_->ImpactAnimStart(ANIM_IMPACT_SHAKE_SLIDER_SPEED_);
             slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
             return;
         }
@@ -1519,13 +1796,15 @@ namespace stage
             return;
         }
 
-        if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
+        if (IsPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             StartPerformAnim();
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
             if (tempConditionsWakeStr_.empty() == false)
@@ -1541,16 +1820,23 @@ namespace stage
 
             if (turnActionInfo_.Action() == combat::TurnAction::Nothing)
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
                 SetTurnPhase(TurnPhase::PostTurnPause);
                 StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
             }
             else
             {
-                //also do the perform step here so that the TurnBox can display the non-player creature's intent before showing the result
+                //also do the perform step here so that the TurnBox can display the non-player
+                //creature's intent before showing the result
                 SetTurnActionPhase( HandleEnemyTurnStep2_Perform() );
 
-                //collect a list of all attacking and targeted creatures that need to be centered on the screen
+                //collect a list of all attacking and targeted creatures that need to be
+                //centered on the screen
                 creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtr_ };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
 
@@ -1563,14 +1849,15 @@ namespace stage
                 else
                 {
                     SetTurnPhase(TurnPhase::CenterAndZoomOut);
-                    combatAnimationPtr_->CenteringStart(allEffectedCreaturesPVec);
+                    combatAnimationUPtr_->CenteringStart(allEffectedCreaturesPVec);
                     slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
                 }
             }
             return;
         }
 
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
+        if (IsNonPlayerCharacterTurnValid() &&
+            (TurnPhase::PostCenterAndZoomOutPause == turnPhase_))
         {
             //See above for call to HandleEnemyTurnStep2_Perform()
             StartPerformAnim();
@@ -1583,8 +1870,11 @@ namespace stage
             auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
             if (performReportEffectIndex_ < CREATURE_EFFECTS_VEC.size())
             {
-                auto const HIT_INFO_VEC_SIZE{ CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().size() };
-                if ((HIT_INFO_VEC_SIZE > 0) && (performReportHitIndex_ <  (HIT_INFO_VEC_SIZE - 1)))
+                auto const HIT_INFO_VEC_SIZE{ CREATURE_EFFECTS_VEC.at(
+                    performReportEffectIndex_).GetHitInfoVec().size() };
+
+                if ((HIT_INFO_VEC_SIZE > 0) &&
+                    (performReportHitIndex_ <  (HIT_INFO_VEC_SIZE - 1)))
                 {
                     ++performReportHitIndex_;
                 }
@@ -1600,7 +1890,9 @@ namespace stage
                     }
                 }
 
-                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
+                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(
+                    performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
+
                 SetupTurnBox();
                 StartPause(PERFORM_REPORT_PAUSE_SEC_, "PerformReport");
                 return;
@@ -1617,8 +1909,13 @@ namespace stage
             creature::CreaturePVec_t killedNonPlayerCreaturesPVec;
             auto const CREATURE_EFFECTS{ fightResult_.Effects() };
             for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
-                if ((NEXT_CREATURE_EFFECT.WasKill()) && (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
+            {
+                if ((NEXT_CREATURE_EFFECT.WasKill()) &&
+                    (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
+                {
                     killedNonPlayerCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                }
+            }
 
             if (killedNonPlayerCreaturesPVec.empty())
             {
@@ -1628,7 +1925,7 @@ namespace stage
             else
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
-                combatAnimationPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
+                combatAnimationUPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
                 //TODO SOUNDEFFECT play creature death sound effect here
             }
@@ -1681,7 +1978,9 @@ namespace stage
 
             case combat::TurnAction::Attack:
             {
-                fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, turnActionInfo_.Target());
+                fightResult_ = combat::FightClub::Fight(turnCreaturePtr_,
+                                                        turnActionInfo_.Target());
+
                 SetupTurnBox();
                 return GetTurnActionPhaseFromFightResult(fightResult_);
             }
@@ -1758,12 +2057,12 @@ namespace stage
     //start centering anim
     void CombatStage::StartTurn_Step1()
     {
-        zoomSliderOrigPos_ = zoomSliderBarSPtr_->GetCurrentValue();
+        zoomSliderOrigPos_ = zoomSliderBarUPtr_->GetCurrentValue();
 
         turnCreaturePtr_ = combat::Encounter::Instance()->CurrentTurnCreature();
 
         SetTurnPhase(TurnPhase::CenterAndZoomIn);
-        combatAnimationPtr_->CenteringStart(turnCreaturePtr_);
+        combatAnimationUPtr_->CenteringStart(turnCreaturePtr_);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
     }
 
@@ -1771,18 +2070,11 @@ namespace stage
     //start pre-pause
     void CombatStage::StartTurn_Step2()
     {
-        //TODO TEMP REMOVE -testing sparks animation
-        sparksAnimUPtr_ = std::make_unique<sfml_util::animation::SparksAnimation>(true,
-                                                                                  combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_)->GetEntityRegion(),
-                                                                                  0.25f,
-                                                                                  sfml_util::MapByRes(0.15f, 0.45f),
-                                                                                  0.75f);
-
         auto const IS_PLAYER_TURN{ turnCreaturePtr_->IsPlayerCharacter() };
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
-        combatAnimationPtr_->CenteringStop();
-        combatAnimationPtr_->ShakeAnimStart(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
+        combatAnimationUPtr_->CenteringStop();
+        combatAnimationUPtr_->ShakeAnimStart(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
 
         goldTextColorShaker_.Reset();
 
@@ -1821,9 +2113,6 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
-        //TODO TEMP REMOVE
-        sparksAnimUPtr_.reset();
-
         if (restoreInfo_.CanTurnAdvance())
         {
             combat::Encounter::Instance()->IncrementTurn();
@@ -1851,16 +2140,19 @@ namespace stage
 
     void CombatStage::PositionSlideStartTasks()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
-        combatAnimationPtr_->RepositionAnimStart(turnCreaturePtr_);
-        combatAnimationPtr_->ShakeAnimStop(turnCreaturePtr_);
+        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
+            "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
+        combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
+        combatAnimationUPtr_->ShakeAnimStop(turnCreaturePtr_);
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
 
     bool CombatStage::HandleAttack()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayStagePtr_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextAttackStr(turnCreaturePtr_,
+                                                                       combatDisplayStagePtr_) );
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1868,7 +2160,8 @@ namespace stage
         }
         else
         {
-            HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(turnCreaturePtr_, combatDisplayStagePtr_) );
+            HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(
+                turnCreaturePtr_, combatDisplayStagePtr_) );
             return true;
         }
     }
@@ -1876,7 +2169,9 @@ namespace stage
 
     bool CombatStage::HandleFight()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(turnCreaturePtr_, combatDisplayStagePtr_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextFightStr(
+            turnCreaturePtr_, combatDisplayStagePtr_) );
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -1884,7 +2179,8 @@ namespace stage
         }
         else
         {
-            //can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because the player must select which non_player creature to fight first
+            //can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because the player
+            //must select which non_player creature to fight first
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
             combatDisplayStagePtr_->SetScrollingAllowed(true);
             SetTurnPhase(TurnPhase::TargetSelect);
@@ -1906,19 +2202,22 @@ namespace stage
         {
             SetUserActionAllowed(false);
             SetTurnActionPhase(TurnActionPhase::Cast);
-            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(POPUP_NAME_SPELLBOOK_, turnCreaturePtr_, restoreInfo_.LastCastSpellNum(turnCreaturePtr_)) };
+            
+            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                POPUP_NAME_SPELLBOOK_,
+                turnCreaturePtr_,
+                restoreInfo_.LastCastSpellNum(turnCreaturePtr_)) };
+
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             return true;
         }
     }
 
 
-    void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell::SpellPtr_t spellPtr)
+    void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll()
     {
-        spellBeingCastPtr_ = spellPtr;
-
-        if ((spellPtr->Target() == TargetType::SingleCompanion) ||
-            (spellPtr->Target() == TargetType::SingleOpponent))
+        if ((spellBeingCastPtr_->Target() == TargetType::SingleCompanion) ||
+            (spellBeingCastPtr_->Target() == TargetType::SingleOpponent))
         {
             SetUserActionAllowed(true);
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
@@ -1926,18 +2225,22 @@ namespace stage
             SetTurnPhase(TurnPhase::TargetSelect);
             SetupTurnBox();
         }
-        else if (spellPtr->Target() == TargetType::AllCompanions)
+        else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {
             HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(true));
         }
-        else if (spellPtr->Target() == TargetType::AllOpponents)
+        else if (spellBeingCastPtr_->Target() == TargetType::AllOpponents)
         {
             HandleCast_Step3_PerformOnTargets(creature::Algorithms::NonPlayers(true));
         }
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell=" << spellPtr->Name() << ") had a target_type of " << TargetType::ToString(spellPtr->Target()) << " which is not yet supported during combat.";
+            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell="
+                << spellBeingCastPtr_->Name() << ") had a target_type of "
+                << TargetType::ToString(spellBeingCastPtr_->Target())
+                << " which is not yet supported during combat.";
+
             throw std::runtime_error(ssErr.str());
         }
     }
@@ -1954,9 +2257,10 @@ namespace stage
         SetTurnActionPhase(TurnActionPhase::Cast);
 
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
+        isShortPostZoomOutPause_ = true;
         auto creaturesToCenterOnPVec{ creaturesToCastUponPVec };
         creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
-        combatAnimationPtr_->CenteringStart(creaturesToCenterOnPVec);
+        combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
 
         SetupTurnBox();
@@ -2644,7 +2948,7 @@ namespace stage
 
                 auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
                 M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.size() == 1), "game::stage::CombatStage::StartPerformAnim(turnActionPhase_=MeleeWeapon) found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size() << " instead of 1.");
-                combatAnimationPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_, CREATURE_EFFECTS_VEC[0].GetCreature());
+                combatAnimationUPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_, CREATURE_EFFECTS_VEC[0].GetCreature());
                 slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
             }
@@ -2662,7 +2966,7 @@ namespace stage
                     if (WEAPON_PTR != nullptr)
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_PTR);
-                        combatAnimationPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
+                        combatAnimationUPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
                                                                       fightResult_.Effects()[0].GetCreature(),
                                                                       WEAPON_PTR,
                                                                       fightResult_.WasHit());
@@ -2689,11 +2993,30 @@ namespace stage
 
             case TurnActionPhase::Cast:
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
-                SetTurnPhase(TurnPhase::PerformReport);
-                SetAnimPhase(AnimPhase::NotAnimating);
-                SetupTurnBox();
-                StartPause(PERFORM_PRE_REPORT_PAUSE_SEC_, "PerformPreReport (PostCast)");
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
+                combatSoundEffects_.PlaySpell(spellBeingCastPtr_);
+
+                //get a vec of CombatNodePtr_t for each creature being cast upon
+                creature::CreaturePVec_t creaturesCastUponPVec;
+                fightResult_.EffectedCreatures(creaturesCastUponPVec);
+                combat::CombatNodePVec_t combatNodesCastUponPVec;
+                for (auto const NEXT_CREATURE_PTR : creaturesCastUponPVec)
+                {
+                    combatNodesCastUponPVec.push_back(
+                        combatDisplayStagePtr_->GetCombatNodeForCreature(NEXT_CREATURE_PTR) );
+                }
+
+                combatAnimationUPtr_->SpellAnimStart(spellBeingCastPtr_,
+                                                     turnCreaturePtr_,
+                                                     combatNodesCastUponPVec);
+
+                SetAnimPhase(AnimPhase::Spell);
+                //SetupTurnBox();
                 break;
             }
             case TurnActionPhase::Roar:
@@ -2749,7 +3072,7 @@ namespace stage
             case TurnActionPhase::Roar:             { return "Roar"; }
             case TurnActionPhase::Pounce:           { return "Pounce"; }
             case TurnActionPhase::Count:
-            default:                            { return ""; }
+            default:                                { return ""; }
         }
     }
 
@@ -2781,10 +3104,12 @@ namespace stage
             case AnimPhase::PostMoveTowardPause: { return "PostTowardPause"; }
             case AnimPhase::Impact:              { return "Impact"; }
             case AnimPhase::PostImpactPause:     { return "PostImpactPause"; }
+            case AnimPhase::Spell:               { return "Spell"; }
+            case AnimPhase::PostSpellPause:      { return "PostSpellPause"; }
             case AnimPhase::MoveBack:            { return "MoveBack"; }
             case AnimPhase::FinalPause:          { return "FinalPause"; }
             case AnimPhase::Count:
-            default:                                    { return ""; }
+            default:                             { return ""; }
         }
     }
 
@@ -2913,7 +3238,7 @@ namespace stage
 
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
-        combatAnimationPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, creatureToAttackPtr });
+        combatAnimationUPtr_->CenteringStart(creature::CreaturePVec_t{ turnCreaturePtr_, creatureToAttackPtr });
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
 
         SetupTurnBox();

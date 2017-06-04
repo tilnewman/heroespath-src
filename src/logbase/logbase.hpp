@@ -101,6 +101,9 @@ namespace logbase
     //
     class LogBase : public appbase::ILog
     {
+        LogBase(const LogBase &) = delete;
+        LogBase & operator=(const LogBase &) = delete;
+
     public:
         explicit LogBase(const std::string & fileName         = FILE_NAME_DEFAULT,
                          const std::string & fileNameExt      = FILE_NAME_EXT_DEFAULT,
@@ -110,10 +113,7 @@ namespace logbase
                          const LogPri::Enum  consoleEchoPri   = LogPri::Disabled);
 
         virtual ~LogBase();
-    private:
-        LogBase(const LogBase &);
-
-    public:
+    
         virtual void Log(const std::string & MSG);
 
         virtual void Log(const std::string & FILE,
@@ -196,7 +196,6 @@ namespace logbase
         const LogPri::Enum              CONSOLE_ECHO_PRIORITY_;
         std::size_t                     fileNum_; //current file being written to
         std::ofstream                   fileStream_;
-        mutable boost::recursive_mutex  fileAccessMutex_;
         bool                            isDestructing_;
     };
 

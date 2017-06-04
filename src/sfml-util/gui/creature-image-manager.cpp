@@ -120,17 +120,10 @@ namespace gui
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
 
-        
-        static int totalTestCount{ static_cast<int>(
-            (static_cast<float>(game::creature::race::Count) *
-             static_cast<float>(game::creature::role::Count) *
-             static_cast<float>(game::creature::sex::Count))  *
-            1.5f) };
-
-        static int totalTestIndex{ 0 };
-
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
+            static int totalTestIndex{ 0 };
+
             auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
             auto const RACE_STR { game::creature::race::ToString(RACE_ENUM) };
 
@@ -141,6 +134,12 @@ namespace gui
 
                 if (sexIndex < static_cast<int>(game::creature::sex::Count))
                 {
+                    static int totalTestCount{ static_cast<int>(
+                        (static_cast<float>(game::creature::race::Count) *
+                         static_cast<float>(game::creature::role::Count) *
+                         static_cast<float>(game::creature::sex::Count))  *
+                        1.5f) };
+
                     static std::size_t i{ 0 };
 
                     auto const SEX_ENUM{ static_cast<game::creature::sex::Enum>(sexIndex) };

@@ -315,15 +315,21 @@ namespace gui
         if (IsInEntityRegion(MOUSE_POS_V))
         {
             if (WHEEL_MOTION < 0.0f)
+            {
                 currentVal_ -= 0.02f;
+            }
             else
+            {
                 currentVal_ += 0.02f;
+            }
 
             SetupAllPositions();
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -356,10 +362,16 @@ namespace gui
     void SliderBar::SetPadPosition()
     {
         if (currentVal_ > 1.0f)
+        {
             currentVal_ = 1.0f;
+        }
         else
+        {
             if (currentVal_ < 0.0f)
+            {
                 currentVal_ = 0.0f;
+            }
+        }
 
         const sf::Vector2f POS_V(GetEntityPos());
 
@@ -384,12 +396,12 @@ namespace gui
         {
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                 currentVal_ -= 0.1f;
             }
             else
             {
-                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                 currentVal_ += 0.1f;
             }
 
@@ -402,12 +414,12 @@ namespace gui
             {
                 if (STYLE_.orientation == Orientation::Horiz)
                 {
-                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                     currentVal_ += 0.1f;
                 }
                 else
                 {
-                    SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                     currentVal_ -= 0.1f;
                 }
 
@@ -418,7 +430,7 @@ namespace gui
             {
                 if (padImage_.MouseDown(MOUSE_POS_V))
                 {
-                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                     entityMouseState_ = MouseState::Down;
                 }
                 else
@@ -429,7 +441,7 @@ namespace gui
                         {
                             if (MOUSE_POS_V.x < padImage_.GetEntityRegion().left)
                             {
-                                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                                 currentVal_ -= 0.1f;
                                 SetupAllPositions();
                                 return true;
@@ -438,7 +450,7 @@ namespace gui
                             {
                                 if (MOUSE_POS_V.x > (padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
                                 {
-                                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                                     currentVal_ += 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -449,7 +461,7 @@ namespace gui
                         {
                             if (MOUSE_POS_V.y < padImage_.GetEntityRegion().top)
                             {
-                                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
                                 currentVal_ -= 0.1f;
                                 SetupAllPositions();
                                 return true;
@@ -458,7 +470,7 @@ namespace gui
                             {
                                 if (MOUSE_POS_V.y > (padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
                                 {
-                                    SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
                                     currentVal_ += 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -478,7 +490,7 @@ namespace gui
     {
         if (padImage_.MouseUp(MOUSE_POS_V))
         {
-            SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
             entityMouseState_ = MouseState::Up;
         }
 

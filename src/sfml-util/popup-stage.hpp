@@ -135,6 +135,8 @@ namespace sfml_util
         bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
         bool CanCastSpell(const game::spell::SpellPtrC_t) const;
 
+        bool HandleSpellCast();
+
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:
@@ -170,7 +172,7 @@ namespace sfml_util
         PopupButton_OkaySPtr_t      buttonOkaySPtr_;
 
         //members supporting the image select sliderbar
-        gui::SliderBarSPtr_t sliderbarSPtr_;
+        gui::SliderBarUPtr_t sliderbarUPtr_;
         float sliderbarPosTop_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;

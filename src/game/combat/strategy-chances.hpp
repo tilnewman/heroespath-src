@@ -173,8 +173,13 @@ namespace strategy
     };
 
     bool operator<(const Chances & L, const Chances & R);
+
     bool operator==(const Chances & L, const Chances & R);
-    bool operator!=(const Chances & L, const Chances & R);
+    
+    inline bool operator!=(const Chances & L, const Chances & R)
+    {
+        return ! (L == R);
+    }
 
 }
 }

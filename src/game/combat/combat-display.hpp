@@ -48,8 +48,11 @@ namespace sfml_util
 {
 namespace gui
 {
-    class Box;
-    using BoxSPtr_t = std::shared_ptr<Box>;
+    namespace box
+    {
+        class Box;
+        using BoxUPtr_t = std::unique_ptr<Box>;
+    }
 
     class IGuiEntity;
 }
@@ -67,6 +70,9 @@ namespace combat
 
     class SummaryView;
     using SummaryViewUPtr_t = std::unique_ptr<SummaryView>;
+
+    class CombatAnimation;
+    using CombatAnimationPtr_t = CombatAnimation *;
 
 
     //Assists with delayed position shifting of creature images on the battlefield,
@@ -212,6 +218,8 @@ namespace combat
 
         inline NodePosTrackerMap_t NodePositionTrackerMap()                     { return nodePosTrackerMap_; }
 
+        inline void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr)       { combatAnimationPtr_ = ptr; }
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
@@ -251,7 +259,7 @@ namespace combat
         //
         unsigned int                    nameCharSizeCurr_;
         sf::FloatRect                   battlefieldRect_;
-        sfml_util::gui::box::BoxSPtr_t  boxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t  boxUPtr_;
         sf::Texture                     bgTexture_;
         sf::RenderTexture               offScreenTexture_;
         sf::Sprite                      offScreenSprite_;
@@ -274,6 +282,7 @@ namespace combat
         bool                            isStatusMessageAnim_;
         bool                            isSummaryViewInProgress_;
         CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
+        CombatAnimationPtr_t            combatAnimationPtr_;
 
         //members to manage node position shifting, put another way,
         //members that allow on battlefield creature images to slide

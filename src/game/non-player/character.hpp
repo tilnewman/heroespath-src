@@ -40,6 +40,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 
 namespace sfml_util
@@ -109,10 +110,14 @@ namespace non_player
         }
     };
 
-    using CharacterSPtr_t = std::shared_ptr<non_player::Character>;
-    using CharacterSVec_t = std::vector<CharacterSPtr_t>;
-    using CharacterSVecIter_t = CharacterSVec_t::iterator;
-    using CharacterSVecCIter_t = CharacterSVec_t::const_iterator;
+    using CharacterPtr_t = Character *;
+    using CharacterCPtr_t = const Character *;
+    using CharacterPtrC_t = Character * const;
+    using CharacerCPtrC_t = const Character * const;
+
+    using CharacterPVec_t = std::vector<CharacterPtr_t>;
+    using CharacterPSet_t = std::set<CharacterPtr_t>;
+
 
     bool operator==(const Character & L, const Character & R);
 

@@ -29,7 +29,9 @@
 //  Popup buttons types.
 //
 #include "sfml-util/gui/text-button.hpp"
+
 #include "game/popup-info.hpp"
+
 #include <memory>
 
 

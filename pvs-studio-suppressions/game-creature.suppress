@@ -151,4 +151,412 @@
     <CodeCurrent>2327452172</CodeCurrent>
     <CodeNext>52101514</CodeNext>
   </game-creature>
+  <game-creature>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>113</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...edStanding, _, _, Rol...</Message>
+    <CodePrev>2739987785</CodePrev>
+    <CodeCurrent>1316398530</CodeCurrent>
+    <CodeNext>3983974436</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...et(_, _, _, _, _, _)) );.</Message>
+    <CodePrev>3983974936</CodePrev>
+    <CodeCurrent>1507893347</CodeCurrent>
+    <CodeNext>808101045</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...dgedFlying, _, _, Rol...</Message>
+    <CodePrev>1472958430</CodePrev>
+    <CodeCurrent>746725175</CodeCurrent>
+    <CodeNext>2308569818</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...et(_, _, _, _, _, _)) );.</Message>
+    <CodePrev>1316354184</CodePrev>
+    <CodeCurrent>4073835317</CodeCurrent>
+    <CodeNext>2632813999</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...kstabsHits, _, _, Role...</Message>
+    <CodePrev>3337106998</CodePrev>
+    <CodeCurrent>4247762947</CodeCurrent>
+    <CodeNext>1579945526</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...esSurvived, _, _, RoleV...</Message>
+    <CodePrev>2784745501</CodePrev>
+    <CodeCurrent>1015532172</CodeCurrent>
+    <CodeNext>2837682909</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ealthGiven, _, _, Role...</Message>
+    <CodePrev>2879198456</CodePrev>
+    <CodeCurrent>1121116851</CodeCurrent>
+    <CodeNext>2200942393</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._), _, _, _) );.</Message>
+    <CodePrev>2551688182</CodePrev>
+    <CodeCurrent>2708445021</CodeCurrent>
+    <CodeNext>2614687675</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...althTraded, _, _, Role...</Message>
+    <CodePrev>2614687675</CodePrev>
+    <CodeCurrent>935313726</CodeCurrent>
+    <CodeNext>1587199345</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..., _), _, _, _) );.</Message>
+    <CodePrev>1611037346</CodePrev>
+    <CodeCurrent>540441221</CodeCurrent>
+    <CodeNext>2787738456</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...BeastRoars, _, _, Role...</Message>
+    <CodePrev>2787738456</CodePrev>
+    <CodeCurrent>1879015497</CodeCurrent>
+    <CodeNext>1604551528</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._), _, _, _) );.</Message>
+    <CodePrev>3582087923</CodePrev>
+    <CodeCurrent>1367565516</CodeCurrent>
+    <CodeNext>165765192</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ocksPicked, _, _, Role...</Message>
+    <CodePrev>165765192</CodePrev>
+    <CodeCurrent>179136042</CodeCurrent>
+    <CodeNext>1224079281</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ongsPlayed, _, _, Role...</Message>
+    <CodePrev>1106243732</CodePrev>
+    <CodeCurrent>2050720798</CodeCurrent>
+    <CodeNext>3079873629</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._ ), _, _, _ ) );.</Message>
+    <CodePrev>1543893427</CodePrev>
+    <CodeCurrent>3595943160</CodeCurrent>
+    <CodeNext>3968233452</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ritsLifted, _, _, Role...</Message>
+    <CodePrev>3968233452</CodePrev>
+    <CodeCurrent>1418359304</CodeCurrent>
+    <CodeNext>3872586285</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ectileHits, _, _, Ro...</Message>
+    <CodePrev>1443655113</CodePrev>
+    <CodeCurrent>1990053173</CodeCurrent>
+    <CodeNext>2375349458</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ts::StatSet(_, _, _, _,...</Message>
+    <CodePrev>2175022290</CodePrev>
+    <CodeCurrent>2323481523</CodeCurrent>
+    <CodeNext>4166034289</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._), _, _, _) );.</Message>
+    <CodePrev>1209744605</CodePrev>
+    <CodeCurrent>728586949</CodeCurrent>
+    <CodeNext>3303039028</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...SpellsCast, _, _, Ro...</Message>
+    <CodePrev>3303039028</CodePrev>
+    <CodeCurrent>3198910776</CodeCurrent>
+    <CodeNext>1692791907</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...emiesFaced, _, _, Role...</Message>
+    <CodePrev>2978033958</CodePrev>
+    <CodeCurrent>2674480727</CodeCurrent>
+    <CodeNext>2640770625</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ts::StatSet(_, _, _, _,...</Message>
+    <CodePrev>2674480727</CodePrev>
+    <CodeCurrent>2640770625</CodeCurrent>
+    <CodeNext>64088594</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:MoonHowls, _, _, RoleV...</Message>
+    <CodePrev>246572543</CodePrev>
+    <CodeCurrent>2877733971</CodeCurrent>
+    <CodeNext>2879809807</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...nsInFlight, _, _, Role...</Message>
+    <CodePrev>3007847623</CodePrev>
+    <CodeCurrent>1480081895</CodeCurrent>
+    <CodeNext>3466029062</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ackActions, _, _, Role...</Message>
+    <CodePrev>1829314650</CodePrev>
+    <CodeCurrent>3497336162</CodeCurrent>
+    <CodeNext>3005954243</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tMindLinks, _, _, Role...</Message>
+    <CodePrev>2812789340</CodePrev>
+    <CodeCurrent>1558049831</CodeCurrent>
+    <CodeNext>2223669829</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:MeleeHits, _, _, Rol...</Message>
+    <CodePrev>4117272071</CodePrev>
+    <CodeCurrent>782039238</CodeCurrent>
+    <CodeNext>759732244</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...AttackHits, _, _, Role...</Message>
+    <CodePrev>1897923225</CodePrev>
+    <CodeCurrent>1206740245</CodeCurrent>
+    <CodeNext>1915193904</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._, _, _, _), _, _, _) );.</Message>
+    <CodePrev>1206740245</CodePrev>
+    <CodeCurrent>1915193904</CodeCurrent>
+    <CodeNext>4076893688</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, false,...</Message>
+    <CodePrev>98221543</CodePrev>
+    <CodeCurrent>23654863</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, false,...</Message>
+    <CodePrev>1571537323</CodePrev>
+    <CodeCurrent>1905511016</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, true, t...</Message>
+    <CodePrev>98221233</CodePrev>
+    <CodeCurrent>1627196081</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...g, _, _, _, _, true, true...</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>802016342</CodeCurrent>
+    <CodeNext>1850375207</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...cale, _, _, _, _, true,...</Message>
+    <CodePrev>802016342</CodePrev>
+    <CodeCurrent>1850375207</CodeCurrent>
+    <CodeNext>51344547</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...rue, false, _);.</Message>
+    <CodePrev>24555389</CodePrev>
+    <CodeCurrent>4208238760</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...Nothing, _, _, _, _, fals...</Message>
+    <CodePrev>1571545117</CodePrev>
+    <CodeCurrent>2199826203</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, true, t...</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>2873037618</CodeCurrent>
+    <CodeNext>2510578790</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, true, f...</Message>
+    <CodePrev>2873037618</CodePrev>
+    <CodeCurrent>2510578790</CodeCurrent>
+    <CodeNext>2780964929</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hers, _, _, _, _, true, t...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3785321157</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, true, f...</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>3701541795</CodeCurrent>
+    <CodeNext>923711743</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...hing, _, _, _, _, false,...</Message>
+    <CodePrev>923711743</CodePrev>
+    <CodeCurrent>4262121066</CodeCurrent>
+    <CodeNext>2533927244</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <CodePrev>3812748798</CodePrev>
+    <CodeCurrent>4020566814</CodeCurrent>
+    <CodeNext>3101031808</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <CodePrev>4020566814</CodePrev>
+    <CodeCurrent>3101031808</CodeCurrent>
+    <CodeNext>3810881022</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2611340669</CodeCurrent>
+    <CodeNext>2340706172</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...cale, _, _, _, _, true, t...</Message>
+    <CodePrev>2611340669</CodePrev>
+    <CodeCurrent>2340706172</CodeCurrent>
+    <CodeNext>3129711703</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>creature.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: divisor = _;.</Message>
+    <CodePrev>1415099648</CodePrev>
+    <CodeCurrent>35815</CodeCurrent>
+    <CodeNext>2504308102</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _); }.</Message>
+    <CodePrev>3644747448</CodePrev>
+    <CodeCurrent>1285054201</CodeCurrent>
+    <CodeNext>810179834</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>1285054201</CodePrev>
+    <CodeCurrent>810179834</CodeCurrent>
+    <CodeNext>2905522806</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _); }.</Message>
+    <CodePrev>810179834</CodePrev>
+    <CodeCurrent>2905522806</CodeCurrent>
+    <CodeNext>4076033200</CodeNext>
+  </game-creature>
 </NewDataSet>

@@ -30,7 +30,6 @@
 #include "main-menu-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -42,7 +41,10 @@
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+#include "game/state/game-state.hpp"
 #include "game/state/game-state-factory.hpp"
+
+#include "misc/real.hpp"
 
 
 namespace game
@@ -65,7 +67,7 @@ namespace stage
         settingsButtonSPtr_( new main_menu_buttons::SettingsButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
         creditsButtonSPtr_ ( new main_menu_buttons::CreditsButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
         exitButtonSPtr_    ( new main_menu_buttons::ExitButton(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         bottomSymbol_      (),
         backgroundImage_   ("media-images-backgrounds-tile-darkknot")
     {}
@@ -104,8 +106,8 @@ namespace stage
         gradient_.Setup(SCREEN_RECT_, sfml_util::GradientInfo(sf::Color(0,0,0,200), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight) );
 
         //Ouroboros
-        ouroborosSPtr_.reset( new game::Ouroboros("MainMenu's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<game::Ouroboros>("MainMenu's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //buttons
         resumeButtonSPtr_->SetScaleToRes();
@@ -132,10 +134,18 @@ namespace stage
         resumeButtonSPtr_->SetCallbackHandler(this);
 
         //determine if there are saved games to load
-        const state::GameStateSSet_t GAMESTATE_SSET( state::GameStateFactory::Instance()->LoadAllGames() );
-        if (GAMESTATE_SSET.empty())
+        auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
+        if (GAMESTATE_PSET.empty())
         {
             resumeButtonSPtr_->SetIsDisabled(true);
+        }
+        else
+        {
+            //free all of the loaded games
+            for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
+            {
+                delete NEXT_GAMESTATE_PTR;
+            }
         }
     }
 
@@ -159,28 +169,28 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
             createButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             LoopManager::Instance()->Goto_CharacterCreation();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             settingsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             LoopManager::Instance()->Goto_Settings();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
             creditsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             LoopManager::Instance()->Goto_Credits();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::E)
         {
             exitButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             LoopManager::Instance()->Goto_Exit();
             return true;
         }
@@ -189,7 +199,7 @@ namespace stage
             if (false == resumeButtonSPtr_->IsDisabled())
             {
                 resumeButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
                 LoopManager::Instance()->Goto_LoadGameMenu();
                 return true;
             }

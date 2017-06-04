@@ -92,18 +92,11 @@ namespace sfml_util
         bool           willLoop_;
     };
 
-
     using MusicSetSPtr_t = std::shared_ptr<MusicSet>;
     using MusicSetSVec_t = std::vector<MusicSetSPtr_t>;
 
 
-    inline bool operator==(const MusicSet & L, const MusicSet & R)
-    {
-        return (std::tie(L.whichVec_, L.currentlyPlaying_, L.previouslyPlaying_, L.willRandomize_, L.fadeInMult_, L.volume_)
-                ==
-                std::tie(R.whichVec_, R.currentlyPlaying_, R.previouslyPlaying_, R.willRandomize_, R.fadeInMult_, R.volume_));
-    }
-
+    bool operator==(const MusicSet & L, const MusicSet & R);
 
     inline bool operator!=(const MusicSet & L, const MusicSet & R)
     {
@@ -111,6 +104,5 @@ namespace sfml_util
     }
 
 }
-
 
 #endif //SFMLUTIL_MUSICSET_INCLUDED

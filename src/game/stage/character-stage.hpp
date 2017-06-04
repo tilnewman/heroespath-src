@@ -35,7 +35,6 @@
 #include "sfml-util/animation.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/radio-button.hpp"
@@ -57,8 +56,24 @@
 #include <vector>
 
 
+//forward declarations
+namespace sfml_util
+{
+namespace gui
+{
+namespace box
+{
+    class Box;
+    using BoxUPtr_t = std::unique_ptr<Box>;
+}
+}
+}
+
 namespace game
 {
+    class Ouroboros;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
+
 namespace stage
 {
 
@@ -95,7 +110,7 @@ namespace stage
         :
             value(VAL),
             stat(STAT),
-            text_region_sptr( new sfml_util::gui::TextRegion(std::string(NAME).append("StatModText")) )
+            text_region_sptr( std::make_shared<sfml_util::gui::TextRegion>(std::string(NAME).append("StatModText")) )
         {
             const sf::Int8 COLOR_BASE(100);
             sf::Color color(COLOR_BASE, 255, COLOR_BASE);
@@ -243,6 +258,8 @@ namespace stage
         const float STATBOX_POS_LEFT_;
         const float STATS_POS_LEFT_;
         //
+        OuroborosUPtr_t ouroborosUPtr_;
+        //
         MainMenuTitle mainMenuTitle_;
         //
         float attribVertOffset1_;
@@ -290,7 +307,7 @@ namespace stage
         float statsSpdPosTop_;
         float statsIntPosTop_;
         //
-        sfml_util::gui::box::BoxSPtr_t statsBoxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t statsBoxUPtr_;
         //
         bool          isAnimStats_;
         bool          isWaitingForStats_;

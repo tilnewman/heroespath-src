@@ -29,9 +29,11 @@
 //
 #include "party.hpp"
 
-#include "misc/boost-string-includes.hpp"
-
+#include "game/log-macros.hpp"
 #include "game/non-player/character.hpp"
+#include "game/non-player/character-warehouse.hpp"
+
+#include "misc/boost-string-includes.hpp"
 
 #include <map>
 #include <sstream>
@@ -43,51 +45,79 @@ namespace game
 namespace non_player
 {
 
-
-    Party::Party(const CharacterSVec_t & CHARACTERS_SVEC)
+    Party::Party(const CharacterPVec_t & CHARACTERS_PVEC)
     :
-        charactersSVec_(CHARACTERS_SVEC)
-    {}
+        charactersPVec_()
+    {
+        for(auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
+        {
+            charactersPVec_.push_back( CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR) );
+        }
+    }
 
 
     Party::~Party()
-    {}
-
-
-    bool Party::Add(const CharacterSPtr_t & CHARACTER_SPTR)
     {
-        if (charactersSVec_.size() < charactersSVec_.max_size())
+        for (auto & nextCharacterPtr : charactersPVec_)
         {
-            charactersSVec_.push_back(CHARACTER_SPTR);
-            return true;
+            CharacterWarehouse::Instance()->Free(nextCharacterPtr);
         }
-        else
-            return false;
+
+        charactersPVec_.clear();
     }
 
 
-
-    bool Party::Remove(const CharacterSPtr_t & CHARACTER_SPTR)
+    void Party::Add(const CharacterPtr_t CHARACTER_PTR, const bool WILL_STORE)
     {
-        const CharacterSVecCIter_t FOUND_ITER( std::find(charactersSVec_.begin(), charactersSVec_.end(), CHARACTER_SPTR) );
-
-        if (FOUND_ITER == charactersSVec_.end())
-            return false;
+        if (WILL_STORE)
+        {
+            charactersPVec_.push_back( CharacterWarehouse::Instance()->Store(CHARACTER_PTR) );
+        }
         else
         {
-            charactersSVec_.erase(FOUND_ITER);
-            return true;
+            charactersPVec_.push_back(CHARACTER_PTR);
         }
     }
 
 
-    CharacterSPtr_t Party::FindByCreaturePtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    bool Party::Remove(CharacterPtr_t characterPtr, const bool WILL_FREE)
     {
-        for (auto const & NEXT_CHARACTER_SPTR : charactersSVec_)
-            if (NEXT_CHARACTER_SPTR.get() == CREATURE_CPTRC)
-                return NEXT_CHARACTER_SPTR;
+        auto const FOUND_ITER{ std::find(charactersPVec_.begin(),
+                                         charactersPVec_.end(),
+                                         characterPtr) };
 
-        return CharacterSPtr_t();
+        if (FOUND_ITER == charactersPVec_.end())
+        {
+            M_HP_LOG_ERR("game::non-player::Party::Remove(will_free=" << std::boolalpha
+                << WILL_FREE << ", ptr=" << characterPtr << ", name="
+                << characterPtr->Name() << ") was not found in the party.");
+
+            return false;
+        }
+        else
+        {
+            if (WILL_FREE)
+            {
+                CharacterWarehouse::Instance()->Free(characterPtr);
+            }
+
+            charactersPVec_.erase(FOUND_ITER);
+            return true;
+        }
+    }
+
+
+    CharacterPtr_t Party::FindByCreaturePtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    {
+        for (auto const NEXT_CHARACTER_PTR : charactersPVec_)
+        {
+            if (NEXT_CHARACTER_PTR == CREATURE_CPTRC)
+            {
+                return NEXT_CHARACTER_PTR;
+            }
+        }
+
+        return nullptr;
     }
 
 
@@ -98,8 +128,11 @@ namespace non_player
         RaceRoleCountMap_t raceRoleMap;
 
         //count all race/role combinations
-        for (auto const & NEXT_CHAR_SPTR : charactersSVec_)
-            raceRoleMap[std::make_pair(NEXT_CHAR_SPTR->Race().Name(), NEXT_CHAR_SPTR->Role().Name())]++;
+        for (auto const NEXT_CHAR_PTR : charactersPVec_)
+        {
+            raceRoleMap[ std::make_pair(NEXT_CHAR_PTR->Race().Name(),
+                NEXT_CHAR_PTR->Role().Name()) ]++;
+        }
 
         //make a single string summary of all race/role combinations
         std::ostringstream ss;

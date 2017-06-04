@@ -186,7 +186,6 @@ namespace sfml_util
         auto const NUM_STAGES{ stagePVec_.size() };
         for (std::size_t i(0); i<NUM_STAGES; ++i)
         {
-
             if (stagePVec_[i] != nullptr)
             {
                 delete stagePVec_[i];
@@ -488,7 +487,7 @@ namespace sfml_util
         if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::Escape))
         {
             M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED.  Bail.");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             game::LoopManager::Instance()->Goto_Exit();
         }
         else
@@ -496,7 +495,7 @@ namespace sfml_util
             if (willExitOnKeypress_)
             {
                 M_HP_LOG(NAME_ << " key event while willExitOnKeypress.  Exiting the loop.");
-                sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
                 willExit_ = true;
             }
         }
@@ -538,7 +537,7 @@ namespace sfml_util
         if (willExitOnMouseclick_)
         {
             M_HP_LOG(NAME_ << " mouse click while willExitOnMouseclick.  Exiting...");
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             willExit_ = true;
         }
     }

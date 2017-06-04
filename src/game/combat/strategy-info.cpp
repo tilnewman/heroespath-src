@@ -136,12 +136,6 @@ namespace strategy
                         R.standPounceFreqType_);
     }
 
-
-    bool operator!=(const Info & L, const Info & R)
-    {
-        return ! (L == R);
-    }
-
 }
 }
 }

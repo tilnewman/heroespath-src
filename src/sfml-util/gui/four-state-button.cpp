@@ -65,7 +65,7 @@ namespace gui
         textRegionDownUPtr_    (),
         textRegionOverUPtr_    (),
         textRegionDisabledUPtr_(),
-        boxSPtr_               (),
+        boxUPtr_               (),
         scale_                 (1.0f),
         callbackHandlerPtr_    (nullptr)
     {}
@@ -100,7 +100,7 @@ namespace gui
         textRegionDownUPtr_    (),
         textRegionOverUPtr_    (),
         textRegionDisabledUPtr_(),
-        boxSPtr_               (),
+        boxUPtr_               (),
         scale_                 (SCALE),
         callbackHandlerPtr_    (nullptr)
     {
@@ -151,7 +151,7 @@ namespace gui
         textRegionDownUPtr_    (),
         textRegionOverUPtr_    (),
         textRegionDisabledUPtr_(),
-        boxSPtr_               (),
+        boxUPtr_               (),
         scale_                 (SCALE),
         callbackHandlerPtr_    (nullptr)
     {
@@ -331,7 +331,7 @@ namespace gui
 
         if (WILL_BOX)
         {
-            boxSPtr_.reset(new box::Box("FourStateButton's", box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White), gui::BackgroundInfo())));
+            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's", box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White), gui::BackgroundInfo()));
         }
 
         SetMouseState(MouseState::Up);
@@ -361,9 +361,9 @@ namespace gui
 
     void FourStateButton::Reset()
     {
-        if (boxSPtr_.get() != nullptr)
+        if (boxUPtr_.get() != nullptr)
         {
-            boxSPtr_.reset(new box::Box("FourStateButton's", gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White))));
+            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's", gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White)));
         }
 
         if (isDisabled_)
@@ -459,9 +459,9 @@ namespace gui
             textRegionCurrPtr_->draw(target, states);
         }
 
-        if (boxSPtr_.get() != nullptr)
+        if (boxUPtr_.get() != nullptr)
         {
-            target.draw(*boxSPtr_, states);
+            target.draw( * boxUPtr_, states);
         }
     }
 
@@ -477,7 +477,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             Reset();
         }
 
@@ -496,7 +496,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             Reset();
         }
 
@@ -517,11 +517,11 @@ namespace gui
         {
             if (GetMouseState() == MouseState::Over)
             {
-                SoundManager::Instance()->SoundEffectsSet_TickOn().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
             }
             else
             {
-                SoundManager::Instance()->SoundEffectsSet_TickOff().PlayRandom();
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
             }
 
             Reset();

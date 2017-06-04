@@ -34,6 +34,8 @@
 #include "game/location/location.hpp"
 
 #include <tuple>
+#include <sstream>
+#include <exception>
 
 
 namespace game
@@ -41,34 +43,67 @@ namespace game
 namespace state
 {
 
-    GameState::GameState(const player::PartySPtr_t &      PARTY_SPTR,
-                         const WorldStateSPtr_t &         WORLD_STATE_SPTR,
+    GameState::GameState(const player::PartyPtr_t         PARTY_PTR,
+                         const WorldStatePtr_t            WORLD_STATE_PTR,
                          const location::LocationSPtr_t & LOCATION_SPTR)
     :
-        partySPtr_       (PARTY_SPTR),
-        worldStateSPtr_  (WORLD_STATE_SPTR),
+        partyUPtr_       (),
+        worldStateUPtr_  (),
         isGameNew_       (false),
         dateTimeStarted_ (),
         dateTimeLastSave_(),
         locationSPtr_    (LOCATION_SPTR)
-    {}
+    {
+        partyUPtr_.reset(PARTY_PTR);
+        worldStateUPtr_.reset(WORLD_STATE_PTR);
+    }
 
 
     GameState::~GameState()
     {}
 
 
+    WorldState & GameState::World()
+    {
+        if (worldStateUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::state::GameState::World() called when the world ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * worldStateUPtr_;
+        }
+    }
+
+
+    player::Party & GameState::Party()
+    {
+        if (partyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::state::GameState::Party() called when the party ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * partyUPtr_;
+        }
+    }
+
+
     bool operator<(const GameState & L, const GameState & R)
     {
-        return std::tie(L.partySPtr_,
-                        L.worldStateSPtr_,
+        return std::tie(L.partyUPtr_,
+                        L.worldStateUPtr_,
                         L.isGameNew_,
                         L.dateTimeStarted_,
                         L.dateTimeLastSave_,
                         L.locationSPtr_)
                <
-               std::tie(R.partySPtr_,
-                        R.worldStateSPtr_,
+               std::tie(R.partyUPtr_,
+                        R.worldStateUPtr_,
                         R.isGameNew_,
                         R.dateTimeStarted_,
                         R.dateTimeLastSave_,
@@ -78,15 +113,15 @@ namespace state
 
     bool operator==(const GameState & L, const GameState & R)
     {
-        return std::tie(L.partySPtr_,
-                        L.worldStateSPtr_,
+        return std::tie(L.partyUPtr_,
+                        L.worldStateUPtr_,
                         L.isGameNew_,
                         L.dateTimeStarted_,
                         L.dateTimeLastSave_,
                         L.locationSPtr_)
                ==
-               std::tie(R.partySPtr_,
-                        R.worldStateSPtr_,
+               std::tie(R.partyUPtr_,
+                        R.worldStateUPtr_,
                         R.isGameNew_,
                         R.dateTimeStarted_,
                         R.dateTimeLastSave_,

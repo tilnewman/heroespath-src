@@ -103,44 +103,46 @@ namespace state
 
     void GameStateFactory::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::GameStateFactory::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::GameStateFactory::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
 
-    void GameStateFactory::NewGame(const player::PartySPtr_t & PARTY_SPTR) const
+    void GameStateFactory::NewGame(const player::PartyPtr_t PARTY_PTR) const
     {
-        const WorldStateSPtr_t WORLDSTATE_SPTR( new WorldState );
-        GameStateSPtr_t gameStateSPtr( new GameState(PARTY_SPTR, WORLDSTATE_SPTR) );
-        gameStateSPtr->IsNewGameSet(true);
-        gameStateSPtr->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());
+        auto gameStatePtr = new GameState(PARTY_PTR, new WorldState());
+        gameStatePtr->IsNewGameSet(true);
+        gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
 
-        location::LocationSPtr_t locationSPtr( new location::Location(location::map::Thornberry) );
-        gameStateSPtr->LocationSet( locationSPtr );
+        gameStatePtr->LocationSet(
+            std::make_shared<location::Location>(location::map::Thornberry) );
 
-        Game::Instance()->StateSet(gameStateSPtr);
-        SaveGame(gameStateSPtr);
+        Game::Instance()->StateStore(gameStatePtr);
+        SaveGame(gameStatePtr);
     }
 
 
-    GameStateSSet_t GameStateFactory::LoadAllGames() const
+    GameStatePSet_t GameStateFactory::LoadAllGames() const
     {
         namespace bfs = boost::filesystem;
 
         //configure the path
-        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_GAME_DIR_NAME_)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
+            bfs::path(SAVED_GAME_DIR_NAME_)));
 
-        GameStateSSet_t gameStateSSet;
+        GameStatePSet_t gameStatePSet;
 
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
         {
-            return gameStateSSet;
+            return gameStatePSet;
         }
 
         if (false == bfs::is_directory(DIR_OBJ))
         {
-            return gameStateSSet;
+            return gameStatePSet;
         }
 
         //create a vector of paths to saved games
@@ -159,55 +161,63 @@ namespace state
         //try and load each game file
         for (auto const & NEXT_PATH_OBJ : pathVec)
         {
-            GameStateSPtr_t nextGameStateSPtr( new GameState() );
+            GameStatePtr_t nextGameStatePtr{ new GameState() };
 
             try
             {
                 std::ifstream ifs(NEXT_PATH_OBJ.string());
                 boost::archive::text_iarchive ia(ifs);
-                ia >> * nextGameStateSPtr;
-
-                gameStateSSet.insert(nextGameStateSPtr);
+                ia >> * nextGameStatePtr;
+                gameStatePSet.insert(nextGameStatePtr);
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAll() while trying to de-serialize/load saved game file \"" << NEXT_PATH_OBJ.string() << "\", threw std::exception(\"" << E.what() << "\")");
+                M_HP_LOG("game::state::GameStateFactory::LoadAll() while trying to "
+                    << "de-serialize/load saved game file \"" << NEXT_PATH_OBJ.string()
+                    << "\", threw std::exception(\"" << E.what() << "\")");
             }
             catch (...)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAll() while trying to de-serialize/load saved game file \"" << NEXT_PATH_OBJ.string() << "\", threw UNKNOWN exception.");
+                M_HP_LOG("game::state::GameStateFactory::LoadAll() while trying to "
+                    << "de-serialize/load saved game file \"" << NEXT_PATH_OBJ.string()
+                    << "\", threw UNKNOWN exception.");
             }
         }
 
-        return gameStateSSet;
+        return gameStatePSet;
     }
 
 
-    void GameStateFactory::SaveGame(const GameStateSPtr_t & GAME_SPTR) const
+    void GameStateFactory::SaveGame(const GameStatePtr_t GAME_PTR) const
     {
-        Save(GAME_SPTR,
-             player::CharacterSPtr_t(),
+        Save(GAME_PTR,
+             nullptr,
              SAVED_GAME_DIR_NAME_,
              SAVED_GAME_FILE_NAME_,
              SAVED_GAME_FILE_EXT_);
     }
 
 
-    player::CharacterSSet_t GameStateFactory::LoadAllCompanions() const
+    player::CharacterPSet_t GameStateFactory::LoadAllCompanions() const
     {
         namespace bfs = boost::filesystem;
 
         //configure the path
-        const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
+            bfs::path(SAVED_CHAR_DIR_NAME_)));
 
-        player::CharacterSSet_t characterSSet;
+        player::CharacterPSet_t characterPSet;
 
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
-            return characterSSet;
+        {
+            return characterPSet;
+        }
 
         if (false == bfs::is_directory(DIR_OBJ))
-            return characterSSet;
+        {
+            return characterPSet;
+        }
 
         //create a vector of paths to saved characters
         std::vector<bfs::path> pathVec;
@@ -225,53 +235,62 @@ namespace state
         const std::size_t NUM_FILES(pathVec.size());
         for (std::size_t i(0); i < NUM_FILES; ++i)
         {
-            player::CharacterSPtr_t nextCharacterSPtr( new player::Character() );
+            auto nextCharacterPtr{ new player::Character() };
 
             try
             {
                 std::ifstream ifs(pathVec[i].string());
                 boost::archive::text_iarchive ia(ifs);
-                ia >> * nextCharacterSPtr;
+                ia >> * nextCharacterPtr;
 
-                characterSSet.insert(nextCharacterSPtr);
+                characterPSet.insert(nextCharacterPtr);
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw std::exception(\"" << E.what() << "\")");
+                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to "
+                    << "de-serialize/load saved game file \"" << pathVec[i].string()
+                    << "\", threw std::exception(\"" << E.what() << "\")");
             }
             catch (...)
             {
-                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to de-serialize/load saved game file \"" << pathVec[i].string() << "\", threw UNKNOWN exception.");
+                M_HP_LOG("game::state::GameStateFactory::LoadAllCompanions(), while trying to "
+                    << "de-serialize/load saved game file \"" << pathVec[i].string()
+                    << "\", threw UNKNOWN exception.");
             }
         }
 
-        return characterSSet;
+        return characterPSet;
     }
 
 
-    void GameStateFactory::SaveCharacter(const player::CharacterSPtr_t & CHARACTER_SPTR) const
+    void GameStateFactory::SaveCharacter(const player::CharacterPtr_t CHARACTER_PTR) const
     {
-        Save(GameStateSPtr_t(),
-             CHARACTER_SPTR,
+        Save(nullptr,
+             CHARACTER_PTR,
              SAVED_CHAR_DIR_NAME_,
-             CHARACTER_SPTR->Name(),
+             CHARACTER_PTR->Name(),
              SAVED_CHAR_FILE_EXT_);
     }
 
 
-    bool GameStateFactory::DeleteCharacter(const player::CharacterSPtr_t & CHAR_TO_DELETE_SPTR) const
+    bool GameStateFactory::DeleteCharacter(const player::CharacterPtr_t CHAR_TO_DELETE_PTR) const
     {
         namespace bfs = boost::filesystem;
 
         //configure the path
-        const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
+            bfs::path(SAVED_CHAR_DIR_NAME_)));
 
         //check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
+        {
             return false;
+        }
 
         if (false == bfs::is_directory(DIR_OBJ))
+        {
             return false;
+        }
 
         //create a vector of paths to saved characters
         std::vector<bfs::path> pathVec;
@@ -288,17 +307,17 @@ namespace state
         //loop over all paths to saved games and load then compare before deleting
         for (auto const & NEXT_PATH : pathVec)
         {
-            player::CharacterSPtr_t nextCharacterSPtr( new player::Character() );
+            auto nextCharacterPtr{ new player::Character() };
 
             try
             {
                 {
                     std::ifstream ifs(NEXT_PATH.string());
                     boost::archive::text_iarchive ia(ifs);
-                    ia >> *nextCharacterSPtr;
+                    ia >> * nextCharacterPtr;
                 }
 
-                if ((*nextCharacterSPtr) == (*CHAR_TO_DELETE_SPTR))
+                if (( * nextCharacterPtr) == ( * CHAR_TO_DELETE_PTR))
                 {
                     boost::system::error_code errorCode;
                     if (bfs::remove(NEXT_PATH, errorCode))
@@ -307,18 +326,28 @@ namespace state
                     }
                     else
                     {
-                        M_HP_LOG("game::state::GameStateFactory::DeleteCharacter(" << CHAR_TO_DELETE_SPTR->Name() << "), while trying to delete " << NEXT_PATH.string() << ", failed with error code=" << errorCode);
+                        M_HP_LOG("game::state::GameStateFactory::DeleteCharacter("
+                            << CHAR_TO_DELETE_PTR->Name() << "), while trying to delete "
+                            << NEXT_PATH.string() << ", failed with error code=" << errorCode);
+
                         return false;
                     }
                 }
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG("game::state::GameStateFactory::DeleteCharacter(" << CHAR_TO_DELETE_SPTR->Name() << "), while trying to de-serialize/load saved game file \"" << NEXT_PATH.string() << "\", threw std::exception(\"" << E.what() << "\")");
+                M_HP_LOG("game::state::GameStateFactory::DeleteCharacter("
+                    << CHAR_TO_DELETE_PTR->Name()
+                    << "), while trying to de-serialize/load saved game file \""
+                    << NEXT_PATH.string() << "\", threw std::exception(\"" << E.what()
+                    << "\")");
             }
             catch (...)
             {
-                M_HP_LOG("game::state::GameStateFactory::DeleteCharacter(" << CHAR_TO_DELETE_SPTR->Name() << "), while trying to de-serialize/load saved game file \"" << NEXT_PATH.string() << "\", threw UNKNOWN exception.");
+                M_HP_LOG("game::state::GameStateFactory::DeleteCharacter("
+                    << CHAR_TO_DELETE_PTR->Name()
+                    << "), while trying to de-serialize/load saved game file \""
+                    << NEXT_PATH.string() << "\", threw UNKNOWN exception.");
             }
         }
 
@@ -326,22 +355,25 @@ namespace state
     }
 
 
-    void GameStateFactory::Save(const GameStateSPtr_t &         GAME_SPTR,
-                                const player::CharacterSPtr_t & CHARACTER_SPTR,
-                                const std::string &             DIR_STR,
-                                const std::string &             FILE_STR,
-                                const std::string &             EXT_STR) const
+    void GameStateFactory::Save(const GameStatePtr_t         GAME_PTR,
+                                const player::CharacterPtr_t CHARACTER_PTR,
+                                const std::string &          DIR_STR,
+                                const std::string &          FILE_STR,
+                                const std::string &          EXT_STR) const
     {
         namespace bfs = boost::filesystem;
 
         //establish the path
-        const bfs::path   DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path(DIR_STR)));
+        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
+            bfs::path(DIR_STR)));
 
         //create directory if missing
         if (false == bfs::exists(DIR_OBJ))
         {
             boost::system::error_code ec;
-            M_ASSERT_OR_LOGANDTHROW_SS((bfs::create_directory(DIR_OBJ, ec)), "game::GameStateFactory::Save() was unable to create the save game directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec);
+            M_ASSERT_OR_LOGANDTHROW_SS((bfs::create_directory(DIR_OBJ, ec)),
+                "game::GameStateFactory::Save() was unable to create the save game directory \""
+                << DIR_OBJ.string() << "\".  Error code=" << ec);
         }
 
         //find the next available save game filename
@@ -355,14 +387,20 @@ namespace state
             nextFilePathObj = (DIR_OBJ / bfs::path(ss.str()));
 
             if (false == bfs::exists(nextFilePathObj))
+            {
                 break;
+            }
 
-            M_ASSERT_OR_LOGANDTHROW_SS((i < 10000), "game::Save() failed to find an available save character filename after 10,000 tries.  Something is very wrong...");
+            M_ASSERT_OR_LOGANDTHROW_SS((i < 10000),
+                "game::Save() failed to find an available save character filename after 10,000"
+                << " tries.  Something is very wrong...");
         }
 
         //set the date and time of last save
-        if (GAME_SPTR.get() != nullptr)
-            GAME_SPTR->DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
+        if (GAME_PTR != nullptr)
+        {
+            GAME_PTR->DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
+        }
 
         try
         {
@@ -370,23 +408,35 @@ namespace state
             boost::archive::text_oarchive oa(ofs);
 
             //save either, not both
-            if (GAME_SPTR.get() != nullptr)
-                oa << * GAME_SPTR;
+            if (GAME_PTR != nullptr)
+            {
+                oa << * GAME_PTR;
+            }
             else
-                if (CHARACTER_SPTR.get() != nullptr)
-                    oa << * CHARACTER_SPTR;
+            {
+                if (CHARACTER_PTR != nullptr)
+                {
+                    oa << * CHARACTER_PTR;
+                }
+            }
         }
         catch (const std::exception & E)
         {
             ss.str("");
-            ss << "game::state::GameStateFactory::Save() while trying to serialize/save game file \"" << nextFilePathObj.string() << "\", threw std::exception(\"" << E.what() << "\".";
+            ss << "game::state::GameStateFactory::Save() while trying to serialize/save"
+                << " game file \"" << nextFilePathObj.string()
+                << "\", threw std::exception(\"" << E.what() << "\".";
+
             M_HP_LOG(ss.str());
             throw std::runtime_error(ss.str());
         }
         catch (...)
         {
             ss.str("");
-            ss << "game::state::GameStateFactory::Save() while trying to serialize/save game file \"" << nextFilePathObj.string() << "\", threw an UNKNOWN exception.";
+            ss << "game::state::GameStateFactory::Save() while trying to serialize/save"
+                << " game file \"" << nextFilePathObj.string()
+                << "\", threw an UNKNOWN exception.";
+
             M_HP_LOG(ss.str());
             throw std::runtime_error(ss.str());
         }

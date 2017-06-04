@@ -113,7 +113,7 @@ namespace combat
         SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
         nameCharSizeCurr_          (NAME_CHAR_SIZE_ORIG_),
         battlefieldRect_           (),
-        boxSPtr_                   (),
+        boxUPtr_                   (),
         bgTexture_                 (),
         offScreenTexture_          (),
         offScreenSprite_           (),
@@ -136,6 +136,7 @@ namespace combat
         isStatusMessageAnim_       (false),
         isSummaryViewInProgress_   (false),
         combatNodeToGuiEntityMap_  (),
+        combatAnimationPtr_        (nullptr),
         nodePosTrackerMap_         (),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
@@ -150,20 +151,28 @@ namespace combat
     void CombatDisplay::Setup()
     {
         //create CombatNodes and add them into the combateTree_
-        const player::CharacterSVec_t PLAYER_CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : PLAYER_CHAR_SVEC)
+        auto const PLAYER_CHAR_PVEC( game::Game::Instance()->State().Party().Characters() );
+        for (auto const NEXT_CHARACTER_PTR : PLAYER_CHAR_PVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
+                std::make_shared<combat::CombatNode>(NEXT_CHARACTER_PTR,
+                                                     creature::NameInfo::Instance()->DefaultFont(),
+                                                     nameCharSizeCurr_) );
+
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
         }
         InitialPlayerPartyCombatTreeSetup();
         //
-        const non_player::CharacterSVec_t NONPLAYER_CHAR_SVEC(Encounter::Instance()->NonPlayerParty()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : NONPLAYER_CHAR_SVEC)
+        auto const NONPLAYER_CHAR_PVEC( Encounter::Instance()->NonPlayerParty().Characters() );
+        for (auto const NEXT_CHARACTER_PTR : NONPLAYER_CHAR_PVEC)
         {
-            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(std::make_shared<combat::CombatNode>(NEXT_CHARACTER_SPTR, creature::NameInfo::Instance()->DefaultFont(), nameCharSizeCurr_));
+            const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
+                std::make_shared<combat::CombatNode>(NEXT_CHARACTER_PTR,
+                                                     creature::NameInfo::Instance()->DefaultFont(),
+                                                     nameCharSizeCurr_) );
+
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
             combatTree_.AddVertex(COMBAT_NODE_SPTR);
@@ -178,7 +187,7 @@ namespace combat
 
         //battlefield bounding box
         const sfml_util::gui::box::Info BOX_INFO(true, battlefieldRect_, sfml_util::gui::ColorSet(sf::Color::White, sf::Color::Transparent));
-        boxSPtr_.reset( new sfml_util::gui::box::Box("CombatDisplay's'", BOX_INFO) );
+        boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatDisplay's'", BOX_INFO);
 
         //load background texture
         sfml_util::LoadImageOrTexture<sf::Texture>(bgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkpaper"));
@@ -209,7 +218,7 @@ namespace combat
     void CombatDisplay::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(offScreenSprite_, STATES);
-        target.draw( * boxSPtr_, STATES);
+        target.draw( * boxUPtr_, STATES);
         Stage::Draw(target, STATES);
         summaryViewUPtr_->Draw(target, STATES);
     }
@@ -227,10 +236,13 @@ namespace combat
             (combatNodePtr->GetEntityWillDraw() == true) &&
             (false == isMouseHeldDownInBF_) &&
             isPlayerTurn_ &&
-            (false == GetIsStatusMessageAnimating()))
+            (GetIsStatusMessageAnimating() == false))
         {
             //stop shaking a creature image if mouse-over will start transitioning to summary view
-            CombatAnimation::Instance()->ShakeAnimTemporaryStop(combatNodePtr->Creature());
+            M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+                "game::combat::CombatDisplay::SetMouseHover() found combatAnimationPtr_ "
+                << "to be null.");
+            combatAnimationPtr_->ShakeAnimTemporaryStop(combatNodePtr->Creature());
 
             summaryViewUPtr_->SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
@@ -334,11 +346,15 @@ namespace combat
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
 
-            auto const COMBAT_NODE_CLICKED_ON_PTR{ combatTree_.GetNode(MOUSE_POS_V.x, MOUSE_POS_V.y) };
+            auto const COMBAT_NODE_CLICKED_ON_PTR{
+                combatTree_.GetNode(MOUSE_POS_V.x, MOUSE_POS_V.y) };
+
             if (COMBAT_NODE_CLICKED_ON_PTR == nullptr)
             {
                 if (battlefieldRect_.contains(MOUSE_POS_V))
+                {
                     isMouseHeldDownInBF_ = true;
+                }
             }
         }
 
@@ -346,7 +362,8 @@ namespace combat
     }
 
 
-    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(
+        const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {
@@ -385,16 +402,24 @@ namespace combat
             else
             {
                 if (NEXT_REGION.left < posHorizMin)
+                {
                     posHorizMin = NEXT_REGION.left;
+                }
 
                 if ((NEXT_REGION.left + NEXT_REGION.width) > posHorizMax)
+                {
                     posHorizMax = NEXT_REGION.left + NEXT_REGION.width;
+                }
 
                 if (NEXT_REGION.top < posVertMin)
+                {
                     posVertMin = NEXT_REGION.top;
+                }
 
                 if ((NEXT_REGION.top + NEXT_REGION.height) > posVertMax)
+                {
                     posVertMax = NEXT_REGION.top + NEXT_REGION.height;
+                }
             }
         }
 
@@ -954,7 +979,9 @@ namespace combat
 
     void CombatDisplay::HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "game::combat::CombatDisplay::HandleFlyingChange(nullptr, is_flying=" << std::boolalpha << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
+            "game::combat::CombatDisplay::HandleFlyingChange(nullptr, is_flying=" << std::boolalpha
+            << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
         combatTree_.GetNode(CREATURE_CPTRC)->IsFlying(IS_FLYING);
     }
 
@@ -964,7 +991,10 @@ namespace combat
         UpdateHealthTasks();
 
         //stop all creature image shaking
-        CombatAnimation::Instance()->ShakeAnimStop(nullptr);
+        M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+            "game::combat::CombatDisplay::HandleEndOfTurnTasks() found combatAnimationPtr_ "
+            << "to be null.");
+        combatAnimationPtr_->ShakeAnimStop(nullptr);
     }
 
 
@@ -975,18 +1005,26 @@ namespace combat
         combatTree_.GetCombatNodes(combatNodesPVec);
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
+        {
             nextCombatNodePtrC->HealthChangeTasks();
+        }
     }
 
 
     bool CombatDisplay::IsCreatureVisible(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr), "game::combat::CombatDisplay::IsCreatureVisible(nullptr) was given a CREATURE_CPTRC that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
+            "game::combat::CombatDisplay::IsCreatureVisible(nullptr) was given a CREATURE_CPTR"
+            << " that was null.");
 
         if (CREATURE_CPTRC == nullptr)
+        {
             return false;
+        }
         else
+        {
             return combatTree_.GetNode(CREATURE_CPTRC)->GetEntityWillDraw();
+        }
     }
 
 
@@ -1094,12 +1132,12 @@ namespace combat
         else
         {
             //place player characters in the blocking order saved in blockingMap_
-            const player::CharacterSVec_t CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-            for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+            auto const CHAR_PVEC( game::Game::Instance()->State().Party().Characters() );
+            for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
             {
-                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_SPTR->UniqueTraits());
+                const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(NEXT_CHARACTER_PTR->UniqueTraits());
                 const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
                 combatTree_.ConnectAllAtPosition(NEXT_POSITION, combat::EdgeType::ShoulderToShoulder);
             }
@@ -1107,12 +1145,12 @@ namespace combat
 
         //whatever blocking order pattern, leave the disabled characters farthest behind
         const int DISABLED_CREATURES_POSITION(position - 1);
-        const player::CharacterSVec_t CHAR_SVEC(game::Game::Instance()->State()->Party()->Characters());
-        for (auto const & NEXT_CHARACTER_SPTR : CHAR_SVEC)
+        auto const CHAR_PVEC( game::Game::Instance()->State().Party().Characters() );
+        for (auto const NEXT_CHARACTER_PTR : CHAR_PVEC)
         {
-            if (NEXT_CHARACTER_SPTR->CanTakeAction() == false)
+            if (NEXT_CHARACTER_PTR->CanTakeAction() == false)
             {
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_SPTR.get()));
+                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
             }
         }
@@ -1187,11 +1225,18 @@ namespace combat
         {
             CreatureToneDown(1.0f - summaryViewUPtr_->GetTransitionStatus());
 
-            if ((CombatAnimation::Instance()->ShakeAnimCreatureCPtr() != nullptr) &&
-                (summaryViewUPtr_->GetTransitionStatus() > 0.99))
+            if (summaryViewUPtr_->GetTransitionStatus() > 0.98)
             {
-                CombatAnimation::Instance()->ShakeAnimRestart();
                 SetIsSummaryViewInProgress(false);
+
+                M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
+                    "game::combat::CombatDisplay::UpdateTime() found combatAnimationPtr_ "
+                    << "to be null.");
+
+                if (combatAnimationPtr_->ShakeAnimCreatureCPtr() != nullptr)
+                {
+                    combatAnimationPtr_->ShakeAnimRestart();
+                }
             }
         }
     }
@@ -1216,12 +1261,19 @@ namespace combat
 
     const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr), "game::combat::CombatDisplay::GetNodeTitle(nullptr) was given a COMBAT_NODE_PTR that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((COMBAT_NODE_PTR != nullptr),
+            "game::combat::CombatDisplay::GetNodeTitle(nullptr) was given a COMBAT_NODE_PTR"
+            << " that was null.");
 
-        if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
-            return COMBAT_NODE_PTR->Creature()->Name();
+        auto creaturePtr{ COMBAT_NODE_PTR->Creature() };
+        if (creaturePtr->IsPlayerCharacter())
+        {
+            return creaturePtr->Name();
+        }
         else
-            return COMBAT_NODE_PTR->Creature()->Name() + " " + COMBAT_NODE_PTR->Creature()->Role().Name();
+        {
+            return creaturePtr->Name() + " " + creaturePtr->Role().Name();
+        }
     }
 
 

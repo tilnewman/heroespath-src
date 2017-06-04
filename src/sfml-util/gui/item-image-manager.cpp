@@ -44,6 +44,7 @@
 
 #include <exception>
 #include <sstream>
+#include <vector>
 
 
 namespace sfml_util
@@ -95,7 +96,8 @@ namespace gui
 
     void ItemImageManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::ItemImageManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::gui::ItemImageManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
@@ -106,7 +108,8 @@ namespace gui
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  Starting tests...");
+            game::LoopManager::Instance()->TestingStrAppend(
+                "sfml_util::gui::ItemImageManager::Test()  Starting tests...");
         }
 
         auto iimPtr{ ItemImageManager::Instance() };
@@ -118,11 +121,14 @@ namespace gui
         if (axeIndex < static_cast<int>(game::item::weapon::axe_type::Count))
         {
             auto const ENUM{ static_cast<game::item::weapon::axe_type::Enum>(axeIndex) };
-            auto const STR { boost::algorithm::to_lower_copy(game::item::weapon::axe_type::ToString(ENUM)) };
+
+            auto const STR { boost::algorithm::to_lower_copy(
+                game::item::weapon::axe_type::ToString(ENUM)) };
+
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Axe, STR);
             wi.axe = ENUM;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++axeIndex;
@@ -135,7 +141,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Bite, "bite");
             wi.is_bite = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBite = true;
@@ -145,12 +151,16 @@ namespace gui
         static auto bladedStaffIndex{ 0 };
         if (bladedStaffIndex < static_cast<int>(game::item::weapon::bladedstaff_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::bladedstaff_type::Enum>(bladedStaffIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::bladedstaff_type::ToString(ENUM)) };
+            auto const ENUM{ static_cast<game::item::weapon::bladedstaff_type::Enum>(
+                bladedStaffIndex) };
+
+            auto const STR{ boost::algorithm::to_lower_copy(
+                game::item::weapon::bladedstaff_type::ToString(ENUM)) };
+
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::BladedStaff, STR);
             wi.bladedstaff = ENUM;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bladedStaffIndex;
@@ -163,7 +173,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Breath, "breath");
             wi.is_breath = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBreath = true;
@@ -176,7 +186,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Claws, "claws");
             wi.is_claws = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedClaws = true;
@@ -187,11 +197,14 @@ namespace gui
         if (clubIndex < static_cast<int>(game::item::weapon::club_type::Count))
         {
             auto const ENUM{ static_cast<game::item::weapon::club_type::Enum>(clubIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::club_type::ToString(ENUM)) };
+
+            auto const STR{ boost::algorithm::to_lower_copy(
+                game::item::weapon::club_type::ToString(ENUM)) };
+
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Club, STR);
             wi.club = ENUM;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++clubIndex;
@@ -204,7 +217,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Fists, "fists");
             wi.is_fists = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedFists = true;
@@ -217,7 +230,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "knife");
             wi.is_knife = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedKnife = true;
@@ -230,7 +243,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "dagger");
             wi.is_dagger = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedDagger = true;
@@ -241,11 +254,14 @@ namespace gui
         if (projIndex < static_cast<int>(game::item::weapon::projectile_type::Count))
         {
             auto const ENUM{ static_cast<game::item::weapon::projectile_type::Enum>(projIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::projectile_type::ToString(ENUM)) };
+
+            auto const STR{ boost::algorithm::to_lower_copy(
+                game::item::weapon::projectile_type::ToString(ENUM)) };
+
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Projectile, STR);
             wi.projectile = ENUM;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++projIndex;
@@ -258,7 +274,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "staff");
             wi.is_staff = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedStaff = true;
@@ -271,7 +287,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "quarterstaff");
             wi.is_quarterstaff = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedQStaff = true;
@@ -282,11 +298,14 @@ namespace gui
         if (swordIndex < static_cast<int>(game::item::weapon::sword_type::Count))
         {
             auto const ENUM{ static_cast<game::item::weapon::sword_type::Enum>(swordIndex) };
-            auto const STR{ boost::algorithm::to_lower_copy(game::item::weapon::sword_type::ToString(ENUM)) };
+
+            auto const STR{ boost::algorithm::to_lower_copy(
+                game::item::weapon::sword_type::ToString(ENUM)) };
+
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Sword, STR);
             wi.sword = ENUM;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++swordIndex;
@@ -299,7 +318,7 @@ namespace gui
             game::item::weapon::WeaponInfo wi(game::item::weapon_type::Tendrils, "tendrils");
             wi.is_tendrils = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedTendrils = true;
@@ -314,7 +333,7 @@ namespace gui
             ai.base = static_cast<game::item::armor::base_type::Enum>(aventailIndex);
             ai.is_aventail = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++aventailIndex;
@@ -328,7 +347,7 @@ namespace gui
             ai.base = static_cast<game::item::armor::base_type::Enum>(bootsIndex);
             ai.is_boots = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bootsIndex;
@@ -342,7 +361,7 @@ namespace gui
             ai.base = static_cast<game::item::armor::base_type::Enum>(bracerIndex);
             ai.is_bracer = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bracerIndex;
@@ -355,7 +374,7 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Covering);
             ai.cover = static_cast<game::item::armor::cover_type::Enum>(coverIndex);
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++coverIndex;
@@ -368,7 +387,7 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Helm);
             ai.helm = static_cast<game::item::armor::helm_type::Enum>(helmIndex);
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++helmIndex;
@@ -382,7 +401,7 @@ namespace gui
             ai.base = static_cast<game::item::armor::base_type::Enum>(pantIndex);
             ai.is_pants = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++pantIndex;
@@ -395,7 +414,7 @@ namespace gui
             game::item::armor::ArmorInfo ai(game::item::armor_type::Sheild);
             ai.shield = static_cast<game::item::armor::shield_type::Enum>(shieldIndex);
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shieldIndex;
@@ -409,7 +428,7 @@ namespace gui
             ai.base = static_cast<game::item::armor::base_type::Enum>(shirtIndex);
             ai.is_shirt = true;
             sf::Texture texture;
-            iimPtr->Load(texture, iimPtr->GetImageFilename(ai, false, false));
+            iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shirtIndex;
@@ -417,36 +436,55 @@ namespace gui
         }
 
         //test misc items
-        auto const RAND_REPEAT_COUNT{ 501 };
         static auto miscIndex{ 1 };
-        static auto randIndex{ 0 };
+        static auto isJeweled{ false };
         if (miscIndex < static_cast<int>(game::item::misc_type::Count))
         {
             auto const ENUM{ static_cast<game::item::misc_type::Enum>(miscIndex) };
-            auto const FILENAME_NONRAND{ iimPtr->GetImageFilename(ENUM, false, false) };
-            M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_NONRAND.empty() == false), "sfml_util::gui::ItemImageManager::Test() (non-rand)  While testing misc items #" << miscIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
-            sf::Texture textureBase;
-            iimPtr->Load(textureBase, FILENAME_NONRAND);
+            auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
+            auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled);
 
-            if (randIndex < RAND_REPEAT_COUNT)
+            M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
+                "sfml_util::gui::ItemImageManager::Test() While testing misc item #" << miscIndex
+                << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha << isJeweled
+                << ", GetImageFilenames() returned an empty vector.");
+
+            static std::size_t fileIndex{ 0 };
+            if (fileIndex < FILENAMES_VEC.size())
             {
-                auto const FILENAME_RAND{ iimPtr->GetImageFilename(ENUM, false, true) };
-                M_ASSERT_OR_LOGANDTHROW_SS((FILENAME_RAND.empty() == false),     "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc items #" << randIndex << " \"" << game::item::misc_type::ToString(ENUM) << "\", GetImageFilename() returned an empty string.");
-                sf::Texture textureRand;
-                iimPtr->Load(textureRand, FILENAME_RAND);
-                game::LoopManager::Instance()->TestingImageSet(textureRand);
+                auto const NEXT_FILENAME{ FILENAMES_VEC[fileIndex] };
 
-                auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
+                M_ASSERT_OR_LOGANDTHROW_SS((NEXT_FILENAME.empty() == false),
+                    "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc item #"
+                    << miscIndex << " \"" << ENUM_STR << "\", filename #" << fileIndex
+                    << ", is_jeweled=" << std::boolalpha << isJeweled
+                    << ", found an empty filename string.");
 
                 std::ostringstream ss;
-                ss << "ItemImageManager Rand Test of " << ENUM_STR << "#";
+                ss << "ItemImageManager Test of " << ENUM_STR << " #" << fileIndex
+                    << ((isJeweled) ? "jeweled" : "not-jeweled" );
+
                 game::LoopManager::Instance()->TestingStrIncrement(ss.str());
 
-                ++randIndex;
+                sf::Texture texture;
+                iimPtr->Load(texture, NEXT_FILENAME);
+                game::LoopManager::Instance()->TestingImageSet(texture);
+
+                ++fileIndex;
                 return false;
             }
 
-            randIndex = 0;
+            if (false == isJeweled)
+            {
+                isJeweled = true;
+                return false;
+            }
+            else
+            {
+                isJeweled = false;
+            }
+
+            fileIndex = 0;
             ++miscIndex;
             return false;
         }
@@ -456,8 +494,12 @@ namespace gui
             static unsigned int categoryIndex{ 0 };
             if (categoryIndex <= game::item::category::Edible)
             {
-                auto const STR{ game::item::category::ToString(static_cast<game::item::category::Enum>(categoryIndex), false) };
-                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager category::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::category::ToString(
+                    static_cast<game::item::category::Enum>(categoryIndex), false) };
+
+                game::LoopManager::Instance()->TestingStrIncrement(
+                    "ItemImageManager category::ToString(\"" + STR + "\") Test.");
+
                 if (0 == categoryIndex)
                 {
                     categoryIndex = 1;
@@ -472,8 +514,12 @@ namespace gui
             static unsigned int weaponTypeIndex{ 0 };
             if (weaponTypeIndex <= game::item::weapon_type::Breath)
             {
-                auto const STR{ game::item::weapon_type::ToString(static_cast<game::item::weapon_type::Enum>(weaponTypeIndex), false) };
-                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::weapon_type::ToString(
+                    static_cast<game::item::weapon_type::Enum>(weaponTypeIndex), false) };
+
+                game::LoopManager::Instance()->TestingStrIncrement(
+                    "ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
+
                 if (0 == weaponTypeIndex)
                 {
                     weaponTypeIndex = 1;
@@ -488,8 +534,12 @@ namespace gui
             static unsigned int armorTypeIndex{ 0 };
             if (armorTypeIndex <= game::item::armor_type::Skin)
             {
-                auto const STR{ game::item::armor_type::ToString(static_cast<game::item::armor_type::Enum>(armorTypeIndex), false) };
-                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::item::armor_type::ToString(
+                    static_cast<game::item::armor_type::Enum>(armorTypeIndex), false) };
+
+                game::LoopManager::Instance()->TestingStrIncrement(
+                    "ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
+
                 if (0 == armorTypeIndex)
                 {
                     armorTypeIndex = 1;
@@ -504,8 +554,14 @@ namespace gui
             static unsigned int collecterTypeIndex{ 0 };
             if (collecterTypeIndex <= game::non_player::ownership::collector_type::Hoarder)
             {
-                auto const STR{ game::non_player::ownership::collector_type::ToString(static_cast<game::non_player::ownership::collector_type::Enum>(collecterTypeIndex)) };
-                game::LoopManager::Instance()->TestingStrIncrement("ItemImageManager non_player::ownership::collector_type::ToString(\"" + STR + "\") Test.");
+                auto const STR{ game::non_player::ownership::collector_type::ToString(
+                    static_cast<game::non_player::ownership::collector_type::Enum>(
+                        collecterTypeIndex)) };
+
+                game::LoopManager::Instance()->TestingStrIncrement(
+                    "ItemImageManager non_player::ownership::collector_type::ToString(\"" +
+                    STR + "\") Test.");
+
                 if (0 == collecterTypeIndex)
                 {
                     collecterTypeIndex = 1;
@@ -518,7 +574,8 @@ namespace gui
             }
         }
 
-        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::ItemImageManager::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend(
+            "sfml_util::gui::ItemImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -532,7 +589,9 @@ namespace gui
     void ItemImageManager::Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const
     {
         namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(IMAGE_FILE_NAME)));
+        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) /
+            bfs::path(IMAGE_FILE_NAME)));
+
         sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
     }
 
@@ -548,22 +607,49 @@ namespace gui
                                 const bool                        IS_JEWELED,
                                 const bool                        WILL_RANDOMIZE) const
     {
-        Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE) );
+        Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE));
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const game::item::ItemPtr_t ITEM_PTR,
-                                                         const bool                  WILL_RANDOMIZE) const
+    const std::string ItemImageManager::GetImageFilename(
+        const game::item::misc_type::Enum ITEM_ENUM,
+        const bool                        IS_JEWELED,
+        const bool                        WILL_RANDOMIZE) const
+    {
+        auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM, IS_JEWELED));
+
+        M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
+            "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
+            << game::item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled="
+            << std::boolalpha << IS_JEWELED << ", will_rand=" << WILL_RANDOMIZE
+            << ") unable to get any filenames for those settings.");
+
+        if (WILL_RANDOMIZE)
+        {
+            return FILENAMES_VEC[
+                static_cast<std::size_t>(misc::random::Int(0,
+                    static_cast<int>(FILENAMES_VEC.size()) - 1))];
+        }
+        else
+        {
+            return FILENAMES_VEC[0];
+        }
+    }
+
+
+    const std::string ItemImageManager::GetImageFilename(
+        const game::item::ItemPtr_t ITEM_PTR,
+        const bool                  WILL_RANDOMIZE) const
     {
         using namespace game::item;
 
         if (ITEM_PTR->IsWeapon() && (ITEM_PTR->Weapon_Info().type != weapon_type::NotAWeapon))
         {
-            return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled());
         }
         else if (ITEM_PTR->IsArmor() && (ITEM_PTR->Armor_Info().type != armor_type::NotArmor))
         {
-            return GetImageFilename(ITEM_PTR->Armor_Info(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->Armor_Info());
         }
         else if (ITEM_PTR->MiscType() != misc_type::NotMisc)
         {
@@ -572,10 +658,11 @@ namespace gui
         else
         {
             std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(item->Name()=" << ITEM_PTR->Name()
-                << ", item->Category=" << category::ToString(ITEM_PTR->Category(), false) << ", desc=\""
-                <<  ITEM_PTR->Desc() << "\") failed to be categorized.  (IsWeapon=" << std::boolalpha
-                << ITEM_PTR->IsWeapon() << ", WeaponInfo.type="
+            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(item->Name()="
+                << ITEM_PTR->Name() << ", item->Category="
+                << category::ToString(ITEM_PTR->Category(), false) << ", desc=\""
+                <<  ITEM_PTR->Desc() << "\") failed to be categorized.  (IsWeapon="
+                << std::boolalpha << ITEM_PTR->IsWeapon() << ", WeaponInfo.type="
                 << weapon_type::ToString(ITEM_PTR->Weapon_Info().type, false) << ", IsArmor="
                 << std::boolalpha << ITEM_PTR->IsArmor() << ", ArmorInfo.type="
                 << armor_type::ToString(ITEM_PTR->Armor_Info().type, false) << ", MiscType()="
@@ -586,113 +673,172 @@ namespace gui
     }
 
 
-    const std::string ItemImageManager::GetImageFilename(const game::item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED, const bool) const
+    const std::string ItemImageManager::GetImageFilename(
+        const game::item::weapon::WeaponInfo & WEAPON_INFO,
+        const bool                             IS_JEWELED) const
     {
         using namespace game::item;
 
-        if ((WEAPON_INFO.type & weapon_type::Sword) != 0)
+        if (WEAPON_INFO.type & weapon_type::Sword)
+        {
             return weapon::sword_type::ToString(WEAPON_INFO.sword) + FILE_EXT_STR_;
+        }
 
-        if ((WEAPON_INFO.type & weapon_type::Axe) != 0)
+        if (WEAPON_INFO.type & weapon_type::Axe)
+        {
             return weapon::axe_type::ToString(WEAPON_INFO.axe) + FILE_EXT_STR_;
+        }
 
-        if ((WEAPON_INFO.type & weapon_type::Club) != 0)
+        if (WEAPON_INFO.type & weapon_type::Club)
+        {
             return weapon::club_type::ToString(WEAPON_INFO.club) + FILE_EXT_STR_;
+        }
 
-        if ((WEAPON_INFO.type & weapon_type::Whip) != 0)
+        if (WEAPON_INFO.type & weapon_type::Whip)
+        {
             return weapon::whip_type::ToString(WEAPON_INFO.whip) + FILE_EXT_STR_;
+        }
 
-        if ((WEAPON_INFO.type & weapon_type::Projectile) != 0)
+        if (WEAPON_INFO.type & weapon_type::Projectile)
+        {
             return weapon::projectile_type::ToString(WEAPON_INFO.projectile) + FILE_EXT_STR_;
+        }
 
-        if ((WEAPON_INFO.type & weapon_type::BladedStaff) != 0)
+        if (WEAPON_INFO.type & weapon_type::BladedStaff)
+        {
             return weapon::bladedstaff_type::ToString(WEAPON_INFO.bladedstaff) + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_bite)
+        {
             return "bite" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_breath)
+        {
             return "breath" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_claws)
+        {
             return "claws" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_dagger)
+        {
             return "dagger" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_fists)
+        {
             return "fists" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_knife)
+        {
             return "knife" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_quarterstaff)
+        {
             return "quarter-staff" + FILE_EXT_STR_;
+        }
 
         if (WEAPON_INFO.is_staff)
         {
             if (IS_JEWELED)
+            {
                 return "staff-special-2" + FILE_EXT_STR_;
+            }
             else
+            {
                 return "staff-plain" + FILE_EXT_STR_;
+            }
         }
 
         if (WEAPON_INFO.is_tendrils)
-            return "tendrils" + FILE_EXT_STR_;
-
-        std::ostringstream ss;
-        ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type=" << weapon_type::ToString(WEAPON_INFO.type, false) << ") failed to resolve a filename.";
-        throw std::runtime_error(ss.str());
-    }
-
-
-    const std::string ItemImageManager::GetImageFilename(const game::item::armor::ArmorInfo & ARMOR_INFO, const bool, const bool) const
-    {
-        using namespace game::item;
-
-        if ((ARMOR_INFO.type & armor_type::Aventail) != 0)
-            return "aventail" + FILE_EXT_STR_;
-
-        if ((ARMOR_INFO.type & armor_type::Boots) != 0)
-            return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
-
-        if (((ARMOR_INFO.type & armor_type::Bracer) != 0) || (ARMOR_INFO.is_bracer))
-            return "bracer" + FILE_EXT_STR_;
-
-        if ((ARMOR_INFO.type & armor_type::Covering) != 0)
-            return armor::cover_type::ToString(ARMOR_INFO.cover) + FILE_EXT_STR_;
-
-        if (((ARMOR_INFO.type & armor_type::Gauntlets) != 0) || (ARMOR_INFO.is_gauntlets))
         {
-            if (ARMOR_INFO.base == armor::base_type::Plain)
-                return "gloves" + FILE_EXT_STR_;
-            else
-                return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+            return "tendrils" + FILE_EXT_STR_;
         }
 
-        if ((ARMOR_INFO.type & armor_type::Helm) != 0)
-            return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + FILE_EXT_STR_;
-
-        if (((ARMOR_INFO.type & armor_type::Pants) != 0) || (ARMOR_INFO.is_pants))
-            return "pants" + FILE_EXT_STR_;
-
-        if ((ARMOR_INFO.type & armor_type::Sheild) != 0)
-            return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + FILE_EXT_STR_;
-
-        if (((ARMOR_INFO.type & armor_type::Shirt) != 0) || (ARMOR_INFO.is_shirt))
-            return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
-
         std::ostringstream ss;
-        ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type=" << armor_type::ToString(ARMOR_INFO.type, false) << ") failed to resolve a filename.";
+        ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type="
+            << weapon_type::ToString(WEAPON_INFO.type, false) << ") failed to resolve a filename.";
         throw std::runtime_error(ss.str());
     }
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::misc_type::Enum ITEM_ENUM,
-        const bool                        IS_JEWELED, 
-        const bool                        WILL_RANDOMIZE) const
+        const game::item::armor::ArmorInfo & ARMOR_INFO) const
     {
+        using namespace game::item;
+
+        if (ARMOR_INFO.type & armor_type::Aventail)
+        {
+            return "aventail" + FILE_EXT_STR_;
+        }
+
+        if (ARMOR_INFO.type & armor_type::Boots)
+        {
+            return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+        }
+
+        if ((ARMOR_INFO.type & armor_type::Bracer) || (ARMOR_INFO.is_bracer))
+        {
+            return "bracer" + FILE_EXT_STR_;
+        }
+
+        if (ARMOR_INFO.type & armor_type::Covering)
+        {
+            return armor::cover_type::ToString(ARMOR_INFO.cover) + FILE_EXT_STR_;
+        }
+
+        if ((ARMOR_INFO.type & armor_type::Gauntlets) || (ARMOR_INFO.is_gauntlets))
+        {
+            if (ARMOR_INFO.base == armor::base_type::Plain)
+            {
+                return "gloves" + FILE_EXT_STR_;
+            }
+            else
+            {
+                return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+            }
+        }
+
+        if (ARMOR_INFO.type & armor_type::Helm)
+        {
+            return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + FILE_EXT_STR_;
+        }
+
+        if ((ARMOR_INFO.type & armor_type::Pants) || (ARMOR_INFO.is_pants))
+        {
+            return "pants" + FILE_EXT_STR_;
+        }
+
+        if (ARMOR_INFO.type & armor_type::Sheild)
+        {
+            return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + FILE_EXT_STR_;
+        }
+
+        if ((ARMOR_INFO.type & armor_type::Shirt) || (ARMOR_INFO.is_shirt))
+        {
+            return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+        }
+
+        std::ostringstream ss;
+        ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type="
+            << armor_type::ToString(ARMOR_INFO.type, false) << ") failed to resolve a filename.";
+
+        throw std::runtime_error(ss.str());
+    }
+
+
+    const std::vector<std::string> ItemImageManager::GetImageFilenames(
+        const game::item::misc_type::Enum ITEM_ENUM,
+        const bool                        IS_JEWELED) const
+    {
+        std::vector<std::string> filenames;
+
         switch (ITEM_ENUM)
         {
             case game::item::misc_type::Charm:
@@ -700,299 +846,292 @@ namespace gui
             case game::item::misc_type::Pendant:
             case game::item::misc_type::Medallion:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 23; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "amulet-" << misc::random::Int(1, 23) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "amulet-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "amulet-20" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Necklas:
             {
-                return "necklas-1" + FILE_EXT_STR_;
+                filenames.push_back("necklas-1" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Bag:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 8; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "bag-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "bag-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "bag-2" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Tome:
             case game::item::misc_type::Book:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 5; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "book-" << misc::random::Int(1, 5) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "book-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "book-2" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Cape:
             {
-                return "cape" + FILE_EXT_STR_;
+                filenames.push_back("cape" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Cloak:
             {
-                return "cloak" + FILE_EXT_STR_;
+                filenames.push_back("cloak" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Robe:
             {
-                return "robe" + FILE_EXT_STR_;
+                filenames.push_back("robe" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Crown:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 12; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "crown-" << misc::random::Int(1, 12) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "crown-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "crown-5" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Doll:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 16; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "doll-" << misc::random::Int(1, 16) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "doll-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "doll-1" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Drink:
             case game::item::misc_type::Potion:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 30; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "potion-" << misc::random::Int(1, 30) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "potion-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                    return "potion-13" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Goblet:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 8; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "goblet-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "goblet-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "goblet-5" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Herbs:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 34; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "herb-" << misc::random::Int(1, 34) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "herb-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                    return "herb-26" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Hourglass:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 3; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "hourglass-" << misc::random::Int(1, 3) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "hourglass-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "hourglass-1" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Key:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 11; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "key-" << misc::random::Int(1, 11) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "key-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "key-2" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Lantern:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 18; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "lantern-" << misc::random::Int(1, 18) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "lantern-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "lantern-10" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Torch:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 5; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "torch-" << misc::random::Int(1, 5) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "torch-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                    return "torch-1" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Lockbox:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 8; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "lockbox-" << misc::random::Int(1, 8) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "lockbox-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "lockbox-2" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Chest:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 14; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "chest-" << misc::random::Int(1, 14) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "chest-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "chest-4" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::LockPicks:
             {
-                return "lockpicks" + FILE_EXT_STR_;
+                filenames.push_back("lockpicks" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Mask:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 6; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "mask-" << misc::random::Int(1, 6) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "mask-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "mask-3" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Mirror:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 10; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "mirror-" << misc::random::Int(1, 10) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "mirror-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "mirror-7" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Lute:
             {
-                return "lute" + FILE_EXT_STR_;
+                filenames.push_back("lute" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Panflute:
             {
-                return "panflute" + FILE_EXT_STR_;
+                filenames.push_back("panflute" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Flute:
             {
-                return "flute" + FILE_EXT_STR_;
+                filenames.push_back("flute" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Sitar:
             {
-                return "sitar" + FILE_EXT_STR_;
+                filenames.push_back("sitar" + FILE_EXT_STR_);
+                return filenames;
             }
             case game::item::misc_type::Scroll:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 13; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "scroll-" << misc::random::Int(1, 13) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "scroll-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "scroll-6" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Orb:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 13; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "orb-" << misc::random::Int(1, 13) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "orb-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "orb-4" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Ring:
-            {
-                if (WILL_RANDOMIZE)
+            {   
+                if (IS_JEWELED)
                 {
-                    std::ostringstream ss;
-                    if (IS_JEWELED)
-                        ss << "ring-jeweled-" << misc::random::Int(1, 14) << FILE_EXT_STR_;
-                    else
-                        ss << "ring-plain-" << misc::random::Int(1, 2) << FILE_EXT_STR_;
-                    return ss.str();
+                    for (auto i(1); i <= 14; ++i)
+                    {
+                        std::ostringstream ss;
+                        ss << "ring-jeweled-" << i << FILE_EXT_STR_;
+                        filenames.push_back(ss.str());
+                    }
                 }
                 else
                 {
-                    if (IS_JEWELED)
-                        return "ring-jeweled-4" + FILE_EXT_STR_;
-                    else
-                        return "ring-plain-2" + FILE_EXT_STR_;
+                    for (auto i(1); i <= 2; ++i)
+                    {
+                        std::ostringstream ss;
+                        ss << "ring-plain-" << i << FILE_EXT_STR_;
+                        filenames.push_back(ss.str());
+                    }
                 }
+                return filenames;
             }
             case game::item::misc_type::Skull:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 11; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "skull-" << misc::random::Int(1, 11) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "skull-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "skull-3" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Shard:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 7; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "shard-" << misc::random::Int(1, 7) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "shard-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "shard-1" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Salve:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 9; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "mortar-" << misc::random::Int(1, 9) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "mortar-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "mortar-3" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::Wand:
             {
-                if (WILL_RANDOMIZE)
+                for (auto i(1); i <= 9; ++i)
                 {
                     std::ostringstream ss;
-                    ss << "wand-" << misc::random::Int(1, 9) << FILE_EXT_STR_;
-                    return ss.str();
+                    ss << "wand-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
                 }
-                else
-                    return "wand-7" + FILE_EXT_STR_;
+                return filenames;
             }
             case game::item::misc_type::NotMisc:
             case game::item::misc_type::Count:

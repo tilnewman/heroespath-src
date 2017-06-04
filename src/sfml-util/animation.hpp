@@ -53,7 +53,12 @@ namespace sfml_util
                                const unsigned int    FRAME_WIDTH,
                                const unsigned int    FRAME_HEIGHT,
                                const float           TIME_BETWEEN_FRAMES,
-                               const std::size_t     FRAME_COUNT          = 0,//zero here means each texture region big enough for a frame contains a frame, and frameCount_ will be set in the constructor
+
+                               //zero here means each texture region big enough for a frame
+                               //contains a frame, and frameCount_ will be set in the
+                               //constructor
+                               const std::size_t     FRAME_COUNT          = 0,
+                               
                                const sf::BlendMode & BLEND_MODE           = sf::BlendAlpha,
                                const float           SCALE_HORIZ          = 1.0f,
                                const float           SCALE_VERT           = 1.0f,
@@ -81,16 +86,29 @@ namespace sfml_util
         inline std::size_t CurrentFrame() const             { return currentFrame_; }
         inline std::size_t FrameCount() const               { return rects_.size(); }
 
-        virtual void MovePosition(const float HORIZ, const float VERT);
-        virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
+        virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
         inline float TimeBetweenFrames() const              { return timeBetweenFrames_; }
         inline void TimeBetweenFramesSet(const float TBF)   { timeBetweenFrames_ = TBF; }
         inline void TimeBetweenFramesAdj(const float ADJ)   { timeBetweenFrames_ += ADJ; }
 
-        inline const sf::Color Color() const                { return color_; }
-        inline void Color(const sf::Color & NEW_COLOR)      { color_ = NEW_COLOR; }
+        inline void ColorTransition(const sf::Color & FROM,
+                                    const sf::Color & TO)
+        {
+            colorFrom_ = FROM;
+            colorTo_ = TO;
+        }
 
+        inline void SetTargetSize(const sf::Vector2f & SIZE_V)
+        {
+            entityRegion_ = sf::FloatRect(entityRegion_.left,
+                                          entityRegion_.top,
+                                          SIZE_V.x,
+                                          SIZE_V.y);
+        }
+
+        inline bool IsFinished() const { return isFinished_; }
+    
     protected:
         const unsigned int FRAME_WIDTH_;
         const unsigned int FRAME_HEIGHT_;
@@ -105,11 +123,17 @@ namespace sfml_util
         sf::Sprite               sprite_;
         sf::Texture              texture_;
         std::vector<sf::IntRect> rects_;//the size of this vector acts as a total frame count.
-        std::size_t              currentFrame_;//counts up to 'total frame count' then restarts at zero
+        std::size_t              currentFrame_;//counts up to total then restarts at zero
         float                    frameTimerSec_;
-        sf::Color                color_;
+        sf::Color                colorFrom_;
+        sf::Color                colorTo_;
+        float                    origSizeHoriz_;
+        float                    origSizeVert_;
+        bool                     isFinished_;
     };
 
+    using SingleTextureAnimationUPtr_t = std::unique_ptr<SingleTextureAnimation>;
+    using SingleTextureAnimationUVec_t = std::vector<SingleTextureAnimationUPtr_t>;
     using SingleTextureAnimationSPtr_t = std::shared_ptr<SingleTextureAnimation>;
     using SingleTextureAnimationSVec_t = std::vector<SingleTextureAnimationSPtr_t>;
 
@@ -151,26 +175,45 @@ namespace sfml_util
         inline std::size_t CurrentFrame() const             { return currentFrame_; }
         inline std::size_t FrameCount() const               { return textureVec_.size(); }
 
-        virtual void MovePosition(const float HORIZ, const float VERT);
-        virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
-
+        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+        
         inline float TimeBetweenFrames() const              { return timeBetweenFrames_; }
         inline void TimeBetweenFramesSet(const float TBF)   { timeBetweenFrames_ = TBF; }
         inline void TimeBetweenFramesAdj(const float ADJ)   { timeBetweenFrames_ += ADJ; }
 
-        inline const sf::Color Color() const                { return color_; }
-        inline void Color(const sf::Color & NEW_COLOR)      { color_ = NEW_COLOR; }
+        inline void ColorTransition(const sf::Color & FROM,
+                                    const sf::Color & TO)
+        {
+            colorFrom_ = FROM;
+            colorTo_ = TO;
+        }
+
+        inline void SetTargetSize(const sf::Vector2f & SIZE_V)
+        {
+            entityRegion_ = sf::FloatRect(entityRegion_.left,
+                                          entityRegion_.top,
+                                          SIZE_V.x,
+                                          SIZE_V.y);
+        }
+
+        inline bool IsFinished() const { return isFinished_; }
 
     protected:
         const sf::BlendMode BLEND_MODE_;
         float               timeBetweenFrames_;
         sf::Sprite          sprite_;
         TextureVec_t        textureVec_;//the size of this vec acts as a total frame count
-        std::size_t         currentFrame_;//counts up to 'total frame count' then restarts at zero
+        std::size_t         currentFrame_;//counts up to total then restarts at zero
         float               frameTimerSec_;
-        sf::Color           color_;
+        sf::Color           colorFrom_;
+        sf::Color           colorTo_;
+        float               origSizeHoriz_;
+        float               origSizeVert_;
+        bool                isFinished_;
     };
 
+    using MultiTextureAnimationUPtr_t = std::unique_ptr<MultiTextureAnimation>;
+    using MultiTextureAnimationUVec_t = std::vector<MultiTextureAnimationUPtr_t>;
     using MultiTextureAnimationSPtr_t = std::shared_ptr<MultiTextureAnimation>;
     using MultiTextureAnimationSVec_t = std::vector<MultiTextureAnimationSPtr_t>;
 

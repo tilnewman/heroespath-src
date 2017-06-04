@@ -71,7 +71,6 @@ namespace logbase
         CONSOLE_ECHO_PRIORITY_  (consoleEchoPri),
         fileNum_                (0),
         fileStream_             (),
-        fileAccessMutex_        (),
         isDestructing_          (false)
     {
         OpenNextFile();
@@ -156,7 +155,8 @@ namespace logbase
     {
         ostringstream fileNameStream;
         AppendFileName(fileNameStream);
-        boostfs::path FULL_PATH( boostfs::system_complete(boostfs::path(FILE_PATH_ / fileNameStream.str()) ) );
+        boostfs::path FULL_PATH( boostfs::system_complete(boostfs::path(FILE_PATH_ /
+            fileNameStream.str()) ) );
         return FULL_PATH.string();
     }
 
@@ -214,12 +214,13 @@ namespace logbase
     }
 
 
-    void LogBase::FlushWrapper( const std::string &             MSG,
-                                const appbase::LogPri::Enum &   PRI,
-                                const std::string &             FILE,
-                                const int                       LINE)
+    void LogBase::FlushWrapper(const std::string &             MSG,
+                               const appbase::LogPri::Enum &   PRI,
+                               const std::string &             FILE,
+                               const int                       LINE)
     {
-        boost::recursive_mutex::scoped_lock lock(fileAccessMutex_);
+        //This project turned out to be single-threaded so there is no need for this
+        //boost::recursive_mutex::scoped_lock lock(fileAccessMutex_);
 
         //handle file rotation, if it is limited, and we are over the limit
         if (static_cast<unsigned long>(fileStream_.tellp()) >= FILE_SIZE_LIMIT_BYTES_)
@@ -237,10 +238,10 @@ namespace logbase
     }
 
 
-    void LogBase::FlushActual(  const std::string &         MSG,
-                                const appbase::LogPri::Enum PRI,
-                                const std::string &         FILE,
-                                const int                   LINE)
+    void LogBase::FlushActual(const std::string &         MSG,
+                              const appbase::LogPri::Enum PRI,
+                              const std::string &         FILE,
+                              const int                   LINE)
     {
         AppendPriority(fileStream_, PRI);
         fileStream_ << "  ";
@@ -293,10 +294,12 @@ namespace logbase
         AppendFileName(fileNameStream);
 
         //boost path object for that file
-        const boostfs::path FULL_PATH( boostfs::system_complete(boostfs::path(FILE_PATH_ / fileNameStream.str()) ) );
+        const boostfs::path FULL_PATH( boostfs::system_complete(boostfs::path(FILE_PATH_ /
+            fileNameStream.str()) ) );
 
         //open the file
-        //NOTE:  Since there are always multiple log files used in rotation, there is no need to append.
+        //NOTE:  Since there are always multiple log files used in rotation, 
+        //       there is no need to append.
         //       Everytime we switch to a new file, the entire file gets erased.
         //       (enforced by the std::ios::out flag)
         fileStream_.open(FULL_PATH.string().c_str(), std::ios::out);
@@ -353,7 +356,8 @@ namespace logbase
 
     void LogBase::AppendDate(ostream & stream) const
     {
-        auto const DATE_INFO{ boost::posix_time::microsec_clock::universal_time().date().year_month_day() };
+        auto const DATE_INFO{
+            boost::posix_time::microsec_clock::universal_time().date().year_month_day() };
 
         stream  << std::setfill('0')
                 << DATE_INFO.year
@@ -366,7 +370,8 @@ namespace logbase
 
     void LogBase::AppendTime(ostream & stream) const
     {
-        auto const TIME_OF_DAY_DURATION{ boost::posix_time::microsec_clock::local_time().time_of_day() };
+        auto const TIME_OF_DAY_DURATION{
+            boost::posix_time::microsec_clock::local_time().time_of_day() };
 
         stream << std::setfill('0')
                << std::setw(2) << TIME_OF_DAY_DURATION.hours() << ":"
@@ -443,7 +448,8 @@ namespace logbase
             ostringstream s2;
             if (WAS_SIZE_EXCEEDED)
             {
-                s2 << "This log file is ending after exceeding the size limit of " << GetFileSizeLimitBytes() << "bytes.";
+                s2 << "This log file is ending after exceeding the size limit of " <<
+                    GetFileSizeLimitBytes() << "bytes.";
             }
             else
             {

@@ -38,7 +38,8 @@ namespace game
     namespace state
     {
         class GameState;
-        using GameStateSPtr_t = std::shared_ptr<GameState>;
+        using GameStatePtr_t = GameState *;
+        using GameStateUPtr_t = std::unique_ptr<GameState>;
     }
 
 
@@ -61,12 +62,12 @@ namespace game
         static void Acquire();
         static void Release();
 
-        inline state::GameStateSPtr_t State() const             { return stateSPtr_; }
-        inline void StateSet(const state::GameStateSPtr_t & GS) { stateSPtr_ = GS; }
+        state::GameState & State() const;
+        void StateStore(const state::GameStatePtr_t);
 
     private:
         static std::unique_ptr<Game> instanceUPtr_;
-        state::GameStateSPtr_t stateSPtr_;
+        state::GameStateUPtr_t stateUPtr_;
     };
 
 }

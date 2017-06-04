@@ -106,10 +106,6 @@ namespace gui
         //use guiImage_.upSprite_ as first state sprite, and guiImage_.downSprite for the second state.
     };
 
-
-    using TwoStateEntitySPtr_t = std::shared_ptr<TwoStateEntity>;
-    using TwoStateEntitySVec_t = std::vector<TwoStateEntitySPtr_t>;
-
 }
 }
 

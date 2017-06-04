@@ -149,16 +149,17 @@ namespace stage
                                                    creditsRegion,
                                                    MEDIA_POS_ADJUSTMENT));
 
-            singleTextureAnimSPtr_.reset( new sfml_util::SingleTextureAnimation("Credit_",
-                                                                                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
-                                                                                POS_V.x,
-                                                                                POS_V.y,
-                                                                                ANIM_FRAME_SIZE_HORIZ,
-                                                                                ANIM_FRAME_SIZE_VERT,
-                                                                                ANIM_FRAME_TIME_SEC,
-                                                                                ANIM_FRAME_COUNT) );
+            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
+                "Credit_",
+                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
+                POS_V.x,
+                POS_V.y,
+                ANIM_FRAME_SIZE_HORIZ,
+                ANIM_FRAME_SIZE_VERT,
+                ANIM_FRAME_TIME_SEC,
+                ANIM_FRAME_COUNT);
 
-            singleTextureAnimSPtr_->MovePosition((singleTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
+            singleTextureAnimSPtr_->MoveEntityPos((singleTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
 
             creditsRegion.top += singleTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
         }
@@ -168,15 +169,16 @@ namespace stage
                                                    creditsRegion,
                                                    MEDIA_POS_ADJUSTMENT));
 
-            multiTextureAnimSPtr_.reset( new sfml_util::MultiTextureAnimation("Credit_" + TITLE,
-                                                                              GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
-                                                                              POS_V.x,
-                                                                              POS_V.y,
-                                                                              ANIM_FRAME_TIME_SEC,
-                                                                              MEDIA_SCALE,
-                                                                              MEDIA_SCALE) );
+            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
+                "Credit_" + TITLE,
+                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
+                POS_V.x,
+                POS_V.y,
+                ANIM_FRAME_TIME_SEC,
+                MEDIA_SCALE,
+                MEDIA_SCALE);
 
-            multiTextureAnimSPtr_->MovePosition((multiTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
+            multiTextureAnimSPtr_->MoveEntityPos((multiTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
 
             creditsRegion.top += multiTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
         }
@@ -187,8 +189,8 @@ namespace stage
                                                        sf::Color(255, 255, 255, 200),
                                                        sfml_util::Justified::Center);
 
-        titleTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
-            "CreditTitle_" + TITLE, TEXT_INFO_TITLE, creditsRegion));
+        titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CreditTitle_" + TITLE, TEXT_INFO_TITLE, creditsRegion);
 
         if (TITLE != " ")
         {
@@ -278,12 +280,12 @@ namespace stage
 
         if (multiTextureAnimSPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+            multiTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
         if (singleTextureAnimSPtr_.get() != nullptr)
         {
-            singleTextureAnimSPtr_->MovePosition(ADJ_HORIZ, ADJ_VERT);
+            singleTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
     }
 

@@ -61,11 +61,17 @@ namespace sfml_util
 
     bool operator==(const Resolution & L, const Resolution & R);
 
-    bool operator!=(const Resolution & L, const Resolution & R);
+    inline bool operator!=(const Resolution & L, const Resolution & R)
+    {
+        return ! (L == R);
+    }
 
     bool operator==(const Resolution & R, const sf::VideoMode & V);
 
-    bool operator!=(const Resolution & R, const sf::VideoMode & V);
+    inline bool operator!=(const Resolution & R, const sf::VideoMode & V)
+    {
+        return ! (R == V);
+    }
 
 
 }

@@ -149,7 +149,8 @@ namespace item
             }
         }
 
-        M_HP_LOG_ERR("game::item::ItemWarehouse::Free((" << itemPtr << ")" << itemPtr->Name() << ") item not found in the warehouse.");
+        M_HP_LOG_ERR("game::item::ItemWarehouse::Free((" << itemPtr << ")"
+            << itemPtr->Name() << ") item not found in the warehouse.");
     }
 
 }

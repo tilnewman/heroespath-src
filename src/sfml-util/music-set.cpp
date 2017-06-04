@@ -28,7 +28,9 @@
 // music-set.cpp
 //
 #include "music-set.hpp"
+
 #include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 
 namespace sfml_util
@@ -88,7 +90,9 @@ namespace sfml_util
     music::Enum MusicSet::PickNextSong()
     {
         if (false == willLoop_)
+        {
             return music::None;
+        }
 
         if (whichVec_.size() == 1)
         {
@@ -98,7 +102,8 @@ namespace sfml_util
         {
             if (willRandomize_)
             {
-                //populate a vector of songs that does not include the currently (or just finished) playing
+                //populate a vector of songs that does not include the currently
+                //(or just finished) playing
                 MusicEnumVec_t possibleVec;
                 for (auto const & NEXT_MUSIC_ENUM : whichVec_)
                 {
@@ -116,7 +121,8 @@ namespace sfml_util
                 }
                 else
                 {
-                    return possibleVec[static_cast<std::size_t>(misc::random::Int(0, static_cast<int>(NUM_POSSIBLE_SONGS) - 1))];
+                    return possibleVec[static_cast<std::size_t>(misc::random::Int(0,
+                        static_cast<int>(NUM_POSSIBLE_SONGS) - 1))];
                 }
             }
             else
@@ -128,9 +134,13 @@ namespace sfml_util
                     if (whichVec_[i] == currentlyPlaying_)
                     {
                         if ((NUM_SONGS - 1) == i)
+                        {
                             return whichVec_[0];
+                        }
                         else
+                        {
                             return whichVec_[i + 1];
+                        }
                     }
                 }
 
@@ -144,10 +154,35 @@ namespace sfml_util
     bool MusicSet::Contains(const music::Enum ENUM_TO_FIND)
     {
         for (auto const & NEXT_MUSIC_ENUM : whichVec_)
+        {
             if (NEXT_MUSIC_ENUM == ENUM_TO_FIND)
+            {
                 return true;
+            }
+        }
 
         return false;
+    }
+
+
+    bool operator==(const MusicSet & L, const MusicSet & R)
+    {
+        if (misc::Vector::OrderlessCompareEqual(L.whichVec_, R.whichVec_) == false)
+        {
+            return false;
+        }
+
+        return (std::tie(L.currentlyPlaying_,
+                         L.previouslyPlaying_,
+                         L.willRandomize_,
+                         L.fadeInMult_,
+                         L.volume_)
+            ==
+            std::tie(R.currentlyPlaying_,
+                     R.previouslyPlaying_,
+                     R.willRandomize_,
+                     R.fadeInMult_,
+                     R.volume_));
     }
 
 }

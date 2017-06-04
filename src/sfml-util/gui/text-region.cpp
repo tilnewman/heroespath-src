@@ -53,8 +53,8 @@ namespace gui
     :
         GuiEntity          (std::string(NAME).append("_TextRegion"), 0.0f, 0.0f),
         boxInfo_           (),
-        boxSPtr_           (),
-        sliderBarSPtr_     (),
+        boxUPtr_           (),
+        sliderBarUPtr_     (),
         stagePtr_          (nullptr),
         text_              (""),
         renderedText_      (),
@@ -76,8 +76,8 @@ namespace gui
     :
         GuiEntity          (std::string(NAME).append("_TextRegion"), REGION),
         boxInfo_           (),
-        boxSPtr_           (),
-        sliderBarSPtr_     (),
+        boxUPtr_           (),
+        sliderBarUPtr_     (),
         stagePtr_          (nullptr),
         text_              (""),
         renderedText_      (),
@@ -106,8 +106,8 @@ namespace gui
     :
         GuiEntity          (std::string(NAME).append("_TextRegion"), REGION),
         boxInfo_           (),
-        boxSPtr_           (),
-        sliderBarSPtr_     (),
+        boxUPtr_           (),
+        sliderBarUPtr_     (),
         stagePtr_          (stagePtr),
         text_              (""),
         renderedText_      (),
@@ -132,14 +132,14 @@ namespace gui
     {
         if (stagePtr_ != nullptr)
         {
-            if (sliderBarSPtr_.get() != nullptr)
+            if (sliderBarUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(sliderBarSPtr_.get());
+                stagePtr_->EntityRemove(sliderBarUPtr_.get());
             }
 
-            if (boxSPtr_.get() != nullptr)
+            if (boxUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(boxSPtr_.get());
+                stagePtr_->EntityRemove(boxUPtr_.get());
             }
         }
     }
@@ -169,8 +169,13 @@ namespace gui
                            const Margins &       MARGINS,
                            const bool            WILL_ALLOW_SCROLLBAR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()), GetEntityName() << " TextRegion::Setup() was given a TEXT_INFO.up.text string that was empty.");
-        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.fontPtr != nullptr), GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),
+            GetEntityName() << " TextRegion::Setup() was given a TEXT_INFO.up.text string"
+            << " that was empty.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.fontPtr != nullptr),
+            GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a"
+            << " null font pointer.");
 
         regionOrig_ = REGION;
         textInfoOrig_ = TEXT_INFO;
@@ -184,17 +189,13 @@ namespace gui
         text_ = TEXT_INFO.text;
         stagePtr_ = stagePtrParam;
 
-        sfml_util::gui::SliderBarSPtr_t newSliderBarSPtr;
-        text_render::RenderToArea(GetEntityName(),
-                                  TEXT_INFO,
-                                  newSliderBarSPtr,
-                                  renderedText_,
-                                  REGION,
-                                  SMALLER_FONT_SIZE,
-                                  MARGINS,
-                                  WILL_ALLOW_SCROLLBAR);
-
-        HandleSliderBar(newSliderBarSPtr);
+        HandleSliderBar( text_render::RenderToArea(GetEntityName(),
+                                                   TEXT_INFO,
+                                                   renderedText_,
+                                                   REGION,
+                                                   SMALLER_FONT_SIZE,
+                                                   MARGINS,
+                                                   WILL_ALLOW_SCROLLBAR) );
 
         //position the text for on-screen coordinates
         const std::size_t NUM_LINES(renderedText_.vec_vec.size());
@@ -221,23 +222,27 @@ namespace gui
     }
 
 
-    void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarSPtr_t & newSliderBarSPtr)
+    void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr)
     {
         if (stagePtr_ != nullptr)
         {
-            if (sliderBarSPtr_.get() != nullptr)
+            if (sliderBarUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(sliderBarSPtr_.get());
-                sliderBarSPtr_.reset();
+                stagePtr_->EntityRemove(sliderBarUPtr_.get());
+                sliderBarUPtr_.reset();
             }
 
-            if (newSliderBarSPtr.get() != nullptr)
+            if (newSliderBarPtr != nullptr)
             {
-                sliderBarSPtr_ = newSliderBarSPtr;
-                sliderBarSPtr_->SetOnChangeHandler(this);
-                sliderBarSPtr_->SetCurrentValue(0.0f);
-                stagePtr_->EntityAdd(sliderBarSPtr_.get());
+                sliderBarUPtr_.reset(newSliderBarPtr);
+                sliderBarUPtr_->SetOnChangeHandler(this);
+                sliderBarUPtr_->SetCurrentValue(0.0f);
+                stagePtr_->EntityAdd(sliderBarUPtr_.get());
             }
+        }
+        else
+        {
+            delete newSliderBarPtr;
         }
     }
 
@@ -254,29 +259,34 @@ namespace gui
 
             sf::FloatRect newRegion(entityRegion_);
 
-            const float FIRST_LINE_HEIGHT(static_cast<float>(renderedText_.vec_vec[0][0].sf_text.getCharacterSize()));
+            const float FIRST_LINE_HEIGHT(static_cast<float>(
+                renderedText_.vec_vec[0][0].sf_text.getCharacterSize()));
+
             newRegion.top = entityRegion_.top - FIRST_LINE_HEIGHT;
             newRegion.height = entityRegion_.height + FIRST_LINE_HEIGHT;
 
-            if (sliderBarSPtr_.get() != nullptr)
+            if (sliderBarUPtr_.get() != nullptr)
             {
-                sliderBarSPtr_->MoveEntityPos(25.0f, 0.0f);
+                sliderBarUPtr_->MoveEntityPos(25.0f, 0.0f);
             }
 
             boxInfo_.SetBoxAndBackgroundRegion(newRegion);
 
-            if (boxSPtr_.get() != nullptr)
+            if (boxUPtr_.get() != nullptr)
             {
-                stagePtr_->EntityRemove(boxSPtr_.get());
+                stagePtr_->EntityRemove(boxUPtr_.get());
             }
 
-            boxSPtr_.reset( new box::Box("TextRegion's", boxInfo_) );
+            boxUPtr_ = std::make_unique<box::Box>("TextRegion's", boxInfo_);
 
-            //Q: Why add the box to Stage's entitySSet?  Why not keep it as a class member and draw it ourselves?  ztn 2016-10-8
-            //A: Because it is easier to let the Stage and its entitySSet_ handle all the mouse events that keep the focus and other features working.
-            //Q: So what to do when the stage draws the box AFTER and on top of the text, such as the box's gradient covering the text?
+            //Q: Why add the box to Stage's entitySSet?  Why not keep it as a class member
+            //   and draw it ourselves?  ztn 2016-10-8
+            //A: Because it is easier to let the Stage and its entityPSet_ handle all the
+            //   mouse events that keep the focus and other features working.
+            //Q: So what to do when the stage draws the box AFTER and on top of the text,
+            //   such as the box's gradient covering the text?
             //A: Have whatever stage owns this TextRegion draw this TextRegion last.
-            stagePtr_->EntityAdd(boxSPtr_.get());
+            stagePtr_->EntityAdd(boxUPtr_.get());
         }
     }
 
@@ -291,28 +301,41 @@ namespace gui
             for (std::size_t l(startLine_); l < NUM_LINES; ++l)
             {
                 if (renderedText_.vec_vec[l].empty())
+                {
                     continue;
+                }
 
                 //remove extra space created by newline characters
                 sf::Text t(renderedText_.vec_vec[l][0].sf_text);
-                t.setString( boost::algorithm::replace_all_copy(std::string(t.getString()), "\n", "") );
+                t.setString( boost::algorithm::replace_all_copy(
+                    std::string(t.getString()), "\n", "") );
 
                 //there should be no empty lines, instead choose a value that fits
                 if (std::string(t.getString()).empty())
                 {
                     t.setString("\n");
-                    posY += t.getGlobalBounds().height * 0.8f;//this magic number found by experiment
+
+                    //this magic number found by experiment
+                    posY += t.getGlobalBounds().height * 0.8f;
                 }
                 else
+                {
                     posY += t.getGlobalBounds().height;
+                }
 
-                const float SCROLL_PAD((sliderBarSPtr_.get() == nullptr) ? 0.0f : static_cast<float>(t.getCharacterSize()));
+                const float SCROLL_PAD((sliderBarUPtr_.get() == nullptr) ?
+                    0.0f : static_cast<float>(t.getCharacterSize()));
+
                 if (posY > (entityRegion_.height - SCROLL_PAD))
+                {
                     break;
+                }
 
                 const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+                {
                     target.draw(renderedText_.vec_vec[l][s].sf_text, states);
+                }
             }
 
             //sfml_util::DrawRectangle(target, states, entityRegion_, sf::Color::Red);
@@ -329,14 +352,20 @@ namespace gui
         {
             const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
                 renderedText_.vec_vec[l][s].sf_text.move(HORIZ, VERT);
+            }
         }
 
-        if (boxSPtr_.get() != nullptr)
-            boxSPtr_->MoveEntityPos(HORIZ, VERT);
+        if (boxUPtr_.get() != nullptr)
+        {
+            boxUPtr_->MoveEntityPos(HORIZ, VERT);
+        }
 
-        if (sliderBarSPtr_.get() != nullptr)
-            sliderBarSPtr_->MoveEntityPos(HORIZ, VERT);
+        if (sliderBarUPtr_.get() != nullptr)
+        {
+            sliderBarUPtr_->MoveEntityPos(HORIZ, VERT);
+        }
     }
 
 
@@ -350,13 +379,15 @@ namespace gui
 
     bool TextRegion::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if (nullptr != sliderBarSPtr_.get())
+        if (sliderBarUPtr_.get() != nullptr)
         {
             EstablishWhichLinesToDraw(PACKAGE.PTR_->GetCurrentValue());
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -367,10 +398,14 @@ namespace gui
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
             //adjust vertical positions
-            sfml_util::text_render::TextSnippetVec_t nextSnippetVec(TEXT_REGION.renderedText_.vec_vec[l]);
+            sfml_util::text_render::TextSnippetVec_t nextSnippetVec(
+                TEXT_REGION.renderedText_.vec_vec[l]);
+
             const std::size_t NUM_SNIPPETS(nextSnippetVec.size());
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
                 nextSnippetVec[s].sf_text.move(0.0f, renderedText_.total_height);
+            }
 
             renderedText_.vec_vec.push_back(nextSnippetVec);
         }
@@ -380,16 +415,13 @@ namespace gui
 
         //adjust longest line if needed
         if (renderedText_.longest_line < TEXT_REGION.renderedText_.longest_line)
+        {
             renderedText_.longest_line = TEXT_REGION.renderedText_.longest_line;
+        }
 
-        //
-        sfml_util::gui::SliderBarSPtr_t newSliderBarSPtr;
-        text_render::ApplyToArea(GetEntityName(),
-                                 newSliderBarSPtr,
-                                 renderedText_,
-                                 GetEntityRegion());
-
-        HandleSliderBar(newSliderBarSPtr);
+        HandleSliderBar( text_render::ApplyToArea(GetEntityName(),
+                                                  renderedText_,
+                                                  GetEntityRegion()) );
 
         //establish the new region
         const sf::FloatRect OUTLINE_RECT(entityRegion_.left,
@@ -410,11 +442,15 @@ namespace gui
         {
             const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
                 sfml_util::SetTextColor(renderedText_.vec_vec[l][s].sf_text, entityFgColor_);
+            }
         }
 
-        if (boxSPtr_.get() != nullptr)
-            boxSPtr_->SetEntityColors(entityColorSet_);
+        if (boxUPtr_.get() != nullptr)
+        {
+            boxUPtr_->SetEntityColors(entityColorSet_);
+        }
     }
 
 
@@ -441,16 +477,23 @@ namespace gui
     void TextRegion::EstablishWhichLinesToDraw(const float SCROLL_RATIO, const float REGION_HEIGHT)
     {
         if ((renderedText_.vec_vec.empty()) || (renderedText_.vec_vec[0].empty()))
+        {
             return;
+        }
 
         //establish how far down the user has scrolled
-        const float SCROLL_POS(SCROLL_RATIO * (renderedText_.total_height - (REGION_HEIGHT * 0.8f)));
-        const float FIRST_LINE_HEIGHT( static_cast<float>(renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) );
+        const float SCROLL_POS(SCROLL_RATIO * (
+            renderedText_.total_height - (REGION_HEIGHT * 0.8f)));
+
+        const float FIRST_LINE_HEIGHT( static_cast<float>(
+            renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) );
 
         //establish which line to start drawing
         float startPosY(SCROLL_POS / FIRST_LINE_HEIGHT);
         if (startPosY < 0.0f)
+        {
             startPosY = 0.0f;
+        }
 
         startLine_ = static_cast<std::size_t>(startPosY);
 
@@ -461,8 +504,9 @@ namespace gui
             const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
             {
-                renderedText_.vec_vec[l][s].sf_text.setPosition(renderedText_.vec_vec[l][s].sf_text.getPosition().x,
-                                                                (entityRegion_.top + (static_cast<float>(l) * FIRST_LINE_HEIGHT)) - SCROLL_POS);
+                renderedText_.vec_vec[l][s].sf_text.setPosition(
+                    renderedText_.vec_vec[l][s].sf_text.getPosition().x,
+                    (entityRegion_.top + (static_cast<float>(l) * FIRST_LINE_HEIGHT)) -SCROLL_POS);
             }
         }
     }

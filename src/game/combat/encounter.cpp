@@ -62,8 +62,8 @@ namespace combat
 
     Encounter::Encounter()
     :
-        enemyPartySPtr_    (),
-        deadEnemyPartySPtr_(std::make_shared<non_player::Party>()),
+        enemyPartyUPtr_    (),
+        deadEnemyPartyUPtr_(std::make_unique<non_player::Party>()),
         roundCounter_      (0),
         hasStarted_        (false),
         turnOverPVec_      (),
@@ -108,24 +108,60 @@ namespace combat
 
     void Encounter::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::combat::Encounter::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::combat::Encounter::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
+    }
+
+
+    non_player::Party & Encounter::NonPlayerParty()
+    {
+        if (enemyPartyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::combat::Encounter::NonPlayerParty() called when ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * enemyPartyUPtr_;
+        }
+    }
+
+
+    non_player::Party & Encounter::DeadNonPlayerParty()
+    {
+        if (deadEnemyPartyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::combat::Encounter::DeadNonPlayerParty() called when ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * deadEnemyPartyUPtr_;
+        }
     }
 
 
     void Encounter::Setup_First()
     {
-        enemyPartySPtr_ = PartyFactory::Instance()->MakeParty_FirstEncounter();
+        enemyPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
     }
 
 
     const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t P) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((P != nullptr), "game::combat::Encounter::GetTurnInfoCopy() was given a nullptr creature::CreaturePtr_t.");
+        M_ASSERT_OR_LOGANDTHROW_SS((P != nullptr),
+            "game::combat::Encounter::GetTurnInfoCopy() was given a nullptr"
+            << " creature::CreaturePtr_t.");
 
         auto const FOUND_ITER{ turnInfoMap_.find(P) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != turnInfoMap_.end()), "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << P->Name() << ") was not found in the turnInfoMap_.");
+        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != turnInfoMap_.end()),
+            "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << P->Name()
+            << ") was not found in the turnInfoMap_.");
 
         return FOUND_ITER->second;
     }
@@ -134,12 +170,14 @@ namespace combat
     void Encounter::StartTasks()
     {
         roundCounter_ = 0;
-        Game::Instance()->State()->World()->EncoundterCountInc();
+        Game::Instance()->State().World().EncoundterCountInc();
 
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
 
-        if (Game::Instance()->State()->IsNewGame())
+        if (Game::Instance()->State().IsNewGame())
+        {
             GenerateFirstEncounter();
+        }
 
         PopulateTurnInfoMap();
         SortAndSetTurnCreature();
@@ -151,7 +189,7 @@ namespace combat
     {
         turnOverPVec_.clear();
         turnInfoMap_.clear();
-        enemyPartySPtr_.reset();
+        enemyPartyUPtr_.reset();
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;
@@ -162,16 +200,18 @@ namespace combat
     {
         //make sure no TurnInfo objects refer to a killed creature
         for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
+        {
             nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
+        }
 
         //no need to remove from turnOverPVec_
 
         //no need to null out turnCreaturePtr_
 
         //move from the enemyParty to the deadEnemyParty for later loot collection
-        auto const KILLED_NONPLAYER_CHARACTER_SPTR{ enemyPartySPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-        enemyPartySPtr_->Remove(KILLED_NONPLAYER_CHARACTER_SPTR);
-        deadEnemyPartySPtr_->Add(KILLED_NONPLAYER_CHARACTER_SPTR);
+        auto killedCharacterPtr{ enemyPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+        enemyPartyUPtr_->Remove(killedCharacterPtr, false);
+        deadEnemyPartyUPtr_->Add(killedCharacterPtr, false);
     }
 
 
@@ -180,9 +220,12 @@ namespace combat
         ++roundCounter_;
 
         if (turnCreaturePtr_ != nullptr)
+        {
             turnOverPVec_.push_back(turnCreaturePtr_);
+        }
 
-        //re-sort by speed every turn because spells/conditions/etc could have changed creature speed during any given turn
+        //re-sort by speed every turn because spells/conditions/etc could have changed
+        //creature speed during any given turn
         SortAndSetTurnCreature();
     }
 
@@ -197,16 +240,20 @@ namespace combat
     {
         turnInfoMap_.clear();
 
-        for (auto const & NEXT_CHAR_SPTR : enemyPartySPtr_->Characters())
+        for (auto const NEXT_CHAR_PTR : enemyPartyUPtr_->Characters())
         {
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
-            turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(NEXT_CHAR_SPTR->Race().Which(), NEXT_CHAR_SPTR->Role().Which()).Make() );
-            turnInfoMap_[NEXT_CHAR_SPTR.get()] = turnInfo;
+            turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(
+                NEXT_CHAR_PTR->Race().Which(), NEXT_CHAR_PTR->Role().Which()).Make() );
+
+            turnInfoMap_[NEXT_CHAR_PTR] = turnInfo;
         }
 
-        for (auto const & NEXT_CHAR_SPTR : Game::Instance()->State()->Party()->Characters())
-            turnInfoMap_[NEXT_CHAR_SPTR.get()] = TurnInfo();
+        for (auto const NEXT_CHAR_PTR : Game::Instance()->State().Party().Characters())
+        {
+            turnInfoMap_[NEXT_CHAR_PTR] = TurnInfo();
+        }
     }
 
 
@@ -221,18 +268,29 @@ namespace combat
             turnOverPVec_.clear();
         }
 
-        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(misc::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
+        creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(
+            misc::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false), "game::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesThatHaveNotTakenTurnYetPVec.empty() == false),
+            "game::combat::Encounter::SortAndSetTurnCreature("
+            << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name())
+            << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 
         if (creaturesThatHaveNotTakenTurnYetPVec.size() > 1)
+        {
             std::sort(creaturesThatHaveNotTakenTurnYetPVec.begin(),
                       creaturesThatHaveNotTakenTurnYetPVec.end(),
-                      [](const creature::CreaturePtr_t A, const creature::CreaturePtr_t B) { return A->Stats().Spd().Current() > B->Stats().Spd().Current(); });
+                      []
+                      (const creature::CreaturePtr_t A, const creature::CreaturePtr_t B)
+                      { return A->Stats().Spd().Current() > B->Stats().Spd().Current(); });
+        }
 
         turnCreaturePtr_ = creaturesThatHaveNotTakenTurnYetPVec.at(0);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr), "game::combat::Encounter::SortAndSetTurnCreature(" << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name()) << ") resulted in a nullptr turnCreaturePtr_.");
+        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
+            "game::combat::Encounter::SortAndSetTurnCreature("
+            << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name())
+            << ") resulted in a nullptr turnCreaturePtr_.");
     }
 
 }

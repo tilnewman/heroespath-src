@@ -30,7 +30,6 @@
 #include "party-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "misc/real.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
@@ -41,6 +40,7 @@
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/state/game-state-factory.hpp"
 #include "game/loop-manager.hpp"
@@ -48,6 +48,9 @@
 #include "game/creature/name-info.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
+#include "game/player/character-warehouse.hpp"
+
+#include "misc/real.hpp"
 
 #include <sstream>
 #include <string>
@@ -72,23 +75,23 @@ namespace stage
     PartyStage::PartyStage()
     :
         Stage("Party"),
-        SCREEN_WIDTH_         (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_        (sfml_util::Display::Instance()->GetWinHeight()),
-        mainMenuTitle_        ("create_party_normal.png"),
-        backgroundImage_      ("media-images-backgrounds-tile-darkknot"),
-        backButtonSPtr_       ( new sfml_util::gui::FourStateButton("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
-        startButtonSPtr_      ( new sfml_util::gui::FourStateButton("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
-        deleteButtonSPtr_     ( new sfml_util::gui::FourStateButton("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
-        characterListBoxSPtr_ (),
-        partyListBoxSPtr_     (),
-        insTextRegionUPtr_    (),
-        upTextRegionUPtr_     (),
-        partyTextRegionUPtr_  (),
-        warningTextInfo_      (),
-        warningTextRegionUPtr_(),
-        warningTextSlider_    (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
-        ouroborosSPtr_        (),
-        bottomSymbol_         (),
+        SCREEN_WIDTH_           (sfml_util::Display::Instance()->GetWinWidth()),
+        SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
+        mainMenuTitle_          ("create_party_normal.png"),
+        backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
+        backButtonSPtr_         ( new sfml_util::gui::FourStateButton("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
+        startButtonSPtr_        ( new sfml_util::gui::FourStateButton("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
+        deleteButtonSPtr_       ( new sfml_util::gui::FourStateButton("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
+        characterListBoxSPtr_   (),
+        partyListBoxSPtr_       (),
+        insTextRegionUPtr_      (),
+        upTextRegionUPtr_       (),
+        partyTextRegionUPtr_    (),
+        warningTextInfo_        (),
+        warningTextRegionUPtr_  (),
+        warningTextSlider_      (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
+        ouroborosUPtr_          (),
+        bottomSymbol_           (),
         willDisplayCharacterCountWarningText_(false),
         willShowMouseOverPopup_ (true),
         mouseOverPopupTimerSec_ (0.0f),
@@ -97,17 +100,25 @@ namespace stage
         mouseOverBoxHeight_     (0.0f),
         mouseOverPosV_          (),
         mouseOverSprite_        (),
-        mouseOverCharSPtr_      (),
+        mouseOverCharPtr_       (),
         mouseOverTexture_       (),
         isMouseOverTexture_     (false),
         mouseOverTextRegionUPtr_(),
-        mouseOverSlider_        (4.0f)
+        mouseOverSlider_        (4.0f),
+        charactersPSet_         ()
     {}
 
 
     PartyStage::~PartyStage()
     {
         ClearAllEntities();
+
+        for (auto & nextCharacterPtr : charactersPSet_)
+        {
+            delete nextCharacterPtr;
+        }
+
+        charactersPSet_.clear();
     }
 
 
@@ -117,7 +128,9 @@ namespace stage
 
         //if this event was not triggered by a double-click then exit
         if (PACKAGE.gui_event != sfml_util::GuiEvent::DoubleClick)
+        {
             return false;
+        }
 
         //handle double-clicks by moving items from one ListBox to the other
 
@@ -172,17 +185,25 @@ namespace stage
         ResetMouseOverPopupState();
         willShowMouseOverPopup_ = true;
 
-        if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) && (PACKAGE.Response() == sfml_util::Response::Yes))
+        if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) &&
+            (PACKAGE.Response() == sfml_util::Response::Yes))
         {
-            sfml_util::gui::ListBoxItemSPtr_t selectedItemSPtr(GetSelectedItemSPtr());
+            auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
-            if (selectedItemSPtr.get() != nullptr)
+            if ((selectedItemSPtr.get() != nullptr) &&
+                (selectedItemSPtr->CHARACTER_CPTR != nullptr))
             {
-                if (state::GameStateFactory::Instance()->DeleteCharacter(selectedItemSPtr->character_sptr))
+                auto characterPtr{ selectedItemSPtr->CHARACTER_CPTR };
+
+                if (state::GameStateFactory::Instance()->DeleteCharacter(characterPtr) == false)
                 {
-                    characterListBoxSPtr_->Remove(selectedItemSPtr);
-                    partyListBoxSPtr_->Remove(selectedItemSPtr);
+                    M_HP_LOG_ERR("game::stage::PartyStage::HandleCallback(delete confirm popup)"
+                        << " unable to delete character \"" << characterPtr->Name() << "\" file.");
                 }
+                
+                characterListBoxSPtr_->Remove(selectedItemSPtr);
+                partyListBoxSPtr_->Remove(selectedItemSPtr);
+                //actual Character object will be free'd when the PartyStage object is destroyed
             }
         }
 
@@ -220,8 +241,11 @@ namespace stage
             const std::size_t NUM_CHARACTERS( partyListBoxSPtr_->GetCount() );
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
-                const creature::race::Enum NEXT_CHAR_RACE(partyListBoxSPtr_->At(i)->character_sptr->Race().Which());
-                if ((creature::race::Dragon == NEXT_CHAR_RACE) || (creature::race::Wolfen == NEXT_CHAR_RACE))
+                const creature::race::Enum NEXT_CHAR_RACE(
+                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Race().Which());
+
+                if ((creature::race::Dragon == NEXT_CHAR_RACE) ||
+                    (creature::race::Wolfen == NEXT_CHAR_RACE))
                 {
                     isAnyCharacterBeast = true;
                     break;
@@ -232,7 +256,9 @@ namespace stage
             bool isAnyCharacterBeastmaster(false);
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
-                const creature::role::Enum NEXT_CHAR_ROLE(partyListBoxSPtr_->At(i)->character_sptr->Role().Which());
+                const creature::role::Enum NEXT_CHAR_ROLE(
+                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Role().Which());
+
                 if (NEXT_CHAR_ROLE == creature::role::Beastmaster)
                 {
                     isAnyCharacterBeastmaster = true;
@@ -244,14 +270,19 @@ namespace stage
             if (isAnyCharacterBeast && (false == isAnyCharacterBeastmaster))
             {
                 std::ostringstream ss;
-                ss << "There are beast characters in your party, but no character with the role of Beastmaster.  To have Wolfens or Dragons in your party, you must also have a Beastmaster.";
-                const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
-                                                                                                     ss.str(),
-                                                                                                     sfml_util::PopupButtons::Okay,
-                                                                                                     sfml_util::PopupImage::RegularSidebar,
-                                                                                                     sfml_util::Justified::Left,
-                                                                                                     sfml_util::sound_effect::PromptWarn));
-                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                ss << "There are beast characters in your party, but no character with the role"
+                    << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
+                    << " have a Beastmaster.";
+
+                const PopupInfo POP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
+                    ss.str(),
+                    sfml_util::PopupButtons::Okay,
+                    sfml_util::PopupImage::RegularSidebar,
+                    sfml_util::Justified::Left,
+                    sfml_util::sound_effect::PromptWarn));
+
+                LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
                 return false;
             }
 
@@ -263,19 +294,23 @@ namespace stage
 
     bool PartyStage::HandleCallback_DeleteButton()
     {
-        player::CharacterSPtr_t selectedCharSPtr( GetSelectedCharacter() );
+        auto selectedCharPtr{ GetSelectedCharacter() };
 
-        if (selectedCharSPtr.get() == nullptr)
+        if (selectedCharPtr == nullptr)
+        {
             return false;
+        }
 
         std::ostringstream ss;
-        ss << "Delete " << selectedCharSPtr->Name() << "?  This cannot be undone.  Are you sure?";
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_STR_DELETE_CONFIRM_,
-                                                                                             ss.str(),
-                                                                                             sfml_util::PopupButtons::YesNo,
-                                                                                             sfml_util::PopupImage::Banner,
-                                                                                             sfml_util::Justified::Center,
-                                                                                             sfml_util::sound_effect::PromptWarn));
+        ss << "Delete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
+        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_STR_DELETE_CONFIRM_,
+            ss.str(),
+            sfml_util::PopupButtons::YesNo,
+            sfml_util::PopupImage::Banner,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::PromptWarn));
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         return true;
     }
@@ -284,8 +319,8 @@ namespace stage
     void PartyStage::Setup()
     {
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("PartyStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_.reset( new Ouroboros("PartyStage's") );
+        EntityAdd(ouroborosUPtr_.get());
 
         //back button
         backButtonSPtr_->SetScaleToRes();
@@ -321,7 +356,7 @@ namespace stage
         }
 
         //load all players not yet assigned to a party/started game
-        game::player::CharacterSSet_t charactersSSet( game::state::GameStateFactory::Instance()->LoadAllCompanions() );
+        charactersPSet_ = game::state::GameStateFactory::Instance()->LoadAllCompanions();
 
         //fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSLst_t itemSList;
@@ -333,18 +368,26 @@ namespace stage
 
         std::ostringstream ssCharText;
         std::ostringstream ssTitle;
-        for (auto const & NEXT_CHAR_SPTR : charactersSSet)
+        for (auto const NEXT_CHAR_PTR : charactersPSet_)
         {
             ssCharText.str("");
-            ssCharText << NEXT_CHAR_SPTR->Name() << "'s_CharacterListing";
+            ssCharText << NEXT_CHAR_PTR->Name() << "'s_CharacterListing";
 
             ssTitle.str("");
-            ssTitle << NEXT_CHAR_SPTR->Name() << ", " << NEXT_CHAR_SPTR->Race().Name();
-            if (NEXT_CHAR_SPTR->Race().Which() != creature::race::Wolfen)
-                ssTitle << ", " << NEXT_CHAR_SPTR->Role().Name();
+            ssTitle << NEXT_CHAR_PTR->Name() << ", " << NEXT_CHAR_PTR->Race().Name();
+
+            if (NEXT_CHAR_PTR->Race().Which() != creature::race::Wolfen)
+            {
+                ssTitle << ", " << NEXT_CHAR_PTR->Role().Name();
+            }
 
             textInfo.text = ssTitle.str();
-            sfml_util::gui::ListBoxItemSPtr_t nextCharTextSPtr( new sfml_util::gui::ListBoxItem(ssCharText.str(), textInfo, NEXT_CHAR_SPTR) );
+
+            auto nextCharTextSPtr = std::make_shared<sfml_util::gui::ListBoxItem>(
+                ssCharText.str(),
+                textInfo,
+                NEXT_CHAR_PTR);
+
             itemSList.push_back( nextCharTextSPtr );
         }
 
@@ -465,7 +508,7 @@ namespace stage
 
         if (willDisplayCharacterCountWarningText_)
         {
-            target.draw(*warningTextRegionUPtr_, STATES);
+            target.draw( * warningTextRegionUPtr_, STATES);
         }
 
         if (willShowMouseOverPopup_ && isMouseOverTexture_)
@@ -490,22 +533,26 @@ namespace stage
     sfml_util::gui::ListBoxItemSPtr_t PartyStage::GetSelectedItemSPtr() const
     {
         if (partyListBoxSPtr_->HasFocus())
+        {
             return partyListBoxSPtr_->GetSelected();
+        }
         else
+        {
             return characterListBoxSPtr_->GetSelected();
+        }
     }
 
 
-    player::CharacterSPtr_t PartyStage::GetSelectedCharacter() const
+    player::CharacterPtr_t PartyStage::GetSelectedCharacter() const
     {
-        sfml_util::gui::ListBoxItemSPtr_t itemSPtr(GetSelectedItemSPtr() );
-
-        player::CharacterSPtr_t cSPtr;
+        auto itemSPtr{ GetSelectedItemSPtr() };
 
         if (itemSPtr.get() != nullptr)
-            cSPtr = itemSPtr->character_sptr;
+        {
+            return itemSPtr->CHARACTER_CPTR;
+        }
 
-        return cSPtr;
+        return nullptr;
     }
 
 
@@ -527,22 +574,27 @@ namespace stage
         }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
-        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) && (false == isMouseOverTexture_))
+        if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) &&
+            (false == isMouseOverTexture_))
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
+            auto itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
 
             if (itemSPtr.get() == nullptr)
+            {
                 itemSPtr = partyListBoxSPtr_->GetItemAtLocation(mouseOverPosV_);
+            }
 
             if ((itemSPtr.get() != nullptr) &&
-                (itemSPtr->character_sptr.get() != nullptr) &&
-                (itemSPtr->character_sptr->ImageFilename().empty() == false))
+                (itemSPtr->CHARACTER_CPTR != nullptr) &&
+                (itemSPtr->CHARACTER_CPTR->ImageFilename().empty() == false))
             {
-                mouseOverCharSPtr_ = itemSPtr->character_sptr;
+                mouseOverCharPtr_ = itemSPtr->CHARACTER_CPTR;
 
                 mouseOverSlider_.Reset(MOUSE_OVER_SLIDER_SPEED_);
 
-                sfml_util::gui::CreatureImageManager::Instance()->GetImage(mouseOverTexture_, itemSPtr->character_sptr->ImageFilename());
+                sfml_util::gui::CreatureImageManager::Instance()->
+                    GetImage(mouseOverTexture_, itemSPtr->CHARACTER_CPTR->ImageFilename());
+
                 isMouseOverTexture_ = true;
                 mouseOverTexture_.setSmooth(true);
                 mouseOverSprite_.setTexture(mouseOverTexture_ );
@@ -583,17 +635,17 @@ namespace stage
             if (mouseOverSlider_.GetIsDone())
             {
                 std::ostringstream ss;
-                ss << "\"" << mouseOverCharSPtr_->Name() << "\"\n"
-                   << mouseOverCharSPtr_->SexName() << ", "
-                   << mouseOverCharSPtr_->Race().Name() << ", "
-                   << mouseOverCharSPtr_->Role().Name() << "\n"
-                   << "Created on " << mouseOverCharSPtr_->DateTimeCreated().date.ToString() << " at " << mouseOverCharSPtr_->DateTimeCreated().time.ToString() << "\n\n"
-                   << "Strength:        "      << mouseOverCharSPtr_->Stats().Str().Normal() << "\n"
-                   << "Accuracy:       "       << mouseOverCharSPtr_->Stats().Acc().Normal() << "\n"
-                   << "Charm:           "      << mouseOverCharSPtr_->Stats().Cha().Normal() << "\n"
-                   << "Luck:              "    << mouseOverCharSPtr_->Stats().Lck().Normal() << "\n"
-                   << "Speed:            "     << mouseOverCharSPtr_->Stats().Spd().Normal() << "\n"
-                   << "Intelligence:    "      << mouseOverCharSPtr_->Stats().Int().Normal();
+                ss << "\"" << mouseOverCharPtr_->Name() << "\"\n"
+                   << mouseOverCharPtr_->SexName() << ", "
+                   << mouseOverCharPtr_->Race().Name() << ", "
+                   << mouseOverCharPtr_->Role().Name() << "\n"
+                   << "Created on " << mouseOverCharPtr_->DateTimeCreated().date.ToString() << " at " << mouseOverCharPtr_->DateTimeCreated().time.ToString() << "\n\n"
+                   << "Strength:        "      << mouseOverCharPtr_->Stats().Str().Normal() << "\n"
+                   << "Accuracy:       "       << mouseOverCharPtr_->Stats().Acc().Normal() << "\n"
+                   << "Charm:           "      << mouseOverCharPtr_->Stats().Cha().Normal() << "\n"
+                   << "Luck:              "    << mouseOverCharPtr_->Stats().Lck().Normal() << "\n"
+                   << "Speed:            "     << mouseOverCharPtr_->Stats().Spd().Normal() << "\n"
+                   << "Intelligence:    "      << mouseOverCharPtr_->Stats().Int().Normal();
 
                 const sf::FloatRect TEXT_RECT(MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_ + mouseOverSprite_.getGlobalBounds().width + MOUSE_OVER_IMAGE_PAD_,
                                               MOUSE_OVER_POPUP_POS_TOP_ + (MOUSE_OVER_IMAGE_PAD_ * 2.0f),
@@ -623,24 +675,31 @@ namespace stage
     void PartyStage::StartNewGame()
     {
         //create a new party structure
-        player::CharacterSVec_t charSVec;
-        for (std::size_t i(0); i < player::Party::MAX_CHARACTER_COUNT_; ++i)
-            charSVec.push_back(partyListBoxSPtr_->At(i)->character_sptr);
-
-        player::PartySPtr_t partySPtr(new player::Party(charSVec));
-
-        //create a new GameState with the given party and then save it
-        state::GameStateFactory::Instance()->NewGame(partySPtr);
-
-        //remove the players from the un-played roster (delete from unplayed folder on disc)
-        for (std::size_t i(0); i < player::Party::MAX_CHARACTER_COUNT_; ++i)
+        player::CharacterPVec_t charPVec;
         {
-            const std::string NEXT_CHAR_NAME(partyListBoxSPtr_->At(i)->character_sptr->Name());
-            M_ASSERT_OR_LOGANDTHROW_SS(state::GameStateFactory::Instance()->DeleteCharacter(partyListBoxSPtr_->At(i)->character_sptr), "PartyStage::HandleCallback_StartButton() while trying to game::state::GameStateFactory::DeleteCharacter(\"" << NEXT_CHAR_NAME << "\") failed.");
+            for (std::size_t i(0); i < partyListBoxSPtr_->GetCount(); ++i)
+            {
+                auto characterPtr{ partyListBoxSPtr_->At(i)->CHARACTER_CPTR };
+                charPVec.push_back(characterPtr);
+                
+                charactersPSet_.erase(characterPtr);
+
+                if (state::GameStateFactory::Instance()->
+                    DeleteCharacter(characterPtr) == false)
+                {
+                    M_HP_LOG_ERR("PartyStage::HandleCallback_StartButton() while trying to game::state::"
+                        << "GameStateFactory::DeleteCharacter(\"" << characterPtr->Name()
+                        << "\") failed.");
+                }
+            }
         }
 
-        //Don't bother clearing the party ListBox because it flashes the "not engouh characters" text,
-        //and since we are immediately transitioning to the Camp Stage anyway.
+        //create a new GameState with the given party and then save it
+        state::GameStateFactory::Instance()->NewGame( new player::Party(charPVec) );
+
+        //Don't bother clearing the party ListBox because it flashes the
+        //"not engouh characters" text, and since we are immediately transitioning 
+        //to the Camp Stage anyway.
         //partyListBoxSPtr_->Clear();
 
         LoopManager::Instance()->Goto_Camp();
@@ -658,7 +717,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_BackButton();
             return true;
@@ -666,7 +725,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
             deleteButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_DeleteButton();
             return true;
@@ -674,7 +733,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             startButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->SoundEffectsSet_Switch().PlayRandom();
+            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_StartButton();
             return true;

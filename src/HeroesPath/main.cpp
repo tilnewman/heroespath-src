@@ -63,8 +63,10 @@
 #include "game/item/weapon-details.hpp"
 #include "game/item/item-warehouse.hpp"
 #include "game/item/weapon-factory.hpp"
-#include "game/non-player/inventory-factory.hpp"
 #include "game/combat/encounter.hpp"
+#include "game/player/character-warehouse.hpp"
+#include "game/non-player/inventory-factory.hpp"
+#include "game/non-player/character-warehouse.hpp"
 
 #include "misc/random.hpp"
 
@@ -123,6 +125,8 @@ int main()
 
         //load game assets Stage 2
         game::item::ItemWarehouse::Acquire();
+        game::player::CharacterWarehouse::Acquire();
+        game::non_player::CharacterWarehouse::Acquire();
         game::item::weapon::WeaponFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
@@ -207,6 +211,8 @@ int main()
         sfml_util::SoundManager::Release();
         game::GameDataFile::Release();
         game::item::weapon::WeaponFactory::Release();
+        game::player::CharacterWarehouse::Release();
+        game::non_player::CharacterWarehouse::Release();
         game::item::ItemWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();

@@ -61,7 +61,7 @@ namespace stage
         candleTexture_     (),
         candleSprite_      (),
         candleAnimSPtr_    (),
-        ouroborosSPtr_     (),
+        ouroborosUPtr_     (),
         bottomSymbol_      ()
     {}
 
@@ -81,8 +81,8 @@ namespace stage
         titleSymbolSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
 
         //ouroboros
-        ouroborosSPtr_.reset( new Ouroboros("InnStage's") );
-        EntityAdd(ouroborosSPtr_.get());
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("InnStage's");
+        EntityAdd(ouroborosUPtr_.get());
 
         //candle
         sfml_util::LoadImageOrTexture<sf::Texture>(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));
@@ -90,15 +90,17 @@ namespace stage
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 
         //candle anim
-        candleAnimSPtr_.reset( new sfml_util::SingleTextureAnimation("Candle",
-                                                                     GameDataFile::Instance()->GetMediaPath("media-anim-images-candleflame"),
-                                                                     SCREEN_WIDTH_ - 225.0f,
-                                                                     SCREEN_HEIGHT_ - 290.0f,
-                                                                     128,
-                                                                     128,
-                                                                     0.05f,
-                                                                     64,
-                                                                     sf::BlendAdd) );
+        candleAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
+            "Candle",
+            GameDataFile::Instance()->GetMediaPath("media-anim-images-candleflame"),
+            SCREEN_WIDTH_ - 225.0f,
+            SCREEN_HEIGHT_ - 290.0f,
+            128,
+            128,
+            0.05f,
+            64,
+            sf::BlendAdd);
+
         EntityAdd(candleAnimSPtr_.get());
     }
 

@@ -86,22 +86,27 @@ namespace combat
 
     void PartyFactory::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::PartyFactory::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::PartyFactory::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
 
-    non_player::PartySPtr_t PartyFactory::MakeParty_FirstEncounter() const
+    non_player::PartyPtr_t PartyFactory::MakeParty_FirstEncounter() const
     {
-        non_player::PartySPtr_t partySPtr( new non_player::Party() );
-        for(std::size_t i(0); i<10; ++i)
-            partySPtr->Add( MakeCreature_GoblinGrunt() );
+        non_player::PartyPtr_t partyPtr{ new non_player::Party() };
 
-        return partySPtr;
+        for (std::size_t i(0); i < 10; ++i)
+        {
+            partyPtr->Add( MakeCreature_GoblinGrunt() );
+        }
+
+        return partyPtr;
     }
 
 
-    non_player::CharacterSPtr_t PartyFactory::MakeCreature_GoblinGrunt() const
+    non_player::CharacterPtr_t PartyFactory::MakeCreature_GoblinGrunt() const
     {
         const stats::StatSet GOBLIN_STATS( 7 + misc::random::Int(5),  //str
                                            5 + misc::random::Int(7),  //acc
@@ -111,24 +116,33 @@ namespace combat
                                            3 + misc::random::Int(5) );//int
 
         const stats::Health_t GOBLIN_HEALTH(7 + misc::random::Int(5));
-        const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female);
 
-        non_player::CharacterSPtr_t goblinGruntSPtr( new non_player::Character(creature::race::Name(creature::race::Goblin),
-                                                                               GOBLIN_SEX,
-                                                                               creature::BodyType::Make_FromRaceAndRole(creature::race::Goblin, creature::role::Grunt),
-                                                                               creature::Race(creature::race::Goblin),
-                                                                               creature::Role(creature::role::Grunt),
-                                                                               GOBLIN_STATS,
-                                                                               GOBLIN_HEALTH) );
+        const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ? 
+            creature::sex::Male : creature::sex::Female);
 
-        goblinGruntSPtr->ImageFilename( sfml_util::gui::CreatureImageManager::Instance()->GetFilename(creature::race::Goblin,
-                                                                                                      creature::role::Grunt,
-                                                                                                      GOBLIN_SEX,
-                                                                                                      true) );
+        auto goblinGruntPtr( new non_player::Character(
+            creature::race::Name(creature::race::Goblin),
+            GOBLIN_SEX,
+            creature::BodyType::Make_FromRaceAndRole(creature::race::Goblin,
+                                                     creature::role::Grunt),
+            creature::Race(creature::race::Goblin),
+            creature::Role(creature::role::Grunt),
+            GOBLIN_STATS,
+            GOBLIN_HEALTH) );
 
-        non_player::ownership::InventoryFactory::Instance()->PopulateCreatureInventory(goblinGruntSPtr);
-        goblinGruntSPtr->SetCurrentWeaponsToBest();
-        return goblinGruntSPtr;
+        goblinGruntPtr->ImageFilename(
+            sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
+                creature::race::Goblin,
+                creature::role::Grunt,
+                GOBLIN_SEX,
+                true) );
+
+        non_player::ownership::InventoryFactory::Instance()->
+            PopulateCreatureInventory(goblinGruntPtr);
+
+        goblinGruntPtr->SetCurrentWeaponsToBest();
+
+        return goblinGruntPtr;
     }
 
 }

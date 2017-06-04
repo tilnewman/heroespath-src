@@ -54,14 +54,14 @@ namespace gui
     namespace box
     {
         class Box;
-        using BoxSPtr_t = std::shared_ptr<Box>;
+        using BoxUPtr_t = std::unique_ptr<Box>;
     }
 }
 }
 namespace game
 {
     class Ouroboros;
-    using OuroborosSPtr_t = std::shared_ptr<Ouroboros>;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
     namespace creature
     {
@@ -251,7 +251,7 @@ namespace stage
         BottomSymbol                bottomSymbol_;
         sf::Texture                 paperBgTexture_;
         sf::Sprite                  paperBgSprite_;
-        OuroborosSPtr_t             ouroborosSPtr_;
+        OuroborosUPtr_t             ouroborosUPtr_;
         sf::Texture                 creatureTexture_;
         sf::Sprite                  creatureSprite_;
         ViewType                    view_;
@@ -298,7 +298,7 @@ namespace stage
         sfml_util::gui::ListBoxSPtr_t    unEquipListBoxSPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
-        sfml_util::gui::box::BoxSPtr_t   descBoxSPtr_;
+        sfml_util::gui::box::BoxUPtr_t   descBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t centerTextRegionUPtr_;
 
         sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;

@@ -55,8 +55,10 @@ namespace player
 namespace non_player
 {
     class Party;
-    using PartySPtr_t = std::shared_ptr<Party>;
+    using PartyPtr_t = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 }
+
 namespace combat
 {
 
@@ -79,14 +81,16 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        inline non_player::PartySPtr_t NonPlayerParty() { return enemyPartySPtr_; }
-        inline std::size_t GetRoundCount()              { return roundCounter_; }
-        inline bool HasStarted() const                  { return hasStarted_; }
+        non_player::Party & NonPlayerParty();
+        non_player::Party & DeadNonPlayerParty();
+
+        inline std::size_t GetRoundCount()  { return roundCounter_; }
+        inline bool HasStarted() const      { return hasStarted_; }
 
         void Setup_First();
 
         inline creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
-
+        
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
         inline void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)              { turnInfoMap_[P] = TI; }
@@ -106,8 +110,8 @@ namespace combat
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
         //
-        non_player::PartySPtr_t  enemyPartySPtr_;
-        non_player::PartySPtr_t  deadEnemyPartySPtr_;
+        non_player::PartyUPtr_t  enemyPartyUPtr_;
+        non_player::PartyUPtr_t  deadEnemyPartyUPtr_;
         std::size_t              roundCounter_;
         bool                     hasStarted_;
         creature::CreaturePVec_t turnOverPVec_;

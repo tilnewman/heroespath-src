@@ -41,7 +41,8 @@ namespace game
     namespace player
     {
         class Party;
-        using PartySPtr_t = std::shared_ptr<Party>;
+        using PartyPtr_t  = Party *;
+        using PartyUPtr_t = std::unique_ptr<Party>;
     }
 
     namespace location
@@ -55,7 +56,8 @@ namespace state
 
     //forward declarations
     class WorldState;
-    using WorldStateSPtr_t = std::shared_ptr<WorldState>;
+    using WorldStatePtr_t  = WorldState *;
+    using WorldStateUPtr_t = std::unique_ptr<WorldState>;
 
 
     //Encapsulates everything about a saved game.
@@ -68,34 +70,62 @@ namespace state
         GameState & operator=(const GameState &) =delete;
 
     public:
-        explicit GameState(const player::PartySPtr_t &      PARTY_SPTR       = player::PartySPtr_t(),
-                           const WorldStateSPtr_t &         WORLD_STATE_SPTR = WorldStateSPtr_t(),
-                           const location::LocationSPtr_t & LOCATION_SPTR    = location::LocationSPtr_t());
+        explicit GameState(const player::PartyPtr_t         PARTY_PTR       = nullptr,
+                           const WorldStatePtr_t            WORLD_STATE_PTR = nullptr,
+                           const location::LocationSPtr_t & LOCATION_SPTR   = location::LocationSPtr_t());
 
         virtual ~GameState();
 
-        inline WorldStateSPtr_t World()         { return worldStateSPtr_; }
+        WorldState & World();
 
-        inline player::PartySPtr_t Party()      { return partySPtr_; }
+        player::Party & Party();
 
-        inline bool IsNewGame() const           { return isGameNew_; }
-        inline void IsNewGameSet(const bool B)  { isGameNew_ = B; }
+        inline bool IsNewGame() const
+        {
+            return isGameNew_;
+        }
 
-        inline const sfml_util::DateTime DateTimeStarted() const            { return dateTimeStarted_; }
-        inline void DateTimeStartedSet(const sfml_util::DateTime & DT)      { dateTimeStarted_ = DT; }
+        inline void IsNewGameSet(const bool B)
+        {
+            isGameNew_ = B;
+        }
 
-        inline const sfml_util::DateTime DateTimeOfLastSave() const         { return dateTimeLastSave_; }
-        inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)   { dateTimeLastSave_ = DT; }
+        inline const sfml_util::DateTime DateTimeStarted() const
+        {
+            return dateTimeStarted_;
+        }
 
-        inline const location::LocationSPtr_t Location() const              { return locationSPtr_; }
-        inline void LocationSet(const location::LocationSPtr_t & L_SPTR)    { locationSPtr_ = L_SPTR; }
+        inline void DateTimeStartedSet(const sfml_util::DateTime & DT)
+        {
+            dateTimeStarted_ = DT;
+        }
+
+        inline const sfml_util::DateTime DateTimeOfLastSave() const
+        {
+            return dateTimeLastSave_;
+        }
+
+        inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)
+        {
+            dateTimeLastSave_ = DT;
+        }
+
+        inline const location::LocationSPtr_t Location() const
+        {
+            return locationSPtr_;
+        }
+
+        inline void LocationSet(const location::LocationSPtr_t & L_SPTR)
+        {
+            locationSPtr_ = L_SPTR;
+        }
 
         friend bool operator<(const GameState & L, const GameState & R);
         friend bool operator==(const GameState & L, const GameState & R);
 
     private:
-        player::PartySPtr_t      partySPtr_;
-        WorldStateSPtr_t         worldStateSPtr_;
+        player::PartyUPtr_t      partyUPtr_;
+        WorldStateUPtr_t         worldStateUPtr_;
         bool                     isGameNew_;
         sfml_util::DateTime      dateTimeStarted_;
         sfml_util::DateTime      dateTimeLastSave_;
@@ -106,8 +136,8 @@ namespace state
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & partySPtr_;
-            ar & worldStateSPtr_;
+            ar & partyUPtr_;
+            ar & worldStateUPtr_;
             ar & isGameNew_;
             ar & dateTimeStarted_;
             ar & dateTimeLastSave_;
@@ -116,9 +146,8 @@ namespace state
     };
 
 
-    using GameStateSPtr_t = std::shared_ptr<GameState>;
-    using GameStateSVec_t = std::vector<GameStateSPtr_t>;
-    using GameStateSSet_t = std::set<GameStateSPtr_t>;
+    using GameStatePtr_t  = GameState *;
+    using GameStatePSet_t = std::set<GameStatePtr_t>;
 
 
     bool operator<(const GameState & L, const GameState & R);
