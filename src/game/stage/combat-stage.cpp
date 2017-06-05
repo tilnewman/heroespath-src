@@ -745,7 +745,7 @@ namespace stage
         std::string errMsgIgnored{ "" };
         player::PartyPtr_t partyPtr{ new player::Party() };
 
-        /*{
+        {
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
                                               15 + misc::random::Int(6) + 100,
                                               0  + misc::random::Int(6),
@@ -767,7 +767,7 @@ namespace stage
 
             player::Initial::Setup(knightPtr);
             partyPtr->Add(knightPtr, errMsgIgnored);
-        }*/
+        }
         /*
         {
             const stats::StatSet FIREBRAND_STATS(20 + misc::random::Int(10),
@@ -799,7 +799,7 @@ namespace stage
             partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
-        /*{
+        {
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
                                               20 + misc::random::Int(10) + 100,
                                               5  + misc::random::Int(6),
@@ -821,7 +821,7 @@ namespace stage
 
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
-        }*/
+        }
         /*
         {
             const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
@@ -843,7 +843,7 @@ namespace stage
             partyPtr->Add(wolfenSPtr, errMsgIgnored);
         }
         */
-        /*{
+        {
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
                                             10 + misc::random::Int(6) + 100,
                                             10 + misc::random::Int(6),
@@ -865,7 +865,7 @@ namespace stage
 
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
-        }*/
+        }
         /*
         {
             const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
@@ -887,7 +887,7 @@ namespace stage
             partyPtr->Add(bmSPtr, errMsgIgnored);
         }
         */
-        /*{
+        {
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
                                              5  + misc::random::Int(10) + 100,
                                              5  + misc::random::Int(10),
@@ -909,7 +909,7 @@ namespace stage
 
             player::Initial::Setup(thiefPtr);
             partyPtr->Add(thiefPtr, errMsgIgnored);
-        }*/
+        }
         {
             const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
                                               5  + misc::random::Int(8) + 100,
@@ -921,7 +921,7 @@ namespace stage
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
                 creature::NameInfo::Instance()->LargestLetterString(),
-                "C1"));
+                "C"));
 
             auto clericPtr{ new player::Character(CLERIC_NAME,
                                                   creature::sex::Female,
@@ -946,105 +946,7 @@ namespace stage
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
                 creature::NameInfo::Instance()->LargestLetterString(),
-                "S1"));
-
-            auto sorcererPtr{ new player::Character(SORCERER_NAME,
-                                                    creature::sex::Male,
-                                                    creature::BodyType::Make_Pixie(),
-                                                    creature::Race(creature::race::Pixie),
-                                                    creature::Role(creature::role::Sorcerer),
-                                                    SORCERER_STATS) };
-
-            player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ManaCurrentSet(10);
-            partyPtr->Add(sorcererPtr, errMsgIgnored);
-        }
-        {
-            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8) + 100,
-                                              15 + misc::random::Int(10),
-                                              10 + misc::random::Int(8),
-                                              25 + misc::random::Int(8),
-                                              10 + misc::random::Int(15));
-
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "C2"));
-
-            auto clericPtr{ new player::Character(CLERIC_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Pixie(),
-                                                  creature::Race(creature::race::Pixie),
-                                                  creature::Role(creature::role::Cleric),
-                                                  CLERIC_STATS) };
-
-            player::Initial::Setup(clericPtr);
-            clericPtr->ManaCurrentSet(10);
-            partyPtr->Add(clericPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8) + 100,
-                                                5  + misc::random::Int(8),
-                                                10 + misc::random::Int(6),
-                                                50 + misc::random::Int(6),
-                                                20 + misc::random::Int(10));
-
-            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "S2"));
-
-            auto sorcererPtr{ new player::Character(SORCERER_NAME,
-                                                    creature::sex::Male,
-                                                    creature::BodyType::Make_Pixie(),
-                                                    creature::Race(creature::race::Pixie),
-                                                    creature::Role(creature::role::Sorcerer),
-                                                    SORCERER_STATS) };
-
-            player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ManaCurrentSet(10);
-            partyPtr->Add(sorcererPtr, errMsgIgnored);
-        }
-        {
-            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8) + 100,
-                                              15 + misc::random::Int(10),
-                                              10 + misc::random::Int(8),
-                                              25 + misc::random::Int(8),
-                                              10 + misc::random::Int(15));
-
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "C3"));
-
-            auto clericPtr{ new player::Character(CLERIC_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Pixie(),
-                                                  creature::Race(creature::race::Pixie),
-                                                  creature::Role(creature::role::Cleric),
-                                                  CLERIC_STATS) };
-
-            player::Initial::Setup(clericPtr);
-            clericPtr->ManaCurrentSet(10);
-            partyPtr->Add(clericPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8) + 100,
-                                                5  + misc::random::Int(8),
-                                                10 + misc::random::Int(6),
-                                                50 + misc::random::Int(6),
-                                                20 + misc::random::Int(10));
-
-            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "S3"));
+                "S"));
 
             auto sorcererPtr{ new player::Character(SORCERER_NAME,
                                                     creature::sex::Male,
@@ -1078,8 +980,14 @@ namespace stage
             partyPtr->Add(sylavinSPtr, errMsgIgnored);
         }
         */
-        if (restoreInfo_.HasRestored() == false)
+        if (restoreInfo_.HasRestored())
         {
+            preTurnPhase_ = PreTurnPhase::End;
+        }
+        else
+        {
+            preTurnPhase_ = PreTurnPhase::Start;
+
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partyPtr);
 
@@ -1436,7 +1344,8 @@ namespace stage
             (IsPaused() == false) &&
             (turnCreaturePtr_ == nullptr) &&
             (TurnPhase::NotATurn == turnPhase_) &&
-            (PreTurnPhase::End == preTurnPhase_))
+            (PreTurnPhase::End == preTurnPhase_) &&
+            (game::LoopManager::Instance()->IsFading() == false))
         {
             StartTurn_Step1();
             return;
