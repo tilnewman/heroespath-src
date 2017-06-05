@@ -917,19 +917,23 @@ namespace stage
                         {
                             isImageSliding_ = true;
                         }
-                        else if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
+                        
+                        if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
                         {
                             isDetailsSliding_ = true;
                         }
-                        else if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
+                        
+                        if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
                         {
                             isCenterSliding_ = true;
                         }
-                        else if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
+                        
+                        if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
                         {
                             isListBoxSliding_ = true;
                         }
-                        else if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
+                        
+                        if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
                         {
                             isStatsSliding_ = true;
                             isDescBoxSliding_ = true;
@@ -943,19 +947,23 @@ namespace stage
                             isStatsSliding_ = true;
                             isDescBoxSliding_ = true;
                         }
-                        else if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
+                        
+                        if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
                         {
                             isCenterSliding_ = true;
                         }
-                        else if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
+                        
+                        if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
                         {
                             isDetailsSliding_ = true;
                         }
-                        else if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
+                        
+                        if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
                         {
                             isListBoxSliding_ = true;
                         }
-                        else if ((false == isImageSlidingDone_) && (false == isImageSliding_))
+                        
+                        if ((false == isImageSlidingDone_) && (false == isImageSliding_))
                         {
                             isImageSliding_ = true;
                             sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;//anything greater than CUT_OFF_TIME_SEC will work here
@@ -1087,7 +1095,7 @@ namespace stage
                     {
                         if (isSlidingLeft_)
                         {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
                         }
                         else
                         {
@@ -1095,7 +1103,7 @@ namespace stage
                         }
                     }
 
-                    if (detailsSlider_.GetIsDone())
+                    if (centerSlider_.GetIsDone())
                     {
                         SetupCenterText();
                         centerTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
@@ -1115,7 +1123,7 @@ namespace stage
                         }
                         else
                         {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
+                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
                         }
                     }
 
