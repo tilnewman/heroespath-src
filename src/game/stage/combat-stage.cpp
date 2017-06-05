@@ -109,6 +109,8 @@ namespace stage
     const float CombatStage::CONDITION_WAKE_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
     const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_     { PAUSE_SHORT_SEC_ };
     //
+    const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_{ 0.4f };
+    //
     const float CombatStage::SLIDER_SPEED_SLOWEST_                  { 1.0f };
     const float CombatStage::SLIDER_SPEED_SLOW_                     { SLIDER_SPEED_SLOWEST_ * 2.0f };
     const float CombatStage::SLIDER_SPEED_NORMAL_                   { SLIDER_SPEED_SLOW_ * 2.0f };
@@ -195,7 +197,9 @@ namespace stage
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
         testingTextRegionUPtr_      (),
-        pauseTitle_                 ("")
+        pauseTitle_                 (""),
+        clickTimerSec_              (-1.0f),//any negative value will work here
+        clickPosV_                  (0.0f, 0.0f)
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -1207,6 +1211,17 @@ namespace stage
             enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
+        //single-click triggers summary view;
+        if (clickTimerSec_ > 0.0f)
+        {
+            clickTimerSec_ -= ELAPSED_TIME_SEC;
+
+            if (clickTimerSec_ < 0.0f)
+            {
+                combatDisplayStagePtr_->StartSummaryView(clickPosV_);
+            }
+        }
+
         //allow progress of the pause timer even if IsStatusMessageAnimating(), because they work together
         if (IsPaused() || isPauseCanceled_)
         {
@@ -1483,9 +1498,19 @@ namespace stage
             creatureAtPosPtr->IsPlayerCharacter() &&
             (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
         {
-            restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-            game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
-            return GUI_ENTITY_WITH_FOCUS;
+            if (clickTimerSec_ < 0.0f)
+            {
+                clickPosV_ = MOUSE_POS_V;
+                clickTimerSec_ = DOUBLE_CLICK_WINDOW_SEC_;
+            }
+            else
+            {
+                clickTimerSec_ = -1.0f;//any negative value will work here
+
+                restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
+                game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+                return GUI_ENTITY_WITH_FOCUS;
+            }
         }
 
         if (TurnPhase::TargetSelect != turnPhase_)

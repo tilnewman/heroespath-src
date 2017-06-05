@@ -293,6 +293,8 @@ namespace stage
         static const float CONDITION_WAKE_PAUSE_SEC_;
         static const float POST_SPELL_ANIM_PAUSE_SEC_;
         //
+        static const float DOUBLE_CLICK_WINDOW_SEC_;
+        //
         static const float SLIDER_SPEED_SLOWEST_;
         static const float SLIDER_SPEED_SLOW_;
         static const float SLIDER_SPEED_NORMAL_;
@@ -396,6 +398,10 @@ namespace stage
         //testing display members
         sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
+
+        //members supporting double-click
+        float clickTimerSec_;
+        sf::Vector2f clickPosV_;
     };
 
 }

@@ -55,7 +55,7 @@ namespace gui
         entityWillFocus_     (true),
         entityWillDraw_      (true),
         entityMouseHoverText_(""),
-        entityClockSPtr_     (),
+        entityClockUPtr_     (),
         entityPrevPos_       (0.0f, 0.0f)
     {}
 
@@ -75,7 +75,7 @@ namespace gui
         entityWillFocus_     (true),
         entityWillDraw_      (true),
         entityMouseHoverText_(""),
-        entityClockSPtr_     (),
+        entityClockUPtr_     (),
         entityPrevPos_       (0.0f, 0.0f)
     {}
 
@@ -94,26 +94,31 @@ namespace gui
 
                 bool didDoubleClickAlready(false);
 
-                if (entityClockSPtr_.get() == nullptr)
-                    entityClockSPtr_.reset( new sf::Clock );
+                if (entityClockUPtr_.get() == nullptr)
+                {
+                    //the sf::Clock starts once constructed
+                    entityClockUPtr_ = std::make_unique<sf::Clock>();
+                }
                 else
                 {
-                    if (entityClockSPtr_->getElapsedTime().asMilliseconds() < DOUBLE_CLICK_TIME_MS_)
+                    if (entityClockUPtr_->getElapsedTime().asMilliseconds() < DOUBLE_CLICK_TIME_MS_)
                     {
                         OnDoubleClick(MOUSE_POS_V);
                         didDoubleClickAlready = true;
                     }
 
-                    entityClockSPtr_->restart();
+                    entityClockUPtr_->restart();
                 }
 
                 if (false == didDoubleClickAlready)
+                {
                     OnClick(MOUSE_POS_V);
+                }
             }
             else
             {
                 entityMouseState_ = MouseState::Up;
-                entityClockSPtr_.reset();
+                entityClockUPtr_.reset();
             }
 
             return true;
@@ -131,7 +136,9 @@ namespace gui
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 
@@ -161,13 +168,17 @@ namespace gui
     bool GuiEntity::SetHasFocus(const bool HAS_FOCUS)
     {
         if (false == entityWillFocus_)
+        {
             return false;
+        }
 
         const bool DID_FOCUS_CHANGE(entityHasFocus_ != HAS_FOCUS);
         entityHasFocus_ = HAS_FOCUS;
 
         if (DID_FOCUS_CHANGE)
+        {
             ChangeColors();
+        }
 
         return DID_FOCUS_CHANGE;
     }
@@ -245,12 +256,16 @@ namespace gui
         const bool WILL_CHANGE(entityHasFocus_ != FAKED_FOCUS);
 
         if (WILL_CHANGE)
+        {
             entityHasFocus_ = FAKED_FOCUS;
+        }
 
         ChangeColors();
 
         if (WILL_CHANGE)
+        {
             entityHasFocus_ = ! FAKED_FOCUS;
+        }
     }
 
 
@@ -259,16 +274,24 @@ namespace gui
         if (L.entityRegion_ != R.entityRegion_)
         {
             if (misc::IsRealClose(L.entityRegion_.left, R.entityRegion_.left) == false)
+            {
                 return (L.entityRegion_.left < R.entityRegion_.left);
+            }
 
             if (misc::IsRealClose(L.entityRegion_.top, R.entityRegion_.top) == false)
-                return (L.entityRegion_.top< R.entityRegion_.top);
+            {
+                return (L.entityRegion_.top < R.entityRegion_.top);
+            }
 
             if (misc::IsRealClose(L.entityRegion_.width, R.entityRegion_.width) == false)
-                return (L.entityRegion_.width< R.entityRegion_.width);
+            {
+                return (L.entityRegion_.width < R.entityRegion_.width);
+            }
 
             if (misc::IsRealClose(L.entityRegion_.height, R.entityRegion_.height) == false)
+            {
                 return (L.entityRegion_.height < R.entityRegion_.height);
+            }
         }
 
         if (L.entityPrevPos_ != R.entityPrevPos_)
@@ -281,10 +304,14 @@ namespace gui
         }
 
         if (L.entityFgColor_ != R.entityFgColor_)
+        {
             return sfml_util::color::ColorLess(L.entityFgColor_, R.entityFgColor_);
+        }
 
         if (L.entityBgColor_ != R.entityBgColor_)
+        {
             return sfml_util::color::ColorLess(L.entityBgColor_, R.entityBgColor_);
+        }
 
         return  std::tie(L.entityName_,
                          L.entityMouseState_,
@@ -293,7 +320,7 @@ namespace gui
                          L.entityWillFocus_,
                          L.entityWillDraw_,
                          L.entityMouseHoverText_,
-                         L.entityClockSPtr_)
+                         L.entityClockUPtr_)
                 <
                 std::tie(R.entityName_,
                          R.entityMouseState_,
@@ -302,7 +329,7 @@ namespace gui
                          R.entityWillFocus_,
                          R.entityWillDraw_,
                          R.entityMouseHoverText_,
-                         R.entityClockSPtr_);
+                         R.entityClockUPtr_);
     }
 
 
@@ -318,7 +345,7 @@ namespace gui
                          L.entityWillFocus_,
                          L.entityWillDraw_,
                          L.entityMouseHoverText_,
-                         L.entityClockSPtr_,
+                         L.entityClockUPtr_,
                          L.entityPrevPos_)
                 ==
                 std::tie(R.entityName_,
@@ -331,7 +358,7 @@ namespace gui
                          R.entityWillFocus_,
                          R.entityWillDraw_,
                          R.entityMouseHoverText_,
-                         R.entityClockSPtr_,
+                         R.entityClockUPtr_,
                          R.entityPrevPos_);
     }
 

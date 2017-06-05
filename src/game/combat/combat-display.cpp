@@ -226,33 +226,30 @@ namespace combat
 
     void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
     {
-        if (false == isSummaryViewAllowed_)
-            return;
+        Stage::SetMouseHover(MOUSE_POS, IS_MOUSE_HOVERING);
+    }
 
+
+    bool CombatDisplay::StartSummaryView(const sf::Vector2f & MOUSE_POS)
+    {
         auto combatNodePtr(combatTree_.GetNode(MOUSE_POS.x, MOUSE_POS.y));
 
-        if (IS_MOUSE_HOVERING &&
+        if (isSummaryViewAllowed_ &&
             (combatNodePtr != nullptr) &&
             (combatNodePtr->GetEntityWillDraw() == true) &&
             (false == isMouseHeldDownInBF_) &&
             isPlayerTurn_ &&
             (GetIsStatusMessageAnimating() == false))
         {
-            //stop shaking a creature image if mouse-over will start transitioning to summary view
-            M_ASSERT_OR_LOGANDTHROW_SS((combatAnimationPtr_ != nullptr),
-                "game::combat::CombatDisplay::SetMouseHover() found combatAnimationPtr_ "
-                << "to be null.");
             combatAnimationPtr_->ShakeAnimTemporaryStop(combatNodePtr->Creature());
-
             summaryViewUPtr_->SetupAndStartTransition(combatNodePtr, battlefieldRect_);
             SetIsSummaryViewInProgress(true);
+            return true;
         }
         else
         {
-            CancelSummaryViewAndStartTransitionBack();
+            return false;
         }
-
-        Stage::SetMouseHover(MOUSE_POS, IS_MOUSE_HOVERING);
     }
 
 
@@ -342,7 +339,7 @@ namespace combat
 
     void CombatDisplay::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (isScrollAllowed_)
+        if ((GetIsSummaryViewInProgress() == false) && isScrollAllowed_)
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
 

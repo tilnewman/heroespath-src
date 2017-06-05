@@ -122,6 +122,8 @@ namespace combat
 
         virtual void SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING);
 
+        bool StartSummaryView(const sf::Vector2f & MOUSE_POS);
+
         //value must be [0.0f, 1.0f], the constrained final zoom value is returned
         float SetZoomLevel(const float);
 

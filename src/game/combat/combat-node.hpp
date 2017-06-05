@@ -116,7 +116,7 @@ namespace combat
         void SelectAnimStop();
 
     protected:
-        virtual void OnClick(const sf::Vector2f &) {}
+        inline virtual void OnClick(const sf::Vector2f &) {}
         const sf::Color HealthColor() const;
         const sf::Color HealthColorRed() const;
         const sf::Color HealthColorTick() const;

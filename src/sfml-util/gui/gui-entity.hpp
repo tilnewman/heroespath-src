@@ -150,7 +150,7 @@ namespace gui
         bool             entityWillFocus_;
         bool             entityWillDraw_;
         std::string      entityMouseHoverText_;
-        std::shared_ptr<sf::Clock> entityClockSPtr_;
+        std::unique_ptr<sf::Clock> entityClockUPtr_;
         sf::Vector2f     entityPrevPos_;
     };
 
