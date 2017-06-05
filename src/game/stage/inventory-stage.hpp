@@ -301,17 +301,18 @@ namespace stage
         sfml_util::gui::box::BoxUPtr_t   descBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t centerTextRegionUPtr_;
 
-        sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t itemsButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t titlesButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t condsButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t spellsButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t giveButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t shareButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t gatherButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t equipButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t unequipButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t dropButtonSPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t itemsButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t titlesButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t condsButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t spellsButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t giveButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t shareButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t gatherButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t equipButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t unequipButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t dropButtonUPtr_;
+        sfml_util::gui::FourStateButtonPVec_t buttonPVec_;
 
         //members that manage the give/drop/share/gather actions
         ActionType                        actionType_;

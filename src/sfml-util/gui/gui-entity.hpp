@@ -91,7 +91,7 @@ namespace gui
         virtual bool SetHasFocus(const bool);
         inline virtual bool WillAcceptFocus() const                             { return entityWillFocus_; }
         inline virtual void SetWillAcceptFocus(const bool WILL_ACCEPT_FOCUS)    { entityWillFocus_ = WILL_ACCEPT_FOCUS; }
-        inline virtual const std::string GetMouseHoverText(const sf::Vector2f &){ return entityMouseHoverText_; }
+        inline virtual const std::string GetMouseHoverText()                    { return entityMouseHoverText_; }
         inline virtual void SetMouseHoverText(const std::string & S)            { entityMouseHoverText_ = S; }
 
     protected:

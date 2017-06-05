@@ -81,10 +81,13 @@ namespace player
         using namespace item;
 
         //TEMP TODO REMOVE -only added to test inventory
-        characterPtrC->CoinsAdj(100);
-        characterPtrC->GemsAdj(100);
-        characterPtrC->MeteorShardsAdj(100);
-        
+        if (characterPtrC->IsBeast() == false)
+        {
+            characterPtrC->CoinsAdj(100);
+            characterPtrC->GemsAdj(100);
+            characterPtrC->MeteorShardsAdj(100);
+        }
+
         auto const ROLE_ENUM{ characterPtrC->Role().Which() };
 
         if (ROLE_ENUM == creature::role::Knight)

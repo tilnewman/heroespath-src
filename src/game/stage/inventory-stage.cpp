@@ -174,17 +174,17 @@ namespace stage
         descTextRegionUPtr_     (),
         descBoxUPtr_            (),
         centerTextRegionUPtr_   (),
-        backButtonSPtr_         (),
-        itemsButtonSPtr_        (),
-        titlesButtonSPtr_       (),
-        condsButtonSPtr_        (),
-        spellsButtonSPtr_       (),
-        giveButtonSPtr_         (),
-        shareButtonSPtr_        (),
-        gatherButtonSPtr_       (),
-        equipButtonSPtr_        (),
-        unequipButtonSPtr_      (),
-        dropButtonSPtr_         (),
+        backButtonUPtr_         (),
+        itemsButtonUPtr_        (),
+        titlesButtonUPtr_       (),
+        condsButtonUPtr_        (),
+        spellsButtonUPtr_       (),
+        giveButtonUPtr_         (),
+        shareButtonUPtr_        (),
+        gatherButtonUPtr_       (),
+        equipButtonUPtr_        (),
+        unequipButtonUPtr_      (),
+        buttonPVec_             (),
         actionType_             (ActionType::Count),
         contentType_            (ContentType::Count),
         listBoxItemToGiveSPtr_  (),
@@ -257,57 +257,57 @@ namespace stage
         if (isSliderAnimating_)
             return false;
 
-        if (PACKAGE.PTR_ == backButtonSPtr_.get())
+        if (PACKAGE.PTR_ == backButtonUPtr_.get())
         {
             return HandleBack();
         }
 
-        if (PACKAGE.PTR_ == itemsButtonSPtr_.get())
+        if (PACKAGE.PTR_ == itemsButtonUPtr_.get())
         {
             return HandleViewChange(ViewType::Items);
         }
 
-        if (PACKAGE.PTR_ == titlesButtonSPtr_.get())
+        if (PACKAGE.PTR_ == titlesButtonUPtr_.get())
         {
             return HandleViewChange(ViewType::Titles);
         }
 
-        if (PACKAGE.PTR_ == condsButtonSPtr_.get())
+        if (PACKAGE.PTR_ == condsButtonUPtr_.get())
         {
             return HandleViewChange(ViewType::Conditions);
         }
 
-        if (PACKAGE.PTR_ == spellsButtonSPtr_.get())
+        if (PACKAGE.PTR_ == spellsButtonUPtr_.get())
         {
             return HandleViewChange(ViewType::Spells);
         }
 
-        if (PACKAGE.PTR_ == giveButtonSPtr_.get())
+        if (PACKAGE.PTR_ == giveButtonUPtr_.get())
         {
             return HandleGive();
         }
 
-        if (PACKAGE.PTR_ == shareButtonSPtr_.get())
+        if (PACKAGE.PTR_ == shareButtonUPtr_.get())
         {
             return HandleShare();
         }
 
-        if (PACKAGE.PTR_ == gatherButtonSPtr_.get())
+        if (PACKAGE.PTR_ == gatherButtonUPtr_.get())
         {
             return HandleGather();
         }
 
-        if (PACKAGE.PTR_ == equipButtonSPtr_.get())
+        if (PACKAGE.PTR_ == equipButtonUPtr_.get())
         {
             return HandleEquip();
         }
 
-        if (PACKAGE.PTR_ == unequipButtonSPtr_.get())
+        if (PACKAGE.PTR_ == unequipButtonUPtr_.get())
         {
             return HandleUnequip();
         }
 
-        if (PACKAGE.PTR_ == dropButtonSPtr_.get())
+        if (PACKAGE.PTR_ == dropButtonUPtr_.get())
         {
             return HandleDrop();
         }
@@ -657,90 +657,101 @@ namespace stage
         buttonTextInfo.text = "(B)ack";
         buttonTextInfoDisabled.text = "(B)ack";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        backButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
-        backButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonSPtr_->GetEntityRegion().height * 0.5f));
-        backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_.get());
+        backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
+        backButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
+        backButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(backButtonUPtr_.get());
+        buttonPVec_.push_back(backButtonUPtr_.get());
 
         buttonTextInfo.text = "(I)tems";
         buttonTextInfoDisabled.text = "(I)tems";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_ITEMS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        itemsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
-        itemsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonSPtr_->GetEntityRegion().height * 0.5f));
-        itemsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(itemsButtonSPtr_.get());
+        itemsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
+        itemsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        itemsButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(itemsButtonUPtr_.get());
+        buttonPVec_.push_back(itemsButtonUPtr_.get());
 
         buttonTextInfo.text = "(T)itles";
         buttonTextInfoDisabled.text = "(T)itles";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_TITLES(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        titlesButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
-        titlesButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonSPtr_->GetEntityRegion().height * 0.5f));
-        titlesButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(titlesButtonSPtr_.get());
+        titlesButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
+        titlesButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonUPtr_->GetEntityRegion().height * 0.5f));
+        titlesButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(titlesButtonUPtr_.get());
+        buttonPVec_.push_back(titlesButtonUPtr_.get());
 
         buttonTextInfo.text = "(C)onditions";
         buttonTextInfoDisabled.text = "(C)onditions";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_CONDITIONS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        condsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
-        condsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonSPtr_->GetEntityRegion().height * 0.5f));
-        condsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(condsButtonSPtr_.get());
+        condsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
+        condsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        condsButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(condsButtonUPtr_.get());
+        buttonPVec_.push_back(condsButtonUPtr_.get());
 
         buttonTextInfo.text = "(S)pells";
         buttonTextInfoDisabled.text = "(S)pells";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SPELLS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        spellsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
-        spellsButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonSPtr_->GetEntityRegion().height * 0.5f));
-        spellsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(spellsButtonSPtr_.get());
+        spellsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
+        spellsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        spellsButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(spellsButtonUPtr_.get());
+        buttonPVec_.push_back(spellsButtonUPtr_.get());
 
         buttonTextInfo.text = "(G)ive";
         buttonTextInfoDisabled.text = "(G)ive";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GIVE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        giveButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
-        giveButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonSPtr_->GetEntityRegion().height * 0.5f));
-        giveButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(giveButtonSPtr_.get());
+        giveButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
+        giveButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonUPtr_->GetEntityRegion().height * 0.5f));
+        giveButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(giveButtonUPtr_.get());
+        buttonPVec_.push_back(giveButtonUPtr_.get());
 
         buttonTextInfo.text = "S(h)are";
         buttonTextInfoDisabled.text = "S(h)are";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SHARE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        shareButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
-        shareButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonSPtr_->GetEntityRegion().height * 0.5f));
-        shareButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(shareButtonSPtr_.get());
+        shareButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
+        shareButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonUPtr_->GetEntityRegion().height * 0.5f));
+        shareButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(shareButtonUPtr_.get());
+        buttonPVec_.push_back(shareButtonUPtr_.get());
 
         buttonTextInfo.text = "Gathe(r)";
         buttonTextInfoDisabled.text = "Gathe(r)";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GATHER(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        gatherButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
-        gatherButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonSPtr_->GetEntityRegion().height * 0.5f));
-        gatherButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(gatherButtonSPtr_.get());
+        gatherButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
+        gatherButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonUPtr_->GetEntityRegion().height * 0.5f));
+        gatherButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(gatherButtonUPtr_.get());
+        buttonPVec_.push_back(gatherButtonUPtr_.get());
 
         buttonTextInfo.text = "(E)quip";
         buttonTextInfoDisabled.text = "(E)quip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_EQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        equipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
-        equipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonSPtr_->GetEntityRegion().height * 0.5f));
-        equipButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(equipButtonSPtr_.get());
+        equipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
+        equipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonUPtr_->GetEntityRegion().height * 0.5f));
+        equipButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(equipButtonUPtr_.get());
+        buttonPVec_.push_back(equipButtonUPtr_.get());
 
         buttonTextInfo.text = "(U)nequip";
         buttonTextInfoDisabled.text = "(U)nequip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_UNEQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        unequipButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
-        unequipButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonSPtr_->GetEntityRegion().height * 0.5f));
-        unequipButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(unequipButtonSPtr_.get());
+        unequipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
+        unequipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonUPtr_->GetEntityRegion().height * 0.5f));
+        unequipButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(unequipButtonUPtr_.get());
+        buttonPVec_.push_back(unequipButtonUPtr_.get());
 
         buttonTextInfo.text = "(D)rop";
         buttonTextInfoDisabled.text = "(D)rop";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_DROP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        dropButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
-        dropButtonSPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonSPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonSPtr_->GetEntityRegion().height * 0.5f));
-        dropButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(dropButtonSPtr_.get());
+        dropButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
+        dropButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonUPtr_->GetEntityRegion().height * 0.5f));
+        dropButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(dropButtonUPtr_.get());
+        buttonPVec_.push_back(dropButtonUPtr_.get());
 
         SetupButtons();
 
@@ -766,7 +777,10 @@ namespace stage
 
         if (detailViewTextUPtr_.get() != nullptr)
         {
-            target.draw(detailViewSprite_, STATES);
+            sf::RenderStates statesBlendAdd{ STATES };
+            statesBlendAdd.blendMode = sf::BlendAdd;
+            target.draw(detailViewSprite_, statesBlendAdd);
+
             detailViewTextUPtr_->draw(target, STATES);
         }
     }
@@ -1456,6 +1470,16 @@ namespace stage
     {
         HandleDetailViewMouseInterrupt(MOUSE_POS_V);
         Stage::UpdateMouseDown(MOUSE_POS_V);
+
+        for (auto const NEXT_BUTTON_PTR : buttonPVec_)
+        {
+            if ((NEXT_BUTTON_PTR->IsDisabled()) &&
+                (NEXT_BUTTON_PTR->GetEntityRegion().contains(MOUSE_POS_V)))
+            {
+                PopupRejectionWindow(NEXT_BUTTON_PTR->GetMouseHoverText(), false);
+                break;
+            }
+        }
     }
 
 
@@ -1488,83 +1512,84 @@ namespace stage
 
     void InventoryStage::SetupButtons()
     {
-        backButtonSPtr_->SetIsDisabled(false);
-        backButtonSPtr_->SetMouseHoverText("Click here or press 'b' to return to previous screen.");
+        backButtonUPtr_->SetIsDisabled(false);
+        backButtonUPtr_->SetMouseHoverText("Click here or press 'b' to return to previous screen.");
 
         if (ViewType::Items == view_)
         {
-            itemsButtonSPtr_->SetIsDisabled(true);
-            itemsButtonSPtr_->SetMouseHoverText("Already viewing items.");
+            itemsButtonUPtr_->SetIsDisabled(true);
+            itemsButtonUPtr_->SetMouseHoverText("Already viewing items.");
         }
+        else
         {
-            itemsButtonSPtr_->SetIsDisabled(false);
-            itemsButtonSPtr_->SetMouseHoverText("Click here or press 'i' to view items.");
+            itemsButtonUPtr_->SetIsDisabled(false);
+            itemsButtonUPtr_->SetMouseHoverText("Click here or press 'i' to view items.");
         }
 
         if (creaturePtr_->Spells().empty())
         {
-            spellsButtonSPtr_->SetIsDisabled(true);
-            spellsButtonSPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not know any spells.");
+            spellsButtonUPtr_->SetIsDisabled(true);
+            spellsButtonUPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not know any spells.");
         }
         else if (ViewType::Spells == view_)
         {
-            spellsButtonSPtr_->SetIsDisabled(true);
-            spellsButtonSPtr_->SetMouseHoverText("Already viewing spells.");
+            spellsButtonUPtr_->SetIsDisabled(true);
+            spellsButtonUPtr_->SetMouseHoverText("Already viewing spells.");
         }
         else
         {
-            spellsButtonSPtr_->SetIsDisabled(false);
-            spellsButtonSPtr_->SetMouseHoverText("Click here or press 's' to view and cast spells.");
+            spellsButtonUPtr_->SetIsDisabled(false);
+            spellsButtonUPtr_->SetMouseHoverText("Click here or press 's' to view and cast spells.");
         }
 
         if (creaturePtr_->Titles().empty())
         {
-            titlesButtonSPtr_->SetIsDisabled(true);
-            titlesButtonSPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not have any titles.");
+            titlesButtonUPtr_->SetIsDisabled(true);
+            titlesButtonUPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not have any titles.");
         }
         else if (ViewType::Titles == view_)
         {
-            titlesButtonSPtr_->SetIsDisabled(true);
-            titlesButtonSPtr_->SetMouseHoverText("Already viewing titles.");
+            titlesButtonUPtr_->SetIsDisabled(true);
+            titlesButtonUPtr_->SetMouseHoverText("Already viewing titles.");
         }
         else
         {
-            titlesButtonSPtr_->SetIsDisabled(false);
-            titlesButtonSPtr_->SetMouseHoverText("Click here or press 't' to view titles.");
+            titlesButtonUPtr_->SetIsDisabled(false);
+            titlesButtonUPtr_->SetMouseHoverText("Click here or press 't' to view titles.");
         }
 
         if (ViewType::Conditions == view_)
         {
-            condsButtonSPtr_->SetIsDisabled(true);
-            condsButtonSPtr_->SetMouseHoverText("Already viewing conditions.");
+            condsButtonUPtr_->SetIsDisabled(true);
+            condsButtonUPtr_->SetMouseHoverText("Already viewing conditions.");
         }
         else
         {
-            condsButtonSPtr_->SetIsDisabled(false);
-            condsButtonSPtr_->SetMouseHoverText("Click here or press 'c' to view conditions.");
+            condsButtonUPtr_->SetIsDisabled(false);
+            condsButtonUPtr_->SetMouseHoverText("Click here or press 'c' to view conditions.");
         }
 
         if (creaturePtr_->IsBeast())
         {
-            giveButtonSPtr_->SetIsDisabled(true);
-            shareButtonSPtr_->SetIsDisabled(true);
-            gatherButtonSPtr_->SetIsDisabled(true);
+            giveButtonUPtr_->SetIsDisabled(true);
+            shareButtonUPtr_->SetIsDisabled(true);
+            gatherButtonUPtr_->SetIsDisabled(true);
 
             const std::string DENY_MSG("Beasts cannot carry items, coins, gems, or Meteor Shards.");
 
-            giveButtonSPtr_->SetMouseHoverText(DENY_MSG);
-            shareButtonSPtr_->SetMouseHoverText(DENY_MSG);
-            gatherButtonSPtr_->SetMouseHoverText(DENY_MSG);
+            giveButtonUPtr_->SetMouseHoverText(DENY_MSG);
+            shareButtonUPtr_->SetMouseHoverText(DENY_MSG);
+            gatherButtonUPtr_->SetMouseHoverText(DENY_MSG);
         }
         else
         {
-            giveButtonSPtr_->SetIsDisabled(false);
-            shareButtonSPtr_->SetIsDisabled(false);
-            gatherButtonSPtr_->SetIsDisabled(false);
+            giveButtonUPtr_->SetIsDisabled(false);
+            shareButtonUPtr_->SetIsDisabled(false);
+            gatherButtonUPtr_->SetIsDisabled(false);
 
-            giveButtonSPtr_->SetMouseHoverText("Click here or press 'g' to give something to another character.");
-            shareButtonSPtr_->SetMouseHoverText("Click here or press 'h' to share something between all characters.");
-            gatherButtonSPtr_->SetMouseHoverText("Click here or press 'r' to gather all of something from all other characters.");
+            giveButtonUPtr_->SetMouseHoverText("Click here or press 'g' to give something to another character.");
+            shareButtonUPtr_->SetMouseHoverText("Click here or press 'h' to share something between all characters.");
+            gatherButtonUPtr_->SetMouseHoverText("Click here or press 'r' to gather all of something from all other characters.");
         }
 
         if (ViewType::Items == view_)
@@ -1575,33 +1600,33 @@ namespace stage
                 (selectedItemPtr->ITEM_CPTR != nullptr) &&
                 (selectedItemPtr->ITEM_CPTR->Name().empty() == false))
             {
-                equipButtonSPtr_->SetIsDisabled(false);
-                equipButtonSPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
-                dropButtonSPtr_->SetIsDisabled(false);
-                dropButtonSPtr_->SetMouseHoverText("(Click here or press 'd' to drop the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
+                equipButtonUPtr_->SetIsDisabled(false);
+                equipButtonUPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                dropButtonUPtr_->SetIsDisabled(false);
+                dropButtonUPtr_->SetMouseHoverText("(Click here or press 'd' to drop the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
             }
             else
             {
-                equipButtonSPtr_->SetIsDisabled(true);
-                equipButtonSPtr_->SetMouseHoverText("There is no unequipped item selected to equip.");
-                dropButtonSPtr_->SetIsDisabled(true);
-                dropButtonSPtr_->SetMouseHoverText("There is no unequipped item selected to drop.");
+                equipButtonUPtr_->SetIsDisabled(true);
+                equipButtonUPtr_->SetMouseHoverText("There is no unequipped item selected to equip.");
+                dropButtonUPtr_->SetIsDisabled(true);
+                dropButtonUPtr_->SetMouseHoverText("There is no unequipped item selected to drop.");
             }
         }
         else if (creaturePtr_->IsBeast())
         {
-            equipButtonSPtr_->SetIsDisabled(true);
-            equipButtonSPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
-            dropButtonSPtr_->SetIsDisabled(true);
-            dropButtonSPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
+            equipButtonUPtr_->SetIsDisabled(true);
+            equipButtonUPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
+            dropButtonUPtr_->SetIsDisabled(true);
+            dropButtonUPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
 
         }
         else
         {
-            equipButtonSPtr_->SetIsDisabled(true);
-            equipButtonSPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to equip an item.");
-            dropButtonSPtr_->SetIsDisabled(true);
-            dropButtonSPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to drop an item.");
+            equipButtonUPtr_->SetIsDisabled(true);
+            equipButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to equip an item.");
+            dropButtonUPtr_->SetIsDisabled(true);
+            dropButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to drop an item.");
         }
 
         if (ViewType::Items == view_)
@@ -1610,24 +1635,24 @@ namespace stage
                 (equippedListBoxSPtr_->GetSelected()->ITEM_CPTR != nullptr) &&
                 (equippedListBoxSPtr_->GetSelected()->ITEM_CPTR->Name().empty() == false))
             {
-                unequipButtonSPtr_->SetIsDisabled(false);
-                unequipButtonSPtr_->SetMouseHoverText("Click here or press 'u' to unequip the " + equippedListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                unequipButtonUPtr_->SetIsDisabled(false);
+                unequipButtonUPtr_->SetMouseHoverText("Click here or press 'u' to unequip the " + equippedListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
             }
             else
             {
-                unequipButtonSPtr_->SetIsDisabled(true);
-                unequipButtonSPtr_->SetMouseHoverText("There is no item to unequip.");
+                unequipButtonUPtr_->SetIsDisabled(true);
+                unequipButtonUPtr_->SetMouseHoverText("There is no item to unequip.");
             }
         }
         else if (creaturePtr_->IsBeast())
         {
-            unequipButtonSPtr_->SetIsDisabled(true);
-            unequipButtonSPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
+            unequipButtonUPtr_->SetIsDisabled(true);
+            unequipButtonUPtr_->SetMouseHoverText("Beasts cannot carry, equip, or drop items.");
         }
         else
         {
-            unequipButtonSPtr_->SetIsDisabled(true);
-            unequipButtonSPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to unequip an item.");
+            unequipButtonUPtr_->SetIsDisabled(true);
+            unequipButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to unequip an item.");
         }
     }
 
@@ -1646,16 +1671,16 @@ namespace stage
 
     bool InventoryStage::HandleViewChange(const ViewType NEW_VIEW)
     {
-        if ((NEW_VIEW == ViewType::Items) && ((ViewType::Items == view_) || itemsButtonSPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Items) && ((ViewType::Items == view_) || itemsButtonUPtr_->IsDisabled()))
             return false;
 
-        if ((NEW_VIEW == ViewType::Titles) && ((ViewType::Titles == view_) || titlesButtonSPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Titles) && ((ViewType::Titles == view_) || titlesButtonUPtr_->IsDisabled()))
             return false;
 
-        if ((NEW_VIEW == ViewType::Conditions) && ((ViewType::Conditions == view_) || condsButtonSPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Conditions) && ((ViewType::Conditions == view_) || condsButtonUPtr_->IsDisabled()))
             return false;
 
-        if ((NEW_VIEW == ViewType::Spells) && ((ViewType::Spells == view_) || spellsButtonSPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Spells) && ((ViewType::Spells == view_) || spellsButtonUPtr_->IsDisabled()))
             return false;
 
         viewToChangeTo_ = NEW_VIEW;
@@ -1673,7 +1698,7 @@ namespace stage
 
     bool InventoryStage::HandleEquip()
     {
-        if ((ViewType::Items == view_) && (equipButtonSPtr_->IsDisabled() == false))
+        if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
             const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
@@ -1708,7 +1733,7 @@ namespace stage
 
     bool InventoryStage::HandleUnequip()
     {
-        if ((ViewType::Items == view_) && (unequipButtonSPtr_->IsDisabled() == false))
+        if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
             const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(equippedListBoxSPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
@@ -1769,7 +1794,7 @@ namespace stage
 
     bool InventoryStage::HandleDrop()
     {
-        if ((ViewType::Items == view_) && (equipButtonSPtr_->IsDisabled() == false))
+        if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
             const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
@@ -2535,7 +2560,7 @@ namespace stage
         {
             std::ostringstream ss;
             ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers
-                << " gems from the rest of the party, and now has "
+                << " coins from the rest of the party, and now has "
                 << creaturePtr_->Inventory().Coins() << ".";
 
             PopupDoneWindow(ss.str(), false);

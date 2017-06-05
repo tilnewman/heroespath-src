@@ -100,7 +100,7 @@ namespace gui
         virtual bool WillAcceptFocus() const = 0;
         virtual void SetWillAcceptFocus(const bool) = 0;
         virtual void FakeColorSetAsIfFocusIs(const bool) = 0;
-        virtual const std::string GetMouseHoverText(const sf::Vector2f &) = 0;
+        virtual const std::string GetMouseHoverText() = 0;
         virtual void SetMouseHoverText(const std::string &) = 0;
     protected:
         virtual void OnClick(const sf::Vector2f &) = 0;

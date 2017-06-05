@@ -284,7 +284,7 @@ namespace sfml_util
             if ((entityWithFocusPtr_ != nullptr) &&
                 (entityWithFocusPtr_->GetEntityRegion().contains(MOUSE_POS_V)))
             {
-                hoverText = entityWithFocusPtr_->GetMouseHoverText(MOUSE_POS_V);
+                hoverText = entityWithFocusPtr_->GetMouseHoverText();
             }
 
             //if focused entity is not hovered, then look for any entity the mouse is hoving over
@@ -294,7 +294,7 @@ namespace sfml_util
                 {
                     if (NEXT_ENTITY_PTR->GetEntityRegion().contains(MOUSE_POS_V))
                     {
-                        hoverText = NEXT_ENTITY_PTR->GetMouseHoverText(MOUSE_POS_V);
+                        hoverText = NEXT_ENTITY_PTR->GetMouseHoverText();
 
                         if (hoverText.empty() == false)
                         {
