@@ -53,8 +53,9 @@ namespace sfml_util
             All
         };
 
+        inline static const std::string FileExt() { return ".ogg"; }
+
         static const std::string ToString(const music::Enum);
-        static const std::string FileExt(const music::Enum);
         static const std::string Filename(const music::Enum);
         static const std::string Directory(const music::Enum);
         static const std::string ArtistName(const music::Enum);

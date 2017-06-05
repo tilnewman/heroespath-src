@@ -48,7 +48,6 @@ namespace sfml_util
             case Switch1:           { return "Switch1"; }
             case Switch2:           { return "Switch2"; }
             case Switch3:           { return "Switch3"; }
-            case Switch4:           { return "Switch4"; }
             case Thock1:            { return "Thock1"; }
             case Thock2:            { return "Thock2"; }
             case Thock3:            { return "Thock3"; }
@@ -244,7 +243,6 @@ namespace sfml_util
             case Switch1:
             case Switch2:
             case Switch3:
-            case Switch4:
             case Thock1:
             case Thock2:
             case Thock3:

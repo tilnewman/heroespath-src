@@ -48,7 +48,6 @@ namespace sfml_util
             Switch1,
             Switch2,
             Switch3,
-            Switch4,
             Thock1,
             Thock2,
             Thock3,

@@ -132,8 +132,7 @@ namespace sfml_util
         const SoundEffectEnumVec_t SWITCH_SOUNDS_ENUM_VEC = {
             sound_effect::Switch1,
             sound_effect::Switch2,
-            sound_effect::Switch3,
-            sound_effect::Switch4 };
+            sound_effect::Switch3 };
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::Switch)] =
             SoundEffectsSet(SWITCH_SOUNDS_ENUM_VEC);
@@ -681,7 +680,7 @@ namespace sfml_util
             const std::string NEXT_TRACK_NAME(filenamePartsVec.at(2));
 
             const std::string NEXT_LICENSE_NAME(boost::algorithm::erase_all_copy(
-                filenamePartsVec.at(3), music::FileExt(music::CombatIntro)));
+                filenamePartsVec.at(3), music::FileExt()));
 
             combatIntroMusicInfoVec_.push_back(MusicInfo(music::CombatIntro,
                                                          false,

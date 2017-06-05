@@ -60,40 +60,10 @@ namespace sfml_util
     }
 
 
-    const std::string music::FileExt(const music::Enum E)
-    {
-        switch (E)
-        {
-            case Theme:
-            case Wind:        { return ".flac"; }
-            case Fire1:
-            case Fire2:
-            case PartyCreation:
-            case Credits1:
-            case Credits2:
-            case CombatIntro: { return ".ogg"; }
-            case All:
-            case None:
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::music::FileExt(" << music::ToString(E) << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::music::FileExt(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-
     const std::string music::Filename(const music::Enum E)
     {
         std::ostringstream ss;
-        ss << ToString(E) << FileExt(E);
+        ss << ToString(E) << FileExt();
         return ss.str();
     }
 
