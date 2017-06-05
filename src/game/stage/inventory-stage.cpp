@@ -206,11 +206,15 @@ namespace stage
         detailViewTextUPtr_     (),
         detailViewSlider_       (DETAILVIEW_SLIDER_SPEED_)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr), "game::stage::InventoryStage::InventoryStage() was given a null creature shared pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr),
+            "game::stage::InventoryStage::InventoryStage() was given a null "
+            << "creature shared pointer.");
 
         const std::size_t NUM_CHARACTERS(characterViewMap_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
             characterViewMap_[i] = ViewType::Count;
+        }
     }
 
 
@@ -254,37 +258,59 @@ namespace stage
             return false;
 
         if (PACKAGE.PTR_ == backButtonSPtr_.get())
+        {
             return HandleBack();
+        }
 
         if (PACKAGE.PTR_ == itemsButtonSPtr_.get())
+        {
             return HandleViewChange(ViewType::Items);
+        }
 
         if (PACKAGE.PTR_ == titlesButtonSPtr_.get())
+        {
             return HandleViewChange(ViewType::Titles);
+        }
 
         if (PACKAGE.PTR_ == condsButtonSPtr_.get())
+        {
             return HandleViewChange(ViewType::Conditions);
+        }
 
         if (PACKAGE.PTR_ == spellsButtonSPtr_.get())
+        {
             return HandleViewChange(ViewType::Spells);
+        }
 
         if (PACKAGE.PTR_ == giveButtonSPtr_.get())
+        {
             return HandleGive();
+        }
 
         if (PACKAGE.PTR_ == shareButtonSPtr_.get())
+        {
             return HandleShare();
+        }
 
         if (PACKAGE.PTR_ == gatherButtonSPtr_.get())
+        {
             return HandleGather();
+        }
 
         if (PACKAGE.PTR_ == equipButtonSPtr_.get())
+        {
             return HandleEquip();
+        }
 
         if (PACKAGE.PTR_ == unequipButtonSPtr_.get())
+        {
             return HandleUnequip();
+        }
 
         if (PACKAGE.PTR_ == dropButtonSPtr_.get())
+        {
             return HandleDrop();
+        }
 
         return false;
     }
@@ -335,9 +361,13 @@ namespace stage
                     return false;
                 }
                 else if (creaturePtr_->Inventory().Coins() == 1)
+                {
                     PopupCharacterSelectWindow("Give the coin to whom?");
+                }
                 else
+                {
                     PopupCharacterSelectWindow("Give coins to whom?");
+                }
 
                 contentType_ = ContentType::Coins;
                 return false;
@@ -352,9 +382,13 @@ namespace stage
                     return false;
                 }
                 else if (creaturePtr_->Inventory().Gems() == 1)
+                {
                     PopupCharacterSelectWindow("Give the gem to whom?");
+                }
                 else
+                {
                     PopupCharacterSelectWindow("Give gems to whom?");
+                }
 
                 contentType_ = ContentType::Gems;
                 return false;
@@ -369,9 +403,13 @@ namespace stage
                     return false;
                 }
                 else if (creaturePtr_->Inventory().MeteorShards() == 1)
+                {
                     PopupCharacterSelectWindow("Give the Meteor Shard to whom?");
+                }
                 else
+                {
                     PopupCharacterSelectWindow("Give Meteor Shards to whom?");
+                }
 
                 contentType_ = ContentType::MeteorShards;
                 return false;
@@ -498,27 +536,39 @@ namespace stage
             if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Coins())
             {
                 if (ActionType::Gather == actionType_)
+                {
                     HandleCoinsGather(true);
+                }
                 else if (ActionType::Share == actionType_)
+                {
                     HandleCoinsShare();
+                }
 
                 return false;
             }
             else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Gems())
             {
                 if (ActionType::Gather == actionType_)
+                {
                     HandleGemsGather(true);
+                }
                 else if (ActionType::Share == actionType_)
+                {
                     HandleGemsShare();
+                }
 
                 return false;
             }
             else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
+                {
                     HandleMeteorShardsGather(true);
+                }
                 else if (ActionType::Share == actionType_)
+                {
                     HandleMeteorShardsShare();
+                }
 
                 return false;
             }
@@ -694,19 +744,12 @@ namespace stage
 
         SetupButtons();
 
-        if (creaturePtr_->IsBeast())
-        {
-            HandleViewChange(ViewType::Conditions);
-        }
-        else
-        {
-            //force action on the equipped item listbox to force focus and selection
-            sf::Event::KeyEvent keyEvent;
-            keyEvent.code = sf::Keyboard::Down;
-            equippedListBoxSPtr_->KeyRelease(keyEvent);
-            keyEvent.code = sf::Keyboard::Up;
-            equippedListBoxSPtr_->KeyRelease(keyEvent);
-        }
+        //force action on the equipped item listbox to force focus and selection
+        sf::Event::KeyEvent keyEvent;
+        keyEvent.code = sf::Keyboard::Down;
+        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        keyEvent.code = sf::Keyboard::Up;
+        equippedListBoxSPtr_->KeyRelease(keyEvent);
     }
 
 
@@ -738,64 +781,104 @@ namespace stage
             sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
 
             if (KEY_EVENT.code == sf::Keyboard::A)
+            {
                 return HandleAchievementDisplay();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::B)
+            {
                 return HandleBack();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::I)
+            {
                 return HandleViewChange(ViewType::Items);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::T)
+            {
                 return HandleViewChange(ViewType::Titles);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::C)
+            {
                 return HandleViewChange(ViewType::Conditions);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::S)
+            {
                 return HandleViewChange(ViewType::Spells);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::G)
+            {
                 return HandleGive();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::H)
+            {
                 return HandleShare();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::R)
+            {
                 return HandleGather();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::E)
+            {
                 return HandleEquip();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::U)
+            {
                 return HandleUnequip();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::D)
+            {
                 return HandleDrop();
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Left)
+            {
                 return HandlePlayerChangeBeforeOrAfter(false);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Right)
+            {
                 return HandlePlayerChangeBeforeOrAfter(true);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num1)
+            {
                 return HandlePlayerChangeIndex(0);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num2)
+            {
                 return HandlePlayerChangeIndex(1);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num3)
+            {
                 return HandlePlayerChangeIndex(2);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num4)
+            {
                 return HandlePlayerChangeIndex(3);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num5)
+            {
                 return HandlePlayerChangeIndex(4);
+            }
 
             if (KEY_EVENT.code == sf::Keyboard::Num6)
+            {
                 return HandlePlayerChangeIndex(5);
+            }
         }
 
         if (isDetailViewDoneFading_)
@@ -900,9 +983,13 @@ namespace stage
                     const float RATIO(imageSlider_.Update(ELAPSED_TIME_SECONDS));
 
                     if (isSlidingLeft_)
+                    {
                         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO), creatureSprite_.getPosition().y);
+                    }
                     else
+                    {
                         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), creatureSprite_.getPosition().y);
+                    }
 
                     if (imageSlider_.GetIsDone())
                     {
@@ -917,7 +1004,9 @@ namespace stage
                     const float RATIO((1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)));
 
                     if (isSlidingLeft_)
+                    {
                         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), creatureSprite_.getPosition().y);
+                    }
                     else
                     {
                         const float NEW_POS_LEFT(CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO));
@@ -1091,9 +1180,13 @@ namespace stage
                     const float RATIO(listBoxSlider_.Update(ELAPSED_TIME_SECONDS));
 
                     if (isSlidingLeft_)
+                    {
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                    }
                     else
+                    {
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                    }
 
                     if (listBoxSlider_.GetIsDone())
                     {
@@ -1108,9 +1201,13 @@ namespace stage
                     const float RATIO((1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)));
 
                     if (isSlidingLeft_)
+                    {
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                    }
                     else
+                    {
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                    }
 
                     if (listBoxSlider_.GetIsDone())
                     {
@@ -1132,9 +1229,13 @@ namespace stage
                     if (ViewType::Items == view_)
                     {
                         if (isSlidingLeft_)
+                        {
                             unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxSPtr_->GetEntityPos().y);
+                        }
                         else
+                        {
                             unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxSPtr_->GetEntityPos().y);
+                        }
                     }
                     else
                     {
@@ -1169,9 +1270,13 @@ namespace stage
                     if ((ViewType::Items == viewToChangeTo_) || isViewForcedToItems_ || ((ViewType::Count == viewToChangeTo_) && (ViewType::Items == view_)))
                     {
                         if (isSlidingLeft_)
+                        {
                             unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxSPtr_->GetEntityPos().y);
+                        }
                         else
+                        {
                             unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxSPtr_->GetEntityPos().y);
+                        }
                     }
                     else
                     {
@@ -1206,15 +1311,14 @@ namespace stage
                     isDescBoxSlidingDone_)
                 {
                     AfterChangingViewTasks();
-
-                    if ((creaturePtr_->IsBeast()) && (ViewType::Items == view_))
-                        HandleViewChange(ViewType::Conditions);
                 }
             }
             else
             {
                 if (isListBoxSlidingDone_ && isDescBoxSlidingDone_)
+                {
                     AfterChangingViewTasks();
+                }
             }
         }
         else
@@ -1384,12 +1488,6 @@ namespace stage
             itemsButtonSPtr_->SetIsDisabled(true);
             itemsButtonSPtr_->SetMouseHoverText("Already viewing items.");
         }
-        else if (creaturePtr_->IsBeast())
-        {
-            itemsButtonSPtr_->SetIsDisabled(true);
-            itemsButtonSPtr_->SetMouseHoverText("Beasts cannot carry items.");
-        }
-        else
         {
             itemsButtonSPtr_->SetIsDisabled(false);
             itemsButtonSPtr_->SetMouseHoverText("Click here or press 'i' to view items.");
@@ -1733,18 +1831,11 @@ namespace stage
             creaturePtr_ = CREATURE_CPTRC;
             StartSlidingAnimation(IS_SLIDING_LEFT);
 
-            if (CREATURE_CPTRC->IsBeast())
+            if (((ViewType::Titles == view_) && (CREATURE_CPTRC->Titles().empty())) ||
+                ((ViewType::Spells == view_) && (CREATURE_CPTRC->Spells().empty())) ||
+                ((ViewType::Conditions == view_) && (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
             {
-                isViewForcedToItems_ = false;
-            }
-            else
-            {
-                if (((ViewType::Titles == view_) && (CREATURE_CPTRC->Titles().empty())) ||
-                    ((ViewType::Spells == view_) && (CREATURE_CPTRC->Spells().empty())) ||
-                    ((ViewType::Conditions == view_) && (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
-                {
-                    isViewForcedToItems_ = true;
-                }
+                isViewForcedToItems_ = true;
             }
 
             return true;

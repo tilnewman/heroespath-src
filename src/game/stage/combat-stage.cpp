@@ -764,7 +764,7 @@ namespace stage
                                                   creature::Race(creature::race::Human),
                                                   creature::Role(creature::role::Knight),
                                                   KNIGHT_STATS) };
-
+            
             player::Initial::Setup(knightPtr);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
@@ -799,7 +799,7 @@ namespace stage
             partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
-        {
+        /*{
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
                                               20 + misc::random::Int(10) + 100,
                                               5  + misc::random::Int(6),
@@ -821,8 +821,8 @@ namespace stage
 
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
-        }
-        /*
+        }*/
+        
         {
             const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
                                               20 + misc::random::Int(10),
@@ -831,19 +831,22 @@ namespace stage
                                               5  + misc::random::Int(8),
                                               5  + misc::random::Int(6));
 
-            const std::string WOLFEN_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "W"));
-            player::CharacterSPtr_t wolfenSPtr(new player::Character(WOLFEN_NAME,
-                                                                     creature::sex::Female,
-                                                                     creature::BodyType::Make_Wolfen(),
-                                                                     creature::Race(creature::race::Wolfen),
-                                                                     creature::Role(creature::role::Wolfen),
-                                                                     WOLFEN_STATS));
+            const std::string WOLFEN_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "W"));
 
-            player::Initial::Setup(wolfenSPtr.get());
-            partyPtr->Add(wolfenSPtr, errMsgIgnored);
+            auto wolfenPtr{ new player::Character(WOLFEN_NAME,
+                                                  creature::sex::Female,
+                                                  creature::BodyType::Make_Wolfen(),
+                                                  creature::Race(creature::race::Wolfen),
+                                                  creature::Role(creature::role::Wolfen),
+                                                  WOLFEN_STATS) };
+
+            player::Initial::Setup(wolfenPtr);
+            partyPtr->Add(wolfenPtr, errMsgIgnored);
         }
-        */
-        {
+        /*{
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
                                             10 + misc::random::Int(6) + 100,
                                             10 + misc::random::Int(6),
@@ -865,8 +868,8 @@ namespace stage
 
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
-        }
-        /*
+        }*/
+        
         {
             const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
                                                    10 + misc::random::Int(6),
@@ -875,18 +878,22 @@ namespace stage
                                                    10 + misc::random::Int(6),
                                                    10 + misc::random::Int(6));
 
-            const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "G"));
-            player::CharacterSPtr_t bmSPtr(new player::Character(BEASTMASTER_NAME,
-                                                                 creature::sex::Male,
-                                                                 creature::BodyType::Make_Humanoid(),
-                                                                 creature::Race(creature::race::Human),
-                                                                 creature::Role(creature::role::Beastmaster),
-                                                                 BEASTMASTER_STATS));
+            const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "G"));
 
-            player::Initial::Setup(bmSPtr.get());
-            partyPtr->Add(bmSPtr, errMsgIgnored);
+            auto bmPtr{ new player::Character(BEASTMASTER_NAME,
+                                              creature::sex::Male,
+                                              creature::BodyType::Make_Humanoid(),
+                                              creature::Race(creature::race::Human),
+                                              creature::Role(creature::role::Beastmaster),
+                                              BEASTMASTER_STATS) };
+
+            player::Initial::Setup(bmPtr);
+            partyPtr->Add(bmPtr, errMsgIgnored);
         }
-        */
+        
         {
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
                                              5  + misc::random::Int(10) + 100,
@@ -986,7 +993,8 @@ namespace stage
         }
         else
         {
-            preTurnPhase_ = PreTurnPhase::Start;
+            //TODO TEMP -change back to ::Start when inventory testing is over
+            preTurnPhase_ = PreTurnPhase::End;
 
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partyPtr);
