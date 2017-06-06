@@ -1710,6 +1710,7 @@ namespace stage
                 const std::string EQUIP_RESULT(creaturePtr_->ItemEquip(IITEM_PTR));
                 if (EQUIP_RESULT.empty())
                 {
+                    sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
                     unEquipListBoxSPtr_->Remove(LISTBOX_ITEM_SPTR);
                     equippedListBoxSPtr_->Add(LISTBOX_ITEM_SPTR);
                     SetupButtons();
@@ -1748,6 +1749,7 @@ namespace stage
                 }
                 else
                 {
+                    sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
                     const item::ItemPtr_t IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
                     creaturePtr_->ItemUnEquip(IITEM_PTR);
                     equippedListBoxSPtr_->Remove(LISTBOX_ITEM_SPTR);
