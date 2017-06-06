@@ -54,8 +54,8 @@ namespace game
 namespace creature
 {
 
-    std::size_t       Creature::globalSerialNumber_(0);
-    const std::string Creature::ITEM_ACTION_SUCCESS_STR_("");
+    std::size_t       Creature::globalSerialNumber_{ 0 };
+    const std::string Creature::ITEM_ACTION_SUCCESS_STR_{ "" };
 
 
     Creature::Creature(const std::string &         NAME,
@@ -1167,18 +1167,26 @@ namespace creature
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
         if (role::Knight == role_.Which())
+        {
             return RESPONSE_PREFIX + "knights cannot cast spells" + RESPONSE_POSTFIX;
+        }
 
         const std::string CAN_TAKE_ACTION_STR(CanTakeActionStr(false));
 
         if (CAN_TAKE_ACTION_STR.empty() == false)
+        {
             return RESPONSE_PREFIX + CAN_TAKE_ACTION_STR + RESPONSE_POSTFIX;
+        }
 
         if (spellsVec_.empty())
+        {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells" + RESPONSE_POSTFIX;
+        }
 
         if (ManaCurrent() <= 0)
+        {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
+        }
 
         return "";
     }
@@ -1419,7 +1427,8 @@ namespace creature
                       L.dateTimeCreated_,
                       L.achievements_,
                       L.manaCurrent_,
-                      L.manaNormal_)
+                      L.manaNormal_,
+                      L.lastSpellCastNum_)
                 ==
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1436,7 +1445,8 @@ namespace creature
                          R.dateTimeCreated_,
                          R.achievements_,
                          R.manaCurrent_,
-                         R.manaNormal_) == false)
+                         R.manaNormal_,
+                         R.lastSpellCastNum_) == false)
         {
             return false;
         }
@@ -1472,7 +1482,8 @@ namespace creature
                       L.dateTimeCreated_,
                       L.achievements_,
                       L.manaCurrent_,
-                      L.manaNormal_)
+                      L.manaNormal_,
+                      L.lastSpellCastNum_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1489,7 +1500,8 @@ namespace creature
                          R.dateTimeCreated_,
                          R.achievements_,
                          R.manaCurrent_,
-                         R.manaNormal_) == true)
+                         R.manaNormal_,
+                         R.lastSpellCastNum_) == true)
         {
             return true;
         }

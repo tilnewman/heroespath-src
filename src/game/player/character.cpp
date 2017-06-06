@@ -105,7 +105,8 @@ namespace player
                      L.dateTimeCreated_,
                      L.achievements_,
                      L.manaCurrent_,
-                     L.manaNormal_)
+                     L.manaNormal_,
+                     L.lastSpellCastNum_)
                !=
                std::tie(R.name_,
                         R.imageFilename_,
@@ -122,7 +123,8 @@ namespace player
                         R.dateTimeCreated_,
                         R.achievements_,
                         R.manaCurrent_,
-                        R.manaNormal_))
+                        R.manaNormal_,
+                        R.lastSpellCastNum_))
         {
             return false;
         }
@@ -158,7 +160,8 @@ namespace player
                      L.dateTimeCreated_,
                      L.achievements_,
                      L.manaCurrent_,
-                     L.manaNormal_)
+                     L.manaNormal_,
+                     L.lastSpellCastNum_)
                <
                std::tie(R.name_,
                         R.imageFilename_,
@@ -175,7 +178,8 @@ namespace player
                         R.dateTimeCreated_,
                         R.achievements_,
                         R.manaCurrent_,
-                        R.manaNormal_))
+                        R.manaNormal_,
+                        R.lastSpellCastNum_))
         {
             return true;
         }

@@ -116,9 +116,14 @@ namespace spell
 
     const std::string Sleep::EffectCreature(
         creature::CreaturePtr_t,
-        creature::CreaturePtr_t        effectedCreaturePtr,
+        creature::CreaturePtr_t effectedCreaturePtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural) ||
             effectedCreaturePtr->HasCondition(creature::Conditions::AsleepMagical))
         {
@@ -137,6 +142,11 @@ namespace spell
                                              creature::CreaturePtr_t effectedCreaturePtr,
                                              creature::ConditionEnumVec_t &) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural))
         {
             effectedCreaturePtr->ConditionRemove(creature::Conditions::AsleepNatural);
@@ -163,6 +173,11 @@ namespace spell
                                            creature::CreaturePtr_t        effectedCreaturePtr,
                                            creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "tripped";
@@ -180,6 +195,11 @@ namespace spell
                                            creature::CreaturePtr_t effectedCreaturePtr,
                                            creature::ConditionEnumVec_t &) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
         {
             effectedCreaturePtr->ConditionRemove(creature::Conditions::Tripped);
@@ -196,6 +216,11 @@ namespace spell
                                            creature::CreaturePtr_t        effectedCreaturePtr,
                                            creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dazed";
@@ -214,6 +239,11 @@ namespace spell
         creature::CreaturePtr_t        effectedCreaturePtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() +
@@ -232,6 +262,11 @@ namespace spell
                                                 creature::CreaturePtr_t effectedCreaturePtr,
                                                 creature::ConditionEnumVec_t &) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
         {
             effectedCreaturePtr->ConditionRemove(creature::Conditions::Frightened);
@@ -254,6 +289,11 @@ namespace spell
         creature::CreaturePtr_t        effectedCreaturePtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";
@@ -271,6 +311,11 @@ namespace spell
                                                creature::CreaturePtr_t effectedCreaturePtr,
                                                creature::ConditionEnumVec_t &) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
             effectedCreaturePtr->ConditionRemove(creature::Conditions::Poisoned);
@@ -288,6 +333,11 @@ namespace spell
         creature::CreaturePtr_t        effectedCreaturePtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
+        if (effectedCreaturePtr->IsAlive() == false)
+        {
+            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+        }
+
         if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";

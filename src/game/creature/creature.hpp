@@ -277,6 +277,9 @@ namespace creature
         //should only be called after loading a saved game
         void StoreItemsInWarehouseAfterLoad();
 
+        std::size_t LastSpellCastNum() const                    { return lastSpellCastNum_; }
+        void LastSpellCastNum(const std::size_t N)              { lastSpellCastNum_ = N; }
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
@@ -286,7 +289,7 @@ namespace creature
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
         static std::size_t globalSerialNumber_;
-
+        
     protected:
         std::string         name_;
         std::string         imageFilename_;
@@ -309,6 +312,7 @@ namespace creature
         item::ItemPVec_t    currWeaponsPVec_;
         stats::Mana_t       manaCurrent_;
         stats::Mana_t       manaNormal_;
+        std::size_t         lastSpellCastNum_;
 
     private:
         friend class boost::serialization::access;
@@ -336,6 +340,7 @@ namespace creature
             ar & currWeaponsPVec_;
             ar & manaCurrent_;
             ar & manaNormal_;
+            ar & lastSpellCastNum_;
         }
     };
 

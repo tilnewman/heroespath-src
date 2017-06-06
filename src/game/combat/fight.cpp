@@ -626,6 +626,8 @@ namespace combat
             << creatureCastingPtr->NameAndRaceAndRole() << ", creatures_cast_upon=empty) was "
             << "given an empty creaturesCastUponPVec.");
 
+        creatureCastingPtr->ManaCurrentAdj(SPELL_CPTR->ManaCost() * -1);
+
         if (((SPELL_CPTR->Target() == TargetType::SingleCompanion) ||
             (SPELL_CPTR->Target() == TargetType::SingleOpponent)) &&
                 (creaturesCastUponPVec.size() > 1))
@@ -649,14 +651,14 @@ namespace combat
         }
 
         CreatureEffectVec_t creatureEffectVec;
-        for (auto nextCreatureCastUpon : creaturesCastUponPVec)
+        for (auto nextCreatureCastUponPtr : creaturesCastUponPVec)
         {
-            auto const HEALTH_ADJ{ SPELL_CPTR->HealthAdj(creatureCastingPtr,
-                                                         nextCreatureCastUpon) };
+            auto const HEALTH_ADJ{((nextCreatureCastUponPtr->IsAlive()) ?
+                SPELL_CPTR->HealthAdj(creatureCastingPtr, nextCreatureCastUponPtr) : 0) };
 
             creature::ConditionEnumVec_t conditionsVec;
             auto const SPELL_RESULT_STR{ SPELL_CPTR->EffectCreature(creatureCastingPtr,
-                                                                    nextCreatureCastUpon,
+                                                                    nextCreatureCastUponPtr,
                                                                     conditionsVec) };
 
             HitInfoVec_t hitInfoVec;
@@ -664,11 +666,12 @@ namespace combat
                                                SPELL_CPTR,
                                                SPELL_RESULT_STR,
                                                creatureCastingPtr,
-                                               nextCreatureCastUpon,
+                                               nextCreatureCastUponPtr,
                                                HEALTH_ADJ,
                                                conditionsVec) );
 
-            creatureEffectVec.push_back( CreatureEffect(nextCreatureCastUpon, hitInfoVec, SPELL_CPTR) );
+            creatureEffectVec.push_back(
+                CreatureEffect(nextCreatureCastUponPtr, hitInfoVec, SPELL_CPTR) );
 
             //TODO Handle Encounter::Instance()->TurnInfo
         }

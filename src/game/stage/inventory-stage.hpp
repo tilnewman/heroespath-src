@@ -38,6 +38,8 @@
 #include "game/main-menu-title.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/i-popup-callback.hpp"
+#include "game/combat/fight-results.hpp"
+#include "game/combat/combat-text.hpp"
 
 #include <memory>
 #include <string>
@@ -76,6 +78,12 @@ namespace game
     {
         class Item;
         using ItemPtr_t = Item *;
+    }
+
+    namespace combat
+    {
+        class CombatSoundEffects;
+        using CombatSoundEffectsUPtr_t = std::unique_ptr<CombatSoundEffects>;
     }
 
 namespace stage
@@ -167,7 +175,7 @@ namespace stage
         void SetupDescBoxTitle();
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
         void SetDescBoxText(const std::string &);
-        void PopupCharacterSelectWindow(const std::string &);
+        void PopupCharacterSelectWindow(const std::string &, const bool CAN_SELECT_ALL = false);
         void PopupRejectionWindow(const std::string &, const bool WILL_USE_REGULAR_SIZE_POPUP = false);
         void PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX);
         void PopupDoneWindow(const std::string &, const bool);
@@ -191,7 +199,10 @@ namespace stage
         void SetupDetailViewCreature(creature::CreatureCPtrC_t CREATURE_CPTRC);
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
-        ViewType EstablishViewToUse() const;
+        bool HandleCast_Step1_TargetSelection(const spell::SpellPtr_t);
+        void HandleCast_Step2_PerformSpell(const creature::CreaturePVec_t &);
+        bool HandleCast_Step3_DisplayResults();
+        void ForceSelectionAndDrawOfListBox();
 
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
@@ -207,6 +218,8 @@ namespace stage
         static const std::string POPUP_NAME_NUMBER_SELECT_;
         static const std::string POPUP_NAME_CONTENTSELECTION_;
         static const std::string POPUP_NAME_DROPCONFIRM_;
+        static const std::string POPUP_NAME_SPELLBOOK_;
+        static const std::string POPUP_NAME_SPELL_RESULT_;
 
     private:
         const float                 SCREEN_WIDTH_;
@@ -337,6 +350,14 @@ namespace stage
         sf::Texture     detailViewTexture_;
         sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
+
+        //members that support spell casting
+        spell::SpellPtr_t      spellBeingCastPtr_;
+        combat::TurnActionInfo spellTurnActionInfo_;
+        combat::FightResult    spellFightResult_;
+        std::size_t            spellCreatureEffectIndex_;
+        std::size_t            spellHitInfoIndex_;
+        combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
     };
 
 }

@@ -43,8 +43,7 @@ namespace combat
         canTurnAdvance_             (false),
         hasRestored_                (false),
         creaturesFlyingPVec_        (),
-        creatureBlockingPosMap_     (),
-        creatureLastCastSpellNumMap_()
+        creatureBlockingPosMap_     ()
     {}
 
 
@@ -96,15 +95,21 @@ namespace combat
         COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);
 
         for (auto const nextCombatNodeCPtr : combatNodesPVec)
+        {
             if (nextCombatNodeCPtr->IsFlying())
+            {
                 creaturesFlyingPVec_.push_back(nextCombatNodeCPtr->Creature());
+            }
+        }
     }
 
 
     void RestoreInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
         for (auto const nextFlyingCreaturePtr : creaturesFlyingPVec_)
+        {
             combatDisplayPtrC->HandleFlyingChange(nextFlyingCreaturePtr, true);
+        }
     }
 
 
@@ -117,7 +122,8 @@ namespace combat
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
-            creatureBlockingPosMap_[nextCombatNodePtrC->Creature()] = nextCombatNodePtrC->GetBlockingPos();
+            creatureBlockingPosMap_[nextCombatNodePtrC->Creature()] =
+                nextCombatNodePtrC->GetBlockingPos();
         }
     }
 
@@ -128,9 +134,15 @@ namespace combat
         combatDisplayPtrC->GetCombatNodes(combatNodesPVec);
 
         for (auto const NEXT_CREATUREPOS_PAIR : creatureBlockingPosMap_)
+        {
             for (auto const nextCombatNodePtrC : combatNodesPVec)
+            {
                 if (NEXT_CREATUREPOS_PAIR.first == nextCombatNodePtrC->Creature())
+                {
                     nextCombatNodePtrC->SetBlockingPos(NEXT_CREATUREPOS_PAIR.second);
+                }
+            }
+        }
 
         combatDisplayPtrC->CombatTreeObj().ResetAllEdges();
         combatDisplayPtrC->PositionCombatTreeCells(false);

@@ -295,26 +295,17 @@ namespace stage
             if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
-                M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
+                M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
+                    "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection="
+                    << POPUP_RESPONSE.Selection() << ") Selection was greater than SpellPVec.size="
+                    << SPELLS_PVEC.size());
 
                 auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
-                M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ), "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection=" << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
+                M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ),
+                    "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection="
+                    << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
 
-                if ((spellPtr->ValidPhases() & Phase::Combat) == 0)
-                {
-                    QuickSmallPopup("The " + spellPtr->Name() + " spell cannot be cast during combat.", true, false);
-                    return false;
-                }
-
-                if (spellPtr->ManaCost() > turnCreaturePtr_->ManaCurrent())
-                {
-                    std::ostringstream ss;
-                    ss << turnCreaturePtr_->Name() << " does not have enough mana to cast " << spellPtr->Name() << ".  " << (spellPtr->ManaCost() - turnCreaturePtr_->ManaCurrent()) << " short.";
-                    QuickSmallPopup(ss.str(), true, false);
-                    return false;
-                }
-
-                restoreInfo_.LastCastSpellNum(turnCreaturePtr_, POPUP_RESPONSE.Selection());
+                turnCreaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
 
                 spellBeingCastPtr_ = spellPtr;
                 HandleCast_Step2_SelectTargetOrPerformOnAll();
@@ -747,7 +738,7 @@ namespace stage
 
         {
             const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
-                                              15 + misc::random::Int(6) + 100,
+                                              15 + misc::random::Int(6),
                                               0  + misc::random::Int(6),
                                               5  + misc::random::Int(10),
                                               15 + misc::random::Int(10),
@@ -801,7 +792,7 @@ namespace stage
         */
         /*{
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
-                                              20 + misc::random::Int(10) + 100,
+                                              20 + misc::random::Int(10),
                                               5  + misc::random::Int(6),
                                               10 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
@@ -848,7 +839,7 @@ namespace stage
         }
         /*{
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6) + 100,
+                                            10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
@@ -896,7 +887,7 @@ namespace stage
         
         {
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
-                                             5  + misc::random::Int(10) + 100,
+                                             5  + misc::random::Int(10),
                                              5  + misc::random::Int(10),
                                              15 + misc::random::Int(15),
                                              15 + misc::random::Int(10),
@@ -919,7 +910,7 @@ namespace stage
         }
         {
             const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8) + 100,
+                                              5  + misc::random::Int(8),
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
                                               25 + misc::random::Int(8),
@@ -938,13 +929,12 @@ namespace stage
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
-            clericPtr->ManaCurrentSet(10);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
         {
             const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8) + 100,
+                                                0  + misc::random::Int(8),
                                                 5  + misc::random::Int(8),
                                                 10 + misc::random::Int(6),
                                                 50 + misc::random::Int(6),
@@ -963,7 +953,6 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ManaCurrentSet(10);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
@@ -2134,7 +2123,9 @@ namespace stage
 
     bool CombatStage::HandleCast_Step1_ValidateCastAndSelectSpell()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_, combatDisplayStagePtr_)  );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextCastStr(turnCreaturePtr_,
+                                                                     combatDisplayStagePtr_) );
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
@@ -2145,10 +2136,11 @@ namespace stage
             SetUserActionAllowed(false);
             SetTurnActionPhase(TurnActionPhase::Cast);
             
-            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
-                POPUP_NAME_SPELLBOOK_,
-                turnCreaturePtr_,
-                restoreInfo_.LastCastSpellNum(turnCreaturePtr_)) };
+            auto const POPUP_INFO{
+                sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                    POPUP_NAME_SPELLBOOK_,
+                    turnCreaturePtr_,
+                    turnCreaturePtr_->LastSpellCastNum()) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             return true;
@@ -2169,7 +2161,7 @@ namespace stage
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {
-            HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(true));
+            HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(false));
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllOpponents)
         {
@@ -2181,7 +2173,7 @@ namespace stage
             ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell="
                 << spellBeingCastPtr_->Name() << ") had a target_type of "
                 << TargetType::ToString(spellBeingCastPtr_->Target())
-                << " which is not yet supported during combat.";
+                << " which is not yet supported in combat stage.";
 
             throw std::runtime_error(ssErr.str());
         }

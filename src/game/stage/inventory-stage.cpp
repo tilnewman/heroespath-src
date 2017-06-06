@@ -53,9 +53,12 @@
 #include "game/non-player/character.hpp"
 #include "game/creature/condition.hpp"
 #include "game/creature/creature.hpp"
+#include "game/creature/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
+#include "game/combat/fight.hpp"
+#include "game/combat/combat-sound-effects.hpp"
 
 #include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -68,20 +71,22 @@ namespace game
 namespace stage
 {
 
-    const float InventoryStage::VIEW_CHANGE_SLIDER_SPEED_     (4.0f);
-    const float InventoryStage::VIEW_CHANGE_BETWEEN_TIME_SEC_ (0.5f);
-    const float InventoryStage::CREATURE_IMAGE_RIGHT_PAD_     (10.0f);
-    const float InventoryStage::DETAILVIEW_SLIDER_SPEED_      (4.0f);
-    const float InventoryStage::DETAILVIEW_TIMER_DURATION_SEC_(2.33f);
-    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_START_ (20.0f);
-    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_END_   (220.0f);
-    const float InventoryStage::DETAILVIEW_INNER_PAD_         (20.0f);
+    const float InventoryStage::VIEW_CHANGE_SLIDER_SPEED_     { 4.0f };
+    const float InventoryStage::VIEW_CHANGE_BETWEEN_TIME_SEC_ { 0.5f };
+    const float InventoryStage::CREATURE_IMAGE_RIGHT_PAD_     { 10.0f };
+    const float InventoryStage::DETAILVIEW_SLIDER_SPEED_      { 4.0f };
+    const float InventoryStage::DETAILVIEW_TIMER_DURATION_SEC_{ 2.33f };
+    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_START_ { 20.0f };
+    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_END_   { 220.0f };
+    const float InventoryStage::DETAILVIEW_INNER_PAD_         { 20.0f };
     //
-    const std::string InventoryStage::POPUP_NAME_GIVE_            ("InventoryStage'sGivePopupName");
-    const std::string InventoryStage::POPUP_NAME_CHAR_SELECT_     ("InventoryStage'sCharacterSelectPopupName");
-    const std::string InventoryStage::POPUP_NAME_NUMBER_SELECT_   ("InventoryStage'sPopupNumberSelectPopupName");
-    const std::string InventoryStage::POPUP_NAME_CONTENTSELECTION_("InventoryStage'sShareGatherSelectionPopupName");
-    const std::string InventoryStage::POPUP_NAME_DROPCONFIRM_     ("InventoryStage'sDropItemConfirmationPopupName");
+    const std::string InventoryStage::POPUP_NAME_GIVE_            { "InventoryStage'sGivePopupName" };
+    const std::string InventoryStage::POPUP_NAME_CHAR_SELECT_     { "InventoryStage'sCharacterSelectPopupName" };
+    const std::string InventoryStage::POPUP_NAME_NUMBER_SELECT_   { "InventoryStage'sPopupNumberSelectPopupName" };
+    const std::string InventoryStage::POPUP_NAME_CONTENTSELECTION_{ "InventoryStage'sShareGatherSelectionPopupName" };
+    const std::string InventoryStage::POPUP_NAME_DROPCONFIRM_     { "InventoryStage'sDropItemConfirmationPopupName" };
+    const std::string InventoryStage::POPUP_NAME_SPELLBOOK_       { "InventoryStage'sSpellbookPopupName" };
+    const std::string InventoryStage::POPUP_NAME_SPELL_RESULT_    { "InventoryStage'sSpellResultPopupName" };
 
 
     InventoryStage::InventoryStage(creature::CreaturePtr_t creaturePtr)
@@ -123,88 +128,94 @@ namespace stage
         DETAILVIEW_HEIGHT_         (SCREEN_HEIGHT_ * 0.85f),
         DETAILVIEW_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f)),
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
-        listBoxItemTextInfo_    (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
-        creaturePtr_            (creaturePtr),
-        bottomSymbol_           (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
-        paperBgTexture_         (),
-        paperBgSprite_          (),
-        ouroborosUPtr_          (),
-        creatureTexture_        (),
-        creatureSprite_         (),
-        view_                   (ViewType::Items),
-        characterViewMap_       (),
-        isSliderAnimating_      (false),
-        isSlidingLeft_          (false),
-        isViewForcedToItems_    (false),
-        viewToChangeTo_         (ViewType::Count),
-        sliderAnimTimerSec_     (VIEW_CHANGE_BETWEEN_TIME_SEC_ + 1.0f),//anything greater than VIEW_CHANGE_BETWEEN_TIME_SEC_ will work here
-        detailsPosLeft_         (0.0f),
-        centerPosLeft_          (0.0f),
-        isImageSliding_         (false),
-        isDetailsSliding_       (false),
-        isCenterSliding_        (false),
-        isStatsSliding_         (false),
-        isListBoxSliding_       (false),
-        isDescBoxSliding_       (false),
-        isImageSlidingDone_     (true),
-        isDetailsSlidingDone_   (true),
-        isCenterSlidingDone_    (true),
-        isStatsSlidingDone_     (true),
-        isListBoxSlidingDone_   (true),
-        isDescBoxSlidingDone_   (true),
-        hasImageChanged_        (false),
-        hasDetailsChanged_      (false),
-        hasCenterChanged_       (false),
-        hasStatsChanged_        (false),
-        hasListBoxChanged_      (false),
-        hasDescBoxChanged_      (false),
-        imageSlider_            (VIEW_CHANGE_SLIDER_SPEED_),
-        detailsSlider_          (VIEW_CHANGE_SLIDER_SPEED_),
-        centerSlider_           (VIEW_CHANGE_SLIDER_SPEED_),
-        statsSlider_            (VIEW_CHANGE_SLIDER_SPEED_),
-        listBoxSlider_          (VIEW_CHANGE_SLIDER_SPEED_),
-        descBoxSlider_          (VIEW_CHANGE_SLIDER_SPEED_),
-        detailsTextRegionUPtr_  (),
-        statsTextRegionUPtr_    (),
-        eqTitleTextRegionUPtr_  (),
-        unEqTitleTextRegionUPtr_(),
-        equippedListBoxSPtr_    (),
-        unEquipListBoxSPtr_     (),
-        insTextRegionUPtr_      (),
-        descTextRegionUPtr_     (),
-        descBoxUPtr_            (),
-        centerTextRegionUPtr_   (),
-        backButtonUPtr_         (),
-        itemsButtonUPtr_        (),
-        titlesButtonUPtr_       (),
-        condsButtonUPtr_        (),
-        spellsButtonUPtr_       (),
-        giveButtonUPtr_         (),
-        shareButtonUPtr_        (),
-        gatherButtonUPtr_       (),
-        equipButtonUPtr_        (),
-        unequipButtonUPtr_      (),
-        buttonPVec_             (),
-        actionType_             (ActionType::Count),
-        contentType_            (ContentType::Count),
-        listBoxItemToGiveSPtr_  (),
-        creatureToGiveToPtr_    (),
-        iItemToDropPtr_         (),
-        isDetailViewFadingIn_   (false),
-        isDetailViewFadingOut_  (false),
-        isDetailViewDoneFading_ (false),
-        isAchievementDisplaying_(false),
-        hasMouseMoved_          (false),
-        isWaitingOnPopup_       (false),
-        detailViewTimerSec_     (0.0f),
-        detailViewSliderRatio_  (0.0f),
-        mousePosV_              (0.0f, 0.0f),
-        detailViewSourceRect_   (sfml_util::gui::ListBox::ERROR_RECT_),
-        detailViewQuads_        (sf::Quads, 4),
-        detailViewSprite_       (),
-        detailViewTexture_      (),
-        detailViewTextUPtr_     (),
-        detailViewSlider_       (DETAILVIEW_SLIDER_SPEED_)
+        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
+        creaturePtr_               (creaturePtr),
+        bottomSymbol_              (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
+        paperBgTexture_            (),
+        paperBgSprite_             (),
+        ouroborosUPtr_             (),
+        creatureTexture_           (),
+        creatureSprite_            (),
+        view_                      (ViewType::Items),
+        characterViewMap_          (),
+        isSliderAnimating_         (false),
+        isSlidingLeft_             (false),
+        isViewForcedToItems_       (false),
+        viewToChangeTo_            (ViewType::Count),
+        sliderAnimTimerSec_        (VIEW_CHANGE_BETWEEN_TIME_SEC_ + 1.0f),//anything greater than VIEW_CHANGE_BETWEEN_TIME_SEC_ will work here
+        detailsPosLeft_            (0.0f),
+        centerPosLeft_             (0.0f),
+        isImageSliding_            (false),
+        isDetailsSliding_          (false),
+        isCenterSliding_           (false),
+        isStatsSliding_            (false),
+        isListBoxSliding_          (false),
+        isDescBoxSliding_          (false),
+        isImageSlidingDone_        (true),
+        isDetailsSlidingDone_      (true),
+        isCenterSlidingDone_       (true),
+        isStatsSlidingDone_        (true),
+        isListBoxSlidingDone_      (true),
+        isDescBoxSlidingDone_      (true),
+        hasImageChanged_           (false),
+        hasDetailsChanged_         (false),
+        hasCenterChanged_          (false),
+        hasStatsChanged_           (false),
+        hasListBoxChanged_         (false),
+        hasDescBoxChanged_         (false),
+        imageSlider_               (VIEW_CHANGE_SLIDER_SPEED_),
+        detailsSlider_             (VIEW_CHANGE_SLIDER_SPEED_),
+        centerSlider_              (VIEW_CHANGE_SLIDER_SPEED_),
+        statsSlider_               (VIEW_CHANGE_SLIDER_SPEED_),
+        listBoxSlider_             (VIEW_CHANGE_SLIDER_SPEED_),
+        descBoxSlider_             (VIEW_CHANGE_SLIDER_SPEED_),
+        detailsTextRegionUPtr_     (),
+        statsTextRegionUPtr_       (),
+        eqTitleTextRegionUPtr_     (),
+        unEqTitleTextRegionUPtr_   (),
+        equippedListBoxSPtr_       (),
+        unEquipListBoxSPtr_        (),
+        insTextRegionUPtr_         (),
+        descTextRegionUPtr_        (),
+        descBoxUPtr_               (),
+        centerTextRegionUPtr_      (),
+        backButtonUPtr_            (),
+        itemsButtonUPtr_           (),
+        titlesButtonUPtr_          (),
+        condsButtonUPtr_           (),
+        spellsButtonUPtr_          (),
+        giveButtonUPtr_            (),
+        shareButtonUPtr_           (),
+        gatherButtonUPtr_          (),
+        equipButtonUPtr_           (),
+        unequipButtonUPtr_         (),
+        buttonPVec_                (),
+        actionType_                (ActionType::Count),
+        contentType_               (ContentType::Count),
+        listBoxItemToGiveSPtr_     (),
+        creatureToGiveToPtr_       (),
+        iItemToDropPtr_            (),
+        isDetailViewFadingIn_      (false),
+        isDetailViewFadingOut_     (false),
+        isDetailViewDoneFading_    (false),
+        isAchievementDisplaying_   (false),
+        hasMouseMoved_             (false),
+        isWaitingOnPopup_          (false),
+        detailViewTimerSec_        (0.0f),
+        detailViewSliderRatio_     (0.0f),
+        mousePosV_                 (0.0f, 0.0f),
+        detailViewSourceRect_      (sfml_util::gui::ListBox::ERROR_RECT_),
+        detailViewQuads_           (sf::Quads, 4),
+        detailViewSprite_          (),
+        detailViewTexture_         (),
+        detailViewTextUPtr_        (),
+        detailViewSlider_          (DETAILVIEW_SLIDER_SPEED_),
+        spellBeingCastPtr_         (nullptr),
+        spellTurnActionInfo_       (),
+        spellFightResult_          (),
+        spellCreatureEffectIndex_  (0),
+        spellHitInfoIndex_         (0),
+        combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>())
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr),
             "game::stage::InventoryStage::InventoryStage() was given a null "
@@ -236,15 +247,18 @@ namespace stage
                 SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->GetSelected());
             }
             else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
-                (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+                     (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
                 if (PACKAGE.package.PTR_ == equippedListBoxSPtr_.get())
                 {
-                    return HandleUnequip();
-                }
-                else if (PACKAGE.package.PTR_ == unEquipListBoxSPtr_.get())
-                {
-                    return HandleEquip();
+                    if (view_ == ViewType::Items)
+                    {
+                        return HandleUnequip();
+                    }
+                    else if (PACKAGE.package.PTR_ == unEquipListBoxSPtr_.get())
+                    {
+                        return HandleEquip();
+                    }
                 }
             }
         }
@@ -321,15 +335,23 @@ namespace stage
     {
         isWaitingOnPopup_ = false;
 
-        if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELL_RESULT_)
         {
-            sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::ItemDrop).PlayRandom();
+            return HandleCast_Step3_DisplayResults();
+        }
+        else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
+            (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+        {
+            sfml_util::SoundManager::Instance()->
+                GetSfxSet(sfml_util::SfxSet::ItemDrop).PlayRandom();
+
             creaturePtr_->ItemRemove(iItemToDropPtr_);
             item::ItemWarehouse::Instance()->Free(iItemToDropPtr_);
             EndOfGiveShareGatherTasks();
             SetupDescBox(false);
         }
-        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_GIVE_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_GIVE_) &&
+                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
             if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Item())
             {
@@ -416,13 +438,23 @@ namespace stage
                 return false;
             }
         }
-        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) &&
+                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
-            creatureToGiveToPtr_ = Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
+            creatureToGiveToPtr_ =
+                Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
 
             if (creatureToGiveToPtr_ == nullptr)
             {
                 return false;
+            }
+
+            if (nullptr != spellBeingCastPtr_)
+            {
+                creature::CreaturePVec_t spellTargetCreaturePVec;
+                spellTargetCreaturePVec.push_back(creatureToGiveToPtr_);
+                HandleCast_Step2_PerformSpell(spellTargetCreaturePVec);
+                return true;
             }
 
             switch (contentType_)
@@ -435,18 +467,25 @@ namespace stage
                     }
 
                     const item::ItemPtr_t IITEM_PTR(listBoxItemToGiveSPtr_->ITEM_CPTR);
-                    const std::string CAN_GIVE_ITEM_STR(creatureToGiveToPtr_->ItemIsAddAllowed(IITEM_PTR));
+
+                    const std::string CAN_GIVE_ITEM_STR(
+                        creatureToGiveToPtr_->ItemIsAddAllowed(IITEM_PTR));
 
                     if (CAN_GIVE_ITEM_STR.empty() == false)
                     {
                         std::ostringstream ss;
-                        ss << "Can't give the " << IITEM_PTR->Name() << " to " << creatureToGiveToPtr_->Name() << " because:  " << CAN_GIVE_ITEM_STR;
+                        ss << "Can't give the " << IITEM_PTR->Name() << " to "
+                            << creatureToGiveToPtr_->Name() << " because:  "
+                            << CAN_GIVE_ITEM_STR;
+
                         PopupRejectionWindow(ss.str(), true);
                         return false;
                     }
                     else
                     {
-                        sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::ItemGive).PlayRandom();
+                        sfml_util::SoundManager::Instance()->
+                            GetSfxSet(sfml_util::SfxSet::ItemGive).PlayRandom();
+
                         creaturePtr_->ItemRemove(IITEM_PTR);
                         creatureToGiveToPtr_->ItemAdd(IITEM_PTR);
                         SetupDescBox(false);
@@ -465,7 +504,10 @@ namespace stage
                     {
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many coins?";
-                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().Coins()));
+
+                        PopupNumberSelectWindow(ss.str(),
+                            static_cast<std::size_t>(creaturePtr_->Inventory().Coins()));
+
                         return false;
                     }
                 }
@@ -480,7 +522,10 @@ namespace stage
                     {
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many gems?";
-                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().Gems()));
+
+                        PopupNumberSelectWindow(ss.str(),
+                            static_cast<std::size_t>(creaturePtr_->Inventory().Gems()));
+
                         return false;
                     }
                 }
@@ -496,8 +541,12 @@ namespace stage
                     else
                     {
                         std::ostringstream ss;
-                        ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many Meteor Shards?";
-                        PopupNumberSelectWindow(ss.str(), static_cast<std::size_t>(creaturePtr_->Inventory().MeteorShards()));
+                        ss << "\nGive " << creatureToGiveToPtr_->Name()
+                            << " how many Meteor Shards?";
+
+                        PopupNumberSelectWindow(ss.str(),
+                            static_cast<std::size_t>(creaturePtr_->Inventory().MeteorShards()));
+
                         return false;
                     }
                 }
@@ -532,7 +581,8 @@ namespace stage
                 }
             }
         }
-        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CONTENTSELECTION_) && (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CONTENTSELECTION_) &&
+                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
             if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Coins())
             {
@@ -573,6 +623,23 @@ namespace stage
 
                 return false;
             }
+        }
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
+                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+        {   
+            const spell::SpellPVec_t SPELLS_PVEC( creaturePtr_->SpellsPVec() );
+            M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
+                "game::stage::InventoryStage::HandleCallback(POPUP_RESPONSE, selection="
+                << POPUP_RESPONSE.Selection() << ") Selection was greater than SpellPVec.size="
+                << SPELLS_PVEC.size());
+
+            auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ),
+                "game::stage::InventoryStage::HandleCallback(POPUP_RESPONSE, selection="
+                << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
+
+            creaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
+            return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
         }
 
         return false;
@@ -755,13 +822,7 @@ namespace stage
         buttonPVec_.push_back(dropButtonUPtr_.get());
 
         SetupButtons();
-
-        //force action on the equipped item listbox to force focus and selection
-        sf::Event::KeyEvent keyEvent;
-        keyEvent.code = sf::Keyboard::Down;
-        equippedListBoxSPtr_->KeyRelease(keyEvent);
-        keyEvent.code = sf::Keyboard::Up;
-        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        ForceSelectionAndDrawOfListBox();
     }
 
 
@@ -822,7 +883,23 @@ namespace stage
 
             if (KEY_EVENT.code == sf::Keyboard::S)
             {
-                return HandleViewChange(ViewType::Spells);
+                auto const CAN_CAST_STR{ creaturePtr_->CanCastSpellsStr(true) };
+                if (CAN_CAST_STR.empty())
+                {
+                    auto const POPUP_INFO{
+                        sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                            POPUP_NAME_SPELLBOOK_,
+                            creaturePtr_,
+                            creaturePtr_->LastSpellCastNum()) };
+
+                    LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                    return true;
+                }
+                else
+                {
+                    PopupRejectionWindow(CAN_CAST_STR, true);
+                    return false;
+                }
             }
 
             if (KEY_EVENT.code == sf::Keyboard::G)
@@ -1503,11 +1580,14 @@ namespace stage
         characterViewMap_[Game::Instance()->State().Party().GetOrderNum(creaturePtr_)] = view_;
 
         if (ViewType::Items != view_)
+        {
             SetDescBoxTextFromListBoxItem(equippedListBoxSPtr_->GetSelected());
+        }
 
         SetupFirstListBoxTitle();
         SetupDescBoxTitle();
         SetupButtons();
+        ForceSelectionAndDrawOfListBox();
     }
 
 
@@ -1672,17 +1752,23 @@ namespace stage
 
     bool InventoryStage::HandleViewChange(const ViewType NEW_VIEW)
     {
-        if ((NEW_VIEW == ViewType::Items) && ((ViewType::Items == view_) || itemsButtonUPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Items) &&
+            ((ViewType::Items == view_) || itemsButtonUPtr_->IsDisabled()))
+        {
             return false;
+        }
 
-        if ((NEW_VIEW == ViewType::Titles) && ((ViewType::Titles == view_) || titlesButtonUPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Titles) &&
+            ((ViewType::Titles == view_) || titlesButtonUPtr_->IsDisabled()))
+        {
             return false;
+        }
 
-        if ((NEW_VIEW == ViewType::Conditions) && ((ViewType::Conditions == view_) || condsButtonUPtr_->IsDisabled()))
+        if ((NEW_VIEW == ViewType::Conditions) &&
+            ((ViewType::Conditions == view_) || condsButtonUPtr_->IsDisabled()))
+        {
             return false;
-
-        if ((NEW_VIEW == ViewType::Spells) && ((ViewType::Spells == view_) || spellsButtonUPtr_->IsDisabled()))
-            return false;
+        }
 
         viewToChangeTo_ = NEW_VIEW;
         StartSlidingAnimation(true);
@@ -1739,7 +1825,7 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
-            const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(equippedListBoxSPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR(equippedListBoxSPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
                 if (LISTBOX_ITEM_SPTR->ITEM_CPTR->IsBodypart())
@@ -1858,7 +1944,8 @@ namespace stage
     }
 
 
-    bool InventoryStage::HandlePlayerChangeTo(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_SLIDING_LEFT)
+    bool InventoryStage::HandlePlayerChangeTo(const creature::CreaturePtrC_t CREATURE_CPTRC,
+                                              const bool                     IS_SLIDING_LEFT)
     {
         if (isSliderAnimating_)
         {
@@ -1871,7 +1958,8 @@ namespace stage
 
             if (((ViewType::Titles == view_) && (CREATURE_CPTRC->Titles().empty())) ||
                 ((ViewType::Spells == view_) && (CREATURE_CPTRC->Spells().empty())) ||
-                ((ViewType::Conditions == view_) && (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
+                ((ViewType::Conditions == view_) &&
+                    (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
             {
                 isViewForcedToItems_ = true;
             }
@@ -1922,12 +2010,20 @@ namespace stage
 
     void InventoryStage::SetupCreatureImage()
     {
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(creatureTexture_, creaturePtr_->ImageFilename(), true);
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(creatureTexture_,
+                                                                   creaturePtr_->ImageFilename(),
+                                                                   true);
+
         sfml_util::Invert(creatureTexture_);
         sfml_util::Mask(creatureTexture_, sf::Color::White);
         creatureTexture_.setSmooth(true);
         creatureSprite_.setTexture(creatureTexture_);
-        creatureSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(creatureTexture_.getSize().x), static_cast<int>(creatureTexture_.getSize().y)) );
+        creatureSprite_.setTextureRect( sf::IntRect(
+            0,
+            0,
+            static_cast<int>(creatureTexture_.getSize().x),
+            static_cast<int>(creatureTexture_.getSize().y)) );
+
         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
         creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
         creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -1937,7 +2033,8 @@ namespace stage
     void InventoryStage::SetupCreatureDetails(const bool WILL_UPDATE_POSITION)
     {
         std::ostringstream ss;
-        ss << "Character # " << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
+        ss << "Character # "
+            << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
             << creaturePtr_->Name() << "\n"
             << creaturePtr_->SexName() << "\n"
             << creaturePtr_->Race().Name();
@@ -1951,22 +2048,27 @@ namespace stage
         }
         else
         {
-            ss << " " << creaturePtr_->RankClassName() << " " << creaturePtr_->Role().Name() << "\n";
+            ss << " " << creaturePtr_->RankClassName() << " "
+                << creaturePtr_->Role().Name() << "\n";
         }
 
         ss << "Rank:  " << creaturePtr_->Rank() << "\n"
            << "Experience: " << creaturePtr_->Exp() << "\n"
-           << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal() << " " << creaturePtr_->HealthPercentStr() << "\n"
+           << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal()
+           << " " << creaturePtr_->HealthPercentStr() << "\n"
            << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
            << "\n";
 
-        const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(ss.str(),
-                                                         sfml_util::FontManager::Instance()->Font_Default1(),
-                                                         sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                         sfml_util::FontManager::Color_GrayDarker(),
-                                                         sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
 
-        sf::FloatRect detailsTextRect(CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width + CREATURE_IMAGE_RIGHT_PAD_,
+        sf::FloatRect detailsTextRect(CREATURE_IMAGE_POS_LEFT_ +
+                                        creatureSprite_.getGlobalBounds().width +
+                                        CREATURE_IMAGE_RIGHT_PAD_,
                                       creatureSprite_.getPosition().y + CREATURE_IMAGE_RIGHT_PAD_,
                                       0.0f,
                                       0.0f);
@@ -1988,7 +2090,8 @@ namespace stage
             detailsTextRegionUPtr_->SetText(ss.str());
         }
 
-        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_, detailsTextRegionUPtr_->GetEntityPos().y);
+        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_,
+                                             detailsTextRegionUPtr_->GetEntityPos().y);
     }
 
 
@@ -2012,11 +2115,12 @@ namespace stage
            << "Intelligence:   "   << STATS.Int().Current() << " " << INT_MOD_STR << "\n"
            << "\n \n ";
 
-        const sfml_util::gui::TextInfo STATS_TEXT_INFO(ss.str(),
-                                                       sfml_util::FontManager::Instance()->Font_Typical(),
-                                                       sfml_util::FontManager::Instance()->Size_Normal(),
-                                                       sfml_util::FontManager::Color_GrayDarker(),
-                                                       sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo STATS_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
 
         const sf::FloatRect STATS_TEXT_RECT(STATS_POS_LEFT_,
                                             mainMenuTitle_.LowerPosition(false) + 20.0f,
@@ -2041,20 +2145,24 @@ namespace stage
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
            << "Gems:  " << INVENTORY.Gems() << "\n"
            << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
-           << "Mana:  " << creaturePtr_->ManaCurrent() << "/" << creaturePtr_->ManaNormal() << "\n"
-           << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
+           << "Mana:  " << creaturePtr_->ManaCurrent() << "/"
+           << creaturePtr_->ManaNormal() << "\n"
+           << "Weight: " << INVENTORY.Weight() << "/"
+           << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
 
-        const sfml_util::gui::TextInfo CENTER_TEXT_INFO(ss.str(),
-                                                        sfml_util::FontManager::Instance()->Font_Typical(),
-                                                        sfml_util::FontManager::Instance()->Size_Normal(),
-                                                        sfml_util::FontManager::Color_GrayDarker(),
-                                                        sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo CENTER_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
 
-        const sf::FloatRect CENTER_TEXT_RECT(0.0f,
-                                             mainMenuTitle_.LowerPosition(true) + sfml_util::MapByRes(5.0f, 30.0f),
-                                             0.0f,
-                                             0.0f);
+        const sf::FloatRect CENTER_TEXT_RECT(
+            0.0f,
+            mainMenuTitle_.LowerPosition(true) + sfml_util::MapByRes(5.0f, 30.0f),
+            0.0f,
+            0.0f);
 
         const bool WAS_ALREADY_INSTANTIATED(centerTextRegionUPtr_.get() != nullptr);
 
@@ -2068,7 +2176,10 @@ namespace stage
             centerTextRegionUPtr_->SetText(ss.str());
         }
 
-        const float POS_LEFT(((WAS_ALREADY_INSTANTIATED == false) && (creaturePtr_->IsBeast())) ? (SCREEN_WIDTH_ + 1.0f) : (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f));
+        const float POS_LEFT(((WAS_ALREADY_INSTANTIATED == false) &&
+                              (creaturePtr_->IsBeast())) ? (SCREEN_WIDTH_ + 1.0f) :
+                              (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f));
+
         centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
         centerPosLeft_ = POS_LEFT;
     }
@@ -2247,7 +2358,8 @@ namespace stage
         {
             if (WILL_MOVE_OFFSCREEN)
             {
-                unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
+                unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
+                                                  unEquipListBoxSPtr_->GetEntityPos().y);
             }
             else
             {
@@ -2257,7 +2369,8 @@ namespace stage
 
         if (descBoxUPtr_.get() == nullptr)
         {
-            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("InventoryStage'sDesc", LISTBOX_BOX_INFO);
+            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
+                "InventoryStage'sDesc", LISTBOX_BOX_INFO);
         }
 
         sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
@@ -2284,7 +2397,9 @@ namespace stage
             EntityAdd(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
+        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
+                                          descTextRegionUPtr_->GetEntityPos().y);
+
         descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
     }
 
@@ -2302,13 +2417,17 @@ namespace stage
             default:                { titleText = "Titles"; break; }
         }
 
-        const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(titleText,
-                                                         sfml_util::FontManager::Instance()->Font_Default2(),
-                                                         sfml_util::FontManager::Instance()->Size_Normal(),
-                                                         LISTBOX_COLOR_TITLE_,
-                                                         sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(
+            titleText,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            LISTBOX_COLOR_TITLE_,
+            sfml_util::Justified::Center);
 
-        const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
+        const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_,
+                                              0.0f,
+                                              LISTBOX_WIDTH_,
+                                              0.0f);
 
         if (eqTitleTextRegionUPtr_.get() == nullptr)
         {
@@ -2368,11 +2487,7 @@ namespace stage
             {
                 ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
             }
-            else if (LISTBOX_ITEM_SPTR->SPELL_CPTRC != nullptr)
-            {
-                ss << LISTBOX_ITEM_SPTR->SPELL_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->SPELL_CPTRC->DescComplete();
-            }
-
+            
             if (ss.str().empty() == false)
             {
                 SetDescBoxText(ss.str());
@@ -2411,20 +2526,25 @@ namespace stage
     }
 
 
-    void InventoryStage::PopupCharacterSelectWindow(const std::string & PROMPT_TEXT)
+    void InventoryStage::PopupCharacterSelectWindow(const std::string & PROMPT_TEXT,
+        const bool CAN_SELECT_ALL)
     {
         std::ostringstream ss;
         ss << PROMPT_TEXT << "  Select a character by pressing the number key:\n\n";
 
-        const std::size_t CURRENT_CREATURE_ORDER_NUM(Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
+        const std::size_t CURRENT_CREATURE_ORDER_NUM(
+            Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
         std::vector<std::size_t> invalidCharacterNumVec;
-        const std::size_t NUM_CHARACTERS(6);
+        const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            if ((CURRENT_CREATURE_ORDER_NUM != i) && (Game::Instance()->State().Party().GetAtOrderPos(i)->Body().IsHumanoid()))
+            if (((CURRENT_CREATURE_ORDER_NUM != i) &&
+                (Game::Instance()->State().Party().GetAtOrderPos(i)->Body().IsHumanoid())) ||
+                CAN_SELECT_ALL)
             {
-                ss << "(" << i + 1 << ") " << Game::Instance()->State().Party().GetAtOrderPos(i)->Name() << "\n";
+                ss << "(" << i + 1 << ") "
+                    << Game::Instance()->State().Party().GetAtOrderPos(i)->Name() << "\n";
             }
             else
             {
@@ -2432,26 +2552,32 @@ namespace stage
             }
         }
 
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CHAR_SELECT_,
-                                                                                             ss.str(),
-                                                                                             invalidCharacterNumVec,
-                                                                                             sfml_util::FontManager::Instance()->Size_Smallish()));
+        auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_CHAR_SELECT_,
+            ss.str(),
+            invalidCharacterNumVec,
+            sfml_util::FontManager::Instance()->Size_Smallish()) };
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         isWaitingOnPopup_ = true;
     }
 
 
-    void InventoryStage::PopupRejectionWindow(const std::string & REJECTION_PROMPT_TEXT, const bool WILL_USE_REGULAR_SIZE_POPUP)
+    void InventoryStage::PopupRejectionWindow(const std::string & REJECTION_PROMPT_TEXT,
+                                              const bool WILL_USE_REGULAR_SIZE_POPUP)
     {
-        const PopupInfo POPUP_INFO_NOITEM(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo("InventoryStage'sPopupRejection",
-                                                                                                    REJECTION_PROMPT_TEXT,
-                                                                                                    sfml_util::PopupButtons::Cancel,
-                                                                                                    ((WILL_USE_REGULAR_SIZE_POPUP) ? sfml_util::PopupImage::Regular : sfml_util::PopupImage::Banner),
-                                                                                                    sfml_util::Justified::Center,
-                                                                                                    sfml_util::sound_effect::PromptWarn,
-                                                                                                    game::Popup::Generic,
-                                                                                                    sfml_util::FontManager::Instance()->Size_Largeish()));
-        LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_NOITEM);
+        const PopupInfo POPUPINFO_NOITEM(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            "InventoryStage'sPopupRejection",
+            REJECTION_PROMPT_TEXT,
+            sfml_util::PopupButtons::Cancel,
+            ((WILL_USE_REGULAR_SIZE_POPUP) ?
+                sfml_util::PopupImage::Regular : sfml_util::PopupImage::Banner),
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::PromptWarn,
+            game::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Largeish()));
+
+        LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
     }
@@ -3269,6 +3395,119 @@ namespace stage
             detailViewTimerSec_ = 0.0f;
             mousePosV_ = MOUSE_POS_V;
         }
+    }
+
+
+    bool InventoryStage::HandleCast_Step1_TargetSelection(const spell::SpellPtr_t SPELL_PTR)
+    {   
+        spellBeingCastPtr_ = SPELL_PTR;
+
+        if (spellBeingCastPtr_->Target() == TargetType::SingleCompanion)
+        {
+            PopupCharacterSelectWindow("Cast " + spellBeingCastPtr_->Name()
+                + " on which character?", true);
+        }
+        else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
+        {
+            HandleCast_Step2_PerformSpell(creature::Algorithms::Players(false));
+        }
+        else
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::stage::InventoryStage::HandleCast_Step2_SelectTargetOrPerformOnAll"
+                << "(spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
+                << TargetType::ToString(spellBeingCastPtr_->Target())
+                << " which is not yet supported while in Inventory stage.";
+
+            throw std::runtime_error(ssErr.str());
+        }
+        
+        return false;
+    }
+
+
+    void InventoryStage::HandleCast_Step2_PerformSpell(
+        const creature::CreaturePVec_t & TARGET_CREATURES_PVEC)
+    {
+        combatSoundEffectsUPtr_->PlaySpell(spellBeingCastPtr_);
+
+        spellTurnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_,
+                                                      TARGET_CREATURES_PVEC);
+
+        spellFightResult_ = combat::FightClub::Cast(spellBeingCastPtr_,
+                                                    creaturePtr_,
+                                                    TARGET_CREATURES_PVEC);
+
+        SetupCreatureDetails(false);
+        SetupCreatureStats();
+        SetupCenterText();
+
+        spellCreatureEffectIndex_ = 0;
+        spellHitInfoIndex_ = 0;
+
+        HandleCast_Step3_DisplayResults();
+    }
+
+
+    bool InventoryStage::HandleCast_Step3_DisplayResults()
+    {
+        if (spellBeingCastPtr_ != nullptr)
+        {
+            auto const ACTION_TEXT{ combat::Text::ActionText(creaturePtr_,
+                                                             spellTurnActionInfo_,
+                                                             spellFightResult_,
+                                                             false,
+                                                             false,
+                                                             false,
+                                                             spellCreatureEffectIndex_,
+                                                             spellHitInfoIndex_) };
+
+            auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_SPELL_RESULT_,
+                ACTION_TEXT,
+                sfml_util::PopupButtons::Okay,
+                sfml_util::PopupImage::Regular,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::None,
+                game::Popup::Generic,
+                sfml_util::FontManager::Instance()->Size_Normal()) };
+
+            auto const CREATURE_EFFECTS_VEC{ spellFightResult_.Effects() };
+            
+            auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[spellCreatureEffectIndex_].GetHitInfoVec() };
+            if (++spellHitInfoIndex_ >= HIT_INFO_VEC.size())
+            {
+                spellHitInfoIndex_ = 0;
+                if (++spellCreatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size())
+                {
+                    spellBeingCastPtr_ = nullptr;
+                }
+            }
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+            isWaitingOnPopup_ = true;
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
+    void InventoryStage::ForceSelectionAndDrawOfListBox()
+    {
+        equippedListBoxSPtr_->WillPlaySoundEffects(false);
+
+        sf::Event::KeyEvent keyEvent;
+
+        keyEvent.code = sf::Keyboard::Down;
+        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        
+        keyEvent.code = sf::Keyboard::Up;
+        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        
+        equippedListBoxSPtr_->WillPlaySoundEffects(true);
     }
 
 }

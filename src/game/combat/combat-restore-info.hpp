@@ -54,9 +54,6 @@ namespace combat
     using CreatureBlockingPosMap_t = std::map<creature::CreaturePtr_t, int>;
 
 
-    using CreatureLastCastSpellNumMap_t = std::map<creature::CreaturePtr_t, std::size_t>;
-
-
     //Everything required to save the state of combat so it can be restored later.
     class RestoreInfo
     {
@@ -70,9 +67,6 @@ namespace combat
         inline bool HasRestored() const             { return hasRestored_; }
         inline bool CanTurnAdvance() const          { return canTurnAdvance_; }
         inline void CanTurnAdvance(const bool B)    { canTurnAdvance_ = B; }
-
-        inline std::size_t LastCastSpellNum(const creature::CreaturePtr_t CPTR)                 { return creatureLastCastSpellNumMap_[CPTR]; }
-        inline void LastCastSpellNum(const creature::CreaturePtr_t CPTR, const std::size_t NUM) { creatureLastCastSpellNumMap_[CPTR] = NUM; }
 
     private:
         void CreatureHealthSave(const CombatDisplayPtrC_t);
@@ -89,7 +83,6 @@ namespace combat
         bool hasRestored_;
         creature::CreaturePVec_t creaturesFlyingPVec_;
         CreatureBlockingPosMap_t creatureBlockingPosMap_;
-        CreatureLastCastSpellNumMap_t creatureLastCastSpellNumMap_;
     };
 
 }
