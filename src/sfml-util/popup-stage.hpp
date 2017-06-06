@@ -176,6 +176,8 @@ namespace sfml_util
         float sliderbarPosTop_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
+        sf::Texture textureCurr_;
+        sf::Texture texturePrev_;
 
         //number selection members
         gui::TextRegionUPtr_t   infoTextRegionUPtr_;

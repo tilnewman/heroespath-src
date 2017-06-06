@@ -79,7 +79,8 @@ namespace game
         numberInvalidVec_(INVALID_CHAR_NUM_VEC),
         imageFadeSpeed_  (IMAGE_FADE_SPEED),
         creatureCPtr_    (CREATURE_CPTR),
-        initialSelection_(INITIAL_SELECTION)
+        initialSelection_(INITIAL_SELECTION),
+        areImgsCreatures_(false)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupButtons::IsValid(BUTTONS)), "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given a BUTTONS value of " << BUTTONS << ", which is invalid.");
         M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),           "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
@@ -133,13 +134,15 @@ namespace game
         numberInvalidVec_(),
         imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
         creatureCPtr_    (nullptr),
-        initialSelection_(0)
+        initialSelection_(0),
+        areImgsCreatures_(false)
     {}
 
 
     PopupInfo::PopupInfo(const std::string &                     NAME,
                          const sfml_util::gui::TextInfo &        TEXT_INFO,
                          const sfml_util::TextureVec_t &         TEXTURE_VEC,
+                         const bool                              ARE_IMAGES_CREATURES,
                          const float                             IMAGE_SCALE,
                          const sfml_util::sound_effect::Enum     SOUND_EFFECT,
                          const sfml_util::PopupButtonColor::Enum BUTTON_COLOR)
@@ -162,7 +165,8 @@ namespace game
         numberInvalidVec_(),
         imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
         creatureCPtr_    (nullptr),
-        initialSelection_(0)
+        initialSelection_(0),
+        areImgsCreatures_(ARE_IMAGES_CREATURES)
     {}
 
 
@@ -190,7 +194,8 @@ namespace game
         numberInvalidVec_(),
         imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
         creatureCPtr_    (nullptr),
-        initialSelection_(0)
+        initialSelection_(0),
+        areImgsCreatures_(false)
     {}
 
 
@@ -217,12 +222,13 @@ namespace game
         numberMax_       (PI.numberMax_),
         numberInvalidVec_(PI.numberInvalidVec_),
         imageFadeSpeed_  (PI.imageFadeSpeed_),
-
+        
         //The creature object is not managed by this class,
         //so it is safe to copy here.
         creatureCPtr_    (PI.creatureCPtr_),
 
-        initialSelection_(PI.initialSelection_)
+        initialSelection_(PI.initialSelection_),
+        areImgsCreatures_(PI.areImgsCreatures_)
     {}
 
 
@@ -247,6 +253,7 @@ namespace game
             numberMax_        = PI.numberMax_;
             numberInvalidVec_ = PI.numberInvalidVec_;
             imageFadeSpeed_   = PI.imageFadeSpeed_;
+            areImgsCreatures_ = PI.areImgsCreatures_;
 
             //The lifetime of these objects is not managed by this class.
             //Usage is short-term observation only, so copying is safe.

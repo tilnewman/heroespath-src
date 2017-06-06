@@ -86,6 +86,7 @@ namespace creature
         PopupInfo(const std::string &                     NAME,
                   const sfml_util::gui::TextInfo &        TEXT_INFO,
                   const sfml_util::TextureVec_t &         TEXTURE_VEC,
+                  const bool                              ARE_IMAGES_CREATURES,
                   const float                             IMAGE_SCALE,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
                   const sfml_util::PopupButtonColor::Enum BUTTON_COLOR = sfml_util::PopupButtonColor::Dark);
@@ -115,12 +116,19 @@ namespace creature
         inline bool                              WillAddRandImage() const   { return willAddRandImage_; }
         inline float                             ImageScale() const         { return imageScale_; }
         inline const sfml_util::TextureVec_t &   Images() const             { return textureVec_; }
+        inline std::size_t                       ImagesCount() const        { return textureVec_.size(); }
         inline std::size_t                       NumberSelMin() const       { return numberMin_; }
         inline std::size_t                       NumberSelMax() const       { return numberMax_; }
         inline const std::vector<std::size_t>    NumberSelInvVec() const    { return numberInvalidVec_; }
         inline float                             ImageFadeSpeed() const     { return imageFadeSpeed_; }
         inline creature::CreaturePtr_t           CreaturePtr() const        { return creatureCPtr_; }
         inline std::size_t                       InitialSelection() const   { return initialSelection_; }
+        inline bool                              AreImagesCreatures() const { return areImgsCreatures_; }
+
+        inline const sf::Texture & ImagesAt(const std::size_t I) const
+        {
+            return textureVec_.at(I);
+        }
 
         inline static std::size_t ContentNum_Item()          { return 0; }
         inline static std::size_t ContentNum_Coins()         { return 1; }
@@ -157,6 +165,7 @@ namespace creature
         float                             imageFadeSpeed_;
         creature::CreaturePtr_t           creatureCPtr_;
         std::size_t                       initialSelection_;
+        bool                              areImgsCreatures_;
     };
 
 

@@ -99,6 +99,8 @@ namespace sfml_util
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
         willTextBoxUpdate_         (true),
+        textureCurr_               (),
+        texturePrev_               (),
         infoTextRegionUPtr_        (),
         textEntryBoxSPtr_          (),
         isImageProcAllowed_        (false),
@@ -173,11 +175,13 @@ namespace sfml_util
         {
             if (isImageProcAllowed_)
             {
-                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
+                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.ImagesCount()));
                 std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
 
-                if (index >= POPUP_INFO_.Images().size())
-                    index = POPUP_INFO_.Images().size() - 1;
+                if (index >= POPUP_INFO_.ImagesCount())
+                {
+                    index = POPUP_INFO_.ImagesCount() - 1;
+                }
 
                 imageMoveQueue_.push(index);
             }
@@ -514,10 +518,10 @@ namespace sfml_util
             imagesRect_ = textRegion_;
             imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);//added is a pad so the text does not touch the images
             imagesRect_.height = (sliderbarPosTop_ - (POPUPBUTTON_TEXT_HEIGHT * 2.0f)) - imagesRect_.top;
-            isImageProcAllowed_ = ! POPUP_INFO_.Images().empty();
+            isImageProcAllowed_ = ! (POPUP_INFO_.ImagesCount() == 0);
             imageMoveQueue_.push(0);
 
-            if (POPUP_INFO_.Images().size() == 1)
+            if (POPUP_INFO_.ImagesCount() == 1)
             {
                 const sfml_util::gui::TextInfo TEXT_INFO("(there is only one image)",
                                                          FontManager::Instance()->Font_Default1(),
@@ -540,16 +544,14 @@ namespace sfml_util
             const float IMAGE_REGION_TOP(textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD);
             const float IMAGE_REGION_HEIGHT((textRegion_.top + textRegion_.height) - IMAGE_REGION_TOP);
 
-            auto const & textureVec(POPUP_INFO_.Images());
-
-            if (textureVec.size() == 1)
+            if (POPUP_INFO_.ImagesCount() == 1)
             {
-                imageSpriteCurr_.setTexture(POPUP_INFO_.Images().at(0));
+                imageSpriteCurr_.setTexture(POPUP_INFO_.ImagesAt(0), true);
             }
             else
             {
-                imageSpritePrev_.setTexture(POPUP_INFO_.Images().at(0));
-                imageSpriteCurr_.setTexture(POPUP_INFO_.Images().at(1));
+                imageSpritePrev_.setTexture(POPUP_INFO_.ImagesAt(0), true);
+                imageSpriteCurr_.setTexture(POPUP_INFO_.ImagesAt(1), true);
             }
 
             float newScale(1.0f);
@@ -558,7 +560,7 @@ namespace sfml_util
                 newScale = IMAGE_REGION_HEIGHT / imageSpriteCurr_.getLocalBounds().height;
             }
 
-            //assume POPUP_INFO_.Images()[0] and POPUP_INFO_.Images()[1] are the same size
+            //assume POPUP_INFO_.ImagesAt(0) and POPUP_INFO_.ImagesAt(1) are the same size
             imageSpritePrev_.setScale(newScale, newScale);
             imageSpriteCurr_.setScale(newScale, newScale);
 
@@ -942,7 +944,9 @@ namespace sfml_util
                 willShowImageCount_ = false;
 
                 if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
+                {
                     sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                }
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();
 
@@ -1078,52 +1082,114 @@ namespace sfml_util
                 return false;
             }
         }
-
-        if ((KEY_EVENT.code == sf::Keyboard::Left) && (POPUP_INFO_.Images().empty() == false))
+        
+        if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) &&
+            ((KEY_EVENT.code == sf::Keyboard::Left) ||
+             (KEY_EVENT.code == sf::Keyboard::Right) ||
+             ((KEY_EVENT.code >= sf::Keyboard::Num1) && (KEY_EVENT.code <= sf::Keyboard::Num9))))
         {
-            if (imageIndex_ > 0)
+            if ((KEY_EVENT.code >= sf::Keyboard::Num1) && (KEY_EVENT.code <= sf::Keyboard::Num9))
             {
-                std::size_t index(imageIndex_);
-                --index;
+                std::size_t targetIndex{ 0 };
+                if      (KEY_EVENT.code == sf::Keyboard::Num2) targetIndex = 1;
+                else if (KEY_EVENT.code == sf::Keyboard::Num3) targetIndex = 2;
+                else if (KEY_EVENT.code == sf::Keyboard::Num4) targetIndex = 3;
+                else if (KEY_EVENT.code == sf::Keyboard::Num5) targetIndex = 4;
+                else if (KEY_EVENT.code == sf::Keyboard::Num6) targetIndex = 5;
+                else if (KEY_EVENT.code == sf::Keyboard::Num7) targetIndex = 6;
+                else if (KEY_EVENT.code == sf::Keyboard::Num8) targetIndex = 7;
+                else if (KEY_EVENT.code == sf::Keyboard::Num9) targetIndex = 8;
 
-                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
-
-                imageMoveQueue_.push(index);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        if ((KEY_EVENT.code == sf::Keyboard::Right) && (POPUP_INFO_.Images().empty() == false))
-        {
-            if (imageIndex_ < (POPUP_INFO_.Images().size() - 1))
-            {
-                std::size_t index(imageIndex_);
-                ++index;
-
-                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(POPUP_INFO_.Images().size()));
-                sliderbarUPtr_->SetCurrentValue(static_cast<float>(index) * SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
-
-                //if already at the end, then make sure the sliderbar is all the way to the right
-                if (index >= (POPUP_INFO_.Images().size() - 1))
+                if ((imageIndex_ == targetIndex) ||
+                    (targetIndex > (POPUP_INFO_.ImagesCount() - 1)))
                 {
-                    //prevent processing and adding to the imageMoveQueue_ or calling SetupSelectImage() when setting the sliderbar value here.
-                    isImageProcAllowed_ = false;
-                    sliderbarUPtr_->SetCurrentValue(1.0f);
-                    isImageProcAllowed_ = true;
+                    return false;
                 }
 
-                imageMoveQueue_.push(index);
+                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
+                    static_cast<float>(POPUP_INFO_.ImagesCount()));
+
+                isImageProcAllowed_ = false;
+                sliderbarUPtr_->SetCurrentValue(static_cast<float>(targetIndex) *
+                    SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                isImageProcAllowed_ = true;
+
+                std::size_t i{ imageIndex_ };
+                while(true)
+                {
+                    if (targetIndex < imageIndex_)
+                    {
+                        imageMoveQueue_.push(--i);
+                    }
+                    else
+                    {
+                        imageMoveQueue_.push(++i);
+                    }
+
+                    if (i == targetIndex)
+                    {
+                        break;
+                    }
+                }
+
                 return true;
             }
-            else
-                return false;
-        }
+            else if (KEY_EVENT.code == sf::Keyboard::Left)
+            {
+                if (imageIndex_ > 0)
+                {
+                    const std::size_t NEW_INDEX(imageIndex_ - 1);
 
+                    const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
+                        static_cast<float>(POPUP_INFO_.ImagesCount()));
+
+                    isImageProcAllowed_ = false;
+                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NEW_INDEX) *
+                        SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                    isImageProcAllowed_ = true;
+
+                    imageMoveQueue_.push(NEW_INDEX);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (KEY_EVENT.code == sf::Keyboard::Right)
+            {
+                if (imageIndex_ < (POPUP_INFO_.ImagesCount() - 1))
+                {
+                    const std::size_t NEW_INDEX(imageIndex_ + 1);
+
+                    const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
+                        static_cast<float>(POPUP_INFO_.ImagesCount()));
+
+                    isImageProcAllowed_ = false;
+                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NEW_INDEX) *
+                        SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
+                    isImageProcAllowed_ = true;
+
+                    //if already at the end, then make sure the sliderbar is
+                    //all the way to the right
+                    if (NEW_INDEX >= (POPUP_INFO_.ImagesCount() - 1))
+                    {
+                        //prevent processing and adding to the imageMoveQueue_ or calling
+                        //SetupSelectImage() when setting the sliderbar value here.
+                        isImageProcAllowed_ = false;
+                        sliderbarUPtr_->SetCurrentValue(1.0f);
+                        isImageProcAllowed_ = true;
+                    }
+
+                    imageMoveQueue_.push(NEW_INDEX);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         if (POPUP_INFO_.Buttons() & Response::Continue)
         {
             if ((KEY_EVENT.code == sf::Keyboard::C) ||
@@ -1230,11 +1296,15 @@ namespace sfml_util
     void PopupStage::SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED)
     {
         if (false == isImageProcAllowed_)
+        {
             return;
+        }
 
         std::size_t newIndex(NEW_IMAGE_INDEX);
-        if (newIndex >= POPUP_INFO_.Images().size())
-            newIndex = POPUP_INFO_.Images().size() - 1;
+        if (newIndex >= POPUP_INFO_.ImagesCount())
+        {
+            newIndex = POPUP_INFO_.ImagesCount() - 1;
+        }
 
         if ((imageIndex_ != newIndex) || isInitialAnimation_)
         {
@@ -1243,7 +1313,7 @@ namespace sfml_util
             selectPopupButtonSPtr_->SetSelection(static_cast<int>(imageIndex_));
 
             std::ostringstream ss;
-            ss << imageIndex_ + 1 << "/" << POPUP_INFO_.Images().size();
+            ss << imageIndex_ + 1 << "/" << POPUP_INFO_.ImagesCount();
             const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
                                                      FontManager::Instance()->Font_Typical(),
                                                      FontManager::Instance()->Size_Smallish(),
@@ -1256,9 +1326,18 @@ namespace sfml_util
             imageSlider_.Reset(SLIDER_SPEED);
 
             imageSpritePrev_ = imageSpriteCurr_;
+            texturePrev_ = textureCurr_;
+            imageSpritePrev_.setTexture(texturePrev_, true);
 
-            imageSpriteCurr_.setTexture(POPUP_INFO_.Images()[newIndex] );
-            imageSpriteCurr_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(POPUP_INFO_.Images()[newIndex].getSize().x), static_cast<int>(POPUP_INFO_.Images()[newIndex].getSize().y)));
+            textureCurr_ = POPUP_INFO_.ImagesAt(imageIndex_);
+            textureCurr_.setSmooth(true);
+            if (POPUP_INFO_.AreImagesCreatures())
+            {
+                sfml_util::Invert(textureCurr_);
+                sfml_util::Mask(textureCurr_, sf::Color::White);
+            }
+
+            imageSpriteCurr_.setTexture(textureCurr_, true);
             imageSpriteCurr_.setScale(1.0f, 1.0f);
 
             const float POS_LEFT(textRegion_.left + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f));
@@ -1283,16 +1362,24 @@ namespace sfml_util
                 s.setScale(imageCurrTargetScale_, imageCurrTargetScale_);
                 const float POS_LEFT_CENTERED((textRegion_.left + (textRegion_.width * 0.5f)) - (s.getGlobalBounds().width * 0.5f));
                 if (areImagesMovingLeft_)
+                {
                     imageCurrTravelDist_ = (textRegion_.left + textRegion_.width) - POS_LEFT_CENTERED;
+                }
                 else
+                {
                     imageCurrTravelDist_ = POS_LEFT_CENTERED - textRegion_.left;
+                }
             }
 
             //establish the distance selectSpritePrev, the old index sprite, will travel
             if (areImagesMovingLeft_)
+            {
                 imagePrevTravelDist_ = imageSpritePrev_.getGlobalBounds().left - imagesRect_.left;
+            }
             else
+            {
                 imagePrevTravelDist_ = (imagesRect_.left + imagesRect_.width) - imageSpritePrev_.getGlobalBounds().left;
+            }
         }
     }
 

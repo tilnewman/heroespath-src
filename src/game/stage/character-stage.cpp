@@ -536,9 +536,11 @@ namespace stage
 
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
-        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_IMAGE_SELECTION_,
-                                                                                                                ss.str(),
-                                                                                                                characterTextureVec));
+        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+            CreatePopupInfo(POPUP_NAME_IMAGE_SELECTION_,
+                            ss.str(),
+                            characterTextureVec,
+                            true));
 
         return true;
     }

@@ -152,6 +152,7 @@ namespace gui
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                               const std::string &              PROMPT_TEXT,
                                               const sfml_util::TextureVec_t &  TEXTURE_VEC,
+                                              const bool                       ARE_IMAGES_CREATURES,
                                               const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
                                               const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal());
 

@@ -228,15 +228,18 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &             POPUP_NAME,
-                                                        const std::string &             PROMPT_TEXT,
-                                                        const sfml_util::TextureVec_t & TEXTURE_VEC,
-                                                        const sound_effect::Enum        SOUND_EFFECT,
-                                                        const unsigned int              FONT_SIZE)
+    const game::PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &             POPUP_NAME,
+        const std::string &             PROMPT_TEXT,
+        const sfml_util::TextureVec_t & TEXTURE_VEC,
+        const bool                      ARE_IMAGES_CREATURES,
+        const sound_effect::Enum        SOUND_EFFECT,
+        const unsigned int              FONT_SIZE)
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
                                TEXTURE_VEC,
+                               ARE_IMAGES_CREATURES,
                                BACKGROUND_IMAGE_SCALE_DEFAULT_,
                                SOUND_EFFECT);
     }

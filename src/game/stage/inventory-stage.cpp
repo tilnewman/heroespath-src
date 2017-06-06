@@ -2017,13 +2017,7 @@ namespace stage
         sfml_util::Invert(creatureTexture_);
         sfml_util::Mask(creatureTexture_, sf::Color::White);
         creatureTexture_.setSmooth(true);
-        creatureSprite_.setTexture(creatureTexture_);
-        creatureSprite_.setTextureRect( sf::IntRect(
-            0,
-            0,
-            static_cast<int>(creatureTexture_.getSize().x),
-            static_cast<int>(creatureTexture_.getSize().y)) );
-
+        creatureSprite_.setTexture(creatureTexture_, true);
         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
         creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
         creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
