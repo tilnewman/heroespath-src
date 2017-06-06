@@ -317,8 +317,12 @@ namespace creature
     {
         ConditionEnumVec_t conditionsToRemoveVec;
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 conditionsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+            }
+        }
 
         auto wasAnyConditionRemoved{ false };
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
@@ -329,7 +333,9 @@ namespace creature
         }
 
         if (conditionsVec_.size() == 0)
+        {
             ConditionAdd(Conditions::Good);
+        }
 
         ReCalculateStats();
 
@@ -342,8 +348,10 @@ namespace creature
         const std::size_t ORIG_COND_COUNT(conditionsVec_.size());
 
         //undo the changes made by the conditions that will be removed
-        for(auto const NEXT_COND_ENUM : conditionsVec_)
+        for (auto const NEXT_COND_ENUM : conditionsVec_)
+        {
             condition::Warehouse::Get(NEXT_COND_ENUM)->FinalUndo(this);
+        }
 
         conditionsVec_.clear();
         ConditionAdd(Conditions::Good);
@@ -366,8 +374,12 @@ namespace creature
     bool Creature::HasCondition(const Conditions::Enum E) const
     {
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (NEXT_CONDITION_ENUM == E)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -405,7 +417,9 @@ namespace creature
 
             std::sort(tempCondVec.begin(),
                       tempCondVec.end(),
-                      [] (const Conditions::Enum A, const Conditions::Enum B) { return condition::Severity::Get(A) > condition::Severity::Get(B); });
+                      []
+                      (const Conditions::Enum A, const Conditions::Enum B)
+                      { return condition::Severity::Get(A) > condition::Severity::Get(B); });
 
             return condition::Severity::Get(tempCondVec[0]);
         }
@@ -415,8 +429,12 @@ namespace creature
     bool Creature::HasMagicalCondition() const
     {
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             if (condition::Warehouse::Get(NEXT_CONDITION_ENUM)->IsMagical())
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -441,25 +459,39 @@ namespace creature
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
         if (HasCondition(Conditions::Dead))
+        {
             return RESPONSE_PREFIX + "dead" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::Stone))
+        {
             return RESPONSE_PREFIX + "turned to stone" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::Unconscious))
+        {
             return RESPONSE_PREFIX + "unconscious" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::Dazed))
+        {
             return RESPONSE_PREFIX + "dazed" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::Tripped))
+        {
             return RESPONSE_PREFIX + "tripped" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::AsleepNatural))
+        {
             return RESPONSE_PREFIX + "asleep" + RESPONSE_POSTFIX;
+        }
 
         if (HasCondition(Conditions::AsleepMagical))
+        {
             return RESPONSE_PREFIX + "under magical sleep" + RESPONSE_POSTFIX;
+        }
 
         return "";
     }
@@ -536,11 +568,6 @@ namespace creature
             inventory_.ItemEquip(ITEM_PTR);
             SetCurrentWeaponsToBest();
         }
-        else
-        {
-            M_HP_LOG("game::creature::ItemEquip(creature_name=\"" << Name() << "\", item_name=\""
-                << ITEM_PTR->Name() << "\") item equip failed:  \"" << IS_ALLOWED_STR << "\".");
-        }
 
         return IS_ALLOWED_STR;
     }
@@ -566,10 +593,14 @@ namespace creature
             ss << "Not an equippable item.";
 
             if (CATEGORY & item::category::Useable)
+            {
                 ss << "  (Try using it instead)";
+            }
 
             if (CATEGORY & item::category::QuestItem)
+            {
                 ss << "  (have patience, this item will prove useful in time)";
+            }
 
             return ss.str();
         }
@@ -635,10 +666,13 @@ namespace creature
             resultSS << race_.Name() << "'s can't wear rings because they have no fingers." << SEP;
         }
 
-        if (CATEGORY & item::category::Armor)
-        {
-            const item::armor_type::Enum ARMOR_TYPE(ITEM_PTR->ArmorType());
+        const item::armor_type::Enum ARMOR_TYPE(ITEM_PTR->ArmorType());
 
+        if ((CATEGORY & item::category::Armor) ||
+            (ARMOR_TYPE == item::armor_type::Boots) ||
+            (ARMOR_TYPE == item::armor_type::Pants) ||
+            (ARMOR_TYPE == item::armor_type::Shirt))
+        {
             if ((ARMOR_TYPE & item::armor_type::Bracer) && (Body().HasArms() == false))
             {
                 resultSS << "Can't wear bracers without arms." << SEP;
@@ -689,19 +723,27 @@ namespace creature
                 armorEquipLimit = Body().NumHeads();
             }
 
+            if (ARMOR_TYPE & item::armor_type::Shirt)
+            {
+                armorEquipLimit = 1;
+            }
+
             if (ARMOR_TYPE & item::armor_type::Aventail)
             {
                 armorEquipLimit = inventory_.CountItemOfArmorTypeEquipped(item::armor_type::Helm);
             }
 
-            if (armorEquipLimit == inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE))
+            if (inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE) >= armorEquipLimit)
             {
                 const std::string ARMOR_TYPE_STR( item::armor_type::ToString(ARMOR_TYPE, false) );
 
                 std::ostringstream ss;
                 ss << "Can't equip more than " << armorEquipLimit;
                 if (boost::algorithm::iends_with(ARMOR_TYPE_STR, "s"))
+                {
                     ss << " pairs";
+                }
+                
                 ss << " of " << ARMOR_TYPE_STR << "." << SEP;
 
                 //make an exception for cover_type::Vest, which can be equipped along with the

@@ -235,7 +235,8 @@ namespace stage
             {
                 SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->GetSelected());
             }
-            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
+                (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
                 if (PACKAGE.package.PTR_ == equippedListBoxSPtr_.get())
                 {
@@ -1700,8 +1701,10 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            auto const LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
+
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+                (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
                 const item::ItemPtr_t IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
                 const std::string EQUIP_RESULT(creaturePtr_->ItemEquip(IITEM_PTR));
