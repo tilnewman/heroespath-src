@@ -31,7 +31,7 @@
 #include "game/combat/strategy-enums.hpp"
 #include "game/combat/strategy-info.hpp"
 #include "game/combat/turn-action-info.hpp"
-#include "game/spell/spell-type-enum.hpp"
+#include "game/effect-type-enum.hpp"
 
 #include <memory>
 #include <vector>
@@ -119,22 +119,21 @@ namespace combat
 
         static const TurnActionInfo DecideSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
                                                 const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                const spell::SpellTypeVec_t &  SPELL_TYPES_VEC);
+                                                const EffectTypeVec_t &        SPELL_TYPES_VEC);
 
 
         static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                           const spell::SpellType::Enum   SPELL_TYPE);
+                                           const EffectType::Enum         SPELL_TYPE);
 
         static spell::SpellPtr_t PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                           const spell::SpellTypeVec_t &  SPELL_TYPES_VEC);
+                                           const EffectTypeVec_t &        SPELL_TYPES_VEC);
 
         static const TurnActionInfo DecideIfFlying(const TurnInfo &               TURN_INFO,
                                                    const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC);
 
     private:
-        static const spell::SpellTypeVec_t COMBAT_SPELLS_VEC_;
-        static const spell::SpellTypeVec_t AFFLICTION_SPELLS_VEC_;
-        static const spell::SpellTypeVec_t BENEFICIAL_SPELLS_VEC_;
+        static const EffectTypeVec_t HARM_EFFECTTYPES_VEC_;
+        static const EffectTypeVec_t HELP_EFFECTTYPES_VEC_;
     };
 
 }

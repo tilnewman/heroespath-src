@@ -45,6 +45,7 @@
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
 
 #include "game/combat/strategy-details.hpp"
 #include "game/loop-manager.hpp"
@@ -67,6 +68,7 @@
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
+#include "game/song/song-warehouse.hpp"
 
 #include "misc/random.hpp"
 
@@ -85,7 +87,8 @@ int main(int argc, char * argv[])
         {
             for (int i(2); i < argc; ++i)
             {
-                std::cout << "Ignoring extra command line argument: \"" << argv[i] << "\"" << std::endl;
+                std::cout << "Ignoring extra command line argument: \""
+                    << argv[i] << "\"" << std::endl;
             }
         }
     }
@@ -156,6 +159,7 @@ int main(int argc, char * argv[])
         game::creature::title::Warehouse::Fill();
         game::creature::condition::Warehouse::Fill();
         game::spell::Warehouse::Fill();
+        game::song::Warehouse::Fill();
         sfml_util::FontManager::Fill();
 
         //load game assets Stage 2
@@ -173,6 +177,7 @@ int main(int argc, char * argv[])
         sfml_util::gui::SpellImageManager::Acquire();
         sfml_util::gui::ConditionImageManager::Acquire();
         sfml_util::gui::CombatImageManager::Acquire();
+        sfml_util::gui::SongImageManager::Acquire();
         game::Game::Acquire();
         game::state::GameStateFactory::Acquire();
         game::combat::PartyFactory::Acquire();
@@ -238,6 +243,7 @@ int main(int argc, char * argv[])
         game::combat::PartyFactory::Release();
         game::state::GameStateFactory::Release();
         game::Game::Release();
+        sfml_util::gui::SongImageManager::Release();
         sfml_util::gui::CombatImageManager::Release();
         sfml_util::gui::ConditionImageManager::Release();
         sfml_util::gui::SpellImageManager::Release();
@@ -258,6 +264,7 @@ int main(int argc, char * argv[])
 
         //unload stage 1
         sfml_util::FontManager::Empty();
+        game::song::Warehouse::Empty();
         game::spell::Warehouse::Empty();
         game::creature::condition::Warehouse::Empty();
         game::creature::title::Warehouse::Empty();

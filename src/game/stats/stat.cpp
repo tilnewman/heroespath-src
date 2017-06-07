@@ -38,11 +38,11 @@ namespace game
 namespace stats
 {
 
-    const Stat_t Stat::VAL_MIN_           {  0 };
-    const Stat_t Stat::VAL_MAX_INITIAL_   { 20 };
-    const Stat_t Stat::VAL_INVALID_       { -1 };
-    const float  Stat::REDUCE_DIVISOR_    { 5.0f };
-    const float  Stat::REDUCE_MULTIPLIER_ { 2.0f };
+    const Stat_t Stat::VAL_MIN_          {  0 };
+    const Stat_t Stat::VAL_MAX_INITIAL_  { 20 };
+    const Stat_t Stat::VAL_INVALID_      { -1 };
+    const float  Stat::REDUCE_DIVISOR_   { 5.0f };
+    const float  Stat::REDUCE_MULTIPLIER_{ 2.0f };
 
 
     Stat::Stat(const stat::Enum WHICH, const Stat_t VALUE)

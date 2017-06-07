@@ -49,7 +49,7 @@ namespace spell
 
 
     Spell::Spell(const Spells::Enum     WHICH,
-                 const SpellType::Enum  TYPE,
+                 const EffectType::Enum EFFECT_TYPE,
                  const Phase::Enum      VALID_PHASES,
                  const stats::Mana_t    MANA_COST,
                  const stats::Rank_t    RANK,
@@ -57,7 +57,7 @@ namespace spell
     :
         which_      (WHICH),
         rank_       (RANK),
-        type_       (TYPE),
+        effectType_ (EFFECT_TYPE),
         validPhases_(VALID_PHASES),
         manaCost_   (MANA_COST),
         targetType_ (TARGET_TYPE)
@@ -80,7 +80,7 @@ namespace spell
     {
         std::ostringstream ss;
         ss  << "A " << misc::String::DecorateNumber(rank_) << " rank"
-            << " " << SpellType::Name(type_) << " spell"
+            << " " << EffectType::Name(effectType_) << " spell"
             << " that can be cast during " << Phase::ToString(validPhases_, false)
             << ", targeting " << TargetType::Name(targetType_)
             << ", and costing " << manaCost_ << " mana.";

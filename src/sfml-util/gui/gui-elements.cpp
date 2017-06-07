@@ -151,7 +151,7 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_WRN("Singleton ACquire() after Construction: GuiElements");
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: GuiElements");
         }
     }
 

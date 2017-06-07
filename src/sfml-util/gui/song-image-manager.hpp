@@ -22,64 +22,70 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_MISCITEMFACTORY_INCLUDED
-#define GAME_ITEM_MISCITEMFACTORY_INCLUDED
+#ifndef SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
+#define SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
 //
-// misc-item-factory.hpp
-//  Responsible for making individual item objects.
+// song-image-manager.hpp
 //
-#include "game/item/item-type-enum.hpp"
-#include "game/item/item-factory-base.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
-#include <memory>
+#include "game/song/song-enum.hpp"
+
+#include <boost/filesystem/path.hpp>
+
 #include <string>
+#include <memory>
 
 
-namespace game
+namespace sfml_util
 {
-namespace item
-{
-    class Item;
-    using ItemPtr_t = Item *;
-
-namespace misc
+namespace gui
 {
 
-    //A singleton class responsible for making misc item objects.
-    class ItemFactory : public FactoryBase
+    //Loads images and delivers sf::Textures to them on demand.
+    class SongImageManager
     {
         //prevent copy construction
-        ItemFactory(const ItemFactory &) =delete;
+        SongImageManager(const SongImageManager &) =delete;
 
         //prevent copy assignment
-        ItemFactory & operator=(const ItemFactory &) =delete;
+        SongImageManager & operator=(const SongImageManager &) =delete;
 
         //prevent non-singleton construction
-        ItemFactory();
+        SongImageManager();
 
     public:
-        virtual ~ItemFactory();
+        ~SongImageManager();
 
-        static ItemFactory * Instance();
+        static SongImageManager * Instance();
         static void Acquire();
         static void Release();
 
-        static ItemPtr_t Make_Ring(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC,
-                                   const bool           IS_PIXIE_ITEM = false);
+        inline static void SetImagesDirectory(const std::string & S)
+        {
+            songImagesDirectory_ = S;
+        }
 
-        static ItemPtr_t Make_Wand(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC,
-                                   const bool           IS_PIXIE_ITEM = false);
+        inline static float Dimmension()
+        {
+            return 256.0f;
+        }
 
-        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM = false);
+        static bool Test();
+
+        void Get(sf::Texture & texture, game::song::Songs::Enum) const;
 
     private:
-        static std::unique_ptr<ItemFactory> instanceUPtr_;
+        const std::string MakeFilename(const game::song::Songs::Enum) const;
+        const boost::filesystem::path MakeFilepath(const game::song::Songs::Enum) const;
+    
+    private:
+        static std::unique_ptr<SongImageManager> instanceUPtr_;
+        static std::string songImagesDirectory_;
+        static const std::string filenameExtension_;
     };
 
 }
 }
-}
 
-#endif //GAME_ITEM_MISCITEMFACTORY_INCLUDED
+#endif //SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED

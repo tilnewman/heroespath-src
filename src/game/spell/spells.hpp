@@ -53,7 +53,7 @@ namespace spell
     {
     public:
         Sparks() : Spell(Spells::Sparks,
-                         SpellType::Attack,
+                         EffectType::CreatureHarmDamage,
                          Phase::Combat,
                          1,
                          1,
@@ -73,7 +73,7 @@ namespace spell
     {
     public:
         Bandage() : Spell(Spells::Bandage,
-                          SpellType::Heal,
+                          EffectType::CreatureHelpHeal,
                           static_cast<Phase::Enum>(Phase::Combat |
                                                    Phase::Exploring |
                                                    Phase::Inventory),
@@ -95,7 +95,7 @@ namespace spell
     {
     public:
         Sleep() : Spell(Spells::Sleep,
-                        SpellType::EffectCreature,
+                        EffectType::CreatureHarmMisc,
                         Phase::Combat,
                         1,
                         1,
@@ -114,7 +114,7 @@ namespace spell
     {
     public:
         Awaken() : Spell(Spells::Awaken,
-                         SpellType::EffectCreature,
+                         EffectType::CreatureHelpMisc,
                          static_cast<Phase::Enum>(Phase::Combat |
                                                   Phase::Exploring |
                                                   Phase::Inventory),
@@ -135,7 +135,7 @@ namespace spell
     {
     public:
         Trip() : Spell(Spells::Trip,
-                       SpellType::EffectCreature,
+                       EffectType::CreatureHarmMisc,
                        Phase::Combat,
                        1,
                        1,
@@ -154,7 +154,7 @@ namespace spell
     {
     public:
         Lift() : Spell(Spells::Lift,
-                       SpellType::EffectCreature,
+                       EffectType::CreatureHelpMisc,
                        static_cast<Phase::Enum>(Phase::Combat |
                                                 Phase::Exploring |
                                                 Phase::Inventory),
@@ -175,7 +175,7 @@ namespace spell
     {
     public:
         Daze() : Spell(Spells::Daze,
-                       SpellType::EffectCreature,
+                       EffectType::CreatureHarmMisc,
                        Phase::Combat,
                        1,
                        1,
@@ -194,11 +194,11 @@ namespace spell
     {
     public:
         Frighten() : Spell(Spells::Frighten,
-            SpellType::EffectCreature,
-            Phase::Combat,
-            1,
-            1,
-            TargetType::SingleOpponent) {}
+                           EffectType::CreatureHarmMisc,
+                           Phase::Combat,
+                           1,
+                           1,
+                           TargetType::SingleOpponent) {}
 
         virtual ~Frighten() {}
 
@@ -213,7 +213,7 @@ namespace spell
     {
     public:
         ClearMind() : Spell(Spells::ClearMind,
-                            SpellType::EffectCreature,
+                            EffectType::CreatureHelpMisc,
                             static_cast<Phase::Enum>(Phase::Combat |
                                                      Phase::Exploring |
                                                      Phase::Inventory),
@@ -234,7 +234,7 @@ namespace spell
     {
     public:
         Poison() : Spell(Spells::Poison,
-                         SpellType::EffectCreature,
+                         EffectType::CreatureHarmMisc,
                          Phase::Combat,
                          1,
                          1,
@@ -253,7 +253,7 @@ namespace spell
     {
     public:
         Antidote() : Spell(Spells::Antidote,
-                           SpellType::EffectCreature,
+                           EffectType::CreatureHelpMisc,
                            static_cast<Phase::Enum>(Phase::Combat |
                                                     Phase::Exploring |
                                                     Phase::Inventory),
@@ -274,7 +274,7 @@ namespace spell
     {
     public:
         PoisonCloud() : Spell(Spells::PoisonCloud,
-                              SpellType::EffectCreature,
+                              EffectType::CreatureHarmMisc,
                               Phase::Combat,
                               3,
                               1,

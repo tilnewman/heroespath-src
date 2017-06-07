@@ -14,6 +14,10 @@ endif()
 
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} Misc)
+target_link_libraries(${PROJECT_NAME}
+				${Boost_LIBRARIES}
+				Game
+				Game-Song
+				Misc)
 
 add_subdirectory(gui)

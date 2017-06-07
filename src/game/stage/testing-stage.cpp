@@ -51,6 +51,7 @@
 #include "game/creature/creature.hpp"
 #include "game/player/character.hpp"
 #include "game/spell/spell-warehouse.hpp"
+#include "game/song/song-warehouse.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -327,6 +328,13 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_Songs{ false };
+        if (false == hasTestingCompleted_Songs)
+        {
+            hasTestingCompleted_Songs = game::song::Warehouse::Test();
+            return;
+        }
+
         static auto hasTestingCompleted_ImageSet{ false };
         if (false == hasTestingCompleted_ImageSet)
         {
@@ -344,7 +352,8 @@ namespace stage
         static auto hasTestingCompleted_ConditionImageManager{ false };
         if (false == hasTestingCompleted_ConditionImageManager)
         {
-            hasTestingCompleted_ConditionImageManager = sfml_util::gui::ConditionImageManager::Instance()->Test();
+            hasTestingCompleted_ConditionImageManager =
+                sfml_util::gui::ConditionImageManager::Instance()->Test();
             return;
         }
 
@@ -355,45 +364,59 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_SongImageManager{ false };
+        if (false == hasTestingCompleted_SongImageManager)
+        {
+            hasTestingCompleted_SongImageManager =
+                sfml_util::gui::SpellImageManager::Instance()->Test();
+            return;
+        }
+
         static auto hasTestingCompleted_SpellImageManager{ false };
         if (false == hasTestingCompleted_SpellImageManager)
         {
-            hasTestingCompleted_SpellImageManager = sfml_util::gui::SpellImageManager::Instance()->Test();
+            hasTestingCompleted_SpellImageManager =
+                sfml_util::gui::SpellImageManager::Instance()->Test();
             return;
         }
 
         static auto hasTestingCompleted_PopupManager{ false };
         if (false == hasTestingCompleted_PopupManager)
         {
-            hasTestingCompleted_PopupManager = sfml_util::gui::PopupManager::Instance()->Test();
+            hasTestingCompleted_PopupManager =
+                sfml_util::gui::PopupManager::Instance()->Test();
             return;
         }
 
         static auto hasTestingCompleted_CombatImageManager{ false };
         if (false == hasTestingCompleted_CombatImageManager)
         {
-            hasTestingCompleted_CombatImageManager = sfml_util::gui::CombatImageManager::Instance()->Test();
+            hasTestingCompleted_CombatImageManager =
+                sfml_util::gui::CombatImageManager::Instance()->Test();
             return;
         }
 
         static auto hasTestingCompleted_ItemImageManager{ false };
         if (false == hasTestingCompleted_ItemImageManager)
         {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Instance()->Test();
+            hasTestingCompleted_ItemImageManager =
+                sfml_util::gui::ItemImageManager::Instance()->Test();
             return;
         }
 
         static auto hasTestingCompleted_SoundManager{ false };
         if (false == hasTestingCompleted_SoundManager)
         {
-            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
+            hasTestingCompleted_SoundManager =
+                sfml_util::SoundManager::Instance()->Test();
             return;
         }
 
         static auto hasTestingCompleted_CreatureImageManager{ false };
         if (false == hasTestingCompleted_CreatureImageManager)
         {
-            hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Instance()->Test();
+            hasTestingCompleted_CreatureImageManager =
+                sfml_util::gui::CreatureImageManager::Instance()->Test();
             return;
         }
 
@@ -408,7 +431,8 @@ namespace stage
 
     void TestingStage::PerformStatsTests()
     {
-        LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::PerformStatsTests() Starting Tests...");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::PerformStatsTests() Starting Tests...");
 
         const stats::StatSet STAT_SET_ZEROS(0, 0, 0, 0, 0, 0);
         stats::StatSet actualSet;
@@ -458,7 +482,8 @@ namespace stage
 
         actualSet.ModifyCurrent(STAT_SET_MOD1.CreateInvertCopy());
         expectedSet = STAT_SET_BASE;
-        TestStatSetsCurrentAndNormal("Base Set Mod1 INV Current (should be back to Base)", actualSet, expectedSet);
+        TestStatSetsCurrentAndNormal(
+            "Base Set Mod1 INV Current (should be back to Base)", actualSet, expectedSet);
 
         actualSet = STAT_SET_BASE;
         for (int i(0); i < 10; ++i)
@@ -474,12 +499,13 @@ namespace stage
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
         const stats::StatSet STAT_SET_CHAR_BASE{ 1000, 1000, 1000, 1000, 1000, 1000 };
-        auto playerSPtr( std::make_shared<player::Character>("StatsTestingCreatureName",
-                                                             creature::sex::Female,
-                                                             creature::BodyType::Make_Wolfen(),
-                                                             creature::Race(creature::race::Wolfen),
-                                                             creature::Role(creature::role::Wolfen),
-                                                             STAT_SET_CHAR_BASE) );
+        auto playerSPtr( std::make_shared<player::Character>(
+            "StatsTestingCreatureName",
+            creature::sex::Female,
+            creature::BodyType::Make_Wolfen(),
+            creature::Race(creature::race::Wolfen),
+            creature::Role(creature::role::Wolfen),
+            STAT_SET_CHAR_BASE) );
 
         playerSPtr->Stats() = STAT_SET_CHAR_BASE;
         expectedSet = STAT_SET_CHAR_BASE;
@@ -489,35 +515,54 @@ namespace stage
         expectedSet = STAT_SET_CHAR_BASE;
         const stats::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 1000, 1000, 500, 1000);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED);
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened", playerSPtr->Stats(), expectedSet);
+
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
 
         playerSPtr->ConditionAdd(creature::Conditions::Dazed);
         expectedSet = STAT_SET_CHAR_BASE;
         const stats::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 1000, 1000, 166, 500);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED_AND_DAZED);
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed", playerSPtr->Stats(), expectedSet);
+
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
 
         playerSPtr->ConditionAdd(creature::Conditions::Dead);
         expectedSet = STAT_SET_CHAR_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed and Dead", playerSPtr->Stats(), expectedSet);
+
+        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed and Dead",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
 
         playerSPtr->ConditionRemove(creature::Conditions::Frightened);
         expectedSet = STAT_SET_CHAR_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dazed and Dead", playerSPtr->Stats(), expectedSet);
+
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed and Dead",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
 
         playerSPtr->ConditionRemove(creature::Conditions::Dead);
         expectedSet = STAT_SET_CHAR_BASE;
         const stats::StatSet STAT_SET_CHAR_DAZED(500, 333, 1000, 1000, 333, 500);
         expectedSet.ResetCurrent(STAT_SET_CHAR_DAZED);
-        TestStatSetsCurrentAndNormal("Creature Base Set Dazed", playerSPtr->Stats(), expectedSet);
+
+        TestStatSetsCurrentAndNormal("Creature Base Set Dazed",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
 
         playerSPtr->ConditionRemove(creature::Conditions::Dazed);
         expectedSet = STAT_SET_CHAR_BASE;
-        TestStatSetsCurrentAndNormal("Creature Base Set (back to char base)", playerSPtr->Stats(), expectedSet);
 
-        LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::PerformStatsTests()  All Tests PASSED.");
+        TestStatSetsCurrentAndNormal("Creature Base Set (back to char base)",
+                                     playerSPtr->Stats(),
+                                     expectedSet);
+
+        LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::PerformStatsTests()  All Tests PASSED.");
     }
 
 
@@ -561,7 +606,9 @@ namespace stage
                 ss << "(Normal Value Incorrect)";
             }
 
-            ss << "\nExpected:" << EXPECTED.ToStringTesting(true) << "\nActual:" << ACTUAL.ToStringTesting(true);
+            ss << "\nExpected:" << EXPECTED.ToStringTesting(true)
+                << "\nActual:" << ACTUAL.ToStringTesting(true);
+
             M_HP_LOG(ss.str());
             throw std::runtime_error(ss.str());
         }
@@ -579,7 +626,8 @@ namespace stage
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestImageSet() Starting Tests...");
+            LoopManager::Instance()->TestingStrAppend(
+                "game::stage::TestingStage::TestImageSet() Starting Tests...");
         }
 
         static std::vector<std::string> imagePathKeyVec =
@@ -633,14 +681,18 @@ namespace stage
             LoopManager::Instance()->TestingStrAppend(ss.str());
 
             sf::Texture texture;
-            sfml_util::LoadImageOrTexture(texture, GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
+            sfml_util::LoadImageOrTexture(texture,
+                GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
+
             TestingImageSet(texture);
 
             ++imageIndex;
             return false;
         }
 
-        LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+
         return true;
     }
 
@@ -651,7 +703,8 @@ namespace stage
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() Starting Tests...");
+            LoopManager::Instance()->TestingStrAppend(
+                "game::stage::TestingStage::TestAnimations() Starting Tests...");
         }
 
         static std::vector<std::string> multiTexturedAnimPathKeyVec =
@@ -793,14 +846,17 @@ namespace stage
             }
         }
 
-        LoopManager::Instance()->TestingStrAppend("game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
+
         return true;
     }
 
 
-    bool TestingStage::TestMultiTextureAnimation(const std::string & MEDIA_PATH_KEY_STR,
-                                                 const bool          WILL_REBUILD_ANIMATION_OBJECT,
-                                                 const sf::Color &   COLOR)
+    bool TestingStage::TestMultiTextureAnimation(
+        const std::string & MEDIA_PATH_KEY_STR,
+        const bool          WILL_REBUILD_ANIMATION_OBJECT,
+        const sf::Color &   COLOR)
     {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {
@@ -808,11 +864,12 @@ namespace stage
             ss << "TestMultiTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
             LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>("TestMultiTextureAnimation_" + MEDIA_PATH_KEY_STR,
-                                                                                       game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
-                                                                                       0.0f,
-                                                                                       0.0f,
-                                                                                       0.06f);
+            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
+                "TestMultiTextureAnimation_" + MEDIA_PATH_KEY_STR,
+                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+                0.0f,
+                0.0f,
+                0.06f);
 
             multiTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
             multiTextureAnimSPtr_->SetTargetSize( sf::Vector2f(512.0f, 512.0f) );
@@ -822,12 +879,13 @@ namespace stage
     }
 
 
-    bool TestingStage::TestSingleTextureAnimation(const std::string &   MEDIA_PATH_KEY_STR,
-                                                  const bool            WILL_REBUILD_ANIMATION_OBJECT,
-                                                  const unsigned int    FRAME_WIDTH,
-                                                  const unsigned int    FRAME_HEIGHT,
-                                                  const sf::BlendMode & BLEND_MODE,
-                                                  const sf::Color &     COLOR)
+    bool TestingStage::TestSingleTextureAnimation(
+        const std::string &   MEDIA_PATH_KEY_STR,
+        const bool            WILL_REBUILD_ANIMATION_OBJECT,
+        const unsigned int    FRAME_WIDTH,
+        const unsigned int    FRAME_HEIGHT,
+        const sf::BlendMode & BLEND_MODE,
+        const sf::Color &     COLOR)
     {
         if (WILL_REBUILD_ANIMATION_OBJECT)
         {
@@ -835,15 +893,16 @@ namespace stage
             ss << "TestSingleTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
             LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>("TestSingleTextureAnimation_" + MEDIA_PATH_KEY_STR,
-                                                                                         game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
-                                                                                         0.0f,
-                                                                                         0.0f,
-                                                                                         FRAME_WIDTH,
-                                                                                         FRAME_HEIGHT,
-                                                                                         0.06f,
-                                                                                         0,
-                                                                                         BLEND_MODE);
+            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
+                "TestSingleTextureAnimation_" + MEDIA_PATH_KEY_STR,
+                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+                0.0f,
+                0.0f,
+                FRAME_WIDTH,
+                FRAME_HEIGHT,
+                0.06f,
+                0,
+                BLEND_MODE);
 
             singleTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
             singleTextureAnimSPtr_->SetTargetSize(sf::Vector2f(512.0f, 512.0f) );

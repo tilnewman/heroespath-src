@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,43 +24,35 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_SPELL_SPELLTYPEENUM_HPP_INCLUDED
-#define GAME_SPELL_SPELLTYPEENUM_HPP_INCLUDED
 //
-// spell-type-enum.hpp
+// song-enum.cpp
 //
-#include <string>
-#include <vector>
+#include "song-type-enum.hpp"
+
+#include <sstream>
+#include <exception>
 
 
 namespace game
 {
-namespace spell
+namespace song
 {
 
-    struct SpellType
+    const std::string SongType::ToString(const Enum E)
     {
-        enum Enum
+        switch (E)
         {
-            Attack = 0,
-            Heal,
-            EffectItem,
-            EnchantItemHelpful,
-            EnchantItemHarmful,
-            EffectCreature,
-            EnchantCreatureHelpful,
-            EnchantCreatureHarmful,
-            Misc,
-            Count
-        };
-
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum);
-    };
-
-    using SpellTypeVec_t = std::vector<SpellType::Enum>;
+            case Guitar: { return "Guitar"; }
+            case Drum:   { return "Drum"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::song::SongType::ToString(" << E << ")_InvalidValueError.";
+                throw std::runtime_error(ss.str());
+            }
+        }
+    }
 
 }
 }
-
-#endif //GAME_SPELL_SPELLTYPEENUM_HPP_INCLUDED

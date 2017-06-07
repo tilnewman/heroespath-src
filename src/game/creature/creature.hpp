@@ -44,7 +44,8 @@
 #include "game/creature/wolfen-class-enum.hpp"
 #include "game/creature/achievements.hpp"
 #include "game/spell/spell-enum.hpp"
-#include "game/spell/spell-type-enum.hpp"
+#include "game/effect-type-enum.hpp"
+#include "game/song/song-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -249,7 +250,11 @@ namespace creature
 
         const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        bool CanCastSpellByType(const spell::SpellType::Enum) const;
+        bool CanCastSpellByEffectType(const EffectType::Enum) const;
+        bool CanCastSpellByEffectType(const EffectTypeVec_t &) const;
+
+        //bool CanPlaySongByEffectType(const EffectType::Enum) const;
+        //bool CanPlaySongByEffectType(const EffectTypeVec_t &) const;
 
         inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
 

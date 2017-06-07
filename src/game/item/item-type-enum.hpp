@@ -102,10 +102,7 @@ namespace item
             LockPicks,
             Mask,
             Mirror,
-            Lute,
-            Panflute,
-            Flute,
-            Sitar,
+            DrumLute,
             Scroll,
             Orb,
             Ring,
@@ -117,7 +114,9 @@ namespace item
         };
 
         static const std::string ToString(const misc_type::Enum);
-        inline static bool IsMusicalInstrument(const misc_type::Enum E) { return ((E == Lute) || (E == Panflute) || (E == Flute) || (E == Sitar)); }
+        inline static bool IsMusicalInstrument(const misc_type::Enum E)
+        {
+            return (E == DrumLute); }
     };
 
     struct material

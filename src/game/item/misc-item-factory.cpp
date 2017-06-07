@@ -172,86 +172,27 @@ namespace misc
     }
 
 
-    ItemPtr_t ItemFactory::Make_Instrument(const instrument_type::Enum TYPE,
-                                           const bool                  IS_PIXIE_ITEM)
+    ItemPtr_t ItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
     {
-        Coin_t price(0);
-        Weight_t weight(0);
-        std::string name("");
-        std::string desc("");
-        misc_type::Enum miscType(misc_type::Count);
-        std::string imageFilename("");
-        category::Enum categoryHanded(category::OneHanded);
-
-        switch (TYPE)
-        {
-            case instrument_type::Panflute:
-            {
-                name = "Panflute";
-                desc = "A set of pipes at varying length bound together";
-                price = 100;
-                weight = 150;
-                categoryHanded = category::OneHanded;
-                imageFilename = "panflute";
-                miscType = misc_type::Panflute;
-                break;
-            }
-            case instrument_type::Flute:
-            {
-                name = "Flute";
-                desc = "A single hollow length";
-                price = 500;
-                weight = 200;
-                categoryHanded = category::TwoHanded;
-                imageFilename = "flute";
-                miscType = misc_type::Flute;
-                break;
-            }
-            case instrument_type::Lute:
-            {
-                name = "Lute";
-                desc = "A type of guitar with a round body";
-                price = 1000;
-                weight = 350;
-                categoryHanded = category::TwoHanded;
-                imageFilename = "lute";
-                miscType = misc_type::Lute;
-                break;
-            }
-            case instrument_type::Sitar:
-            {
-                name = "Sitar";
-                desc = "A type of guitar with a long neck";
-                price = 2000;
-                weight = 400;
-                categoryHanded = category::TwoHanded;
-                imageFilename = "sitar";
-                miscType = misc_type::Sitar;
-                break;
-            }
-            case instrument_type::Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "herospath::item::ItemFactory::Make_Instrument("
-                    << TYPE << ") -but that type is invalid.";
-                throw std::range_error(ss.str());
-            }
-        }
-
+        Coin_t price(1000);
+        Weight_t weight(350);
+        std::string desc("An acoustic guitar with a round hollow body that can also be drummed.");
+        
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);
 
         return ItemWarehouse::Instance()->Store( new Item(
-            Make_Name(name, material::Wood, material::Rope, IS_PIXIE_ITEM),
+            Make_Name("DrumLute", material::Wood, material::Rope, IS_PIXIE_ITEM),
             Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
-            static_cast<category::Enum>(category::Equippable | category::Useable | categoryHanded),
-            miscType,
+            static_cast<category::Enum>(category::Equippable |
+                                        category::Useable |
+                                        category::TwoHanded),
+            misc_type::DrumLute,
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
             material::Wood,
             material::Rope,
-            imageFilename,
+            "DrumLute",
             price,
             weight,
             0,

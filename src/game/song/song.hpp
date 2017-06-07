@@ -22,16 +22,18 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_SPELL_Spell_HPP_INCLUDED
-#define GAME_SPELL_Spell_HPP_INCLUDED
+#ifndef GAME_SONG_SONG_HPP_INCLUDED
+#define GAME_SONG_SONG_HPP_INCLUDED
 //
-// spell-base.hpp
+// song.hpp
 //
 #include "game/stats/types.hpp"
-#include "game/spell/spell-enum.hpp"
-#include "game/effect-type-enum.hpp"
-#include "game/target-enum.hpp"
+#include "game/song/song-enum.hpp"
+#include "game/song/song-type-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "game/target-enum.hpp"
+#include "game/stats/types.hpp"
+#include "game/effect-type-enum.hpp"
 #include "game/creature/condition-enum.hpp"
 
 #include <string>
@@ -56,32 +58,34 @@ namespace item
     using ItemPtr_t = Item *;
 }
 
-namespace spell
+namespace song
 {
 
-    //common base code to all spell classes
-    class Spell
+    //common base code to all song classes
+    class Song
     {
     public:
-        Spell(const Spells::Enum     WHICH,
-              const EffectType::Enum EFFECT_TYPE,
-              const Phase::Enum      VALID_PHASES,
-              const stats::Mana_t    MANA_COST,
-              const stats::Rank_t    RANK,
-              const TargetType::Enum TARGET_TYPE);
+        Song(const Songs::Enum      WHICH,
+             const SongType::Enum   SONG_TYPE,
+             const EffectType::Enum EFFECT_TYPE,
+             const Phase::Enum      VALID_PHASES,
+             const stats::Mana_t    MANA_COST,
+             const stats::Rank_t    RANK,
+             const TargetType::Enum TARGET_TYPE);
 
-        virtual ~Spell();
+        virtual ~Song();
 
-        inline const std::string Name() const       { return Spells::Name(which_); }
+        inline const std::string Name() const       { return Songs::Name(which_); }
 
         const std::string ToString() const;
 
-        inline const std::string Desc() const       { return Spells::ShortDesc(which_); }
-        inline const std::string DescExtra() const  { return Spells::ExtraDesc(which_); }
+        inline const std::string Desc() const       { return Songs::ShortDesc(which_); }
+        inline const std::string DescExtra() const  { return Songs::ExtraDesc(which_); }
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
-        inline Spells::Enum Which() const           { return which_; }
+        inline Songs::Enum Which() const            { return which_; }
+        inline SongType::Enum Type() const          { return type_; }
         inline EffectType::Enum EffectType() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const      { return validPhases_; }
         inline stats::Mana_t ManaCost() const       { return manaCost_; }
@@ -90,30 +94,30 @@ namespace spell
 
         //Returns a short sentance describing what the spell did.
         //For the following functions the first CreaturePtr_t is the caster and the second is the target.
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t,         //creatureCasting
-                                               creature::CreaturePtr_t) const   //creatureCastUpon
+        virtual const std::string ActionPhrase(creature::CreaturePtr_t,         //creaturePlaying
+                                               creature::CreaturePtr_t) const   //creatureListening
         {
             return "TODO";
         }
 
         //Allows the spell to change the target creature.
-        virtual const std::string EffectCreature(creature::CreaturePtr_t,              //creatureCasting
-                                                 creature::CreaturePtr_t,              //creatureCastUpon
+        virtual const std::string EffectCreature(creature::CreaturePtr_t,              //creaturePlaying
+                                                 creature::CreaturePtr_t,              //creatureListening
                                                  creature::ConditionEnumVec_t &) const //conditionsAdded
         {
-            return Spell::EFFECT_STR_NOTHING_TO_DO_;
+            return Song::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Allows the spell to change the target item.
-        virtual const std::string EffectItem(creature::CreaturePtr_t,   //creatureCasting
-                                             item::ItemPtr_t) const  //itemCastUpon
+        virtual const std::string EffectItem(creature::CreaturePtr_t,   //creaturePlaying
+                                             item::ItemPtr_t) const  //itemEffected
         {
-            return Spell::EFFECT_STR_NOTHING_TO_DO_;
+            return Song::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Returns the amount of health that the spell either gives or takes away.
-        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t,      //creatureCasting
-                                          creature::CreaturePtr_t) const//creatureCastUpon
+        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t,      //creaturePlaying
+                                          creature::CreaturePtr_t) const//creatureListening
         {
             return 0;
         }
@@ -137,10 +141,12 @@ namespace spell
             }
         }
 
-        friend bool operator<(const Spell & L, const Spell & R);
-        friend bool operator==(const Spell & L, const Spell & R);
+        friend bool operator<(const Song & L, const Song & R);
+        friend bool operator==(const Song & L, const Song & R);
 
     protected:
+        const std::string ActionPhraseBeginning(creature::CreaturePtr_t creaturePlayingPtr) const;
+
         int GenerateValue(const int FLOOR,
                           const int THE_RAND_MAX,
                           const int RANK         = 0,
@@ -165,63 +171,67 @@ namespace spell
         static const int         EFFECTS_ALL_CREATURES_COUNT_;
 
     protected:
-        Spells::Enum     which_;
-        stats::Rank_t    rank_;
+        Songs::Enum      which_;
+        SongType::Enum   type_;
         EffectType::Enum effectType_;
+        stats::Rank_t    rank_;
         Phase::Enum      validPhases_;
         stats::Mana_t    manaCost_;
         TargetType::Enum targetType_;
     };
 
 
-    using SpellPtr_t       = Spell *;
-    using SpellPVec_t      = std::vector<SpellPtr_t>;
-    using SpellPVecIter_t  = SpellPVec_t::iterator;
-    using SpellPVecCIter_t = SpellPVec_t::const_iterator;
-
-    using SpellSPtr_t = std::shared_ptr<Spell>;
-    using SpellSVec_t = std::vector<SpellSPtr_t>;
+    using SongPtr_t       = Song *;
+    using SongPVec_t      = std::vector<SongPtr_t>;
+    using SongPVecIter_t  = SongPVec_t::iterator;
+    using SongPVecCIter_t = SongPVec_t::const_iterator;
 
 
-    inline bool operator<(const Spell & L, const Spell & R)
+    inline bool operator<(const Song & L, const Song & R)
     {
         return std::tie(L.which_,
-                        L.rank_,
                         L.effectType_,
+                        L.effectType_,
+                        L.rank_,
                         L.validPhases_,
                         L.manaCost_,
                         L.targetType_)
                 <
                std::tie(R.which_,
-                        R.rank_,
+                        R.type_,
                         R.effectType_,
+                        R.rank_,
                         R.validPhases_,
                         R.manaCost_,
                         R.targetType_);
     }
 
-    inline bool operator==(const Spell & L, const Spell & R)
+
+    inline bool operator==(const Song & L, const Song & R)
     {
         return std::tie(L.which_,
-                        L.rank_,
+                        L.type_,
                         L.effectType_,
+                        L.rank_,
                         L.validPhases_,
                         L.manaCost_,
                         L.targetType_)
                 ==
                std::tie(R.which_,
-                        R.rank_,
+                        R.type_,
                         R.effectType_,
+                        R.rank_,
                         R.validPhases_,
                         R.manaCost_,
                         R.targetType_);
     }
 
-    inline bool operator!=(const Spell & L, const Spell & R)
+
+    inline bool operator!=(const Song & L, const Song & R)
     {
         return ! (L == R);
     }
 
 }
 }
-#endif //GAME_SPELL_Spell_HPP_INCLUDED
+#endif //GAME_SONG_SONG_HPP_INCLUDED

@@ -14,4 +14,8 @@ endif()
 
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
-target_link_libraries(${PROJECT_NAME} sfml-util ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+				sfml-util
+				Game
+				Game-Song
+				${Boost_LIBRARIES})

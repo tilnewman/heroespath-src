@@ -211,8 +211,7 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t panflutePtr(misc::ItemFactory::Make_Instrument(
-                misc::instrument_type::Panflute, characterPtrC->IsPixie()));
+            ItemPtr_t panflutePtr(misc::ItemFactory::Make_DrumLute(characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(panflutePtr);
             characterPtrC->ItemEquip(panflutePtr);

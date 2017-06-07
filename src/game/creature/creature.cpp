@@ -40,6 +40,7 @@
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
+#include "game/song/song-warehouse.hpp"
 
 #include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -1192,14 +1193,56 @@ namespace creature
     }
 
 
-    bool Creature::CanCastSpellByType(const spell::SpellType::Enum E) const
+    bool Creature::CanCastSpellByEffectType(const EffectType::Enum E) const
+    {
+        return CanCastSpellByEffectType( EffectTypeVec_t(1, E) );
+    }
+
+
+    bool Creature::CanCastSpellByEffectType(const EffectTypeVec_t & EFFECT_TYPE_VEC) const
     {
         for (auto const NEXT_SPELL_ENUM : spellsVec_)
-            if (spell::Warehouse::Get(NEXT_SPELL_ENUM)->Type() == E)
-                return true;
+        {
+            auto const NEXT_EFFECT_TYPE_SOURCE{
+                spell::Warehouse::Get(NEXT_SPELL_ENUM)->EffectType() };
+
+            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
+            {
+                if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
+                {
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
+
+
+    /*bool Creature::CanPlaySongByEffectType(const EffectType::Enum E) const
+    {
+        return CanPlaySongByEffectType(EffectTypeVec_t(1, E));
+    }
+
+
+    bool Creature::CanPlaySongByEffectType(const EffectTypeVec_t & EFFECT_TYPE_VEC) const
+    {
+        for (auto const NEXT_SONG_ENUM : songsVec_)
+        {
+            auto const NEXT_EFFECT_TYPE_SOURCE{
+                song::Warehouse::Get(NEXT_SONG_ENUM)->EffectType() };
+
+            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
+            {
+                if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }*/
 
 
     const spell::SpellPVec_t Creature::SpellsPVec() const
@@ -1207,7 +1250,9 @@ namespace creature
         spell::SpellPVec_t spellsPVec;
 
         for (auto const NEXT_SPELL_TYPE : spellsVec_)
-            spellsPVec.push_back( spell::Warehouse::Get(NEXT_SPELL_TYPE) );
+        {
+            spellsPVec.push_back(spell::Warehouse::Get(NEXT_SPELL_TYPE));
+        }
 
         return spellsPVec;
     }
@@ -1261,11 +1306,15 @@ namespace creature
 
         ss << ", conds=";
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             ss << condition::Warehouse::Get(NEXT_CONDITION_ENUM)->Name() << ",";
+        }
 
         ss << ", titles=";
         for (auto const NEXT_TITLE_ENUM : titlesVec_)
+        {
             ss << title::Warehouse::Get(NEXT_TITLE_ENUM)->Name() << ",";
+        }
 
         ss << ", inventory=" << inventory_.ToString();
 
@@ -1307,29 +1356,48 @@ namespace creature
     {
         item::Weight_t base(5000);
         if (race::Gnome == race_.Which())
+        {
             base = 2500;
+        }
         else if (race::Pixie == race_.Which())
+        {
             base = 10;
+        }
         else if (race::Human != race_.Which())
+        {
             base = 3000;
+        }
 
         item::Weight_t multiplier(1000);
         if (race::Gnome == race_.Which())
+        {
             multiplier = 500;
+        }
         else if (race::Pixie == race_.Which())
+        {
             multiplier = 100;
+        }
         else if (race::Human != race_.Which())
+        {
             multiplier = 750;
+        }
 
         item::Weight_t divisor(2);
         if (race::Gnome == race_.Which())
+        {
             divisor = 4;
+        }
         else if (race::Pixie == race_.Which())
+        {
             divisor = 50;
+        }
         else if (race::Human != race_.Which())
+        {
             divisor = 3;
+        }
 
-        return (base + ((static_cast<item::Weight_t>(stats_.Str().Current()) * multiplier) / divisor));
+        return (base +
+            ((static_cast<item::Weight_t>(stats_.Str().Current()) * multiplier) / divisor));
     }
 
 

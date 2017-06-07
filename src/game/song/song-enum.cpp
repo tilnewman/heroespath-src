@@ -25,9 +25,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// spell-type-enum.cpp
+// song-enum.cpp
 //
-#include "spell-type-enum.hpp"
+#include "song-enum.hpp"
+
+#include "game/game-data-file.hpp"
 
 #include <sstream>
 #include <exception>
@@ -35,54 +37,54 @@
 
 namespace game
 {
-namespace spell
+namespace song
 {
 
-    const std::string SpellType::ToString(const Enum E)
+    const std::string Songs::ToString(const Enum E)
     {
         switch (E)
         {
-            case Attack:                    { return "Attack"; }
-            case Heal:                      { return "Heal"; }
-            case EffectItem:                { return "EffectItem"; }
-            case EnchantItemHelpful:        { return "EnchantItemHelpful"; }
-            case EnchantItemHarmful:        { return "EnchantItemHarmful"; }
-            case EffectCreature:            { return "EffectCreature"; }
-            case EnchantCreatureHelpful:    { return "EnchantCreatureHelpful"; }
-            case EnchantCreatureHarmful:    { return "EnchantCreatureHarmful"; }
-            case Misc:                      { return "Misc"; }
+            case SleepMelody: { return "SleepMelody"; }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::spell::ToString(" << E << ")_InvalidValueError";
+                ss << "game::song::Songs::ToString(" << E << ")_InvalidValueError.";
                 throw std::runtime_error(ss.str());
             }
         }
     }
 
 
-    const std::string SpellType::Name(const Enum E)
+    const std::string Songs::Name(const Enum E)
     {
         switch (E)
         {
-            case Attack:                    { return "attack"; }
-            case Heal:                      { return "heal"; }
-            case EffectItem:                { return "effect item"; }
-            case EnchantItemHelpful:        { return "helpful enchant item"; }
-            case EnchantItemHarmful:        { return "harmful enchant item"; }
-            case EffectCreature:            { return "effect creature"; }
-            case EnchantCreatureHelpful:    { return "helpful enchant creature"; }
-            case EnchantCreatureHarmful:    { return "harmful enchant creature"; }
-            case Misc:                      { return "miscellaneous"; }
+            case SleepMelody: { return "Sleep Melody"; }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::spell::ToString(" << E << ")_InvalidValueError";
+                ss << "game::song::Songs::Name(" << E << ")_InvalidValueError.";
                 throw std::runtime_error(ss.str());
             }
         }
+    }
+
+
+    const std::string Songs::ShortDesc(const Songs::Enum E)
+    {
+        std::ostringstream keySS;
+        keySS << "heroespath-song-" << ToString(E) << "-short-desc";
+        return GameDataFile::Instance()->GetCopyStr(keySS.str());
+    }
+
+
+    const std::string Songs::ExtraDesc(const Songs::Enum E)
+    {
+        std::ostringstream keySS;
+        keySS << "heroespath-song-" << ToString(E) << "-extra-desc";
+        return GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
 
 }

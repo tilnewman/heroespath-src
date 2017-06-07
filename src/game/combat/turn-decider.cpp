@@ -35,7 +35,6 @@
 #include "game/combat/combat-display.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/algorithms.hpp"
-#include "game/spell/spell-type-enum.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
 
@@ -53,19 +52,17 @@ namespace game
 namespace combat
 {
 
-    const spell::SpellTypeVec_t TurnDecider::COMBAT_SPELLS_VEC_
-        { spell::SpellType::Attack,
-          spell::SpellType::EnchantCreatureHelpful,
-          spell::SpellType::EnchantCreatureHarmful };
+    const EffectTypeVec_t TurnDecider::HARM_EFFECTTYPES_VEC_{
+        EffectType::CreatureHarmDamage,
+        EffectType::CreatureHarmMisc,
+        EffectType::ItemHarmBreak,
+        EffectType::ItemHarmMisc };
 
-    const spell::SpellTypeVec_t TurnDecider::AFFLICTION_SPELLS_VEC_
-        { spell::SpellType::Attack,
-          spell::SpellType::EnchantCreatureHarmful };
-
-    const spell::SpellTypeVec_t TurnDecider::BENEFICIAL_SPELLS_VEC_
-        { spell::SpellType::Heal,
-          spell::SpellType::EnchantCreatureHelpful };
-
+    const EffectTypeVec_t TurnDecider::HELP_EFFECTTYPES_VEC_{
+        EffectType::CreatureHelpHeal,
+        EffectType::CreatureHelpMisc,
+        EffectType::ItemHelpFix,
+        EffectType::ItemHelpMisc };
 
     const TurnActionInfo TurnDecider::Decide(
         const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
@@ -186,9 +183,9 @@ namespace combat
         }
 
         //cast an attack spell if able
-        if (CREATURE_DECIDING_CPTRC->CanCastSpellByType(spell::SpellType::Attack))
+        if (CREATURE_DECIDING_CPTRC->CanCastSpellByEffectType(HARM_EFFECTTYPES_VEC_))
         {
-            return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, { spell::SpellType::Attack });
+            return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, HARM_EFFECTTYPES_VEC_);
         }
 
         //cast any misc spell if able
@@ -567,49 +564,68 @@ namespace combat
     }
 
 
-    const TurnActionInfo TurnDecider::DecideIfCasting(const TurnInfo &               TURN_INFO,
-                                                      const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                      const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC)
+    const TurnActionInfo TurnDecider::DecideIfCasting(
+        const TurnInfo &               TURN_INFO,
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC)
     {
-        auto const CAN_CAST_HEALING_SPELLS   { CREATURE_DECIDING_CPTRC->CanCastSpellByType(spell::SpellType::Heal) };
-        auto const CAN_CAST_ATTACK_SPELLS    { CREATURE_DECIDING_CPTRC->CanCastSpellByType(spell::SpellType::Attack) };
+        auto const CAN_CAST_HEALING_SPELLS{
+            CREATURE_DECIDING_CPTRC->CanCastSpellByEffectType(EffectType::CreatureHelpHeal) };
+
+        auto const CAN_CAST_ATTACK_SPELLS {
+            CREATURE_DECIDING_CPTRC->CanCastSpellByEffectType(EffectType::CreatureHarmDamage) };
 
         //determine if casting a spell
         if ((CAN_CAST_HEALING_SPELLS || CAN_CAST_ATTACK_SPELLS) && (TURN_INFO.GetStrategyInfo().CastFreq() != strategy::FrequencyType::Never))
         {
             //heal self if needed
             if ((CAN_CAST_HEALING_SPELLS) && (CREATURE_DECIDING_CPTRC->HealthRatio() < 0.26f))
-                return DecideSpell(CREATURE_DECIDING_CPTRC, CREATURE_DECIDING_CPTRC, { spell::SpellType::Heal });
+            {
+                return DecideSpell(CREATURE_DECIDING_CPTRC, CREATURE_DECIDING_CPTRC, { EffectType::CreatureHelpHeal });
+            }
 
             std::size_t maxCastCount{ 0 };
 
             if (TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Once)
+            {
                 maxCastCount = 1;
+            }
             else if (TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Twice)
+            {
                 maxCastCount = 2;
+            }
             else if (TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Thrice)
+            {
                 maxCastCount = 3;
+            }
 
             //prevent casting spell if already cast too many times
             if ((maxCastCount == 0) || (TURN_INFO.CastCount() < maxCastCount))
             {
-                auto const CAST_CHANCE{ ChanceFromFrequency(TURN_INFO.GetStrategyInfo().CastFreq()) };
+                auto const CAST_CHANCE{
+                    ChanceFromFrequency(TURN_INFO.GetStrategyInfo().CastFreq()) };
 
                 //determine if will cast spell at random
                 if ((TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Always) ||
                     (misc::random::Float(1.0f) < CAST_CHANCE))
                 {
-                    auto const FELLOWS_WITH_LOWEST_HEALTH_PVEC{ creature::Algorithms::FindLowestHealthRatio(creature::Algorithms::NonPlayers(true)) };
+                    auto const FELLOWS_WITH_LOWEST_HEALTH_PVEC{
+                        creature::Algorithms::FindLowestHealthRatio(
+                            creature::Algorithms::NonPlayers(true)) };
 
                     //heal fellow if one is injured enough
                     if (FELLOWS_WITH_LOWEST_HEALTH_PVEC.at(0)->HealthRatio() < 0.25f)
                     {
-                        return DecideSpell(CREATURE_DECIDING_CPTRC, misc::Vector::SelectRandom(FELLOWS_WITH_LOWEST_HEALTH_PVEC), { spell::SpellType::Heal });
+                        return DecideSpell(CREATURE_DECIDING_CPTRC,
+                            misc::Vector::SelectRandom(FELLOWS_WITH_LOWEST_HEALTH_PVEC),
+                            { EffectType::CreatureHelpHeal });
                     }
                     else
                     {
-                        //...otherwise choose a combat spell
-                        return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, COMBAT_SPELLS_VEC_);
+                        //...otherwise choose a random combat spell
+                        return DecideSpell(CREATURE_DECIDING_CPTRC,
+                                           MOST_DESIRED_TARGET_CPTRC,
+                                           HARM_EFFECTTYPES_VEC_);
                     }
                 }
             }
@@ -658,11 +674,12 @@ namespace combat
     }
 
 
-    const TurnActionInfo TurnDecider::DecideIfDoingBeastAction(const TurnInfo &                 TURN_INFO,
-                                                               const creature::CreaturePtrC_t   CREATURE_DECIDING_CPTRC,
-                                                               const creature::CreaturePtrC_t   MOST_DESIRED_TARGET_CPTRC,
-                                                               const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
-                                                               const int                        MOST_DESIRED_TARGET_CREATURE_DISTANCE)
+    const TurnActionInfo TurnDecider::DecideIfDoingBeastAction(
+        const TurnInfo &                 TURN_INFO,
+        const creature::CreaturePtrC_t   CREATURE_DECIDING_CPTRC,
+        const creature::CreaturePtrC_t   MOST_DESIRED_TARGET_CPTRC,
+        const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
+        const int                        MOST_DESIRED_TARGET_CREATURE_DISTANCE)
     {
         if (CREATURE_DECIDING_CPTRC->IsBeast())
         {
@@ -672,44 +689,72 @@ namespace combat
             using ActionChances_t = std::tuple<TurnAction::Enum, float, float>;
             std::vector<ActionChances_t> actionChancesVec;
 
-            auto const ROAR_CHANCE{ ((PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0) ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().RoarFreq()) : 0.0f) };
+            auto const ROAR_CHANCE{ ((PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0) ?
+                ChanceFromFrequency(TURN_INFO.GetStrategyInfo().RoarFreq()) : 0.0f) };
+
             if (ROAR_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < ROAR_CHANCE)
-                    actionChancesVec.push_back(std::make_tuple(TurnAction::Roar, ROAR_CHANCE, RAND));
+                {
+                    actionChancesVec.push_back(
+                        std::make_tuple(TurnAction::Roar, ROAR_CHANCE, RAND));
+                }
             }
 
-            auto const FLY_CHANCE{ ((CREATURE_DECIDING_CPTRC->CanFly() && (TURN_INFO.GetIsFlying() == false)) ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()) : 0.0f) };
+            auto const FLY_CHANCE{
+                ((CREATURE_DECIDING_CPTRC->CanFly() && (TURN_INFO.GetIsFlying() == false)) ?
+                    ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()) : 0.0f) };
+            
             if (FLY_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
+                {
                     actionChancesVec.push_back(std::make_tuple(TurnAction::Fly, FLY_CHANCE, RAND));
+                }
             }
 
-            auto const SKYPOUNCE_CHANCE{ ((TURN_INFO.GetIsFlying()) ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyPounceFreq()) : 0.0f) };
+            auto const SKYPOUNCE_CHANCE{
+                ((TURN_INFO.GetIsFlying()) ?
+                    ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyPounceFreq()) : 0.0f) };
+            
             if (SKYPOUNCE_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
-                    actionChancesVec.push_back(std::make_tuple(TurnAction::SkyPounce, SKYPOUNCE_CHANCE, RAND));
+                {
+                    actionChancesVec.push_back(std::make_tuple(
+                        TurnAction::SkyPounce, SKYPOUNCE_CHANCE, RAND));
+                }
             }
 
-            auto const LANDPOUNCE_CHANCE{ (((TURN_INFO.GetIsFlying() == false) && (PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0)) ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().StandPounceFreq()) : 0.0f) };
+            auto const LANDPOUNCE_CHANCE{
+                (((TURN_INFO.GetIsFlying() == false) && (PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0)) ?
+                    ChanceFromFrequency(TURN_INFO.GetStrategyInfo().StandPounceFreq()) : 0.0f) };
+            
             if (LANDPOUNCE_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
-                    actionChancesVec.push_back(std::make_tuple(TurnAction::LandPounce, LANDPOUNCE_CHANCE, RAND));
+                {
+                    actionChancesVec.push_back(std::make_tuple(TurnAction::LandPounce,
+                                               LANDPOUNCE_CHANCE, RAND));
+                }
             }
 
             if (actionChancesVec.empty() == false)
             {
                 if (actionChancesVec.size() > 1)
+                {
                     std::sort(actionChancesVec.begin(),
                               actionChancesVec.end(),
-                              [] (const ActionChances_t & A, const ActionChances_t & B) { return std::get<2>(A) < std::get<2>(B); });
+                              []
+                              (const ActionChances_t & A, const ActionChances_t & B)
+                              {
+                                  return std::get<2>(A) < std::get<2>(B);
+                              });
+                }
 
                 auto const DECIDED_ACTION{ std::get<0>(actionChancesVec[0]) };
 
@@ -733,27 +778,41 @@ namespace combat
     }
 
 
-    const TurnActionInfo TurnDecider::ForcePickSpellToCast(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                           const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC)
+    const TurnActionInfo TurnDecider::ForcePickSpellToCast(
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC)
     {
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 
         spell::SpellPVec_t combatSpellsPVec;
 
+        //Don't allow item based spells for now...
+        //TODO -why not?
         std::copy_if(ALL_SPELLS_PVEC.begin(),
                      ALL_SPELLS_PVEC.end(),
                      back_inserter(combatSpellsPVec),
-                     [] (const spell::SpellPtr_t S_PTR) { return ((S_PTR->Type() != spell::SpellType::EnchantItemHelpful) &&
-                                                                  (S_PTR->Type() != spell::SpellType::EnchantItemHarmful) &&
-                                                                  (S_PTR->ValidPhases() & Phase::Combat)); });
+                     []
+                     (const spell::SpellPtr_t S_PTR)
+                     {
+                        return ((S_PTR->EffectType() != EffectType::ItemHarmBreak) &&
+                                (S_PTR->EffectType() != EffectType::ItemHarmMisc) &&
+                                (S_PTR->EffectType() != EffectType::ItemHelpFix) &&
+                                (S_PTR->EffectType() != EffectType::ItemHelpMisc) &&
+                                (S_PTR->ValidPhases() & Phase::Combat) );
+                     });
 
         if (combatSpellsPVec.empty())
         {
             return TurnActionInfo();
         }
 
-        auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR{ misc::Vector::SelectRandom(creature::Algorithms::FindLowestHealthRatio(creature::Algorithms::NonPlayers(true))) };
-        auto const CAN_CAST_HEAL_SPELLS{ (RAND_FELLOW_WITH_LOWEST_HEALTH_PTR->HealthRatio() < 1.0f) };
+        auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR{
+            misc::Vector::SelectRandom(
+                creature::Algorithms::FindLowestHealthRatio(
+                    creature::Algorithms::NonPlayers(true))) };
+
+        auto const CAN_CAST_HEAL_SPELLS{
+            (RAND_FELLOW_WITH_LOWEST_HEALTH_PTR->HealthRatio() < 1.0f) };
 
         spell::SpellPVec_t finalSpellPVec;
 
@@ -766,7 +825,11 @@ namespace combat
             std::copy_if(combatSpellsPVec.begin(),
                          combatSpellsPVec.end(),
                          back_inserter(finalSpellPVec),
-                         [] (const spell::SpellPtr_t S_PTR) { return (S_PTR->Type() != spell::SpellType::Heal); });
+                         []
+                         (const spell::SpellPtr_t S_PTR)
+                         {
+                             return (S_PTR->EffectType() != EffectType::CreatureHelpHeal);
+                         });
         }
 
         spell::SpellPtr_t spellToCastPtr{ nullptr };
@@ -781,30 +844,41 @@ namespace combat
         }
         else
         {
-            spellToCastPtr = finalSpellPVec.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(finalSpellPVec.size()) - 1)));
+            spellToCastPtr = finalSpellPVec.at(
+                static_cast<std::size_t>(misc::random::Int(
+                    static_cast<int>(finalSpellPVec.size()) - 1)));
         }
 
-        return DecideSpell(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, { spellToCastPtr->Type() });
+        return DecideSpell(CREATURE_DECIDING_CPTRC,
+                           MOST_DESIRED_TARGET_CPTRC,
+                           { spellToCastPtr->EffectType() });
     }
 
 
-    const TurnActionInfo TurnDecider::DecideSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                                  const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
-                                                  const spell::SpellTypeVec_t &  SPELL_TYPES_VEC)
+    const TurnActionInfo TurnDecider::DecideSpell(
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
+        const EffectTypeVec_t &        SPELL_EFFECTTYPES_VEC)
     {
-        auto spellPtr{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPES_VEC) };
+        auto spellPtr{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_EFFECTTYPES_VEC) };
 
         if (spellPtr == nullptr)
         {
-            auto const SPELL_TYPES_STR{ misc::Vector::Join<spell::SpellType::Enum>(SPELL_TYPES_VEC,
-                                                                                    false,
-                                                                                    false,
-                                                                                    0,
-                                                                                    false,
-                                                                                    &spell::SpellType::ToString) };
+            auto const SPELL_TYPES_STR{ misc::Vector::Join<EffectType::Enum>(
+                SPELL_EFFECTTYPES_VEC,
+                false,
+                false,
+                0,
+                false,
+                & EffectType::ToString) };
 
             std::ostringstream ssErr;
-            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", spell_types=(" << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\""
+                << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
+                << "\", most_desired_target_creature=\""
+                << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", spell_types=("
+                << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
+
             throw std::runtime_error(ssErr.str());
         }
 
@@ -839,7 +913,13 @@ namespace combat
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\"" << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole() << "\", most_desired_target_creature=\"" << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\"" << spellPtr->Name() << "\") had a TargetType of \"" << TargetType::ToString(spellPtr->Target()) << "\" -which is not yet supported.";
+            ssErr << "game::combat::TurnDecider::DecideSpell(creature_deciding=\""
+                << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
+                << "\", most_desired_target_creature=\""
+                << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\""
+                << spellPtr->Name() << "\") had a TargetType of \""
+                << TargetType::ToString(spellPtr->Target()) << "\" -which is not yet supported.";
+
             throw std::runtime_error(ssErr.str());
         }
 
@@ -847,35 +927,41 @@ namespace combat
     }
 
 
-    spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                             const spell::SpellType::Enum   SPELL_TYPE)
+    spell::SpellPtr_t TurnDecider::PickSpell(
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        const EffectType::Enum         SPELL_EFFECTTYPE)
     {
-        const spell::SpellTypeVec_t SPELL_TYPE_VEC{ SPELL_TYPE };
-        return PickSpell(CREATURE_DECIDING_CPTRC, SPELL_TYPE_VEC);
+        return PickSpell(CREATURE_DECIDING_CPTRC, EffectTypeVec_t{ SPELL_EFFECTTYPE });
     }
 
 
-    spell::SpellPtr_t TurnDecider::PickSpell(const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-                                             const spell::SpellTypeVec_t &  SPELL_TYPES_VEC)
+    spell::SpellPtr_t TurnDecider::PickSpell(
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+        const EffectTypeVec_t &        SPELL_EFFECTTYPE_VEC)
     {
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 
         if (ALL_SPELLS_PVEC.empty())
+        {
             return nullptr;
+        }
 
         spell::SpellPVec_t spellsOfTypePVec;
 
         std::copy_if(ALL_SPELLS_PVEC.begin(),
                      ALL_SPELLS_PVEC.end(),
                      back_inserter(spellsOfTypePVec),
-                     [& SPELL_TYPES_VEC]
+                     [& SPELL_EFFECTTYPE_VEC]
                      (const spell::SpellPtr_t S_PTR)
                      {
-                        for (auto const NEXT_SPELL_TYPE : SPELL_TYPES_VEC)
+                        for (auto const NEXT_SPELL_EFFECTTYPE : SPELL_EFFECTTYPE_VEC)
+                        {
                             if ((S_PTR->ValidPhases() & Phase::Combat) &&
-                                (NEXT_SPELL_TYPE == S_PTR->Type()))
+                                (NEXT_SPELL_EFFECTTYPE == S_PTR->EffectType()))
+                            {
                                 return true;
-
+                            }
+                        }
                         return false;
                      });
 
@@ -891,17 +977,20 @@ namespace combat
         }
         else
         {
-            return spellsOfTypePVec.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(spellsOfTypePVec.size()) - 1)) );
+            return spellsOfTypePVec.at(static_cast<std::size_t>(misc::random::Int(
+                static_cast<int>(spellsOfTypePVec.size()) - 1)) );
         }
     }
 
 
-    const TurnActionInfo TurnDecider::DecideIfFlying(const TurnInfo &               TURN_INFO,
-                                                     const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC)
+    const TurnActionInfo TurnDecider::DecideIfFlying(
+        const TurnInfo &               TURN_INFO,
+        const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC)
     {
         if ((TURN_INFO.GetIsFlying() == false) && (CREATURE_DECIDING_CPTRC->CanFly()))
         {
-            if (misc::random::Float(1.0f) < ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()))
+            if (misc::random::Float(1.0f) <
+                ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()))
             {
                 return TurnActionInfo(TurnAction::Fly);
             }

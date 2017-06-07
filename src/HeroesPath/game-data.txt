@@ -140,6 +140,12 @@ heroespath-spell-Poison-extra-desc=         Some creatures can poison your chara
 heroespath-spell-Antidote-extra-desc=       This spell works whether the poisoning was natural or magical.
 heroespath-spell-PoisonCloud-extra-desc=    Some creatures breathe a poisonous cloud that can effect your characters in the same way as this spell.
 
+#Song Short Descriptions
+heroespath-song-SleepMelody-short-desc=     Attempts to sleep all enemies during combat.
+
+#Song Extra Descriptions
+heroespath-song-SleepMelody-extra-desc=     How many enemies are slept depends on the Bard's Charm, Intelligence, and Rank.
+
 #Player Role Descriptions
 heroespath-creature-role-Beastmaster-desc=Beastmasters allow you to include animals, such as Wolfens and Dragons, in your party.  They may be rough around the edges, but a Beastmaster's spiritual link with animals is useful in many ways.  They can also be good fighters in the melee.  As they progress in rank, Beastmaster gain magical abilities that interact with the animals both in, and out, of your party.  This is why intelligence is the primary attribute a Beastmaster is concerned with, followed closely by strength.  Secondary attributes to consider would be accuracy and speed.
 heroespath-creature-role-Sorcerer-desc=The Sorcerer is a role that is completely devoted to magic.  They specialize in all the arcane arts except for healing.  They are useless with weapons, and may be weak in the beginning, but in higher ranks they are a dominating presence to be reckoned with.  A Sorcerer's primary attribute is intelligence, but also consider speed for dodging attacks.  Luck never hurts a spell caster either...

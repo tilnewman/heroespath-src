@@ -1031,24 +1031,9 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Lute:
+            case game::item::misc_type::DrumLute:
             {
                 filenames.push_back("lute" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Panflute:
-            {
-                filenames.push_back("panflute" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Flute:
-            {
-                filenames.push_back("flute" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Sitar:
-            {
-                filenames.push_back("sitar" + FILE_EXT_STR_);
                 return filenames;
             }
             case game::item::misc_type::Scroll:
