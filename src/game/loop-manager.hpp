@@ -107,12 +107,13 @@ namespace game
         void Goto_LoadGameMenu();
         void Goto_Combat();
         void Goto_Test();
-        void Goto_Inventory(creature::CreaturePtr_t);
+        void Goto_Inventory(const creature::CreaturePtr_t, const bool IS_DURING_COMBAT);
 
-        sfml_util::DisplayChangeResult::Enum ChangeResolution(sfml_util::IStage * const         currentStagePtr_,
-                                                              callback::IPopupHandler_t * const HANDLER_PTR,
-                                                              const sfml_util::Resolution &     NEW_RES,
-                                                              const unsigned                    ANTIALIAS_LEVEL);
+        sfml_util::DisplayChangeResult::Enum ChangeResolution(
+            sfml_util::IStage * const         currentStagePtr_,
+            callback::IPopupHandler_t * const HANDLER_PTR,
+            const sfml_util::Resolution &     NEW_RES,
+            const unsigned                    ANTIALIAS_LEVEL);
 
         inline void SetTransitionBeforeFade(const LoopState::Enum E) { stateBeforeFade_ = E; }
 
@@ -147,7 +148,7 @@ namespace game
         void TransitionTo_LoadGameMenu();
         void TransitionTo_Combat();
         void TransitionTo_Test();
-        void TransitionTo_Inventory(creature::CreaturePtr_t);
+        void TransitionTo_Inventory(const creature::CreaturePtr_t, const bool);
         void TransitionTo(const LoopState::Enum);
 
         void TransitionHelper(const bool                        WILL_CLEAR_QUEUE,

@@ -75,7 +75,8 @@ namespace stage
         virtual bool Execute();
     };
 
-    using LoopCmd_AddStage_Party_CreationSPtr_t = std::shared_ptr<LoopCmd_AddStage_Party_Creation>;
+    using LoopCmd_AddStage_Party_CreationSPtr_t =
+        std::shared_ptr<LoopCmd_AddStage_Party_Creation>;
 
 
 
@@ -99,7 +100,8 @@ namespace stage
         virtual bool Execute();
     };
 
-    using LoopCmd_AddStage_LoadGameMenuSPtr_t = std::shared_ptr<LoopCmd_AddStage_LoadGameMenu>;
+    using LoopCmd_AddStage_LoadGameMenuSPtr_t =
+        std::shared_ptr<LoopCmd_AddStage_LoadGameMenu>;
 
 
 
@@ -147,7 +149,8 @@ namespace stage
         virtual bool Execute();
     };
 
-    using LoopCmd_AddStage_Character_CreationSPtr_t = std::shared_ptr<LoopCmd_AddStage_Character_Creation>;
+    using LoopCmd_AddStage_Character_CreationSPtr_t =
+        std::shared_ptr<LoopCmd_AddStage_Character_Creation>;
 
 
 
@@ -168,11 +171,15 @@ namespace stage
         LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) =delete;
 
     public:
-        explicit LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t & loopSPtr, creature::CreaturePtr_t creaturePtr);
+        explicit LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t &      loopSPtr,
+                                            const creature::CreaturePtr_t CREATURE_PTR,
+                                            const bool                    IS_DURING_COMBAT);
+
         virtual ~LoopCmd_AddStage_Inventory();
         virtual bool Execute();
     private:
-        creature::CreaturePtr_t creaturePtr_;
+        const creature::CreaturePtr_t CREATURE_PTR_;
+        const bool IS_DURING_COMBAT_;
     };
 
     using LoopCmd_AddStage_InventorySPtr_t = std::shared_ptr<LoopCmd_AddStage_Inventory>;

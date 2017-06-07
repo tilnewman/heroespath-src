@@ -1392,7 +1392,8 @@ namespace stage
             return GUI_ENTITY_WITH_FOCUS;
         }
 
-        creature::CreaturePtr_t creatureAtPosPtr(combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
+        creature::CreaturePtr_t creatureAtPosPtr(
+            combatDisplayStagePtr_->GetCreatureAtPos(MOUSE_POS_V));
 
         if (creatureAtPosPtr == nullptr)
         {
@@ -1414,7 +1415,7 @@ namespace stage
                 clickTimerSec_ = -1.0f;//any negative value will work here
 
                 restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr);
+                game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr, true);
                 return GUI_ENTITY_WITH_FOCUS;
             }
         }
@@ -1499,14 +1500,18 @@ namespace stage
         {
             if (KE.code == sf::Keyboard::Return)
             {
-                auto const MOUSEOVER_ATTACK_STR(combat::Text::MouseOverTextAttackStr(turnCreaturePtr_, combatDisplayStagePtr_));
+                auto const MOUSEOVER_ATTACK_STR(combat::Text::MouseOverTextAttackStr(
+                    turnCreaturePtr_, combatDisplayStagePtr_));
+
                 if (MOUSEOVER_ATTACK_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
                 {
                     return HandleAttack();
                 }
                 else
                 {
-                    auto const MOUSEOVER_STR(combat::Text::MouseOverTextBlockStr(turnCreaturePtr_, combatDisplayStagePtr_));
+                    auto const MOUSEOVER_STR(combat::Text::MouseOverTextBlockStr(
+                        turnCreaturePtr_, combatDisplayStagePtr_));
+
                     if (MOUSEOVER_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
                     {
                         return HandleBlock();
@@ -1554,7 +1559,8 @@ namespace stage
                 }
 
                 if ((KE.code == sf::Keyboard::S) ||
-                    ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction() == false)))
+                    ((KE.code == sf::Keyboard::Space) &&
+                     (turnCreaturePtr_->CanTakeAction() == false)))
                 {
                     return HandleSkip();
                 }
@@ -1564,13 +1570,14 @@ namespace stage
                     if (turnCreaturePtr_->IsPlayerCharacter())
                     {
                         restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_);
+                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_, true);
                     }
                 }
 
                 if (KE.code == sf::Keyboard::P)
                 {
-                    return HandlePounce(combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying());
+                    return HandlePounce(combat::Encounter::Instance()->GetTurnInfoCopy(
+                        turnCreaturePtr_).GetIsFlying());
                 }
             }
         }

@@ -413,7 +413,8 @@ namespace game
     }
 
 
-    void LoopManager::TransitionTo_Inventory(creature::CreaturePtr_t creaturePtr)
+    void LoopManager::TransitionTo_Inventory(const creature::CreaturePtr_t CREATURE_PTR,
+                                             const bool                    IS_DURING_COMBAT)
     {
         prevSettingsState_ = state_;
 
@@ -423,7 +424,10 @@ namespace game
                          true, //WILL_RESTORE_MOUSE
                          true, //WILL_FINAL_EXECUTE
                          LoopState::Inventory,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Inventory>(currentLoopSPtr_, creaturePtr),
+                         std::make_shared<game::stage::LoopCmd_AddStage_Inventory>(
+                             currentLoopSPtr_,
+                             CREATURE_PTR,
+                             IS_DURING_COMBAT),
                          sfml_util::music::None,
                          sfml_util::music::None);
     }
@@ -605,9 +609,10 @@ namespace game
         TransitionTo_Test();
     }
 
-    void LoopManager::Goto_Inventory(creature::CreaturePtr_t creaturePtr)
+    void LoopManager::Goto_Inventory(const creature::CreaturePtr_t CREATURE_PTR,
+                                     const bool                    IS_DURING_COMBAT)
     {
-        TransitionTo_Inventory(creaturePtr);
+        TransitionTo_Inventory(CREATURE_PTR, IS_DURING_COMBAT);
     }
 
     void LoopManager::Goto_Previous()

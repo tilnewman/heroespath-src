@@ -134,7 +134,9 @@ namespace stage
         InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:
-        explicit InventoryStage(creature::CreaturePtr_t creaturePtr);
+        explicit InventoryStage(const creature::CreaturePtr_t CREATURE_PTR,
+                                const bool                    IS_DURING_COMBAT);
+
         virtual ~InventoryStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
@@ -352,12 +354,17 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
         //members that support spell casting
-        spell::SpellPtr_t      spellBeingCastPtr_;
+        spell::SpellPtr_t spellBeingCastPtr_;
         combat::TurnActionInfo spellTurnActionInfo_;
-        combat::FightResult    spellFightResult_;
-        std::size_t            spellCreatureEffectIndex_;
-        std::size_t            spellHitInfoIndex_;
+        combat::FightResult spellFightResult_;
+        std::size_t spellCreatureEffectIndex_;
+        std::size_t spellHitInfoIndex_;
         combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
+
+        //members that control combat action restrictions
+        creature::CreaturePtr_t originalCreaturePtr_;
+        bool isDuringCombat_;
+        bool hasTakenActionSpell_;
     };
 
 }

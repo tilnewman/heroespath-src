@@ -89,7 +89,8 @@ namespace stage
     const std::string InventoryStage::POPUP_NAME_SPELL_RESULT_    { "InventoryStage'sSpellResultPopupName" };
 
 
-    InventoryStage::InventoryStage(creature::CreaturePtr_t creaturePtr)
+    InventoryStage::InventoryStage(const creature::CreaturePtr_t CREATURE_PTR,
+                                   const bool                    IS_DURING_COMBAT)
     :
         Stage                      ("Inventory", 0.0f, 0.0f, sfml_util::Display::Instance()->GetWinWidth(), sfml_util::Display::Instance()->GetWinHeight()),
         SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
@@ -129,7 +130,7 @@ namespace stage
         DETAILVIEW_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f)),
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
         listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
-        creaturePtr_               (creaturePtr),
+        creaturePtr_               (CREATURE_PTR),
         bottomSymbol_              (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
         paperBgTexture_            (),
         paperBgSprite_             (),
@@ -215,9 +216,12 @@ namespace stage
         spellFightResult_          (),
         spellCreatureEffectIndex_  (0),
         spellHitInfoIndex_         (0),
-        combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>())
+        combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>()),
+        originalCreaturePtr_       (CREATURE_PTR),
+        isDuringCombat_            (IS_DURING_COMBAT),
+        hasTakenActionSpell_       (false)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::stage::InventoryStage::InventoryStage() was given a null "
             << "creature shared pointer.");
 
@@ -235,7 +239,8 @@ namespace stage
     }
 
 
-    bool InventoryStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    bool InventoryStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
         if (PACKAGE.package.PTR_ != nullptr)
         {
@@ -253,10 +258,33 @@ namespace stage
                 {
                     if (view_ == ViewType::Items)
                     {
+                        if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                        {
+                            std::ostringstream ss;
+                            ss << "\nDuring combat, only the character whose turn it is may "
+                                << "unequip items.";
+
+                            PopupRejectionWindow(ss.str(), true);
+                            return false;
+                        }
+
                         return HandleUnequip();
                     }
-                    else if (PACKAGE.package.PTR_ == unEquipListBoxSPtr_.get())
+                }
+                else if (PACKAGE.package.PTR_ == unEquipListBoxSPtr_.get())
+                {
+                    if (view_ == ViewType::Items)
                     {
+                        if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                        {
+                            std::ostringstream ss;
+                            ss << "\nDuring combat, only the character whose turn it is may "
+                                << "equip items.";
+
+                            PopupRejectionWindow(ss.str(), true);
+                            return false;
+                        }
+
                         return HandleEquip();
                     }
                 }
@@ -340,8 +368,18 @@ namespace stage
             return HandleCast_Step3_DisplayResults();
         }
         else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
-            (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+                  (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
         {
+            if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+            {
+                std::ostringstream ss;
+                ss << "\nDuring combat, only the character whose turn it is may "
+                    << "interact with items.";
+
+                PopupRejectionWindow(ss.str(), true);
+                return false;
+            }
+
             sfml_util::SoundManager::Instance()->
                 GetSfxSet(sfml_util::SfxSet::ItemDrop).PlayRandom();
 
@@ -355,6 +393,16 @@ namespace stage
         {
             if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Item())
             {
+                if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                {
+                    std::ostringstream ss;
+                    ss << "\nDuring combat, only the character whose turn it is may "
+                        << "interact with items.";
+
+                    PopupRejectionWindow(ss.str(), true);
+                    return false;
+                }
+
                 listBoxItemToGiveSPtr_ = unEquipListBoxSPtr_->GetSelected();
 
                 if (listBoxItemToGiveSPtr_.get() != nullptr)
@@ -461,6 +509,16 @@ namespace stage
             {
                 case ContentType::Item:
                 {
+                    if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                    {
+                        std::ostringstream ss;
+                        ss << "\nDuring combat, only the character whose turn it is may "
+                            << "interact with items.";
+
+                        PopupRejectionWindow(ss.str(), true);
+                        return false;
+                    }
+
                     if (listBoxItemToGiveSPtr_.get() == nullptr)
                     {
                         return false;
@@ -883,6 +941,28 @@ namespace stage
 
             if (KEY_EVENT.code == sf::Keyboard::S)
             {
+                if (isDuringCombat_)
+                {
+                    if (creaturePtr_ != originalCreaturePtr_)
+                    {
+                        std::ostringstream ss;
+                        ss << "\nDuring combat, only the character whose turn it is may "
+                            << "cast spells.";
+
+                        PopupRejectionWindow(ss.str(), true);
+                        return false;
+                    }
+                    else if (hasTakenActionSpell_)
+                    {
+                        std::ostringstream ss;
+                        ss << "\nDuring combat, the creature whose turn it is may only cast"
+                            << " one spell.";
+
+                        PopupRejectionWindow(ss.str(), true);
+                        return false;
+                    }
+                }
+
                 auto const CAN_CAST_STR{ creaturePtr_->CanCastSpellsStr(true) };
                 if (CAN_CAST_STR.empty())
                 {
@@ -1853,14 +1933,18 @@ namespace stage
     bool InventoryStage::HandleGive()
     {
         actionType_ = ActionType::Give;
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_GIVE_,
-                                                                                             "\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor Shards\n\n...or (Escape) to Cancel",
-                                                                                             sfml_util::PopupButtons::Cancel,
-                                                                                             sfml_util::PopupImage::Large,
-                                                                                             sfml_util::Justified::Center,
-                                                                                             sfml_util::sound_effect::PromptGeneric,
-                                                                                             Popup::ContentSelectionWithItem,
-                                                                                             sfml_util::FontManager::Instance()->Size_Largeish()));
+
+        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_GIVE_,
+            std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor").
+                append("Shards\n\n...or (Escape) to Cancel"),
+            sfml_util::PopupButtons::Cancel,
+            sfml_util::PopupImage::Large,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::PromptGeneric,
+            Popup::ContentSelectionWithItem,
+            sfml_util::FontManager::Instance()->Size_Largeish()));
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         isWaitingOnPopup_ = true;
         return true;
@@ -1887,21 +1971,35 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            const sfml_util::gui::ListBoxItemSPtr_t LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            auto const LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+                (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
-                const item::ItemPtr_t IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                {
+                    std::ostringstream ss;
+                    ss << "\nDuring combat, only the character whose turn it is may "
+                        << "interact with items.";
+
+                    PopupRejectionWindow(ss.str(), true);
+                    return false;
+                }
+
+                auto const IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
 
                 iItemToDropPtr_ = IITEM_PTR;
 
                 actionType_ = ActionType::Drop;
 
-                const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_DROPCONFIRM_,
-                                                                                                     "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
-                                                                                                     sfml_util::PopupButtons::YesNo,
-                                                                                                     sfml_util::PopupImage::Regular,
-                                                                                                     sfml_util::Justified::Center,
-                                                                                                     sfml_util::sound_effect::PromptQuestion));
+                const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->
+                    CreatePopupInfo(
+                        POPUP_NAME_DROPCONFIRM_,
+                        "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
+                        sfml_util::PopupButtons::YesNo,
+                        sfml_util::PopupImage::Regular,
+                        sfml_util::Justified::Center,
+                        sfml_util::sound_effect::PromptQuestion));
+
                 LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 isWaitingOnPopup_ = true;
                 return true;
@@ -3438,6 +3536,8 @@ namespace stage
 
         spellCreatureEffectIndex_ = 0;
         spellHitInfoIndex_ = 0;
+
+        hasTakenActionSpell_ = true;
 
         HandleCast_Step3_DisplayResults();
     }
