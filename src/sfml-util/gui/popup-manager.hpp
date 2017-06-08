@@ -166,7 +166,7 @@ namespace gui
         //use this function to make character selection popup windows
         const game::PopupInfo CreatePopupInfo(const std::string &              POPUP_NAME,
                                               const std::string &              PROMPT_TEXT,
-                                              const std::vector<std::size_t> & INVALID_PLAYER_NUM_VEC,
+                                              const std::vector<std::string> & INVALID_TEXT_VEC,
                                               const unsigned int               FONT_SIZE = FontManager::Instance()->Size_Large());
 
         //use this function to make image fade/transition popup windows

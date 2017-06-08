@@ -177,7 +177,11 @@ namespace stage
         void SetupDescBoxTitle();
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
         void SetDescBoxText(const std::string &);
-        void PopupCharacterSelectWindow(const std::string &, const bool CAN_SELECT_ALL = false);
+        
+        void PopupCharacterSelectWindow(const std::string & PROMPT_TEXT,
+                                        const bool          CAN_SELECT_SELF = false,
+                                        const bool          CAN_SELECT_BEASTS = false);
+        
         void PopupRejectionWindow(const std::string &, const bool WILL_USE_REGULAR_SIZE_POPUP = false);
         void PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX);
         void PopupDoneWindow(const std::string &, const bool);

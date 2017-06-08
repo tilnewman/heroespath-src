@@ -410,7 +410,7 @@ namespace stage
                     auto const IITEM_PTR(listBoxItemToGiveSPtr_->ITEM_CPTR);
                     if (IITEM_PTR != nullptr)
                     {
-                        PopupCharacterSelectWindow("Give the " + IITEM_PTR->Name() + " to whom?");
+                        PopupCharacterSelectWindow("Give the " + IITEM_PTR->Name() + " to who?");
                         contentType_ = ContentType::Item;
                         return false;
                     }
@@ -433,11 +433,11 @@ namespace stage
                 }
                 else if (creaturePtr_->Inventory().Coins() == 1)
                 {
-                    PopupCharacterSelectWindow("Give the coin to whom?");
+                    PopupCharacterSelectWindow("Give the coin to who?");
                 }
                 else
                 {
-                    PopupCharacterSelectWindow("Give coins to whom?");
+                    PopupCharacterSelectWindow("Give coins to who?");
                 }
 
                 contentType_ = ContentType::Coins;
@@ -454,11 +454,11 @@ namespace stage
                 }
                 else if (creaturePtr_->Inventory().Gems() == 1)
                 {
-                    PopupCharacterSelectWindow("Give the gem to whom?");
+                    PopupCharacterSelectWindow("Give the gem to who?");
                 }
                 else
                 {
-                    PopupCharacterSelectWindow("Give gems to whom?");
+                    PopupCharacterSelectWindow("Give gems to who?");
                 }
 
                 contentType_ = ContentType::Gems;
@@ -475,11 +475,11 @@ namespace stage
                 }
                 else if (creaturePtr_->Inventory().MeteorShards() == 1)
                 {
-                    PopupCharacterSelectWindow("Give the Meteor Shard to whom?");
+                    PopupCharacterSelectWindow("Give the Meteor Shard to who?");
                 }
                 else
                 {
-                    PopupCharacterSelectWindow("Give Meteor Shards to whom?");
+                    PopupCharacterSelectWindow("Give Meteor Shards to who?");
                 }
 
                 contentType_ = ContentType::MeteorShards;
@@ -2134,8 +2134,9 @@ namespace stage
         if (creaturePtr_->IsBeast())
         {
             if (creaturePtr_->Race().Which() != creature::race::Wolfen)
+            {
                 ss << ", " << creaturePtr_->Role().Name();
-
+            }
             ss << " " << creaturePtr_->RankClassName() << "\n";
         }
         else
@@ -2619,35 +2620,38 @@ namespace stage
 
 
     void InventoryStage::PopupCharacterSelectWindow(const std::string & PROMPT_TEXT,
-        const bool CAN_SELECT_ALL)
+                                                    const bool          CAN_SELECT_SELF,
+                                                    const bool          CAN_SELECT_BEASTS)
     {
-        std::ostringstream ss;
-        ss << PROMPT_TEXT << "  Select a character by pressing the number key:\n\n";
-
         const std::size_t CURRENT_CREATURE_ORDER_NUM(
             Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
-        std::vector<std::size_t> invalidCharacterNumVec;
         const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+        
+        std::vector<std::string> invalidTextVec;
+        invalidTextVec.resize(NUM_CHARACTERS);
+
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            if (((CURRENT_CREATURE_ORDER_NUM != i) &&
-                (Game::Instance()->State().Party().GetAtOrderPos(i)->Body().IsHumanoid())) ||
-                CAN_SELECT_ALL)
+            if ((CURRENT_CREATURE_ORDER_NUM == i) && (CAN_SELECT_SELF == false))
             {
-                ss << "(" << i + 1 << ") "
-                    << Game::Instance()->State().Party().GetAtOrderPos(i)->Name() << "\n";
+                invalidTextVec[i] = "Cannot select self";
+            }
+            else if (Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast() &&
+                     (CAN_SELECT_BEASTS == false))
+            {
+                invalidTextVec[i] = "Cannot select Beasts";
             }
             else
             {
-                invalidCharacterNumVec.push_back(i);
+                invalidTextVec[i] = "";
             }
         }
 
         auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_CHAR_SELECT_,
-            ss.str(),
-            invalidCharacterNumVec,
+            PROMPT_TEXT,
+            invalidTextVec,
             sfml_util::FontManager::Instance()->Size_Smallish()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
@@ -3496,8 +3500,9 @@ namespace stage
 
         if (spellBeingCastPtr_->Target() == TargetType::SingleCompanion)
         {
-            PopupCharacterSelectWindow("Cast " + spellBeingCastPtr_->Name()
-                + " on which character?", true);
+            PopupCharacterSelectWindow("Cast " + spellBeingCastPtr_->Name() + " on who?",
+                                       true,
+                                       true);
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {

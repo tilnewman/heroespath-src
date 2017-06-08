@@ -137,6 +137,8 @@ namespace sfml_util
 
         bool HandleSpellCast();
 
+        void SetupCharacterSelectDetailText();
+
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
     protected:
@@ -204,6 +206,7 @@ namespace sfml_util
         float                 imagePrevTravelDist_;
         std::queue<std::size_t> imageMoveQueue_;
         sliders::ZeroSliderOnce<float> imageSlider_;
+        float                 imagePosTop_;
 
         //members used to fade two images
         //imageSpritePrev_ and imageSpriteCurr_ are used to display the two fading images
@@ -244,6 +247,11 @@ namespace sfml_util
         float                   spellWarningTimerSec_;
         ColorShaker             spellWarnColorShaker_;
         sliders::ZeroSliderOnce<float> spellColorSlider_;
+
+        //members supporting character selection
+        sf::Texture xSymbolTexture_;
+        sf::Sprite xSymbolSprite_;
+        
     };
 
     using PopupStagePtr_t = PopupStage *;

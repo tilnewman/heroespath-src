@@ -66,9 +66,11 @@ namespace creature
                   const bool                              WILL_ADD_RAND_IMAGE  = true,
                   const std::vector<std::size_t> &        INVALID_NUM_VEC      = std::vector<std::size_t>(),
                   const sfml_util::TextureVec_t &         TEXTURE_VEC          = sfml_util::TextureVec_t(),
+                  const std::vector<std::string> &        TEXT_VEC             = std::vector<std::string>(),
                   const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_,
                   const creature::CreaturePtr_t           CREATURE_CPTR        = nullptr,
-                  const std::size_t                       INITIAL_SELECTION    = 0);
+                  const std::size_t                       INITIAL_SELECTION    = 0,
+                  const bool                              ARE_IMAGES_CREATURES = false);
 
         //use this constructor for boxed popups with no background image
         PopupInfo(const std::string &                     NAME,
@@ -124,6 +126,7 @@ namespace creature
         inline creature::CreaturePtr_t           CreaturePtr() const        { return creatureCPtr_; }
         inline std::size_t                       InitialSelection() const   { return initialSelection_; }
         inline bool                              AreImagesCreatures() const { return areImgsCreatures_; }
+        inline const std::vector<std::string> &  TextVec() const            { return textVec_; }
 
         inline const sf::Texture & ImagesAt(const std::size_t I) const
         {
@@ -166,6 +169,7 @@ namespace creature
         creature::CreaturePtr_t           creatureCPtr_;
         std::size_t                       initialSelection_;
         bool                              areImgsCreatures_;
+        std::vector<std::string>          textVec_;
     };
 
 

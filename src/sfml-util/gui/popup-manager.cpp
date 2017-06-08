@@ -259,21 +259,30 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &         POPUP_NAME,
-                                                        const std::string &         PROMPT_TEXT,
-                                                        const std::vector<std::size_t> & INVALID_CHAR_NUM_VEC,
-                                                        const unsigned int          FONT_SIZE)
+    const game::PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &              POPUP_NAME,
+        const std::string &              PROMPT_TEXT,
+        const std::vector<std::string> & INVALID_TEXT_VEC,
+        const unsigned int               FONT_SIZE)
     {
         return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
-                               sfml_util::PopupButtons::Cancel,
-                               sfml_util::PopupImage::Regular,
-                               GetScaleForImage(PopupImage::Regular),
+                               TextInfoDefault(PROMPT_TEXT,
+                                               sfml_util::Justified::Center,
+                                               FONT_SIZE),
+                               sfml_util::PopupButtons::SelectCancel,
+                               sfml_util::PopupImage::Large,
+                               GetScaleForImage(PopupImage::Large),
                                game::Popup::CharacterSelection,
                                sfml_util::sound_effect::PromptQuestion,
                                sfml_util::PopupButtonColor::Dark,
                                true,
-                               INVALID_CHAR_NUM_VEC);
+                               std::vector<std::size_t>(),
+                               TextureVec_t(),
+                               INVALID_TEXT_VEC,
+                               0.0f,
+                               nullptr,
+                               0,
+                               true);
     }
 
 
@@ -290,7 +299,9 @@ namespace gui
         textureVec.push_back(TO_IMAGE);
 
         return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+                               TextInfoDefault(PROMPT_TEXT,
+                                               sfml_util::Justified::Center,
+                                               FONT_SIZE),
                                BUTTONS,
                                PopupImage::Regular,
                                GetScaleForImage(PopupImage::Regular),
@@ -300,6 +311,7 @@ namespace gui
                                true,
                                std::vector<std::size_t>(),
                                textureVec,
+                               std::vector<std::string>(),
                                100.0f);
     }
 
@@ -319,6 +331,7 @@ namespace gui
                                false,
                                std::vector<std::size_t>(),
                                sfml_util::TextureVec_t(),
+                               std::vector<std::string>(),
                                game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
                                CREATURE_CPTR,
                                INITIAL_SELECTION);
