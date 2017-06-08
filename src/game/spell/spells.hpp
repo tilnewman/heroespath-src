@@ -60,7 +60,7 @@ namespace spell
                          TargetType::SingleOpponent) {}
 
         virtual ~Sparks() {}
-        
+       
         virtual const std::string ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
                                                creature::CreaturePtr_t effectedCreaturePtr) const;
 
@@ -82,7 +82,7 @@ namespace spell
                           TargetType::SingleCompanion) {}
 
         virtual ~Bandage() {}
-        
+       
         virtual const std::string ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
                                                creature::CreaturePtr_t effectedCreaturePtr) const;
 

@@ -1082,7 +1082,7 @@ namespace sfml_util
                 return false;
             }
         }
-        
+       
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) &&
             ((KEY_EVENT.code == sf::Keyboard::Left) ||
              (KEY_EVENT.code == sf::Keyboard::Right) ||

@@ -45,7 +45,7 @@ namespace item
 
     std::unique_ptr<ItemWarehouse> ItemWarehouse::instanceUPtr_{ nullptr };
 
-    
+   
     ItemWarehouse::ItemWarehouse()
     :
         itemUVec_()

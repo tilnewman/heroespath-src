@@ -61,7 +61,7 @@ namespace player
         static CharacterWarehouse * Instance();
         static void Acquire();
         static void Release();
-        
+       
         CharacterPtr_t Store(const CharacterPtr_t);
         void Free(CharacterPtr_t &);
 

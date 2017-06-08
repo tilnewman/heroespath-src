@@ -114,7 +114,7 @@ namespace combat
         {
             return creature::ConditionEnumVec_t();
         }
-        
+       
         if (HEALTH_ADJ > 0)
         {
             creatureDefendingPtrC->HealthCurrentAdj(HEALTH_ADJ);
@@ -122,7 +122,7 @@ namespace combat
             if (creatureDefendingPtrC->HealthCurrent() > creatureDefendingPtrC->HealthNormal())
             {
                 creatureDefendingPtrC->HealthCurrentSet(creatureDefendingPtrC->HealthNormal());
-                
+               
                 if (creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed))
                 {
                     creatureDefendingPtrC->ConditionRemove(creature::Conditions::Dazed);
@@ -321,7 +321,7 @@ namespace combat
         auto const DEFEND_SPD_RAND_MIN{ stats::Stat::Reduce(defendSpdToUse) };
         auto const DEFEND_SPD_RAND_MAX{ std::max(DEFEND_SPD_RAW, defendSpdToUse) };
         auto const DEFEND_SPD_RAND{ misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
-        
+       
         auto const IS_DEFENSE_AMAZING_DODGE{
             (defendSpdToUse >= STAT_HIGHER_THAN_AVERAGE_) &&
             IsValuetHigherThanRatioOfStat(DEFEND_SPD_RAND, defendSpdToUse, STAT_RATIO_AMAZING_)};
@@ -454,7 +454,7 @@ namespace combat
             hasHitBeenDetermined = true;
         }
 
-        
+       
         //handle forced hit
         if (WILL_FORCE_HIT && (false == wasHit))
         {
@@ -505,7 +505,7 @@ namespace combat
         const creature::ConditionEnumVec_t & CONDITIONS_VEC)
     {
         auto const CONDS_FROM_DAMAGE{ HandleDamage(creatureCastUponPtrC, hitInfoVec, HEALTH_ADJ) };
-        
+       
         return HitInfo(SPELL_CPTR,
                        EFFECT_STR,
                        HEALTH_ADJ,
