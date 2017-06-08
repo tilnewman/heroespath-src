@@ -35,6 +35,7 @@
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/animation.hpp"
+#include "sfml-util/song-animation.hpp"
 
 #include "game/combat/combat-display.hpp"
 #include "game/combat/combat-text.hpp"
@@ -172,6 +173,14 @@ namespace combat
             if (NEXT_MULTITEXTANIM_UPTR->IsFinished() == false)
             {
                 NEXT_MULTITEXTANIM_UPTR->draw(target, STATES);
+            }
+        }
+
+        for (auto & NEXT_SONGANIM_PTR : songAnimUVec_)
+        {
+            if (NEXT_SONGANIM_PTR->IsFinished() == false)
+            {
+                NEXT_SONGANIM_PTR->draw(target, STATES);
             }
         }
     }
@@ -1102,6 +1111,58 @@ namespace combat
             multiTextureAnimUVec_[multiTextureAnimUVec_.size() - 1]->
                 SetTargetSize( sf::Vector2f(region.width, region.height) );
         }
+    }
+
+
+    void CombatAnimation::SongAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
+    {
+        songAnimUVec_.clear();
+
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
+        {
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            {
+                continue;
+            }
+
+            songAnimUVec_.push_back(
+                std::make_unique<sfml_util::animation::SongAnimation>(
+                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                    0.1f,
+                    sfml_util::MapByRes(0.1f, 0.25f),
+                    0.25f,
+                    sfml_util::MapByRes(0.35f, 0.9f),
+                    0.25f,
+                    6.0f,
+                    0.75f,
+                    5.0f,
+                    1.25f,
+                    0.5f,
+                    1.0f,
+                    0.0f) );
+        }
+    }
+
+
+    bool CombatAnimation::SongAnimUpdate(const float ELAPSED_TIME_SEC)
+    {
+        auto areAllSongAnimFinished{ true };
+        for (auto & nextSongAnimUPtr : songAnimUVec_)
+        {
+            if (nextSongAnimUPtr->IsFinished() == false)
+            {
+                areAllSongAnimFinished = false;
+                nextSongAnimUPtr->Update(ELAPSED_TIME_SEC);
+            }
+        }
+
+        return areAllSongAnimFinished;
+    }
+
+
+    void CombatAnimation::SongAnimStop()
+    {
+        songAnimUVec_.clear();
     }
 
 

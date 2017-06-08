@@ -80,6 +80,12 @@ media-images-misc-spark=                    image/misc/spark.png
 media-images-misc-cloud1=                   image/misc/cloud1.png
 media-images-misc-cloud2=                   image/misc/cloud2.png
 media-images-misc-cloud3=                   image/misc/cloud3.png
+media-images-misc-note1=                    image/misc/note1.png
+media-images-misc-note2=                    image/misc/note2.png
+media-images-misc-note3=                    image/misc/note3.png
+media-images-misc-note4=                    image/misc/note4.png
+media-images-misc-note5=                    image/misc/note5.png
+media-images-misc-note6=                    image/misc/note6.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

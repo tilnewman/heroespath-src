@@ -56,6 +56,10 @@ namespace animation
     class CloudAnimation;
     using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
     using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
+
+    class SongAnimation;
+    using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
+    using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
 }
 }
 
@@ -227,8 +231,12 @@ namespace combat
                                     const sf::Color &                COLOR_FROM,
                                     const sf::Color &                COLOR_TO);
 
-        private:
-            const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect &) const;
+        void SongAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
+        bool SongAnimUpdate(const float ELAPSED_TIME_SEC);
+        void SongAnimStop();
+
+    private:
+        const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect &) const;
 
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
@@ -288,6 +296,9 @@ namespace combat
         sfml_util::SingleTextureAnimationUVec_t singleTextureAnimUVec_;
         sfml_util::MultiTextureAnimationUVec_t multiTextureAnimUVec_;
         MediaPathSizeMap_t singleTextureSizeMap_;
+
+        //members that control the song animation
+        sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;

@@ -72,6 +72,7 @@ namespace game
             case ItemHarmMisc:          { return "Item Harm"; }
             case ItemHelpFix:           { return "Item Fix"; }
             case ItemHelpMisc:          { return "Item Help"; }
+            case Misc:                  { return "Misc"; }
             case Count:
             default:
             {

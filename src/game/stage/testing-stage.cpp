@@ -670,7 +670,13 @@ namespace stage
             "media-images-misc-spark",
             "media-images-misc-cloud1",
             "media-images-misc-cloud2",
-            "media-images-misc-cloud3"
+            "media-images-misc-cloud3",
+            "media-images-misc-note1",
+            "media-images-misc-note2",
+            "media-images-misc-note3",
+            "media-images-misc-note4",
+            "media-images-misc-note5",
+            "media-images-misc-note6"
         };
 
         static std::size_t imageIndex{ 0 };
