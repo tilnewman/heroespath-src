@@ -541,14 +541,6 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
         {
-            //load the x symbol image
-            sfml_util::LoadImageOrTexture(xSymbolTexture_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
-
-            xSymbolTexture_.setSmooth(true);
-            xSymbolSprite_.setTexture(xSymbolTexture_);
-            xSymbolSprite_.setColor( sf::Color::Red );
-
             imagesRect_ = textRegion_;
 
             imagesRect_.top = textRegionUPtr_->GetEntityPos().y +
@@ -557,6 +549,23 @@ namespace sfml_util
             imagesRect_.height = 300.0f;
 
             imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
+
+            sfml_util::LoadImageOrTexture(xSymbolTexture_,
+                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
+
+            xSymbolTexture_.setSmooth(true);
+            xSymbolSprite_.setTexture(xSymbolTexture_);
+            xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
+            auto const X_SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
+            xSymbolSprite_.setScale(X_SYM_SCALE, X_SYM_SCALE);
+
+            auto const X_SYM_POS_TOP{ (imagesRect_.top + (imagesRect_.height * 0.5f)) -
+                (xSymbolSprite_.getGlobalBounds().height * 0.5f)};
+
+            auto const X_SYM_POS_LEFT{ (imagesRect_.left + (imagesRect_.width * 0.5f)) -
+                (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
+
+            xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
 
             sf::FloatRect charDetailsTextRegion(textRegion_);
 
@@ -937,6 +946,11 @@ namespace sfml_util
             charDetailsTextRegionUPtr_->draw(target, STATES);
         }
 
+        if (willShowRejectImage_)
+        {
+            target.draw(xSymbolSprite_, STATES);
+        }
+
         Stage::Draw(target, STATES);
     }
 
@@ -1028,7 +1042,8 @@ namespace sfml_util
                 {
                     if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
                     {
-                        SetupCharacterSelectDetailText();
+                        SetupCharacterSelectDetailText(false);
+                        SetupCharacterSelectionRejectImage(false);
                     }
 
                     willShowImageCount_ = true;
@@ -1067,6 +1082,8 @@ namespace sfml_util
                 imageMoveQueue_.pop();
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
 
+                SetupCharacterSelectDetailText(true);
+                SetupCharacterSelectionRejectImage(true);
             }
 
             const float CURR_SCALE(imageCurrTargetScale_ * currRatio);
@@ -1386,9 +1403,27 @@ namespace sfml_util
         if ((POPUP_INFO_.Buttons() & Response::Select) &&
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
-            return true;
+            if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
+            {
+                auto const TEXT{ POPUP_INFO_.TextVec()[imageIndex_] };
+                if (TEXT.empty())
+                {
+                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+                    game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
+                    return true;
+                }
+                else
+                {
+                    SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+                    return false;
+                }
+            }
+            else
+            {
+                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
+                return true;
+            }
         }
 
         if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
@@ -1916,8 +1951,14 @@ namespace sfml_util
     }
 
 
-    void PopupStage::SetupCharacterSelectDetailText()
+    void PopupStage::SetupCharacterSelectDetailText(const bool WILL_ERASE)
     {
+        if (WILL_ERASE)
+        {
+            charDetailsTextRegionUPtr_->SetText(" ");
+            return;
+        }
+
         auto const CREATURE_PTR{
             game::Game::Instance()->State().Party().GetAtOrderPos(imageIndex_) };
 
@@ -1944,6 +1985,37 @@ namespace sfml_util
            << "Condition:  " << CREATURE_PTR->ConditionNames(3) << "\n";
 
         charDetailsTextRegionUPtr_->SetText(ss.str());
+    }
+
+
+    void PopupStage::SetupCharacterSelectionRejectImage(const bool WILL_ERASE)
+    {
+        if (imageIndex_ < POPUP_INFO_.TextVec().size())
+        {
+            auto const TEXT{ POPUP_INFO_.TextVec()[imageIndex_] };
+
+            if (TEXT.empty())
+            {
+                selectPopupButtonSPtr_->SetSelection(static_cast<int>(imageIndex_));
+            }
+            else
+            {
+                selectPopupButtonSPtr_->SetSelection(-1);
+            }
+
+            if (TEXT.empty() || WILL_ERASE)
+            {
+                willShowRejectImage_ = false;
+                SetupCharacterSelectDetailText(false);
+                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::Black);
+            }
+            else
+            {
+                willShowRejectImage_ = true;
+                charDetailsTextRegionUPtr_->SetText(TEXT);
+                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color(100, 32, 32));
+            }
+        }
     }
 
 }

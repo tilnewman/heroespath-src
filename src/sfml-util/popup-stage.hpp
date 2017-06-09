@@ -137,7 +137,9 @@ namespace sfml_util
 
         bool HandleSpellCast();
 
-        void SetupCharacterSelectDetailText();
+        void SetupCharacterSelectDetailText(const bool WILL_ERASE);
+
+        void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
@@ -251,6 +253,7 @@ namespace sfml_util
         //members supporting character selection
         sf::Texture xSymbolTexture_;
         sf::Sprite xSymbolSprite_;
+        bool willShowRejectImage_;
         
     };
 

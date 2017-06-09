@@ -107,7 +107,11 @@ namespace sfml_util
 
     void PopupButton_Select::OnClick(const sf::Vector2f &)
     {
-        if (selection_ >= 0)
+        if (selection_ < 0)
+        {
+            SoundManager::Instance()->SoundEffectPlay(sound_effect::PromptWarn);
+        }
+        else
         {
             SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
             game::LoopManager::Instance()->PopupWaitEnd(Response::Select, static_cast<std::size_t>(selection_));
