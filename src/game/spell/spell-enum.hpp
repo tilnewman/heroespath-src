@@ -38,7 +38,12 @@ namespace spell
 
     struct Spells
     {
-        //Note:  Keep order in sync with spell::Warehouse::Fill()
+        //Note:  Keep in sync with:
+        //          spell::Warehouse::Fill()
+        //          spells.hpp
+        //          CombatAnimation::SpellAnimStart()
+        //          CombatSoundEffects::PlaySpell()
+        //          Initial::SetupInventory()
         enum Enum
         {
             Sparks = 0,
@@ -48,7 +53,7 @@ namespace spell
             Trip,
             Lift,
             Daze,
-            Frighten,
+            Panic,
             ClearMind,
             Poison,
             Antidote,//cures poison

@@ -190,17 +190,17 @@ namespace spell
     };
 
 
-    class Frighten : public Spell
+    class Panic : public Spell
     {
     public:
-        Frighten() : Spell(Spells::Frighten,
-                           EffectType::CreatureHarmMisc,
-                           Phase::Combat,
-                           1,
-                           1,
-                           TargetType::SingleOpponent) {}
+        Panic() : Spell(Spells::Panic,
+                        EffectType::CreatureHarmMisc,
+                        Phase::Combat,
+                        1,
+                        1,
+                        TargetType::SingleOpponent) {}
 
-        virtual ~Frighten() {}
+        virtual ~Panic() {}
 
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,

@@ -45,7 +45,7 @@ namespace creature
         switch (E)
         {
             case Conditions::Good:          { return "Good"; }
-            case Conditions::Frightened:    { return "Frightened"; }
+            case Conditions::Panic:         { return "Panic"; }
             case Conditions::Dazed:         { return "Dazed"; }
             case Conditions::Tripped:       { return "Tripped"; }
             case Conditions::AsleepNatural: { return "AsleepNatural"; }
@@ -107,7 +107,7 @@ namespace creature
             switch (E)
             {
                 case Conditions::Good:          { return GOOD; }
-                case Conditions::Frightened:    { return LEAST_HARMFUL; }
+                case Conditions::Panic:         { return LEAST_HARMFUL; }
                 case Conditions::Dazed:         { return 1100; }
                 case Conditions::Tripped:       { return 1200; }
                 case Conditions::AsleepNatural: { return 1300; }

@@ -814,7 +814,7 @@ namespace combat
                 return;
             }
             
-            case spell::Spells::Frighten:
+            case spell::Spells::Panic:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
                                        ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,

@@ -322,7 +322,7 @@ namespace player
             characterPtrC->ItemEquip(wandPtr);
 
             characterPtrC->SpellAdd(spell::Spells::Daze);
-            characterPtrC->SpellAdd(spell::Spells::Frighten);
+            characterPtrC->SpellAdd(spell::Spells::Panic);
             characterPtrC->SpellAdd(spell::Spells::Sleep);
             characterPtrC->SpellAdd(spell::Spells::Awaken);
             characterPtrC->SpellAdd(spell::Spells::Poison);

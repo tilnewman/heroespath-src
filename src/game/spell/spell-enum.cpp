@@ -51,7 +51,7 @@ namespace spell
             case Trip:          { return "Trip"; }
             case Lift:          { return "Lift"; }
             case Daze:          { return "Daze"; }
-            case Frighten:      { return "Frighten"; }
+            case Panic:         { return "Panic"; }
             case ClearMind:     { return "ClearMind"; }
             case Poison:        { return "Poison"; }
             case Antidote:      { return "Antidote"; }
@@ -78,7 +78,7 @@ namespace spell
             case Trip:          { return "Trip"; }
             case Lift:          { return "Lift"; }
             case Daze:          { return "Daze"; }
-            case Frighten:      { return "Frighten"; }
+            case Panic:         { return "Panic"; }
             case ClearMind:     { return "Clear Mind"; }
             case Poison:        { return "Poison"; }
             case Antidote:      { return "Antidote"; }

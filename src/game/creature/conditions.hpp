@@ -50,18 +50,26 @@ namespace condition
     };
 
 
-    class Frightened : public Condition
+    class Panic : public Condition
     {
     public:
-        Frightened() : Condition(Conditions::Frightened, false, stats::StatMultSet(1.0f, 0.5f, 1.0f, 1.0f, 0.5f, 1.0f)) {}
-        virtual ~Frightened() {}
+        Panic() : Condition(
+            Conditions::Panic,
+            false,
+            stats::StatMultSet(1.0f, 0.5f, 0.5f, 1.0f, 0.75f, 0.5f)) {}
+
+        virtual ~Panic() {}
     };
 
 
     class Tripped : public Condition
     {
     public:
-        Tripped() : Condition(Conditions::Tripped, false, stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
+        Tripped() : Condition(
+            Conditions::Tripped,
+            false,
+            stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
+
         virtual ~Tripped() {}
     };
 
@@ -69,7 +77,11 @@ namespace condition
     class Dazed : public Condition
     {
     public:
-        Dazed() : Condition(Conditions::Dazed, false, stats::StatMultSet(0.5f, (1.0f / 3.0f), 1.0f, 1.0f, (1.0f / 3.0f), 0.5f)) {}
+        Dazed() : Condition(
+            Conditions::Dazed,
+            false,
+            stats::StatMultSet(0.5f, (1.0f / 3.0f), 1.0f, 1.0f, (1.0f / 3.0f), 0.5f)) {}
+        
         virtual ~Dazed() {}
     };
 
@@ -85,7 +97,11 @@ namespace condition
     class Stone : public Condition
     {
     public:
-        Stone() : Condition(Conditions::Stone, true, stats::StatMultSet(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f)) {}
+        Stone() : Condition(
+            Conditions::Stone,
+            true,
+            stats::StatMultSet(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f)) {}
+        
         virtual ~Stone() {}
     };
 
@@ -93,7 +109,11 @@ namespace condition
     class Dead : public Condition
     {
     public:
-        Dead() : Condition(Conditions::Dead, false, stats::StatMultSet(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)) {}
+        Dead() : Condition(
+            Conditions::Dead,
+            false,
+            stats::StatMultSet(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)) {}
+        
         virtual ~Dead() {}
     };
 
@@ -101,7 +121,10 @@ namespace condition
     class AsleepNatural : public Condition
     {
     public:
-        AsleepNatural() : Condition(Conditions::AsleepNatural, false, stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
+        AsleepNatural() : Condition(
+            Conditions::AsleepNatural,
+            false,
+            stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
         virtual ~AsleepNatural() {}
     };
 
@@ -109,7 +132,11 @@ namespace condition
     class AsleepMagical : public Condition
     {
     public:
-        AsleepMagical() : Condition(Conditions::AsleepMagical, false, stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
+        AsleepMagical() : Condition(
+            Conditions::AsleepMagical,
+            false,
+            stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
+        
         virtual ~AsleepMagical() {}
     };
 
@@ -117,7 +144,11 @@ namespace condition
     class Poisoned : public Condition
     {
     public:
-        Poisoned() : Condition(Conditions::Poisoned, false, stats::StatMultSet(0.75f, 1.0f, 0.5f, 1.0f, 0.75f, 1.0f)) {}
+        Poisoned() : Condition(
+            Conditions::Poisoned,
+            false,
+            stats::StatMultSet(0.75f, 1.0f, 0.5f, 1.0f, 0.75f, 1.0f)) {}
+        
         virtual ~Poisoned() {}
         virtual const ConditionEnumVec_t PerTurnChange(CreaturePtrC_t creaturePtrC);
     };

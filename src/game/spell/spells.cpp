@@ -234,7 +234,7 @@ namespace spell
     }
 
 
-    const std::string Frighten::EffectCreature(
+    const std::string Panic::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t        effectedCreaturePtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
@@ -244,15 +244,15 @@ namespace spell
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
         }
 
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
+        if (effectedCreaturePtr->HasCondition(creature::Conditions::Panic))
         {
             return effectedCreaturePtr->NameOrRaceAndRole() +
-                EFFECT_STR_IS_ALREADY_ + "frightened";
+                EFFECT_STR_IS_ALREADY_ + "panicked";
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::Frightened);
-            conditionsAddedVec.push_back(creature::Conditions::Frightened);
+            effectedCreaturePtr->ConditionAdd(creature::Conditions::Panic);
+            conditionsAddedVec.push_back(creature::Conditions::Panic);
             return Spell::EFFECT_STR_SUCCESS_;
         }
     }
@@ -267,19 +267,26 @@ namespace spell
             return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
         }
 
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Frightened))
+        auto didRemoveCondition{ false };
+        if (effectedCreaturePtr->HasCondition(creature::Conditions::Panic))
         {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Frightened);
-            return Spell::EFFECT_STR_SUCCESS_;
+            effectedCreaturePtr->ConditionRemove(creature::Conditions::Panic);
+            didRemoveCondition = true;
         }
-        else if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
+        
+        if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
         {
             effectedCreaturePtr->ConditionRemove(creature::Conditions::Dazed);
+            didRemoveCondition = true;
+        }
+        
+        if (didRemoveCondition)
+        {
             return Spell::EFFECT_STR_SUCCESS_;
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is not frightened or dazed";
+            return effectedCreaturePtr->NameOrRaceAndRole() + " is not panicked or dazed";
         }
     }
 

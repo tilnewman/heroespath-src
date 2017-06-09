@@ -249,7 +249,7 @@ namespace combat
                     sfml_util::sound_effect::SpellDaze);
                 break;
             }
-            case spell::Spells::Frighten:
+            case spell::Spells::Panic:
             {
                 sfml_util::SoundManager::Instance()->SoundEffectPlay(
                     sfml_util::sound_effect::SpellFrighten);

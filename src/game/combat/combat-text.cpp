@@ -56,7 +56,7 @@ namespace combat
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_    ("Click, press 's', or press the spacebar to take no action and skip this turn.");
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_     ("Click or press 'y' to fly into the air.");
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_    ("Click or press 'l' to stop flying and land.");
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_    ("Click or press 'r' to roar and attempt to frighten enemies.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_    ("Click or press 'r' to roar and attempt to panic enemies.");
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_  ("Click or press 'p' to attempt to pounce on an enemy.");
 
 

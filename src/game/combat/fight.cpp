@@ -762,18 +762,18 @@ namespace combat
 
         CreatureEffectVec_t creatureEffectsVec;
 
-        //Give each defending creature a chance to resist being frightened.
+        //Give each defending creature a chance to resist being panicked.
         //The farther away each defending creature is the better chance of resisting he/she/it has.
         for (auto const NEXT_DEFEND_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
         {
-            if (NEXT_DEFEND_CREATURE_PTR->HasCondition(creature::Conditions::Frightened))
+            if (NEXT_DEFEND_CREATURE_PTR->HasCondition(creature::Conditions::Panic))
             {
                 continue;
             }
 
             auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(creatureRoaringPtrC, NEXT_DEFEND_CREATURE_PTR)) };
 
-            //if flying, then consider it farther away and less likely to be frightened
+            //if flying, then consider it farther away and less likely to be panicked
             if (Encounter::Instance()->GetTurnInfoCopy(NEXT_DEFEND_CREATURE_PTR).GetIsFlying() &&
                 (IS_ROARING_CREATURE_FLYING == false))
             {
@@ -818,7 +818,7 @@ namespace combat
 
             if (didFrighten)
             {
-                auto const CONDITION_VEC{ creature::Conditions::Frightened };
+                auto const CONDITION_VEC{ creature::Conditions::Panic };
 
                 NEXT_DEFEND_CREATURE_PTR->ConditionAdd(CONDITION_VEC);
 

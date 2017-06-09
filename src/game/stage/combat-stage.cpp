@@ -3244,11 +3244,11 @@ namespace stage
             return "wakes from being dazed";
         }
 
-        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Frightened)) &&
+        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Panic)) &&
             (misc::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
         {
-            turnCreaturePtr_->ConditionRemove(creature::Conditions::Frightened);
-            return "recovers from being frightened";
+            turnCreaturePtr_->ConditionRemove(creature::Conditions::Panic);
+            return "recovers from being panicked";
         }
 
         return "";

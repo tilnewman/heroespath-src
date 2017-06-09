@@ -51,7 +51,7 @@ namespace condition
 
         //Note:  Keep order in sync with game::creature::Conditions::Enum
         conditionsUVec_.push_back( std::make_unique<Good>() );
-        conditionsUVec_.push_back( std::make_unique<Frightened>() );
+        conditionsUVec_.push_back( std::make_unique<Panic>() );
         conditionsUVec_.push_back( std::make_unique<Dazed>() );
         conditionsUVec_.push_back( std::make_unique<Tripped>() );
         conditionsUVec_.push_back( std::make_unique<AsleepNatural>() );

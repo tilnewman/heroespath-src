@@ -53,7 +53,7 @@ namespace creature
         enum Enum
         {
             Good = 0,
-            Frightened,
+            Panic,
             Dazed,
             Tripped,
             AsleepNatural,
@@ -68,7 +68,6 @@ namespace creature
         static const std::string Name(const Enum);
         static const std::string ToString(const Enum);
         static const std::string Desc(const Enum);
-
     };
 
     using ConditionEnumVec_t      = std::vector<Conditions::Enum>;

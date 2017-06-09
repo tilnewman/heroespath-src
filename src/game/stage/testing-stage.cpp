@@ -487,14 +487,18 @@ namespace stage
 
         actualSet = STAT_SET_BASE;
         for (int i(0); i < 10; ++i)
+        {
             actualSet.ModifyCurrent(STAT_SET_MOD1);
+        }
         const stats::StatSet STAT_SET_BASE_MOD1_X10(12, 2, 32, 0, 52, 0);
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_MOD1_X10);
         TestStatSetsCurrentAndNormal("Base Set Mod1 x10 Current", actualSet, expectedSet);
 
         for (int i(0); i < 10; ++i)
+        {
             actualSet.ModifyCurrent(STAT_SET_MOD1.CreateInvertCopy());
+        }
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
@@ -511,21 +515,21 @@ namespace stage
         expectedSet = STAT_SET_CHAR_BASE;
         TestStatSetsCurrentAndNormal("Creature Base Set", playerSPtr->Stats(), expectedSet);
 
-        playerSPtr->ConditionAdd(creature::Conditions::Frightened);
+        playerSPtr->ConditionAdd(creature::Conditions::Panic);
         expectedSet = STAT_SET_CHAR_BASE;
-        const stats::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 1000, 1000, 500, 1000);
+        const stats::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 500, 1000, 750, 500);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED);
 
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened",
+        TestStatSetsCurrentAndNormal("Creature Base Set Panicked",
                                      playerSPtr->Stats(),
                                      expectedSet);
 
         playerSPtr->ConditionAdd(creature::Conditions::Dazed);
         expectedSet = STAT_SET_CHAR_BASE;
-        const stats::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 1000, 1000, 166, 500);
+        const stats::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 500, 1000, 250, 250);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED_AND_DAZED);
 
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed",
+        TestStatSetsCurrentAndNormal("Creature Base Set Panicked and Dazed",
                                      playerSPtr->Stats(),
                                      expectedSet);
 
@@ -533,11 +537,11 @@ namespace stage
         expectedSet = STAT_SET_CHAR_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
 
-        TestStatSetsCurrentAndNormal("Creature Base Set Frightened and Dazed and Dead",
+        TestStatSetsCurrentAndNormal("Creature Base Set Panicked and Dazed and Dead",
                                      playerSPtr->Stats(),
                                      expectedSet);
 
-        playerSPtr->ConditionRemove(creature::Conditions::Frightened);
+        playerSPtr->ConditionRemove(creature::Conditions::Panic);
         expectedSet = STAT_SET_CHAR_BASE;
         expectedSet.ResetCurrent(STAT_SET_ZEROS);
 

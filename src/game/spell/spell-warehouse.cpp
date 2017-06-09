@@ -57,7 +57,7 @@ namespace spell
         spellsUVec_.push_back( std::make_unique<Trip>() );
         spellsUVec_.push_back( std::make_unique<Lift>() );
         spellsUVec_.push_back( std::make_unique<Daze>() );
-        spellsUVec_.push_back( std::make_unique<Frighten>() );
+        spellsUVec_.push_back( std::make_unique<Panic>() );
         spellsUVec_.push_back( std::make_unique<ClearMind>() );
         spellsUVec_.push_back( std::make_unique<Poison>() );
         spellsUVec_.push_back( std::make_unique<Antidote>() );
