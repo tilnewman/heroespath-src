@@ -57,6 +57,12 @@ namespace game
 {
 
 //forward declarations
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+    using SongPVec_t = std::vector<SongPtr_t>;
+}
 namespace spell
 {
     class Spell;
@@ -115,7 +121,8 @@ namespace creature
                           const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                           const std::string &         IMAGE_FILENAME  = "",
                           const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
-                          const stats::Mana_t         MANA            = 0);
+                          const stats::Mana_t         MANA            = 0,
+                          const song::SongVec_t &     SONG_VEC        = song::SongVec_t());
 
         virtual ~Creature();
 
@@ -246,6 +253,7 @@ namespace creature
 
         inline const UniqueTraits_t UniqueTraits() const        { return UniqueTraits_t( std::make_tuple(Name(), Role().Which(), DateTimeCreated(), serialNumber_) ); }
 
+        //spell related functions
         inline bool CanCastSpells() const                       { return CanCastSpellsStr().empty(); }
 
         const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
@@ -253,15 +261,27 @@ namespace creature
         bool CanCastSpellByEffectType(const EffectType::Enum) const;
         bool CanCastSpellByEffectType(const EffectTypeVec_t &) const;
 
-        //bool CanPlaySongByEffectType(const EffectType::Enum) const;
-        //bool CanPlaySongByEffectType(const EffectTypeVec_t &) const;
-
         inline spell::SpellVec_t Spells() const                 { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
 
         bool SpellAdd(const spell::Spells::Enum);
         bool SpellRemove(const spell::Spells::Enum);
+
+        //song related functions
+        inline bool CanPlaySongs() const { return CanPlaySongsStr().empty(); }
+
+        const std::string CanPlaySongsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
+
+        bool CanPlaySongsByEffectType(const EffectType::Enum) const;
+        bool CanPlaySongsByEffectType(const EffectTypeVec_t &) const;
+
+        inline song::SongVec_t Songs() const { return songsVec_; }
+
+        const song::SongPVec_t SongsPVec() const;
+
+        bool SongAdd(const song::Songs::Enum);
+        bool SongRemove(const song::Songs::Enum);
 
         item::Weight_t WeightCanCarry() const;
 
@@ -318,6 +338,7 @@ namespace creature
         stats::Mana_t       manaCurrent_;
         stats::Mana_t       manaNormal_;
         std::size_t         lastSpellCastNum_;
+        song::SongVec_t     songsVec_;
 
     private:
         friend class boost::serialization::access;
@@ -346,6 +367,7 @@ namespace creature
             ar & manaCurrent_;
             ar & manaNormal_;
             ar & lastSpellCastNum_;
+            ar & songsVec_;
         }
     };
 

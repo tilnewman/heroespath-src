@@ -31,8 +31,10 @@
 
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
-#include "game/spell/spell-warehouse.hpp"
+#include "game/song/song.hpp"
+#include "game/song/song-warehouse.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/spell/spell-warehouse.hpp"
 #include "game/item/item.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/creature/conditions.hpp"
@@ -74,7 +76,8 @@ namespace creature
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
                        const spell::SpellVec_t &   SPELL_VEC,
-                       const stats::Mana_t         MANA)
+                       const stats::Mana_t         MANA,
+                       const song::SongVec_t &     SONG_VEC)
     :
         name_           (NAME),
         imageFilename_  (IMAGE_FILENAME),
@@ -96,7 +99,8 @@ namespace creature
         achievements_   (),
         currWeaponsPVec_(),
         manaCurrent_    (MANA),
-        manaNormal_     (MANA)
+        manaNormal_     (MANA),
+        songsVec_       (SONG_VEC)
     {
         //set the default condition if not already there
         if (conditionsVec_.empty())
@@ -1219,32 +1223,6 @@ namespace creature
     }
 
 
-    /*bool Creature::CanPlaySongByEffectType(const EffectType::Enum E) const
-    {
-        return CanPlaySongByEffectType(EffectTypeVec_t(1, E));
-    }
-
-
-    bool Creature::CanPlaySongByEffectType(const EffectTypeVec_t & EFFECT_TYPE_VEC) const
-    {
-        for (auto const NEXT_SONG_ENUM : songsVec_)
-        {
-            auto const NEXT_EFFECT_TYPE_SOURCE{
-                song::Warehouse::Get(NEXT_SONG_ENUM)->EffectType() };
-
-            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
-            {
-                if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }*/
-
-
     const spell::SpellPVec_t Creature::SpellsPVec() const
     {
         spell::SpellPVec_t spellsPVec;
@@ -1287,6 +1265,105 @@ namespace creature
         }
     }
 
+
+    const std::string Creature::CanPlaySongsStr(const bool WILL_PREFIX_AND_POSTFIX) const
+    {
+        const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot play song because " : "");
+        const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
+
+        if (role_.Which() != role::Bard)
+        {
+            return RESPONSE_PREFIX + "only Bards can play magical songs" + RESPONSE_POSTFIX;
+        }
+
+        const std::string CAN_TAKE_ACTION_STR(CanTakeActionStr(false));
+
+        if (CAN_TAKE_ACTION_STR.empty() == false)
+        {
+            return RESPONSE_PREFIX + CAN_TAKE_ACTION_STR + RESPONSE_POSTFIX;
+        }
+
+        if (songsVec_.empty())
+        {
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no songs" + RESPONSE_POSTFIX;
+        }
+
+        if (ManaCurrent() <= 0)
+        {
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
+        }
+
+        return "";
+    }
+
+
+    bool Creature::CanPlaySongsByEffectType(const EffectType::Enum E) const
+    {
+        return CanPlaySongsByEffectType(EffectTypeVec_t(1, E));
+    }
+
+
+    bool Creature::CanPlaySongsByEffectType(const EffectTypeVec_t & EFFECT_TYPE_VEC) const
+    {
+        for (auto const NEXT_SONG_ENUM : songsVec_)
+        {
+            auto const NEXT_EFFECT_TYPE_SOURCE{
+                song::Warehouse::Get(NEXT_SONG_ENUM)->EffectType() };
+
+            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
+            {
+                if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    const song::SongPVec_t Creature::SongsPVec() const
+    {
+        song::SongPVec_t songsPVec;
+
+        for (auto const NEXT_SONG_ENUM : songsVec_)
+        {
+            songsPVec.push_back(song::Warehouse::Get(NEXT_SONG_ENUM));
+        }
+
+        return songsPVec;
+    }
+
+
+    bool Creature::SongAdd(const song::Songs::Enum E)
+    {
+        if (std::find(songsVec_.begin(), songsVec_.end(), E) == songsVec_.end())
+        {
+            songsVec_.push_back(E);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    bool Creature::SongRemove(const song::Songs::Enum E)
+    {
+        auto const FOUND_ITER{ std::find(songsVec_.begin(), songsVec_.end(), E) };
+
+        if (FOUND_ITER == songsVec_.end())
+        {
+            return false;
+        }
+        else
+        {
+            songsVec_.erase(FOUND_ITER);
+            return true;
+        }
+    }
 
     const std::string Creature::ToString() const
     {
@@ -1529,6 +1606,11 @@ namespace creature
             return false;
         }
 
+        if (misc::Vector::OrderlessCompareEqual(L.songsVec_, R.songsVec_) == false)
+        {
+            return false;
+        }
+
         return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
@@ -1580,6 +1662,11 @@ namespace creature
         }
 
         if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        {
+            return true;
+        }
+
+        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_) == true)
         {
             return true;
         }

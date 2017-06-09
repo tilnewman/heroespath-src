@@ -31,6 +31,7 @@
 #include "misc/boost-serialize-includes.hpp"
 
 #include "game/spell/spell-enum.hpp"
+#include "game/song/song-enum.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/title-enum.hpp"
@@ -94,7 +95,8 @@ namespace non_player
                            const sfml_util::DateTime &          DATE_TIME      = sfml_util::DateTime(),
                            const std::string &                  IMAGE_FILENAME = "",
                            const spell::SpellVec_t &            SPELLS_VEC     = spell::SpellVec_t(),
-                           const stats::Mana_t                  MANA           = 0);
+                           const stats::Mana_t                  MANA           = 0,
+                           const song::SongVec_t &              SONG_VEC       = song::SongVec_t());
 
         virtual ~Character();
 

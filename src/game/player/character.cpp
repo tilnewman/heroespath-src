@@ -63,7 +63,8 @@ namespace player
                          const sfml_util::DateTime &          DATE_TIME,
                          const std::string &                  IMAGE_FILENAME,
                          const spell::SpellVec_t &            SPELLS_VEC,
-                         const stats::Mana_t                  MANA)
+                         const stats::Mana_t                  MANA,
+                         const song::SongVec_t &              SONG_VEC)
     :
         Creature(NAME,
                  SEX,
@@ -80,7 +81,8 @@ namespace player
                  DATE_TIME,
                  IMAGE_FILENAME,
                  SPELLS_VEC,
-                 MANA)
+                 MANA,
+                 SONG_VEC)
     {}
 
 
@@ -139,6 +141,11 @@ namespace player
             return false;
         }
 
+        if (misc::Vector::OrderlessCompareEqual(L.songsVec_, R.songsVec_) == false)
+        {
+            return false;
+        }
+
         return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
@@ -190,6 +197,11 @@ namespace player
         }
 
         if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        {
+            return true;
+        }
+
+        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_) == true)
         {
             return true;
         }

@@ -28,6 +28,7 @@
 // song-enum.hpp
 //
 #include <string>
+#include <vector>
 
 
 namespace game
@@ -48,6 +49,8 @@ namespace song
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
     };
+
+    using SongVec_t = std::vector<Songs::Enum>;
 
 }
 }
