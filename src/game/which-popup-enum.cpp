@@ -48,6 +48,7 @@ namespace game
             case CharacterSelection:            { return "CharacterSelection"; }
             case NumberSelection:               { return "NumberSelection"; }
             case Spellbook:                     { return "Spellbook"; }
+            case MusicSheet:                    { return "MusicSheet"; }
             case Count:
             default:
             {

@@ -35,6 +35,7 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/title.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 
 #include <tuple>
 #include <string>
@@ -55,6 +56,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -72,6 +74,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -90,6 +93,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -108,6 +112,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -126,6 +131,7 @@ namespace gui
             COND_CPTRC    (CONDITION_CPTRC_PARAM),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -144,6 +150,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -162,6 +169,7 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (TITLE_CPTRC_PARAM),
             SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (nullptr),
             is_valid      (IS_VALID)
     {}
 
@@ -180,6 +188,26 @@ namespace gui
             COND_CPTRC    (nullptr),
             TITLE_CPTRC   (nullptr),
             SPELL_CPTRC   (SPELL_CPTRC_PARAM),
+            SONG_CPTRC    (nullptr),
+            is_valid      (IS_VALID)
+    {}
+
+
+    ListBoxItem::ListBoxItem(const std::string &              NAME,
+                             const sfml_util::gui::TextInfo & TEXT_INFO,
+                             const game::song::SongPtrC_t     SONG_CPTRC_PARAM,
+                             const bool                       IS_VALID)
+    :
+            TextRegion    (std::string(NAME).append("_ListBoxItemSong"),
+                           TEXT_INFO,
+                           sf::FloatRect()),
+            CHARACTER_CPTR(nullptr),
+            GAMESTATE_CPTR(nullptr),
+            ITEM_CPTR     (nullptr),
+            COND_CPTRC    (nullptr),
+            TITLE_CPTRC   (nullptr),
+            SPELL_CPTRC   (nullptr),
+            SONG_CPTRC    (SONG_CPTRC_PARAM),
             is_valid      (IS_VALID)
     {}
 
@@ -192,6 +220,7 @@ namespace gui
                         L.COND_CPTRC,
                         L.TITLE_CPTRC,
                         L.SPELL_CPTRC,
+                        L.SONG_CPTRC,
                         L.is_valid)
                ==
                std::tie(R.CHARACTER_CPTR,
@@ -200,6 +229,7 @@ namespace gui
                         R.COND_CPTRC,
                         R.TITLE_CPTRC,
                         R.SPELL_CPTRC,
+                        R.SONG_CPTRC,
                         R.is_valid);
     }
 
@@ -212,6 +242,7 @@ namespace gui
                         L.COND_CPTRC,
                         L.TITLE_CPTRC,
                         L.SPELL_CPTRC,
+                        L.SONG_CPTRC,
                         L.is_valid)
                <
                std::tie(R.CHARACTER_CPTR,
@@ -220,6 +251,7 @@ namespace gui
                         R.COND_CPTRC,
                         R.TITLE_CPTRC,
                         R.SPELL_CPTRC,
+                        R.SONG_CPTRC,
                         R.is_valid);
     }
 

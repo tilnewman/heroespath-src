@@ -53,6 +53,7 @@
 #include "game/creature/race.hpp"
 #include "game/creature/role.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 #include "game/game-data-file.hpp"
 
 #include "misc/random.hpp"
@@ -134,14 +135,14 @@ namespace sfml_util
         imagePosTop_               (0.0f),
         beforeFadeTimerSec_        (0.0f),
         fadeAlpha_                 (0.0f),
-        spellbookState_            (SpellbookState::Initial),
+        fadeState_                 (FadeState::Initial),
         playerTexture_             (),
         playerSprite_              (),
         pageRectLeft_              (),
         pageRectRight_             (),
         charDetailsTextRegionUPtr_ (),
         listBoxLabelTextRegionUPtr_(),
-        spellListBoxSPtr_          (),
+        listBoxSPtr_               (),
         LISTBOX_IMAGE_COLOR_       (sf::Color(255, 255, 255, 190)),
         LISTBOX_LINE_COLOR_        (sfml_util::FontManager::Color_GrayDark()),
         LISTBOX_COLOR_FG_          (LISTBOX_LINE_COLOR_),
@@ -267,19 +268,19 @@ namespace sfml_util
                 (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
                 (PACKAGE.keypress_event.code == sf::Keyboard::Down))
             {
-                if ((SpellbookState::Initial != spellbookState_) &&
+                if ((FadeState::Initial != fadeState_) &&
                     (PACKAGE.package.PTR_->GetSelected() != nullptr) &&
                     (spellCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC))
                 {
                     spellCurrentPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
 
-                    if (SpellbookState::FadingOut != spellbookState_)
+                    if (FadeState::FadingOut != fadeState_)
                     {
                         spellColorImageStart_  = spellColorImageCurrent_;
                         spellColorTextStart_  = spellColorTextCurrent_;
                         spellColorImageEnd_ = sf::Color(255, 255, 255, 0);
                         spellColorTextEnd_ = sf::Color(0, 0, 0, 0);
-                        spellbookState_ = SpellbookState::FadingOut;
+                        fadeState_ = FadeState::FadingOut;
                         spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
                     }
 
@@ -944,7 +945,7 @@ namespace sfml_util
                 listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
             }
 
-            spellListBoxSPtr_ = std::make_shared<gui::ListBox>("PopupStage'sSpellListBox",
+            listBoxSPtr_ = std::make_shared<gui::ListBox>("PopupStage'sSpellListBox",
                                                                LISTBOX_RECT,
                                                                listBoxItemsSList,
                                                                this,
@@ -955,26 +956,274 @@ namespace sfml_util
                                                                sfml_util::gui::ListBox::NO_LIMIT_,
                                                                this);
 
-            EntityAdd(spellListBoxSPtr_.get());
-            spellListBoxSPtr_->SetSelectedIndex(0);
-            spellListBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
+            EntityAdd(listBoxSPtr_.get());
+            listBoxSPtr_->SetSelectedIndex(0);
+            listBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
 
             //Force spell listbox to take focus so that user up/down
             //keystrokes work without having to click on the listbox.
-            SetFocus(spellListBoxSPtr_.get());
+            SetFocus(listBoxSPtr_.get());
 
             //Force spell listbox selection up and down to force
             //colors to correct.
-            spellListBoxSPtr_->WillPlaySoundEffects(false);
+            listBoxSPtr_->WillPlaySoundEffects(false);
             sf::Event::KeyEvent keyEvent;
             keyEvent.code = sf::Keyboard::Down;
-            spellListBoxSPtr_->KeyRelease(keyEvent);
+            listBoxSPtr_->KeyRelease(keyEvent);
             keyEvent.code = sf::Keyboard::Up;
-            spellListBoxSPtr_->KeyRelease(keyEvent);
-            spellListBoxSPtr_->WillPlaySoundEffects(true);
+            listBoxSPtr_->KeyRelease(keyEvent);
+            listBoxSPtr_->WillPlaySoundEffects(true);
 
             //setup initial values for spellbook page right text and colors
-            spellCurrentPtr_ = spellListBoxSPtr_->At(0)->SPELL_CPTRC;
+            spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
+            SetupSpellbookPageRightForFadeIn();
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
+        {
+            //setup regions
+            auto const LEFT_SIDE_RECT_RAW { sfml_util::ConvertRect<int, float>(
+                sfml_util::gui::PopupManager::Rect_MusicSheet_LeftSide()) };
+
+            auto const SCALE(INNER_REGION_.width /
+                static_cast<float>(backgroundTexture_.getSize().x));
+
+            pageRectLeft_.left   = INNER_REGION_.left + (LEFT_SIDE_RECT_RAW.left * SCALE);
+            pageRectLeft_.top    = INNER_REGION_.top + (LEFT_SIDE_RECT_RAW.top * SCALE);
+            pageRectLeft_.width  = LEFT_SIDE_RECT_RAW.width * SCALE;
+            pageRectLeft_.height = LEFT_SIDE_RECT_RAW.height * SCALE;
+
+            auto const RIGHT_SIDE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
+                sfml_util::gui::PopupManager::Rect_MusicSheet_RightSide()) };
+
+            pageRectRight_.left = INNER_REGION_.left + (RIGHT_SIDE_RECT_RAW.left * SCALE);
+            pageRectRight_.top = INNER_REGION_.top + (RIGHT_SIDE_RECT_RAW.top * SCALE);
+            pageRectRight_.width = RIGHT_SIDE_RECT_RAW.width * SCALE;
+            pageRectRight_.height = RIGHT_SIDE_RECT_RAW.height * SCALE;
+
+            //setup the left accent image
+            {
+                sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+                accentSprite1_.setTexture(accentTexture1_);
+
+                auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
+
+                const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) /
+                    accentSprite1_.getLocalBounds().height);
+                
+                accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
+
+                if (accentSprite1_.getGlobalBounds().width > (pageRectLeft_.width * SIZE_RATIO))
+                {
+                    const float SCALE_HORIZ((pageRectLeft_.width * SIZE_RATIO) /
+                        accentSprite1_.getLocalBounds().width);
+
+                    if (SCALE_HORIZ < SCALE_VERT)
+                    {
+                        accentSprite1_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                    }
+                }
+
+                //always center the accent sprite image
+                const float ACCENT1_POS_LEFT((pageRectLeft_.left + (pageRectLeft_.width  * 0.5f)) -
+                    (accentSprite1_.getGlobalBounds().width * 0.5f));
+
+                const float ACCENT1_POS_TOP ((pageRectLeft_.top  + (pageRectLeft_.height * 0.5f)) -
+                    (accentSprite1_.getGlobalBounds().height * 0.5f));
+
+                accentSprite1_.setPosition(ACCENT1_POS_LEFT, ACCENT1_POS_TOP);
+
+                accentSprite1_.setColor(sf::Color(255, 255, 255, 16));
+            }
+
+            //setup the right accent image
+            {
+                sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+                accentSprite2_.setTexture(accentTexture2_);
+
+                auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
+
+                const float SCALE_VERT((pageRectRight_.height * SIZE_RATIO) /
+                    accentSprite2_.getLocalBounds().height);
+
+                accentSprite2_.setScale(SCALE_VERT, SCALE_VERT);
+
+                if (accentSprite2_.getGlobalBounds().width > (pageRectRight_.width * SIZE_RATIO))
+                {
+                    const float SCALE_HORIZ((pageRectRight_.width * SIZE_RATIO) /
+                        accentSprite2_.getLocalBounds().width);
+
+                    if (SCALE_HORIZ < SCALE_VERT)
+                    {
+                        accentSprite2_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                    }
+                }
+
+                //always center the accent sprite image
+                auto const ACCENT2_POS_LEFT{ (pageRectRight_.left + (pageRectRight_.width  * 0.5f))
+                    - (accentSprite2_.getGlobalBounds().width * 0.5f) };
+
+                auto const ACCENT2_POS_TOP{ (pageRectRight_.top + (pageRectRight_.height * 0.5f))
+                    - (accentSprite2_.getGlobalBounds().height * 0.5f) };
+
+                accentSprite2_.setPosition(ACCENT2_POS_LEFT, ACCENT2_POS_TOP);
+
+                accentSprite2_.setColor(sf::Color(255, 255, 255, 16));
+            }
+
+            //setup player image
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_,
+                POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
+
+            playerTexture_.setSmooth(true);
+            sfml_util::Invert(playerTexture_);
+            sfml_util::Mask(playerTexture_, sf::Color::White);
+            //
+            playerSprite_.setTexture(playerTexture_ );
+            auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
+            playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
+            playerSprite_.setColor(sf::Color(255, 255, 255, 192));
+            playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
+
+            //setup player details text
+            auto cPtr{ POPUP_INFO_.CreaturePtr() };
+            std::ostringstream ss;
+            ss << cPtr->Name() << "\n";
+
+            if (cPtr->IsBeast())
+            {
+                ss << cPtr->Race().Name();
+
+                if (cPtr->Race().Which() != game::creature::race::Wolfen)
+                {
+                    ss << ", " << cPtr->Role().Name();
+                }
+
+                ss << " " << cPtr->RankClassName() << "\n";
+            }
+            else
+            {
+                ss << cPtr->RankClassName() << " " << cPtr->Role().Name() << "\n"
+                    << cPtr->Race().Name() << "\n";
+            }
+
+            ss << "Rank:  " << cPtr->Rank() << "\n"
+               << "Health:  " << cPtr->HealthCurrent() << "/" << cPtr->HealthNormal() << " "
+               << cPtr->HealthPercentStr() << "\n"
+               << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
+               << "\n";
+
+            const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sfml_util::Justified::Left);
+
+            const sf::FloatRect DETAILS_TEXT_RECT{
+                pageRectLeft_.left +
+                    playerSprite_.getGlobalBounds().width +
+                    sfml_util::MapByRes(10.0f, 40.0f),
+                pageRectLeft_.top + sfml_util::MapByRes(20.0f, 80.0f),
+                0.0f,
+                0.0f };
+
+            charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+                "MusicSheetPopupWindowDetails",
+                DETAILS_TEXTINFO,
+                DETAILS_TEXT_RECT);
+
+            //spell listbox label
+            const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
+                "MusicSheet",
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Largeish(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sfml_util::Justified::Left);
+
+            const sf::FloatRect LISTBOX_LABEL_TEXTRECT{
+                pageRectLeft_.left + sfml_util::MapByRes(10.0f, 40.0f),
+                playerSprite_.getGlobalBounds().top +
+                    playerSprite_.getGlobalBounds().height +
+                    sfml_util::MapByRes(20.0f, 80.0f),
+                0.0f,
+                0.0f };
+
+            listBoxLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+                "MusicSheetPopupWindowSpellListLabel",
+                LISTBOX_LABEL_TEXTINFO,
+                LISTBOX_LABEL_TEXTRECT);
+
+
+            //spell listbox
+            auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
+            auto const LISTBOX_RECT_LEFT  { pageRectLeft_.left + LISTBOX_MARGIN };
+
+            auto const LISTBOX_RECT_TOP   { listBoxLabelTextRegionUPtr_->GetEntityRegion().top +
+                listBoxLabelTextRegionUPtr_->GetEntityRegion().height + LISTBOX_MARGIN };
+            
+            auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
+
+            auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height) -
+                LISTBOX_RECT_TOP) - (LISTBOX_MARGIN * 2.0f) };
+
+            const sf::FloatRect LISTBOX_RECT(LISTBOX_RECT_LEFT,
+                                             LISTBOX_RECT_TOP,
+                                             LISTBOX_RECT_WIDTH,
+                                             LISTBOX_RECT_HEIGHT);
+
+            const sfml_util::gui::box::Info LISTBOX_BOX_INFO(1,
+                                                             true,
+                                                             LISTBOX_RECT,
+                                                             LISTBOX_COLORSET_,
+                                                             LISTBOX_BG_INFO_);
+
+            sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
+            auto const SONG_PVEC{ cPtr->SongsPVec() };
+            for (auto const NEXT_SONG_PTR : SONG_PVEC)
+            {
+                listBoxItemTextInfo_.text = NEXT_SONG_PTR->Name();
+
+                auto const LISTBOXITEM_SPTR( std::make_shared<gui::ListBoxItem>(
+                    NEXT_SONG_PTR->Name() + "_MusicListBoxEntry",
+                    listBoxItemTextInfo_,
+                    NEXT_SONG_PTR,
+                    CanPlaySong(NEXT_SONG_PTR)) );
+
+                listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+            }
+
+            listBoxSPtr_ = std::make_shared<gui::ListBox>(
+                "PopupStage'sMusicListBox",
+                LISTBOX_RECT,
+                listBoxItemsSList,
+                this,
+                10.0f,
+                6.0f,
+                LISTBOX_BOX_INFO,
+                LISTBOX_LINE_COLOR_,
+                sfml_util::gui::ListBox::NO_LIMIT_,
+                this);
+
+            EntityAdd(listBoxSPtr_.get());
+            listBoxSPtr_->SetSelectedIndex(0);
+            listBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
+
+            //Force spell listbox to take focus so that user up/down
+            //keystrokes work without having to click on the listbox.
+            SetFocus(listBoxSPtr_.get());
+
+            //Force spell listbox selection up and down to force
+            //colors to correct.
+            listBoxSPtr_->WillPlaySoundEffects(false);
+            sf::Event::KeyEvent keyEvent;
+            keyEvent.code = sf::Keyboard::Down;
+            listBoxSPtr_->KeyRelease(keyEvent);
+            keyEvent.code = sf::Keyboard::Up;
+            listBoxSPtr_->KeyRelease(keyEvent);
+            listBoxSPtr_->WillPlaySoundEffects(true);
+
+            //setup initial values for spellbook page right text and colors
+            spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
             SetupSpellbookPageRightForFadeIn();
         }
     }
@@ -1057,23 +1306,23 @@ namespace sfml_util
 
         if (POPUP_INFO_.Type() == game::Popup::Spellbook)
         {
-            if (SpellbookState::Initial == spellbookState_)
+            if (FadeState::Initial == fadeState_)
             {
-                spellCurrentPtr_ = spellListBoxSPtr_->At(0)->SPELL_CPTRC;
+                spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
                 SetupSpellbookPageRightForFadeIn();
             }
-            else if (SpellbookState::FadingIn == spellbookState_)
+            else if (FadeState::FadingIn == fadeState_)
             {
                 MoveSpellbookPageRightColors(ELAPSED_TIME_SECONDS);
                 SetSpellbookPageRightColors();
 
                 if (spellColorSlider_.GetIsDone())
                 {
-                    spellbookState_ = SpellbookState::Waiting;
+                    fadeState_ = FadeState::Waiting;
                     spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
                 }
             }
-            else if (SpellbookState::FadingOut == spellbookState_)
+            else if (FadeState::FadingOut == fadeState_)
             {
                 MoveSpellbookPageRightColors(ELAPSED_TIME_SECONDS);
                 SetSpellbookPageRightColors();
@@ -1084,7 +1333,7 @@ namespace sfml_util
                     SetupSpellbookPageRightForFadeIn();
                 }
             }
-            else if (SpellbookState::Warning == spellbookState_)
+            else if (FadeState::Warning == fadeState_)
             {
                 spellUnableTextUPtr_->SetEntityColorFgBoth(spellWarnColorShaker_.Update(ELAPSED_TIME_SECONDS));
                 spellWarningTimerSec_ += ELAPSED_TIME_SECONDS;
@@ -1092,7 +1341,7 @@ namespace sfml_util
                 {
                     spellUnableTextUPtr_->SetEntityColorFgBoth(SPELL_UNABLE_TEXT_COLOR_);
                     spellWarningTimerSec_ = 0.0f;
-                    spellbookState_ = SpellbookState::Waiting;
+                    fadeState_ = FadeState::Waiting;
                 }
             }
             return;
@@ -1260,7 +1509,7 @@ namespace sfml_util
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
                 return true;
             }
-            else if ((SpellbookState::Waiting == spellbookState_) &&
+            else if ((FadeState::Waiting == fadeState_) &&
                      ((KEY_EVENT.code == sf::Keyboard::Return) ||
                      (KEY_EVENT.code == sf::Keyboard::C)))
             {
@@ -1950,7 +2199,7 @@ namespace sfml_util
         spellColorImageEnd_ = sf::Color(255, 255, 255, SPELLBOOK_IMAGE_ALPHA_);
         spellColorTextEnd_ = sf::Color(0, 0, 0, 255);
 
-        spellbookState_ = SpellbookState::FadingIn;
+        fadeState_ = FadeState::FadingIn;
 
         spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
 
@@ -2021,18 +2270,57 @@ namespace sfml_util
 
     bool PopupStage::HandleSpellCast()
     {
-        if (CanCastSpell(spellListBoxSPtr_->GetSelected()->SPELL_CPTRC))
+        if (CanCastSpell(listBoxSPtr_->GetSelected()->SPELL_CPTRC))
         {
             SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, spellListBoxSPtr_->GetSelectedIndex());
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, listBoxSPtr_->GetSelectedIndex());
             return true;
         }
         else
         {
             SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
-            if (SpellbookState::Waiting == spellbookState_)
+            if (FadeState::Waiting == fadeState_)
             {
-                spellbookState_ = SpellbookState::Warning;
+                fadeState_ = FadeState::Warning;
+                spellWarningTimerSec_ = 0.0f;
+            }
+            return false;
+        }
+    }
+
+
+    bool PopupStage::DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t SONG_CPTRC) const
+    {
+        return (POPUP_INFO_.CreaturePtr()->ManaCurrent() >= SONG_CPTRC->ManaCost());
+    }
+
+
+    bool PopupStage::CanPlaySongInPhase(const game::song::SongPtrC_t SONG_CPTRC) const
+    {
+        return (SONG_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+    }
+
+
+    bool PopupStage::CanPlaySong(const game::song::SongPtrC_t SONG_CPTRC) const
+    {
+        return (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) && CanPlaySongInPhase(SONG_CPTRC));
+    }
+
+
+    bool PopupStage::HandleSongPlay()
+    {
+        if (CanPlaySong(listBoxSPtr_->GetSelected()->SONG_CPTRC))
+        {
+            //SoundManager::Instance()->SoundEffectPlay(sound_effect::SongSelect);
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, listBoxSPtr_->GetSelectedIndex());
+            return true;
+        }
+        else
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
+            if (FadeState::Waiting == fadeState_)
+            {
+                fadeState_ = FadeState::Warning;
                 spellWarningTimerSec_ = 0.0f;
             }
             return false;

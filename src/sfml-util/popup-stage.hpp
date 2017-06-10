@@ -61,6 +61,12 @@ namespace spell
     using SpellPtr_t = Spell *;
     using SpellPtrC_t = Spell * const;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+    using SongPtrC_t = Song * const;
+}
 }
 namespace sfml_util
 {
@@ -89,7 +95,7 @@ namespace sfml_util
         PopupStage & operator=(const PopupStage &) =delete;
 
         //defines what is happening on the spellbook popup
-        enum class SpellbookState
+        enum class FadeState
         {
             Initial = 0,
             Waiting,
@@ -136,9 +142,13 @@ namespace sfml_util
         bool DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t) const;
         bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
         bool CanCastSpell(const game::spell::SpellPtrC_t) const;
-
         bool HandleSpellCast();
 
+        bool DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t) const;
+        bool CanPlaySongInPhase(const game::song::SongPtrC_t) const;
+        bool CanPlaySong(const game::song::SongPtrC_t) const;
+        bool HandleSongPlay();
+        
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
 
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
@@ -222,14 +232,14 @@ namespace sfml_util
         float fadeAlpha_;
 
         //members supporting the spellbook popup
-        SpellbookState          spellbookState_;
+        FadeState               fadeState_;
         sf::Texture             playerTexture_;
         sf::Sprite              playerSprite_;
         sf::FloatRect           pageRectLeft_;
         sf::FloatRect           pageRectRight_;
         gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
         gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
-        gui::ListBoxSPtr_t      spellListBoxSPtr_;
+        gui::ListBoxSPtr_t      listBoxSPtr_;
         const sf::Color         LISTBOX_IMAGE_COLOR_;
         const sf::Color         LISTBOX_LINE_COLOR_;
         const sf::Color         LISTBOX_COLOR_FG_;

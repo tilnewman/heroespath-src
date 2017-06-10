@@ -39,12 +39,14 @@
 #include "sfml-util/gui/title-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/creature/title.hpp"
 #include "game/player/character.hpp"
 #include "game/creature/condition.hpp"
 #include "game/spell/spells.hpp"
+#include "game/song/song.hpp"
 #include "game/item/item.hpp"
 
 #include <vector>
@@ -866,6 +868,14 @@ namespace gui
             sfml_util::gui::ConditionImageManager::Instance()->Get(
                 texture,
                 listBoxItemSPtr->COND_CPTRC->Which());
+
+            didLoadTexture = true;
+        }
+        else if (listBoxItemSPtr->SONG_CPTRC != nullptr)
+        {
+            sfml_util::gui::SongImageManager::Instance()->Get(
+                texture,
+                listBoxItemSPtr->SONG_CPTRC->Which());
 
             didLoadTexture = true;
         }

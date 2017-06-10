@@ -43,6 +43,11 @@ namespace spell
     class Spell;
     using SpellPtrC_t = Spell * const;
 }
+namespace song
+{
+    class Song;
+    using SongPtrC_t = Song * const;
+}
 namespace creature
 {
     class Title;
@@ -128,12 +133,19 @@ namespace gui
                     const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
                     const bool                       IS_VALID = true);
 
+        //used by the inventory stage to list spells
+        ListBoxItem(const std::string &              NAME,
+                    const sfml_util::gui::TextInfo & TEXT_INFO,
+                    const game::song::SongPtrC_t     SONG_CPTRC_PARAM,
+                    const bool                       IS_VALID = true);
+
         const game::player::CharacterPtr_t    CHARACTER_CPTR;
         const game::state::GameStatePtr_t     GAMESTATE_CPTR;
         const game::item::ItemPtr_t           ITEM_CPTR;
         const game::creature::ConditionPtrC_t COND_CPTRC;
         const game::creature::TitlePtrC_t     TITLE_CPTRC;
         const game::spell::SpellPtrC_t        SPELL_CPTRC;
+        const game::song::SongPtrC_t          SONG_CPTRC;
         bool                                  is_valid;
 
         friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);

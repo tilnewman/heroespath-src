@@ -355,7 +355,7 @@ namespace gui
                                sfml_util::PopupButtons::None,
                                PopupImage::MusicSheet,
                                1.0f,
-                               game::Popup::Spellbook,
+                               game::Popup::MusicSheet,
                                sfml_util::sound_effect::None,
                                sfml_util::PopupButtonColor::Dark,
                                false,

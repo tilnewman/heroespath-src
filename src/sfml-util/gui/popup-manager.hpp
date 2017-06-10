@@ -138,6 +138,16 @@ namespace gui
             return sf::IntRect(932, 155, 652, 990);
         }
 
+        static inline sf::IntRect Rect_MusicSheet_LeftSide()
+        {
+            return sf::IntRect(116, 116, 700, 843);
+        }
+
+        static inline sf::IntRect Rect_MusicSheet_RightSide()
+        {
+            return sf::IntRect(816, 116, 700, 843);
+        }
+
         //throws range_error on an unknown enum value
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 

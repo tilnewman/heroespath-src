@@ -47,6 +47,7 @@ namespace game
             CharacterSelection,
             NumberSelection,
             Spellbook,
+            MusicSheet,
             Count
         };
 
