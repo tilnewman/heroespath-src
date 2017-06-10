@@ -28,8 +28,9 @@
 // popup-enums.cpp
 //
 #include "popup-enums.hpp"
-#include <exception>
+
 #include <sstream>
+#include <exception>
 
 
 namespace sfml_util
@@ -39,6 +40,7 @@ namespace sfml_util
     {
         switch (E)
         {
+            case None:         { return "None"; }
             case Okay:         { return "Okay";         }
             case Select:       { return "Select";       }
             case Cancel:       { return "Cancel";       }
@@ -46,7 +48,6 @@ namespace sfml_util
             case Continue:     { return "Continue";     }
             case YesNo:        { return "YesNo";        }
             case YesNoCancel:  { return "YesNoCancel";  }
-            case Error:
             default:
             {
                 std::ostringstream ss;
@@ -59,8 +60,18 @@ namespace sfml_util
 
     bool PopupButtons::IsValid(const PopupButtons::Enum E)
     {
-        const unsigned MAX(None | Okay | Select | Cancel | SelectCancel | Continue | YesNo | YesNoCancel);
-        return (static_cast<unsigned>(E) <= MAX);
+        switch (E)
+        {
+            case None:
+            case Okay:
+            case Select:
+            case Cancel:
+            case SelectCancel:
+            case Continue:
+            case YesNo:
+            case YesNoCancel: { return true;  }
+            default:          { return false; }
+        }
     }
 
 
@@ -69,7 +80,7 @@ namespace sfml_util
         switch(E)
         {
             case Light: { return "Light"; }
-            case Dark:  { return "Dark"; }
+            case Dark:  { return "Dark";  }
             case Count:
             default:
             {
@@ -86,7 +97,7 @@ namespace sfml_util
         switch (E)
         {
             case Light:
-            case Dark:  { return true; }
+            case Dark:  { return true;  }
             case Count:
             default:    { return false; }
         }
@@ -104,6 +115,7 @@ namespace sfml_util
             case LargeSidebar:      { return "LargeSidebar"; }
             case Custom:            { return "Custom"; }
             case Spellbook:         { return "Spellbook"; }
+            case MusicSheet:        { return "MusicSheet"; }
             case Count:
             default:
             {
@@ -125,9 +137,10 @@ namespace sfml_util
             case Large:
             case LargeSidebar:
             case Custom:
-            case Spellbook: { return true; }
+            case Spellbook:
+            case MusicSheet: { return true;  }
             case Count:
-            default: { return false; }
+            default:         { return false; }
         }
     }
 

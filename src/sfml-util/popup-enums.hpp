@@ -38,8 +38,7 @@ namespace sfml_util
     {
         enum Enum : unsigned
         {
-            Error        = 0,
-            None         = Error,
+            None         = 0,
             Okay         = Response::Okay,
             Select       = Response::Select,
             Cancel       = Response::Cancel,
@@ -79,6 +78,7 @@ namespace sfml_util
             LargeSidebar,
             Custom,
             Spellbook,
+            MusicSheet,
             Count
         };
 

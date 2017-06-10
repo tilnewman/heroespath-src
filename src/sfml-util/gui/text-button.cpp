@@ -37,26 +37,28 @@ namespace sfml_util
 namespace gui
 {
 
-    float TextButton::CLICK_SHIFT_DEFAULT_(2.0f);
-
-
-    TextButton::TextButton(const std::string & NAME)
+    TextButton::TextButton(
+        const std::string & NAME,
+        callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
     :
-        GuiText    (std::string(NAME).append("_TextButton")),
-        clickShift_(0)
+        GuiText            (std::string(NAME).append("_TextButton")),
+        callbackHandlerPtr_(callbackHandlerPtr)
     {}
 
 
-    TextButton::TextButton( const std::string &   NAME,
-                            const float           POS_LEFT,
-                            const float           POS_TOP,
-                            const MouseTextInfo & MOUSE_TEXT_INFO,
-                            const float           CLICK_SHIFT )
+    TextButton::TextButton(const std::string &   NAME,
+                           const float           POS_LEFT,
+                           const float           POS_TOP,
+                           const MouseTextInfo & MOUSE_TEXT_INFO,
+                           callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
     :
-        GuiText    (std::string(NAME).append("_TextButton"), POS_LEFT, POS_TOP, MOUSE_TEXT_INFO),
-        clickShift_(CLICK_SHIFT)
+        GuiText            (std::string(NAME).append("_TextButton"),
+                            POS_LEFT,
+                            POS_TOP,
+                            MOUSE_TEXT_INFO),
+        callbackHandlerPtr_(callbackHandlerPtr)
     {
-        Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, CLICK_SHIFT);
+        Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, callbackHandlerPtr);
     }
 
 
@@ -67,10 +69,19 @@ namespace gui
     void TextButton::Setup(const float           POS_LEFT,
                            const float           POS_TOP,
                            const MouseTextInfo & MOUSE_TEXT_INFO,
-                           const float           CLICK_SHIFT)
+                           callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
     {
         GuiText::Setup(MOUSE_TEXT_INFO.up.text, POS_LEFT, POS_TOP, MOUSE_TEXT_INFO);
-        clickShift_ = CLICK_SHIFT;
+        callbackHandlerPtr_ = callbackHandlerPtr;
+    }
+
+
+    void TextButton::OnClick(const sf::Vector2f &)
+    {
+        if (nullptr != callbackHandlerPtr_)
+        {
+            callbackHandlerPtr_->HandleCallback(this);
+        }
     }
 
 }

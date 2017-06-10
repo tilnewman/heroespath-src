@@ -448,7 +448,8 @@ namespace stage
     }
 
 
-    bool CharacterStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    bool CharacterStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
         if (PACKAGE.PTR_ == helpButtonSPtr_.get())
             return HandleCallback_HelpButton();

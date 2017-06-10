@@ -29,6 +29,7 @@
 //  Drawing and handling code for buttons that are only text.
 //
 #include "sfml-util/gui/gui-entity-text.hpp"
+#include "sfml-util/i-callback-handler.hpp"
 
 #include <memory>
 #include <string>
@@ -43,6 +44,17 @@ namespace gui
     class MouseTextInfo;
 
 
+    class TextButton;
+    namespace callback
+    {
+        using TextButtonCallbackPackage_t =
+            sfml_util::callback::PtrWrapper<TextButton>;
+
+        using ITextButtonCallbackHandler_t =
+            sfml_util::callback::ICallbackHandler<TextButtonCallbackPackage_t, bool>;
+    }
+
+
     //Base class for a text button that has different text styles for mouse positions
     class TextButton : public GuiText
     {
@@ -54,31 +66,32 @@ namespace gui
 
     public:
         //if using this constructor, Setup() must be called before any other functions
-        explicit TextButton(const std::string & NAME);
+        explicit TextButton(
+            const std::string & NAME,
+            callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
 
-        TextButton( const std::string &   NAME,
-                    const float           POS_LEFT,
-                    const float           POS_TOP,
-                    const MouseTextInfo & MOUSE_TEXT_INFO,
-                    const float           CLICK_SHIFT = CLICK_SHIFT_DEFAULT_);
+        TextButton(const std::string &   NAME,
+                   const float           POS_LEFT,
+                   const float           POS_TOP,
+                   const MouseTextInfo & MOUSE_TEXT_INFO,
+                   callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
 
         virtual ~TextButton();
 
         void Setup(const float           POS_LEFT,
                    const float           POS_TOP,
                    const MouseTextInfo & MOUSE_TEXT_INFO,
-                   const float           CLICK_SHIFT = CLICK_SHIFT_DEFAULT_);
+                   callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
 
     protected:
-        static float CLICK_SHIFT_DEFAULT_;
-        inline virtual void OnClick(const sf::Vector2f &) {}
+        virtual void OnClick(const sf::Vector2f &);
 
     private:
-        float clickShift_;
+        callback::ITextButtonCallbackHandler_t * callbackHandlerPtr_;
     };
 
-    using TextButtonSPtr_t = std::shared_ptr<TextButton>;
-    using TextButtonSVec_t = std::vector<TextButtonSPtr_t>;
+    using TextButtonUPtr_t = std::unique_ptr<TextButton>;
+    using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
 
 }
 }

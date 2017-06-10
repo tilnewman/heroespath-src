@@ -54,6 +54,7 @@ namespace gui
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
+
     class FourStateButton;
     namespace callback
     {
@@ -143,7 +144,10 @@ namespace gui
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
-        inline virtual void SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr) { callbackHandlerPtr_ = ptr; }
+        inline virtual void SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
+        {
+            callbackHandlerPtr_ = ptr;
+        }
 
         inline bool IsDisabled() const { return isDisabled_; }
         void SetIsDisabled(const bool);

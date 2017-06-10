@@ -85,19 +85,35 @@ namespace game
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (TEXT_VEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupButtons::IsValid(BUTTONS)), "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given a BUTTONS value of " << BUTTONS << ", which is invalid.");
-        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),           "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
-        M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupImage::IsValid(IMAGE)),     "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
+        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
+            "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons="
+            << sfml_util::PopupButtons::ToString(BUTTONS) << ", image="
+            << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\""
+            << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((sfml_util::PopupImage::IsValid(IMAGE)),
+            "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons="
+            << sfml_util::PopupButtons::ToString(BUTTONS) << ", image="
+            << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text <<
+            "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
         if ((game::Popup::Spellbook == type_) && (creatureCPtr_ == nullptr))
         {
-            throw std::runtime_error("game::PopupInfo(type=Spellbook) constructor found spellbook popup with a creaturePtr that was null.");
+            throw std::runtime_error(
+                std::string("game::PopupInfo(type=Spellbook) constructor found spellbook").append(
+                    " popup with a creaturePtr that was null.") );
         }
 
         if ((imageFadeSpeed_ > 0.0f) && (textureVec_.empty()))
         {
             std::ostringstream ss;
-            ss << "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons=" << sfml_util::PopupButtons::ToString(BUTTONS) << ", image=" << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text << "\") was given an image fade speed of " << IMAGE_FADE_SPEED << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade speed then there must be images to fade-in.";
+            ss << "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons="
+                << sfml_util::PopupButtons::ToString(BUTTONS) << ", image="
+                << sfml_util::PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+                << "\") was given an image fade speed of " << IMAGE_FADE_SPEED
+                << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade "
+                << "speed then there must be images to fade-in.";
+
             throw std::runtime_error(ss.str());
         }
 

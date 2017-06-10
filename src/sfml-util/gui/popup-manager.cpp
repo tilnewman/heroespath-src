@@ -139,6 +139,7 @@ namespace gui
         LoadPopup("paper-large.png", popupLargeTexture_);
         LoadPopup("paper-large-bar.png", popupLargeSidebarTextue_);
         LoadPopup("spellbook.png", popupSpellbookTexture_);
+        LoadPopup("music-sheet.png", popupMusicSheetTexture_);
 
         LoadAccentImagePaths();
     }
@@ -163,6 +164,7 @@ namespace gui
             case PopupImage::Large:          { return sfml_util::ScaleRectCopy(Rect_Large(), SCALE); }
             case PopupImage::LargeSidebar:   { return sfml_util::ScaleRectCopy(Rect_LargeSidebar(), SCALE); }
             case PopupImage::Spellbook:
+            case PopupImage::MusicSheet:
             case PopupImage::Custom:
             case PopupImage::Count:
             default:
@@ -316,17 +318,45 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(const std::string &                 POPUP_NAME,
-                                                                 const game::creature::CreaturePtr_t CREATURE_CPTR,
-                                                                 const std::size_t                   INITIAL_SELECTION)
+    const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(
+        const std::string &                 POPUP_NAME,
+        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const std::size_t                   INITIAL_SELECTION)
     {
         return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(" ", sfml_util::Justified::Center, sfml_util::FontManager::Instance()->Size_Large()),
-                               sfml_util::PopupButtons::Okay,
+                               TextInfoDefault(" ",
+                                               sfml_util::Justified::Center,
+                                               sfml_util::FontManager::Instance()->Size_Large()),
+                               sfml_util::PopupButtons::None,
                                PopupImage::Spellbook,
                                1.0f,
                                game::Popup::Spellbook,
-                               sfml_util::sound_effect::None,//TODO TEMP REPLCE with book/page-turn sound effect
+                               sfml_util::sound_effect::None,
+                               sfml_util::PopupButtonColor::Dark,
+                               false,
+                               std::vector<std::size_t>(),
+                               sfml_util::TextureVec_t(),
+                               std::vector<std::string>(),
+                               game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+                               CREATURE_CPTR,
+                               INITIAL_SELECTION);
+    }
+
+
+    const game::PopupInfo PopupManager::CreateMusicPopupInfo(
+        const std::string &                 POPUP_NAME,
+        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const std::size_t                   INITIAL_SELECTION)
+    {
+        return game::PopupInfo(POPUP_NAME,
+                               TextInfoDefault(" ",
+                                               sfml_util::Justified::Center,
+                                               sfml_util::FontManager::Instance()->Size_Large()),
+                               sfml_util::PopupButtons::None,
+                               PopupImage::MusicSheet,
+                               1.0f,
+                               game::Popup::Spellbook,
+                               sfml_util::sound_effect::None,
                                sfml_util::PopupButtonColor::Dark,
                                false,
                                std::vector<std::size_t>(),
@@ -342,12 +372,13 @@ namespace gui
     {
         switch (PI)
         {
-            case PopupImage::Banner:         { Texture_Banner(texture); break; }
-            case PopupImage::Regular:        { Texture_Regular(texture); break; }
-            case PopupImage::RegularSidebar: { Texture_RegularSidebar(texture); break; }
-            case PopupImage::Large:          { Texture_Large(texture); break; }
-            case PopupImage::LargeSidebar:   { Texture_LargeSidebar(texture); break; }
-            case PopupImage::Spellbook:      { Texture_Spellbook(texture); break; }
+            case PopupImage::Banner:         { texture = popupBannerTexture_; break; }
+            case PopupImage::Regular:        { texture = popupRegularTexture_; break; }
+            case PopupImage::RegularSidebar: { texture = popupRegularSidebarTexture_; break; }
+            case PopupImage::Large:          { texture = popupLargeTexture_; break; }
+            case PopupImage::LargeSidebar:   { texture = popupLargeSidebarTextue_; break; }
+            case PopupImage::Spellbook:      { texture = popupSpellbookTexture_; break; }
+            case PopupImage::MusicSheet:     { texture = popupMusicSheetTexture_; break; }
             case PopupImage::Custom:
             case PopupImage::Count:
             default:

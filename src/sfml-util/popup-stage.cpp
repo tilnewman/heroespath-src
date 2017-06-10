@@ -96,12 +96,13 @@ namespace sfml_util
         accentTexture1_            (),
         accentSprite2_             (),
         accentTexture2_            (),
-        selectPopupButtonSPtr_     (),
-        buttonYesSPtr_             (),
-        buttonNoSPtr_              (),
-        buttonCancelSPtr_          (),
-        buttonContinueSPtr_        (),
-        buttonOkaySPtr_            (),
+        selection_                 (-1),//any negative value will work here
+        buttonSelectUPtr_          (),
+        buttonYesUPtr_             (),
+        buttonNoUPtr_              (),
+        buttonCancelUPtr_          (),
+        buttonContinueUPtr_        (),
+        buttonOkayUPtr_            (),
         sliderbarUPtr_             (),
         sliderbarPosTop_           (0.0f),
         willSliderbarUpdate_       (true),
@@ -208,7 +209,7 @@ namespace sfml_util
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
             const std::size_t CURR_VAL(POPUP_INFO_.NumberSelMin() + static_cast<std::size_t>(CURR_RATIO * static_cast<float>(POPUP_INFO_.NumberSelMax() - POPUP_INFO_.NumberSelMin())));
 
-            selectPopupButtonSPtr_->SetSelection(static_cast<int>(CURR_VAL));
+            selection_ = static_cast<int>(CURR_VAL);
 
             std::ostringstream minNumSS;
             minNumSS << POPUP_INFO_.NumberSelMin();
@@ -241,10 +242,12 @@ namespace sfml_util
         if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
         {
             const int NUM(GetSelectNumber());
-            selectPopupButtonSPtr_->SetSelection(NUM);
+            selection_ = NUM;
 
             if (willTextBoxUpdate_)
+            {
                 ProcessSelectNumber();
+            }
 
             return true;
         }
@@ -298,6 +301,48 @@ namespace sfml_util
     }
 
 
+    bool PopupStage::HandleCallback(
+        const sfml_util::gui::callback::TextButtonCallbackPackage_t & PACKAGE)
+    {
+        if (PACKAGE.PTR_ == buttonSelectUPtr_.get())
+        {
+            return HandleSelect();
+        }
+        else if (PACKAGE.PTR_ == buttonYesUPtr_.get())
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == buttonNoUPtr_.get())
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == buttonCancelUPtr_.get())
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == buttonContinueUPtr_.get())
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == buttonOkayUPtr_.get())
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
+            return true;
+        }
+
+        return false;
+    }
+
+
     void PopupStage::Setup()
     {
         //sound effect
@@ -341,46 +386,90 @@ namespace sfml_util
 
         if (POPUP_INFO_.Buttons() & Response::Yes)
         {
-            buttonYesSPtr_.reset(new sfml_util::PopupButton_Yes(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width / 4.0f) - 50.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonYesSPtr_.get());
+            buttonYesUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sYes",
+                StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width / 4.0f) - 50.0f,
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("Yes", POPUP_INFO_),
+                this);
+
+            EntityAdd(buttonYesUPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::No)
         {
-            buttonNoSPtr_.reset(new sfml_util::PopupButton_No(POPUP_INFO_, StageRegionLeft() + INNER_REGION_.left + (2.0f * (INNER_REGION_.width / 4.0f)) - 40.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonNoSPtr_.get());
+            buttonNoUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sNo",
+                StageRegionLeft() + INNER_REGION_.left + (2.0f * (INNER_REGION_.width / 4.0f))
+                    - 40.0f,
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("No", POPUP_INFO_),
+                this);
+
+            EntityAdd(buttonNoUPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Cancel)
         {
-            buttonCancelSPtr_.reset(new sfml_util::PopupButton_Cancel(POPUP_INFO_, (StageRegionLeft() + INNER_REGION_.left + INNER_REGION_.width) - (INNER_REGION_.width / 3.0f) - 0.0f, BUTTON_POS_TOP));
-            EntityAdd(buttonCancelSPtr_.get());
+            buttonCancelUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sCancel",
+                (StageRegionLeft() + INNER_REGION_.left + INNER_REGION_.width) -
+                    (INNER_REGION_.width / 3.0f),
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("Cancel", POPUP_INFO_),
+                this);
+
+            EntityAdd(buttonCancelUPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Continue)
         {
-            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
-            buttonContinueSPtr_.reset(new sfml_util::PopupButton_Continue(POPUP_INFO_, MIDDLE - 30.0f, BUTTON_POS_TOP));
+            auto const MIDDLE{ StageRegionLeft() + INNER_REGION_.left +
+                (INNER_REGION_.width * 0.5f) };
+
+            buttonContinueUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sContinue",
+                MIDDLE - 30.0f,
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("Continue", POPUP_INFO_),
+                this);
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
             {
-                buttonContinueSPtr_->SetEntityPos(MIDDLE - (buttonContinueSPtr_->GetEntityRegion().width * 0.5f), buttonContinueSPtr_->GetEntityPos().y);
+                auto const POS_LEFT{ MIDDLE -
+                    (buttonContinueUPtr_->GetEntityRegion().width * 0.5f) };
+
+                auto const POS_TOP{ buttonContinueUPtr_->GetEntityPos().y };
+                
+                buttonContinueUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
             }
 
-            EntityAdd(buttonContinueSPtr_.get());
+            EntityAdd(buttonContinueUPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Okay)
         {
-            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left + (INNER_REGION_.width * 0.5f));
-            buttonOkaySPtr_.reset(new sfml_util::PopupButton_Okay(POPUP_INFO_, MIDDLE - 50.0f, BUTTON_POS_TOP));
+            const float MIDDLE(StageRegionLeft() + INNER_REGION_.left +
+                (INNER_REGION_.width * 0.5f));
+
+            buttonOkayUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sOkay",
+                MIDDLE - 50.0f,
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("Okay", POPUP_INFO_),
+                this);
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
             {
-                buttonOkaySPtr_->SetEntityPos(MIDDLE - (buttonOkaySPtr_->GetEntityRegion().width * 0.5f) - 10.0f, buttonOkaySPtr_->GetEntityPos().y);
+                auto const POS_LEFT{ MIDDLE - (buttonOkayUPtr_->GetEntityRegion().width * 0.5f) -
+                    10.0f };
+                
+                auto const POS_TOP{ buttonOkayUPtr_->GetEntityPos().y };
+
+                buttonOkayUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
             }
 
-            EntityAdd(buttonOkaySPtr_.get());
+            EntityAdd(buttonOkayUPtr_.get());
         }
 
         if (POPUP_INFO_.Buttons() & Response::Select)
@@ -388,17 +477,24 @@ namespace sfml_util
             const float MIDDLE(StageRegionLeft() + INNER_REGION_.left +
                 (INNER_REGION_.width * 0.5f));
 
-            selectPopupButtonSPtr_ = std::make_shared<sfml_util::PopupButton_Select>(
-                POPUP_INFO_, MIDDLE - 100.0f, BUTTON_POS_TOP);
+            buttonSelectUPtr_ = std::make_unique<gui::TextButton>(
+                "PopupStage'sSelect",
+                MIDDLE - 100.0f,
+                BUTTON_POS_TOP,
+                gui::MouseTextInfo::Make_PopupButtonSet("Select", POPUP_INFO_),
+                this);
 
             if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
             {
-                selectPopupButtonSPtr_->SetEntityPos(
-                    MIDDLE - (selectPopupButtonSPtr_->GetEntityRegion().width * 0.5f) - 10.0f,
-                    selectPopupButtonSPtr_->GetEntityPos().y);
+                auto const POS_LEFT{ MIDDLE - (buttonSelectUPtr_->GetEntityRegion().width * 0.5f) -
+                    10.0f };
+
+                auto const POS_TOP{ buttonSelectUPtr_->GetEntityPos().y };
+
+                buttonSelectUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
             }
 
-            EntityAdd(selectPopupButtonSPtr_.get());
+            EntityAdd(buttonSelectUPtr_.get());
         }
 
         //establish text region
@@ -1408,22 +1504,15 @@ namespace sfml_util
                 auto const TEXT{ POPUP_INFO_.TextVec()[imageIndex_] };
                 if (TEXT.empty())
                 {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
-                    game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
-                    return true;
+                    selection_ = static_cast<int>(imageIndex_);
                 }
                 else
                 {
-                    SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
-                    return false;
+                    selection_ = -1;//any negative value will work here
                 }
             }
-            else
-            {
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, imageIndex_);
-                return true;
-            }
+
+            return HandleSelect();
         }
 
         if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)
@@ -1491,7 +1580,7 @@ namespace sfml_util
         {
             areImagesMovingLeft_ = (imageIndex_ < newIndex);
             imageIndex_ = newIndex;
-            selectPopupButtonSPtr_->SetSelection(static_cast<int>(imageIndex_));
+            selection_ = static_cast<int>(imageIndex_);
 
             std::ostringstream ss;
             ss << imageIndex_ + 1 << "/" << COUNT;
@@ -1633,11 +1722,11 @@ namespace sfml_util
     bool PopupStage::ProcessSelectNumber()
     {
         const int NUM(GetSelectNumber());
-        selectPopupButtonSPtr_->SetSelection(NUM);
+        selection_ = NUM;
 
         if (NUM < 0)
         {
-            selectPopupButtonSPtr_->SetSelection(NUMBER_SELECT_INVALID_);
+            selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
             ss << "(invalid, type a number between " << POPUP_INFO_.NumberSelMin() << " and " << POPUP_INFO_.NumberSelMax() << ")";
             SetupInfoText(ss.str());
@@ -1645,7 +1734,7 @@ namespace sfml_util
         }
         if (NUM < static_cast<int>(POPUP_INFO_.NumberSelMin()))
         {
-            selectPopupButtonSPtr_->SetSelection(NUMBER_SELECT_INVALID_);
+            selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
             ss << "(the number is too small, the minimum is " << POPUP_INFO_.NumberSelMin() << ")";
             SetupInfoText(ss.str());
@@ -1653,7 +1742,7 @@ namespace sfml_util
         }
         else if (NUM > static_cast<int>(POPUP_INFO_.NumberSelMax()))
         {
-            selectPopupButtonSPtr_->SetSelection(NUMBER_SELECT_INVALID_);
+            selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
             ss << "(the number is too large, the maximum is " << POPUP_INFO_.NumberSelMax() << ")";
             SetupInfoText(ss.str());
@@ -1996,11 +2085,11 @@ namespace sfml_util
 
             if (TEXT.empty())
             {
-                selectPopupButtonSPtr_->SetSelection(static_cast<int>(imageIndex_));
+                selection_ = static_cast<int>(imageIndex_);
             }
             else
             {
-                selectPopupButtonSPtr_->SetSelection(-1);
+                selection_ = -1;//any negative value will work here
             }
 
             if (TEXT.empty() || WILL_ERASE)
@@ -2015,6 +2104,25 @@ namespace sfml_util
                 charDetailsTextRegionUPtr_->SetText(TEXT);
                 charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color(100, 32, 32));
             }
+        }
+    }
+
+
+    bool PopupStage::HandleSelect()
+    {
+        if (selection_ < 0)
+        {
+            SoundManager::Instance()->SoundEffectPlay(sound_effect::PromptWarn);
+            return false;
+        }
+        else
+        {
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+
+            game::LoopManager::Instance()->PopupWaitEnd(
+                Response::Select, static_cast<std::size_t>(selection_));
+
+            return true;
         }
     }
 

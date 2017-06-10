@@ -141,37 +141,6 @@ namespace gui
         //throws range_error on an unknown enum value
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 
-        //get popup window textures based on the style name
-        inline void Texture_Banner(sf::Texture & t) const
-        {
-            t = popupBannerTexture_;
-        }
-
-        inline void Texture_Regular(sf::Texture & t) const
-        {
-            t = popupRegularTexture_;
-        }
-
-        inline void Texture_RegularSidebar(sf::Texture & t) const
-        {
-            t = popupRegularSidebarTexture_;
-        }
-
-        inline void Texture_Large(sf::Texture & t) const
-        {
-            t = popupLargeTexture_;
-        }
-
-        inline void Texture_LargeSidebar(sf::Texture & t) const
-        {
-            t = popupLargeSidebarTextue_;
-        }
-
-        inline void Texture_Spellbook(sf::Texture & t) const
-        {
-            t = popupSpellbookTexture_;
-        }
-
         //TextInfo creation helper functions
         const sfml_util::gui::TextInfo TextInfoDefault(
             const std::string &              TEXT,
@@ -242,6 +211,12 @@ namespace gui
             const game::creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION);
 
+        //use this function to make the spellbook popup window
+        const game::PopupInfo CreateMusicPopupInfo(
+            const std::string &                 POPUP_NAME,
+            const game::creature::CreaturePtr_t CREATURE_CPTR,
+            const std::size_t                   INITIAL_SELECTION);
+
         //throws range error upon unknown enum value
         void Texture(const PopupImage::Enum, sf::Texture &) const;
 
@@ -271,6 +246,7 @@ namespace gui
         sf::Texture popupLargeTexture_;
         sf::Texture popupLargeSidebarTextue_;
         sf::Texture popupSpellbookTexture_;
+        sf::Texture popupMusicSheetTexture_;
         //
         PathVec_t accentPathsVec_;
     };
