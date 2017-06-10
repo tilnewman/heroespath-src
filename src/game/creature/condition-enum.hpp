@@ -53,6 +53,9 @@ namespace creature
         enum Enum
         {
             Good = 0,
+            Bold,
+            Heroic,
+            Daunted,
             Panic,
             Dazed,
             Tripped,

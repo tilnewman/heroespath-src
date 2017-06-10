@@ -47,10 +47,14 @@ namespace condition
 
     void Warehouse::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty()), "game::creature::condition::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty()),
+            "game::creature::condition::Warehouse::Setup() was called twice.");
 
         //Note:  Keep order in sync with game::creature::Conditions::Enum
         conditionsUVec_.push_back( std::make_unique<Good>() );
+        conditionsUVec_.push_back( std::make_unique<Bold>() );
+        conditionsUVec_.push_back( std::make_unique<Heroic>() );
+        conditionsUVec_.push_back( std::make_unique<Daunted>() );
         conditionsUVec_.push_back( std::make_unique<Panic>() );
         conditionsUVec_.push_back( std::make_unique<Dazed>() );
         conditionsUVec_.push_back( std::make_unique<Tripped>() );
@@ -75,7 +79,8 @@ namespace condition
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::creature::condition::Warehouse::Test() Starting Tests...");
+            LoopManager::Instance()->TestingStrAppend(
+                "game::creature::condition::Warehouse::Test() Starting Tests...");
         }
 
         static auto condIndex{ 0 };
@@ -83,26 +88,54 @@ namespace condition
         {
             auto const NEXT_ENUM{ static_cast<creature::Conditions::Enum>(condIndex) };
             auto cndPtr{ Get(NEXT_ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr != nullptr),                             "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") resulted in a nullptr being returned.");
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Desc().empty() == false),               "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->LongDesc().empty() == false),           "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty LongDesc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->ToString().empty() == false),           "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Name().empty() == false),               "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
-            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Name() == Conditions::Name(NEXT_ENUM)), "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM) << "\") Condition is out of order.");
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr != nullptr),
+                "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") resulted in a nullptr being returned.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Desc().empty() == false),
+                "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") resulted in an empty Desc().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->LongDesc().empty() == false),
+                "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") resulted in an empty LongDesc().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->ToString().empty() == false),
+                "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") resulted in an empty ImageFilename().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Name().empty() == false),
+                "game::creature::condition::Warehouse::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") resulted in an empty Name().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cndPtr->Name() == Conditions::Name(NEXT_ENUM)),
+                "game::creature::condition::Warehouse::Test(ptr=\"" << cndPtr->Name()
+                << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
+                << "\") Condition is out of order.");
+
             ++condIndex;
-            LoopManager::Instance()->TestingStrIncrement("Condition Test \"" + cndPtr->Name() + "\"");
+            LoopManager::Instance()->TestingStrIncrement("Condition Test \"" + cndPtr->Name() +
+                "\"");
+
             return false;
         }
 
-        LoopManager::Instance()->TestingStrAppend("game::creature::title::Warehouse::Test()  ALL TESTS PASSED.");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::creature::title::Warehouse::Test()  ALL TESTS PASSED.");
         return true;
     }
 
 
     ConditionPtr_t Warehouse::Get(const Conditions::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty() == false), "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E) << ") was called before Setup().");
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < conditionsUVec_.size()), "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E) << ") found insuff sized conditionsUVec_, probably from a bug in Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS((conditionsUVec_.empty() == false),
+            "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E)
+            << ") was called before Setup().");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < conditionsUVec_.size()),
+            "game::creature::condition::Warehouse::Get(" << Conditions::ToString(E)
+            << ") found insuff sized conditionsUVec_, probably from a bug in Setup().");
+
         return conditionsUVec_.at(static_cast<std::size_t>(E)).get();
     }
 

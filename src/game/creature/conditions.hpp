@@ -50,6 +50,42 @@ namespace condition
     };
 
 
+    class Bold : public Condition
+    {
+    public:
+        Bold() : Condition(
+            Conditions::Bold,
+            false,
+            stats::StatMultSet(1.33f, 1.33f, 1.33f, 1.33f, 1.33f, 1.33f)) {}
+
+        virtual ~Bold() {}
+    };
+
+
+    class Heroic : public Condition
+    {
+    public:
+        Heroic() : Condition(
+            Conditions::Heroic,
+            false,
+            stats::StatMultSet(1.66f, 1.66f, 1.66f, 1.66f, 1.66f, 1.66f)) {}
+
+        virtual ~Heroic() {}
+    };
+
+
+    class Daunted : public Condition
+    {
+    public:
+        Daunted() : Condition(
+            Conditions::Daunted,
+            false,
+            stats::StatMultSet(1.0f, 0.75f, 0.75f, 1.0f, 0.85f, 0.75f)) {}
+
+        virtual ~Daunted() {}
+    };
+
+
     class Panic : public Condition
     {
     public:
@@ -134,7 +170,7 @@ namespace condition
     public:
         AsleepMagical() : Condition(
             Conditions::AsleepMagical,
-            false,
+            true,
             stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
         
         virtual ~AsleepMagical() {}

@@ -115,9 +115,12 @@ heroespath-creature-condition-Poisoned-desc=        Poison has infected the bloo
 heroespath-creature-condition-Tripped-desc=         Knocked down and vulnerable to attack.  Must spend a turn getting back up.
 heroespath-creature-condition-Stone-desc=           Turned to stone.
 heroespath-creature-condition-Dead-desc=            Dead, and beyond the skill of most healers.
-heroespath-creature-condition-Panic-desc=           Physically fine, but terrified into submission.
+heroespath-creature-condition-Panic-desc=           Crippled with fear.  Stats are significantly reduced.
 heroespath-creature-condition-AsleepNatural-desc=   In a calm natural sleep that can be interrupted by being hit or even when hearing a beast roar.
 heroespath-creature-condition-AsleepMagical-desc=   In a deep magical sleep that cannot be interrupted by hearing beast roars or even by being hit.
+heroespath-creature-condition-Daunted-desc=         Discouraged and disheartened.  Minor reductions to some stats.
+heroespath-creature-condition-Bold-desc=            Emboldened  and heartened.  Moderate increases to stats.
+heroespath-creature-condition-Heroic-desc=          Fearless and invigorated.  All stats are significantly increased.
 
 #Spell Short Descriptions
 heroespath-spell-Sparks-short-desc=         Sprays a single enemy with a shower of molten sparks causing minimal damage.

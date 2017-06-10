@@ -45,6 +45,9 @@ namespace creature
         switch (E)
         {
             case Conditions::Good:          { return "Good"; }
+            case Conditions::Bold:          { return "Bold"; }
+            case Conditions::Heroic:        { return "Heroic"; }
+            case Conditions::Daunted:       { return "Daunted"; }
             case Conditions::Panic:         { return "Panic"; }
             case Conditions::Dazed:         { return "Dazed"; }
             case Conditions::Tripped:       { return "Tripped"; }
@@ -58,7 +61,9 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "game::creature::Conditions::Enum::ToString(" << E << ")_InvalidValueError.";
+                ss << "game::creature::Conditions::Enum::ToString(" << E
+                    << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -107,7 +112,10 @@ namespace creature
             switch (E)
             {
                 case Conditions::Good:          { return GOOD; }
-                case Conditions::Panic:         { return LEAST_HARMFUL; }
+                case Conditions::Bold:          { return 100; }
+                case Conditions::Heroic:        { return 400; }
+                case Conditions::Daunted:       { return 1001; }
+                case Conditions::Panic:         { return 1050; }
                 case Conditions::Dazed:         { return 1100; }
                 case Conditions::Tripped:       { return 1200; }
                 case Conditions::AsleepNatural: { return 1300; }
@@ -115,12 +123,14 @@ namespace creature
                 case Conditions::AsleepMagical: { return 1500; }
                 case Conditions::Unconscious:   { return 1800; }
                 case Conditions::Stone:         { return 1900; }
-                case Conditions::Dead:          { return MOST_HARMFUL; }
+                case Conditions::Dead:          { return 2000; }
                 case Conditions::Count:
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "game::creature::Conditions::Enum::Severity(" << E << ")_InvalidValueError.";
+                    ss << "game::creature::Conditions::Enum::Severity(" << E
+                        << ")_InvalidValueError.";
+
                     throw std::range_error(ss.str());
                 }
             }
