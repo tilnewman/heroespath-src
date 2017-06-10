@@ -60,6 +60,10 @@ namespace animation
     class SongAnimation;
     using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
     using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
+
+    class SparkleAnimation;
+    using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
+    using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
 }
 }
 
@@ -235,8 +239,9 @@ namespace combat
         bool SongAnimUpdate(const float ELAPSED_TIME_SEC);
         void SongAnimStop();
 
-    private:
-        const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect &) const;
+        void SparkleAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
+        bool SparkleAnimUpdate(const float ELAPSED_TIME_SEC);
+        void SparkleAnimStop();
 
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
@@ -299,6 +304,9 @@ namespace combat
 
         //members that control the song animation
         sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
+
+        //members that control the sparkle animation
+        sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;

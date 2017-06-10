@@ -34,6 +34,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/animation.hpp"
 #include "sfml-util/song-animation.hpp"
 
@@ -135,7 +136,8 @@ namespace combat
         cloudAnimUVec_                   (),
         singleTextureAnimUVec_           (),
         multiTextureAnimUVec_            (),
-        singleTextureSizeMap_            ()
+        singleTextureSizeMap_            (),
+        sparkleAnimUVec_                 ()
     {
         singleTextureSizeMap_[ANIM_MEDIA_PATH_KEY_STR_SPARKLE_] = sf::Vector2f(128.0f, 128.0f);
     }
@@ -1043,7 +1045,7 @@ namespace combat
                 continue;
             }
 
-            auto const REGION{ MakeMinimalSquareAndCenter(
+            auto const REGION{ sfml_util::MakeMinimalSquareAndCenter(
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             singleTextureAnimUVec_.push_back(std::make_unique<sfml_util::SingleTextureAnimation>(
@@ -1081,7 +1083,7 @@ namespace combat
                 continue;
             }
 
-            auto region{ MakeMinimalSquareAndCenter(
+            auto region{ sfml_util::MakeMinimalSquareAndCenter(
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             //grow the shimmer animation to better cover the creature image
@@ -1166,25 +1168,49 @@ namespace combat
     }
 
 
-    const sf::FloatRect CombatAnimation::MakeMinimalSquareAndCenter(
-        const sf::FloatRect & REGION) const
+    void CombatAnimation::SparkleAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        auto width{ REGION.width };
-        auto height{ REGION.height };
+        sparkleAnimUVec_.clear();
 
-        if (REGION.width < REGION.height)
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            height = REGION.width;
-        }
-        else
-        {
-            width = REGION.height;
-        }
-        
-        auto const POS_LEFT{ (REGION.left + (REGION.width * 0.5f)) - (width * 0.5f) };
-        auto const POS_TOP{ (REGION.top + (REGION.height * 0.5f)) - (height * 0.5f) };
+            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            {
+                continue;
+            }
 
-        return sf::FloatRect(POS_LEFT, POS_TOP, width, height);
+            sparkleAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparkleAnimation>(
+                NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                sfml_util::MapByRes(0.333f, 1.33f),
+                0.5f,
+                10.0f,
+                0.5f,
+                6.0f,
+                4.0f,
+                0.5f) );
+        }
+    }
+
+
+    bool CombatAnimation::SparkleAnimUpdate(const float ELAPSED_TIME_SEC)
+    {
+        auto areAllSparkleAnimFinished{ true };
+        for (auto & nextSparkleAnimUPtr : sparkleAnimUVec_)
+        {
+            if (nextSparkleAnimUPtr->IsFinished() == false)
+            {
+                areAllSparkleAnimFinished = false;
+                nextSparkleAnimUPtr->Update(ELAPSED_TIME_SEC);
+            }
+        }
+
+        return areAllSparkleAnimFinished;
+    }
+
+
+    void CombatAnimation::SparkleAnimStop()
+    {
+        sparkleAnimUVec_.clear();
     }
 
 }

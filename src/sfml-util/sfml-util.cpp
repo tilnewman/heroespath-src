@@ -49,9 +49,33 @@
 namespace sfml_util
 {
 
+    const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect & REGION)
+    {
+        auto width{ REGION.width };
+        auto height{ REGION.height };
+
+        if (REGION.width < REGION.height)
+        {
+            height = REGION.width;
+        }
+        else
+        {
+            width = REGION.height;
+        }
+        
+        auto const POS_LEFT{ (REGION.left + (REGION.width * 0.5f)) - (width * 0.5f) };
+        auto const POS_TOP{ (REGION.top + (REGION.height * 0.5f)) - (height * 0.5f) };
+
+        return sf::FloatRect(POS_LEFT, POS_TOP, width, height);
+    }
+
+
     float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V)
     {
-        auto const ANGLE_RADIANS{ std::atan((std::max(BEGIN_POS_V.y, END_POS_V.y) - std::min(BEGIN_POS_V.y, END_POS_V.y)) / (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
+        auto const ANGLE_RADIANS{ std::atan((std::max(BEGIN_POS_V.y, END_POS_V.y) -
+            std::min(BEGIN_POS_V.y, END_POS_V.y)) /
+            (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
+
         auto const ANGLE_DEGREES{ (ANGLE_RADIANS * 180.0f) / boost::math::constants::pi<float>() };
 
         if (BEGIN_POS_V.x < END_POS_V.x)

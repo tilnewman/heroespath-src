@@ -39,6 +39,7 @@
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/song-animation.hpp"
+#include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/animation.hpp"
 
 #include "game/log-macros.hpp"
