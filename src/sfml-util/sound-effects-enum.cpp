@@ -191,6 +191,12 @@ namespace sfml_util
             case ClawTear:          { return "claw-tear";  }
             case Magic1:            { return "magic1"; }
             case Trip:              { return "trip-and-fall"; }
+            case DrumBlip1:         { return "drum-blip1"; }
+            case DrumBlip2:         { return "drum-blip2"; }
+            case DrumBlip3:         { return "drum-blip3"; }
+            case DrumBlip4:         { return "drum-blip4"; }
+            case DrumBlip5:         { return "drum-blip5"; }
+            case DrumBlip6:         { return "drum-blip6"; }
             case SpellSelect1:      { return "deep-pulse-a"; }
             case SpellSelect2:      { return "deep-pulse-b"; }
             case SpellSelect3:      { return "deep-pulse-c"; }
@@ -386,6 +392,12 @@ namespace sfml_util
             case ClawTear:              { return "sound-effects/combat/claw-tear"; }
             case Magic1:                { return "sound-effects/misc"; }
             case Trip:                  { return "sound-effects/combat"; }
+            case DrumBlip1:
+            case DrumBlip2:
+            case DrumBlip3:
+            case DrumBlip4:
+            case DrumBlip5:
+            case DrumBlip6:             { return "sound-effects/misc"; }
             case SpellSelect1:
             case SpellSelect2:
             case SpellSelect3:

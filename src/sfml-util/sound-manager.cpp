@@ -405,6 +405,17 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::SpellBandage)] =
             SoundEffectsSet(SPELLBANDAGE_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t DRUMBLIP_SOUNDS_ENUM_VEC = {
+            sound_effect::DrumBlip1,
+            sound_effect::DrumBlip2,
+            sound_effect::DrumBlip3,
+            sound_effect::DrumBlip4,
+            sound_effect::DrumBlip5,
+            sound_effect::DrumBlip6 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::DrumBlip)] =
+            SoundEffectsSet(DRUMBLIP_SOUNDS_ENUM_VEC);
     }
 
 

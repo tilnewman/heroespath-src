@@ -67,6 +67,7 @@ namespace sfml_util
             case Wind:              { return "Wind"; }
             case SpellSelect:       { return "SpellSelect"; }
             case SpellBandage:      { return "SpellBandage"; }
+            case DrumBlip:          { return "DrumBlip"; }
             case Count:
             default:
             {

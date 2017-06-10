@@ -64,6 +64,7 @@ namespace sfml_util
             Wind,
             SpellSelect,
             SpellBandage,
+            DrumBlip,
             Count
         };
 
