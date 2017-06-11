@@ -49,8 +49,15 @@ namespace creature
         count_        (0),
         titleCountMap_(TITLE_COUNT_MAP)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((WHICH != AchievementType::None),   "game::creature::Achievement::Achievement(which=AchievementType::None, title_count_map_size=" << TITLE_COUNT_MAP.size() << ") was given an invalid AchievementType.");
-        M_ASSERT_OR_LOGANDTHROW_SS((TITLE_COUNT_MAP.empty() == false), "game::creature::Achievement::Achievement(which=" << AchievementType::ToString(WHICH) << ", title_count_map_size=" << TITLE_COUNT_MAP.size() << ") was given an empty title count map.");
+        M_ASSERT_OR_LOGANDTHROW_SS((WHICH != AchievementType::None),
+            "game::creature::Achievement::Achievement(which=AchievementType::None, "
+            << "title_count_map_size=" << TITLE_COUNT_MAP.size()
+            << ") was given an invalid AchievementType.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((TITLE_COUNT_MAP.empty() == false),
+            "game::creature::Achievement::Achievement(which=" << AchievementType::ToString(WHICH)
+            << ", title_count_map_size=" << TITLE_COUNT_MAP.size()
+            << ") was given an empty title count map.");
     }
 
 
@@ -114,7 +121,10 @@ namespace creature
 
         const std::string SEP_STR(", ");
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
-            ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count " << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
+        {
+            ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
+                << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
+        }
 
         return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
     }
@@ -128,16 +138,19 @@ namespace creature
 
     TitlePtr_t Achievement::Increment(const CreaturePtr_t CREATURE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr), "game::creature::Achievement::Increment() was given a null CREATURE_PTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::creature::Achievement::Increment() was given a null CREATURE_PTR.");
 
         ++count_;
 
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
             auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_TITLE_COUNT_PAIR.second) };
-            if (NEXT_TITLE_PTR->AchievementCount() == count_)
-                if (NEXT_TITLE_PTR->IsRoleInList(CREATURE_PTR->Role().Which()))
-                    return NEXT_TITLE_PTR;
+            if ((NEXT_TITLE_PTR->AchievementCount() == count_) &&
+                (NEXT_TITLE_PTR->IsRoleInList(CREATURE_PTR->Role().Which())))
+            {
+                return NEXT_TITLE_PTR;
+            }
         }
 
         return nullptr;

@@ -215,6 +215,12 @@ namespace sfml_util
             case SpellPoison:       { return "worble-warp"; }
             case SpellFrighten:     { return "fright"; }
             case SpellPoisonCloud:  { return "bluam-long"; }
+            case SongRallyDrum:         { return "rally-drum"; }
+            case SongSpiritResonance:   { return "spirit-resonance"; }
+            case SongRousingRhythm:     { return "rousing-rhythm"; }
+            case SongTripBeat:          { return "trip-beat"; }
+            case SongPanicStrings:      { return "panic-strings"; }
+            case SongLullaby:           { return "lullaby"; }
             case None:              { return "None"; }
             case Count:
             case Random:
@@ -416,6 +422,12 @@ namespace sfml_util
             case SpellPoison:
             case SpellFrighten:
             case SpellPoisonCloud:      { return "sound-effects/spells"; }
+            case SongRallyDrum:
+            case SongSpiritResonance:
+            case SongRousingRhythm:
+            case SongTripBeat:
+            case SongPanicStrings:
+            case SongLullaby:           { return "sound-effects/songs"; }
             case Count:
             case None:
             case Random:

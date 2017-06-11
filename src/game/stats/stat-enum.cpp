@@ -28,7 +28,9 @@
 // stat-enum.hpp
 //
 #include "stat-enum.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include <sstream>
 #include <exception>
 

@@ -51,7 +51,12 @@ namespace song
             "game::song::Warehouse::Setup() was called twice.");
 
         //Note::Keep order in sync with game::song::Songs::Enum
-        songsUVec_.push_back( std::make_unique<SleepMelody>() );
+        songsUVec_.push_back( std::make_unique<RallyDrum>() );
+        songsUVec_.push_back( std::make_unique<SpiritResonance>() );
+        songsUVec_.push_back( std::make_unique<RousingRhythm>() );
+        songsUVec_.push_back( std::make_unique<TripBeat>() );
+        songsUVec_.push_back( std::make_unique<PanicStrings>() );
+        songsUVec_.push_back( std::make_unique<Lullaby>() );
     }
 
 

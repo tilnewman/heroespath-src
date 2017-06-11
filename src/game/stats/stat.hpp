@@ -116,9 +116,10 @@ namespace stats
         static const Stat_t VAL_MIN_;
         static const Stat_t VAL_MAX_INITIAL_;
         static const Stat_t VAL_INVALID_;
+        static const Stat_t VAL_ESTIMATED_MAX_;
         static const float  REDUCE_DIVISOR_;
         static const float  REDUCE_MULTIPLIER_;
-
+        
     protected:
         Stat_t normal_;
         Stat_t current_;

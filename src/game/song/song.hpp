@@ -94,10 +94,10 @@ namespace song
 
         //Returns a short sentance describing what the spell did.
         //For the following functions the first CreaturePtr_t is the caster and the second is the target.
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t,         //creaturePlaying
+        virtual const std::string ActionPhrase(creature::CreaturePtr_t creaturePlayingPtr,//creaturePlaying
                                                creature::CreaturePtr_t) const   //creatureListening
         {
-            return "TODO";
+            return ActionPhraseBeginning(creaturePlayingPtr);
         }
 
         //Allows the spell to change the target creature.
@@ -168,8 +168,9 @@ namespace song
         static const std::string EFFECT_STR_NOTHING_TO_DO_;
         static const std::string EFFECT_STR_IS_ALREADY_;
         static const std::string EFFECT_STR_RESISTED_;
+        static const std::string EFFECT_STR_NOT_EFFECTED_;
         static const int         EFFECTS_ALL_CREATURES_COUNT_;
-
+        
     protected:
         Songs::Enum      which_;
         SongType::Enum   type_;

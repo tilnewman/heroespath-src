@@ -31,6 +31,9 @@
 
 #include "game/log-macros.hpp"
 
+#include "misc/assertlogandthrow.hpp"
+#include "misc/random.hpp"
+
 #include <sstream>
 #include <string>
 #include <exception>
@@ -109,14 +112,18 @@ namespace stats
     void StatSet::ModifyNormal(const StatSet & SET)
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ModifyNormal(SET.GetCopy(nextStat.Which()));
+        }
     }
 
 
     void StatSet::ModifyCurrent(const StatSet & SET)
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ModifyCurrent(SET.GetCopy(nextStat.Which()));
+        }
     }
 
 
@@ -132,21 +139,42 @@ namespace stats
         {
             auto const NEXT_STAT{ statVec_[static_cast<std::size_t>(i)] };
 
-            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Normal() != Stat::VAL_INVALID_))))
+            if (((WILL_SKIP_ZEROS == false) || 
+                    (WILL_SKIP_ZEROS && (NEXT_STAT.Normal() != 0))) && 
+                ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && 
+                    (NEXT_STAT.Normal() != Stat::VAL_INVALID_))))
             {
                 if (0 == i)
                 {
                     if (WILL_ABBR)
-                        ss << NEXT_STAT.Abbr() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Normal();
+                    {
+                        ss << NEXT_STAT.Abbr() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Normal();
+                    }
                     else
-                        ss << NEXT_STAT.Name() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Normal();
+                    {
+                        ss << NEXT_STAT.Name() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Normal();
+                    }
                 }
                 else
                 {
                     if (WILL_ABBR)
-                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Abbr() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Normal();
+                    {
+                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Abbr()
+                            << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ?
+                                "=+" :
+                                "=") << NEXT_STAT.Normal();
+                    }
                     else
-                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Name() << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Normal();
+                    {
+                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Name()
+                            << (((NEXT_STAT.Normal() > 0) && WILL_ADD_PLUS) ?
+                                "=+" :
+                                "=") << NEXT_STAT.Normal();
+                    }
                 }
             }
         }
@@ -156,10 +184,14 @@ namespace stats
         if (WILL_WRAP)
         {
             if (ss.str().empty() == false)
+            {
                 finalSS << "(" << ss.str() << ")";
+            }
         }
         else
+        {
             finalSS << ss.str();
+        }
 
         return finalSS.str();
     }
@@ -177,21 +209,38 @@ namespace stats
         {
             auto const NEXT_STAT{ statVec_[static_cast<std::size_t>(i)] };
 
-            if (((WILL_SKIP_ZEROS == false) || (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) && ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID && (NEXT_STAT.Current() != Stat::VAL_INVALID_))))
+            if (((WILL_SKIP_ZEROS == false) ||
+                    (WILL_SKIP_ZEROS && (NEXT_STAT.Current() != 0))) &&
+                ((WILL_SKIP_INVALID == false) || (WILL_SKIP_INVALID &&
+                    (NEXT_STAT.Current() != Stat::VAL_INVALID_))))
             {
                 if (0 == i)
                 {
                     if (WILL_ABBR)
-                        ss << NEXT_STAT.Abbr() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Current();
+                    {
+                        ss << NEXT_STAT.Abbr() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Current();
+                    }
                     else
-                        ss << NEXT_STAT.Name() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Current();
+                    {
+                        ss << NEXT_STAT.Name() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Current();
+                    }
                 }
                 else
                 {
                     if (WILL_ABBR)
-                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Abbr() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Current();
+                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Abbr()
+                        << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Current();
                     else
-                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Name() << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ? "=+" : "=") << NEXT_STAT.Current();
+                        ss << ((ss.str().empty()) ? "" : ", ") << NEXT_STAT.Name()
+                        << (((NEXT_STAT.Current() > 0) && WILL_ADD_PLUS) ?
+                            "=+" :
+                            "=") << NEXT_STAT.Current();
                 }
             }
         }
@@ -201,10 +250,14 @@ namespace stats
         if (WILL_WRAP)
         {
             if (ss.str().empty() == false)
+            {
                 finalSS << "(" << ss.str() << ")";
+            }
         }
         else
+        {
             finalSS << ss.str();
+        }
 
         return finalSS.str();
     }
@@ -214,7 +267,9 @@ namespace stats
     {
         std::ostringstream ss;
         for (auto const & NEXT_STAT : statVec_)
+        {
             ss << "\n" << NEXT_STAT.ToStringTesting(WILL_SHOW_ACTUAL);
+        }
 
         return ss.str();
     }
@@ -223,7 +278,9 @@ namespace stats
     void StatSet::Invert()
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.Invert();
+        }
     }
 
 
@@ -302,42 +359,55 @@ namespace stats
     void StatSet::ResetCurrentToNormal()
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ResetCurrentToNormal();
+        }
     }
 
 
     void StatSet::ResetCurrentAndActualToNormal()
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ResetCurrentAndActualToNormal();
+        }
     }
 
 
     void StatSet::ResetCurrent(const StatSet & NEW_CURRENT_SET)
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ResetCurrent(NEW_CURRENT_SET.GetCopy(nextStat.Which()).Current());
+        }
     }
 
 
     void StatSet::ResetNormal(const StatSet & NEW_NORMAL_SET)
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ResetNormal(NEW_NORMAL_SET.GetCopy(nextStat.Which()).Current());
+        }
     }
 
 
     void StatSet::ResetActual(const StatSet & NEW_ACTUAL_SET)
     {
         for (auto & nextStat : statVec_)
+        {
             nextStat.ResetActual(NEW_ACTUAL_SET.GetCopy(nextStat.Which()).Current());
+        }
     }
 
 
     void StatSet::ModifyCurrentAndActual(const StatMultSet & STAT_MULT_SET)
     {
         for (auto & nextStat : statVec_)
-            nextStat.ResetCurrentAndActual( static_cast<stats::Stat_t>(static_cast<float>(nextStat.Current()) * STAT_MULT_SET.Get(nextStat.Which())) );
+        {
+            nextStat.ResetCurrentAndActual( static_cast<stats::Stat_t>(
+                static_cast<float>(nextStat.Current()) * STAT_MULT_SET.Get(nextStat.Which())) );
+        }
     }
 
 
@@ -378,9 +448,14 @@ namespace stats
     bool StatSet::ForceValidNormal()
     {
         auto anyValuesChanged{ false };
+
         for (auto & nextStat : statVec_)
+        {
             if (nextStat.ForceValidNormal())
+            {
                 anyValuesChanged = true;
+            }
+        }
 
         return anyValuesChanged;
     }
@@ -389,9 +464,14 @@ namespace stats
     bool StatSet::ForceValidCurrent()
     {
         auto anyValuesChanged{ false };
+
         for (auto & nextStat : statVec_)
+        {
             if (nextStat.ForceValidCurrent())
+            {
                 anyValuesChanged = true;
+            }
+        }
 
         return anyValuesChanged;
     }
@@ -400,9 +480,14 @@ namespace stats
     bool StatSet::ForceValidAll()
     {
         auto anyValuesChanged{ false };
+
         for (auto & nextStat : statVec_)
+        {
             if (nextStat.ForceValidAll())
+            {
                 anyValuesChanged = true;
+            }
+        }
 
         return anyValuesChanged;
     }

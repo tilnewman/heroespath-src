@@ -30,6 +30,7 @@
 #include "songs.hpp"
 
 #include "game/creature/creature.hpp"
+#include "game/creature/stats.hpp"
 
 #include "misc/random.hpp"
 
@@ -39,62 +40,180 @@ namespace game
 namespace song
 {
 
-    const std::string SleepMelody::ActionPhrase(creature::CreaturePtr_t creaturePlayingPtr,
-                                                creature::CreaturePtr_t) const
-    {
-        return ActionPhraseBeginning(creaturePlayingPtr);
-    }
-
-
-    const std::string SleepMelody::EffectCreature(
+    const std::string RallyDrum::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
         creature::ConditionEnumVec_t & conditionsAddedVec) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Bold))
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ +
+                "emboldened.";
+        }
+        else
+        {
+            if (creature::Stats::Roll(creaturePlayingPtr, { stats::stat::Intelligence,
+                                                            stats::stat::Charm}))
+            {
+                creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
+                conditionsAddedVec.push_back(creature::Conditions::Bold);
+                return Song::EFFECT_STR_SUCCESS_;
+            }
+            else
+            {
+                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_NOT_EFFECTED_;
+            }
+        }
+    }
+
+
+    const std::string SpiritResonance::EffectCreature(
+        creature::CreaturePtr_t creaturePlayingPtr,
+        creature::CreaturePtr_t creatureListeningPtr,
+        creature::ConditionEnumVec_t &) const
+    {
+        if (creatureListeningPtr->IsAlive() == false)
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+        }
+
+        creatureListeningPtr->ManaCurrentAdj(3 + static_cast<stats::Mana_t>(7.0f *
+            creature::Stats::Ratio(creaturePlayingPtr,
+                { stats::stat::Intelligence, stats::stat::Charm })));
+
+        return Song::EFFECT_STR_SUCCESS_;
+    }
+
+
+    const std::string RousingRhythm::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t creatureListeningPtr,
+        creature::ConditionEnumVec_t &) const
+    {
+        if (creatureListeningPtr->IsAlive() == false)
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
+        {
+            creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepNatural);
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
+        {
+            creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepMagical);
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Dazed))
+        {
+            creatureListeningPtr->ConditionRemove(creature::Conditions::Dazed);
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Dazed))
+        {
+            creatureListeningPtr->ConditionRemove(creature::Conditions::Dazed);
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Unconscious))
+        {
+            creatureListeningPtr->ConditionRemove(creature::Conditions::Unconscious);
+        }
+
+        return Song::EFFECT_STR_SUCCESS_;
+    }
+
+
+    const std::string TripBeat::EffectCreature(
+        creature::CreaturePtr_t creaturePlayingPtr,
+        creature::CreaturePtr_t creatureListeningPtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
+    {
+        if (creatureListeningPtr->IsAlive() == false)
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Tripped))
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "tripped.";
+        }
+        else
+        {
+            if (creature::Stats::Versus(
+                creaturePlayingPtr,
+                { stats::stat::Intelligence, stats::stat::Charm},
+                creatureListeningPtr))
+            {
+                creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
+                conditionsAddedVec.push_back(creature::Conditions::Tripped);
+                return Song::EFFECT_STR_SUCCESS_;
+            }
+            else
+            {
+                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+            }
+        }
+    }
+
+
+    const std::string PanicStrings::EffectCreature(
+        creature::CreaturePtr_t creaturePlayingPtr,
+        creature::CreaturePtr_t creatureListeningPtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
+    {
+        if (creatureListeningPtr->IsAlive() == false)
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+        }
+
+        if (creatureListeningPtr->HasCondition(creature::Conditions::Panic))
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "panicked.";
+        }
+        else
+        {
+            if (creature::Stats::Versus(
+                creaturePlayingPtr,
+                { stats::stat::Intelligence, stats::stat::Charm},
+                creatureListeningPtr))
+            {
+                creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
+                conditionsAddedVec.push_back(creature::Conditions::Panic);
+                return Song::EFFECT_STR_SUCCESS_;
+            }
+            else
+            {
+                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+            }
+        }
+    }
+
+
+    const std::string Lullaby::EffectCreature(
+        creature::CreaturePtr_t creaturePlayingPtr,
+        creature::CreaturePtr_t creatureListeningPtr,
+        creature::ConditionEnumVec_t & conditionsAddedVec) const
+    {
+        if (creatureListeningPtr->IsAlive() == false)
+        {
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
         }
 
         if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural) ||
             creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "asleep";
+            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "asleep.";
         }
         else
         {
-            auto const RAND_INT_PLAYER{ misc::random::Int(
-                creaturePlayingPtr->Stats().Int().CurrentReduced(),
-                creaturePlayingPtr->Stats().Int().Current()) };
-
-            auto const RAND_CHA_PLAYER{ misc::random::Int(
-                creaturePlayingPtr->Stats().Cha().CurrentReduced(),
-                creaturePlayingPtr->Stats().Cha().Current()) };
-
-            auto const RAND_PLAYER{ (RAND_INT_PLAYER + RAND_CHA_PLAYER) / 2};
-
-            //check for player character 'natural' success
-            if (creaturePlayingPtr->IsPlayerCharacter() &&
-                (RAND_PLAYER >= (creaturePlayingPtr->Stats().Int().Normal() +
-                    creaturePlayingPtr->Stats().Cha().Normal())))
-            {
-                creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
-                conditionsAddedVec.push_back(creature::Conditions::AsleepMagical);
-                return Song::EFFECT_STR_SUCCESS_;
-            }
-
-            //check for 'normal' success
-            auto const RAND_LISTENER{ misc::random::Int(
-                creatureListeningPtr->Stats().Int().CurrentReduced(),
-                creatureListeningPtr->Stats().Int().Current()) };
-
-            auto const CHANCE_VAL_PLAYER{ RAND_PLAYER +
-                static_cast<int>(creaturePlayingPtr->Rank()) };
-
-            auto const CHANCE_VAL_LISTENER{ RAND_LISTENER +
-                static_cast<int>(creatureListeningPtr->Rank()) };
-
-            if (CHANCE_VAL_PLAYER >= CHANCE_VAL_LISTENER)
+            if (creature::Stats::Roll(creaturePlayingPtr, { stats::stat::Intelligence,
+                                                            stats::stat::Charm}))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
                 conditionsAddedVec.push_back(creature::Conditions::AsleepMagical);

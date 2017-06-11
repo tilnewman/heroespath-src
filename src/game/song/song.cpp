@@ -45,9 +45,10 @@ namespace song
 
     const std::string Song::EFFECT_STR_SUCCESS_         { "" };
     const std::string Song::EFFECT_STR_NOTHING_TO_DO_   { "Nothing to do." };
-    const int         Song::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
     const std::string Song::EFFECT_STR_IS_ALREADY_      { " is already " };
-    const std::string Song::EFFECT_STR_RESISTED_        { " resisted the song's effects" };
+    const std::string Song::EFFECT_STR_RESISTED_        { " resisted the song's effects." };
+    const std::string Song::EFFECT_STR_NOT_EFFECTED_    { " is not effected." };
+    const int         Song::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
 
 
     Song::Song(const Songs::Enum      WHICH,

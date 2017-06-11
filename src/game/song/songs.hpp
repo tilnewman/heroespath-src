@@ -57,23 +57,124 @@ namespace item
 namespace song
 {
 
-    class SleepMelody : public Song
+    class RallyDrum : public Song
     {
     public:
-        SleepMelody() : Song(Songs::SleepMelody,
-                             SongType::Guitar,
-                             EffectType::CreatureHarmMisc,
-                             Phase::Combat,
-                             2,
-                             1,
-                             TargetType::AllOpponents)
+        RallyDrum() : Song(Songs::RallyDrum,
+                           SongType::Drum,
+                           EffectType::CreatureHelpMisc,
+                           static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+                           1,
+                           1,
+                           TargetType::AllCompanions)
         {}
 
-        virtual ~SleepMelody() {}
+        virtual ~RallyDrum() {}
 
-        virtual const std::string ActionPhrase(
+        virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr) const;
+            creature::CreaturePtr_t effectedCreaturePtr,
+            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+    };
+
+
+    class SpiritResonance : public Song
+    {
+    public:
+        SpiritResonance() : Song(Songs::SpiritResonance,
+                                 SongType::Guitar,
+                                 EffectType::CreatureHelpMisc,
+                                 static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+                                 3,
+                                 1,
+                                 TargetType::AllCompanions)
+        {}
+
+        virtual ~SpiritResonance() {}
+
+        virtual const std::string EffectCreature(
+            creature::CreaturePtr_t castingCreaturePtr,
+            creature::CreaturePtr_t effectedCreaturePtr,
+            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+    };
+
+
+    class RousingRhythm : public Song
+    {
+    public:
+        RousingRhythm() : Song(Songs::RousingRhythm,
+                               SongType::Drum,
+                               EffectType::CreatureHelpMisc,
+                               static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+                               2,
+                               1,
+                               TargetType::AllCompanions)
+        {}
+
+        virtual ~RousingRhythm() {}
+
+        virtual const std::string EffectCreature(
+            creature::CreaturePtr_t castingCreaturePtr,
+            creature::CreaturePtr_t effectedCreaturePtr,
+            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+    };
+
+
+    class TripBeat : public Song
+    {
+    public:
+        TripBeat() : Song(Songs::TripBeat,
+                          SongType::Drum,
+                          EffectType::CreatureHarmMisc,
+                          Phase::Combat,
+                          1,
+                          1,
+                          TargetType::AllOpponents)
+        {}
+
+        virtual ~TripBeat() {}
+
+        virtual const std::string EffectCreature(
+            creature::CreaturePtr_t castingCreaturePtr,
+            creature::CreaturePtr_t effectedCreaturePtr,
+            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+    };
+
+
+    class PanicStrings : public Song
+    {
+    public:
+        PanicStrings() : Song(Songs::PanicStrings,
+                              SongType::Guitar,
+                              EffectType::CreatureHarmMisc,
+                              Phase::Combat,
+                              2,
+                              1,
+                              TargetType::AllOpponents)
+        {}
+
+        virtual ~PanicStrings() {}
+
+        virtual const std::string EffectCreature(
+            creature::CreaturePtr_t castingCreaturePtr,
+            creature::CreaturePtr_t effectedCreaturePtr,
+            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+    };
+
+
+    class Lullaby : public Song
+    {
+    public:
+        Lullaby() : Song(Songs::Lullaby,
+                         SongType::Guitar,
+                         EffectType::CreatureHarmMisc,
+                         Phase::Combat,
+                         2,
+                         1,
+                         TargetType::AllOpponents)
+        {}
+
+        virtual ~Lullaby() {}
 
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,

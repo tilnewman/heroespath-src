@@ -40,7 +40,12 @@ namespace song
     {
         enum Enum
         {
-            SleepMelody = 0,
+            RallyDrum = 0,
+            SpiritResonance,
+            RousingRhythm,
+            TripBeat,
+            PanicStrings,
+            Lullaby,
             Count
         };
 

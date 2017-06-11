@@ -151,10 +151,20 @@ heroespath-spell-Antidote-extra-desc=       This spell works whether the poisoni
 heroespath-spell-PoisonCloud-extra-desc=    Some creatures breathe a poisonous cloud that can effect your characters in the same way as this spell.
 
 #Song Short Descriptions
-heroespath-song-SleepMelody-short-desc=     Attempts to sleep all enemies during combat.
+heroespath-song-RallyDrum-short-desc=       Attempts to embolden all party members, removing fear and doubt, and conferring the Undaunted Condition upon them.
+heroespath-song-SpiritResonance-short-desc= All magical party members gain Mana through magical music.
+heroespath-song-RousingRhythm-short-desc=   Wakes party members from Sleep, and removes the Dazed and Unconscious Conditions.
+heroespath-song-TripBeat-short-desc=        Confuses the feet of your enemies, causing them to fall over, bestowing the Tripped Condition.
+heroespath-song-PanicStrings-short-desc=    Attempts to scare all enemies, giving them the Panic Condition.
+heroespath-song-Lullaby-short-desc=         Attempts to put all enemies into a magical sleep.
 
 #Song Extra Descriptions
-heroespath-song-SleepMelody-extra-desc=     How many enemies are slept depends on the Bard's Charm, Intelligence, and Rank.
+heroespath-song-RallyDrum-extra-desc=       How many party members become Undaunted depends on the Bard’s Charm, Intelligence, and Rank.
+heroespath-song-SpiritResonance-extra-desc= How much Mana is gained depends on the Bard’s Charm, Intelligence, and Rank.
+heroespath-song-RousingRhythm-extra-desc=   The chance that a Condition is removed depends on the Bard’s Charm, Intelligence, and Rank.
+heroespath-song-TripBeat-extra-desc=        The chance that each single enemy is Tripped depends on that creature’s Intelligence, Rank, and on the drumming Bard’s Charm, Intelligence, and Rank.
+heroespath-song-PanicStrings-extra-desc=    The chance that each single enemy is Panicked depends on that creature’s Intelligence, Rank, and on the drumming Bard’s Charm, Intelligence, and Rank.
+heroespath-song-Lullaby-extra-desc=         The chance that each single enemy is slept depends on that creature’s Intelligence, Rank, and on the playing Bard’s Charm, Intelligence, and Rank.
 
 #Player Role Descriptions
 heroespath-creature-role-Beastmaster-desc=Beastmasters allow you to include animals, such as Wolfens and Dragons, in your party.  They may be rough around the edges, but a Beastmaster's spiritual link with animals is useful in many ways.  They can also be good fighters in the melee.  As they progress in rank, Beastmaster gain magical abilities that interact with the animals both in, and out, of your party.  This is why intelligence is the primary attribute a Beastmaster is concerned with, followed closely by strength.  Secondary attributes to consider would be accuracy and speed.

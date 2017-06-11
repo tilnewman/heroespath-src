@@ -215,6 +215,12 @@ namespace sfml_util
             SpellPoison,
             SpellFrighten,
             SpellPoisonCloud,
+            SongRallyDrum,
+            SongSpiritResonance,
+            SongRousingRhythm,
+            SongTripBeat,
+            SongPanicStrings,
+            SongLullaby,
             Count,
             None,
             Random

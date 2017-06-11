@@ -34,6 +34,7 @@
 #include "game/item/item.hpp"
 #include "game/log-macros.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -282,7 +283,58 @@ namespace combat
             case spell::Spells::Count:
             default:
             {
-                M_HP_LOG_ERR("game::combat::CombatSoundEffects(" << SPELL_PTR->Name() << ") failed to play a sound effect.");
+                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlaySpell(" << SPELL_PTR->Name()
+                    << ") failed to play a sound effect.");
+            }
+        }
+    }
+
+
+    void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR)
+    {
+        switch (SONG_PTR->Which())
+        {
+            case song::Songs::RallyDrum:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongRallyDrum);
+                break;
+            }
+            case song::Songs::SpiritResonance:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongSpiritResonance);
+                break;
+            }
+            case song::Songs::RousingRhythm:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongRousingRhythm);
+                break;
+            }
+            case song::Songs::TripBeat:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongTripBeat);
+                break;
+            }
+            case song::Songs::PanicStrings:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongPanicStrings);
+                break;
+            }
+            case song::Songs::Lullaby:
+            {
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::SongLullaby);
+                break;
+            }
+            case song::Songs::Count:
+            default:
+            {
+                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlaySong(" << SONG_PTR->Name()
+                    << ") failed to play a sound effect.");
             }
         }
     }

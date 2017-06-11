@@ -84,13 +84,17 @@ namespace creature
 
     TitlePtr_t Achievements::Increment(const AchievementType::Enum E, const CreaturePtr_t CREATURE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr), "game::creature::Achievements::Increment(which_enum=" << E << ", creature_ptr=" << CREATURE_PTR << ") was given a CREATURE_PTR that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::creature::Achievements::Increment(which_enum=" << E << ", creature_ptr="
+            << CREATURE_PTR << ") was given a CREATURE_PTR that was null.");
 
         const AchievementMapIter_t ITER(map_.find(E));
         if (ITER == map_.end())
         {
             std::ostringstream ss;
-            ss << "game::creature::Achievements::Increment(which_enum=" << E << ", creature_name=" << CREATURE_PTR->Name() << ") was given an invalid AchievementType::Enum.";
+            ss << "game::creature::Achievements::Increment(which_enum=" << E << ", creature_name="
+                << CREATURE_PTR->Name() << ") was given an invalid AchievementType::Enum.";
+
             throw std::runtime_error(ss.str());
         }
         else

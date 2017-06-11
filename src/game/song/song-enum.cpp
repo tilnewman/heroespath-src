@@ -44,7 +44,12 @@ namespace song
     {
         switch (E)
         {
-            case SleepMelody: { return "SleepMelody"; }
+            case RallyDrum:         { return "RallyDrum"; }
+            case SpiritResonance:   { return "SpiritResonance"; }
+            case RousingRhythm:     { return "RousingRhythm"; }
+            case TripBeat:          { return "TripBeat"; }
+            case PanicStrings:      { return "PanicStrings"; }
+            case Lullaby:           { return "Lullaby"; }
             case Count:
             default:
             {
@@ -60,7 +65,12 @@ namespace song
     {
         switch (E)
         {
-            case SleepMelody: { return "Sleep Melody"; }
+            case RallyDrum:         { return "Rally Drum"; }
+            case SpiritResonance:   { return "Spirit Resonance"; }
+            case RousingRhythm:     { return "Rousing Rhythm"; }
+            case TripBeat:          { return "Tri pBeat"; }
+            case PanicStrings:      { return "Panic Strings"; }
+            case Lullaby:           { return "Lullaby"; }
             case Count:
             default:
             {

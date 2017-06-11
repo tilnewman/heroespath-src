@@ -44,6 +44,11 @@ namespace spell
     class Spell;
     using SpellPtr_t = Spell *;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+}
 
 namespace combat
 {
@@ -64,6 +69,7 @@ namespace combat
         void PlayShoot(const item::ItemPtr_t);
         void PlayHitOrMiss(const HitInfo &);
         void PlaySpell(const spell::SpellPtr_t);
+        void PlaySong(const song::SongPtr_t);
     };
 
 }

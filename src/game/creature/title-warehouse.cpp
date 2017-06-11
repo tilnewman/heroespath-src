@@ -85,22 +85,22 @@ namespace title
         titleUVec_.push_back( std::make_unique<Title>(Titles::ShadowWalker, AchievementType::BackstabsHits, 7, 500,  RoleVec_t { role::Thief }, stats::StatSet(0, 7,  0, 7,  0, 0), 1, 0, 10) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::Assassin,     AchievementType::BackstabsHits, 8, 1000, RoleVec_t { role::Thief }, stats::StatSet(0, 10, 0, 10, 0, 0), 2, 0, 20) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheClashingBlade, AchievementType::BattlesSurvived, 1, 10, RoleVec_t{ role::Knight }, stats::StatSet(1, 1, 0, 0, 0, 0), 0, 0, 5) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfAHundredBattles, AchievementType::BattlesSurvived, 2, 100, RoleVec_t{ role::Knight }, stats::StatSet(2, 2, 0, 0, 0, 0), 0, 0, 10) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfThePiercingBlade, AchievementType::BattlesSurvived, 3, 200, RoleVec_t{ role::Knight }, stats::StatSet(3, 3, 0, 0, 0, 0), 0, 0, 15) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheUndauntedBlade, AchievementType::BattlesSurvived, 4, 500, RoleVec_t{ role::Knight }, stats::StatSet(4, 4, 0, 0, 0, 0), 0, 0, 20) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfAThousandBattles, AchievementType::BattlesSurvived, 5, 1000, RoleVec_t{ role::Knight }, stats::StatSet(5, 5, 0, 0, 0, 0), 1, 0, 25) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheFearedBlade, AchievementType::BattlesSurvived, 6, 2000, RoleVec_t{ role::Knight }, stats::StatSet(6, 6, 0, 0, 0, 0), 1, 0, 30) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheRealm, AchievementType::BattlesSurvived, 7, 3000, RoleVec_t{ role::Knight }, stats::StatSet(7, 7, 0, 0, 0, 0), 1, 0, 35) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfEtan,                AchievementType::BattlesSurvived, 8, 5000, RoleVec_t{ role::Knight }, stats::StatSet(10, 10, 0, 0, 0, 0), 2, 0, 50) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheClashingBlade,  AchievementType::BattlesSurvived, 1, 10,   RoleVec_t{ role::Knight }, stats::StatSet(1,   1, 0, 0, 0, 0), 0, 0,  5) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfAHundredBattles,   AchievementType::BattlesSurvived, 2, 100,  RoleVec_t{ role::Knight }, stats::StatSet(2,   2, 0, 0, 0, 0), 0, 0, 10) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfThePiercingBlade,  AchievementType::BattlesSurvived, 3, 200,  RoleVec_t{ role::Knight }, stats::StatSet(3,   3, 0, 0, 0, 0), 0, 0, 15) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheUndauntedBlade, AchievementType::BattlesSurvived, 4, 500,  RoleVec_t{ role::Knight }, stats::StatSet(4,   4, 0, 0, 0, 0), 0, 0, 20) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfAThousandBattles,  AchievementType::BattlesSurvived, 5, 1000, RoleVec_t{ role::Knight }, stats::StatSet(5,   5, 0, 0, 0, 0), 1, 0, 25) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheFearedBlade,    AchievementType::BattlesSurvived, 6, 2000, RoleVec_t{ role::Knight }, stats::StatSet(6,   6, 0, 0, 0, 0), 1, 0, 30) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfTheRealm,          AchievementType::BattlesSurvived, 7, 3000, RoleVec_t{ role::Knight }, stats::StatSet(7,   7, 0, 0, 0, 0), 1, 0, 35) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::KnightOfEtan,              AchievementType::BattlesSurvived, 8, 5000, RoleVec_t{ role::Knight }, stats::StatSet(10, 10, 0, 0, 0, 0), 2, 0, 50) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Mender,                AchievementType::HealthGiven, 1, 50, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 1, 0, 0, 1), 0, 0, 2) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Healer,                AchievementType::HealthGiven, 2, 200, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 2, 0, 0, 2), 0, 0, 5) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::BlessedHands,          AchievementType::HealthGiven, 3, 500, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 3, 0, 0, 3), 0, 0, 10) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::WitchDoctor,           AchievementType::HealthGiven, 4, 1000, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 4, 0, 0, 4), 1, 0, 15) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::LightOfTheCure,        AchievementType::HealthGiven, 5, 2000, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 5, 0, 0, 5), 1, 0, 20) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::DivineTouch,           AchievementType::HealthGiven, 6, 3000, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 6, 0, 0, 6), 1, 0, 25) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::OrderOfTheWhiteSage,   AchievementType::HealthGiven, 7, 5000, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 8, 0, 0, 8), 1, 0, 35) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Mender,                AchievementType::HealthGiven, 1, 50,    RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  1, 0, 0,  1), 0, 0,  2) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Healer,                AchievementType::HealthGiven, 2, 200,   RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  2, 0, 0,  2), 0, 0,  5) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::BlessedHands,          AchievementType::HealthGiven, 3, 500,   RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  3, 0, 0,  3), 0, 0, 10) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::WitchDoctor,           AchievementType::HealthGiven, 4, 1000,  RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  4, 0, 0,  4), 1, 0, 15) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::LightOfTheCure,        AchievementType::HealthGiven, 5, 2000,  RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  5, 0, 0,  5), 1, 0, 20) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::DivineTouch,           AchievementType::HealthGiven, 6, 3000,  RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  6, 0, 0,  6), 1, 0, 25) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::OrderOfTheWhiteSage,   AchievementType::HealthGiven, 7, 5000,  RoleVec_t{ role::Cleric }, stats::StatSet(0, 0,  8, 0, 0,  8), 1, 0, 35) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::ClericOfTheCovenant,   AchievementType::HealthGiven, 8, 10000, RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 10, 0, 0, 10), 2, 0, 50) );
 
         titleUVec_.push_back( std::make_unique<Title>(Titles::HandsOfCharity,          AchievementType::HealthTraded, 1, 50,   RoleVec_t{ role::Cleric }, stats::StatSet(0, 0, 1,  0, 0, 1),  0, 0, 2) );
