@@ -416,6 +416,13 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::DrumBlip)] =
             SoundEffectsSet(DRUMBLIP_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t GUITARSTRUM_SOUNDS_ENUM_VEC = {
+            sound_effect::GuitarStrum1,
+            sound_effect::GuitarStrum2 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::GuitarStrum)] =
+            SoundEffectsSet(GUITARSTRUM_SOUNDS_ENUM_VEC);
     }
 
 

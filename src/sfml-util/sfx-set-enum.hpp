@@ -65,6 +65,7 @@ namespace sfml_util
             SpellSelect,
             SpellBandage,
             DrumBlip,
+            GuitarStrum,
             Count
         };
 

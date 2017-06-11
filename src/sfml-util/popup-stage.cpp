@@ -42,6 +42,7 @@
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
 
 #include "game/game.hpp"
 #include "game/state/game-state.hpp"
@@ -168,7 +169,8 @@ namespace sfml_util
         spellWarnColorShaker_      (SPELL_UNABLE_TEXT_COLOR_, sf::Color::Transparent, 60.0f),
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_),
         xSymbolTexture_            (),
-        xSymbolSprite_             ()
+        xSymbolSprite_             (),
+        songCurrentPtr_            (nullptr)
     {
         backgroundTexture_.setSmooth(true);
         backgroundSprite_.setTexture(backgroundTexture_);
@@ -268,11 +270,19 @@ namespace sfml_util
                 (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
                 (PACKAGE.keypress_event.code == sf::Keyboard::Down))
             {
-                if ((FadeState::Initial != fadeState_) &&
-                    (PACKAGE.package.PTR_->GetSelected() != nullptr) &&
-                    (spellCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC))
+                if (((FadeState::Initial != fadeState_) &&
+                    (PACKAGE.package.PTR_->GetSelected() != nullptr)) &&
+                    ((spellCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC) ||
+                     (songCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC)))
                 {
-                    spellCurrentPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
+                    if (spellCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC)
+                    {
+                        spellCurrentPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
+                    }
+                    else if (songCurrentPtr_ != PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC)
+                    {
+                        songCurrentPtr_ = PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC;
+                    }
 
                     if (FadeState::FadingOut != fadeState_)
                     {
@@ -294,7 +304,14 @@ namespace sfml_util
             else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
                      (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
-                return HandleSpellCast();
+                if (PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC != nullptr)
+                {
+                    return HandleSpellCast();
+                }
+                else if (PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC != nullptr)
+                {
+                    return HandleSongPlay();
+                }
             }
         }
 
@@ -1223,7 +1240,7 @@ namespace sfml_util
             listBoxSPtr_->WillPlaySoundEffects(true);
 
             //setup initial values for spellbook page right text and colors
-            spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
+            songCurrentPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
             SetupSpellbookPageRightForFadeIn();
         }
     }
@@ -1268,14 +1285,15 @@ namespace sfml_util
             target.draw(imageSpritePrev_, STATES);
             target.draw(imageSpriteCurr_, STATES);
         }
-        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        else if ((POPUP_INFO_.Type() == game::Popup::Spellbook) ||
+                 (POPUP_INFO_.Type() == game::Popup::MusicSheet))
         {
-            //target.draw(accentSprite1_, STATES);
-            //target.draw(accentSprite2_, STATES);
+            target.draw(accentSprite1_, STATES);
+            target.draw(accentSprite2_, STATES);
             target.draw(playerSprite_, STATES);
+            target.draw(spellSprite_, STATES);
             charDetailsTextRegionUPtr_->draw(target, STATES);
             listBoxLabelTextRegionUPtr_->draw(target, STATES);
-            target.draw(spellSprite_, STATES);
             spellTitleTextRegionUPtr_->draw(target, STATES);
             spellDetailsTextUPtr_->draw(target, STATES);
             if (spellUnableTextWillShow_)
@@ -1304,11 +1322,20 @@ namespace sfml_util
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        if ((POPUP_INFO_.Type() == game::Popup::Spellbook) ||
+            (POPUP_INFO_.Type() == game::Popup::MusicSheet))
         {
             if (FadeState::Initial == fadeState_)
             {
-                spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
+                if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+                {
+                    spellCurrentPtr_ = listBoxSPtr_->At(0)->SPELL_CPTRC;
+                }
+                else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
+                {
+                    songCurrentPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
+                }
+
                 SetupSpellbookPageRightForFadeIn();
             }
             else if (FadeState::FadingIn == fadeState_)
@@ -1329,7 +1356,15 @@ namespace sfml_util
 
                 if (spellColorSlider_.GetIsDone())
                 {
-                    SetupSpellbookPageRightText(spellCurrentPtr_);
+                    if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+                    {
+                        SetupSpellbookPageRightText(spellCurrentPtr_);
+                    }
+                    else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
+                    {
+                        SetupMusicSheetPageRightText(songCurrentPtr_);
+                    }
+                    
                     SetupSpellbookPageRightForFadeIn();
                 }
             }
@@ -1500,7 +1535,8 @@ namespace sfml_util
 
     bool PopupStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        if ((POPUP_INFO_.Type() == game::Popup::Spellbook) ||
+            (POPUP_INFO_.Type() == game::Popup::MusicSheet))
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                 (KEY_EVENT.code == sf::Keyboard::Space))
@@ -1513,7 +1549,14 @@ namespace sfml_util
                      ((KEY_EVENT.code == sf::Keyboard::Return) ||
                      (KEY_EVENT.code == sf::Keyboard::C)))
             {
-                return HandleSpellCast();
+                if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+                {
+                    return HandleSpellCast();
+                }
+                else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
+                {
+                    return HandleSongPlay();
+                }
             }
         }
 
@@ -2186,9 +2229,179 @@ namespace sfml_util
     }
 
 
+    void PopupStage::SetupMusicSheetPageRightText(const game::song::SongPtrC_t SONG_CPTRC)
+    {
+        if (SONG_CPTRC == nullptr)
+        {
+            return;
+        }
+
+        //setup song title text
+        const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(SONG_CPTRC->Name(),
+                                                           sfml_util::FontManager::Instance()->Font_Default1(),
+                                                           sfml_util::FontManager::Instance()->Size_Large(),
+                                                           sfml_util::FontManager::Color_GrayDarker(),
+                                                           sfml_util::Justified::Center);
+
+        const sf::FloatRect SONG_TITLE_TEXTRECT{ pageRectRight_.left,
+                                                 pageRectRight_.top,
+                                                 pageRectRight_.width,
+                                                 0.0f };
+
+        if (spellTitleTextRegionUPtr_.get() == nullptr)
+        {
+            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>("MusicSheetPopupWindowSongTitle",
+                                                                           SONG_TITLE_TEXTINFO,
+                                                                           SONG_TITLE_TEXTRECT);
+        }
+        else
+        {
+            spellTitleTextRegionUPtr_->SetText(SONG_CPTRC->Name());
+        }
+
+        //setup song image
+        sfml_util::gui::SongImageManager::Instance()->Get(spellTexture_, SONG_CPTRC->Which());
+        spellTexture_.setSmooth(true);
+        //
+        spellSprite_.setTexture(spellTexture_);
+        auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
+        spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
+        spellSprite_.setColor(spellColorImageCurrent_);
+        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
+
+        //setup spell details text
+        std::ostringstream ss;
+        ss << "Mana Cost: " << SONG_CPTRC->ManaCost() << "\n"
+           << "Rank: " << SONG_CPTRC->Rank() << "\n"
+           << "Targets " << game::TargetType::Name(SONG_CPTRC->Target()) << "\n"
+           << "Play during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << "\n";
+
+        const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(ss.str(),
+                                                             sfml_util::FontManager::Instance()->Font_Default1(),
+                                                             sfml_util::FontManager::Instance()->Size_Small(),
+                                                             sfml_util::FontManager::Color_GrayDarker(),
+                                                             sfml_util::Justified::Center);
+
+        auto const SONGDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SONGDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+        auto const SONGDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
+        auto const SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
+
+        const sf::FloatRect SONG_DETAILS_TEXTRECT{ SONGDETAILS_TEXTRECT_LEFT,
+                                                   SONGDETAILS_TEXTRECT_TOP,
+                                                   SONGDETAILS_TEXTRECT_WIDTH,
+                                                   SONGDETAILS_TEXTRECT_HEIGHT };
+
+        if (spellDetailsTextUPtr_.get() == nullptr)
+        {
+            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>("MusicsheetPopupWindowSongDetails",
+                                                                       SONG_DETAILS_TEXTINFO,
+                                                                       SONG_DETAILS_TEXTRECT);
+        }
+        else
+        {
+            spellDetailsTextUPtr_->SetText(ss.str());
+        }
+
+        //setup song 'unable to cast' text
+        ss.str(" ");
+        spellUnableTextWillShow_ = false;
+        if (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) == false)
+        {
+            ss << "Insufficient Mana";
+            spellUnableTextWillShow_ = true;
+        }
+        else
+        {
+            if (CanPlaySongInPhase(SONG_CPTRC) == false)
+            {
+                auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
+                if (CURRENT_PHASE & game::Phase::Combat)             ss << "Cannot play during combat.";
+                else if (CURRENT_PHASE & game::Phase::Conversation)  ss << "Cannot play while talking.";
+                else if (CURRENT_PHASE & game::Phase::Exploring)     ss << "Cannot play while exploring.";
+                else if (CURRENT_PHASE & game::Phase::Inventory)     ss << "Cannot play from inventory.";
+                else ss << "Only during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << ".";
+
+                spellUnableTextWillShow_ = true;
+            }
+        }
+
+        const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(ss.str(),
+                                                            sfml_util::FontManager::Instance()->Font_Default2(),
+                                                            sfml_util::FontManager::Instance()->Size_Normal(),
+                                                            SPELL_UNABLE_TEXT_COLOR_,
+                                                            sf::BlendAlpha,
+                                                            sf::Text::Bold,
+                                                            sfml_util::Justified::Center);
+
+        auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
+
+        auto const SONG_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SONG_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+        auto const SONG_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
+        auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
+
+        const sf::FloatRect SONG_UNABLE_TEXTRECT{ SONG_UNABLE_TEXTRECT_LEFT,
+                                                   SONG_UNABLE_TEXTRECT_TOP,
+                                                   SONG_UNABLE_TEXTRECT_WIDTH,
+                                                   SONG_UNABLE_TEXTRECT_HEIGHT };
+
+        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>("MusicsheetPopupWindowSongUnableToCast",
+                                                                 SONG_UNABLE_TEXTINFO,
+                                                                 SONG_UNABLE_TEXTRECT);
+
+        //setup spell description text
+        ss.str("");
+        ss << SONG_CPTRC->Desc() << "  " << SONG_CPTRC->DescExtra();
+
+        const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(ss.str(),
+                                                          sfml_util::FontManager::Instance()->Font_Default1(),
+                                                          sfml_util::FontManager::Instance()->Size_Small(),
+                                                          sfml_util::FontManager::Color_GrayDarker(),
+                                                          sfml_util::Justified::Center);
+
+        auto const SONG_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
+        auto const SONG_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
+        auto spellDescTextRectTop{ 0.0f };
+        if (spellUnableTextWillShow_)
+        {
+            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top + spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+        }
+        else
+        {
+            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+        }
+        auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width - (SONG_DESC_HORIZ_MARGIN * 2.0f) };
+        auto const SONG_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER };
+
+        const sf::FloatRect SONG_DESC_TEXTRECT{ SONG_DESC_TEXTRECT_LEFT,
+                                                spellDescTextRectTop,
+                                                SONG_DESC_TEXTRECT_WIDTH,
+                                                SONG_DESC_TEXTRECT_HEIGHT };
+
+        if (spellDescTextUPtr_.get() == nullptr)
+        {
+            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
+                                                                   SONG_DESC_TEXTINFO,
+                                                                   SONG_DESC_TEXTRECT);
+        }
+        else
+        {
+            spellDescTextUPtr_->Setup(SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, this);
+        }
+    }
+
+
     void PopupStage::SetupSpellbookPageRightForFadeIn()
     {
-        SetupSpellbookPageRightText(spellCurrentPtr_);
+        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            SetupSpellbookPageRightText(spellCurrentPtr_);
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            SetupMusicSheetPageRightText(songCurrentPtr_);
+        }
 
         spellColorImageStart_ = sf::Color::Transparent;
         spellColorImageCurrent_ = sf::Color::Transparent;
@@ -2203,7 +2416,24 @@ namespace sfml_util
 
         spellColorSlider_.Reset(SPELLBOOK_COLOR_FADE_SPEED_);
 
-        SoundManager::Instance()->SoundEffectPlay(sound_effect::Magic1);
+        if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            SoundManager::Instance()->SoundEffectPlay(sound_effect::Magic1);
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        {
+            if (songCurrentPtr_ != nullptr)
+            {
+                if (songCurrentPtr_->Type() == game::song::SongType::Drum)
+                {
+                    SoundManager::Instance()->GetSfxSet(SfxSet::DrumBlip).PlayRandom();
+                }
+                else if (songCurrentPtr_->Type() == game::song::SongType::Guitar)
+                {
+                    SoundManager::Instance()->GetSfxSet(SfxSet::GuitarStrum).PlayRandom();
+                }
+            }
+        }
     }
 
 
@@ -2311,7 +2541,17 @@ namespace sfml_util
     {
         if (CanPlaySong(listBoxSPtr_->GetSelected()->SONG_CPTRC))
         {
-            //SoundManager::Instance()->SoundEffectPlay(sound_effect::SongSelect);
+            if (songCurrentPtr_ != nullptr)
+            {
+                if (songCurrentPtr_->Type() == game::song::SongType::Drum)
+                {
+                    SoundManager::Instance()->GetSfxSet(SfxSet::DrumBlip).PlayRandom();
+                }
+                else if (songCurrentPtr_->Type() == game::song::SongType::Guitar)
+                {
+                    SoundManager::Instance()->GetSfxSet(SfxSet::GuitarStrum).PlayRandom();
+                }
+            }
             game::LoopManager::Instance()->PopupWaitEnd(Response::Select, listBoxSPtr_->GetSelectedIndex());
             return true;
         }

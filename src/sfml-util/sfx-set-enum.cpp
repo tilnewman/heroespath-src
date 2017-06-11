@@ -68,6 +68,7 @@ namespace sfml_util
             case SpellSelect:       { return "SpellSelect"; }
             case SpellBandage:      { return "SpellBandage"; }
             case DrumBlip:          { return "DrumBlip"; }
+            case GuitarStrum:       { return "GuitarStrum"; }
             case Count:
             default:
             {

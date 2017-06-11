@@ -136,6 +136,7 @@ namespace sfml_util
 
         void SetupSpellbookPageRightForFadeIn();
         void SetupSpellbookPageRightText(const game::spell::SpellPtrC_t);
+        void SetupMusicSheetPageRightText(const game::song::SongPtrC_t);
         void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
         void SetSpellbookPageRightColors();
 
@@ -269,6 +270,10 @@ namespace sfml_util
         sf::Texture xSymbolTexture_;
         sf::Sprite xSymbolSprite_;
         bool willShowRejectImage_;
+
+        //members supporting song selection
+        //Note:  Many spell members are re-used
+        game::song::SongPtr_t songCurrentPtr_;
         
     };
 

@@ -191,6 +191,8 @@ namespace sfml_util
             case ClawTear:          { return "claw-tear";  }
             case Magic1:            { return "magic1"; }
             case Trip:              { return "trip-and-fall"; }
+            case GuitarStrum1:      { return "guitar-strum1"; }
+            case GuitarStrum2:      { return "guitar-strum2"; }
             case DrumBlip1:         { return "drum-blip1"; }
             case DrumBlip2:         { return "drum-blip2"; }
             case DrumBlip3:         { return "drum-blip3"; }
@@ -398,6 +400,8 @@ namespace sfml_util
             case ClawTear:              { return "sound-effects/combat/claw-tear"; }
             case Magic1:                { return "sound-effects/misc"; }
             case Trip:                  { return "sound-effects/combat"; }
+            case GuitarStrum1:
+            case GuitarStrum2:          { return "sound-effects/misc"; }
             case DrumBlip1:
             case DrumBlip2:
             case DrumBlip3:

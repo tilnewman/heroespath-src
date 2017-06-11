@@ -191,6 +191,8 @@ namespace sfml_util
             ClawTear,
             Magic1,
             Trip,
+            GuitarStrum1,
+            GuitarStrum2,
             DrumBlip1,
             DrumBlip2,
             DrumBlip3,
