@@ -60,7 +60,15 @@ namespace creature
                          const stats::StatEnumVec_t & STAT_ENUM_VEC,
                          const bool                   WILL_CONSIDER_RANK = false);
 
-        //Returns true if the challenger wins the "roll".
+        //You can leave DEFENDER_STAT stats::stat::Count to mean the same as CHALLENGER_STAT
+        static bool Versus(
+            const CreaturePtr_t     CHALLENGER_PTR,
+            const stats::stat::Enum CHALLENGER_STAT,
+            const CreaturePtr_t     DEFENDER_PTR,
+            const stats::stat::Enum DEFENDER_STAT = stats::stat::Count,
+            const bool              WILL_CONDSIDER_RANK = true,
+            const bool              ALLOW_PLAYER_NATURAL_WINS = true);
+
         //You can leave the DEFENDER_STAT_VEC empty to mean both vecs are the same.
         static bool Versus(
             const CreaturePtr_t          CHALLENGER_PTR,

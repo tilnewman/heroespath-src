@@ -30,6 +30,7 @@
 #include "spells.hpp"
 
 #include "game/creature/creature.hpp"
+#include "game/creature/stats.hpp"
 #include "game/creature/conditions.hpp"
 
 #include "misc/random.hpp"
@@ -351,31 +352,9 @@ namespace spell
         }
         else
         {
-            auto const RAND_CASTER{ misc::random::Int(
-                castingCreaturePtr->Stats().Int().CurrentReduced(),
-                castingCreaturePtr->Stats().Int().Current()) };
-
-            //check for player character 'natural' success
-            if ((castingCreaturePtr->IsPlayerCharacter()) &&
-                (RAND_CASTER >= castingCreaturePtr->Stats().Int().Normal()))
-            {
-                effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
-                conditionsAddedVec.push_back(creature::Conditions::Poisoned);
-                return Spell::EFFECT_STR_SUCCESS_;
-            }
-
-            auto const RAND_DEFENDER{ misc::random::Int(
-                effectedCreaturePtr->Stats().Int().CurrentReduced(),
-                effectedCreaturePtr->Stats().Int().Current())};
-
-            //check for 'normal' success
-            auto const CHANCE_VAL_CASTER{ RAND_CASTER +
-                static_cast<int>(castingCreaturePtr->Rank()) };
-
-            auto const CHANCE_VAL_DEFENDER{ RAND_DEFENDER +
-                static_cast<int>(effectedCreaturePtr->Rank()) };
-
-            if (CHANCE_VAL_CASTER >= CHANCE_VAL_DEFENDER)
+            if (creature::Stats::Versus(castingCreaturePtr,
+                                        stats::stat::Intelligence,
+                                        effectedCreaturePtr))
             {
                 effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
                 conditionsAddedVec.push_back(creature::Conditions::Poisoned);

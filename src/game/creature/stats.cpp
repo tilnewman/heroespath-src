@@ -241,6 +241,25 @@ namespace creature
     }
 
 
+    bool Stats::Versus(const CreaturePtr_t     CHALLENGER_PTR,
+                       const stats::stat::Enum CHALLENGER_STAT,
+                       const CreaturePtr_t     DEFENDER_PTR,
+                       const stats::stat::Enum DEFENDER_STAT_PARAM,
+                       const bool              WILL_CONDSIDER_RANK,
+                       const bool              ALLOW_PLAYER_NATURAL_WINS)
+    {
+        auto const DEFENDER_STAT{ ((DEFENDER_STAT_PARAM == stats::stat::Count) ?
+            CHALLENGER_STAT : DEFENDER_STAT_PARAM) };
+
+        return Versus(CHALLENGER_PTR,
+                      stats::StatEnumVec_t(1, CHALLENGER_STAT),
+                      DEFENDER_PTR,
+                      stats::StatEnumVec_t(1, DEFENDER_STAT),
+                      WILL_CONDSIDER_RANK,
+                      ALLOW_PLAYER_NATURAL_WINS);
+    }
+
+
     bool Stats::Versus(const CreaturePtr_t          CHALLENGER_PTR,
                        const stats::StatEnumVec_t & CHALLENGER_STAT_VEC,
                        const CreaturePtr_t          DEFENDER_PTR,
