@@ -72,7 +72,7 @@ namespace sfml_util
     const int       PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
     const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
     const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
-    const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.85f };
+    const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.9f };
     const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 6.0f };
     const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
     const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
@@ -374,7 +374,8 @@ namespace sfml_util
         //darken the box gold bars a bit
         box_.SetEntityColors(sfml_util::gui::ColorSet(sf::Color(200,200,200)));
 
-        if (POPUP_INFO_.Image() == sfml_util::PopupImage::Spellbook)
+        if ((POPUP_INFO_.Image() == sfml_util::PopupImage::Spellbook) ||
+            (POPUP_INFO_.Image() == sfml_util::PopupImage::MusicSheet))
         {
             auto const SCALE(INNER_REGION_.width / static_cast<float>(backgroundTexture_.getSize().x));
             backgroundSprite_.setScale(SCALE, SCALE);
@@ -1088,7 +1089,7 @@ namespace sfml_util
 
                 accentSprite2_.setColor(sf::Color(255, 255, 255, 16));
             }
-
+            
             //setup player image
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_,
                 POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
@@ -1102,7 +1103,7 @@ namespace sfml_util
             playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
             playerSprite_.setColor(sf::Color(255, 255, 255, 192));
             playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
-
+            
             //setup player details text
             auto cPtr{ POPUP_INFO_.CreaturePtr() };
             std::ostringstream ss;
@@ -1130,7 +1131,7 @@ namespace sfml_util
                << cPtr->HealthPercentStr() << "\n"
                << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
                << "\n";
-
+            
             const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
                 ss.str(),
                 sfml_util::FontManager::Instance()->Font_Default1(),
@@ -1150,10 +1151,10 @@ namespace sfml_util
                 "MusicSheetPopupWindowDetails",
                 DETAILS_TEXTINFO,
                 DETAILS_TEXT_RECT);
-
+            
             //spell listbox label
             const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
-                "MusicSheet",
+                "Songs",
                 sfml_util::FontManager::Instance()->Font_Default1(),
                 sfml_util::FontManager::Instance()->Size_Largeish(),
                 sfml_util::FontManager::Color_GrayDarker(),
@@ -1171,8 +1172,7 @@ namespace sfml_util
                 "MusicSheetPopupWindowSpellListLabel",
                 LISTBOX_LABEL_TEXTINFO,
                 LISTBOX_LABEL_TEXTRECT);
-
-
+            
             //spell listbox
             auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
             auto const LISTBOX_RECT_LEFT  { pageRectLeft_.left + LISTBOX_MARGIN };
@@ -1210,7 +1210,7 @@ namespace sfml_util
 
                 listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
             }
-
+            
             listBoxSPtr_ = std::make_shared<gui::ListBox>(
                 "PopupStage'sMusicListBox",
                 LISTBOX_RECT,
@@ -1230,7 +1230,7 @@ namespace sfml_util
             //Force spell listbox to take focus so that user up/down
             //keystrokes work without having to click on the listbox.
             SetFocus(listBoxSPtr_.get());
-
+            
             //Force spell listbox selection up and down to force
             //colors to correct.
             listBoxSPtr_->WillPlaySoundEffects(false);
@@ -1240,7 +1240,7 @@ namespace sfml_util
             keyEvent.code = sf::Keyboard::Up;
             listBoxSPtr_->KeyRelease(keyEvent);
             listBoxSPtr_->WillPlaySoundEffects(true);
-
+            
             //setup initial values for spellbook page right text and colors
             songCurrentPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
             SetupSpellbookPageRightForFadeIn();
@@ -2400,7 +2400,7 @@ namespace sfml_util
         {
             SetupSpellbookPageRightText(spellCurrentPtr_);
         }
-        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
         {
             SetupMusicSheetPageRightText(songCurrentPtr_);
         }
@@ -2422,7 +2422,7 @@ namespace sfml_util
         {
             SoundManager::Instance()->SoundEffectPlay(sound_effect::Magic1);
         }
-        else if (POPUP_INFO_.Type() == game::Popup::Spellbook)
+        else if (POPUP_INFO_.Type() == game::Popup::MusicSheet)
         {
             if (songCurrentPtr_ != nullptr)
             {

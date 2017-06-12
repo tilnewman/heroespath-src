@@ -52,7 +52,10 @@ namespace gui
 
     std::string PopupManager::windowTextureDirectoryPath_    { "" };
     std::string PopupManager::accentTextureDirectoryPath_    { "" };
-    sf::Color   PopupManager::fontColor_                     { sf::Color(64, 64, 64, 255) };//set to match FontManager::Color_GrayDarker() before being set in the constructor
+
+    //set to match FontManager::Color_GrayDarker() before being set in the constructor
+    sf::Color   PopupManager::fontColor_                     { sf::Color(64, 64, 64, 255) };
+
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_{ nullptr };
 
 
@@ -105,7 +108,8 @@ namespace gui
 
     void PopupManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::PopupManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::gui::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
@@ -124,10 +128,12 @@ namespace gui
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::PopupManager::Test() Starting Tests...");
+            game::LoopManager::Instance()->TestingStrAppend(
+                "sfml_util::gui::PopupManager::Test() Starting Tests...");
         }
 
-        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend(
+            "sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -149,7 +155,9 @@ namespace gui
                                  sf::Texture &       texture) const
     {
         namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) / bfs::path(WINDOW_FILE_NAME)));
+        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) /
+            bfs::path(WINDOW_FILE_NAME)));
+
         sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
     }
 
@@ -158,11 +166,31 @@ namespace gui
     {
         switch (PI)
         {
-            case PopupImage::Banner:         { return sfml_util::ScaleRectCopy(Rect_Banner(), SCALE); }
-            case PopupImage::Regular:        { return sfml_util::ScaleRectCopy(Rect_Regular(), SCALE); }
-            case PopupImage::RegularSidebar: { return sfml_util::ScaleRectCopy(Rect_RegularSidebar(), SCALE); }
-            case PopupImage::Large:          { return sfml_util::ScaleRectCopy(Rect_Large(), SCALE); }
-            case PopupImage::LargeSidebar:   { return sfml_util::ScaleRectCopy(Rect_LargeSidebar(), SCALE); }
+            case PopupImage::Banner:
+            {
+                return sfml_util::ScaleRectCopy(Rect_Banner(), SCALE);
+            }
+
+            case PopupImage::Regular:
+            {
+                return sfml_util::ScaleRectCopy(Rect_Regular(), SCALE);
+            }
+
+            case PopupImage::RegularSidebar:
+            {
+                return sfml_util::ScaleRectCopy(Rect_RegularSidebar(), SCALE);
+            }
+
+            case PopupImage::Large:
+            {
+                return sfml_util::ScaleRectCopy(Rect_Large(), SCALE);
+            }
+
+            case PopupImage::LargeSidebar:
+            {
+                return sfml_util::ScaleRectCopy(Rect_LargeSidebar(), SCALE);
+            }
+
             case PopupImage::Spellbook:
             case PopupImage::MusicSheet:
             case PopupImage::Custom:
@@ -177,9 +205,10 @@ namespace gui
     }
 
 
-    const sfml_util::gui::TextInfo PopupManager::TextInfoDefault(const std::string &              TEXT,
-                                                                 const sfml_util::Justified::Enum JUSTIFIED,
-                                                                 const unsigned int               FONT_SIZE) const
+    const sfml_util::gui::TextInfo PopupManager::TextInfoDefault(
+        const std::string &              TEXT,
+        const sfml_util::Justified::Enum JUSTIFIED,
+        const unsigned int               FONT_SIZE) const
     {
         return sfml_util::gui::TextInfo(TEXT,
                                         sfml_util::FontManager::Instance()->Font_Default2(),
@@ -447,8 +476,12 @@ namespace gui
                 SPELLBOOK_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
 
             sf::FloatRect rect;
-            rect.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
-            rect.top = ((sfml_util::Display::Instance()->GetWinHeight() - SPELLBOOK_HEIGHT) * 0.5f);
+            rect.left = ((sfml_util::Display::Instance()->GetWinWidth() -
+                SPELLBOOK_WIDTH) * 0.5f);
+
+            rect.top = ((sfml_util::Display::Instance()->GetWinHeight() -
+                SPELLBOOK_HEIGHT) * 0.5f);
+
             rect.width = SPELLBOOK_WIDTH;
             rect.height = SPELLBOOK_HEIGHT;
 
@@ -474,8 +507,12 @@ namespace gui
                 MUSICSHEET_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
 
             sf::FloatRect rect;
-            rect.left = (sfml_util::Display::Instance()->GetWinWidth() - MUSICSHEET_WIDTH) * 0.5f;
-            rect.top = (sfml_util::Display::Instance()->GetWinHeight() - MUSICSHEET_HEIGHT) * 0.5f;
+            rect.left = (sfml_util::Display::Instance()->GetWinWidth() -
+                MUSICSHEET_WIDTH) * 0.5f;
+
+            rect.top = (sfml_util::Display::Instance()->GetWinHeight() -
+                MUSICSHEET_HEIGHT) * 0.5f;
+
             rect.width =  MUSICSHEET_WIDTH;
             rect.height = MUSICSHEET_HEIGHT;
 
@@ -498,12 +535,17 @@ namespace gui
             const float TEXTURE_HEIGHT(static_cast<float>(backgroundTexture.getSize().y));
 
             sf::FloatRect rect;
-            rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (TEXTURE_WIDTH * 0.5f);
-            rect.top = (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (TEXTURE_HEIGHT * 0.5f);
+            rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
+                (TEXTURE_WIDTH * 0.5f);
+
+            rect.top = (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) -
+                (TEXTURE_HEIGHT * 0.5f);
+
             rect.width = TEXTURE_WIDTH;
             rect.height = TEXTURE_HEIGHT;
 
-            const sf::FloatRect INNER_RECT(sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(), POPUP_INFO.ImageScale())));
+            const sf::FloatRect INNER_RECT(sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(),
+                POPUP_INFO.ImageScale())));
 
             auto popupStagePtr( new PopupStage(POPUP_INFO,
                                                rect,
@@ -517,7 +559,8 @@ namespace gui
 
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
-        sfml_util::LoadImageOrTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
+        sfml_util::LoadImageOrTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(
+            misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
 
         if (misc::random::Bool())
         {
@@ -547,8 +590,13 @@ namespace gui
 
         const bfs::path   DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
 
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)), "sfml_util::gui::PopupManager::LoadAssets() accents dir path not found \"" << DIR_OBJ.string() << "\".");
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)), "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \"" << DIR_OBJ.string() << "\".");
+        M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)),
+            "sfml_util::gui::PopupManager::LoadAssets() accents dir path not found \""
+            << DIR_OBJ.string() << "\".");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)),
+            "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \""
+            << DIR_OBJ.string() << "\".");
 
         //create a vector of paths to saved games
         bfs::directory_iterator end_itr; // default construction yields past-the-end
