@@ -149,6 +149,9 @@ int main(int argc, char * argv[])
         sfml_util::gui::SpellImageManager::SetImagesDirectory(
             gameDataFilePtr->GetMediaPath("media-images-spells-dir") );
 
+        sfml_util::gui::SongImageManager::SetImagesDirectory(
+            gameDataFilePtr->GetMediaPath("media-images-songs-dir"));
+
         sfml_util::gui::ConditionImageManager::SetImagesDirectory(
             gameDataFilePtr->GetMediaPath("media-images-conditions-dir") );
 

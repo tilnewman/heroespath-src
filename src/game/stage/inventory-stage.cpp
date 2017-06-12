@@ -87,6 +87,8 @@ namespace stage
     const std::string InventoryStage::POPUP_NAME_DROPCONFIRM_     { "InventoryStage'sDropItemConfirmationPopupName" };
     const std::string InventoryStage::POPUP_NAME_SPELLBOOK_       { "InventoryStage'sSpellbookPopupName" };
     const std::string InventoryStage::POPUP_NAME_SPELL_RESULT_    { "InventoryStage'sSpellResultPopupName" };
+    const std::string InventoryStage::POPUP_NAME_MUSICSHEET_      { "InventoryStage'sMusicSheetPopupName" };
+    const std::string InventoryStage::POPUP_NAME_SONG_RESULT_     { "InventoryStage'sSongResultPopupName" };
 
 
     InventoryStage::InventoryStage(const creature::CreaturePtr_t CREATURE_PTR,
@@ -219,7 +221,7 @@ namespace stage
         combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>()),
         originalCreaturePtr_       (CREATURE_PTR),
         isDuringCombat_            (IS_DURING_COMBAT),
-        hasTakenActionSpell_       (false)
+        hasTakenActionSpellOrSong_ (false)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::stage::InventoryStage::InventoryStage() was given a null "
@@ -322,7 +324,7 @@ namespace stage
 
         if (PACKAGE.PTR_ == spellsButtonUPtr_.get())
         {
-            return HandleViewChange(ViewType::Spells);
+            return HandleSpellsOrSongs();
         }
 
         if (PACKAGE.PTR_ == giveButtonUPtr_.get())
@@ -941,45 +943,7 @@ namespace stage
 
             if (KEY_EVENT.code == sf::Keyboard::S)
             {
-                if (isDuringCombat_)
-                {
-                    if (creaturePtr_ != originalCreaturePtr_)
-                    {
-                        std::ostringstream ss;
-                        ss << "\nDuring combat, only the character whose turn it is may "
-                            << "cast spells.";
-
-                        PopupRejectionWindow(ss.str(), true);
-                        return false;
-                    }
-                    else if (hasTakenActionSpell_)
-                    {
-                        std::ostringstream ss;
-                        ss << "\nDuring combat, the creature whose turn it is may only cast"
-                            << " one spell.";
-
-                        PopupRejectionWindow(ss.str(), true);
-                        return false;
-                    }
-                }
-
-                auto const CAN_CAST_STR{ creaturePtr_->CanCastSpellsStr(true) };
-                if (CAN_CAST_STR.empty())
-                {
-                    auto const POPUP_INFO{
-                        sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
-                            POPUP_NAME_SPELLBOOK_,
-                            creaturePtr_,
-                            creaturePtr_->LastSpellCastNum()) };
-
-                    LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
-                    return true;
-                }
-                else
-                {
-                    PopupRejectionWindow(CAN_CAST_STR, true);
-                    return false;
-                }
+                return HandleSpellsOrSongs();
             }
 
             if (KEY_EVENT.code == sf::Keyboard::G)
@@ -1674,7 +1638,9 @@ namespace stage
     void InventoryStage::SetupButtons()
     {
         backButtonUPtr_->SetIsDisabled(false);
-        backButtonUPtr_->SetMouseHoverText("Click here or press 'b' to return to previous screen.");
+
+        backButtonUPtr_->SetMouseHoverText(
+            "Click here or press 'b' to return to previous screen.");
 
         if (ViewType::Items == view_)
         {
@@ -1687,20 +1653,47 @@ namespace stage
             itemsButtonUPtr_->SetMouseHoverText("Click here or press 'i' to view items.");
         }
 
-        if (creaturePtr_->Spells().empty())
+        if (ViewType::Spells == view_)
         {
-            spellsButtonUPtr_->SetIsDisabled(true);
-            spellsButtonUPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not know any spells.");
+            auto const ROLE_ENUM{ creaturePtr_->Role().Which() };
+            if (ROLE_ENUM == creature::role::Bard)
+            {
+                spellsButtonUPtr_->SetText("(S)ongs");
+                spellsButtonUPtr_->SetIsDisabled(true);
+
+                spellsButtonUPtr_->SetMouseHoverText(
+                    "Already viewing songs.");
+            }
+            else if ((ROLE_ENUM == creature::role::Cleric) ||
+                     (ROLE_ENUM == creature::role::Sorcerer))
+            {
+                spellsButtonUPtr_->SetText("(S)pells");
+                spellsButtonUPtr_->SetIsDisabled(true);
+
+                spellsButtonUPtr_->SetMouseHoverText(
+                    "Already viewing spells.");
+            }
         }
-        else if (ViewType::Spells == view_)
+        else if (ViewType::Spells != view_)
         {
-            spellsButtonUPtr_->SetIsDisabled(true);
-            spellsButtonUPtr_->SetMouseHoverText("Already viewing spells.");
-        }
-        else
-        {
-            spellsButtonUPtr_->SetIsDisabled(false);
-            spellsButtonUPtr_->SetMouseHoverText("Click here or press 's' to view and cast spells.");
+            auto const ROLE_ENUM{ creaturePtr_->Role().Which() };
+            if (ROLE_ENUM == creature::role::Bard)
+            {
+                spellsButtonUPtr_->SetText("(S)ongs");
+                spellsButtonUPtr_->SetIsDisabled(false);
+
+                spellsButtonUPtr_->SetMouseHoverText(
+                    "Click here or press 's' to view and play magical songs.");
+            }
+            else if ((ROLE_ENUM == creature::role::Cleric) ||
+                     (ROLE_ENUM == creature::role::Sorcerer))
+            {
+                spellsButtonUPtr_->SetText("(S)pells");
+                spellsButtonUPtr_->SetIsDisabled(false);
+
+                spellsButtonUPtr_->SetMouseHoverText(
+                    "Click here or press 's' to view and cast spells.");
+            }
         }
 
         if (creaturePtr_->Titles().empty())
@@ -3542,7 +3535,7 @@ namespace stage
         spellCreatureEffectIndex_ = 0;
         spellHitInfoIndex_ = 0;
 
-        hasTakenActionSpell_ = true;
+        hasTakenActionSpellOrSong_ = true;
 
         HandleCast_Step3_DisplayResults();
     }
@@ -3607,6 +3600,91 @@ namespace stage
         equippedListBoxSPtr_->KeyRelease(keyEvent);
         
         equippedListBoxSPtr_->WillPlaySoundEffects(true);
+    }
+
+
+    bool InventoryStage::HandleSpellsOrSongs()
+    {
+        auto const IS_SPELLS{ ! (creaturePtr_->Role().Which() == creature::role::Bard) };
+
+        if (isDuringCombat_)
+        {
+            if (creaturePtr_ != originalCreaturePtr_)
+            {
+                std::ostringstream ss;
+                ss << "\nDuring combat, only the character whose turn it is may ";
+
+                if (IS_SPELLS)
+                {
+                    ss << "cast spells.";
+                }
+                else
+                {
+                    ss << "play songs.";
+                }
+
+                PopupRejectionWindow(ss.str(), true);
+                return false;
+            }
+            else if (hasTakenActionSpellOrSong_)
+            {
+                std::ostringstream ss;
+                ss << "\nDuring combat, the creature whose turn it is may only ";
+
+                if (IS_SPELLS)
+                {
+                    ss << "cast one spell.";
+                }
+                else
+                {
+                    ss << "play one song.";
+                }
+
+                PopupRejectionWindow(ss.str(), true);
+                return false;
+            }
+        }
+
+        if (IS_SPELLS)
+        {
+            auto const CAN_CAST_STR{ creaturePtr_->CanCastSpellsStr(true) };
+            if (CAN_CAST_STR.empty())
+            {
+                auto const POPUP_INFO{
+                    sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                        POPUP_NAME_SPELLBOOK_,
+                        creaturePtr_,
+                        creaturePtr_->LastSpellCastNum()) };
+
+                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                return true;
+            }
+            else
+            {
+                PopupRejectionWindow(CAN_CAST_STR, true);
+                return false;
+            }
+        }
+        else
+        {
+            auto const CAN_PLAY_STR{ creaturePtr_->CanPlaySongsStr(true) };
+            if (CAN_PLAY_STR.empty())
+            {
+                auto const POPUP_INFO{
+                    sfml_util::gui::PopupManager::Instance()->CreateMusicPopupInfo(
+                        POPUP_NAME_MUSICSHEET_,
+                        creaturePtr_,
+                        creaturePtr_->LastSongPlayedNum()) };
+
+                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                return true;
+            }
+            else
+            {
+                PopupRejectionWindow(CAN_PLAY_STR, true);
+                return false;
+            }
+        }
     }
 
 }

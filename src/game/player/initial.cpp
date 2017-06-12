@@ -39,6 +39,7 @@
 #include "game/item/misc-item-factory.hpp"
 #include "game/creature/creature.hpp"
 #include "game/spell/spell-enum.hpp"
+#include "game/song/song-enum.hpp"
 
 #include <exception>
 #include <sstream>
@@ -53,6 +54,7 @@ namespace player
     void Initial::Setup(CharacterPtrC_t characterPtrC)
     {
         SetupInventory(characterPtrC);
+        SetupSpellsAndSongs(characterPtrC);
         characterPtrC->SetCurrentWeaponsToBest();
         SetStartingHealth(characterPtrC);
         SetStartingMana(characterPtrC);
@@ -79,14 +81,6 @@ namespace player
         EquipBodyParts(characterPtrC);
 
         using namespace item;
-
-        //TEMP TODO REMOVE -only added to test inventory
-        if (characterPtrC->IsBeast() == false)
-        {
-            characterPtrC->CoinsAdj(100);
-            characterPtrC->GemsAdj(100);
-            characterPtrC->MeteorShardsAdj(100);
-        }
 
         auto const ROLE_ENUM{ characterPtrC->Role().Which() };
 
@@ -211,10 +205,10 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t panflutePtr(misc::ItemFactory::Make_DrumLute(characterPtrC->IsPixie()));
+            ItemPtr_t drumLutePtr(misc::ItemFactory::Make_DrumLute(characterPtrC->IsPixie()));
 
-            characterPtrC->ItemAdd(panflutePtr);
-            characterPtrC->ItemEquip(panflutePtr);
+            characterPtrC->ItemAdd(drumLutePtr);
+            characterPtrC->ItemEquip(drumLutePtr);
 
             return;
         }
@@ -242,11 +236,13 @@ namespace player
 
             ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
 
             ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain, material::SoftLeather, characterPtrC->IsPixie()));
+
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
@@ -282,13 +278,6 @@ namespace player
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
 
-            characterPtrC->SpellAdd(spell::Spells::Awaken);
-            characterPtrC->SpellAdd(spell::Spells::Bandage);
-            characterPtrC->SpellAdd(spell::Spells::ClearMind);
-            characterPtrC->SpellAdd(spell::Spells::Lift);
-            characterPtrC->SpellAdd(spell::Spells::Sleep);
-            characterPtrC->SpellAdd(spell::Spells::Antidote);
-
             return;
         }
 
@@ -321,14 +310,6 @@ namespace player
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
 
-            characterPtrC->SpellAdd(spell::Spells::Daze);
-            characterPtrC->SpellAdd(spell::Spells::Panic);
-            characterPtrC->SpellAdd(spell::Spells::Sleep);
-            characterPtrC->SpellAdd(spell::Spells::Awaken);
-            characterPtrC->SpellAdd(spell::Spells::Poison);
-            characterPtrC->SpellAdd(spell::Spells::Sparks);
-            characterPtrC->SpellAdd(spell::Spells::Trip);
-
             //TODO TEMP REMOVE -this line was only added so that mutli-creature
             //targeting spells could be tested
             characterPtrC->SpellAdd(spell::Spells::PoisonCloud);
@@ -355,6 +336,41 @@ namespace player
             << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
+    }
+
+
+    void Initial::SetupSpellsAndSongs(CharacterPtrC_t characterPtrC)
+    {
+        auto const ROLE_ENUM{ characterPtrC->Role().Which() };
+
+        if (ROLE_ENUM == creature::role::Cleric)
+        {
+            characterPtrC->SpellAdd(spell::Spells::Awaken);
+            characterPtrC->SpellAdd(spell::Spells::Bandage);
+            characterPtrC->SpellAdd(spell::Spells::ClearMind);
+            characterPtrC->SpellAdd(spell::Spells::Lift);
+            characterPtrC->SpellAdd(spell::Spells::Sleep);
+            characterPtrC->SpellAdd(spell::Spells::Antidote);
+        }
+        else if (ROLE_ENUM == creature::role::Sorcerer)
+        {
+            characterPtrC->SpellAdd(spell::Spells::Daze);
+            characterPtrC->SpellAdd(spell::Spells::Panic);
+            characterPtrC->SpellAdd(spell::Spells::Sleep);
+            characterPtrC->SpellAdd(spell::Spells::Awaken);
+            characterPtrC->SpellAdd(spell::Spells::Poison);
+            characterPtrC->SpellAdd(spell::Spells::Sparks);
+            characterPtrC->SpellAdd(spell::Spells::Trip);
+        }
+        else if (ROLE_ENUM == creature::role::Bard)
+        {
+            characterPtrC->SongAdd(song::Songs::RallyDrum);
+            characterPtrC->SongAdd(song::Songs::Lullaby);
+            characterPtrC->SongAdd(song::Songs::PanicStrings);
+            characterPtrC->SongAdd(song::Songs::RousingRhythm);
+            characterPtrC->SongAdd(song::Songs::TripBeat);
+            characterPtrC->SongAdd(song::Songs::SpiritResonance);
+        }
     }
 
 
@@ -414,10 +430,19 @@ namespace player
 
     void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
     {
-        if ((characterPtrC->Role().Which() == creature::role::Sorcerer) ||
-            (characterPtrC->Role().Which() == creature::role::Cleric))
+        auto const ROLE_ENUM{ characterPtrC->Role().Which() };
+        if ((ROLE_ENUM == creature::role::Sorcerer) ||
+            (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const STARTING_MANA{ characterPtrC->Stats().Int().Current() / 2 };
+            auto const STARTING_MANA{ characterPtrC->Stats().Int().Normal() / 2 };
+            characterPtrC->ManaNormalSet(STARTING_MANA);
+            characterPtrC->ManaCurrentSet(STARTING_MANA);
+        }
+        else if (ROLE_ENUM == creature::role::Bard)
+        {
+            auto const STARTING_MANA{ (characterPtrC->Stats().Int().Normal() +
+                characterPtrC->Stats().Cha().Normal()) / 4 };
+
             characterPtrC->ManaNormalSet(STARTING_MANA);
             characterPtrC->ManaCurrentSet(STARTING_MANA);
         }

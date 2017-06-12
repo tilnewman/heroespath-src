@@ -54,7 +54,7 @@ namespace game
 
     GameDataFile::~GameDataFile()
     {
-        M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
+        //M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
     }
 
 

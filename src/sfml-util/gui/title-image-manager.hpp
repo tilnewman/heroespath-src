@@ -69,6 +69,7 @@ namespace gui
         static void Acquire();
         static void Release();
         static void SetTitleImageDirectory(const std::string & PATH);
+        static bool Test();
 
         inline static const std::string PlaceholderFileName()
         {

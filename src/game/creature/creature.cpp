@@ -79,28 +79,30 @@ namespace creature
                        const stats::Mana_t         MANA,
                        const song::SongVec_t &     SONG_VEC)
     :
-        name_           (NAME),
-        imageFilename_  (IMAGE_FILENAME),
-        sex_            (SEX),
-        bodyType_       (BODY_TYPE),
-        race_           (RACE),
-        role_           (ROLE),
-        stats_          (STATS),
-        serialNumber_   (globalSerialNumber_++),
-        healthCurrent_  (HEALTH),
-        healthNormal_   (HEALTH),
-        rank_           (RANK),
-        experience_     (EXPERIENCE),
-        conditionsVec_  (CONDITIONS_VEC),
-        titlesVec_      (TITLE_VEC),
-        inventory_      (INVENTORY),
-        dateTimeCreated_(DATE_TIME),
-        spellsVec_      (SPELL_VEC),
-        achievements_   (),
-        currWeaponsPVec_(),
-        manaCurrent_    (MANA),
-        manaNormal_     (MANA),
-        songsVec_       (SONG_VEC)
+        name_             (NAME),
+        imageFilename_    (IMAGE_FILENAME),
+        sex_              (SEX),
+        bodyType_         (BODY_TYPE),
+        race_             (RACE),
+        role_             (ROLE),
+        stats_            (STATS),
+        serialNumber_     (globalSerialNumber_++),
+        healthCurrent_    (HEALTH),
+        healthNormal_     (HEALTH),
+        rank_             (RANK),
+        experience_       (EXPERIENCE),
+        conditionsVec_    (CONDITIONS_VEC),
+        titlesVec_        (TITLE_VEC),
+        inventory_        (INVENTORY),
+        dateTimeCreated_  (DATE_TIME),
+        spellsVec_        (SPELL_VEC),
+        achievements_     (),
+        currWeaponsPVec_  (),
+        manaCurrent_      (MANA),
+        manaNormal_       (MANA),
+        lastSpellCastNum_ (0),
+        songsVec_         (SONG_VEC),
+        lastSongPlayedNum_(0)
     {
         //set the default condition if not already there
         if (conditionsVec_.empty())
@@ -1573,7 +1575,8 @@ namespace creature
                       L.achievements_,
                       L.manaCurrent_,
                       L.manaNormal_,
-                      L.lastSpellCastNum_)
+                      L.lastSpellCastNum_,
+                      L.lastSongPlayedNum_)
                 ==
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1591,7 +1594,8 @@ namespace creature
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_,
-                         R.lastSpellCastNum_) == false)
+                         R.lastSpellCastNum_,
+                         R.lastSongPlayedNum_) == false)
         {
             return false;
         }
@@ -1633,7 +1637,8 @@ namespace creature
                       L.achievements_,
                       L.manaCurrent_,
                       L.manaNormal_,
-                      L.lastSpellCastNum_)
+                      L.lastSpellCastNum_,
+                      L.lastSongPlayedNum_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1651,7 +1656,8 @@ namespace creature
                          R.achievements_,
                          R.manaCurrent_,
                          R.manaNormal_,
-                         R.lastSpellCastNum_) == true)
+                         R.lastSpellCastNum_,
+                         R.lastSongPlayedNum_) == true)
         {
             return true;
         }

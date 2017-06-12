@@ -80,7 +80,7 @@ namespace sfml_util
 
     Display::~Display()
     {
-        M_HP_LOG_DBG("Singleton Destruction: Display");
+        //M_HP_LOG_DBG("Singleton Destruction: Display");
     }
 
 

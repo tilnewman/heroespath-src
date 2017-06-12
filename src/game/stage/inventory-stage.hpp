@@ -209,6 +209,7 @@ namespace stage
         void HandleCast_Step2_PerformSpell(const creature::CreaturePVec_t &);
         bool HandleCast_Step3_DisplayResults();
         void ForceSelectionAndDrawOfListBox();
+        bool HandleSpellsOrSongs();
 
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
@@ -226,6 +227,8 @@ namespace stage
         static const std::string POPUP_NAME_DROPCONFIRM_;
         static const std::string POPUP_NAME_SPELLBOOK_;
         static const std::string POPUP_NAME_SPELL_RESULT_;
+        static const std::string POPUP_NAME_MUSICSHEET_;
+        static const std::string POPUP_NAME_SONG_RESULT_;
 
     private:
         const float                 SCREEN_WIDTH_;
@@ -368,7 +371,7 @@ namespace stage
         //members that control combat action restrictions
         creature::CreaturePtr_t originalCreaturePtr_;
         bool isDuringCombat_;
-        bool hasTakenActionSpell_;
+        bool hasTakenActionSpellOrSong_;
     };
 
 }

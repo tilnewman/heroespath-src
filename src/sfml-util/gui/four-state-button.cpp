@@ -260,22 +260,30 @@ namespace gui
         //validate TextInfo objects if text is given
         if (MOUSE_TEXT_INFO.up.text.empty() == false)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text << "\") (UP) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr),
+                "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text
+                << "\") (UP) was given a null font pointer.");
         }
 
         if (MOUSE_TEXT_INFO.down.text.empty() == false)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text << "\") (DOWN) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.down.fontPtr != nullptr),
+                "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text
+                << "\") (DOWN) was given a null font pointer.");
         }
 
         if (MOUSE_TEXT_INFO.over.text.empty() == false)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontPtr != nullptr), "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text << "\") (OVER) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.over.fontPtr != nullptr),
+                "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text
+                << "\") (OVER) was given a null font pointer.");
         }
 
         if (TEXT_INFO_DISABLED.text.empty() == false)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO_DISABLED.fontPtr != nullptr), "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text << "\") (DISABLED) was given a null font pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO_DISABLED.fontPtr != nullptr),
+                "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text
+                << "\") (DISABLED) was given a null font pointer.");
         }
 
         scale_           = SCALE;
@@ -291,51 +299,85 @@ namespace gui
         hasDisabled_ = HAS_IMAGE_DISABLED;
 
         sf::FloatRect tempRect(POS_LEFT, POS_TOP, 0.0f, 0.0f);
-        if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) && (MOUSE_TEXT_INFO.up.text.empty() == false))
+
+        if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) &&
+            (MOUSE_TEXT_INFO.up.text.empty() == false))
         {
-            textRegionUpUPtr_.reset(new TextRegion(GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect));
+            textRegionUpUPtr_ = std::make_unique<TextRegion>(GetEntityName() + "Up",
+                                                             MOUSE_TEXT_INFO.up,
+                                                             tempRect);
         }
 
         if (textRegionUpUPtr_.get() != nullptr)
         {
-            SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, textRegionUpUPtr_->GetEntityRegion().width, textRegionUpUPtr_->GetEntityRegion().height) );
+            SetEntityRegion( sf::FloatRect(POS_LEFT,
+                                           POS_TOP,
+                                           textRegionUpUPtr_->GetEntityRegion().width,
+                                           textRegionUpUPtr_->GetEntityRegion().height) );
         }
         else
         {
             if (HAS_IMAGE_UP)
             {
-                SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, static_cast<float>(textureUp_.getSize().x), static_cast<float>(textureUp_.getSize().y)));
+                SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP,
+                                              static_cast<float>(textureUp_.getSize().x),
+                                              static_cast<float>(textureUp_.getSize().y)));
             }
             else
             {
                 std::ostringstream ss;
-                ss << "sfml_util::gui::FourStateButton::Setup()  Both the given 'up' text and the 'up' texture were invalid.  One must be valid to create a FourStateButton.";
+                ss << "sfml_util::gui::FourStateButton::Setup()  Both the given 'up' "
+                    << "text and the 'up' texture were invalid.  One must be valid to "
+                    << "create a FourStateButton.";
+
                 throw std::runtime_error(ss.str());
             }
         }
 
-        if ((MOUSE_TEXT_INFO.down.fontPtr != nullptr) && (MOUSE_TEXT_INFO.down.text.empty() == false))
+        if ((MOUSE_TEXT_INFO.down.fontPtr != nullptr) &&
+            (MOUSE_TEXT_INFO.down.text.empty() == false))
         {
-            textRegionDownUPtr_.reset(new TextRegion(GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion()));
+            textRegionDownUPtr_ = std::make_unique<TextRegion>(
+                GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion());
         }
 
-        if ((MOUSE_TEXT_INFO.over.fontPtr != nullptr) && (MOUSE_TEXT_INFO.over.text.empty() == false))
+        if ((MOUSE_TEXT_INFO.over.fontPtr != nullptr) &&
+            (MOUSE_TEXT_INFO.over.text.empty() == false))
         {
-            textRegionOverUPtr_.reset(new TextRegion(GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion()));
+            textRegionOverUPtr_ = std::make_unique<TextRegion>(
+                GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion());
         }
 
-        if ((TEXT_INFO_DISABLED.fontPtr != nullptr) && (TEXT_INFO_DISABLED.text.empty() == false))
+        if ((TEXT_INFO_DISABLED.fontPtr != nullptr) &&
+            (TEXT_INFO_DISABLED.text.empty() == false))
         {
-            textRegionDisabledUPtr_.reset(new TextRegion(GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion()));
+            textRegionDisabledUPtr_ = std::make_unique<TextRegion>(
+                GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion());
         }
 
         if (WILL_BOX)
         {
-            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's", box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White), gui::BackgroundInfo()));
+            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's",
+                                                  box::Info(true,
+                                                            GetEntityRegion(),
+                                                            gui::ColorSet(sf::Color::White),
+                                                  gui::BackgroundInfo()));
         }
 
         SetMouseState(MouseState::Up);
         Reset();
+    }
+
+
+    void FourStateButton::SetText(const std::string & TEXT_UP,
+                                  const std::string & TEXT_DOWN,
+                                  const std::string & TEXT_OVER,
+                                  const std::string & TEXT_DISABLED)
+    {
+        textRegionUpUPtr_->SetText(TEXT_UP);
+        textRegionDownUPtr_->SetText(((TEXT_DOWN.empty()) ? TEXT_UP : TEXT_DOWN ));
+        textRegionOverUPtr_->SetText(((TEXT_OVER.empty()) ? TEXT_UP : TEXT_OVER));
+        textRegionDisabledUPtr_->SetText(((TEXT_DISABLED.empty()) ? TEXT_UP : TEXT_DISABLED));
     }
 
 
@@ -352,7 +394,10 @@ namespace gui
     {
         if (hasUp_)
         {
-            const float POS_TOP((sfml_util::Display::Instance()->GetWinHeight() - buttonSprite_.getGlobalBounds().height) - sfml_util::MapByRes(42.0f, 170.0f));
+            const float POS_TOP((sfml_util::Display::Instance()->GetWinHeight() -
+                buttonSprite_.getGlobalBounds().height) -
+                sfml_util::MapByRes(42.0f, 170.0f));
+
             buttonSprite_.setPosition(POS_LEFT, POS_TOP);
             SetEntityPos(POS_LEFT, POS_TOP);
         }
@@ -363,7 +408,8 @@ namespace gui
     {
         if (boxUPtr_.get() != nullptr)
         {
-            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's", gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White)));
+            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's",
+                gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White)));
         }
 
         if (isDisabled_)

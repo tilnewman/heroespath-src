@@ -73,7 +73,7 @@ namespace misc
 
     Platform::~Platform()
     {
-        M_HP_LOG_DBG("Singleton Destruction: Platform");
+        //M_HP_LOG_DBG("Singleton Destruction: Platform");
     }
 
 

@@ -35,6 +35,7 @@
 #include "game/item/item.hpp"
 #include "game/loop-manager.hpp"
 #include "game/non-player/ownership-profile.hpp"
+#include "game/item/armor-details.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -1033,7 +1034,7 @@ namespace gui
             }
             case game::item::misc_type::DrumLute:
             {
-                filenames.push_back("lute" + FILE_EXT_STR_);
+                filenames.push_back("drumlute" + FILE_EXT_STR_);
                 return filenames;
             }
             case game::item::misc_type::Scroll:
@@ -1048,7 +1049,7 @@ namespace gui
             }
             case game::item::misc_type::Orb:
             {
-                for (auto i(1); i <= 13; ++i)
+                for (auto i(1); i <= 9; ++i)
                 {
                     std::ostringstream ss;
                     ss << "orb-" << i << FILE_EXT_STR_;

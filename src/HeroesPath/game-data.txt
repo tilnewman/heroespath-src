@@ -19,6 +19,7 @@ media-images-items-dir=image/items/
 media-images-titles-dir=image/titles/
 media-images-spells-dir=image/spells/
 media-images-conditions-dir=image/conditions/
+media-images-songs-dir=image/songs/
 media-images-combat-dir=image/combat/
 
 #animation files and folders

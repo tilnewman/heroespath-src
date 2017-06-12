@@ -33,6 +33,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/creature/title.hpp"
+#include "game/loop-manager.hpp"
 
 #include <boost/filesystem.hpp>
 #include <sstream>
@@ -103,6 +104,38 @@ namespace gui
     void TitleImageManager::SetTitleImageDirectory(const std::string & PATH)
     {
         imagesDirectoryPath_ = PATH;
+    }
+
+
+    bool TitleImageManager::Test()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            game::LoopManager::Instance()->TestingStrAppend(
+                "sfml_util::gui::TitleImageManager::Test() Starting Tests...");
+        }
+
+        auto timPtr{ TitleImageManager::Instance() };
+
+        static auto titleIndex{ 0 };
+        if (titleIndex < game::creature::Titles::Count)
+        {
+            auto const ENUM{ static_cast<game::creature::Titles::Enum>(titleIndex) };
+            auto const ENUM_STR{ game::creature::Titles::ToString(ENUM) };
+            sf::Texture texture;
+            timPtr->Get(texture, ENUM);
+            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingStrAppend("TitleImageManager Tested " + ENUM_STR);
+            ++titleIndex;
+            return false;
+        }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "sfml_util::gui::TitleImageManager::Test()  ALL TESTS PASSED.");
+
+        return true;
     }
 
 

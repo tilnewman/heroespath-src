@@ -305,6 +305,9 @@ namespace creature
         std::size_t LastSpellCastNum() const                    { return lastSpellCastNum_; }
         void LastSpellCastNum(const std::size_t N)              { lastSpellCastNum_ = N; }
 
+        std::size_t LastSongPlayedNum() const                   { return lastSongPlayedNum_; }
+        void LastSongPlayedtNum(const std::size_t N)            { lastSongPlayedNum_ = N; }
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
@@ -339,6 +342,7 @@ namespace creature
         stats::Mana_t       manaNormal_;
         std::size_t         lastSpellCastNum_;
         song::SongVec_t     songsVec_;
+        std::size_t         lastSongPlayedNum_;
 
     private:
         friend class boost::serialization::access;
@@ -368,6 +372,7 @@ namespace creature
             ar & manaNormal_;
             ar & lastSpellCastNum_;
             ar & songsVec_;
+            ar & lastSongPlayedNum_;
         }
     };
 

@@ -38,7 +38,9 @@
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
 
@@ -321,10 +323,25 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_ImageSet{ false };
+        if (false == hasTestingCompleted_ImageSet)
+        {
+            hasTestingCompleted_ImageSet = TestImageSet();
+            return;
+        }
+
         static auto hasTestingCompleted_Spells{ false };
         if (false == hasTestingCompleted_Spells)
         {
             hasTestingCompleted_Spells = game::spell::Warehouse::Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_SpellsImageManager{ false };
+        if (false == hasTestingCompleted_SpellsImageManager)
+        {
+            hasTestingCompleted_SpellsImageManager =
+                sfml_util::gui::SpellImageManager::Instance()->Test();
             return;
         }
 
@@ -335,10 +352,11 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_ImageSet{ false };
-        if (false == hasTestingCompleted_ImageSet)
+        static auto hasTestingCompleted_SongsImageManager{ false };
+        if (false == hasTestingCompleted_SongsImageManager)
         {
-            hasTestingCompleted_ImageSet = TestImageSet();
+            hasTestingCompleted_SongsImageManager =
+                sfml_util::gui::SongImageManager::Instance()->Test();
             return;
         }
 
@@ -361,6 +379,14 @@ namespace stage
         if (false == hasTestingCompleted_Title)
         {
             hasTestingCompleted_Title = creature::title::Warehouse::Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_TitleImageManager{ false };
+        if (false == hasTestingCompleted_TitleImageManager)
+        {
+            hasTestingCompleted_TitleImageManager =
+                sfml_util::gui::TitleImageManager::Instance()->Test();
             return;
         }
 

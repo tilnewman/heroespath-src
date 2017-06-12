@@ -158,6 +158,8 @@ namespace sfml_util
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
+        static const float MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
+
     protected:
         static const float     IMAGE_SLIDER_SPEED_;
         static const int       NUMBER_SELECT_INVALID_;

@@ -72,11 +72,13 @@ namespace sfml_util
     const int       PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
     const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
     const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
+    const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.85f };
     const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 6.0f };
     const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
     const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
     const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_                { sf::Color(127, 32, 32) };
     const float     PopupStage::SPELL_WARNING_DURATION_SEC_             { 2.0f };
+
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
                            const sf::FloatRect &   REGION,

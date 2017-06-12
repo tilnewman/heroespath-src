@@ -85,7 +85,7 @@ namespace song
                                  SongType::Guitar,
                                  EffectType::CreatureHelpMisc,
                                  static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
-                                 3,
+                                 5,
                                  1,
                                  TargetType::AllCompanions)
         {}
@@ -106,7 +106,7 @@ namespace song
                                SongType::Drum,
                                EffectType::CreatureHelpMisc,
                                static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
-                               2,
+                               3,
                                1,
                                TargetType::AllCompanions)
         {}

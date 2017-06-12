@@ -743,7 +743,7 @@ namespace stage
                                               15 + misc::random::Int(6),
                                               0  + misc::random::Int(6),
                                               5  + misc::random::Int(10),
-                                              15 + misc::random::Int(10),
+                                              55 + misc::random::Int(10),
                                               0  + misc::random::Int(8));
 
             const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
@@ -792,12 +792,12 @@ namespace stage
             partyPtr->Add(firebrandSPtr, errMsgIgnored);
         }
         */
-        /*{
+        {
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
                                               20 + misc::random::Int(10),
                                               5  + misc::random::Int(6),
                                               10 + misc::random::Int(10),
-                                              10 + misc::random::Int(8),
+                                              50 + misc::random::Int(8),
                                               5  + misc::random::Int(6));
 
             const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(
@@ -814,8 +814,8 @@ namespace stage
 
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
-        }*/
-        
+        }
+        /*
         {
             const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
                                               20 + misc::random::Int(10),
@@ -838,13 +838,14 @@ namespace stage
 
             player::Initial::Setup(wolfenPtr);
             partyPtr->Add(wolfenPtr, errMsgIgnored);
-        }
-        /*{
+        }*/
+        
+        {
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6),
+                                            90 + misc::random::Int(6),
                                             10 + misc::random::Int(6));
 
             const std::string BARD_NAME(boost::algorithm::replace_last_copy(
@@ -861,8 +862,8 @@ namespace stage
 
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
-        }*/
-        
+        }
+        /*
         {
             const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
                                                    10 + misc::random::Int(6),
@@ -886,13 +887,13 @@ namespace stage
             player::Initial::Setup(bmPtr);
             partyPtr->Add(bmPtr, errMsgIgnored);
         }
-        
+        */
         {
             const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
                                              5  + misc::random::Int(10),
                                              5  + misc::random::Int(10),
                                              15 + misc::random::Int(15),
-                                             15 + misc::random::Int(10),
+                                             55 + misc::random::Int(10),
                                              5  + misc::random::Int(8));
 
             const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
@@ -915,7 +916,7 @@ namespace stage
                                               5  + misc::random::Int(8),
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
-                                              25 + misc::random::Int(8),
+                                              55 + misc::random::Int(8),
                                               10 + misc::random::Int(15));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(

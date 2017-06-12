@@ -136,6 +136,11 @@ namespace gui
                            const float           SCALE              = 1.0f,
                            const bool            IS_DISABLED        = false);
 
+        virtual void SetText(const std::string & TEXT_UP,
+                             const std::string & TEXT_DOWN     = "",
+                             const std::string & TEXT_OVER     = "",
+                             const std::string & TEXT_DISABLED = "");
+
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
         virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);

@@ -50,6 +50,7 @@ namespace player
     private:
         static void EnsureValidImageFilename(CharacterPtrC_t);
         static void SetupInventory(CharacterPtrC_t);
+        static void SetupSpellsAndSongs(CharacterPtrC_t);
         static void EquipBodyParts(CharacterPtrC_t);
         static stats::Health_t GetStartingHealth(CharacterCPtrC_t);
         static void SetStartingHealth(CharacterPtrC_t);

@@ -440,14 +440,44 @@ namespace gui
             Texture(POPUP_INFO.Image(), backgroundTexture);
 
             //define the outer limits of the stage
-            auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
-            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) * SPELLBOOK_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
+            auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() *
+                PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
+
+            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) *
+                SPELLBOOK_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
 
             sf::FloatRect rect;
             rect.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
             rect.top = ((sfml_util::Display::Instance()->GetWinHeight() - SPELLBOOK_HEIGHT) * 0.5f);
             rect.width = SPELLBOOK_WIDTH;
             rect.height = SPELLBOOK_HEIGHT;
+
+            auto const INNER_RECT{ rect };
+
+            auto popupStagePtr( new PopupStage(POPUP_INFO,
+                                               rect,
+                                               INNER_RECT,
+                                               backgroundTexture) );
+            popupStagePtr->Setup();
+            return popupStagePtr;
+        }
+        else if (POPUP_INFO.Image() == sfml_util::PopupImage::MusicSheet)
+        {
+            sf::Texture backgroundTexture;
+            Texture(POPUP_INFO.Image(), backgroundTexture);
+
+            //define the outer limits of the stage
+            auto const MUSICSHEET_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() *
+                PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_ };
+
+            auto const MUSICSHEET_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) *
+                MUSICSHEET_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
+
+            sf::FloatRect rect;
+            rect.left = (sfml_util::Display::Instance()->GetWinWidth() - MUSICSHEET_WIDTH) * 0.5f;
+            rect.top = (sfml_util::Display::Instance()->GetWinHeight() - MUSICSHEET_HEIGHT) * 0.5f;
+            rect.width =  MUSICSHEET_WIDTH;
+            rect.height = MUSICSHEET_HEIGHT;
 
             auto const INNER_RECT{ rect };
 
