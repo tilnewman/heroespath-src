@@ -34,6 +34,8 @@
 #include "game/item/weapon-info.hpp"
 #include "game/item/item-warehouse.hpp"
 
+#include "sfml-util/gui/item-image-manager.hpp"
+
 
 namespace game
 {
@@ -167,7 +169,7 @@ namespace armor
         }
         ssDesc << ".";
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
             ssName.str(),
             ssDesc.str(),
             static_cast<category::Enum>(category::Armor |
@@ -178,7 +180,7 @@ namespace armor
             armor_type::Sheild,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -186,7 +188,12 @@ namespace armor
             armorRating,
             exclusiveRole,
             weapon::WeaponInfo(),
-            armorInfo) );
+            armorInfo)) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -223,7 +230,7 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, materialPri, materialSec),
             Make_Desc(DETAILS.description, materialPri, materialSec),
             static_cast<category::Enum>(category::Armor |
@@ -234,7 +241,7 @@ namespace armor
             armor_type::Helm,
             materialPri,
             materialSec,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -242,7 +249,12 @@ namespace armor
             armorRating,
             exclusiveRole,
             weapon::WeaponInfo(),
-            armorInfo) );
+            armorInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -278,7 +290,7 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Armor |
@@ -289,7 +301,7 @@ namespace armor
             armor_type::Gauntlets,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -298,7 +310,12 @@ namespace armor
             exclusiveRole,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -336,7 +353,7 @@ namespace armor
             armorCategory = category::Wearable;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(armorCategory |
@@ -347,7 +364,7 @@ namespace armor
             armor_type::Pants,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -356,7 +373,12 @@ namespace armor
             exclusiveRole,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -387,20 +409,13 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        std::string imageFilename(DETAILS.image_filename);
-        if ((material::IsClothOrLeather(MATERIAL_PRI)) &&
-            (material::IsClothOrLeather(MATERIAL_SEC)))
-        {
-            imageFilename = "boots-leather";
-        }
-
         category::Enum armorCategory(category::Armor);
         if (TYPE == base_type::Plain)
         {
             armorCategory = category::Wearable;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(armorCategory |
@@ -411,7 +426,7 @@ namespace armor
             armor_type::Boots,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            imageFilename,
+            "",
             price,
             weight,
             0,
@@ -420,7 +435,12 @@ namespace armor
             exclusiveRole,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -457,7 +477,7 @@ namespace armor
             armorCategory = category::Wearable;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
@@ -466,7 +486,7 @@ namespace armor
             armor_type::Shirt,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -475,7 +495,12 @@ namespace armor
             exclusiveRole,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -506,7 +531,7 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Armor |
@@ -517,7 +542,7 @@ namespace armor
             armor_type::Bracer,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -526,7 +551,12 @@ namespace armor
             exclusiveRole,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -556,7 +586,7 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Armor |
@@ -567,7 +597,7 @@ namespace armor
             armor_type::Aventail,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -575,7 +605,12 @@ namespace armor
             armorRating,
             exclusiveRole,
             weapon::WeaponInfo(),
-            armorInfo) );
+            armorInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -599,7 +634,7 @@ namespace armor
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
         AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Armor |
@@ -610,7 +645,7 @@ namespace armor
             armor_type::Covering,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             0,
@@ -619,7 +654,12 @@ namespace armor
             creature::role::Count,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -640,26 +680,13 @@ namespace armor
         details.weight = static_cast<item::Weight_t>(100.0f *
             material::WeightMult(MATERIAL, material::Nothing));
 
-        if (MATERIAL == material::Hide)
-        {
-            details.image_filename = "hide";
-        }
-        else if (MATERIAL == material::Scale)
-        {
-            details.image_filename = "scale";
-        }
-        else //TODO other material images
-        {
-            details.image_filename = "no-image";
-        }
-
         std::ostringstream ss;
         ss << "Skin made of " << material::ToReadableString(MATERIAL)
             << ".  The Armor Rating increases with Rank.";
 
         details.description = ss.str();
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             details.name,
             details.description,
             static_cast<category::Enum>(category::Armor |
@@ -671,7 +698,7 @@ namespace armor
             armor_type::Skin,
             MATERIAL,
             material::Nothing,
-            details.image_filename,
+            "",
             details.price,
             details.weight,
             0,
@@ -680,7 +707,12 @@ namespace armor
             creature::role::Count,
             weapon::WeaponInfo(),
             armorInfo,
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 }

@@ -76,7 +76,9 @@ namespace item
         isPixie_         (false)//see constructor
     {
         if (IS_PIXIE_ITEM)
+        {
             IsPixie(true, true);
+        }
     }
 
 

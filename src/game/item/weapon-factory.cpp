@@ -37,6 +37,8 @@
 #include "game/item/item-warehouse.hpp"
 #include "game/creature/creature.hpp"
 
+#include "sfml-util/gui/item-image-manager.hpp"
+
 #include <exception>
 #include <sstream>
 
@@ -104,7 +106,7 @@ namespace weapon
         const WeaponDetails FISTS_DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails("Fists") );
 
-        return ItemWarehouse::Instance()->Store(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(FISTS_DETAILS.name,
             FISTS_DETAILS.description,
             static_cast<category::Enum>(category::Weapon |
@@ -117,14 +119,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Bone,
             material::Flesh,
-            FISTS_DETAILS.image_filename,
+            "",
             FISTS_DETAILS.price,
             FISTS_DETAILS.weight,
             FISTS_DETAILS.damage_min,
             FISTS_DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -142,7 +149,7 @@ namespace weapon
         std::ostringstream ssDesc;
         ssDesc << "The sharp tearing claws of a " << CREATURE_CPTRC->Race().Name() << ".";
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             ssName.str(),
             ssDesc.str(),
             static_cast<category::Enum>(category::Weapon |
@@ -155,14 +162,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Claw,
             material::Nothing,
-            CLAWS_DETAILS.image_filename,
+            "",
             CLAWS_DETAILS.price,
             CLAWS_DETAILS.weight,
             CLAWS_DETAILS.damage_min,
             CLAWS_DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -180,7 +192,7 @@ namespace weapon
         std::ostringstream ssDesc;
         ssDesc << "The writhing lengths of a " << CREATURE_CPTRC->Race().Name() << ".";
 
-        return ItemWarehouse::Instance()->Store(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
             static_cast<category::Enum>(category::Weapon |
@@ -192,14 +204,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Flesh,
             material::Nothing,
-            TENDRIL_DETAILS.image_filename,
+            "",
             TENDRIL_DETAILS.price,
             TENDRIL_DETAILS.weight,
             TENDRIL_DETAILS.damage_min,
             TENDRIL_DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -217,7 +234,7 @@ namespace weapon
         std::ostringstream ssDesc;
         ssDesc << "The fanged jaws of a " << CREATURE_CPTRC->Race().Name() << ".";
 
-        return ItemWarehouse::Instance()->Store(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
             static_cast<category::Enum>(category::Weapon |
@@ -228,14 +245,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Tooth,
             material::Nothing,
-            BITE_DETAILS.image_filename,
+            "",
             BITE_DETAILS.price,
             BITE_DETAILS.weight,
             BITE_DETAILS.damage_min,
             BITE_DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -262,7 +284,7 @@ namespace weapon
                 << " " << CREATURE_CPTRC->Race().Name() << ".";
         }
 
-        return ItemWarehouse::Instance()->Store(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
             static_cast<category::Enum>(category::Weapon |
@@ -273,14 +295,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Gas,
             material::Nothing,
-            BREATH_DETAILS.image_filename,
+            "",
             BREATH_DETAILS.price,
             BREATH_DETAILS.weight,
             BREATH_DETAILS.damage_min,
             BREATH_DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -349,7 +376,7 @@ namespace weapon
         std::ostringstream ssDesc;
         ssDesc << "A " << nameDescriptor << baseName;
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(ssName.str(), MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(ssDesc.str(), MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Equippable |
@@ -363,7 +390,7 @@ namespace weapon
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            ((IS_DAGGER) ? "dagger" : "knife"),
+            "",
             price,
             weight,
             damageMin,
@@ -372,7 +399,12 @@ namespace weapon
             creature::role::Count,
             weaponInfo,
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -396,7 +428,7 @@ namespace weapon
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Weapon |
@@ -409,14 +441,19 @@ namespace weapon
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
             0,
             exclusiveRole,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -436,7 +473,7 @@ namespace weapon
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Weapon |
@@ -449,14 +486,19 @@ namespace weapon
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -476,7 +518,7 @@ namespace weapon
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Weapon |
@@ -487,14 +529,19 @@ namespace weapon
             armor_type::NotArmor,
             material::Steel,
             material::Wood,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_min,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -542,7 +589,7 @@ namespace weapon
         AdjustPrice(price, materialPri, MATERIAL_SEC);
         AdjustWeight(weight, materialPri, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, materialPri, MATERIAL_SEC),
             Make_Desc(DETAILS.description, materialPri, MATERIAL_SEC, "handle"),
             static_cast<category::Enum>(category::Weapon |
@@ -553,14 +600,19 @@ namespace weapon
             armor_type::NotArmor,
             materialPri,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -625,7 +677,7 @@ namespace weapon
         AdjustPrice(price, materialPri, MATERIAL_SEC);
         AdjustWeight(weight, materialPri, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, materialPri, MATERIAL_SEC),
             Make_Desc(DETAILS.description, materialPri, MATERIAL_SEC, "grip"),
             static_cast<category::Enum>(category::Weapon |
@@ -637,14 +689,19 @@ namespace weapon
             armor_type::NotArmor,
             materialPri,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -667,7 +724,7 @@ namespace weapon
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(std::string("A ").append(DETAILS.name),
                       MATERIAL_PRI,
@@ -682,7 +739,7 @@ namespace weapon
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
@@ -691,7 +748,12 @@ namespace weapon
             creature::role::Count,
             weaponInfo,
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -744,7 +806,7 @@ namespace weapon
             ssDesc << material::ToReadableString(MATERIAL_SEC) << ".";
         }
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             ssDesc.str(),
             static_cast<category::Enum>(category::Weapon |
@@ -757,14 +819,19 @@ namespace weapon
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            DETAILS.image_filename,
+            "",
             price,
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
             0,
             creature::role::Count,
-            weaponInfo) );
+            weaponInfo) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 }

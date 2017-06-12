@@ -117,7 +117,7 @@ namespace item
             case LockPicks        : { return "LockPicks"; }
             case Mask             : { return "Mask"; }
             case Mirror           : { return "Mirror"; }
-            case DrumLute         : { return "Lute"; }
+            case DrumLute         : { return "DrumLute"; }
             case Scroll           : { return "Scroll"; }
             case Orb              : { return "Orb"; }
             case Ring             : { return "Ring"; }

@@ -95,7 +95,9 @@ namespace weapon
 
     void WeaponDetailLoader::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::item::weapon::WeaponDetailLoader::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::item::weapon::WeaponDetailLoader::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -106,11 +108,15 @@ namespace weapon
         if (CITER == weaponDetailsMap_.end())
         {
             std::ostringstream ss;
-            ss << "game::item::weapon::WeaponDetailLoader::LookupWeaponDetails(\"" << NAME << "\")  failed to find that name in weaponDetailsMap_.";
+            ss << "game::item::weapon::WeaponDetailLoader::LookupWeaponDetails(\""
+                << NAME << "\")  failed to find that name in weaponDetailsMap_.";
+
             throw std::runtime_error(ss.str());
         }
         else
+        {
             return CITER->second;
+        }
     }
 
 
@@ -175,24 +181,34 @@ namespace weapon
         appbase::stringhelp::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
         //verify there are eight fields
-        M_ASSERT_OR_LOGANDTHROW_SS((fieldsVec.size() == 9), "game::item::weapon::WeaponDetailsLoader::LoadDetailsForKey(weapon_name=\"" << WEAPON_NAME << "\") using key=\"" << KEY_STR << "\" found value=\"" << VALUE_STR << "\" but failed to find the required 9 comma separated fields.");
+        M_ASSERT_OR_LOGANDTHROW_SS((fieldsVec.size() == 8),
+            "game::item::weapon::WeaponDetailsLoader::LoadDetailsForKey(weapon_name=\""
+            << WEAPON_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
+            << VALUE_STR << "\" but failed to find the required 9 comma separated fields.");
 
-        weaponDetails.name =            CleanStringField(fieldsVec[0], false);
-        weaponDetails.complexity =      non_player::ownership::complexity_type::FromString( CleanStringField(fieldsVec[1], false) );
-        weaponDetails.price =           StringFieldToInt("Price", fieldsVec[2]);
-        weaponDetails.weight =          static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
-        weaponDetails.damage_min =      StringFieldToInt("DamageMin", fieldsVec[4]);
-        weaponDetails.damage_max =      StringFieldToInt("DamageMax", fieldsVec[5]);
-        weaponDetails.handedness =      ((CleanStringField(fieldsVec[6], true) == "two-handed") ? item::category::TwoHanded : item::category::OneHanded );
-        weaponDetails.image_filename =  CleanStringField(fieldsVec[7], true);
-        weaponDetails.description =     CleanStringField(fieldsVec[8], false);
+        weaponDetails.name = CleanStringField(fieldsVec[0], false);
+
+        weaponDetails.complexity = non_player::ownership::complexity_type::FromString(
+            CleanStringField(fieldsVec[1], false) );
+        
+        weaponDetails.price = StringFieldToInt("Price", fieldsVec[2]);
+        weaponDetails.weight = static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
+
+        weaponDetails.damage_min = StringFieldToInt("DamageMin", fieldsVec[4]);
+        weaponDetails.damage_max = StringFieldToInt("DamageMax", fieldsVec[5]);
+
+        weaponDetails.handedness = ((CleanStringField(fieldsVec[6], true) == "two-handed") ?
+            item::category::TwoHanded : item::category::OneHanded );
+
+        weaponDetails.description = CleanStringField(fieldsVec[7], false);
 
         //store details in the map
         weaponDetailsMap_[WEAPON_NAME] = weaponDetails;
     }
 
 
-    int WeaponDetailLoader::StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR)
+    int WeaponDetailLoader::StringFieldToInt(const std::string & FIELD_NAME,
+                                             const std::string & NUM_STR)
     {
         const int ERROR_VAL(-1);
         int result(ERROR_VAL);
@@ -205,20 +221,28 @@ namespace weapon
             result = ERROR_VAL;
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((result != ERROR_VAL), "game::item::weapon::WeaponDetailsLoader::StringFieldToInt(field_name=\"" << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the " << FIELD_NAME << " field of \"" << NUM_STR << "\" into an int.");
+        M_ASSERT_OR_LOGANDTHROW_SS((result != ERROR_VAL),
+            "game::item::weapon::WeaponDetailsLoader::StringFieldToInt(field_name=\""
+            << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the "
+            << FIELD_NAME << " field of \"" << NUM_STR << "\" into an int.");
 
         return result;
     }
 
 
-    const std::string WeaponDetailLoader::CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE)
+    const std::string WeaponDetailLoader::CleanStringField(const std::string & FIELD_STR,
+                                                           const bool          WILL_LOWERCASE)
     {
         using namespace boost::algorithm;
 
         if (WILL_LOWERCASE)
+        {
             return to_lower_copy(trim_copy(erase_all_copy(FIELD_STR, "\"")));
+        }
         else
+        {
             return trim_copy(erase_all_copy(FIELD_STR, "\""));
+        }
     }
 }
 }

@@ -82,6 +82,7 @@ namespace item
         inline const std::string Desc() const                   { return desc_; }
 
         inline const std::string ImageFilename() const          { return imageFilename_; }
+        inline void ImageFilename(const std::string & S)        { imageFilename_ = S; }
 
         inline const weapon::WeaponInfo Weapon_Info() const     { return weaponInfo_; }
         inline const armor::ArmorInfo Armor_Info() const        { return armorInfo_; }

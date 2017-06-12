@@ -107,13 +107,7 @@ namespace misc
         Weight_t weight(20);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        std::string imageFilename("ring-plain");
-        if (material::IsPrecious(MATERIAL_SEC))
-        {
-            imageFilename = "ring-jeweled";
-        }
-
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Equippable | category::Wearable),
@@ -122,7 +116,7 @@ namespace misc
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            imageFilename,
+            "",
             price,
             weight,
             0,
@@ -131,7 +125,12 @@ namespace misc
             creature::role::Count,
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -145,7 +144,7 @@ namespace misc
         Weight_t weight(40);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Equippable |
@@ -156,10 +155,7 @@ namespace misc
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            boost::algorithm::erase_all_copy(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(
-                    item::misc_type::Wand, material::IsJewel(MATERIAL_SEC), true),
-                sfml_util::gui::ItemImageManager::FileExtension()),
+            "",
             price,
             weight,
             0,
@@ -168,7 +164,12 @@ namespace misc
             creature::role::Count,
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM) );
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 
@@ -181,7 +182,7 @@ namespace misc
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);
 
-        return ItemWarehouse::Instance()->Store( new Item(
+        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
             Make_Name("DrumLute", material::Wood, material::Rope, IS_PIXIE_ITEM),
             Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Equippable |
@@ -192,7 +193,7 @@ namespace misc
             armor_type::NotArmor,
             material::Wood,
             material::Rope,
-            "DrumLute",
+            "",
             price,
             weight,
             0,
@@ -201,7 +202,12 @@ namespace misc
             creature::role::Bard,
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM));
+            IS_PIXIE_ITEM) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 }

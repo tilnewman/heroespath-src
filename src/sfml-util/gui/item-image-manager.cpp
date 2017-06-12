@@ -599,7 +599,7 @@ namespace gui
 
     void ItemImageManager::Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const
     {
-        return Load(texture, ITEM_PTR->ImageFilename() + FILE_EXT_STR_);
+        return Load(texture, ITEM_PTR->ImageFilename());
     }
 
 
@@ -648,7 +648,7 @@ namespace gui
         {
             return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled());
         }
-        else if (ITEM_PTR->IsArmor() && (ITEM_PTR->Armor_Info().type != armor_type::NotArmor))
+        else if (ITEM_PTR->Armor_Info().type != armor_type::NotArmor)
         {
             return GetImageFilename(ITEM_PTR->Armor_Info());
         }

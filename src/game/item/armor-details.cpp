@@ -91,7 +91,8 @@ namespace armor
 
     void ArmorDetailLoader::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::item::armor::ArmorDetailLoader::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::item::armor::ArmorDetailLoader::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
@@ -102,11 +103,15 @@ namespace armor
         if (CITER == armorDetailsMap_.end())
         {
             std::ostringstream ss;
-            ss << "game::item::armor::ArmorDetailLoader::LookupArmorDetails(\"" << NAME << "\")  failed to find that name in armorDetailsMap_.";
+            ss << "game::item::armor::ArmorDetailLoader::LookupArmorDetails(\"" << NAME
+                << "\")  failed to find that name in armorDetailsMap_.";
+
             throw std::runtime_error(ss.str());
         }
         else
+        {
             return CITER->second;
+        }
     }
 
 
@@ -168,22 +173,28 @@ namespace armor
         appbase::stringhelp::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
         //verify there are eight fields
-        M_ASSERT_OR_LOGANDTHROW_SS((fieldsVec.size() == 7), "game::item::armor::ArmorDetailsLoader::LoadDetailsForKey(armor_name=\"" << ARMOR_NAME << "\") using key=\"" << KEY_STR << "\" found value=\"" << VALUE_STR << "\" but failed to find the required 7 comma separated fields.");
+        M_ASSERT_OR_LOGANDTHROW_SS((fieldsVec.size() == 6),
+            "game::item::armor::ArmorDetailsLoader::LoadDetailsForKey(armor_name=\""
+            << ARMOR_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
+            << VALUE_STR << "\" but failed to find the required 7 comma separated fields.");
 
-        armorDetails.name =            CleanStringField(fieldsVec[0], false);
-        armorDetails.complexity =      non_player::ownership::complexity_type::FromString( CleanStringField(fieldsVec[1], false) );
-        armorDetails.price =           StringFieldToInt("Price", fieldsVec[2]);
-        armorDetails.weight =          static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
-        armorDetails.armor_rating =    StringFieldToInt("ArmorRating", fieldsVec[4]);
-        armorDetails.image_filename =  CleanStringField(fieldsVec[5], true);
-        armorDetails.description =     CleanStringField(fieldsVec[6], false);
+        armorDetails.name = CleanStringField(fieldsVec[0], false);
+
+        armorDetails.complexity = non_player::ownership::complexity_type::FromString(
+            CleanStringField(fieldsVec[1], false) );
+
+        armorDetails.price = StringFieldToInt("Price", fieldsVec[2]);
+        armorDetails.weight = static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
+        armorDetails.armor_rating = StringFieldToInt("ArmorRating", fieldsVec[4]);
+        armorDetails.description = CleanStringField(fieldsVec[5], false);
 
         //store details in the map
         armorDetailsMap_[ARMOR_NAME] = armorDetails;
     }
 
 
-    int ArmorDetailLoader::StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR)
+    int ArmorDetailLoader::StringFieldToInt(const std::string & FIELD_NAME,
+                                            const std::string & NUM_STR)
     {
         const int ERROR_VAL(-1);
         int result(ERROR_VAL);
@@ -196,13 +207,17 @@ namespace armor
             result = ERROR_VAL;
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((result != ERROR_VAL), "game::item::armor::ArmorDetailsLoader::StringFieldToInt(field_name=\"" << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the " << FIELD_NAME << " field of \"" << NUM_STR << "\" into an int.");
+        M_ASSERT_OR_LOGANDTHROW_SS((result != ERROR_VAL),
+            "game::item::armor::ArmorDetailsLoader::StringFieldToInt(field_name=\""
+            << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the "
+            << FIELD_NAME << " field of \"" << NUM_STR << "\" into an int.");
 
         return result;
     }
 
 
-    const std::string ArmorDetailLoader::CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE)
+    const std::string ArmorDetailLoader::CleanStringField(const std::string & FIELD_STR,
+                                                          const bool          WILL_LOWERCASE)
     {
         using namespace boost::algorithm;
 

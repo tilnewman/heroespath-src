@@ -50,7 +50,6 @@ namespace armor
         ArmorDetails()
         :
             name            (),
-            image_filename  (),
             description     (),
             price           (0),
             weight          (0),
@@ -59,7 +58,6 @@ namespace armor
         {}
 
         std::string     name;
-        std::string     image_filename;
         std::string     description;
         item::Coin_t    price;
         item::Weight_t  weight;

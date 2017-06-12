@@ -761,7 +761,7 @@ namespace stage
             "media-anim-images-dir-whiteburst",
         };
 
-        const long ANIM_FRAME_SLEEP_MS{ 15 };
+        const long ANIM_FRAME_SLEEP_MS{ 0 };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
