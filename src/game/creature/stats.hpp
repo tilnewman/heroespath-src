@@ -47,17 +47,21 @@ namespace creature
     struct Stats
     {
         static float Ratio(const CreaturePtr_t     CREATURE_PTR,
-                           const stats::stat::Enum STAT_ENUM);
+                           const stats::stat::Enum STAT_ENUM,
+                           const bool              WILL_INCLUDE_LUCK = true);
 
         static float Ratio(const CreaturePtr_t          CREATURE_PTR,
-                           const stats::StatEnumVec_t & STAT_ENUM_VEC);
+                           const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                           const bool                   WILL_INCLUDE_LUCK = true);
 
         static bool Roll(const CreaturePtr_t     CREATURE_PTR,
                          const stats::stat::Enum STAT_ENUM,
+                         const bool              WILL_CONSIDER_LUCK = true,
                          const bool              WILL_CONSIDER_RANK = false);
 
         static bool Roll(const CreaturePtr_t          CREATURE_PTR,
                          const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                         const bool                   WILL_CONSIDER_LUCK = true,
                          const bool                   WILL_CONSIDER_RANK = false);
 
         //You can leave DEFENDER_STAT stats::stat::Count to mean the same as CHALLENGER_STAT
@@ -66,7 +70,10 @@ namespace creature
             const stats::stat::Enum CHALLENGER_STAT,
             const CreaturePtr_t     DEFENDER_PTR,
             const stats::stat::Enum DEFENDER_STAT = stats::stat::Count,
+            const stats::Stat_t     CHALLENGER_BONUS_PER = 0,
+            const stats::Stat_t     DEFENDER_BONUS_PER = 0,
             const bool              WILL_CONDSIDER_RANK = true,
+            const bool              WILL_CONSIDER_PLAYER_LUCK = true,
             const bool              ALLOW_PLAYER_NATURAL_WINS = true);
 
         //You can leave the DEFENDER_STAT_VEC empty to mean both vecs are the same.
@@ -75,10 +82,17 @@ namespace creature
             const stats::StatEnumVec_t & CHALLENGER_STAT_VEC,
             const CreaturePtr_t          DEFENDER_PTR,
             const stats::StatEnumVec_t & DEFENDER_STAT_VEC_PARAM = stats::StatEnumVec_t(),
+            const stats::Stat_t          CHALLENGER_BONUS_PER = 0,
+            const stats::Stat_t          DEFENDER_BONUS_PER = 0,
             const bool                   WILL_CONDSIDER_RANK = true,
+            const bool                   WILL_CONSIDER_PLAYER_LUCK = true,
             const bool                   ALLOW_PLAYER_NATURAL_WINS = true);
         
     private:
+        static const stats::Stat_t LUCK_DIVISOR_;
+
+        static stats::Stat_t LuckBonus(const CreaturePtr_t CREATURE_PTR);
+
         static stats::Stat_t RollBonusByRace(const stats::stat::Enum STAT_ENUM,
                                              const race::Enum        RACE_ENUM);
 

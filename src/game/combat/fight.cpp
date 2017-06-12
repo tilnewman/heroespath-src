@@ -32,6 +32,7 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/creature/stats.hpp"
 #include "game/item/item.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/combat/combat-display.hpp"
@@ -683,45 +684,10 @@ namespace combat
     const FightResult FightClub::Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
-        auto const POUNCER_SPD{ creaturePouncingPtrC->Stats().Spd().Current() };
-        auto const POUNCER_SPD_RAND_MIN{ stats::Stat::Reduce(POUNCER_SPD) };
-        auto const POUNCER_SPD_RAND_MAX{ POUNCER_SPD };
-        auto const POUNCER_SPD_RAND{ misc::random::Int(POUNCER_SPD_RAND_MIN, POUNCER_SPD_RAND_MAX) };
-
-        auto const POUNCER_ACC{ creaturePouncingPtrC->Stats().Acc().Current() };
-        auto const POUNCER_ACC_RAND_MIN{ stats::Stat::Reduce(POUNCER_ACC) };
-        auto const POUNCER_ACC_RAND_MAX{ POUNCER_ACC };
-        auto const POUNCER_ACC_RAND{ misc::random::Int(POUNCER_ACC_RAND_MIN, POUNCER_ACC_RAND_MAX) };
-
-        auto didPounce{ false };
-
-        if ((POUNCER_SPD_RAND == POUNCER_SPD_RAND_MAX) || (POUNCER_ACC_RAND == POUNCER_ACC_RAND_MAX))
-        {
-            //if either of the pouncer's attribute "rolls" were natural max then the pounce occurs
-            didPounce = true;
-        }
-        else if ((creatureDefendingPtrC->HasConditionNotAThreatTemp() || creatureDefendingPtrC->HasConditionNotAThreatPerm()) &&
-                 (POUNCER_ACC_RAND != POUNCER_ACC_RAND_MIN))
-        {
-            //if the defender is temp disabled then the pounce succeeds unless the accuracy "roll" was natural min
-            didPounce = true;
-        }
-        else
-        {
-            auto const DEFENDER_SPD{ creatureDefendingPtrC->Stats().Spd().Current() };
-            auto const DEFENDER_SPD_RAND_MIN{ stats::Stat::Reduce(DEFENDER_SPD) };
-            auto const DEFENDER_SPD_RAND_MAX{ DEFENDER_SPD };
-            auto const DEFENDER_SPD_RAND{ misc::random::Int(DEFENDER_SPD_RAND_MIN, DEFENDER_SPD_RAND_MAX) };
-
-            if (((POUNCER_SPD_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPD_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))) ||
-                ((POUNCER_ACC_RAND + static_cast<int>(creaturePouncingPtrC->Rank())) > (DEFENDER_SPD_RAND + static_cast<int>(creatureDefendingPtrC->Rank()))))
-            {
-                //if the pouncer's speed or accuracy "rolls" are greater than the defender's speed "roll" then the pouce occurs
-                didPounce = true;
-            }
-        }
-
-        if (didPounce)
+        if (creature::Stats::Versus(creaturePouncingPtrC,
+                                    { stats::stat::Speed, stats::stat::Accuracy },
+                                    creatureDefendingPtrC,
+                                    { stats::stat::Speed }))
         {
             creature::ConditionEnumVec_t nonHitConditionsVec;
             if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped) == false)
@@ -744,23 +710,13 @@ namespace combat
     const FightResult FightClub::Roar(creature::CreaturePtrC_t creatureRoaringPtrC,
                                       CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
     {
-        auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType( ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
-
-        auto const ROARER_STRENGTH{ creatureRoaringPtrC->Stats().Str().Current() };
-        auto const ROARER_STRENGTH_RAND_MIN{ stats::Stat::Reduce(ROARER_STRENGTH) };
-        auto const ROARER_STRENGTH_RAND_MAX{ ROARER_STRENGTH };
-
-        auto const ROARER_LCK{ creatureRoaringPtrC->Stats().Lck().Current() };
-        auto const ROARER_LCK_RAND_MIN_HALF((ROARER_LCK / 5));
-        auto const ROARER_LCK_RAND_MAX_HALF{ ROARER_LCK / 2 };
-
-        auto const IS_ROARING_CREATURE_FLYING{ Encounter::Instance()->GetTurnInfoCopy(creatureRoaringPtrC).GetIsFlying() };
-
-        auto const ROARING_FRIGHTEN_ROLL_MIN{ ROARER_STRENGTH_RAND_MIN + ROARER_LCK_RAND_MIN_HALF };
-        auto const ROARING_FRIGHTEN_ROLL_MAX{ ROARER_STRENGTH_RAND_MAX + ROARER_LCK_RAND_MAX_HALF };
-        auto const ROARING_CREATURE_FRIGHTEN_ROLL{ misc::random::Int(ROARING_FRIGHTEN_ROLL_MIN, ROARING_FRIGHTEN_ROLL_MAX)};
+        auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
+            ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
 
         CreatureEffectVec_t creatureEffectsVec;
+
+        auto const IS_ROARING_CREATURE_FLYING{
+            combat::Encounter::Instance()->GetTurnInfoCopy(creatureRoaringPtrC).GetIsFlying() };
 
         //Give each defending creature a chance to resist being panicked.
         //The farther away each defending creature is the better chance of resisting he/she/it has.
@@ -770,8 +726,9 @@ namespace combat
             {
                 continue;
             }
-
-            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(creatureRoaringPtrC, NEXT_DEFEND_CREATURE_PTR)) };
+            
+            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
+                creatureRoaringPtrC, NEXT_DEFEND_CREATURE_PTR)) };
 
             //if flying, then consider it farther away and less likely to be panicked
             if (Encounter::Instance()->GetTurnInfoCopy(NEXT_DEFEND_CREATURE_PTR).GetIsFlying() &&
@@ -780,41 +737,14 @@ namespace combat
                 ++nextBlockingDisatnce;
             }
 
-            auto const DISATANCE_OFFSET{ nextBlockingDisatnce * 5 };
+            const stats::Stat_t DISATANCE_BONUS{ nextBlockingDisatnce * 2 };
 
-            auto const DEFENDER_INTELLIGENCE{ creatureRoaringPtrC->Stats().Int().Current() };
-            auto const DEFENDER_INTELLIGENCE_RAND_MIN{ stats::Stat::Reduce(DEFENDER_INTELLIGENCE) };
-            auto const DEFENDER_INTELLIGENCE_RAND_MAX{ DEFENDER_INTELLIGENCE };
-
-            auto const DEFENDER_LCK{ creatureRoaringPtrC->Stats().Lck().Current() };
-            auto const DEFENDER_LCK_RAND_MIN_HALF((DEFENDER_LCK / 5));
-            auto const DEFENDER_LCK_RAND_MAX_HALF{ DEFENDER_LCK / 2 };
-
-            auto const DEFEND_FRIGHTEN_ROLL_MIN{ DEFENDER_INTELLIGENCE_RAND_MIN + DEFENDER_LCK_RAND_MIN_HALF + DISATANCE_OFFSET };
-            auto const DEFEND_FRIGHTEN_ROLL_MAX{ DEFENDER_INTELLIGENCE_RAND_MAX + DEFENDER_LCK_RAND_MAX_HALF + DISATANCE_OFFSET };
-            auto const DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL{ misc::random::Int(DEFEND_FRIGHTEN_ROLL_MIN, DEFEND_FRIGHTEN_ROLL_MAX) };
-
-            auto didFrighten{ false };
-            if ((ROARING_CREATURE_FRIGHTEN_ROLL == ROARING_FRIGHTEN_ROLL_MAX) && (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL != DEFEND_FRIGHTEN_ROLL_MAX))
-            {
-                //if the roaring creature's roll was max and the defending creature's was not, then frighten
-                didFrighten = true;
-            }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL != ROARING_FRIGHTEN_ROLL_MAX) && (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL == DEFEND_FRIGHTEN_ROLL_MAX))
-            {
-                //if the defending creature's roll was max and the roaring creature's was not, then don't frighten
-                didFrighten = false;
-            }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) == (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFEND_CREATURE_PTR->Rank())))
-            {
-                //if rank offset rolls are equal, then decide if frightened by fair coint toss
-                didFrighten = misc::random::Bool();
-            }
-            else if ((ROARING_CREATURE_FRIGHTEN_ROLL + static_cast<int>(creatureRoaringPtrC->Rank())) > (DEFEND_CREATURE_FRIGHTEN_RESIST_ROLL + static_cast<int>(NEXT_DEFEND_CREATURE_PTR->Rank())))
-            {
-                //if the roaring creature's rolls offset with rank was higher than the defending creature's rank offset roll, then frighten
-                didFrighten = true;
-            }
+            auto didFrighten{ creature::Stats::Versus(creatureRoaringPtrC,
+                                                      stats::stat::Strength,
+                                                      NEXT_DEFEND_CREATURE_PTR,
+                                                      stats::stat::Intelligence,
+                                                      0,
+                                                      DISATANCE_BONUS) };
 
             if (didFrighten)
             {
@@ -825,7 +755,8 @@ namespace combat
                 creature::ConditionEnumVec_t nonHitConditionsVec;
                 nonHitConditionsVec.push_back(CONDITION_VEC);
 
-                creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsVec) );
+                creatureEffectsVec.push_back( CreatureEffect(
+                    NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(), nullptr, nonHitConditionsVec) );
             }
         }
 
@@ -833,8 +764,9 @@ namespace combat
     }
 
 
-    creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(creature::CreaturePtrC_t creatureAttackingtrC,
-                                                                     CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
+    creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(
+        creature::CreaturePtrC_t creatureAttackingtrC,
+        CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
     {
         creature::CreaturePVec_t attackableNonPlayerCreaturesPVec;
         COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(attackableNonPlayerCreaturesPVec, creatureAttackingtrC, false);
