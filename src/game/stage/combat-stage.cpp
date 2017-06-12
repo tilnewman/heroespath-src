@@ -1418,7 +1418,9 @@ namespace stage
                 clickTimerSec_ = -1.0f;//any negative value will work here
 
                 restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                game::LoopManager::Instance()->Goto_Inventory(creatureAtPosPtr, true);
+                game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_, 
+                                                              creatureAtPosPtr,
+                                                              Phase::Combat);
                 return GUI_ENTITY_WITH_FOCUS;
             }
         }
@@ -1573,7 +1575,9 @@ namespace stage
                     if (turnCreaturePtr_->IsPlayerCharacter())
                     {
                         restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_, true);
+                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_,
+                                                                      turnCreaturePtr_,
+                                                                      Phase::Combat);
                     }
                 }
 

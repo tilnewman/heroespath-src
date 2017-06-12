@@ -30,6 +30,8 @@
 //
 #include "sfml-util/loop-cmd.hpp"
 
+#include "game/phase-enum.hpp"
+
 #include <memory>
 
 
@@ -172,14 +174,16 @@ namespace stage
 
     public:
         explicit LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t &      loopSPtr,
-                                            const creature::CreaturePtr_t CREATURE_PTR,
-                                            const bool                    IS_DURING_COMBAT);
+                                            const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                            const Phase::Enum             CURRENT_PHASE);
 
         virtual ~LoopCmd_AddStage_Inventory();
         virtual bool Execute();
     private:
-        const creature::CreaturePtr_t CREATURE_PTR_;
-        const bool IS_DURING_COMBAT_;
+        const creature::CreaturePtr_t TURN_CREATURE_PTR_;
+        const creature::CreaturePtr_t INVENTORY_CREATURE_PTR_;
+        const Phase::Enum CURRENT_PHASE_;
     };
 
     using LoopCmd_AddStage_InventorySPtr_t = std::shared_ptr<LoopCmd_AddStage_Inventory>;

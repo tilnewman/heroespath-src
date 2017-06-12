@@ -91,10 +91,15 @@ namespace stage
     const std::string InventoryStage::POPUP_NAME_SONG_RESULT_     { "InventoryStage'sSongResultPopupName" };
 
 
-    InventoryStage::InventoryStage(const creature::CreaturePtr_t CREATURE_PTR,
-                                   const bool                    IS_DURING_COMBAT)
+    InventoryStage::InventoryStage(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                   const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                   const Phase::Enum             CURRENT_PHASE)
     :
-        Stage                      ("Inventory", 0.0f, 0.0f, sfml_util::Display::Instance()->GetWinWidth(), sfml_util::Display::Instance()->GetWinHeight()),
+        Stage                      ("Inventory",
+                                    0.0f,
+                                    0.0f,
+                                    sfml_util::Display::Instance()->GetWinWidth(),
+                                    sfml_util::Display::Instance()->GetWinHeight()),
         SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
         INNER_PAD_                 (sfml_util::MapByRes(10.0f, 40.0f)),
@@ -132,7 +137,7 @@ namespace stage
         DETAILVIEW_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f)),
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
         listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
-        creaturePtr_               (CREATURE_PTR),
+        creaturePtr_               (INVENTORY_CREATURE_PTR),
         bottomSymbol_              (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
         paperBgTexture_            (),
         paperBgSprite_             (),
@@ -219,14 +224,10 @@ namespace stage
         spellCreatureEffectIndex_  (0),
         spellHitInfoIndex_         (0),
         combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>()),
-        originalCreaturePtr_       (CREATURE_PTR),
-        isDuringCombat_            (IS_DURING_COMBAT),
+        turnCreaturePtr_           (TURN_CREATURE_PTR),
+        currentPhase_              (CURRENT_PHASE),
         hasTakenActionSpellOrSong_ (false)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
-            "game::stage::InventoryStage::InventoryStage() was given a null "
-            << "creature shared pointer.");
-
         const std::size_t NUM_CHARACTERS(characterViewMap_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
@@ -260,7 +261,7 @@ namespace stage
                 {
                     if (view_ == ViewType::Items)
                     {
-                        if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                        if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                         {
                             std::ostringstream ss;
                             ss << "\nDuring combat, only the character whose turn it is may "
@@ -277,7 +278,7 @@ namespace stage
                 {
                     if (view_ == ViewType::Items)
                     {
-                        if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                        if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                         {
                             std::ostringstream ss;
                             ss << "\nDuring combat, only the character whose turn it is may "
@@ -372,7 +373,7 @@ namespace stage
         else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
                   (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
         {
-            if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+            if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
             {
                 std::ostringstream ss;
                 ss << "\nDuring combat, only the character whose turn it is may "
@@ -395,7 +396,7 @@ namespace stage
         {
             if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Item())
             {
-                if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                 {
                     std::ostringstream ss;
                     ss << "\nDuring combat, only the character whose turn it is may "
@@ -511,7 +512,7 @@ namespace stage
             {
                 case ContentType::Item:
                 {
-                    if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                    if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                     {
                         std::ostringstream ss;
                         ss << "\nDuring combat, only the character whose turn it is may "
@@ -1968,7 +1969,7 @@ namespace stage
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
-                if (isDuringCombat_ && (creaturePtr_ != originalCreaturePtr_))
+                if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                 {
                     std::ostringstream ss;
                     ss << "\nDuring combat, only the character whose turn it is may "
@@ -3607,9 +3608,9 @@ namespace stage
     {
         auto const IS_SPELLS{ ! (creaturePtr_->Role().Which() == creature::role::Bard) };
 
-        if (isDuringCombat_)
+        if (Phase::Combat == currentPhase_)
         {
-            if (creaturePtr_ != originalCreaturePtr_)
+            if (creaturePtr_ != turnCreaturePtr_)
             {
                 std::ostringstream ss;
                 ss << "\nDuring combat, only the character whose turn it is may ";

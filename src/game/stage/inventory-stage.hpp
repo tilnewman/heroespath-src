@@ -40,6 +40,7 @@
 #include "game/i-popup-callback.hpp"
 #include "game/combat/fight-results.hpp"
 #include "game/combat/combat-text.hpp"
+#include "game/phase-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -134,8 +135,9 @@ namespace stage
         InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:
-        explicit InventoryStage(const creature::CreaturePtr_t CREATURE_PTR,
-                                const bool                    IS_DURING_COMBAT);
+        explicit InventoryStage(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                const Phase::Enum             CURRENT_PHASE);
 
         virtual ~InventoryStage();
 
@@ -369,8 +371,8 @@ namespace stage
         combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
 
         //members that control combat action restrictions
-        creature::CreaturePtr_t originalCreaturePtr_;
-        bool isDuringCombat_;
+        creature::CreaturePtr_t turnCreaturePtr_;
+        Phase::Enum currentPhase_;
         bool hasTakenActionSpellOrSong_;
     };
 

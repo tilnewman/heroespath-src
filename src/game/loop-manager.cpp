@@ -413,8 +413,9 @@ namespace game
     }
 
 
-    void LoopManager::TransitionTo_Inventory(const creature::CreaturePtr_t CREATURE_PTR,
-                                             const bool                    IS_DURING_COMBAT)
+    void LoopManager::TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                             const Phase::Enum             CURRENT_PHASE)
     {
         prevSettingsState_ = state_;
 
@@ -426,8 +427,9 @@ namespace game
                          LoopState::Inventory,
                          std::make_shared<game::stage::LoopCmd_AddStage_Inventory>(
                              currentLoopSPtr_,
-                             CREATURE_PTR,
-                             IS_DURING_COMBAT),
+                             TURN_CREATURE_PTR,
+                             INVENTORY_CREATURE_PTR,
+                             CURRENT_PHASE),
                          sfml_util::music::None,
                          sfml_util::music::None);
     }
@@ -609,10 +611,13 @@ namespace game
         TransitionTo_Test();
     }
 
-    void LoopManager::Goto_Inventory(const creature::CreaturePtr_t CREATURE_PTR,
-                                     const bool                    IS_DURING_COMBAT)
+    void LoopManager::Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                     const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                     const Phase::Enum             CURRENT_PHASE)
     {
-        TransitionTo_Inventory(CREATURE_PTR, IS_DURING_COMBAT);
+        TransitionTo_Inventory(TURN_CREATURE_PTR,
+                               INVENTORY_CREATURE_PTR,
+                               CURRENT_PHASE);
     }
 
     void LoopManager::Goto_Previous()

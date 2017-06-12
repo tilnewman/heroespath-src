@@ -83,7 +83,12 @@ namespace game
         inline LoopState::Enum GetPrevState() const                 { return prevState_; }
         inline sfml_util::Response::Enum GetPopupResponse() const   { return popupResponse_; }
         inline std::size_t GetPopupSelection() const                { return popupSelection_; }
-        inline void ClearPopupResponse()                            { popupResponse_ = sfml_util::Response::None; popupSelection_ = 0; }
+
+        inline void ClearPopupResponse()
+        {
+            popupResponse_ = sfml_util::Response::None;
+            popupSelection_ = 0;
+        }
 
         Phase::Enum GetPhase() const;
 
@@ -92,7 +97,8 @@ namespace game
         void PopupWaitBegin(callback::IPopupHandler_t * const HANDLER_PTR,
                             const PopupInfo &                 POPUP_INFO_SPTR);
 
-        void PopupWaitEnd(const sfml_util::Response::Enum RESPONSE, const std::size_t SELECTION = 0);
+        void PopupWaitEnd(const sfml_util::Response::Enum RESPONSE,
+                          const std::size_t SELECTION = 0);
 
         void Goto_Intro();
         void Goto_Credits();
@@ -107,7 +113,10 @@ namespace game
         void Goto_LoadGameMenu();
         void Goto_Combat();
         void Goto_Test();
-        void Goto_Inventory(const creature::CreaturePtr_t, const bool IS_DURING_COMBAT);
+
+        void Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                            const Phase::Enum             CURRENT_PHASE);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             sfml_util::IStage * const         currentStagePtr_,
@@ -115,20 +124,49 @@ namespace game
             const sfml_util::Resolution &     NEW_RES,
             const unsigned                    ANTIALIAS_LEVEL);
 
-        inline void SetTransitionBeforeFade(const LoopState::Enum E) { stateBeforeFade_ = E; }
+        inline void SetTransitionBeforeFade(const LoopState::Enum E)
+        {
+            stateBeforeFade_ = E;
+        }
 
         void HandleTransitionBeforeFade();
 
         void FakeMouseClick(const sf::Vector2f &);
 
-        inline void AddStage(sfml_util::IStagePtr_t stagePtr)     { currentLoopSPtr_->AddStage(stagePtr); }
-        inline bool IsFading() const                              { return currentLoopSPtr_->IsFading(); }
-        inline bool GetIgnoreMouse() const                        { return currentLoopSPtr_->GetIgnoreMouse(); }
-        inline void SetIgnoreMouse(const bool B)                  { currentLoopSPtr_->SetIgnoreMouse(B); }
+        inline void AddStage(sfml_util::IStagePtr_t stagePtr)
+        {
+            currentLoopSPtr_->AddStage(stagePtr);
+        }
 
-        inline void TestingStrAppend(const std::string & S)       { currentLoopSPtr_->TestingStrAppend(S); }
-        inline void TestingStrIncrement(const std::string & S)    { currentLoopSPtr_->TestingStrIncrement(S); }
-        inline void TestingImageSet(const sf::Texture & T)        { currentLoopSPtr_->TestingImageSet(T); }
+        inline bool IsFading() const
+        {
+            return currentLoopSPtr_->IsFading();
+        }
+
+        inline bool GetIgnoreMouse() const
+        {
+            return currentLoopSPtr_->GetIgnoreMouse();
+        }
+
+        inline void SetIgnoreMouse(const bool B)
+        {
+            currentLoopSPtr_->SetIgnoreMouse(B);
+        }
+
+        inline void TestingStrAppend(const std::string & S)
+        {
+            currentLoopSPtr_->TestingStrAppend(S);
+        }
+
+        inline void TestingStrIncrement(const std::string & S)
+        {
+            currentLoopSPtr_->TestingStrIncrement(S);
+        }
+
+        inline void TestingImageSet(const sf::Texture & T)
+        {
+            currentLoopSPtr_->TestingImageSet(T);
+        }
 
     protected:
         void TransitionTo_Intro();
@@ -148,18 +186,23 @@ namespace game
         void TransitionTo_LoadGameMenu();
         void TransitionTo_Combat();
         void TransitionTo_Test();
-        void TransitionTo_Inventory(const creature::CreaturePtr_t, const bool);
+
+        void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+                                    const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+                                    const Phase::Enum             CURRENT_PHASE);
+
         void TransitionTo(const LoopState::Enum);
 
-        void TransitionHelper(const bool                        WILL_CLEAR_QUEUE,
-                              const bool                        WILL_EXIT_LOOP,
-                              const bool                        WILL_IGNORE_MOUSE,
-                              const bool                        WILL_RESTORE_MOUSE,
-                              const bool                        WILL_FINAL_EXECUTE,
-                              const LoopState::Enum             NEW_STATE,
-                              const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
-                              const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
-                              const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
+        void TransitionHelper(
+            const bool                        WILL_CLEAR_QUEUE,
+            const bool                        WILL_EXIT_LOOP,
+            const bool                        WILL_IGNORE_MOUSE,
+            const bool                        WILL_RESTORE_MOUSE,
+            const bool                        WILL_FINAL_EXECUTE,
+            const LoopState::Enum             NEW_STATE,
+            const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+            const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
+            const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
 
     private:
         static std::unique_ptr<LoopManager> instanceUPtr_;

@@ -40,15 +40,21 @@ namespace stage
 
     LoopCmd_AddStage_Inventory::LoopCmd_AddStage_Inventory(
         sfml_util::ILoopSPtr_t &      loopSPtr,
-        const creature::CreaturePtr_t CREATURE_PTR,
-        const bool                    IS_DURING_COMBAT)
+        const creature::CreaturePtr_t TURN_CREATURE_PTR,
+        const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+        const Phase::Enum             CURRENT_PHASE)
     :
-        LoopCmd          ("AddStage_\"Inventory\"", loopSPtr),
-        CREATURE_PTR_    (CREATURE_PTR),
-        IS_DURING_COMBAT_(IS_DURING_COMBAT)
+        LoopCmd                ("AddStage_\"Inventory\"", loopSPtr),
+        TURN_CREATURE_PTR_     (TURN_CREATURE_PTR),
+        INVENTORY_CREATURE_PTR_(INVENTORY_CREATURE_PTR),
+        CURRENT_PHASE_         (CURRENT_PHASE)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
-            "game::stage::LoopCmd_AddStage_Inventory() was given a nullptr CreaturePtr_t.");
+        M_ASSERT_OR_LOGANDTHROW_SS((TURN_CREATURE_PTR != nullptr),
+            "game::stage::LoopCmd_AddStage_Inventory() was given a nullptr TURN_CREATURE_PTR.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((INVENTORY_CREATURE_PTR != nullptr),
+            "game::stage::LoopCmd_AddStage_Inventory() was given a nullptr "
+            << "INVENTORY_CREATURE_PTR.");
     }
 
 
@@ -58,7 +64,10 @@ namespace stage
 
     bool LoopCmd_AddStage_Inventory::Execute()
     {
-        auto inventoryStagePtr( new game::stage::InventoryStage(CREATURE_PTR_, IS_DURING_COMBAT_) );
+        auto inventoryStagePtr( new game::stage::InventoryStage(TURN_CREATURE_PTR_,
+                                                                INVENTORY_CREATURE_PTR_,
+                                                                CURRENT_PHASE_) );
+
         inventoryStagePtr->Setup();
         iLoopSPtr_->AddStage(inventoryStagePtr);
         return true;
