@@ -50,7 +50,7 @@ namespace creature
         return Ratio(CREATURE_PTR, stats::StatEnumVec_t (1, STAT_ENUM), WILL_INCLUDE_LUCK);
     }
 
-    
+   
     float Stats::Ratio(const CreaturePtr_t          CREATURE_PTR,
                        const stats::StatEnumVec_t & STAT_ENUM_VEC,
                        const bool                   WILL_INCLUDE_LUCK)
@@ -126,7 +126,7 @@ namespace creature
 
         auto const ROLL{ rollBase + bonus + static_cast<stats::Stat_t>(
             (WILL_CONSIDER_RANK) ? CREATURE_PTR->Rank() : 0) };
-        
+       
         return (misc::random::Int(stats::Stat::VAL_ESTIMATED_MAX_) < ROLL);
     }
 

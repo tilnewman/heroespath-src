@@ -200,7 +200,7 @@ namespace stage
                     M_HP_LOG_ERR("game::stage::PartyStage::HandleCallback(delete confirm popup)"
                         << " unable to delete character \"" << characterPtr->Name() << "\" file.");
                 }
-               
+              
                 characterListBoxSPtr_->Remove(selectedItemSPtr);
                 partyListBoxSPtr_->Remove(selectedItemSPtr);
                 //actual Character object will be free'd when the PartyStage object is destroyed
@@ -681,7 +681,7 @@ namespace stage
             {
                 auto characterPtr{ partyListBoxSPtr_->At(i)->CHARACTER_CPTR };
                 charPVec.push_back(characterPtr);
-               
+              
                 charactersPSet_.erase(characterPtr);
 
                 if (state::GameStateFactory::Instance()->

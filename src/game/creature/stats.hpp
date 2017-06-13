@@ -87,7 +87,7 @@ namespace creature
             const bool                   WILL_CONDSIDER_RANK = true,
             const bool                   WILL_CONSIDER_PLAYER_LUCK = true,
             const bool                   ALLOW_PLAYER_NATURAL_WINS = true);
-        
+       
     private:
         static const stats::Stat_t LUCK_DIVISOR_;
 

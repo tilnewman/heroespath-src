@@ -249,7 +249,7 @@ namespace combat
         static const std::string ANIM_MEDIA_PATH_KEY_STR_SPARKLE_;
         static const std::string ANIM_MEDIA_PATH_KEY_STR_SHIMMER_;
         static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
-       
+      
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;

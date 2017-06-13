@@ -750,7 +750,7 @@ namespace creature
                 {
                     ss << " pairs";
                 }
-               
+              
                 ss << " of " << ARMOR_TYPE_STR << "." << SEP;
 
                 //make an exception for cover_type::Vest, which can be equipped along with the

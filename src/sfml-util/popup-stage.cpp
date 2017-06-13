@@ -461,7 +461,7 @@ namespace sfml_util
                     (buttonContinueUPtr_->GetEntityRegion().width * 0.5f) };
 
                 auto const POS_TOP{ buttonContinueUPtr_->GetEntityPos().y };
-                
+               
                 buttonContinueUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
             }
 
@@ -484,7 +484,7 @@ namespace sfml_util
             {
                 auto const POS_LEFT{ MIDDLE - (buttonOkayUPtr_->GetEntityRegion().width * 0.5f) -
                     10.0f };
-                
+               
                 auto const POS_TOP{ buttonOkayUPtr_->GetEntityPos().y };
 
                 buttonOkayUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
@@ -689,7 +689,7 @@ namespace sfml_util
             charDetailsTextRegion.top = imagesRect_.top + imagesRect_.height;
 
             charDetailsTextRegion.height = 0.0f;
-            
+           
             auto charDetailsTextInfo{ POPUP_INFO_.TextInfo() };
             charDetailsTextInfo.text = " ";
 
@@ -718,7 +718,7 @@ namespace sfml_util
 
             isImageProcAllowed_ =
                 (game::Game::Instance()->State().Party().Characters().size() != 0);
-            
+           
             imageMoveQueue_.push(0);
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageSelection)
@@ -731,7 +731,7 @@ namespace sfml_util
 
             imagesRect_.height = (sliderbarPosTop_ - (POPUPBUTTON_TEXT_HEIGHT * 2.0f)) -
                 imagesRect_.top;
-            
+           
             imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
             isImageProcAllowed_ = (POPUP_INFO_.ImagesCount() != 0);
@@ -1029,7 +1029,7 @@ namespace sfml_util
 
                 const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) /
                     accentSprite1_.getLocalBounds().height);
-                
+               
                 accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
 
                 if (accentSprite1_.getGlobalBounds().width > (pageRectLeft_.width * SIZE_RATIO))
@@ -1089,7 +1089,7 @@ namespace sfml_util
 
                 accentSprite2_.setColor(sf::Color(255, 255, 255, 16));
             }
-            
+           
             //setup player image
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_,
                 POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
@@ -1103,7 +1103,7 @@ namespace sfml_util
             playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
             playerSprite_.setColor(sf::Color(255, 255, 255, 192));
             playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
-            
+           
             //setup player details text
             auto cPtr{ POPUP_INFO_.CreaturePtr() };
             std::ostringstream ss;
@@ -1131,7 +1131,7 @@ namespace sfml_util
                << cPtr->HealthPercentStr() << "\n"
                << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
                << "\n";
-            
+           
             const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
                 ss.str(),
                 sfml_util::FontManager::Instance()->Font_Default1(),
@@ -1151,7 +1151,7 @@ namespace sfml_util
                 "MusicSheetPopupWindowDetails",
                 DETAILS_TEXTINFO,
                 DETAILS_TEXT_RECT);
-            
+           
             //spell listbox label
             const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
                 "Songs",
@@ -1172,14 +1172,14 @@ namespace sfml_util
                 "MusicSheetPopupWindowSpellListLabel",
                 LISTBOX_LABEL_TEXTINFO,
                 LISTBOX_LABEL_TEXTRECT);
-            
+           
             //spell listbox
             auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
             auto const LISTBOX_RECT_LEFT  { pageRectLeft_.left + LISTBOX_MARGIN };
 
             auto const LISTBOX_RECT_TOP   { listBoxLabelTextRegionUPtr_->GetEntityRegion().top +
                 listBoxLabelTextRegionUPtr_->GetEntityRegion().height + LISTBOX_MARGIN };
-            
+           
             auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
 
             auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height) -
@@ -1210,7 +1210,7 @@ namespace sfml_util
 
                 listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
             }
-            
+           
             listBoxSPtr_ = std::make_shared<gui::ListBox>(
                 "PopupStage'sMusicListBox",
                 LISTBOX_RECT,
@@ -1230,7 +1230,7 @@ namespace sfml_util
             //Force spell listbox to take focus so that user up/down
             //keystrokes work without having to click on the listbox.
             SetFocus(listBoxSPtr_.get());
-            
+           
             //Force spell listbox selection up and down to force
             //colors to correct.
             listBoxSPtr_->WillPlaySoundEffects(false);
@@ -1240,7 +1240,7 @@ namespace sfml_util
             keyEvent.code = sf::Keyboard::Up;
             listBoxSPtr_->KeyRelease(keyEvent);
             listBoxSPtr_->WillPlaySoundEffects(true);
-            
+           
             //setup initial values for spellbook page right text and colors
             songCurrentPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
             SetupSpellbookPageRightForFadeIn();
@@ -1366,7 +1366,7 @@ namespace sfml_util
                     {
                         SetupMusicSheetPageRightText(songCurrentPtr_);
                     }
-                    
+                   
                     SetupSpellbookPageRightForFadeIn();
                 }
             }
@@ -1623,7 +1623,7 @@ namespace sfml_util
                 return false;
             }
         }
-       
+      
         if (((POPUP_INFO_.Type() == game::Popup::ImageSelection) ||
             (POPUP_INFO_.Type() == game::Popup::CharacterSelection)) &&
             ((KEY_EVENT.code == sf::Keyboard::Left) ||
@@ -1860,7 +1860,7 @@ namespace sfml_util
             return;
         }
 
-        auto const COUNT{ ((POPUP_INFO_.Type() == game::Popup::CharacterSelection) ? 
+        auto const COUNT{ ((POPUP_INFO_.Type() == game::Popup::CharacterSelection) ?
             game::Game::Instance()->State().Party().Characters().size() :
             POPUP_INFO_.ImagesCount()) };
 

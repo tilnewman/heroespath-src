@@ -41,7 +41,7 @@ namespace item
     using ItemPtr_t  = Item *;
     using ItemUPtr_t = std::unique_ptr<Item>;
     using ItemUVec_t = std::vector<ItemUPtr_t>;
-   
+  
 
     //Singleton responsible for the lifetimes of item objects.
     class ItemWarehouse
@@ -61,7 +61,7 @@ namespace item
         static ItemWarehouse * Instance();
         static void Acquire();
         static void Release();
-       
+      
         ItemPtr_t Store(const ItemPtr_t);
         void Free(ItemPtr_t &);
 
