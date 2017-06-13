@@ -117,6 +117,17 @@ namespace sfml_util
                 << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
                 << ") failed because strToVecMap_ entry was an empty vec.");
 
+            M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second[0] < cacheUVec_.size()),
+                "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR
+                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                << ") failed because strToVecMap_ entry=" << FOUND_ITER->second[0]
+                << " was out of bounds with cacheUVec_.size()=" << cacheUVec_.size() << ".");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[FOUND_ITER->second[0]].get() != nullptr),
+                "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR
+                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                << ") failed because strToVecMap_ entry pointed to a null pointer.");
+
             return FOUND_ITER->second[0];
         }
 
@@ -235,7 +246,7 @@ namespace sfml_util
             << "RemoveByIndex(" << INDEX << "\") failed because that index is out of range."
             << "(size=" << cacheUVec_.size() << ")");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[INDEX].get() != nullptr), "sfml_util::TextureCache::"
+        M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[INDEX].get() != nullptr),"sfml_util::TextureCache::"
             << "RemoveByIndex(" << INDEX << "\") failed because that pointer was already null.");
 
         cacheUVec_[INDEX].reset();
@@ -316,7 +327,13 @@ namespace sfml_util
                                                 const bool          WILL_SMOOTH)
     {
         auto const INDEX{ EstablishNextAvailableIndex() };
-        sfml_util::LoadImageOrTexture(*cacheUVec_[INDEX], PATH_TO_TEXTURE_STR);
+
+        if (cacheUVec_[INDEX].get() == nullptr)
+        {
+            cacheUVec_[INDEX] = std::make_unique<sf::Texture>();
+        }
+
+        sfml_util::LoadImageOrTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR);
         cacheUVec_[INDEX]->setSmooth(WILL_SMOOTH);
         return INDEX;
     }

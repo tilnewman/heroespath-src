@@ -30,7 +30,7 @@
 #include "animation.hpp"
 
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/texture-cache.hpp"
 
 #include "misc/real.hpp"
 
@@ -68,7 +68,6 @@ namespace sfml_util
         BLEND_MODE_             (BLEND_MODE),
         timeBetweenFrames_      (TIME_BETWEEN_FRAMES),
         sprite_                 (),
-        texture_                (),
         rects_                  (),
         currentFrame_           (0),
         frameTimerSec_          (0.0f),
@@ -78,24 +77,24 @@ namespace sfml_util
         origSizeVert_           (static_cast<float>(FRAME_HEIGHT)),
         isFinished_             (false)
     {
-        sfml_util::LoadImageOrTexture(texture_, TEXTURE_FILE_PATH);
-        texture_.setSmooth(true);
-
         //entityRegion_ holds the target width and height
         SetEntityRegion( sf::FloatRect(SCREEN_POS_LEFT,
                                        SCREEN_POS_TOP,
                                        static_cast<float>(FRAME_WIDTH) * SCALE_HORIZ,
                                        static_cast<float>(FRAME_HEIGHT) * SCALE_VERT) );
-
-        sprite_.setTexture(texture_);
+        
+        auto const TEXTURE_ID_NUM{ TextureCache::Instance()->AddByPath(TEXTURE_FILE_PATH, true) };
+        
+        sprite_.setTexture(TextureCache::Instance()->GetByIndex(TEXTURE_ID_NUM));
+        
         sprite_.setPosition(SCREEN_POS_LEFT, SCREEN_POS_TOP);
         sprite_.setColor(colorFrom_);
 
         sprite_.setScale(entityRegion_.width / origSizeHoriz_,
                          entityRegion_.height / origSizeVert_);
 
-        auto const TEXTURE_WIDTH (texture_.getSize().x);
-        auto const TEXTURE_HEIGHT(texture_.getSize().y);
+        auto const TEXTURE_WIDTH (sprite_.getLocalBounds().width);
+        auto const TEXTURE_HEIGHT(sprite_.getLocalBounds().height);
 
         auto posX(FIRST_FRAME_POS_LEFT_);
         auto posY(FIRST_FRAME_POS_TOP_);
@@ -216,7 +215,8 @@ namespace sfml_util
         BLEND_MODE_         (BLEND_MODE),
         timeBetweenFrames_  (TIME_BETWEEN_FRAMES),
         sprite_             (),
-        textureVec_         (),
+        textureIdVec_       (TextureCache::Instance()->AddAllInDirectoryByPath(TEXTURES_DIRECTORY,
+                                                                               true)),
         currentFrame_       (0),
         frameTimerSec_      (0.0f),
         colorFrom_          (COLOR),
@@ -225,17 +225,7 @@ namespace sfml_util
         origSizeVert_       (0.0f),
         isFinished_         (false)
     {
-        sfml_util::LoadAllImageOrTextureInDir(textureVec_, TEXTURES_DIRECTORY);
-
-        M_ASSERT_OR_LOGANDTHROW_SS((textureVec_.empty() == false),
-            "sfml_util::MultiTextureAnimation constructor failed to find any images to load.");
-
-        for (auto & nextTexture : textureVec_)
-        {
-            nextTexture.setSmooth(true);
-        }
-
-        sprite_.setTexture( textureVec_[0] );
+        sprite_.setTexture( TextureCache::Instance()->GetByIndex(textureIdVec_[0]) );
 
         origSizeHoriz_ = sprite_.getLocalBounds().width;
         origSizeVert_ = sprite_.getLocalBounds().height;
@@ -281,18 +271,19 @@ namespace sfml_util
         while (frameTimerSec_ > timeBetweenFrames_)
         {
             frameTimerSec_ -= timeBetweenFrames_;
-            if (++currentFrame_ >= (textureVec_.size() - 1))
+            if (++currentFrame_ >= (textureIdVec_.size() - 1))
             {
                 currentFrame_ = 0;
                 isFinished_ = true;
             }
 
-            sprite_.setTexture(textureVec_[currentFrame_]);
+            sprite_.setTexture( TextureCache::Instance()->GetByIndex(
+                textureIdVec_[currentFrame_]) );
 
             if (colorFrom_ != colorTo_)
             {
                 auto const RATIO_COMPLETE{ static_cast<float>(currentFrame_) /
-                    static_cast<float>(textureVec_.size() - 1) };
+                    static_cast<float>(textureIdVec_.size() - 1) };
 
                 sprite_.setColor(sfml_util::color::TransitionColor(colorFrom_,
                                                                    colorTo_,

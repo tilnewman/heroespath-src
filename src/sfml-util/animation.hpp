@@ -31,6 +31,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 
+#include "misc/handy-types.hpp"
+
 #include <string>
 #include <vector>
 
@@ -121,7 +123,6 @@ namespace sfml_util
         const sf::BlendMode      BLEND_MODE_;
         float                    timeBetweenFrames_;
         sf::Sprite               sprite_;
-        sf::Texture              texture_;
         std::vector<sf::IntRect> rects_;//the size of this vector acts as a total frame count.
         std::size_t              currentFrame_;//counts up to total then restarts at zero
         float                    frameTimerSec_;
@@ -173,7 +174,7 @@ namespace sfml_util
         virtual bool UpdateTime(const float SECONDS);
 
         inline std::size_t CurrentFrame() const             { return currentFrame_; }
-        inline std::size_t FrameCount() const               { return textureVec_.size(); }
+        inline std::size_t FrameCount() const               { return textureIdVec_.size(); }
 
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
         
@@ -202,7 +203,7 @@ namespace sfml_util
         const sf::BlendMode BLEND_MODE_;
         float               timeBetweenFrames_;
         sf::Sprite          sprite_;
-        TextureVec_t        textureVec_;//the size of this vec acts as a total frame count
+        misc::SizetVec_t    textureIdVec_;//the size of this vec acts as a total frame count
         std::size_t         currentFrame_;//counts up to total then restarts at zero
         float               frameTimerSec_;
         sf::Color           colorFrom_;
