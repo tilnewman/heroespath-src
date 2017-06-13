@@ -68,15 +68,15 @@ namespace gui
         switch (E)
         {
             case Wing:      { return "wing.png";   }
-            case Arrow1:    { return "arrow1.gif"; }
-            case Arrow2:    { return "arrow2.gif"; }
-            case Arrow3:    { return "arrow3.gif"; }
-            case Bolt:      { return "arrow4.gif"; }
-            case Dart:      { return "dart.gif";   }
-            case Stone1:    { return "stone1.gif"; }
-            case Stone2:    { return "stone2.gif"; }
-            case Stone3:    { return "stone3.gif"; }
-            case Stone4:    { return "stone4.gif"; }
+            case Arrow1:    { return "arrow1.png"; }
+            case Arrow2:    { return "arrow2.png"; }
+            case Arrow3:    { return "arrow3.png"; }
+            case Bolt:      { return "arrow4.png"; }
+            case Dart:      { return "dart.png";   }
+            case Stone1:    { return "stone1.png"; }
+            case Stone2:    { return "stone2.png"; }
+            case Stone3:    { return "stone3.png"; }
+            case Stone4:    { return "stone4.png"; }
             case Count:
             default:
             {
