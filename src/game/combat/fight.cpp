@@ -68,7 +68,10 @@ namespace combat
                                        creature::CreaturePtrC_t creatureDefendingPtrC,
                                        const bool               WILL_FORCE_HIT)
     {
-        auto const HIT_INFO_VEC{ AttackWithAllWeapons(creatureAttackingPtrC, creatureDefendingPtrC, WILL_FORCE_HIT) };
+        auto const HIT_INFO_VEC{ AttackWithAllWeapons(creatureAttackingPtrC,
+                                                      creatureDefendingPtrC,
+                                                      WILL_FORCE_HIT) };
+
         auto const CREATURE_EFFECT{ CreatureEffect(creatureDefendingPtrC, HIT_INFO_VEC) };
 
         auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
@@ -98,7 +101,8 @@ namespace combat
         auto const MOST_DAMAGE_CREATURE_PAIR{ turnInfo.GetMostDamageCreature() };
         if (CREATURE_EFFECT.GetDamageTotal() > MOST_DAMAGE_CREATURE_PAIR.first)
         {
-            turnInfo.SetMostDamageCreature(std::make_pair(CREATURE_EFFECT.GetDamageTotal(), creatureAttackingPtrC));
+            turnInfo.SetMostDamageCreature(std::make_pair(CREATURE_EFFECT.GetDamageTotal(),
+                                                          creatureAttackingPtrC));
         }
 
         Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
@@ -107,16 +111,17 @@ namespace combat
     }
 
 
-    const creature::ConditionEnumVec_t FightClub::HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                               HitInfoVec_t &           hitInfoVec,
-                                                               const stats::Health_t    HEALTH_ADJ)
+    const creature::ConditionEnumVec_t FightClub::HandleDamage(
+        creature::CreaturePtrC_t creatureDefendingPtrC,
+        HitInfoVec_t &           hitInfoVec,
+        const stats::Health_t    HEALTH_ADJ)
     {
         if (HEALTH_ADJ == 0)
         {
             return creature::ConditionEnumVec_t();
         }
        
-        if (HEALTH_ADJ > 0)
+        if (HEALTH_ADJ > 0) 
         {
             creatureDefendingPtrC->HealthCurrentAdj(HEALTH_ADJ);
 
@@ -143,15 +148,17 @@ namespace combat
 
         creature::ConditionEnumVec_t conditionsAddedVec;
 
-        auto const IS_ALREADY_KILLED{ creatureDefendingPtrC->HasCondition(creature::Conditions::Dead) ||
-                                      IsConditionContained(creature::Conditions::Dead, hitInfoVec) };
+        auto const IS_ALREADY_KILLED{
+            creatureDefendingPtrC->HasCondition(creature::Conditions::Dead) ||
+                IsConditionContained(creature::Conditions::Dead, hitInfoVec) };
 
         if (IS_ALREADY_KILLED == false)
         {
             auto willKill{ false };
 
-            auto const IS_ALREADY_UNCONSCIOUS{ creatureDefendingPtrC->HasCondition(creature::Conditions::Unconscious) ||
-                                               IsConditionContained(creature::Conditions::Unconscious, hitInfoVec) };
+            auto const IS_ALREADY_UNCONSCIOUS{
+                creatureDefendingPtrC->HasCondition(creature::Conditions::Unconscious) ||
+                    IsConditionContained(creature::Conditions::Unconscious, hitInfoVec) };
 
             if (IS_ALREADY_UNCONSCIOUS)
             {
@@ -168,7 +175,9 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(0);
 
-                const creature::Conditions::Enum CONDITION_DEAD_ENUM{ creature::Conditions::Dead };
+                const creature::Conditions::Enum CONDITION_DEAD_ENUM{
+                    creature::Conditions::Dead };
+
                 creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_ENUM);
                 conditionsAddedVec.push_back(CONDITION_DEAD_ENUM);
 
@@ -191,16 +200,20 @@ namespace combat
                     creatureDefendingPtrC->HealthCurrentSet(0);
                 }
 
-                auto const IS_ALREADY_DAZED{ creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed) ||
-                                             IsConditionContained(creature::Conditions::Dazed, hitInfoVec) };
+                auto const IS_ALREADY_DAZED{
+                    creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed) ||
+                        IsConditionContained(creature::Conditions::Dazed, hitInfoVec) };
 
                 if (IS_ALREADY_UNCONSCIOUS == false)
                 {
-                    if (creatureDefendingPtrC->IsPlayerCharacter() && (creatureDefendingPtrC->HealthCurrent() <= 0))
+                    if (creatureDefendingPtrC->IsPlayerCharacter() &&
+                        (creatureDefendingPtrC->HealthCurrent() <= 0))
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
 
-                        const creature::Conditions::Enum CONDITION_UNCON_ENUM{ creature::Conditions::Unconscious };
+                        const creature::Conditions::Enum CONDITION_UNCON_ENUM{
+                            creature::Conditions::Unconscious };
+
                         creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_ENUM);
                         conditionsAddedVec.push_back(CONDITION_UNCON_ENUM);
 
@@ -227,7 +240,9 @@ namespace combat
 
                             if (DAMAGE_ABS >= halfHealthNormal)
                             {
-                                const creature::Conditions::Enum CONDITION_DAZED_ENUM{ creature::Conditions::Dazed };
+                                const creature::Conditions::Enum CONDITION_DAZED_ENUM{
+                                    creature::Conditions::Dazed };
+
                                 creatureDefendingPtrC->ConditionAdd(CONDITION_DAZED_ENUM);
                                 conditionsAddedVec.push_back(CONDITION_DAZED_ENUM);
                             }
