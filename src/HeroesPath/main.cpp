@@ -37,6 +37,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/texture-cache.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -166,6 +167,7 @@ int main(int argc, char * argv[])
         sfml_util::FontManager::Fill();
 
         //load game assets Stage 2
+        sfml_util::TextureCache::Acquire();
         game::item::ItemWarehouse::Acquire();
         game::player::CharacterWarehouse::Acquire();
         game::non_player::CharacterWarehouse::Acquire();
@@ -264,6 +266,7 @@ int main(int argc, char * argv[])
         game::item::ItemWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
+        sfml_util::TextureCache::Release();
 
         //unload stage 1
         sfml_util::FontManager::Empty();

@@ -195,16 +195,16 @@ namespace gui
     {}
 
 
-    RadioButtonSet::RadioButtonSet( const std::string &    NAME,
-                                    const float            POS_LEFT,
-                                    const float            POS_TOP,
-                                    const TextInfoVec_t &  TEXT_INFO_VEC,
-                                    const std::size_t      INITIAL_SELECTION,
-                                    const Brightness::Enum BRIGHTNESS,
-                                    const IndexVec_t &     INVALID_SEL_VEC,
-                                    const box::Info &      BOX_INFO,
-                                    const float            OUTER_PAD,
-                                    const float            BETWEEN_PAD)
+    RadioButtonSet::RadioButtonSet( const std::string &      NAME,
+                                    const float              POS_LEFT,
+                                    const float              POS_TOP,
+                                    const TextInfoVec_t &    TEXT_INFO_VEC,
+                                    const std::size_t        INITIAL_SELECTION,
+                                    const Brightness::Enum   BRIGHTNESS,
+                                    const misc::SizetVec_t & INVALID_SEL_VEC,
+                                    const box::Info &        BOX_INFO,
+                                    const float              OUTER_PAD,
+                                    const float              BETWEEN_PAD)
     :
         GuiEntity           (std::string(NAME).append("_RadioButtonSet"), POS_LEFT, POS_TOP),
         outerPad_           (OUTER_PAD),
@@ -235,7 +235,7 @@ namespace gui
                                     const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
                                     const std::size_t          INITIAL_SELECTION,
                                     const Brightness::Enum     BRIGHTNESS,
-                                    const IndexVec_t &         INVALID_SEL_VEC,
+                                    const misc::SizetVec_t &   INVALID_SEL_VEC,
                                     const box::Info &          BOX_INFO,
                                     const float                OUTER_PAD,
                                     const float                BETWEEN_PAD )
@@ -270,7 +270,7 @@ namespace gui
                                     const std::vector<std::string> & LABEL_VEC,
                                     const std::size_t                INITIAL_SELECTION,
                                     const Brightness::Enum           BRIGHTNESS,
-                                    const IndexVec_t &               INVALID_SEL_VEC,
+                                    const misc::SizetVec_t &         INVALID_SEL_VEC,
                                     const box::Info &                BOX_INFO,
                                     const float                      OUTER_PAD,
                                     const float                      BETWEEN_PAD)
@@ -303,15 +303,15 @@ namespace gui
     {}
 
 
-    void RadioButtonSet::Setup(const float            POS_LEFT,
-                               const float            POS_TOP,
-                               const TextInfoVec_t &  TEXT_INFO_VEC,
-                               const std::size_t      INITIAL_SELECTION,
-                               const Brightness::Enum BRIGHTNESS,
-                               const IndexVec_t &     INVALID_SEL_VEC,
-                               const box::Info &      BOX_INFO,
-                               const float            OUTER_PAD,
-                               const float            BETWEEN_PAD)
+    void RadioButtonSet::Setup(const float              POS_LEFT,
+                               const float              POS_TOP,
+                               const TextInfoVec_t &    TEXT_INFO_VEC,
+                               const std::size_t        INITIAL_SELECTION,
+                               const Brightness::Enum   BRIGHTNESS,
+                               const misc::SizetVec_t & INVALID_SEL_VEC,
+                               const box::Info &        BOX_INFO,
+                               const float              OUTER_PAD,
+                               const float              BETWEEN_PAD)
     {
         outerPad_   = OUTER_PAD;
         betweenPad_ = BETWEEN_PAD;
@@ -351,7 +351,7 @@ namespace gui
                                 const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
                                 const std::size_t          INITIAL_SELECTION,
                                 const Brightness::Enum     BRIGHTNESS,
-                                const IndexVec_t &         INVALID_SEL_VEC,
+                                const misc::SizetVec_t &   INVALID_SEL_VEC,
                                 const box::Info &          BOX_INFO,
                                 const float                OUTER_PAD,
                                 const float                BETWEEN_PAD )
@@ -394,7 +394,7 @@ namespace gui
                                 const std::vector<std::string> & LABEL_VEC,
                                 const std::size_t                INITIAL_SELECTION,
                                 const Brightness::Enum           BRIGHTNESS,
-                                const IndexVec_t &               INVALID_SEL_VEC,
+                                const misc::SizetVec_t &         INVALID_SEL_VEC,
                                 const box::Info &                BOX_INFO,
                                 const float                      OUTER_PAD,
                                 const float                      BETWEEN_PAD )
@@ -490,8 +490,12 @@ namespace gui
     {
         const std::size_t NUM_INVALIDS(invalidSelectionVec_.size());
         for (std::size_t i(0); i < NUM_INVALIDS; ++i)
+        {
             if (invalidSelectionVec_[i] == INDEX)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -531,7 +535,9 @@ namespace gui
 
             const float NEXT_HORIZ_LIMIT(buttonSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f));
             if (maxX < NEXT_HORIZ_LIMIT)
+            {
                 maxX = NEXT_HORIZ_LIMIT;
+            }
         }
         posY += buttonSVec_[buttonSVec_.size() - 1]->GetEntityRegion().height;
 
@@ -563,7 +569,9 @@ namespace gui
 
         const std::size_t NUM_BUTTONS(buttonSVec_.size());
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+        {
             buttonSVec_[i]->draw(target, states);
+        }
     }
 
 
@@ -583,7 +591,7 @@ namespace gui
     }
 
 
-    void RadioButtonSet::SetInvalidSelections(const IndexVec_t & INVALID_SELECTIONS_VEC)
+    void RadioButtonSet::SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC)
     {
         invalidSelectionVec_ = INVALID_SELECTIONS_VEC;
 
@@ -597,7 +605,9 @@ namespace gui
             const bool IS_VALID(!IsInvalid(i));
 
             if ((IS_VALID) && (ORIG_CURR_SEL == i))
+            {
                 isCurrentSelectionValid = true;
+            }
 
             if ((IS_VALID) && (false == hasSetFirstValid))
             {
@@ -606,8 +616,9 @@ namespace gui
                 hasSetFirstValid = true;
             }
             else
+            {
                 buttonSVec_[i]->SetIsInFirstState(true);
-
+            }
             buttonSVec_[i]->SetValidity(IS_VALID);
         }
 
@@ -615,7 +626,9 @@ namespace gui
         if (isCurrentSelectionValid)
         {
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+            {
                 buttonSVec_[i]->SetIsInFirstState(true);
+            }
 
             buttonSVec_[ORIG_CURR_SEL]->SetIsInFirstState(false);
             currentSelection_ = ORIG_CURR_SEL;
@@ -638,7 +651,9 @@ namespace gui
                 (currentSelection_ != i))
             {
                 if (buttonSVec_[i]->GetMouseState() != MouseState::Over)
+                {
                     SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                }
 
                 buttonSVec_[i]->SetMouseState(MouseState::Over);
                 didStatesChange = true;
@@ -674,7 +689,9 @@ namespace gui
 
         const std::size_t NUM_BUTTONS(buttonSVec_.size());
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+        {
             buttonSVec_[i]->MoveEntityPos(HORIZ, VERT);
+        }
 
         box_.MoveEntityPos(HORIZ, VERT);
     }

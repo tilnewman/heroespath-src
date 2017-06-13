@@ -38,6 +38,8 @@
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
 
+#include "misc/handy-types.hpp"
+
 
 namespace gui_demo
 {
@@ -84,7 +86,7 @@ namespace gui_demo
               mouseTextInfoVec,
               FindCurrentResolutionSelection(),
               sfml_util::Brightness::Bright,
-              sfml_util::IndexVec_t(),
+              misc::SizetVec_t(),
               resRadioButtonSetBoxInfo);
     }
 

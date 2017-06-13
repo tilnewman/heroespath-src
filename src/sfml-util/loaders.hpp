@@ -54,13 +54,19 @@ namespace sfml_util
         const std::string PATH_OBJ_STR( PATH_OBJ.string() );
 
         //check if the path exists
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ), "LoadImageOrTexture(\"" << PATH_OBJ_STR << "\") failed because that file does not exist!");
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ),
+            "LoadImageOrTexture(\"" << PATH_OBJ_STR
+            << "\") failed because that file does not exist.");
 
         //ignore subdirectories, irregulare files, etc.
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ), "LoadImageOrTexture(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file!");
+        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ),
+            "LoadImageOrTexture(\"" << PATH_OBJ_STR
+            << "\") failed because that is not a regular file.");
 
         //verify the load()
-        M_ASSERT_OR_LOGANDTHROW_SS(imageOrTexture.loadFromFile(PATH_OBJ_STR.c_str()), "During LoadImageOrTexture(), sf::(Image or Texture).loadFromFile(\"" << PATH_OBJ_STR << "\") failed!  Check console output for information.");
+        M_ASSERT_OR_LOGANDTHROW_SS(imageOrTexture.loadFromFile(PATH_OBJ_STR.c_str()),
+            "During LoadImageOrTexture(), sf::(Image or Texture).loadFromFile(\""
+            << PATH_OBJ_STR << "\") failed.  Check console output for information.");
     }
 
 
@@ -76,7 +82,7 @@ namespace sfml_util
         const std::string DIR_OBJ_STR(DIR_OBJ.string());
 
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ), "LoadAllImageOrTextureInDir(\""
-            << DIR_OBJ_STR << "\") failed because that path does not exist!");
+            << DIR_OBJ_STR << "\") failed because that path does not exist.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ), "LoadAllImageOrTextureInDir(\""
             << DIR_OBJ_STR << "\") failed because that is not a directory.");

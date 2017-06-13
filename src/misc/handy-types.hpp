@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_HANDYTYPES_HPP_INCLUDED
-#define SFMLUTIL_HANDYTYPES_HPP_INCLUDED
+#ifndef MISC_HANDYTYPES_HPP_INCLUDED
+#define MISC_HANDYTYPES_HPP_INCLUDED
 //
 // handy-types.hpp
 //
@@ -32,10 +32,10 @@
 #include <cstddef>
 
 
-namespace sfml_util
+namespace misc
 {
     using StrVec_t = std::vector<std::string>;
-    using IndexVec_t = std::vector<std::size_t>;
+    using SizetVec_t = std::vector<std::size_t>;
 }
 
-#endif //SFMLUTIL_HANDYTYPES_HPP_INCLUDED
+#endif //MISC_HANDYTYPES_HPP_INCLUDED

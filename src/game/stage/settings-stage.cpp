@@ -292,7 +292,7 @@ namespace stage
                                                                             AA_LABEL_VEC,
                                                                             aaInitialSelection,
                                                                             sfml_util::Brightness::Bright,
-                                                                            sfml_util::IndexVec_t(),
+                                                                            misc::SizetVec_t(),
                                                                             AA_BOX_INFO) );
 
             aaRadioButtonSetSPtr_->SetEntityColors(sfml_util::gui::ColorSet(sf::Color(180, 180, 180),

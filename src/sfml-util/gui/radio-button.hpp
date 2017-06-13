@@ -31,11 +31,12 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/brightness-enum.hpp"
-#include "sfml-util/handy-types.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/two-state-entity.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
+
+#include "misc/handy-types.hpp"
 
 #include <memory>
 #include <string>
@@ -122,16 +123,16 @@ namespace gui
         explicit RadioButtonSet(const std::string & NAME);
 
         //Constructor for cases where each radio button's label text has a different style, size, etc.
-        RadioButtonSet( const std::string &    NAME,
-                        const float            POS_LEFT,
-                        const float            POS_TOP,
-                        const TextInfoVec_t &  TEXT_INFO_VEC,
-                        const std::size_t      INITIAL_SELECTION,
-                        const Brightness::Enum BRIGHTNESS,
-                        const IndexVec_t &     INVALID_SEL_VEC = IndexVec_t(),
-                        const box::Info &      BOX_INFO        = box::Info(),
-                        const float            OUTER_PAD       = OUTER_PAD_DEFAULT_,
-                        const float            BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
+        RadioButtonSet( const std::string &      NAME,
+                        const float              POS_LEFT,
+                        const float              POS_TOP,
+                        const TextInfoVec_t &    TEXT_INFO_VEC,
+                        const std::size_t        INITIAL_SELECTION,
+                        const Brightness::Enum   BRIGHTNESS,
+                        const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                        const box::Info &        BOX_INFO        = box::Info(),
+                        const float              OUTER_PAD       = OUTER_PAD_DEFAULT_,
+                        const float              BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
 
         RadioButtonSet( const std::string &        NAME,
                         const float                POS_LEFT,
@@ -139,7 +140,7 @@ namespace gui
                         const MouseTextInfoVec_t & TEXT_INFO_VEC,
                         const std::size_t          INITIAL_SELECTION,
                         const Brightness::Enum     BRIGHTNESS,
-                        const IndexVec_t &         INVALID_SEL_VEC = IndexVec_t(),
+                        const misc::SizetVec_t &   INVALID_SEL_VEC = misc::SizetVec_t(),
                         const box::Info &          BOX_INFO        = box::Info(),
                         const float                OUTER_PAD       = OUTER_PAD_DEFAULT_,
                         const float                BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -152,29 +153,29 @@ namespace gui
                         const std::vector<std::string> & LABEL_VEC,
                         const std::size_t                INITIAL_SELECTION,
                         const Brightness::Enum           BRIGHTNESS,
-                        const IndexVec_t &               INVALID_SEL_VEC = IndexVec_t(),
+                        const misc::SizetVec_t &         INVALID_SEL_VEC = misc::SizetVec_t(),
                         const box::Info &                BOX_INFO        = box::Info(),
                         const float                      OUTER_PAD       = OUTER_PAD_DEFAULT_,
                         const float                      BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
 
         virtual ~RadioButtonSet();
 
-        void Setup(const float            POS_LEFT,
-                   const float            POS_TOP,
-                   const TextInfoVec_t &  TEXT_INFO_VEC,
-                   const std::size_t      INITIAL_SELECTION,
-                   const Brightness::Enum BRIGHTNESS,
-                   const IndexVec_t &     INVALID_SEL_VEC = IndexVec_t(),
-                   const box::Info &      BOX_INFO        = box::Info(),
-                   const float            OUTER_PAD       = OUTER_PAD_DEFAULT_,
-                   const float            BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
+        void Setup(const float              POS_LEFT,
+                   const float              POS_TOP,
+                   const TextInfoVec_t &    TEXT_INFO_VEC,
+                   const std::size_t        INITIAL_SELECTION,
+                   const Brightness::Enum   BRIGHTNESS,
+                   const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                   const box::Info &        BOX_INFO        = box::Info(),
+                   const float              OUTER_PAD       = OUTER_PAD_DEFAULT_,
+                   const float              BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
 
         void Setup(const float                POS_LEFT,
                    const float                POS_TOP,
                    const MouseTextInfoVec_t & TEXT_INFO_VEC,
                    const std::size_t          INITIAL_SELECTION,
                    const Brightness::Enum     BRIGHTNESS,
-                   const IndexVec_t &         INVALID_SEL_VEC = IndexVec_t(),
+                   const misc::SizetVec_t &   INVALID_SEL_VEC = misc::SizetVec_t(),
                    const box::Info &          BOX_INFO        = box::Info(),
                    const float                OUTER_PAD       = OUTER_PAD_DEFAULT_,
                    const float                BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -185,7 +186,7 @@ namespace gui
                     const std::vector<std::string> & LABEL_VEC,
                     const std::size_t                INITIAL_SELECTION,
                     const Brightness::Enum           BRIGHTNESS,
-                    const IndexVec_t &               INVALID_SEL_VEC = IndexVec_t(),
+                    const misc::SizetVec_t &         INVALID_SEL_VEC = misc::SizetVec_t(),
                     const box::Info &                BOX_INFO        = box::Info(),
                     const float                      OUTER_PAD       = OUTER_PAD_DEFAULT_,
                     const float                      BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_ );
@@ -198,8 +199,8 @@ namespace gui
         //throws on out of bounds, but will allow setting a grayed-out number
         void SetSelectNumber(const std::size_t);
 
-        void SetInvalidSelections(const IndexVec_t & INVALID_SELECTIONS_VEC);
-        inline const IndexVec_t GetInvalidSelections() const    { return invalidSelectionVec_; }
+        void SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC);
+        inline const misc::SizetVec_t GetInvalidSelections() const    { return invalidSelectionVec_; }
 
         //returns true if the currentSelection_ changed
         virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
@@ -248,7 +249,7 @@ namespace gui
         RadioButtonSVec_t  buttonSVec_;
         box::Box           box_;
         std::size_t        downInWhichRegion_;
-        IndexVec_t         invalidSelectionVec_;
+        misc::SizetVec_t   invalidSelectionVec_;
         std::size_t        prevSelection_;
         //
         sfml_util::callback::RadioButtonCallbackHandlerPtrSet_t callbackHandlerPtrSet_;

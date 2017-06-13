@@ -183,7 +183,7 @@ namespace gui
                              const float               POS_TOP,
                              const TextInfoVec_t &     TEXT_INFO_VEC,
                              const Brightness::Enum    BRIGHTNESS,
-                             const IndexVec_t &        INVALID_SEL_VEC,
+                             const misc::SizetVec_t &  INVALID_SEL_VEC,
                              const gui::box::Info &    BOX_INFO,
                              const std::deque<bool> &  INITIAL_SELECTIONS,
                              const float               OUTER_PAD,
@@ -229,7 +229,7 @@ namespace gui
                              const float                POS_TOP,
                              const MouseTextInfoVec_t & TEXT_INFO_VEC,
                              const Brightness::Enum     BRIGHTNESS,
-                             const IndexVec_t &         INVALID_SEL_VEC,
+                             const misc::SizetVec_t &   INVALID_SEL_VEC,
                              const gui::box::Info &     BOX_INFO,
                              const std::deque<bool> &   INITIAL_SELECTIONS,
                              const float                OUTER_PAD,
@@ -276,7 +276,7 @@ namespace gui
                              const TextInfo &                 TEXT_INFO,
                              const std::vector<std::string> & LABEL_VEC,
                              const Brightness::Enum           BRIGHTNESS,
-                             const IndexVec_t &               INVALID_SEL_VEC,
+                             const misc::SizetVec_t &         INVALID_SEL_VEC,
                              const gui::box::Info &           BOX_INFO,
                              const std::deque<bool> &         INITIAL_SELECTIONS,
                              const float                      OUTER_PAD,
@@ -349,8 +349,12 @@ namespace gui
 
         const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+        {
             if (false == checkBoxSVec_[i]->IsInFirstState())
-                checkedBoxes.push_back( checkBoxSVec_[i] );
+            {
+                checkedBoxes.push_back(checkBoxSVec_[i]);
+            }
+        }
 
         return checkedBoxes;
     }
@@ -430,8 +434,12 @@ namespace gui
     {
         const std::size_t NUM_INVALIDS(invalidSelectionsVec_.size());
         for (std::size_t i(0); i < NUM_INVALIDS; ++i)
+        {
             if (invalidSelectionsVec_[i] == INDEX)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -466,7 +474,9 @@ namespace gui
 
             const float NEXT_FAR_X_POINT(checkBoxSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f));
             if (maxX < NEXT_FAR_X_POINT)
+            {
                 maxX = NEXT_FAR_X_POINT;
+            }
         }
         posY += checkBoxSVec_[checkBoxSVec_.size() - 1]->GetEntityRegion().height;
 
@@ -481,7 +491,9 @@ namespace gui
 
         const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+        {
             checkBoxSVec_[i]->draw(target, states);
+        }
     }
 
 
@@ -507,7 +519,9 @@ namespace gui
 
         const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+        {
             checkBoxSVec_[i]->MoveEntityPos(HORIZ, VERT);
+        }
 
         box_.MoveEntityPos(HORIZ, VERT);
     }

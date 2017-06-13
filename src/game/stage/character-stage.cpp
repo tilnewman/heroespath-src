@@ -663,7 +663,7 @@ namespace stage
             }
         }
 
-        sfml_util::IndexVec_t invalidSelectionsVec;
+        misc::SizetVec_t invalidSelectionsVec;
         for (auto const NEXT_ENUM : temp)
             invalidSelectionsVec.push_back( static_cast<std::size_t>(NEXT_ENUM) );
 
@@ -724,7 +724,7 @@ namespace stage
                 raceNameVec,
                 0,
                 sfml_util::Brightness::Bright,
-                sfml_util::IndexVec_t(),
+                misc::SizetVec_t(),
                 BOX_INFO,
                 sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
                 0.0f);
@@ -758,7 +758,7 @@ namespace stage
                 roleNameVec,
                 0,
                 sfml_util::Brightness::Bright,
-                sfml_util::IndexVec_t(),
+                misc::SizetVec_t(),
                 BOX_INFO,
                 sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
                 -5.0f);
@@ -841,7 +841,7 @@ namespace stage
                 sexNameVec,
                 0,
                 sfml_util::Brightness::Bright,
-                sfml_util::IndexVec_t(),
+                misc::SizetVec_t(),
                 BOX_INFO,
                 5.0f,
                 0.0f);
