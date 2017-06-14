@@ -276,25 +276,7 @@ namespace sfml_util
             sound_effect::MeleeMiss20,
             sound_effect::MeleeMiss21,
             sound_effect::MeleeMiss22,
-            sound_effect::MeleeMiss23,
-            sound_effect::MeleeMiss24,
-            sound_effect::MeleeMiss25,
-            sound_effect::MeleeMiss26,
-            sound_effect::MeleeMiss27,
-            sound_effect::MeleeMiss28,
-            sound_effect::MeleeMiss29,
-            sound_effect::MeleeMiss30,
-            sound_effect::MeleeMiss31,
-            sound_effect::MeleeMiss32,
-            sound_effect::MeleeMiss33,
-            sound_effect::MeleeMiss34,
-            sound_effect::MeleeMiss35,
-            sound_effect::MeleeMiss36,
-            sound_effect::MeleeMiss37,
-            sound_effect::MeleeMiss38,
-            sound_effect::MeleeMiss39,
-            sound_effect::MeleeMiss40,
-            sound_effect::MeleeMiss41 };
+            sound_effect::MeleeMiss23 };
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::MeleeMiss)] =
             SoundEffectsSet(MELEE_MISS_SOUNDS_ENUM_VEC);

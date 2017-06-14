@@ -127,24 +127,6 @@ namespace sfml_util
             case MeleeMiss21:       { return "melee-miss-21"; }
             case MeleeMiss22:       { return "melee-miss-22"; }
             case MeleeMiss23:       { return "melee-miss-23"; }
-            case MeleeMiss24:       { return "melee-miss-24"; }
-            case MeleeMiss25:       { return "melee-miss-25"; }
-            case MeleeMiss26:       { return "melee-miss-26"; }
-            case MeleeMiss27:       { return "melee-miss-27"; }
-            case MeleeMiss28:       { return "melee-miss-28"; }
-            case MeleeMiss29:       { return "melee-miss-29"; }
-            case MeleeMiss30:       { return "melee-miss-30"; }
-            case MeleeMiss31:       { return "melee-miss-31"; }
-            case MeleeMiss32:       { return "melee-miss-32"; }
-            case MeleeMiss33:       { return "melee-miss-33"; }
-            case MeleeMiss34:       { return "melee-miss-34"; }
-            case MeleeMiss35:       { return "melee-miss-35"; }
-            case MeleeMiss36:       { return "melee-miss-36"; }
-            case MeleeMiss37:       { return "melee-miss-37"; }
-            case MeleeMiss38:       { return "melee-miss-38"; }
-            case MeleeMiss39:       { return "melee-miss-39"; }
-            case MeleeMiss40:       { return "melee-miss-40"; }
-            case MeleeMiss41:       { return "melee-miss-41"; }
             case FistHit1:          { return "fist-hit-1"; }
             case FistHit2:          { return "fist-hit-2"; }
             case FistHit3:          { return "fist-hit-3"; }
@@ -335,25 +317,7 @@ namespace sfml_util
             case MeleeMiss20:
             case MeleeMiss21:
             case MeleeMiss22:
-            case MeleeMiss23:
-            case MeleeMiss24:
-            case MeleeMiss25:
-            case MeleeMiss26:
-            case MeleeMiss27:
-            case MeleeMiss28:
-            case MeleeMiss29:
-            case MeleeMiss30:
-            case MeleeMiss31:
-            case MeleeMiss32:
-            case MeleeMiss33:
-            case MeleeMiss34:
-            case MeleeMiss35:
-            case MeleeMiss36:
-            case MeleeMiss37:
-            case MeleeMiss38:
-            case MeleeMiss39:
-            case MeleeMiss40:
-            case MeleeMiss41:           { return "sound-effects/combat/melee-miss"; }
+            case MeleeMiss23:           { return "sound-effects/combat/melee-miss"; }
             case FistHit1:
             case FistHit2:
             case FistHit3:
