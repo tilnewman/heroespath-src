@@ -289,7 +289,6 @@ namespace map
         const sf::Vector2u WIN_SIZE_V_;
         sf::Vector2f       playerPosV_; //in offscreen coordinates
         sf::Vector2f       playerPosOffsetV_;//in screeen coordinates
-        sf::Texture        tileTexture_;
         sf::RenderStates   renderStates_;
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;

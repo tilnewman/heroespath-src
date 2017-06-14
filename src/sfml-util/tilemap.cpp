@@ -223,7 +223,6 @@ namespace map
         WIN_SIZE_V_      (WIN_SIZE_V),
         playerPosV_      (PLAYER_POS_V),
         playerPosOffsetV_(0.0f, 0.0f),
-        tileTexture_     (),
         renderStates_    (sf::RenderStates::Default),
         offScreenRect_   (),
         mapSprite_       (),
@@ -580,7 +579,7 @@ namespace map
                     quads[3].position  = NEXT_MAP_LAYER.vert_array[j].position;
                     quads[3].texCoords = NEXT_MAP_LAYER.vert_array[j++].texCoords;
 
-                    renderStates_.texture = &NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture;
+                    renderStates_.texture = & NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture;
 
                     offScreenTexture_.draw(quads, renderStates_);
                 }
