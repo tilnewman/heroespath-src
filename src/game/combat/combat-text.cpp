@@ -487,7 +487,7 @@ namespace combat
                 }
                 else
                 {
-                    ss << "for " << FIGHT_RESULT.DamageTotal() << " damage";
+                    ss << "for " << FIGHT_RESULT.DamageTotal() * -1 << " damage";
                 }
 
                 ss << AttackConditionsSummaryList(FIGHT_RESULT);
@@ -509,12 +509,16 @@ namespace combat
                 std::size_t killCount{ 0 };
                 auto const CREATURE_EFFECTS_VEC{ FIGHT_RESULT.Effects() };
                 for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
-                    if (NEXT_CREATURE_EFFECT.WasKill())
-                        ++killCount;
-
-                if (FIGHT_RESULT.DamageTotal() > 0)
                 {
-                    ss << "for " << FIGHT_RESULT.DamageTotal() << " damage";
+                    if (NEXT_CREATURE_EFFECT.WasKill())
+                    {
+                        ++killCount;
+                    }
+                }
+
+                if (FIGHT_RESULT.DamageTotal() < 0)
+                {
+                    ss << "for " << FIGHT_RESULT.DamageTotal() * -1 << " damage";
                 }
 
                 if (killCount > 0)
@@ -587,9 +591,9 @@ namespace combat
                 }
             }
 
-            if (HIT_INFO.Damage() > 0)
+            if (HIT_INFO.Damage() < 0)
             {
-                ss << "for " << HIT_INFO.Damage() << " damage";
+                ss << "for " << HIT_INFO.Damage() * -1 << " damage";
             }
             else
             {
