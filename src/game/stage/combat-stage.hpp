@@ -50,6 +50,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <set>
 
 
 //forward declarations
@@ -98,6 +99,9 @@ namespace combat
 
 namespace stage
 {
+
+    using SizePairSet_t = std::set<std::pair<std::size_t, std::size_t>>;
+
 
     //A Stage class that allows camping characters
     class CombatStage
@@ -269,6 +273,8 @@ namespace stage
 
         const std::string RemoveSingleTurnTemporaryConditions();
 
+        void HandlePlayingMeleeSoundEffects();
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
         //
@@ -333,6 +339,7 @@ namespace stage
         sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;
         sf::FloatRect                    turnBoxRegion_;
         combat::CombatSoundEffects       combatSoundEffects_;
+        SizePairSet_t                    soundEffectsPlayedSet_;
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;
         TurnActionPhase                  turnActionPhase_;

@@ -624,7 +624,7 @@ namespace combat
 
 
     const std::string Text::CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                         const FightResult & FIGHT_RESULT)
+                                                         const FightResult &    FIGHT_RESULT)
     {
         std::ostringstream ss;
 

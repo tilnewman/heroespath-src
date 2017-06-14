@@ -88,7 +88,7 @@ namespace game
 namespace stage
 {
 
-    const std::string CombatStage::POPUP_NAME_SPELLBOOK_    { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_SPELLBOOK_{ "SPELLBOOK_POPUP_WINDOW_NAME" };
     //
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
@@ -113,29 +113,37 @@ namespace stage
     //
     const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_{ 0.4f };
     //
-    const float CombatStage::SLIDER_SPEED_SLOWEST_                  { 1.0f };
-    const float CombatStage::SLIDER_SPEED_SLOW_                     { SLIDER_SPEED_SLOWEST_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_NORMAL_                   { SLIDER_SPEED_SLOW_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_FAST_                     { SLIDER_SPEED_NORMAL_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_FASTEST_                  { SLIDER_SPEED_NORMAL_ * 10.0f };
-    const float CombatStage::ZOOM_SLIDER_SPEED_                     { SLIDER_SPEED_SLOW_ };
-    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_               { SLIDER_SPEED_FASTEST_ };
-    const float CombatStage::ANIM_CENTERING_SLIDER_SPEED_           { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_INITIAL_CENTERING_SLIDER_SPEED_   { SLIDER_SPEED_SLOWEST_ };
-    const float CombatStage::ANIM_CREATURE_POS_SLIDER_SPEED_        { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_    { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_DEATH_SLIDER_SPEED_               { SLIDER_SPEED_SLOWEST_ };
-    const float CombatStage::ANIM_MELEE_MOVE_SLIDER_SPEED_          { SLIDER_SPEED_FAST_ };
-    const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_              { SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_      { SLIDER_SPEED_FASTEST_ };
-    const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_        { SLIDER_SPEED_FASTEST_ * 3.0f };
+    const float CombatStage::SLIDER_SPEED_SLOWEST_               { 1.0f };
+    const float CombatStage::SLIDER_SPEED_SLOW_                  { SLIDER_SPEED_SLOWEST_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_NORMAL_                { SLIDER_SPEED_SLOW_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FAST_                  { SLIDER_SPEED_NORMAL_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FASTEST_               { SLIDER_SPEED_NORMAL_ * 10.0f };
+    const float CombatStage::ZOOM_SLIDER_SPEED_                  { SLIDER_SPEED_SLOW_ };
+    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_            { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_CENTERING_SLIDER_SPEED_        { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_INITIAL_CENTERING_SLIDER_SPEED_{ SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_CREATURE_POS_SLIDER_SPEED_     { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_DEATH_SLIDER_SPEED_            { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_MELEE_MOVE_SLIDER_SPEED_       { SLIDER_SPEED_FAST_ };
+    const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_           { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_   { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_     { SLIDER_SPEED_FASTEST_ * 3.0f };
     //
-    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_   { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_    { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20) };
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_{ (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40) };
-    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_     { sf::Color::White };
-    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_  { sf::Color(150, 150, 150) };
-    const sf::Color CombatStage::LISTBOX_LINE_COLOR_         { sf::Color(255, 255, 255, 25) };
+    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_
+    { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
+
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_
+    { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) +
+        sf::Color(20, 20, 20, 20) };
+
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_
+    { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) +
+        sf::Color(40, 40, 40, 40) };
+
+    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_   { sf::Color::White };
+    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_{ sf::Color(150, 150, 150) };
+    const sf::Color CombatStage::LISTBOX_LINE_COLOR_       { sf::Color(255, 255, 255, 25) };
     //
     combat::RestoreInfo CombatStage::restoreInfo_;
 
@@ -147,11 +155,18 @@ namespace stage
         SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
         commandBoxUPtr_             (),
         statusBoxSPtr_              (),
-        statusBoxTextInfo_          (" ", sfml_util::FontManager::Instance()->Font_Typical(), sfml_util::FontManager::Instance()->Size_Small(), sfml_util::FontManager::Color_Orange(), sfml_util::Justified::Left),
+
+        statusBoxTextInfo_          (" ",
+                                     sfml_util::FontManager::Instance()->Font_Typical(),
+                                     sfml_util::FontManager::Instance()->Size_Small(),
+                                     sfml_util::FontManager::Color_Orange(),
+                                     sfml_util::Justified::Left),
+
         zoomSliderBarUPtr_          (),
         turnBoxUPtr_                (),
         turnBoxRegion_              (),
         combatSoundEffects_         (),
+        soundEffectsPlayedSet_      (),
         turnPhase_                  (TurnPhase::NotATurn),
         preTurnPhase_               (PreTurnPhase::Start),
         turnActionPhase_            (TurnActionPhase::None),
@@ -163,16 +178,31 @@ namespace stage
         willClrShkInitStatusMsg_    (false),
         tempConditionsWakeStr_      (""),
         isShortPostZoomOutPause_    (false),
-        slider_                     (1.0f),//initiall speed ignored because speed is set before each use, any value greater than zero will work here
+
+        //initiall speed ignored because speed is set before each use,
+        //any value greater than zero will work here
+        slider_                     (1.0f),
+
         combatDisplayStagePtr_      (new combat::CombatDisplay()),
-        combatAnimationUPtr_        ( std::make_unique<combat::CombatAnimation>(combatDisplayStagePtr_) ),
+
+        combatAnimationUPtr_        ( std::make_unique<combat::CombatAnimation>(
+                                        combatDisplayStagePtr_) ),
         settingsButtonSPtr_         (),
         pauseDurationSec_           (0.0f),
-        pauseElapsedSec_            (pauseDurationSec_ + 1.0f),//anything greater than pauseTimeDurationSecs_ will work here
+
+        //anything greater than pauseTimeDurationSecs_ will work here
+        pauseElapsedSec_            (pauseDurationSec_ + 1.0f),
+
         isPauseCanceled_            (false),
         turnCreaturePtr_            (nullptr),
-        goldTextColorShaker_        (sfml_util::FontManager::Color_Orange(), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_),
-        redTextColorShaker_         (sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
+
+        goldTextColorShaker_        (sfml_util::FontManager::Color_Orange(),
+                                     sf::Color::White,
+                                     TEXT_COLOR_SHAKER_SPEED_),
+
+        redTextColorShaker_         (sf::Color(255, 127, 127),
+                                     sf::Color::White,
+                                     TEXT_COLOR_SHAKER_SPEED_ * 0.65f),
         turnActionInfo_             (),
         fightResult_                (),
         willRedColorShakeWeaponText_(false),
@@ -196,8 +226,15 @@ namespace stage
         pounceTBoxButtonSPtr_       (),
         tBoxStdButtonSVec_          (),
         tBoxBeastButtonSVec_        (),
-        statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f), //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
-        statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false),
+
+        //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
+        statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f),
+
+        statusMsgAnimColorShaker_   (LISTBOX_HIGHLIGHT_COLOR_,
+                                     LISTBOX_HIGHLIGHT_ALT_COLOR_,
+                                     35.0f,
+                                     false),
+
         testingTextRegionUPtr_      (),
         pauseTitle_                 (""),
         clickTimerSec_              (-1.0f),//any negative value will work here
@@ -219,46 +256,73 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    bool CombatStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
-        if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::Determine != turnPhase_))
+        if ((IsPlayerCharacterTurnValid() == false) ||
+            (TurnPhase::Determine != turnPhase_))
+        {
             return false;
+        }
 
         if (PACKAGE.PTR_ == attackTBoxButtonSPtr_.get())
+        {
             return HandleAttack();
+        }
 
         if (PACKAGE.PTR_ == fightTBoxButtonSPtr_.get())
+        {
             return HandleFight();
+        }
 
         if (PACKAGE.PTR_ == castTBoxButtonSPtr_.get())
+        {
             return HandleCast_Step1_ValidateCastAndSelectSpell();
+        }
 
         if (PACKAGE.PTR_ == advanceTBoxButtonSPtr_.get())
+        {
             return HandleAdvance();
+        }
 
         if (PACKAGE.PTR_ == retreatTBoxButtonSPtr_.get())
+        {
             return HandleRetreat();
+        }
 
         if (PACKAGE.PTR_ == blockTBoxButtonSPtr_.get())
+        {
             return HandleBlock();
+        }
 
         if (PACKAGE.PTR_ == skipTBoxButtonSPtr_.get())
+        {
             return HandleSkip();
+        }
 
         if (PACKAGE.PTR_ == flyTBoxButtonSPtr_.get())
+        {
             return HandleFly();
+        }
 
         if (PACKAGE.PTR_ == landTBoxButtonSPtr_.get())
+        {
             return HandleLand();
+        }
 
         if (PACKAGE.PTR_ == roarTBoxButtonSPtr_.get())
+        {
             return HandleRoar();
+        }
 
         if (PACKAGE.PTR_ == pounceTBoxButtonSPtr_.get())
         {
             auto isSkyPounce(false);
             if ((TurnPhase::NotATurn != turnPhase_) && (turnCreaturePtr_ != nullptr))
-                isSkyPounce = combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying();
+            {
+                isSkyPounce = combat::Encounter::Instance()->
+                    GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying();
+            }
 
             return HandlePounce(isSkyPounce);
         }
@@ -274,12 +338,16 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
+    bool CombatStage::HandleCallback(
+        const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((PACKAGE.PTR_ == zoomSliderBarUPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
+        if ((PACKAGE.PTR_ == zoomSliderBarUPtr_.get()) &&
+            (combatDisplayStagePtr_ != nullptr))
         {
             //only zoom out half the distance that the slider actually shows
-            auto const HALF_ZOOM_DIFFERENCE{ 1.0f - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
+            auto const HALF_ZOOM_DIFFERENCE{ 1.0f -
+                ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
+
             combatDisplayStagePtr_->SetZoomLevel(HALF_ZOOM_DIFFERENCE);
             return true;
         }
@@ -1827,16 +1895,13 @@ namespace stage
                 {
                     performReportHitIndex_ = 0;
                     ++performReportEffectIndex_;
-
+                    
                     if (performReportEffectIndex_ >= CREATURE_EFFECTS_VEC.size())
                     {
                         HandlePerformReportPhaseOverTasks();
                         return;
                     }
                 }
-
-                combatSoundEffects_.PlayHitOrMiss(CREATURE_EFFECTS_VEC.at(
-                    performReportEffectIndex_).GetHitInfoVec().at(performReportHitIndex_));
 
                 SetupTurnBox();
                 StartPause(PERFORM_REPORT_PAUSE_SEC_, "PerformReport");
@@ -2058,6 +2123,8 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
+        soundEffectsPlayedSet_.clear();
+
         if (restoreInfo_.CanTurnAdvance())
         {
             combat::Encounter::Instance()->IncrementTurn();
@@ -2699,17 +2766,21 @@ namespace stage
         }
 
         auto willDrawTurnBoxButtons{ true };
-
+        
         if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
             (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
-            ((TurnPhase::PostCenterAndZoomInPause == turnPhase_) && IsNonPlayerCharacterTurnValid()) ||
-            ((TurnPhase::PerformAnim == turnPhase_) && (animPhase_ < AnimPhase::Impact)))
+            ((TurnPhase::PostCenterAndZoomInPause == turnPhase_) &&
+                IsNonPlayerCharacterTurnValid()) ||
+            ((TurnPhase::PerformAnim == turnPhase_) &&
+                (animPhase_ < AnimPhase::Impact)))
         {
             willDrawTurnBoxButtons = false;
 
             if ((fightResult_.Count() > 0) ||
-                ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::AdvanceOrRetreat == animPhase_)))
+                ((TurnPhase::PerformAnim == turnPhase_) &&
+                    (AnimPhase::AdvanceOrRetreat == animPhase_)))
             {
+                
                 infoSS.str(EMPTY_STR);
                 weaponHoldingSS.str(EMPTY_STR);
                 armorSS.str(EMPTY_STR);
@@ -2717,6 +2788,7 @@ namespace stage
 
                 isPreambleShowing = true;
 
+                //preamble version of action text
                 preambleSS << combat::Text::ActionText(turnCreaturePtr_,
                                                        turnActionInfo_,
                                                        fightResult_,
@@ -2733,6 +2805,8 @@ namespace stage
                  (TurnPhase::PostPerformPause == turnPhase_) ||
                  ((TurnPhase::PerformAnim == turnPhase_) &&  (animPhase_ >= AnimPhase::Impact)))
         {
+            HandlePlayingMeleeSoundEffects();
+
             willDrawTurnBoxButtons = false;
 
             infoSS.str(EMPTY_STR);
@@ -2742,6 +2816,7 @@ namespace stage
 
             isPreambleShowing = true;
 
+            //perform report version of action text
             preambleSS << combat::Text::ActionText(turnCreaturePtr_,
                                                    turnActionInfo_,
                                                    fightResult_,
@@ -3258,6 +3333,33 @@ namespace stage
         }
 
         return "";
+    }
+
+
+    void CombatStage::HandlePlayingMeleeSoundEffects()
+    {
+        auto const CREATURE_EFFECTS_VEC(fightResult_.Effects());
+        if (performReportEffectIndex_ >= CREATURE_EFFECTS_VEC.size())
+        {
+            return;
+        }
+
+        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[performReportEffectIndex_].GetHitInfoVec() };
+        if (performReportHitIndex_ >= HIT_INFO_VEC.size())
+        {
+            return;
+        }
+
+        auto const HIT_INFO{ HIT_INFO_VEC[performReportHitIndex_] };
+
+        auto const EFFECT_HIT_PAIR{ std::make_pair(performReportEffectIndex_,
+            performReportHitIndex_) };
+
+        if (soundEffectsPlayedSet_.find(EFFECT_HIT_PAIR) == soundEffectsPlayedSet_.end())
+        {
+            soundEffectsPlayedSet_.insert(EFFECT_HIT_PAIR);
+            combatSoundEffects_.PlayHitOrMiss(HIT_INFO);
+        }
     }
 
 }
