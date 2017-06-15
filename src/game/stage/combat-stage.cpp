@@ -3239,17 +3239,15 @@ namespace stage
             {
                 killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
             }
-            else
+
+            if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
             {
-                if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
+                auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
+                if (DAMAGE != 0)
                 {
-                    auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
-                    if (DAMAGE != 0)
-                    {
-                        damageVec.push_back(DAMAGE);
-                        combatNodePVec.push_back(combatDisplayStagePtr_->
-                            GetCombatNodeForCreature(NEXT_CREATURE_EFFECT.GetCreature()));
-                    }
+                    damageVec.push_back(DAMAGE);
+                    combatNodePVec.push_back(combatDisplayStagePtr_->
+                        GetCombatNodeForCreature(NEXT_CREATURE_EFFECT.GetCreature()));
                 }
             }
         }
