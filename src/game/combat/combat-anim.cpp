@@ -35,8 +35,10 @@
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/sparkle-animation.hpp"
+#include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation.hpp"
 #include "sfml-util/song-animation.hpp"
+#include "sfml-util/gui/text-region.hpp"
 
 #include "game/combat/combat-display.hpp"
 #include "game/combat/combat-text.hpp"
@@ -137,7 +139,8 @@ namespace combat
         singleTextureAnimUVec_           (),
         multiTextureAnimUVec_            (),
         singleTextureSizeMap_            (),
-        sparkleAnimUVec_                 ()
+        sparkleAnimUVec_                 (),
+        textAnimUVec_                    ()
     {
         singleTextureSizeMap_[ANIM_MEDIA_PATH_KEY_STR_SPARKLE_] = sf::Vector2f(128.0f, 128.0f);
     }
@@ -183,6 +186,14 @@ namespace combat
             if (NEXT_SONGANIM_PTR->IsFinished() == false)
             {
                 NEXT_SONGANIM_PTR->draw(target, STATES);
+            }
+        }
+
+        for (auto const & NEXT_TEXTANIM_UPTR : textAnimUVec_)
+        {
+            if (NEXT_TEXTANIM_UPTR->IsFinished() == false)
+            {
+                NEXT_TEXTANIM_UPTR->draw(target, STATES);
             }
         }
     }
@@ -238,6 +249,14 @@ namespace combat
             if (slider_.GetIsDone())
             {
                 SelectAnimStop();
+            }
+        }
+
+        for (auto const & NEXT_TEXTANIM_UPTR : textAnimUVec_)
+        {
+            if (NEXT_TEXTANIM_UPTR->IsFinished() == false)
+            {
+                NEXT_TEXTANIM_UPTR->Update(ELAPSED_TIME_SECONDS);
             }
         }
     }
@@ -1211,6 +1230,67 @@ namespace combat
     void CombatAnimation::SparkleAnimStop()
     {
         sparkleAnimUVec_.clear();
+    }
+
+
+    void CombatAnimation::TextAnimStart(const stats::Health_t &       DAMAGE,
+                                        const combat::CombatNodePtr_t TARGET_PTR)
+    {
+        TextAnimStart(std::vector<stats::Health_t>(1, DAMAGE),
+            combat::CombatNodePVec_t(1, TARGET_PTR));
+    }
+
+
+    void CombatAnimation::TextAnimStart(const std::vector<stats::Health_t> & DAMAGE_VEC,
+                                        const combat::CombatNodePVec_t &     TARGETS_PVEC)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((DAMAGE_VEC.size() == TARGETS_PVEC.size()),
+            "game::combat::CombatAnimation::TextAnimStart(damage_vec_size="
+            << DAMAGE_VEC.size() << ", combat_node_vec_size=" << TARGETS_PVEC.size()
+            << ") sizes do not match.");
+
+        textAnimUVec_.clear();
+
+        std::size_t damageIndex{ 0 };
+        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
+        {
+            auto const NEXT_DAMAGE_VALUE{ DAMAGE_VEC[damageIndex++] };
+
+            if ((NEXT_DAMAGE_VALUE == 0) ||
+                (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
+            {
+                continue;
+            }
+
+            std::ostringstream ss;
+            sf::Color startColor(255, 0, 0);
+            sf::Color endColor(255, 0, 0, 0);
+            if (NEXT_DAMAGE_VALUE > 0)
+            {
+                ss << "+";
+                startColor.g = 232;
+                startColor.b = 232;
+                endColor.g = 232;
+                endColor.b = 232;
+            }
+
+            ss << NEXT_DAMAGE_VALUE;
+
+            textAnimUVec_.push_back( std::make_unique<sfml_util::animation::TextAnimation>(
+                ss.str(),
+                NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                1.0f,
+                1,
+                sfml_util::FontManager::Instance()->Size_Larger() + 64,
+                startColor,
+                endColor) );
+        }
+    }
+
+
+    void CombatAnimation::TextAnimStop()
+    {
+        textAnimUVec_.clear();
     }
 
 }

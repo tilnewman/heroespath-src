@@ -129,16 +129,14 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(creatureDefendingPtrC->HealthNormal());
               
-                if (creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed))
-                {
-                    creatureDefendingPtrC->ConditionRemove(creature::Conditions::Dazed);
-                }
+                RemoveCondition(creature::Conditions::Dazed,
+                                creatureDefendingPtrC,
+                                hitInfoVec);
             }
 
-            if (creatureDefendingPtrC->HasCondition(creature::Conditions::Unconscious))
-            {
-                creatureDefendingPtrC->ConditionRemove(creature::Conditions::Unconscious);
-            }
+            RemoveCondition(creature::Conditions::Unconscious,
+                            creatureDefendingPtrC,
+                            hitInfoVec);
 
             return creature::ConditionEnumVec_t();
         }
@@ -184,12 +182,9 @@ namespace combat
                 //remove the unconscious condition if already there
                 if (IS_ALREADY_UNCONSCIOUS)
                 {
-                    creatureDefendingPtrC->ConditionRemove(creature::Conditions::Unconscious);
-
-                    for (auto & nextHitInfo : hitInfoVec)
-                    {
-                        nextHitInfo.RemoveCondition(creature::Conditions::Unconscious);
-                    }
+                    RemoveCondition(creature::Conditions::Unconscious,
+                                    creatureDefendingPtrC,
+                                    hitInfoVec);
                 }
             }
             else
@@ -200,10 +195,6 @@ namespace combat
                     creatureDefendingPtrC->HealthCurrentSet(0);
                 }
 
-                auto const IS_ALREADY_DAZED{
-                    creatureDefendingPtrC->HasCondition(creature::Conditions::Dazed) ||
-                        IsConditionContained(creature::Conditions::Dazed, hitInfoVec) };
-
                 if (IS_ALREADY_UNCONSCIOUS == false)
                 {
                     if (creatureDefendingPtrC->IsPlayerCharacter() &&
@@ -211,48 +202,91 @@ namespace combat
                     {
                         creatureDefendingPtrC->HealthCurrentSet(1);
 
-                        const creature::Conditions::Enum CONDITION_UNCON_ENUM{
-                            creature::Conditions::Unconscious };
+                        creatureDefendingPtrC->ConditionAdd(creature::Conditions::Unconscious);
+                        conditionsAddedVec.push_back(creature::Conditions::Unconscious);
 
-                        creatureDefendingPtrC->ConditionAdd(CONDITION_UNCON_ENUM);
-                        conditionsAddedVec.push_back(CONDITION_UNCON_ENUM);
+                        RemoveCondition(creature::Conditions::Dazed,
+                                        creatureDefendingPtrC,
+                                        hitInfoVec);
 
-                        //remove the dazed condition if already there
-                        if (IS_ALREADY_DAZED)
-                        {
-                            creatureDefendingPtrC->ConditionRemove(creature::Conditions::Dazed);
-
-                            for (auto & nextHitInfo : hitInfoVec)
-                            {
-                                nextHitInfo.RemoveCondition(creature::Conditions::Dazed);
-                            }
-                        }
+                        RemoveCondition(creature::Conditions::Daunted,
+                                        creatureDefendingPtrC,
+                                        hitInfoVec);
                     }
                     else
                     {
-                        if (IS_ALREADY_DAZED == false)
-                        {
-                            auto halfHealthNormal{ creatureDefendingPtrC->HealthNormal() / 2 };
-                            if (0 == halfHealthNormal)
-                            {
-                                halfHealthNormal = 1;
-                            }
-
-                            if (DAMAGE_ABS >= halfHealthNormal)
-                            {
-                                const creature::Conditions::Enum CONDITION_DAZED_ENUM{
-                                    creature::Conditions::Dazed };
-
-                                creatureDefendingPtrC->ConditionAdd(CONDITION_DAZED_ENUM);
-                                conditionsAddedVec.push_back(CONDITION_DAZED_ENUM);
-                            }
-                        }
+                        HandleConditionsBasedOnDamage(creatureDefendingPtrC,
+                                                      DAMAGE_ABS,
+                                                      conditionsAddedVec);
                     }
                 }
             }
         }
 
         return conditionsAddedVec;
+    }
+
+
+    void FightClub::HandleConditionsBasedOnDamage(
+        creature::CreaturePtrC_t       creatureDefendingPtrC,
+        const stats::Health_t          DAMAGE_ABS,
+        creature::ConditionEnumVec_t & condsVecParam)
+    {
+        creature::ConditionEnumVec_t condsVecToAdd{ creature::Conditions::Daunted,
+                                                    creature::Conditions::Dazed,
+                                                    creature::Conditions::Tripped };
+        
+        misc::Vector::ShuffleVec(condsVecToAdd);
+
+        if (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() -
+            (creatureDefendingPtrC->HealthNormal() / 8)))
+        {
+            //leave condsVec as is, with all three conditions contained
+        }
+        else if (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() -
+                    (creatureDefendingPtrC->HealthNormal() / 4)))
+        {
+            condsVecToAdd.resize(2);
+        }
+        else if (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() -
+            (creatureDefendingPtrC->HealthNormal() / 2)))
+        {
+            condsVecToAdd.resize(1);
+        }
+        else
+        {
+            return;
+        }
+
+        for (auto const NEXT_COND_ENUM : condsVecToAdd)
+        {
+            //only a 50/50 chance of adding conditions
+            if (misc::random::Bool() &&
+                (creatureDefendingPtrC->HasCondition(NEXT_COND_ENUM) == false))
+            {
+                creatureDefendingPtrC->ConditionAdd(NEXT_COND_ENUM);
+                condsVecParam.push_back(NEXT_COND_ENUM);
+            }
+        }
+    }
+
+
+    void FightClub::RemoveCondition(const creature::Conditions::Enum COND_ENUM,
+                                    creature::CreaturePtrC_t         creaturePtrC,
+                                    HitInfoVec_t &                   hitInfoVec)
+    {
+        if (creaturePtrC->HasCondition(COND_ENUM))
+        {
+            creaturePtrC->ConditionRemove(COND_ENUM);
+        }
+
+        if (IsConditionContained(COND_ENUM, hitInfoVec))
+        {
+            for (auto & nextHitInfo : hitInfoVec)
+            {
+                nextHitInfo.RemoveCondition(COND_ENUM);
+            }
+        }
     }
 
 

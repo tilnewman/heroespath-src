@@ -79,9 +79,19 @@ namespace combat
                                        const bool               WILL_FORCE_HIT = false);
 
         //negative values are damaging, positive values are healing
-        static const creature::ConditionEnumVec_t HandleDamage(creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                               HitInfoVec_t &           hitInfoVec,
-                                                               const stats::Health_t    HEALTH_ADJ);
+        static const creature::ConditionEnumVec_t HandleDamage(
+            creature::CreaturePtrC_t creatureDefendingPtrC,
+            HitInfoVec_t &           hitInfoVec,
+            const stats::Health_t    HEALTH_ADJ);
+
+        static void HandleConditionsBasedOnDamage(
+            creature::CreaturePtrC_t       creatureDefendingPtrC,
+            const stats::Health_t          DAMAGE_ABS,
+            creature::ConditionEnumVec_t & condsVec);
+
+        static void RemoveCondition(const creature::Conditions::Enum COND_ENUM,
+                                    creature::CreaturePtrC_t         creaturePtrC,
+                                    HitInfoVec_t &                   hitInfoVec);
 
         static const FightResult Cast(const spell::SpellPtr_t          SPELL_CPTR,
                                       creature::CreaturePtrC_t         creatureCastingPtrC,
@@ -93,35 +103,41 @@ namespace combat
         static const FightResult Roar(creature::CreaturePtrC_t creatureRoaringPtrC,
                                       CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
 
-        static creature::CreaturePtr_t FindNonPlayerCreatureToAttack(creature::CreaturePtrC_t creatureAttackingtrC,
-                                                                     CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
+        static creature::CreaturePtr_t FindNonPlayerCreatureToAttack(
+            creature::CreaturePtrC_t creatureAttackingtrC,
+            CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
 
     private:
-        static const HitInfoVec_t AttackWithAllWeapons(creature::CreaturePtrC_t creatureAttackingPtrC,
-                                                       creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                       const bool               WILL_FORCE_HIT = false);
+        static const HitInfoVec_t AttackWithAllWeapons(
+            creature::CreaturePtrC_t creatureAttackingPtrC,
+            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const bool               WILL_FORCE_HIT = false);
 
-        static const HitInfo AttackWithSingleWeapon(HitInfoVec_t &           hitInfoVec,
-                                                    const item::ItemPtr_t    WEAPON_PTR,
-                                                    creature::CreaturePtrC_t creatureAttackingPtrC,
-                                                    creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                    const bool               WILL_FORCE_HIT = false);
+        static const HitInfo AttackWithSingleWeapon(
+            HitInfoVec_t &           hitInfoVec,
+            const item::ItemPtr_t    WEAPON_PTR,
+            creature::CreaturePtrC_t creatureAttackingPtrC,
+            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const bool               WILL_FORCE_HIT = false);
 
-        static const HitInfo CastSpellUpon(HitInfoVec_t &                       hitInfoVec,
-                                           const spell::SpellPtr_t              SPELL_CPTR,
-                                           const std::string &                  EFFECT_STR,
-                                           creature::CreaturePtrC_t             creatureCastingPtrC,
-                                           creature::CreaturePtrC_t             creatureCastUponPtrC,
-                                           const stats::Health_t                HEALTH_ADJ,
-                                           const creature::ConditionEnumVec_t & CONDITIONS_VEC);
+        static const HitInfo CastSpellUpon(
+            HitInfoVec_t &                       hitInfoVec,
+            const spell::SpellPtr_t              SPELL_CPTR,
+            const std::string &                  EFFECT_STR,
+            creature::CreaturePtrC_t             creatureCastingPtrC,
+            creature::CreaturePtrC_t             creatureCastUponPtrC,
+            const stats::Health_t                HEALTH_ADJ,
+            const creature::ConditionEnumVec_t & CONDITIONS_VEC);
 
-        static stats::Health_t DetermineDamage(const item::ItemPtr_t    WEAPON_PTR,
-                                               creature::CreaturePtrC_t creatureAttackingPtrC,
-                                               creature::CreaturePtrC_t creatureDefendingPtrC,
-                                               bool &                   isPowerHit_OutParam,
-                                               bool &                   isCriticalHit_OutParam);
+        static stats::Health_t DetermineDamage(
+            const item::ItemPtr_t    WEAPON_PTR,
+            creature::CreaturePtrC_t creatureAttackingPtrC,
+            creature::CreaturePtrC_t creatureDefendingPtrC,
+            bool &                   isPowerHit_OutParam,
+            bool &                   isCriticalHit_OutParam);
 
-        static bool IsConditionContained(const creature::Conditions::Enum E, const HitInfoVec_t & HIT_INFO_VEC);
+        static bool IsConditionContained(const creature::Conditions::Enum E,
+                                         const HitInfoVec_t & HIT_INFO_VEC);
     };
 
 }

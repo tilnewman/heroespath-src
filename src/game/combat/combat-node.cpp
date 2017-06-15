@@ -399,6 +399,7 @@ namespace combat
     void CombatNode::HealthChangeTasks()
     {
         willShowCrossBones_ = (creaturePtr_->IsPlayerCharacter() && creaturePtr_->IsDead());
+
         if (willShowCrossBones_)
         {
             SetupSkullAndCrossBones();

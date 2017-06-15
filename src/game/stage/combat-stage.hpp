@@ -326,7 +326,8 @@ namespace stage
         static const sf::Color LISTBOX_LINE_COLOR_;
 
     private:
-        //stores information about the state of combat when temporarily in another stage.  (inventory, Setup, etc.)
+        //stores information about the state of combat when temporarily in another stage.
+        //(inventory, Setup, etc.)
         static combat::RestoreInfo restoreInfo_;
         //
         const float SCREEN_WIDTH_;
@@ -355,7 +356,8 @@ namespace stage
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
-        //The scope of this is controlled by Loop, so check before use during shutdown of the stage.
+        //The scope of this is controlled by Loop,
+        //so check before use during shutdown of the stage.
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
 
         //this member controls combat related animations

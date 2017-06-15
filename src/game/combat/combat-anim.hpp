@@ -31,6 +31,8 @@
 #include "sfml-util/shaker.hpp"
 #include "sfml-util/sliders.hpp"
 
+#include "game/stats/types.hpp"
+
 #include <vector>
 #include <memory>
 #include <string>
@@ -64,6 +66,10 @@ namespace animation
     class SparkleAnimation;
     using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
     using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
+
+    class TextAnimation;
+    using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
+    using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
 }
 }
 
@@ -243,6 +249,14 @@ namespace combat
         bool SparkleAnimUpdate(const float ELAPSED_TIME_SEC);
         void SparkleAnimStop();
 
+        void TextAnimStart(const stats::Health_t &       DAMAGE,
+                           const combat::CombatNodePtr_t TARGET_PTR);
+
+        void TextAnimStart(const std::vector<stats::Health_t> & DAMAGE_VEC, 
+                           const combat::CombatNodePVec_t &     TARGETS_PVEC);
+        
+        void TextAnimStop();
+
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
         static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;
@@ -291,10 +305,7 @@ namespace combat
         //members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
 
-        //members that control the sparks animation
         sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
-
-        //members that control the poison cloud animation
         sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
 
         //members that control animations in general
@@ -302,11 +313,9 @@ namespace combat
         sfml_util::MultiTextureAnimationUVec_t multiTextureAnimUVec_;
         MediaPathSizeMap_t singleTextureSizeMap_;
 
-        //members that control the song animation
         sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
-
-        //members that control the sparkle animation
         sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
+        sfml_util::animation::TextAnimationUVec_t textAnimUVec_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;

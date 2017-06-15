@@ -40,6 +40,7 @@
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/song-animation.hpp"
 #include "sfml-util/sparkle-animation.hpp"
+#include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation.hpp"
 
 #include "game/log-macros.hpp"
@@ -1173,18 +1174,23 @@ namespace stage
 
         if (willRedColorShakeWeaponText_)
         {
-            weaponTBoxTextRegionUPtr_->SetEntityColorFgBoth(redTextColorShaker_.Update(ELAPSED_TIME_SEC));
-        }
-
-        if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
-        {
-            titleTBoxTextRegionUPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+            weaponTBoxTextRegionUPtr_->SetEntityColorFgBoth(
+                redTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() &&
-            ((TurnPhase::CenterAndZoomOut == turnPhase_) || (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
+            (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+            titleTBoxTextRegionUPtr_->SetEntityColorFgBoth(
+                goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+        }
+
+        if (IsNonPlayerCharacterTurnValid() &&
+            ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
+             (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
+        {
+            enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(
+                goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
         //single-click triggers summary view;
@@ -1198,7 +1204,8 @@ namespace stage
             }
         }
 
-        //allow progress of the pause timer even if IsStatusMessageAnimating(), because they work together
+        //allow progress of the pause timer even if IsStatusMessageAnimating(),
+        //because they work together
         if (IsPaused() || isPauseCanceled_)
         {
             pauseElapsedSec_ += ELAPSED_TIME_SEC;
@@ -3222,6 +3229,8 @@ namespace stage
     void CombatStage::HandleApplyDamageTasks()
     {
         //create a vec of all creatures killed this turn
+        std::vector<stats::Health_t> damageVec;
+        combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
@@ -3230,7 +3239,22 @@ namespace stage
             {
                 killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
             }
+            else
+            {
+                if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
+                {
+                    auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
+                    if (DAMAGE != 0)
+                    {
+                        damageVec.push_back(DAMAGE);
+                        combatNodePVec.push_back(combatDisplayStagePtr_->
+                            GetCombatNodeForCreature(NEXT_CREATURE_EFFECT.GetCreature()));
+                    }
+                }
+            }
         }
+
+        combatAnimationUPtr_->TextAnimStart(damageVec, combatNodePVec);
 
         //remove all conditions except for stone and dead from the killed creature
         for (auto nextKilledCreaturePtr : killedCreaturesPVec)
