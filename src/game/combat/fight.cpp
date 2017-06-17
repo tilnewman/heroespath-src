@@ -40,6 +40,7 @@
 #include "game/combat/encounter.hpp"
 #include "game/combat/combat-text.hpp"
 #include "game/name-position-enum.hpp"
+#include "game/song/song.hpp"
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -286,9 +287,10 @@ namespace combat
     }
 
 
-    const HitInfoVec_t FightClub::AttackWithAllWeapons(creature::CreaturePtrC_t creatureAttackingPtrC,
-                                                       creature::CreaturePtrC_t creatureDefendingPtrC,
-                                                       const bool               WILL_FORCE_HIT)
+    const HitInfoVec_t FightClub::AttackWithAllWeapons(
+        creature::CreaturePtrC_t creatureAttackingPtrC,
+        creature::CreaturePtrC_t creatureDefendingPtrC,
+        const bool               WILL_FORCE_HIT)
     {
         HitInfoVec_t hitInfoVec;
 
@@ -332,15 +334,15 @@ namespace combat
         auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Stats().Acc().Current() };
         auto attackAccToUse{ ATTACK_ACC_RAW };
 
-        //If the attacking creature is an archer who is using a projectile weapon to attack with,
-        //then add a 20% accuracy bonus plus half the attacker's Rank.
+        //If the attacking creature is an archer who is using a projectile weapon,
+        //then add an accuracy bonus.
         if ((creatureAttackingPtrC->Role().Which() == creature::role::Archer) &&
             (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
             attackAccToUse += static_cast<stats::Stat_t>(static_cast<float>(ATTACK_ACC_RAW) *
-                STAT_RATIO_AMAZING_);
+                0.15f);
 
-            attackAccToUse += static_cast<int>(creatureAttackingPtrC->Rank()) / 2;
+            attackAccToUse += static_cast<int>(creatureAttackingPtrC->Rank()) / 3;
         }
 
         auto const ATTACK_ACC_RAND_MIN{ stats::Stat::Reduce(attackAccToUse) };
@@ -425,8 +427,8 @@ namespace combat
             auto const IS_ATTACK_AMAZING_LCK{
                 (ATTACK_LCK >= STAT_HIGHER_THAN_AVERAGE_) &&
                 IsValuetHigherThanRatioOfStat(ATTACK_LCK_RAND,
-                                                ATTACK_LCK,
-                                                STAT_RATIO_AMAZING_) };
+                                              ATTACK_LCK,
+                                              STAT_RATIO_AMAZING_) };
 
             auto const DEFEND_LCK{ creatureDefendingPtrC->Stats().Lck().Current() };
             auto const DEFEND_LCK_RAND_MIN{ stats::Stat::Reduce(DEFEND_LCK) };
@@ -437,8 +439,8 @@ namespace combat
             auto const IS_DEFEND_AMAZING_LCK{
                 (DEFEND_LCK >= STAT_HIGHER_THAN_AVERAGE_) &&
                 IsValuetHigherThanRatioOfStat(DEFEND_LCK_RAND,
-                                                DEFEND_LCK,
-                                                STAT_RATIO_AMAZING_) };
+                                              DEFEND_LCK,
+                                              STAT_RATIO_AMAZING_) };
 
             if (IS_ATTACK_AMAZING_LCK && (IS_DEFEND_AMAZING_LCK == false))
             {
@@ -473,15 +475,25 @@ namespace combat
             }
         }
 
-        //In this case, everything that could be equal WAS equal, so determine hit
-        //based on 'fair coin toss'.
+        //In this case, everything that could be equal WAS equal, so let the player win.
         if (false == hasHitBeenDetermined)
         {
-            wasHit = misc::random::Bool();
-            hasHitBeenDetermined = true;
+            if (creatureAttackingPtrC->IsPlayerCharacter() &&
+                creatureDefendingPtrC->IsPlayerCharacter())
+            {
+                //In this case, both attacker and defender are players,
+                //so let fair coin toss determine the hit.
+                wasHit = misc::random::Bool();
+                hasHitBeenDetermined = true;
+            }
+            else
+            {
+                wasHit = creatureAttackingPtrC->IsPlayerCharacter();
+                hasHitBeenDetermined = true;
+            }
         }
 
-        //handle forced hit
+        //handle forced hits
         if (WILL_FORCE_HIT && (false == wasHit))
         {
             wasHit = true;
@@ -534,17 +546,31 @@ namespace combat
         const stats::Health_t DAMAGE_FROM_RANK{
             static_cast<stats::Health_t>(creatureAttackingPtrC->Rank()) / RANK_DIVISOR };
 
-        //add extra damage based on the attacking creature's strength
-        auto const STAT_FLOOR{ 10 };
-        auto strAdj{creatureAttackingPtrC->Stats().Str().Current() - STAT_FLOOR };
-        if (strAdj < 0)
+        //If strength stat is at or over the min of STAT_FLOOR,
+        //then add a damage bonus based on half a strength ratio "roll".
+        const stats::Stat_t STAT_FLOOR{ 10 };
+        stats::Health_t damageFromStrength{ 0 };
+        auto const STAT_STR{ creatureAttackingPtrC->Stats().Str().Current() };
+        if (STAT_STR >= STAT_FLOOR)
         {
-            strAdj = 0;
-        }
-        const stats::Health_t DAMAGE_FROM_STRENGTH{ stats::Stat::Reduce(strAdj) };
+            auto const STR_RATIO{ creature::Stats::Ratio(creatureAttackingPtrC,
+                                                         stats::stat::Strength,
+                                                         false,
+                                                         false) };
 
+            damageFromStrength += static_cast<stats::Health_t>(
+                static_cast<float>(STAT_STR) * STR_RATIO * 0.5f);
+
+            damageFromStrength -= STAT_FLOOR;
+
+            if (damageFromStrength < 0)
+            {
+                damageFromStrength = 0;
+            }
+        }
+        
         const stats::Health_t DAMAGE_BASE{
-            DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + DAMAGE_FROM_STRENGTH };
+            DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
 
         //there is a rare chance of a power hit for players
         auto const STRENGTH{ creatureAttackingPtrC->Stats().Str().Current() };
@@ -556,7 +582,7 @@ namespace combat
         isPowerHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
                                (STRENGTH_RAND == STRENGTH_RAND_MAX) &&
                                ((STRENGTH >= STAT_FLOOR) ||
-                                    (misc::random::Int(STAT_FLOOR / 2) == 0)));
+                                    (misc::random::Int(5) == 0)));
 
         //there is a rare chance of a critical hit for players
         auto const ACC{ creatureAttackingPtrC->Stats().Acc().Current() };
@@ -568,13 +594,13 @@ namespace combat
         isCriticalHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
                                   (ACC_RAND == ACC_RAND_MAX) &&
                                   ((ACC >= STAT_FLOOR) ||
-                                    (misc::random::Int(STAT_FLOOR / 2) == 0)));
+                                    (misc::random::Int(5) == 0)));
 
         stats::Health_t damageFinal{ DAMAGE_BASE };
 
         if (isPowerHit_OutParam)
         {
-            damageFinal += DAMAGE_FROM_STRENGTH;
+            damageFinal += damageFromStrength;
         }
 
         if (isCriticalHit_OutParam)
@@ -630,6 +656,9 @@ namespace combat
                                       creature::CreaturePtrC_t         creatureCastingPtr,
                                       const creature::CreaturePVec_t & creaturesCastUponPVec)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((SPELL_CPTR != nullptr),
+            "game::combat::FightClub::Cast() was given a null SPELL_CPTR.");
+
         M_ASSERT_OR_LOGANDTHROW_SS((creaturesCastUponPVec.empty() == false),
             "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
             << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
@@ -717,6 +746,101 @@ namespace combat
     }
 
 
+    const FightResult FightClub::PlaySong(
+        const song::SongPtr_t            SONG_CPTR,
+        creature::CreaturePtrC_t         creaturePlayingPtr,
+        const creature::CreaturePVec_t & creaturesListeningPVec)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((SONG_CPTR != nullptr),
+            "game::combat::FightClub::PlaySong() was given a null SONG_CPTR.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((creaturesListeningPVec.empty() == false),
+            "game::combat::FightClub::PlaySong(song=" << SONG_CPTR->Name()
+            << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
+            << ", creatures_listening=empty) was given an empty creaturesListeningPVec.");
+
+        creaturePlayingPtr->ManaCurrentAdj(SONG_CPTR->ManaCost() * -1);
+
+        if (((SONG_CPTR->Target() == TargetType::SingleCompanion) ||
+            (SONG_CPTR->Target() == TargetType::SingleOpponent)) &&
+                (creaturesListeningPVec.size() > 1))
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::combat::FightClub::PlaySong(song=" << SONG_CPTR->Name()
+                  << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
+                  << ", creatures_listening=\"" << misc::Vector::Join<creature::CreaturePtr_t>(
+                      creaturesListeningPVec,
+                      false,
+                      false,
+                      0,
+                      false,
+                      []
+                      (const creature::CreaturePtr_t CPTR) -> const std::string
+                      { return CPTR->NameAndRaceAndRole(); })
+                  << "\") song target_type=" << TargetType::ToString(SONG_CPTR->Target())
+                  << " but there were " << creaturesListeningPVec.size()
+                  << " creatures listening.  There should have been only 1.";
+            throw std::runtime_error(ssErr.str());
+        }
+
+        CreatureEffectVec_t creatureEffectVec;
+        for (auto nextCreatureCastUponPtr : creaturesListeningPVec)
+        {
+            if (nextCreatureCastUponPtr->IsAlive() == false)
+            {
+                const ContentAndNamePos CNP(" is dead.", NamePosition::TargetBefore);
+
+                const HitInfo HIT_INFO(false,
+                                       SONG_CPTR,
+                                       CNP);
+
+                creatureEffectVec.push_back( CreatureEffect(nextCreatureCastUponPtr,
+                                                            HitInfoVec_t(1, HIT_INFO)) );
+            }
+            else
+            {
+                ContentAndNamePos actionPhraseCNP;
+                stats::Health_t healthAdj{ 0 };
+                creature::CondEnumVec_t condsAddedVec;
+                creature::CondEnumVec_t condsRemovedVec;
+
+                auto const DID_SONG_SUCCEED{ SONG_CPTR->EffectCreature(
+                    creaturePlayingPtr,
+                    nextCreatureCastUponPtr,
+                    healthAdj,
+                    condsAddedVec,
+                    condsRemovedVec,
+                    actionPhraseCNP) };
+                
+                HitInfoVec_t hitInfoVec;
+
+                if (DID_SONG_SUCCEED)
+                {
+                    HandleDamage(nextCreatureCastUponPtr,
+                                 hitInfoVec,
+                                 healthAdj,
+                                 condsAddedVec,
+                                 condsRemovedVec);
+                }
+
+                hitInfoVec.push_back( HitInfo(DID_SONG_SUCCEED,
+                                              SONG_CPTR,
+                                              actionPhraseCNP,
+                                              healthAdj,
+                                              condsAddedVec,
+                                              condsRemovedVec) );
+
+                creatureEffectVec.push_back( CreatureEffect(nextCreatureCastUponPtr,
+                                                            hitInfoVec) );
+
+                //TODO Handle Encounter::Instance()->TurnInfo
+            }
+        }
+
+        return FightResult(creatureEffectVec);
+    }
+
+
     const FightResult FightClub::Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
@@ -727,7 +851,7 @@ namespace combat
             const ContentAndNamePos CNP("",
                                         " pounces on ",
                                         ".",
-                                        NamePosition::SourceContentTarget);
+                                        NamePosition::SourceThenTarget);
 
             hitInfo = HitInfo(true, HitType::Pounce, CNP);
         }
@@ -743,7 +867,7 @@ namespace combat
                 const ContentAndNamePos CNP("",
                                             " pounces on ",
                                             ".",
-                                            NamePosition::SourceContentTarget);
+                                            NamePosition::SourceThenTarget);
 
                 const creature::CondEnumVec_t CONDS_ADDED_VEC{
                     creature::Conditions::Tripped };
@@ -760,7 +884,7 @@ namespace combat
                 const ContentAndNamePos CNP("",
                                             " tried to pounce on ",
                                             "but missed.",
-                                            NamePosition::SourceContentTarget);
+                                            NamePosition::SourceThenTarget);
 
                 hitInfo = HitInfo(false, HitType::Pounce, CNP);
             }
@@ -822,7 +946,7 @@ namespace combat
                 NEXT_DEFEND_CREATURE_PTR->ConditionAdd(creature::Conditions::Panic);
 
                 const ContentAndNamePos CNP("'s roar panics ",
-                                        NamePosition::SourceContentTarget);
+                                        NamePosition::SourceThenTarget);
 
                 const HitInfo HIT_INFO(
                     true,

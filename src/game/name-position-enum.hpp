@@ -41,10 +41,10 @@ namespace game
             NoName = 0,
             SourceBefore,
             SourceAfter,
-            SourceContentTarget,
+            SourceThenTarget,
             TargetBefore,
             TargetAfter,
-            TargetContentSource,
+            TargetThenSource,
             Count
         };
 

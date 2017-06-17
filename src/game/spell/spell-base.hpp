@@ -107,17 +107,6 @@ namespace spell
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
 
-    private:
-        //Returns the amount of health that the spell either gives or takes away.
-        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t,
-                                          creature::CreaturePtr_t) const
-        {
-            return 0;
-        }
-
-    public:
-        static const int EFFECTS_ALL_CREATURES_COUNT_;
-
     protected:
         Spells::Enum     which_;
         stats::Rank_t    rank_;

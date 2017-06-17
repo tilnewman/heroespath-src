@@ -43,14 +43,6 @@ namespace game
 namespace song
 {
 
-    const std::string Song::EFFECT_STR_SUCCESS_         { "" };
-    const std::string Song::EFFECT_STR_NOTHING_TO_DO_   { "Nothing to do." };
-    const std::string Song::EFFECT_STR_IS_ALREADY_      { " is already " };
-    const std::string Song::EFFECT_STR_RESISTED_        { " resisted the song's effects." };
-    const std::string Song::EFFECT_STR_NOT_EFFECTED_    { " is not effected." };
-    const int         Song::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
-
-
     Song::Song(const Songs::Enum      WHICH,
                const SongType::Enum   TYPE,
                const EffectType::Enum EFFECT_TYPE,
@@ -112,8 +104,13 @@ namespace song
     }
 
 
-    const ContentAndNamePos Song::ActionPhraseBeginning(
-        creature::CreaturePtr_t) const
+    bool Song::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
+    {
+        return "Nothing to do.";
+    }
+
+
+    const std::string Song::ActionPhrasePreamble() const
     {
         std::ostringstream ss;
 
@@ -137,17 +134,43 @@ namespace song
         {
             ss << "hands ";
 
-            switch(misc::random::Int(2))
+            switch(misc::random::Int(3))
             {
                 case 1:     { ss << "tap";  break; }
                 case 2:     { ss << "rap";  break; }
+                case 3:     { ss << "drum"; break; }
                 default:    { ss << "pound";  break; }
             }
 
-            ss << " the back of the lute like a drum";
+            ss << " the back of the lute";
         }
 
-        return ContentAndNamePos(ss.str(), NamePosition::SourceBefore);
+        return ss.str();
+    }
+
+
+    const std::string Song::SongTypeToVerb() const
+    {
+        if (SongType::Guitar == type_)
+        {
+            switch (misc::random::Int(3))
+            {
+                case 1:     { return "melody";    }
+                case 2:     { return "tune";      }
+                case 3:     { return "song";      }
+                default:    { return "strumming"; }
+            }
+        }
+        else
+        {
+            switch (misc::random::Int(3))
+            {
+                case 1:     { return "drumming"; }
+                case 2:     { return "pounding"; }
+                case 3:     { return "rapping";  }
+                default:    { return "tapping";  }
+            }
+        }
     }
 
 }

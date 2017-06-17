@@ -48,6 +48,7 @@ namespace combat
         {
             case Weapon:    { return "Weapon"; }
             case Spell:     { return "Spell"; }
+            case Song:      { return "Song"; }
             case Pounce:    { return "Pounce"; }
             case Roar:      { return "Roar"; }
             case Count:
@@ -68,8 +69,7 @@ namespace combat
                      const bool                      IS_POWER_HIT,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC,
-                     const std::string &             ACTION_VERB,
-                     const ContentAndNamePos &       ACTION_PHRASE_CNP)
+                     const std::string &             ACTION_VERB)
     :
         wasHit_         (WAS_HIT),
         hitType_        (HitType::Weapon),
@@ -81,7 +81,8 @@ namespace combat
         condsRemovedVec_(CONDS_REMOVED_VEC),
         actionVerb_     (ACTION_VERB),
         spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP)
+        actionPhraseCNP_(),
+        songPtr_        (nullptr)
     {}
 
 
@@ -102,7 +103,30 @@ namespace combat
         condsRemovedVec_(CONDS_REMOVED_VEC),
         actionVerb_     ("casts"),
         spellPtr_       (SPELL_CPTR),
-        actionPhraseCNP_(ACTION_PHRASE_CNP)
+        actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (nullptr)
+    {}
+
+
+    HitInfo::HitInfo(const bool                      WAS_HIT,
+                     const song::SongPtr_t           SONG_CPTR,
+                     const ContentAndNamePos &       ACTION_PHRASE_CNP,
+                     const stats::Health_t           DAMAGE,
+                     const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+                     const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+    :
+        wasHit_         (WAS_HIT),
+        hitType_        (HitType::Song),
+        weaponPtr_      (nullptr),
+        damage_         (DAMAGE),
+        isCritical_     (false),
+        isPower_        (false),
+        condsAddedVec_  (CONDS_ADDED_VEC),
+        condsRemovedVec_(CONDS_REMOVED_VEC),
+        actionVerb_     ("casts"),
+        spellPtr_       (nullptr),
+        actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (SONG_CPTR)
     {}
 
 
@@ -123,7 +147,8 @@ namespace combat
         condsRemovedVec_(CONDS_REMOVED_VEC),
         actionVerb_     (""),
         spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP)
+        actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (nullptr)
     {}
 
 
@@ -140,7 +165,8 @@ namespace combat
         condsRemovedVec_(),
         actionVerb_     (""),
         spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP)
+        actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (nullptr)
     {}
 
 
@@ -160,11 +186,13 @@ namespace combat
         condsRemovedVec_(HI.condsRemovedVec_),
         actionVerb_     (HI.actionVerb_),
 
-        //The lifetime of this object is not managed by this class.
-        //Usage is short-term observation only, so ptr copying is safe.
+        //see the comment above regarding pointers in this class
         spellPtr_(HI.spellPtr_),
 
-        actionPhraseCNP_(HI.actionPhraseCNP_)
+        actionPhraseCNP_(HI.actionPhraseCNP_),
+
+        //see the comment above regarding pointers in this class
+        songPtr_(HI.songPtr_)
     {}
 
 
@@ -189,6 +217,9 @@ namespace combat
             spellPtr_ = HI.spellPtr_;
 
             actionPhraseCNP_ = HI.actionPhraseCNP_;
+
+            //see copy constructor comment regarding this pointer
+            songPtr_ = HI.songPtr_;
         }
 
         return * this;
@@ -267,6 +298,38 @@ namespace combat
     }
 
 
+    bool HitInfo::IsValid() const
+    {
+        switch (hitType_)
+        {
+            case HitType::Weapon:
+            {
+                return (weaponPtr_ != nullptr);
+            }
+            case HitType::Spell:
+            {
+                return ((spellPtr_ != nullptr) &&
+                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+            }
+            case HitType::Song:
+            {
+                return ((songPtr_ != nullptr) &&
+                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+            }
+            case HitType::Pounce:
+            case HitType::Roar:
+            {
+                return (actionPhraseCNP_.NamePos() != NamePosition::Count);
+            }
+            case HitType::Count:
+            default:
+            {
+                return false;
+            }
+        }
+    }
+
+
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
         if (misc::Vector::OrderlessCompareLess(L.condsAddedVec_, R.condsAddedVec_))
@@ -287,7 +350,8 @@ namespace combat
                         L.isPower_,
                         L.actionVerb_,
                         L.spellPtr_,
-                        L.actionPhraseCNP_)
+                        L.actionPhraseCNP_,
+                        L.songPtr_)
                <
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -297,7 +361,8 @@ namespace combat
                         R.isPower_,
                         R.actionVerb_,
                         R.spellPtr_,
-                        R.actionPhraseCNP_);
+                        R.actionPhraseCNP_,
+                        R.songPtr_);
     }
 
 
@@ -321,7 +386,8 @@ namespace combat
                         L.isPower_,
                         L.actionVerb_,
                         L.spellPtr_,
-                        L.actionPhraseCNP_)
+                        L.actionPhraseCNP_,
+                        L.songPtr_)
                ==
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -331,7 +397,8 @@ namespace combat
                         R.isPower_,
                         R.actionVerb_,
                         R.spellPtr_,
-                        R.actionPhraseCNP_);
+                        R.actionPhraseCNP_,
+                        R.songPtr_);
     }
 
 }

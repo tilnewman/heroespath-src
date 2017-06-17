@@ -52,7 +52,7 @@ namespace spell
         if (RANDOM_VALUE == 0)
         {
             return ContentAndNamePos(" shoots sparks at ",
-                                     NamePosition::SourceContentTarget);
+                                     NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
@@ -106,14 +106,14 @@ namespace spell
         if (RANDOM_VALUE == 0)
         {
             return ContentAndNamePos(" magically bandages ",
-                                     NamePosition::SourceContentTarget);
+                                     NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
             return ContentAndNamePos("",
                                      " magically bandages ",
                                      "'s wounds ",
-                                     NamePosition::SourceContentTarget);
+                                     NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 2)
         {
@@ -171,8 +171,8 @@ namespace spell
         //TODO add more phrases
         return ContentAndNamePos("",
                                  "'s magic forces ",
-                                 " to go to sleep.",
-                                 NamePosition::SourceContentTarget);
+                                 " to sleep.",
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -208,7 +208,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s magic forces ",
                                  " to wake.",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -257,7 +257,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s spell trips ",
                                  ".",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -294,7 +294,7 @@ namespace spell
             "",
             "'s magic forces ",
             " to " + creature::sex::HisHerIts(creatureCastUponPtr->Sex(), false, false) + " feet.",
-            NamePosition::SourceContentTarget);
+            NamePosition::SourceThenTarget);
     }
 
 
@@ -329,7 +329,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s magic puts ",
                                  " in a daze.",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -364,7 +364,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s spell panics ",
                                  ".",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -399,7 +399,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s spell clears ",
                                  "'s mind.",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -448,7 +448,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s spell poisons ",
                                  ".",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 
@@ -483,7 +483,7 @@ namespace spell
         return ContentAndNamePos("",
                                  "'s spell cures ",
                                  ".",
-                                 NamePosition::SourceContentTarget);
+                                 NamePosition::SourceThenTarget);
     }
 
 

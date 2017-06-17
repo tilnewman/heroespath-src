@@ -43,9 +43,6 @@ namespace game
 namespace spell
 {
 
-    const int Spell::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
-
-
     Spell::Spell(const Spells::Enum     WHICH,
                  const EffectType::Enum EFFECT_TYPE,
                  const Phase::Enum      VALID_PHASES,

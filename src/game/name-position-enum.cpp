@@ -43,10 +43,10 @@ namespace game
             case NoName:                { return "NoName"; }
             case SourceBefore:          { return "SourceBefore"; }
             case SourceAfter:           { return "SourceAfter"; }
-            case SourceContentTarget:   { return "SourceContentTarget"; }
+            case SourceThenTarget:   { return "SourceThenTarget"; }
             case TargetBefore:          { return "TargetBefore"; }
             case TargetAfter:           { return "TargetAfter"; }
-            case TargetContentSource:   { return "TargetContentSource"; }
+            case TargetThenSource:   { return "TargetThenSource"; }
             case Count:
             default:
             {
@@ -86,12 +86,12 @@ namespace game
         std::ostringstream ss;
         ss << pre_;
 
-        if ((NamePosition::SourceContentTarget == posEnum_) ||
+        if ((NamePosition::SourceThenTarget == posEnum_) ||
             (NamePosition::SourceBefore == posEnum_))
         {
             ss << SOURCE_NAME;
         }
-        else if ((NamePosition::TargetContentSource == posEnum_) ||
+        else if ((NamePosition::TargetThenSource == posEnum_) ||
                  (NamePosition::TargetBefore == posEnum_))
         {
             ss << TARGET_NAME;
@@ -99,12 +99,12 @@ namespace game
 
         ss << content_;
 
-        if ((NamePosition::TargetContentSource == posEnum_) ||
+        if ((NamePosition::TargetThenSource == posEnum_) ||
             (NamePosition::SourceAfter == posEnum_))
         {
             ss << SOURCE_NAME;
         }
-        else if ((NamePosition::SourceContentTarget == posEnum_) ||
+        else if ((NamePosition::SourceThenTarget == posEnum_) ||
                  (NamePosition::TargetAfter == posEnum_))
         {
             ss << TARGET_NAME;

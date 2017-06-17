@@ -58,134 +58,19 @@ namespace combat
     {}
 
 
-    CreatureEffect FightResult::FirstEffect() const
-    {
-        if (creatureEffectVec_.empty())
-        {
-            std::ostringstream ss;
-            ss << "game::combat::FightResult::FirstEffect() called when the creatureEffectVec_"
-                << " is empty.";
-
-            throw std::runtime_error(ss.str());
-        }
-        else
-        {
-            return creatureEffectVec_[0];
-        }
-    }
-
-
-    creature::CreaturePtr_t FightResult::FirstCreature() const
-    {
-        if (creatureEffectVec_.empty())
-        {
-            std::ostringstream ss;
-            ss << "game::combat::FightResult::FirstCreature() called when the"
-                << " creatureEffectVec_ is empty.";
-
-            throw std::runtime_error(ss.str());
-        }
-        else
-        {
-            return creatureEffectVec_[0].GetCreature();
-        }
-    }
-
-
-    stats::Health_t FightResult::DamageTotal() const
-    {
-        stats::Health_t damageTotal{ 0 };
-
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
-        {
-            damageTotal += NEXT_CREATURE_EFFECT.GetDamageTotal();
-        }
-
-        return damageTotal;
-    }
-
-
-    bool FightResult::WasHit() const
-    {
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
-        {
-            if (NEXT_CREATURE_EFFECT.GetWasHit())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    std::size_t FightResult::HitCount() const
-    {
-        std::size_t counter{ 0 };
-
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
-        {
-            auto const HIT_INFO_VEC{ NEXT_CREATURE_EFFECT.GetHitInfoVec() };
-            for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
-            {
-                if (NEXT_HIT_INFO.WasHit())
-                    ++counter;
-            }
-        }
-
-        return counter;
-    }
-
-
-    const creature::CondEnumVec_t FightResult::AllCondsAdded() const
-    {
-        creature::CondEnumVec_t conditionsVec;
-
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
-        {
-            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllCondsAdded(), conditionsVec);
-        }
-
-        conditionsVec.erase(std::unique(conditionsVec.begin(),
-                                        conditionsVec.end()),
-                            conditionsVec.end());
-        
-        return conditionsVec;
-    }
-
-
-    const creature::CondEnumVec_t FightResult::AllCondsRemoved() const
-    {
-        creature::CondEnumVec_t conditionsVec;
-
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
-        {
-            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllCondsRemoved(), conditionsVec);
-        }
-
-        conditionsVec.erase(std::unique(conditionsVec.begin(),
-                                        conditionsVec.end()),
-                            conditionsVec.end());
-        
-        return conditionsVec;
-    }
-
-
-    bool FightResult::GetHitInfo(HitInfo &         HitInfo_OutParam,
-                                 const std::size_t EFFECT_INDEX,
-                                 const std::size_t HIT_INDEX) const
+    const HitInfo FightResult::GetHitInfo(const std::size_t EFFECT_INDEX,
+                                          const std::size_t HIT_INDEX) const
     {
         if (EFFECT_INDEX < creatureEffectVec_.size())
         {
             auto const HIT_INFO_VEC{ creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
             if (HIT_INDEX < HIT_INFO_VEC.size())
             {
-                HitInfo_OutParam = HIT_INFO_VEC[HIT_INDEX];
-                return true;
+                return HIT_INFO_VEC[HIT_INDEX];
             }
         }
 
-        return false;
+        return HitInfo();//invalid HitInfo object
     }
 
 

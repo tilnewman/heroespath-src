@@ -2989,18 +2989,18 @@ namespace stage
             case TurnActionPhase::ShootBlowpipe:
             {
                 //Note:  There should only be one CreatureEffect and one HitInfoVec when attacking with a projectile
-                combat::HitInfo hitInfo;
-                if (fightResult_.GetHitInfo(hitInfo))
+                auto const HIT_INFO{ fightResult_.GetHitInfo(0, 0) };
+                if (HIT_INFO.IsValid())
                 {
                     //at this point we are guaranteed fightResult_ contains at least one CreatureEffect and one HitInfo
-                    auto const WEAPON_PTR{ hitInfo.Weapon() };
+                    auto const WEAPON_PTR{ HIT_INFO.Weapon() };
                     if (WEAPON_PTR != nullptr)
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_PTR);
                         combatAnimationUPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
                                                                       fightResult_.Effects()[0].GetCreature(),
                                                                       WEAPON_PTR,
-                                                                      fightResult_.WasHit());
+                                                                      HIT_INFO.WasHit());
 
                         slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetAnimPhase(AnimPhase::ProjectileShoot);
@@ -3181,11 +3181,11 @@ namespace stage
 
     CombatStage::TurnActionPhase CombatStage::GetTurnActionPhaseFromFightResult(const combat::FightResult & FIGHT_RESULT) const
     {
-        //Note: It is not yet possible for an attack to target multiple creatures
-        combat::HitInfo hitInfo;
-        if (FIGHT_RESULT.GetHitInfo(hitInfo))
+        //Note: Assume it is not possible for a weapon attack to target multiple creatures
+        auto const HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
+        if (HIT_INFO.IsValid())
         {
-            auto const WEAPON_PTR{ hitInfo.Weapon() };
+            auto const WEAPON_PTR{ HIT_INFO.Weapon() };
             if (WEAPON_PTR != nullptr)
             {
                 return GetTurnActionPhaseFromWeaponType(WEAPON_PTR);

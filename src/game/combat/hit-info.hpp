@@ -43,6 +43,11 @@ namespace spell
     class Spell;
     using SpellPtr_t = Spell *;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+}
 namespace item
 {
     class Item;
@@ -58,6 +63,7 @@ namespace combat
         {
             Weapon,
             Spell,
+            Song,
             Pounce,
             Roar,
             Count
@@ -67,7 +73,7 @@ namespace combat
     };
 
 
-    //Everything required to describe a how a creature's health was reduced.
+    //Everything required to describe an attempted combat action.
     //Note:  It is possible to hit with a weapon and cause no damage.
     class HitInfo
     {
@@ -81,10 +87,9 @@ namespace combat
             const bool                      IS_POWER_HIT      = false,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
             const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t(),
-            const std::string &             ACTION_VERB       = "",
-            const ContentAndNamePos &       ACTION_PHRASE_CNP = ContentAndNamePos());
+            const std::string &             ACTION_VERB       = "");
 
-        //use this constructor when a spell adds or removes health
+        //use this constructor for spells
         HitInfo(const bool                      WAS_HIT,
                 const spell::SpellPtr_t         SPELL_CPTR,
                 const ContentAndNamePos &       ACTION_PHRASE_CNP,
@@ -92,7 +97,15 @@ namespace combat
                 const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
-        //use this constructor for pounce and roar
+        //use this constructor for songs
+        HitInfo(const bool                      WAS_HIT,
+                const song::SongPtr_t           SONG_CPTR,
+                const ContentAndNamePos &       ACTION_PHRASE_CNP,
+                const stats::Health_t           DAMAGE            = 0,
+                const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
+                const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
+
+        //use this constructor for pounce or roar
         HitInfo(const bool                      WAS_HIT,
                 const HitType::Enum             HIT_TYPE,
                 const ContentAndNamePos &       ACTION_PHRASE_CNP,
@@ -100,7 +113,7 @@ namespace combat
                 const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
-        //use this constructor when the hit failed
+        //use this constructor when the attempt failed/missed
         HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP);
 
         HitInfo(const HitInfo &);
@@ -114,6 +127,7 @@ namespace combat
         inline bool              IsPowerHit() const { return isPower_; }
         inline const std::string ActionVerb() const { return actionVerb_; }
         inline spell::SpellPtr_t SpellPtr() const   { return spellPtr_; }
+        inline song::SongPtr_t   SongPtr() const    { return songPtr_; }
         inline bool              IsSpell() const    { return (spellPtr_ != nullptr); }
         inline bool              IsWeapon() const   { return (weaponPtr_ != nullptr); }
 
@@ -140,6 +154,8 @@ namespace combat
 
         inline bool WasKill() const { return CondsAddedContains(creature::Conditions::Dead); }
 
+        bool IsValid() const;
+
         friend bool operator<(const HitInfo & L, const HitInfo & R);
         friend bool operator==(const HitInfo & L, const HitInfo & R);
 
@@ -155,6 +171,7 @@ namespace combat
         std::string             actionVerb_;
         spell::SpellPtr_t       spellPtr_;
         ContentAndNamePos       actionPhraseCNP_;
+        song::SongPtr_t         songPtr_;
     };
 
     using HitInfoVec_t = std::vector<HitInfo>;

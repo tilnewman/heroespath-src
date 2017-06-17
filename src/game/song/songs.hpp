@@ -34,6 +34,7 @@
 #include "game/phase-enum.hpp"
 #include "game/target-enum.hpp"
 #include "game/creature/condition.hpp"
+#include "game/name-position-enum.hpp"
 
 #include <string>
 
@@ -71,11 +72,13 @@ namespace song
 
         virtual ~RallyDrum() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 
@@ -93,11 +96,13 @@ namespace song
 
         virtual ~SpiritResonance() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 
@@ -115,11 +120,13 @@ namespace song
 
         virtual ~RousingRhythm() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 
@@ -137,11 +144,13 @@ namespace song
 
         virtual ~TripBeat() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 
@@ -159,11 +168,13 @@ namespace song
 
         virtual ~PanicStrings() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 
@@ -181,11 +192,13 @@ namespace song
 
         virtual ~Lullaby() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::CondEnumVec_t & conditionsAddedVec,
-            creature::CondEnumVec_t & conditionsRemovedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   creaturePlayingPtr,
+            creature::CreaturePtr_t   creatureListeningPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
     };
 
 }

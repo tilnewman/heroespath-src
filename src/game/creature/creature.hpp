@@ -309,6 +309,11 @@ namespace creature
         inline void ManaNormalSet(const stats::Mana_t M)        { manaNormal_ = M; }
         void ManaNormalAdj(const stats::Mana_t ADJ);
 
+        inline stats::Mana_t ManaMissing() const
+        {
+            return (ManaNormal() - ManaCurrent());
+        }
+
         //should only be called after loading a saved game
         void StoreItemsInWarehouseAfterLoad();
 

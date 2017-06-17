@@ -38,7 +38,12 @@ namespace game
 namespace spell
 {
     class Spell;
-    using SpellCPtrC_t = const Spell * const;
+    using SpellPtr_t = Spell *;
+}
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
 }
 namespace item
 {
@@ -68,13 +73,15 @@ namespace combat
         static const stats::Stat_t STAT_HIGHER_THAN_AVERAGE_;
         static const float STAT_RATIO_AMAZING_;
 
-        static stats::Stat_t IsValuetHigherThanRatioOfStat(const stats::Stat_t STAT_VALUE,
-                                                           const stats::Stat_t STAT_MAX,
-                                                           const float         RATIO);
+        static stats::Stat_t IsValuetHigherThanRatioOfStat(
+            const stats::Stat_t STAT_VALUE,
+            const stats::Stat_t STAT_MAX,
+            const float         RATIO);
 
-        static const FightResult Fight(creature::CreaturePtrC_t creatureAttackingPtrC,
-                                       creature::CreaturePtrC_t creatureDefendingPtrC,
-                                       const bool               WILL_FORCE_HIT = false);
+        static const FightResult Fight(
+            creature::CreaturePtrC_t creatureAttackingPtrC,
+            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const bool               WILL_FORCE_HIT = false);
 
         //negative values are damaging, positive values are healing
         static void HandleDamage(
@@ -89,20 +96,29 @@ namespace combat
             const stats::Health_t          DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec);
 
-        static void RemoveAddedCondition(const creature::Conditions::Enum COND_ENUM,
-                                         creature::CreaturePtrC_t         creaturePtrC,
-                                         HitInfoVec_t &                   hitInfoVec,
-                                         creature::CondEnumVec_t &   condsRemovedVec);
+        static void RemoveAddedCondition(
+            const creature::Conditions::Enum COND_ENUM,
+            creature::CreaturePtrC_t         creaturePtrC,
+            HitInfoVec_t &                   hitInfoVec,
+            creature::CondEnumVec_t &   condsRemovedVec);
 
-        static const FightResult Cast(const spell::SpellPtr_t          SPELL_CPTR,
-                                      creature::CreaturePtrC_t         creatureCastingPtrC,
-                                      const creature::CreaturePVec_t & creaturesDefendingPVec);
+        static const FightResult Cast(
+            const spell::SpellPtr_t          SPELL_CPTR,
+            creature::CreaturePtrC_t         creatureCastingPtrC,
+            const creature::CreaturePVec_t & creaturesDefendingPVec);
 
-        static const FightResult Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
-                                        creature::CreaturePtrC_t creatureDefendingPtrC);
+        static const FightResult PlaySong(
+            const song::SongPtr_t           SONG_CPTR,
+            creature::CreaturePtrC_t         creaturePlayingPtrC,
+            const creature::CreaturePVec_t & creaturesListeningPVec);
 
-        static const FightResult Roar(creature::CreaturePtrC_t creatureRoaringPtrC,
-                                      CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
+        static const FightResult Pounce(
+            creature::CreaturePtrC_t creaturePouncingPtrC,
+            creature::CreaturePtrC_t creatureDefendingPtrC);
+
+        static const FightResult Roar(
+            creature::CreaturePtrC_t creatureRoaringPtrC,
+            CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
 
         static creature::CreaturePtr_t FindNonPlayerCreatureToAttack(
             creature::CreaturePtrC_t creatureAttackingtrC,

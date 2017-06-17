@@ -130,8 +130,10 @@ namespace combat
             const std::size_t             HIT_INDEX);
 
         static const std::string WeaponActionVerbList(
-            const FightResult & FIGHT_RESULT,
-            const bool          WILL_SKIP_MISSES);
+            const HitInfoVec_t & HIT_INFO_VEC,
+            const bool           WILL_SKIP_MISSES);
+
+        static const std::string CountPhrase(const HitInfoVec_t &);
 
         static const std::string CountPhrase(const std::size_t);
 
@@ -141,11 +143,9 @@ namespace combat
             const std::size_t                    NUM_TO_LIST);
 
         static const std::string AttackConditionsSummaryList(
-            const FightResult & FIGHT_RESULT);
+            const CreatureEffect & CREATURE_EFFECT);
 
-        //requires FIGHT_RESULT is not empty
-        static const std::string FirstTargetNamePhrase(
-            const FightResult & FIGHT_RESULT);
+        static const std::string NamePhrase(const creature::CreaturePtr_t);
 
         static const std::string InitialCombatStatusMessagePrefix();
     };

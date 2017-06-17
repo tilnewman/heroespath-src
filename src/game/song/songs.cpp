@@ -40,21 +40,24 @@ namespace game
 namespace song
 {
 
-    const std::string RallyDrum::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
-        creature::CondEnumVec_t & conditionsAddedVec,
-        creature::CondEnumVec_t &) const
+    bool RallyDrum::EffectCreature(
+        creature::CreaturePtr_t   creaturePlayingPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
-        {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
-        }
-
         if (creatureListeningPtr->HasCondition(creature::Conditions::Bold))
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ +
-                "emboldened.";
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + SongTypeToVerb() + " failed on ",
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " is already emboldened.",
+                NamePosition::SourceThenTarget);
+
+            return false;
         }
         else
         {
@@ -62,123 +65,189 @@ namespace song
                                                             stats::stat::Charm}))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
-                conditionsAddedVec.push_back(creature::Conditions::Bold);
-                return Song::EFFECT_STR_SUCCESS_;
+                condsAddedVec.push_back(creature::Conditions::Bold);
+
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s magical " + SongTypeToVerb() + " emboldens ",
+                    ".",
+                    NamePosition::SourceThenTarget);
+
+                return true;
             }
             else
             {
-                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_NOT_EFFECTED_;
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " failed on ",
+                    " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                        " resisted.",
+                    NamePosition::SourceThenTarget);
+
+                return false;
             }
         }
     }
 
 
-    const std::string SpiritResonance::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
+    bool SpiritResonance::EffectCreature(
+        creature::CreaturePtr_t   creaturePlayingPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
         creature::CondEnumVec_t &,
-        creature::CondEnumVec_t &) const
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
+        auto const MANA_GAIN_ORIG{ 3 + static_cast<stats::Mana_t>(7.0f * creature::Stats::Ratio(
+            creaturePlayingPtr, { stats::stat::Intelligence, stats::stat::Charm })) };
+
+        auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
+
+        auto const MANA_GAIN_FINAL{ ((MANA_GAIN_ORIG > MANA_GAIN_MAX) ?
+            MANA_GAIN_MAX : MANA_GAIN_ORIG) };
+
+        if (MANA_GAIN_FINAL > 0)
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+            creatureListeningPtr->ManaCurrentAdj(MANA_GAIN_FINAL);
+
+            std::ostringstream ss;
+            ss << "'s mana for " << MANA_GAIN_FINAL << ".";
+
+            actionPhraseCNP = ContentAndNamePos("",
+                                                "'s " + SongTypeToVerb() + " recharges ",
+                                                ss.str(),
+                                                NamePosition::SourceThenTarget);
+
+            return true;
         }
+        else
+        {
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + SongTypeToVerb() + " failed on ",
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " already has full mana.",
+                NamePosition::SourceThenTarget);
 
-        creatureListeningPtr->ManaCurrentAdj(3 + static_cast<stats::Mana_t>(7.0f *
-            creature::Stats::Ratio(creaturePlayingPtr,
-                { stats::stat::Intelligence, stats::stat::Charm })));
-
-        return Song::EFFECT_STR_SUCCESS_;
+            return false;
+        }
     }
 
 
-    const std::string RousingRhythm::EffectCreature(
+    bool RousingRhythm::EffectCreature(
         creature::CreaturePtr_t,
-        creature::CreaturePtr_t creatureListeningPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
         creature::CondEnumVec_t &,
-        creature::CondEnumVec_t & conditionsRemovedVec) const
+        creature::CondEnumVec_t & condsRemovedVec,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
+        const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
+            creature::Conditions::AsleepNatural,
+            creature::Conditions::AsleepMagical,
+            creature::Conditions::Dazed,
+            creature::Conditions::Unconscious };
+
+        creature::CondEnumVec_t condsToRemoveVec;
+        for (auto const NEXT_COND_TO_REMOVE_ENUM : CONDS_TO_REMOVE_VEC)
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
+            if (creatureListeningPtr->HasCondition(NEXT_COND_TO_REMOVE_ENUM))
+            {
+                creatureListeningPtr->ConditionRemove(NEXT_COND_TO_REMOVE_ENUM);
+                condsToRemoveVec.push_back(NEXT_COND_TO_REMOVE_ENUM);
+            }
         }
 
-        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
+        if (condsToRemoveVec.empty())
         {
-            creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepNatural);
-            conditionsRemovedVec.push_back(creature::Conditions::AsleepNatural);
+            actionPhraseCNP = ContentAndNamePos("",
+                                                "'s " + SongTypeToVerb() + " failed because ",
+                                                " did not need rousing.",
+                                                NamePosition::SourceThenTarget);
+            return false;
         }
-
-        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
+        else
         {
-            creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepMagical);
-            conditionsRemovedVec.push_back(creature::Conditions::AsleepMagical);
-        }
+            actionPhraseCNP = ContentAndNamePos("",
+                                                "'s " + SongTypeToVerb() + " rouses ",
+                                                ".",
+                                                NamePosition::SourceThenTarget);
 
-        if (creatureListeningPtr->HasCondition(creature::Conditions::Dazed))
-        {
-            creatureListeningPtr->ConditionRemove(creature::Conditions::Dazed);
-            conditionsRemovedVec.push_back(creature::Conditions::Dazed);
+            return true;
         }
-
-        if (creatureListeningPtr->HasCondition(creature::Conditions::Unconscious))
-        {
-            creatureListeningPtr->ConditionRemove(creature::Conditions::Unconscious);
-            conditionsRemovedVec.push_back(creature::Conditions::Unconscious);
-        }
-
-        return Song::EFFECT_STR_SUCCESS_;
     }
 
 
-    const std::string TripBeat::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
-        creature::CondEnumVec_t & conditionsAddedVec,
-        creature::CondEnumVec_t &) const
+    bool TripBeat::EffectCreature(
+        creature::CreaturePtr_t   creaturePlayingPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
-        {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
-        }
-
         if (creatureListeningPtr->HasCondition(creature::Conditions::Tripped))
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "tripped.";
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + SongTypeToVerb() + " failed on ",
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " is already tripped.",
+                NamePosition::SourceThenTarget);
+
+            return false;
         }
         else
         {
             if (creature::Stats::Versus(
                 creaturePlayingPtr,
-                { stats::stat::Intelligence, stats::stat::Charm},
+                { stats::stat::Intelligence, stats::stat::Charm },
                 creatureListeningPtr))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
-                conditionsAddedVec.push_back(creature::Conditions::Tripped);
-                return Song::EFFECT_STR_SUCCESS_;
+                condsAddedVec.push_back(creature::Conditions::Tripped);
+
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " trips ",
+                    ".",
+                    NamePosition::SourceThenTarget);
+
+                return true;
             }
             else
             {
-                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " failed on ",
+                    " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " resisted.",
+                    NamePosition::SourceThenTarget);
+
+                return false;
             }
         }
     }
 
 
-    const std::string PanicStrings::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
-        creature::CondEnumVec_t & conditionsAddedVec,
-        creature::CondEnumVec_t &) const
+    bool PanicStrings::EffectCreature(
+        creature::CreaturePtr_t   creaturePlayingPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
-        {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
-        }
-
         if (creatureListeningPtr->HasCondition(creature::Conditions::Panic))
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "panicked.";
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + SongTypeToVerb() + " failed on ",
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                " is already panicked.",
+                NamePosition::SourceThenTarget);
+
+            return false;
         }
         else
         {
@@ -188,32 +257,50 @@ namespace song
                 creatureListeningPtr))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
-                conditionsAddedVec.push_back(creature::Conditions::Panic);
-                return Song::EFFECT_STR_SUCCESS_;
+                condsAddedVec.push_back(creature::Conditions::Panic);
+
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " panics ",
+                    ".",
+                    NamePosition::SourceThenTarget);
+
+                return true;
             }
             else
             {
-                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " failed on ",
+                    " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " resisted.",
+                    NamePosition::SourceThenTarget);
+
+                return false;
             }
         }
     }
 
 
-    const std::string Lullaby::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
-        creature::CondEnumVec_t & conditionsAddedVec,
-        creature::CondEnumVec_t &) const
+    bool Lullaby::EffectCreature(
+        creature::CreaturePtr_t   creaturePlayingPtr,
+        creature::CreaturePtr_t   creatureListeningPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->IsAlive() == false)
-        {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead.";
-        }
-
         if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural) ||
             creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "asleep.";
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + SongTypeToVerb() + " failed on ",
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                " is already asleep.",
+                NamePosition::SourceThenTarget);
+
+            return false;
         }
         else
         {
@@ -221,12 +308,26 @@ namespace song
                                                             stats::stat::Charm}))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
-                conditionsAddedVec.push_back(creature::Conditions::AsleepMagical);
-                return Song::EFFECT_STR_SUCCESS_;
+                condsAddedVec.push_back(creature::Conditions::AsleepMagical);
+
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " puts ",
+                    " into a magical slumber.",
+                    NamePosition::SourceThenTarget);
+
+                return true;
             }
             else
             {
-                return creatureListeningPtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+                actionPhraseCNP = ContentAndNamePos(
+                    "",
+                    "'s " + SongTypeToVerb() + " failed on ",
+                    " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " resisted.",
+                    NamePosition::SourceThenTarget);
+
+                return false;
             }
         }
     }
