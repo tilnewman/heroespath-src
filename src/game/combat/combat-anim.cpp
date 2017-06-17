@@ -1003,7 +1003,7 @@ namespace combat
             {
                 cloudAnimUVec_.push_back( std::make_unique<sfml_util::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                    0.12f,
+                    0.35f,
                     sfml_util::MapByRes(0.1f, 0.35f),
                     0.2f,
                     sfml_util::MapByRes(0.4f, 1.2f),

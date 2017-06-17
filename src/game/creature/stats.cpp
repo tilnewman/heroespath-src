@@ -440,14 +440,15 @@ namespace creature
         const stats::stat::Enum STAT_ENUM,
         const int               RAND_SPREAD,
         const int               FLOOR_DIVISOR,
-        const float             RANK_BONUS_MULT)
+        const float             RANK_BONUS_MULT,
+        const bool              WILL_INCLUDE_LUCK)
     {   
-        int x{ static_cast<int>(1.0f + (static_cast<float>(RAND_SPREAD) *
-            Ratio(CREATURE_PTR, STAT_ENUM, false, true))) };
+        int x{ static_cast<int>((static_cast<float>(RAND_SPREAD) *
+            Ratio(CREATURE_PTR, STAT_ENUM, false, WILL_INCLUDE_LUCK))) };
         
         if (FLOOR_DIVISOR > 0)
         {
-            x = (CREATURE_PTR->Stats().GetCopy(STAT_ENUM).Current() / FLOOR_DIVISOR);
+            x += (CREATURE_PTR->Stats().GetCopy(STAT_ENUM).Current() / FLOOR_DIVISOR);
         }
 
         x += static_cast<int>(static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_MULT);

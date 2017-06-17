@@ -94,9 +94,9 @@ namespace creature
             const CreaturePtr_t     CREATURE_PTR,
             const stats::stat::Enum STAT_ENUM,
             const int               RAND_SPREAD,
-            const int               FLOOR_DIVISOR   = 0,//zero means 'no floor'
-            const float             RANK_BONUS_MULT = 0.0f);//zero means 'no rank bonus'
-
+            const int               FLOOR_DIVISOR     = 0,//zero means 'no floor'
+            const float             RANK_BONUS_MULT   = 0.0f,//zero means 'no rank bonus'
+            const bool              WILL_INCLUDE_LUCK = false);
     private:
         static const stats::Stat_t LUCK_DIVISOR_;
 

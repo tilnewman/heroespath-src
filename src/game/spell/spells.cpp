@@ -515,8 +515,10 @@ namespace spell
 
     const ContentAndNamePos PoisonCloud::ActionPhrase() const
     {
-        return ContentAndNamePos("'s spell attempts to poison the enemy.",
-                                 NamePosition::SourceBefore);
+        return ContentAndNamePos("",
+                                 "'s spell poisons the ",
+                                 ".",
+                                 NamePosition::SourceThenTarget);
     }
 
 

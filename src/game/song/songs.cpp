@@ -168,6 +168,10 @@ namespace song
         }
         else
         {
+            condsRemovedVec.insert(condsRemovedVec.end(),
+                                   condsToRemoveVec.begin(),
+                                   condsToRemoveVec.end());
+
             actionPhraseCNP = ContentAndNamePos("",
                                                 "'s " + SongTypeToVerb() + " rouses ",
                                                 ".",

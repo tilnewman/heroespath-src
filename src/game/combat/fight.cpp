@@ -166,7 +166,7 @@ namespace combat
         if (IS_ALREADY_UNCONSCIOUS ||
             ((creatureDefendingPtrC->IsPlayerCharacter() == false) &&
             ((DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() * 2) ||
-                (DAMAGE_ABS > creatureDefendingPtrC->HealthCurrent())))))
+                (DAMAGE_ABS >= creatureDefendingPtrC->HealthCurrent())))))
         {
             creatureDefendingPtrC->HealthCurrentSet(0);
 

@@ -198,18 +198,16 @@ namespace animation
             auto const HORIZ_BASE       { HORIZ_CENTER - (HORIZ_RAND_SPAN * 0.5f) };
             auto const HORIZ_START_POS  { HORIZ_BASE + misc::random::Float(HORIZ_RAND_SPAN) };
             auto const HORIZ_END_POS    { ((HORIZ_START_POS < HORIZ_CENTER) ?
-                (HORIZ_START_POS - misc::random::Float(HORIZ_START_POS - REGION_.left)) :
-                (HORIZ_START_POS + misc::random::Float(
-                    (REGION_.left + REGION_.width) - HORIZ_START_POS))) };
+                (HORIZ_START_POS - misc::random::Float(HORIZ_RAND_SPAN)) :
+                (HORIZ_START_POS + misc::random::Float(HORIZ_RAND_SPAN))) };
 
             auto const VERT_CENTER{ REGION_.top + (REGION_.height * 0.5f) };
             auto const VERT_RAND_SPAN{ (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
             auto const VERT_BASE{ VERT_CENTER - (VERT_RAND_SPAN * 0.5f) };
             auto const VERT_START_POS{ VERT_BASE + misc::random::Float(VERT_RAND_SPAN) };
             auto const VERT_END_POS{ ((VERT_START_POS < VERT_CENTER) ?
-                (VERT_START_POS - misc::random::Float(VERT_START_POS - REGION_.top)) :
-                (VERT_START_POS + misc::random::Float(
-                    (REGION_.top + REGION_.height) - VERT_START_POS))) };
+                (VERT_START_POS - misc::random::Float(VERT_RAND_SPAN)) :
+                (VERT_START_POS + misc::random::Float(VERT_RAND_SPAN))) };
 
             sf::Texture & textureRef{ cloudTexture1_ };
             auto const WHICH_TEXTURE_NUM{ misc::random::Int(2) };

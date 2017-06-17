@@ -808,11 +808,11 @@ namespace stage
         player::PartyPtr_t partyPtr{ new player::Party() };
 
         {
-            const stats::StatSet KNIGHT_STATS(20 + misc::random::Int(10),
+            const stats::StatSet KNIGHT_STATS(15 + misc::random::Int(10),
                                               15 + misc::random::Int(6),
                                               0  + misc::random::Int(6),
                                               5  + misc::random::Int(10),
-                                              55 + misc::random::Int(10),
+                                              15 + misc::random::Int(10),
                                               0  + misc::random::Int(8));
 
             const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
@@ -863,11 +863,11 @@ namespace stage
         }
         */
         {
-            const stats::StatSet ARCHER_STATS(15 + misc::random::Int(10),
-                                              20 + misc::random::Int(10),
+            const stats::StatSet ARCHER_STATS(15 + misc::random::Int(6),
+                                              15 + misc::random::Int(10),
                                               5  + misc::random::Int(6),
-                                              10 + misc::random::Int(10),
-                                              50 + misc::random::Int(8),
+                                              10 + misc::random::Int(6),
+                                              10 + misc::random::Int(8),
                                               5  + misc::random::Int(6));
 
             const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(
@@ -914,7 +914,7 @@ namespace stage
             const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6),
+                                            5  + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6));
 
@@ -963,7 +963,7 @@ namespace stage
                                              5  + misc::random::Int(10),
                                              5  + misc::random::Int(10),
                                              15 + misc::random::Int(15),
-                                             55 + misc::random::Int(10),
+                                             15 + misc::random::Int(10),
                                              5  + misc::random::Int(8));
 
             const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
@@ -986,7 +986,7 @@ namespace stage
                                               5  + misc::random::Int(8),
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
-                                              95 + misc::random::Int(8),
+                                              30 + misc::random::Int(8),
                                               10 + misc::random::Int(15));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
@@ -1006,11 +1006,11 @@ namespace stage
         }
 
         {
-            const stats::StatSet SORCERER_STATS(0  + misc::random::Int(8),
-                                                0  + misc::random::Int(8),
+            const stats::StatSet SORCERER_STATS(1  + misc::random::Int(8),
+                                                1  + misc::random::Int(8),
                                                 5  + misc::random::Int(8),
                                                 10 + misc::random::Int(6),
-                                                90 + misc::random::Int(6),
+                                                30 + misc::random::Int(6),
                                                 20 + misc::random::Int(10));
 
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
@@ -1481,7 +1481,6 @@ namespace stage
         }
 
         if ((TurnPhase::Determine == turnPhase_) &&
-            creatureAtPosPtr->IsPlayerCharacter() &&
             (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
         {
             if (clickTimerSec_ < 0.0f)
@@ -1489,7 +1488,7 @@ namespace stage
                 clickPosV_ = MOUSE_POS_V;
                 clickTimerSec_ = DOUBLE_CLICK_WINDOW_SEC_;
             }
-            else
+            else if (creatureAtPosPtr->IsPlayerCharacter())
             {
                 clickTimerSec_ = -1.0f;//any negative value will work here
 
