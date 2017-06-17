@@ -30,6 +30,7 @@
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
 #include "game/creature/condition-enum.hpp"
+#include "game/name-position-enum.hpp"
 
 #include "misc/random.hpp"
 
@@ -61,11 +62,16 @@ namespace spell
 
         virtual ~Sparks() {}
       
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
-                                               creature::CreaturePtr_t effectedCreaturePtr) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
 
-        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
-                                          creature::CreaturePtr_t effectedCreaturePtr) const;
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -83,11 +89,16 @@ namespace spell
 
         virtual ~Bandage() {}
       
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
-                                               creature::CreaturePtr_t effectedCreaturePtr) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
 
-        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
-                                          creature::CreaturePtr_t effectedCreaturePtr) const;
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -103,10 +114,16 @@ namespace spell
 
         virtual ~Sleep() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -124,10 +141,16 @@ namespace spell
 
         virtual ~Awaken() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -143,10 +166,16 @@ namespace spell
 
         virtual ~Trip() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -164,10 +193,17 @@ namespace spell
 
         virtual ~Lift() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase(
+            creature::CreaturePtr_t creatureCastUponPtr) const;
     };
 
 
@@ -183,10 +219,16 @@ namespace spell
 
         virtual ~Daze() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -202,10 +244,16 @@ namespace spell
 
         virtual ~Panic() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -223,10 +271,16 @@ namespace spell
 
         virtual ~ClearMind() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -242,10 +296,16 @@ namespace spell
 
         virtual ~Poison() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -263,10 +323,16 @@ namespace spell
 
         virtual ~Antidote() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &        healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 
@@ -282,10 +348,16 @@ namespace spell
 
         virtual ~PoisonCloud() {}
 
-        virtual const std::string EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+        virtual bool EffectCreature(
+            creature::CreaturePtr_t   castingCreaturePtr,
+            creature::CreaturePtr_t   creatureCastUponPtr,
+            stats::Health_t &         healthAdj,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            ContentAndNamePos &       actionPhraseCNP) const;
+
+    private:
+        virtual const ContentAndNamePos ActionPhrase() const;
     };
 
 }

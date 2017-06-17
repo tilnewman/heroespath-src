@@ -46,13 +46,13 @@ namespace creature
 namespace condition
 {
 
-    const std::string Algorithms::Names(const ConditionEnumVec_t & CONDITIONS_VEC,
-                                        const bool                 WILL_WRAP,
-                                        const bool                 WILL_AND,
-                                        const std::size_t          MAX_COUNT,
-                                        const bool                 WILL_ELLIPSIS,
-                                        const std::size_t          MIN_SEVERITY,
-                                        const bool                 WILL_SORT_DESCENDING)
+    const std::string Algorithms::Names(const CondEnumVec_t & CONDITIONS_VEC,
+                                        const bool            WILL_WRAP,
+                                        const bool            WILL_AND,
+                                        const std::size_t     MAX_COUNT,
+                                        const bool            WILL_ELLIPSIS,
+                                        const std::size_t     MIN_SEVERITY,
+                                        const bool            WILL_SORT_DESCENDING)
 
     {
         auto tempVec{ CONDITIONS_VEC };
@@ -72,7 +72,7 @@ namespace condition
     }
 
 
-    void Algorithms::SortBySeverity(ConditionEnumVec_t & conditionsVec,
+    void Algorithms::SortBySeverity(CondEnumVec_t & conditionsVec,
                                     const bool           SORT_DESCENDING)
     {
         if (conditionsVec.size() > 1)
@@ -86,7 +86,7 @@ namespace condition
     }
 
 
-    const ConditionEnumVec_t Algorithms::SortBySeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
+    const CondEnumVec_t Algorithms::SortBySeverityCopy(const CondEnumVec_t & CONDITIONS_VEC,
                                                             const bool                 SORT_DESCENDING)
     {
         auto sortedConditionsVec{ CONDITIONS_VEC };
@@ -95,7 +95,7 @@ namespace condition
     }
 
 
-    void Algorithms::RemoveByMinSeverity(ConditionEnumVec_t & conditionsVec,
+    void Algorithms::RemoveByMinSeverity(CondEnumVec_t & conditionsVec,
                                          const std::size_t    MIN_SEVERITY)
     {
         if (conditionsVec.empty() == false)
@@ -111,7 +111,7 @@ namespace condition
     }
 
 
-    const ConditionEnumVec_t Algorithms::RemoveByMinSeverityCopy(const ConditionEnumVec_t & CONDITIONS_VEC,
+    const CondEnumVec_t Algorithms::RemoveByMinSeverityCopy(const CondEnumVec_t & CONDITIONS_VEC,
                                                                  const std::size_t          MIN_SEVERITY)
     {
         auto tempVec{ CONDITIONS_VEC };

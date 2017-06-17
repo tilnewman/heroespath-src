@@ -57,7 +57,7 @@ namespace player
                          const stats::Health_t                HEALTH,
                          const stats::Rank_t                  RANK,
                          const stats::Exp_t                   EXPERIENCE,
-                         const creature::ConditionEnumVec_t & CONDITIONS_VEC,
+                         const creature::CondEnumVec_t &      CONDITIONS_VEC,
                          const creature::TitleEnumVec_t &     TITLES_VEC,
                          const item::Inventory &              INVENTORY,
                          const sfml_util::DateTime &          DATE_TIME,

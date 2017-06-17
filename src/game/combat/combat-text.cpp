@@ -29,6 +29,7 @@
 //
 #include "combat-text.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition-algorithms.hpp"
@@ -197,7 +198,7 @@ namespace combat
     }
 
 
-    const std::string Text::ActionText(creature::CreatureCPtrC_t      CREATURE_ATTACKING_CPTRC,
+    const std::string Text::ActionText(const creature::CreaturePtr_t  CREATURE_ATTACKING_PTR,
                                        const combat::TurnActionInfo & TURN_ACTION_INFO,
                                        const combat::FightResult &    FIGHT_RESULT,
                                        const bool                     WILL_USE_NAME,
@@ -211,11 +212,11 @@ namespace combat
 
         if (WILL_USE_NAME)
         {
-            ss << CREATURE_ATTACKING_CPTRC->Name();
+            ss << CREATURE_ATTACKING_PTR->Name();
         }
         else
         {
-            ss << creature::sex::HeSheIt(CREATURE_ATTACKING_CPTRC->Sex(), true);
+            ss << creature::sex::HeSheIt(CREATURE_ATTACKING_PTR->Sex(), true);
         }
 
         ss << " ";
@@ -252,7 +253,11 @@ namespace combat
                 }
                 else
                 {
-                    ss << CastDescriptionFullVersion(TURN_ACTION_INFO, FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
+                    return CastDescriptionFullVersion(CREATURE_ATTACKING_PTR,
+                                                      TURN_ACTION_INFO,
+                                                      FIGHT_RESULT,
+                                                      EFFECT_INDEX,
+                                                      HIT_INDEX);
                 }
 
                 break;
@@ -260,7 +265,7 @@ namespace combat
 
             case combat::TurnAction::ChangeWeapon:
             {
-                auto const CURRENT_WEAPONS_SVEC{ CREATURE_ATTACKING_CPTRC->CurrentWeaponsCopy() };
+                auto const CURRENT_WEAPONS_SVEC{ CREATURE_ATTACKING_PTR->CurrentWeaponsCopy() };
 
                 if (CURRENT_WEAPONS_SVEC.empty())
                 {
@@ -437,35 +442,6 @@ namespace combat
     }
 
 
-    const std::string Text::HitDescription(const combat::HitInfo & HIT_INFO)
-    {
-        switch (HIT_INFO.HitKind())
-        {
-            case combat::HitType::AmazingAccuracy:  { return "with amazing Accuracy"; }
-            case combat::HitType::Luck:             { return "by a lucky shot"; }
-            case combat::HitType::AmazingLuck:      { return "with amazing luck"; }
-            case combat::HitType::Count:
-            case combat::HitType::Accuracy:
-            case combat::HitType::Spell:
-            default:                                { return ""; }
-        }
-    }
-
-
-    const std::string Text::DodgeDescription(const combat::HitInfo & HIT_INFO)
-    {
-        switch (HIT_INFO.DodgeKind())
-        {
-            case combat::DodgeType::AmazingSpeed:   { return "amazing speed"; }
-            case combat::DodgeType::Luck:           { return "by a lucky move"; }
-            case combat::DodgeType::AmazingLuck:    { return "with amazing luck"; }
-            case combat::DodgeType::Count:
-            case combat::DodgeType::Speed:
-            default:                                { return ""; }
-        }
-    }
-
-
     const std::string Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT)
     {
         auto const CREATURES_FOUGHT_COUNT{ FIGHT_RESULT.Count() };
@@ -541,10 +517,15 @@ namespace combat
 
     const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Count() != 0), "game::combat::Text::AttackDescriptionPreambleVersion() was given an empty FIGHT_RESULT.");
+        M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Count() != 0),
+            "game::combat::Text::AttackDescriptionPreambleVersion() "
+            << "was given an empty FIGHT_RESULT.");
 
         std::ostringstream ss;
-        ss << WeaponActionVerbList(FIGHT_RESULT, false) << " " << FirstTargetNamePhrase(FIGHT_RESULT) << "...";
+
+        ss << WeaponActionVerbList(FIGHT_RESULT, false) << " " 
+            << FirstTargetNamePhrase(FIGHT_RESULT) << "...";
+
         return ss.str();
     }
 
@@ -555,14 +536,30 @@ namespace combat
     {
         auto const CREATURE_EFFECTS_VEC{ FIGHT_RESULT.Effects() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.empty() == false),      "game::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") was given an empty FIGHT_RESULT.");
-        M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX < CREATURE_EFFECTS_VEC.size()), "game::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") effect_index was out of bounds with FIGHT_RESULT.Effects().size()="  << CREATURE_EFFECTS_VEC.size() << ".");
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.empty() == false),
+            "game::combat::Text::AttackDescriptionFullVersion(effect_index="
+            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+            << ") was given an empty FIGHT_RESULT.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX < CREATURE_EFFECTS_VEC.size()),
+            "game::combat::Text::AttackDescriptionFullVersion(effect_index="
+            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+            << ") effect_index was out of bounds with FIGHT_RESULT.Effects().size()="
+            << CREATURE_EFFECTS_VEC.size() << ".");
 
         auto const CREATURE_EFFECT{ CREATURE_EFFECTS_VEC.at(EFFECT_INDEX) };
         auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INFO_VEC.empty() == false),   "game::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") was given an empty HIT_INFO_VEC.");
-        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFO_VEC.size()), "game::combat::Text::AttackDescriptionFullVersion(effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX << ") hit_index was out of bounds with FIGHT_RESULT.Effects()[effect_index].GetCount()=" << HIT_INFO_VEC.size() << ".");
+        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INFO_VEC.empty() == false),
+            "game::combat::Text::AttackDescriptionFullVersion(effect_index="
+            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+            << ") was given an empty HIT_INFO_VEC.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFO_VEC.size()),
+            "game::combat::Text::AttackDescriptionFullVersion(effect_index="
+            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+            <<") hit_index was out of bounds with FIGHT_RESULT.Effects()[effect_index].GetCount()="
+            << HIT_INFO_VEC.size() << ".");
 
         auto const HIT_INFO{ HIT_INFO_VEC.at(HIT_INDEX) };
 
@@ -600,18 +597,13 @@ namespace combat
                 ss << "but does no damage";
             }
 
-            auto const CONDITIONS_VEC{ HIT_INFO.Conditions() };
-            if (CONDITIONS_VEC.empty() == false)
+            if (HIT_INFO.WasKill())
             {
-                if (HIT_INFO.WasKill())
-                {
-                    ss << " and kills";
-                }
-                else
-                {
-                    ss << " and causes " 
-                        << creature::condition::Algorithms::Names(CONDITIONS_VEC, false, true);
-                }
+                ss << " and kills ";
+            }
+            else
+            {
+                ss << AttackConditionsSummaryList(FIGHT_RESULT);
             }
         }
         else
@@ -623,8 +615,9 @@ namespace combat
     }
 
 
-    const std::string Text::CastDescriptionStatusVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                         const FightResult &    FIGHT_RESULT)
+    const std::string Text::CastDescriptionStatusVersion(
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult &    FIGHT_RESULT)
     {
         std::ostringstream ss;
 
@@ -643,8 +636,9 @@ namespace combat
     }
 
 
-    const std::string Text::CastDescriptionPreambleVersion(const TurnActionInfo & TURN_ACTION_INFO,
-                                                           const FightResult &    FIGHT_RESULT)
+    const std::string Text::CastDescriptionPreambleVersion(
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult &    FIGHT_RESULT)
     {
         std::ostringstream ss;
         ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << " spell ";
@@ -682,21 +676,54 @@ namespace combat
     }
 
 
-
-    const std::string Text::CastDescriptionFullVersion(const TurnActionInfo &,
-                                                       const FightResult &,
-                                                       const std::size_t,
-                                                       const std::size_t)
+    const std::string Text::CastDescriptionFullVersion(
+        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+        const TurnActionInfo &        TURN_ACTION_INFO,
+        const FightResult &           FIGHT_RESULT,
+        const std::size_t             EFFECT_INDEX,
+        const std::size_t             HIT_INDEX)
     {
+        if (TURN_ACTION_INFO.Spell() == nullptr)
+        {
+            return "";
+        }
+
+        if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
+        {
+            return "";
+        }
+
+        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+
+        if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
+        {
+            return "";
+        }
+
+        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+
         std::ostringstream ss;
 
-        ss << "Cast Description TODO.";
+        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ATTACKING_PTR->Name(),
+                                              CREATURE_EFFECT.GetCreature()->Name());
+
+        auto const DAMAGE{ HIT_INFO.Damage() };
+        
+        if (DAMAGE > 0)
+        {
+            ss << " healing for " << DAMAGE;
+        }
+        else if (DAMAGE < 0)
+        {
+            ss << " doing " << std::abs(DAMAGE) << " damage.";
+        }
 
         return ss.str();
     }
 
 
-    const std::string Text::WeaponActionVerbList(const FightResult & FIGHT_RESULT, const bool WILL_SKIP_MISSES)
+    const std::string Text::WeaponActionVerbList(const FightResult & FIGHT_RESULT,
+                                                 const bool          WILL_SKIP_MISSES)
     {
         std::vector<std::string> strVec;
         auto const CREATURE_EFFECTS_VEC{ FIGHT_RESULT.Effects() };
@@ -706,7 +733,8 @@ namespace combat
             auto const HIT_INFO_VEC{ NEXT_CREATURE_EFFECT.GetHitInfoVec() };
             for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
             {
-                if ((WILL_SKIP_MISSES == false) || (WILL_SKIP_MISSES && (NEXT_HIT_INFO.WasHit() == true)))
+                if ((WILL_SKIP_MISSES == false) ||
+                    (WILL_SKIP_MISSES && (NEXT_HIT_INFO.WasHit() == true)))
                 {
                     strVec.push_back(NEXT_HIT_INFO.ActionVerb());
                 }
@@ -751,16 +779,34 @@ namespace combat
     {
         std::ostringstream ss;
 
-        const std::size_t NUM_CONDITIONS_TO_LIST{ 3 };
-        auto const CONDITIONS_EXCLUDING_DEAD_SVEC{ misc::Vector::Exclude(FIGHT_RESULT.Conditions(true), creature::Conditions::Dead) };
-        auto const NUM_CONDITIONS{ CONDITIONS_EXCLUDING_DEAD_SVEC.size() };
-        if (NUM_CONDITIONS != 0)
-        {
-            ss << " and causing " << creature::condition::Algorithms::Names(CONDITIONS_EXCLUDING_DEAD_SVEC, false, true, NUM_CONDITIONS_TO_LIST);
+        const std::size_t NUM_CONDS_TO_LIST{ 3 };
+        
+        auto const ADDED_CONDS_EXCLUDING_DEAD_SVEC{
+            misc::Vector::Exclude(FIGHT_RESULT.AllCondsAdded(), creature::Conditions::Dead) };
 
-            if (NUM_CONDITIONS > NUM_CONDITIONS_TO_LIST)
+        auto const NUM_ADDED_CONDS{ ADDED_CONDS_EXCLUDING_DEAD_SVEC.size() };
+        if (NUM_ADDED_CONDS > 0)
+        {
+            ss << ", causing " << creature::condition::Algorithms::Names(
+                ADDED_CONDS_EXCLUDING_DEAD_SVEC, false, true, NUM_CONDS_TO_LIST);
+
+            if (NUM_ADDED_CONDS > NUM_CONDS_TO_LIST)
             {
-                ss << "...";
+                ss << " (more...)";
+            }
+        }
+
+        auto const REMOVED_CONDS_SVEC{ FIGHT_RESULT.AllCondsRemoved() };
+        auto const NUM_REMOVED_CONDS{ REMOVED_CONDS_SVEC.size() };
+
+        if (NUM_REMOVED_CONDS > 0)
+        {
+            ss << ", and eliminating " << creature::condition::Algorithms::Names(
+                REMOVED_CONDS_SVEC, false, true, NUM_CONDS_TO_LIST);
+
+            if (NUM_REMOVED_CONDS > NUM_CONDS_TO_LIST)
+            {
+                ss << " (more...)";
             }
         }
 

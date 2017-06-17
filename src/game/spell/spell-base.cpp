@@ -29,6 +29,8 @@
 //
 #include "spell-base.hpp"
 
+#include "game/creature/creature.hpp"
+
 #include "misc/strings.hpp"
 #include "misc/random.hpp"
 
@@ -41,11 +43,7 @@ namespace game
 namespace spell
 {
 
-    const std::string Spell::EFFECT_STR_SUCCESS_         { "" };
-    const std::string Spell::EFFECT_STR_NOTHING_TO_DO_   { "Nothing to do." };
-    const int         Spell::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
-    const std::string Spell::EFFECT_STR_IS_ALREADY_      { " is already " };
-    const std::string Spell::EFFECT_STR_RESISTED_        { " resisted the spell" };
+    const int Spell::EFFECTS_ALL_CREATURES_COUNT_{ -1 };
 
 
     Spell::Spell(const Spells::Enum     WHICH,
@@ -97,25 +95,9 @@ namespace spell
     }
 
 
-    int Spell::GenerateValue(const int FLOOR,
-                             const int THE_RAND_MAX,
-                             const int RANK,
-                             const int RANK_MAX) const
+    const std::string Spell::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
     {
-        int x{ FLOOR };
-
-        if (RANK_MAX == 0)
-        {
-            x += RANK;
-        }
-        else
-        {
-            x += std::min(RANK, RANK_MAX);
-        }
-
-        x += misc::random::Int(THE_RAND_MAX);
-
-        return x;
+        return "Nothing to do.";
     }
 
 }

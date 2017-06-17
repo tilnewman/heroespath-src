@@ -31,8 +31,10 @@
 
 #include "game/creature/creature.hpp"
 
-#include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
+
+#include <algorithm>
 
 
 namespace game
@@ -45,14 +47,19 @@ namespace creature
 
     float Stats::Ratio(const CreaturePtr_t     CREATURE_PTR,
                        const stats::stat::Enum STAT_ENUM,
+                       const bool              WILL_INCLUDE_STANDARD_OFFSET,
                        const bool              WILL_INCLUDE_LUCK)
     {
-        return Ratio(CREATURE_PTR, stats::StatEnumVec_t (1, STAT_ENUM), WILL_INCLUDE_LUCK);
+        return Ratio(CREATURE_PTR,
+                     stats::StatEnumVec_t (1, STAT_ENUM),
+                     WILL_INCLUDE_STANDARD_OFFSET,
+                     WILL_INCLUDE_LUCK);
     }
 
    
     float Stats::Ratio(const CreaturePtr_t          CREATURE_PTR,
                        const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                       const bool                   WILL_INCLUDE_STANDARD_OFFSET,
                        const bool                   WILL_INCLUDE_LUCK)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
@@ -63,7 +70,8 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
         {
             auto const NEXT_STAT{ CREATURE_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
-            randSum += misc::random::Int(NEXT_STAT.CurrentReduced(), NEXT_STAT.Normal());
+            auto const MIN{ ((WILL_INCLUDE_STANDARD_OFFSET) ? NEXT_STAT.CurrentReduced() : 0 ) };
+            randSum += misc::random::Int(MIN, NEXT_STAT.Current());
 
             if (WILL_INCLUDE_LUCK)
             {
@@ -424,6 +432,27 @@ namespace creature
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    int Stats::RandomRatioWithFloorAndRankBonus(
+        const CreaturePtr_t     CREATURE_PTR,
+        const stats::stat::Enum STAT_ENUM,
+        const int               RAND_SPREAD,
+        const int               FLOOR_DIVISOR,
+        const float             RANK_BONUS_MULT)
+    {   
+        int x{ static_cast<int>(1.0f + (static_cast<float>(RAND_SPREAD) *
+            Ratio(CREATURE_PTR, STAT_ENUM, false, true))) };
+        
+        if (FLOOR_DIVISOR > 0)
+        {
+            x = (CREATURE_PTR->Stats().GetCopy(STAT_ENUM).Current() / FLOOR_DIVISOR);
+        }
+
+        x += static_cast<int>(static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_MULT);
+        
+        return x;
     }
 
 }

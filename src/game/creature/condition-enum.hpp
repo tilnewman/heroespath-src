@@ -73,9 +73,9 @@ namespace creature
         static const std::string Desc(const Enum);
     };
 
-    using ConditionEnumVec_t      = std::vector<Conditions::Enum>;
-    using ConditionEnumVecIter_t  = ConditionEnumVec_t::iterator;
-    using ConditionEnumVecCIter_t = ConditionEnumVec_t::const_iterator;
+    using CondEnumVec_t      = std::vector<Conditions::Enum>;
+    using ConditionEnumVecIter_t  = CondEnumVec_t::iterator;
+    using ConditionEnumVecCIter_t = CondEnumVec_t::const_iterator;
 
 namespace condition
 {

@@ -112,33 +112,12 @@ namespace song
     }
 
 
-    int Song::GenerateValue(const int FLOOR,
-                             const int THE_RAND_MAX,
-                             const int RANK,
-                             const int RANK_MAX) const
-    {
-        int x{ FLOOR };
-
-        if (RANK_MAX == 0)
-        {
-            x += RANK;
-        }
-        else
-        {
-            x += std::min(RANK, RANK_MAX);
-        }
-
-        x += misc::random::Int(THE_RAND_MAX);
-
-        return x;
-    }
-
-
-    const std::string Song::ActionPhraseBeginning(creature::CreaturePtr_t creaturePlayingPtr) const
+    const ContentAndNamePos Song::ActionPhraseBeginning(
+        creature::CreaturePtr_t) const
     {
         std::ostringstream ss;
 
-        ss << creaturePlayingPtr->NameOrRaceAndRole() << "'s ";
+        ss << "'s ";
 
         if (SongType::Guitar == type_)
         {
@@ -168,7 +147,7 @@ namespace song
             ss << " the back of the lute like a drum";
         }
 
-        return ss.str();
+        return ContentAndNamePos(ss.str(), NamePosition::SourceBefore);
     }
 
 }

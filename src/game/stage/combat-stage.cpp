@@ -915,7 +915,7 @@ namespace stage
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
                                             10 + misc::random::Int(6),
-                                            90 + misc::random::Int(6),
+                                            10 + misc::random::Int(6),
                                             10 + misc::random::Int(6));
 
             const std::string BARD_NAME(boost::algorithm::replace_last_copy(
@@ -986,7 +986,7 @@ namespace stage
                                               5  + misc::random::Int(8),
                                               15 + misc::random::Int(10),
                                               10 + misc::random::Int(8),
-                                              55 + misc::random::Int(8),
+                                              95 + misc::random::Int(8),
                                               10 + misc::random::Int(15));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
@@ -1010,7 +1010,7 @@ namespace stage
                                                 0  + misc::random::Int(8),
                                                 5  + misc::random::Int(8),
                                                 10 + misc::random::Int(6),
-                                                50 + misc::random::Int(6),
+                                                90 + misc::random::Int(6),
                                                 20 + misc::random::Int(10));
 
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(

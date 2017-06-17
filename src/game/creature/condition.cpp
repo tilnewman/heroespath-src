@@ -118,24 +118,24 @@ namespace creature
     }
 
 
-    const ConditionEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
+    const CondEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::InitialChange(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return ConditionEnumVec_t();
+        return CondEnumVec_t();
     }
 
 
-    const ConditionEnumVec_t Condition::PerTurnChange(CreaturePtrC_t creaturePtrC)
+    const CondEnumVec_t Condition::PerTurnChange(CreaturePtrC_t creaturePtrC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::PerTurnChange(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return ConditionEnumVec_t();
+        return CondEnumVec_t();
     }
 
 
-    const ConditionEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
+    const CondEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::FinalUndo(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return ConditionEnumVec_t();
+        return CondEnumVec_t();
     }
 
 }

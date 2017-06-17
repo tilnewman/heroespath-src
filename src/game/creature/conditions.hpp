@@ -186,7 +186,7 @@ namespace condition
             stats::StatMultSet(0.75f, 1.0f, 0.5f, 1.0f, 0.75f, 1.0f)) {}
         
         virtual ~Poisoned() {}
-        virtual const ConditionEnumVec_t PerTurnChange(CreaturePtrC_t creaturePtrC);
+        virtual const CondEnumVec_t PerTurnChange(CreaturePtrC_t creaturePtrC);
     };
 
 }

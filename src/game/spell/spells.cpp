@@ -29,10 +29,12 @@
 //
 #include "spells.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/stats.hpp"
 #include "game/creature/conditions.hpp"
 
+#include "misc/real.hpp"
 #include "misc/random.hpp"
 
 #include <string>
@@ -43,326 +45,515 @@ namespace game
 namespace spell
 {
 
-    const std::string Sparks::ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
-                                           creature::CreaturePtr_t effectedCreaturePtr) const
+    const ContentAndNamePos Sparks::ActionPhrase() const
     {
         auto const RANDOM_VALUE{ misc::random::Int(3) };
 
         if (RANDOM_VALUE == 0)
         {
-            return castingCreaturePtr->NameOrRaceAndRole() + " shoots sparks at " +
-                effectedCreaturePtr->NameOrRaceAndRole() + ".";
+            return ContentAndNamePos(" shoots sparks at ",
+                                     NamePosition::SourceContentTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is sprayed with sparks.";
+            return ContentAndNamePos(" is sprayed with sparks ",
+                                     NamePosition::TargetBefore);
         }
         else if (RANDOM_VALUE == 2)
         {
-            return "A sputter of sparks hits " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+            return ContentAndNamePos("A sputter of sparks hits ",
+                                     NamePosition::TargetAfter);
         }
         else
         {
-            return "Sparks shower upon " + effectedCreaturePtr->NameOrRaceAndRole() + ".";
+            return ContentAndNamePos("Sparks shower ",
+                                     NamePosition::TargetAfter);
         }
     }
 
 
-    stats::Health_t Sparks::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
-                                      creature::CreaturePtr_t) const
+    bool Sparks::EffectCreature(
+        creature::CreaturePtr_t   castingCreaturePtr,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &         healthAdj,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        return -1 * GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5),
-                                        6,
-                                        static_cast<int>(castingCreaturePtr->Rank()),
-                                        10);
+        auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
+            castingCreaturePtr,
+            stats::stat::Intelligence,
+            6,
+            6,
+            0.5f) };
+
+        auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
+
+        auto const DAMAGE_ABS_FINAL{ ((DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ?
+            DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
+
+        healthAdj = -1 * DAMAGE_ABS_FINAL;
+
+        actionPhraseCNP = ActionPhrase();
+        return true;
     }
 
 
-    const std::string Bandage::ActionPhrase(creature::CreaturePtr_t castingCreaturePtr,
-                                            creature::CreaturePtr_t effectedCreaturePtr) const
+    const ContentAndNamePos Bandage::ActionPhrase() const
     {
         auto const RANDOM_VALUE{ misc::random::Int(3) };
 
         if (RANDOM_VALUE == 0)
         {
-            return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " +
-                effectedCreaturePtr->NameOrRaceAndRole() + ".";
+            return ContentAndNamePos(" magically bandages ",
+                                     NamePosition::SourceContentTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
-            return castingCreaturePtr->NameOrRaceAndRole() + " magically bandages " +
-                effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds.";
+            return ContentAndNamePos("",
+                                     " magically bandages ",
+                                     "'s wounds ",
+                                     NamePosition::SourceContentTarget);
         }
         else if (RANDOM_VALUE == 2)
         {
-            return "Magical bandages wrap " +
-                effectedCreaturePtr->NameOrRaceAndRole() + "'s injuries.";
+            return ContentAndNamePos("",
+                                     "Magical bandages wrap ",
+                                     "'s injuries ",
+                                     NamePosition::TargetAfter);
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + "'s wounds are magically bandaged.";
+            return ContentAndNamePos("'s wounds are magically bandaged ",
+                                     NamePosition::TargetBefore);
         }
     }
 
 
-    stats::Health_t Bandage::HealthAdj(creature::CreaturePtr_t castingCreaturePtr,
-                                       creature::CreaturePtr_t) const
+    bool Bandage::EffectCreature(
+        creature::CreaturePtr_t   castingCreaturePtr,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &         healthAdj,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        return GenerateHealthValue((castingCreaturePtr->Stats().Int().Current() / 5),
-                                    6,
-                                    static_cast<int>(castingCreaturePtr->Rank()),
-                                    10);
+        auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
+            castingCreaturePtr,
+            stats::stat::Intelligence,
+            6,
+            6,
+            0.5f) };
+
+        auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
+
+        healthAdj = ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ?
+            HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
+
+        if (0 == healthAdj)
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                "'s health already at maximum.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+        else
+        {
+            actionPhraseCNP = ActionPhrase();
+            return true;
+        }
     }
 
 
-    const std::string Sleep::EffectCreature(
+    const ContentAndNamePos Sleep::ActionPhrase() const
+    {
+        //TODO add more phrases
+        return ContentAndNamePos("",
+                                 "'s magic forces ",
+                                 " to go to sleep.",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool Sleep::EffectCreature(
         creature::CreaturePtr_t,
-        creature::CreaturePtr_t effectedCreaturePtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::AsleepNatural) ||
+            creatureCastUponPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural) ||
-            effectedCreaturePtr->HasCondition(creature::Conditions::AsleepMagical))
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "asleep";
+            actionPhraseCNP =  ContentAndNamePos("Spell failed because ",
+                                                 " is already asleep.",
+                                                 "",
+                                                 NamePosition::TargetBefore);
+            return false;
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::AsleepNatural);
-            conditionsAddedVec.push_back(creature::Conditions::AsleepNatural);
-            return Spell::EFFECT_STR_SUCCESS_;
+            creatureCastUponPtr->ConditionAdd(creature::Conditions::AsleepNatural);
+            condsAddedVec.push_back(creature::Conditions::AsleepNatural);
+            actionPhraseCNP = ActionPhrase();
+            return true;
         }
     }
 
 
-    const std::string Awaken::EffectCreature(creature::CreaturePtr_t,
-                                             creature::CreaturePtr_t effectedCreaturePtr,
-                                             creature::ConditionEnumVec_t &) const
+    const ContentAndNamePos Awaken::ActionPhrase() const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepNatural))
-        {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::AsleepNatural);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-        else if (effectedCreaturePtr->HasCondition(creature::Conditions::AsleepMagical))
-        {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::AsleepMagical);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-        else if (effectedCreaturePtr->HasCondition(creature::Conditions::Unconscious))
-        {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Unconscious);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-        else
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is not asleep or unconscious";
-        }
+        return ContentAndNamePos("",
+                                 "'s magic forces ",
+                                 " to wake.",
+                                 NamePosition::SourceContentTarget);
     }
 
 
-    const std::string Trip::EffectCreature(creature::CreaturePtr_t,
-                                           creature::CreaturePtr_t        effectedCreaturePtr,
-                                           creature::ConditionEnumVec_t & conditionsAddedVec) const
-    {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "tripped";
-        }
-        else
-        {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::Tripped);
-            conditionsAddedVec.push_back(creature::Conditions::Tripped);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-    }
-
-
-    const std::string Lift::EffectCreature(creature::CreaturePtr_t,
-                                           creature::CreaturePtr_t effectedCreaturePtr,
-                                           creature::ConditionEnumVec_t &) const
-    {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Tripped))
-        {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Tripped);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-        else
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is not tripped";
-        }
-    }
-
-
-    const std::string Daze::EffectCreature(creature::CreaturePtr_t,
-                                           creature::CreaturePtr_t        effectedCreaturePtr,
-                                           creature::ConditionEnumVec_t & conditionsAddedVec) const
-    {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dazed";
-        }
-        else
-        {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::Dazed);
-            conditionsAddedVec.push_back(creature::Conditions::Dazed);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-    }
-
-
-    const std::string Panic::EffectCreature(
+    bool Awaken::EffectCreature(
         creature::CreaturePtr_t,
-        creature::CreaturePtr_t        effectedCreaturePtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & condsRemovedVec,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
+        const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
+            creature::Conditions::AsleepNatural,
+            creature::Conditions::AsleepMagical,
+            creature::Conditions::Unconscious };
 
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Panic))
+        auto wereAnyCondsRemoved{ false };
+        for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() +
-                EFFECT_STR_IS_ALREADY_ + "panicked";
-        }
-        else
-        {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::Panic);
-            conditionsAddedVec.push_back(creature::Conditions::Panic);
-            return Spell::EFFECT_STR_SUCCESS_;
-        }
-    }
-
-
-    const std::string ClearMind::EffectCreature(creature::CreaturePtr_t,
-                                                creature::CreaturePtr_t effectedCreaturePtr,
-                                                creature::ConditionEnumVec_t &) const
-    {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        auto didRemoveCondition{ false };
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Panic))
-        {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Panic);
-            didRemoveCondition = true;
+            if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
+            {
+                creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
+                condsRemovedVec.push_back(NEXT_COND_ENUM_TO_REMOVE);
+                wereAnyCondsRemoved = true;
+            }
         }
         
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Dazed))
+        if (wereAnyCondsRemoved)
         {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Dazed);
-            didRemoveCondition = true;
+            actionPhraseCNP = ActionPhrase();
+            return true;
+        }
+        else
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is not asleep or unconcious.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+    }
+
+
+    const ContentAndNamePos Trip::ActionPhrase() const
+    {
+        return ContentAndNamePos("",
+                                 "'s spell trips ",
+                                 ".",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool Trip::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is already tripped.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+        else
+        {
+            creatureCastUponPtr->ConditionAdd(creature::Conditions::Tripped);
+            condsAddedVec.push_back(creature::Conditions::Tripped);
+            actionPhraseCNP = ActionPhrase();
+            return true;
+        }
+    }
+
+
+    const ContentAndNamePos Lift::ActionPhrase(
+        creature::CreaturePtr_t creatureCastUponPtr) const
+    {
+        return ContentAndNamePos(
+            "",
+            "'s magic forces ",
+            " to " + creature::sex::HisHerIts(creatureCastUponPtr->Sex(), false, false) + " feet.",
+            NamePosition::SourceContentTarget);
+    }
+
+
+    bool Lift::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & condsRemovedVec,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
+        {
+            creatureCastUponPtr->ConditionRemove(creature::Conditions::Tripped);
+            condsRemovedVec.push_back(creature::Conditions::Tripped);
+            actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+            return true;
+        }
+        else
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is not tripped.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+    }
+
+
+    const ContentAndNamePos Daze::ActionPhrase() const
+    {
+        return ContentAndNamePos("",
+                                 "'s magic puts ",
+                                 " in a daze.",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool Daze::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Dazed))
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is already dazed.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+        else
+        {
+            creatureCastUponPtr->ConditionAdd(creature::Conditions::Dazed);
+            condsAddedVec.push_back(creature::Conditions::Dazed);
+            actionPhraseCNP = ActionPhrase();
+            return true;
+        }
+    }
+
+
+    const ContentAndNamePos Panic::ActionPhrase() const
+    {
+        return ContentAndNamePos("",
+                                 "'s spell panics ",
+                                 ".",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool Panic::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Panic))
+        {
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is already panicked.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+        else
+        {
+            creatureCastUponPtr->ConditionAdd(creature::Conditions::Panic);
+            condsAddedVec.push_back(creature::Conditions::Panic);
+            actionPhraseCNP = ActionPhrase();
+            return true;
+        }
+    }
+
+
+    const ContentAndNamePos ClearMind::ActionPhrase() const
+    {
+        return ContentAndNamePos("",
+                                 "'s spell clears ",
+                                 "'s mind.",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool ClearMind::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & condsRemovedVec,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
+            creature::Conditions::Panic,
+            creature::Conditions::Daunted,
+            creature::Conditions::Dazed };
+
+        auto wereAnyCondsRemoved{ false };
+        for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
+        {
+            if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
+            {
+                creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
+                condsRemovedVec.push_back(NEXT_COND_ENUM_TO_REMOVE);
+                wereAnyCondsRemoved = true;
+            }
         }
         
-        if (didRemoveCondition)
+        if (wereAnyCondsRemoved)
         {
-            return Spell::EFFECT_STR_SUCCESS_;
+            actionPhraseCNP = ActionPhrase();
+            return true;
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is not panicked or dazed";
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is not panicked or dazed.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
         }
     }
 
 
-    const std::string Poison::EffectCreature(
+    const ContentAndNamePos Poison::ActionPhrase() const
+    {
+        return ContentAndNamePos("",
+                                 "'s spell poisons ",
+                                 ".",
+                                 NamePosition::SourceContentTarget);
+    }
+
+
+    bool Poison::EffectCreature(
         creature::CreaturePtr_t,
-        creature::CreaturePtr_t        effectedCreaturePtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
-
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is already poisoned.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
         }
         else
         {
-            effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
-            conditionsAddedVec.push_back(creature::Conditions::Poisoned);
-            return Spell::EFFECT_STR_SUCCESS_;
+            creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
+            condsAddedVec.push_back(creature::Conditions::Poisoned);
+            actionPhraseCNP = ActionPhrase();
+            return true;
         }
     }
 
 
-    const std::string Antidote::EffectCreature(creature::CreaturePtr_t,
-                                               creature::CreaturePtr_t effectedCreaturePtr,
-                                               creature::ConditionEnumVec_t &) const
+    const ContentAndNamePos Antidote::ActionPhrase() const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
+        return ContentAndNamePos("",
+                                 "'s spell cures ",
+                                 ".",
+                                 NamePosition::SourceContentTarget);
+    }
 
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
+
+    bool Antidote::EffectCreature(
+        creature::CreaturePtr_t,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & condsRemovedVec,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
-            effectedCreaturePtr->ConditionRemove(creature::Conditions::Poisoned);
-            return Spell::EFFECT_STR_SUCCESS_;
+            creatureCastUponPtr->ConditionRemove(creature::Conditions::Poisoned);
+            condsRemovedVec.push_back(creature::Conditions::Poisoned);
+            actionPhraseCNP = ActionPhrase();
+            return true;
         }
         else
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + " is not poisoned";
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is not poisoned.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
         }
     }
 
 
-    const std::string PoisonCloud::EffectCreature(
-        creature::CreaturePtr_t        castingCreaturePtr,
-        creature::CreaturePtr_t        effectedCreaturePtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+    const ContentAndNamePos PoisonCloud::ActionPhrase() const
     {
-        if (effectedCreaturePtr->IsAlive() == false)
-        {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "dead";
-        }
+        return ContentAndNamePos("'s spell attempts to poison the enemy.",
+                                 NamePosition::SourceBefore);
+    }
 
-        if (effectedCreaturePtr->HasCondition(creature::Conditions::Poisoned))
+
+    bool PoisonCloud::EffectCreature(
+        creature::CreaturePtr_t   castingCreaturePtr,
+        creature::CreaturePtr_t   creatureCastUponPtr,
+        stats::Health_t &,
+        creature::CondEnumVec_t & condsAddedVec,
+        creature::CondEnumVec_t &,
+        ContentAndNamePos &       actionPhraseCNP) const
+    {
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
-            return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_IS_ALREADY_ + "poisoned";
+            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                " is already poisoned.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
         }
         else
         {
             if (creature::Stats::Versus(castingCreaturePtr,
                                         stats::stat::Intelligence,
-                                        effectedCreaturePtr))
+                                        creatureCastUponPtr))
             {
-                effectedCreaturePtr->ConditionAdd(creature::Conditions::Poisoned);
-                conditionsAddedVec.push_back(creature::Conditions::Poisoned);
-                return Spell::EFFECT_STR_SUCCESS_;
+                creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
+                condsAddedVec.push_back(creature::Conditions::Poisoned);
+                actionPhraseCNP = ActionPhrase();
+                return true;
             }
             else
             {
-                return effectedCreaturePtr->NameOrRaceAndRole() + EFFECT_STR_RESISTED_;
+                actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+                                                    " resisted.",
+                                                    "",
+                                                    NamePosition::TargetBefore);
+                return false;
             }
         }
     }

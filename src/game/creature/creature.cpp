@@ -70,7 +70,7 @@ namespace creature
                        const stats::Health_t       HEALTH,
                        const stats::Rank_t         RANK,
                        const stats::Exp_t          EXPERIENCE,
-                       const ConditionEnumVec_t &  CONDITIONS_VEC,
+                       const CondEnumVec_t &       CONDITIONS_VEC,
                        const TitleEnumVec_t &      TITLE_VEC,
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
@@ -322,7 +322,7 @@ namespace creature
 
     bool Creature::ConditionRemove(const Conditions::Enum E)
     {
-        ConditionEnumVec_t conditionsToRemoveVec;
+        CondEnumVec_t conditionsToRemoveVec;
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
         {
             if (NEXT_CONDITION_ENUM == E)
@@ -420,7 +420,7 @@ namespace creature
         }
         else
         {
-            ConditionEnumVec_t tempCondVec(conditionsVec_);
+            CondEnumVec_t tempCondVec(conditionsVec_);
 
             std::sort(tempCondVec.begin(),
                       tempCondVec.end(),

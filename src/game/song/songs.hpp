@@ -74,7 +74,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 
@@ -95,7 +96,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 
@@ -116,7 +118,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 
@@ -137,7 +140,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 
@@ -158,7 +162,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 
@@ -179,7 +184,8 @@ namespace song
         virtual const std::string EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t effectedCreaturePtr,
-            creature::ConditionEnumVec_t & conditionsAddedVec) const;
+            creature::CondEnumVec_t & conditionsAddedVec,
+            creature::CondEnumVec_t & conditionsRemovedVec) const;
     };
 
 }

@@ -137,22 +137,36 @@ namespace combat
     }
 
 
-    const creature::ConditionEnumVec_t FightResult::Conditions(const bool WILL_UNIUQE) const
+    const creature::CondEnumVec_t FightResult::AllCondsAdded() const
     {
-        creature::ConditionEnumVec_t conditionsVec;
+        creature::CondEnumVec_t conditionsVec;
 
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
-            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllConditions(), conditionsVec);
+            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllCondsAdded(), conditionsVec);
         }
 
-        if (WILL_UNIUQE)
+        conditionsVec.erase(std::unique(conditionsVec.begin(),
+                                        conditionsVec.end()),
+                            conditionsVec.end());
+        
+        return conditionsVec;
+    }
+
+
+    const creature::CondEnumVec_t FightResult::AllCondsRemoved() const
+    {
+        creature::CondEnumVec_t conditionsVec;
+
+        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
-            conditionsVec.erase(std::unique(conditionsVec.begin(),
-                                            conditionsVec.end()),
-                                            conditionsVec.end());
+            misc::Vector::Append(NEXT_CREATURE_EFFECT.GetAllCondsRemoved(), conditionsVec);
         }
 
+        conditionsVec.erase(std::unique(conditionsVec.begin(),
+                                        conditionsVec.end()),
+                            conditionsVec.end());
+        
         return conditionsVec;
     }
 

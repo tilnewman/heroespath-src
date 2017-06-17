@@ -48,10 +48,12 @@ namespace creature
     {
         static float Ratio(const CreaturePtr_t     CREATURE_PTR,
                            const stats::stat::Enum STAT_ENUM,
-                           const bool              WILL_INCLUDE_LUCK = true);
+                           const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
+                           const bool              WILL_INCLUDE_LUCK            = true);
 
         static float Ratio(const CreaturePtr_t          CREATURE_PTR,
                            const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                           const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
                            const bool                   WILL_INCLUDE_LUCK = true);
 
         static bool Roll(const CreaturePtr_t     CREATURE_PTR,
@@ -87,7 +89,14 @@ namespace creature
             const bool                   WILL_CONDSIDER_RANK = true,
             const bool                   WILL_CONSIDER_PLAYER_LUCK = true,
             const bool                   ALLOW_PLAYER_NATURAL_WINS = true);
-       
+
+        static int RandomRatioWithFloorAndRankBonus(
+            const CreaturePtr_t     CREATURE_PTR,
+            const stats::stat::Enum STAT_ENUM,
+            const int               RAND_SPREAD,
+            const int               FLOOR_DIVISOR   = 0,//zero means 'no floor'
+            const float             RANK_BONUS_MULT = 0.0f);//zero means 'no rank bonus'
+
     private:
         static const stats::Stat_t LUCK_DIVISOR_;
 

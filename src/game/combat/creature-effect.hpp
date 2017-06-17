@@ -42,6 +42,11 @@ namespace spell
     class Spell;
     using SpellPtr_t = Spell *;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+}
 namespace creature
 {
     class Creature;
@@ -57,41 +62,37 @@ namespace combat
     {
     public:
         explicit CreatureEffect(
-            const creature::CreaturePtr_t        CREATURE_PTR   = nullptr,
-            const HitInfoVec_t &                 HIT_INFO_VEC   = HitInfoVec_t(),
-            const spell::SpellPtr_t              SPELL_PTR      = nullptr,
-            const creature::ConditionEnumVec_t & CONDITIONS_VEC = creature::ConditionEnumVec_t(),
-            const bool                           WAS_POUNCED    = false);
+            const creature::CreaturePtr_t CREATURE_PTR = nullptr,
+            const HitInfoVec_t &          HIT_INFO_VEC = HitInfoVec_t());
 
         CreatureEffect(const CreatureEffect &);
         CreatureEffect & operator=(const CreatureEffect &);
 
-        inline std::size_t                  GetCount() const           { return hitInfoVec_.size(); }
-        inline HitInfoVec_t                 GetHitInfoVec() const      { return hitInfoVec_; }
-        inline spell::SpellPtr_t            GetSpell() const           { return spellPtr_; }
-        inline creature::CreaturePtr_t      GetCreature() const        { return creaturePtr_; }
-        inline bool                         GetWasPounced() const      { return wasPounced_; }
-
+        inline std::size_t             GetCount() const         { return hitInfoVec_.size(); }
+        inline HitInfoVec_t            GetHitInfoVec() const    { return hitInfoVec_; }
+        inline creature::CreaturePtr_t GetCreature() const      { return creaturePtr_; }
+        
         bool GetWasHit() const;
+
         stats::Health_t GetDamageTotal() const;
 
-        const creature::ConditionEnumVec_t          GetHitConditions() const;
-        inline const creature::ConditionEnumVec_t   GetNonHitConditions() const { return conditionsVec_; }
-        const creature::ConditionEnumVec_t          GetAllConditions() const;
-        bool                                        ContainsCondition(const creature::Conditions::Enum) const;
-        bool                                        RemoveCondition(const creature::Conditions::Enum);
+        const creature::CondEnumVec_t GetAllCondsAdded() const;
+        const creature::CondEnumVec_t GetAllCondsRemoved() const;
 
-        inline bool WasKill() const { return ContainsCondition(creature::Conditions::Dead); }
+        bool GetAllCondsAddedContains(const creature::Conditions::Enum) const;
+        bool GetAllCondsRemovedContains(const creature::Conditions::Enum) const;
+
+        bool AllCondsAddedRemove(const creature::Conditions::Enum);
+        bool AllCondsRemovedRemove(const creature::Conditions::Enum);
+
+        inline bool WasKill() const { return GetAllCondsAddedContains(creature::Conditions::Dead); }
 
         friend bool operator<(const CreatureEffect & L, const CreatureEffect & R);
         friend bool operator==(const CreatureEffect & L, const CreatureEffect & R);
 
     private:
         HitInfoVec_t hitInfoVec_;
-        spell::SpellPtr_t spellPtr_;
         creature::CreaturePtr_t creaturePtr_;
-        creature::ConditionEnumVec_t conditionsVec_;
-        bool wasPounced_;
     };
 
     using CreatureEffectVec_t = std::vector<CreatureEffect>;

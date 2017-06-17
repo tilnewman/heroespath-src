@@ -43,7 +43,8 @@ namespace song
     const std::string RallyDrum::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CondEnumVec_t & conditionsAddedVec,
+        creature::CondEnumVec_t &) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
@@ -75,7 +76,8 @@ namespace song
     const std::string SpiritResonance::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t &) const
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t &) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
@@ -93,7 +95,8 @@ namespace song
     const std::string RousingRhythm::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t &) const
+        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & conditionsRemovedVec) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
@@ -103,26 +106,25 @@ namespace song
         if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
         {
             creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepNatural);
+            conditionsRemovedVec.push_back(creature::Conditions::AsleepNatural);
         }
 
         if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
             creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepMagical);
+            conditionsRemovedVec.push_back(creature::Conditions::AsleepMagical);
         }
 
         if (creatureListeningPtr->HasCondition(creature::Conditions::Dazed))
         {
             creatureListeningPtr->ConditionRemove(creature::Conditions::Dazed);
-        }
-
-        if (creatureListeningPtr->HasCondition(creature::Conditions::Dazed))
-        {
-            creatureListeningPtr->ConditionRemove(creature::Conditions::Dazed);
+            conditionsRemovedVec.push_back(creature::Conditions::Dazed);
         }
 
         if (creatureListeningPtr->HasCondition(creature::Conditions::Unconscious))
         {
             creatureListeningPtr->ConditionRemove(creature::Conditions::Unconscious);
+            conditionsRemovedVec.push_back(creature::Conditions::Unconscious);
         }
 
         return Song::EFFECT_STR_SUCCESS_;
@@ -132,7 +134,8 @@ namespace song
     const std::string TripBeat::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CondEnumVec_t & conditionsAddedVec,
+        creature::CondEnumVec_t &) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
@@ -165,7 +168,8 @@ namespace song
     const std::string PanicStrings::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CondEnumVec_t & conditionsAddedVec,
+        creature::CondEnumVec_t &) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {
@@ -198,7 +202,8 @@ namespace song
     const std::string Lullaby::EffectCreature(
         creature::CreaturePtr_t creaturePlayingPtr,
         creature::CreaturePtr_t creatureListeningPtr,
-        creature::ConditionEnumVec_t & conditionsAddedVec) const
+        creature::CondEnumVec_t & conditionsAddedVec,
+        creature::CondEnumVec_t &) const
     {
         if (creatureListeningPtr->IsAlive() == false)
         {

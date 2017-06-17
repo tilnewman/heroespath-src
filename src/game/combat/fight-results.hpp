@@ -74,7 +74,8 @@ namespace combat
 
         std::size_t HitCount() const;
 
-        const creature::ConditionEnumVec_t Conditions(const bool WILL_UNIUQE) const;
+        const creature::CondEnumVec_t AllCondsAdded() const;
+        const creature::CondEnumVec_t AllCondsRemoved() const;
 
         bool GetHitInfo(HitInfo &         HitInfo_OutParam,
                         const std::size_t EFFECT_INDEX = 0,

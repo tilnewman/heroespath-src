@@ -74,9 +74,9 @@ namespace creature
         inline bool IsMagical() const                       { return isMagical_; }
         inline const stats::StatMultSet StatMult() const    { return statMultSet_; }
 
-        virtual const ConditionEnumVec_t InitialChange(CreaturePtrC_t);
-        virtual const ConditionEnumVec_t PerTurnChange(CreaturePtrC_t);
-        virtual const ConditionEnumVec_t FinalUndo(CreaturePtrC_t);
+        virtual const CondEnumVec_t InitialChange(CreaturePtrC_t);
+        virtual const CondEnumVec_t PerTurnChange(CreaturePtrC_t);
+        virtual const CondEnumVec_t FinalUndo(CreaturePtrC_t);
 
         friend bool operator<(const Condition & L, const Condition & R);
         friend bool operator==(const Condition & L, const Condition & R);

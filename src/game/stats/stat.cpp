@@ -42,8 +42,7 @@ namespace stats
     const Stat_t Stat::VAL_MAX_INITIAL_  { 20 };
     const Stat_t Stat::VAL_INVALID_      { -1 };
     const Stat_t Stat::VAL_ESTIMATED_MAX_{ 100 };
-    const float  Stat::REDUCE_DIVISOR_   { 5.0f };
-    const float  Stat::REDUCE_MULTIPLIER_{ 2.0f };
+    const float  Stat::REDUCE_MULTIPLIER_{ 0.4f };
 
 
     Stat::Stat(const stat::Enum WHICH, const Stat_t VALUE)
@@ -199,8 +198,7 @@ namespace stats
 
     Stat_t Stat::Reduce(const Stat_t VAL)
     {
-        return static_cast<Stat_t>((static_cast<float>(VAL) * REDUCE_MULTIPLIER_) /
-            REDUCE_DIVISOR_);
+        return static_cast<Stat_t>((static_cast<float>(VAL) * REDUCE_MULTIPLIER_));
     }
 
 }

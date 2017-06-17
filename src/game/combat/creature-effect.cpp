@@ -44,31 +44,21 @@ namespace game
 namespace combat
 {
 
-    CreatureEffect::CreatureEffect(const creature::CreaturePtr_t        CREATURE_PTR,
-                                   const HitInfoVec_t &                 HIT_INFO_VEC,
-                                   const spell::SpellPtr_t              SPELL_PTR,
-                                   const creature::ConditionEnumVec_t & CONDITIONS_VEC,
-                                   const bool                           WAS_POUNCED)
+    CreatureEffect::CreatureEffect(const creature::CreaturePtr_t CREATURE_PTR,
+                                   const HitInfoVec_t &          HIT_INFO_VEC)
     :
-        hitInfoVec_   (HIT_INFO_VEC),
-        spellPtr_     (SPELL_PTR),
-        creaturePtr_  (CREATURE_PTR),
-        conditionsVec_(CONDITIONS_VEC),
-        wasPounced_   (WAS_POUNCED)
+        hitInfoVec_ (HIT_INFO_VEC),
+        creaturePtr_(CREATURE_PTR)
     {}
 
 
     CreatureEffect::CreatureEffect(const CreatureEffect & CE)
     :
-        hitInfoVec_   (CE.hitInfoVec_),
+        hitInfoVec_(CE.hitInfoVec_),
 
         //The lifetime of these objects is not managed by this class.
         //Usage is short-term observation only, so ptr copying is safe.
-        spellPtr_     (CE.spellPtr_),
-        creaturePtr_  (CE.creaturePtr_),
-
-        conditionsVec_(CE.conditionsVec_),
-        wasPounced_   (CE.wasPounced_)
+        creaturePtr_(CE.creaturePtr_)
     {}
 
 
@@ -77,11 +67,8 @@ namespace combat
         if (& CE != this)
         {
             hitInfoVec_ = CE.hitInfoVec_;
-            conditionsVec_ = CE.conditionsVec_;
-            wasPounced_ = CE.wasPounced_;
 
             //see copy constructor comment regarding these pointers
-            spellPtr_ = CE.spellPtr_;
             creaturePtr_ = CE.creaturePtr_;
         }
 
@@ -116,16 +103,19 @@ namespace combat
     }
 
 
-    const creature::ConditionEnumVec_t CreatureEffect::GetHitConditions() const
+    const creature::CondEnumVec_t CreatureEffect::GetAllCondsAdded() const
     {
-        creature::ConditionEnumVec_t conditionsVec;
+        creature::CondEnumVec_t conditionsVec;
 
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
         {
-            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.Conditions() };
-            for (auto const NEXT_CONDITION_ENUM : NEXT_CONDITION_VEC)
+            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.CondsAdded() };
+
+            if (NEXT_CONDITION_VEC.empty() == false)
             {
-                conditionsVec.push_back(NEXT_CONDITION_ENUM);
+                conditionsVec.insert(conditionsVec.end(),
+                                     NEXT_CONDITION_VEC.begin(),
+                                     NEXT_CONDITION_VEC.end());
             }
         }
 
@@ -133,80 +123,66 @@ namespace combat
     }
 
 
-    const creature::ConditionEnumVec_t CreatureEffect::GetAllConditions() const
+    const creature::CondEnumVec_t CreatureEffect::GetAllCondsRemoved() const
     {
-        creature::ConditionEnumVec_t allConditionsVec;
+        creature::CondEnumVec_t conditionsVec;
 
-        auto const HIT_CONDITIONS_VEC{ GetHitConditions() };
-
-        if (HIT_CONDITIONS_VEC.empty() == false)
+        for (auto const & NEXT_HIT_INFO : hitInfoVec_)
         {
-            std::copy(HIT_CONDITIONS_VEC.begin(),
-                      HIT_CONDITIONS_VEC.end(),
-                      back_inserter(allConditionsVec));
-        }
+            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.CondsRemoved() };
 
-        auto const NON_HIT_CONDITIONS_VEC{ GetNonHitConditions() };
-
-        if (NON_HIT_CONDITIONS_VEC.empty() == false)
-        {
-            std::copy(NON_HIT_CONDITIONS_VEC.begin(),
-                      NON_HIT_CONDITIONS_VEC.end(),
-                      back_inserter(allConditionsVec));
-        }
-
-        return allConditionsVec;
-    }
-
-
-    bool CreatureEffect::ContainsCondition(const creature::Conditions::Enum E) const
-    {
-        const auto CONDITIONS_VEC{ GetAllConditions() };
-
-        for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
-        {
-            if (NEXT_CONDITION_ENUM == E)
+            if (NEXT_CONDITION_VEC.empty() == false)
             {
-                return true;
+                conditionsVec.insert(conditionsVec.end(),
+                                     NEXT_CONDITION_VEC.begin(),
+                                     NEXT_CONDITION_VEC.end());
             }
         }
 
-        return false;
+        return conditionsVec;
     }
 
 
-    bool CreatureEffect::RemoveCondition(const creature::Conditions::Enum E)
+    bool CreatureEffect::GetAllCondsAddedContains(const creature::Conditions::Enum E) const
+    {
+        const auto VEC{ GetAllCondsAdded() };
+        return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
+    }
+
+
+    bool CreatureEffect::GetAllCondsRemovedContains(const creature::Conditions::Enum E) const
+    {
+        const auto VEC{ GetAllCondsRemoved() };
+        return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
+    }
+
+
+    bool CreatureEffect::AllCondsAddedRemove(const creature::Conditions::Enum E)
     {
         auto wasCondRemoved{ false };
 
         for (auto & nextHitInfo : hitInfoVec_)
         {
-            if (nextHitInfo.RemoveCondition(E))
+            if (nextHitInfo.CondsAddedRemove(E))
             {
                 wasCondRemoved = true;
             }
         }
 
-        creature::ConditionEnumVec_t condsToRemoveVec;
+        return wasCondRemoved;
+    }
 
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+
+    bool CreatureEffect::AllCondsRemovedRemove(const creature::Conditions::Enum E)
+    {
+        auto wasCondRemoved{ false };
+
+        for (auto & nextHitInfo : hitInfoVec_)
         {
-            if (NEXT_CONDITION_ENUM == E)
+            if (nextHitInfo.CondsRemovedRemove(E))
             {
-                condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+                wasCondRemoved = true;
             }
-        }
-
-        if (condsToRemoveVec.empty() == false)
-        {
-            wasCondRemoved = true;
-        }
-
-        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
-        {
-            conditionsVec_.erase(std::remove(conditionsVec_.begin(),
-                                             conditionsVec_.end(),
-                                             NEXT_CONDITION_TO_REMOVE_ENUM), conditionsVec_.end());
         }
 
         return wasCondRemoved;
@@ -215,39 +191,21 @@ namespace combat
 
     bool operator<(const CreatureEffect & L, const CreatureEffect & R)
     {
-        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
-        {
-            return true;
-        }
-
         return std::tie(L.hitInfoVec_,
-                        L.spellPtr_,
-                        L.creaturePtr_,
-                        L.wasPounced_)
+                        L.creaturePtr_)
                <
                std::tie(R.hitInfoVec_,
-                        R.spellPtr_,
-                        R.creaturePtr_,
-                        R.wasPounced_);
+                        R.creaturePtr_);
     }
 
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R)
     {
-        if (misc::Vector::OrderlessCompareEqual(L.conditionsVec_, R.conditionsVec_) == false)
-        {
-            return false;
-        }
-
         return std::tie(L.hitInfoVec_,
-                        L.spellPtr_,
-                        L.creaturePtr_,
-                        L.wasPounced_)
+                        L.creaturePtr_)
                ==
                std::tie(R.hitInfoVec_,
-                        R.spellPtr_,
-                        R.creaturePtr_,
-                        R.wasPounced_);
+                        R.creaturePtr_);
     }
 
 }

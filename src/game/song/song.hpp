@@ -35,6 +35,7 @@
 #include "game/stats/types.hpp"
 #include "game/effect-type-enum.hpp"
 #include "game/creature/condition-enum.hpp"
+#include "game/name-position-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -93,37 +94,46 @@ namespace song
         inline TargetType::Enum Target() const      { return targetType_; }
 
         //Returns a short sentance describing what the spell did.
-        //For the following functions the first CreaturePtr_t is the caster and the second is the target.
-        virtual const std::string ActionPhrase(creature::CreaturePtr_t creaturePlayingPtr,//creaturePlaying
-                                               creature::CreaturePtr_t) const   //creatureListening
+        //For the following functions the first CreaturePtr_t is
+        //  the caster and the second is the target.
+        virtual const ContentAndNamePos ActionPhrase(
+            creature::CreaturePtr_t creaturePlayingPtr,
+            creature::CreaturePtr_t) const
         {
+            //TODO -remove this default implementation and replace it with
+            //a pure virtual function that all songs must define
             return ActionPhraseBeginning(creaturePlayingPtr);
         }
 
         //Allows the spell to change the target creature.
-        virtual const std::string EffectCreature(creature::CreaturePtr_t,              //creaturePlaying
-                                                 creature::CreaturePtr_t,              //creatureListening
-                                                 creature::ConditionEnumVec_t &) const //conditionsAdded
+        virtual const std::string EffectCreature(
+            creature::CreaturePtr_t,
+            creature::CreaturePtr_t,
+            creature::CondEnumVec_t &,
+            creature::CondEnumVec_t &) const
         {
             return Song::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Allows the spell to change the target item.
-        virtual const std::string EffectItem(creature::CreaturePtr_t,   //creaturePlaying
-                                             item::ItemPtr_t) const  //itemEffected
+        virtual const std::string EffectItem(
+            creature::CreaturePtr_t,
+            item::ItemPtr_t) const
         {
             return Song::EFFECT_STR_NOTHING_TO_DO_;
         }
 
         //Returns the amount of health that the spell either gives or takes away.
-        virtual stats::Health_t HealthAdj(creature::CreaturePtr_t,      //creaturePlaying
-                                          creature::CreaturePtr_t) const//creatureListening
+        virtual stats::Health_t HealthAdj(
+            creature::CreaturePtr_t,
+            creature::CreaturePtr_t) const
         {
             return 0;
         }
 
         //Returns the number of target creatures that will be effected.
-        virtual int EffectedCreatureCount(creature::CreaturePtr_t) const
+        virtual int EffectedCreatureCount(
+            creature::CreaturePtr_t) const
         {
             if ((TargetType::SingleCompanion == targetType_) ||
                 (TargetType::SingleOpponent == targetType_))
@@ -145,23 +155,8 @@ namespace song
         friend bool operator==(const Song & L, const Song & R);
 
     protected:
-        const std::string ActionPhraseBeginning(creature::CreaturePtr_t creaturePlayingPtr) const;
-
-        int GenerateValue(const int FLOOR,
-                          const int THE_RAND_MAX,
-                          const int RANK         = 0,
-                          const int RANK_MAX     = 0) const;
-
-        inline stats::Health_t GenerateHealthValue(const int FLOOR,
-                                                   const int THE_RAND_MAX,
-                                                   const int RANK         = 0,
-                                                   const int RANK_MAX     = 0) const
-        {
-            return static_cast<stats::Health_t>( GenerateValue(FLOOR,
-                                                               THE_RAND_MAX,
-                                                               RANK,
-                                                               RANK_MAX) );
-        }
+        const ContentAndNamePos ActionPhraseBeginning(
+            creature::CreaturePtr_t creaturePlayingPtr) const;
 
     public:
         static const std::string EFFECT_STR_SUCCESS_;

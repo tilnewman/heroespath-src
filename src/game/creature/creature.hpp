@@ -115,7 +115,7 @@ namespace creature
                           const stats::Health_t       HEALTH          = 0,
                           const stats::Rank_t         RANK            = 1,
                           const stats::Exp_t          EXPERIENCE      = 0,
-                          const ConditionEnumVec_t &  CONDITIONS_VEC  = ConditionEnumVec_t(),
+                          const CondEnumVec_t &  CONDITIONS_VEC  = CondEnumVec_t(),
                           const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
                           const item::Inventory &     INVENTORY       = item::Inventory(),
                           const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
@@ -175,9 +175,19 @@ namespace creature
         inline void HealthNormalAdj(const stats::Health_t C)    { healthNormal_ += C; }
         inline void HealthCurrentSet(const stats::Health_t H)   { healthCurrent_ = H; }
         inline void HealthNormalSet(const stats::Health_t H)    { healthNormal_ = H; }
-        inline float HealthRatio() const                        { return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_); }
+        
+        inline float HealthRatio() const
+        {
+            return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_);
+        }
+        
         const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
-
+        
+        inline stats::Health_t HealthMissing() const
+        {
+            return HealthNormal() - HealthCurrent();
+        }
+        
         //returns true only if the condition was actually added, and not a duplicate, etc.
         //prevents duplicate conditions
         //calls Condition::Change() on this creature after adding
@@ -193,7 +203,7 @@ namespace creature
         //for each Condition, Condition::Undo() is called before removing
         std::size_t ConditionRemoveAll();
 
-        inline const ConditionEnumVec_t Conditions() const      { return conditionsVec_; }
+        inline const CondEnumVec_t Conditions() const      { return conditionsVec_; }
         const ConditionPVec_t ConditionsPVec() const;
 
         bool HasCondition(const Conditions::Enum) const;
@@ -331,7 +341,7 @@ namespace creature
         stats::Health_t     healthNormal_;
         stats::Rank_t       rank_;
         stats::Exp_t        experience_;
-        ConditionEnumVec_t  conditionsVec_;
+        CondEnumVec_t  conditionsVec_;
         TitleEnumVec_t      titlesVec_;
         item::Inventory     inventory_;
         sfml_util::DateTime dateTimeCreated_;

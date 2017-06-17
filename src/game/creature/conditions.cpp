@@ -46,7 +46,7 @@ namespace creature
 namespace condition
 {
 
-    const ConditionEnumVec_t Poisoned::PerTurnChange(CreaturePtrC_t creaturePtrC)
+    const CondEnumVec_t Poisoned::PerTurnChange(CreaturePtrC_t creaturePtrC)
     {
         const stats::Health_t DAMAGE_BASE{ misc::random::Int(2, 6) };
         auto const DAMAGE_FROM_HEALTH_NORMAL{ static_cast<stats::Health_t>(static_cast<float>(creaturePtrC->HealthNormal()) * 0.1f) };
@@ -55,11 +55,11 @@ namespace condition
         if (creaturePtrC->HealthCurrent() <= 0)
         {
             creaturePtrC->ConditionAdd(Conditions::Dead);
-            return ConditionEnumVec_t(1, Conditions::Dead );
+            return CondEnumVec_t(1, Conditions::Dead );
         }
         else
         {
-            return ConditionEnumVec_t();
+            return CondEnumVec_t();
         }
     }
 
