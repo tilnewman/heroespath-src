@@ -58,7 +58,9 @@ namespace spell
                          Phase::Combat,
                          1,
                          1,
-                         TargetType::SingleOpponent) {}
+                         TargetType::SingleOpponent,
+                         "sprays with sparks",
+                         "sprayed with sparks") {}
 
         virtual ~Sparks() {}
       
@@ -85,7 +87,9 @@ namespace spell
                                                    Phase::Inventory),
                           1,
                           1,
-                          TargetType::SingleCompanion) {}
+                          TargetType::SingleCompanion,
+                          "bandages",
+                          "bandaged") {}
 
         virtual ~Bandage() {}
       
@@ -110,7 +114,9 @@ namespace spell
                         Phase::Combat,
                         1,
                         1,
-                        TargetType::SingleOpponent) {}
+                        TargetType::SingleOpponent,
+                        "sleeps",
+                        "slept") {}
 
         virtual ~Sleep() {}
 
@@ -137,7 +143,9 @@ namespace spell
                                                   Phase::Inventory),
                          1,
                          1,
-                         TargetType::SingleCompanion) {}
+                         TargetType::SingleCompanion,
+                         "awakens",
+                         "awakened") {}
 
         virtual ~Awaken() {}
 
@@ -162,7 +170,9 @@ namespace spell
                        Phase::Combat,
                        1,
                        1,
-                       TargetType::SingleOpponent) {}
+                       TargetType::SingleOpponent,
+                       "trips",
+                       "tripped") {}
 
         virtual ~Trip() {}
 
@@ -189,7 +199,9 @@ namespace spell
                                                 Phase::Inventory),
                        1,
                        1,
-                       TargetType::SingleCompanion) {}
+                       TargetType::SingleCompanion,
+                       "lifts",
+                       "lifted") {}
 
         virtual ~Lift() {}
 
@@ -215,7 +227,9 @@ namespace spell
                        Phase::Combat,
                        1,
                        1,
-                       TargetType::SingleOpponent) {}
+                       TargetType::SingleOpponent,
+                       "dazes",
+                       "dazed") {}
 
         virtual ~Daze() {}
 
@@ -240,7 +254,9 @@ namespace spell
                         Phase::Combat,
                         1,
                         1,
-                        TargetType::SingleOpponent) {}
+                        TargetType::SingleOpponent,
+                        "panics",
+                        "panicked") {}
 
         virtual ~Panic() {}
 
@@ -267,7 +283,9 @@ namespace spell
                                                      Phase::Inventory),
                             1,
                             1,
-                            TargetType::SingleCompanion) {}
+                            TargetType::SingleCompanion,
+                            "clears the mind",
+                            "clear headed") {}
 
         virtual ~ClearMind() {}
 
@@ -292,7 +310,9 @@ namespace spell
                          Phase::Combat,
                          1,
                          1,
-                         TargetType::SingleOpponent) {}
+                         TargetType::SingleOpponent,
+                         "poisons",
+                         "poisoned") {}
 
         virtual ~Poison() {}
 
@@ -319,7 +339,9 @@ namespace spell
                                                     Phase::Inventory),
                            1,
                            1,
-                           TargetType::SingleCompanion) {}
+                           TargetType::SingleCompanion,
+                           "cures",
+                           "cured") {}
 
         virtual ~Antidote() {}
 
@@ -344,7 +366,9 @@ namespace spell
                               Phase::Combat,
                               3,
                               1,
-                              TargetType::AllOpponents) {}
+                              TargetType::AllOpponents,
+                              "poisons",
+                              "poisoned") {}
 
         virtual ~PoisonCloud() {}
 

@@ -69,13 +69,18 @@ namespace spell
               const Phase::Enum      VALID_PHASES,
               const stats::Mana_t    MANA_COST,
               const stats::Rank_t    RANK,
-              const TargetType::Enum TARGET_TYPE);
+              const TargetType::Enum TARGET_TYPE,
+              const std::string &    VERB_THIRD_PERSON,
+              const std::string &    VERB_PAST_TENSE);
 
         virtual ~Spell();
 
         inline const std::string Name() const       { return Spells::Name(which_); }
 
         const std::string ToString() const;
+
+        inline const std::string VerbThirdPerson() const { return verbThirdPerson_; }
+        inline const std::string VerbPastTense() const   { return verbPastTense_; }
 
         inline const std::string Desc() const       { return Spells::ShortDesc(which_); }
         inline const std::string DescExtra() const  { return Spells::ExtraDesc(which_); }
@@ -107,6 +112,10 @@ namespace spell
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
 
+    public:
+        static const std::string RESISTED_STR_;
+        static const std::string FAILED_BECAUSE_STR_;
+
     protected:
         Spells::Enum     which_;
         stats::Rank_t    rank_;
@@ -114,6 +123,8 @@ namespace spell
         Phase::Enum      validPhases_;
         stats::Mana_t    manaCost_;
         TargetType::Enum targetType_;
+        std::string      verbThirdPerson_;
+        std::string      verbPastTense_;
     };
 
 
@@ -133,14 +144,18 @@ namespace spell
                         L.effectType_,
                         L.validPhases_,
                         L.manaCost_,
-                        L.targetType_)
+                        L.targetType_,
+                        L.verbThirdPerson_,
+                        L.verbPastTense_)
                 <
                std::tie(R.which_,
                         R.rank_,
                         R.effectType_,
                         R.validPhases_,
                         R.manaCost_,
-                        R.targetType_);
+                        R.targetType_,
+                        R.verbThirdPerson_,
+                        R.verbPastTense_);
     }
 
     inline bool operator==(const Spell & L, const Spell & R)
@@ -150,14 +165,18 @@ namespace spell
                         L.effectType_,
                         L.validPhases_,
                         L.manaCost_,
-                        L.targetType_)
+                        L.targetType_,
+                        L.verbThirdPerson_,
+                        L.verbPastTense_)
                 ==
                std::tie(R.which_,
                         R.rank_,
                         R.effectType_,
                         R.validPhases_,
                         R.manaCost_,
-                        R.targetType_);
+                        R.targetType_,
+                        R.verbThirdPerson_,
+                        R.verbPastTense_);
     }
 
     inline bool operator!=(const Spell & L, const Spell & R)

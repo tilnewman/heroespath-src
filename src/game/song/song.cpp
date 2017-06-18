@@ -43,21 +43,29 @@ namespace game
 namespace song
 {
 
+    const std::string Song::RESISTED_STR_{ " resisted." };
+    const std::string Song::FAILED_STR_{ " failed on " };
+
+
     Song::Song(const Songs::Enum      WHICH,
                const SongType::Enum   TYPE,
                const EffectType::Enum EFFECT_TYPE,
                const Phase::Enum      VALID_PHASES,
                const stats::Mana_t    MANA_COST,
                const stats::Rank_t    RANK,
-               const TargetType::Enum TARGET_TYPE)
+               const TargetType::Enum TARGET_TYPE,
+               const std::string &    VERB_THIRD_PERSON,
+               const std::string &    VERB_PAST_TENSE)
     :
-        which_      (WHICH),
-        type_       (TYPE),
-        effectType_ (EFFECT_TYPE),
-        rank_       (RANK),
-        validPhases_(VALID_PHASES),
-        manaCost_   (MANA_COST),
-        targetType_ (TARGET_TYPE)
+        which_          (WHICH),
+        type_           (TYPE),
+        effectType_     (EFFECT_TYPE),
+        rank_           (RANK),
+        validPhases_    (VALID_PHASES),
+        manaCost_       (MANA_COST),
+        targetType_     (TARGET_TYPE),
+        verbThirdPerson_(VERB_THIRD_PERSON),
+        verbPastTense_  (VERB_PAST_TENSE)
     {}
 
 
@@ -149,7 +157,7 @@ namespace song
     }
 
 
-    const std::string Song::SongTypeToVerb() const
+    const std::string Song::TypeToVerb() const
     {
         if (SongType::Guitar == type_)
         {
@@ -169,6 +177,31 @@ namespace song
                 case 2:     { return "pounding"; }
                 case 3:     { return "rapping";  }
                 default:    { return "tapping";  }
+            }
+        }
+    }
+
+
+    const std::string Song::TypeToNoun() const
+    {
+        if (SongType::Guitar == type_)
+        {
+            switch (misc::random::Int(2))
+            {
+                case 1:  { return "melody"; }
+                case 2:  { return "tune";   }
+                default: { return "song";   }
+            }
+        }
+        else
+        {
+            if (misc::random::Bool())
+            {
+                return "rhythm";
+            }
+            else
+            {
+                return "beat";
             }
         }
     }

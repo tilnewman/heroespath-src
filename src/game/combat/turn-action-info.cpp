@@ -45,7 +45,8 @@ namespace combat
     :
         actionType_ (ACTION),
         targetsPVec_(1, TARGET_PTR),
-        spellPtr_   (nullptr)
+        spellPtr_   (nullptr),
+        songPtr_    (nullptr)
     {}
 
 
@@ -54,7 +55,18 @@ namespace combat
     :
         actionType_ (TurnAction::Cast),
         targetsPVec_(TARGET_PVEC),
-        spellPtr_   (SPELL_PTR)
+        spellPtr_   (SPELL_PTR),
+        songPtr_    (nullptr)
+    {}
+
+
+    TurnActionInfo::TurnActionInfo(const song::SongPtr_t            SONG_PTR,
+                                   const creature::CreaturePVec_t & TARGET_PVEC)
+    :
+        actionType_ (TurnAction::PlaySong),
+        targetsPVec_(TARGET_PVEC),
+        spellPtr_   (nullptr),
+        songPtr_    (SONG_PTR)
     {}
 
 
@@ -65,7 +77,8 @@ namespace combat
         //The lifetime of these objects is not managed by this class.
         //Usage is short-term observation only, so ptr copying is safe.
         targetsPVec_(TAI.targetsPVec_),
-        spellPtr_   (TAI.spellPtr_)
+        spellPtr_   (TAI.spellPtr_),
+        songPtr_    (TAI.songPtr_)
     {}
 
 
@@ -78,6 +91,7 @@ namespace combat
             //See comment in the copy constructor regarding these pointers.
             targetsPVec_ = TAI.targetsPVec_;
             spellPtr_    = TAI.spellPtr_;
+            songPtr_     = TAI.songPtr_;
         }
 
         return * this;
@@ -104,9 +118,9 @@ namespace combat
             return true;
         }
 
-        return std::tie(L.actionType_, L.spellPtr_)
+        return std::tie(L.actionType_, L.spellPtr_, L.songPtr_)
                <
-               std::tie(R.actionType_, R.spellPtr_);
+               std::tie(R.actionType_, R.spellPtr_, R.songPtr_);
     }
 
 
@@ -117,9 +131,9 @@ namespace combat
             return false;
         }
 
-        return std::tie(L.actionType_, L.spellPtr_)
+        return std::tie(L.actionType_, L.spellPtr_, L.songPtr_)
                ==
-               std::tie(R.actionType_, R.spellPtr_);
+               std::tie(R.actionType_, R.spellPtr_, R.songPtr_);
     }
 
 }

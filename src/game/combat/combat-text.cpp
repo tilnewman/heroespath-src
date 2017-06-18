@@ -38,9 +38,12 @@
 #include "game/item/item.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 
 #include "misc/vectors.hpp"
 #include "misc/boost-string-includes.hpp"
+
+#include <boost/algorithm/algorithm.hpp>
 
 
 namespace game
@@ -203,10 +206,7 @@ namespace combat
                                        const combat::FightResult &    FIGHT_RESULT,
                                        const bool                     WILL_USE_NAME,
                                        const bool                     IS_STATUS_VERSION,
-                                       const bool                     IS_PREAMBLE_VERSION,
-                                       const std::size_t              EFFECT_INDEX,
-                                       const std::size_t              HIT_INDEX)
-
+                                       const bool                     IS_PREAMBLE_VERSION)
     {
         std::ostringstream ss;
 
@@ -233,10 +233,6 @@ namespace combat
                 {
                     ss << AttackDescriptionStatusVersion(FIGHT_RESULT);
                 }
-                else
-                {
-                    ss << AttackDescriptionFullVersion(FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
-                }
 
                 break;
             }
@@ -251,15 +247,21 @@ namespace combat
                 {
                     ss << CastDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
                 }
-                else
-                {
-                    return CastDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                                      TURN_ACTION_INFO,
-                                                      FIGHT_RESULT,
-                                                      EFFECT_INDEX,
-                                                      HIT_INDEX);
-                }
+                
+                break;
+            }
 
+            case combat::TurnAction::PlaySong:
+            {
+                if (IS_PREAMBLE_VERSION)
+                {
+                    ss << PlaySongDescriptionPreambleVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                }
+                else if (IS_STATUS_VERSION)
+                {
+                    ss << PlaySongDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                }
+                
                 break;
             }
 
@@ -334,6 +336,64 @@ namespace combat
         }
 
         return ss.str();
+    }
+
+
+    const std::string Text::ActionTextIndexed(
+        const creature::CreaturePtr_t  CREATURE_ATTACKING_PTR,
+        const combat::TurnActionInfo & TURN_ACTION_INFO,
+        const combat::FightResult &    FIGHT_RESULT,
+        const bool                     WILL_USE_NAME,
+        const std::size_t              EFFECT_INDEX,
+        const std::size_t              HIT_INDEX,
+        bool &                         wasCollapsed)
+    {
+        wasCollapsed = false;
+
+        auto const TURN_ACTION{ TURN_ACTION_INFO.Action() };
+
+        if (TURN_ACTION == combat::TurnAction::Attack)
+        {
+            std::ostringstream ss;
+
+            if (WILL_USE_NAME)
+            {
+                ss << CREATURE_ATTACKING_PTR->Name();
+            }
+            else
+            {
+                ss << creature::sex::HeSheIt(CREATURE_ATTACKING_PTR->Sex(), true);
+            }
+
+            ss << " " << AttackDescriptionFullVersion(FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
+            return ss.str();
+        }
+        else if (TURN_ACTION == combat::TurnAction::Cast)
+        {
+            return CastDescriptionFullVersion(CREATURE_ATTACKING_PTR,
+                                                    TURN_ACTION_INFO,
+                                                    FIGHT_RESULT,
+                                                    EFFECT_INDEX,
+                                                    HIT_INDEX,
+                                                    wasCollapsed);
+        }
+        else if (TURN_ACTION == combat::TurnAction::PlaySong)
+        {
+            return PlaySongDescriptionFullVersion(CREATURE_ATTACKING_PTR,
+                                                        TURN_ACTION_INFO,
+                                                        FIGHT_RESULT,
+                                                        EFFECT_INDEX,
+                                                        HIT_INDEX,
+                                                        wasCollapsed);
+        }
+        else
+        {
+            std::ostringstream ss;
+            ss << "(error: invalid TurnAction (" << combat::TurnAction::ToString(TURN_ACTION)
+                << ") for indexed version of game::combat::Text::ActionText)";
+
+            return ss.str();
+        }
     }
 
 
@@ -656,23 +716,158 @@ namespace combat
         const TurnActionInfo &        TURN_ACTION_INFO,
         const FightResult &           FIGHT_RESULT,
         const std::size_t             EFFECT_INDEX,
-        const std::size_t             HIT_INDEX)
+        const std::size_t             HIT_INDEX,
+        bool &                        wasCollapsed)
     {
+        wasCollapsed = false;
+
         if (TURN_ACTION_INFO.Spell() == nullptr)
         {
-            return "";
+            return "(error: TURN_ACTION_INFO.Spell() null)";
         }
 
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(FIGHT_RESULT) };
+        if (FIGHT_RESULT_SUMMARY.IsValid())
+        {
+            wasCollapsed = true;
+            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
+                TURN_ACTION_INFO.Spell()->VerbPastTense());
+        }
+        
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
         {
-            return "";
+            return "(error: EFFECT_INDEX out of range)";
         }
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
-            return "";
+            return "(error: HIT_INDEX out of range)";
+        }
+
+        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+
+        std::ostringstream ss;
+
+        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ATTACKING_PTR->Name(),
+                                              CREATURE_EFFECT.GetCreature()->Name());
+
+        auto const DAMAGE{ HIT_INFO.Damage() };
+        
+        if (DAMAGE > 0)
+        {
+            ss << " healing for " << DAMAGE;
+        }
+        else if (DAMAGE < 0)
+        {
+            ss << " doing " << std::abs(DAMAGE) << " damage.";
+        }
+
+        return ss.str();
+    }
+
+
+    const std::string Text::PlaySongDescriptionStatusVersion(
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult &    FIGHT_RESULT)
+    {
+        std::ostringstream ss;
+
+        auto const SONG_PTR{ TURN_ACTION_INFO.Song() };
+        ss << "plays the " << SONG_PTR->Name() << " " << SONG_PTR->TypeToNoun() << " "
+            << TargetType::ActionPhrase(SONG_PTR->Target());
+
+        if ((SONG_PTR->Target() == TargetType::AllCompanions) ||
+            (SONG_PTR->Target() == TargetType::AllOpponents))
+        {
+            ss << " effecting " << FIGHT_RESULT.Count();
+        }
+
+        ss << ".";
+        return ss.str();
+    }
+
+
+    const std::string Text::PlaySongDescriptionPreambleVersion(
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult &    FIGHT_RESULT)
+    {
+        std::ostringstream ss;
+        ss << "plays the " << TURN_ACTION_INFO.Song()->Name() << " "
+            << TURN_ACTION_INFO.Song()->TypeToNoun() << " ";
+
+        if (FIGHT_RESULT.Count() == 1)
+        {
+            auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
+            auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
+            ss << "on ";
+            if (CREATURE_PTR->IsPlayerCharacter())
+            {
+                ss << CREATURE_PTR->Name();
+            }
+            else
+            {
+                ss << "a " << CREATURE_PTR->NameOrRaceAndRole();
+            }
+        }
+        else if (FIGHT_RESULT.Count() > 1)
+        {
+            ss << "effecting " << FIGHT_RESULT.Count();
+
+            auto const FIRST_CREATURE_PTR{ FIGHT_RESULT.Effects()[0].GetCreature() };
+            if (FIRST_CREATURE_PTR->IsPlayerCharacter())
+            {
+                ss << " characters";
+            }
+            else
+            {
+                ss << " creatures";
+            }
+        }
+        else
+        {
+            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Song()->Target());
+        }
+
+        ss << "...";
+        return ss.str();
+    }
+
+
+    const std::string Text::PlaySongDescriptionFullVersion(
+        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+        const TurnActionInfo &        TURN_ACTION_INFO,
+        const FightResult &           FIGHT_RESULT,
+        const std::size_t             EFFECT_INDEX,
+        const std::size_t             HIT_INDEX,
+        bool &                        wasCollapsed)
+    {
+        wasCollapsed = false;
+
+        if (TURN_ACTION_INFO.Song() == nullptr)
+        {
+            return "(error: TURN_ACTION_INFO.Song() null)";
+        }
+
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(FIGHT_RESULT) };
+        if (FIGHT_RESULT_SUMMARY.IsValid())
+        {
+            wasCollapsed = true;
+            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
+                TURN_ACTION_INFO.Song()->VerbPastTense());
+        }
+        
+        if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
+        {
+            return "(error: EFFECT_INDEX out of range)";
+        }
+
+        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+
+        if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
+        {
+            return "(error: HIT_INDEX out of range)";
         }
 
         auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
@@ -766,9 +961,9 @@ namespace combat
         std::ostringstream ss;
 
         const std::size_t NUM_CONDS_TO_LIST{ 3 };
-        
+
         auto const ADDED_CONDS_EXCLUDING_DEAD_VEC{
-            misc::Vector::Exclude(CREATURE_EFFECT.GetAllCondsAdded(), creature::Conditions::Dead)};
+            misc::Vector::Exclude(CREATURE_EFFECT.GetAllCondsAdded(), creature::Conditions::Dead) };
 
         auto const NUM_ADDED_CONDS{ ADDED_CONDS_EXCLUDING_DEAD_VEC.size() };
         if (NUM_ADDED_CONDS > 0)
@@ -821,13 +1016,101 @@ namespace combat
     {
         switch (misc::random::Int(4))
         {
-            case 0:  { return "You face"; }
-            case 1:  { return "Before you rage"; }
-            case 2:  { return "Before you stand"; }
-            case 3:  { return "Attacking you are"; }
-            case 4:
-            default: { return "You encounter"; }
+        case 0: { return "You face"; }
+        case 1: { return "Before you rage"; }
+        case 2: { return "Before you stand"; }
+        case 3: { return "Attacking you are"; }
+        case 4:
+        default: { return "You encounter"; }
         }
+    }
+
+
+    const FightResultSummary Text::SummarizeFightResult(const FightResult & FIGHT_RESULT)
+    {
+        auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
+        auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
+
+        if (CREATURE_EFFECTS_COUNT < 2)
+        {
+            return FightResultSummary();
+        }
+
+        auto const FIRST_HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
+        if (FIRST_HIT_INFO.IsValid() == false)
+        {
+            return FightResultSummary();
+        }
+
+        FightResultSummary frs;
+
+        frs.hit_type = FIRST_HIT_INFO.TypeOfHit();
+
+        if (FIRST_HIT_INFO.TypeOfHit() == HitType::Spell)
+        {
+            frs.spell_ptr = FIRST_HIT_INFO.SpellPtr();
+        }
+        else if (FIRST_HIT_INFO.TypeOfHit() == HitType::Song)
+        {
+            frs.song_ptr = FIRST_HIT_INFO.SongPtr();
+        }
+
+        for (std::size_t i(1); i<CREATURE_EFFECTS_COUNT; ++i)
+        {
+            if (SummarizeCreatureEffect(frs,
+                                        FIRST_HIT_INFO,
+                                        CREATURE_EFFECT_VEC[i]) == false)
+            {
+                return FightResultSummary();
+            }
+        }
+
+        return frs;
+    }
+
+
+    bool Text::SummarizeCreatureEffect(FightResultSummary &   frs,
+                                       const HitInfo &        FIRST_HIT_INFO,
+                                       const CreatureEffect & CREATURE_EFFECT)
+    {
+        auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        if (HIT_INFO_VEC.size() != 1)
+        {
+            return false;
+        }
+
+        auto const HIT_INFO{ HIT_INFO_VEC[0] };
+
+        if (HIT_INFO.IsCloseEnoughToEqual(FIRST_HIT_INFO) == false)
+        {
+            return false;
+        }
+
+        auto const ACTION_STR{ HIT_INFO.ActionPhrase().Compose("", "") };
+
+        if ((boost::algorithm::contains(ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_)) ||
+            (boost::algorithm::contains(ACTION_STR, song::Song::FAILED_STR_)))
+        {
+            if (boost::algorithm::contains(ACTION_STR, "already"))
+            {
+                frs.already_pvec.push_back(CREATURE_EFFECT.GetCreature());
+            }
+            else if ((boost::algorithm::contains(ACTION_STR, spell::Spell::RESISTED_STR_)) ||
+                     (boost::algorithm::contains(ACTION_STR, song::Song::RESISTED_STR_)))
+            {
+                frs.resisted_pvec.push_back(CREATURE_EFFECT.GetCreature());
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            frs.effected_pvec.push_back(CREATURE_EFFECT.GetCreature());
+        }
+
+        return true;
     }
 
 }

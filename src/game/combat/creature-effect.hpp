@@ -69,7 +69,7 @@ namespace combat
         CreatureEffect & operator=(const CreatureEffect &);
 
         inline std::size_t             GetCount() const         { return hitInfoVec_.size(); }
-        inline HitInfoVec_t            GetHitInfoVec() const    { return hitInfoVec_; }
+        inline const HitInfoVec_t &    GetHitInfoVec() const    { return hitInfoVec_; }
         inline creature::CreaturePtr_t GetCreature() const      { return creaturePtr_; }
         
         bool GetWasHit() const;

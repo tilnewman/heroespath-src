@@ -67,7 +67,9 @@ namespace song
                            static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
                            1,
                            1,
-                           TargetType::AllCompanions)
+                           TargetType::AllCompanions,
+                           "emboldens",
+                           "emboldened")
         {}
 
         virtual ~RallyDrum() {}
@@ -91,7 +93,9 @@ namespace song
                                  static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
                                  5,
                                  1,
-                                 TargetType::AllCompanions)
+                                 TargetType::AllCompanions,
+                                 "recharges",
+                                 "recharged")
         {}
 
         virtual ~SpiritResonance() {}
@@ -115,7 +119,9 @@ namespace song
                                static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
                                3,
                                1,
-                               TargetType::AllCompanions)
+                               TargetType::AllCompanions,
+                               "rouses",
+                               "roused")
         {}
 
         virtual ~RousingRhythm() {}
@@ -139,7 +145,9 @@ namespace song
                           Phase::Combat,
                           1,
                           1,
-                          TargetType::AllOpponents)
+                          TargetType::AllOpponents,
+                          "trips",
+                          "tripped")
         {}
 
         virtual ~TripBeat() {}
@@ -163,7 +171,9 @@ namespace song
                               Phase::Combat,
                               2,
                               1,
-                              TargetType::AllOpponents)
+                              TargetType::AllOpponents,
+                              "panics",
+                              "panicked")
         {}
 
         virtual ~PanicStrings() {}
@@ -187,7 +197,9 @@ namespace song
                          Phase::Combat,
                          2,
                          1,
-                         TargetType::AllOpponents)
+                         TargetType::AllOpponents,
+                         "sleeps",
+                         "slept")
         {}
 
         virtual ~Lullaby() {}

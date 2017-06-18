@@ -33,6 +33,8 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/creature.hpp"
+#include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 
 #include "misc/vectors.hpp"
 
@@ -45,6 +47,146 @@ namespace game
 {
 namespace combat
 {
+
+    std::size_t FightResultSummary::PtrCount() const
+    {
+        return (effected_pvec.size() + resisted_pvec.size() + already_pvec.size());
+    }
+
+
+    bool FightResultSummary::IsValid() const
+    {
+        if (PtrCount() <= 1)
+        {
+            return false;
+        }
+        
+        if ((HitType::Roar != hit_type) &&
+            (HitType::Song != hit_type) &&
+            (HitType::Spell != hit_type))
+        {
+            return false;
+        }
+
+        if ((HitType::Spell == hit_type) && (spell_ptr == nullptr))
+        {
+            return false;
+        }
+
+        if ((HitType::Song == hit_type) && (song_ptr == nullptr))
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+
+    const std::string FightResultSummary::VerbThirdPerson() const
+    {
+        if (HitType::Song == hit_type)
+        {
+            return song_ptr->VerbThirdPerson();
+        }
+        else if (HitType::Spell == hit_type)
+        {
+            return spell_ptr->VerbThirdPerson();
+        }
+        else if (HitType::Roar == hit_type)
+        {
+            return "panics";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+
+    const std::string FightResultSummary::Compose(
+        const std::string & FIGHTING_CREATURE_NAME,
+        const std::string & VERB_PAST_TENSE) const
+    {
+        if (IsValid() == false)
+        {
+            return "";
+        }
+
+        std::ostringstream preSS;
+        preSS << FIGHTING_CREATURE_NAME;
+
+        switch (hit_type)
+        {
+            case HitType::Spell:
+            {
+                preSS << " casts " << spell_ptr->Name();
+                break;
+            }
+            case HitType::Song:
+            {
+                preSS << song_ptr->ActionPhrasePreamble() << " playing " << song_ptr->Name();
+                break;
+            }
+            case HitType::Roar:
+            {
+                preSS << " roars";
+                break;
+            }
+            case HitType::Count:
+            case HitType::Weapon:
+            case HitType::Pounce:
+            default:
+            {
+                return "";
+            }
+        }
+
+        preSS << " at " << PtrCount();
+
+        std::ostringstream postSS;
+        if (resisted_pvec.empty() && already_pvec.empty())
+        {
+            postSS << " and " << VerbThirdPerson() << " ALL of them";
+        }
+        else if (effected_pvec.empty() && already_pvec.empty())
+        {
+            postSS << " but ALL resisted";
+        }
+        else if (effected_pvec.empty() && resisted_pvec.empty())
+        {
+            postSS << " but ALL were already " << VERB_PAST_TENSE;
+        }
+        else
+        {
+            if (effected_pvec.empty() == false)
+            {
+                postSS << " and " << VerbThirdPerson() << " " << effected_pvec.size();
+            }
+
+            if (resisted_pvec.empty() == false)
+            {
+                if (postSS.str().empty())
+                {
+                    postSS << " and ";
+                }
+                else
+                {
+                    postSS << ", but ";
+                }
+
+                postSS << resisted_pvec.size() << " resisted";
+            }
+
+            if (already_pvec.empty() == false)
+            {
+                postSS << ", and " << already_pvec.size() << " were already " << VERB_PAST_TENSE;
+            }
+        }
+
+        postSS << ".";
+        return preSS.str() + postSS.str();
+    }
+
 
     FightResult::FightResult(const CreatureEffectVec_t & CREATURE_EFFECT_VEC)
     :

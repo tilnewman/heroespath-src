@@ -52,7 +52,7 @@ namespace song
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
-                "'s " + SongTypeToVerb() + " failed on ",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
                     " is already emboldened.",
                 NamePosition::SourceThenTarget);
@@ -69,7 +69,7 @@ namespace song
 
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s magical " + SongTypeToVerb() + " emboldens ",
+                    "'s magical " + TypeToVerb() + " emboldens ",
                     ".",
                     NamePosition::SourceThenTarget);
 
@@ -79,9 +79,9 @@ namespace song
             {
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " failed on ",
+                    "'s " + TypeToVerb() + Song::FAILED_STR_,
                     " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                        " resisted.",
+                        Song::RESISTED_STR_,
                     NamePosition::SourceThenTarget);
 
                 return false;
@@ -114,7 +114,7 @@ namespace song
             ss << "'s mana for " << MANA_GAIN_FINAL << ".";
 
             actionPhraseCNP = ContentAndNamePos("",
-                                                "'s " + SongTypeToVerb() + " recharges ",
+                                                "'s " + TypeToVerb() + " recharges ",
                                                 ss.str(),
                                                 NamePosition::SourceThenTarget);
 
@@ -124,7 +124,7 @@ namespace song
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
-                "'s " + SongTypeToVerb() + " failed on ",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
                     " already has full mana.",
                 NamePosition::SourceThenTarget);
@@ -160,10 +160,13 @@ namespace song
 
         if (condsToRemoveVec.empty())
         {
-            actionPhraseCNP = ContentAndNamePos("",
-                                                "'s " + SongTypeToVerb() + " failed because ",
-                                                " did not need rousing.",
-                                                NamePosition::SourceThenTarget);
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " did not need rousing.",
+                NamePosition::SourceThenTarget);
+
             return false;
         }
         else
@@ -173,7 +176,7 @@ namespace song
                                    condsToRemoveVec.end());
 
             actionPhraseCNP = ContentAndNamePos("",
-                                                "'s " + SongTypeToVerb() + " rouses ",
+                                                "'s " + TypeToVerb() + " rouses ",
                                                 ".",
                                                 NamePosition::SourceThenTarget);
 
@@ -194,7 +197,7 @@ namespace song
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
-                "'s " + SongTypeToVerb() + " failed on ",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
                     " is already tripped.",
                 NamePosition::SourceThenTarget);
@@ -213,7 +216,7 @@ namespace song
 
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " trips ",
+                    "'s " + TypeToVerb() + " trips ",
                     ".",
                     NamePosition::SourceThenTarget);
 
@@ -223,9 +226,9 @@ namespace song
             {
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " failed on ",
+                    "'s " + TypeToVerb() + Song::FAILED_STR_,
                     " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                    " resisted.",
+                        Song::RESISTED_STR_,
                     NamePosition::SourceThenTarget);
 
                 return false;
@@ -246,9 +249,9 @@ namespace song
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
-                "'s " + SongTypeToVerb() + " failed on ",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                " is already panicked.",
+                    " is already panicked.",
                 NamePosition::SourceThenTarget);
 
             return false;
@@ -265,7 +268,7 @@ namespace song
 
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " panics ",
+                    "'s " + TypeToVerb() + " panics ",
                     ".",
                     NamePosition::SourceThenTarget);
 
@@ -275,9 +278,9 @@ namespace song
             {
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " failed on ",
+                    "'s " + TypeToVerb() + Song::FAILED_STR_,
                     " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                    " resisted.",
+                        Song::RESISTED_STR_,
                     NamePosition::SourceThenTarget);
 
                 return false;
@@ -299,9 +302,9 @@ namespace song
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
-                "'s " + SongTypeToVerb() + " failed on ",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                " is already asleep.",
+                    " is already asleep.",
                 NamePosition::SourceThenTarget);
 
             return false;
@@ -316,8 +319,8 @@ namespace song
 
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " puts ",
-                    " into a magical slumber.",
+                    "'s " + TypeToVerb() + " puts ",
+                        " into a magical slumber.",
                     NamePosition::SourceThenTarget);
 
                 return true;
@@ -326,9 +329,9 @@ namespace song
             {
                 actionPhraseCNP = ContentAndNamePos(
                     "",
-                    "'s " + SongTypeToVerb() + " failed on ",
+                    "'s " + TypeToVerb() + Song::FAILED_STR_,
                     " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                    " resisted.",
+                        Song::RESISTED_STR_,
                     NamePosition::SourceThenTarget);
 
                 return false;

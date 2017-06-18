@@ -95,9 +95,16 @@ namespace combat
             const FightResult &           FIGHT_RESULT,
             const bool                    WILL_USE_NAME       = false,
             const bool                    IS_STATUS_VERSION   = false,
-            const bool                    IS_PREAMBLE_VERSION = false,
-            const std::size_t             EFFECT_INDEX = 0,
-            const std::size_t             HIT_INDEX = 0);
+            const bool                    IS_PREAMBLE_VERSION = false);
+
+        static const std::string ActionTextIndexed(
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const TurnActionInfo &        TURN_ACTION_INFO,
+            const FightResult &           FIGHT_RESULT,
+            const bool                    WILL_USE_NAME,
+            const std::size_t             EFFECT_INDEX,
+            const std::size_t             HIT_INDEX,
+            bool &                        wasCollapsed);
 
         static const std::string WeaponActionVerb(
             const item::ItemPtr_t WEAPON_PTR,
@@ -127,7 +134,24 @@ namespace combat
             const TurnActionInfo &        TURN_ACTION_INFO,
             const FightResult &           FIGHT_RESULT,
             const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX);
+            const std::size_t             HIT_INDEX,
+            bool &                        wasCollapsed);
+
+        static const std::string PlaySongDescriptionStatusVersion(
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult &    FIGHT_RESULT);
+
+        static const std::string PlaySongDescriptionPreambleVersion(
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult &    FIGHT_RESULT);
+
+        static const std::string PlaySongDescriptionFullVersion(
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const TurnActionInfo &        TURN_ACTION_INFO,
+            const FightResult &           FIGHT_RESULT,
+            const std::size_t             EFFECT_INDEX,
+            const std::size_t             HIT_INDEX,
+            bool &                        wasCollapsed);
 
         static const std::string WeaponActionVerbList(
             const HitInfoVec_t & HIT_INFO_VEC,
@@ -148,6 +172,12 @@ namespace combat
         static const std::string NamePhrase(const creature::CreaturePtr_t);
 
         static const std::string InitialCombatStatusMessagePrefix();
+
+        static const FightResultSummary SummarizeFightResult(const FightResult &);
+
+        static bool SummarizeCreatureEffect(FightResultSummary &   frs,
+                                            const HitInfo &        FIRST_HIT_INFO,
+                                            const CreatureEffect & CREATURE_EFFECT);
     };
 
 }

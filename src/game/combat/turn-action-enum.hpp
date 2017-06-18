@@ -47,6 +47,7 @@ namespace combat
             Fly,
             Land,
             Cast,
+            PlaySong,
             SkyPounce,
             LandPounce,
             Roar,

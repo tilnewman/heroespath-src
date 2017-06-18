@@ -3546,14 +3546,15 @@ namespace stage
     {
         if (spellBeingCastPtr_ != nullptr)
         {
-            auto const ACTION_TEXT{ combat::Text::ActionText(creaturePtr_,
-                                                             spellTurnActionInfo_,
-                                                             spellFightResult_,
-                                                             false,
-                                                             false,
-                                                             false,
-                                                             spellCreatureEffectIndex_,
-                                                             spellHitInfoIndex_) };
+            bool isFightResultCollapsed{ false };
+            auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
+                creaturePtr_,
+                spellTurnActionInfo_,
+                spellFightResult_,
+                false,
+                spellCreatureEffectIndex_,
+                spellHitInfoIndex_,
+                isFightResultCollapsed) };
 
             auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_SPELL_RESULT_,
@@ -3567,11 +3568,14 @@ namespace stage
 
             auto const CREATURE_EFFECTS_VEC{ spellFightResult_.Effects() };
             
-            auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[spellCreatureEffectIndex_].GetHitInfoVec() };
-            if (++spellHitInfoIndex_ >= HIT_INFO_VEC.size())
+            auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[
+                spellCreatureEffectIndex_].GetHitInfoVec() };
+
+            if (isFightResultCollapsed || (++spellHitInfoIndex_ >= HIT_INFO_VEC.size()))
             {
                 spellHitInfoIndex_ = 0;
-                if (++spellCreatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size())
+                if (isFightResultCollapsed ||
+                    (++spellCreatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
                 {
                     spellBeingCastPtr_ = nullptr;
                 }

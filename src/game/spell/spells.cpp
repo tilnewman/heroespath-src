@@ -152,7 +152,7 @@ namespace spell
 
         if (0 == healthAdj)
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 "'s health already at maximum.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -187,7 +187,7 @@ namespace spell
         if (creatureCastUponPtr->HasCondition(creature::Conditions::AsleepNatural) ||
             creatureCastUponPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            actionPhraseCNP =  ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP =  ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                  " is already asleep.",
                                                  "",
                                                  NamePosition::TargetBefore);
@@ -243,8 +243,8 @@ namespace spell
         }
         else
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
-                                                " is not asleep or unconcious.",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
+                                                " is already awake.",
                                                 "",
                                                 NamePosition::TargetBefore);
             return false;
@@ -271,7 +271,7 @@ namespace spell
     {
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already tripped.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -315,10 +315,11 @@ namespace spell
         }
         else
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
-                                                " is not tripped.",
-                                                "",
-                                                NamePosition::TargetBefore);
+            actionPhraseCNP = ContentAndNamePos(
+                Spell::FAILED_BECAUSE_STR_,
+                " is already upright.",
+                "",
+                NamePosition::TargetBefore);
             return false;
         }
     }
@@ -343,7 +344,7 @@ namespace spell
     {
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Dazed))
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already dazed.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -378,7 +379,7 @@ namespace spell
     {
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Panic))
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already panicked.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -434,8 +435,8 @@ namespace spell
         }
         else
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
-                                                " is not panicked or dazed.",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
+                                                " is already clear headed.",
                                                 "",
                                                 NamePosition::TargetBefore);
             return false;
@@ -462,7 +463,7 @@ namespace spell
     {
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already poisoned.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -504,8 +505,8 @@ namespace spell
         }
         else
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
-                                                " is not poisoned.",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
+                                                " is already cured.",
                                                 "",
                                                 NamePosition::TargetBefore);
             return false;
@@ -532,7 +533,7 @@ namespace spell
     {
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
-            actionPhraseCNP = ContentAndNamePos("Spell failed because ",
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already poisoned.",
                                                 "",
                                                 NamePosition::TargetBefore);
@@ -551,8 +552,8 @@ namespace spell
             }
             else
             {
-                actionPhraseCNP = ContentAndNamePos("Spell failed because ",
-                                                    " resisted.",
+                actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
+                                                    Spell::RESISTED_STR_,
                                                     "",
                                                     NamePosition::TargetBefore);
                 return false;

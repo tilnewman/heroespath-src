@@ -43,19 +43,27 @@ namespace game
 namespace spell
 {
 
+    const std::string Spell::RESISTED_STR_{ " resisted." };
+    const std::string Spell::FAILED_BECAUSE_STR_{ "Spell failed because " };
+
+
     Spell::Spell(const Spells::Enum     WHICH,
                  const EffectType::Enum EFFECT_TYPE,
                  const Phase::Enum      VALID_PHASES,
                  const stats::Mana_t    MANA_COST,
                  const stats::Rank_t    RANK,
-                 const TargetType::Enum TARGET_TYPE)
+                 const TargetType::Enum TARGET_TYPE,
+                 const std::string &    VERB_THIRD_PERSON,
+                 const std::string &    VERB_PAST_TENSE)
     :
-        which_      (WHICH),
-        rank_       (RANK),
-        effectType_ (EFFECT_TYPE),
-        validPhases_(VALID_PHASES),
-        manaCost_   (MANA_COST),
-        targetType_ (TARGET_TYPE)
+        which_          (WHICH),
+        rank_           (RANK),
+        effectType_     (EFFECT_TYPE),
+        validPhases_    (VALID_PHASES),
+        manaCost_       (MANA_COST),
+        targetType_     (TARGET_TYPE),
+        verbThirdPerson_(VERB_THIRD_PERSON),
+        verbPastTense_  (VERB_PAST_TENSE)
     {}
 
 

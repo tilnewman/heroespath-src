@@ -49,6 +49,7 @@ namespace combat
             case Fly:           { return "Fly"; }
             case Land:          { return "Land"; }
             case Cast:          { return "Cast"; }
+            case PlaySong:      { return "PlaySong"; }
             case SkyPounce:     { return "SkyPounce"; }
             case LandPounce:    { return "LandPounce"; }
             case Roar:          { return "Roar"; }
@@ -76,6 +77,7 @@ namespace combat
             case Fly:           { return "Flies"; }
             case Land:          { return "Lands"; }
             case Cast:          { return "Casts a Spell"; }
+            case PlaySong:      { return "Plays a Magical Song"; }
             case SkyPounce:     { return "Pounces from the Sky"; }
             case LandPounce:    { return "Pounces"; }
             case Roar:          { return "Roars"; }

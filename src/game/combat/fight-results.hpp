@@ -50,6 +50,26 @@ namespace item
 namespace combat
 {
 
+    struct FightResultSummary
+    {
+        HitType::Enum hit_type;
+        song::SongPtr_t song_ptr;
+        spell::SpellPtr_t spell_ptr;
+        creature::CreaturePVec_t effected_pvec;
+        creature::CreaturePVec_t resisted_pvec;
+        creature::CreaturePVec_t already_pvec;
+
+        std::size_t PtrCount() const;
+
+        bool IsValid() const;
+
+        const std::string VerbThirdPerson() const;
+
+        const std::string Compose(const std::string & FIGHTING_CREATURE_NAME,
+                                  const std::string & VERB_PAST_TENSE) const;
+    };
+
+
     //Everything required to describe the results of a fight or fight action.
     class FightResult
     {

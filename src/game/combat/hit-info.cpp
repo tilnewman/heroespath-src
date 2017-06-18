@@ -330,6 +330,38 @@ namespace combat
     }
 
 
+    bool HitInfo::IsCloseEnoughToEqual(const HitInfo & HI) const
+    {
+        if (misc::Vector::OrderlessCompareEqual(condsAddedVec_, HI.condsAddedVec_) == false)
+        {
+            return false;
+        }
+
+        if (misc::Vector::OrderlessCompareEqual(condsRemovedVec_, HI.condsRemovedVec_) == false)
+        {
+            return false;
+        }
+
+        return std::tie(hitType_,
+                        wasHit_,
+                        weaponPtr_,
+                        damage_,
+                        isCritical_,
+                        isPower_,
+                        spellPtr_,
+                        songPtr_)
+               ==
+               std::tie(HI.hitType_,
+                        HI.wasHit_,
+                        HI.weaponPtr_,
+                        HI.damage_,
+                        HI.isCritical_,
+                        HI.isPower_,
+                        HI.spellPtr_,
+                        HI.songPtr_);
+    }
+
+
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
         if (misc::Vector::OrderlessCompareLess(L.condsAddedVec_, R.condsAddedVec_))

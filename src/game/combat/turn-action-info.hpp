@@ -40,6 +40,11 @@ namespace spell
     class Spell;
     using SpellPtr_t = Spell *;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = Song *;
+}
 namespace creature
 {
     //forward declarations
@@ -60,12 +65,16 @@ namespace combat
         TurnActionInfo(const spell::SpellPtr_t          SPELL_PTR,
                        const creature::CreaturePVec_t & TARGET_PVEC);
 
+        TurnActionInfo(const song::SongPtr_t            SONG_PTR,
+                       const creature::CreaturePVec_t & TARGET_PVEC);
+
         TurnActionInfo(const TurnActionInfo &);
         TurnActionInfo & operator=(const TurnActionInfo &);
 
-        inline TurnAction::Enum         Action() const  { return actionType_; }
-        inline spell::SpellPtr_t        Spell() const   { return spellPtr_; }
-        inline creature::CreaturePVec_t Targets() const { return targetsPVec_; }
+        inline TurnAction::Enum                 Action() const  { return actionType_; }
+        inline spell::SpellPtr_t                Spell() const   { return spellPtr_; }
+        inline song::SongPtr_t                  Song() const    { return songPtr_; }
+        inline const creature::CreaturePVec_t & Targets() const { return targetsPVec_; }
 
         creature::CreaturePtr_t Target() const;
 
@@ -76,6 +85,7 @@ namespace combat
         TurnAction::Enum         actionType_;
         creature::CreaturePVec_t targetsPVec_;
         spell::SpellPtr_t        spellPtr_;
+        song::SongPtr_t          songPtr_;
     };
 
 
@@ -87,7 +97,6 @@ namespace combat
     {
         return ! (L == R);
     }
-
 
 }
 }

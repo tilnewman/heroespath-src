@@ -551,7 +551,7 @@ namespace combat
         const stats::Stat_t STAT_FLOOR{ 10 };
         stats::Health_t damageFromStrength{ 0 };
         auto const STAT_STR{ creatureAttackingPtrC->Stats().Str().Current() };
-        if (STAT_STR >= STAT_FLOOR)
+        if (STAT_STR > STAT_FLOOR)
         {
             auto const STR_RATIO{ creature::Stats::Ratio(creatureAttackingPtrC,
                                                          stats::stat::Strength,

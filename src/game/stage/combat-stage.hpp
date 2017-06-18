@@ -370,13 +370,15 @@ namespace stage
         float pauseElapsedSec_;
         bool isPauseCanceled_;
 
-        //members that deal with which creature's turn it is and the timing of taking turns
+        //members that deal with which creature's turn it is and
+        //the timing of taking turns
         creature::CreaturePtr_t turnCreaturePtr_;
         sfml_util::ColorShaker goldTextColorShaker_;
         sfml_util::ColorShaker redTextColorShaker_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;
         bool willRedColorShakeWeaponText_;
+        bool isFightResultCollapsed_;
 
         //members displaying a player character's turn
         sfml_util::gui::TextRegionUPtr_t titleTBoxTextRegionUPtr_;

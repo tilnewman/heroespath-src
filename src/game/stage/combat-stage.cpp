@@ -207,6 +207,7 @@ namespace stage
         turnActionInfo_             (),
         fightResult_                (),
         willRedColorShakeWeaponText_(false),
+        isFightResultCollapsed_     (false),
         titleTBoxTextRegionUPtr_    (),
         weaponTBoxTextRegionUPtr_   (),
         armorTBoxTextRegionUPtr_    (),
@@ -1888,7 +1889,8 @@ namespace stage
         if (TurnPhase::PerformReport == turnPhase_)
         {
             auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
-            if (performReportEffectIndex_ < CREATURE_EFFECTS_VEC.size())
+            if ((isFightResultCollapsed_ == false) &&
+                (performReportEffectIndex_ < CREATURE_EFFECTS_VEC.size()))
             {
                 auto const HIT_INFO_VEC_SIZE{ CREATURE_EFFECTS_VEC.at(
                     performReportEffectIndex_).GetHitInfoVec().size() };
@@ -2006,7 +2008,12 @@ namespace stage
             {
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
                 return TurnActionPhase::PauseAndReport;
             }
 
@@ -2016,7 +2023,13 @@ namespace stage
                 fightResult_ = combat::FightResult();
                 combatDisplayStagePtr_->HandleFlyingChange(turnCreaturePtr_, false);
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 return TurnActionPhase::PauseAndReport;
             }
 
@@ -2024,10 +2037,40 @@ namespace stage
             {
                 creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
-                fightResult_ = combat::FightClub::Cast(turnActionInfo_.Spell(), turnCreaturePtr_, targetedCreaturesPVec);
+
+                fightResult_ = combat::FightClub::Cast(turnActionInfo_.Spell(),
+                                                       turnCreaturePtr_,
+                                                       targetedCreaturesPVec);
+                
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 return TurnActionPhase::Cast;
+            }
+
+            case combat::TurnAction::PlaySong:
+            {
+                creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
+                combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
+
+                fightResult_ = combat::FightClub::PlaySong(turnActionInfo_.Song(),
+                                                           turnCreaturePtr_,
+                                                           targetedCreaturesPVec);
+                
+                SetupTurnBox();
+                
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
+                return TurnActionPhase::Cast;//reuse the cast TurnActionPhase intentionally here
             }
 
             case combat::TurnAction::SkyPounce:
@@ -2035,7 +2078,12 @@ namespace stage
             {
                 fightResult_ = combat::FightClub::Pounce(turnCreaturePtr_, turnActionInfo_.Target());
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
 
                 //TODO if fightResult_ says the pounce was a success then return the TurnActionPhase::Pounce
                 return TurnActionPhase::PauseAndReport;
@@ -2045,7 +2093,12 @@ namespace stage
             {
                 fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
 
                 //TODO if fightResult_ says the roar happened then return TurnActionPhase::Roar
                 return TurnActionPhase::PauseAndReport;
@@ -2057,14 +2110,23 @@ namespace stage
             {
                 fightResult_ = combat::FightResult();
                 SetupTurnBox();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 return TurnActionPhase::PauseAndReport;
             }
 
             default:
             {
                 std::ostringstream ss;
-                ss << "game::stage::CombatStage::HandleEnemyTurnStep2_Perform() found turnActionInfo_.Action() (which is really a combat::TurnAction) of " << turnActionInfo_.Action() << " which is invalid.";
+                ss << "game::stage::CombatStage::HandleEnemyTurnStep2_Perform() found "
+                    << "turnActionInfo_.Action() (which is really a combat::TurnAction) of "
+                    << turnActionInfo_.Action() << " which is invalid.";
+
                 throw std::runtime_error(ss.str());
             }
         }
@@ -2130,6 +2192,8 @@ namespace stage
 
     void CombatStage::EndTurn()
     {
+        isFightResultCollapsed_ = false;
+
         soundEffectsPlayedSet_.clear();
 
         if (restoreInfo_.CanTurnAdvance())
@@ -2824,14 +2888,14 @@ namespace stage
             isPreambleShowing = true;
 
             //perform report version of action text
-            preambleSS << combat::Text::ActionText(turnCreaturePtr_,
-                                                   turnActionInfo_,
-                                                   fightResult_,
-                                                   false,
-                                                   false,
-                                                   false,
-                                                   performReportEffectIndex_,
-                                                   performReportHitIndex_);
+            preambleSS << combat::Text::ActionTextIndexed(
+                turnCreaturePtr_,
+                turnActionInfo_,
+                fightResult_,
+                false,
+                performReportEffectIndex_,
+                performReportHitIndex_,
+                isFightResultCollapsed_);
         }
         else if (TurnPhase::TargetSelect == turnPhase_)
         {
@@ -2957,7 +3021,13 @@ namespace stage
             {
                 combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
                 PositionSlideStartTasks();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 SetAnimPhase(AnimPhase::AdvanceOrRetreat);
                 break;
             }
@@ -2966,19 +3036,37 @@ namespace stage
             {
                 combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
                 PositionSlideStartTasks();
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 SetAnimPhase(AnimPhase::AdvanceOrRetreat);
                 break;
             }
 
             case TurnActionPhase::MeleeWeapon:
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_, turnActionInfo_, fightResult_, true, true), false);
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
                 SetAnimPhase(AnimPhase::MoveToward);
 
                 auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
-                M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.size() == 1), "game::stage::CombatStage::StartPerformAnim(turnActionPhase_=MeleeWeapon) found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size() << " instead of 1.");
-                combatAnimationUPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_, CREATURE_EFFECTS_VEC[0].GetCreature());
+
+                M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_EFFECTS_VEC.size() == 1),
+                    "game::stage::CombatStage::StartPerformAnim(turnActionPhase_=MeleeWeapon) "
+                    << "found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size()
+                    << " instead of 1.");
+                
+                combatAnimationUPtr_->MeleeMoveTowardAnimStart(turnCreaturePtr_,
+                    CREATURE_EFFECTS_VEC[0].GetCreature());
+
                 slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
             }
@@ -2987,19 +3075,22 @@ namespace stage
             case TurnActionPhase::ShootArrow:
             case TurnActionPhase::ShootBlowpipe:
             {
-                //Note:  There should only be one CreatureEffect and one HitInfoVec when attacking with a projectile
+                //Note:  There should only be one CreatureEffect and one HitInfoVec when
+                //attacking with a projectile
                 auto const HIT_INFO{ fightResult_.GetHitInfo(0, 0) };
                 if (HIT_INFO.IsValid())
                 {
-                    //at this point we are guaranteed fightResult_ contains at least one CreatureEffect and one HitInfo
+                    //at this point we are guaranteed fightResult_ contains at least one
+                    //CreatureEffect and one HitInfo
                     auto const WEAPON_PTR{ HIT_INFO.Weapon() };
                     if (WEAPON_PTR != nullptr)
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_PTR);
-                        combatAnimationUPtr_->ProjectileShootAnimStart(turnCreaturePtr_,
-                                                                      fightResult_.Effects()[0].GetCreature(),
-                                                                      WEAPON_PTR,
-                                                                      HIT_INFO.WasHit());
+                        combatAnimationUPtr_->ProjectileShootAnimStart(
+                            turnCreaturePtr_,
+                            fightResult_.Effects()[0].GetCreature(),
+                            WEAPON_PTR,
+                            HIT_INFO.WasHit());
 
                         slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetAnimPhase(AnimPhase::ProjectileShoot);

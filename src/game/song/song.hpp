@@ -72,13 +72,18 @@ namespace song
              const Phase::Enum      VALID_PHASES,
              const stats::Mana_t    MANA_COST,
              const stats::Rank_t    RANK,
-             const TargetType::Enum TARGET_TYPE);
+             const TargetType::Enum TARGET_TYPE,
+             const std::string &    VERB_THIRD_PERSON,
+             const std::string &    VERB_PAST_TENSE);
 
         virtual ~Song();
 
         inline const std::string Name() const       { return Songs::Name(which_); }
 
         const std::string ToString() const;
+
+        inline const std::string VerbThirdPerson() const { return verbThirdPerson_; }
+        inline const std::string VerbPastTense() const { return verbPastTense_; }
 
         inline const std::string Desc() const       { return Songs::ShortDesc(which_); }
         inline const std::string DescExtra() const  { return Songs::ExtraDesc(which_); }
@@ -105,12 +110,16 @@ namespace song
         //Allows the spell to change the target item.
         virtual bool EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
 
+        const std::string ActionPhrasePreamble() const;
+        const std::string TypeToVerb() const;
+        const std::string TypeToNoun() const;
+
         friend bool operator<(const Song & L, const Song & R);
         friend bool operator==(const Song & L, const Song & R);
 
-    protected:
-        const std::string ActionPhrasePreamble() const;
-        const std::string SongTypeToVerb() const;
+    public:
+        static const std::string RESISTED_STR_;
+        static const std::string FAILED_STR_;
 
     protected:
         Songs::Enum      which_;
@@ -120,6 +129,8 @@ namespace song
         Phase::Enum      validPhases_;
         stats::Mana_t    manaCost_;
         TargetType::Enum targetType_;
+        std::string      verbThirdPerson_;
+        std::string      verbPastTense_;
     };
 
 
@@ -137,7 +148,9 @@ namespace song
                         L.rank_,
                         L.validPhases_,
                         L.manaCost_,
-                        L.targetType_)
+                        L.targetType_,
+                        L.verbThirdPerson_,
+                        L.verbPastTense_)
                 <
                std::tie(R.which_,
                         R.type_,
@@ -145,7 +158,9 @@ namespace song
                         R.rank_,
                         R.validPhases_,
                         R.manaCost_,
-                        R.targetType_);
+                        R.targetType_,
+                        R.verbThirdPerson_,
+                        R.verbPastTense_);
     }
 
 
@@ -157,7 +172,9 @@ namespace song
                         L.rank_,
                         L.validPhases_,
                         L.manaCost_,
-                        L.targetType_)
+                        L.targetType_,
+                        L.verbThirdPerson_,
+                        L.verbPastTense_)
                 ==
                std::tie(R.which_,
                         R.type_,
@@ -165,7 +182,9 @@ namespace song
                         R.rank_,
                         R.validPhases_,
                         R.manaCost_,
-                        R.targetType_);
+                        R.targetType_,
+                        R.verbThirdPerson_,
+                        R.verbPastTense_);
     }
 
 
