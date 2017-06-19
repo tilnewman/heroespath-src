@@ -308,6 +308,13 @@ namespace stage
             LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
 
+        static auto hasTestingCompleted_GameDataFile{ false };
+        if (false == hasTestingCompleted_GameDataFile)
+        {
+            hasTestingCompleted_GameDataFile = PerformGameDataFileTests();;
+            return;
+        }
+
         static auto hasTestingCompleted_Stats{ false };
         if (false == hasTestingCompleted_Stats)
         {
@@ -729,6 +736,55 @@ namespace stage
 
         LoopManager::Instance()->TestingStrAppend(
             "game::stage::TestingStage::TestImageSet() ALL Tests Passed.");
+
+        return true;
+    }
+
+
+    bool TestingStage::PerformGameDataFileTests()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            LoopManager::Instance()->TestingStrAppend(
+                "game::stage::TestingStage::PerformGameDataFileTests() Starting Tests...");
+        }
+
+        static std::vector<std::string> keyVec =
+        {
+            "heroespath-fight-stats-reduce-ratio",
+            "heroespath-fight-stats-luck-adj-ratio",
+            "heroespath-fight-stats-amazing-ratio",
+            "heroespath-fight-stats-base-high-val",
+            "heroespath-fight-stats-value-floor",
+            "heroespath-fight-hit-critical-chance-ratio",
+            "heroespath-fight-hit-power-chance-ratio",
+            "heroespath-fight-damage-strength-bonus-ratio",
+            "heroespath-fight-no-damage-armor-mult",
+            "heroespath-fight-pixie-damage-floor",
+            "heroespath-fight-pixie-damage-adj-ratio",
+            "heroespath-fight-pixie-defend-speed-rank-bonus-ratio",
+            "heroespath-fight-archer-projectile-accuracy-bonus-ratio",
+            "heroespath-fight-archer-projectile-rank-bonus-ratio",
+            "heroespath-fight-chance-conditions-added-from-damage-ratio",
+            "heroespath-fight-rank-damage-bonus-ratio"
+        };
+
+        static std::size_t keyIndex{ 0 };
+        if (keyIndex < keyVec.size())
+        {
+            std::ostringstream ss;
+            ss << "Testing GameDataFile Key() \"" << keyVec[keyIndex] << "\"="
+                << GameDataFile::Instance()->GetCopyFloat(keyVec[keyIndex]);
+
+            LoopManager::Instance()->TestingStrAppend(ss.str());
+            ++keyIndex;
+            return false;
+        }
+
+        LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::PerformGameDataFileTests() ALL Tests Passed.");
 
         return true;
     }

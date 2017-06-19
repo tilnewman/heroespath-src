@@ -53,6 +53,8 @@ namespace stats
 
         virtual ~Stat();
 
+        static void SetReduceRatio();
+
         inline stat::Enum Which() const                             { return which_; }
         inline const std::string Name() const                       { return stat::Name(which_); }
         inline const std::string Desc() const                       { return stat::Desc(which_); }
@@ -117,9 +119,9 @@ namespace stats
         static const Stat_t VAL_MAX_INITIAL_;
         static const Stat_t VAL_INVALID_;
         static const Stat_t VAL_ESTIMATED_MAX_;
-        static const float  REDUCE_MULTIPLIER_;
         
     protected:
+        static float reduceMultiplier_;
         Stat_t normal_;
         Stat_t current_;
         Stat_t actual_;

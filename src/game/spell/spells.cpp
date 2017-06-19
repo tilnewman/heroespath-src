@@ -83,8 +83,8 @@ namespace spell
         auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
             stats::stat::Intelligence,
-            6,
-            6,
+            4,
+            4,
             0.5f) };
 
         auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
@@ -141,8 +141,8 @@ namespace spell
         auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
             stats::stat::Intelligence,
-            6,
-            6,
+            4,
+            4,
             0.5f) };
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };

@@ -70,9 +70,6 @@ namespace combat
     //all the functions required to allow two creatures to engage in one turn of fighting
     struct FightClub
     {
-        static const stats::Stat_t STAT_HIGHER_THAN_AVERAGE_;
-        static const float STAT_RATIO_AMAZING_;
-
         static stats::Stat_t IsValuetHigherThanRatioOfStat(
             const stats::Stat_t STAT_VALUE,
             const stats::Stat_t STAT_MAX,

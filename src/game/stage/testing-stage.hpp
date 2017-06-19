@@ -81,8 +81,9 @@ namespace stage
                                           const stats::StatSet & EXPECTED);
 
         bool TestImageSet();
-
+        bool PerformGameDataFileTests();
         bool TestAnimations();
+
         bool TestMultiTextureAnimation(const std::string &  MEDIA_PATH_KEY_STR,
                                        const bool           WILL_REBUILD_ANIMATION_OBJECT,
                                        const sf::Color &    COLOR);

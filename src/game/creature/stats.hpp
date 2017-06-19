@@ -97,9 +97,8 @@ namespace creature
             const int               FLOOR_DIVISOR     = 0,//zero means 'no floor'
             const float             RANK_BONUS_MULT   = 0.0f,//zero means 'no rank bonus'
             const bool              WILL_INCLUDE_LUCK = false);
+    
     private:
-        static const stats::Stat_t LUCK_DIVISOR_;
-
         static stats::Stat_t LuckBonus(const CreaturePtr_t CREATURE_PTR);
 
         static stats::Stat_t RollBonusByRace(const stats::stat::Enum STAT_ENUM,

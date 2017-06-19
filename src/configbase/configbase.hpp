@@ -108,37 +108,53 @@ namespace appbase
         //Returns the value stored at KEY.
         //Retuns DEFAULT if key does not exist, or cannot be cast to the desired type.
         template<typename T>
-        T GetCopy(const std::string & KEY, const T DEFAULT = T()) const
+        T GetWithDefault(const std::string & KEY, const T DEFAULT = T()) const
         {
-            T temp(DEFAULT);
-            Get<T>(temp, KEY);
-            return temp;
+            T x;
+
+            try
+            {
+                Get<T>(x, KEY);
+            }
+            catch (...)
+            {
+                x = DEFAULT;
+            }
+
+            return x;
         }
         //
-        virtual const std::string GetCopyStr(const std::string & KEY, const std::string & DEFAULT = "") const;
-        virtual int               GetCopyInt(const std::string & KEY, const int DEFAULT = 0) const            { return GetCopy<int>(KEY, DEFAULT); }
-        virtual std::size_t       GetCopySizet(const std::string & KEY, const std::size_t DEFAULT = 0) const       { return GetCopy<std::size_t>(KEY, DEFAULT); }
-        virtual bool              GetCopyBool(const std::string & KEY, const bool DEFAULT = false) const      { return GetCopy<bool>(KEY, DEFAULT); }
-        virtual float             GetCopyFloat(const std::string & KEY, const float DEFAULT = 0.0f) const     { return GetCopy<float>(KEY, DEFAULT); }
-        virtual double            GetCopyDouble(const std::string & KEY, const double DEFAULT = 0.0) const    { return GetCopy<double>(KEY, DEFAULT); }
+        inline virtual const std::string GetWithDefaultStr(const std::string & KEY, const std::string & DEFAULT = "") const { return GetWithDefault<std::string>(KEY, DEFAULT); }
+        inline virtual int               GetWithDefaultInt(const std::string & KEY, const int DEFAULT = 0) const            { return GetWithDefault<int>(KEY, DEFAULT); }
+        inline virtual std::size_t       GetWithDefaultSizet(const std::string & KEY, const std::size_t DEFAULT = 0) const  { return GetWithDefault<std::size_t>(KEY, DEFAULT); }
+        inline virtual float             GetWithDefaultFloat(const std::string & KEY, const float DEFAULT = 0.0f) const     { return GetWithDefault<float>(KEY, DEFAULT); }
+        inline virtual double            GetWithDefaultDouble(const std::string & KEY, const double DEFAULT = 0.0) const    { return GetWithDefault<double>(KEY, DEFAULT); }
+        virtual bool                     GetWithDefaultBool(const std::string & KEY, const bool DEFAULT = false) const;
+        //
+        inline virtual const std::string GetCopyStr(const std::string & KEY) const      { std::string s; Get<std::string>(s, KEY); return s; }
+        inline virtual int               GetCopyInt(const std::string & KEY) const      { int i; Get<int>(i, KEY); return i; }
+        inline virtual std::size_t       GetCopySizet(const std::string & KEY) const    { std::size_t s; Get<std::size_t>(s, KEY); return s; }
+        inline virtual float             GetCopyFloat(const std::string & KEY) const    { float f; Get<float>(f, KEY); return f; }
+        inline virtual double            GetCopyDouble(const std::string & KEY) const   { double d; Get<double>(d, KEY); return d; }
+        inline virtual bool              GetCopyBool(const std::string & KEY) const     { bool b; GetBool(b, KEY); return b; }
 
         //Sets val to value stored at KEY and returns true.
         //If KEY does not exist or cannot be cast to the desired type, then val is not changed and false is returned.
         //
         virtual void GetStr(std::string & val, const std::string & KEY) const;
-        virtual void GetInt(int & val, const std::string & KEY) const           { return Get<int>(val, KEY); }
-        virtual void GetSizet(std::size_t & val, const std::string & KEY) const { return Get<std::size_t>(val, KEY); }
-        virtual void GetBool(bool & val, const std::string & KEY) const         { return Get<bool>(val, KEY); }
-        virtual void GetFloat(float & val, const std::string & KEY) const       { return Get<float>(val, KEY); }
-        virtual void GetDouble(double & val, const std::string & KEY) const     { return Get<double>(val, KEY); }
+        inline virtual void GetInt(int & val, const std::string & KEY) const           { return Get<int>(val, KEY); }
+        inline virtual void GetSizet(std::size_t & val, const std::string & KEY) const { return Get<std::size_t>(val, KEY); }
+        inline virtual void GetFloat(float & val, const std::string & KEY) const       { return Get<float>(val, KEY); }
+        inline virtual void GetDouble(double & val, const std::string & KEY) const     { return Get<double>(val, KEY); }
+        virtual void GetBool(bool & val, const std::string & KEY) const;
 
         //Sets the value at KEY to VALUE, creating the key if needed.
         virtual void SetStr(const std::string & KEY, const std::string & VALUE);
-        virtual void SetInt(const std::string & KEY, const int VALUE)           { Set<int>(KEY, VALUE); }
-        virtual void SetSizet(const std::string & KEY, const std::size_t VALUE) { Set<std::size_t>(KEY, VALUE); }
-        virtual void SetBool(const std::string & KEY, const bool VALUE)         { Set<bool>(KEY, VALUE); }
-        virtual void SetFloat(const std::string & KEY, const float VALUE)       { Set<float>(KEY, VALUE); }
-        virtual void SetDouble(const std::string & KEY, const double VALUE)     { Set<double>(KEY, VALUE); }
+        inline virtual void SetInt(const std::string & KEY, const int VALUE)           { Set<int>(KEY, VALUE); }
+        inline virtual void SetSizet(const std::string & KEY, const std::size_t VALUE) { Set<std::size_t>(KEY, VALUE); }
+        inline virtual void SetBool(const std::string & KEY, const bool VALUE)         { Set<bool>(KEY, VALUE); }
+        inline virtual void SetFloat(const std::string & KEY, const float VALUE)       { Set<float>(KEY, VALUE); }
+        inline virtual void SetDouble(const std::string & KEY, const double VALUE)     { Set<double>(KEY, VALUE); }
 
         virtual void Dump(std::ostream &);
 
@@ -163,7 +179,11 @@ namespace appbase
             catch(const std::exception & EX)
             {
                 std::ostringstream ss;
-                ss << "appbase::ConfigBase::Get<" << boost::typeindex::type_id<T>().pretty_name() << ">(key=\"" << KEY << "\") Failed to convert value \"" << value << "\" into a \"" << boost::typeindex::type_id<T>().pretty_name() << "\".  boost::lexical_cast threw: [" << EX.what() << "]";
+                ss << "appbase::ConfigBase::Get<" << boost::typeindex::type_id<T>().pretty_name()
+                    << ">(key=\"" << KEY << "\") Failed to convert value \"" << value
+                    << "\" into a \"" << boost::typeindex::type_id<T>().pretty_name()
+                    << "\".  boost::lexical_cast threw: [" << EX.what() << "]";
+
                 throw std::runtime_error(ss.str());
             }
         }
@@ -187,6 +207,8 @@ namespace appbase
 
         //Returns true if the line is a comment and should be ignored.
         virtual bool IsCommentLine(const std::string &) const;
+
+        bool StringToBool(const std::string & S, bool & result) const;
 
         //getters for immutable internal data
     public:

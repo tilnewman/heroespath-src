@@ -32,7 +32,6 @@
 
 #include "logbase/macros.hpp"
 
-#include "misc/platform.hpp"
 #include "sfml-util/loop.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -70,8 +69,10 @@
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
 #include "game/song/song-warehouse.hpp"
+#include "game/stats/stat.hpp"
 
 #include "misc/random.hpp"
+#include "misc/platform.hpp"
 
 
 int main(int argc, char * argv[])
@@ -121,10 +122,10 @@ int main(int argc, char * argv[])
         sfml_util::WinPtr_t winPtr{ sfml_util::Display::Instance()->GetWindow() };
 
         winPtr->setFramerateLimit(static_cast<unsigned int>(
-            gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit", 0)) );
+            gameDataFilePtr->GetCopyInt("system-window-frame-rate-limit")) );
         
         winPtr->setVerticalSyncEnabled(
-            gameDataFilePtr->GetCopyBool("system-window-sync", true) );
+            gameDataFilePtr->GetCopyBool("system-window-sync") );
         
         //set resource paths for manager classes
         sfml_util::FontManager::SetFontsDirectory(
@@ -165,6 +166,7 @@ int main(int argc, char * argv[])
         game::spell::Warehouse::Fill();
         game::song::Warehouse::Fill();
         sfml_util::FontManager::Fill();
+        game::stats::Stat::SetReduceRatio();
 
         //load game assets Stage 2
         sfml_util::TextureCache::Acquire();

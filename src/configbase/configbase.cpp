@@ -29,6 +29,8 @@
 //
 #include "configbase.hpp"
 
+#include <boost/algorithm/algorithm.hpp>
+
 #include <sstream>
 #include <fstream>
 #include <exception>
@@ -170,11 +172,39 @@ namespace appbase
     }
 
 
-    const std::string ConfigBase::GetCopyStr(const std::string & KEY, const std::string & DEFAULT) const
+    bool ConfigBase::GetWithDefaultBool(const std::string & KEY, const bool DEFAULT) const
     {
-        std::string temp(DEFAULT);
-        GetStr(temp, KEY);
-        return temp;
+        try
+        {
+            bool b;
+            GetBool(b, KEY);
+            return b;
+        }
+        catch (...)
+        {
+            return DEFAULT;
+        }
+    }
+
+
+    void ConfigBase::GetBool(bool & b, const std::string & KEY) const
+    {
+        std::string s;
+        Get<std::string>(s, KEY);
+
+        if (StringToBool(s, b) == false)
+        {
+            try
+            {
+                b = boost::lexical_cast<bool>(s);
+            }
+            catch (...)
+            {
+                std::ostringstream ss;
+                ss << "appbase::ConfigBase::GetBool(key=\"" << KEY << "\", str=\"" << s << "\") str could not be interpreted as a bool.";
+                throw std::runtime_error(ss.str());
+            }
+        }
     }
 
 
@@ -317,6 +347,29 @@ namespace appbase
         else
         {
             return (LINE.compare(0, commentStr_.length(), commentStr_) == 0);
+        }
+    }
+
+
+    bool ConfigBase::StringToBool(const std::string & S, bool & result) const
+    {
+        namespace ba = boost::algorithm;
+
+        auto const BOOL_STR{ ba::trim_copy(ba::to_lower_copy(S)) };
+        
+        if ((BOOL_STR == "true") || (BOOL_STR == "yes") || (BOOL_STR == "1"))
+        {
+            result = true;
+            return true;
+        }
+        else if ((BOOL_STR == "false") || (BOOL_STR == "no") || (BOOL_STR == "0"))
+        {
+            result = false;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

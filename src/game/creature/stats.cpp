@@ -30,6 +30,7 @@
 #include "stats.hpp"
 
 #include "game/creature/creature.hpp"
+#include "game/game-data-file.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -41,9 +42,6 @@ namespace game
 {
 namespace creature
 {
-
-    const stats::Stat_t Stats::LUCK_DIVISOR_{ 5 };
-
 
     float Stats::Ratio(const CreaturePtr_t     CREATURE_PTR,
                        const stats::stat::Enum STAT_ENUM,
@@ -294,8 +292,9 @@ namespace creature
 
     stats::Stat_t Stats::LuckBonus(const CreaturePtr_t CREATURE_PTR)
     {
-        return misc::random::Int(CREATURE_PTR->Stats().Lck().Current() /
-            LUCK_DIVISOR_);
+        return misc::random::Int(static_cast<int>(static_cast<float>(
+            CREATURE_PTR->Stats().Lck().Current()) /
+                GameDataFile::Instance()->GetCopyFloat("heroespath-fight-stats-luck-adj-ratio")));
     }
 
 
