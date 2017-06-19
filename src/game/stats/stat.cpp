@@ -201,7 +201,7 @@ namespace stats
     void Stat::SetReduceRatio()
     {
         reduceMultiplier_ = GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-fight-stats-reduce-ratio");
+            "heroespath-stats-reduce-ratio");
     }
 
 

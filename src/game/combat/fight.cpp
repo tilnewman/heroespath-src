@@ -432,48 +432,25 @@ namespace combat
         //so determine if the attack hit or miss based on luck.
         if (false == hasHitBeenDetermined)
         {
-            auto const ATTACK_LCK{ creatureAttackingPtrC->Stats().Lck().Current() };
-            auto const ATTACK_LCK_RAND_MIN{ stats::Stat::Reduce(ATTACK_LCK) };
-            auto const ATTACK_LCK_RAND_MAX{ ATTACK_LCK };
-            auto const ATTACK_LCK_RAND{ misc::random::Int(ATTACK_LCK_RAND_MIN,
-                                                            ATTACK_LCK_RAND_MAX) };
+            auto const ATTACKER_LUCK_RAND{ creature::Stats::RatioOfStat(creatureAttackingPtrC,
+                                                                        stats::stat::Luck,
+                                                                        false,
+                                                                        false,
+                                                                        true) };
 
-            auto const IS_ATTACK_AMAZING_LCK{
-                (ATTACK_LCK >= STAT_HIGHER_THAN_AVERAGE) &&
-                IsValuetHigherThanRatioOfStat(ATTACK_LCK_RAND,
-                                              ATTACK_LCK,
-                                              STAT_RATIO_AMAZING) };
-
-            auto const DEFEND_LCK{ creatureDefendingPtrC->Stats().Lck().Current() };
-            auto const DEFEND_LCK_RAND_MIN{ stats::Stat::Reduce(DEFEND_LCK) };
-            auto const DEFEND_LCK_RAND_MAX{ DEFEND_LCK };
-            auto const DEFEND_LCK_RAND{ misc::random::Int(DEFEND_LCK_RAND_MIN,
-                                                            DEFEND_LCK_RAND_MAX) };
-
-            auto const IS_DEFEND_AMAZING_LCK{
-                (DEFEND_LCK >= STAT_HIGHER_THAN_AVERAGE) &&
-                IsValuetHigherThanRatioOfStat(DEFEND_LCK_RAND,
-                                              DEFEND_LCK,
-                                              STAT_RATIO_AMAZING) };
-
-            if (IS_ATTACK_AMAZING_LCK && (IS_DEFEND_AMAZING_LCK == false))
+            auto const DEFENDER_LUCK_RAND{ creature::Stats::RatioOfStat(creatureDefendingPtrC,
+                                                                        stats::stat::Luck,
+                                                                        false,
+                                                                        false,
+                                                                        true) };
+            if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
-                wasHit = true;
-                hasHitBeenDetermined = true;
-            }
-            else if ((IS_ATTACK_AMAZING_LCK == false) && IS_DEFEND_AMAZING_LCK)
-            {
-                wasHit = false;
-                hasHitBeenDetermined = true;
-            }
-            else
-            {
-                //In this case, neither attaker or defender had amazing luck,
-                //so the hit is determined by who has the greater lck+rank.
-                auto const ATTACK_LCK_RANK_ADJ{ ATTACK_LCK_RAND +
+                //In this case, attaker and defender tied on luck rolls,
+                //so the hit is determined by who has the greater luck roll + rank.
+                auto const ATTACK_LCK_RANK_ADJ{ ATTACKER_LUCK_RAND +
                     static_cast<int>(creatureAttackingPtrC->Rank()) };
 
-                auto const DEFEND_LCK_RANK_ADJ{ DEFEND_LCK_RAND +
+                auto const DEFEND_LCK_RANK_ADJ{ DEFENDER_LUCK_RAND +
                     static_cast<int>(creatureDefendingPtrC->Rank()) };
 
                 if (ATTACK_LCK_RANK_ADJ > DEFEND_LCK_RANK_ADJ)
@@ -486,6 +463,11 @@ namespace combat
                     wasHit = false;
                     hasHitBeenDetermined = true;
                 }
+            }
+            else
+            {
+                wasHit = (ATTACKER_LUCK_RAND > DEFENDER_LUCK_RAND);
+                hasHitBeenDetermined = true;
             }
         }
 
@@ -567,21 +549,30 @@ namespace combat
         //then add a damage bonus based on half a strength ratio "roll".
         const stats::Stat_t STAT_FLOOR{ GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
+
+        /*M_HP_LOG_DBG("\t 1*********  FightClub::DetermineDamage("
+            << "item=" << WEAPON_PTR->Name()
+            << ", attacker=" << creatureAttackingPtrC->Name()
+            << ", defending=" << creatureDefendingPtrC->Name()
+            << ") weapon_min=" << WEAPON_PTR->DamageMin()
+            << ", weapon_max=" << WEAPON_PTR->DamageMax()
+            << ", RANK_DAMAGE_BONUS_ADJ_RATIO=" << RANK_DAMAGE_BONUS_ADJ_RATIO
+            << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
+            << ", STAT_FLOOR=" << STAT_FLOOR);
+            */
         //
         stats::Health_t damageFromStrength{ 0 };
         auto const STAT_STR{ creatureAttackingPtrC->Stats().Str().Current() };
         if (STAT_STR > STAT_FLOOR)
         {
-            auto const STR_RATIO{ creature::Stats::Ratio(creatureAttackingPtrC,
-                                                         stats::stat::Strength,
-                                                         false,
-                                                         false) };
+            auto const RAND_STR_STAT{ creature::Stats::RatioOfStat(
+                creatureAttackingPtrC, stats::stat::Strength) };
 
             auto const STR_BONUS_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
 
             damageFromStrength += static_cast<stats::Health_t>(
-                static_cast<float>(STAT_STR) * STR_RATIO * STR_BONUS_ADJ_RATIO);
+                static_cast<float>(RAND_STR_STAT) * STR_BONUS_ADJ_RATIO);
 
             damageFromStrength -= STAT_FLOOR;
 
@@ -589,6 +580,14 @@ namespace combat
             {
                 damageFromStrength = 0;
             }
+
+            /*M_HP_LOG_DBG("\t 2*********  FightClub::DetermineDamage()"
+                << ", STAT_STR=" << STAT_STR
+                << ", RAND_STR_STAT=" << RAND_STR_STAT
+                << ", STR_BONUS_ADJ_RATIO=" << STR_BONUS_ADJ_RATIO
+                << ", damageFromStrength=" << damageFromStrength
+                << ", STAT_FLOOR=" << STAT_FLOOR);
+                */
         }
         
         const stats::Health_t DAMAGE_BASE{
@@ -625,6 +624,7 @@ namespace combat
                                     (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO)));
 
         stats::Health_t damageFinal{ DAMAGE_BASE };
+        stats::Health_t damageFinalA{ damageFinal };
 
         if (isPowerHit_OutParam)
         {
@@ -656,30 +656,46 @@ namespace combat
                     creatureDefendingPtrC->ArmorRating())));
         }
 
-        if (damageFinal > 0)
+        /*M_HP_LOG_DBG("\t 3*********  FightClub::DetermineDamage()"
+            << "  DAMAGE_FROM_WEAPON=" << DAMAGE_FROM_WEAPON
+            << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
+            << ", damageFromStrength=" << damageFromStrength
+            << ", DAMAGE_BASE=" << DAMAGE_BASE
+            << ", STRENGTH=" << STRENGTH
+            << ", STRENGTH_RAND=" << STRENGTH_RAND
+            << ", isPowerHit_OutParam=" << std::boolalpha << isPowerHit_OutParam
+            << ", ACC=" << ACC
+            << ", ACC_RAND=" << ACC_RAND
+            << ", isCriticalHit_OutParam=" << isCriticalHit_OutParam
+            << ", damageFinalA=" << damageFinalA
+            << ", creatureDefendingPtrC->ArmorRating()=" << creatureDefendingPtrC->ArmorRating()
+            << ", damageFinal=" << damageFinal);
+            */
+        //pixies are dealt less damage than other creatures because of
+        //their small size and speed
+        if ((damageFinal > 0) &&
+            (creatureDefendingPtrC->Race().Which() == creature::race::Pixie))
         {
-            //pixies are dealt less damage than other creatures because of
-            //their small size and speed
-            if (creatureDefendingPtrC->Race().Which() == creature::race::Pixie)
+            auto PIXIE_DAMAGE_ADJ_RATIOB{ 0.0f };
+            auto const PIXIE_DAMAGE_FLOOR{ GameDataFile::Instance()->GetCopyInt(
+                "heroespath-fight-pixie-damage-floor") };
+
+            if (damageFinal < PIXIE_DAMAGE_FLOOR)
             {
-                auto const PIXIE_DAMAGE_FLOOR{ GameDataFile::Instance()->GetCopyInt(
-                    "heroespath-fight-pixie-damage-floor") };
+                damageFinal = 1;
+            }
+            else
+            {
+                auto const PIXIE_DAMAGE_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-pixie-damage-adj-ratio") };
 
-                if (damageFinal < PIXIE_DAMAGE_FLOOR)
-                {
-                    damageFinal = 1;
-                }
-                else
-                {
-                    auto const PIXIE_DAMAGE_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
-                        "heroespath-fight-pixie-damage-adj-ratio") };
-
-                    damageFinal = static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
-                        PIXIE_DAMAGE_ADJ_RATIO);
-                }
+                PIXIE_DAMAGE_ADJ_RATIOB = PIXIE_DAMAGE_ADJ_RATIO;
+                damageFinal = static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
+                    PIXIE_DAMAGE_ADJ_RATIO);
             }
         }
-        else if(damageFinal < 0)
+
+        if(damageFinal < 0)
         {
             damageFinal = 0;
         }
@@ -897,7 +913,14 @@ namespace combat
             if (creature::Stats::Versus(creaturePouncingPtrC,
                                         { stats::stat::Speed, stats::stat::Accuracy },
                                         creatureDefendingPtrC,
-                                        { stats::stat::Speed }))
+                                        { stats::stat::Speed },
+                                        0,
+                                        0,
+                                        false,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
             {
                 creatureDefendingPtrC->ConditionAdd(creature::Conditions::Tripped);
 
@@ -978,7 +1001,12 @@ namespace combat
                                         NEXT_DEFEND_CREATURE_PTR,
                                         stats::stat::Intelligence,
                                         0,
-                                        DISATANCE_BONUS))
+                                        DISATANCE_BONUS,
+                                        false,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
             {
                 NEXT_DEFEND_CREATURE_PTR->ConditionAdd(creature::Conditions::Panic);
 

@@ -29,8 +29,8 @@
 //
 #include "stats.hpp"
 
-#include "game/creature/creature.hpp"
 #include "game/game-data-file.hpp"
+#include "game/creature/creature.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -46,20 +46,26 @@ namespace creature
     float Stats::Ratio(const CreaturePtr_t     CREATURE_PTR,
                        const stats::stat::Enum STAT_ENUM,
                        const bool              WILL_INCLUDE_STANDARD_OFFSET,
-                       const bool              WILL_INCLUDE_LUCK)
+                       const bool              WILL_INCLUDE_LUCK,
+                       const bool              WILL_INCLUDE_RACEROLE_BONUS)
     {
         return Ratio(CREATURE_PTR,
                      stats::StatEnumVec_t (1, STAT_ENUM),
                      WILL_INCLUDE_STANDARD_OFFSET,
-                     WILL_INCLUDE_LUCK);
+                     WILL_INCLUDE_LUCK,
+                     WILL_INCLUDE_RACEROLE_BONUS);
     }
 
    
     float Stats::Ratio(const CreaturePtr_t          CREATURE_PTR,
                        const stats::StatEnumVec_t & STAT_ENUM_VEC,
                        const bool                   WILL_INCLUDE_STANDARD_OFFSET,
-                       const bool                   WILL_INCLUDE_LUCK)
+                       const bool                   WILL_INCLUDE_LUCK,
+                       const bool                   WILL_INCLUDE_RACEROLE_BONUS)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::creature::Stats::Ratio() called with a null CREATURE_PTR.");
+
         M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
             "game::creature::Stats::Ratio() called with STAT_ENUM_VEC empty.");
 
@@ -68,7 +74,11 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
         {
             auto const NEXT_STAT{ CREATURE_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
+
+            normalSum += NEXT_STAT.Normal();
+
             auto const MIN{ ((WILL_INCLUDE_STANDARD_OFFSET) ? NEXT_STAT.CurrentReduced() : 0 ) };
+
             randSum += misc::random::Int(MIN, NEXT_STAT.Current());
 
             if (WILL_INCLUDE_LUCK)
@@ -76,7 +86,16 @@ namespace creature
                 randSum += LuckBonus(CREATURE_PTR);
             }
 
-            normalSum += NEXT_STAT.Normal();
+            if (WILL_INCLUDE_RACEROLE_BONUS)
+            {
+                randSum += RollBonusByRace(NEXT_STAT.Current(),
+                                           NEXT_STAT_ENUM,
+                                           CREATURE_PTR->Race().Which());
+            
+                randSum += RollBonusByRole(NEXT_STAT.Current(),
+                                           NEXT_STAT_ENUM,
+                                           CREATURE_PTR->Role().Which());
+            }
         }
 
         if (randSum > normalSum)
@@ -88,22 +107,70 @@ namespace creature
     }
 
 
+    stats::Stat_t Stats::RatioOfStat(const CreaturePtr_t     CREATURE_PTR,
+                                     const stats::stat::Enum STAT_ENUM,
+                                     const bool              WILL_INCLUDE_STANDARD_OFFSET,
+                                     const bool              WILL_INCLUDE_LUCK,
+                                     const bool              WILL_INCLUDE_RACEROLE_BONUS)
+    {                                
+        return RatioOfStat(CREATURE_PTR,
+                           stats::StatEnumVec_t (1, STAT_ENUM),
+                           WILL_INCLUDE_STANDARD_OFFSET,
+                           WILL_INCLUDE_LUCK,
+                           WILL_INCLUDE_RACEROLE_BONUS);
+    }
+
+
+    stats::Stat_t Stats::RatioOfStat(const CreaturePtr_t          CREATURE_PTR,
+                                     const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                                     const bool                   WILL_INCLUDE_STANDARD_OFFSET,
+                                     const bool                   WILL_INCLUDE_LUCK,
+                                     const bool                   WILL_INCLUDE_RACEROLE_BONUS)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::creature::Stats::RatioOfStat() called with a null CREATURE_PTR.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
+            "game::creature::Stats::Ratio() called with STAT_ENUM_VEC empty.");
+
+        auto randSum{ 0.0f };
+        for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
+        {
+            auto const CURRENT{ static_cast<float>(CREATURE_PTR->Stats().GetCopy(
+                NEXT_STAT_ENUM).Current()) };
+
+            auto const RATIO{ Ratio(CREATURE_PTR,
+                                    STAT_ENUM_VEC,
+                                    WILL_INCLUDE_STANDARD_OFFSET,
+                                    WILL_INCLUDE_LUCK,
+                                    WILL_INCLUDE_RACEROLE_BONUS) };
+
+            randSum += (CURRENT * RATIO);
+        }
+
+        return static_cast<stats::Stat_t>(randSum / static_cast<float>(STAT_ENUM_VEC.size()));
+    }
+
+
     bool Stats::Roll(const CreaturePtr_t     CREATURE_PTR,
                      const stats::stat::Enum STAT_ENUM,
-                     const bool              WILL_CONSIDER_LUCK,
-                     const bool              WILL_CONSIDER_RANK)
+                     const float             RANK_BONUS_RATIO,
+                     const bool              WILL_INCLUDE_LUCK,
+                     const bool              WILL_INCLUDE_RACEROLE_BONUS)
     {
         return Roll(CREATURE_PTR,
                     stats::StatEnumVec_t(1, STAT_ENUM),
-                    WILL_CONSIDER_LUCK,
-                    WILL_CONSIDER_RANK);
+                    RANK_BONUS_RATIO,
+                    WILL_INCLUDE_LUCK,
+                    WILL_INCLUDE_RACEROLE_BONUS);
     }
 
 
     bool Stats::Roll(const CreaturePtr_t          CREATURE_PTR,
                      const stats::StatEnumVec_t & STAT_ENUM_VEC,
-                     const bool                   WILL_CONSIDER_LUCK,
-                     const bool                   WILL_CONSIDER_RANK)
+                     const float                  RANK_BONUS_RATIO,
+                     const bool                   WILL_INCLUDE_LUCK,
+                     const bool                   WILL_INCLUDE_RACEROLE_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Versus() called with a null CREATURE_PTR.");
@@ -111,29 +178,36 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
             "game::creature::Stats::Versus() called with STAT_ENUM_VEC empty.");
 
-        stats::Stat_t rollBase{ 0 };
+        stats::Stat_t rollBaseSum{ 0 };
         for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
         {
-            rollBase += CREATURE_PTR->Stats().GetCopy(NEXT_STAT_ENUM).Current();
+            auto const CURRENT{ CREATURE_PTR->Stats().GetCopy(NEXT_STAT_ENUM).Current() };
 
-            if (WILL_CONSIDER_LUCK)
+            rollBaseSum += CURRENT;
+
+            if (WILL_INCLUDE_LUCK)
             {
-                rollBase += LuckBonus(CREATURE_PTR);
+                rollBaseSum += LuckBonus(CREATURE_PTR);
+            }
+
+            if (WILL_INCLUDE_RACEROLE_BONUS)
+            {
+                rollBaseSum += RollBonusByRace(CURRENT,
+                                               NEXT_STAT_ENUM,
+                                               CREATURE_PTR->Race().Which());
+            
+                rollBaseSum += RollBonusByRole(CURRENT,
+                                               NEXT_STAT_ENUM,
+                                               CREATURE_PTR->Role().Which());
             }
         }
-        rollBase /= STAT_ENUM_VEC.size();
 
-        stats::Stat_t bonus{ 0 };
-        for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
-        {
-            bonus += RollBonusByRace(NEXT_STAT_ENUM, CREATURE_PTR->Race().Which());
-            bonus += RollBonusByRole(NEXT_STAT_ENUM, CREATURE_PTR->Role().Which());
-        }
+        rollBaseSum /= STAT_ENUM_VEC.size();
 
-        auto const ROLL{ rollBase + bonus + static_cast<stats::Stat_t>(
-            (WILL_CONSIDER_RANK) ? CREATURE_PTR->Rank() : 0) };
-       
-        return (misc::random::Int(stats::Stat::VAL_ESTIMATED_MAX_) < ROLL);
+        auto const RANK_BONUS{ static_cast<stats::Stat_t>(
+            static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_RATIO) };
+
+        return (misc::random::Int(stats::Stat::VAL_ESTIMATED_MAX_) < (rollBaseSum + RANK_BONUS));
     }
 
 
@@ -143,8 +217,10 @@ namespace creature
                        const stats::stat::Enum DEFENDER_STAT_PARAM,
                        const stats::Stat_t     CHALLENGER_BONUS_PER,
                        const stats::Stat_t     DEFENDER_BONUS_PER,
-                       const bool              WILL_CONDSIDER_RANK,
-                       const bool              WILL_CONSIDER_PLAYER_LUCK,
+                       const bool              WILL_INCLUDE_STANDARD_OFFSET,
+                       const bool              WILL_INCLUDE_RACEROLE_BONUS,
+                       const bool              WILL_INCLUDE_RANK,
+                       const bool              WILL_INCLUDE_PLAYER_LUCK,
                        const bool              ALLOW_PLAYER_NATURAL_WINS)
     {
         auto const DEFENDER_STAT{ ((DEFENDER_STAT_PARAM == stats::stat::Count) ?
@@ -156,8 +232,10 @@ namespace creature
                       stats::StatEnumVec_t(1, DEFENDER_STAT),
                       CHALLENGER_BONUS_PER,
                       DEFENDER_BONUS_PER,
-                      WILL_CONDSIDER_RANK,
-                      WILL_CONSIDER_PLAYER_LUCK,
+                      WILL_INCLUDE_STANDARD_OFFSET,
+                      WILL_INCLUDE_RACEROLE_BONUS,
+                      WILL_INCLUDE_RANK,
+                      WILL_INCLUDE_PLAYER_LUCK,
                       ALLOW_PLAYER_NATURAL_WINS);
     }
 
@@ -168,8 +246,10 @@ namespace creature
                        const stats::StatEnumVec_t & DEFENDER_STAT_VEC_PARAM,
                        const stats::Stat_t          CHALLENGER_BONUS_PER,
                        const stats::Stat_t          DEFENDER_BONUS_PER,
-                       const bool                   WILL_CONDSIDER_RANK,
-                       const bool                   WILL_CONSIDER_PLAYER_LUCK,
+                       const bool                   WILL_INCLUDE_STANDARD_OFFSET,
+                       const bool                   WILL_INCLUDE_RACEROLE_BONUS,
+                       const bool                   WILL_INCLUDE_RANK,
+                       const bool                   WILL_INCLUDE_PLAYER_LUCK,
                        const bool                   ALLOW_PLAYER_NATURAL_WINS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CHALLENGER_PTR != nullptr),
@@ -187,12 +267,13 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : CHALLENGER_STAT_VEC)
         {
             auto const NEXT_STAT{ CHALLENGER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
-            chaRandSum += misc::random::Int(NEXT_STAT.CurrentReduced(), NEXT_STAT.Current());
-
-            if (WILL_CONSIDER_PLAYER_LUCK && CHALLENGER_PTR->IsPlayerCharacter())
-            {
-                chaRandSum += LuckBonus(CHALLENGER_PTR);
-            }
+            
+            chaRandSum += RatioOfStat(
+                CHALLENGER_PTR,
+                NEXT_STAT_ENUM,
+                WILL_INCLUDE_STANDARD_OFFSET,
+                (CHALLENGER_PTR->IsPlayerCharacter() && WILL_INCLUDE_PLAYER_LUCK),
+                WILL_INCLUDE_RACEROLE_BONUS);
 
             chaRandSum += CHALLENGER_BONUS_PER;
 
@@ -207,7 +288,7 @@ namespace creature
             return true;
         }
 
-        auto const CHALLENGER_ROLL{ chaRandSum + ((WILL_CONDSIDER_RANK) ?
+        auto const CHALLENGER_ROLL{ chaRandSum + ((WILL_INCLUDE_RANK) ?
             static_cast<stats::Stat_t>(CHALLENGER_PTR->Rank()) : 0 ) };
 
         auto const DEFENDER_STAT_VEC{ ((DEFENDER_STAT_VEC_PARAM.empty()) ?
@@ -219,12 +300,13 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : DEFENDER_STAT_VEC)
         {
             auto const NEXT_STAT{ DEFENDER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
-            defRandSum += misc::random::Int(NEXT_STAT.CurrentReduced(), NEXT_STAT.Current());
-
-            if (WILL_CONSIDER_PLAYER_LUCK && DEFENDER_PTR->IsPlayerCharacter())
-            {
-                defRandSum += LuckBonus(DEFENDER_PTR);
-            }
+            
+            defRandSum += RatioOfStat(
+                DEFENDER_PTR,
+                NEXT_STAT_ENUM,
+                WILL_INCLUDE_STANDARD_OFFSET,
+                (DEFENDER_PTR->IsPlayerCharacter() && WILL_INCLUDE_PLAYER_LUCK),
+                WILL_INCLUDE_RACEROLE_BONUS);
 
             defRandSum += DEFENDER_BONUS_PER;
 
@@ -239,7 +321,7 @@ namespace creature
             return true;
         }
 
-        auto const DEFENDER_ROLL{ defRandSum + ((WILL_CONDSIDER_RANK) ?
+        auto const DEFENDER_ROLL{ defRandSum + ((WILL_INCLUDE_RANK) ?
             static_cast<stats::Stat_t>(DEFENDER_PTR->Rank()) : 0 ) };
 
         //handle roll tie
@@ -298,11 +380,17 @@ namespace creature
     }
 
 
-    stats::Stat_t Stats::RollBonusByRace(const stats::stat::Enum STAT_ENUM,
+    stats::Stat_t Stats::RollBonusByRace(const stats::Stat_t     STAT_VALUE,
+                                         const stats::stat::Enum STAT_ENUM,
                                          const race::Enum        RACE_ENUM)
     {
-        const stats::Stat_t BASE{ stats::Stat::VAL_ESTIMATED_MAX_ / 8 };
-        const stats::Stat_t MINOR{ BASE / 3 };
+        auto const BASE{ static_cast<stats::Stat_t>(
+            static_cast<float>(STAT_VALUE) * GameDataFile::Instance()->
+                GetCopyFloat("heroespath-stats-race-bonus-base-adj-ratio")) };
+
+        auto const MINOR{ static_cast<stats::Stat_t>(
+            static_cast<float>(BASE) * GameDataFile::Instance()->
+                GetCopyFloat("heroespath-stats-race-bonus-minor-adj-ratio")) };
 
         switch (STAT_ENUM)
         {
@@ -374,11 +462,17 @@ namespace creature
     }
 
 
-    stats::Stat_t Stats::RollBonusByRole(const stats::stat::Enum STAT_ENUM,
+    stats::Stat_t Stats::RollBonusByRole(const stats::Stat_t     STAT_VALUE,
+                                         const stats::stat::Enum STAT_ENUM,
                                          const role::Enum        ROLE_ENUM)
     {
-        const stats::Stat_t BASE{ stats::Stat::VAL_ESTIMATED_MAX_ / 8 };
-        const stats::Stat_t MINOR{ BASE / 3 };
+        auto const BASE{ static_cast<stats::Stat_t>(
+            static_cast<float>(STAT_VALUE) * GameDataFile::Instance()->
+            GetCopyFloat("heroespath-stats-role-bonus-base-adj-ratio")) };
+
+        auto const MINOR{ static_cast<stats::Stat_t>(
+            static_cast<float>(BASE) * GameDataFile::Instance()->
+            GetCopyFloat("heroespath-stats-role-bonus-minor-adj-ratio")) };
 
         switch (STAT_ENUM)
         {
@@ -440,10 +534,16 @@ namespace creature
         const int               RAND_SPREAD,
         const int               FLOOR_DIVISOR,
         const float             RANK_BONUS_MULT,
-        const bool              WILL_INCLUDE_LUCK)
-    {   
-        int x{ static_cast<int>((static_cast<float>(RAND_SPREAD) *
-            Ratio(CREATURE_PTR, STAT_ENUM, false, WILL_INCLUDE_LUCK))) };
+        const bool              WILL_INCLUDE_LUCK,
+        const bool              WILL_INCLUDE_RACEROLE_BONUS)
+    {
+        auto const RATIO{ Ratio(CREATURE_PTR,
+                                STAT_ENUM,
+                                false,
+                                WILL_INCLUDE_LUCK,
+                                WILL_INCLUDE_RACEROLE_BONUS) };
+
+        int x{ static_cast<int>((static_cast<float>(RAND_SPREAD) * RATIO)) };
         
         if (FLOOR_DIVISOR > 0)
         {

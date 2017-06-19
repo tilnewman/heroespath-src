@@ -61,8 +61,11 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Roll(creaturePlayingPtr, { stats::stat::Intelligence,
-                                                            stats::stat::Charm}))
+            if (creature::Stats::Roll(creaturePlayingPtr,
+                                      { stats::stat::Intelligence, stats::stat::Charm},
+                                      0.5f,
+                                      true,
+                                      true))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
                 condsAddedVec.push_back(creature::Conditions::Bold);
@@ -98,8 +101,14 @@ namespace song
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        auto const MANA_GAIN_ORIG{ 3 + static_cast<stats::Mana_t>(7.0f * creature::Stats::Ratio(
-            creaturePlayingPtr, { stats::stat::Intelligence, stats::stat::Charm })) };
+        auto const RATIO{ creature::Stats::Ratio(
+            creaturePlayingPtr,
+            { stats::stat::Intelligence, stats::stat::Charm },
+            false,
+            true,
+            true) };
+
+        auto const MANA_GAIN_ORIG{ static_cast<stats::Mana_t>(10.0f * RATIO) };
 
         auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
 
@@ -206,10 +215,17 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Versus(
-                creaturePlayingPtr,
-                { stats::stat::Intelligence, stats::stat::Charm },
-                creatureListeningPtr))
+            if (creature::Stats::Versus(creaturePlayingPtr,
+                                        { stats::stat::Intelligence, stats::stat::Charm },
+                                        creatureListeningPtr,
+                                        {},
+                                        0,
+                                        0,
+                                        false,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
                 condsAddedVec.push_back(creature::Conditions::Tripped);
@@ -258,10 +274,17 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Versus(
-                creaturePlayingPtr,
-                { stats::stat::Intelligence, stats::stat::Charm},
-                creatureListeningPtr))
+            if (creature::Stats::Versus(creaturePlayingPtr,
+                                        { stats::stat::Intelligence, stats::stat::Charm},
+                                        creatureListeningPtr,
+                                        {},
+                                        0,
+                                        0,
+                                        false,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
                 condsAddedVec.push_back(creature::Conditions::Panic);
@@ -311,8 +334,11 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Roll(creaturePlayingPtr, { stats::stat::Intelligence,
-                                                            stats::stat::Charm}))
+            if (creature::Stats::Roll(creaturePlayingPtr,
+                                      { stats::stat::Intelligence, stats::stat::Charm},
+                                      0.5f,
+                                      true,
+                                      true))
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
                 condsAddedVec.push_back(creature::Conditions::AsleepMagical);

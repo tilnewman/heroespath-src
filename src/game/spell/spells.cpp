@@ -83,9 +83,11 @@ namespace spell
         auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
             stats::stat::Intelligence,
-            4,
-            4,
-            0.5f) };
+            8,
+            0,
+            0.5f,
+            true,
+            true) };
 
         auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
 
@@ -141,9 +143,11 @@ namespace spell
         auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
             stats::stat::Intelligence,
-            4,
-            4,
-            0.5f) };
+            8,
+            0,
+            0.5f,
+            true,
+            true) };
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
 
@@ -543,7 +547,15 @@ namespace spell
         {
             if (creature::Stats::Versus(castingCreaturePtr,
                                         stats::stat::Intelligence,
-                                        creatureCastUponPtr))
+                                        creatureCastUponPtr,
+                                        stats::stat::Count,
+                                        0,
+                                        0,
+                                        false,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
             {
                 creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
                 condsAddedVec.push_back(creature::Conditions::Poisoned);

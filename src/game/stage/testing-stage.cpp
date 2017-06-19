@@ -753,7 +753,12 @@ namespace stage
 
         static std::vector<std::string> keyVec =
         {
-            "heroespath-fight-stats-reduce-ratio",
+            "heroespath-stats-reduce-ratio",
+            "heroespath-stats-race-bonus-base-adj-ratio",
+            "heroespath-stats-race-bonus-minor-adj-ratio",
+            "heroespath-stats-role-bonus-base-adj-ratio",
+            "heroespath-stats-role-bonus-minor-adj-ratio",
+
             "heroespath-fight-stats-luck-adj-ratio",
             "heroespath-fight-stats-amazing-ratio",
             "heroespath-fight-stats-base-high-val",

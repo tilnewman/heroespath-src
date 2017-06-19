@@ -46,65 +46,94 @@ namespace creature
     //A collection of stat related creature functions.
     struct Stats
     {
-        static float Ratio(const CreaturePtr_t     CREATURE_PTR,
-                           const stats::stat::Enum STAT_ENUM,
-                           const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
-                           const bool              WILL_INCLUDE_LUCK            = true);
+        static float Ratio(
+            const CreaturePtr_t     CREATURE_PTR,
+            const stats::stat::Enum STAT_ENUM,
+            const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool              WILL_INCLUDE_LUCK            = false,
+            const bool              WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static float Ratio(const CreaturePtr_t          CREATURE_PTR,
-                           const stats::StatEnumVec_t & STAT_ENUM_VEC,
-                           const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
-                           const bool                   WILL_INCLUDE_LUCK = true);
+        static float Ratio(
+            const CreaturePtr_t          CREATURE_PTR,
+            const stats::StatEnumVec_t & STAT_ENUM_VEC,
+            const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool                   WILL_INCLUDE_LUCK            = false,
+            const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static bool Roll(const CreaturePtr_t     CREATURE_PTR,
-                         const stats::stat::Enum STAT_ENUM,
-                         const bool              WILL_CONSIDER_LUCK = true,
-                         const bool              WILL_CONSIDER_RANK = false);
+        static stats::Stat_t RatioOfStat(
+            const CreaturePtr_t     CREATURE_PTR,
+            const stats::stat::Enum STAT_ENUM,
+            const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool              WILL_INCLUDE_LUCK            = false,
+            const bool              WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static bool Roll(const CreaturePtr_t          CREATURE_PTR,
-                         const stats::StatEnumVec_t & STAT_ENUM_VEC,
-                         const bool                   WILL_CONSIDER_LUCK = true,
-                         const bool                   WILL_CONSIDER_RANK = false);
+        static stats::Stat_t RatioOfStat(
+            const CreaturePtr_t          CREATURE_PTR,
+            const stats::StatEnumVec_t & STAT_ENUM_VEC,
+            const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool                   WILL_INCLUDE_LUCK            = false,
+            const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false);
+
+        static bool Roll(
+            const CreaturePtr_t     CREATURE_PTR,
+            const stats::stat::Enum STAT_ENUM,
+            const float             RANK_BONUS_RATIO             = 0.0f,
+            const bool              WILL_INCLUDE_LUCK            = false,
+            const bool              WILL_INCLUDE_RACEROLE_BONUS  = false);
+
+        static bool Roll(
+            const CreaturePtr_t          CREATURE_PTR,
+            const stats::StatEnumVec_t & STAT_ENUM_VEC,
+            const float                  RANK_BONUS_RATIO             = 0.0f,
+            const bool                   WILL_INCLUDE_LUCK            = false,
+            const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false);
 
         //You can leave DEFENDER_STAT stats::stat::Count to mean the same as CHALLENGER_STAT
         static bool Versus(
             const CreaturePtr_t     CHALLENGER_PTR,
             const stats::stat::Enum CHALLENGER_STAT,
             const CreaturePtr_t     DEFENDER_PTR,
-            const stats::stat::Enum DEFENDER_STAT = stats::stat::Count,
-            const stats::Stat_t     CHALLENGER_BONUS_PER = 0,
-            const stats::Stat_t     DEFENDER_BONUS_PER = 0,
-            const bool              WILL_CONDSIDER_RANK = true,
-            const bool              WILL_CONSIDER_PLAYER_LUCK = true,
-            const bool              ALLOW_PLAYER_NATURAL_WINS = true);
+            const stats::stat::Enum DEFENDER_STAT                = stats::stat::Count,
+            const stats::Stat_t     CHALLENGER_BONUS_PER         = 0,
+            const stats::Stat_t     DEFENDER_BONUS_PER           = 0,
+            const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool              WILL_INCLUDE_RACEROLE_BONUS  = false,
+            const bool              WILL_INCLUDE_RANK            = false,
+            const bool              WILL_INCLUDE_PLAYER_LUCK     = false,
+            const bool              ALLOW_PLAYER_NATURAL_WINS    = false);
 
         //You can leave the DEFENDER_STAT_VEC empty to mean both vecs are the same.
         static bool Versus(
             const CreaturePtr_t          CHALLENGER_PTR,
             const stats::StatEnumVec_t & CHALLENGER_STAT_VEC,
             const CreaturePtr_t          DEFENDER_PTR,
-            const stats::StatEnumVec_t & DEFENDER_STAT_VEC_PARAM = stats::StatEnumVec_t(),
-            const stats::Stat_t          CHALLENGER_BONUS_PER = 0,
-            const stats::Stat_t          DEFENDER_BONUS_PER = 0,
-            const bool                   WILL_CONDSIDER_RANK = true,
-            const bool                   WILL_CONSIDER_PLAYER_LUCK = true,
-            const bool                   ALLOW_PLAYER_NATURAL_WINS = true);
+            const stats::StatEnumVec_t & DEFENDER_STAT_VEC_PARAM      = stats::StatEnumVec_t(),
+            const stats::Stat_t          CHALLENGER_BONUS_PER         = 0,
+            const stats::Stat_t          DEFENDER_BONUS_PER           = 0,
+            const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
+            const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false,
+            const bool                   WILL_INCLUDE_RANK            = false,
+            const bool                   WILL_INCLUDE_PLAYER_LUCK     = false,
+            const bool                   ALLOW_PLAYER_NATURAL_WINS    = false);
 
         static int RandomRatioWithFloorAndRankBonus(
             const CreaturePtr_t     CREATURE_PTR,
             const stats::stat::Enum STAT_ENUM,
             const int               RAND_SPREAD,
-            const int               FLOOR_DIVISOR     = 0,//zero means 'no floor'
-            const float             RANK_BONUS_MULT   = 0.0f,//zero means 'no rank bonus'
-            const bool              WILL_INCLUDE_LUCK = false);
+            const int               FLOOR_DIVISOR               = 0,//zero means 'no floor'
+            const float             RANK_BONUS_MULT             = 0.0f,//zero means 'no rank bonus'
+            const bool              WILL_INCLUDE_LUCK           = false,
+            const bool              WILL_INCLUDE_RACEROLE_BONUS = false);
     
     private:
         static stats::Stat_t LuckBonus(const CreaturePtr_t CREATURE_PTR);
 
-        static stats::Stat_t RollBonusByRace(const stats::stat::Enum STAT_ENUM,
+        static stats::Stat_t RollBonusByRace(const stats::Stat_t     STAT_VALUE,
+                                             const stats::stat::Enum STAT_ENUM,
                                              const race::Enum        RACE_ENUM);
 
-        static stats::Stat_t RollBonusByRole(const stats::stat::Enum STAT_ENUM,
+        static stats::Stat_t RollBonusByRole(const stats::Stat_t     STAT_VALUE,
+                                             const stats::stat::Enum STAT_ENUM,
                                              const role::Enum        ROLE_ENUM);
 
     };
