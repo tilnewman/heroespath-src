@@ -139,7 +139,8 @@ namespace combat
             creature::CreaturePtrC_t creatureAttackingPtrC,
             creature::CreaturePtrC_t creatureDefendingPtrC,
             bool &                   isPowerHit_OutParam,
-            bool &                   isCriticalHit_OutParam);
+            bool &                   isCriticalHit_OutParam,
+            bool &                   didArmorAbsorb_OutParam);
 
         static bool IsCondContainedInAddedConds(
             const creature::Conditions::Enum E,

@@ -16,6 +16,7 @@ heroespath-fight-stats-base-high-val=                       20
 heroespath-fight-stats-value-floor=                         10
 heroespath-fight-hit-critical-chance-ratio=                 0.2
 heroespath-fight-hit-power-chance-ratio=                    0.2
+heroespath-fight-hit-special-damage-min=                    4
 heroespath-fight-damage-strength-bonus-ratio=               0.5
 heroespath-fight-no-damage-armor-mult=                      4.0
 heroespath-fight-pixie-damage-floor=                        10

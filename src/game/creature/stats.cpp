@@ -107,31 +107,31 @@ namespace creature
     }
 
 
-    stats::Stat_t Stats::RatioOfStat(const CreaturePtr_t     CREATURE_PTR,
-                                     const stats::stat::Enum STAT_ENUM,
-                                     const bool              WILL_INCLUDE_STANDARD_OFFSET,
-                                     const bool              WILL_INCLUDE_LUCK,
-                                     const bool              WILL_INCLUDE_RACEROLE_BONUS)
+    stats::Stat_t Stats::Roll(const CreaturePtr_t     CREATURE_PTR,
+                              const stats::stat::Enum STAT_ENUM,
+                              const bool              WILL_INCLUDE_STANDARD_OFFSET,
+                              const bool              WILL_INCLUDE_LUCK,
+                              const bool              WILL_INCLUDE_RACEROLE_BONUS)
     {                                
-        return RatioOfStat(CREATURE_PTR,
-                           stats::StatEnumVec_t (1, STAT_ENUM),
-                           WILL_INCLUDE_STANDARD_OFFSET,
-                           WILL_INCLUDE_LUCK,
-                           WILL_INCLUDE_RACEROLE_BONUS);
+        return Roll(CREATURE_PTR,
+                    stats::StatEnumVec_t (1, STAT_ENUM),
+                    WILL_INCLUDE_STANDARD_OFFSET,
+                    WILL_INCLUDE_LUCK,
+                    WILL_INCLUDE_RACEROLE_BONUS);
     }
 
 
-    stats::Stat_t Stats::RatioOfStat(const CreaturePtr_t          CREATURE_PTR,
-                                     const stats::StatEnumVec_t & STAT_ENUM_VEC,
-                                     const bool                   WILL_INCLUDE_STANDARD_OFFSET,
-                                     const bool                   WILL_INCLUDE_LUCK,
-                                     const bool                   WILL_INCLUDE_RACEROLE_BONUS)
+    stats::Stat_t Stats::Roll(const CreaturePtr_t          CREATURE_PTR,
+                              const stats::StatEnumVec_t & STAT_ENUM_VEC,
+                              const bool                   WILL_INCLUDE_STANDARD_OFFSET,
+                              const bool                   WILL_INCLUDE_LUCK,
+                              const bool                   WILL_INCLUDE_RACEROLE_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
-            "game::creature::Stats::RatioOfStat() called with a null CREATURE_PTR.");
+            "game::creature::Stats::Roll() called with a null CREATURE_PTR.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
-            "game::creature::Stats::Ratio() called with STAT_ENUM_VEC empty.");
+            "game::creature::Stats::Roll() called with STAT_ENUM_VEC empty.");
 
         auto randSum{ 0.0f };
         for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
@@ -152,13 +152,13 @@ namespace creature
     }
 
 
-    bool Stats::Roll(const CreaturePtr_t     CREATURE_PTR,
+    bool Stats::Test(const CreaturePtr_t     CREATURE_PTR,
                      const stats::stat::Enum STAT_ENUM,
                      const float             RANK_BONUS_RATIO,
                      const bool              WILL_INCLUDE_LUCK,
                      const bool              WILL_INCLUDE_RACEROLE_BONUS)
     {
-        return Roll(CREATURE_PTR,
+        return Test(CREATURE_PTR,
                     stats::StatEnumVec_t(1, STAT_ENUM),
                     RANK_BONUS_RATIO,
                     WILL_INCLUDE_LUCK,
@@ -166,17 +166,17 @@ namespace creature
     }
 
 
-    bool Stats::Roll(const CreaturePtr_t          CREATURE_PTR,
+    bool Stats::Test(const CreaturePtr_t          CREATURE_PTR,
                      const stats::StatEnumVec_t & STAT_ENUM_VEC,
                      const float                  RANK_BONUS_RATIO,
                      const bool                   WILL_INCLUDE_LUCK,
                      const bool                   WILL_INCLUDE_RACEROLE_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
-            "game::creature::Stats::Versus() called with a null CREATURE_PTR.");
+            "game::creature::Stats::Test() called with a null CREATURE_PTR.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((STAT_ENUM_VEC.empty() == false),
-            "game::creature::Stats::Versus() called with STAT_ENUM_VEC empty.");
+            "game::creature::Stats::Test() called with STAT_ENUM_VEC empty.");
 
         stats::Stat_t rollBaseSum{ 0 };
         for (auto const NEXT_STAT_ENUM : STAT_ENUM_VEC)
@@ -268,7 +268,7 @@ namespace creature
         {
             auto const NEXT_STAT{ CHALLENGER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
             
-            chaRandSum += RatioOfStat(
+            chaRandSum += Roll(
                 CHALLENGER_PTR,
                 NEXT_STAT_ENUM,
                 WILL_INCLUDE_STANDARD_OFFSET,
@@ -301,7 +301,7 @@ namespace creature
         {
             auto const NEXT_STAT{ DEFENDER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
             
-            defRandSum += RatioOfStat(
+            defRandSum += Roll(
                 DEFENDER_PTR,
                 NEXT_STAT_ENUM,
                 WILL_INCLUDE_STANDARD_OFFSET,

@@ -67,6 +67,7 @@ namespace combat
                      const stats::Health_t           DAMAGE,
                      const bool                      IS_CRITICAL_HIT,
                      const bool                      IS_POWER_HIT,
+                     const bool                      DID_ARMOR_ABSORB,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC,
                      const std::string &             ACTION_VERB)
@@ -82,7 +83,8 @@ namespace combat
         actionVerb_     (ACTION_VERB),
         spellPtr_       (nullptr),
         actionPhraseCNP_(),
-        songPtr_        (nullptr)
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (DID_ARMOR_ABSORB)
     {}
 
 
@@ -104,7 +106,8 @@ namespace combat
         actionVerb_     ("casts"),
         spellPtr_       (SPELL_CPTR),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr)
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (false)
     {}
 
 
@@ -123,10 +126,11 @@ namespace combat
         isPower_        (false),
         condsAddedVec_  (CONDS_ADDED_VEC),
         condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     ("casts"),
+        actionVerb_     ("plays"),
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (SONG_CPTR)
+        songPtr_        (SONG_CPTR),
+        didArmorAbsorb_ (false)
     {}
 
 
@@ -148,7 +152,8 @@ namespace combat
         actionVerb_     (""),
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr)
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (false)
     {}
 
 
@@ -166,7 +171,8 @@ namespace combat
         actionVerb_     (""),
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr)
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (false)
     {}
 
 
@@ -192,7 +198,9 @@ namespace combat
         actionPhraseCNP_(HI.actionPhraseCNP_),
 
         //see the comment above regarding pointers in this class
-        songPtr_(HI.songPtr_)
+        songPtr_(HI.songPtr_),
+
+        didArmorAbsorb_(HI.didArmorAbsorb_)
     {}
 
 
@@ -202,23 +210,18 @@ namespace combat
         {
             wasHit_ = HI.wasHit_;
             hitType_ = HI.hitType_;
-
-            //see copy constructor comment regarding this pointer
-            weaponPtr_ = HI.weaponPtr_;
-
-            damage_          = HI.damage_;
-            isCritical_      = HI.isCritical_;
-            isPower_         = HI.isPower_;
-            condsAddedVec_   = HI.condsAddedVec_;
+            damage_ = HI.damage_;
+            isCritical_ = HI.isCritical_;
+            isPower_ = HI.isPower_;
+            condsAddedVec_ = HI.condsAddedVec_;
             condsRemovedVec_ = HI.condsRemovedVec_;
-            actionVerb_      = HI.actionVerb_;
-
-            //see copy constructor comment regarding this pointer
-            spellPtr_ = HI.spellPtr_;
-
+            actionVerb_ = HI.actionVerb_;
             actionPhraseCNP_ = HI.actionPhraseCNP_;
+            didArmorAbsorb_ = HI.didArmorAbsorb_;
 
-            //see copy constructor comment regarding this pointer
+            //see copy constructor comment regarding these pointers
+            weaponPtr_ = HI.weaponPtr_;
+            spellPtr_ = HI.spellPtr_;
             songPtr_ = HI.songPtr_;
         }
 
@@ -349,7 +352,8 @@ namespace combat
                         isCritical_,
                         isPower_,
                         spellPtr_,
-                        songPtr_)
+                        songPtr_,
+                        didArmorAbsorb_)
                ==
                std::tie(HI.hitType_,
                         HI.wasHit_,
@@ -358,7 +362,8 @@ namespace combat
                         HI.isCritical_,
                         HI.isPower_,
                         HI.spellPtr_,
-                        HI.songPtr_);
+                        HI.songPtr_,
+                        HI.didArmorAbsorb_);
     }
 
 
@@ -383,7 +388,8 @@ namespace combat
                         L.actionVerb_,
                         L.spellPtr_,
                         L.actionPhraseCNP_,
-                        L.songPtr_)
+                        L.songPtr_,
+                        L.didArmorAbsorb_)
                <
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -394,7 +400,8 @@ namespace combat
                         R.actionVerb_,
                         R.spellPtr_,
                         R.actionPhraseCNP_,
-                        R.songPtr_);
+                        R.songPtr_,
+                        R.didArmorAbsorb_);
     }
 
 
@@ -419,7 +426,8 @@ namespace combat
                         L.actionVerb_,
                         L.spellPtr_,
                         L.actionPhraseCNP_,
-                        L.songPtr_)
+                        L.songPtr_,
+                        L.didArmorAbsorb_)
                ==
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -430,7 +438,8 @@ namespace combat
                         R.actionVerb_,
                         R.spellPtr_,
                         R.actionPhraseCNP_,
-                        R.songPtr_);
+                        R.songPtr_,
+                        R.didArmorAbsorb_);
     }
 
 }

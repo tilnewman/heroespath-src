@@ -432,17 +432,17 @@ namespace combat
         //so determine if the attack hit or miss based on luck.
         if (false == hasHitBeenDetermined)
         {
-            auto const ATTACKER_LUCK_RAND{ creature::Stats::RatioOfStat(creatureAttackingPtrC,
-                                                                        stats::stat::Luck,
-                                                                        false,
-                                                                        false,
-                                                                        true) };
+            auto const ATTACKER_LUCK_RAND{ creature::Stats::Roll(creatureAttackingPtrC,
+                                                                 stats::stat::Luck,
+                                                                 false,
+                                                                 false,
+                                                                 true) };
 
-            auto const DEFENDER_LUCK_RAND{ creature::Stats::RatioOfStat(creatureDefendingPtrC,
-                                                                        stats::stat::Luck,
-                                                                        false,
-                                                                        false,
-                                                                        true) };
+            auto const DEFENDER_LUCK_RAND{ creature::Stats::Roll(creatureDefendingPtrC,
+                                                                 stats::stat::Luck,
+                                                                 false,
+                                                                 false,
+                                                                 true) };
             if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
                 //In this case, attaker and defender tied on luck rolls,
@@ -499,6 +499,7 @@ namespace combat
         stats::Health_t damage{ 0 };
         auto isPowerHit{ false };
         auto isCriticalHit{ false };
+        auto didArmorAbsorb{ false };
         creature::CondEnumVec_t condsAddedVec;
         creature::CondEnumVec_t condsRemovedVec;
         if (wasHit)
@@ -507,7 +508,8 @@ namespace combat
                                      creatureAttackingPtrC,
                                      creatureDefendingPtrC,
                                      isPowerHit,
-                                     isCriticalHit);
+                                     isCriticalHit,
+                                     didArmorAbsorb);
 
             HandleDamage(creatureDefendingPtrC,
                          hitInfoVec,
@@ -521,6 +523,7 @@ namespace combat
                        damage,
                        isCriticalHit,
                        isPowerHit,
+                       didArmorAbsorb,
                        condsAddedVec,
                        condsRemovedVec,
                        Text::WeaponActionVerb(WEAPON_PTR, false));
@@ -532,7 +535,8 @@ namespace combat
         creature::CreaturePtrC_t creatureAttackingPtrC,
         creature::CreaturePtrC_t creatureDefendingPtrC,
         bool &                   isPowerHit_OutParam,
-        bool &                   isCriticalHit_OutParam)
+        bool &                   isCriticalHit_OutParam,
+        bool &                   didArmorAbsorb_OutParam)
     {
         const stats::Health_t DAMAGE_FROM_WEAPON{ misc::random::Int(
             WEAPON_PTR->DamageMin(), WEAPON_PTR->DamageMax()) };
@@ -550,7 +554,7 @@ namespace combat
         const stats::Stat_t STAT_FLOOR{ GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
 
-        /*M_HP_LOG_DBG("\t 1*********  FightClub::DetermineDamage("
+        M_HP_LOG_DBG("\t 1*********  FightClub::DetermineDamage("
             << "item=" << WEAPON_PTR->Name()
             << ", attacker=" << creatureAttackingPtrC->Name()
             << ", defending=" << creatureDefendingPtrC->Name()
@@ -559,14 +563,14 @@ namespace combat
             << ", RANK_DAMAGE_BONUS_ADJ_RATIO=" << RANK_DAMAGE_BONUS_ADJ_RATIO
             << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
             << ", STAT_FLOOR=" << STAT_FLOOR);
-            */
+            
         //
         stats::Health_t damageFromStrength{ 0 };
-        auto const STAT_STR{ creatureAttackingPtrC->Stats().Str().Current() };
-        if (STAT_STR > STAT_FLOOR)
+        auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Stats().Str().Current() };
+        if (STRENGTH_CURRENT > STAT_FLOOR)
         {
-            auto const RAND_STR_STAT{ creature::Stats::RatioOfStat(
-                creatureAttackingPtrC, stats::stat::Strength) };
+            auto const RAND_STR_STAT{ creature::Stats::Roll(creatureAttackingPtrC,
+                                                            stats::stat::Strength) };
 
             auto const STR_BONUS_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
@@ -581,60 +585,74 @@ namespace combat
                 damageFromStrength = 0;
             }
 
-            /*M_HP_LOG_DBG("\t 2*********  FightClub::DetermineDamage()"
-                << ", STAT_STR=" << STAT_STR
+            M_HP_LOG_DBG("\t 2*********  FightClub::DetermineDamage()"
+                << ", STRENGTH_CURRENT=" << STRENGTH_CURRENT
                 << ", RAND_STR_STAT=" << RAND_STR_STAT
                 << ", STR_BONUS_ADJ_RATIO=" << STR_BONUS_ADJ_RATIO
                 << ", damageFromStrength=" << damageFromStrength
                 << ", STAT_FLOOR=" << STAT_FLOOR);
-                */
         }
         
         const stats::Health_t DAMAGE_BASE{
             DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
 
         //there is a rare chance of a power hit for players
-        auto const STRENGTH{ creatureAttackingPtrC->Stats().Str().Current() };
-        auto const STRENGTH_RAND_MIN{ stats::Stat::Reduce(STRENGTH) };
-        auto const STRENGTH_RAND_MAX{ STRENGTH };
-        auto const STRENGTH_RAND{ misc::random::Int(STRENGTH_RAND_MIN, STRENGTH_RAND_MAX) };
+        auto const STRENGTH_TEST{ creature::Stats::Test(creatureAttackingPtrC,
+                                                        stats::stat::Strength,
+                                                        0.25f,
+                                                        true,
+                                                        true) };
 
         auto const POWER_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-power-chance-ratio") };
 
-        //low str can mean greater chance of power hit so compensate here
-        isPowerHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
-                               (STRENGTH_RAND == STRENGTH_RAND_MAX) &&
-                               ((STRENGTH >= STAT_FLOOR) ||
-                                    (misc::random::Float(1.0f) < POWER_HIT_CHANCE_RATIO)));
+        isPowerHit_OutParam = (creatureAttackingPtrC->IsPlayerCharacter() &&
+                               STRENGTH_TEST &&
+                               (STRENGTH_CURRENT >= STAT_FLOOR) &&
+                               (misc::random::Float(1.0f) < POWER_HIT_CHANCE_RATIO));
 
-        //there is a rare chance of a critical hit for players
-        auto const ACC{ creatureAttackingPtrC->Stats().Acc().Current() };
-        auto const ACC_RAND_MIN{ stats::Stat::Reduce(ACC) };
-        auto const ACC_RAND_MAX{ ACC };
-        auto const ACC_RAND{ misc::random::Int(ACC_RAND_MIN, ACC_RAND_MAX) };
+        //there is a rare chance of a critical hit for players and non-players
+        auto const ACCURACY_TEST{ creature::Stats::Test(creatureAttackingPtrC,
+                                                        stats::stat::Accuracy,
+                                                        0.25f,
+                                                        true,
+                                                        true) };
+
+        auto const LUCK_TEST{ creature::Stats::Test(creatureAttackingPtrC,
+                                                    stats::stat::Luck,
+                                                    0.25f,
+                                                    true,
+                                                    true) };
 
         auto const CRITICAL_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };
 
-        //low acc can mean greater chance of critical hit so compensate here
-        isCriticalHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter()) &&
-                                  (ACC_RAND == ACC_RAND_MAX) &&
-                                  ((ACC >= STAT_FLOOR) ||
-                                    (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO)));
+        auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Stats().Acc().Current() };
+
+        isCriticalHit_OutParam = ((creatureAttackingPtrC->IsPlayerCharacter() || LUCK_TEST) &&
+                                  ACCURACY_TEST &&
+                                  ((ACCURACY_CURRENT >= STAT_FLOOR) || LUCK_TEST) &&
+                                  (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO));
 
         stats::Health_t damageFinal{ DAMAGE_BASE };
         stats::Health_t damageFinalA{ damageFinal };
 
+        const stats::Health_t SPECIAL_HIT_DAMAGE_MIN{
+            static_cast<stats::Health_t>(creatureAttackingPtrC->Rank()) +
+                GameDataFile::Instance()->GetCopyInt("heroespath-fight-hit-special-damage-min") };
+
         if (isPowerHit_OutParam)
         {
-            damageFinal += damageFromStrength;
+            damageFinal += std::max(std::max(damageFromStrength,
+                (damageFinal / SPECIAL_HIT_DAMAGE_MIN)), SPECIAL_HIT_DAMAGE_MIN);
         }
 
         if (isCriticalHit_OutParam)
         {
-            damageFinal += DAMAGE_FROM_WEAPON;
+            damageFinal += std::max(DAMAGE_FROM_WEAPON, SPECIAL_HIT_DAMAGE_MIN);
         }
+
+        auto const DAMAGE_AFTER_SPECIALS{ damageFinal };
 
         auto const ARMOR_ZERO_DAMAGE_MULT{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-no-damage-armor-mult") };
@@ -656,21 +674,25 @@ namespace combat
                     creatureDefendingPtrC->ArmorRating())));
         }
 
-        /*M_HP_LOG_DBG("\t 3*********  FightClub::DetermineDamage()"
+        //check if armor absorbed all the damage
+        if ((DAMAGE_AFTER_SPECIALS > 0) && (damageFinal <= 0))
+        {
+            didArmorAbsorb_OutParam = true;
+        }
+
+        M_HP_LOG_DBG("\t 3*********  FightClub::DetermineDamage()"
             << "  DAMAGE_FROM_WEAPON=" << DAMAGE_FROM_WEAPON
             << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
             << ", damageFromStrength=" << damageFromStrength
             << ", DAMAGE_BASE=" << DAMAGE_BASE
-            << ", STRENGTH=" << STRENGTH
-            << ", STRENGTH_RAND=" << STRENGTH_RAND
-            << ", isPowerHit_OutParam=" << std::boolalpha << isPowerHit_OutParam
-            << ", ACC=" << ACC
-            << ", ACC_RAND=" << ACC_RAND
-            << ", isCriticalHit_OutParam=" << isCriticalHit_OutParam
             << ", damageFinalA=" << damageFinalA
-            << ", creatureDefendingPtrC->ArmorRating()=" << creatureDefendingPtrC->ArmorRating()
+            << ", isPowerHit=" << std::boolalpha << isPowerHit_OutParam
+            << ", isCriticalHit=" << isCriticalHit_OutParam
+            << ", damageAfterSpecials=" << DAMAGE_AFTER_SPECIALS
+            << ", Defender'sArmorRating()=" << creatureDefendingPtrC->ArmorRating()
+            << ", didArmorAbsorb=" << didArmorAbsorb_OutParam
             << ", damageFinal=" << damageFinal);
-            */
+
         //pixies are dealt less damage than other creatures because of
         //their small size and speed
         if ((damageFinal > 0) &&
@@ -695,9 +717,27 @@ namespace combat
             }
         }
 
+        //prevent negative damage
         if(damageFinal < 0)
         {
             damageFinal = 0;
+        }
+
+        //if power or critical hit, then assure there is some damage dealt
+        if ((isPowerHit_OutParam || isCriticalHit_OutParam) &&
+            (damageFinal < SPECIAL_HIT_DAMAGE_MIN))
+        {
+            didArmorAbsorb_OutParam = false;
+
+            if (isPowerHit_OutParam)
+            {
+                damageFinal += std::max(damageFromStrength, SPECIAL_HIT_DAMAGE_MIN);
+            }
+
+            if (isCriticalHit_OutParam)
+            {
+                damageFinal += std::max(DAMAGE_FROM_WEAPON, SPECIAL_HIT_DAMAGE_MIN);
+            }
         }
 
         return damageFinal * -1;

@@ -625,7 +625,27 @@ namespace combat
             }
             else
             {
-                ss << "but does no damage";
+                if (HIT_INFO.DidArmorAbsorb())
+                {
+                    ss << " but ";
+
+                    auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
+                    
+                    if (CREATURE_PTR->IsPlayerCharacter())
+                    {
+                        ss << CREATURE_PTR->Name() << "'s";
+                    }
+                    else
+                    {
+                        ss << "the " << CREATURE_EFFECT.GetCreature()->NameOrRaceAndRole() << "'s";
+                    }
+                    
+                    ss << " armor absorbed ALL the damage";
+                }
+                else
+                {
+                    ss << "but does no damage";
+                }
             }
 
             if (HIT_INFO.WasKill())

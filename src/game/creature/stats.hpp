@@ -60,28 +60,28 @@ namespace creature
             const bool                   WILL_INCLUDE_LUCK            = false,
             const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static stats::Stat_t RatioOfStat(
+        static stats::Stat_t Roll(
             const CreaturePtr_t     CREATURE_PTR,
             const stats::stat::Enum STAT_ENUM,
             const bool              WILL_INCLUDE_STANDARD_OFFSET = false,
             const bool              WILL_INCLUDE_LUCK            = false,
             const bool              WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static stats::Stat_t RatioOfStat(
+        static stats::Stat_t Roll(
             const CreaturePtr_t          CREATURE_PTR,
             const stats::StatEnumVec_t & STAT_ENUM_VEC,
             const bool                   WILL_INCLUDE_STANDARD_OFFSET = false,
             const bool                   WILL_INCLUDE_LUCK            = false,
             const bool                   WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static bool Roll(
+        static bool Test(
             const CreaturePtr_t     CREATURE_PTR,
             const stats::stat::Enum STAT_ENUM,
             const float             RANK_BONUS_RATIO             = 0.0f,
             const bool              WILL_INCLUDE_LUCK            = false,
             const bool              WILL_INCLUDE_RACEROLE_BONUS  = false);
 
-        static bool Roll(
+        static bool Test(
             const CreaturePtr_t          CREATURE_PTR,
             const stats::StatEnumVec_t & STAT_ENUM_VEC,
             const float                  RANK_BONUS_RATIO             = 0.0f,

@@ -61,7 +61,7 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Roll(creaturePlayingPtr,
+            if (creature::Stats::Test(creaturePlayingPtr,
                                       { stats::stat::Intelligence, stats::stat::Charm},
                                       0.5f,
                                       true,
@@ -334,7 +334,7 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Roll(creaturePlayingPtr,
+            if (creature::Stats::Test(creaturePlayingPtr,
                                       { stats::stat::Intelligence, stats::stat::Charm},
                                       0.5f,
                                       true,

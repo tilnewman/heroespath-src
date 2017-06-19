@@ -85,6 +85,7 @@ namespace combat
             const stats::Health_t           DAMAGE            = 0,
             const bool                      IS_CRITICAL_HIT   = false,
             const bool                      IS_POWER_HIT      = false,
+            const bool                      DID_ARMOR_ABSORB  = false,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
             const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t(),
             const std::string &             ACTION_VERB       = "");
@@ -130,7 +131,9 @@ namespace combat
         inline song::SongPtr_t   SongPtr() const    { return songPtr_; }
         inline bool              IsSpell() const    { return (spellPtr_ != nullptr); }
         inline bool              IsWeapon() const   { return (weaponPtr_ != nullptr); }
-
+        
+        inline bool DidArmorAbsorb() const { return didArmorAbsorb_; }
+        
         inline const ContentAndNamePos ActionPhrase() const
         {
             return actionPhraseCNP_;
@@ -174,6 +177,7 @@ namespace combat
         spell::SpellPtr_t       spellPtr_;
         ContentAndNamePos       actionPhraseCNP_;
         song::SongPtr_t         songPtr_;
+        bool                    didArmorAbsorb_;
     };
 
     using HitInfoVec_t = std::vector<HitInfo>;
