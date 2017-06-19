@@ -84,7 +84,7 @@ namespace creature
             randSum = normalSum;
         }
 
-        return static_cast<float>(normalSum) / static_cast<float>(randSum);
+        return static_cast<float>(randSum) / static_cast<float>(normalSum);
     }
 
 

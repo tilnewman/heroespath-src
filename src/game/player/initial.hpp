@@ -29,6 +29,7 @@
 //  A collection of functions that performs initial setup of a player character
 //
 #include "game/stats/types.hpp"
+#include "game/item/item-type-enum.hpp"
 
 
 namespace game
@@ -55,6 +56,7 @@ namespace player
         static stats::Health_t GetStartingHealth(CharacterCPtrC_t);
         static void SetStartingHealth(CharacterPtrC_t);
         static void SetStartingMana(CharacterPtrC_t);
+        static item::material::Enum HardOrSoftLeatherRand();
     };
 
 }
