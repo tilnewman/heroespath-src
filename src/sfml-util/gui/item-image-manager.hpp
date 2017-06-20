@@ -99,6 +99,9 @@ namespace gui
         const std::string GetImageFilename(
             const game::item::armor::ArmorInfo & ARMOR_INFO) const;
 
+        const std::string GetSkinImageFilename(
+            const game::item::ItemPtr_t ITEM_PTR) const;
+
         const std::string GetImageFilename(
             const game::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,

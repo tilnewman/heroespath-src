@@ -28,6 +28,9 @@
 // item-type-enum.cpp
 //
 #include "item-type-enum.hpp"
+
+#include "game/game-data-file.hpp"
+
 #include <sstream>
 #include <exception>
 
@@ -61,7 +64,8 @@ namespace item
 
             if ((E & category::EnchantsOnlyWhenEquipped) && (E & category::EnchantsWhenHeld))
             {
-                ss << ((ss.str().empty()) ? "" : " and ") << "works an enchantment when held or equipped";
+                ss << ((ss.str().empty()) ? "" : " and ")
+                    << "works an enchantment when held or equipped";
             }
             else
             {
@@ -203,7 +207,8 @@ namespace item
     }
 
 
-    stats::Armor_t material::ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
+    stats::Armor_t material::ArmorRatingBonus(const material::Enum MATERIAL_PRI,
+                                              const material::Enum MATERIAL_SEC)
     {
         return ArmorRatingBonusPri(MATERIAL_PRI) + ArmorRatingBonusSec(MATERIAL_SEC);
     }
@@ -228,37 +233,39 @@ namespace item
             case Flesh      : { return 1; }
             case Rope       :
             case Cloth      : { return 2; }
-            case Hide       : { return 3; }
-            case SoftLeather: { return 4; }
-            case HardLeather: { return 5; }
-            case Plant      : { return 6; }
-            case Claw       : { return 7; }
-            case Scale      : { return 8; }
-            case Horn       : { return 9; }
-            case Bone       : { return 10; }
-            case Tooth      : { return 12; }
-            case Wood       : { return 13; }
+            case Hide       : { return 5; }
+            case SoftLeather: { return 6; }
+            case HardLeather: { return 10; }
+            case Plant      : { return 11; }
+            case Claw       : { return 12; }
+            case Scale      : { return 13; }
+            case Horn       : { return 14; }
+            case Bone       : { return 15; }
+            case Tooth      : { return 16; }
+            case Wood       : { return 17; }
             case Tin        : { return 20; }
             case Bronze     : { return 21; }
             case Iron       : { return 22; }
-            case Steel      : { return 23; }
-            case Silver     : { return 24; }
-            case Gold       : { return 30; }
+            case Stone      : { return 23; }
+            case Obsidian   : { return 24; }
+            case Steel      : { return 25; }
+            case Silver     : { return 26; }
+            case Amethyst   : { return 27; }
+            case Emerald    : { return 28; }
+            case Pearl      : { return 29; }
+            case Ruby       : { return 30; }
+            case Lapis      : { return 31; }
+            case Sapphire   : { return 32; }
+            case Gold       : { return 35; }
             case Platinum   : { return 40; }
-            case Stone      : { return 18; }
-            case Obsidian   : { return 20; }
-            case Amethyst   : { return 22; }
-            case Emerald    : { return 24; }
-            case Pearl      : { return 26; }
-            case Ruby       : { return 28; }
-            case Lapis      : { return 20; }
-            case Sapphire   : { return 30; }
             case Diamond    : { return 50; }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::material::ArmorRatingBonusPri(" << MATERIAL_PRI << ")_InvalidValueError.";
+                ss << "game::item::material::ArmorRatingBonusPri(" << MATERIAL_PRI
+                    << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -267,11 +274,16 @@ namespace item
 
     stats::Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
-        return static_cast<stats::Armor_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) / static_cast<float>(10));
+        auto const SEC_MATERIAL_ARMOR_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-item-secondary-material-armor-adj-ratio") };
+
+        return static_cast<stats::Armor_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) *
+            SEC_MATERIAL_ARMOR_ADJ_RATIO);
     }
 
 
-    item::Coin_t material::PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
+    item::Coin_t material::PriceAdj(const material::Enum MATERIAL_PRI,
+                                    const material::Enum MATERIAL_SEC)
     {
         return PriceAdjPri(MATERIAL_PRI) + PriceAdjSec(MATERIAL_SEC);
     }
@@ -326,7 +338,10 @@ namespace item
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::material::PriceAdjPri(" << MATERIAL_PRI << ")_InvalidValueError.";
+
+                ss << "game::item::material::PriceAdjPri(" << MATERIAL_PRI
+                    << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -341,7 +356,8 @@ namespace item
     }
 
 
-    float material::WeightMult(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
+    float material::WeightMult(const material::Enum MATERIAL_PRI,
+                               const material::Enum MATERIAL_SEC)
     {
         return WeightMultPri(MATERIAL_PRI) + WeightMultSec(MATERIAL_SEC);
     }
@@ -396,7 +412,10 @@ namespace item
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::material::WeightMultPri(" << MATERIAL_PRI << ")_InvalidValueError.";
+
+                ss << "game::item::material::WeightMultPri(" << MATERIAL_PRI
+                    << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -522,7 +541,9 @@ namespace item
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::FireDamageRatio(material_pri=" << PRI << ", material_sec=...) -but that material_pri type is unknown.";
+                ss << "game::item::FireDamageRatio(material_pri=" << PRI
+                    << ", material_sec=...) -but that material_pri type is unknown.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -573,7 +594,9 @@ namespace item
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::FireDamageRatio(material_pri=" << material::ToString(PRI) << ", material_sec=" << SEC << " -but that material_sec type is unknown.";
+                ss << "game::item::FireDamageRatio(material_pri=" << material::ToString(PRI)
+                    << ", material_sec=" << SEC << " -but that material_sec type is unknown.";
+
                 throw std::range_error(ss.str());
             }
         }
@@ -651,7 +674,8 @@ namespace item
     }
 
 
-    const std::string weapon_type::ToString(const item::weapon_type::Enum E, const bool WILL_WRAP)
+    const std::string weapon_type::ToString(const item::weapon_type::Enum E,
+                                            const bool WILL_WRAP)
     {
         std::ostringstream ss;
 

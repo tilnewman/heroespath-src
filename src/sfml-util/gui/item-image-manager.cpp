@@ -648,6 +648,10 @@ namespace gui
         {
             return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled());
         }
+        else if (ITEM_PTR->Armor_Info().type == armor_type::Skin)
+        {
+            return GetSkinImageFilename(ITEM_PTR);
+        }
         else if (ITEM_PTR->Armor_Info().type != armor_type::NotArmor)
         {
             return GetImageFilename(ITEM_PTR->Armor_Info());
@@ -764,7 +768,7 @@ namespace gui
 
         std::ostringstream ss;
         ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type="
-            << weapon_type::ToString(WEAPON_INFO.type, false) << ") failed to resolve a filename.";
+            << weapon_type::ToString(WEAPON_INFO.type, false) << ") failed to resolve a filename for weapon.";
         throw std::runtime_error(ss.str());
     }
 
@@ -828,7 +832,41 @@ namespace gui
 
         std::ostringstream ss;
         ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type="
-            << armor_type::ToString(ARMOR_INFO.type, false) << ") failed to resolve a filename.";
+            << armor_type::ToString(ARMOR_INFO.type, false) << ") failed to resolve a filename for armor.";
+
+        throw std::runtime_error(ss.str());
+    }
+
+
+    const std::string ItemImageManager::GetSkinImageFilename(
+        const game::item::ItemPtr_t ITEM_PTR) const
+    {
+        using namespace game::item;
+
+        auto const PRI_MATERIAL{ ITEM_PTR->MaterialPrimary() };
+        
+        if (PRI_MATERIAL == material::Plant)
+        {
+            return "plant" + FILE_EXT_STR_;
+        }
+        else if (PRI_MATERIAL == material::Flesh)
+        {
+            return "flesh" + FILE_EXT_STR_;
+        }
+        else if (PRI_MATERIAL == material::Scale)
+        {
+            return "scale" + FILE_EXT_STR_;
+        }
+        else if ((PRI_MATERIAL == material::Fur) ||
+                 (PRI_MATERIAL == material::Hide))
+        {
+            return "hide" + FILE_EXT_STR_;
+        }
+
+        std::ostringstream ss;
+        ss << "sfml_util::gui::ItemImageManager::GetSkinImageFilename(PRI_MATERIAL="
+            << material::ToString(PRI_MATERIAL)
+            << ") failed to resolve a filename for that material.";
 
         throw std::runtime_error(ss.str());
     }

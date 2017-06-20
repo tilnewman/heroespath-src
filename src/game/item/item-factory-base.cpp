@@ -61,22 +61,35 @@ namespace item
         if ((MATERIAL_SEC != MATERIAL_PRI) && (MATERIAL_SEC != material::Nothing))
         {
             if (material::IsJewel(MATERIAL_SEC))
+            {
                 ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " jeweled ";
+            }
             else if (material::IsPrecious(MATERIAL_SEC))
+            {
                 ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " adorned ";
+            }
             else if (material::IsLiquid(MATERIAL_SEC))
-                ssName << "coated ";
+            {
+                ssName << material::ToReadableString(MATERIAL_SEC) << "coated ";
+            }
             else
+            {
                 ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " ";
+            }
         }
 
         //don't use the word leather twice in a name
         std::string baseNameToUse(BASE_NAME);
-        if ((boost::algorithm::icontains(ssName.str(), "leather")) && (boost::algorithm::icontains(BASE_NAME, "leather")))
+        if ((boost::algorithm::icontains(ssName.str(), "leather")) &&
+            (boost::algorithm::icontains(BASE_NAME, "leather")))
+        {
             boost::algorithm::ierase_all(baseNameToUse, "leather");
+        }
 
         if (IS_PIXIE_ITEM)
+        {
             ssName << " Pixie ";
+        }
 
         ssName << baseNameToUse;
         return ssName.str();
@@ -103,11 +116,18 @@ namespace item
                 ssDesc << " and ";
 
                 if (material::IsJewel(MATERIAL_SEC))
+                {
                     ssDesc << "jeweled with ";
+                }
                 else if (material::IsPrecious(MATERIAL_SEC))
-                    ssDesc << "decorated with ";//at this point we know MATERIAL_SEC is either silver/gold/platinum
+                {
+                    //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                    ssDesc << "decorated with ";
+                }
                 else if (material::IsLiquid(MATERIAL_SEC))
+                {
                     ssDesc << "covered in ";
+                }
 
                 ssDesc << material::ToString(MATERIAL_SEC);
             }
@@ -116,16 +136,24 @@ namespace item
                 ssDesc << " with a ";
 
                 if (material::IsRigid(MATERIAL_SEC) == false)
+                {
                     ssDesc << EXTRA_NAME << " covered in ";
+                }
 
                 ssDesc << material::ToReadableString(MATERIAL_SEC);
 
                 if (material::IsJewel(MATERIAL_SEC))
+                {
                     ssDesc << " jeweled " << EXTRA_NAME;
+                }
                 else if (material::IsPrecious(MATERIAL_SEC))
+                {
                     ssDesc << " adorned " << EXTRA_NAME;
+                }
                 else if (material::IsRigid(MATERIAL_SEC))
+                {
                     ssDesc << " " << EXTRA_NAME;
+                }
             }
         }
 
@@ -150,15 +178,25 @@ namespace item
         if ((MATERIAL_SEC != material::Nothing) && (MATERIAL_SEC != MATERIAL_PRI))
         {
             if (material::IsJewel(MATERIAL_SEC))
+            {
                 ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " jeweled clasp";
+            }
             else if (material::IsMetal(MATERIAL_SEC))
+            {
                 ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " chain";
+            }
             else if (material::IsLiquid(MATERIAL_SEC))
+            {
                 ssDesc << " covered in " << material::ToReadableString(MATERIAL_SEC);
+            }
             else if (material::IsRigid(MATERIAL_SEC))
+            {
                 ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " clasp";
+            }
             else
+            {
                 ssDesc << " and " << material::ToReadableString(MATERIAL_SEC);
+            }
         }
 
         ssDesc << ".";
@@ -174,7 +212,9 @@ namespace item
         price += material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC);
 
         if (IS_PIXIE_ITEM)
+        {
             price = static_cast<Coin_t>(static_cast<float>(price) * 1.5f);
+        }
     }
 
 
@@ -182,7 +222,8 @@ namespace item
                                    const material::Enum MATERIAL_PRI,
                                    const material::Enum MATERIAL_SEC)
     {
-        weight = static_cast<Weight_t>(static_cast<float>(weight) * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC));
+        weight = static_cast<Weight_t>(static_cast<float>(weight) *
+            material::WeightMult(MATERIAL_PRI, MATERIAL_SEC));
     }
 
 

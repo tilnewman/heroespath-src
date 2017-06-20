@@ -49,7 +49,7 @@ namespace item
             Useable                  = 1 << 3,
             Equippable               = 1 << 4,
             BodyPart                 = 1 << 5,
-            Wearable                 = 1 << 6, //if not wearable then it must be one-handed or two-handed
+            Wearable                 = 1 << 6, //if not wearable then it must be one or two-handed
             OneHanded                = 1 << 7,
             TwoHanded                = 1 << 8,
             EnchantsWhenHeld         = 1 << 9,
@@ -124,7 +124,9 @@ namespace item
 
         enum Enum
         {
-            Nothing = 0,//Use 'Nothing' as default instead of 'Error' or 'Count' so that an Item's materialSec_ member can be 'Nothing'.
+            //Use 'Nothing' as default instead of 'Error' or 'Count' so that an Item's
+            //materialSec_ member can be 'Nothing'.
+            Nothing = 0,
             Wood,
             HardLeather,
             SoftLeather,

@@ -759,6 +759,8 @@ namespace stage
             "heroespath-stats-role-bonus-base-adj-ratio",
             "heroespath-stats-role-bonus-minor-adj-ratio",
 
+            "heroespath-item-secondary-material-armor-adj-ratio",
+
             "heroespath-fight-stats-luck-adj-ratio",
             "heroespath-fight-stats-amazing-ratio",
             "heroespath-fight-stats-base-high-val",
@@ -766,7 +768,6 @@ namespace stage
             "heroespath-fight-hit-critical-chance-ratio",
             "heroespath-fight-hit-power-chance-ratio",
             "heroespath-fight-damage-strength-bonus-ratio",
-            "heroespath-fight-no-damage-armor-mult",
             "heroespath-fight-pixie-damage-floor",
             "heroespath-fight-pixie-damage-adj-ratio",
             "heroespath-fight-pixie-defend-speed-rank-bonus-ratio",

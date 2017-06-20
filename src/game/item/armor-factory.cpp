@@ -267,7 +267,7 @@ namespace armor
         armorInfo.is_gauntlets = true;
         armorInfo.base = TYPE;
 
-        std::string gauntletName("gloves");
+        std::string gauntletName("Gloves");
         if (TYPE != item::armor::base_type::Plain)
         {
             gauntletName = item::armor::base_type::ToString(TYPE) + "Gauntlets";
@@ -339,7 +339,10 @@ namespace armor
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-        AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
+
+        //Prevent secondary material from altering the armor rating,
+        //since it is only the material of the clasp.
+        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -463,7 +466,11 @@ namespace armor
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-        AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
+
+        //Prevent secondary material from altering the armor rating,
+        //since it is only the material of the clasp.
+        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
+
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -578,7 +585,10 @@ namespace armor
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-        AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
+
+        //Prevent secondary material from altering the armor rating,
+        //since it is only the material of the clasp.
+        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -632,7 +642,10 @@ namespace armor
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-        AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
+
+        //Prevent secondary material from altering the armor rating,
+        //since it is only the material of the clasp.
+        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),

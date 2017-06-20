@@ -64,6 +64,7 @@
 #include "game/item/weapon-details.hpp"
 #include "game/item/item-warehouse.hpp"
 #include "game/item/weapon-factory.hpp"
+#include "game/item/armor-ratings.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
@@ -167,7 +168,7 @@ int main(int argc, char * argv[])
         game::song::Warehouse::Fill();
         sfml_util::FontManager::Fill();
         game::stats::Stat::SetReduceRatio();
-
+        
         //load game assets Stage 2
         sfml_util::TextureCache::Acquire();
         game::item::ItemWarehouse::Acquire();
@@ -194,6 +195,7 @@ int main(int argc, char * argv[])
         game::item::weapon::WeaponDetailLoader::Acquire();
         game::non_player::ownership::InventoryFactory::Acquire();
         game::combat::Encounter::Acquire();
+        game::item::ArmorRatings::Acquire();
 
         try
         {
@@ -209,10 +211,32 @@ int main(int argc, char * argv[])
             sfml_util::SoundManager::Instance()->LoadSoundSets();
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
             sfml_util::gui::PopupManager::Instance()->LoadAssets();
+            game::item::ArmorRatings::Instance()->Setup();
 
             //create the game loop manager and run the game
             game::LoopManager::Acquire();
-            game::LoopManager::Instance()->Execute();
+
+            try
+            {
+                game::LoopManager::Instance()->Execute();
+            }
+            catch (const std::exception & E)
+            {
+                std::cout << APPLICATION_NAME << " Execute() threw exception(\""
+                    << E.what() << "\")" << std::endl;
+
+                M_LOG( * logPtr, APPLICATION_NAME << " Execute() threw exception(\""
+                    << E.what() << "\")");
+            }
+            catch (...)
+            {
+                std::cout << APPLICATION_NAME 
+                    << " Execute() threw an unknown non-std exception." << std::endl;
+
+                M_LOG( * logPtr, APPLICATION_NAME
+                    << " Execute() threw an unknown non-std exception.");
+            }
+
             game::LoopManager::Release();
 
             //save settings
@@ -241,6 +265,7 @@ int main(int argc, char * argv[])
         }
 
         //unload stage 2
+        game::item::ArmorRatings::Release();
         game::combat::Encounter::Release();
         game::non_player::ownership::InventoryFactory::Release();
         game::item::weapon::WeaponDetailLoader::Release();

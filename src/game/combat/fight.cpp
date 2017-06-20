@@ -35,6 +35,7 @@
 #include "game/creature/algorithms.hpp"
 #include "game/creature/stats.hpp"
 #include "game/item/item.hpp"
+#include "game/item/armor-ratings.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/combat/combat-display.hpp"
 #include "game/combat/encounter.hpp"
@@ -654,26 +655,11 @@ namespace combat
 
         auto const DAMAGE_AFTER_SPECIALS{ damageFinal };
 
-        auto const ARMOR_ZERO_DAMAGE_MULT{ GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-fight-no-damage-armor-mult") };
-
         //reduce damage based on the defending creature's armor
-        if (creatureDefendingPtrC->ArmorRating() >= static_cast<int>(
-            static_cast<float>(damageFinal) * ARMOR_ZERO_DAMAGE_MULT))
-        {
-            damageFinal = 0;
-        }
-        else if (damageFinal > creatureDefendingPtrC->ArmorRating())
-        {
-            damageFinal -= creatureDefendingPtrC->ArmorRating();
-        }
-        else
-        {
-            damageFinal = static_cast<stats::Health_t>( static_cast<float>(damageFinal) *
-                (static_cast<float>(damageFinal) / static_cast<float>(
-                    creatureDefendingPtrC->ArmorRating())));
-        }
-
+        damageFinal -= static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
+            (static_cast<float>(creatureDefendingPtrC->ArmorRating()) / 
+                static_cast<float>(item::ArmorRatings::Instance()->ArmoredGreaterDiamond()) ) );
+        
         //check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0) && (damageFinal <= 0))
         {
@@ -690,7 +676,7 @@ namespace combat
             << ", isCriticalHit=" << isCriticalHit_OutParam
             << ", damageAfterSpecials=" << DAMAGE_AFTER_SPECIALS
             << ", Defender'sArmorRating()=" << creatureDefendingPtrC->ArmorRating()
-            << ", didArmorAbsorb=" << didArmorAbsorb_OutParam
+            << ", ArmorAbsorbDamage=" << (DAMAGE_AFTER_SPECIALS - damageFinal)
             << ", damageFinal=" << damageFinal);
 
         //pixies are dealt less damage than other creatures because of
