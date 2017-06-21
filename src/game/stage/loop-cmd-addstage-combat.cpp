@@ -36,9 +36,12 @@ namespace game
 namespace stage
 {
 
-    LoopCmd_AddStage_Combat::LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr)
+    LoopCmd_AddStage_Combat::LoopCmd_AddStage_Combat(
+        sfml_util::ILoopSPtr_t & loopSPtr,
+        const bool               WILL_ADVANCE_TURN)
     :
-        LoopCmd("AddStage_\"Combat\"", loopSPtr)
+        LoopCmd           ("AddStage_\"Combat\"", loopSPtr),
+        WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
     {}
 
 
@@ -48,7 +51,7 @@ namespace stage
 
     bool LoopCmd_AddStage_Combat::Execute()
     {
-        auto combatStagePtr( new game::stage::CombatStage() );
+        auto combatStagePtr( new game::stage::CombatStage(WILL_ADVANCE_TURN_) );
         combatStagePtr->Setup();
         iLoopSPtr_->AddStage(combatStagePtr);
         return true;

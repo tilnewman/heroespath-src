@@ -105,13 +105,13 @@ namespace game
         void Goto_Exit();
         void Goto_MainMenu();
         void Goto_Settings();
-        void Goto_Previous();
+        void Goto_Previous(const bool WILL_ADVANCE_TURN = false);
         void Goto_CharacterCreation();
         void Goto_PartyCreation();
         void Goto_Inn();
         void Goto_Camp();
         void Goto_LoadGameMenu();
-        void Goto_Combat();
+        void Goto_Combat(const bool WILL_ADVANCE_TURN);
         void Goto_Test();
 
         void Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
@@ -184,14 +184,14 @@ namespace game
         void TransitionTo_Inn();
         void TransitionTo_Camp();
         void TransitionTo_LoadGameMenu();
-        void TransitionTo_Combat();
+        void TransitionTo_Combat(const bool WILL_ADVANCE_TURN);
         void TransitionTo_Test();
 
         void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                                     const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
                                     const Phase::Enum             CURRENT_PHASE);
 
-        void TransitionTo(const LoopState::Enum);
+        void TransitionTo(const LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
         void TransitionHelper(
             const bool                        WILL_CLEAR_QUEUE,

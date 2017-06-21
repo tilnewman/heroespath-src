@@ -159,9 +159,14 @@ namespace stage
     class LoopCmd_AddStage_Combat : public sfml_util::LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr);
+        explicit LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr,
+                                         const bool               WILL_ADVANCE_TURN);
+
         virtual ~LoopCmd_AddStage_Combat();
         virtual bool Execute();
+
+    private:
+        const bool WILL_ADVANCE_TURN_;
     };
 
     using LoopCmd_AddStage_CombatSPtr_t = std::shared_ptr<LoopCmd_AddStage_Combat>;

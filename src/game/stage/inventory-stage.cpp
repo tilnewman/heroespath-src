@@ -1852,7 +1852,7 @@ namespace stage
 
     bool InventoryStage::HandleBack()
     {
-        game::LoopManager::Instance()->Goto_Previous();
+        game::LoopManager::Instance()->Goto_Previous(hasTakenActionSpellOrSong_);
         return true;
     }
 

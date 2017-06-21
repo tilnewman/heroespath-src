@@ -149,9 +149,10 @@ namespace stage
     combat::RestoreInfo CombatStage::restoreInfo_;
 
 
-    CombatStage::CombatStage()
+    CombatStage::CombatStage(const bool WILL_ADVANCE_TURN)
     :
         Stage                       ("Combat"),
+        WILL_ADVANCE_TURN_          (WILL_ADVANCE_TURN),
         SCREEN_WIDTH_               (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
         commandBoxUPtr_             (),
@@ -1208,6 +1209,11 @@ namespace stage
         MoveTurnBoxObjectsOffScreen(true);
         restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
+
+        if (WILL_ADVANCE_TURN_)
+        {
+            combat::Encounter::Instance()->IncrementTurn();
+        }
     }
 
 

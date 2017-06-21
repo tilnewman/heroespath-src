@@ -360,14 +360,18 @@ namespace game
 
         //establish the theme music volume
         const float VOLUME_IF_INTRO_OR_CAMP_STAGE(25.0f);
-        float targetVolumeToUse(0.0f);//zero means 'use whatever music volume is set in the SoundManager'
+
+        //zero means 'use whatever music volume is set in the SoundManager'
+        float targetVolumeToUse(0.0f);
+
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
             targetVolumeToUse = VOLUME_IF_INTRO_OR_CAMP_STAGE;
 
-        cmdQueue_.Push( std::make_shared<sfml_util::LoopCmd_StartMusic>(currentLoopSPtr_,
-                                                                                   sfml_util::music::Theme,
-                                                                                   sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
-                                                                                   targetVolumeToUse) );
+        cmdQueue_.Push( std::make_shared<sfml_util::LoopCmd_StartMusic>(
+            currentLoopSPtr_,
+            sfml_util::music::Theme,
+            sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
+            targetVolumeToUse) );
 
         cmdQueue_.Push( std::make_shared<sfml_util::LoopCmd_Execute>(currentLoopSPtr_) );
     }
@@ -381,11 +385,12 @@ namespace game
                          true, //WILL_RESTORE_MOUSE
                          true, //WILL_FINAL_EXECUTE
                          LoopState::LoadGameMenu,
-                         std::make_shared<game::stage::LoopCmd_AddStage_LoadGameMenu>(currentLoopSPtr_) );
+                         std::make_shared<game::stage::LoopCmd_AddStage_LoadGameMenu>(
+                             currentLoopSPtr_) );
     }
 
 
-    void LoopManager::TransitionTo_Combat()
+    void LoopManager::TransitionTo_Combat(const bool WILL_ADVANCE_TURN)
     {
         TransitionHelper(true, //WILL_CLEAR_QUEUE
                          true, //WILL_EXIT_LOOP
@@ -393,7 +398,8 @@ namespace game
                          true, //WILL_RESTORE_MOUSE
                          true, //WILL_FINAL_EXECUTE
                          LoopState::Combat,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Combat>(currentLoopSPtr_),
+                         std::make_shared<game::stage::LoopCmd_AddStage_Combat>(currentLoopSPtr_,
+                                                                                WILL_ADVANCE_TURN),
                          sfml_util::music::All,
                          sfml_util::music::None);
     }
@@ -601,9 +607,9 @@ namespace game
         TransitionTo_LoadGameMenu();
     }
 
-    void LoopManager::Goto_Combat()
+    void LoopManager::Goto_Combat(const bool WILL_ADVANCE_TURN)
     {
-        TransitionTo_Combat();
+        TransitionTo_Combat(WILL_ADVANCE_TURN);
     }
 
     void LoopManager::Goto_Test()
@@ -620,15 +626,17 @@ namespace game
                                CURRENT_PHASE);
     }
 
-    void LoopManager::Goto_Previous()
+    void LoopManager::Goto_Previous(const bool WILL_ADVANCE_TURN)
     {
         currentLoopSPtr_->Exit();
 
         LoopState::Enum prevStateToUse(prevState_);
         if (prevState_ == LoopState::Popup)
+        {
             prevStateToUse = prevSettingsState_;
+        }
 
-        TransitionTo(prevStateToUse);
+        TransitionTo(prevStateToUse, WILL_ADVANCE_TURN);
     }
 
 
@@ -652,7 +660,7 @@ namespace game
     }
 
 
-    void LoopManager::TransitionTo(const LoopState::Enum STATE)
+    void LoopManager::TransitionTo(const LoopState::Enum STATE, const bool WILL_ADVANCE_TURN)
     {
         switch (STATE)
         {
@@ -666,7 +674,7 @@ namespace game
             case LoopState::LoadGameMenu:       { Goto_LoadGameMenu(); break; }
             case LoopState::CharacterCreation:  { Goto_CharacterCreation(); break; }
             case LoopState::Inn:                { Goto_Inn(); break; }
-            case LoopState::Combat:             { Goto_Combat(); break; }
+            case LoopState::Combat:             { Goto_Combat(WILL_ADVANCE_TURN); break; }
             case LoopState::Test:               { Goto_Test(); break; }
             case LoopState::Inventory:
             case LoopState::Adventure:

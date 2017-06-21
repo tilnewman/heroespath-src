@@ -186,7 +186,7 @@ namespace stage
         };
 
     public:
-        CombatStage();
+        CombatStage(const bool WILL_ADVANCE_TURN);
         virtual ~CombatStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
@@ -331,6 +331,7 @@ namespace stage
         //(inventory, Setup, etc.)
         static combat::RestoreInfo restoreInfo_;
         //
+        const bool WILL_ADVANCE_TURN_;
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         //
