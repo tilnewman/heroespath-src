@@ -223,6 +223,7 @@ namespace stage
         void PositionSlideStartTasks();
         bool HandleAttack();
         bool HandleFight();
+        bool HandleSong_Step1_ValidatePlayAndSelectSong();
         bool HandleCast_Step1_ValidateCastAndSelectSpell();
         void HandleCast_Step2_SelectTargetOrPerformOnAll();
         void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
