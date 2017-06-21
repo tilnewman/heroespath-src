@@ -587,6 +587,14 @@ namespace sfml_util
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
 
+        //setup red x symbol image
+        sfml_util::LoadImageOrTexture(xSymbolTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
+        //
+        xSymbolTexture_.setSmooth(true);
+        xSymbolSprite_.setTexture(xSymbolTexture_);
+        xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
+
         //sliderbar setup
         sliderbarPosTop_ = (BUTTON_POS_TOP - (POPUPBUTTON_TEXT_HEIGHT * 3.0f));
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) ||
@@ -612,14 +620,22 @@ namespace sfml_util
                                                           gui::PopupManager::Color_Font(),
                                                           Justified::Center);
 
-            infoTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
+            infoTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
+
             EntityAdd(infoTextRegionUPtr_.get());
             SetupInfoText("(type a number or use the slider below)");
 
             const float TEXTENTRY_BOX_WIDTH(textRegion_.width * 0.45f);
-            const float TEXTENTRY_BOX_POS_LEFT(textRegion_.left + ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f));
-            const float TEXTENTRY_BOX_POS_TOP(infoTextRegionUPtr_->GetEntityPos().y - 115.0f);//this spacer value of 115 found to look good by experiment
-            const float TEXTENTRY_BOX_HEIGHT(55.0f);//this is the minimum height a textbox can be, and fits pretty well here with the font size being "large"
+
+            const float TEXTENTRY_BOX_POS_LEFT(textRegion_.left +
+                ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f));
+
+            //this 115 spacer value of 115 found to look good by experiment
+            const float TEXTENTRY_BOX_POS_TOP(infoTextRegionUPtr_->GetEntityPos().y - 115.0f);
+
+            //this textbox's min height, and fits pretty well here with the font size being "large"
+            const float TEXTENTRY_BOX_HEIGHT(55.0f);
 
             const sf::FloatRect TEXTENTRY_REGION(TEXTENTRY_BOX_POS_LEFT,
                                                  TEXTENTRY_BOX_POS_TOP,
@@ -667,14 +683,8 @@ namespace sfml_util
 
             imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
-            sfml_util::LoadImageOrTexture(xSymbolTexture_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
-
-            xSymbolTexture_.setSmooth(true);
-            xSymbolSprite_.setTexture(xSymbolTexture_);
-            xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
-            auto const X_SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
-            xSymbolSprite_.setScale(X_SYM_SCALE, X_SYM_SCALE);
+            auto const SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
+            xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
             auto const X_SYM_POS_TOP{ (imagesRect_.top + (imagesRect_.height * 0.5f)) -
                 (xSymbolSprite_.getGlobalBounds().height * 0.5f)};
@@ -1962,7 +1972,8 @@ namespace sfml_util
             }
             else
             {
-                imagePrevTravelDist_ = (imagesRect_.left + imagesRect_.width) - imageSpritePrev_.getGlobalBounds().left;
+                imagePrevTravelDist_ = (imagesRect_.left + imagesRect_.width) -
+                    imageSpritePrev_.getGlobalBounds().left;
             }
         }
     }
@@ -1980,13 +1991,19 @@ namespace sfml_util
 
         EntityRemove(infoTextRegionUPtr_.get());
 
-        infoTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect()) );
+        infoTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
 
         EntityAdd(infoTextRegionUPtr_.get());
 
-        const float INFO_TEXT_POS_LEFT((textRegion_.left + (textRegion_.width * 0.5f)) - (infoTextRegionUPtr_->GetEntityRegion().width * 0.5f));
-        const float INFO_TEXT_POS_TOP(sliderbarPosTop_ - (2.0f * infoTextRegionUPtr_->GetEntityRegion().height));
-        infoTextRegionUPtr_->SetEntityPos(INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2), INFO_TEXT_POS_TOP);
+        const float INFO_TEXT_POS_LEFT((textRegion_.left + (textRegion_.width * 0.5f)) -
+            (infoTextRegionUPtr_->GetEntityRegion().width * 0.5f));
+
+        const float INFO_TEXT_POS_TOP(sliderbarPosTop_ -
+            (2.0f * infoTextRegionUPtr_->GetEntityRegion().height));
+
+        infoTextRegionUPtr_->SetEntityPos(INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2),
+            INFO_TEXT_POS_TOP);
     }
 
 
@@ -2022,7 +2039,10 @@ namespace sfml_util
         {
             selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
-            ss << "(invalid, type a number between " << POPUP_INFO_.NumberSelMin() << " and " << POPUP_INFO_.NumberSelMax() << ")";
+
+            ss << "(invalid, type a number between " << POPUP_INFO_.NumberSelMin() << " and "
+                << POPUP_INFO_.NumberSelMax() << ")";
+
             SetupInfoText(ss.str());
             return false;
         }
@@ -2030,7 +2050,10 @@ namespace sfml_util
         {
             selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
-            ss << "(the number is too small, the minimum is " << POPUP_INFO_.NumberSelMin() << ")";
+
+            ss << "(the number is too small, the minimum is "
+                << POPUP_INFO_.NumberSelMin() << ")";
+
             SetupInfoText(ss.str());
             return false;
         }
@@ -2038,7 +2061,10 @@ namespace sfml_util
         {
             selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;
-            ss << "(the number is too large, the maximum is " << POPUP_INFO_.NumberSelMax() << ")";
+
+            ss << "(the number is too large, the maximum is "
+                << POPUP_INFO_.NumberSelMax() << ")";
+
             SetupInfoText(ss.str());
             return false;
         }
@@ -2076,11 +2102,12 @@ namespace sfml_util
         }
 
         //setup spell title text
-        const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(SPELL_CPTRC->Name(),
-                                                            sfml_util::FontManager::Instance()->Font_Default1(),
-                                                            sfml_util::FontManager::Instance()->Size_Large(),
-                                                            sfml_util::FontManager::Color_GrayDarker(),
-                                                            sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(
+            SPELL_CPTRC->Name(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Large(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         const sf::FloatRect SPELL_TITLE_TEXTRECT{ pageRectRight_.left,
                                                   pageRectRight_.top,
@@ -2089,9 +2116,10 @@ namespace sfml_util
 
         if (spellTitleTextRegionUPtr_.get() == nullptr)
         {
-            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellTitle",
-                                                                           SPELL_TITLE_TEXTINFO,
-                                                                           SPELL_TITLE_TEXTRECT);
+            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+                "SpellnbookPopupWindowSpellTitle",
+                SPELL_TITLE_TEXTINFO,
+                SPELL_TITLE_TEXTRECT);
         }
         else
         {
@@ -2106,7 +2134,25 @@ namespace sfml_util
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(spellColorImageCurrent_);
-        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
+
+        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) -
+            (spellSprite_.getGlobalBounds().width * 0.5f),
+                spellTitleTextRegionUPtr_->GetEntityRegion().top +
+                    spellTitleTextRegionUPtr_->GetEntityRegion().height +
+                        sfml_util::MapByRes(5.0f, 60.0f));
+
+        auto const SYM_SCALE{ sfml_util::MapByRes(0.75f, 3.75f) };
+        xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
+
+        auto const X_SYM_POS_LEFT{ (spellSprite_.getGlobalBounds().left +
+            (spellSprite_.getGlobalBounds().width * 0.5f)) -
+                (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
+
+        auto const X_SYM_POS_TOP{ (spellSprite_.getGlobalBounds().top +
+            (spellSprite_.getGlobalBounds().height * 0.5f)) -
+                (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
+
+        xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
 
         //setup spell details text
         std::ostringstream ss;
@@ -2115,14 +2161,18 @@ namespace sfml_util
            << "Targets " << game::TargetType::Name(SPELL_CPTRC->Target()) << "\n"
            << "Cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n";
 
-        const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(ss.str(),
-                                                              sfml_util::FontManager::Instance()->Font_Default1(),
-                                                              sfml_util::FontManager::Instance()->Size_Small(),
-                                                              sfml_util::FontManager::Color_GrayDarker(),
-                                                              sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         auto const SPELLDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
-        auto const SPELLDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+
+        auto const SPELLDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top +
+            spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+        
         auto const SPELLDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SPELLDETAILS_TEXTRECT_HEIGHT { 0.0f };
 
@@ -2133,9 +2183,10 @@ namespace sfml_util
 
         if (spellDetailsTextUPtr_.get() == nullptr)
         {
-            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDetails",
-                                                                       SPELL_DETAILS_TEXTINFO,
-                                                                       SPELL_DETAILS_TEXTRECT);
+            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>(
+                "SpellnbookPopupWindowSpellDetails",
+                SPELL_DETAILS_TEXTINFO,
+                SPELL_DETAILS_TEXTRECT);
         }
         else
         {
@@ -2143,40 +2194,62 @@ namespace sfml_util
         }
 
         //setup spell 'unable to cast' text
+        willShowRejectImage_ = false;
         ss.str(" ");
         spellUnableTextWillShow_ = false;
         if (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) == false)
         {
+            willShowRejectImage_ = true;
             ss << "Insufficient Mana";
             spellUnableTextWillShow_ = true;
         }
-        else
+        else if(CanCastSpellInPhase(SPELL_CPTRC) == false)
         {
-            if (CanCastSpellInPhase(SPELL_CPTRC) == false)
-            {
-                auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
-                if (CURRENT_PHASE & game::Phase::Combat)             ss << "Cannot cast during combat.";
-                else if (CURRENT_PHASE & game::Phase::Conversation)  ss << "Cannot cast while talking.";
-                else if (CURRENT_PHASE & game::Phase::Exploring)     ss << "Cannot cast while exploring.";
-                else if (CURRENT_PHASE & game::Phase::Inventory)     ss << "Cannot cast from inventory.";
-                else ss << "Only during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << ".";
+            willShowRejectImage_ = true;
 
-                spellUnableTextWillShow_ = true;
+            auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
+
+            if (CURRENT_PHASE & game::Phase::Combat)
+            {
+                ss << "Cannot cast during combat.";
             }
+            else if (CURRENT_PHASE & game::Phase::Conversation)
+            {
+                ss << "Cannot cast while talking.";
+            }
+            else if (CURRENT_PHASE & game::Phase::Exploring)
+            {
+                ss << "Cannot cast while exploring.";
+            }
+            else if (CURRENT_PHASE & game::Phase::Inventory)
+            {
+                ss << "Cannot cast from inventory.";
+            }
+            else
+            {
+                ss << "Only during "
+                    << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << ".";
+            }
+
+            spellUnableTextWillShow_ = true;
         }
 
-        const sfml_util::gui::TextInfo SPELL_UNABLE_TEXTINFO(ss.str(),
-                                                             sfml_util::FontManager::Instance()->Font_Default2(),
-                                                             sfml_util::FontManager::Instance()->Size_Normal(),
-                                                             SPELL_UNABLE_TEXT_COLOR_,
-                                                             sf::BlendAlpha,
-                                                             sf::Text::Bold,
-                                                             sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SPELL_UNABLE_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            SPELL_UNABLE_TEXT_COLOR_,
+            sf::BlendAlpha,
+            sf::Text::Bold,
+            sfml_util::Justified::Center);
 
         auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
 
         auto const SPELL_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
-        auto const SPELL_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+
+        auto const SPELL_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top +
+            spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+
         auto const SPELL_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };
 
@@ -2185,33 +2258,40 @@ namespace sfml_util
                                                    SPELL_UNABLE_TEXTRECT_WIDTH,
                                                    SPELL_UNABLE_TEXTRECT_HEIGHT };
 
-        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellUnableToCast",
-                                                                 SPELL_UNABLE_TEXTINFO,
-                                                                 SPELL_UNABLE_TEXTRECT);
+        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>(
+            "SpellnbookPopupWindowSpellUnableToCast",
+            SPELL_UNABLE_TEXTINFO,
+            SPELL_UNABLE_TEXTRECT);
 
         //setup spell description text
         ss.str("");
         ss << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra();
 
-        const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(ss.str(),
-                                                           sfml_util::FontManager::Instance()->Font_Default1(),
-                                                           sfml_util::FontManager::Instance()->Size_Small(),
-                                                           sfml_util::FontManager::Color_GrayDarker(),
-                                                           sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         auto const SPELL_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
         auto const SPELL_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SPELL_DESC_HORIZ_MARGIN };
         auto spellDescTextRectTop{ 0.0f };
         if (spellUnableTextWillShow_)
         {
-            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top + spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top +
+                spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
         else
         {
-            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top +
+                spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
-        auto const SPELL_DESC_TEXTRECT_WIDTH{ pageRectRight_.width - (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
-        auto const SPELL_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER };
+        auto const SPELL_DESC_TEXTRECT_WIDTH{ pageRectRight_.width -
+            (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
+
+        auto const SPELL_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) -
+            spellDescTextRectTop) - VERT_SPACER };
 
         const sf::FloatRect SPELL_DESC_TEXTRECT{ SPELL_DESC_TEXTRECT_LEFT,
                                                  spellDescTextRectTop,
@@ -2220,9 +2300,10 @@ namespace sfml_util
 
         if (spellDescTextUPtr_.get() == nullptr)
         {
-            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
-                                                                   SPELL_DESC_TEXTINFO,
-                                                                   SPELL_DESC_TEXTRECT);
+            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>(
+                "SpellnbookPopupWindowSpellDescription",
+                SPELL_DESC_TEXTINFO,
+                SPELL_DESC_TEXTRECT);
         }
         else
         {
@@ -2239,11 +2320,12 @@ namespace sfml_util
         }
 
         //setup song title text
-        const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(SONG_CPTRC->Name(),
-                                                           sfml_util::FontManager::Instance()->Font_Default1(),
-                                                           sfml_util::FontManager::Instance()->Size_Large(),
-                                                           sfml_util::FontManager::Color_GrayDarker(),
-                                                           sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
+            SONG_CPTRC->Name(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Large(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         const sf::FloatRect SONG_TITLE_TEXTRECT{ pageRectRight_.left,
                                                  pageRectRight_.top,
@@ -2252,9 +2334,10 @@ namespace sfml_util
 
         if (spellTitleTextRegionUPtr_.get() == nullptr)
         {
-            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>("MusicSheetPopupWindowSongTitle",
-                                                                           SONG_TITLE_TEXTINFO,
-                                                                           SONG_TITLE_TEXTRECT);
+            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+                "MusicSheetPopupWindowSongTitle",
+                SONG_TITLE_TEXTINFO,
+                SONG_TITLE_TEXTRECT);
         }
         else
         {
@@ -2269,7 +2352,24 @@ namespace sfml_util
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(spellColorImageCurrent_);
-        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) - (spellSprite_.getGlobalBounds().width * 0.5f), spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
+
+        spellSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) -
+            (spellSprite_.getGlobalBounds().width * 0.5f),
+                spellTitleTextRegionUPtr_->GetEntityRegion().top + spellTitleTextRegionUPtr_->
+                    GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
+
+        auto const SYM_SCALE{ sfml_util::MapByRes(0.75f, 3.75f) };
+        xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
+
+        auto const X_SYM_POS_LEFT{ (spellSprite_.getGlobalBounds().left +
+            (spellSprite_.getGlobalBounds().width * 0.5f)) -
+            (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
+
+        auto const X_SYM_POS_TOP{ (spellSprite_.getGlobalBounds().top +
+            (spellSprite_.getGlobalBounds().height * 0.5f)) -
+            (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
+
+        xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
 
         //setup spell details text
         std::ostringstream ss;
@@ -2278,14 +2378,18 @@ namespace sfml_util
            << "Targets " << game::TargetType::Name(SONG_CPTRC->Target()) << "\n"
            << "Play during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << "\n";
 
-        const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(ss.str(),
-                                                             sfml_util::FontManager::Instance()->Font_Default1(),
-                                                             sfml_util::FontManager::Instance()->Size_Small(),
-                                                             sfml_util::FontManager::Color_GrayDarker(),
-                                                             sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         auto const SONGDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
-        auto const SONGDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top + spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+
+        auto const SONGDETAILS_TEXTRECT_TOP    { spellSprite_.getGlobalBounds().top +
+            spellSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+        
         auto const SONGDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
 
@@ -2296,9 +2400,10 @@ namespace sfml_util
 
         if (spellDetailsTextUPtr_.get() == nullptr)
         {
-            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>("MusicsheetPopupWindowSongDetails",
-                                                                       SONG_DETAILS_TEXTINFO,
-                                                                       SONG_DETAILS_TEXTRECT);
+            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>(
+                "MusicsheetPopupWindowSongDetails",
+                SONG_DETAILS_TEXTINFO,
+                SONG_DETAILS_TEXTRECT);
         }
         else
         {
@@ -2306,40 +2411,62 @@ namespace sfml_util
         }
 
         //setup song 'unable to cast' text
+        willShowRejectImage_ = false;
         ss.str(" ");
         spellUnableTextWillShow_ = false;
         if (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) == false)
         {
+            willShowRejectImage_ = true;
             ss << "Insufficient Mana";
             spellUnableTextWillShow_ = true;
         }
-        else
+        else if (CanPlaySongInPhase(SONG_CPTRC) == false)
         {
-            if (CanPlaySongInPhase(SONG_CPTRC) == false)
-            {
-                auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
-                if (CURRENT_PHASE & game::Phase::Combat)             ss << "Cannot play during combat.";
-                else if (CURRENT_PHASE & game::Phase::Conversation)  ss << "Cannot play while talking.";
-                else if (CURRENT_PHASE & game::Phase::Exploring)     ss << "Cannot play while exploring.";
-                else if (CURRENT_PHASE & game::Phase::Inventory)     ss << "Cannot play from inventory.";
-                else ss << "Only during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << ".";
+            willShowRejectImage_ = true;
 
-                spellUnableTextWillShow_ = true;
+            auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
+
+            if (CURRENT_PHASE & game::Phase::Combat)
+            {
+                ss << "Cannot play during combat.";
             }
+            else if (CURRENT_PHASE & game::Phase::Conversation)
+            {
+                ss << "Cannot play while talking.";
+            }
+            else if (CURRENT_PHASE & game::Phase::Exploring)
+            {
+                ss << "Cannot play while exploring.";
+            }
+            else if (CURRENT_PHASE & game::Phase::Inventory)
+            {
+                ss << "Cannot play from inventory.";
+            }
+            else
+            {
+                ss << "Only during "
+                    << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << ".";
+            }
+
+            spellUnableTextWillShow_ = true;
         }
 
-        const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(ss.str(),
-                                                            sfml_util::FontManager::Instance()->Font_Default2(),
-                                                            sfml_util::FontManager::Instance()->Size_Normal(),
-                                                            SPELL_UNABLE_TEXT_COLOR_,
-                                                            sf::BlendAlpha,
-                                                            sf::Text::Bold,
-                                                            sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            SPELL_UNABLE_TEXT_COLOR_,
+            sf::BlendAlpha,
+            sf::Text::Bold,
+            sfml_util::Justified::Center);
 
         auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
 
         auto const SONG_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
-        auto const SONG_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+
+        auto const SONG_UNABLE_TEXTRECT_TOP    { spellDetailsTextUPtr_->GetEntityRegion().top +
+            spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+        
         auto const SONG_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
 
@@ -2348,33 +2475,40 @@ namespace sfml_util
                                                    SONG_UNABLE_TEXTRECT_WIDTH,
                                                    SONG_UNABLE_TEXTRECT_HEIGHT };
 
-        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>("MusicsheetPopupWindowSongUnableToCast",
-                                                                 SONG_UNABLE_TEXTINFO,
-                                                                 SONG_UNABLE_TEXTRECT);
+        spellUnableTextUPtr_ = std::make_unique<gui::TextRegion>(
+            "MusicsheetPopupWindowSongUnableToCast",
+            SONG_UNABLE_TEXTINFO,
+            SONG_UNABLE_TEXTRECT);
 
         //setup spell description text
         ss.str("");
         ss << SONG_CPTRC->Desc() << "  " << SONG_CPTRC->DescExtra();
 
-        const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(ss.str(),
-                                                          sfml_util::FontManager::Instance()->Font_Default1(),
-                                                          sfml_util::FontManager::Instance()->Size_Small(),
-                                                          sfml_util::FontManager::Color_GrayDarker(),
-                                                          sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Center);
 
         auto const SONG_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
         auto const SONG_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
         auto spellDescTextRectTop{ 0.0f };
         if (spellUnableTextWillShow_)
         {
-            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top + spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            spellDescTextRectTop = spellUnableTextUPtr_->GetEntityRegion().top +
+                spellUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
         else
         {
-            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            spellDescTextRectTop = spellDetailsTextUPtr_->GetEntityRegion().top +
+                spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
-        auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width - (SONG_DESC_HORIZ_MARGIN * 2.0f) };
-        auto const SONG_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER };
+        auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width -
+            (SONG_DESC_HORIZ_MARGIN * 2.0f) };
+
+        auto const SONG_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) -
+            spellDescTextRectTop) - VERT_SPACER };
 
         const sf::FloatRect SONG_DESC_TEXTRECT{ SONG_DESC_TEXTRECT_LEFT,
                                                 spellDescTextRectTop,
@@ -2383,9 +2517,10 @@ namespace sfml_util
 
         if (spellDescTextUPtr_.get() == nullptr)
         {
-            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>("SpellnbookPopupWindowSpellDescription",
-                                                                   SONG_DESC_TEXTINFO,
-                                                                   SONG_DESC_TEXTRECT);
+            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>(
+                "SpellnbookPopupWindowSpellDescription",
+                SONG_DESC_TEXTINFO,
+                SONG_DESC_TEXTRECT);
         }
         else
         {
