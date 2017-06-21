@@ -82,22 +82,24 @@ namespace combat
 
         //negative values are damaging, positive values are healing
         static void HandleDamage(
-            creature::CreaturePtrC_t       creatureDefendingPtrC,
-            HitInfoVec_t &                 hitInfoVec,
-            const stats::Health_t          HEALTH_ADJ,
+            creature::CreaturePtrC_t  creatureDefendingPtrC,
+            HitInfoVec_t &            hitInfoVec,
+            const stats::Health_t     HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec);
 
         static void AddConditionsBasedOnDamage(
-            creature::CreaturePtrC_t       creatureDefendingPtrC,
-            const stats::Health_t          DAMAGE_ABS,
-            creature::CondEnumVec_t & condsAddedVec);
+            creature::CreaturePtrC_t  creatureDefendingPtrC,
+            const stats::Health_t     DAMAGE_ABS,
+            creature::CondEnumVec_t & condsAddedVec,
+            creature::CondEnumVec_t & condsRemovedVec,
+            HitInfoVec_t &            hitInfoVec);
 
         static void RemoveAddedCondition(
             const creature::Conditions::Enum COND_ENUM,
             creature::CreaturePtrC_t         creaturePtrC,
             HitInfoVec_t &                   hitInfoVec,
-            creature::CondEnumVec_t &   condsRemovedVec);
+            creature::CondEnumVec_t &        condsRemovedVec);
 
         static const FightResult Cast(
             const spell::SpellPtr_t          SPELL_CPTR,
@@ -142,9 +144,10 @@ namespace combat
             bool &                   isCriticalHit_OutParam,
             bool &                   didArmorAbsorb_OutParam);
 
-        static bool IsCondContainedInAddedConds(
-            const creature::Conditions::Enum E,
-            const HitInfoVec_t &             HIT_INFO_VEC);
+        static bool AreAnyOfCondsContained(
+            const creature::CondEnumVec_t & CONDS_VEC,
+            const creature::CreaturePtrC_t  CREATURE_PTR,
+            const HitInfoVec_t &            HIT_INFO_VEC);
     };
 
 }

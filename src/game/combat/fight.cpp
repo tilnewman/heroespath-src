@@ -147,15 +147,15 @@ namespace combat
         }
 
         //check if already dead
-        if (creatureDefendingPtrC->HasCondition(creature::Conditions::Dead) ||
-            IsCondContainedInAddedConds(creature::Conditions::Dead, hitInfoVec))
+        if (AreAnyOfCondsContained({ creature::Conditions::Dead },
+                                   creatureDefendingPtrC,
+                                   hitInfoVec))
         {
             return;
         }
 
-        auto const IS_ALREADY_UNCONSCIOUS{
-            creatureDefendingPtrC->HasCondition(creature::Conditions::Unconscious) ||
-                IsCondContainedInAddedConds(creature::Conditions::Unconscious, hitInfoVec) };
+        auto const IS_ALREADY_UNCONSCIOUS{ AreAnyOfCondsContained(
+            { creature::Conditions::Unconscious }, creatureDefendingPtrC, hitInfoVec) };
 
         //at this point HEALTH_ADJ is negative
         auto const DAMAGE_ABS{ std::abs(HEALTH_ADJ) };
@@ -167,19 +167,16 @@ namespace combat
                 (DAMAGE_ABS >= creatureDefendingPtrC->HealthCurrent())))))
         {
             creatureDefendingPtrC->HealthCurrentSet(0);
-
-            const creature::Conditions::Enum CONDITION_DEAD_ENUM{ creature::Conditions::Dead };
-
-            creatureDefendingPtrC->ConditionAdd(CONDITION_DEAD_ENUM);
-            condsAddedVec.push_back(CONDITION_DEAD_ENUM);
+            creatureDefendingPtrC->ConditionAdd(creature::Conditions::Dead);
+            condsAddedVec.push_back(creature::Conditions::Dead);
 
             //remove the unconscious condition if already there
             if (IS_ALREADY_UNCONSCIOUS)
             {
                 RemoveAddedCondition(creature::Conditions::Unconscious,
-                                        creatureDefendingPtrC,
-                                        hitInfoVec,
-                                        condsRemovedVec);
+                                     creatureDefendingPtrC,
+                                     hitInfoVec,
+                                     condsRemovedVec);
             }
 
             return;
@@ -215,20 +212,24 @@ namespace combat
             {
                 AddConditionsBasedOnDamage(creatureDefendingPtrC,
                                            DAMAGE_ABS,
-                                           condsAddedVec);
+                                           condsAddedVec,
+                                           condsRemovedVec,
+                                           hitInfoVec);
             }
         }
     }
 
 
     void FightClub::AddConditionsBasedOnDamage(
-        creature::CreaturePtrC_t       creatureDefendingPtrC,
-        const stats::Health_t          DAMAGE_ABS,
-        creature::CondEnumVec_t & condsAddedVecParam)
+        creature::CreaturePtrC_t  creatureDefendingPtrC,
+        const stats::Health_t     DAMAGE_ABS,
+        creature::CondEnumVec_t & condsAddedVecParam,
+        creature::CondEnumVec_t & condsRemovedVecParam,
+        HitInfoVec_t &            hitInfoVec)
     {
         creature::CondEnumVec_t condsVecToAdd{ creature::Conditions::Daunted,
-                                                    creature::Conditions::Dazed,
-                                                    creature::Conditions::Tripped };
+                                               creature::Conditions::Dazed,
+                                               creature::Conditions::Tripped };
         
         misc::Vector::ShuffleVec(condsVecToAdd);
 
@@ -243,7 +244,7 @@ namespace combat
             condsVecToAdd.resize(2);
         }
         else if (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() -
-            (creatureDefendingPtrC->HealthNormal() / 2)))
+                    (creatureDefendingPtrC->HealthNormal() / 2)))
         {
             condsVecToAdd.resize(1);
         }
@@ -257,10 +258,62 @@ namespace combat
 
         for (auto const NEXT_COND_ENUM : condsVecToAdd)
         {
+            using namespace creature;
+
             //only a 50/50 chance of adding conditions
-            if ((misc::random::Float(1.0f) < CHANCE_CONDS_ADDED_RATIO) &&
-                (creatureDefendingPtrC->HasCondition(NEXT_COND_ENUM) == false))
+            if (misc::random::Float(1.0f) < CHANCE_CONDS_ADDED_RATIO)
             {
+                if ((NEXT_COND_ENUM == Conditions::Dazed) && AreAnyOfCondsContained(
+                    { Conditions::AsleepMagical,
+                      Conditions::AsleepNatural,
+                      Conditions::Dazed,
+                      Conditions::Unconscious },
+                    creatureDefendingPtrC,
+                    hitInfoVec))
+                {
+                    continue;
+                }
+
+                if ((NEXT_COND_ENUM == Conditions::Daunted) && AreAnyOfCondsContained(
+                    { Conditions::Daunted,
+                      Conditions::Unconscious },
+                    creatureDefendingPtrC,
+                    hitInfoVec))
+                {
+                    continue;
+                }
+
+                if ((NEXT_COND_ENUM == Conditions::Tripped) && AreAnyOfCondsContained(
+                    { Conditions::Tripped,
+                      Conditions::AsleepMagical,
+                      Conditions::AsleepNatural,
+                      Conditions::Unconscious },
+                    creatureDefendingPtrC,
+                    hitInfoVec))
+                {
+                    continue;
+                }
+
+
+                if ((NEXT_COND_ENUM == Conditions::Daunted) && AreAnyOfCondsContained(
+                    { Conditions::Heroic,
+                      Conditions::Bold }, 
+                    creatureDefendingPtrC,
+                    hitInfoVec))
+                {
+                    RemoveAddedCondition(Conditions::Heroic,
+                                         creatureDefendingPtrC,
+                                         hitInfoVec,
+                                         condsRemovedVecParam);
+
+                    RemoveAddedCondition(Conditions::Bold,
+                                         creatureDefendingPtrC,
+                                         hitInfoVec,
+                                         condsRemovedVecParam);
+
+                    continue;
+                }
+
                 creatureDefendingPtrC->ConditionAdd(NEXT_COND_ENUM);
                 condsAddedVecParam.push_back(NEXT_COND_ENUM);
             }
@@ -554,18 +607,7 @@ namespace combat
         //then add a damage bonus based on half a strength ratio "roll".
         const stats::Stat_t STAT_FLOOR{ GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
-
-        M_HP_LOG_DBG("\t 1*********  FightClub::DetermineDamage("
-            << "item=" << WEAPON_PTR->Name()
-            << ", attacker=" << creatureAttackingPtrC->Name()
-            << ", defending=" << creatureDefendingPtrC->Name()
-            << ") weapon_min=" << WEAPON_PTR->DamageMin()
-            << ", weapon_max=" << WEAPON_PTR->DamageMax()
-            << ", RANK_DAMAGE_BONUS_ADJ_RATIO=" << RANK_DAMAGE_BONUS_ADJ_RATIO
-            << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
-            << ", STAT_FLOOR=" << STAT_FLOOR);
-            
-        //
+        
         stats::Health_t damageFromStrength{ 0 };
         auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Stats().Str().Current() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
@@ -585,13 +627,6 @@ namespace combat
             {
                 damageFromStrength = 0;
             }
-
-            M_HP_LOG_DBG("\t 2*********  FightClub::DetermineDamage()"
-                << ", STRENGTH_CURRENT=" << STRENGTH_CURRENT
-                << ", RAND_STR_STAT=" << RAND_STR_STAT
-                << ", STR_BONUS_ADJ_RATIO=" << STR_BONUS_ADJ_RATIO
-                << ", damageFromStrength=" << damageFromStrength
-                << ", STAT_FLOOR=" << STAT_FLOOR);
         }
         
         const stats::Health_t DAMAGE_BASE{
@@ -636,7 +671,6 @@ namespace combat
                                   (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO));
 
         stats::Health_t damageFinal{ DAMAGE_BASE };
-        stats::Health_t damageFinalA{ damageFinal };
 
         const stats::Health_t SPECIAL_HIT_DAMAGE_MIN{
             static_cast<stats::Health_t>(creatureAttackingPtrC->Rank()) +
@@ -665,19 +699,6 @@ namespace combat
         {
             didArmorAbsorb_OutParam = true;
         }
-
-        M_HP_LOG_DBG("\t 3*********  FightClub::DetermineDamage()"
-            << "  DAMAGE_FROM_WEAPON=" << DAMAGE_FROM_WEAPON
-            << ", DAMAGE_FROM_RANK=" << DAMAGE_FROM_RANK
-            << ", damageFromStrength=" << damageFromStrength
-            << ", DAMAGE_BASE=" << DAMAGE_BASE
-            << ", damageFinalA=" << damageFinalA
-            << ", isPowerHit=" << std::boolalpha << isPowerHit_OutParam
-            << ", isCriticalHit=" << isCriticalHit_OutParam
-            << ", damageAfterSpecials=" << DAMAGE_AFTER_SPECIALS
-            << ", Defender'sArmorRating()=" << creatureDefendingPtrC->ArmorRating()
-            << ", ArmorAbsorbDamage=" << (DAMAGE_AFTER_SPECIALS - damageFinal)
-            << ", damageFinal=" << damageFinal);
 
         //pixies are dealt less damage than other creatures because of
         //their small size and speed
@@ -1127,14 +1148,23 @@ namespace combat
     }
 
 
-    bool FightClub::IsCondContainedInAddedConds(const creature::Conditions::Enum E,
-                                                const HitInfoVec_t & HIT_INFO_VEC)
+    bool FightClub::AreAnyOfCondsContained(const creature::CondEnumVec_t & CONDS_VEC,
+                                           const creature::CreaturePtrC_t  CREATURE_PTR,
+                                           const HitInfoVec_t &            HIT_INFO_VEC)
     {
-        for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
+        for (auto const NEXT_COND_ENUM : CONDS_VEC)
         {
-            if (NEXT_HIT_INFO.CondsAddedContains(E))
+            if (CREATURE_PTR->HasCondition(NEXT_COND_ENUM))
             {
                 return true;
+            }
+
+            for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
+            {
+                if (NEXT_HIT_INFO.CondsAddedContains(NEXT_COND_ENUM))
+                {
+                    return true;
+                }
             }
         }
 
