@@ -646,6 +646,7 @@ namespace weapon
                 weaponType = weapon_type::Sling;
                 break;
             }
+            case projectile_type::Shortbow:
             case projectile_type::Longbow:
             {
                 materialPri = material::Wood;

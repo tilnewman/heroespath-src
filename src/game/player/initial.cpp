@@ -208,11 +208,11 @@ namespace player
 
         if (ROLE_ENUM == creature::role::Archer)
         {
-            auto slingPtr{ weapon::WeaponFactory::Make_Projectile(
-                weapon::projectile_type::Sling, material::Nothing) };
+            auto shortbowPtr{ weapon::WeaponFactory::Make_Projectile(
+                weapon::projectile_type::Shortbow, material::Nothing) };
 
-            characterPtrC->ItemAdd(slingPtr);
-            characterPtrC->ItemEquip(slingPtr);
+            characterPtrC->ItemAdd(shortbowPtr);
+            characterPtrC->ItemEquip(shortbowPtr);
 
             ItemPtr_t bootsPtr(armor::ArmorFactory::Make_Boots(
                 armor::base_type::Plain, HardOrSoftLeatherRand(), material::Nothing));

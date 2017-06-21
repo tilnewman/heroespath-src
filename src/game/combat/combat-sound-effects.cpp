@@ -85,6 +85,7 @@ namespace combat
         {
             M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss() "
                 << "was given a nullptr WEAPON_PTR.");
+
             return;
         }
         
@@ -92,11 +93,17 @@ namespace combat
         
         if (HIT_INFO.WasHit())
         {
-            if ((WEAPON_TYPE & item::weapon_type::Blowpipe) ||
-                (WEAPON_TYPE & item::weapon_type::Sling))
+            if (WEAPON_TYPE & item::weapon_type::Blowpipe)
             {
                 sfml_util::SoundManager::Instance()->GetSfxSet(
                     sfml_util::SfxSet::BlowpipeHit).PlayRandom();
+            }
+            else if (WEAPON_TYPE & item::weapon_type::Sling)
+            {
+                //The horn hit sounded good for slings too
+                return sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::MaterialHitMisc).Play(
+                        sfml_util::sound_effect::MaterialHitHorn);
             }
             else if ((WEAPON_TYPE & item::weapon_type::Bow) ||
                 (WEAPON_TYPE & item::weapon_type::Crossbow))

@@ -110,6 +110,7 @@ namespace weapon
         {
             Blowpipe = 0,
             Sling,
+            Shortbow,
             Longbow,
             Crossbow,
             CompositeBow,

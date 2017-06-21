@@ -128,6 +128,7 @@ namespace weapon
         {
             case Blowpipe:     { return "Blowpipe"; }
             case Sling:        { return "Sling"; }
+            case Shortbow:     { return "Shortbow"; }
             case Longbow:      { return "Longbow"; }
             case CompositeBow: { return "CompositeBow"; }
             case Crossbow:     { return "Crossbow"; }

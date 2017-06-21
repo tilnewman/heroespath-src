@@ -146,6 +146,7 @@ namespace weapon
         LoadDetailsForKey("MaceAndChain");
         LoadDetailsForKey("Blowpipe");
         LoadDetailsForKey("Sling");
+        LoadDetailsForKey("Shortbow");
         LoadDetailsForKey("Longbow");
         LoadDetailsForKey("Compositebow");
         LoadDetailsForKey("Crossbow");

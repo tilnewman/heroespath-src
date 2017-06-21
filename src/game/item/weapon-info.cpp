@@ -94,6 +94,7 @@ namespace weapon
         else if (name == "maceandchain")  { whip = whip_type::MaceAndChain;             type = weapon_type::Whip;  }
         else if (name == "blowpipe")      { projectile = projectile_type::Blowpipe;     type = weapon_type::Projectile;  }
         else if (name == "sling")         { projectile = projectile_type::Sling;        type = weapon_type::Projectile;  }
+        else if (name == "shortbow")      { projectile = projectile_type::Shortbow;     type = weapon_type::Projectile;  }
         else if (name == "longbow")       { projectile = projectile_type::Longbow;      type = weapon_type::Projectile;  }
         else if (name == "compositebow")  { projectile = projectile_type::CompositeBow; type = weapon_type::Projectile;  }
         else if (name == "crossbow")      { projectile = projectile_type::Crossbow;     type = weapon_type::Projectile;  }
