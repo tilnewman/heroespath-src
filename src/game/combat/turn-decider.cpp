@@ -230,57 +230,51 @@ namespace combat
         const creature::CreaturePVec_t REFINED_TARGETS_PVEC{
             RefineTargets(SELECT_TARGETS_PVEC, TURN_INFO) };
 
-        if (REFINED_TARGETS_PVEC.empty())
-        {
-            if (SELECT_TARGETS_PVEC.empty())
-            {
-                //if no refined or select targets, then choose the closest player,
-                //avoiding those permenantly not a threat, at random
-                auto const CLOSEST_PLAYERS_PVEC{
-                    COMBAT_DISPLAY_CPTRC->FindClosestLivingByType(CREATURE_CPTRC, true) };
-
-                if (CLOSEST_PLAYERS_PVEC.size() == 1)
-                {
-                    return * CLOSEST_PLAYERS_PVEC.begin();
-                }
-
-                auto const CLOSEST_PLAYERS_STILL_A_THREAT_PVEC{
-                    creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                        CLOSEST_PLAYERS_PVEC, false) };
-
-                auto const CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH{ ((TURN_INFO.GetIsFlying()) ?
-                    CLOSEST_PLAYERS_STILL_A_THREAT_PVEC :
-                    creature::Algorithms::FindByFlying(
-                        CLOSEST_PLAYERS_STILL_A_THREAT_PVEC, false)) };
-
-                if (CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH.empty())
-                {
-                    if (CLOSEST_PLAYERS_STILL_A_THREAT_PVEC.empty())
-                    {
-                        return misc::Vector::SelectRandom(CLOSEST_PLAYERS_PVEC);
-                    }
-                    else
-                    {
-                        return misc::Vector::SelectRandom(CLOSEST_PLAYERS_STILL_A_THREAT_PVEC);
-                    }
-                }
-                else
-                {
-                    return misc::Vector::SelectRandom(CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH);
-                }
-            }
-            else
-            {
-                //select the closest of the select targets at random
-                return misc::Vector::SelectRandom( COMBAT_DISPLAY_CPTRC->FindClosestLiving(
-                    CREATURE_CPTRC, SELECT_TARGETS_PVEC) );
-            }
-        }
-        else
+        if (REFINED_TARGETS_PVEC.empty() == false)
         {
             //select the closest of the refined targets at random
             return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(
                 CREATURE_CPTRC, REFINED_TARGETS_PVEC));
+        }
+
+        if (SELECT_TARGETS_PVEC.empty() == false)
+        {
+            //select the closest of the select targets at random
+            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(
+                CREATURE_CPTRC, SELECT_TARGETS_PVEC));
+        }
+
+        //if no refined or select targets, then choose the closest player,
+        //avoiding those permenantly not a threat, at random
+        auto const CLOSEST_PLAYERS_PVEC{
+            COMBAT_DISPLAY_CPTRC->FindClosestLivingByType(CREATURE_CPTRC, true) };
+
+        if (CLOSEST_PLAYERS_PVEC.size() == 1)
+        {
+            return CLOSEST_PLAYERS_PVEC[0];
+        }
+
+        auto const CLOSEST_PLAYERS_STILL_A_THREAT_PVEC{
+            creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
+                CLOSEST_PLAYERS_PVEC, false) };
+
+        auto const CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH{ ((TURN_INFO.GetIsFlying()) ?
+            CLOSEST_PLAYERS_STILL_A_THREAT_PVEC :
+            creature::Algorithms::FindByFlying(
+                CLOSEST_PLAYERS_STILL_A_THREAT_PVEC, false)) };
+
+        if (CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH.empty() == false)
+        {
+            return misc::Vector::SelectRandom(CLOSEST_PLAYERS_THREAT_AND_FLYING_MATCH);
+        }
+
+        if (CLOSEST_PLAYERS_STILL_A_THREAT_PVEC.empty())
+        {
+            return misc::Vector::SelectRandom(CLOSEST_PLAYERS_PVEC);
+        }
+        else
+        {
+            return misc::Vector::SelectRandom(CLOSEST_PLAYERS_STILL_A_THREAT_PVEC);
         }
     }
 
@@ -370,25 +364,40 @@ namespace combat
     }
 
 
-    creature::CreaturePVec_t TurnDecider::RefineTargets(const creature::CreaturePVec_t & SELECTED_TARGETS_PVEC, const TurnInfo & TURN_INFO)
+    creature::CreaturePVec_t TurnDecider::RefineTargets(
+        const creature::CreaturePVec_t & SELECTED_TARGETS_PVEC,
+        const TurnInfo &                 TURN_INFO)
     {
         auto const REFINE_TYPE_ENUM{ TURN_INFO.GetStrategyInfo().Refine() };
 
-        if (SELECTED_TARGETS_PVEC.empty() || (REFINE_TYPE_ENUM == strategy::RefineType::None))
+        if (SELECTED_TARGETS_PVEC.empty() ||
+            (REFINE_TYPE_ENUM == strategy::RefineType::None))
+        {
             return SELECTED_TARGETS_PVEC;
+        }
 
         creature::CreaturePVec_t refinedTargetsPVec;
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Murderer)
+        {
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
-                         [] (const creature::CreaturePtr_t CCPTR) { return CCPTR->HasCondition(creature::Conditions::Unconscious); });
+                         []
+                         (const creature::CreaturePtr_t CCPTR)
+                            {
+                                return CCPTR->HasCondition(creature::Conditions::Unconscious);
+                            });
+        }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Bloodthirsty)
         {
-            auto const LOWEST_HEALTH_PVEC{ creature::Algorithms::FindLowestHealth(SELECTED_TARGETS_PVEC) };
-            std::copy(LOWEST_HEALTH_PVEC.begin(), LOWEST_HEALTH_PVEC.end(), back_inserter(refinedTargetsPVec));
+            auto const LOWEST_HEALTH_PVEC{
+                creature::Algorithms::FindLowestHealth(SELECTED_TARGETS_PVEC) };
+
+            std::copy(LOWEST_HEALTH_PVEC.begin(),
+                      LOWEST_HEALTH_PVEC.end(),
+                      back_inserter(refinedTargetsPVec));
         }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Coward)
@@ -398,15 +407,23 @@ namespace combat
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(cantTakeActionPVec),
-                         [] (const creature::CreaturePtr_t CCPTR) { return (CCPTR->CanTakeAction() == false); });
+                         []
+                         (const creature::CreaturePtr_t CCPTR)
+                            {
+                                return (CCPTR->CanTakeAction() == false);
+                            });
 
             if (cantTakeActionPVec.empty() == false)
             {
-                auto const CANT_ACT_BUT_NOT_PERM_PVEC{ creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(cantTakeActionPVec, false) };
+                auto const CANT_ACT_BUT_NOT_PERM_PVEC{
+                    creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
+                        cantTakeActionPVec, false) };
 
                 if (CANT_ACT_BUT_NOT_PERM_PVEC.empty() == false)
                 {
-                    std::copy(CANT_ACT_BUT_NOT_PERM_PVEC.begin(), CANT_ACT_BUT_NOT_PERM_PVEC.end(), back_inserter(refinedTargetsPVec));
+                    std::copy(CANT_ACT_BUT_NOT_PERM_PVEC.begin(),
+                              CANT_ACT_BUT_NOT_PERM_PVEC.end(),
+                              back_inserter(refinedTargetsPVec));
                 }
             }
         }
@@ -488,7 +505,11 @@ namespace combat
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
-                         [] (const creature::CreaturePtr_t CCPTR) { return CCPTR->HasMagicalCondition(); });
+                         []
+                         (const creature::CreaturePtr_t CCPTR)
+                            {
+                                return CCPTR->HasMagicalCondition();
+                            });
         }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::NotEnchanted)
@@ -496,7 +517,11 @@ namespace combat
             std::copy_if(SELECTED_TARGETS_PVEC.begin(),
                          SELECTED_TARGETS_PVEC.end(),
                          back_inserter(refinedTargetsPVec),
-                         [] (const creature::CreaturePtr_t CCPTR) { return (CCPTR->HasMagicalCondition() == false); });
+                         []
+                         (const creature::CreaturePtr_t CCPTR)
+                            {
+                                return (CCPTR->HasMagicalCondition() == false);
+                            });
         }
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::MostDamage)
@@ -509,7 +534,9 @@ namespace combat
 
         if (refinedTargetsPVec.size() > 1)
         {
-            refinedTargetsPVec.erase(std::unique(refinedTargetsPVec.begin(), refinedTargetsPVec.end()), refinedTargetsPVec.end());
+            refinedTargetsPVec.erase(std::unique(refinedTargetsPVec.begin(),
+                                                 refinedTargetsPVec.end()),
+                                                 refinedTargetsPVec.end());
         }
 
         return refinedTargetsPVec;
@@ -519,19 +546,33 @@ namespace combat
     float TurnDecider::ChanceFromFrequency(const strategy::FrequencyType::Enum E)
     {
         if (E == strategy::FrequencyType::Commonly)
+        {
             return 0.75f;
+        }
         else if (E == strategy::FrequencyType::Neutral)
+        {
             return 0.5f;
+        }
         else if (E == strategy::FrequencyType::Often)
+        {
             return 0.9f;
+        }
         else if (E == strategy::FrequencyType::Rarely)
+        {
             return 0.1f;
+        }
         else if (E == strategy::FrequencyType::Seldom)
+        {
             return 0.25f;
+        }
         else if (E == strategy::FrequencyType::Always)
+        {
             return 1.0f;
+        }
         else // Never & everything else
+        {
             return 0.0f;
+        }
     }
 
 

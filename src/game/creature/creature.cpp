@@ -395,10 +395,7 @@ namespace creature
     bool Creature::HasConditionNotAThreatTemp() const
     {
         return (HasCondition(Conditions::Dazed) ||
-                HasCondition(Conditions::Tripped) ||
-                HasCondition(Conditions::Unconscious) ||
-                HasCondition(Conditions::AsleepNatural) ||
-                HasCondition(Conditions::AsleepMagical));
+                HasCondition(Conditions::Tripped));
     }
 
 
