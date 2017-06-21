@@ -690,9 +690,21 @@ namespace combat
         auto const DAMAGE_AFTER_SPECIALS{ damageFinal };
 
         //reduce damage based on the defending creature's armor
+        auto const MAX_ARMOR_RATING{ item::ArmorRatings::Instance()->ArmoredGreaterDiamond() };
+
+        auto armorRatingToUse{ creatureDefendingPtrC->ArmorRating() };
+
+        if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped))
+        {
+            armorRatingToUse -= MAX_ARMOR_RATING / 2;
+            if (armorRatingToUse < 0)
+            {
+                armorRatingToUse = 0;
+            }
+        }
+
         damageFinal -= static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
-            (static_cast<float>(creatureDefendingPtrC->ArmorRating()) / 
-                static_cast<float>(item::ArmorRatings::Instance()->ArmoredGreaterDiamond()) ) );
+            (static_cast<float>(armorRatingToUse) / static_cast<float>(MAX_ARMOR_RATING) ) );
         
         //check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0) && (damageFinal <= 0))
