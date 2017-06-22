@@ -3,11 +3,11 @@ This repository holds the source-code of the Heroes’ Path game.
 
 
 ## About the Game
-Heroes' Path is an open-source, non-commercial, simple, 2D game in the classic RPG turn-based style.  It was created more as a learning exercise than as an attempt to finish a full game.  I’ll implement a few hours worth of playtime, that is, resources such as maps, spells, creatures, etc., and then leave it as a full-playable, all be it short, running game.  Perhaps myself or others will finish it.
+Heroes' Path is an open-source, free (non-commercial), simple, 2D game in the classic RPG turn-based style.  It was created more as a learning exercise than as an attempt to finish a full game.  I intend to implement a few hours worth of playtime, and then leave it as a fully-playable, all be it short, running game.  Given the permissive license the software and resource files are released under, it is possible for others to finish the game or to make their own ‘spin-off’ versions.
 
 
 ## About the Code
-The code is written in C++ (C++14) that I have endeavored to keep simple and straightforward, staying away from the dark corners of the type system and templates.  I relied heavily on SFML (for 2D graphics and sound) and a couple of Boost libraries. (SFML = “Simple Fast Multimedia Library”, www.sfml-dev.org)
+The code is written in C++ (C++14).  I have endeavored to keep the code simple and straightforward, staying away from the dark corners of the type system and templates.  I relied heavily on SFML (“Simple Fast Multimedia Library”, www.sfml-dev.org) for 2D graphics and sound, while using the Boost (boost.org) libraries sparingly.
 
 This is a CMake project, and I maintained three build environments that compile cleanly at high warning levels:
  * Windows running Visual Studio 2017
@@ -24,7 +24,7 @@ Since I was working alone on this project, I relied on static and runtime analys
 
 ## How To
 0. Install [CMake](http://cmake.org)
-1. Install Visual Studio/GCC/Clang
+1. Install Visual Studio, GCC, or the Clang compiler
 2. Install [Boost](http://boost.org)
 3. Install [SFML](http://sfml-dev.org)
 4. `mkdir heroespath`
