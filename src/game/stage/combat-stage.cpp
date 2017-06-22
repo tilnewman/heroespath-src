@@ -1391,9 +1391,10 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
-            auto const ZOOM_CURR_VAL(zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
-            zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
-
+            //Note:  This zoom in was never needed, and it caused bad panning artifacts
+            //zoomSliderBarUPtr_->SetCurrentValue(zoomSliderOrigPos_ +
+            //    (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
+            
             combatAnimationUPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
             {
@@ -1475,7 +1476,9 @@ namespace stage
             //the initial pan seems to take extra time getting started so speed it up here
             auto sliderPosAdj{ 0.25f + slider_.Update(ELAPSED_TIME_SEC) };
             if (sliderPosAdj > 1.0f)
+            {
                 sliderPosAdj = 1.0f;
+            }
 
             combatAnimationUPtr_->CenteringUpdate(sliderPosAdj);
             if (slider_.GetIsDone())
@@ -2320,6 +2323,7 @@ namespace stage
     {
         M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
             "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
+
         combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
         combatAnimationUPtr_->ShakeAnimStop(turnCreaturePtr_);
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);

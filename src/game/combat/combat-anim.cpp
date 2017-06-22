@@ -45,6 +45,7 @@
 #include "game/combat/combat-node.hpp"
 #include "game/item/item.hpp"
 #include "game/creature/creature.hpp"
+#include "game/creature/algorithms.hpp"
 #include "game/game-data-file.hpp"
 #include "game/spell/spell-base.hpp"
 
@@ -405,6 +406,7 @@ namespace combat
     {
         auto combatNodesPVec{
             combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
             nextCombatNodePtrC->SetDead(true);
@@ -416,7 +418,9 @@ namespace combat
     void CombatAnimation::DeathAnimUpdate(const float SLIDER_POS)
     {
         for (auto const nextCombatNodePtrC : deadAnimNodesPVec_)
+        {
             nextCombatNodePtrC->UpdateDeathAnim(SLIDER_POS);
+        }
     }
 
 
@@ -504,11 +508,13 @@ namespace combat
 
         auto const DIFF_X((BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x);
         auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
+
         combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f *
             SLIDER_POS, WILL_MOVE_BACKGROUND);
 
         auto const DIFF_Y((BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y);
         auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
+
         combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f *
             SLIDER_POS, WILL_MOVE_BACKGROUND);
 
@@ -553,8 +559,7 @@ namespace combat
             NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
         }
 
-        creature::CreaturePVec_t creaturePVec{ repositionAnimCreaturePtr_ };
-        CenteringStart(creaturePVec);
+        CenteringStart( creature::CreaturePVec_t{ repositionAnimCreaturePtr_ } );
 
         //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
         CenteringUpdate(10.0f, false);

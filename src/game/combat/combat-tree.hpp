@@ -163,8 +163,8 @@ namespace combat
 
         //returns a vector of vertex IDs that were left without edges
         //throws logic_error if ID is not an existing vertex
-        const IdVec_t RemoveVertex(const Id_t ID,
-                                   const bool WILL_REMOVE_DANGLING_EDGES = false);
+        void RemoveVertex(const Id_t ID,
+                          const bool WILL_REMOVE_DANGLING_EDGES = false);
 
         std::size_t EdgeCount(const EdgeType::Enum TYPE = EdgeType::All) const;
 
@@ -219,8 +219,7 @@ namespace combat
 
         //WILL_BREAK_PRE_EXISTING only breaks edges of type CONNECTION_TYPE
         void ConnectAllAtPosition(const int            POS,
-                                  const EdgeType::Enum CONNECTION_TYPE,
-                                  const bool           WILL_BREAK_PRE_EXISTING = true);
+                                  const EdgeType::Enum CONNECTION_TYPE);
 
         int GetBlockingPosMin() const;
         int GetBlockingPosMax() const;

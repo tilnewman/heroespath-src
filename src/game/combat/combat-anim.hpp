@@ -161,7 +161,8 @@ namespace combat
         void CenteringStartTargetCenterOfBatllefield();
         void CenteringStart(const creature::CreaturePVec_t &);
 
-        //returns true if CombatStage should zoom out, or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
+        //returns true if CombatStage should zoom out,
+        //or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
         bool CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
 
         void CenteringStop();

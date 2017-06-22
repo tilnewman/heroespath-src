@@ -108,14 +108,14 @@ namespace combat
 
     non_player::CharacterPtr_t PartyFactory::MakeCreature_GoblinGrunt() const
     {
-        const stats::StatSet GOBLIN_STATS( 7 + misc::random::Int(5),  //str
-                                           5 + misc::random::Int(7),  //acc
-                                           5 + misc::random::Int(7),  //cha
-                                           5 + misc::random::Int(7),  //lck
-                                           5 + misc::random::Int(7),  //spd
-                                           3 + misc::random::Int(5) );//int
+        const stats::StatSet GOBLIN_STATS( 13 + misc::random::Int(5),  //str
+                                           13 + misc::random::Int(5),  //acc
+                                           5  + misc::random::Int(5),  //cha
+                                           5  + misc::random::Int(5),  //lck
+                                           13 + misc::random::Int(5),  //spd
+                                           3  + misc::random::Int(5) );//int
 
-        const stats::Health_t GOBLIN_HEALTH(7 + misc::random::Int(5));
+        const stats::Health_t GOBLIN_HEALTH(10 + misc::random::Int(10));
 
         const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ? 
             creature::sex::Male : creature::sex::Female);

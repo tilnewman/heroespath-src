@@ -630,7 +630,9 @@ namespace combat
         CombatNodePVec_t combatNodePVec;
         combatTree_.GetCombatNodes(combatNodePVec);
         for (auto const nextCombatNodePtrC : combatNodePVec)
+        {
             nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT * -1.0f);
+        }
 
         if (UpdateWhichNodesWillDraw())
         {
@@ -644,7 +646,6 @@ namespace combat
         else
         {
             //if no creature/combat nodes are drawn to the screen anymore, then move back
-
             if (WILL_MOVE_BACKGROUND)
             {
                 offScreenPosY_ = prevScrollPosVert_;
@@ -653,7 +654,9 @@ namespace combat
             offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
 
             for (auto const nextCombatNodePtrC : combatNodePVec)
+            {
                 nextCombatNodePtrC->MoveEntityPos(0.0f, AMOUNT);
+            }
 
             UpdateWhichNodesWillDraw();
         }
@@ -679,7 +682,9 @@ namespace combat
         CombatNodePVec_t combatNodePVec;
         combatTree_.GetCombatNodes(combatNodePVec);
         for (auto const nextCombatNodePtrC : combatNodePVec)
+        {
             nextCombatNodePtrC->MoveEntityPos(AMOUNT * -1.0f, 0.0f);
+        }
 
         if (UpdateWhichNodesWillDraw())
         {
@@ -692,6 +697,7 @@ namespace combat
         }
         else
         {
+            //if no creature/combat nodes are drawn to the screen anymore, then move back
             if (WILL_MOVE_BACKGROUND)
             {
                 offScreenPosX_ = prevScrollPosHoriz_;
@@ -700,7 +706,9 @@ namespace combat
             offScreenSprite_.setTextureRect(ORIG_OFFSCREEN_SPRITE_RECT);
 
             for (auto const nextCombatNodePtrC : combatNodePVec)
+            {
                 nextCombatNodePtrC->MoveEntityPos(AMOUNT, 0.0f);
+            }
 
             UpdateWhichNodesWillDraw();
         }
@@ -1188,7 +1196,7 @@ namespace combat
 
         //move the vertecies and edges in the combatTree_
         combatTree_.RemoveVertex(CREATURE_NODE_ID, true);
-        combatTree_.AddVertex(CREATURE_NODE_ID, combatNodeSPtr);//re-use the same node id
+        combatTree_.AddVertex(CREATURE_NODE_ID, combatNodeSPtr);//re-use the same node id and ptr
         combatTree_.ConnectAllAtPosition(blockingPos, EdgeType::ShoulderToShoulder);
 
         //re-position CombatNodes/Creatures on the battlefield in the slow animated way
@@ -1313,8 +1321,8 @@ namespace combat
         }
 
         auto const TOLERANCE{ sfml_util::MapByRes(300.0f, 600.0f) };
-        return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  + TOLERANCE)) &&
-                (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() + TOLERANCE)));
+        return ((horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth()  - TOLERANCE)) ||
+                (vertPosDiffMax  > (sfml_util::Display::Instance()->GetWinHeight() - TOLERANCE)));
     }
 
 
