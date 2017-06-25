@@ -95,6 +95,8 @@ namespace stage
                                         const sf::BlendMode & BLEND_MODE,
                                         const sf::Color &     COLOR);
 
+        bool TestInventoryFactory();
+
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
         static sfml_util::MultiTextureAnimationSPtr_t multiTextureAnimSPtr_;

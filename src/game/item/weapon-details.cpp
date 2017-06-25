@@ -148,7 +148,7 @@ namespace weapon
         LoadDetailsForKey("Sling");
         LoadDetailsForKey("Shortbow");
         LoadDetailsForKey("Longbow");
-        LoadDetailsForKey("Compositebow");
+        LoadDetailsForKey("CompositeBow");
         LoadDetailsForKey("Crossbow");
         LoadDetailsForKey("Spear");
         LoadDetailsForKey("ShortSpear");

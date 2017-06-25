@@ -756,6 +756,8 @@ heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Wyvern=-0.5
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Giant=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Ghoul=0.0
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Beetle=0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Boar=0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Gnome=-0.5
@@ -794,6 +796,8 @@ heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Wyvern=0.9
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Giant=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Ghoul=-0.2
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Beetle=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Boar=-0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Gnome=0.5
@@ -832,6 +836,8 @@ heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Wyvern=0.77
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Giant=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Ghoul=0.0
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Beetle=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Boar=-0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Gnome=0.5
@@ -870,6 +876,8 @@ heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-ra
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Wyvern=0.85
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Giant=0.5
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Ghoul=-0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Beetle=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Boar=-0.9
 #
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-role-Archer=0.15
@@ -1077,6 +1085,8 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Pug=0.85
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Wyvern=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Giant=0.85
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Ghoul=0.25
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Beetle=0.99
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Boar=0.99
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Human=0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Gnome=0.5
@@ -1115,6 +1125,8 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Pug=0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Wyvern=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Giant=0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Ghoul=0.5
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Beetle=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Boar=0.005
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Human=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Gnome=0.1
@@ -1153,6 +1165,8 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Pug=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Wyvern=0.9
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Giant=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Ghoul=0.25
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Beetle=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Boar=0.005
 #
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-Rarely-role-Beastmaster=-0.1
@@ -1361,7 +1375,7 @@ heroespath-nonplayer-ownershipprofile-complexitytype-role-Blacksmith=Complex
 heroespath-nonplayer-ownershipprofile-complexitytype-role-Witch=Complex
 
 #armor chances by role
-heroespath-nonplayer-armor-chances-role-Beastmaster=Shirt,Mail,0.33 | Shirt,Scale,0.33 | Pants,Mail0.20 | Pants,Scale,0.05 | Boots,Mail,0.33 | Boots,Scale,0.33 | Gauntlets,Mail,0.10 | Gauntlets,Scale,0.10 | Aventail,Mail,0.05 | Aventail,Scale,0.05 ||| Buckler,0.10 | Kite,0.30 | Heater,0.30 | Pavis,0.00 ||| Leather,0.10 | MailCoif,0.25 | Kettle,0.10 | Archers,0.20 | Bascinet,0.10 | Great,0.00 |||
+heroespath-nonplayer-armor-chances-role-Beastmaster=Shirt,Mail,0.33 | Shirt,Scale,0.33 | Pants,Mail,0.20 | Pants,Scale,0.05 | Boots,Mail,0.33 | Boots,Scale,0.33 | Gauntlets,Mail,0.10 | Gauntlets,Scale,0.10 | Aventail,Mail,0.05 | Aventail,Scale,0.05 ||| Buckler,0.10 | Kite,0.30 | Heater,0.30 | Pavis,0.00 ||| Leather,0.10 | MailCoif,0.25 | Kettle,0.10 | Archers,0.20 | Bascinet,0.10 | Great,0.00 |||
 heroespath-nonplayer-armor-chances-role-Sorcerer=|
 heroespath-nonplayer-armor-chances-role-Cleric=|
 heroespath-nonplayer-armor-chances-role-Knight=Shirt,Plate,0.33|  Shirt,Mail,0.33 | Shirt,Scale,0.33| Pants,Plate,0.33 | Pants,Mail,0.33 | Pants,Scale,0.33 | Boots,Plate,0.33    | Boots,Mail,0.33      | Boots,Scale,0.33   | Gauntlets,Plate,0.33 | Gauntlets,Mail,0.33 | Gauntlets,Scale,0.33 | Aventail,Mail,0.00 | Aventail,Plate,0.33 | Aventail,Scale,0.33 ||| Buckler,0.10 | Kite,0.20 | Heater,0.30 | Pavis,0.40 ||| Leather,0.00 | MailCoif,0.10 | Kettle,0.20 | Archers,0.00 | Bascinet,0.30 | Great,0.40 |||
@@ -1403,12 +1417,12 @@ heroespath-nonplayer-armor-chances-role-Blacksmith=Shirt,Mail,0.20 | Shirt,Scale
 heroespath-nonplayer-armor-chances-role-Witch=|
 
 #weapon chances by role
-heroespath-nonplayer-weapon-chances-role-Beastmaster=		{ [pick-1]    | Longsword,0.1    | Flamberg,0.042  | Broadsword,0.035 | Falcata,0.028    | Saber,0.021    | Cutlass,0.014    | Gladius,0.007 | Sickle,0.13    | Battleaxe,0.19  | Waraxe,0.07      | SpikedClub,0.06 | Maul,0.065      | Mace,0.065      | Warhammer,0.06 | Spear,0.03      | Pike,0.03        | Partisan,0.01     | Halberd,0.03 }
+heroespath-nonplayer-weapon-chances-role-Beastmaster=		{ [pick-1]    | Longsword,0.1    | Flamberg,0.042  | Broadsword,0.035 | Falcata,0.028    | Saber,0.021    | Cutlass,0.014    | Gladius,0.007 | Sickle,0.13    | Battleaxe,0.19  | Waraxe,0.07      | SpikedClub,0.06 | Maul,0.065      | Mace,0.065      | Warhammer,0.06 | Spear,0.03 }
 heroespath-nonplayer-weapon-chances-role-Sorcerer=		    { Staff,1.0 }
 heroespath-nonplayer-weapon-chances-role-Cleric=		    { Staff,1.0 }
 heroespath-nonplayer-weapon-chances-role-Knight=		    { [pick-2]    | Claymore,0.056   | Longsword,0.078 | Flamberg,0.050   | Broadsword,0.050 | Falcata,0.044  | Saber,0.044      | Cutlass,0.044 | Gladius,0.006  | Rapier,0.030    | Battleaxe,0.07   | Waraxe,0.03     | SpikedClub,0.025| Maul,0.025      | Mace,0.025     | Warhammer,0.025 | MaceAndChain,0.2 | Spear,0.05 | Pike,0.05 | Partisan,0.05 | Halberd,0.05 }
 heroespath-nonplayer-weapon-chances-role-Archer=		    { [pick-1]    | Longbow,0.64     | Crossbow,0.24   | Compositebow,0.14 }
-heroespath-nonplayer-weapon-chances-role-Bard=		        { [pick-1]    | Longsword,0.154  | Flamberg,0.054  | Broadsword,0.044 | Saber,0.044      | Rapier,0.104   | ShortSword,0.114 | Battleaxe,0.2 | Spiked,0.033   | Maul,0.033      | Mace,0.033       |  Bullwhip,0.025 | Flail,0.075     | Blowpipe,0.025, | Sling,0.02     | Shortbow,0.040   | Crossbow,0.015 }
+heroespath-nonplayer-weapon-chances-role-Bard=		        { [pick-1]    | Longsword,0.154  | Flamberg,0.054  | Broadsword,0.044 | Saber,0.044      | Rapier,0.104   | ShortSword,0.114 |  Bullwhip,0.025 | Flail,0.075     | Blowpipe,0.025, | Sling,0.02     | Shortbow,0.040   | Crossbow,0.015 }
 heroespath-nonplayer-weapon-chances-role-Thief=		        { [pick-1]    | (knife),0.1      | (dagger),0.75   | Rapier,0.05      | Shortsword,0.1 }
 heroespath-nonplayer-weapon-chances-role-Wolfen=		    { [body] }
 heroespath-nonplayer-weapon-chances-role-Firebrand=		    { [body] }
@@ -1421,13 +1435,13 @@ heroespath-nonplayer-weapon-chances-role-Berserker=		    { [pick-1]    | Fists,0
 heroespath-nonplayer-weapon-chances-role-Mountain=		    { [pick-1]    | Fists,0.8        | Battleaxe,0.075 | Waraxe,0.025     | Spiked,0.25      | Warhammer,0.05 }
 heroespath-nonplayer-weapon-chances-role-Grunt=		        { [pick-1]    | Shortsword,0.3   | Gladius,0.05    | Handaxe,0.1      | Spiked,0.12      | Maul,0.1       | Mace,0.08        | Spear,0.1       | ShortSpear,0.1   | Quarterstaff,0.1 }
 heroespath-nonplayer-weapon-chances-role-Captain=		    { [pick-1]    | Shortsword,0.128  | Flamberg,0.030  | Broadsword,0.084 | Saber,0.084      | Cutlass,0.084  | Rapier,0.084     | Battleaxe,0.09| Waraxe,0.01    | Spiked,0.03     | Maul,0.08        | Mace,0.08       | WarHammer,0.01 } { [pick-1]       | Sling,0.16     | Longbow,0.73    | Crossbow,0.1 }
-heroespath-nonplayer-weapon-chances-role-Chieftain=		    { [pick-2]    | Shortword,0.128  | Flamberg,0.030  | Broadsword,0.084 | Saber,0.084      | Cutlass,0.084  | Rapier,0.084     | Battleaxe,0.09| Waraxe,0.01    | Spiked,0.03     | Maul,0.08        | Mace,0.08       | WarHammer,0.01 } { [pick-1]       | Longbow,0.83   | Crossbow,0.16 }
+heroespath-nonplayer-weapon-chances-role-Chieftain=		    { [pick-2]    | Shortsword,0.128  | Flamberg,0.030  | Broadsword,0.084 | Saber,0.084      | Cutlass,0.084  | Rapier,0.084     | Battleaxe,0.09| Waraxe,0.01    | Spiked,0.03     | Maul,0.08        | Mace,0.08       | WarHammer,0.01 } { [pick-1]       | Longbow,0.83   | Crossbow,0.16 }
 heroespath-nonplayer-weapon-chances-role-Trader=		    { Fists,1.0 }
 heroespath-nonplayer-weapon-chances-role-Warlord=		    { [pick-3]    | Longsword,0.050  | Flamberg,0.078  | Broadsword,0.050 | Falcata,0.044   | Saber,0.044     | Cutlass,0.044    | Gladius,0.006 | Rapier,0.030   | Battleaxe,0.07  | Waraxe,0.03      | SpikedClub,0.025| Maul,0.025      | Mace,0.025      | Warhammer,0.025| MaceAndChain,0.2| Spear,0.05       | Pike,0.05 | Partisan,0.05 | Halberd,0.05 }
 heroespath-nonplayer-weapon-chances-role-Shaman=		    { Staff,1.0 }
 heroespath-nonplayer-weapon-chances-role-Smasher=		    { [pick-1]    | (club),1.0 }
 heroespath-nonplayer-weapon-chances-role-Strangler=		    { Fists,1.0 }
-heroespath-nonplayer-weapon-chances-role-Soldier=		    { [pick-1]    | Longsword,0.098  | Flamberg,0.02   | Broadsword,0.070 | Falcata,0.024   | Saber,0.084     | Cutlass,0.084    | Gladius,0.056 | Rapier,0.005   | Battleaxe,0.07  | SpikedClub,0.025 | Maul,0.025      | Mace,0.025      | MaceAndChain,0.2| Spear,0.005     | Pike,0.065       | Partisan,0.06    | Halberd,0.07 }
+heroespath-nonplayer-weapon-chances-role-Soldier=		    { [pick-1]    | Longsword,0.098  | Flamberg,0.02   | Broadsword,0.070 | Falcata,0.024   | Saber,0.084     | Cutlass,0.084    | Gladius,0.056 | Rapier,0.005   | Battleaxe,0.07  | SpikedClub,0.025 | Maul,0.025      | Mace,0.025      | MaceAndChain,0.2| Spear,0.005 }
 heroespath-nonplayer-weapon-chances-role-TwoHeaded=		    { [body] }
 heroespath-nonplayer-weapon-chances-role-Giant=		        { [pick-1]    | Longsword,0.1    | Battleaxe,0.25  | Waraxe,0.05      | Spiked,0.233    | Mace,0.033      | Warhammer,0.133  | Spear,0.1     | Fists,0.1 }
 heroespath-nonplayer-weapon-chances-role-Elder=		        { [pick-1]    | Staff,0.5        | Quarterstaff,0.1 }
@@ -1438,7 +1452,7 @@ heroespath-nonplayer-weapon-chances-role-Whelp=		        { [body] }
 heroespath-nonplayer-weapon-chances-role-Pod=		        { [body] }
 heroespath-nonplayer-weapon-chances-role-Spike=		        { [pick-1]    | Spear,0.75       | ShortSpear,0.25 }
 heroespath-nonplayer-weapon-chances-role-Skeleton=		    { [pick-1]    | Shortsword,0.06  | Gladius,0.06    | Falcata,0.16     | Saber,0.06      | Broadsword,0.06 | Handaxe,0.09    | Sickle,0.09    | Battleaxe,0.03 | Spiked,0.07     | Maul,0.07        | Mace,0.07 }
-heroespath-nonplayer-weapon-chances-role-Ranger=		    { [pick-1]    | Rapier,0.015     | Longsword,0.075 | Battleaxe,0.1 }  { [pick-1] Longbow,1.0 }
+heroespath-nonplayer-weapon-chances-role-Ranger=		    { [pick-1]    | Rapier,0.015     | Longsword,0.075 | Battleaxe,0.1 }  { [pick-1] | Longbow,1.0 }
 heroespath-nonplayer-weapon-chances-role-Desert=		    { [body] }
 heroespath-nonplayer-weapon-chances-role-Water=		        { [body] }
 heroespath-nonplayer-weapon-chances-role-Blacksmith=		{ [pick-1]    | Shortsword,0.084 | Gladius,0.084   | Rapier,0.084     | Saber,0.084     | Broadsword,0.084| Longsword,0.084 | Sickle,0.2     | Battleaxe,0.2 }
@@ -1471,7 +1485,7 @@ heroespath-item-weapon-details-Blowpipe=		"Blowpipe",        "Simple",   150,   
 heroespath-item-weapon-details-Sling=		    "Sling",           "Simple",    25,    75,  2,  5, two-handed, "A length of leather with a pouch for throwing stones"
 heroespath-item-weapon-details-Longbow=		    "Longbow",         "Simple",   200,   450,  8, 13, two-handed, "A bow that extends the full height of the archer and curves inward"
 heroespath-item-weapon-details-Shortbow=		"Shortbow",        "Simple",   100,   250,  4,  9, two-handed, "A smaller inward curving bow."
-heroespath-item-weapon-details-Compositebow=	"Composite Bow",   "Moderate", 450,   650,  9, 16, two-handed, "A smaller bow made from animal horn with ends that curve outward"
+heroespath-item-weapon-details-CompositeBow=	"Composite Bow",   "Moderate", 450,   650,  9, 16, two-handed, "A smaller bow made from animal horn with ends that curve outward"
 heroespath-item-weapon-details-Crossbow=		"Crossbow",        "Complex",  300,   650,  10,15, two-handed, "A wooden construct with a pull string that fires metal bolts"
 heroespath-item-weapon-details-Spear=		    "Spear",           "Simple",    85,   200,  4,  8, two-handed, "A long shaft with a pointed tip"
 heroespath-item-weapon-details-ShortSpear=		"ShortSpear",      "Simple",    50,   125,  3,  7, two-handed, "A short shaft with a pointed tip"

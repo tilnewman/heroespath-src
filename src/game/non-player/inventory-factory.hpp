@@ -178,6 +178,9 @@ namespace ownership
             return std::make_pair(highestChanceItem, highestChance);
         }
 
+        static void RemoveArmorTypeFromVec(const item::armor_type::Enum ENUM,
+                                           item::ItemPVec_t &           vec);
+
     private:
         static std::unique_ptr<InventoryFactory> instanceUPtr_;
     };

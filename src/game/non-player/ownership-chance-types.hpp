@@ -26,7 +26,8 @@
 #define GAME_NONPLAYER_OWNERSHIPCHANCETYPES_INCLUDED
 //
 // ownership-chance-types.hpp
-//  A collection of types that define chances to items that might be owned/carried/worn by non-player characters.
+//  A collection of types that define chances to items that might be
+//  owned/carried/worn by non-player characters.
 //
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
@@ -69,13 +70,21 @@ namespace chance
     template<typename T>
     T MappedRandomFloatChance(const std::map<T, float> & MAP)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((MAP.empty() == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map was empty.");
+        M_ASSERT_OR_LOGANDTHROW_SS((MAP.empty() == false),
+            "game::non_player::ownership::chance::MappedRandomFloatChance(T=\""
+            << boost::typeindex::type_id<T>().pretty_name()
+            << "\") called when the map was empty.");
 
         float chanceSubTotal(0.0f);
         for (auto const & NEXT_MAP_PAIR : MAP)
+        {
             chanceSubTotal += NEXT_MAP_PAIR.second;
+        }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(chanceSubTotal, 0.0f) == false), "game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") called when the map's chance total is zero.");
+        M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(chanceSubTotal, 0.0f) == false),
+            "game::non_player::ownership::chance::MappedRandomFloatChance(T=\""
+            << boost::typeindex::type_id<T>().pretty_name()
+            << "\") called when the map's chance total is zero.");
 
         const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
 
@@ -84,10 +93,14 @@ namespace chance
         {
             cumulativeChance += NEXT_MAP_PAIR.second;
             if (RAND < cumulativeChance)
+            {
                 return NEXT_MAP_PAIR.first;
+            }
         }
 
-        M_HP_LOG("WARNING:  game::non_player::ownership::chance::MappedRandomFloatChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") failed to random select.  Choosing first with a count of one by default.");
+        M_HP_LOG("WARNING:  game::non_player::ownership::chance::MappedRandomFloatChance(T=\""
+            << boost::typeindex::type_id<T>().pretty_name()
+            << "\") failed to random select.  Choosing first with a count of one by default.");
 
         return MAP.begin()->first;
     }
@@ -124,38 +137,56 @@ namespace chance
         item::material::Enum RandomMaterialSec() const;
 
         //make it so there is no chance this item will be owned
-        inline void SetCountChanceSingleNoChance() { num_owned_map.clear(); num_owned_map[0] = 1.0f; }
+        inline void SetCountChanceSingleNoChance()
+        {
+            num_owned_map.clear();
+            num_owned_map[0] = 1.0f;
+        }
 
         //set the likelyhood of a certain (1.0f) number of this items owned
-        inline void SetCountChance(const std::size_t COUNT = 1, const float CHANCE = 1.0f) { num_owned_map[COUNT] = CHANCE; }
+        inline void SetCountChance(const std::size_t COUNT = 1, const float CHANCE = 1.0f)
+        {
+            num_owned_map[COUNT] = CHANCE;
+        }
 
         //clear all chances except for single and make that single chance certain (1.0f)
         void SetCountChanceSingleCertain();
 
-        //clear all chances except for a single item to be owned, and set that chance to the value provided
+        //clear all chances except for a single item to be owned,
+        //and set that chance to the value provided
         void SetCountChanceSingle(const float CHANCE);
 
-        //find the highest number owned with a non-zero chance, then set the number greater than that to the value provided
+        //find the highest number owned with a non-zero chance,
+        //then set the number greater than that to the value provided
         void SetCountChanceIncrement(const float CHANCE = 1.0f);
 
         //same as SetCountChanceIncrement() but the CHANCE value set is 1.0f
         inline void SetCountChanceIncrementCertain() { SetCountChanceIncrement(1.0f); }
 
         //calls SetCountChanceIncrement() and sets chance_equipped
-        inline void SetCountChanceIncrementAndEquip(const float CHANCE = 1.0f, const float EQUIP_CHANCE = 1.0f) { SetCountChanceIncrement(CHANCE); chance_equipped = EQUIP_CHANCE; }
+        inline void SetCountChanceIncrementAndEquip(const float CHANCE       = 1.0f,
+                                                    const float EQUIP_CHANCE = 1.0f)
+        {
+            SetCountChanceIncrement(CHANCE);
+            chance_equipped = EQUIP_CHANCE;
+        }
 
         //The chance that this item will be equipped.
-        //ChanceFactory sets this value for InventoryFactory to determine if the item will be equipped or not, see IsEquipped().
+        //ChanceFactory sets this value for InventoryFactory to determine if the item will
+        //be equipped or not, see IsEquipped().
         float chance_equipped;
 
-        //What is the chance that a certain number of this item is owned.  (num_owned_map[0]=1.0f is valid)
-        //ChanceFactory sets these values so that the InventoryFactory knows how many to give a non_player_character.
+        //What is the chance that a certain number of this item is owned.
+        //(num_owned_map[0]=1.0f is valid)
+        //ChanceFactory sets these values so that the InventoryFactory knows
+        //how many to give a non_player_character.
         CountChanceMap_t num_owned_map;
 
         //the primary material composing this item
         MaterialChanceMap_t mat_map_pri;
 
-        //material::Nothing can be added to this map so that there can be a chance of no secondary material
+        //material::Nothing can be added to this map so that there can be a chance of no
+        //secondary material
         MaterialChanceMap_t mat_map_sec;
     };
 
@@ -176,18 +207,27 @@ namespace chance
 
 
     //returns the type and count of the item selected in a pair
-    //It is possible and valid for the MAP to be empty, or to have only chances for zero counts.  It is the caller's responsibility to check for a returned count of zero.
+    //It is possible and valid for the MAP to be empty, or to have only chances for zero counts.
+    //It is the caller's responsibility to check for a returned count of zero.
     template<typename T>
     std::pair<T, std::size_t> MappedRandomItemChance(const std::map<T, ItemChances> & MAP)
     {
         float chanceSubTotal(0.0f);
         for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
+        {
             for (auto const & NEXT_MAP_PAIR_INNER : NEXT_MAP_PAIR_OUTER.second.num_owned_map)
+            {
                 if (NEXT_MAP_PAIR_INNER.first > 0)
+                {
                     chanceSubTotal += NEXT_MAP_PAIR_INNER.second;
+                }
+            }
+        }
 
         if (misc::IsRealClose(chanceSubTotal, 0.0f))
+        {
             return std::make_pair(MAP.begin()->first, 0);
+        }
 
         const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
 
@@ -198,11 +238,15 @@ namespace chance
             {
                 cumulativeChance += NEXT_MAP_PAIR_INNER.second;
                 if (RAND < cumulativeChance)
+                {
                     return std::make_pair(NEXT_MAP_PAIR_OUTER.first, NEXT_MAP_PAIR_INNER.first);
+                }
             }
         }
 
-        M_HP_LOG("WARNING:  game::non_player::ownership::chance::MappedRandomItemChance(T=\"" << boost::typeindex::type_id<T>().pretty_name() << "\") failed random selection.  Choosing first with a count of one by default.");
+        M_HP_LOG("WARNING:  game::non_player::ownership::chance::MappedRandomItemChance(T=\""
+            << boost::typeindex::type_id<T>().pretty_name()
+            << "\") failed random selection.  Choosing first with a count of one by default.");
 
         return std::make_pair(MAP.begin()->first, 1);
     }
@@ -211,14 +255,15 @@ namespace chance
     //A wrapper for all the info needed to create a set of clothes for a non-player-character.
     struct ClothingChances
     {
-        explicit ClothingChances(const float                 SHIRT            = 0.0f,
-                                 const float                 GLOVES           = 0.0f,
-                                 const float                 PANTS            = 0.0f,
-                                 const float                 BOOTS            = 0.0f,
-                                 const float                 VEST             = 0.0f,
-                                 const CoverChanceMap_t &    COVER_CHANCE_MAP = CoverChanceMap_t(),
-                                 const MaterialChanceMap_t & MAT_CH_MAP_PRI   = MaterialChanceMap_t(),
-                                 const MaterialChanceMap_t & MAT_CH_MAP_SEC   = MaterialChanceMap_t());
+        explicit ClothingChances(
+            const float                 SHIRT            = 0.0f,
+            const float                 GLOVES           = 0.0f,
+            const float                 PANTS            = 0.0f,
+            const float                 BOOTS            = 0.0f,
+            const float                 VEST             = 0.0f,
+            const CoverChanceMap_t &    COVER_CHANCE_MAP = CoverChanceMap_t(),
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI   = MaterialChanceMap_t(),
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC   = MaterialChanceMap_t());
 
         static inline ClothingChances NoClothes() { return ClothingChances(); }
 
@@ -234,13 +279,15 @@ namespace chance
 
 
 
-    //A wrapper for (almost) all the information needed to determine if a piece of armor is owned and its construction
+    //A wrapper for (almost) all the information needed to determine if a
+    //piece of armor is owned and its construction
     struct ArmorItemChances : public ItemChances
     {
-        explicit ArmorItemChances(const float                  CHANCE_OWNED      = 0.0f,
-                                  const ArmorTypeChanceMap_t & ARMOR_TYPE_CH_MAP = ArmorTypeChanceMap_t(),
-                                  const MaterialChanceMap_t &  MAT_CH_MAP_PRI    = MaterialChanceMap_t(),
-                                  const MaterialChanceMap_t &  MAT_CH_MAP_SEC    = MaterialChanceMap_t());
+        explicit ArmorItemChances(
+            const float                  CHANCE_OWNED      = 0.0f,
+            const ArmorTypeChanceMap_t & ARMOR_TYPE_CH_MAP = ArmorTypeChanceMap_t(),
+            const MaterialChanceMap_t &  MAT_CH_MAP_PRI    = MaterialChanceMap_t(),
+            const MaterialChanceMap_t &  MAT_CH_MAP_SEC    = MaterialChanceMap_t());
 
         ArmorItemChances(const float                        CHANCE_OWNED,
                          const item::armor::base_type::Enum ARMOR_BASE_TYPE,
@@ -249,31 +296,47 @@ namespace chance
 
         static inline ArmorItemChances NoArmorChance() { return ArmorItemChances(); }
 
-        inline item::armor::base_type::Enum RandomArmorBaseType() const { return MappedRandomFloatChance<item::armor::base_type::Enum>(type_map); }
+        inline item::armor::base_type::Enum RandomArmorBaseType() const
+        {
+            return MappedRandomFloatChance<item::armor::base_type::Enum>(type_map);
+        }
 
         ArmorTypeChanceMap_t type_map;
     };
 
 
 
-    //A wrapper holding all the information needed to determine what armor a non-player-character is wearing
+    //A wrapper holding all the information needed to determine what
+    //armor a non-player-character is wearing
     struct ArmorChances
     {
-        explicit ArmorChances(const ArmorItemChances &  AVENTAIL   = ArmorItemChances::NoArmorChance(),
-                              const ArmorItemChances &  SHIRT      = ArmorItemChances::NoArmorChance(),
-                              const ArmorItemChances &  BRACERS    = ArmorItemChances::NoArmorChance(),
-                              const ArmorItemChances &  GAUNTLETS  = ArmorItemChances::NoArmorChance(),
-                              const ArmorItemChances &  PANTS      = ArmorItemChances::NoArmorChance(),
-                              const ArmorItemChances &  BOOTS      = ArmorItemChances::NoArmorChance(),
-                              const HelmChanceMap_t &   HELM_MAP   = HelmChanceMap_t(),
-                              const CoverChanceMap_t &  COVER_MAP  = CoverChanceMap_t(),
-                              const ShieldChanceMap_t & SHIELD_MAP = ShieldChanceMap_t());
+        explicit ArmorChances(
+            const ArmorItemChances &  AVENTAIL   = ArmorItemChances::NoArmorChance(),
+            const ArmorItemChances &  SHIRT      = ArmorItemChances::NoArmorChance(),
+            const ArmorItemChances &  BRACERS    = ArmorItemChances::NoArmorChance(),
+            const ArmorItemChances &  GAUNTLETS  = ArmorItemChances::NoArmorChance(),
+            const ArmorItemChances &  PANTS      = ArmorItemChances::NoArmorChance(),
+            const ArmorItemChances &  BOOTS      = ArmorItemChances::NoArmorChance(),
+            const HelmChanceMap_t &   HELM_MAP   = HelmChanceMap_t(),
+            const CoverChanceMap_t &  COVER_MAP  = CoverChanceMap_t(),
+            const ShieldChanceMap_t & SHIELD_MAP = ShieldChanceMap_t());
 
         static inline ArmorChances NoArmor() { return ArmorChances(); }
 
-        const std::pair<item::armor::helm_type::Enum, std::size_t>   RandomHelm() const   { return MappedRandomItemChance<item::armor::helm_type::Enum>(helm_map); }
-        const std::pair<item::armor::cover_type::Enum, std::size_t>  RandomCover() const  { return MappedRandomItemChance<item::armor::cover_type::Enum>(cover_map); }
-        const std::pair<item::armor::shield_type::Enum, std::size_t> RandomShield() const { return MappedRandomItemChance<item::armor::shield_type::Enum>(shield_map); }
+        const std::pair<item::armor::helm_type::Enum, std::size_t>   RandomHelm() const
+        {
+            return MappedRandomItemChance<item::armor::helm_type::Enum>(helm_map);
+        }
+
+        const std::pair<item::armor::cover_type::Enum, std::size_t>  RandomCover() const
+        {
+            return MappedRandomItemChance<item::armor::cover_type::Enum>(cover_map);
+        }
+
+        const std::pair<item::armor::shield_type::Enum, std::size_t> RandomShield() const
+        {
+            return MappedRandomItemChance<item::armor::shield_type::Enum>(shield_map);
+        }
 
         ArmorItemChances  aventail;
         ArmorItemChances  shirt;
@@ -289,15 +352,17 @@ namespace chance
 
 
 
-    //A wrapper holding all the information needed to determine what kind of knife a non-player-character has.
+    //A wrapper holding all the information needed to determine what kind of knife a
+    //non-player-character has.
     struct KnifeItemChances : public ItemChances
     {
-        explicit KnifeItemChances(const float                 CHANCE_OWNED    = 0.0f,
-                                  const float                 CHANCE_EQUIPPED = 0.0f,
-                                  const float                 IS_DAGGER       = 0.0f,
-                                  const SizeChanceMap_t &     SIZE_MAP        = SizeChanceMap_t(),
-                                  const MaterialChanceMap_t & MAT_CH_MAP_PRI  = MaterialChanceMap_t(),
-                                  const MaterialChanceMap_t & MAT_CH_MAP_SEC  = MaterialChanceMap_t());
+        explicit KnifeItemChances(
+            const float                 CHANCE_OWNED    = 0.0f,
+            const float                 CHANCE_EQUIPPED = 0.0f,
+            const float                 IS_DAGGER       = 0.0f,
+            const SizeChanceMap_t &     SIZE_MAP        = SizeChanceMap_t(),
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI  = MaterialChanceMap_t(),
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC  = MaterialChanceMap_t());
 
         static inline KnifeItemChances NoKnife() { return KnifeItemChances(); }
 
@@ -307,36 +372,40 @@ namespace chance
 
 
 
-    //A wrapper holding all the information needed to determine what kind of staff a non-player-character has.
+    //A wrapper holding all the information needed to determine what kind of staff a
+    //non-player-character has.
     struct StaffItemChances : public ItemChances
     {
-        explicit StaffItemChances(const float                 CHANCE_OWNED    = 0.0f,
-                                  const float                 IS_EQUIPPED     = 0.0f,
-                                  const float                 IS_QUARTERSTAFF = 0.0f,
-                                  const MaterialChanceMap_t & MAT_CH_MAP_PRI  = MaterialChanceMap_t(),
-                                  const MaterialChanceMap_t & MAT_CH_MAP_SEC  = MaterialChanceMap_t());
+        explicit StaffItemChances(
+            const float                 CHANCE_OWNED    = 0.0f,
+            const float                 IS_EQUIPPED     = 0.0f,
+            const float                 IS_QUARTERSTAFF = 0.0f,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI  = MaterialChanceMap_t(),
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC  = MaterialChanceMap_t());
 
         float is_quarterstaff;
     };
 
 
 
-    //A wrapper holding all the information needed to determine what weapons a non-player-character owns.
+    //A wrapper holding all the information needed to determine what weapons a
+    //non-player-character owns.
     struct WeaponChances
     {
-        explicit WeaponChances(const bool                     HAS_CLAWS       = false,
-                               const bool                     HAS_BITE        = false,
-                               const bool                     HAS_FISTS       = false,
-                               const bool                     HAS_TENDRILS    = false,
-                               const bool                     HAS_BREATH      = false,
-                               const KnifeItemChances &       KNIFE           = KnifeItemChances(),
-                               const StaffItemChances &       STAFF           = StaffItemChances(),
-                               const AxeChanceMap_t &         AXE_MAP         = AxeChanceMap_t(),
-                               const ClubChanceMap_t &        CLUB_MAP        = ClubChanceMap_t(),
-                               const WhipChanceMap_t &        WHIP_MAP        = WhipChanceMap_t(),
-                               const SwordChanceMap_t &       SWORD_MAP       = SwordChanceMap_t(),
-                               const ProjectileChanceMap_t &  PROJECTILE_MAP  = ProjectileChanceMap_t(),
-                               const BladedStaffChanceMap_t & BLADEDSTAFF_MAP = BladedStaffChanceMap_t());
+        explicit WeaponChances(
+            const bool                     HAS_CLAWS       = false,
+            const bool                     HAS_BITE        = false,
+            const bool                     HAS_FISTS       = false,
+            const bool                     HAS_TENDRILS    = false,
+            const bool                     HAS_BREATH      = false,
+            const KnifeItemChances &       KNIFE           = KnifeItemChances(),
+            const StaffItemChances &       STAFF           = StaffItemChances(),
+            const AxeChanceMap_t &         AXE_MAP         = AxeChanceMap_t(),
+            const ClubChanceMap_t &        CLUB_MAP        = ClubChanceMap_t(),
+            const WhipChanceMap_t &        WHIP_MAP        = WhipChanceMap_t(),
+            const SwordChanceMap_t &       SWORD_MAP       = SwordChanceMap_t(),
+            const ProjectileChanceMap_t &  PROJECTILE_MAP  = ProjectileChanceMap_t(),
+            const BladedStaffChanceMap_t & BLADEDSTAFF_MAP = BladedStaffChanceMap_t());
 
         static inline WeaponChances NoWeapon() { return WeaponChances(); }
 
@@ -359,17 +428,22 @@ namespace chance
 
 
 
-    //A wrapper holding all the information needed to randomly choose a complete inventory set for a non-player-character.
+    //A wrapper holding all the information needed to randomly choose a complete
+    //inventory set for a non-player-character.
     struct InventoryChances
     {
-        explicit InventoryChances(const item::Coin_t       COINS_MIN       = 0,
-                                  const item::Coin_t       COINS_MAX       = 0,
-                                  const ClothingChances &  CLOTHES_CHANCES = ClothingChances::NoClothes(),
-                                  const WeaponChances &    WEAPON_CHANCES  = WeaponChances::NoWeapon(),
-                                  const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),
-                                  const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
+        explicit InventoryChances(
+            const item::Coin_t       COINS_MIN       = 0,
+            const item::Coin_t       COINS_MAX       = 0,
+            const ClothingChances &  CLOTHES_CHANCES = ClothingChances::NoClothes(),
+            const WeaponChances &    WEAPON_CHANCES  = WeaponChances::NoWeapon(),
+            const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),
+            const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
 
-        inline item::Coin_t RandomCoins() const { return ((coins_max > coins_min) ? misc::random::Int(coins_min, coins_max) : coins_min); }
+        inline item::Coin_t RandomCoins() const
+        {
+            return ((coins_max > coins_min) ? misc::random::Int(coins_min, coins_max) : coins_min);
+        }
 
         item::Coin_t coins_min;
         item::Coin_t coins_max;

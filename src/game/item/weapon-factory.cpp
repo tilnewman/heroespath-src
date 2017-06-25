@@ -264,6 +264,7 @@ namespace weapon
     ItemPtr_t WeaponFactory::Make_Breath(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         WeaponInfo weaponInfo(weapon_type::Breath);
+        weaponInfo.is_breath = true;
 
         auto const BREATH_DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails("Breath") );
@@ -319,6 +320,7 @@ namespace weapon
     {
         WeaponInfo weaponInfo(weapon_type::Knife);
         weaponInfo.is_dagger = IS_DAGGER;
+        weaponInfo.is_knife = ! IS_DAGGER;
         weaponInfo.knife_size = SIZE;
 
         const WeaponDetails KNIFE_DETAILS(
@@ -339,7 +341,6 @@ namespace weapon
             price += 10;
             damageMin += 1;
             damageMax += 1;
-
         }
         else if (SIZE == sfml_util::Size::Small)
         {

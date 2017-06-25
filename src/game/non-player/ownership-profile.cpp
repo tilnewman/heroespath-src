@@ -225,6 +225,7 @@ namespace ownership
         {
             const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-minimum"));
+
             if (chanceMinimalist < CHANCE_MIN)
             {
                 chanceMinimalist = CHANCE_MIN;
@@ -250,6 +251,7 @@ namespace ownership
         {
             const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-maximum"));
+
             if (chanceMinimalist > CHANCE_MAX)
             {
                 chanceMinimalist = CHANCE_MAX;
@@ -274,16 +276,24 @@ namespace ownership
         //determine
         collector_type::Enum collectorType(NoPreference);
         if (misc::random::Float() < chancePractical)
+        {
             collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
+        }
 
         if (misc::random::Float() < chanceCollector)
+        {
             collectorType = static_cast<collector_type::Enum>(collectorType | Collector);
+        }
 
         if (misc::random::Float() < chanceMinimalist)
+        {
             collectorType = static_cast<collector_type::Enum>(collectorType | Minimalist);
+        }
 
         if ((misc::random::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
+        {
             collectorType = static_cast<collector_type::Enum>(collectorType | Hoarder);
+        }
 
         return collectorType;
     }
@@ -384,7 +394,7 @@ namespace ownership
         }
 
         //determine
-        const float RAND(misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
+        auto const RAND(misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
 
         if (RAND < chanceMagical)
         {

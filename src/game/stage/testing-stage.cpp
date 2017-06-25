@@ -52,8 +52,10 @@
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/creature.hpp"
 #include "game/player/character.hpp"
+#include "game/non-player/character.hpp"
 #include "game/spell/spell-warehouse.hpp"
 #include "game/song/song-warehouse.hpp"
+#include "game/non-player/inventory-factory.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -442,6 +444,13 @@ namespace stage
         {
             hasTestingCompleted_SoundManager =
                 sfml_util::SoundManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_InventoryFactory{ false };
+        if (false == hasTestingCompleted_InventoryFactory)
+        {
+            hasTestingCompleted_InventoryFactory = TestInventoryFactory();;
             return;
         }
 
@@ -1008,6 +1017,136 @@ namespace stage
         }
 
         return singleTextureAnimSPtr_->UpdateTime(0.02f);
+    }
+
+
+    bool TestingStage::TestInventoryFactory()
+    {
+        static auto didPostInitial{ false };
+        if (false == didPostInitial)
+        {
+            didPostInitial = true;
+            game::LoopManager::Instance()->TestingStrAppend(
+                "game::stage::TestingStage::TestInventoryFactory() Starting Tests...");
+        }
+
+        static auto raceIndex{ 0 };
+        static auto roleIndex{ 0 };
+        
+        if (raceIndex < static_cast<int>(game::creature::race::Count))
+        {
+            static int totalTestIndex{ 0 };
+
+            auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
+            auto const RACE_STR{ game::creature::race::ToString(RACE_ENUM) };
+
+            if (roleIndex < static_cast<int>(game::creature::role::Count))
+            {
+                auto const ROLE_ENUM{ static_cast<game::creature::role::Enum>(roleIndex) };
+                auto const ROLE_STR{ game::creature::role::ToString(ROLE_ENUM) };
+
+                if ((RACE_ENUM == creature::race::Dragon) &&
+                    (ROLE_ENUM != creature::role::Sylavin) &&
+                    (ROLE_ENUM != creature::role::Firebrand))
+                {
+                    ++roleIndex;
+                    ++totalTestIndex;
+                    return false;
+                }
+
+                if ((RACE_ENUM == creature::race::Wolfen) &&
+                    (ROLE_ENUM != creature::role::Wolfen))
+                {
+                    ++roleIndex;
+                    ++totalTestIndex;
+                    return false;
+                }
+
+                static int totalTestCount{ static_cast<int>(
+                    static_cast<float>(game::creature::race::Count) *
+                    static_cast<float>(game::creature::role::Count)  *
+                    1.182f) };
+
+                const std::size_t RANK_MAX{ [&]()
+                    {
+                        if (RACE_ENUM == creature::race::Dragon)
+                        {
+                            return GameDataFile::Instance()->GetCopySizet(
+                                "heroespath-creature-dragon-class-rank-min-Elder");
+                        }
+                        else if (RACE_ENUM == creature::race::Wolfen)
+                        {
+                            return GameDataFile::Instance()->GetCopySizet(
+                                "heroespath-creature-wolfen-class-rank-min-Elder");
+                        }
+                        else
+                        {
+                            return GameDataFile::Instance()->GetCopySizet(
+                                "heroespath-rankclass-Master-rankmax");
+                        }
+                    }() };
+
+                for(std::size_t rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
+                {
+                    std::ostringstream ss;
+                    ss << " InventoryFactory (" << totalTestCount - totalTestIndex
+                        << ") Testing rank=" << rankIndex << " with race="
+                        << RACE_STR << " and role=" << ROLE_STR;
+
+                    M_HP_LOG_DBG(ss.str());
+
+                    const stats::StatSet STATS(
+                        10,  //str
+                        10,  //acc
+                        10,  //cha
+                        10,  //lck
+                        10,  //spd
+                        10 );//int
+
+                    std::ostringstream nameSS;
+                    nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
+
+                    auto characterPtr( new non_player::Character(
+                        nameSS.str(),
+                        creature::sex::Male,
+                        creature::BodyType::Make_FromRaceAndRole(RACE_ENUM,
+                                                                 ROLE_ENUM),
+                        creature::Race(RACE_ENUM),
+                        creature::Role(ROLE_ENUM),
+                        STATS,
+                        10,
+                        rankIndex,
+                        static_cast<stats::Exp_t>(rankIndex * 10'000)) );
+                    
+                    non_player::ownership::InventoryFactory::Instance()->
+                        PopulateCreatureInventory(characterPtr);
+
+                    characterPtr->SetCurrentWeaponsToBest();
+                    
+                    delete characterPtr;
+                }
+
+                std::ostringstream ss;
+                ss << " InventoryFactory (" << totalTestCount - totalTestIndex << ") Tested "
+                    << RANK_MAX << " ranks with race=" << RACE_STR << " role=" << ROLE_STR;
+
+                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+
+                ++roleIndex;
+                ++totalTestIndex;
+                return false;
+            }
+
+            roleIndex = 0;
+            ++raceIndex;
+            ++totalTestIndex;
+            return false;
+        }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "game::stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
+
+        return true;
     }
 
 }

@@ -294,22 +294,32 @@ namespace logbase
         AppendFileName(fileNameStream);
 
         //boost path object for that file
-        const boostfs::path FULL_PATH( boostfs::system_complete(boostfs::path(FILE_PATH_ /
+        auto filePath( boostfs::system_complete(boostfs::path(FILE_PATH_ /
             fileNameStream.str()) ) );
+
+        //check for pre-existing files
+        while (boostfs::exists(filePath))
+        {
+            ++fileNum_;
+            fileNameStream.str("");
+            AppendFileName(fileNameStream);
+            filePath = boostfs::system_complete(boostfs::path(FILE_PATH_ /
+                fileNameStream.str()));
+        }
 
         //open the file
         //NOTE:  Since there are always multiple log files used in rotation, 
         //       there is no need to append.
         //       Everytime we switch to a new file, the entire file gets erased.
         //       (enforced by the std::ios::out flag)
-        fileStream_.open(FULL_PATH.string().c_str(), std::ios::out);
+        fileStream_.open(filePath.string().c_str(), std::ios::out);
         fileStream_.seekp(0, std::ios::beg);
 
         //verify the file stream is open and ready
         if (false == IsFileReady())
         {
             ostringstream es;
-            es << "LogBase was unable to open \"" << FULL_PATH.string() << "\" for writing.";
+            es << "LogBase was unable to open \"" << filePath.string() << "\" for writing.";
             std::cerr << es.str() << std::endl;
 
             throw std::runtime_error( es.str() );

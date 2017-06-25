@@ -295,7 +295,7 @@ namespace ownership
     const chance::ArmorChances ChanceFactory::Make_ArmorChances(const Profile &                  PROFILE,
                                                                 const non_player::CharacterPtr_t CHARACTER_PTR)
     {
-        chance::ArmorChances armorChances( chance::ArmorChances::NoArmor() );
+        auto armorChances{ chance::ArmorChances::NoArmor() };
         LookupPossibleArmorByRole(PROFILE, CHARACTER_PTR, armorChances);
 
         //enforce bodytype restrictions
@@ -341,7 +341,9 @@ namespace ownership
             chanceCombined += NEXT_WEAPONINFO_CHANCE_PAIR.second;
 
         if (misc::IsRealClose(chanceCombined, 0.0f))
+        {
             return;
+        }
 
         const float RAND(misc::random::Float(0.0f, chanceCombined));
 
@@ -457,7 +459,7 @@ namespace ownership
                 PopulateWeaponMaterials(WEAPON_NAME,
                                         typicalKnifePrimaryMaterials,
                                         PROFILE,
-                    CHARACTER_PTR,
+                                        CHARACTER_PTR,
                                         weaponChances.knife.mat_map_pri,
                                         weaponChances.knife.mat_map_sec);
             }
@@ -696,7 +698,11 @@ namespace ownership
             StrVec_t piecesVec;
             appbase::stringhelp::SplitByChar(NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
 
-            M_ASSERT_OR_LOGANDTHROW_SS((piecesVec.size() >= 2), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CHARACTER_PTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which failed to be parsed into the required 2  or more comma sep fields.");
+            M_ASSERT_OR_LOGANDTHROW_SS((piecesVec.size() >= 2),
+                "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\""
+                << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                << "\") found value-str=\"" << VALUE_STR
+                << "\" which failed to be parsed into the required 2  or more comma sep fields.");
 
             const std::string ARMOR_NAME_STR(piecesVec[0]);
 
@@ -710,7 +716,19 @@ namespace ownership
             {
                 armorChanceVal = -1.0f;
             }
-            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(-1.0f, armorChanceVal) == false), "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CHARACTER_PTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\"" << ARMOR_CHANCE_STR << "\" which was unable to be parsed into a valid (!= -1) float.  (" << armorChanceVal << ")");
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(-1.0f, armorChanceVal) == false),
+                "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\""
+                << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\""
+                << ARMOR_CHANCE_STR
+                << "\" which was unable to be parsed into a valid (!= -1) float.  ("
+                << armorChanceVal << ")");
+
+            //I must have been lazy and left zeros in the mix...zTn  2017-6-24
+            if (misc::IsRealZero(armorChanceVal))
+            {
+                continue;
+            }
 
             using namespace item::armor;
 
@@ -719,13 +737,26 @@ namespace ownership
             const base_type::Enum ARMOR_TYPE( base_type::FromString(ARMOR_TYPE_STR) );
             if (HAS_TYPE_STR)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Count), "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CHARACTER_PTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had more than two comma sep fields, but the second field failed to be parsed as a valid item::armor::base_type::Enum.");
-                M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Plain), "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\"" << creature::role::ToString(CHARACTER_PTR->Role().Which()) << "\") found value-str=\"" << VALUE_STR << "\" which had more than two comma sep fields, but the second field failed to be parsed as a valid non-Plain item::armor::base_type::Enum.");
+                M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Count),
+                    "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\""
+                    << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                    << "\") found value-str=\"" << VALUE_STR
+                    << "\" which had more than two comma sep fields, but the second field failed "
+                    << "to be parsed as a valid item::armor::base_type::Enum.");
+
+                M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Plain),
+                    "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\""
+                    << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                    << "\") found value-str=\"" << VALUE_STR
+                    << "\" which had more than two comma sep fields, but the second field failed "
+                    << "to be parsed as a valid non-Plain item::armor::base_type::Enum.");
             }
 
-            const std::string ARMOR_NAME_COMPLETE_STR(((HAS_TYPE_STR) ? ARMOR_TYPE_STR : "") + ARMOR_NAME_STR);
+            const std::string ARMOR_NAME_COMPLETE_STR(((HAS_TYPE_STR) ?
+                ARMOR_TYPE_STR : "") + ARMOR_NAME_STR);
 
             if (ARMOR_NAME_STR == "Shirt")
+            {
                 SetArmorChancesGeneral(armorChances.shirt,
                                        ARMOR_NAME_COMPLETE_STR,
                                        ARMOR_TYPE,
@@ -733,8 +764,10 @@ namespace ownership
                                        PROFILE,
                                        CHARACTER_PTR,
                                        false);
+            }
 
             if (ARMOR_NAME_STR == "Pants")
+            {
                 SetArmorChancesGeneral(armorChances.pants,
                                        ARMOR_NAME_COMPLETE_STR,
                                        ARMOR_TYPE,
@@ -742,8 +775,10 @@ namespace ownership
                                        PROFILE,
                                        CHARACTER_PTR,
                                        false);
+            }
 
             if (ARMOR_NAME_STR == "Boots")
+            {
                 SetArmorChancesGeneral(armorChances.boots,
                                        ARMOR_NAME_COMPLETE_STR,
                                        ARMOR_TYPE,
@@ -751,8 +786,10 @@ namespace ownership
                                        PROFILE,
                                        CHARACTER_PTR,
                                        false);
+            }
 
             if (ARMOR_NAME_STR == "Gauntlets")
+            {
                 SetArmorChancesGeneral(armorChances.gauntlets,
                                        ARMOR_NAME_COMPLETE_STR,
                                        ARMOR_TYPE,
@@ -760,8 +797,10 @@ namespace ownership
                                        PROFILE,
                                        CHARACTER_PTR,
                                        false);
+            }
 
             if (ARMOR_NAME_STR == "Aventail")
+            {
                 SetArmorChancesGeneral(armorChances.aventail,
                                        ARMOR_NAME_COMPLETE_STR,
                                        ARMOR_TYPE,
@@ -769,93 +808,115 @@ namespace ownership
                                        PROFILE,
                                        CHARACTER_PTR,
                                        false);
+            }
 
             //shields
             if (ARMOR_NAME_STR == "Buckler")
+            {
                 SetArmorChancesSpecific(armorChances.shield_map[item::armor::shield_type::Buckler],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Kite")
+            {
                 SetArmorChancesSpecific(armorChances.shield_map[item::armor::shield_type::Kite],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Heater")
+            {
                 SetArmorChancesSpecific(armorChances.shield_map[item::armor::shield_type::Heater],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Pavis")
+            {
                 SetArmorChancesSpecific(armorChances.shield_map[item::armor::shield_type::Pavis],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             //helms
             if (ARMOR_NAME_STR == "Leather")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::Leather],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         false);//materials will be forced to make sense by ArmorFactory::Make_Helm()
+            }
 
             if (ARMOR_NAME_STR == "MailCoif")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::MailCoif],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Kettle")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::Kettle],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Archers")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::Archers],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Bascinet")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::Bascinet],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
 
             if (ARMOR_NAME_STR == "Great")
+            {
                 SetArmorChancesSpecific(armorChances.helm_map[item::armor::helm_type::Great],
                                         ARMOR_NAME_COMPLETE_STR,
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
                                         true);
+            }
         }
     }
 
 
-    void ChanceFactory::LookupPossibleWeaponsByRole(const creature::role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam)
+    void ChanceFactory::LookupPossibleWeaponsByRole(const creature::role::Enum ROLE,
+        WeaponSetVec_t & weaponSetVec_OutParam)
     {
         using namespace boost::algorithm;
 
@@ -863,7 +924,9 @@ namespace ownership
 
         const std::string ROLE_STR(creature::role::ToString(ROLE));
         const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
-        const std::string VALUE_STR_LOWER(to_lower_copy(GameDataFile::Instance()->GetCopyStr(KEY_STR)) );
+
+        const std::string VALUE_STR_LOWER(to_lower_copy(
+            GameDataFile::Instance()->GetCopyStr(KEY_STR)) );
 
         StrVec_t weaponSetVec;
         appbase::stringhelp::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
@@ -874,7 +937,7 @@ namespace ownership
             WeaponSet nextWeaponSet;
 
             StrVec_t instructionsVec;
-            appbase::stringhelp::SplitByChar(NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
+            appbase::stringhelp::SplitByChar(NEXT_WEAPON_SET_STR, instructionsVec, '|', true,true);
 
             //Loop over each instruction, denoted by the pipe character in the GameDataFile.
             //A collection of instructions composes a WeaponSet
@@ -882,10 +945,13 @@ namespace ownership
             {
                 if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
                 {
-                    if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "[pick-"))
+                    auto const PICK_CSTR{ "[pick-" };
+                    if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
                     {
-                        //assume the instruction takes the form: [pick-<number>], where <number> must be a positive integer greater than zero
-                        const std::string COUNT_STR( erase_first_copy(erase_first_copy(NEXT_INSTRUCTION_STR,"[pick-"), "]") );
+                        //assume the instruction takes the form: [pick-<number>],
+                        //where <number> must be a positive integer greater than zero
+                        auto const COUNT_STR{ erase_first_copy(erase_first_copy(
+                            NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
 
                         try
                         {
@@ -896,7 +962,13 @@ namespace ownership
                             nextWeaponSet.count = 0;
                         }
 
-                        M_ASSERT_OR_LOGANDTHROW_SS((nextWeaponSet.count > 0), "game::non_player::ownership::LookupPossibleWeaponsByRole(role=" << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\"" << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR << "\" and parsed pick count string to be \"" << COUNT_STR << "\", but failed to convert it into a valid (> zero) std::size_t.  It was converted into " << nextWeaponSet.count << ".");
+                        M_ASSERT_OR_LOGANDTHROW_SS((nextWeaponSet.count > 0),
+                            "game::non_player::ownership::LookupPossibleWeaponsByRole(role="
+                            << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                            << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR
+                            << "\" and parsed pick count string to be \"" << COUNT_STR
+                            << "\", but failed to convert it into a valid (> zero) std::size_t.  "
+                            << "It was converted into " << nextWeaponSet.count << ".");
                     }
                     else if (NEXT_INSTRUCTION_STR == "[body]")
                     {
@@ -904,22 +976,36 @@ namespace ownership
                     }
                     else
                     {
-                        M_HP_LOG("game::non_player::ownership::LookupPossibleWeaponsByRole(role=" << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\"" << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR << "\" which was not recognized, and will be ignored.");
+                        M_HP_LOG("game::non_player::ownership::LookupPossibleWeaponsByRole(role="
+                            << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                            << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR
+                            << "\" which was not recognized, and will be ignored.");
                     }
                 }
                 else
                 {
-                    //At this point, assume the instruction is in the form of:  <weapon name>,<chance float> or (<weapon name>),<chance float> -so it must have two comma separated strings.
+                    //At this point, assume the instruction is in the form of:
+                    // <weapon name>,<chance float> or (<weapon name>),<chance float>
+                    //-so it must have two comma separated strings.
                     StrVec_t partsVec;
-                    appbase::stringhelp::SplitByChar(NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
+                    appbase::stringhelp::SplitByChar(
+                        NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(((partsVec.size() > 1) && (partsVec.at(0).size() > 2) && (partsVec.at(1).size() > 2)), "game::non_player::ownership::LookupPossibleWeaponsByRole(role=" << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\"" << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR << "\" but was unable to parse as at least two strings separated by a comma.");
+                    M_ASSERT_OR_LOGANDTHROW_SS(((partsVec.size() > 1) &&
+                                                (partsVec.at(0).size() > 2) &&
+                                                (partsVec.at(1).size() > 2)),
+                        "game::non_player::ownership::LookupPossibleWeaponsByRole(role="
+                        << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                        << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR
+                        << "\" but was unable to parse as at least two strings separated by "
+                        << "a comma.");
 
                     const std::string WEAPON_NAME(partsVec[0]);
                     const std::string CHANCE_STR(partsVec[1]);
 
                     //parse weapon name and type
-                    const item::weapon::WeaponInfo WEAPON_INFO(item::weapon_type::NotAWeapon, WEAPON_NAME);
+                    const item::weapon::WeaponInfo WEAPON_INFO(item::weapon_type::NotAWeapon,
+                                                               WEAPON_NAME);
 
                     //parse weapon chance
                     float chance(0.0f);
@@ -932,7 +1018,13 @@ namespace ownership
                         chance = -1.0f;
                     }
 
-                    M_ASSERT_OR_LOGANDTHROW_SS((chance > 0.0f), "game::non_player::ownership::LookupPossibleWeaponsByRole(role=" << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\"" << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR << "\", weapon name=\"" << WEAPON_NAME << "\", and chance str=\"" << CHANCE_STR << "\", but was unable to convert this into a valid (> zero) float.  Converted instead to:" << chance << ".");
+                    M_ASSERT_OR_LOGANDTHROW_SS((chance > 0.0f),
+                        "game::non_player::ownership::LookupPossibleWeaponsByRole(role="
+                        << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                        << VALUE_STR_LOWER << "\" found INSTRUCTION=\"" << NEXT_INSTRUCTION_STR
+                        << "\", weapon name=\"" << WEAPON_NAME << "\", and chance str=\""
+                        << CHANCE_STR << "\", but was unable to convert this into a valid "
+                        << "(> zero) float.  Converted instead to:" << chance << ".");
 
                     nextWeaponSet.chanceMap[WEAPON_INFO] = chance;
                 }
@@ -943,7 +1035,9 @@ namespace ownership
     }
 
 
-    float ChanceFactory::GetFloatFromGameDataFile(const std::string & KEY, const float MIN, const float MAX)
+    float ChanceFactory::GetFloatFromGameDataFile(const std::string & KEY,
+                                                  const float         MIN,
+                                                  const float         MAX)
     {
         const std::string MIN_STR("min");
         const std::string MAX_STR("max");
@@ -979,7 +1073,12 @@ namespace ownership
                         exceptionWhatStr = EX.what();
                     }
 
-                    M_ASSERT_OR_LOGANDTHROW_SS((exceptionWhatStr.empty()), "game::non-player::ownership::ChanceFactory::GetFloatFromGameDataFile(key=\"" << KEY << "\"), found value \"" << VALUE_STR << "\" that failed to be parsed as a float, throwing exception: \"" << exceptionWhatStr << "\".");
+                    M_ASSERT_OR_LOGANDTHROW_SS((exceptionWhatStr.empty()),
+                      "game::non-player::ownership::ChanceFactory::GetFloatFromGameDataFile(key=\""
+                        << KEY << "\"), found value \"" << VALUE_STR
+                        << "\" that failed to be parsed as a float, throwing exception: \""
+                        << exceptionWhatStr << "\".");
+
                     return -1.0f;
                 }
             }
@@ -987,53 +1086,89 @@ namespace ownership
     }
 
 
-    void ChanceFactory::LookupClothingMaterialChances(const Profile &                  PROFILE,
-                                                      const non_player::CharacterPtr_t CHARACTER_PTR,
-                                                      float &                          clothChance,
-                                                      float &                          softleatherChance,
-                                                      float &                          hardleatherChance)
+    void ChanceFactory::LookupClothingMaterialChances(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR,
+        float &                          clothChance,
+        float &                          softleatherChance,
+        float &                          hardleatherChance)
     {
         std::ostringstream ss;
-        ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType) << "-chances";
+        ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
+            << "-chances";
+
         const std::string WEARABLE_STR_BASE(ss.str());
 
         //find the chance-subtotal and the material that will have the remaining chance
         float chanceSubTotal(0.0f);
         item::material::Enum materialWithChanceRemaining(item::material::Nothing);
-        const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat("heroespath-inventory-clothing-chance-min"));
-        const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat("heroespath-inventory-clothing-chance-max"));
+        const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-inventory-clothing-chance-min"));
 
-        clothChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-cloth", CHANCE_MIN, CHANCE_MAX);
+        const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-inventory-clothing-chance-max"));
+
+        clothChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-cloth",
+                                               CHANCE_MIN,
+                                               CHANCE_MAX);
+
         if (clothChance < 0.0f)
+        {
             materialWithChanceRemaining = item::material::Cloth;
+        }
         else
+        {
             chanceSubTotal += clothChance;
+        }
 
-        softleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-soft-leather", CHANCE_MIN, CHANCE_MAX);
+        softleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-soft-leather",
+                                                     CHANCE_MIN,
+                                                     CHANCE_MAX);
+
         if (softleatherChance < 0.0f)
+        {
             materialWithChanceRemaining = item::material::SoftLeather;
+        }
         else
+        {
             chanceSubTotal += softleatherChance;
+        }
 
-        hardleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-hard-leather", CHANCE_MIN, CHANCE_MAX);
+        hardleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-hard-leather",
+                                                     CHANCE_MIN,
+                                                     CHANCE_MAX);
+
         if (hardleatherChance < 0.0f)
+        {
             materialWithChanceRemaining = item::material::HardLeather;
+        }
         else
+        {
             chanceSubTotal += hardleatherChance;
+        }
 
         //set the chance for the material with the remaining chance
         if (item::material::Cloth == materialWithChanceRemaining)
+        {
             clothChance = 1.0f - chanceSubTotal;
+        }
         else
         {
             if (item::material::SoftLeather == materialWithChanceRemaining)
+            {
                 softleatherChance = 1.0f - chanceSubTotal;
+            }
             else
+            {
                 hardleatherChance = 1.0f - chanceSubTotal;
+            }
         }
 
-        //adjust chances by rank, where higher rank means a higher chance of more valuable materials
-        const float RANK_RATIO(static_cast<float>(CHARACTER_PTR->Rank()) / GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax"));
+        //adjust chances by rank, where higher rank means a higher
+        //chance of more valuable materials
+        const float RANK_RATIO(static_cast<float>(CHARACTER_PTR->Rank()) /
+            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax"));
+
         hardleatherChance += RANK_RATIO;
         softleatherChance += RANK_RATIO * 0.5f;
         clothChance       -= RANK_RATIO;
@@ -1045,16 +1180,19 @@ namespace ownership
     }
 
 
-    void ChanceFactory::Make_ClothingMaterialChancesPrimary(const Profile &                  PROFILE,
-                                                            const non_player::CharacterPtr_t CHARACTER_PTR,
-                                                            chance::ItemChances &            itemChancesBase)
+    void ChanceFactory::Make_ClothingMaterialChancesPrimary(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR,
+        chance::ItemChances &            itemChancesBase)
     {
-        //set the chance base object with data common to all clothing chances (shared between boots, cloaks, capes, etc.)
+        //set the chance base object with data common to all clothing chances
+        //(shared between boots, cloaks, capes, etc.)
 
         //all clothing items are equipped
         itemChancesBase.chance_equipped = 1.0f;
 
-        //determine the final chances for each possible primary material type, which for clothing are restricted to cloth, soft leather, and hard leather
+        //determine the final chances for each possible primary material type,
+        //which for clothing are restricted to cloth, soft leather, and hard leather
         float clothChance(0.0f);
         float softleatherChance(0.0f);
         float hardleatherChance(0.0f);
@@ -1071,23 +1209,32 @@ namespace ownership
     }
 
 
-    void ChanceFactory::Make_MaterialChancesPrimary(const Profile &                     PROFILE,
-                                                    const non_player::CharacterPtr_t    CHARACTER_PTR,
-                                                    const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-                                                    const item::Weight_t                ITEM_WEIGHT,
-                                                    chance::MaterialChanceMap_t &       materialsMap_OutParam)
+    void ChanceFactory::Make_MaterialChancesPrimary(
+        const Profile &                     PROFILE,
+        const non_player::CharacterPtr_t    CHARACTER_PTR,
+        const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
+        const item::Weight_t                ITEM_WEIGHT,
+        chance::MaterialChanceMap_t &       materialsMap_OutParam)
     {
         //establish the base chances for a special primary material
-        float chanceCool    (1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-primary-chance-base-Cool-onein"));
-        float chanceMetal   (1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-primary-chance-base-Metal-onein"));
-        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-primary-chance-base-Precious-onein"));
+        float chanceCool    (1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Cool-onein"));
+
+        float chanceMetal   (1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Metal-onein"));
+
+        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Precious-onein"));
+
         //
         chance::MaterialChanceMap_t chanceMapCool(Make_MaterialChanceMapCool());
         chance::MaterialChanceMap_t chanceMapMetal(Make_MaterialChanceMapMetal());
         chance::MaterialChanceMap_t chanceMapPrecious(Make_MaterialChanceMapPrecious());
 
         //adjustments that make higher ranks more likely to have special materials
-        const float RANK_DIVISOR(static_cast<float>(GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax")));
+        const float RANK_DIVISOR(static_cast<float>(GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-rankclass-Master-rankmax")));
+
         const float RANK_CHANCE_INCREASE(static_cast<float>(CHARACTER_PTR->Rank()) / RANK_DIVISOR);
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
@@ -1104,7 +1251,10 @@ namespace ownership
             nextMapPair.second /= RANK_CHANCE_INCREASE;
 
         //adjustments that make more wealth equal better chances for special materials
-        const float WEALTH_CHANCE_ADJUSTMENT(GameDataFile::Instance()->GetCopyFloat("heroespath-material-wealth-chance-base-adjustment-" + wealth_type::ToString(PROFILE.wealthType)));
+        const float WEALTH_CHANCE_ADJUSTMENT(GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-wealth-chance-base-adjustment-" +
+            wealth_type::ToString(PROFILE.wealthType)));
+
         chanceCool += WEALTH_CHANCE_ADJUSTMENT;
         chanceMetal += WEALTH_CHANCE_ADJUSTMENT;
         chancePrecious += WEALTH_CHANCE_ADJUSTMENT;

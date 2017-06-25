@@ -50,7 +50,9 @@ namespace chance
         mat_map_sec     (MAT_CH_MAP_SEC)
     {
         if (num_owned_map.empty())
+        {
             num_owned_map[0] = 1.0f;
+        }
     }
 
 
@@ -87,15 +89,22 @@ namespace chance
     std::size_t ItemChances::CountOwned() const
     {
         if (num_owned_map.empty())
+        {
             return 0;
+        }
         else
+        {
             return MappedRandomFloatChance<std::size_t>(num_owned_map);
+        }
     }
 
 
     item::material::Enum ItemChances::RandomMaterialPri() const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((mat_map_pri.empty() == false), "game::non_player::ownership::chances::ItemChances::RandomMaterialPri() called when mat_map_pri is empty.");
+        M_ASSERT_OR_LOGANDTHROW_SS((mat_map_pri.empty() == false),
+            "game::non_player::ownership::chances::ItemChances::RandomMaterialPri() "
+            << "called when mat_map_pri is empty.");
+
         return MappedRandomFloatChance<item::material::Enum>(mat_map_pri);
     }
 
@@ -103,9 +112,13 @@ namespace chance
     item::material::Enum ItemChances::RandomMaterialSec() const
     {
         if (mat_map_sec.empty())
+        {
             return item::material::Nothing;
+        }
         else
+        {
             return MappedRandomFloatChance<item::material::Enum>(mat_map_sec);
+        }
     }
 
 
@@ -137,7 +150,10 @@ namespace chance
             }
         };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((i < MAX_ITERATIONS), "game::non_player::ownership::ItemChances::SetCountChanceIncrement(" << CHANCE << ") reached the sentinel of " << MAX_ITERATIONS << " iterations.  Something is very wrong...");
+        M_ASSERT_OR_LOGANDTHROW_SS((i < MAX_ITERATIONS),
+            "game::non_player::ownership::ItemChances::SetCountChanceIncrement("
+            << CHANCE << ") reached the sentinel of " << MAX_ITERATIONS
+            << " iterations.  Something is very wrong...");
     }
 
 
@@ -164,8 +180,12 @@ namespace chance
         std::map<item::armor::cover_type::Enum, float> coverChanceMap;
 
         for (auto const & NEXT_CHANCE_PAIR : cover_map)
+        {
             if (NEXT_CHANCE_PAIR.second.IsOwned())
+            {
                 coverChanceMap[NEXT_CHANCE_PAIR.first] = misc::random::Float();
+            }
+        }
 
         if (coverChanceMap.size() == 1)
         {
@@ -176,13 +196,19 @@ namespace chance
             float highestChance(0.0f);
             item::armor::cover_type::Enum highestEnum(coverChanceMap.begin()->first);
             for (auto const & NEXT_CHANCE_PAIR : coverChanceMap)
+            {
                 if (NEXT_CHANCE_PAIR.second > highestChance)
+                {
                     highestEnum = NEXT_CHANCE_PAIR.first;
+                }
+            }
 
             return highestEnum;
         }
         else
+        {
             return item::armor::cover_type::Count;
+        }
     }
 
 

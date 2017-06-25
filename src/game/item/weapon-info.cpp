@@ -85,6 +85,7 @@ namespace weapon
         else if (name == "sickle")        { axe = axe_type::Sickle;                     type = weapon_type::Axe;  }
         else if (name == "battleaxe")     { axe = axe_type::Battleaxe;                  type = weapon_type::Axe;  }
         else if (name == "waraxe")        { axe = axe_type::Waraxe;                     type = weapon_type::Axe;  }
+        else if (name == "spikedclub")    { club = club_type::Spiked;                   type = weapon_type::Club;  }
         else if (name == "spiked")        { club = club_type::Spiked;                   type = weapon_type::Club;  }
         else if (name == "maul")          { club = club_type::Maul;                     type = weapon_type::Club;  }
         else if (name == "mace")          { club = club_type::Mace;                     type = weapon_type::Club;  }
@@ -123,7 +124,9 @@ namespace weapon
         else if (name == "(bladedstaff)") { type = weapon_type::BladedStaff; }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((name.empty()), "game::item::weapon::WeaponInfo::ProcessName(name=\"" << name << "\") was not a recognized weapon.");
+            M_ASSERT_OR_LOGANDTHROW_SS((name.empty()),
+                "game::item::weapon::WeaponInfo::ProcessName(name=\"" << name
+                << "\") was not a recognized weapon.");
         }
     }
 

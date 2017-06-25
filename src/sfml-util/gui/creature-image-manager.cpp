@@ -93,7 +93,9 @@ namespace gui
 
     void CreatureImageManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::CreatureImageManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::gui::CreatureImageManager::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -110,7 +112,8 @@ namespace gui
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CreatureImageManager::Test() Starting Tests...");
+            game::LoopManager::Instance()->TestingStrAppend(
+                "sfml_util::gui::CreatureImageManager::Test() Starting Tests...");
         }
 
         auto cimSPtr{ CreatureImageManager::Instance() };
