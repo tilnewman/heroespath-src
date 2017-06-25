@@ -172,6 +172,7 @@ namespace sfml_util
         spellColorSlider_          (SPELLBOOK_COLOR_FADE_SPEED_),
         xSymbolTexture_            (),
         xSymbolSprite_             (),
+        willShowRejectImage_       (false),
         songCurrentPtr_            (nullptr)
     {
         backgroundTexture_.setSmooth(true);

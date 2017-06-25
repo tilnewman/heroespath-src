@@ -276,7 +276,6 @@ namespace sfml_util
         //members supporting song selection
         //Note:  Many spell members are re-used
         game::song::SongPtr_t songCurrentPtr_;
-        
     };
 
     using PopupStagePtr_t = PopupStage *;
