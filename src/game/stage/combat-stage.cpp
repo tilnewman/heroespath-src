@@ -2899,12 +2899,12 @@ namespace stage
                                       const bool          WILL_PREPEND_NEWLINE)
     {
         std::ostringstream ss;
-        ss << ((WILL_PREPEND_NEWLINE) ? "\n" : "") << PROMPT;
+        ss << "\n" << ((WILL_PREPEND_NEWLINE) ? "\n" : "") << PROMPT;
         const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
             "CombatStage'sQuickPopup",
             ss.str(),
             sfml_util::PopupButtons::Okay,
-            sfml_util::PopupImage::Banner,
+            sfml_util::PopupImage::Regular,
             sfml_util::Justified::Center,
             ((IS_SOUNDEFFECT_NORMAL) ?
                 sfml_util::sound_effect::PromptGeneric : sfml_util::sound_effect::PromptWarn),

@@ -1141,8 +1141,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "Cannot " << ADVANCE_OR_RETREAT_STR << " because there are "
-                << oppositePartyCreatureCount << " enemy creatures blocking the way.  "
-                << "(can only advance on one if not blocking)";
+                << oppositePartyCreatureCount << " enemy creatures blocking the way.";
 
             return ss.str();
         }
