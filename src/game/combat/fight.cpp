@@ -170,6 +170,12 @@ namespace combat
             creatureDefendingPtrC->ConditionAdd(creature::Conditions::Dead);
             condsAddedVec.push_back(creature::Conditions::Dead);
 
+            auto turnInfo{ combat::Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
+            turnInfo.SetIsFlying(false);
+            turnInfo.SetWasHitLastTurn(true);
+            turnInfo.SetTurnActionInfo( TurnActionInfo() );
+            combat::Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
+
             //remove the unconscious condition if already there
             if (IS_ALREADY_UNCONSCIOUS)
             {

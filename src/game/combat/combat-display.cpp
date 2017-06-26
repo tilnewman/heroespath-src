@@ -1132,7 +1132,10 @@ namespace combat
                 }
                 else
                 {
-                    ++oppositePartyCreatureCount;
+                    if (NEXT_VERT_PAIR.second->Creature())
+                    {
+                        ++oppositePartyCreatureCount;
+                    }
                 }
             }
         }
@@ -1140,8 +1143,9 @@ namespace combat
         if (oppositePartyCreatureCount >= SHOULDER_TO_SHOULDER_OPPOSITE_TYPE_MAX_)
         {
             std::ostringstream ss;
-            ss << "Cannot " << ADVANCE_OR_RETREAT_STR << " because there are "
-                << oppositePartyCreatureCount << " enemy creatures blocking the way.";
+            ss << "Cannot " << ADVANCE_OR_RETREAT_STR
+                << " because there are too many enemy creatures ("
+                << oppositePartyCreatureCount << ") blocking the way.";
 
             return ss.str();
         }

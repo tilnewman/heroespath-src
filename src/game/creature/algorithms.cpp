@@ -309,7 +309,9 @@ namespace creature
         CreaturePVec_t creaturesThatAreStillAThreatVec;
 
         if (CREATURE_PVEC.empty())
+        {
             return creaturesThatAreStillAThreatVec;
+        }
 
         std::copy_if(CREATURE_PVEC.begin(),
                      CREATURE_PVEC.end(),

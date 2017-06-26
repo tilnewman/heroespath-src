@@ -497,6 +497,15 @@ namespace combat
                                                         HIT_INDEX,
                                                         wasCollapsed);
         }
+        else if (TURN_ACTION == combat::TurnAction::Block)
+        {
+            return ActionText(CREATURE_ATTACKING_PTR,
+                              TURN_ACTION_INFO,
+                              FIGHT_RESULT,
+                              WILL_USE_NAME,
+                              false,
+                              false);
+        }
         else
         {
             std::ostringstream ss;
