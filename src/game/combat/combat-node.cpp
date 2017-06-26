@@ -50,28 +50,48 @@ namespace game
 namespace combat
 {
 
-    const sf::Uint8 CombatNode::HIGHLIGHT_ADJ_VALUE_                 (sfml_util::FontManager::ColorValue_Highlight());
-    const sf::Color CombatNode::HIGHLIGHT_ADJ_COLOR_                 (sf::Color(HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, 0));
-    const sf::Color CombatNode::PLAYER_NAME_COLOR_                   (sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
-    const sf::Color CombatNode::CONDITION_COLOR_                     (sfml_util::FontManager::Color_Light() - HIGHLIGHT_ADJ_COLOR_);
-    const sf::Color CombatNode::NONPLAYER_NAME_COLOR_                (sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)), static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_))) - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Uint8 CombatNode::HIGHLIGHT_ADJ_VALUE_
+        (sfml_util::FontManager::ColorValue_Highlight());
+
+    const sf::Color CombatNode::HIGHLIGHT_ADJ_COLOR_
+        (sf::Color(HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, 0));
+
+    const sf::Color CombatNode::PLAYER_NAME_COLOR_
+        (sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
+
+    const sf::Color CombatNode::CONDITION_COLOR_
+        (sfml_util::FontManager::Color_Light() - HIGHLIGHT_ADJ_COLOR_);
+
+    const sf::Color CombatNode::NONPLAYER_NAME_COLOR_
+        (sf::Color(255, static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_)),
+            static_cast<sf::Uint8>(255 - static_cast<int>(HIGHLIGHT_ADJ_VALUE_))) -
+                HIGHLIGHT_ADJ_COLOR_);
+
     const sf::Uint8 CombatNode::CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_(32);
-    const sf::Uint8 CombatNode::CREATURE_IMAGE_COLOR_ALPHA_          (32);
-    const sf::Color CombatNode::CREATURE_IMAGE_COLOR_PLAYER_         (sf::Color(255, 243, 201, CREATURE_IMAGE_COLOR_ALPHA_));//slightly orange
-    const sf::Color CombatNode::CREATURE_IMAGE_COLOR_NONPLAYER_      (sf::Color(255, 235, 235, CREATURE_IMAGE_COLOR_ALPHA_));//slightly red
-    const float     CombatNode::TONED_DOWN_MULT_                     (0.64f);
-    const sf::Uint8 CombatNode::DECAL_IMAGE_ALPHA_                   (46);
-    const float     CombatNode::WING_IMAGE_SCALE_                    (0.65f);
-    const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_             (0.333f);
-    const float     CombatNode::WING_IMAGE_ANIM_SPEED_               (8.0f);
-    const float     CombatNode::WING_IMAGE_ROTATION_MAX_             (-90.0f);
+
+    const sf::Uint8 CombatNode::CREATURE_IMAGE_COLOR_ALPHA_(32);
+
+    const sf::Color CombatNode::CREATURE_IMAGE_COLOR_PLAYER_
+        (sf::Color(255, 243, 201, CREATURE_IMAGE_COLOR_ALPHA_));//slightly orange
+
+    const sf::Color CombatNode::CREATURE_IMAGE_COLOR_NONPLAYER_
+        (sf::Color(255, 235, 235, CREATURE_IMAGE_COLOR_ALPHA_));//slightly red
+
+    const float     CombatNode::TONED_DOWN_MULT_         (0.64f);
+    const sf::Uint8 CombatNode::DECAL_IMAGE_ALPHA_       (46);
+    const float     CombatNode::WING_IMAGE_SCALE_        (0.65f);
+    const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_ (0.333f);
+    const float     CombatNode::WING_IMAGE_ANIM_SPEED_   (8.0f);
+    const float     CombatNode::WING_IMAGE_ROTATION_MAX_ (-90.0f);
     
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR,
                            const sfml_util::FontPtr_t    FONT_PTR,
                            const unsigned int            FONT_CHAR_SIZE)
     :
-        GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""), sf::FloatRect()),
+        GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).
+                                append("\""), sf::FloatRect()),
+
         nameTextObj_          (CREATURE_PTR->Name(), * FONT_PTR, FONT_CHAR_SIZE),
         condTextObj_          ("", * FONT_PTR, FONT_CHAR_SIZE),
         blockingPos_          (0),
@@ -141,7 +161,9 @@ namespace combat
     const std::string CombatNode::ToString() const
     {
         std::ostringstream ss;
-        ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ? "Player " : "NonPlayer ") << creaturePtr_->Race().Name() << " " << creaturePtr_->Role().Name();
+        ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ?
+            "Player " : "NonPlayer ") << creaturePtr_->Race().Name()
+            << " " << creaturePtr_->Role().Name();
 
         if (creaturePtr_->IsPlayerCharacter())
         {
@@ -227,18 +249,29 @@ namespace combat
         }
 
         if ((false == isMoving_) &&
-            (false == isSummaryView_) &&
-            (false == isDead_))
+            (false == isSummaryView_))
         {
             target.draw(nameTextObj_, states);
             target.draw(condTextObj_, states);
+        }
 
+        if ((false == isMoving_) &&
+            (false == isSummaryView_) &&
+            (false == isDead_))
+        {
             //draw health lines
-            auto const HEALTH_POS_TOP           { nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+            auto const HEALTH_POS_TOP
+                { nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+
             auto const HEALTH_LINE_LEN_MARGIN   { 0.25f * entityRegion_.width };
+
             auto const HEALTH_LINE_POS_LEFT     { entityRegion_.left + HEALTH_LINE_LEN_MARGIN };
-            auto const HEALTH_LINE_LEN          { entityRegion_.width - (HEALTH_LINE_LEN_MARGIN * 2.0f) };
+
+            auto const HEALTH_LINE_LEN
+                { entityRegion_.width - (HEALTH_LINE_LEN_MARGIN * 2.0f) };
+
             auto const HEALTH_LINE_TICK_HEIGHT  { 4.0f };
+
             sf::Vertex lines[] =
             {
                 sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP)),
@@ -273,14 +306,21 @@ namespace combat
 
         SetTextPositions();
 
-        imagePosV_.x = (entityRegion_.left + (entityRegion_.width  * 0.5f)) - (sprite_.getGlobalBounds().width  * 0.5f);
-        imagePosV_.y = (entityRegion_.top  + (entityRegion_.height * 0.5f)) - (sprite_.getGlobalBounds().height * 0.5f);
+        imagePosV_.x = (entityRegion_.left + (entityRegion_.width  * 0.5f)) -
+            (sprite_.getGlobalBounds().width  * 0.5f);
+
+        imagePosV_.y = (entityRegion_.top  + (entityRegion_.height * 0.5f)) -
+            (sprite_.getGlobalBounds().height * 0.5f);
 
         UpdateImagePosition();
         SetWingImagePosition();
 
-        auto const CROSSBONES_IMAGE_POS_LEFT{ (entityRegion_.left + (entityRegion_.width  * 0.5f)) - (crossBonesSprite_.getGlobalBounds().width  * 0.5f) };
-        auto const CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top  + (entityRegion_.height * 0.5f)) - (crossBonesSprite_.getGlobalBounds().height * 0.5f) };
+        auto const CROSSBONES_IMAGE_POS_LEFT{ (entityRegion_.left + (entityRegion_.width  * 0.5f))
+            - (crossBonesSprite_.getGlobalBounds().width  * 0.5f) };
+
+        auto const CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top  + (entityRegion_.height * 0.5f))
+            - (crossBonesSprite_.getGlobalBounds().height * 0.5f) };
+
         crossBonesSprite_.setPosition(CROSSBONES_IMAGE_POS_LEFT, CROSSBONES_IMAGE_POS_TOP);
     }
 
@@ -314,9 +354,14 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
-        sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NAME_COLOR, TONE_DOWN_VAL));
-        sfml_util::SetTextColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
+        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ?
+            PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+
+        sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NAME_COLOR,
+                                                                     TONE_DOWN_VAL));
+
+        sfml_util::SetTextColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_,
+                                                                     TONE_DOWN_VAL));
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
         healthLineColorRed_ = AdjustColorForToneDown(HealthColorRed(), TONE_DOWN_VAL);
@@ -326,7 +371,9 @@ namespace combat
 
     void CombatNode::UpdateConditionText()
     {
-        condTextObj_.setString( creaturePtr_->ConditionNames(3, creature::condition::Severity::LEAST_BENEFITIAL) );
+        condTextObj_.setString( creaturePtr_->ConditionNames(3,
+            creature::condition::Severity::LEAST_BENEFITIAL) );
+
         SetTextPositions();
     }
 
@@ -376,11 +423,13 @@ namespace combat
         {
             if (creaturePtr_->IsPlayerCharacter())
             {
-                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
+                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ *
+                    wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
             }
             else
             {
-                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ * wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
+                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ *
+                    wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
             }
         }
 
@@ -398,10 +447,14 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
-        willShowCrossBones_ = (creaturePtr_->IsPlayerCharacter() && creaturePtr_->IsDead());
+        auto const WILL_SETUP_SKULL_IMAGE{ (creaturePtr_->IsPlayerCharacter() &&
+                                            creaturePtr_->IsDead() &&
+                                            (false == willShowCrossBones_)) };
 
-        if (willShowCrossBones_)
+        if (WILL_SETUP_SKULL_IMAGE)
         {
+            willShowCrossBones_ = true;
+            isDead_ = true;
             SetupSkullAndCrossBones();
         }
 
@@ -439,30 +492,46 @@ namespace combat
     }
 
 
-    const sf::Color CombatNode::AdjustColorForToneDown(const sf::Color & OLD_COLOR, const float TONE_DOWN_VAL) const
+    const sf::Color CombatNode::AdjustColorForToneDown(const sf::Color & OLD_COLOR,
+                                                       const float       TONE_DOWN_VAL) const
     {
         sf::Color newColor(OLD_COLOR);
-        newColor.r = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.r) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
-        newColor.g = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.g) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
-        newColor.b = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.b) * (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
+        newColor.r = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.r) *
+            (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
+
+        newColor.g = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.g) *
+            (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
+
+        newColor.b = static_cast<sf::Uint8>(static_cast<float>(OLD_COLOR.b) *
+            (1.0f - (TONE_DOWN_VAL * TONED_DOWN_MULT_)));
+
         return newColor;
     }
 
 
     void CombatNode::SetTextPositions(const bool DID_TRANSITION_TO_SUMMARY_VIEW)
     {
-        const float NAME_TEXT_POS_TOP((entityRegion_.top + (entityRegion_.height * 0.7f)) - (nameTextObj_.getGlobalBounds().height * 0.5f));
-        const float COND_TEXT_POS_TOP((entityRegion_.top + entityRegion_.height) - (condTextObj_.getGlobalBounds().height * 0.5f));
+        const float NAME_TEXT_POS_TOP((entityRegion_.top + (entityRegion_.height * 0.7f)) -
+            (nameTextObj_.getGlobalBounds().height * 0.5f));
+
+        const float COND_TEXT_POS_TOP((entityRegion_.top + entityRegion_.height) -
+            (condTextObj_.getGlobalBounds().height * 0.5f));
 
         if (DID_TRANSITION_TO_SUMMARY_VIEW)
         {
-            nameTextObj_.setPosition(entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
-            condTextObj_.setPosition(sfml_util::Display::Instance()->GetWinWidth() + 1.0f, sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
+            nameTextObj_.setPosition(entityRegion_.left + entityRegion_.width + 15.0f,
+                NAME_TEXT_POS_TOP);
+
+            condTextObj_.setPosition(sfml_util::Display::Instance()->GetWinWidth() + 1.0f,
+                sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
         }
         else
         {
-            nameTextObj_.setPosition((entityRegion_.left + (entityRegion_.width  * 0.5f)) - (nameTextObj_.getGlobalBounds().width  * 0.5f), NAME_TEXT_POS_TOP);
-            condTextObj_.setPosition((entityRegion_.left + (entityRegion_.width  * 0.5f)) - (condTextObj_.getGlobalBounds().width  * 0.5f), COND_TEXT_POS_TOP);
+            nameTextObj_.setPosition((entityRegion_.left + (entityRegion_.width  * 0.5f)) -
+                (nameTextObj_.getGlobalBounds().width  * 0.5f), NAME_TEXT_POS_TOP);
+
+            condTextObj_.setPosition((entityRegion_.left + (entityRegion_.width  * 0.5f)) -
+                (condTextObj_.getGlobalBounds().width  * 0.5f), COND_TEXT_POS_TOP);
         }
     }
 
@@ -472,8 +541,13 @@ namespace combat
         auto const ORIG_ORIGIN{ wingSprite_.getOrigin() };
         wingSprite_.setOrigin(0.0f, 0.0f);
 
-        wingSprite_.setPosition((sprite_.getGlobalBounds().left - (wingSprite_.getGlobalBounds().width * WING_IMAGE_HORIZ_OFFSET_)) + wingSprite_.getGlobalBounds().width,
-                                (sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height) - (wingSprite_.getGlobalBounds().height * 0.5f));
+        wingSprite_.setPosition(
+            (sprite_.getGlobalBounds().left -
+                (wingSprite_.getGlobalBounds().width * WING_IMAGE_HORIZ_OFFSET_)) +
+                    wingSprite_.getGlobalBounds().width,
+            (sprite_.getGlobalBounds().top +
+                sprite_.getGlobalBounds().height) -
+                    (wingSprite_.getGlobalBounds().height * 0.5f));
 
         wingSprite_.setOrigin(ORIG_ORIGIN);
     }
@@ -481,12 +555,15 @@ namespace combat
 
     void CombatNode::SetWingImageScaleAndOrigin()
     {
-        auto const WING_SCALE{ (entityRegion_.height / wingSprite_.getLocalBounds().height) * WING_IMAGE_SCALE_ };
+        auto const WING_SCALE{ (entityRegion_.height /
+            wingSprite_.getLocalBounds().height) * WING_IMAGE_SCALE_ };
+
         wingSprite_.setScale(WING_SCALE, WING_SCALE);
 
         if (creaturePtr_->IsPlayerCharacter())
         {
-            wingSprite_.setOrigin(wingSprite_.getLocalBounds().width, wingSprite_.getLocalBounds().height);
+            wingSprite_.setOrigin(wingSprite_.getLocalBounds().width,
+                wingSprite_.getLocalBounds().height);
         }
         else
         {
@@ -503,26 +580,31 @@ namespace combat
 
     void CombatNode::SetHighlight(const bool WILL_HIGHLIGHT, const bool WILL_PLAY_SOUND_EFFECT)
     {
-        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+        const sf::Color NAME_COLOR((creaturePtr_->IsPlayerCharacter()) ?
+            PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
 
         if (WILL_HIGHLIGHT)
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::TickOn).PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
             sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
             healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
             healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
-            sprite_.setColor(creatureImageColor_ + sf::Color(0, 0, 0, CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_));
+
+            sprite_.setColor(creatureImageColor_ +
+                sf::Color(0, 0, 0, CREATURE_IMAGE_COLOR_HIGHLIGHT_VALUE_));
         }
         else
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOff).PlayRandom();
+                sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::TickOff).PlayRandom();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
@@ -536,7 +618,9 @@ namespace combat
 
     void CombatNode::SetRotationDegrees(const float DEGREES)
     {
-        sprite_.setOrigin(sprite_.getGlobalBounds().width * 0.5f, sprite_.getGlobalBounds().height * 0.5f);
+        sprite_.setOrigin(sprite_.getGlobalBounds().width * 0.5f,
+            sprite_.getGlobalBounds().height * 0.5f);
+
         sprite_.setRotation(DEGREES);
         sprite_.setOrigin(0.0f, 0.0f);
     }
@@ -550,11 +634,15 @@ namespace combat
 
             sfml_util::LoadImageOrTexture( * crossBonesTextureUPtr_,
                 GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
+
+            crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);    
         }
 
-        crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);
+        crossBonesSprite_.setScale(1.0f, 1.0f);
+        crossBonesSprite_.setPosition(0.0f, 0.0f);
         crossBonesSprite_.setColor( sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_) );
         SetCrossBonesImageScale();
+        SetEntityPos(GetEntityPos().x, GetEntityPos().y);
     }
 
 
@@ -579,10 +667,11 @@ namespace combat
     {
         const float SCALE_VERT(entityRegion_.height / crossBonesSprite_.getLocalBounds().height);
         crossBonesSprite_.setScale(SCALE_VERT, SCALE_VERT);
-
+        
         if (crossBonesSprite_.getGlobalBounds().width > entityRegion_.width)
         {
-            const float SCALE_HORIZ(entityRegion_.width / crossBonesSprite_.getLocalBounds().width);
+            const float SCALE_HORIZ(entityRegion_.width /
+                crossBonesSprite_.getLocalBounds().width);
 
             if (SCALE_HORIZ < SCALE_VERT)
             {
@@ -596,7 +685,9 @@ namespace combat
     {
         SetRotationDegrees((12.0f * 360.0f) * SLIDER_POS);
         SetRegion(1.0f - SLIDER_POS);
-        MoveEntityPos((GetEntityRegion().width * SLIDER_POS) * SLIDER_POS, (GetEntityRegion().height * SLIDER_POS) * SLIDER_POS);
+
+        MoveEntityPos((GetEntityRegion().width * SLIDER_POS) * SLIDER_POS,
+            (GetEntityRegion().height * SLIDER_POS) * SLIDER_POS);
     }
 
 
@@ -614,9 +705,14 @@ namespace combat
         selectAnimSprite_.setScale(SCALE, SCALE);
 
         //re-center
-        auto const HORIZ_ADJ{ (selectAnimSprite_.getGlobalBounds().width  - sprite_.getGlobalBounds().width)  * 0.5f };
-        auto const VERT_ADJ { (selectAnimSprite_.getGlobalBounds().height - sprite_.getGlobalBounds().height) * 0.5f };
-        selectAnimSprite_.setPosition(sprite_.getPosition().x - HORIZ_ADJ, sprite_.getPosition().y - VERT_ADJ);
+        auto const HORIZ_ADJ{ (selectAnimSprite_.getGlobalBounds().width  -
+            sprite_.getGlobalBounds().width)  * 0.5f };
+
+        auto const VERT_ADJ { (selectAnimSprite_.getGlobalBounds().height -
+            sprite_.getGlobalBounds().height) * 0.5f };
+
+        selectAnimSprite_.setPosition(sprite_.getPosition().x - HORIZ_ADJ,
+            sprite_.getPosition().y - VERT_ADJ);
 
         //fade-out
         auto color{ selectAnimSprite_.getColor() };

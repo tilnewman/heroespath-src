@@ -910,7 +910,7 @@ namespace stage
                                                   KNIGHT_STATS) };
             
             player::Initial::Setup(knightPtr);
-            knightPtr->HealthCurrentAdj(-10);
+            knightPtr->HealthCurrentSet(2);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
         /*
@@ -965,6 +965,7 @@ namespace stage
                                                   ARCHER_STATS) };
 
             player::Initial::Setup(archerPtr);
+            archerPtr->HealthCurrentSet(2);
             partyPtr->Add(archerPtr, errMsgIgnored);
         }
         /*
@@ -1013,6 +1014,7 @@ namespace stage
                                                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
+            bardPtr->HealthCurrentSet(2);
             partyPtr->Add(bardPtr, errMsgIgnored);
         }
         /*
@@ -1061,6 +1063,7 @@ namespace stage
                                                  THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
+            thiefPtr->HealthCurrentSet(2);
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
         {
@@ -1084,6 +1087,7 @@ namespace stage
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
+            clericPtr->HealthCurrentSet(2);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
