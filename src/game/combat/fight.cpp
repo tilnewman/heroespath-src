@@ -119,6 +119,8 @@ namespace combat
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec)
     {
+        using namespace creature;
+
         if (HEALTH_ADJ == 0)
         {
             return;
@@ -128,17 +130,35 @@ namespace combat
         {
             creatureDefendingPtrC->HealthCurrentAdj(HEALTH_ADJ);
 
-            if (creatureDefendingPtrC->HealthCurrent() > creatureDefendingPtrC->HealthNormal())
+            if (creatureDefendingPtrC->HealthCurrent() >= creatureDefendingPtrC->HealthNormal())
             {
                 creatureDefendingPtrC->HealthCurrentSet(creatureDefendingPtrC->HealthNormal());
 
-                RemoveAddedCondition(creature::Conditions::Dazed,
+                RemoveAddedCondition(Conditions::Dazed,
                                      creatureDefendingPtrC,
                                      hitInfoVec,
                                      condsRemovedVec);
+
+                RemoveAddedCondition(Conditions::Daunted,
+                                     creatureDefendingPtrC,
+                                     hitInfoVec,
+                                     condsRemovedVec);
+
+                if (AreAnyOfCondsContained({ Conditions::Panic },
+                                           creatureDefendingPtrC,
+                                           hitInfoVec))
+                {
+                    RemoveAddedCondition(Conditions::Panic,
+                                         creatureDefendingPtrC,
+                                         hitInfoVec,
+                                         condsRemovedVec);
+
+                    creatureDefendingPtrC->ConditionAdd(Conditions::Daunted);
+                    condsAddedVec.push_back(Conditions::Daunted);
+                }
             }
 
-            RemoveAddedCondition(creature::Conditions::Unconscious,
+            RemoveAddedCondition(Conditions::Unconscious,
                                  creatureDefendingPtrC,
                                  hitInfoVec,
                                  condsRemovedVec);
@@ -147,7 +167,7 @@ namespace combat
         }
 
         //check if already dead
-        if (AreAnyOfCondsContained({ creature::Conditions::Dead },
+        if (AreAnyOfCondsContained({ Conditions::Dead },
                                    creatureDefendingPtrC,
                                    hitInfoVec))
         {
@@ -155,7 +175,7 @@ namespace combat
         }
 
         auto const IS_ALREADY_UNCONSCIOUS{ AreAnyOfCondsContained(
-            { creature::Conditions::Unconscious }, creatureDefendingPtrC, hitInfoVec) };
+            { Conditions::Unconscious }, creatureDefendingPtrC, hitInfoVec) };
 
         //at this point HEALTH_ADJ is negative
         auto const DAMAGE_ABS{ std::abs(HEALTH_ADJ) };
@@ -167,8 +187,8 @@ namespace combat
                 (DAMAGE_ABS >= creatureDefendingPtrC->HealthCurrent())))))
         {
             creatureDefendingPtrC->HealthCurrentSet(0);
-            creatureDefendingPtrC->ConditionAdd(creature::Conditions::Dead);
-            condsAddedVec.push_back(creature::Conditions::Dead);
+            creatureDefendingPtrC->ConditionAdd(Conditions::Dead);
+            condsAddedVec.push_back(Conditions::Dead);
 
             auto turnInfo{ combat::Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
             turnInfo.SetIsFlying(false);
@@ -179,7 +199,7 @@ namespace combat
             //remove the unconscious condition if already there
             if (IS_ALREADY_UNCONSCIOUS)
             {
-                RemoveAddedCondition(creature::Conditions::Unconscious,
+                RemoveAddedCondition(Conditions::Unconscious,
                                      creatureDefendingPtrC,
                                      hitInfoVec,
                                      condsRemovedVec);
@@ -201,15 +221,15 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(1);
 
-                creatureDefendingPtrC->ConditionAdd(creature::Conditions::Unconscious);
-                condsAddedVec.push_back(creature::Conditions::Unconscious);
+                creatureDefendingPtrC->ConditionAdd(Conditions::Unconscious);
+                condsAddedVec.push_back(Conditions::Unconscious);
 
-                RemoveAddedCondition(creature::Conditions::Dazed,
+                RemoveAddedCondition(Conditions::Dazed,
                                      creatureDefendingPtrC,
                                      hitInfoVec,
                                      condsRemovedVec);
 
-                RemoveAddedCondition(creature::Conditions::Daunted,
+                RemoveAddedCondition(Conditions::Daunted,
                                      creatureDefendingPtrC,
                                      hitInfoVec,
                                      condsRemovedVec);
@@ -233,9 +253,11 @@ namespace combat
         creature::CondEnumVec_t & condsRemovedVecParam,
         HitInfoVec_t &            hitInfoVec)
     {
-        creature::CondEnumVec_t condsVecToAdd{ creature::Conditions::Daunted,
-                                               creature::Conditions::Dazed,
-                                               creature::Conditions::Tripped };
+        using namespace creature;
+
+        creature::CondEnumVec_t condsVecToAdd{ Conditions::Daunted,
+                                               Conditions::Dazed,
+                                               Conditions::Tripped };
         
         misc::Vector::ShuffleVec(condsVecToAdd);
 
@@ -264,8 +286,6 @@ namespace combat
 
         for (auto const NEXT_COND_ENUM : condsVecToAdd)
         {
-            using namespace creature;
-
             //only a 50/50 chance of adding conditions
             if (misc::random::Float(1.0f) < CHANCE_CONDS_ADDED_RATIO)
             {
@@ -962,9 +982,11 @@ namespace combat
     const FightResult FightClub::Pounce(creature::CreaturePtrC_t creaturePouncingPtrC,
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
+        using namespace creature;
+
         HitInfo hitInfo;
 
-        if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped))
+        if (creatureDefendingPtrC->HasCondition(Conditions::Tripped))
         {
             const ContentAndNamePos CNP("",
                                         " pounces on ",
@@ -987,15 +1009,14 @@ namespace combat
                                         true,
                                         true))
             {
-                creatureDefendingPtrC->ConditionAdd(creature::Conditions::Tripped);
+                creatureDefendingPtrC->ConditionAdd(Conditions::Tripped);
 
                 const ContentAndNamePos CNP("",
                                             " pounces on ",
                                             ".",
                                             NamePosition::SourceThenTarget);
 
-                const creature::CondEnumVec_t CONDS_ADDED_VEC{
-                    creature::Conditions::Tripped };
+                const creature::CondEnumVec_t CONDS_ADDED_VEC{ Conditions::Tripped };
 
                 hitInfo = HitInfo(true,
                                   HitType::Pounce,
@@ -1023,6 +1044,8 @@ namespace combat
     const FightResult FightClub::Roar(creature::CreaturePtrC_t creatureRoaringPtrC,
                                       CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC)
     {
+        using namespace creature;
+
         auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
             ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
 
@@ -1036,7 +1059,7 @@ namespace combat
         //of resisting he/she/it has.
         for (auto const NEXT_DEFEND_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
         {
-            if (NEXT_DEFEND_CREATURE_PTR->HasCondition(creature::Conditions::Panic))
+            if (NEXT_DEFEND_CREATURE_PTR->HasCondition(Conditions::Panic))
             {
                 const ContentAndNamePos CNP(" is already panicked.",
                                             NamePosition::TargetBefore);
@@ -1073,17 +1096,20 @@ namespace combat
                                         true,
                                         true))
             {
-                NEXT_DEFEND_CREATURE_PTR->ConditionAdd(creature::Conditions::Panic);
+                //remove the Daunted condition before adding the Panicked condition
+                NEXT_DEFEND_CREATURE_PTR->ConditionRemove(Conditions::Daunted);
+
+                NEXT_DEFEND_CREATURE_PTR->ConditionAdd(Conditions::Panic);
 
                 const ContentAndNamePos CNP("'s roar panics ",
-                                        NamePosition::SourceThenTarget);
+                                            NamePosition::SourceThenTarget);
 
                 const HitInfo HIT_INFO(
                     true,
                     HitType::Roar,
                     CNP,
                     0,
-                    creature::CondEnumVec_t(1, creature::Conditions::Panic),
+                    creature::CondEnumVec_t(1, Conditions::Panic),
                     creature::CondEnumVec_t());
 
                 creatureEffectsVec.push_back( CreatureEffect(NEXT_DEFEND_CREATURE_PTR,

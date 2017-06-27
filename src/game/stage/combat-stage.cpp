@@ -910,7 +910,7 @@ namespace stage
                                                   KNIGHT_STATS) };
             
             player::Initial::Setup(knightPtr);
-            knightPtr->HealthCurrentSet(2);
+            knightPtr->HealthCurrentAdj(-1);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
         /*
