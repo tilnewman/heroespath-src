@@ -780,6 +780,7 @@ namespace stage
             "heroespath-fight-pixie-damage-floor",
             "heroespath-fight-pixie-damage-adj-ratio",
             "heroespath-fight-pixie-defend-speed-rank-bonus-ratio",
+            "heroespath-fight-block-defend-speed-bonus-ratio",
             "heroespath-fight-archer-projectile-accuracy-bonus-ratio",
             "heroespath-fight-archer-projectile-rank-bonus-ratio",
             "heroespath-fight-chance-conditions-added-from-damage-ratio",

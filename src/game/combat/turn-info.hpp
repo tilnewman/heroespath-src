@@ -50,6 +50,7 @@ namespace creature
 namespace combat
 {
 
+    //stores the abs of the damage
     using DamageCreaturePair_t = std::pair<stats::Health_t, creature::CreaturePtr_t>;
 
 
@@ -100,11 +101,15 @@ namespace combat
         inline creature::CreaturePtr_t GetLastToCastCreature() const            { return lastToCastPtr_; }
         inline void SetLastToCastCreature(creature::CreaturePtr_t SPTR)         { lastToCastPtr_ = SPTR; }
 
-        inline const DamageCreaturePair_t GetMostDamageCreature() const         { return mostDamagePair_; }
-        inline void SetMostDamageCreature(const DamageCreaturePair_t & P)       { mostDamagePair_ = P; }
+        //stores the abs of the damage
+        inline const DamageCreaturePair_t GetMostDamageCreaturePair() const     { return mostDamagePair_; }
+        inline void SetMostDamageCreaturePair(const DamageCreaturePair_t & P)   { mostDamagePair_ = P; }
 
         inline std::size_t CastCount() const                                    { return castCount_; }
         inline std::size_t CastCountIncrement()                                 { return ++castCount_; }
+
+        inline std::size_t SongCount() const                                    { return songCount_; }
+        inline std::size_t SongCountIncrement()                                 { return ++songCount_; }
 
         inline bool GetWasHitLastTurn() const                                   { return wasHitLastTurn_; }
         inline void SetWasHitLastTurn(const bool B)                             { wasHitLastTurn_ = B; }
@@ -128,6 +133,7 @@ namespace combat
         creature::CreaturePtr_t lastToCastPtr_;
         DamageCreaturePair_t mostDamagePair_;
         std::size_t castCount_;
+        std::size_t songCount_;
         bool wasHitLastTurn_;
     };
 

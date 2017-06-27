@@ -99,11 +99,11 @@ namespace combat
             }
         }
 
-        auto const MOST_DAMAGE_CREATURE_PAIR{ turnInfo.GetMostDamageCreature() };
+        auto const MOST_DAMAGE_CREATURE_PAIR{ turnInfo.GetMostDamageCreaturePair() };
         if (CREATURE_EFFECT.GetDamageTotal() > MOST_DAMAGE_CREATURE_PAIR.first)
         {
-            turnInfo.SetMostDamageCreature(std::make_pair(CREATURE_EFFECT.GetDamageTotal(),
-                                                          creatureAttackingPtrC));
+            turnInfo.SetMostDamageCreaturePair(std::make_pair(CREATURE_EFFECT.GetDamageTotal(),
+                                                              creatureAttackingPtrC));
         }
 
         Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
@@ -449,14 +449,21 @@ namespace combat
         auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Stats().Spd().Current()};
         auto defendSpdToUse{ DEFEND_SPD_RAW };
 
-        //If the defending creature is a Pixie then add 20% speed bonus plus half defender's rank.
+        //If the defending creature is a Pixie then add a speed bonus based on rank.
         if (creatureDefendingPtrC->IsPixie())
         {
-            auto const PIXIE_DEFEND_SPD_RANK_BONUS_RATIO{ GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-fight-pixie-defend-speed-rank-bonus-ratio") };
-
             defendSpdToUse += static_cast<int>(static_cast<float>(creatureDefendingPtrC->Rank()) *
-                PIXIE_DEFEND_SPD_RANK_BONUS_RATIO);
+                GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-pixie-defend-speed-rank-bonus-ratio"));
+        }
+
+        //If the defending creature is Blocking, then add a speed bonus.
+        if (combat::Encounter::Instance()->GetTurnInfoCopy(
+            creatureDefendingPtrC).GetTurnActionInfo().Action() == TurnAction::Block)
+        {
+            defendSpdToUse += static_cast<int>(static_cast<float>(DEFEND_SPD_RAW) *
+                GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-block-defend-speed-bonus-ratio"));
         }
 
         auto const DEFEND_SPD_RAND_MIN{ stats::Stat::Reduce(defendSpdToUse) };
@@ -785,6 +792,34 @@ namespace combat
             }
         }
 
+        //update TurnInfo
+        auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
+        
+        if (turnInfo.GetFirstAttackedByCreature() == nullptr)
+        {
+            turnInfo.SetFirstAttackedByCreature(creatureAttackingPtrC);
+        }
+
+        if (turnInfo.GetFirstHitByCreature() == nullptr)
+        {
+            turnInfo.SetFirstHitByCreature(creatureAttackingPtrC);
+        }
+
+        turnInfo.SetLastAttackedByCreature(creatureAttackingPtrC);
+        turnInfo.SetLastHitByCreature(creatureAttackingPtrC);
+        
+        auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
+        if (mostDamageCreaturePair.first < std::abs(damageFinal))
+        {
+            mostDamageCreaturePair.first = std::abs(damageFinal);
+            mostDamageCreaturePair.second = creatureAttackingPtrC;
+            turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
+        }
+
+        turnInfo.SetWasHitLastTurn(true);
+
+        Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
+
         return damageFinal * -1;
     }
 
@@ -826,6 +861,16 @@ namespace combat
             throw std::runtime_error(ssErr.str());
         }
 
+        //update caster's TurnInfo
+        auto casterTurnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureCastingPtr) };
+        casterTurnInfo.CastCountIncrement();
+        Encounter::Instance()->SetTurnInfo(creatureCastingPtr, casterTurnInfo);
+
+        //update caster's TurnActionInfo
+        Encounter::Instance()->SetTurnActionInfo(creatureCastingPtr,
+            TurnActionInfo(SPELL_CPTR, creaturesCastUponPVec) );
+
+        //attempt to have spell effect each target creature
         CreatureEffectVec_t creatureEffectVec;
         for (auto nextCreatureCastUponPtr : creaturesCastUponPVec)
         {
@@ -876,7 +921,50 @@ namespace combat
                 creatureEffectVec.push_back( CreatureEffect(nextCreatureCastUponPtr,
                                                             hitInfoVec) );
 
-                //TODO Handle Encounter::Instance()->TurnInfo
+                //update target's TurnInfo
+                auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
+
+                turnInfo.SetWasHitLastTurn(false);
+
+                if ((SPELL_CPTR->EffectType() == EffectType::CreatureHarmDamage) ||
+                    (SPELL_CPTR->EffectType() == EffectType::CreatureHarmMisc))
+                {
+                    if (turnInfo.GetFirstAttackedByCreature() == nullptr)
+                    {
+                        turnInfo.SetFirstAttackedByCreature(creatureCastingPtr);
+                    }
+
+                    turnInfo.SetLastAttackedByCreature(creatureCastingPtr);
+
+                    if (DID_SPELL_SUCCEED)
+                    {
+                        if (turnInfo.GetFirstHitByCreature() == nullptr)
+                        {
+                            turnInfo.SetFirstHitByCreature(creatureCastingPtr);
+                        }
+
+                        turnInfo.SetLastHitByCreature(creatureCastingPtr);
+
+                        auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
+                        if (mostDamageCreaturePair.first < std::abs(healthAdj))
+                        {
+                            mostDamageCreaturePair.first = std::abs(healthAdj);
+                            mostDamageCreaturePair.second = creatureCastingPtr;
+                            turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
+                        }
+
+                        turnInfo.SetWasHitLastTurn(true);
+                    }
+                }
+
+                turnInfo.SetLastToCastCreature(creatureCastingPtr);
+                
+                if (DID_SPELL_SUCCEED && (turnInfo.GetFirstToCastCreature() == nullptr))
+                {
+                    turnInfo.SetFirstToCastCreature(creatureCastingPtr);
+                }
+
+                Encounter::Instance()->SetTurnInfo(nextCreatureCastUponPtr, turnInfo);
             }
         }
 
@@ -921,6 +1009,16 @@ namespace combat
             throw std::runtime_error(ssErr.str());
         }
 
+        //update player's TurnInfo
+        auto playerTurnInfo{ Encounter::Instance()->GetTurnInfoCopy(creaturePlayingPtr) };
+        playerTurnInfo.SongCountIncrement();
+        Encounter::Instance()->SetTurnInfo(creaturePlayingPtr, playerTurnInfo);
+
+        //update player's TurnActionInfo
+        Encounter::Instance()->SetTurnActionInfo(creaturePlayingPtr,
+                TurnActionInfo(SONG_CPTR, creaturesListeningPVec));
+
+        //attempt to have spell effect each target creature
         CreatureEffectVec_t creatureEffectVec;
         for (auto nextCreatureCastUponPtr : creaturesListeningPVec)
         {
@@ -971,7 +1069,45 @@ namespace combat
                 creatureEffectVec.push_back( CreatureEffect(nextCreatureCastUponPtr,
                                                             hitInfoVec) );
 
-                //TODO Handle Encounter::Instance()->TurnInfo
+                //handle TurnInfo
+                auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
+                
+                if (turnInfo.GetFirstToMakeMusicCreature() == nullptr)
+                {
+                    turnInfo.SetFirstToMakeMusicCreature(creaturePlayingPtr);
+                }
+
+                turnInfo.SetLastToMakeMusicCreature(creaturePlayingPtr);
+                
+                turnInfo.SetWasHitLastTurn(false);
+
+                if ((SONG_CPTR->EffectType() == EffectType::CreatureHarmDamage) ||
+                    (SONG_CPTR->EffectType() == EffectType::CreatureHarmDamage))
+                {
+                    if (turnInfo.GetFirstAttackedByCreature() == nullptr)
+                    {
+                        turnInfo.SetFirstAttackedByCreature(creaturePlayingPtr);
+                    }
+
+                    if (DID_SONG_SUCCEED)
+                    {
+                        turnInfo.SetFirstHitByCreature(creaturePlayingPtr);
+                        turnInfo.SetLastAttackedByCreature(creaturePlayingPtr);
+                        turnInfo.SetLastHitByCreature(creaturePlayingPtr);
+
+                        auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
+                        if (mostDamageCreaturePair.first < std::abs(healthAdj))
+                        {
+                            mostDamageCreaturePair.first = std::abs(healthAdj);
+                            mostDamageCreaturePair.second = creaturePlayingPtr;
+                            turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
+                        }
+
+                        turnInfo.SetWasHitLastTurn(true);
+                    }
+                }
+
+                Encounter::Instance()->SetTurnInfo(nextCreatureCastUponPtr, turnInfo);
             }
         }
 
@@ -983,6 +1119,12 @@ namespace combat
                                         creature::CreaturePtrC_t creatureDefendingPtrC)
     {
         using namespace creature;
+
+        //update player's TurnActionInfo
+        Encounter::Instance()->SetTurnActionInfo(creaturePouncingPtrC,
+            TurnActionInfo(((Encounter::Instance()->GetTurnInfoCopy(
+                creaturePouncingPtrC).GetIsFlying()) ?
+                    TurnAction::SkyPounce : TurnAction::LandPounce), { creatureDefendingPtrC }));
 
         HitInfo hitInfo;
 
@@ -997,18 +1139,35 @@ namespace combat
         }
         else
         {
-            if (creature::Stats::Versus(creaturePouncingPtrC,
-                                        { stats::stat::Speed, stats::stat::Accuracy },
-                                        creatureDefendingPtrC,
-                                        { stats::stat::Speed },
-                                        0,
-                                        0,
-                                        false,
-                                        true,
-                                        true,
-                                        true,
-                                        true))
+            auto const DID_SUCCEED{ creature::Stats::Versus(
+                creaturePouncingPtrC,
+                { stats::stat::Speed, stats::stat::Accuracy },
+                creatureDefendingPtrC,
+                { stats::stat::Speed },
+                0,
+                0,
+                false,
+                true,
+                true,
+                true,
+                true) };
+
+            stats::Health_t healthAdj{ 0 };
+
+            if (DID_SUCCEED)
             {
+                //TODO pouncing should do some damage
+                healthAdj = 0;
+
+                HitInfoVec_t hitInfoVec;
+                creature::CondEnumVec_t condsAddedVec;
+                creature::CondEnumVec_t condsRemovedVec;
+                HandleDamage(creatureDefendingPtrC,
+                             hitInfoVec,
+                             healthAdj,
+                             condsAddedVec,
+                             condsRemovedVec);
+
                 creatureDefendingPtrC->ConditionAdd(Conditions::Tripped);
 
                 const ContentAndNamePos CNP("",
@@ -1021,7 +1180,7 @@ namespace combat
                 hitInfo = HitInfo(true,
                                   HitType::Pounce,
                                   CNP,
-                                  0, //TODO pouncing should do some damage
+                                  healthAdj,
                                   CONDS_ADDED_VEC,
                                   creature::CondEnumVec_t());
             }
@@ -1034,6 +1193,40 @@ namespace combat
 
                 hitInfo = HitInfo(false, HitType::Pounce, CNP);
             }
+
+            //update defender's TurnInfo
+            auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
+
+            if (turnInfo.GetFirstAttackedByCreature() == nullptr)
+            {
+                turnInfo.SetFirstAttackedByCreature(creaturePouncingPtrC);
+            }
+
+            turnInfo.SetLastAttackedByCreature(creaturePouncingPtrC);
+
+            turnInfo.SetWasHitLastTurn(false);
+            
+            if (DID_SUCCEED)
+            {
+                if (turnInfo.GetFirstHitByCreature() == nullptr)
+                {
+                    turnInfo.SetFirstHitByCreature(creaturePouncingPtrC);
+                }
+
+                turnInfo.SetLastHitByCreature(creaturePouncingPtrC);
+
+                auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
+                if (mostDamageCreaturePair.first < std::abs(healthAdj))
+                {
+                    mostDamageCreaturePair.first = std::abs(healthAdj);
+                    mostDamageCreaturePair.second = creaturePouncingPtrC;
+                    turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
+                }
+
+                turnInfo.SetWasHitLastTurn(true);
+            }
+
+            Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
         }
 
         return FightResult( CreatureEffect(creatureDefendingPtrC,
@@ -1048,6 +1241,10 @@ namespace combat
 
         auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
             ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
+
+        //update player's TurnActionInfo
+        Encounter::Instance()->SetTurnActionInfo(creatureRoaringPtrC,
+            TurnActionInfo(TurnAction::Roar, LIVING_OPPONENT_CREATURES_PVEC) );
 
         CreatureEffectVec_t creatureEffectsVec;
 
@@ -1096,6 +1293,8 @@ namespace combat
                                         true,
                                         true))
             {
+                //no TurnInfo settings need to be made for roar
+
                 //remove the Daunted condition before adding the Panicked condition
                 NEXT_DEFEND_CREATURE_PTR->ConditionRemove(Conditions::Daunted);
 

@@ -170,7 +170,7 @@ namespace combat
         //attack most desired target if possible
         if (CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
         {
-            return TurnActionInfo(TurnAction::Attack, MOST_DESIRED_TARGET_CPTRC);
+            return TurnActionInfo(TurnAction::Attack, { MOST_DESIRED_TARGET_CPTRC });
         }
 
         //if no players are in range to attack but there are held weapons ready to attack and other
@@ -235,7 +235,7 @@ namespace combat
             (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false))
         {
             return TurnActionInfo(TurnAction::Attack,
-                misc::Vector::SelectRandom(LIVING_PLAYERS_IN_ATTACK_RANGE));
+                { misc::Vector::SelectRandom(LIVING_PLAYERS_IN_ATTACK_RANGE) });
         }
 
         //At this point nothing was chosen to be done, so block instead
@@ -551,9 +551,9 @@ namespace combat
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::MostDamage)
         {
-            if (TURN_INFO.GetMostDamageCreature().second != nullptr)
+            if (TURN_INFO.GetMostDamageCreaturePair().second != nullptr)
             {
-                refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreature().second);
+                refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreaturePair().second);
             }
         }
 
@@ -838,7 +838,7 @@ namespace combat
                     }
                 }
 
-                return TurnActionInfo(DECIDED_ACTION, creatureToActOn);
+                return TurnActionInfo(DECIDED_ACTION, { creatureToActOn });
             }
         }
 

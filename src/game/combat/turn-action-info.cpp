@@ -40,11 +40,11 @@ namespace game
 namespace combat
 {
 
-    TurnActionInfo::TurnActionInfo(const TurnAction::Enum        ACTION,
-                                   const creature::CreaturePtr_t TARGET_PTR)
+    TurnActionInfo::TurnActionInfo(const TurnAction::Enum         ACTION,
+                                   const creature::CreaturePVec_t TARGETS_PVEC)
     :
         actionType_ (ACTION),
-        targetsPVec_(1, TARGET_PTR),
+        targetsPVec_(TARGETS_PVEC),
         spellPtr_   (nullptr),
         songPtr_    (nullptr)
     {}

@@ -53,6 +53,7 @@ namespace combat
         lastToCastPtr_             (nullptr),
         mostDamagePair_            (std::make_pair(0, nullptr)),
         castCount_                 (0),
+        songCount_                 (0),
         wasHitLastTurn_            (false)
     {}
 
@@ -76,6 +77,7 @@ namespace combat
 
         mostDamagePair_ (TI.mostDamagePair_),
         castCount_      (TI.castCount_     ),
+        songCount_      (TI.songCount_     ),
         wasHitLastTurn_ (TI.wasHitLastTurn_)
     {}
 
@@ -97,6 +99,7 @@ namespace combat
             lastToCastPtr_              = TI.lastToCastPtr_;
             mostDamagePair_             = TI.mostDamagePair_;
             castCount_                  = TI.castCount_;
+            songCount_                  = TI.songCount_;
             wasHitLastTurn_             = TI.wasHitLastTurn_;
         }
 
@@ -107,31 +110,49 @@ namespace combat
     void TurnInfo::RemoveDeadCreatureTasks(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         if (firstAttackedByCreaturePtr_ == CREATURE_CPTRC)
+        {
             firstAttackedByCreaturePtr_ = nullptr;
+        }
 
         if (firstHitByCreaturePtr_ == CREATURE_CPTRC)
+        {
             firstHitByCreaturePtr_ = nullptr;
+        }
 
         if (lastAttackedByCreaturePtr_ == CREATURE_CPTRC)
+        {
             lastAttackedByCreaturePtr_ = nullptr;
+        }
 
         if (lastHitByCreaturePtr_ == CREATURE_CPTRC)
+        {
             lastHitByCreaturePtr_ = nullptr;
+        }
 
         if (firstToMakeMusicPtr_ == CREATURE_CPTRC)
+        {
             firstToMakeMusicPtr_ = nullptr;
+        }
 
         if (lastToMakeMusicPtr_ == CREATURE_CPTRC)
+        {
             lastToMakeMusicPtr_ = nullptr;
+        }
 
         if (firstToCastPtr_ == CREATURE_CPTRC)
+        {
             firstToCastPtr_ = nullptr;
+        }
 
         if (lastToCastPtr_ == CREATURE_CPTRC)
+        {
             lastToCastPtr_ = nullptr;
+        }
 
         if (mostDamagePair_.second == CREATURE_CPTRC)
+        {
             mostDamagePair_ = std::make_pair(0, nullptr);
+        }
     }
 
 
@@ -150,6 +171,7 @@ namespace combat
                         L.lastToCastPtr_,
                         L.mostDamagePair_,
                         L.castCount_,
+                        L.songCount_,
                         L.wasHitLastTurn_)
                <
                std::tie(R.isFlying_,
@@ -165,6 +187,7 @@ namespace combat
                         R.lastToCastPtr_,
                         R.mostDamagePair_,
                         R.castCount_,
+                        R.songCount_,
                         R.wasHitLastTurn_);
     }
 
@@ -184,6 +207,7 @@ namespace combat
                         L.lastToCastPtr_,
                         L.mostDamagePair_,
                         L.castCount_,
+                        L.songCount_,
                         L.wasHitLastTurn_)
                ==
                std::tie(R.isFlying_,
@@ -199,6 +223,7 @@ namespace combat
                         R.lastToCastPtr_,
                         R.mostDamagePair_,
                         R.castCount_,
+                        R.songCount_,
                         R.wasHitLastTurn_);
     }
 

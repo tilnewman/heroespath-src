@@ -59,8 +59,9 @@ namespace combat
     class TurnActionInfo
     {
     public:
-        explicit TurnActionInfo(const TurnAction::Enum        ACTION     = TurnAction::Nothing,
-                                const creature::CreaturePtr_t TARGET_PTR = nullptr);
+        explicit TurnActionInfo(
+            const TurnAction::Enum         ACTION       = TurnAction::Nothing,
+            const creature::CreaturePVec_t TARGETS_PVEC = creature::CreaturePVec_t());
 
         TurnActionInfo(const spell::SpellPtr_t          SPELL_PTR,
                        const creature::CreaturePVec_t & TARGET_PVEC);
