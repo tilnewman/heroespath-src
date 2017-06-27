@@ -144,6 +144,7 @@ namespace combat
         sf::VertexArray                  bgQuads_;
         CombatNodePtr_t                  combatNodePtr_;
         sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t rankTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t healthTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;

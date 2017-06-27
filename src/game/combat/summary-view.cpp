@@ -110,6 +110,7 @@ namespace combat
         bgQuads_             (sf::Quads, 4),
         combatNodePtr_       (),
         nameTextRegionUPtr_  (),
+        rankTextRegionUPtr_  (),
         healthTextRegionUPtr_(),
         descTextRegionUPtr_  (),
         condTextRegionUPtr_  (),
@@ -227,6 +228,7 @@ namespace combat
         if (isTransToComplete_ && (combatNodePtr_ != nullptr))
         {
             nameTextRegionUPtr_->draw(target, states);
+            rankTextRegionUPtr_->draw(target, states);
             healthTextRegionUPtr_->draw(target, states);
             condTextRegionUPtr_->draw(target, states);
 
@@ -311,6 +313,20 @@ namespace combat
             CREATURE_NAME_TEXT_INFO,
             sf::FloatRect() );
 
+        std::ostringstream rankSS;
+        rankSS << "Rank " << creaturePtr->Rank() << " (" << creaturePtr->RankClassName() << ")";
+
+        const sfml_util::gui::TextInfo CREATURE_RANK_TEXT_INFO(
+            rankSS.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light());
+
+        rankTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "SummaryView'sRank",
+            CREATURE_RANK_TEXT_INFO,
+            sf::FloatRect() );
+
         std::ostringstream healthSS;
         healthSS << "Health: ";
         if (creaturePtr->IsPlayerCharacter())
@@ -390,9 +406,14 @@ namespace combat
             nameTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 IMAGE_POS_TOP + TOP_TEXT_SPACER);
 
-            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+            rankTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 nameTextRegionUPtr_->GetEntityRegion().top +
                 nameTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                rankTextRegionUPtr_->GetEntityRegion().top +
+                rankTextRegionUPtr_->GetEntityRegion().height +
                 BETWEEN_TEXT_SPACER);
             
             armorTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
@@ -415,9 +436,14 @@ namespace combat
             nameTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 IMAGE_POS_TOP + TOP_TEXT_SPACER);
 
-            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+            rankTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 nameTextRegionUPtr_->GetEntityRegion().top +
                 nameTextRegionUPtr_->GetEntityRegion().height +
+                BETWEEN_TEXT_SPACER);
+
+            healthTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
+                rankTextRegionUPtr_->GetEntityRegion().top +
+                rankTextRegionUPtr_->GetEntityRegion().height +
                 BETWEEN_TEXT_SPACER);
 
             condTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
