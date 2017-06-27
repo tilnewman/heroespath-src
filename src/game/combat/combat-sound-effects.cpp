@@ -100,7 +100,7 @@ namespace combat
             }
             else if (WEAPON_TYPE & item::weapon_type::Sling)
             {
-                //The horn hit sounded good for slings too
+                //The horn hit sfx sounded good for slings too
                 return sfml_util::SoundManager::Instance()->GetSfxSet(
                     sfml_util::SfxSet::MaterialHitMisc).Play(
                         sfml_util::sound_effect::MaterialHitHorn);
@@ -247,7 +247,7 @@ namespace combat
                     case item::material::Platinum:
                     {
                         return sfml_util::SoundManager::Instance()->GetSfxSet(
-                            sfml_util::SfxSet::MaterialHitMisc).PlayRandom();
+                            sfml_util::SfxSet::MaterialHitMetal).PlayRandom();
                     }
 
                     case item::material::Feathers:
