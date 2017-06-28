@@ -395,7 +395,8 @@ namespace creature
     bool Creature::HasConditionNotAThreatTemp() const
     {
         return (HasCondition(Conditions::Dazed) ||
-                HasCondition(Conditions::Tripped));
+                HasCondition(Conditions::Tripped) ||
+                HasCondition(Conditions::Pounced));
     }
 
 
@@ -485,6 +486,11 @@ namespace creature
         if (HasCondition(Conditions::Tripped))
         {
             return RESPONSE_PREFIX + "tripped" + RESPONSE_POSTFIX;
+        }
+
+        if (HasCondition(Conditions::Pounced))
+        {
+            return RESPONSE_PREFIX + "pounced" + RESPONSE_POSTFIX;
         }
 
         if (HasCondition(Conditions::AsleepNatural))

@@ -67,12 +67,14 @@
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/creature/stats.hpp"
 #include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
+#include "game/stats/stat-enum.hpp"
 
 #include "misc/real.hpp"
 #include "misc/random.hpp"
@@ -3695,18 +3697,26 @@ namespace stage
             return "gets up after being tripped";
         }
 
-        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Dazed)) &&
-            (misc::random::Int(100) < 75))
+        if (turnCreaturePtr_->HasCondition(creature::Conditions::Dazed))
         {
-            turnCreaturePtr_->ConditionRemove(creature::Conditions::Dazed);
-            return "wakes from being dazed";
+            if ((misc::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))) ||
+                (creature::Stats::Test(turnCreaturePtr_, stats::stat::Strength,
+                    0.0f, true, true)))
+            {
+                turnCreaturePtr_->ConditionRemove(creature::Conditions::Dazed);
+                return "recovers from the dazed condition";
+            }
         }
 
-        if ((turnCreaturePtr_->HasCondition(creature::Conditions::Panic)) &&
-            (misc::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))))
+        if (turnCreaturePtr_->HasCondition(creature::Conditions::Panic))
         {
-            turnCreaturePtr_->ConditionRemove(creature::Conditions::Panic);
-            return "recovers from being panicked";
+            if ((misc::random::Int(100) < (10 + static_cast<int>(turnCreaturePtr_->Rank()))) ||
+                (creature::Stats::Test(turnCreaturePtr_, stats::stat::Intelligence,
+                    0.0f, true, true)))
+            {
+                turnCreaturePtr_->ConditionRemove(creature::Conditions::Panic);
+                return "recovers from being panicked";
+            }
         }
 
         return "";

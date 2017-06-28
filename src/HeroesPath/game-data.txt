@@ -147,6 +147,7 @@ heroespath-creature-condition-AsleepMagical-desc=   In a deep magical sleep that
 heroespath-creature-condition-Daunted-desc=         Discouraged and disheartened.  Minor reductions to some stats.
 heroespath-creature-condition-Bold-desc=            Emboldened  and heartened.  Moderate increases to stats.
 heroespath-creature-condition-Heroic-desc=          Fearless and invigorated.  All stats are significantly increased.
+heroespath-creature-condition-Pounced-desc=         Knocked over and held down by a beast.  Stats are significantly reduced.
 
 #Spell Short Descriptions
 heroespath-spell-Sparks-short-desc=         Sprays a single enemy with a shower of molten sparks causing minimal damage.

@@ -60,6 +60,7 @@ namespace condition
         conditionsUVec_.push_back( std::make_unique<Tripped>() );
         conditionsUVec_.push_back( std::make_unique<AsleepNatural>() );
         conditionsUVec_.push_back( std::make_unique<Poisoned>() );
+        conditionsUVec_.push_back( std::make_unique<Pounced>() );
         conditionsUVec_.push_back( std::make_unique<AsleepMagical>() );
         conditionsUVec_.push_back( std::make_unique<Unconscious>() );
         conditionsUVec_.push_back( std::make_unique<Stone>() );

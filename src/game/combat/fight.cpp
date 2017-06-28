@@ -1181,20 +1181,18 @@ namespace combat
                              condsAddedVec,
                              condsRemovedVec);
 
-                creatureDefendingPtrC->ConditionAdd(Conditions::Tripped);
+                creatureDefendingPtrC->ConditionAdd(Conditions::Pounced);
 
                 const ContentAndNamePos CNP("",
                                             " pounces on ",
                                             ".",
                                             NamePosition::SourceThenTarget);
 
-                const creature::CondEnumVec_t CONDS_ADDED_VEC{ Conditions::Tripped };
-
                 hitInfo = HitInfo(true,
                                   HitType::Pounce,
                                   CNP,
                                   healthAdj,
-                                  CONDS_ADDED_VEC,
+                                  { Conditions::Pounced },
                                   creature::CondEnumVec_t());
             }
             else

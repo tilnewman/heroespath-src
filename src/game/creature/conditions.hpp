@@ -110,6 +110,18 @@ namespace condition
     };
 
 
+    class Pounced : public Condition
+    {
+    public:
+        Pounced() : Condition(
+            Conditions::Pounced,
+            false,
+            stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
+
+        virtual ~Pounced() {}
+    };
+
+
     class Dazed : public Condition
     {
     public:

@@ -61,6 +61,7 @@ namespace creature
             Tripped,
             AsleepNatural,
             Poisoned,
+            Pounced,
             AsleepMagical,
             Unconscious,
             Stone,

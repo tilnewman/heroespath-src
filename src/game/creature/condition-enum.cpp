@@ -53,6 +53,7 @@ namespace creature
             case Conditions::Tripped:       { return "Tripped"; }
             case Conditions::AsleepNatural: { return "AsleepNatural"; }
             case Conditions::Poisoned:      { return "Poisoned"; }
+            case Conditions::Pounced:       { return "Pounced"; }
             case Conditions::AsleepMagical: { return "AsleepMagical"; }
             case Conditions::Unconscious:   { return "Unconscious"; }
             case Conditions::Stone:         { return "Stone"; }
@@ -120,6 +121,7 @@ namespace creature
                 case Conditions::Tripped:       { return 1200; }
                 case Conditions::AsleepNatural: { return 1300; }
                 case Conditions::Poisoned:      { return 1400; }
+                case Conditions::Pounced:       { return 1450; }
                 case Conditions::AsleepMagical: { return 1500; }
                 case Conditions::Unconscious:   { return 1800; }
                 case Conditions::Stone:         { return 1900; }
@@ -135,7 +137,6 @@ namespace creature
                 }
             }
         }
-
     }
 
 }
