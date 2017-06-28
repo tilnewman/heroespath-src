@@ -317,17 +317,16 @@ namespace song
         creature::CreaturePtr_t   creatureListeningPtr,
         stats::Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
-        creature::CondEnumVec_t &,
+        creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural) ||
-            creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
+        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
                 "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                    " is already asleep.",
+                    " is already under a magical sleep.",
                 NamePosition::SourceThenTarget);
 
             return false;
@@ -340,6 +339,12 @@ namespace song
                                       true,
                                       true))
             {
+                if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
+                {
+                    creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepNatural);
+                    condsRemovedVec.push_back(creature::Conditions::AsleepNatural);
+                }
+
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
                 condsAddedVec.push_back(creature::Conditions::AsleepMagical);
 
