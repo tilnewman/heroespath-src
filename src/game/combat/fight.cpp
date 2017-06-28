@@ -113,9 +113,9 @@ namespace combat
 
 
     void FightClub::HandleDamage(
-        creature::CreaturePtrC_t       creatureDefendingPtrC,
-        HitInfoVec_t &                 hitInfoVec,
-        const stats::Health_t          HEALTH_ADJ,
+        creature::CreaturePtrC_t  creatureDefendingPtrC,
+        HitInfoVec_t &            hitInfoVec,
+        const stats::Health_t     HEALTH_ADJ,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec)
     {
@@ -134,15 +134,10 @@ namespace combat
             {
                 creatureDefendingPtrC->HealthCurrentSet(creatureDefendingPtrC->HealthNormal());
 
-                RemoveAddedCondition(Conditions::Dazed,
-                                     creatureDefendingPtrC,
-                                     hitInfoVec,
-                                     condsRemovedVec);
-
-                RemoveAddedCondition(Conditions::Daunted,
-                                     creatureDefendingPtrC,
-                                     hitInfoVec,
-                                     condsRemovedVec);
+                RemoveAddedConditions({ Conditions::Dazed, Conditions::Daunted },
+                                      creatureDefendingPtrC,
+                                      hitInfoVec,
+                                      condsRemovedVec);
 
                 if (AreAnyOfCondsContained({ Conditions::Panic },
                                            creatureDefendingPtrC,
@@ -208,6 +203,15 @@ namespace combat
             return;
         }
         
+        if (DAMAGE_ABS > 0)
+        {
+            //wake from natural sleep if hit
+            RemoveAddedCondition(Conditions::AsleepNatural,
+                                 creatureDefendingPtrC,
+                                 hitInfoVec,
+                                 condsRemovedVec);
+        }
+
         creatureDefendingPtrC->HealthCurrentAdj(DAMAGE_ABS * -1);
         if (creatureDefendingPtrC->HealthCurrent() < 0)
         {
@@ -224,15 +228,17 @@ namespace combat
                 creatureDefendingPtrC->ConditionAdd(Conditions::Unconscious);
                 condsAddedVec.push_back(Conditions::Unconscious);
 
-                RemoveAddedCondition(Conditions::Dazed,
-                                     creatureDefendingPtrC,
-                                     hitInfoVec,
-                                     condsRemovedVec);
-
-                RemoveAddedCondition(Conditions::Daunted,
-                                     creatureDefendingPtrC,
-                                     hitInfoVec,
-                                     condsRemovedVec);
+                RemoveAddedConditions({ Conditions::Dazed,
+                                        Conditions::Daunted,
+                                        Conditions::AsleepNatural,
+                                        Conditions::AsleepMagical,
+                                        Conditions::Bold,
+                                        Conditions::Heroic,
+                                        Conditions::Panic,
+                                        Conditions::Tripped },
+                                      creatureDefendingPtrC,
+                                      hitInfoVec,
+                                      condsRemovedVec);
             }
             else
             {
@@ -327,22 +333,29 @@ namespace combat
                     creatureDefendingPtrC,
                     hitInfoVec))
                 {
-                    RemoveAddedCondition(Conditions::Heroic,
+                    RemoveAddedConditions({ Conditions::Heroic, Conditions::Bold },
                                          creatureDefendingPtrC,
                                          hitInfoVec,
                                          condsRemovedVecParam);
-
-                    RemoveAddedCondition(Conditions::Bold,
-                                         creatureDefendingPtrC,
-                                         hitInfoVec,
-                                         condsRemovedVecParam);
-
                     continue;
                 }
 
                 creatureDefendingPtrC->ConditionAdd(NEXT_COND_ENUM);
                 condsAddedVecParam.push_back(NEXT_COND_ENUM);
             }
+        }
+    }
+
+
+    void FightClub::RemoveAddedConditions(
+        const creature::CondEnumVec_t & CONDS_VEC,
+        creature::CreaturePtrC_t        creaturePtrC,
+        HitInfoVec_t &                  hitInfoVec,
+        creature::CondEnumVec_t &       condsRemovedVec)
+    {
+        for (auto const NEXT_COND_ENUM : CONDS_VEC)
+        {
+            RemoveAddedCondition(NEXT_COND_ENUM, creaturePtrC, hitInfoVec, condsRemovedVec);
         }
     }
 

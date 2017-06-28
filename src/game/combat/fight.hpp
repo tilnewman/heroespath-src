@@ -95,6 +95,12 @@ namespace combat
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);
 
+        static void RemoveAddedConditions(
+            const creature::CondEnumVec_t & CONDS_VEC,
+            creature::CreaturePtrC_t        creaturePtrC,
+            HitInfoVec_t &                  hitInfoVec,
+            creature::CondEnumVec_t &       condsRemovedVec);
+
         static void RemoveAddedCondition(
             const creature::Conditions::Enum COND_ENUM,
             creature::CreaturePtrC_t         creaturePtrC,
