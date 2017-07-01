@@ -142,7 +142,7 @@ namespace combat
             }
         }
 
-        preSS << " at " << PtrCount() + 1;
+        preSS << " at " << PtrCount();
 
         std::ostringstream postSS;
         if (resisted_pvec.empty() && already_pvec.empty())

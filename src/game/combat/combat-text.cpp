@@ -1197,7 +1197,9 @@ namespace combat
             frs.song_ptr = FIRST_HIT_INFO.SongPtr();
         }
 
-        for (std::size_t i(1); i<CREATURE_EFFECTS_COUNT; ++i)
+        //Note:  First pass will compare FIRST_HIT_INFO to itself,
+        //       but that is intended normal behavior.
+        for (std::size_t i(0); i<CREATURE_EFFECTS_COUNT; ++i)
         {
             if (SummarizeCreatureEffect(frs,
                                         FIRST_HIT_INFO,
