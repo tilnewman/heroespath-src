@@ -220,6 +220,12 @@ namespace animation
                 textureRef = cloudTexture3_;
             }
 
+            auto rotationSpeedToUse{ ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_) };
+            if (misc::random::Bool())
+            {
+                rotationSpeedToUse *= -1.0f;
+            }
+
             cloudVec_.push_back( Cloud(
                 textureRef,
                 sf::Vector2f(HORIZ_START_POS, VERT_START_POS),
@@ -227,7 +233,7 @@ namespace animation
                 ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
                 ValueWithRandomVariance(START_SCALE_BASE_, START_SCALE_VAR_RATIO_),
                 ValueWithRandomVariance(END_SCALE_BASE_, END_SCALE_VAR_RATIO_),
-                ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_),
+                rotationSpeedToUse,
                 sf::Color(static_cast<sf::Uint8>(104 + misc::random::Int(25)),
                           155,
                           static_cast<sf::Uint8>(54 + misc::random::Int(50))),
