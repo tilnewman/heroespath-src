@@ -506,17 +506,17 @@ namespace combat
 
         auto const BF_RECT{ combatDisplayStagePtr_->BattlefieldRect() };
 
-        auto const DIFF_X((BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x);
-        auto const DIFF_DIVISOR_X(SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_);
+        auto const DIFF_X{ (BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x };
+        auto const DIFF_DIVISOR_X{ SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_ };
+        auto const MOVE_AMOUNT_X{ (DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS };
 
-        combatDisplayStagePtr_->MoveBattlefieldHoriz((DIFF_X / DIFF_DIVISOR_X) * -1.0f *
-            SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldHoriz(MOVE_AMOUNT_X, WILL_MOVE_BACKGROUND);
 
-        auto const DIFF_Y((BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y);
-        auto const DIFF_DIVISOR_Y(SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_);
+        auto const DIFF_Y{ (BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y };
+        auto const DIFF_DIVISOR_Y{ SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_ };
+        auto const MOVE_AMOUNT_Y{ (DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS };
 
-        combatDisplayStagePtr_->MoveBattlefieldVert((DIFF_Y / DIFF_DIVISOR_Y) * -1.0f *
-            SLIDER_POS, WILL_MOVE_BACKGROUND);
+        combatDisplayStagePtr_->MoveBattlefieldVert(MOVE_AMOUNT_Y, WILL_MOVE_BACKGROUND);
 
         if (centeringAnimCombatNodePtr_ == nullptr)
         {

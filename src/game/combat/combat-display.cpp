@@ -293,10 +293,17 @@ namespace combat
         const float ORIG_ZOOM_LEVEL(zoomLevel_);
         zoomLevel_ = ZOOM_LEVEL;
 
+        if (misc::IsRealClose(ZOOM_LEVEL, ORIG_ZOOM_LEVEL))
+        {
+            return zoomLevel_;
+        }
+
         //prevent zoom level from going too low
         const float MIN_ZOOM_LEVEL(0.1f);
         if (zoomLevel_ < MIN_ZOOM_LEVEL)
+        {
             zoomLevel_ = MIN_ZOOM_LEVEL;
+        }
 
         nameCharSizeCurr_ = static_cast<unsigned int>(
             static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ZOOM_LEVEL);
@@ -314,7 +321,9 @@ namespace combat
             combatNodesPVec.reserve(combatTree_.VertexCount());
             combatTree_.GetCombatNodes(combatNodesPVec);
             for (auto const NEXT_COMBATNODE_PTR : combatNodesPVec)
+            {
                 NEXT_COMBATNODE_PTR->MoveEntityPos(HORIZ_DIFF, VERT_DIFF);
+            }
         }
 
         //if all creatures are already visible then prevent further zoom out

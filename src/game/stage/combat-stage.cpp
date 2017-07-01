@@ -1404,7 +1404,6 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
-            //Note:  This zoom in was never needed, and it caused bad panning artifacts
             zoomSliderBarUPtr_->SetCurrentValue(zoomSliderOrigPos_ +
                 (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             
@@ -2272,9 +2271,7 @@ namespace stage
     void CombatStage::StartTurn_Step1()
     {
         zoomSliderOrigPos_ = zoomSliderBarUPtr_->GetCurrentValue();
-
         turnCreaturePtr_ = combat::Encounter::Instance()->CurrentTurnCreature();
-
         SetTurnPhase(TurnPhase::CenterAndZoomIn);
         combatAnimationUPtr_->CenteringStart(turnCreaturePtr_);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
