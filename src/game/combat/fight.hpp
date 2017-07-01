@@ -86,7 +86,8 @@ namespace combat
             HitInfoVec_t &            hitInfoVec,
             const stats::Health_t     HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
-            creature::CondEnumVec_t & condsRemovedVec);
+            creature::CondEnumVec_t & condsRemovedVec,
+            const bool                CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
@@ -95,13 +96,17 @@ namespace combat
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);
 
-        static void RemoveAddedConditions(
+        //returns true if any conditions were removed from the creature,
+        //not from the hitInfoVec
+        static bool RemoveAddedConditions(
             const creature::CondEnumVec_t & CONDS_VEC,
             creature::CreaturePtrC_t        creaturePtrC,
             HitInfoVec_t &                  hitInfoVec,
             creature::CondEnumVec_t &       condsRemovedVec);
 
-        static void RemoveAddedCondition(
+        //returns true if a condition wwas removed from the creature,
+        //not from the hitInfoVec
+        static bool RemoveAddedCondition(
             const creature::Conditions::Enum COND_ENUM,
             creature::CreaturePtrC_t         creaturePtrC,
             HitInfoVec_t &                   hitInfoVec,

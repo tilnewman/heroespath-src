@@ -107,6 +107,10 @@ namespace condition
             stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
 
         virtual ~Tripped() {}
+
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 
@@ -119,6 +123,10 @@ namespace condition
             stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
 
         virtual ~Pounced() {}
+
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 
@@ -131,6 +139,10 @@ namespace condition
             stats::StatMultSet(0.5f, (1.0f / 3.0f), 1.0f, 1.0f, (1.0f / 3.0f), 0.5f)) {}
         
         virtual ~Dazed() {}
+
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 
@@ -174,6 +186,10 @@ namespace condition
             false,
             stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
         virtual ~AsleepNatural() {}
+
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 
@@ -186,6 +202,10 @@ namespace condition
             stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
         
         virtual ~AsleepMagical() {}
+
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 
@@ -198,7 +218,10 @@ namespace condition
             stats::StatMultSet(0.75f, 1.0f, 0.5f, 1.0f, 0.75f, 1.0f)) {}
         
         virtual ~Poisoned() {}
-        virtual const CondEnumVec_t PerTurnChange(CreaturePtrC_t creaturePtrC);
+        
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
     };
 
 }

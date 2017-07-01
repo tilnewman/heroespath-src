@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,39 +22,42 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED
+#define GAME_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED
 //
-//  random.cpp
+// condition-effects.hpp
 //
-#include "random.hpp"
+#include "game/combat/hit-info.hpp"
+#include "game/phase-enum.hpp"
+
+#include "misc/handy-types.hpp"
+
+#include <string>
+#include <vector>
+#include <utility>
 
 
-namespace misc
+namespace game
 {
-namespace random
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
+namespace combat
 {
 
-    std::mt19937 MersenneTwister::engine;
-
-
-    int Int(const int THE_MIN, const int THE_MAX)
+    struct ConditionEffects
     {
-        if (THE_MIN == THE_MAX)
-        {
-            return THE_MIN;
-        }
-        else
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
-                "misc::random::Int(min=" << THE_MIN << ", max="
-                << THE_MAX << ")  The min was not less than the max.");
-
-            //uniform_int_distribution is [x,y] (inclusive to the max value)
-            //so no increment is needed
-            std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
-
-            return uni_int_dist(MersenneTwister::engine);
-        }
-    }
+        //returns true if an effect consumed the current turn
+        //fightResult_OutParam is guaranteed to to only have one CreatureEffect
+        //if hitInfoVec_OutParam is empty return value will be false
+        static bool Process(const Phase::Enum       GAME_PHASE,
+                            creature::CreaturePtr_t creaturePtr,
+                            HitInfoVec_t &          hitInfoVec_OuParam);
+    };
 
 }
 }
+
+#endif //GAME_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED

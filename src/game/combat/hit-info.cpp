@@ -29,6 +29,8 @@
 //
 #include "hit-info.hpp"
 
+#include "game/creature/condition-warehouse.hpp"
+
 #include "misc/vectors.hpp"
 
 #include <sstream>
@@ -51,6 +53,7 @@ namespace combat
             case Song:      { return "Song"; }
             case Pounce:    { return "Pounce"; }
             case Roar:      { return "Roar"; }
+            case Condition: { return "Condition"; }
             case Count:
             default:
             {
@@ -84,7 +87,8 @@ namespace combat
         spellPtr_       (nullptr),
         actionPhraseCNP_(),
         songPtr_        (nullptr),
-        didArmorAbsorb_ (DID_ARMOR_ABSORB)
+        didArmorAbsorb_ (DID_ARMOR_ABSORB),
+        conditionPtr_   (nullptr)
     {}
 
 
@@ -107,7 +111,8 @@ namespace combat
         spellPtr_       (SPELL_CPTR),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
         songPtr_        (nullptr),
-        didArmorAbsorb_ (false)
+        didArmorAbsorb_ (false),
+        conditionPtr_   (nullptr)
     {}
 
 
@@ -130,7 +135,32 @@ namespace combat
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
         songPtr_        (SONG_CPTR),
-        didArmorAbsorb_ (false)
+        didArmorAbsorb_ (false),
+        conditionPtr_   (nullptr)
+    {}
+
+
+    HitInfo::HitInfo(const bool                       WAS_HIT,
+                     const creature::Conditions::Enum COND_ENUM,
+                     const ContentAndNamePos &        ACTION_PHRASE_CNP,
+                     const stats::Health_t            DAMAGE,
+                     const creature::CondEnumVec_t &  CONDS_ADDED_VEC,
+                     const creature::CondEnumVec_t &  CONDS_REMOVED_VEC)
+    :
+        wasHit_         (WAS_HIT),
+        hitType_        (HitType::Song),
+        weaponPtr_      (nullptr),
+        damage_         (DAMAGE),
+        isCritical_     (false),
+        isPower_        (false),
+        condsAddedVec_  (CONDS_ADDED_VEC),
+        condsRemovedVec_(CONDS_REMOVED_VEC),
+        actionVerb_     ("plays"),
+        spellPtr_       (nullptr),
+        actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (false),
+        conditionPtr_   (creature::condition::Warehouse::Get(COND_ENUM))
     {}
 
 
@@ -153,7 +183,8 @@ namespace combat
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
         songPtr_        (nullptr),
-        didArmorAbsorb_ (false)
+        didArmorAbsorb_ (false),
+        conditionPtr_   (nullptr)
     {}
 
 
@@ -172,7 +203,8 @@ namespace combat
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
         songPtr_        (nullptr),
-        didArmorAbsorb_ (false)
+        didArmorAbsorb_ (false),
+        conditionPtr_   (nullptr)
     {}
 
 
@@ -200,7 +232,10 @@ namespace combat
         //see the comment above regarding pointers in this class
         songPtr_(HI.songPtr_),
 
-        didArmorAbsorb_(HI.didArmorAbsorb_)
+        didArmorAbsorb_(HI.didArmorAbsorb_),
+
+        //see the comment above regarding pointers in this class
+        conditionPtr_(HI.conditionPtr_)
     {}
 
 
@@ -223,6 +258,7 @@ namespace combat
             weaponPtr_ = HI.weaponPtr_;
             spellPtr_ = HI.spellPtr_;
             songPtr_ = HI.songPtr_;
+            conditionPtr_ = HI.conditionPtr_;
         }
 
         return * this;
@@ -324,6 +360,11 @@ namespace combat
             {
                 return (actionPhraseCNP_.NamePos() != NamePosition::Count);
             }
+            case HitType::Condition:
+            {
+                return ((conditionPtr_ != nullptr) &&
+                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+            }
             case HitType::Count:
             default:
             {
@@ -353,7 +394,8 @@ namespace combat
                         isPower_,
                         spellPtr_,
                         songPtr_,
-                        didArmorAbsorb_)
+                        didArmorAbsorb_,
+                        conditionPtr_)
                ==
                std::tie(HI.hitType_,
                         HI.wasHit_,
@@ -363,7 +405,8 @@ namespace combat
                         HI.isPower_,
                         HI.spellPtr_,
                         HI.songPtr_,
-                        HI.didArmorAbsorb_);
+                        HI.didArmorAbsorb_,
+                        HI.conditionPtr_);
     }
 
 
@@ -389,7 +432,8 @@ namespace combat
                         L.spellPtr_,
                         L.actionPhraseCNP_,
                         L.songPtr_,
-                        L.didArmorAbsorb_)
+                        L.didArmorAbsorb_,
+                        L.conditionPtr_)
                <
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -401,7 +445,8 @@ namespace combat
                         R.spellPtr_,
                         R.actionPhraseCNP_,
                         R.songPtr_,
-                        R.didArmorAbsorb_);
+                        R.didArmorAbsorb_,
+                        R.conditionPtr_);
     }
 
 
@@ -427,7 +472,8 @@ namespace combat
                         L.spellPtr_,
                         L.actionPhraseCNP_,
                         L.songPtr_,
-                        L.didArmorAbsorb_)
+                        L.didArmorAbsorb_,
+                        L.conditionPtr_)
                ==
                std::tie(R.hitType_,
                         R.wasHit_,
@@ -439,7 +485,8 @@ namespace combat
                         R.spellPtr_,
                         R.actionPhraseCNP_,
                         R.songPtr_,
-                        R.didArmorAbsorb_);
+                        R.didArmorAbsorb_,
+                        R.conditionPtr_);
     }
 
 }

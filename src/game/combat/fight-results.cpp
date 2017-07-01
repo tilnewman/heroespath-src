@@ -135,6 +135,7 @@ namespace combat
             case HitType::Count:
             case HitType::Weapon:
             case HitType::Pounce:
+            case HitType::Condition:
             default:
             {
                 return "";

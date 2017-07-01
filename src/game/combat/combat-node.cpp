@@ -240,7 +240,8 @@ namespace combat
             target.draw(wingSprite_, states);
         }
 
-        if (willShowCrossBones_)
+        if (willShowCrossBones_ &&
+           (false == isSummaryView_))
         {
             const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
             states.blendMode = sf::BlendAdd;

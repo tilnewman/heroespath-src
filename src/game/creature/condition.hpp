@@ -32,6 +32,7 @@
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/stats/stat-mult-set.hpp"
+#include "game/combat/hit-info.hpp"
 
 #include <memory>
 #include <string>
@@ -74,17 +75,21 @@ namespace creature
         inline bool IsMagical() const                       { return isMagical_; }
         inline const stats::StatMultSet StatMult() const    { return statMultSet_; }
 
-        virtual const CondEnumVec_t InitialChange(CreaturePtrC_t);
-        virtual const CondEnumVec_t PerTurnChange(CreaturePtrC_t);
-        virtual const CondEnumVec_t FinalUndo(CreaturePtrC_t);
+        //These two functions do not alter stats, see creature.cpp::ConditionAdd() for that
+        virtual void InitialChange(CreaturePtrC_t) const;
+        virtual void FinalChange(CreaturePtrC_t) const;
 
+        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
+                                   combat::HitInfoVec_t & hitInfoVec,
+                                   bool &                 hasTurnBeenConsumed) const;
+        
         friend bool operator<(const Condition & L, const Condition & R);
         friend bool operator==(const Condition & L, const Condition & R);
 
     private:
-        Conditions::Enum    type_;
-        bool                isMagical_;
-        stats::StatMultSet  statMultSet_;
+        Conditions::Enum   type_;
+        bool               isMagical_;
+        stats::StatMultSet statMultSet_;
     };
 
     using ConditionPtr_t = Condition *;

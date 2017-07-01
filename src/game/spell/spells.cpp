@@ -317,6 +317,13 @@ namespace spell
             actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
             return true;
         }
+        else if(creatureCastUponPtr->HasCondition(creature::Conditions::Pounced))
+        {
+            creatureCastUponPtr->ConditionRemove(creature::Conditions::Pounced);
+            condsRemovedVec.push_back(creature::Conditions::Pounced);
+            actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+            return true;
+        }
         else
         {
             actionPhraseCNP = ContentAndNamePos(

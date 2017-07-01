@@ -118,25 +118,19 @@ namespace creature
     }
 
 
-    const CondEnumVec_t Condition::InitialChange(CreaturePtrC_t creaturePtrC)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::InitialChange(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return CondEnumVec_t();
-    }
+    //InitialChange() does not alter stats, see creature.cpp::ConditionAdd() for that
+    void Condition::InitialChange(CreaturePtrC_t) const
+    {}
 
 
-    const CondEnumVec_t Condition::PerTurnChange(CreaturePtrC_t creaturePtrC)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::PerTurnChange(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return CondEnumVec_t();
-    }
+    void Condition::FinalChange(CreaturePtrC_t) const
+    {}
 
 
-    const CondEnumVec_t Condition::FinalUndo(CreaturePtrC_t creaturePtrC)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtrC != nullptr), "Condition::FinalUndo(creaturePtr==nullptr)  type=\"" << Conditions::Name(type_) << "\", was given a null creaturePtr.");
-        return CondEnumVec_t();
-    }
+    void Condition::PerTurnEffect(CreaturePtr_t,
+                                  combat::HitInfoVec_t &,
+                                  bool &) const
+    {}
 
 }
 }

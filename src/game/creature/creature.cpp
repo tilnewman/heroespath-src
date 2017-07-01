@@ -186,7 +186,9 @@ namespace creature
         auto const CONDITIONS_PVEC{ ConditionsPVec() };
 
         for (auto const NEXT_COND_PTR : CONDITIONS_PVEC)
+        {
             stats_.ModifyCurrentAndActual(NEXT_COND_PTR->StatMult());
+        }
     }
 
 
@@ -293,7 +295,9 @@ namespace creature
             else
             {
                 //remove (all) the 'Good' conditions before adding the 'not so good' condition
-                conditionsVec_.erase(std::remove(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good), conditionsVec_.end());
+                conditionsVec_.erase(std::remove(conditionsVec_.begin(),
+                                                 conditionsVec_.end(),
+                                                 Conditions::Good), conditionsVec_.end());
                 willAdd = true;
             }
         }
@@ -301,7 +305,9 @@ namespace creature
         if (willAdd)
         {
             //verify the condition is not already in the list
-            if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), E))
+            if (conditionsVec_.end() == std::find(conditionsVec_.begin(),
+                                                  conditionsVec_.end(),
+                                                  E))
             {
                 conditionsVec_.push_back(E);
 
@@ -335,8 +341,10 @@ namespace creature
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
         {
             wasAnyConditionRemoved = true;
-            condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalUndo(this);
-            conditionsVec_.erase(std::find(conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM));
+            condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
+            conditionsVec_.erase(std::find(conditionsVec_.begin(),
+                                           conditionsVec_.end(),
+                                           NEXT_CONDITION_TO_REMOVE_ENUM));
         }
 
         if (conditionsVec_.size() == 0)
@@ -344,7 +352,10 @@ namespace creature
             ConditionAdd(Conditions::Good);
         }
 
-        ReCalculateStats();
+        if (wasAnyConditionRemoved)
+        {
+            ReCalculateStats();
+        }
 
         return wasAnyConditionRemoved;
     }
@@ -357,7 +368,7 @@ namespace creature
         //undo the changes made by the conditions that will be removed
         for (auto const NEXT_COND_ENUM : conditionsVec_)
         {
-            condition::Warehouse::Get(NEXT_COND_ENUM)->FinalUndo(this);
+            condition::Warehouse::Get(NEXT_COND_ENUM)->FinalChange(this);
         }
 
         conditionsVec_.clear();
@@ -476,11 +487,6 @@ namespace creature
         if (HasCondition(Conditions::Unconscious))
         {
             return RESPONSE_PREFIX + "unconscious" + RESPONSE_POSTFIX;
-        }
-
-        if (HasCondition(Conditions::Dazed))
-        {
-            return RESPONSE_PREFIX + "dazed" + RESPONSE_POSTFIX;
         }
 
         if (HasCondition(Conditions::Tripped))
@@ -1181,7 +1187,7 @@ namespace creature
             return RESPONSE_PREFIX + "knights cannot cast spells" + RESPONSE_POSTFIX;
         }
 
-        const std::string CAN_TAKE_ACTION_STR(CanTakeActionStr(false));
+        const std::string CAN_TAKE_ACTION_STR( CanTakeActionStr(false) );
 
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {

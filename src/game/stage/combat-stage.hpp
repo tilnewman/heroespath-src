@@ -47,6 +47,8 @@
 #include "game/combat/combat-sound-effects.hpp"
 #include "game/combat/combat-restore-info.hpp"
 
+#include "misc/handy-types.hpp"
+
 #include <memory>
 #include <vector>
 #include <string>
@@ -134,14 +136,25 @@ namespace stage
         enum class TurnPhase
         {
             NotATurn = 0,
-            CenterAndZoomIn,//center on turn creature
+
+            //center on turn creature
+            CenterAndZoomIn,
+
             PostCenterAndZoomInPause,
             Determine,
             TargetSelect,
-            ConditionWakePause,
-            CenterAndZoomOut,//center on turn creature and targets of whatever action the turn creature is taking (performType_)
+            ConditionEffectPause,
+
+            //center on turn creature and targets of whatever
+            //action the turn creature is taking (performType_)
+            CenterAndZoomOut,
+
             PostCenterAndZoomOutPause,
-            PerformAnim, //see enum PerformType for which anim is performed here and PerformAnimPhase for which phase that anim is in
+
+            //see enum PerformType for which anim is performed here and
+            //PerformAnimPhase for which phase that anim is in
+            PerformAnim,
+
             PerformReport,
             PostPerformPause,
             StatusAnim,
@@ -272,8 +285,6 @@ namespace stage
 
         bool HandleMiscCancelTasks();
 
-        const std::string RemoveSingleTurnTemporaryConditions();
-
         void HandlePlayingMeleeSoundEffects();
 
     public:
@@ -297,7 +308,7 @@ namespace stage
         static const float STATUSMSG_ANIM_PAUSE_SEC_;
         static const float POST_MELEEMOVE_ANIM_PAUSE_SEC_;
         static const float POST_IMPACT_ANIM_PAUSE_SEC_;
-        static const float CONDITION_WAKE_PAUSE_SEC_;
+        static const float CONDITION_EFFECT_PAUSE_SEC_;
         static const float POST_SPELL_ANIM_PAUSE_SEC_;
         //
         static const float DOUBLE_CLICK_WINDOW_SEC_;
@@ -352,7 +363,9 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willClrShkInitStatusMsg_;
-        std::string                      tempConditionsWakeStr_;
+        combat::HitInfoVec_t             conditionEffectsVec_;
+        std::size_t                      conditionEffectsIndex_;
+        bool                             conditionEffectsTookTurn_;
         bool                             isShortPostZoomOutPause_;
 
         //A slider member that is used for various slider tasks

@@ -117,7 +117,8 @@ namespace combat
         HitInfoVec_t &            hitInfoVec,
         const stats::Health_t     HEALTH_ADJ,
         creature::CondEnumVec_t & condsAddedVec,
-        creature::CondEnumVec_t & condsRemovedVec)
+        creature::CondEnumVec_t & condsRemovedVec,
+        const bool                CAN_ADD_CONDITIONS)
     {
         using namespace creature;
 
@@ -242,11 +243,14 @@ namespace combat
             }
             else
             {
-                AddConditionsBasedOnDamage(creatureDefendingPtrC,
-                                           DAMAGE_ABS,
-                                           condsAddedVec,
-                                           condsRemovedVec,
-                                           hitInfoVec);
+                if (CAN_ADD_CONDITIONS)
+                {
+                    AddConditionsBasedOnDamage(creatureDefendingPtrC,
+                                               DAMAGE_ABS,
+                                               condsAddedVec,
+                                               condsRemovedVec,
+                                               hitInfoVec);
+                }
             }
         }
     }
@@ -319,7 +323,8 @@ namespace combat
                     { Conditions::Tripped,
                       Conditions::AsleepMagical,
                       Conditions::AsleepNatural,
-                      Conditions::Unconscious },
+                      Conditions::Unconscious,
+                      Conditions::Pounced },
                     creatureDefendingPtrC,
                     hitInfoVec))
                 {
@@ -347,35 +352,48 @@ namespace combat
     }
 
 
-    void FightClub::RemoveAddedConditions(
+    bool FightClub::RemoveAddedConditions(
         const creature::CondEnumVec_t & CONDS_VEC,
         creature::CreaturePtrC_t        creaturePtrC,
         HitInfoVec_t &                  hitInfoVec,
         creature::CondEnumVec_t &       condsRemovedVec)
     {
+        auto wasAnyRemoved{ false };
+
         for (auto const NEXT_COND_ENUM : CONDS_VEC)
         {
-            RemoveAddedCondition(NEXT_COND_ENUM, creaturePtrC, hitInfoVec, condsRemovedVec);
-        }
-    }
-
-
-    void FightClub::RemoveAddedCondition(const creature::Conditions::Enum COND_ENUM,
-                                         creature::CreaturePtrC_t         creaturePtrC,
-                                         HitInfoVec_t &                   hitInfoVec,
-                                         creature::CondEnumVec_t &   condsRemovedVec)
-    {
-        if (creaturePtrC->HasCondition(COND_ENUM))
-        {
-            if (creaturePtrC->ConditionRemove(COND_ENUM))
+            if (RemoveAddedCondition(NEXT_COND_ENUM,
+                                     creaturePtrC,
+                                     hitInfoVec,
+                                     condsRemovedVec))
             {
-                condsRemovedVec.push_back(COND_ENUM);
+                wasAnyRemoved = true;
             }
         }
 
+        return wasAnyRemoved;
+    }
+
+
+    bool FightClub::RemoveAddedCondition(const creature::Conditions::Enum COND_ENUM,
+                                         creature::CreaturePtrC_t         creaturePtrC,
+                                         HitInfoVec_t &                   hitInfoVec,
+                                         creature::CondEnumVec_t &        condsRemovedVec)
+    {
         for (auto & nextHitInfo : hitInfoVec)
         {
             nextHitInfo.CondsAddedRemove(COND_ENUM);
+        }
+
+        if (creaturePtrC->HasCondition(COND_ENUM))
+        {
+            creaturePtrC->ConditionRemove(COND_ENUM);
+            condsRemovedVec.push_back(COND_ENUM);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -1141,104 +1159,106 @@ namespace combat
 
         HitInfo hitInfo;
 
-        if (creatureDefendingPtrC->HasCondition(Conditions::Tripped))
+        auto const DID_ROLL_SUCCEED{ creature::Stats::Versus(
+            creaturePouncingPtrC,
+            { stats::stat::Speed, stats::stat::Accuracy },
+            creatureDefendingPtrC,
+            { stats::stat::Speed },
+            0,
+            0,
+            false,
+            true,
+            true,
+            true,
+            true) };
+
+        auto const DID_SUCCEED{ (DID_ROLL_SUCCEED ||
+            creatureDefendingPtrC->HasCondition(Conditions::Tripped) ||
+            creatureDefendingPtrC->HasCondition(Conditions::AsleepNatural) ||
+            creatureDefendingPtrC->HasCondition(Conditions::AsleepMagical) ||
+            creatureDefendingPtrC->HasCondition(Conditions::Unconscious)) };
+
+        stats::Health_t healthAdj{ 0 };
+
+        if (DID_SUCCEED)
         {
+            //TODO pouncing should do some damage
+            healthAdj = 0;
+
+            HitInfoVec_t hitInfoVec;
+            creature::CondEnumVec_t condsAddedVec;
+            creature::CondEnumVec_t condsRemovedVec;
+
+            if (creatureDefendingPtrC->HasCondition(Conditions::Tripped))
+            {
+                creatureDefendingPtrC->ConditionRemove(Conditions::Tripped);
+                condsRemovedVec.push_back(Conditions::Tripped);
+            }
+
+            HandleDamage(creatureDefendingPtrC,
+                         hitInfoVec,
+                         healthAdj,
+                         condsAddedVec,
+                         condsRemovedVec);
+
+            creatureDefendingPtrC->ConditionAdd(Conditions::Pounced);
+
             const ContentAndNamePos CNP("",
                                         " pounces on ",
                                         ".",
                                         NamePosition::SourceThenTarget);
 
-            hitInfo = HitInfo(true, HitType::Pounce, CNP);
+            hitInfo = HitInfo(true,
+                              HitType::Pounce,
+                              CNP,
+                              healthAdj,
+                              { Conditions::Pounced },
+                              creature::CondEnumVec_t());
         }
         else
         {
-            auto const DID_SUCCEED{ creature::Stats::Versus(
-                creaturePouncingPtrC,
-                { stats::stat::Speed, stats::stat::Accuracy },
-                creatureDefendingPtrC,
-                { stats::stat::Speed },
-                0,
-                0,
-                false,
-                true,
-                true,
-                true,
-                true) };
+            const ContentAndNamePos CNP("",
+                                        " tried to pounce on ",
+                                        "but missed.",
+                                        NamePosition::SourceThenTarget);
 
-            stats::Health_t healthAdj{ 0 };
-
-            if (DID_SUCCEED)
-            {
-                //TODO pouncing should do some damage
-                healthAdj = 0;
-
-                HitInfoVec_t hitInfoVec;
-                creature::CondEnumVec_t condsAddedVec;
-                creature::CondEnumVec_t condsRemovedVec;
-                HandleDamage(creatureDefendingPtrC,
-                             hitInfoVec,
-                             healthAdj,
-                             condsAddedVec,
-                             condsRemovedVec);
-
-                creatureDefendingPtrC->ConditionAdd(Conditions::Pounced);
-
-                const ContentAndNamePos CNP("",
-                                            " pounces on ",
-                                            ".",
-                                            NamePosition::SourceThenTarget);
-
-                hitInfo = HitInfo(true,
-                                  HitType::Pounce,
-                                  CNP,
-                                  healthAdj,
-                                  { Conditions::Pounced },
-                                  creature::CondEnumVec_t());
-            }
-            else
-            {
-                const ContentAndNamePos CNP("",
-                                            " tried to pounce on ",
-                                            "but missed.",
-                                            NamePosition::SourceThenTarget);
-
-                hitInfo = HitInfo(false, HitType::Pounce, CNP);
-            }
-
-            //update defender's TurnInfo
-            auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
-
-            if (turnInfo.GetFirstAttackedByCreature() == nullptr)
-            {
-                turnInfo.SetFirstAttackedByCreature(creaturePouncingPtrC);
-            }
-
-            turnInfo.SetLastAttackedByCreature(creaturePouncingPtrC);
-
-            turnInfo.SetWasHitLastTurn(false);
-            
-            if (DID_SUCCEED)
-            {
-                if (turnInfo.GetFirstHitByCreature() == nullptr)
-                {
-                    turnInfo.SetFirstHitByCreature(creaturePouncingPtrC);
-                }
-
-                turnInfo.SetLastHitByCreature(creaturePouncingPtrC);
-
-                auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
-                if (mostDamageCreaturePair.first < std::abs(healthAdj))
-                {
-                    mostDamageCreaturePair.first = std::abs(healthAdj);
-                    mostDamageCreaturePair.second = creaturePouncingPtrC;
-                    turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
-                }
-
-                turnInfo.SetWasHitLastTurn(true);
-            }
-
-            Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
+            hitInfo = HitInfo(false, HitType::Pounce, CNP);
         }
+
+        //update defender's TurnInfo
+        auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
+
+        if (turnInfo.GetFirstAttackedByCreature() == nullptr)
+        {
+            turnInfo.SetFirstAttackedByCreature(creaturePouncingPtrC);
+        }
+
+        turnInfo.SetLastAttackedByCreature(creaturePouncingPtrC);
+
+        turnInfo.SetWasHitLastTurn(false);
+            
+        if (DID_SUCCEED)
+        {
+            if (turnInfo.GetFirstHitByCreature() == nullptr)
+            {
+                turnInfo.SetFirstHitByCreature(creaturePouncingPtrC);
+            }
+
+            turnInfo.SetLastHitByCreature(creaturePouncingPtrC);
+
+            auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
+            if (mostDamageCreaturePair.first < std::abs(healthAdj))
+            {
+                mostDamageCreaturePair.first = std::abs(healthAdj);
+                mostDamageCreaturePair.second = creaturePouncingPtrC;
+                turnInfo.SetMostDamageCreaturePair(mostDamageCreaturePair);
+            }
+
+            turnInfo.SetWasHitLastTurn(true);
+        }
+
+        Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
+        
 
         return FightResult( CreatureEffect(creatureDefendingPtrC,
                                            HitInfoVec_t(1, hitInfo)) );

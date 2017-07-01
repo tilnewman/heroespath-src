@@ -62,6 +62,7 @@
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/combat-anim.hpp"
 #include "game/combat/combat-text.hpp"
+#include "game/combat/condition-effects.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition-algorithms.hpp"
@@ -111,7 +112,7 @@ namespace stage
     const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_      { PAUSE_SHORT_SEC_ };
     const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
     const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_    { PAUSE_ZERO_SEC_ };
-    const float CombatStage::CONDITION_WAKE_PAUSE_SEC_      { PAUSE_MEDIUM_SEC_ };
+    const float CombatStage::CONDITION_EFFECT_PAUSE_SEC_    { PAUSE_LONG_SEC_ };
     const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_     { PAUSE_SHORT_SEC_ };
     //
     const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_{ 0.4f };
@@ -180,7 +181,9 @@ namespace stage
         performReportHitIndex_      (0),
         zoomSliderOrigPos_          (0.0f),
         willClrShkInitStatusMsg_    (false),
-        tempConditionsWakeStr_      (""),
+        conditionEffectsVec_        (),
+        conditionEffectsIndex_      (0),
+        conditionEffectsTookTurn_   (false),
         isShortPostZoomOutPause_    (false),
 
         //initiall speed ignored because speed is set before each use,
@@ -912,7 +915,6 @@ namespace stage
                                                   KNIGHT_STATS) };
             
             player::Initial::Setup(knightPtr);
-            knightPtr->HealthCurrentAdj(-1);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
         /*
@@ -967,7 +969,6 @@ namespace stage
                                                   ARCHER_STATS) };
 
             player::Initial::Setup(archerPtr);
-            archerPtr->HealthCurrentSet(2);
             partyPtr->Add(archerPtr, errMsgIgnored);
         }
         /*
@@ -1016,7 +1017,6 @@ namespace stage
                                                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
-            bardPtr->HealthCurrentSet(2);
             partyPtr->Add(bardPtr, errMsgIgnored);
         }
         /*
@@ -1065,7 +1065,6 @@ namespace stage
                                                  THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
-            thiefPtr->HealthCurrentSet(2);
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
         {
@@ -1089,7 +1088,6 @@ namespace stage
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
-            clericPtr->HealthCurrentSet(2);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
 
@@ -1266,6 +1264,15 @@ namespace stage
 
         combatAnimationUPtr_->UpdateTime(ELAPSED_TIME_SEC);
 
+        if (TurnPhase::ConditionEffectPause == turnPhase_)
+        {
+            if (enemyActionTBoxRegionUPtr_.get() != nullptr)
+            {
+                enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(
+                    goldTextColorShaker_.Update(ELAPSED_TIME_SEC) );
+            }
+        }
+
         if (willRedColorShakeWeaponText_)
         {
             weaponTBoxTextRegionUPtr_->SetEntityColorFgBoth(
@@ -1398,8 +1405,8 @@ namespace stage
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
             //Note:  This zoom in was never needed, and it caused bad panning artifacts
-            //zoomSliderBarUPtr_->SetCurrentValue(zoomSliderOrigPos_ +
-            //    (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
+            zoomSliderBarUPtr_->SetCurrentValue(zoomSliderOrigPos_ +
+                (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
             
             combatAnimationUPtr_->CenteringUpdate(SLIDER_POS);
             if (slider_.GetIsDone())
@@ -1896,27 +1903,57 @@ namespace stage
             return;
         }
 
-        if (TurnPhase::ConditionWakePause == turnPhase_)
+        if (TurnPhase::ConditionEffectPause == turnPhase_)
         {
-            SetTurnPhase(TurnPhase::PostTurnPause);
-            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            if (++conditionEffectsIndex_ < conditionEffectsVec_.size())
+            {
+                fightResult_ = combat::FightResult(combat::CreatureEffect(turnCreaturePtr_,
+                    combat::HitInfoVec_t(1, conditionEffectsVec_[conditionEffectsIndex_])));
+
+                HandleApplyDamageTasks();
+
+                SetTurnPhase(TurnPhase::ConditionEffectPause);
+                StartPause(CONDITION_EFFECT_PAUSE_SEC_, "ConditionEffectPause");
+            }
+            else
+            {
+                fightResult_ = combat::FightResult();
+
+                if (conditionEffectsTookTurn_)
+                {
+                    SetTurnPhase(TurnPhase::PostTurnPause);
+                    StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+                }
+                else
+                {
+                    if (turnCreaturePtr_->IsPlayerCharacter())
+                    {
+                        SetTurnPhase(TurnPhase::Determine);
+                        SetUserActionAllowed(true);
+                    }
+                    else
+                    {
+                        SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
+
+                        auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
+                        if (turnCreaturePtr_->CanTakeAction() == false)
+                        {
+                            pauseToUse *= 3.0f;
+                        }
+
+                        StartPause(pauseToUse, "PostZoomIn");
+                    }
+                }
+            }
+
+            SetupTurnBox();
             return;
         }
 
         if (IsPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
-            if (tempConditionsWakeStr_.empty())
-            {
-                SetTurnPhase(TurnPhase::Determine);
-                SetUserActionAllowed(true);
-            }
-            else
-            {
-                SetTurnPhase(TurnPhase::ConditionWakePause);
-                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
-            }
-
+            SetTurnPhase(TurnPhase::Determine);
+            SetUserActionAllowed(true);
             SetupTurnBox();
             return;
         }
@@ -1931,15 +1968,6 @@ namespace stage
         if (IsNonPlayerCharacterTurnValid() &&
             (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
-            if (tempConditionsWakeStr_.empty() == false)
-            {
-                SetTurnPhase(TurnPhase::ConditionWakePause);
-                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
-                SetupTurnBox();
-                return;
-            }
-
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide();
 
@@ -2260,40 +2288,51 @@ namespace stage
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
         combatAnimationUPtr_->CenteringStop();
-        combatAnimationUPtr_->ShakeAnimStart(turnCreaturePtr_, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
+
+        combatAnimationUPtr_->ShakeAnimStart(turnCreaturePtr_,
+                                             ANIM_CREATURE_SHAKE_SLIDER_SPEED_,
+                                             false);
 
         goldTextColorShaker_.Reset();
 
-        //skip PostZoomInPause if a player turn
-        if (IS_PLAYER_TURN)
+        conditionEffectsTookTurn_ = combat::ConditionEffects::Process(Phase::Combat,
+                                                                      turnCreaturePtr_,
+                                                                      conditionEffectsVec_);
+
+        if (conditionEffectsVec_.empty())
         {
-            tempConditionsWakeStr_ = RemoveSingleTurnTemporaryConditions();
-            if (tempConditionsWakeStr_.empty())
+            if (IS_PLAYER_TURN)
             {
                 SetTurnPhase(TurnPhase::Determine);
                 SetUserActionAllowed(true);
             }
             else
             {
-                SetTurnPhase(TurnPhase::ConditionWakePause);
-                StartPause(CONDITION_WAKE_PAUSE_SEC_, "ConditionWakePause");
-            }
+                SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
 
-            SetupTurnBox();
+                auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
+                if (turnCreaturePtr_->CanTakeAction() == false)
+                {
+                    pauseToUse *= 3.0f;
+                }
+
+                StartPause(pauseToUse, "PostZoomIn");
+            }
         }
         else
         {
-            SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
+            conditionEffectsIndex_ = 0;
+            
+            fightResult_ = combat::FightResult( combat::CreatureEffect(turnCreaturePtr_,
+                combat::HitInfoVec_t(1, conditionEffectsVec_[conditionEffectsIndex_])) );
 
-            auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
-            if (turnCreaturePtr_->CanTakeAction() == false)
-            {
-                pauseToUse *= 3.0f;
-            }
+            HandleApplyDamageTasks();
 
-            StartPause(pauseToUse, "PostZoomIn");
-            SetupTurnBox();
+            SetTurnPhase(TurnPhase::ConditionEffectPause);
+            StartPause(CONDITION_EFFECT_PAUSE_SEC_, "ConditionEffectPause");
         }
+
+        SetupTurnBox();
     }
 
 
@@ -2302,6 +2341,10 @@ namespace stage
         isFightResultCollapsed_ = false;
 
         soundEffectsPlayedSet_.clear();
+
+        conditionEffectsVec_.clear();
+        conditionEffectsIndex_ = 0;
+        conditionEffectsTookTurn_ = false;
 
         if (restoreInfo_.CanTurnAdvance())
         {
@@ -2325,6 +2368,9 @@ namespace stage
         spellBeingCastPtr_ = nullptr;
 
         MoveTurnBoxObjectsOffScreen(true);
+
+        goldTextColorShaker_.Reset();
+        redTextColorShaker_.Reset();
     }
 
 
@@ -3190,7 +3236,8 @@ namespace stage
                            << "(Press Escape or X to Cancel)";
             }
         }
-        else if (TurnPhase::ConditionWakePause == turnPhase_)
+        else if ((conditionEffectsIndex_ < conditionEffectsVec_.size()) &&
+                 (TurnPhase::ConditionEffectPause == turnPhase_))
         {
             willDrawTurnBoxButtons = false;
 
@@ -3201,16 +3248,10 @@ namespace stage
 
             isPreambleShowing = true;
 
-            if (IsPlayerCharacterTurnValid())
-            {
-                preambleSS << turnCreaturePtr_->Name();
-            }
-            else
-            {
-                preambleSS << creature::sex::HeSheIt(turnCreaturePtr_->Sex(), true);
-            }
+            auto const & HIT_INFO{ conditionEffectsVec_[conditionEffectsIndex_] };
 
-            preambleSS << " " << tempConditionsWakeStr_ << ".";
+            preambleSS << HIT_INFO.ActionPhrase().Compose(HIT_INFO.ConditionPtr()->Name(),
+                turnCreaturePtr_->Name());
         }
         else
         {
@@ -3423,7 +3464,7 @@ namespace stage
             case TurnPhase::PostCenterAndZoomInPause:   { return "PostZInPause"; }
             case TurnPhase::Determine:                  { return "Determine"; }
             case TurnPhase::TargetSelect:               { return "TargetSelect"; }
-            case TurnPhase::ConditionWakePause:         { return "ConditionWakePause"; }
+            case TurnPhase::ConditionEffectPause:       { return "ConditionEffectPause"; }
             case TurnPhase::CenterAndZoomOut:           { return "CenterAndZoomOut"; }
             case TurnPhase::PostCenterAndZoomOutPause:  { return "PostZOutPause"; }
             case TurnPhase::PerformAnim:                { return "PerformAnim"; }
@@ -3581,20 +3622,20 @@ namespace stage
 
     void CombatStage::HandleApplyDamageTasks()
     {
-        //create a vec of all creatures killed this turn
+        //create a vec of all creatures damaged and killed this turn
         std::vector<stats::Health_t> damageVec;
         combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
         {
-            if (NEXT_CREATURE_EFFECT.WasKill())
-            {
-                killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
-            }
-
             if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
             {
+                if (NEXT_CREATURE_EFFECT.WasKill())
+                {
+                    killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                }
+
                 auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
                 if (DAMAGE != 0)
                 {
@@ -3607,14 +3648,13 @@ namespace stage
 
         combatAnimationUPtr_->TextAnimStart(damageVec, combatNodePVec);
 
-        //remove all conditions except for stone and dead from the killed creature
+        //remove all conditions except for dead from the killed creatures
         for (auto nextKilledCreaturePtr : killedCreaturesPVec)
         {
             auto const CONDITIONS_VEC{ nextKilledCreaturePtr->Conditions() };
             for (auto const NEXT_CONDITION_ENUM : CONDITIONS_VEC)
             {
-                if ((NEXT_CONDITION_ENUM != creature::Conditions::Stone) &&
-                    (NEXT_CONDITION_ENUM != creature::Conditions::Dead))
+                if (NEXT_CONDITION_ENUM != creature::Conditions::Dead)
                 {
                     nextKilledCreaturePtr->ConditionRemove(NEXT_CONDITION_ENUM);
                 }
@@ -3682,46 +3722,7 @@ namespace stage
 
         return false;
     }
-
-
-    const std::string CombatStage::RemoveSingleTurnTemporaryConditions()
-    {
-        if (turnCreaturePtr_->HasCondition(creature::Conditions::Unconscious))
-        {
-            return "";
-        }
-
-        if (turnCreaturePtr_->HasCondition(creature::Conditions::Tripped))
-        {
-            turnCreaturePtr_->ConditionRemove(creature::Conditions::Tripped);
-            return "gets up after being tripped";
-        }
-
-        if (turnCreaturePtr_->HasCondition(creature::Conditions::Dazed))
-        {
-            if ((misc::random::Int(100) < (20 + static_cast<int>(turnCreaturePtr_->Rank()))) ||
-                (creature::Stats::Test(turnCreaturePtr_, stats::stat::Strength,
-                    0.0f, true, true)))
-            {
-                turnCreaturePtr_->ConditionRemove(creature::Conditions::Dazed);
-                return "recovers from the dazed condition";
-            }
-        }
-
-        if (turnCreaturePtr_->HasCondition(creature::Conditions::Panic))
-        {
-            if ((misc::random::Int(100) < (10 + static_cast<int>(turnCreaturePtr_->Rank()))) ||
-                (creature::Stats::Test(turnCreaturePtr_, stats::stat::Intelligence,
-                    0.0f, true, true)))
-            {
-                turnCreaturePtr_->ConditionRemove(creature::Conditions::Panic);
-                return "recovers from being panicked";
-            }
-        }
-
-        return "";
-    }
-
+    
 
     void CombatStage::HandlePlayingMeleeSoundEffects()
     {
