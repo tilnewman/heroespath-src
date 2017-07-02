@@ -691,16 +691,16 @@ heroespath-material-secondary-chance-base-Precious-onein=100
 #player character initial health by race
 heroespath-player-race-health-initial-Human=20
 heroespath-player-race-health-initial-Gnome=16
-heroespath-player-race-health-initial-Pixie=6
-heroespath-player-race-health-initial-Wolfen=12
-heroespath-player-race-health-initial-Dragon=10
+heroespath-player-race-health-initial-Pixie=12
+heroespath-player-race-health-initial-Wolfen=18
+heroespath-player-race-health-initial-Dragon=22
 
 #player character initial health adjustment by role
 heroespath-player-role-health-adjustment-initial-Archer=3
 heroespath-player-role-health-adjustment-initial-Bard=0
 heroespath-player-role-health-adjustment-initial-Beastmaster=4
 heroespath-player-role-health-adjustment-initial-Cleric=-3
-heroespath-player-role-health-adjustment-initial-Firebrand=2
+heroespath-player-role-health-adjustment-initial-Firebrand=4
 heroespath-player-role-health-adjustment-initial-Knight=10
 heroespath-player-role-health-adjustment-initial-Sorcerer=-4
 heroespath-player-role-health-adjustment-initial-Sylavin=1
