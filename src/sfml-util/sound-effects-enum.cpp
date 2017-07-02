@@ -181,24 +181,24 @@ namespace sfml_util
             case DrumBlip4:         { return "drum-blip4"; }
             case DrumBlip5:         { return "drum-blip5"; }
             case DrumBlip6:         { return "drum-blip6"; }
-            case SpellSelect1:      { return "deep-pulse-a"; }
-            case SpellSelect2:      { return "deep-pulse-b"; }
-            case SpellSelect3:      { return "deep-pulse-c"; }
-            case SpellSparks:       { return "soft-sparks"; }
-            case SpellBandage1:     { return "magic-glitter-a"; }
-            case SpellBandage2:     { return "magic-glitter-b"; }
-            case SpellBandage3:     { return "magic-glitter-c"; }
-            case SpellBandage4:     { return "magic-glitter-d"; }
-            case SpellAwaken:       { return "gong-spacey"; }
-            case SpellClearMind:    { return "ahh-tadada"; }
-            case SpellAntidote:     { return "sparkly-doing"; }
-            case SpellLift:         { return "sha-sparkle-short-b"; }
-            case SpellSleep:        { return "spacey-wind-short"; }
-            case SpellTrip:         { return "sha-sparkle-short-a"; }
-            case SpellDaze:         { return "sliding-shimmer-short-a"; }
-            case SpellPoison:       { return "worble-warp"; }
+            case SpellSelect1:      { return "select-1"; }
+            case SpellSelect2:      { return "select-2"; }
+            case SpellSelect3:      { return "select-3"; }
+            case SpellSparks:       { return "sparks"; }
+            case SpellBandage1:     { return "bandage-1"; }
+            case SpellBandage2:     { return "bandage-2"; }
+            case SpellBandage3:     { return "bandage-3"; }
+            case SpellBandage4:     { return "bandage-4"; }
+            case SpellAwaken:       { return "awaken"; }
+            case SpellClearMind:    { return "clear-mind"; }
+            case SpellAntidote:     { return "antidote"; }
+            case SpellLift:         { return "lift"; }
+            case SpellSleep:        { return "sleep"; }
+            case SpellTrip:         { return "trip"; }
+            case SpellDaze:         { return "daze"; }
+            case SpellPoison:       { return "poison"; }
             case SpellFrighten:     { return "fright"; }
-            case SpellPoisonCloud:  { return "bluam-long"; }
+            case SpellPoisonCloud:  { return "poison-cloud"; }
             case SongRallyDrum:         { return "rally-drum"; }
             case SongSpiritResonance:   { return "spirit-resonance"; }
             case SongRousingRhythm:     { return "rousing-rhythm"; }
