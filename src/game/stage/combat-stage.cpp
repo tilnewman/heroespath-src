@@ -3771,13 +3771,16 @@ namespace stage
 
         auto const HIT_INFO{ HIT_INFO_VEC[performReportHitIndex_] };
 
-        auto const EFFECT_HIT_PAIR{ std::make_pair(performReportEffectIndex_,
-            performReportHitIndex_) };
-
-        if (soundEffectsPlayedSet_.find(EFFECT_HIT_PAIR) == soundEffectsPlayedSet_.end())
+        if (HIT_INFO.IsWeapon())
         {
-            soundEffectsPlayedSet_.insert(EFFECT_HIT_PAIR);
-            combatSoundEffects_.PlayHitOrMiss(HIT_INFO);
+            auto const EFFECT_HIT_PAIR{ std::make_pair(performReportEffectIndex_,
+                performReportHitIndex_) };
+
+            if (soundEffectsPlayedSet_.find(EFFECT_HIT_PAIR) == soundEffectsPlayedSet_.end())
+            {
+                soundEffectsPlayedSet_.insert(EFFECT_HIT_PAIR);
+                combatSoundEffects_.PlayHitOrMiss(HIT_INFO);
+            }
         }
     }
 
