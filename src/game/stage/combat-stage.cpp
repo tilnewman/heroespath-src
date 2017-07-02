@@ -738,8 +738,8 @@ namespace stage
         blockTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(blockTBoxButtonSPtr_.get());
 
-        turnButtonTextInfo.text = "(S)kip";
-        turnButtonTextInfoDisabled.text = "(S)kip";
+        turnButtonTextInfo.text = "S(k)ip";
+        turnButtonTextInfoDisabled.text = "S(k)ip";
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo,
             sfml_util::FontManager::Color_Light(),
@@ -1746,13 +1746,12 @@ namespace stage
 
             if (nullptr != turnCreaturePtr_)
             {
-                if ((KE.code == sf::Keyboard::B) ||
-                    ((KE.code == sf::Keyboard::Space) && (turnCreaturePtr_->CanTakeAction())))
+                if (KE.code == sf::Keyboard::B)
                 {
                     return HandleBlock();
                 }
 
-                if ((KE.code == sf::Keyboard::Space) &&
+                if ((KE.code == sf::Keyboard::K) &&
                      (turnCreaturePtr_->CanTakeAction() == false))
                 {
                     return HandleSkip();
