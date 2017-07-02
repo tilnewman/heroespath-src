@@ -345,11 +345,7 @@ namespace combat
     bool CombatNode::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
         const bool DID_MOUSE_STATE_CHANGE( GuiEntity::UpdateMousePos(MOUSE_POS_V) );
-        if (DID_MOUSE_STATE_CHANGE)
-        {
-            SetHighlight((sfml_util::MouseState::Over == entityMouseState_), true);
-        }
-
+        SetHighlight((sfml_util::MouseState::Over == entityMouseState_), DID_MOUSE_STATE_CHANGE);
         return DID_MOUSE_STATE_CHANGE;
     }
 
