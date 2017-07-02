@@ -177,6 +177,8 @@ namespace combat
 
         bool IsCloseEnoughToEqual(const HitInfo &) const;
 
+        const std::string ToString() const;
+
         friend bool operator<(const HitInfo & L, const HitInfo & R);
         friend bool operator==(const HitInfo & L, const HitInfo & R);
 

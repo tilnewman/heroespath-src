@@ -84,7 +84,7 @@ namespace combat
         if (WEAPON_PTR == nullptr)
         {
             M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss() "
-                << "was given a nullptr WEAPON_PTR.");
+                << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
 
             return;
         }

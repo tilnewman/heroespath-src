@@ -30,6 +30,10 @@
 #include "hit-info.hpp"
 
 #include "game/creature/condition-warehouse.hpp"
+#include "game/item/item.hpp"
+#include "game/song/song.hpp"
+#include "game/spell/spell-base.hpp"
+#include "game/creature/condition.hpp"
 
 #include "misc/vectors.hpp"
 
@@ -407,6 +411,76 @@ namespace combat
                         HI.songPtr_,
                         HI.didArmorAbsorb_,
                         HI.conditionPtr_);
+    }
+
+
+    const std::string HitInfo::ToString() const
+    {
+        if (IsValid() == false)
+        {
+            return "{HitInfo is Invalid}";
+        }
+
+        std::ostringstream ss;
+
+        ss << "{" << HitType::ToString(hitType_);
+
+        switch (hitType_)
+        {
+            case HitType::Weapon:
+            {
+                ss << "[" << weaponPtr_->Name() << "]";
+                break;
+            }
+            case HitType::Spell:
+            {
+                ss << "[" << spellPtr_->Name() << "]";
+                break;
+            }
+            case HitType::Song:
+            {
+                ss << "[" << songPtr_->Name() << "]";
+                break;
+            }
+            case HitType::Condition:
+            {
+                ss << "[" << conditionPtr_->Name() << "]";
+                break;
+            }
+            case HitType::Pounce:
+            case HitType::Roar:
+            case HitType::Count:
+            default:
+            {
+                break;
+            }
+        }
+
+        ss << ", \"" << actionPhraseCNP_.Compose("(source)", "(target)") << "\"";
+
+        ss << ", was_hit=" << std::boolalpha << WasHit()
+            << ", damage=" << damage_
+            << ", was_kill=" << WasKill()
+            << ", is_critical=" << isCritical_
+            << ", is_power=" << isPower_
+            << ", did_armor_absorb=" << didArmorAbsorb_
+            << ", conds_added=[";
+
+        for (auto const NEXT_COND_ENUM : condsAddedVec_)
+        {
+            ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
+        }
+
+        ss << "], conds_removed=[";
+
+        for (auto const NEXT_COND_ENUM : condsRemovedVec_)
+        {
+            ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
+        }
+
+        ss << "]}";
+
+        return ss.str();
     }
 
 
