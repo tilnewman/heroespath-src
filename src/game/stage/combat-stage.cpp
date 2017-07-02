@@ -184,6 +184,7 @@ namespace stage
         conditionEffectsVec_        (),
         conditionEffectsIndex_      (0),
         conditionEffectsTookTurn_   (false),
+        conditionEffectsCenterPosV_ (0.0f, 0.0f),
         isShortPostZoomOutPause_    (false),
 
         //initiall speed ignored because speed is set before each use,
@@ -1112,6 +1113,7 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ConditionAdd(creature::Conditions::Poisoned);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
@@ -1904,8 +1906,32 @@ namespace stage
 
         if (TurnPhase::ConditionEffectPause == turnPhase_)
         {
+            //check for death by condition effect
+            auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+            if ((CREATURE_EFFECTS_VEC.empty() == false) &&
+                (CREATURE_EFFECTS_VEC[0].WasKill()) &&
+                (CREATURE_EFFECTS_VEC[0].GetCreature()->IsPlayerCharacter() == false))
+            {
+                SetTurnPhase(TurnPhase::DeathAnim);
+
+                //Note:  This creature should be the same as turnCreaturePtr_
+                auto const CREATURE_PTR{ CREATURE_EFFECTS_VEC[0].GetCreature() };
+
+                conditionEffectsCenterPosV_ = combatDisplayStagePtr_->
+                    GetCombatNodeForCreature(CREATURE_PTR)->GetEntityPos();
+
+                combatAnimationUPtr_->ShakeAnimStop(CREATURE_PTR);
+                combatAnimationUPtr_->DeathAnimStart( { CREATURE_PTR } );
+
+                slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
+                //TODO SOUNDEFFECT play creature death sound effect here
+                return;
+            }
+
             if (++conditionEffectsIndex_ < conditionEffectsVec_.size())
             {
+                conditionEffectsCenterPosV_ = sf::Vector2f(0.0f, 0.0f);
+
                 fightResult_ = combat::FightResult(combat::CreatureEffect(turnCreaturePtr_,
                     combat::HitInfoVec_t(1, conditionEffectsVec_[conditionEffectsIndex_])));
 
@@ -2368,15 +2394,23 @@ namespace stage
 
         goldTextColorShaker_.Reset();
         redTextColorShaker_.Reset();
+
+        conditionEffectsCenterPosV_ = sf::Vector2f(0.0f, 0.0f);
     }
 
 
     void CombatStage::PositionSlideStartTasks()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr_ != nullptr),
-            "game::stage::CombatStage::PositionSlideStartTasks() turnCreaturePtr_ was nullptr.");
+        if ((misc::IsRealZero(conditionEffectsCenterPosV_.x)) &&
+            (misc::IsRealZero(conditionEffectsCenterPosV_.y)))
+        {
+            combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
+        }
+        else
+        {
+            combatAnimationUPtr_->RepositionAnimStart(conditionEffectsCenterPosV_);
+        }
 
-        combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
         combatAnimationUPtr_->ShakeAnimStop(turnCreaturePtr_);
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }

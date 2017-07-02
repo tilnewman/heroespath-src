@@ -127,6 +127,7 @@ namespace combat
         centeringAnimCreaturesPVec_      (),
         centeringAnimWillZoomOut_        (false),
         repositionAnimCreaturePtr_       (nullptr),
+        repositionAnimPosV_              (0.0f, 0.0f),
         meleeMoveAnimOrigPosV_           (0.0f, 0.0f),
         meleeMoveAnimTargetPosV_         (0.0f, 0.0f),
         meleeMoveAnimMovingCombatNodePtr_(nullptr),
@@ -541,7 +542,16 @@ namespace combat
     void CombatAnimation::RepositionAnimStart(creature::CreaturePtr_t creaturePtr)
     {
         repositionAnimCreaturePtr_ = creaturePtr;
-        CenteringStartTargetCenterOfBatllefield();
+        repositionAnimPosV_ = sf::Vector2f(0.0f, 0.0f);
+        CenteringStart(creaturePtr);
+    }
+
+
+    void CombatAnimation::RepositionAnimStart(const sf::Vector2f & POS_V)
+    {
+        repositionAnimCreaturePtr_ = nullptr;
+        repositionAnimPosV_ = POS_V;
+        CenteringStart(POS_V.x, POS_V.y);
     }
 
 
@@ -559,7 +569,14 @@ namespace combat
             NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
         }
 
-        CenteringStart( creature::CreaturePVec_t{ repositionAnimCreaturePtr_ } );
+        if (nullptr == repositionAnimCreaturePtr_)
+        {
+            CenteringStart(repositionAnimPosV_.x, repositionAnimPosV_.y);
+        }
+        else
+        {
+            CenteringStart(repositionAnimCreaturePtr_);
+        }
 
         //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
         CenteringUpdate(10.0f, false);
@@ -572,6 +589,7 @@ namespace combat
     {
         CenteringStop();
         repositionAnimCreaturePtr_ = nullptr;
+        repositionAnimPosV_ = sf::Vector2f(0.0f, 0.0f);
     }
 
 

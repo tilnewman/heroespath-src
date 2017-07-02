@@ -366,6 +366,7 @@ namespace stage
         combat::HitInfoVec_t             conditionEffectsVec_;
         std::size_t                      conditionEffectsIndex_;
         bool                             conditionEffectsTookTurn_;
+        sf::Vector2f                     conditionEffectsCenterPosV_;
         bool                             isShortPostZoomOutPause_;
 
         //A slider member that is used for various slider tasks

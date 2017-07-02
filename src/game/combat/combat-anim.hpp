@@ -171,6 +171,7 @@ namespace combat
         //position change, which has the effecting of looking like the battlefield
         //camera is moving.
         void RepositionAnimStart(creature::CreaturePtr_t);
+        void RepositionAnimStart(const sf::Vector2f &);
         void RepositionAnimUpdate(const float SLIDER_POS);
         void RepositionAnimStop();
 
@@ -291,6 +292,7 @@ namespace combat
 
         //member supporting the Reposition Animation
         creature::CreaturePtr_t repositionAnimCreaturePtr_;
+        sf::Vector2f repositionAnimPosV_;
 
         //members supporting the Melee Move Animations
         sf::Vector2f meleeMoveAnimOrigPosV_;
