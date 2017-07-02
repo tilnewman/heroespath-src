@@ -250,14 +250,11 @@ namespace combat
         }
 
         if ((false == isMoving_) &&
-            (false == isSummaryView_))
+            (false == isSummaryView_) &&
+            (false == isDead_))
         {
             target.draw(nameTextObj_, states);
-
-            if (false == isDead_)
-            {
-                target.draw(condTextObj_, states);
-            }
+            target.draw(condTextObj_, states);
         }
 
         if ((false == isMoving_) &&
