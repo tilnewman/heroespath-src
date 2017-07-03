@@ -76,11 +76,51 @@ namespace combat
 
         auto const TURN_INFO{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC) };
 
-        //decide if flying
-        auto const FLY_TURN_ACTION_INFO{ DecideIfFlying(TURN_INFO, CREATURE_DECIDING_CPTRC) };
-        if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+        //find out if any possible targets (players) are holding projectile weapons
+        auto const ARE_ANY_HOLDING_PROJECTILE_WEAPONS{ []()
+            {
+                auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+                for (auto const NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+                {
+                    if (NEXT_LIVING_PLAYER_PTR->IsHoldingProjectileWeapon())
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }() };
+
+        //find out if any possible targets (players) are flying
+        auto const ARE_ANY_FLYING{ []()
+            {
+                auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+                for (auto const NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+                {
+                    if (Encounter::Instance()->GetTurnInfoCopy(
+                            NEXT_LIVING_PLAYER_PTR).GetIsFlying())
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }() };
+
+        //If flying but no opponents are flying and no opponents are holding projectile weapons,
+        //then this enemy has to land so that combat does not become deadlocked.
+        if ((Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC).GetIsFlying()) &&
+            (ARE_ANY_FLYING == false) &&
+            (ARE_ANY_HOLDING_PROJECTILE_WEAPONS == false))
         {
-            return FLY_TURN_ACTION_INFO;
+            return TurnActionInfo(TurnAction::Land);
+        }
+        else
+        {
+            //decide if flying
+            auto const FLY_TURN_ACTION_INFO{ DecideIfFlying(TURN_INFO, CREATURE_DECIDING_CPTRC) };
+            if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
+            {
+                return FLY_TURN_ACTION_INFO;
+            }
         }
 
         creature::CreaturePVec_t tempPlayersInAttackRangePVec;
@@ -242,6 +282,10 @@ namespace combat
             if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
                 (DOES_FLYING_SEP_RAND_CREATURE_TO_ATTACK == false))
             {
+                M_HP_LOG_WRN("game::Combat::TurnDecider::Decide("
+                    << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
+                    << ") forced to take last-chance attack combat option.");
+
                 return TurnActionInfo(TurnAction::Attack, { RAND_CREATURE_TO_ATTACK });
             }
         }
@@ -319,8 +363,9 @@ namespace combat
         auto const SELECT_TYPE_ENUM{ TURN_INFO.GetStrategyInfo().Select() };
 
         if (SELECT_TYPE_ENUM == strategy::SelectType::None)
+        {
             return selectedPlayersPVec;
-
+        }
         auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
 
         auto const SELECTABLE_PLAYERS_PVEC{ ((TURN_INFO.GetIsFlying()) ? ALL_LIVING_PLAYERS_PVEC : creature::Algorithms::FindByFlying(ALL_LIVING_PLAYERS_PVEC, false)) };

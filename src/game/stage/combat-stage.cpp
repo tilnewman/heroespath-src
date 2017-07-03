@@ -1128,8 +1128,6 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ConditionAdd(creature::Conditions::Poisoned);
-            sorcererPtr->HealthCurrentSet(1);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
