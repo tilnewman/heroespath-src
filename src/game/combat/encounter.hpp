@@ -81,6 +81,7 @@ namespace combat
         static void Acquire();
         static void Release();
 
+        //the player party is kept by the State object
         non_player::Party & NonPlayerParty();
         non_player::Party & DeadNonPlayerParty();
 

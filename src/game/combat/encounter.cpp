@@ -63,7 +63,7 @@ namespace combat
     Encounter::Encounter()
     :
         enemyPartyUPtr_    (),
-        deadEnemyPartyUPtr_(std::make_unique<non_player::Party>()),
+        deadEnemyPartyUPtr_(),
         roundCounter_      (0),
         hasStarted_        (false),
         turnOverPVec_      (),
@@ -169,6 +169,8 @@ namespace combat
 
     void Encounter::StartTasks()
     {
+        deadEnemyPartyUPtr_ = std::make_unique<non_player::Party>();
+
         roundCounter_ = 0;
         Game::Instance()->State().World().EncoundterCountInc();
 
@@ -190,6 +192,7 @@ namespace combat
         turnOverPVec_.clear();
         turnInfoMap_.clear();
         enemyPartyUPtr_.reset();
+        //leave deadEnemyPartyUPtr_ alone so that looting can occur
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;

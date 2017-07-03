@@ -1747,10 +1747,14 @@ namespace stage
             }
 
             if (KE.code == sf::Keyboard::A)
+            {
                 return HandleAttack();
+            }
 
             if (KE.code == sf::Keyboard::F)
+            {
                 return HandleFight();
+            }
 
             if (KE.code == sf::Keyboard::S)
             {
@@ -1766,33 +1770,43 @@ namespace stage
             }
 
             if (KE.code == sf::Keyboard::Right)
+            {
                 return HandleAdvance();
+            }
 
             if (KE.code == sf::Keyboard::Left)
+            {
                 return HandleRetreat();
+            }
 
             if (KE.code == sf::Keyboard::Y)
+            {
                 return HandleFly();
+            }
 
             if (KE.code == sf::Keyboard::L)
+            {
                 return HandleLand();
+            }
 
             if (KE.code == sf::Keyboard::R)
+            {
                 return HandleRoar();
+            }
 
             if (KE.code == sf::Keyboard::X)
+            {
                 return HandleWeaponChange();
+            }
 
             if (nullptr != turnCreaturePtr_)
             {
-                if ((KE.code == sf::Keyboard::B) ||
-                    ((KE.code == sf::Keyboard::Space) && turnCreaturePtr_->CanTakeAction()))
+                if (KE.code == sf::Keyboard::B)
                 {
                     return HandleBlock();
                 }
 
-                if (((KE.code == sf::Keyboard::K) || (KE.code == sf::Keyboard::Space)) &&
-                     (turnCreaturePtr_->CanTakeAction() == false))
+                if (KE.code == sf::Keyboard::K)
                 {
                     return HandleSkip();
                 }
@@ -3675,23 +3689,16 @@ namespace stage
 
     void CombatStage::HandleKilledCreatures()
     {
-        //create a vec of all creatures killed this turn
-        creature::CreaturePVec_t killedCreaturesPVec;
-        auto const CREATURE_EFFECTS{ fightResult_.Effects() };
-        for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
+        auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+        for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
         {
             if (NEXT_CREATURE_EFFECT.WasKill())
             {
-                killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
-            }
-        }
-
-        for (auto nextKilledCreaturePtr : killedCreaturesPVec)
-        {
-            //handle other misc killed tasks
-            if (nextKilledCreaturePtr->IsPlayerCharacter() == false)
-            {
-                combat::Encounter::Instance()->HandleKilledCreature(nextKilledCreaturePtr);
+                if (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false)
+                {
+                    combat::Encounter::Instance()->HandleKilledCreature(
+                        NEXT_CREATURE_EFFECT.GetCreature());
+                }
             }
         }
     }
@@ -3851,6 +3858,7 @@ namespace stage
                     POPUP_NAME_COMBATOVER_WIN_, true));
 
             hasCombatEnded_ = true;
+            combat::Encounter::Instance()->EndTasks();
         }
 
         return hasCombatEnded_;
@@ -3877,6 +3885,7 @@ namespace stage
                     POPUP_NAME_COMBATOVER_LOSE_, false));
 
             hasCombatEnded_ = true;
+            combat::Encounter::Instance()->EndTasks();
         }
 
         return hasCombatEnded_;
