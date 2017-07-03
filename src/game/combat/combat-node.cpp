@@ -251,7 +251,7 @@ namespace combat
 
         if ((false == isMoving_) &&
             (false == isSummaryView_) &&
-            (false == isDead_))
+            ((false == isDead_) || (Creature()->IsPlayerCharacter())))
         {
             target.draw(nameTextObj_, states);
             target.draw(condTextObj_, states);
