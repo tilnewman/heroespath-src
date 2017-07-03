@@ -205,6 +205,12 @@ namespace sfml_util
             SongTripBeat,
             SongPanicStrings,
             SongLullaby,
+            CombatWin1,
+            CombatWin2,
+            CombatWin3,
+            CombatLose1,
+            CombatLose2,
+            CombatLose3,
             Count,
             None,
             Random

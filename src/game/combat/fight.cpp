@@ -240,6 +240,8 @@ namespace combat
                                       creatureDefendingPtrC,
                                       hitInfoVec,
                                       condsRemovedVec);
+
+                Encounter::Instance()->SetIsFlying(creatureDefendingPtrC, false);
             }
             else
             {

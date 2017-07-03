@@ -227,6 +227,11 @@ namespace gui
             const game::creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION);
 
+        //use this function to make the CombatOver popup window
+        const game::PopupInfo CreateCombatOverPopupInfo(
+            const std::string &                 POPUP_NAME,
+            const bool                          DID_WIN_COMBAT);
+
         //throws range error upon unknown enum value
         void Texture(const PopupImage::Enum, sf::Texture &) const;
 

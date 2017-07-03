@@ -397,6 +397,19 @@ namespace gui
     }
 
 
+    const game::PopupInfo PopupManager::CreateCombatOverPopupInfo(
+        const std::string &                 POPUP_NAME,
+        const bool                          DID_WIN_COMBAT)
+    {
+        return game::PopupInfo(POPUP_NAME,
+                               TextInfoDefault(" ",
+                                               sfml_util::Justified::Center,
+                                               sfml_util::FontManager::Instance()->Size_Large()),
+                               sfml_util::MapByRes(1.0f, 5.0f),
+                               DID_WIN_COMBAT);
+    }
+
+
     void PopupManager::Texture(const PopupImage::Enum PI, sf::Texture & texture) const
     {
         switch (PI)
@@ -438,16 +451,17 @@ namespace gui
             //re-construct the info objects based on the REGION
             sfml_util::gui::box::Info newBoxInfo(POPUP_INFO.BoxInfo());
             newBoxInfo.SetBoxAndBackgroundRegion(REGION);
+
             const game::PopupInfo NEW_POPUP_INFO(POPUP_INFO.Name(),
-                                                       POPUP_INFO.TextInfo(),
-                                                       POPUP_INFO.Buttons(),
-                                                       newBoxInfo,
-                                                       POPUP_INFO.SizeX(),
-                                                       POPUP_INFO.SizeY(),
-                                                       POPUP_INFO.Type(),
-                                                       POPUP_INFO.SoundEffect(),
-                                                       POPUP_INFO.ButtonColor(),
-                                                       POPUP_INFO.WillAddRandImage());
+                                                 POPUP_INFO.TextInfo(),
+                                                 POPUP_INFO.Buttons(),
+                                                 newBoxInfo,
+                                                 POPUP_INFO.SizeX(),
+                                                 POPUP_INFO.SizeY(),
+                                                 POPUP_INFO.Type(),
+                                                 POPUP_INFO.SoundEffect(),
+                                                 POPUP_INFO.ButtonColor(),
+                                                 POPUP_INFO.WillAddRandImage());
 
             //establish inner rect
             const float PAD(20.0f);

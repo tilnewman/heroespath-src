@@ -713,6 +713,7 @@ namespace stage
             "media-images-combat-stone3",
             "media-images-combat-stone4",
             "media-images-combat-crossbones",
+            "media-images-combat-crossswords",
             "media-images-misc-spark",
             "media-images-misc-cloud1",
             "media-images-misc-cloud2",

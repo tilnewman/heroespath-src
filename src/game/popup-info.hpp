@@ -100,6 +100,12 @@ namespace creature
                   const std::size_t                THE_MAX,
                   const float                      IMAGE_SCALE);
 
+        //use this constructor for end-of-combat popups
+        PopupInfo(const std::string &              NAME,
+                  const sfml_util::gui::TextInfo & TEXT_INFO,
+                  const float                      IMAGE_SCALE,
+                  const bool                       DID_WIN_COMBAT);
+
         virtual ~PopupInfo();
 
         PopupInfo(const PopupInfo &);
@@ -127,6 +133,7 @@ namespace creature
         inline std::size_t                       InitialSelection() const   { return initialSelection_; }
         inline bool                              AreImagesCreatures() const { return areImgsCreatures_; }
         inline const std::vector<std::string> &  TextVec() const            { return textVec_; }
+        inline bool                              DidWinCombat() const       { return didWinCombat_; }
 
         inline const sf::Texture & ImagesAt(const std::size_t I) const
         {
@@ -170,6 +177,7 @@ namespace creature
         std::size_t                       initialSelection_;
         bool                              areImgsCreatures_;
         std::vector<std::string>          textVec_;
+        bool                              didWinCombat_;
     };
 
 

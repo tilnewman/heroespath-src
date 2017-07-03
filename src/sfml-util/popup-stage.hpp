@@ -276,6 +276,12 @@ namespace sfml_util
         //members supporting song selection
         //Note:  Many spell members are re-used
         game::song::SongPtr_t songCurrentPtr_;
+
+        //members supporting CombatOver
+        sf::Texture combatBgTexture_;
+        sf::Sprite combatBgSprite_;
+        gui::TextRegionUPtr_t combatTitleUPtr_;
+        gui::TextRegionUPtr_t combatDescUPtr_;
     };
 
     using PopupStagePtr_t = PopupStage *;

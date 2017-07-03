@@ -48,6 +48,7 @@ namespace game
             NumberSelection,
             Spellbook,
             MusicSheet,
+            CombatOver,
             Count
         };
 

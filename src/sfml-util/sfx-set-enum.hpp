@@ -66,6 +66,8 @@ namespace sfml_util
             SpellBandage,
             DrumBlip,
             GuitarStrum,
+            CombatWin,
+            CombatLose,
             Count
         };
 

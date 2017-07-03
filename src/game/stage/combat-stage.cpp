@@ -92,7 +92,9 @@ namespace game
 namespace stage
 {
 
-    const std::string CombatStage::POPUP_NAME_SPELLBOOK_{ "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_SPELLBOOK_        { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_   { "COMBAT_OVER_WIN_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_  { "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME" };
     //
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
@@ -186,6 +188,7 @@ namespace stage
         conditionEffectsTookTurn_   (false),
         conditionEffectsCenterPosV_ (0.0f, 0.0f),
         isShortPostZoomOutPause_    (false),
+        hasCombatEnded_             (false),
 
         //initiall speed ignored because speed is set before each use,
         //any value greater than zero will work here
@@ -408,6 +411,17 @@ namespace stage
             {
                 return false;
             }
+        }
+        else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_WIN_)
+        {
+            //TODO If popup response is YES, then goto the loot stage, and if NO,
+            //     then goto the adventure stage.
+            game::LoopManager::Instance()->Goto_Credits();
+        }
+        else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_LOSE_)
+        {
+            //TODO if popup response is YES, then load last saved game
+            game::LoopManager::Instance()->Goto_Credits();
         }
 
         return false;
@@ -1113,7 +1127,6 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
-            sorcererPtr->ConditionAdd(creature::Conditions::Poisoned);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
@@ -1152,7 +1165,8 @@ namespace stage
             combat::Encounter::Instance()->StartTasks();
 
             //TODO TEMP REMOVE -test create that can't take action
-            combat::Encounter::Instance()->NonPlayerParty().Characters()[0]->ConditionAdd(creature::Conditions::Stone);
+            combat::Encounter::Instance()->NonPlayerParty().Characters()[0]->
+                ConditionAdd(creature::Conditions::Stone);
         }
 
         //combat display
@@ -1165,28 +1179,45 @@ namespace stage
         if (restoreInfo_.HasRestored() == false)
         {
             //set Pixie creatures to initially flying
-            //while this doesn't technically make them fly, the call to restoreInfo_.Restore() will actually set them flying
+            //while this doesn't technically make them fly, the call to restoreInfo_.Restore()
+            //will actually set them flying
             {
                 combat::CombatNodePVec_t combatNodesPVec;
                 combatDisplayStagePtr_->GetCombatNodes(combatNodesPVec);
 
                 for (auto const nextComabtNodeCPtr : combatNodesPVec)
-                    if ((creature::race::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Race().Which())) ||
-                        (creature::role::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Role().Which())))
+                {
+                    if ((creature::race::WillInitiallyFly(
+                            nextComabtNodeCPtr->Creature()->Race().Which())) ||
+                        (creature::role::WillInitiallyFly(
+                            nextComabtNodeCPtr->Creature()->Role().Which())))
+                    {
                         nextComabtNodeCPtr->IsFlying(true);
+                    }
 
+                    //TODO TEMP REMOVE testing combat win popup
+                    if (nextComabtNodeCPtr->Creature()->IsPlayerCharacter())
+                    {
+                        nextComabtNodeCPtr->Creature()->ConditionAdd(creature::Conditions::Dead);
+                        break;
+                    }
+                }
                 restoreInfo_.Save(combatDisplayStagePtr_);
             }
         }
 
         //CombatDisplay Zoom Sliderbar
-        const sfml_util::gui::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO("Zoom",
-                                                                  sfml_util::FontManager::Instance()->Font_Default1(),
-                                                                  sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                                  sfml_util::FontManager::Color_Light(),
-                                                                  sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO(
+            "Zoom",
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_Light(),
+            sfml_util::Justified::Left);
         //
-        const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
+        const sf::FloatRect ZOOMSLIDER_LABEL_RECT(0.0f,
+                                                  COMMAND_REGION_TOP + COMMAND_REGION_PAD,
+                                                  0.0f,
+                                                  0.0f);
         //
         zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ZoomSlider's",
@@ -1229,8 +1260,10 @@ namespace stage
         Stage::Draw(target, STATES);
         statusBoxSPtr_->draw(target, STATES);
 
-        if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause)) ||
-            (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
+        if (((turnPhase_ >= TurnPhase::Determine) &&
+                (turnPhase_ <= TurnPhase::PostPerformPause)) ||
+            (IsNonPlayerCharacterTurnValid() &&
+                (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
             turnBoxUPtr_->draw(target, STATES);
 
@@ -1263,6 +1296,11 @@ namespace stage
     void CombatStage::UpdateTime(const float ELAPSED_TIME_SEC)
     {
         Stage::UpdateTime(ELAPSED_TIME_SEC);
+
+        if (hasCombatEnded_)
+        {
+            return;
+        }
 
         combatAnimationUPtr_->UpdateTime(ELAPSED_TIME_SEC);
 
@@ -1527,7 +1565,10 @@ namespace stage
             (PreTurnPhase::End == preTurnPhase_) &&
             (game::LoopManager::Instance()->IsFading() == false))
         {
-            StartTurn_Step1();
+            if ((HandleWin() == false) && (HandleLose() == false))
+            {
+                StartTurn_Step1();
+            }
             return;
         }
 
@@ -1746,12 +1787,12 @@ namespace stage
 
             if (nullptr != turnCreaturePtr_)
             {
-                if (KE.code == sf::Keyboard::B)
+                if ((KE.code == sf::Keyboard::B) || (KE.code == sf::Keyboard::Space))
                 {
                     return HandleBlock();
                 }
 
-                if ((KE.code == sf::Keyboard::K) &&
+                if (((KE.code == sf::Keyboard::K) || (KE.code == sf::Keyboard::Space)) &&
                      (turnCreaturePtr_->CanTakeAction() == false))
                 {
                     return HandleSkip();
@@ -1913,7 +1954,7 @@ namespace stage
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
 
-                //Note:  This creature should be the same as turnCreaturePtr_
+                //Note:  This creature ptr should be the same as turnCreaturePtr_
                 auto const CREATURE_PTR{ CREATURE_EFFECTS_VEC[0].GetCreature() };
 
                 conditionEffectsCenterPosV_ = combatDisplayStagePtr_->
@@ -2109,7 +2150,12 @@ namespace stage
 
         if (TurnPhase::PostTurnPause == turnPhase_)
         {
-            HandleAfterTurnTasks();
+            //end-of-turn tasks here
+            HandleKilledCreatures();
+            combatDisplayStagePtr_->HandleEndOfTurnTasks();
+            restoreInfo_.CanTurnAdvance(true);
+            EndTurn();
+            EndPause();
             return;
         }
     }
@@ -2395,6 +2441,9 @@ namespace stage
         redTextColorShaker_.Reset();
 
         conditionEffectsCenterPosV_ = sf::Vector2f(0.0f, 0.0f);
+
+        HandleWin();
+        HandleLose();
     }
 
 
@@ -2787,16 +2836,6 @@ namespace stage
         turnCreaturePtr_->CurrentWeaponsInc();
         SetupTurnBox();
         return true;
-    }
-
-
-    void CombatStage::HandleAfterTurnTasks()
-    {
-        HandleKilledCreatures();
-        combatDisplayStagePtr_->HandleEndOfTurnTasks();
-        restoreInfo_.CanTurnAdvance(true);
-        EndTurn();
-        EndPause();
     }
 
 
@@ -3781,6 +3820,58 @@ namespace stage
                 combatSoundEffects_.PlayHitOrMiss(HIT_INFO);
             }
         }
+    }
+
+
+    bool CombatStage::HandleWin()
+    {
+        auto areAllEnemiesIncapacitated{ true };
+        auto const ALL_LIVING_ENEMIES_PVEC{ creature::Algorithms::NonPlayers(true) };
+        for (auto const NEXT_ENEMY_PTR : ALL_LIVING_ENEMIES_PVEC)
+        {
+            if (NEXT_ENEMY_PTR->HasConditionNotAThreatPerm() == false)
+            {
+                areAllEnemiesIncapacitated = false;
+                break;
+            }
+        }
+
+        if (areAllEnemiesIncapacitated)
+        {
+            game::LoopManager::Instance()->PopupWaitBegin(this,
+                sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                    POPUP_NAME_COMBATOVER_WIN_, true));
+
+            hasCombatEnded_ = true;
+        }
+
+        return hasCombatEnded_;
+    }
+
+
+    bool CombatStage::HandleLose()
+    {
+        auto areAllCharactersIncapacitated{ true };
+        auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+        for (auto const NEXT_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+        {
+            if (NEXT_PLAYER_PTR->HasConditionNotAThreatPerm() == false)
+            {
+                areAllCharactersIncapacitated = false;
+                break;
+            }
+        }
+
+        if (areAllCharactersIncapacitated)
+        {
+            game::LoopManager::Instance()->PopupWaitBegin(this,
+                sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                    POPUP_NAME_COMBATOVER_LOSE_, false));
+
+            hasCombatEnded_ = true;
+        }
+
+        return hasCombatEnded_;
     }
 
 }

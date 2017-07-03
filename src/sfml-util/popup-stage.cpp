@@ -173,7 +173,11 @@ namespace sfml_util
         xSymbolTexture_            (),
         xSymbolSprite_             (),
         willShowRejectImage_       (false),
-        songCurrentPtr_            (nullptr)
+        songCurrentPtr_            (nullptr),
+        combatBgTexture_           (),
+        combatBgSprite_            (),
+        combatTitleUPtr_           (),
+        combatDescUPtr_            ()
     {
         backgroundTexture_.setSmooth(true);
         backgroundSprite_.setTexture(backgroundTexture_);
@@ -1256,6 +1260,107 @@ namespace sfml_util
             songCurrentPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
             SetupSpellbookPageRightForFadeIn();
         }
+        else if (POPUP_INFO_.Type() == game::Popup::CombatOver)
+        {
+            if (POPUP_INFO_.DidWinCombat())
+            {
+                sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::CombatWin).PlayRandom();
+
+                sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                    GetMediaPath("media-images-combat-crossswords"));
+            }
+            else
+            {
+                sfml_util::SoundManager::Instance()->GetSfxSet(
+                    sfml_util::SfxSet::CombatLose).PlayRandom();
+
+                sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                    GetMediaPath("media-images-combat-crossbones"));
+            }
+
+            combatBgTexture_.setSmooth(true);
+            sfml_util::Invert(combatBgTexture_);
+            sfml_util::Mask(combatBgTexture_, sf::Color::White);
+            combatBgSprite_.setTexture(combatBgTexture_, true);
+            combatBgSprite_.setColor( sf::Color(255, 255, 255, 32) );
+
+            auto const HORIZ_RESCALE{ textRegion_.width /
+                static_cast<float>(combatBgTexture_.getSize().x) };
+
+            combatBgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
+
+            if (combatBgSprite_.getGlobalBounds().height > textRegion_.height)
+            {
+                auto VERT_RESCALE{ textRegion_.height /
+                    static_cast<float>(combatBgTexture_.getSize().y) };
+
+                combatBgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
+            }
+
+            auto const BG_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
+                (combatBgSprite_.getGlobalBounds().width * 0.5f) };
+
+            auto const BG_POS_TOP{ (textRegion_.top + (textRegion_.height * 0.5f)) -
+                (combatBgSprite_.getGlobalBounds().height * 0.5f) };
+
+            combatBgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
+
+            const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
+                ((POPUP_INFO_.DidWinCombat()) ? "Victory!" : "Death Strikes!"),
+                sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+                sfml_util::FontManager::Instance()->Size_Large(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sf::BlendAlpha,
+                sf::Text::Bold,
+                sfml_util::Justified::Center);
+
+            combatTitleUPtr_ = std::make_unique<gui::TextRegion>(
+                "CombatOverPopupTitle",
+                COMBAT_TITLE_TEXTINFO,
+                sf::FloatRect());
+
+            auto const TITLE_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
+                (combatTitleUPtr_->GetEntityRegion().width * 0.5f) };
+
+            auto const TITLE_POS_TOP{ textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
+
+            combatTitleUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
+
+            std::ostringstream winDescSS;
+            winDescSS << "Congratulations, your party has beaten all enemies on the field of"
+                << " battle and emerged victorious.\n\nWill you search for loot?";
+
+            std::ostringstream loseDescSS;
+            loseDescSS << "The dangers of Etan have claimed another party of adventurers.  "
+                << "All of your characters have been incapacitated or killed, but all is not lost."
+                << "  Your saved games remain and can be loaded at any time.\n\nClick YES to restart"
+                << " from your last save, or click NO to quit.";
+
+            const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
+                ((POPUP_INFO_.DidWinCombat()) ?
+                    winDescSS.str() :
+                    loseDescSS.str()),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Normal(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sfml_util::Justified::Center);
+
+            const sf::FloatRect COMBAT_DESC_RECT(
+                textRegion_.left,
+                combatTitleUPtr_->GetEntityRegion().top +
+                    combatTitleUPtr_->GetEntityRegion().height +
+                    sfml_util::MapByRes(20.0f, 60.0f),
+                textRegion_.width,
+                textRegion_.height -
+                    (combatTitleUPtr_->GetEntityRegion().height +
+                        (sfml_util::MapByRes(20.0f, 60.0f) * 2.0f)));
+
+            combatDescUPtr_ = std::make_unique<gui::TextRegion>(
+                "CombatOverPopupDesc",
+                COMBAT_DESC_TEXTINFO,
+                COMBAT_DESC_RECT);
+        }
     }
 
 
@@ -1309,12 +1414,19 @@ namespace sfml_util
             listBoxLabelTextRegionUPtr_->draw(target, STATES);
             spellTitleTextRegionUPtr_->draw(target, STATES);
             spellDetailsTextUPtr_->draw(target, STATES);
+
             if (spellUnableTextWillShow_)
             {
                 spellUnableTextUPtr_->draw(target, STATES);
             }
 
             spellDescTextUPtr_->draw(target, STATES);
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::CombatOver)
+        {
+            target.draw(combatBgSprite_, STATES);
+            target.draw( * combatTitleUPtr_, STATES);
+            target.draw( * combatDescUPtr_, STATES);
         }
 
         if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)

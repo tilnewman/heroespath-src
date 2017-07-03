@@ -149,7 +149,11 @@ namespace condition
     class Unconscious : public Condition
     {
     public:
-        Unconscious() : Condition(Conditions::Unconscious) {}
+        Unconscious() : Condition(
+            Conditions::Unconscious,
+            false,
+            stats::StatMultSet(0.0f, 0.0f, 0.5f, 1.0f, 0.0f, 0.0f)) {}
+
         virtual ~Unconscious() {}
     };
 

@@ -128,8 +128,8 @@ namespace combat
         auto const MOST_DESIRED_TARGET_DISTANCE{ COMBAT_DISPLAY_CPTRC->
             GetBlockingDistanceBetween(CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC) };
 
-        auto const DOES_FLYING_SEPARATE_MOST_DESIRED_TARGET{ (TURN_INFO.GetIsFlying() == false) &&
-            Encounter::Instance()->GetTurnInfoCopy(MOST_DESIRED_TARGET_CPTRC).GetIsFlying() };
+        auto const DOES_FLYING_SEPARATE_MOST_DESIRED_TARGET{ ! (TURN_INFO.GetIsFlying() ==
+            Encounter::Instance()->GetTurnInfoCopy(MOST_DESIRED_TARGET_CPTRC).GetIsFlying()) };
 
         auto const CAN_ATTACK_MOST_DESIRED_TARGET_WITH{
             CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
@@ -231,11 +231,19 @@ namespace combat
 
         //Okay, so we are reaching this end point in the logic tree much more
         //often than anticipated, so try and attack here if possible.
-        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
-            (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false))
+        if (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false)
         {
-            return TurnActionInfo(TurnAction::Attack,
-                { misc::Vector::SelectRandom(LIVING_PLAYERS_IN_ATTACK_RANGE) });
+            auto const RAND_CREATURE_TO_ATTACK{
+                misc::Vector::SelectRandom(LIVING_PLAYERS_IN_ATTACK_RANGE) };
+
+            auto const DOES_FLYING_SEP_RAND_CREATURE_TO_ATTACK{ !(TURN_INFO.GetIsFlying() ==
+                Encounter::Instance()->GetTurnInfoCopy(RAND_CREATURE_TO_ATTACK).GetIsFlying()) };
+
+            if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
+                (DOES_FLYING_SEP_RAND_CREATURE_TO_ATTACK == false))
+            {
+                return TurnActionInfo(TurnAction::Attack, { RAND_CREATURE_TO_ATTACK });
+            }
         }
 
         //At this point nothing was chosen to be done, so block instead

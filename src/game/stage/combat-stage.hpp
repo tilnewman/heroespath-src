@@ -249,7 +249,6 @@ namespace stage
         bool HandleRoar();
         bool HandlePounce(const bool IS_SKY_POUNCE);
         bool HandleWeaponChange();
-        void HandleAfterTurnTasks();
         void MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
         void MoveTurnBoxButtonsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
         void SetupTurnBoxButtons(const creature::CreaturePtrC_t);
@@ -287,8 +286,13 @@ namespace stage
 
         void HandlePlayingMeleeSoundEffects();
 
+        bool HandleWin();
+        bool HandleLose();
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
+        static const std::string POPUP_NAME_COMBATOVER_WIN_;
+        static const std::string POPUP_NAME_COMBATOVER_LOSE_;
         //
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
@@ -368,6 +372,7 @@ namespace stage
         bool                             conditionEffectsTookTurn_;
         sf::Vector2f                     conditionEffectsCenterPosV_;
         bool                             isShortPostZoomOutPause_;
+        bool                             hasCombatEnded_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;

@@ -83,7 +83,8 @@ namespace game
         creatureCPtr_    (CREATURE_CPTR),
         initialSelection_(INITIAL_SELECTION),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
-        textVec_         (TEXT_VEC)
+        textVec_         (TEXT_VEC),
+        didWinCombat_    (false)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
             "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons="
@@ -155,7 +156,8 @@ namespace game
         creatureCPtr_    (nullptr),
         initialSelection_(0),
         areImgsCreatures_(false),
-        textVec_         ()
+        textVec_         (),
+        didWinCombat_    (false)
     {}
 
 
@@ -187,7 +189,8 @@ namespace game
         creatureCPtr_    (nullptr),
         initialSelection_(0),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
-        textVec_         ()
+        textVec_         (),
+        didWinCombat_    (false)
     {}
 
 
@@ -217,7 +220,38 @@ namespace game
         creatureCPtr_    (nullptr),
         initialSelection_(0),
         areImgsCreatures_(false),
-        textVec_         ()
+        textVec_         (),
+        didWinCombat_    (false)
+    {}
+
+
+    PopupInfo::PopupInfo(const std::string &              NAME,
+                         const sfml_util::gui::TextInfo & TEXT_INFO,
+                         const float                      IMAGE_SCALE,
+                         const bool                       DID_WIN_COMBAT)
+    :
+        name_            (NAME),
+        textInfo_        (TEXT_INFO),
+        buttons_         (sfml_util::PopupButtons::YesNo),
+        image_           (sfml_util::PopupImage::Large),
+        type_            (game::Popup::CombatOver),
+        soundEffect_     (sfml_util::sound_effect::None),
+        boxInfo_         (),
+        ratioX_          (1.0f),
+        ratioY_          (1.0f),
+        buttonColor_     (sfml_util::PopupButtonColor::Dark),
+        willAddRandImage_(false),
+        imageScale_      (IMAGE_SCALE),
+        textureVec_      (),
+        numberMin_       (0),
+        numberMax_       (0),
+        numberInvalidVec_(),
+        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
+        creatureCPtr_    (nullptr),
+        initialSelection_(0),
+        areImgsCreatures_(false),
+        textVec_         (),
+        didWinCombat_    (DID_WIN_COMBAT)
     {}
 
 
@@ -251,7 +285,8 @@ namespace game
 
         initialSelection_(PI.initialSelection_),
         areImgsCreatures_(PI.areImgsCreatures_),
-        textVec_         (PI.textVec_)
+        textVec_         (PI.textVec_),
+        didWinCombat_    (PI.didWinCombat_)
     {}
 
 
@@ -284,6 +319,7 @@ namespace game
 
             initialSelection_ = PI.initialSelection_;
             textVec_          = PI.textVec_;
+            didWinCombat_     = PI.didWinCombat_;
         }
 
         return * this;

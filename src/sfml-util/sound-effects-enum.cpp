@@ -205,7 +205,13 @@ namespace sfml_util
             case SongTripBeat:          { return "trip-beat"; }
             case SongPanicStrings:      { return "panic-strings"; }
             case SongLullaby:           { return "lullaby"; }
-            case None:              { return "None"; }
+            case CombatWin1:            { return "win-1"; }
+            case CombatWin2:            { return "win-2"; }
+            case CombatWin3:            { return "win-3"; }
+            case CombatLose1:           { return "lose-1"; }
+            case CombatLose2:           { return "lose-2"; }
+            case CombatLose3:           { return "lose-3"; }
+            case None:                  { return "None"; }
             case Count:
             case Random:
             default:
@@ -396,6 +402,12 @@ namespace sfml_util
             case SongTripBeat:
             case SongPanicStrings:
             case SongLullaby:           { return "sound-effects/songs"; }
+            case CombatWin1:
+            case CombatWin2:
+            case CombatWin3:
+            case CombatLose1:
+            case CombatLose2:
+            case CombatLose3:           { return "sound-effects/combat"; }
             case Count:
             case None:
             case Random:

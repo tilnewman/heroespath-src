@@ -405,6 +405,22 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::GuitarStrum)] =
             SoundEffectsSet(GUITARSTRUM_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t COMBATWIN_SOUNDS_ENUM_VEC = {
+            sound_effect::CombatWin1,
+            sound_effect::CombatWin2,
+            sound_effect::CombatWin3 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::CombatWin)] =
+            SoundEffectsSet(COMBATWIN_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t COMBATLOSE_SOUNDS_ENUM_VEC = {
+            sound_effect::CombatLose1,
+            sound_effect::CombatLose2,
+            sound_effect::CombatLose3 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::CombatLose)] =
+            SoundEffectsSet(COMBATLOSE_SOUNDS_ENUM_VEC);
     }
 
 

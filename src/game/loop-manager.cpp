@@ -534,7 +534,7 @@ namespace game
 
 
     void LoopManager::PopupWaitBegin(callback::IPopupHandler_t * const HANDLER_PTR,
-                                   const PopupInfo &                 POPUP_INFO)
+                                     const PopupInfo &                 POPUP_INFO)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((HANDLER_PTR != nullptr), "LoopManager::PopupWaitBegin(" << POPUP_INFO.ToStringShort(false) << ") given a NULL POPUP_INFO->CallbackHandlerPtr() pointer.");
         M_HP_LOG("LoopManager::PopupWaitBegin(handler=\"" << HANDLER_PTR->HandlerName() << "\", " << POPUP_INFO.ToStringShort(false) << ") while in state=" << LoopState::ToString(prevState_) << ".");
