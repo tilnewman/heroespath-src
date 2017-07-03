@@ -367,12 +367,15 @@ namespace stage
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
         bool                             willClrShkInitStatusMsg_;
+        bool                             isShortPostZoomOutPause_;
+        bool                             hasCombatEnded_;
+
+        //members that manage condition effects per turn
         combat::HitInfoVec_t             conditionEffectsVec_;
         std::size_t                      conditionEffectsIndex_;
         bool                             conditionEffectsTookTurn_;
         sf::Vector2f                     conditionEffectsCenterPosV_;
-        bool                             isShortPostZoomOutPause_;
-        bool                             hasCombatEnded_;
+        bool                             conditionEffectsWillSkip_;
 
         //A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;

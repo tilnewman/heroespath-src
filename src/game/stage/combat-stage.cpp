@@ -183,13 +183,14 @@ namespace stage
         performReportHitIndex_      (0),
         zoomSliderOrigPos_          (0.0f),
         willClrShkInitStatusMsg_    (false),
+        isShortPostZoomOutPause_    (false),
+        hasCombatEnded_             (false),
         conditionEffectsVec_        (),
         conditionEffectsIndex_      (0),
         conditionEffectsTookTurn_   (false),
         conditionEffectsCenterPosV_ (0.0f, 0.0f),
-        isShortPostZoomOutPause_    (false),
-        hasCombatEnded_             (false),
-
+        conditionEffectsWillSkip_   (false),
+        
         //initiall speed ignored because speed is set before each use,
         //any value greater than zero will work here
         slider_                     (1.0f),
@@ -1127,6 +1128,8 @@ namespace stage
                                                     SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
+            sorcererPtr->ConditionAdd(creature::Conditions::Poisoned);
+            sorcererPtr->HealthCurrentSet(1);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
         /*
@@ -1176,7 +1179,11 @@ namespace stage
         //give control of the CombatDisplay object lifetime to the Loop class
         LoopManager::Instance()->AddStage(combatDisplayStagePtr_);
 
-        if (restoreInfo_.HasRestored() == false)
+        if (restoreInfo_.HasRestored())
+        {
+            conditionEffectsWillSkip_ = true;
+        }
+        else
         {
             //set Pixie creatures to initially flying
             //while this doesn't technically make them fly, the call to restoreInfo_.Restore()
@@ -1193,13 +1200,6 @@ namespace stage
                             nextComabtNodeCPtr->Creature()->Role().Which())))
                     {
                         nextComabtNodeCPtr->IsFlying(true);
-                    }
-
-                    //TODO TEMP REMOVE testing combat win popup
-                    if (nextComabtNodeCPtr->Creature()->IsPlayerCharacter())
-                    {
-                        nextComabtNodeCPtr->Creature()->ConditionAdd(creature::Conditions::Dead);
-                        break;
                     }
                 }
                 restoreInfo_.Save(combatDisplayStagePtr_);
@@ -1787,7 +1787,8 @@ namespace stage
 
             if (nullptr != turnCreaturePtr_)
             {
-                if ((KE.code == sf::Keyboard::B) || (KE.code == sf::Keyboard::Space))
+                if ((KE.code == sf::Keyboard::B) ||
+                    ((KE.code == sf::Keyboard::Space) && turnCreaturePtr_->CanTakeAction()))
                 {
                     return HandleBlock();
                 }
@@ -2363,9 +2364,16 @@ namespace stage
 
         goldTextColorShaker_.Reset();
 
-        conditionEffectsTookTurn_ = combat::ConditionEffects::Process(Phase::Combat,
-                                                                      turnCreaturePtr_,
-                                                                      conditionEffectsVec_);
+        if (conditionEffectsWillSkip_)
+        {
+            conditionEffectsWillSkip_ = false;
+        }
+        else
+        {
+            conditionEffectsTookTurn_ = combat::ConditionEffects::Process(Phase::Combat,
+                                                                          turnCreaturePtr_,
+                                                                          conditionEffectsVec_);
+        }
 
         if (conditionEffectsVec_.empty())
         {
@@ -2441,6 +2449,8 @@ namespace stage
         redTextColorShaker_.Reset();
 
         conditionEffectsCenterPosV_ = sf::Vector2f(0.0f, 0.0f);
+
+        conditionEffectsWillSkip_ = false;
 
         HandleWin();
         HandleLose();
