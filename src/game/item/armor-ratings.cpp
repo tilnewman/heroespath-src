@@ -58,7 +58,7 @@ namespace item
     {
         M_HP_LOG_DBG("Singleton Construction: ArmorRatings");
     }
-    
+
 
     ArmorRatings::~ArmorRatings()
     {

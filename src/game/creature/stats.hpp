@@ -124,7 +124,7 @@ namespace creature
             const float             RANK_BONUS_MULT             = 0.0f,//zero means 'no rank bonus'
             const bool              WILL_INCLUDE_LUCK           = false,
             const bool              WILL_INCLUDE_RACEROLE_BONUS = false);
-    
+
     private:
         static stats::Stat_t LuckBonus(const CreaturePtr_t CREATURE_PTR);
 

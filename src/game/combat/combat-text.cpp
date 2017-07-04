@@ -351,7 +351,7 @@ namespace combat
                 {
                     ss << CastDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
                 }
-                
+
                 break;
             }
 
@@ -365,7 +365,7 @@ namespace combat
                 {
                     ss << PlaySongDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
                 }
-                
+
                 break;
             }
 
@@ -661,7 +661,7 @@ namespace combat
         {
             ss << "but misses";
         }
-        
+
         ss << ".";
         return ss.str();
     }
@@ -752,7 +752,7 @@ namespace combat
                     ss << " but ";
 
                     auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
-                    
+
                     if (CREATURE_PTR->IsPlayerCharacter())
                     {
                         ss << CREATURE_PTR->Name() << "'s";
@@ -761,7 +761,7 @@ namespace combat
                     {
                         ss << "the " << CREATURE_EFFECT.GetCreature()->NameOrRaceAndRole() << "'s";
                     }
-                    
+
                     ss << " armor absorbed ALL the damage";
                 }
                 else
@@ -875,7 +875,7 @@ namespace combat
             return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
                 TURN_ACTION_INFO.Spell()->VerbPastTense());
         }
-        
+
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
         {
             return "(error: EFFECT_INDEX out of range)";
@@ -896,7 +896,7 @@ namespace combat
                                               CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
-        
+
         if (DAMAGE > 0)
         {
             ss << " healing for " << DAMAGE;
@@ -999,7 +999,7 @@ namespace combat
             return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
                 TURN_ACTION_INFO.Song()->VerbPastTense());
         }
-        
+
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
         {
             return "(error: EFFECT_INDEX out of range)";
@@ -1020,7 +1020,7 @@ namespace combat
                                               CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
-        
+
         if (DAMAGE > 0)
         {
             ss << " healing for " << DAMAGE;
@@ -1038,7 +1038,7 @@ namespace combat
                                                  const bool           WILL_SKIP_MISSES)
     {
         std::vector<std::string> strVec;
-        
+
         for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
         {
             if ((WILL_SKIP_MISSES == false) ||
@@ -1047,7 +1047,7 @@ namespace combat
                 strVec.push_back(NEXT_HIT_INFO.ActionVerb());
             }
         }
-    
+
         if (strVec.size() > 1)
         {
             strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());

@@ -71,7 +71,7 @@ namespace combat
         inline std::size_t             GetCount() const         { return hitInfoVec_.size(); }
         inline const HitInfoVec_t &    GetHitInfoVec() const    { return hitInfoVec_; }
         inline creature::CreaturePtr_t GetCreature() const      { return creaturePtr_; }
-        
+
         bool GetWasHit() const;
 
         stats::Health_t GetDamageTotal() const;

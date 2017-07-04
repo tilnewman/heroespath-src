@@ -126,7 +126,7 @@ namespace combat
         {
             return;
         }
-      
+
         if (HEALTH_ADJ > 0)
         {
             creatureDefendingPtrC->HealthCurrentAdj(HEALTH_ADJ);
@@ -203,7 +203,7 @@ namespace combat
 
             return;
         }
-        
+
         if (DAMAGE_ABS > 0)
         {
             //wake from natural sleep if hit
@@ -270,7 +270,7 @@ namespace combat
         creature::CondEnumVec_t condsVecToAdd{ Conditions::Daunted,
                                                Conditions::Dazed,
                                                Conditions::Tripped };
-        
+
         misc::Vector::ShuffleVec(condsVecToAdd);
 
         if (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() -
@@ -336,7 +336,7 @@ namespace combat
 
                 if ((NEXT_COND_ENUM == Conditions::Daunted) && AreAnyOfCondsContained(
                     { Conditions::Heroic,
-                      Conditions::Bold }, 
+                      Conditions::Bold },
                     creatureDefendingPtrC,
                     hitInfoVec))
                 {
@@ -502,7 +502,7 @@ namespace combat
         auto const DEFEND_SPD_RAND_MIN{ stats::Stat::Reduce(defendSpdToUse) };
         auto const DEFEND_SPD_RAND_MAX{ std::max(DEFEND_SPD_RAW, defendSpdToUse) };
         auto const DEFEND_SPD_RAND{ misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
-      
+
         auto const IS_DEFENSE_AMAZING_DODGE{
             (defendSpdToUse >= STAT_HIGHER_THAN_AVERAGE) &&
             IsValuetHigherThanRatioOfStat(DEFEND_SPD_RAND, defendSpdToUse, STAT_RATIO_AMAZING)};
@@ -673,7 +673,7 @@ namespace combat
         //then add a damage bonus based on half a strength ratio "roll".
         const stats::Stat_t STAT_FLOOR{ GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
-        
+
         stats::Health_t damageFromStrength{ 0 };
         auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Stats().Str().Current() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
@@ -694,7 +694,7 @@ namespace combat
                 damageFromStrength = 0;
             }
         }
-        
+
         const stats::Health_t DAMAGE_BASE{
             DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
 
@@ -771,7 +771,7 @@ namespace combat
         damageFinal -= static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
             (static_cast<float>(armorRatingToUse) /
                 static_cast<float>(item::ArmorRatings::Instance()->ArmoredGreaterDiamond()) ) );
-        
+
         //check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0) && (damageFinal <= 0))
         {
@@ -827,7 +827,7 @@ namespace combat
 
         //update TurnInfo
         auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
-        
+
         if (turnInfo.GetFirstAttackedByCreature() == nullptr)
         {
             turnInfo.SetFirstAttackedByCreature(creatureAttackingPtrC);
@@ -840,7 +840,7 @@ namespace combat
 
         turnInfo.SetLastAttackedByCreature(creatureAttackingPtrC);
         turnInfo.SetLastHitByCreature(creatureAttackingPtrC);
-        
+
         auto mostDamageCreaturePair{ turnInfo.GetMostDamageCreaturePair() };
         if (mostDamageCreaturePair.first < std::abs(damageFinal))
         {
@@ -932,7 +932,7 @@ namespace combat
                     condsAddedVec,
                     condsRemovedVec,
                     actionPhraseCNP) };
-                
+
                 HitInfoVec_t hitInfoVec;
 
                 if (DID_SPELL_SUCCEED)
@@ -991,7 +991,7 @@ namespace combat
                 }
 
                 turnInfo.SetLastToCastCreature(creatureCastingPtr);
-                
+
                 if (DID_SPELL_SUCCEED && (turnInfo.GetFirstToCastCreature() == nullptr))
                 {
                     turnInfo.SetFirstToCastCreature(creatureCastingPtr);
@@ -1080,7 +1080,7 @@ namespace combat
                     condsAddedVec,
                     condsRemovedVec,
                     actionPhraseCNP) };
-                
+
                 HitInfoVec_t hitInfoVec;
 
                 if (DID_SONG_SUCCEED)
@@ -1104,14 +1104,14 @@ namespace combat
 
                 //handle TurnInfo
                 auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
-                
+
                 if (turnInfo.GetFirstToMakeMusicCreature() == nullptr)
                 {
                     turnInfo.SetFirstToMakeMusicCreature(creaturePlayingPtr);
                 }
 
                 turnInfo.SetLastToMakeMusicCreature(creaturePlayingPtr);
-                
+
                 turnInfo.SetWasHitLastTurn(false);
 
                 if ((SONG_CPTR->EffectType() == EffectType::CreatureHarmDamage) ||
@@ -1238,7 +1238,7 @@ namespace combat
         turnInfo.SetLastAttackedByCreature(creaturePouncingPtrC);
 
         turnInfo.SetWasHitLastTurn(false);
-            
+
         if (DID_SUCCEED)
         {
             if (turnInfo.GetFirstHitByCreature() == nullptr)
@@ -1260,7 +1260,7 @@ namespace combat
         }
 
         Encounter::Instance()->SetTurnInfo(creatureDefendingPtrC, turnInfo);
-        
+
 
         return FightResult( CreatureEffect(creatureDefendingPtrC,
                                            HitInfoVec_t(1, hitInfo)) );

@@ -56,7 +56,7 @@ namespace creature
                      WILL_INCLUDE_RACEROLE_BONUS);
     }
 
-   
+
     float Stats::Ratio(const CreaturePtr_t          CREATURE_PTR,
                        const stats::StatEnumVec_t & STAT_ENUM_VEC,
                        const bool                   WILL_INCLUDE_STANDARD_OFFSET,
@@ -91,7 +91,7 @@ namespace creature
                 randSum += RollBonusByRace(NEXT_STAT.Current(),
                                            NEXT_STAT_ENUM,
                                            CREATURE_PTR->Race().Which());
-            
+
                 randSum += RollBonusByRole(NEXT_STAT.Current(),
                                            NEXT_STAT_ENUM,
                                            CREATURE_PTR->Role().Which());
@@ -112,7 +112,7 @@ namespace creature
                               const bool              WILL_INCLUDE_STANDARD_OFFSET,
                               const bool              WILL_INCLUDE_LUCK,
                               const bool              WILL_INCLUDE_RACEROLE_BONUS)
-    {                                
+    {
         return Roll(CREATURE_PTR,
                     stats::StatEnumVec_t (1, STAT_ENUM),
                     WILL_INCLUDE_STANDARD_OFFSET,
@@ -195,7 +195,7 @@ namespace creature
                 rollBaseSum += RollBonusByRace(CURRENT,
                                                NEXT_STAT_ENUM,
                                                CREATURE_PTR->Race().Which());
-            
+
                 rollBaseSum += RollBonusByRole(CURRENT,
                                                NEXT_STAT_ENUM,
                                                CREATURE_PTR->Role().Which());
@@ -267,7 +267,7 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : CHALLENGER_STAT_VEC)
         {
             auto const NEXT_STAT{ CHALLENGER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
-            
+
             chaRandSum += Roll(
                 CHALLENGER_PTR,
                 NEXT_STAT_ENUM,
@@ -300,7 +300,7 @@ namespace creature
         for (auto const NEXT_STAT_ENUM : DEFENDER_STAT_VEC)
         {
             auto const NEXT_STAT{ DEFENDER_PTR->Stats().GetCopy(NEXT_STAT_ENUM) };
-            
+
             defRandSum += Roll(
                 DEFENDER_PTR,
                 NEXT_STAT_ENUM,
@@ -544,14 +544,14 @@ namespace creature
                                 WILL_INCLUDE_RACEROLE_BONUS) };
 
         int x{ static_cast<int>((static_cast<float>(RAND_SPREAD) * RATIO)) };
-        
+
         if (FLOOR_DIVISOR > 0)
         {
             x += (CREATURE_PTR->Stats().GetCopy(STAT_ENUM).Current() / FLOOR_DIVISOR);
         }
 
         x += static_cast<int>(static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_MULT);
-        
+
         return x;
     }
 

@@ -88,9 +88,9 @@ namespace combat
 
             return;
         }
-        
+
         auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
-        
+
         if (HIT_INFO.WasHit())
         {
             if (WEAPON_TYPE & item::weapon_type::Blowpipe)

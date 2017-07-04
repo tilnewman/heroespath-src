@@ -254,9 +254,9 @@ namespace combat
         void TextAnimStart(const stats::Health_t &       DAMAGE,
                            const combat::CombatNodePtr_t TARGET_PTR);
 
-        void TextAnimStart(const std::vector<stats::Health_t> & DAMAGE_VEC, 
+        void TextAnimStart(const std::vector<stats::Health_t> & DAMAGE_VEC,
                            const combat::CombatNodePVec_t &     TARGETS_PVEC);
-        
+
         void TextAnimStop();
 
         void EndOfCombatCleanup();
@@ -267,7 +267,7 @@ namespace combat
         static const std::string ANIM_MEDIA_PATH_KEY_STR_SPARKLE_;
         static const std::string ANIM_MEDIA_PATH_KEY_STR_SHIMMER_;
         static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
-      
+
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;

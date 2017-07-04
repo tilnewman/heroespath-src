@@ -325,7 +325,7 @@ namespace combat
 
         //this is the scale for Sling projectiles (stones)
         auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };
-        
+
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
             (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
         {
@@ -807,7 +807,7 @@ namespace combat
                                         sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::Sleep:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
@@ -817,7 +817,7 @@ namespace combat
                                        sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
-            
+
             case spell::Spells::Awaken:
             {
                 SetupSingleTextureAnims(TARGETS_PVEC,
@@ -827,7 +827,7 @@ namespace combat
                                         sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::Trip:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
@@ -837,7 +837,7 @@ namespace combat
                                        sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::Lift:
             {
                 SetupSingleTextureAnims(TARGETS_PVEC,
@@ -847,7 +847,7 @@ namespace combat
                                         sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
                 return;
             }
-            
+
             case spell::Spells::Daze:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
@@ -857,7 +857,7 @@ namespace combat
                                        sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::Panic:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
@@ -867,7 +867,7 @@ namespace combat
                                        sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
-            
+
             case spell::Spells::ClearMind:
             {
                 SetupSingleTextureAnims(TARGETS_PVEC,
@@ -877,7 +877,7 @@ namespace combat
                                         sf::Color::White);
                 return;
             }
-            
+
             case spell::Spells::Poison:
             {
                 SetupMultiTextureAnims(TARGETS_PVEC,
@@ -887,7 +887,7 @@ namespace combat
                                        sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::Antidote:
             {
                 SetupSingleTextureAnims(TARGETS_PVEC,
@@ -897,7 +897,7 @@ namespace combat
                                         sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
-            
+
             case spell::Spells::PoisonCloud:
             {
                 PoisonCloudAnimStart(TARGETS_PVEC);

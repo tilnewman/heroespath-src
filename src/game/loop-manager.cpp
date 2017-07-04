@@ -519,7 +519,7 @@ namespace game
 
             //M_HP_LOG("LoopManager::Executing \"" << cmdSPtr->GetName() << "\", while in state \""
             // << LoopState::ToString(state_) << "\"");
-            
+
             cmdSPtr->Execute();
 
             const LoopState::Enum CURRENT_STATE( currentLoopSPtr_->GetState() );
@@ -552,7 +552,7 @@ namespace game
         //M_HP_LOG("LoopManager::PopupWaitEnd(response=\"" << sfml_util::Response::ToString(RESPONSE)
         // << "\", selection=" << SELECTION << ", and will restore state to \""
         // << LoopState::ToString(prevState_) << "\")");
-        
+
         TransitionFrom_Popup();
     }
 

@@ -63,7 +63,7 @@ namespace spell
                          "sprayed with sparks") {}
 
         virtual ~Sparks() {}
-      
+
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
@@ -92,7 +92,7 @@ namespace spell
                           "bandaged") {}
 
         virtual ~Bandage() {}
-      
+
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,

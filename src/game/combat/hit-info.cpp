@@ -216,7 +216,7 @@ namespace combat
     :
         wasHit_(HI.wasHit_),
         hitType_(HI.hitType_),
-        
+
         //The lifetime of this object is not managed by this class.
         //Usage is short-term observation only, so ptr copying is safe.
         weaponPtr_(HI.weaponPtr_),

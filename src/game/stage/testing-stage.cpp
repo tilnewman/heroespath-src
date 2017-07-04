@@ -1034,7 +1034,7 @@ namespace stage
 
         static auto raceIndex{ 0 };
         static auto roleIndex{ 0 };
-        
+
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
             static int totalTestIndex{ 0 };
@@ -1119,12 +1119,12 @@ namespace stage
                         10,
                         rankIndex,
                         static_cast<stats::Exp_t>(rankIndex * 10'000)) );
-                    
+
                     non_player::ownership::InventoryFactory::Instance()->
                         PopulateCreatureInventory(characterPtr);
 
                     characterPtr->SetCurrentWeaponsToBest();
-                    
+
                     delete characterPtr;
                 }
 

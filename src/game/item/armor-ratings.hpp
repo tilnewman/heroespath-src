@@ -61,7 +61,7 @@ namespace item
         static ArmorRatings * Instance();
         static void Acquire();
         static void Release();
-        
+
         void Setup();
 
 
@@ -130,7 +130,7 @@ namespace item
         stats::Armor_t armoredGreaterSteel_;
         stats::Armor_t armoredGreaterDiamond_;
     };
-    
+
 }
 }
 

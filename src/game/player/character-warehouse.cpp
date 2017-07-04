@@ -45,7 +45,7 @@ namespace player
 
     std::unique_ptr<CharacterWarehouse> CharacterWarehouse::instanceUPtr_{ nullptr };
 
-  
+
     CharacterWarehouse::CharacterWarehouse()
     :
         characterUVec_()

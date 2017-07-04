@@ -64,7 +64,7 @@ namespace condition
         if (misc::random::Int(100) < (8 + static_cast<int>(creaturePtr->Rank())))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepMagical);
-            
+
             const ContentAndNamePos CNP(" wakes from a magical sleep.",
                                         NamePosition::TargetBefore);
 
@@ -95,7 +95,7 @@ namespace condition
         if (misc::random::Int(100) < (15 + static_cast<int>(creaturePtr->Rank())))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepNatural);
-            
+
             const ContentAndNamePos CNP(" wakes from a natural sleep.",
                                         NamePosition::TargetBefore);
 
@@ -125,7 +125,7 @@ namespace condition
         if (misc::random::Int(100) < (10 + static_cast<int>(creaturePtr->Rank())))
         {
             creaturePtr->ConditionRemove(Conditions::Dazed);
-            
+
             const ContentAndNamePos CNP("'s mind clears an is not Dazed anymore.",
                                         NamePosition::TargetBefore);
 
@@ -161,7 +161,7 @@ namespace condition
         if (creature::Stats::Test(creaturePtr, stats::stat::Strength, 0.0f, true, true))
         {
             creaturePtr->ConditionRemove(Conditions::Pounced);
-            
+
             const ContentAndNamePos CNP(" gets up after being pounced on.",
                                         NamePosition::TargetBefore);
 
