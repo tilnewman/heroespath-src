@@ -146,6 +146,7 @@ namespace combat
         isSummaryViewInProgress_   (false),
         combatNodeToGuiEntityMap_  (),
         combatAnimationPtr_        (nullptr),
+        isCombatOver_              (false),
         nodePosTrackerMap_         (),
         centeringToPosV_           (-1.0f, -1.0f) //any negative values will work here
     {}
@@ -1501,6 +1502,11 @@ namespace combat
 
     void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        if (isCombatOver_)
+        {
+            return;
+        }
+
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
         summaryViewUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
@@ -1578,6 +1584,23 @@ namespace combat
 
             if (nextCombatNodePtr->Creature()->IsPlayerCharacter() == IS_PLAYER)
                 nextCombatNodePtr->SetBlockingPos(BLOCKING_POS);
+        }
+    }
+
+
+    void CombatDisplay::EndOfCombatCleanup()
+    {
+        isCombatOver_ = true;
+
+        CombatNodePVec_t combatNodesPVec;
+        combatTree_.GetCombatNodes(combatNodesPVec);
+
+        for (auto const NEXT_COMBATNODE_PTR : combatNodesPVec)
+        {
+            auto const NEXT_NODE_ID{combatTree_.GetNodeId(NEXT_COMBATNODE_PTR) };
+            auto const NEXT_NODE_SPTR{combatTree_.GetNodeSPtr(NEXT_NODE_ID) };
+            combatTree_.RemoveVertex(NEXT_NODE_ID, true);
+            RemoveCombatNode(NEXT_NODE_SPTR);
         }
     }
 

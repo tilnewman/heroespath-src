@@ -1316,5 +1316,18 @@ namespace combat
         textAnimUVec_.clear();
     }
 
+
+    void CombatAnimation::EndOfCombatCleanup()
+    {
+        deadAnimNodesPVec_.clear();
+        centeringAnimCombatNodePtr_ = nullptr;
+        centeringAnimCreaturesPVec_.clear();
+        repositionAnimCreaturePtr_ = nullptr;
+        meleeMoveAnimMovingCombatNodePtr_ = nullptr;
+        meleeMoveAnimTargetCombatNodePtr_ = nullptr;
+        shakeAnimCreatureWasCPtr_ = nullptr;
+        selectAnimCombatNodePtr_ = nullptr;
+    }
+
 }
 }

@@ -259,6 +259,8 @@ namespace combat
         
         void TextAnimStop();
 
+        void EndOfCombatCleanup();
+
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
         static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;

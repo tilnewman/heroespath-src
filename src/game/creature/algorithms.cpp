@@ -96,6 +96,18 @@ namespace creature
             }
         }
 
+        if (LIVING_ONLY == false)
+        {
+            auto const DEAD_NONPLAYERS_PVEC(combat::Encounter::Instance()->
+                DeadNonPlayerParty().Characters());
+
+            for (auto const NEXT_DEAD_NONPLAYER_PTR : DEAD_NONPLAYERS_PVEC)
+            {
+                pVec_OutParam.push_back(NEXT_DEAD_NONPLAYER_PTR);
+                ++count;
+            }
+        }
+
         return count;
     }
 

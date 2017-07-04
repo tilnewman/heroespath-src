@@ -1285,7 +1285,11 @@ namespace stage
             pounceTBoxButtonSPtr_->draw(target, STATES);
         }
 
-        combatAnimationUPtr_->Draw(target, STATES);
+        if (false == hasCombatEnded_)
+        {
+            combatAnimationUPtr_->Draw(target, STATES);
+        }
+
         DrawHoverText(target, STATES);
         testingTextRegionUPtr_->draw(target, STATES);
     }
@@ -3857,8 +3861,7 @@ namespace stage
                 sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     POPUP_NAME_COMBATOVER_WIN_, true));
 
-            hasCombatEnded_ = true;
-            combat::Encounter::Instance()->EndTasks();
+            EndOfCombatCleanup();
         }
 
         return hasCombatEnded_;
@@ -3884,11 +3887,20 @@ namespace stage
                 sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     POPUP_NAME_COMBATOVER_LOSE_, false));
 
-            hasCombatEnded_ = true;
-            combat::Encounter::Instance()->EndTasks();
+            EndOfCombatCleanup();
         }
 
         return hasCombatEnded_;
+    }
+
+
+    void CombatStage::EndOfCombatCleanup()
+    {
+        hasCombatEnded_ = true;
+        combat::Encounter::Instance()->EndTasks();
+        turnCreaturePtr_ = nullptr;
+        combatAnimationUPtr_->EndOfCombatCleanup();
+        combatDisplayStagePtr_->EndOfCombatCleanup();
     }
 
 }

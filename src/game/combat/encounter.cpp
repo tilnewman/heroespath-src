@@ -72,12 +72,16 @@ namespace combat
         turnCreaturePtr_   ()
     {
         M_HP_LOG_DBG("Singleton Construction: Encounter");
+        FreeThenResetEnemyParty();
+        FreeThenResetDeadEnemyParty();
     }
 
 
     Encounter::~Encounter()
     {
         M_HP_LOG_DBG("Singleton Destruction: Encounter");
+        FreeThenResetEnemyParty();
+        FreeThenResetDeadEnemyParty();
     }
 
 
@@ -147,6 +151,7 @@ namespace combat
 
     void Encounter::Setup_First()
     {
+        FreeThenResetEnemyParty();
         enemyPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
     }
 
@@ -169,7 +174,8 @@ namespace combat
 
     void Encounter::StartTasks()
     {
-        deadEnemyPartyUPtr_ = std::make_unique<non_player::Party>();
+        //enemyPartyUPtr_ must be left alone because it will have already been populated
+        FreeThenResetDeadEnemyParty();
 
         roundCounter_ = 0;
         Game::Instance()->State().World().EncoundterCountInc();
@@ -189,10 +195,19 @@ namespace combat
 
     void Encounter::EndTasks()
     {
+        //move all remaining enemy creatures to deadEnemyPartyUPtr_ so that none are leaked
+        auto const ENEMY_CHARATER_PVEC{ enemyPartyUPtr_->Characters() };
+        for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARATER_PVEC)
+        {
+            HandleKilledCreature(NEXT_ENEMY_CHARACTER_PTR);
+        }
+
+        FreeThenResetEnemyParty();
+
+        //leave deadEnemyPartyUPtr_ alone so that looting can occur
+        
         turnOverPVec_.clear();
         turnInfoMap_.clear();
-        enemyPartyUPtr_.reset();
-        //leave deadEnemyPartyUPtr_ alone so that looting can occur
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;
@@ -294,6 +309,36 @@ namespace combat
             "game::combat::Encounter::SortAndSetTurnCreature("
             << ((turnCreaturePtr_ == nullptr) ? "nullptr" : turnCreaturePtr_->Name())
             << ") resulted in a nullptr turnCreaturePtr_.");
+    }
+
+
+    void Encounter::FreeThenResetEnemyParty()
+    {
+        if (enemyPartyUPtr_.get() != nullptr)
+        {
+            auto const ENEMY_CHARATER_PVEC{ enemyPartyUPtr_->Characters() };
+            for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARATER_PVEC)
+            {
+                enemyPartyUPtr_->Remove(NEXT_ENEMY_CHARACTER_PTR, true);
+            }
+        }
+
+        enemyPartyUPtr_ = std::make_unique<non_player::Party>();
+    }
+
+
+    void Encounter::FreeThenResetDeadEnemyParty()
+    {
+        if (deadEnemyPartyUPtr_.get() != nullptr)
+        {
+            auto const DEAD_ENEMY_CHARATER_PVEC{ deadEnemyPartyUPtr_->Characters() };
+            for (auto const NEXT_DEAD_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARATER_PVEC)
+            {
+                deadEnemyPartyUPtr_->Remove(NEXT_DEAD_ENEMY_CHARACTER_PTR, true);
+            }
+        }
+
+        deadEnemyPartyUPtr_ = std::make_unique<non_player::Party>();
     }
 
 }

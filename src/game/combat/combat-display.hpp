@@ -222,6 +222,8 @@ namespace combat
 
         inline void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr)       { combatAnimationPtr_ = ptr; }
 
+        void EndOfCombatCleanup();
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
@@ -285,6 +287,7 @@ namespace combat
         bool                            isSummaryViewInProgress_;
         CombatNodeToIGuiEntityMap_t     combatNodeToGuiEntityMap_;
         CombatAnimationPtr_t            combatAnimationPtr_;
+        bool                            isCombatOver_;
 
         //members to manage node position shifting, put another way,
         //members that allow on battlefield creature images to slide

@@ -289,6 +289,8 @@ namespace stage
         bool HandleWin();
         bool HandleLose();
 
+        void EndOfCombatCleanup();
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
         static const std::string POPUP_NAME_COMBATOVER_WIN_;
