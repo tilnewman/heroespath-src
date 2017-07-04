@@ -68,16 +68,26 @@
 namespace sfml_util
 {
 
-    const float     PopupStage::IMAGE_SLIDER_SPEED_                     { 4.0f };
-    const int       PopupStage::NUMBER_SELECT_INVALID_                  { -1 };//any negative number will work here
-    const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_           { 2.0f };
-    const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ { 0.85f };
+    const float     PopupStage::IMAGE_SLIDER_SPEED_{ 4.0f };
+
+    //any negative number will work here
+    const int       PopupStage::NUMBER_SELECT_INVALID_{ -1 };
+
+    const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_{ 2.0f };
+
+    const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.85f };
+
     const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.9f };
-    const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_             { 6.0f };
-    const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                  { 192 };
-    const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                     { 32 };
-    const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_                { sf::Color(127, 32, 32) };
-    const float     PopupStage::SPELL_WARNING_DURATION_SEC_             { 2.0f };
+
+    const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_{ 6.0f };
+
+    const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_{ 192 };
+
+    const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_{ 32 };
+
+    const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_{ sf::Color(127, 32, 32) };
+
+    const float     PopupStage::SPELL_WARNING_DURATION_SEC_{ 2.0f };
 
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
@@ -85,7 +95,9 @@ namespace sfml_util
                            const sf::FloatRect &   INNER_REGION,
                            const sf::Texture &     BG_TEXTURE)
     :
-        Stage                      (std::string(POPUP_INFO.Name()).append("_PopupStage"), REGION),
+        Stage                      (std::string(POPUP_INFO.Name()).append("_PopupStage"),
+                                    REGION,
+                                    false),
         POPUP_INFO_                (POPUP_INFO),
         backgroundSprite_          (BG_TEXTURE),
         backgroundTexture_         (BG_TEXTURE),
@@ -93,7 +105,11 @@ namespace sfml_util
         textRegionUPtr_            (),
         textRegion_                (),
         elapsedTimeCounter_        (0.0f),
-        secondCounter_             (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ? 10 : 0)),//resolution change confirmation timer is six seconds
+
+        //resolution change confirmation timer is six seconds
+        secondCounter_             (((POPUP_INFO.Type() == game::Popup::ResolutionChange) ?
+                                    10 : 0)),
+
         box_                       ("PopupWindow's", gui::box::Info()),
         gradient_                  (),
         accentSprite1_             (),
@@ -149,10 +165,19 @@ namespace sfml_util
         LISTBOX_IMAGE_COLOR_       (sf::Color(255, 255, 255, 190)),
         LISTBOX_LINE_COLOR_        (sfml_util::FontManager::Color_GrayDark()),
         LISTBOX_COLOR_FG_          (LISTBOX_LINE_COLOR_),
-        LISTBOX_COLOR_BG_          (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220)),
+
+        LISTBOX_COLOR_BG_          (sfml_util::FontManager::Color_Orange() -
+                                        sf::Color(100, 100, 100, 220)),
+
         LISTBOX_COLORSET_          (LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
         LISTBOX_BG_INFO_           (LISTBOX_COLOR_BG_),
-        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
+
+        listBoxItemTextInfo_       (" ",
+                                    sfml_util::FontManager::Instance()->Font_Default2(),
+                                    sfml_util::FontManager::Instance()->Size_Smallish(),
+                                    sfml_util::FontManager::Color_GrayDarker(),
+                                    sfml_util::Justified::Left),
+
         spellTexture_              (),
         spellSprite_               (),
         spellTitleTextRegionUPtr_  (),
@@ -190,7 +215,8 @@ namespace sfml_util
     }
 
 
-    bool PopupStage::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
+    bool PopupStage::HandleCallback(
+        const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
         if ((POPUP_INFO_.Type() == game::Popup::ImageSelection) ||
             (POPUP_INFO_.Type() == game::Popup::CharacterSelection))
@@ -202,7 +228,9 @@ namespace sfml_util
                     POPUP_INFO_.ImagesCount()) };
 
                 const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(COUNT));
-                std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() / SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
+
+                std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() /
+                    SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
 
                 if (index >= COUNT)
                 {
@@ -217,7 +245,10 @@ namespace sfml_util
         else if ((POPUP_INFO_.Type() == game::Popup::NumberSelection))
         {
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
-            const std::size_t CURR_VAL(POPUP_INFO_.NumberSelMin() + static_cast<std::size_t>(CURR_RATIO * static_cast<float>(POPUP_INFO_.NumberSelMax() - POPUP_INFO_.NumberSelMin())));
+
+            const std::size_t CURR_VAL(POPUP_INFO_.NumberSelMin() + static_cast<std::size_t>(
+                CURR_RATIO * static_cast<float>(POPUP_INFO_.NumberSelMax() -
+                    POPUP_INFO_.NumberSelMin())));
 
             selection_ = static_cast<int>(CURR_VAL);
 
@@ -247,7 +278,8 @@ namespace sfml_util
     }
 
 
-    bool PopupStage::HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &)
+    bool PopupStage::HandleCallback(
+        const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &)
     {
         if (POPUP_INFO_.Type() == game::Popup::NumberSelection)
         {
@@ -268,7 +300,8 @@ namespace sfml_util
     }
 
 
-    bool PopupStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    bool PopupStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
         if (PACKAGE.package.PTR_ != nullptr)
         {

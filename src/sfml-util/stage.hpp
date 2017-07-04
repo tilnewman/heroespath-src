@@ -65,16 +65,19 @@ namespace sfml_util
         Stage & operator=(const Stage &) =delete;
 
     public:
-        explicit Stage(const std::string & NAME);
+        explicit Stage(const std::string & NAME,
+                       const bool          WILL_CLEAR_CACHE_ON_EXIT = true);
 
         Stage(const std::string &   NAME,
-              const sf::FloatRect & REGION);
+              const sf::FloatRect & REGION,
+              const bool            WILL_CLEAR_CACHE_ON_EXIT = true);
 
         Stage(const std::string & NAME,
               const float         REGION_LEFT,
               const float         REGION_TOP,
               const float         REGION_WIDTH,
-              const float         REGION_HEIGHT);
+              const float         REGION_HEIGHT,
+              const bool          WILL_CLEAR_CACHE_ON_EXIT = true);
 
         virtual ~Stage();
 
@@ -148,6 +151,7 @@ namespace sfml_util
         bool                  isMouseHeldDown_;
         bool                  isMouseHeldDownAndMoving_;
         sf::Vector2f          mouseDownPosV_;
+        bool                  willClearCachesOnExit_;
     };
 
 }

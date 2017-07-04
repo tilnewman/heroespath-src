@@ -49,35 +49,39 @@ namespace sfml_util
     const float Stage::MOUSE_DRAG_MIN_DISTANCE_{ 3.0f };
 
 
-    Stage::Stage(const std::string & NAME)
+    Stage::Stage(const std::string & NAME,
+                 const bool          WILL_CLEAR_CACHE_ON_EXIT)
     :
-        STAGE_NAME_         (std::string(NAME).append("_Stage")),
-        stageRegion_        ( sf::FloatRect(0.0f,
-                                            0.0f,
-                                            Display::Instance()->GetWinWidth(),
-                                            Display::Instance()->GetWinHeight()) ),
-        entityPVec_         (),
-        entityWithFocusPtr_ (),
-        hoverTextBoxUPtr_   (),
-        hoverSfText_        (),
-        isMouseHeldDown_    (false),
+        STAGE_NAME_              (std::string(NAME).append("_Stage")),
+        stageRegion_             (sf::FloatRect(0.0f,
+                                                0.0f,
+                                                Display::Instance()->GetWinWidth(),
+                                                Display::Instance()->GetWinHeight())),
+        entityPVec_              (),
+        entityWithFocusPtr_      (),
+        hoverTextBoxUPtr_        (),
+        hoverSfText_             (),
+        isMouseHeldDown_         (false),
         isMouseHeldDownAndMoving_(false),
-        mouseDownPosV_      (0.0f, 0.0f)
+        mouseDownPosV_           (0.0f, 0.0f),
+        willClearCachesOnExit_   (WILL_CLEAR_CACHE_ON_EXIT)
     {}
 
 
     Stage::Stage(const std::string &   NAME,
-                 const sf::FloatRect & REGION)
+                 const sf::FloatRect & REGION,
+                 const bool            WILL_CLEAR_CACHE_ON_EXIT)
     :
-        STAGE_NAME_         (std::string(NAME).append("_Stage")),
-        stageRegion_        (REGION),
-        entityPVec_         (),
-        entityWithFocusPtr_ (),
-        hoverTextBoxUPtr_   (),
-        hoverSfText_        (),
-        isMouseHeldDown_    (false),
+        STAGE_NAME_              (std::string(NAME).append("_Stage")),
+        stageRegion_             (REGION),
+        entityPVec_              (),
+        entityWithFocusPtr_      (),
+        hoverTextBoxUPtr_        (),
+        hoverSfText_             (),
+        isMouseHeldDown_         (false),
         isMouseHeldDownAndMoving_(false),
-        mouseDownPosV_      (0.0f, 0.0f)
+        mouseDownPosV_           (0.0f, 0.0f),
+        willClearCachesOnExit_   (WILL_CLEAR_CACHE_ON_EXIT)
     {}
 
 
@@ -85,27 +89,32 @@ namespace sfml_util
                  const float         REGION_LEFT,
                  const float         REGION_TOP,
                  const float         REGION_WIDTH,
-                 const float         REGION_HEIGHT)
+                 const float         REGION_HEIGHT,
+                 const bool          WILL_CLEAR_CACHE_ON_EXIT)
     :
-        STAGE_NAME_         (std::string(NAME).append("_Stage")),
-        stageRegion_        ( sf::FloatRect(REGION_LEFT,
-                                            REGION_TOP,
-                                            REGION_WIDTH,
-                                            REGION_HEIGHT) ),
-        entityPVec_         (),
-        entityWithFocusPtr_ (),
-        hoverTextBoxUPtr_   (),
-        hoverSfText_        (),
-        isMouseHeldDown_    (false),
+        STAGE_NAME_              (std::string(NAME).append("_Stage")),
+        stageRegion_             (sf::FloatRect(REGION_LEFT,
+                                                REGION_TOP,
+                                                REGION_WIDTH,
+                                                REGION_HEIGHT)),
+        entityPVec_              (),
+        entityWithFocusPtr_      (),
+        hoverTextBoxUPtr_        (),
+        hoverSfText_             (),
+        isMouseHeldDown_         (false),
         isMouseHeldDownAndMoving_(false),
-        mouseDownPosV_      (0.0f, 0.0f)
+        mouseDownPosV_           (0.0f, 0.0f),
+        willClearCachesOnExit_   (WILL_CLEAR_CACHE_ON_EXIT)
     {}
 
 
     Stage::~Stage()
     {
-        SoundManager::Instance()->ClearSoundEffectsCache();
-        TextureCache::Instance()->RemoveAll();
+        if (willClearCachesOnExit_)
+        {
+            SoundManager::Instance()->ClearSoundEffectsCache();
+            TextureCache::Instance()->RemoveAll();
+        }
     }
 
 
