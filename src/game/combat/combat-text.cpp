@@ -52,7 +52,7 @@ namespace combat
 {
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_
-        ("Click or press 'enter' to automatically fight the enemy who appears weakest.");
+        ("Click or press 'a' to automatically fight the enemy who appears weakest.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_
         ("Click or press 'f' to fight a creature of your choice.");
@@ -64,17 +64,16 @@ namespace combat
         ("Click or press 's' to play a magical song.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_
-        ("Click or press 'a' to move forward.");
+        ("Click, press the right arrow, or press 'd' to move forward.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_
-        ("Click or press 'r' to move backward.");
+        ("Click, press the left arrow, or press 'e' to move backward.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_
-        ("Click, press 'b', or press the spacebar to prepare for attack and prevent \
-            enemies from passing.");
+        ("Click or press 'b' to prepare for attack and prevent enemies from passing.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_
-        ("Click, press the spacebar to take no action and skip this turn.");
+        ("Click or press 'k' to take no action and skip this turn.");
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_
         ("Click or press 'y' to fly into the air.");
@@ -87,6 +86,9 @@ namespace combat
 
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_
         ("Click or press 'p' to attempt to pounce on an enemy.");
+
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_
+        { "Click or press 'u' to attempt to run away." };
 
 
     const std::string Text::MouseOverTextAttackStr(
@@ -302,6 +304,36 @@ namespace combat
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_;
+    }
+
+
+    const std::string Text::MouseOverTextRunStr(
+        const creature::CreaturePtrC_t CREATURE_CPTRC,
+        CombatDisplayCPtrC_t)
+    {
+        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        if (CAN_TAKE_ACTION_STR.empty() == false)
+        {
+            return CAN_TAKE_ACTION_STR;
+        }
+
+        return TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
+    }
+
+
+    const std::string Text::MouseOverTextSkipStr(
+        const creature::CreaturePtrC_t CREATURE_CPTRC,
+        CombatDisplayCPtrC_t)
+    {
+        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        if (CAN_TAKE_ACTION_STR.empty())
+        {
+            return "Cannot skip a turn if able to block.  Try blocking instead.";
+        }
+        else
+        {
+            return TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_;
+        }
     }
 
 

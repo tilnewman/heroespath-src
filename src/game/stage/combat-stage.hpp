@@ -249,9 +249,9 @@ namespace stage
         bool HandleRoar();
         bool HandlePounce(const bool IS_SKY_POUNCE);
         bool HandleWeaponChange();
-        void MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
-        void MoveTurnBoxButtonsOffScreen(const bool WILL_MOVE_SKIP_BUTTON);
-        void SetupTurnBoxButtons(const creature::CreaturePtrC_t);
+        void MoveTurnBoxObjectsOffScreen();
+        void SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_PTR,
+                                 const bool                     WILL_DISABLE_ALL = false);
 
         void QuickSmallPopup(const std::string & PROMPT,
                              const bool          IS_SOUNDEFFECT_NORMAL,
@@ -425,9 +425,8 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t landTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t roarTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t pounceTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSVec_t tBoxStdButtonSVec_;
-        sfml_util::gui::FourStateButtonSVec_t tBoxBeastButtonSVec_;
-
+        sfml_util::gui::FourStateButtonSPtr_t runTBoxButtonSPtr_;
+        
         //members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;

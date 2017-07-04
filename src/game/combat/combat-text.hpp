@@ -78,6 +78,7 @@ namespace combat
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_;
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_;
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_;
+        static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
 
         static const std::string MouseOverTextAttackStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
@@ -110,6 +111,12 @@ namespace combat
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
         
         static const std::string MouseOverTextPounceStr(
+            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+
+        static const std::string MouseOverTextRunStr(
+            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+
+        static const std::string MouseOverTextSkipStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
         static const std::string ActionText(

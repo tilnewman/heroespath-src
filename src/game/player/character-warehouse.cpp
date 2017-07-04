@@ -102,7 +102,7 @@ namespace player
         std::size_t indexToSaveAt{ characterUVec_.size() };
 
         //Ensure this item is not already stored, and along the way,
-        //look for an abandoned slot to use with indexToSaveAt.
+        //look for an abandoned slot to use as indexToSaveAt.
         auto const NUM_CHARACTERS{ indexToSaveAt };
         for (std::size_t i(0); i<NUM_CHARACTERS; ++i)
         {

@@ -43,8 +43,9 @@
 #include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation.hpp"
 
-#include "game/log-macros.hpp"
 #include "game/game.hpp"
+#include "game/phase-enum.hpp"
+#include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "game/player/party.hpp"
@@ -69,12 +70,12 @@
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/creature/stats.hpp"
+#include "game/player/character-warehouse.hpp"
 #include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
-#include "game/phase-enum.hpp"
 #include "game/stats/stat-enum.hpp"
 
 #include "misc/real.hpp"
@@ -237,8 +238,7 @@ namespace stage
         landTBoxButtonSPtr_         (),
         roarTBoxButtonSPtr_         (),
         pounceTBoxButtonSPtr_       (),
-        tBoxStdButtonSVec_          (),
-        tBoxBeastButtonSVec_        (),
+        runTBoxButtonSPtr_          (),
 
         //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f),
@@ -576,7 +576,7 @@ namespace stage
         sfml_util::gui::TextInfo turnButtonTextInfo(
             " ",
             sfml_util::FontManager::Instance()->Font_Default2(),
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_Orange(),
             sfml_util::Justified::Left);
 
@@ -598,6 +598,7 @@ namespace stage
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
         turnButtonTextInfoDisabled.color = TURNBUTTON_DISABLED_COLOR;
 
+        //attack button
         turnButtonTextInfo.text = "(A)ttack";
         turnButtonTextInfoDisabled.text = "(A)ttack";
         const sfml_util::gui::MouseTextInfo ATTACKBUTTON_MOUSETEXTINFO(
@@ -620,9 +621,9 @@ namespace stage
         attackTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
 
-        attackTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(attackTBoxButtonSPtr_.get());
 
+        //fight button
         turnButtonTextInfo.text = "(F)ight";
         turnButtonTextInfoDisabled.text = "(F)ight";
         const sfml_util::gui::MouseTextInfo FIGHTBUTTON_MOUSETEXTINFO(
@@ -646,9 +647,9 @@ namespace stage
         fightTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
 
-        fightTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(fightTBoxButtonSPtr_.get());
 
+        //spell/song button
         turnButtonTextInfo.text = "(S)pell";
         turnButtonTextInfoDisabled.text = "(S)pell";
         const sfml_util::gui::MouseTextInfo CASTBUTTON_MOUSETEXTINFO(
@@ -672,11 +673,11 @@ namespace stage
         castTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
-        castTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(castTBoxButtonSPtr_.get());
 
-        turnButtonTextInfo.text = "Advance";
-        turnButtonTextInfoDisabled.text = "Advance";
+        //advance button
+        turnButtonTextInfo.text = "A(d)vance";
+        turnButtonTextInfoDisabled.text = "A(d)vance";
         const sfml_util::gui::MouseTextInfo ADVANCEBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo,
             sfml_util::FontManager::Color_Light(),
@@ -698,11 +699,11 @@ namespace stage
         advanceTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
 
-        advanceTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(advanceTBoxButtonSPtr_.get());
 
-        turnButtonTextInfo.text = "Retreat";
-        turnButtonTextInfoDisabled.text = "Retreat";
+        //retreat button
+        turnButtonTextInfo.text = "R(e)treat";
+        turnButtonTextInfoDisabled.text = "R(e)treat";
         const sfml_util::gui::MouseTextInfo RETREATBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo,
             sfml_util::FontManager::Color_Light(),
@@ -724,9 +725,9 @@ namespace stage
         retreatTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
 
-        retreatTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(retreatTBoxButtonSPtr_.get());
 
+        //block button
         turnButtonTextInfo.text = "(B)lock";
         turnButtonTextInfoDisabled.text = "(B)lock";
         const sfml_util::gui::MouseTextInfo BLOCKBUTTON_MOUSETEXTINFO(
@@ -750,9 +751,9 @@ namespace stage
         blockTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
 
-        blockTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(blockTBoxButtonSPtr_.get());
 
+        //skip button
         turnButtonTextInfo.text = "S(k)ip";
         turnButtonTextInfoDisabled.text = "S(k)ip";
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(
@@ -776,9 +777,9 @@ namespace stage
         skipTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
-        skipTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(skipTBoxButtonSPtr_.get());
 
+        //fly button
         turnButtonTextInfo.text = "Fl(y)";
         turnButtonTextInfoDisabled.text = "Fl(y)";
         const sfml_util::gui::MouseTextInfo FLYBUTTON_MOUSETEXTINFO(
@@ -802,9 +803,9 @@ namespace stage
         flyTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
 
-        flyTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(flyTBoxButtonSPtr_.get());
 
+        //land button
         turnButtonTextInfo.text = "(L)and";
         turnButtonTextInfoDisabled.text = "(L)and";
         const sfml_util::gui::MouseTextInfo LANDBUTTON_MOUSETEXTINFO(
@@ -825,9 +826,9 @@ namespace stage
 
         landTBoxButtonSPtr_->SetCallbackHandler(this);
         landTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
-        landTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(landTBoxButtonSPtr_.get());
 
+        //roar button
         turnButtonTextInfo.text = "(R)oar";
         turnButtonTextInfoDisabled.text = "(R)oar";
         const sfml_util::gui::MouseTextInfo ROARBUTTON_MOUSETEXTINFO(
@@ -851,9 +852,9 @@ namespace stage
         roarTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
 
-        roarTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(roarTBoxButtonSPtr_.get());
 
+        //pounce button
         turnButtonTextInfo.text = "(P)ounce";
         turnButtonTextInfoDisabled.text = "(P)ounce";
         const sfml_util::gui::MouseTextInfo POUNCEBUTTON_MOUSETEXTINFO(
@@ -877,8 +878,33 @@ namespace stage
         pounceTBoxButtonSPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
 
-        pounceTBoxButtonSPtr_->MoveEntityOffScreen();
         EntityAdd(pounceTBoxButtonSPtr_.get());
+
+        //run button
+        turnButtonTextInfo.text = "R(u)n";
+        turnButtonTextInfoDisabled.text = "R(u)n";
+        const sfml_util::gui::MouseTextInfo RUNBUTTON_MOUSETEXTINFO(
+            turnButtonTextInfo,
+            sfml_util::FontManager::Color_Light(),
+            sf::Color::White);
+
+        runTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "CombatStage'sRun",
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            RUNBUTTON_MOUSETEXTINFO,
+            turnButtonTextInfoDisabled);
+
+        runTBoxButtonSPtr_->SetCallbackHandler(this);
+
+        runTBoxButtonSPtr_->SetMouseHoverText(
+            combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_);
+
+        EntityAdd(runTBoxButtonSPtr_.get());
 
         //settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
@@ -905,18 +931,83 @@ namespace stage
         settingsButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(settingsButtonSPtr_.get());
 
+        //position turn buttons
+        auto const LEFT_ALIGN_PAD{ COMMAND_REGION.width * 0.25f };
+        auto const COLUMN_1_LEFT{ (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 1.0f)) - 15.0f };
+        auto const COLUMN_2_LEFT{ COMMAND_REGION.left + (LEFT_ALIGN_PAD * 2.0f) };
+        auto const COLUMN_3_LEFT{ (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
+
+        auto const COLUMN_TOP{ settingsButtonSPtr_->GetEntityPos().y +
+                               settingsButtonSPtr_->GetEntityRegion().height -
+                               sfml_util::MapByRes(10.0f, 75.0f) };
+
+        auto const COLUMN_VERT_PAD{ attackTBoxButtonSPtr_->GetEntityRegion().height / 1.5f};
+
+        attackTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (attackTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
+
+        fightTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (fightTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
+
+        castTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (castTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
+
+        runTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (runTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
+
+        advanceTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (advanceTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
+
+        retreatTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (retreatTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
+
+        landTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (landTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
+
+        flyTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (flyTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
+
+        pounceTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (pounceTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
+
+        roarTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (roarTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
+
+        skipTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (skipTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
+
+        blockTBoxButtonSPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (blockTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+            COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
+
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
         std::string errMsgIgnored{ "" };
         player::PartyPtr_t partyPtr{ new player::Party() };
 
+        const int STAT_BASE_HIGH{18};
+        const int STAT_BASE_MED{9};
+        const int STAT_BASE_LOW{5};
+        const int STAT_RAND{6};
+        /*
         {
-            const stats::StatSet KNIGHT_STATS(15 + misc::random::Int(10),
-                                              15 + misc::random::Int(6),
-                                              0  + misc::random::Int(6),
-                                              5  + misc::random::Int(10),
-                                              15 + misc::random::Int(10),
-                                              0  + misc::random::Int(8));
+            const stats::StatSet KNIGHT_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
 
             const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -924,46 +1015,40 @@ namespace stage
                 "K") );
 
             auto knightPtr{ new player::Character(KNIGHT_NAME,
-                                                  creature::sex::Male,
-                                                  creature::BodyType::Make_Humanoid(),
-                                                  creature::Race(creature::race::Human),
-                                                  creature::Role(creature::role::Knight),
-                                                  KNIGHT_STATS) };
-
+                                      creature::sex::Male,
+                                      creature::BodyType::Make_Humanoid(),
+                                      creature::Race(creature::race::Human),
+                                      creature::Role(creature::role::Knight),
+                                      KNIGHT_STATS) };
+            
             player::Initial::Setup(knightPtr);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
-        /*
-        {
-            const stats::StatSet FIREBRAND_STATS(20 + misc::random::Int(10),
-                                                 15 + misc::random::Int(10),
-                                                 0 + misc::random::Int(6),
-                                                 5 + misc::random::Int(10),
-                                                 0 + misc::random::Int(10),
-                                                 10 + misc::random::Int(8));
-
-            const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "F"));
-
-            auto firebrandSPtr = std::make_shared<player::Character>(FIREBRAND_NAME,
-                                                                     creature::sex::Male,
-                                                                     creature::BodyType::Make_Dragon(),
-                                                                     creature::Race(creature::race::Dragon),
-                                                                     creature::Role(creature::role::Firebrand),
-                                                                     FIREBRAND_STATS);
-
-            const stats::StatSet STATS_MOD(misc::random::Int(2) * ((misc::random::Bool()) ? -1 : 1),
-                                           misc::random::Int(3) * ((misc::random::Bool()) ? -1 : 1),
-                                           misc::random::Int(4) * ((misc::random::Bool()) ? -1 : 1),
-                                           misc::random::Int(5) * ((misc::random::Bool()) ? -1 : 1),
-                                           misc::random::Int(6) * ((misc::random::Bool()) ? -1 : 1),
-                                           misc::random::Int(7) * ((misc::random::Bool()) ? -1 : 1));
-
-            firebrandSPtr->Stats().ModifyCurrent(STATS_MOD);
-
-            player::Initial::Setup(firebrandSPtr.get());
-            partyPtr->Add(firebrandSPtr, errMsgIgnored);
-        }
         */
+        {
+            const stats::StatSet FIREBRAND_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                                 STAT_BASE_MED  + misc::random::Int(STAT_RAND));
+
+            const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "F"));
+
+            auto firebrandPtr{  new player::Character(FIREBRAND_NAME,
+                                                      creature::sex::Male,
+                                                      creature::BodyType::Make_Dragon(),
+                                                      creature::Race(creature::race::Dragon),
+                                                      creature::Role(creature::role::Firebrand),
+                                                      FIREBRAND_STATS) };
+
+            player::Initial::Setup(firebrandPtr);
+            partyPtr->Add(firebrandPtr, errMsgIgnored);
+        }
+        /*
         {
             const stats::StatSet ARCHER_STATS(15 + misc::random::Int(6),
                                               15 + misc::random::Int(10),
@@ -987,14 +1072,14 @@ namespace stage
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
         }
-        /*
+        
         {
-            const stats::StatSet WOLFEN_STATS(20 + misc::random::Int(10),
-                                              20 + misc::random::Int(10),
-                                              5  + misc::random::Int(6),
-                                              5  + misc::random::Int(10),
-                                              5  + misc::random::Int(8),
-                                              5  + misc::random::Int(6));
+            const stats::StatSet WOLFEN_STATS(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH + 4 + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_MED  + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
 
             const std::string WOLFEN_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1002,23 +1087,23 @@ namespace stage
                 "W"));
 
             auto wolfenPtr{ new player::Character(WOLFEN_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Wolfen(),
-                                                  creature::Race(creature::race::Wolfen),
-                                                  creature::Role(creature::role::Wolfen),
-                                                  WOLFEN_STATS) };
+                                      creature::sex::Female,
+                                      creature::BodyType::Make_Wolfen(),
+                                      creature::Race(creature::race::Wolfen),
+                                      creature::Role(creature::role::Wolfen),
+                                      WOLFEN_STATS) };
 
             player::Initial::Setup(wolfenPtr);
             partyPtr->Add(wolfenPtr, errMsgIgnored);
-        }*/
-
+        }
+        */
         {
-            const stats::StatSet BARD_STATS(10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6),
-                                            5  + misc::random::Int(6),
-                                            10 + misc::random::Int(6),
-                                            10 + misc::random::Int(6));
+            const stats::StatSet BARD_STATS(STAT_BASE_MED + misc::random::Int(STAT_RAND),
+                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
+                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
+                                            STAT_BASE_LOW + misc::random::Int(STAT_RAND),
+                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
+                                            STAT_BASE_MED + misc::random::Int(STAT_RAND));
 
             const std::string BARD_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1035,14 +1120,14 @@ namespace stage
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
         }
-        /*
+        
         {
-            const stats::StatSet BEASTMASTER_STATS(10 + misc::random::Int(6),
-                                                   10 + misc::random::Int(6),
-                                                   10 + misc::random::Int(6),
-                                                   10 + misc::random::Int(6),
-                                                   10 + misc::random::Int(6),
-                                                   10 + misc::random::Int(6));
+            const stats::StatSet BEASTMASTER_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND),
+                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                                   STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND));
 
             const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1059,14 +1144,14 @@ namespace stage
             player::Initial::Setup(bmPtr);
             partyPtr->Add(bmPtr, errMsgIgnored);
         }
-        */
+        
         {
-            const stats::StatSet THEIF_STATS(5  + misc::random::Int(10),
-                                             5  + misc::random::Int(10),
-                                             5  + misc::random::Int(10),
-                                             15 + misc::random::Int(15),
-                                             15 + misc::random::Int(10),
-                                             5  + misc::random::Int(8));
+            const stats::StatSet THEIF_STATS(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
+                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
+                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
+                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
+                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
+                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND));
 
             const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1084,12 +1169,12 @@ namespace stage
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
         {
-            const stats::StatSet CLERIC_STATS(5  + misc::random::Int(8),
-                                              5  + misc::random::Int(8),
-                                              15 + misc::random::Int(10),
-                                              10 + misc::random::Int(8),
-                                              30 + misc::random::Int(8),
-                                              10 + misc::random::Int(15));
+            const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
+                                              STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND),
+                                              STAT_BASE_MED +       misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
+                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1106,14 +1191,15 @@ namespace stage
             player::Initial::Setup(clericPtr);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
-
+        /*
         {
-            const stats::StatSet SORCERER_STATS(1  + misc::random::Int(8),
-                                                1  + misc::random::Int(8),
-                                                5  + misc::random::Int(8),
-                                                10 + misc::random::Int(6),
-                                                30 + misc::random::Int(6),
-                                                20 + misc::random::Int(10));
+            const stats::StatSet SORCERER_STATS(
+                1             +       misc::random::Int(STAT_RAND),
+                STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
+                STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
+                STAT_BASE_MED +       misc::random::Int(STAT_RAND),
+                STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
+                STAT_BASE_HIGH + 4 +  misc::random::Int(STAT_RAND));
 
             const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -1130,27 +1216,31 @@ namespace stage
             player::Initial::Setup(sorcererPtr);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
-        /*
-        {
-            const stats::StatSet SYLAVIN_STATS(20 + misc::random::Int(8),
-                                               20 + misc::random::Int(8),
-                                               5  + misc::random::Int(8),
-                                               5  + misc::random::Int(6),
-                                               50 + misc::random::Int(6),
-                                               10 + misc::random::Int(10));
-
-            const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(creature::NameInfo::Instance()->LargestName(), creature::NameInfo::Instance()->LargestLetterString(), "S"));
-            player::CharacterSPtr_t sylavinSPtr(new player::Character(SYLAVIN_NAME,
-                                                                      creature::sex::Male,
-                                                                      creature::BodyType::Make_Dragon(),
-                                                                      creature::Race(creature::race::Dragon),
-                                                                      creature::Role(creature::role::Sylavin),
-                                                                      SYLAVIN_STATS));
-
-            player::Initial::Setup(sylavinSPtr.get());
-            partyPtr->Add(sylavinSPtr, errMsgIgnored);
-        }
         */
+        {
+            const stats::StatSet SYLAVIN_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
+                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
+                                               STAT_BASE_MED  + misc::random::Int(STAT_RAND));
+
+            const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(
+                creature::NameInfo::Instance()->LargestName(),
+                creature::NameInfo::Instance()->LargestLetterString(),
+                "S"));
+
+            auto sylavinPtr{ new player::Character(SYLAVIN_NAME,
+                                                   creature::sex::Male,
+                                                   creature::BodyType::Make_Dragon(),
+                                                   creature::Race(creature::race::Dragon),
+                                                   creature::Role(creature::role::Sylavin),
+                                                   SYLAVIN_STATS) };
+
+            player::Initial::Setup(sylavinPtr);
+            partyPtr->Add(sylavinPtr, errMsgIgnored);
+        }
+        
         if (restoreInfo_.HasRestored())
         {
             preTurnPhase_ = PreTurnPhase::End;
@@ -1241,7 +1331,7 @@ namespace stage
         EntityAdd(zoomLabelTextRegionUPtr_.get());
         EntityAdd(zoomSliderBarUPtr_.get());
 
-        MoveTurnBoxObjectsOffScreen(true);
+        MoveTurnBoxObjectsOffScreen();
         restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
 
@@ -1275,12 +1365,15 @@ namespace stage
             attackTBoxButtonSPtr_->draw(target, STATES);
             fightTBoxButtonSPtr_->draw(target, STATES);
             castTBoxButtonSPtr_->draw(target, STATES);
+            runTBoxButtonSPtr_->draw(target, STATES);
+            
             advanceTBoxButtonSPtr_->draw(target, STATES);
             retreatTBoxButtonSPtr_->draw(target, STATES);
-            blockTBoxButtonSPtr_->draw(target, STATES);
-            skipTBoxButtonSPtr_->draw(target, STATES);
             flyTBoxButtonSPtr_->draw(target, STATES);
             landTBoxButtonSPtr_->draw(target, STATES);
+
+            blockTBoxButtonSPtr_->draw(target, STATES);
+            skipTBoxButtonSPtr_->draw(target, STATES);
             roarTBoxButtonSPtr_->draw(target, STATES);
             pounceTBoxButtonSPtr_->draw(target, STATES);
         }
@@ -1291,7 +1384,7 @@ namespace stage
         }
 
         DrawHoverText(target, STATES);
-        testingTextRegionUPtr_->draw(target, STATES);
+        //testingTextRegionUPtr_->draw(target, STATES);
     }
 
 
@@ -1773,12 +1866,12 @@ namespace stage
                 }
             }
 
-            if (KE.code == sf::Keyboard::Right)
+            if ((KE.code == sf::Keyboard::Right) || (KE.code == sf::Keyboard::D))
             {
                 return HandleAdvance();
             }
 
-            if (KE.code == sf::Keyboard::Left)
+            if ((KE.code == sf::Keyboard::Left) || (KE.code == sf::Keyboard::E))
             {
                 return HandleRetreat();
             }
@@ -1798,7 +1891,7 @@ namespace stage
                 return HandleRoar();
             }
 
-            if (KE.code == sf::Keyboard::X)
+            if (KE.code == sf::Keyboard::C)
             {
                 return HandleWeaponChange();
             }
@@ -1864,7 +1957,7 @@ namespace stage
         statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
             "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
-        MoveTurnBoxObjectsOffScreen(true);
+        MoveTurnBoxObjectsOffScreen();
         statusMsgAnimColorShaker_.Reset();
         statusMsgAnimColorShaker_.Start();
         statusMsgAnimTimerSec_ = 0.0f;
@@ -1883,7 +1976,7 @@ namespace stage
         if (WILL_ANIM)
         {
             SetTurnPhase(TurnPhase::StatusAnim);
-            MoveTurnBoxObjectsOffScreen(true);
+            MoveTurnBoxObjectsOffScreen();
             statusMsgAnimColorShaker_.Reset();
             statusMsgAnimColorShaker_.Start();
             statusMsgAnimTimerSec_ = 0.0f;
@@ -2459,7 +2552,7 @@ namespace stage
         turnCreaturePtr_ = nullptr;
         spellBeingCastPtr_ = nullptr;
 
-        MoveTurnBoxObjectsOffScreen(true);
+        MoveTurnBoxObjectsOffScreen();
 
         goldTextColorShaker_.Reset();
         redTextColorShaker_.Reset();
@@ -2865,7 +2958,7 @@ namespace stage
     }
 
 
-    void CombatStage::MoveTurnBoxObjectsOffScreen(const bool WILL_MOVE_SKIP_BUTTON)
+    void CombatStage::MoveTurnBoxObjectsOffScreen()
     {
         titleTBoxTextRegionUPtr_->MoveEntityOffScreen();
         weaponTBoxTextRegionUPtr_->MoveEntityOffScreen();
@@ -2873,40 +2966,16 @@ namespace stage
         infoTBoxTextRegionUPtr_->MoveEntityOffScreen();
         enemyActionTBoxRegionUPtr_->MoveEntityOffScreen();
         enemyCondsTBoxRegionUPtr_->MoveEntityOffScreen();
-
-        MoveTurnBoxButtonsOffScreen(WILL_MOVE_SKIP_BUTTON);
     }
 
 
-    void CombatStage::MoveTurnBoxButtonsOffScreen(const bool WILL_MOVE_SKIP_BUTTON)
+    void CombatStage::SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_CPTRC,
+                                          const bool                     WILL_DISABLE_ALL)
     {
-        attackTBoxButtonSPtr_->MoveEntityOffScreen();
-        fightTBoxButtonSPtr_->MoveEntityOffScreen();
-        castTBoxButtonSPtr_->MoveEntityOffScreen();
-        advanceTBoxButtonSPtr_->MoveEntityOffScreen();
-        retreatTBoxButtonSPtr_->MoveEntityOffScreen();
-        blockTBoxButtonSPtr_->MoveEntityOffScreen();
-        skipTBoxButtonSPtr_->MoveEntityOffScreen();
-        flyTBoxButtonSPtr_->MoveEntityOffScreen();
-        landTBoxButtonSPtr_->MoveEntityOffScreen();
-        roarTBoxButtonSPtr_->MoveEntityOffScreen();
-        pounceTBoxButtonSPtr_->MoveEntityOffScreen();
-
-        if (WILL_MOVE_SKIP_BUTTON)
+        if (CREATURE_CPTRC->IsPlayerCharacter() && (WILL_DISABLE_ALL == false))
         {
-            skipTBoxButtonSPtr_->MoveEntityOffScreen();
-        }
-    }
-
-
-    void CombatStage::SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_CPTRC)
-    {
-        if (CREATURE_CPTRC->IsPlayerCharacter())
-        {
-            tBoxStdButtonSVec_.clear();
-
             //attack button
-            const std::string MOT_ATTACK_STR(
+            auto const MOT_ATTACK_STR(
                 combat::Text::MouseOverTextAttackStr(CREATURE_CPTRC,
                     combatDisplayStagePtr_));
 
@@ -2915,13 +2984,8 @@ namespace stage
 
             attackTBoxButtonSPtr_->SetMouseHoverText(MOT_ATTACK_STR);
 
-            if (MOT_ATTACK_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
-            {
-                tBoxStdButtonSVec_.push_back(attackTBoxButtonSPtr_);
-            }
-
             //fight button
-            const std::string MOT_FIGHT_STR(combat::Text::MouseOverTextFightStr(
+            auto const MOT_FIGHT_STR(combat::Text::MouseOverTextFightStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             fightTBoxButtonSPtr_->SetIsDisabled(MOT_FIGHT_STR !=
@@ -2929,50 +2993,35 @@ namespace stage
 
             fightTBoxButtonSPtr_->SetMouseHoverText(MOT_FIGHT_STR);
 
-            if (MOT_FIGHT_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
-            {
-                tBoxStdButtonSVec_.push_back(fightTBoxButtonSPtr_);
-            }
-
             //cast/play button
             if ((turnCreaturePtr_ != nullptr) &&
                 (turnCreaturePtr_->Role().Which() == creature::role::Bard))
             {
                 castTBoxButtonSPtr_->SetText("(S)ong");
 
-                const std::string MOT_PLAY_STR(combat::Text::MouseOverTextPlayStr(
+                auto const MOT_PLAY_STR(combat::Text::MouseOverTextPlayStr(
                     CREATURE_CPTRC, combatDisplayStagePtr_));
 
                 castTBoxButtonSPtr_->SetIsDisabled(MOT_PLAY_STR !=
                     combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
                 castTBoxButtonSPtr_->SetMouseHoverText(MOT_PLAY_STR);
-
-                if (MOT_PLAY_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
-                {
-                    tBoxStdButtonSVec_.push_back(castTBoxButtonSPtr_);
-                }
             }
             else
             {
                 castTBoxButtonSPtr_->SetText("(S)pell");
 
-                const std::string MOT_CAST_STR(combat::Text::MouseOverTextCastStr(
+                auto const MOT_CAST_STR(combat::Text::MouseOverTextCastStr(
                     CREATURE_CPTRC, combatDisplayStagePtr_));
 
                 castTBoxButtonSPtr_->SetIsDisabled(MOT_CAST_STR !=
                     combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
                 castTBoxButtonSPtr_->SetMouseHoverText(MOT_CAST_STR);
-
-                if (MOT_CAST_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
-                {
-                    tBoxStdButtonSVec_.push_back(castTBoxButtonSPtr_);
-                }
             }
 
             //advance button
-            const std::string MOT_ADVANCE_STR(combat::Text::MouseOverTextAdvanceStr(
+            auto const MOT_ADVANCE_STR(combat::Text::MouseOverTextAdvanceStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             advanceTBoxButtonSPtr_->SetIsDisabled(MOT_ADVANCE_STR !=
@@ -2981,7 +3030,7 @@ namespace stage
             advanceTBoxButtonSPtr_->SetMouseHoverText(MOT_ADVANCE_STR);
 
             //retreat button
-            const std::string MOT_RETREAT_STR(combat::Text::MouseOverTextRetreatStr(
+            auto const MOT_RETREAT_STR(combat::Text::MouseOverTextRetreatStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             retreatTBoxButtonSPtr_->SetIsDisabled(MOT_RETREAT_STR !=
@@ -2999,7 +3048,7 @@ namespace stage
             blockTBoxButtonSPtr_->SetMouseHoverText(MOT_BLOCK_STR);
 
             //fly button
-            const std::string MOT_FLY_STR(combat::Text::MouseOverTextFlyStr(
+            auto const MOT_FLY_STR(combat::Text::MouseOverTextFlyStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             flyTBoxButtonSPtr_->SetIsDisabled(MOT_FLY_STR !=
@@ -3007,13 +3056,8 @@ namespace stage
 
             flyTBoxButtonSPtr_->SetMouseHoverText(MOT_FLY_STR);
 
-            if (MOT_FLY_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_)
-            {
-                tBoxStdButtonSVec_.push_back(flyTBoxButtonSPtr_);
-            }
-
             //land
-            const std::string MOT_LAND_STR(combat::Text::MouseOverTextLandStr(
+            auto const MOT_LAND_STR(combat::Text::MouseOverTextLandStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             landTBoxButtonSPtr_->SetIsDisabled(MOT_LAND_STR !=
@@ -3021,13 +3065,8 @@ namespace stage
 
             landTBoxButtonSPtr_->SetMouseHoverText(MOT_LAND_STR);
 
-            if (MOT_LAND_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_)
-            {
-                tBoxStdButtonSVec_.push_back(landTBoxButtonSPtr_);
-            }
-
             //roar button
-            const std::string MOT_ROAR_STR(combat::Text::MouseOverTextRoarStr(
+            auto const MOT_ROAR_STR(combat::Text::MouseOverTextRoarStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             roarTBoxButtonSPtr_->SetIsDisabled(MOT_ROAR_STR !=
@@ -3035,13 +3074,8 @@ namespace stage
 
             roarTBoxButtonSPtr_->SetMouseHoverText(MOT_ROAR_STR);
 
-            if (MOT_ROAR_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
-            {
-                tBoxStdButtonSVec_.push_back(roarTBoxButtonSPtr_);
-            }
-
             //pounce button
-            const std::string MOT_POUNCE_STR(combat::Text::MouseOverTextPounceStr(
+            auto const MOT_POUNCE_STR(combat::Text::MouseOverTextPounceStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
             pounceTBoxButtonSPtr_->SetIsDisabled(MOT_POUNCE_STR !=
@@ -3049,52 +3083,42 @@ namespace stage
 
             pounceTBoxButtonSPtr_->SetMouseHoverText(MOT_POUNCE_STR);
 
-            if (MOT_POUNCE_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_)
-            {
-                tBoxStdButtonSVec_.push_back(pounceTBoxButtonSPtr_);
-            }
+            //skip button
+            auto const MOT_SKIP_STR(combat::Text::MouseOverTextSkipStr(
+                CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            //'can take action' adjustments
-            auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
-            if (CAN_TAKE_ACTION_STR.empty())
-            {
-                skipTBoxButtonSPtr_->SetIsDisabled(true);
-                skipTBoxButtonSPtr_->MoveEntityOffScreen();
-                //blockTBoxButtonSPtr_ position already set above
-                tBoxStdButtonSVec_.push_back(blockTBoxButtonSPtr_);
-            }
-            else
-            {
-                skipTBoxButtonSPtr_->SetIsDisabled(false);
-                blockTBoxButtonSPtr_->MoveEntityOffScreen();
-                tBoxStdButtonSVec_.push_back(skipTBoxButtonSPtr_);
-            }
+            skipTBoxButtonSPtr_->SetIsDisabled(MOT_POUNCE_STR !=
+                combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
-            //position turn buttons
-            auto const BUTTON_ROW_WIDTH(sfml_util::MapByRes(55.0f, 175.0f));
-
-            auto const RIGHTROW_POS_LEFT((turnBoxRegion_.left + turnBoxRegion_.width) -
-                BUTTON_ROW_WIDTH);
-
-            auto const RIGHTROW_VERT_POS_OFFSET(turnBoxRegion_.height /
-                (static_cast<float>(tBoxStdButtonSVec_.size()) + 1.0f));
-
-            const size_t NUM_RIGHTROW_STD_BUTTONS(tBoxStdButtonSVec_.size());
-
-            for (size_t i(0); i < NUM_RIGHTROW_STD_BUTTONS; ++i)
-            {
-                auto const POS_LEFT{ RIGHTROW_POS_LEFT -
-                    (tBoxStdButtonSVec_[i]->GetEntityRegion().width * 0.5f) };
-
-                auto const POS_TOP{ turnBoxRegion_.top + (RIGHTROW_VERT_POS_OFFSET * 0.5f) +
-                    (static_cast<float>(i) * RIGHTROW_VERT_POS_OFFSET) };
-
-                tBoxStdButtonSVec_[i]->SetEntityPos(POS_LEFT, POS_TOP);
-            }
+            skipTBoxButtonSPtr_->SetMouseHoverText(MOT_SKIP_STR);
         }
         else
         {
-            MoveTurnBoxButtonsOffScreen(true);
+            attackTBoxButtonSPtr_->SetIsDisabled(true);
+            fightTBoxButtonSPtr_->SetIsDisabled(true);
+            castTBoxButtonSPtr_->SetIsDisabled(true);
+            runTBoxButtonSPtr_->SetIsDisabled(true);
+            advanceTBoxButtonSPtr_->SetIsDisabled(true);
+            retreatTBoxButtonSPtr_->SetIsDisabled(true);
+            landTBoxButtonSPtr_->SetIsDisabled(true);
+            flyTBoxButtonSPtr_->SetIsDisabled(true);
+            pounceTBoxButtonSPtr_->SetIsDisabled(true);
+            roarTBoxButtonSPtr_->SetIsDisabled(true); 
+            skipTBoxButtonSPtr_->SetIsDisabled(true);
+            blockTBoxButtonSPtr_->SetIsDisabled(true);
+            
+            attackTBoxButtonSPtr_->SetMouseHoverText("");
+            fightTBoxButtonSPtr_->SetMouseHoverText("");
+            castTBoxButtonSPtr_->SetMouseHoverText("");
+            runTBoxButtonSPtr_->SetMouseHoverText("");
+            advanceTBoxButtonSPtr_->SetMouseHoverText("");
+            retreatTBoxButtonSPtr_->SetMouseHoverText("");
+            landTBoxButtonSPtr_->SetMouseHoverText("");
+            flyTBoxButtonSPtr_->SetMouseHoverText("");
+            pounceTBoxButtonSPtr_->SetMouseHoverText("");
+            roarTBoxButtonSPtr_->SetMouseHoverText("");
+            blockTBoxButtonSPtr_->SetMouseHoverText("");
+            skipTBoxButtonSPtr_->SetMouseHoverText("");
         }
     }
 
@@ -3237,8 +3261,6 @@ namespace stage
             }
         }
 
-        auto willDrawTurnBoxButtons{ true };
-
         if ((TurnPhase::CenterAndZoomOut == turnPhase_) ||
             (TurnPhase::PostCenterAndZoomOutPause == turnPhase_) ||
             ((TurnPhase::PostCenterAndZoomInPause == turnPhase_) &&
@@ -3246,8 +3268,6 @@ namespace stage
             ((TurnPhase::PerformAnim == turnPhase_) &&
                 (animPhase_ < AnimPhase::Impact)))
         {
-            willDrawTurnBoxButtons = false;
-
             if ((fightResult_.Count() > 0) ||
                 ((TurnPhase::PerformAnim == turnPhase_) &&
                     (AnimPhase::AdvanceOrRetreat == animPhase_)))
@@ -3279,8 +3299,6 @@ namespace stage
         {
             HandlePlayingMeleeSoundEffects();
 
-            willDrawTurnBoxButtons = false;
-
             infoSS.str(EMPTY_STR);
             weaponHoldingSS.str(EMPTY_STR);
             armorSS.str(EMPTY_STR);
@@ -3300,8 +3318,6 @@ namespace stage
         }
         else if (TurnPhase::TargetSelect == turnPhase_)
         {
-            willDrawTurnBoxButtons = false;
-
             infoSS.str(EMPTY_STR);
             weaponHoldingSS.str(EMPTY_STR);
             armorSS.str(EMPTY_STR);
@@ -3334,8 +3350,6 @@ namespace stage
         else if ((conditionEffectsIndex_ < conditionEffectsVec_.size()) &&
                  (TurnPhase::ConditionEffectPause == turnPhase_))
         {
-            willDrawTurnBoxButtons = false;
-
             infoSS.str(EMPTY_STR);
             weaponHoldingSS.str(EMPTY_STR);
             armorSS.str(EMPTY_STR);
@@ -3355,24 +3369,35 @@ namespace stage
 
         auto const VERT_POS_SHIFT(sfml_util::MapByRes(0.0f, 16.0f));
         titleTBoxTextRegionUPtr_->SetText(titleSS.str());
-        titleTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left,
-                                               (turnBoxRegion_.top + (titleTBoxTextRegionUPtr_->GetEntityRegion().height * 0.5f)) - VERT_POS_SHIFT);
+        titleTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left, (turnBoxRegion_.top +
+            (titleTBoxTextRegionUPtr_->GetEntityRegion().height * 0.5f)) - VERT_POS_SHIFT);
 
         weaponTBoxTextRegionUPtr_->SetText(weaponHoldingSS.str());
-        weaponTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (weaponTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f),
-                                                (titleTBoxTextRegionUPtr_->GetEntityRegion().top + titleTBoxTextRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
+
+        weaponTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - 
+            (weaponTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f), (titleTBoxTextRegionUPtr_->
+                GetEntityRegion().top + titleTBoxTextRegionUPtr_->GetEntityRegion().height) -
+                    VERT_POS_SHIFT);
 
         auto const WEAPON_TBOXTEXT_REGION{ weaponTBoxTextRegionUPtr_->GetEntityRegion() };
         armorTBoxTextRegionUPtr_->SetText(armorSS.str());
-        armorTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (armorTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f),
-                                               (WEAPON_TBOXTEXT_REGION.top + WEAPON_TBOXTEXT_REGION.height) - VERT_POS_SHIFT);
+
+        armorTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) -
+            (armorTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f), (WEAPON_TBOXTEXT_REGION.top +
+                WEAPON_TBOXTEXT_REGION.height) - VERT_POS_SHIFT);
 
         enemyCondsTBoxRegionUPtr_->SetText(enemyCondsSS.str());
-        enemyCondsTBoxRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyCondsTBoxRegionUPtr_->GetEntityRegion().width * 0.5f),
-                                                (armorTBoxTextRegionUPtr_->GetEntityRegion().top + armorTBoxTextRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT);
 
-        auto enemyActionPosLeft{ (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - (enemyActionTBoxRegionUPtr_->GetEntityRegion().width * 0.5f) };
-        auto enemyActionPosTop{ (enemyCondsTBoxRegionUPtr_->GetEntityRegion().top + enemyCondsTBoxRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT };
+        enemyCondsTBoxRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) -
+            (enemyCondsTBoxRegionUPtr_->GetEntityRegion().width * 0.5f), (armorTBoxTextRegionUPtr_->
+                GetEntityRegion().top + armorTBoxTextRegionUPtr_->GetEntityRegion().height) -
+                    VERT_POS_SHIFT);
+
+        auto enemyActionPosLeft{ (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) -
+            (enemyActionTBoxRegionUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto enemyActionPosTop{ (enemyCondsTBoxRegionUPtr_->GetEntityRegion().top +
+            enemyCondsTBoxRegionUPtr_->GetEntityRegion().height) - VERT_POS_SHIFT };
 
         if (enemyCondsSS.str() == EMPTY_STR)
         {
@@ -3398,14 +3423,7 @@ namespace stage
         infoTBoxTextRegionUPtr_->SetText(infoSS.str());
         infoTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left, turnBoxRegion_.top);
 
-        if (willDrawTurnBoxButtons)
-        {
-            SetupTurnBoxButtons(turnCreaturePtr_);
-        }
-        else
-        {
-            MoveTurnBoxButtonsOffScreen(true);
-        }
+        SetupTurnBoxButtons(turnCreaturePtr_, (turnCreaturePtr_->IsPlayerCharacter() == false));
     }
 
 
