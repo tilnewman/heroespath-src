@@ -355,10 +355,10 @@ namespace stage
             LoopManager::Instance()->PopupWaitBegin(this,
                                                     sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
                                                         POPUP_NAME_HELP_2_,
-                                                        std::string("Classic:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
-                                                            "\n\n\nPet:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
-                                                            "\n\n\nWing:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric" +
-                                                            "\n\n\nHowler:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric" +
+                                                        std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
+                                                            "\n\n\nPet Set:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
+                                                            "\n\n\nWing Set:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric" +
+                                                            "\n\n\nHowler Set:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric" +
                                                             "\n\n\n" +
                                                             "Note that one of your characters must have the role of Beastmaster " +
                                                             "if you want a Dragon or Wolfen in your party.",
@@ -375,7 +375,7 @@ namespace stage
                                                             "to guide you.  Then hold down the space bar to summon a random set of attributes.  " +
                                                             "\n\nDrag the attributes up and down to customize them for the character you are crafting.  " +
                                                             "Use the attribute description text on the right side of the screen to guide you.  " +
-                                                            "If you don't like the attribute values you have, simply holfd down the space bar " +
+                                                            "If you don't like the attribute values you have, simply hold down the space bar " +
                                                             "again to randomly summon more.\n\nFinally, give your character a name and then click " +
                                                             "the Save button.  Once you have created all the characters you need, click the Next " +
                                                             "button.  You can always return and make more characters.",
