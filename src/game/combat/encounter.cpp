@@ -314,31 +314,28 @@ namespace combat
 
     void Encounter::FreeThenResetEnemyParty()
     {
-        if (enemyPartyUPtr_.get() != nullptr)
-        {
-            auto const ENEMY_CHARATER_PVEC{ enemyPartyUPtr_->Characters() };
-            for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARATER_PVEC)
-            {
-                enemyPartyUPtr_->Remove(NEXT_ENEMY_CHARACTER_PTR, true);
-            }
-        }
-
-        enemyPartyUPtr_ = std::make_unique<non_player::Party>();
+        FreeThenReset(enemyPartyUPtr_);
     }
 
 
     void Encounter::FreeThenResetDeadEnemyParty()
     {
-        if (deadEnemyPartyUPtr_.get() != nullptr)
+        FreeThenReset(deadEnemyPartyUPtr_);
+    }
+
+
+    void Encounter::FreeThenReset(non_player::PartyUPtr_t & nonPlayerPartyUPtr)
+    {
+        if (nonPlayerPartyUPtr.get() != nullptr)
         {
-            auto const DEAD_ENEMY_CHARATER_PVEC{ deadEnemyPartyUPtr_->Characters() };
-            for (auto const NEXT_DEAD_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARATER_PVEC)
+            auto const CHARATER_PVEC{ nonPlayerPartyUPtr->Characters() };
+            for (auto const NEXT_CHARACTER_PTR : CHARATER_PVEC)
             {
-                deadEnemyPartyUPtr_->Remove(NEXT_DEAD_ENEMY_CHARACTER_PTR, true);
+                nonPlayerPartyUPtr->Remove(NEXT_CHARACTER_PTR, true);
             }
         }
 
-        deadEnemyPartyUPtr_ = std::make_unique<non_player::Party>();
+        nonPlayerPartyUPtr = std::make_unique<non_player::Party>();
     }
 
 }

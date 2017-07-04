@@ -108,9 +108,10 @@ namespace combat
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
 
-        //This function is where all enemy charater pointers are free'd
+        //These functions are where all enemy charater pointers are free'd
         void FreeThenResetEnemyParty();
         void FreeThenResetDeadEnemyParty();
+        void FreeThenReset(non_player::PartyUPtr_t &);
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
