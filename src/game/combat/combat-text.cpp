@@ -303,7 +303,7 @@ namespace combat
             return "Cannot Pounce because " + CREATURE_CPTRC->Name() + " is a not a beast.";
         }
 
-        return TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_;
+        return TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_;
     }
 
 

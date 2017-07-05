@@ -163,7 +163,9 @@ namespace combat
         CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
         //returns explanation of why not or an empty string if can
-        const std::string CanAdvanceOrRetreat(creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
+        const std::string CanAdvanceOrRetreat(
+            const creature::CreaturePtr_t CREATURE_CPTRC,
+            const bool                    TRYING_TO_ADVANCE) const;
 
         creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
 

@@ -820,7 +820,18 @@ namespace combat
         else
         {
             creature::CreaturePVec_t creaturesAllAround;
-            FindCreaturesAllRoundOfType(creaturesAllAround, CREATURE_CPTRC, WILL_FIND_PLAYERS);
+            if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying())
+            {
+                creaturesAllAround = creature::Algorithms::PlayersByType(WILL_FIND_PLAYERS,
+                                                                         true,
+                                                                         false);
+            }
+            else
+            {
+                FindCreaturesAllRoundOfType(creaturesAllAround,
+                                            CREATURE_CPTRC,
+                                            WILL_FIND_PLAYERS);
+            }
 
             creature::CreaturePVec_t creaturesAllAroundFlyingMatch;
             if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying() == false)
@@ -1086,7 +1097,7 @@ namespace combat
 
 
     const std::string CombatDisplay::CanAdvanceOrRetreat(
-        creature::CreatureCPtrC_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const
+        const creature::CreaturePtr_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
             "game::combat::CombatDisplay::CanAdvanceOrRetreat(nullptr, trying_to_advance="
@@ -1107,6 +1118,12 @@ namespace combat
             return "Cannot " + ADVANCE_OR_RETREAT_STR + " because already at limit.";
         }
 
+        //flying creatures can always advance or retreat except if at the edge of the battlefield
+        if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying())
+        {
+            return "";
+        }
+
         const int BLOCKING_POS_NEW((ATTEMPTING_BLOCKING_POS_INCREMENT) ?
             (BLOCKING_POS  + 1) : (BLOCKING_POS - 1));
 
@@ -1119,7 +1136,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "Cannot " << ADVANCE_OR_RETREAT_STR << "because there are too many ("
-                << SHOULDER_TO_SHOULDER_MAX_ << ") other creatures in the way.";
+                << "at least " << SHOULDER_TO_SHOULDER_MAX_ << ") other creatures in the way.";
 
             return ss.str();
         }
