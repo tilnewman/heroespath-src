@@ -84,7 +84,7 @@ namespace game
         initialSelection_(INITIAL_SELECTION),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (TEXT_VEC),
-        didWinCombat_    (false)
+        howCombatEnded_  (combat::CombatEnd::Count)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
             "game::PopupInfo(type=" << game::Popup::ToString(TYPE) << ", buttons="
@@ -157,7 +157,7 @@ namespace game
         initialSelection_(0),
         areImgsCreatures_(false),
         textVec_         (),
-        didWinCombat_    (false)
+        howCombatEnded_  (combat::CombatEnd::Count)
     {}
 
 
@@ -190,7 +190,7 @@ namespace game
         initialSelection_(0),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (),
-        didWinCombat_    (false)
+        howCombatEnded_  (combat::CombatEnd::Count)
     {}
 
 
@@ -221,18 +221,19 @@ namespace game
         initialSelection_(0),
         areImgsCreatures_(false),
         textVec_         (),
-        didWinCombat_    (false)
+        howCombatEnded_  (combat::CombatEnd::Count)
     {}
 
 
-    PopupInfo::PopupInfo(const std::string &              NAME,
-                         const sfml_util::gui::TextInfo & TEXT_INFO,
-                         const float                      IMAGE_SCALE,
-                         const bool                       DID_WIN_COMBAT)
+    PopupInfo::PopupInfo(const std::string &                 NAME,
+                         const sfml_util::gui::TextInfo &    TEXT_INFO,
+                         const float                         IMAGE_SCALE,
+                         const sfml_util::PopupButtons::Enum BUTTONS,
+                         const combat::CombatEnd::Enum       HOW_COMBAT_ENDED)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
-        buttons_         (sfml_util::PopupButtons::YesNo),
+        buttons_         (BUTTONS),
         image_           (sfml_util::PopupImage::Large),
         type_            (game::Popup::CombatOver),
         soundEffect_     (sfml_util::sound_effect::None),
@@ -251,7 +252,7 @@ namespace game
         initialSelection_(0),
         areImgsCreatures_(false),
         textVec_         (),
-        didWinCombat_    (DID_WIN_COMBAT)
+        howCombatEnded_  (HOW_COMBAT_ENDED)
     {}
 
 
@@ -286,7 +287,7 @@ namespace game
         initialSelection_(PI.initialSelection_),
         areImgsCreatures_(PI.areImgsCreatures_),
         textVec_         (PI.textVec_),
-        didWinCombat_    (PI.didWinCombat_)
+        howCombatEnded_  (PI.howCombatEnded_)
     {}
 
 
@@ -319,7 +320,7 @@ namespace game
 
             initialSelection_ = PI.initialSelection_;
             textVec_          = PI.textVec_;
-            didWinCombat_     = PI.didWinCombat_;
+            howCombatEnded_   = PI.howCombatEnded_;
         }
 
         return * this;

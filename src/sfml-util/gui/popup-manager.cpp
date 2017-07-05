@@ -399,14 +399,16 @@ namespace gui
 
     const game::PopupInfo PopupManager::CreateCombatOverPopupInfo(
         const std::string &                 POPUP_NAME,
-        const bool                          DID_WIN_COMBAT)
+        const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED)
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ",
                                                sfml_util::Justified::Center,
                                                sfml_util::FontManager::Instance()->Size_Large()),
                                sfml_util::MapByRes(1.0f, 5.0f),
-                               DID_WIN_COMBAT);
+                               ((HOW_COMBAT_ENDED == game::combat::CombatEnd::Ran) ?
+                                   PopupButtons::Continue : PopupButtons::YesNo),
+                               HOW_COMBAT_ENDED);
     }
 
 

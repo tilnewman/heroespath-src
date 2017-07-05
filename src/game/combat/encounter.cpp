@@ -62,26 +62,31 @@ namespace combat
 
     Encounter::Encounter()
     :
-        enemyPartyUPtr_    (),
-        deadEnemyPartyUPtr_(),
-        roundCounter_      (0),
-        hasStarted_        (false),
-        turnOverPVec_      (),
-        turnIndex_         (0),
-        turnInfoMap_       (),
-        turnCreaturePtr_   ()
+        nonPlayerPartyUPtr_       (),
+        deadNonPlayerPartyUPtr_   (),
+        runawayNonPlayerPartyUPtr_(),
+        runawayPlayersVec_        (),
+        roundCounter_             (0),
+        hasStarted_               (false),
+        turnOverPVec_             (),
+        turnIndex_                (0),
+        turnInfoMap_              (),
+        turnCreaturePtr_          ()
     {
         M_HP_LOG_DBG("Singleton Construction: Encounter");
-        FreeThenResetEnemyParty();
-        FreeThenResetDeadEnemyParty();
+        FreeThenResetNonPlayerParty();
+        FreeThenResetDeadNonPlayerParty();
+        FreeThenResetRunawayNonPlayerParty();
+        EmptyRunawayPlayersVec();
     }
 
 
     Encounter::~Encounter()
     {
         M_HP_LOG_DBG("Singleton Destruction: Encounter");
-        FreeThenResetEnemyParty();
-        FreeThenResetDeadEnemyParty();
+        FreeThenResetNonPlayerParty();
+        FreeThenResetDeadNonPlayerParty();
+        FreeThenResetRunawayNonPlayerParty();
     }
 
 
@@ -121,7 +126,7 @@ namespace combat
 
     non_player::Party & Encounter::NonPlayerParty()
     {
-        if (enemyPartyUPtr_.get() == nullptr)
+        if (nonPlayerPartyUPtr_.get() == nullptr)
         {
             std::ostringstream ss;
             ss << "game::combat::Encounter::NonPlayerParty() called when ptr was null.";
@@ -129,14 +134,14 @@ namespace combat
         }
         else
         {
-            return * enemyPartyUPtr_;
+            return * nonPlayerPartyUPtr_;
         }
     }
 
 
     non_player::Party & Encounter::DeadNonPlayerParty()
     {
-        if (deadEnemyPartyUPtr_.get() == nullptr)
+        if (deadNonPlayerPartyUPtr_.get() == nullptr)
         {
             std::ostringstream ss;
             ss << "game::combat::Encounter::DeadNonPlayerParty() called when ptr was null.";
@@ -144,28 +149,80 @@ namespace combat
         }
         else
         {
-            return * deadEnemyPartyUPtr_;
+            return * deadNonPlayerPartyUPtr_;
+        }
+    }
+
+
+    non_player::Party & Encounter::RunawayNonPlayerParty()
+    {
+        if (runawayNonPlayerPartyUPtr_.get() == nullptr)
+        {
+            std::ostringstream ss;
+            ss << "game::combat::Encounter::RunawayNonPlayerParty() called when ptr was null.";
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            return * runawayNonPlayerPartyUPtr_;
+        }
+    }
+
+
+    bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::combat::Encounter::IsRunaway() given a nullptr.");
+
+        return ((std::find(runawayPlayersVec_.begin(), runawayPlayersVec_.end(), CREATURE_PTR) !=
+            runawayPlayersVec_.end()) ||
+                (runawayNonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_PTR) != nullptr));
+    }
+
+
+    void Encounter::Runaway(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
+            "game::combat::Encounter::Runaway() given a nullptr.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((IsRunaway(CREATURE_PTR) == false),
+            "game::combat::Encounter::IsRunaway() given a creature that already ran away.");
+
+        if (CREATURE_PTR->IsPlayerCharacter())
+        {
+            runawayPlayersVec_.push_back(CREATURE_PTR);
+        }
+        else
+        {
+            auto const CHARACTER_PTR{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_PTR) };
+
+            M_ASSERT_OR_LOGANDTHROW_SS((CHARACTER_PTR != nullptr),
+                "game::combat::Encounter::IsRunaway() given a non-player creature "
+                << "that was not in nonPlayerPartyUPtr_.");
+
+            nonPlayerPartyUPtr_->Remove(CHARACTER_PTR, false);
+            runawayNonPlayerPartyUPtr_->Add(CHARACTER_PTR, false);
         }
     }
 
 
     void Encounter::Setup_First()
     {
-        FreeThenResetEnemyParty();
-        enemyPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
+        FreeThenResetNonPlayerParty();
+        nonPlayerPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
     }
 
 
-    const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t P) const
+    const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtrC_t PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((P != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS((PTR != nullptr),
             "game::combat::Encounter::GetTurnInfoCopy() was given a nullptr"
             << " creature::CreaturePtr_t.");
 
-        auto const FOUND_ITER{ turnInfoMap_.find(P) };
+        auto const FOUND_ITER{ turnInfoMap_.find(PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != turnInfoMap_.end()),
-            "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << P->Name()
+            "game::combat::Encounter::GetTurnInfoCopy(creature::CreaturePtr_t=" << PTR->Name()
             << ") was not found in the turnInfoMap_.");
 
         return FOUND_ITER->second;
@@ -174,8 +231,9 @@ namespace combat
 
     void Encounter::StartTasks()
     {
-        //enemyPartyUPtr_ must be left alone because it will have already been populated
-        FreeThenResetDeadEnemyParty();
+        //nonPlayerPartyUPtr_ must be left alone because it will have already been populated
+        FreeThenResetDeadNonPlayerParty();
+        EmptyRunawayPlayersVec();
 
         roundCounter_ = 0;
         Game::Instance()->State().World().EncoundterCountInc();
@@ -195,16 +253,29 @@ namespace combat
 
     void Encounter::EndTasks()
     {
-        //move all remaining enemy creatures to deadEnemyPartyUPtr_ so that none are leaked
-        auto const ENEMY_CHARATER_PVEC{ enemyPartyUPtr_->Characters() };
+        //At the end of this function:
+        //  - runawayPlayersVec_ should be empty of pointer copies
+        //  - nonPlayerPartyUPtr_ should have all owned pointers moved to deadNonPlayerPartyUPtr_
+        //  - deadNonPlayerPartyUPtr_ should hold all dead and not dead pointers for looting
+        //  - runawayNonPlayerPartyUPtr_ should have free'd all it's pointers so they don't
+        //    contribute to looting.
+
+        //leave deadNonPlayerPartyUPtr_ alone so that looting can occur
+
+        //Move all remaining enemy creatures (stoned etc) in the party to
+        //deadNonPlayerPartyUPtr_ so that they are all available for looting.
+        auto const ENEMY_CHARATER_PVEC{ nonPlayerPartyUPtr_->Characters() };
         for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARATER_PVEC)
         {
             HandleKilledCreature(NEXT_ENEMY_CHARACTER_PTR);
         }
 
-        FreeThenResetEnemyParty();
+        //delete runaway player character pointer copies
+        EmptyRunawayPlayersVec();
 
-        //leave deadEnemyPartyUPtr_ alone so that looting can occur
+        //Free runaway non-player character pointers so they will NOT
+        //contribute to looting.
+        FreeThenResetRunawayNonPlayerParty();
         
         turnOverPVec_.clear();
         turnInfoMap_.clear();
@@ -226,10 +297,13 @@ namespace combat
 
         //no need to null out turnCreaturePtr_
 
-        //move from the enemyParty to the deadEnemyParty for later loot collection
-        auto killedCharacterPtr{ enemyPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-        enemyPartyUPtr_->Remove(killedCharacterPtr, false);
-        deadEnemyPartyUPtr_->Add(killedCharacterPtr, false);
+        //move from the enemyParty to the deadNonPlayerParty for later loot collection
+        if (CREATURE_CPTRC->IsPlayerCharacter() == false)
+        {
+            auto killedCharacterPtr{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+            nonPlayerPartyUPtr_->Remove(killedCharacterPtr, false);
+            deadNonPlayerPartyUPtr_->Add(killedCharacterPtr, false);
+        }
     }
 
 
@@ -258,7 +332,7 @@ namespace combat
     {
         turnInfoMap_.clear();
 
-        for (auto const NEXT_CHAR_PTR : enemyPartyUPtr_->Characters())
+        for (auto const NEXT_CHAR_PTR : nonPlayerPartyUPtr_->Characters())
         {
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
@@ -312,15 +386,21 @@ namespace combat
     }
 
 
-    void Encounter::FreeThenResetEnemyParty()
+    void Encounter::FreeThenResetNonPlayerParty()
     {
-        FreeThenReset(enemyPartyUPtr_);
+        FreeThenReset(nonPlayerPartyUPtr_);
     }
 
 
-    void Encounter::FreeThenResetDeadEnemyParty()
+    void Encounter::FreeThenResetDeadNonPlayerParty()
     {
-        FreeThenReset(deadEnemyPartyUPtr_);
+        FreeThenReset(deadNonPlayerPartyUPtr_);
+    }
+
+
+    void Encounter::FreeThenResetRunawayNonPlayerParty()
+    {
+        FreeThenReset(runawayNonPlayerPartyUPtr_);
     }
 
 

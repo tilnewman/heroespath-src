@@ -259,6 +259,10 @@ namespace combat
 
         void TextAnimStop();
 
+        void RunAnimStart(const creature::CreaturePtr_t CREATURE_PTR);
+        void RunAnimUpdate(const float SLIDER_POS);
+        creature::CreaturePtr_t RunAnimStop();
+
         void EndOfCombatCleanup();
 
     private:
@@ -321,6 +325,11 @@ namespace combat
         sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
         sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
         sfml_util::animation::TextAnimationUVec_t textAnimUVec_;
+
+        //members that control the run animation
+        CombatNodePtr_t runAnimCombatNodePtr_;
+        sf::Vector2f runAnimPosVTarget_;
+        sf::Vector2f runAnimPosVOrig_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;

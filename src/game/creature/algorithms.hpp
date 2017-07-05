@@ -52,14 +52,28 @@ namespace creature
     {
         static const CreaturePVec_t MakeIntoVector(const CreaturePtr_t);
 
-        static std::size_t Players(CreaturePVec_t &, const bool LIVING_ONLY = false);
-        static const CreaturePVec_t Players(const bool LIVING_ONLY = false);
+        static std::size_t Players(CreaturePVec_t & pVec_OutParam,
+                                   const bool       LIVING_ONLY      = false,
+                                   const bool       INCLUDE_RUNAWAYS = false);
 
-        static std::size_t NonPlayers(CreaturePVec_t &, const bool LIVING_ONLY = false);
-        static const CreaturePVec_t NonPlayers(const bool LIVING_ONLY = false);
+        static const CreaturePVec_t Players(const bool LIVING_ONLY      = false,
+                                            const bool INCLUDE_RUNAWAYS = false);
 
-        static std::size_t PlayersByType(CreaturePVec_t &, const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY);
-        static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS, const bool LIVING_ONLY);
+        static std::size_t NonPlayers(CreaturePVec_t & pVec_OutParam,
+                                      const bool       LIVING_ONLY      = false,
+                                      const bool       INCLUDE_RUNAWAYS = false);
+
+        static const CreaturePVec_t NonPlayers(const bool LIVING_ONLY      = false,
+                                               const bool INCLUDE_RUNAWAYS = false);
+
+        static std::size_t PlayersByType(CreaturePVec_t & pVec_OutParam,
+                                         const bool       WILL_FIND_PLAYERS,
+                                         const bool       LIVING_ONLY       = false,
+                                         const bool       INCLUDE_RUNAWAYS  = false);
+
+        static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS,
+                                                  const bool LIVING_ONLY       = false,
+                                                  const bool INCLUDE_RUNAWAYS  = false);
 
         static const std::string Names(const CreaturePVec_t &,
                                        const bool             WILL_WRAP              = false,

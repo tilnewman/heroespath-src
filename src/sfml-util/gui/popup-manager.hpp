@@ -35,6 +35,7 @@
 
 #include "game/i-popup-callback.hpp"
 #include "game/popup-info.hpp"
+#include "game/combat/combat-over-enum.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -230,7 +231,7 @@ namespace gui
         //use this function to make the CombatOver popup window
         const game::PopupInfo CreateCombatOverPopupInfo(
             const std::string &                 POPUP_NAME,
-            const bool                          DID_WIN_COMBAT);
+            const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED);
 
         //throws range error upon unknown enum value
         void Texture(const PopupImage::Enum, sf::Texture &) const;

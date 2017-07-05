@@ -54,6 +54,7 @@ namespace combat
             case LandPounce:    { return "LandPounce"; }
             case Roar:          { return "Roar"; }
             case ChangeWeapon:  { return "ChangeWeapon"; }
+            case Run:           { return "Run"; }
             case Count:
             default:
             {
@@ -82,6 +83,7 @@ namespace combat
             case LandPounce:    { return "Pounces"; }
             case Roar:          { return "Roars"; }
             case ChangeWeapon:  { return "Changes Weapons"; }
+            case Run:           { return "Runs Away"; }
             case Count:
             default:
             {

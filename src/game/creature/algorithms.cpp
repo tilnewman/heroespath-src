@@ -56,9 +56,11 @@ namespace creature
     }
 
 
-    std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam, const bool LIVING_ONLY)
+    std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam,
+                                    const bool       LIVING_ONLY,
+                                    const bool       INCLUDE_RUNAWAYS)
     {
-        auto const PLAYERS_PVEC( Game::Instance()->State().Party().Characters() );
+        auto const PLAYERS_PVEC{ Game::Instance()->State().Party().Characters() };
 
         std::size_t count{ 0 };
         for (auto const NEXT_PLAYER_PTR : PLAYERS_PVEC)
@@ -70,19 +72,35 @@ namespace creature
             }
         }
 
+        if ((INCLUDE_RUNAWAYS == false) && (pVec_OutParam.empty() == false))
+        {
+            auto const & RUNAWAY_PLAYERS_PVEC{
+                combat::Encounter::Instance()->RunawayPlayersVec() };
+
+            for (auto const NEXT_RUNAWAY_PLAYER_PTR : RUNAWAY_PLAYERS_PVEC)
+            {
+                pVec_OutParam.erase( std::remove(pVec_OutParam.begin(),
+                                                 pVec_OutParam.end(),
+                                                 NEXT_RUNAWAY_PLAYER_PTR), pVec_OutParam.end());
+            }
+        }
+
         return count;
     }
 
 
-    const CreaturePVec_t Algorithms::Players(const bool LIVING_ONLY)
+    const CreaturePVec_t Algorithms::Players(const bool LIVING_ONLY,
+                                             const bool INCLUDE_RUNAWAYS)
     {
         CreaturePVec_t tempPVec;
-        Players(tempPVec, LIVING_ONLY);
+        Players(tempPVec, LIVING_ONLY, INCLUDE_RUNAWAYS);
         return tempPVec;
     }
 
 
-    std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam, const bool LIVING_ONLY)
+    std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam,
+                                       const bool       LIVING_ONLY,
+                                       const bool       INCLUDE_RUNAWAYS)
     {
         auto const NONPLAYERS_PVEC(combat::Encounter::Instance()->NonPlayerParty().Characters());
 
@@ -108,43 +126,59 @@ namespace creature
             }
         }
 
+        if ((INCLUDE_RUNAWAYS == false) && (pVec_OutParam.empty() == false))
+        {
+            auto const RUNAWAY_NONPLAYERS_PVEC{
+                combat::Encounter::Instance()->RunawayNonPlayerParty().Characters() };
+
+            for (auto const NEXT_RUNAWAY_NONPLAYER_PTR : RUNAWAY_NONPLAYERS_PVEC)
+            {
+                pVec_OutParam.erase( std::remove(pVec_OutParam.begin(),
+                                                 pVec_OutParam.end(),
+                                                 NEXT_RUNAWAY_NONPLAYER_PTR), pVec_OutParam.end());
+            }
+        }
+
         return count;
     }
 
 
-    const CreaturePVec_t Algorithms::NonPlayers(const bool LIVING_ONLY)
+    const CreaturePVec_t Algorithms::NonPlayers(const bool LIVING_ONLY,
+                                                const bool INCLUDE_RUNAWAYS)
     {
         CreaturePVec_t tempPVec;
-        NonPlayers(tempPVec, LIVING_ONLY);
+        NonPlayers(tempPVec, LIVING_ONLY, INCLUDE_RUNAWAYS);
         return tempPVec;
     }
 
 
     std::size_t Algorithms::PlayersByType(CreaturePVec_t & pVec_OutParam,
                                           const bool       WILL_FIND_PLAYERS,
-                                          const bool       LIVING_ONLY)
+                                          const bool       LIVING_ONLY,
+                                          const bool       INCLUDE_RUNAWAYS)
     {
         if (WILL_FIND_PLAYERS)
         {
-            return Players(pVec_OutParam, LIVING_ONLY);
+            return Players(pVec_OutParam, LIVING_ONLY, INCLUDE_RUNAWAYS);
         }
         else
         {
-            return NonPlayers(pVec_OutParam, LIVING_ONLY);
+            return NonPlayers(pVec_OutParam, LIVING_ONLY, INCLUDE_RUNAWAYS);
         }
     }
 
 
     const CreaturePVec_t Algorithms::PlayersByType(const bool WILL_FIND_PLAYERS,
-                                                   const bool LIVING_ONLY)
+                                                   const bool LIVING_ONLY,
+                                                   const bool INCLUDE_RUNAWAYS)
     {
         if (WILL_FIND_PLAYERS)
         {
-            return Players(LIVING_ONLY);
+            return Players(LIVING_ONLY, INCLUDE_RUNAWAYS);
         }
         else
         {
-            return NonPlayers(LIVING_ONLY);
+            return NonPlayers(LIVING_ONLY, INCLUDE_RUNAWAYS);
         }
     }
 

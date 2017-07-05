@@ -1295,21 +1295,42 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::CombatOver)
         {
-            if (POPUP_INFO_.DidWinCombat())
+            switch (POPUP_INFO_.HowCombatEnded())
             {
-                sfml_util::SoundManager::Instance()->GetSfxSet(
-                    sfml_util::SfxSet::CombatWin).PlayRandom();
+                case game::combat::CombatEnd::Win:
+                {
+                    sfml_util::SoundManager::Instance()->GetSfxSet(
+                        sfml_util::SfxSet::CombatWin).PlayRandom();
 
-                sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-combat-crossswords"));
-            }
-            else
-            {
-                sfml_util::SoundManager::Instance()->GetSfxSet(
-                    sfml_util::SfxSet::CombatLose).PlayRandom();
+                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                        GetMediaPath("media-images-combat-crossswords"));
 
-                sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-combat-crossbones"));
+                    break;
+                }
+            
+                case game::combat::CombatEnd::Lose:
+                {
+                    sfml_util::SoundManager::Instance()->GetSfxSet(
+                        sfml_util::SfxSet::CombatLose).PlayRandom();
+
+                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                        GetMediaPath("media-images-combat-crossbones"));
+
+                    break;
+                }
+
+                case game::combat::CombatEnd::Ran:
+                case game::combat::CombatEnd::Count:
+                default:
+                {
+                    sfml_util::SoundManager::Instance()->GetSfxSet(
+                        sfml_util::SfxSet::CombatLose).PlayRandom();
+
+                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                        GetMediaPath("media-images-combat-run"));
+
+                    break;
+                }
             }
 
             combatBgTexture_.setSmooth(true);
@@ -1339,8 +1360,20 @@ namespace sfml_util
 
             combatBgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
 
+            auto const TITLE_TEXT{ [&]()
+                {
+                    switch (POPUP_INFO_.HowCombatEnded())
+                    {
+                        case game::combat::CombatEnd::Win:  { return "Victory!";}
+                        case game::combat::CombatEnd::Lose: { return "Death Strikes!"; }
+                        case game::combat::CombatEnd::Ran:
+                        case game::combat::CombatEnd::Count:
+                        default:                            { return "Defeat!"; }
+                    }
+                }() };
+
             const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
-                ((POPUP_INFO_.DidWinCombat()) ? "Victory!" : "Death Strikes!"),
+                TITLE_TEXT,
                 sfml_util::FontManager::Instance()->Font_BigFlavor1(),
                 sfml_util::FontManager::Instance()->Size_Large(),
                 sfml_util::FontManager::Color_GrayDarker(),
@@ -1360,20 +1393,42 @@ namespace sfml_util
 
             combatTitleUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
-            std::ostringstream winDescSS;
-            winDescSS << "Congratulations, your party has beaten all enemies on the field of"
-                << " battle and emerged victorious.\n\nWill you search for loot?";
-
-            std::ostringstream loseDescSS;
-            loseDescSS << "The dangers of Etan have claimed another party of adventurers.  "
-                << "All of your characters have been incapacitated or killed, but all is not lost."
-                << "  Your saved games remain and can be loaded at any time.\n\nClick YES to restart"
-                << " from your last save, or click NO to quit.";
+            auto const DESC_TEXT{ [&]()
+                {
+                    std::ostringstream descSS;
+                    switch (POPUP_INFO_.HowCombatEnded())
+                    {
+                        case game::combat::CombatEnd::Win:
+                        {
+                            descSS << "Congratulations, your party has beaten all enemies on the "
+                                << "field of battle and emerged victorious.\n\nWill you search "
+                                << "for loot?";
+                            break;
+                        }
+                        case game::combat::CombatEnd::Lose:
+                        {
+                            descSS << "The dangers of Etan have claimed another party of "
+                                << "adventurers.  All of your characters have been "
+                                << "incapacitated or killed, but all is not lost.  Your "
+                                << "saved games remain and can be loaded at any time.\n\n"
+                                << "Click YES to restart from your last save, or click NO "
+                                << "to quit.";
+                            break;
+                        }
+                        case game::combat::CombatEnd::Ran:
+                        case game::combat::CombatEnd::Count:
+                        default:
+                        {
+                            descSS << "You have run from battle, and as a consequence, "
+                                   << "you will earn no experience and loot no treasure.";
+                            break;
+                        }
+                    }
+                    return descSS.str();
+                }() };
 
             const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
-                ((POPUP_INFO_.DidWinCombat()) ?
-                    winDescSS.str() :
-                    loseDescSS.str()),
+                DESC_TEXT,
                 sfml_util::FontManager::Instance()->Font_Default1(),
                 sfml_util::FontManager::Instance()->Size_Normal(),
                 sfml_util::FontManager::Color_GrayDarker(),

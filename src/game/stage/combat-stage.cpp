@@ -64,6 +64,7 @@
 #include "game/combat/combat-anim.hpp"
 #include "game/combat/combat-text.hpp"
 #include "game/combat/condition-effects.hpp"
+#include "game/combat/combat-over-enum.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/conditions.hpp"
 #include "game/creature/condition-algorithms.hpp"
@@ -93,9 +94,10 @@ namespace game
 namespace stage
 {
 
-    const std::string CombatStage::POPUP_NAME_SPELLBOOK_        { "SPELLBOOK_POPUP_WINDOW_NAME" };
-    const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_   { "COMBAT_OVER_WIN_POPUP_WINDOW_NAME" };
-    const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_  { "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_SPELLBOOK_      { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_ { "COMBAT_OVER_WIN_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_{ "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_RAN_ { "COMBAT_OVER_RAN_POPUP_WINDOW_NAME" };
     //
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
@@ -136,6 +138,7 @@ namespace stage
     const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_           { SLIDER_SPEED_NORMAL_ };
     const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_   { SLIDER_SPEED_FASTEST_ };
     const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_     { SLIDER_SPEED_FASTEST_ * 3.0f };
+    const float CombatStage::ANIM_RUN_SLIDER_SPEED_              { SLIDER_SPEED_FAST_ };
     //
     const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_
     { (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
@@ -186,6 +189,7 @@ namespace stage
         willClrShkInitStatusMsg_    (false),
         isShortPostZoomOutPause_    (false),
         hasCombatEnded_             (false),
+        isRepositionAnimAfterRun_   (false),
         conditionEffectsVec_        (),
         conditionEffectsIndex_      (0),
         conditionEffectsTookTurn_   (false),
@@ -361,6 +365,11 @@ namespace stage
             return true;
         }
 
+        if (PACKAGE.PTR_ == runTBoxButtonSPtr_.get())
+        {
+            return HandleRun();
+        }
+
         return false;
     }
 
@@ -422,6 +431,11 @@ namespace stage
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_LOSE_)
         {
             //TODO if popup response is YES, then load last saved game
+            game::LoopManager::Instance()->Goto_Credits();
+        }
+        else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_RAN_)
+        {
+            //TODO go directly back to adventure stage
             game::LoopManager::Instance()->Goto_Credits();
         }
 
@@ -1457,12 +1471,33 @@ namespace stage
             combatAnimationUPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
             {
-                SetTurnPhase(TurnPhase::PostDeathAnimSlide);
+                SetTurnPhase(TurnPhase::RepositionAnim);
                 combatAnimationUPtr_->DeathAnimStop();
                 PositionSlideStartTasks();
             }
             return;
         }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (AnimPhase::Run == animPhase_))
+        {
+            combatAnimationUPtr_->RunAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            if (slider_.GetIsDone())
+            {
+                auto const CREATURE_PTR{ combatAnimationUPtr_->RunAnimStop() };
+
+                combatDisplayStagePtr_->HandleCombatNodeElimination(CREATURE_PTR);
+                combat::Encounter::Instance()->Runaway(CREATURE_PTR);
+                combatDisplayStagePtr_->PositionCombatTreeCells(true);
+                
+                SetAnimPhase(AnimPhase::NotAnimating);
+                SetTurnPhase(TurnPhase::RepositionAnim);
+                isRepositionAnimAfterRun_ = true;
+                PositionSlideStartTasks();
+            }
+            return;
+        }
+
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::ProjectileShoot == animPhase_))
@@ -1550,10 +1585,11 @@ namespace stage
             return;
         }
 
-        if ( (TurnPhase::PostDeathAnimSlide == turnPhase_) ||
+        if ( (TurnPhase::RepositionAnim == turnPhase_) ||
              ((TurnPhase::PerformAnim == turnPhase_) &&
               (AnimPhase::AdvanceOrRetreat == animPhase_) &&
-              ((TurnActionPhase::Advance == turnActionPhase_) || (TurnActionPhase::Retreat == turnActionPhase_))) )
+              ((TurnActionPhase::Advance == turnActionPhase_) ||
+                 (TurnActionPhase::Retreat == turnActionPhase_))) )
         {
             combatAnimationUPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.GetIsDone())
@@ -1894,6 +1930,11 @@ namespace stage
             if (KE.code == sf::Keyboard::C)
             {
                 return HandleWeaponChange();
+            }
+
+            if (KE.code == sf::Keyboard::U)
+            {
+                return HandleRun();
             }
 
             if (nullptr != turnCreaturePtr_)
@@ -2419,6 +2460,8 @@ namespace stage
                 return TurnActionPhase::PauseAndReport;
             }
 
+            case combat::TurnAction::Run://TODO
+
             case combat::TurnAction::ChangeWeapon:
             case combat::TurnAction::Nothing:
             case combat::TurnAction::Count://handle Count gracefully because it is sometimes required
@@ -2568,14 +2611,23 @@ namespace stage
 
     void CombatStage::PositionSlideStartTasks()
     {
-        if ((misc::IsRealZero(conditionEffectsCenterPosV_.x)) &&
-            (misc::IsRealZero(conditionEffectsCenterPosV_.y)))
+        if (isRepositionAnimAfterRun_)
         {
-            combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
+            isRepositionAnimAfterRun_ = false;
+            combatAnimationUPtr_->RepositionAnimStart(
+                combatDisplayStagePtr_->GetCenterOfAllNodes());
         }
         else
         {
-            combatAnimationUPtr_->RepositionAnimStart(conditionEffectsCenterPosV_);
+            if ((misc::IsRealZero(conditionEffectsCenterPosV_.x)) &&
+                (misc::IsRealZero(conditionEffectsCenterPosV_.y)))
+            {
+                combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
+            }
+            else
+            {
+                combatAnimationUPtr_->RepositionAnimStart(conditionEffectsCenterPosV_);
+            }
         }
 
         combatAnimationUPtr_->ShakeAnimStop(turnCreaturePtr_);
@@ -2597,6 +2649,7 @@ namespace stage
         {
             HandleAttackTasks( combat::FightClub::FindNonPlayerCreatureToAttack(
                 turnCreaturePtr_, combatDisplayStagePtr_) );
+
             return true;
         }
     }
@@ -2733,6 +2786,13 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Advance);
             combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+
+            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                         turnActionInfo_,
+                                                         fightResult_,
+                                                         true,
+                                                         true), false);
+
             SetTurnActionPhase(TurnActionPhase::Advance);
             StartPerformAnim();
             return true;
@@ -2756,6 +2816,13 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Retreat);
             combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+
+            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                         turnActionInfo_,
+                                                         fightResult_,
+                                                         true,
+                                                         true), false);
+
             SetTurnActionPhase(TurnActionPhase::Retreat);
             StartPerformAnim();
             return true;
@@ -2955,6 +3022,50 @@ namespace stage
         turnCreaturePtr_->CurrentWeaponsInc();
         SetupTurnBox();
         return true;
+    }
+
+
+    bool CombatStage::HandleRun()
+    {
+        auto const MOUSEOVER_STR(combat::Text::MouseOverTextRunStr(turnCreaturePtr_,
+            combatDisplayStagePtr_));
+
+        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_)
+        {
+            QuickSmallPopup(MOUSEOVER_STR, false, true);
+            return false;
+        }
+        else
+        {
+            //run away works if flying, and if not flying it is a test of speed
+            if ((creature::Stats::Test(turnCreaturePtr_, stats::stat::Speed, 0.0f, true, true)) ||
+                (combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying()))
+            {
+                SetUserActionAllowed(false);
+
+                turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Run);
+
+                combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_,
+                                                                 turnActionInfo_);
+
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+                
+                SetTurnActionPhase(TurnActionPhase::Run);
+                StartPerformAnim();
+                return true;
+            }
+            else
+            {
+                AppendStatusMessage(turnCreaturePtr_->Name() +
+                    " tried to run away but was blocked.", true);
+
+                return false;
+            }
+        }
     }
 
 
@@ -3159,7 +3270,9 @@ namespace stage
         {
             weaponsSS << "Weapon";
             if (boost::algorithm::contains(CURR_WEAPONS_STR, ","))
+            {
                 weaponsSS << "s";
+            }
 
             weaponsSS << ":  " << CURR_WEAPONS_STR;
         }
@@ -3272,7 +3385,6 @@ namespace stage
                 ((TurnPhase::PerformAnim == turnPhase_) &&
                     (AnimPhase::AdvanceOrRetreat == animPhase_)))
             {
-
                 infoSS.str(EMPTY_STR);
                 weaponHoldingSS.str(EMPTY_STR);
                 armorSS.str(EMPTY_STR);
@@ -3433,17 +3545,18 @@ namespace stage
 
         switch (turnActionPhase_)
         {
+            case TurnActionPhase::Run:
+            {
+                combatAnimationUPtr_->RunAnimStart(turnCreaturePtr_);
+                slider_.Reset(ANIM_RUN_SLIDER_SPEED_);
+                SetAnimPhase(AnimPhase::Run);
+                break;
+            }
+
             case TurnActionPhase::Advance:
             {
                 combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, true);
                 PositionSlideStartTasks();
-
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
-                                                             turnActionInfo_,
-                                                             fightResult_,
-                                                             true,
-                                                             true), false);
-
                 SetAnimPhase(AnimPhase::AdvanceOrRetreat);
                 break;
             }
@@ -3452,25 +3565,12 @@ namespace stage
             {
                 combatDisplayStagePtr_->MoveCreatureBlockingPosition(turnCreaturePtr_, false);
                 PositionSlideStartTasks();
-
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
-                                                             turnActionInfo_,
-                                                             fightResult_,
-                                                             true,
-                                                             true), false);
-
                 SetAnimPhase(AnimPhase::AdvanceOrRetreat);
                 break;
             }
 
             case TurnActionPhase::MeleeWeapon:
             {
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
-                                                             turnActionInfo_,
-                                                             fightResult_,
-                                                             true,
-                                                             true), false);
-
                 SetAnimPhase(AnimPhase::MoveToward);
 
                 auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
@@ -3553,7 +3653,6 @@ namespace stage
                                                      combatNodesCastUponPVec);
 
                 SetAnimPhase(AnimPhase::Spell);
-                //SetupTurnBox();
                 break;
             }
             case TurnActionPhase::Roar:
@@ -3585,7 +3684,7 @@ namespace stage
             case TurnPhase::PostPerformPause:           { return "PostPerformPause"; }
             case TurnPhase::StatusAnim:                 { return "StatusAnim"; }
             case TurnPhase::DeathAnim:                  { return "DeathAnim"; }
-            case TurnPhase::PostDeathAnimSlide:         { return "PostDeathAnimSlide"; }
+            case TurnPhase::RepositionAnim:             { return "RepositionAnim"; }
             case TurnPhase::PostTurnPause:              { return "PostTurnPause"; }
             case TurnPhase::Count:
             default:                                    { return ""; }
@@ -3608,6 +3707,7 @@ namespace stage
             case TurnActionPhase::Cast:             { return "Cast"; }
             case TurnActionPhase::Roar:             { return "Roar"; }
             case TurnActionPhase::Pounce:           { return "Pounce"; }
+            case TurnActionPhase::Run:              { return "Run"; }
             case TurnActionPhase::Count:
             default:                                { return ""; }
         }
@@ -3644,6 +3744,7 @@ namespace stage
             case AnimPhase::Spell:               { return "Spell"; }
             case AnimPhase::PostSpellPause:      { return "PostSpellPause"; }
             case AnimPhase::MoveBack:            { return "MoveBack"; }
+            case AnimPhase::Run:                 { return "Run"; }
             case AnimPhase::FinalPause:          { return "FinalPause"; }
             case AnimPhase::Count:
             default:                             { return ""; }
@@ -3716,11 +3817,8 @@ namespace stage
         {
             if (NEXT_CREATURE_EFFECT.WasKill())
             {
-                if (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false)
-                {
-                    combat::Encounter::Instance()->HandleKilledCreature(
-                        NEXT_CREATURE_EFFECT.GetCreature());
-                }
+                combat::Encounter::Instance()->HandleKilledCreature(
+                    NEXT_CREATURE_EFFECT.GetCreature());
             }
         }
     }
@@ -3780,6 +3878,13 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
+        
+        AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
         SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));
 
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
@@ -3795,38 +3900,38 @@ namespace stage
 
     bool CombatStage::HandleMiscCancelTasks()
     {
-        //cancel summary view if visible or even just starting
-        if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
-        {
-            combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
-            return true;
-        }
+//cancel summary view if visible or even just starting
+if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
+{
+    combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
+    return true;
+}
 
-        //cancel pause if paused
-        if (IsPaused())
-        {
-            isPauseCanceled_ = true;
-            return true;
-        }
+//cancel pause if paused
+if (IsPaused())
+{
+    isPauseCanceled_ = true;
+    return true;
+}
 
-        //this interrupts a status animation in progress...
-        if (willClrShkInitStatusMsg_)
-        {
-            willClrShkInitStatusMsg_ = false;
-            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
-            return true;
-        }
+//this interrupts a status animation in progress...
+if (willClrShkInitStatusMsg_)
+{
+    willClrShkInitStatusMsg_ = false;
+    combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+    return true;
+}
 
-        //...and so does this
-        if (TurnPhase::StatusAnim == turnPhase_)
-        {
-            SetTurnPhase(TurnPhase::PostTurnPause);
-            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
-            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
-            return true;
-        }
+//...and so does this
+if (TurnPhase::StatusAnim == turnPhase_)
+{
+    SetTurnPhase(TurnPhase::PostTurnPause);
+    StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+    combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+    return true;
+}
 
-        return false;
+return false;
     }
 
 
@@ -3862,48 +3967,68 @@ namespace stage
 
     bool CombatStage::HandleWin()
     {
-        auto areAllEnemiesIncapacitated{ true };
-        auto const ALL_LIVING_ENEMIES_PVEC{ creature::Algorithms::NonPlayers(true) };
-        for (auto const NEXT_ENEMY_PTR : ALL_LIVING_ENEMIES_PVEC)
-        {
-            if (NEXT_ENEMY_PTR->HasConditionNotAThreatPerm() == false)
-            {
-                areAllEnemiesIncapacitated = false;
-                break;
-            }
-        }
-
-        if (areAllEnemiesIncapacitated)
-        {
-            game::LoopManager::Instance()->PopupWaitBegin(this,
-                sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
-                    POPUP_NAME_COMBATOVER_WIN_, true));
-
-            EndOfCombatCleanup();
-        }
-
-        return hasCombatEnded_;
+        return DetectWinOrLose(true);
     }
 
 
     bool CombatStage::HandleLose()
     {
-        auto areAllCharactersIncapacitated{ true };
-        auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
-        for (auto const NEXT_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+        return DetectWinOrLose(false);
+    }
+
+
+    bool CombatStage::DetectWinOrLose(const bool IS_DETECTING_WIN)
+    {
+        //detect runaway case
+        if (IS_DETECTING_WIN == false)
         {
-            if (NEXT_PLAYER_PTR->HasConditionNotAThreatPerm() == false)
+            auto const ALL_LIVING_PVEC{
+                creature::Algorithms::PlayersByType(true, false, true) };
+
+            auto didAnyPlayersRunAway{ false };
+            auto areAllNonRunawaysIncapacitated{ true };
+            for (auto const NEXT_LIVING_PTR : ALL_LIVING_PVEC)
             {
-                areAllCharactersIncapacitated = false;
-                break;
+                if (combat::Encounter::Instance()->IsRunaway(NEXT_LIVING_PTR))
+                {
+                    didAnyPlayersRunAway = true;
+                }
+                else if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm() == false)
+                {
+                    areAllNonRunawaysIncapacitated = false;
+                }
+            }
+
+            if (didAnyPlayersRunAway && areAllNonRunawaysIncapacitated)
+            {
+                game::LoopManager::Instance()->PopupWaitBegin(this,
+                    sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                        POPUP_NAME_COMBATOVER_RAN_, combat::CombatEnd::Ran));
+
+                EndOfCombatCleanup();
+                return true;
             }
         }
 
-        if (areAllCharactersIncapacitated)
+        //detect all incapacitated cases
+        auto const ALL_LIVING_PVEC{
+            creature::Algorithms::PlayersByType( ! IS_DETECTING_WIN, false, false) };
+
+        auto areAllIncapacitated{ true };
+        for (auto const NEXT_LIVING_PTR : ALL_LIVING_PVEC)
+        {
+            if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm() == false)
+            {
+                areAllIncapacitated = false;
+            }
+        }
+
+        if (areAllIncapacitated)
         {
             game::LoopManager::Instance()->PopupWaitBegin(this,
                 sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
-                    POPUP_NAME_COMBATOVER_LOSE_, false));
+                ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
+                    ((IS_DETECTING_WIN) ? combat::CombatEnd::Win : combat::CombatEnd::Lose)));
 
             EndOfCombatCleanup();
         }

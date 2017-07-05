@@ -159,7 +159,7 @@ namespace stage
             PostPerformPause,
             StatusAnim,
             DeathAnim,
-            PostDeathAnimSlide,
+            RepositionAnim,
             PostTurnPause,
             Count
         };
@@ -178,6 +178,7 @@ namespace stage
             Cast,
             Roar,
             Pounce,
+            Run,
             Count
         };
 
@@ -194,6 +195,7 @@ namespace stage
             MoveBack,
             Spell,
             PostSpellPause,
+            Run,
             FinalPause,
             Count
         };
@@ -249,6 +251,7 @@ namespace stage
         bool HandleRoar();
         bool HandlePounce(const bool IS_SKY_POUNCE);
         bool HandleWeaponChange();
+        bool HandleRun();
         void MoveTurnBoxObjectsOffScreen();
         void SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_PTR,
                                  const bool                     WILL_DISABLE_ALL = false);
@@ -288,6 +291,7 @@ namespace stage
 
         bool HandleWin();
         bool HandleLose();
+        bool DetectWinOrLose(const bool IS_DETECTING_WIN);
 
         void EndOfCombatCleanup();
 
@@ -295,6 +299,7 @@ namespace stage
         static const std::string POPUP_NAME_SPELLBOOK_;
         static const std::string POPUP_NAME_COMBATOVER_WIN_;
         static const std::string POPUP_NAME_COMBATOVER_LOSE_;
+        static const std::string POPUP_NAME_COMBATOVER_RAN_;
         //
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
@@ -335,6 +340,7 @@ namespace stage
         static const float ANIM_IMPACT_SLIDER_SPEED_;
         static const float ANIM_CREATURE_SHAKE_SLIDER_SPEED_;
         static const float ANIM_IMPACT_SHAKE_SLIDER_SPEED_;
+        static const float ANIM_RUN_SLIDER_SPEED_;
         //
         static const sf::Color LISTBOX_BACKGROUND_COLOR_;
         static const sf::Color LISTBOX_HIGHLIGHT_COLOR_;
@@ -371,6 +377,7 @@ namespace stage
         bool                             willClrShkInitStatusMsg_;
         bool                             isShortPostZoomOutPause_;
         bool                             hasCombatEnded_;
+        bool                             isRepositionAnimAfterRun_;
 
         //members that manage condition effects per turn
         combat::HitInfoVec_t             conditionEffectsVec_;

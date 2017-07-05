@@ -1500,6 +1500,34 @@ namespace combat
     }
 
 
+    void CombatDisplay::HandleDeaths(const combat::CombatNodePVec_t & COMBATNODES_PVEC)
+    {
+        //remove non-player nodes from combat tree and prepare for sliding animation
+        for (auto const NEXT_COMBATNODE_PTR : COMBATNODES_PVEC)
+        {
+            HandleCombatNodeElimination(NEXT_COMBATNODE_PTR);
+        }
+
+        //re-position CombatNodes/Creatures on the battlefield in the slow animated way
+        PositionCombatTreeCells(true);
+    }
+
+
+    void CombatDisplay::HandleCombatNodeElimination(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        HandleCombatNodeElimination( GetCombatNodeForCreature(CREATURE_PTR) );
+    }
+
+
+    void CombatDisplay::HandleCombatNodeElimination(const combat::CombatNodePtr_t COMBATNODE_PTR)
+    {
+        auto const NEXT_NODE_ID{ combatTree_.GetNodeId(COMBATNODE_PTR) };
+        auto const NEXT_NODE_SPTR{ combatTree_.GetNodeSPtr(NEXT_NODE_ID) };
+        combatTree_.RemoveVertex(NEXT_NODE_ID, true);
+        RemoveCombatNode(NEXT_NODE_SPTR);
+    }
+
+
     void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         if (isCombatOver_)

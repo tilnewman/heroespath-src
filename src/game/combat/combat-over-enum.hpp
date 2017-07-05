@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
-#define GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
+#ifndef GAME_COMBAT_OVER_ENUM_HPP_INCLUDED
+#define GAME_COMBAT_OVER_ENUM_HPP_INCLUDED
 //
-// turn-action-enum.hpp
+// combat-over-enum.hpp
 //
 #include <string>
 
@@ -35,37 +35,20 @@ namespace game
 namespace combat
 {
 
-    struct TurnAction
+    struct CombatEnd
     {
         enum Enum
         {
-            Nothing = 0,
-            Attack,
-            Block,
-            Advance,
-            Retreat,
-            Fly,
-            Land,
-            Cast,
-            PlaySong,
-            SkyPounce,
-            LandPounce,
-            Roar,
-            ChangeWeapon,
-            Run,
+            Win = 0,
+            Lose,
+            Ran,
             Count
         };
 
-        static const std::string ToString(const TurnAction::Enum);
-        static const std::string Name(const TurnAction::Enum);
-
-        inline static bool IsMove(const Enum E)
-        {
-            return ((E == Advance) || (E == Retreat));
-        }
+        static const std::string ToString(const CombatEnd::Enum);
     };
 
 }
 }
 
-#endif //GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
+#endif //GAME_COMBAT_OVER_ENUM_HPP_INCLUDED

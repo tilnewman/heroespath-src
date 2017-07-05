@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,12 +24,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
-#define GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
 //
-// turn-action-enum.hpp
+// combat-over-enum.cpp
 //
-#include <string>
+#include "combat-over-enum.hpp"
+#include <sstream>
+#include <exception>
 
 
 namespace game
@@ -35,37 +37,22 @@ namespace game
 namespace combat
 {
 
-    struct TurnAction
+    const std::string CombatEnd::ToString(const CombatEnd::Enum E)
     {
-        enum Enum
+        switch (E)
         {
-            Nothing = 0,
-            Attack,
-            Block,
-            Advance,
-            Retreat,
-            Fly,
-            Land,
-            Cast,
-            PlaySong,
-            SkyPounce,
-            LandPounce,
-            Roar,
-            ChangeWeapon,
-            Run,
-            Count
-        };
-
-        static const std::string ToString(const TurnAction::Enum);
-        static const std::string Name(const TurnAction::Enum);
-
-        inline static bool IsMove(const Enum E)
-        {
-            return ((E == Advance) || (E == Retreat));
+            case Win:   { return "Win"; }
+            case Lose:  { return "Lose"; }
+            case Ran:   { return "Ran"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::combat::CombatEnd::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
         }
-    };
+    }
 
 }
 }
-
-#endif //GAME_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED

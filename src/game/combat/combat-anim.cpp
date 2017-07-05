@@ -141,8 +141,12 @@ namespace combat
         singleTextureAnimUVec_           (),
         multiTextureAnimUVec_            (),
         singleTextureSizeMap_            (),
+        songAnimUVec_                    (),
         sparkleAnimUVec_                 (),
-        textAnimUVec_                    ()
+        textAnimUVec_                    (),
+        runAnimCombatNodePtr_            (nullptr),
+        runAnimPosVTarget_               (0.0f, 0.0f),
+        runAnimPosVOrig_                 (0.0f, 0.0f)
     {
         singleTextureSizeMap_[ANIM_MEDIA_PATH_KEY_STR_SPARKLE_] = sf::Vector2f(128.0f, 128.0f);
     }
@@ -427,24 +431,8 @@ namespace combat
 
     void CombatAnimation::DeathAnimStop()
     {
-        //remove non-player nodes from combat tree and prepare for sliding animation
-        for (auto const nextCombatNodeCPtr : deadAnimNodesPVec_)
-        {
-            auto const NEXT_NODE_ID{
-                combatDisplayStagePtr_->CombatTreeObj().GetNodeId(nextCombatNodeCPtr) };
-
-            auto const NEXT_NODE_SPTR{
-                combatDisplayStagePtr_->CombatTreeObj().GetNodeSPtr(NEXT_NODE_ID) };
-
-            //TODO WARN THIS INVALIDATES A CombatNodePtr that could be stored in
-            //CombatAnim::shakeAnimInfoMap_ etc.
-            combatDisplayStagePtr_->CombatTreeObj().RemoveVertex(NEXT_NODE_ID, true);
-            combatDisplayStagePtr_->RemoveCombatNode(NEXT_NODE_SPTR);
-        }
+        combatDisplayStagePtr_->HandleDeaths(deadAnimNodesPVec_);
         deadAnimNodesPVec_.clear();
-
-        //re-position CombatNodes/Creatures on the battlefield in the slow animated way
-        combatDisplayStagePtr_->PositionCombatTreeCells(true);
     }
 
 
@@ -1317,6 +1305,46 @@ namespace combat
     }
 
 
+    void CombatAnimation::RunAnimStart(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        runAnimCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_PTR);
+        runAnimPosVOrig_ = runAnimCombatNodePtr_->GetEntityPos();
+
+        auto const OFFSCREEN_PAD{ 1000.0f };
+        if (CREATURE_PTR->IsPlayerCharacter())
+        {
+            runAnimPosVTarget_ = sf::Vector2f(0.0f - OFFSCREEN_PAD, 0.0f);
+        }
+        else
+        {
+            runAnimPosVTarget_ = sf::Vector2f(sfml_util::Display::Instance()->GetWinWidth() +
+                OFFSCREEN_PAD, 0.0f);
+        }
+    }
+
+
+    void CombatAnimation::RunAnimUpdate(const float SLIDER_POS)
+    {
+        auto const POS_LEFT{ runAnimPosVOrig_.x +
+            ((runAnimPosVTarget_.x - runAnimPosVOrig_.x) * SLIDER_POS) };
+
+        auto const POS_TOP{ runAnimPosVOrig_.y +
+            ((runAnimPosVTarget_.y - runAnimPosVOrig_.y) * SLIDER_POS) };
+
+        runAnimCombatNodePtr_->SetEntityPos(POS_LEFT, POS_TOP);
+    }
+
+
+    creature::CreaturePtr_t CombatAnimation::RunAnimStop()
+    {
+        auto const CREATURE_PTR{ runAnimCombatNodePtr_->Creature() };
+        runAnimCombatNodePtr_ = nullptr;
+        runAnimPosVOrig_ = sf::Vector2f(0.0f, 0.0f);
+        runAnimPosVTarget_ = sf::Vector2f(0.0f, 0.0f);
+        return CREATURE_PTR;
+    }
+
+
     void CombatAnimation::EndOfCombatCleanup()
     {
         deadAnimNodesPVec_.clear();
@@ -1327,6 +1355,7 @@ namespace combat
         meleeMoveAnimTargetCombatNodePtr_ = nullptr;
         shakeAnimCreatureWasCPtr_ = nullptr;
         selectAnimCombatNodePtr_ = nullptr;
+        runAnimCombatNodePtr_ = nullptr;
     }
 
 }

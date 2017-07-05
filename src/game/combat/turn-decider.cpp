@@ -73,9 +73,9 @@ namespace combat
         {
             return TurnActionInfo(TurnAction::Nothing);
         }
-
+        
         auto const TURN_INFO{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC) };
-
+        
         //find out if any possible targets (players) are holding projectile weapons
         auto const ARE_ANY_HOLDING_PROJECTILE_WEAPONS{ []()
             {
@@ -89,7 +89,7 @@ namespace combat
                 }
                 return false;
             }() };
-
+        
         //find out if any possible targets (players) are flying
         auto const ARE_ANY_FLYING{ []()
             {
@@ -104,7 +104,7 @@ namespace combat
                 }
                 return false;
             }() };
-
+        
         //If flying but no opponents are flying and no opponents are holding projectile weapons,
         //then this enemy has to land so that combat does not become deadlocked.
         if ((Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC).GetIsFlying()) &&
@@ -122,12 +122,12 @@ namespace combat
                 return FLY_TURN_ACTION_INFO;
             }
         }
-
+        
         creature::CreaturePVec_t tempPlayersInAttackRangePVec;
         COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(tempPlayersInAttackRangePVec,
                                                                    CREATURE_DECIDING_CPTRC,
                                                                    true);
-
+        
         auto const LIVING_PLAYERS_IN_ATTACK_RANGE{ creature::Algorithms::FindByAlive(
             tempPlayersInAttackRangePVec) };
 
@@ -1006,25 +1006,13 @@ namespace combat
         creature::CreaturePVec_t targetedCreaturesPVec;
         if (spellPtr->Target() == TargetType::AllCompanions)
         {
-            if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
-            {
-                targetedCreaturesPVec = creature::Algorithms::Players(true);
-            }
-            else
-            {
-                targetedCreaturesPVec = creature::Algorithms::NonPlayers(true);
-            }
+            targetedCreaturesPVec = creature::Algorithms::PlayersByType(
+                CREATURE_DECIDING_CPTRC->IsPlayerCharacter(), true);
         }
         else if (spellPtr->Target() == TargetType::AllOpponents)
         {
-            if (CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
-            {
-                targetedCreaturesPVec = creature::Algorithms::NonPlayers(true);
-            }
-            else
-            {
-                targetedCreaturesPVec = creature::Algorithms::Players(true);
-            }
+            targetedCreaturesPVec = creature::Algorithms::PlayersByType(
+                CREATURE_DECIDING_CPTRC->IsPlayerCharacter(), true);
         }
         else if ((spellPtr->Target() == TargetType::SingleCompanion) ||
                  (spellPtr->Target() == TargetType::SingleOpponent))

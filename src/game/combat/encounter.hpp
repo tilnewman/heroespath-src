@@ -84,6 +84,15 @@ namespace combat
         //the player party is kept by the State object
         non_player::Party & NonPlayerParty();
         non_player::Party & DeadNonPlayerParty();
+        non_player::Party & RunawayNonPlayerParty();
+
+        inline const creature::CreaturePVec_t & RunawayPlayersVec() const
+        {
+            return runawayPlayersVec_;
+        }
+
+        bool IsRunaway(const creature::CreaturePtr_t) const;
+        void Runaway(const creature::CreaturePtr_t);
 
         inline std::size_t GetRoundCount()  { return roundCounter_; }
         inline bool HasStarted() const      { return hasStarted_; }
@@ -94,30 +103,53 @@ namespace combat
         
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
-        inline void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)              { turnInfoMap_[P] = TI; }
-        inline void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)                     { turnInfoMap_[P].SetIsFlying(B); }
-        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI) { turnInfoMap_[P].SetTurnActionInfo(TAI); }
+        inline void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)
+        {
+            turnInfoMap_[P] = TI;
+        }
+
+        inline void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)
+        {
+            turnInfoMap_[P].SetIsFlying(B);
+        }
+
+        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
+        {
+            turnInfoMap_[P].SetTurnActionInfo(TAI);
+        }
 
         void HandleKilledCreature(creature::CreatureCPtrC_t);
         void IncrementTurn();
         void StartTasks();
         void EndTasks();
 
+        void HandleRunawayPlayer(const creature::CreaturePtr_t);
+        void HandleRunawayNonPlayer(const creature::CreaturePtr_t);
+
     private:
         void GenerateFirstEncounter();
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
 
-        //These functions are where all enemy charater pointers are free'd
-        void FreeThenResetEnemyParty();
-        void FreeThenResetDeadEnemyParty();
+        //These functions are where all non-player charater pointers are free'd
+        void FreeThenResetNonPlayerParty();
+        void FreeThenResetDeadNonPlayerParty();
+        void FreeThenResetRunawayNonPlayerParty();
         void FreeThenReset(non_player::PartyUPtr_t &);
+
+        inline void EmptyRunawayPlayersVec() { runawayPlayersVec_.clear(); }
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
-        //
-        non_player::PartyUPtr_t  enemyPartyUPtr_;
-        non_player::PartyUPtr_t  deadEnemyPartyUPtr_;
+        
+        //non-player character pointers are owned by these party objects
+        non_player::PartyUPtr_t nonPlayerPartyUPtr_;
+        non_player::PartyUPtr_t deadNonPlayerPartyUPtr_;
+        non_player::PartyUPtr_t runawayNonPlayerPartyUPtr_;
+
+        //copies of player character pointers are store temporarily in this vectors
+        creature::CreaturePVec_t runawayPlayersVec_;
+
         std::size_t              roundCounter_;
         bool                     hasStarted_;
         creature::CreaturePVec_t turnOverPVec_;

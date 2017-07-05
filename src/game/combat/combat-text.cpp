@@ -463,6 +463,7 @@ namespace combat
             case combat::TurnAction::Advance:
             case combat::TurnAction::Retreat:
             case combat::TurnAction::Block:
+            case combat::TurnAction::Run:
             {
                 ss << combat::TurnAction::Name(TURN_ACTION_INFO.Action());
                 break;

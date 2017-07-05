@@ -224,6 +224,11 @@ namespace combat
 
         void EndOfCombatCleanup();
 
+        void HandleDeaths(const combat::CombatNodePVec_t &);
+
+        void HandleCombatNodeElimination(const creature::CreaturePtr_t);
+        void HandleCombatNodeElimination(const combat::CombatNodePtr_t);
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 
