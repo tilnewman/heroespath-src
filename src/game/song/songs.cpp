@@ -31,6 +31,7 @@
 
 #include "game/creature/creature.hpp"
 #include "game/creature/stats.hpp"
+#include "game/combat/encounter.hpp"
 
 #include "misc/random.hpp"
 
@@ -213,6 +214,17 @@ namespace song
 
             return false;
         }
+        else if (combat::Encounter::Instance()->GetTurnInfoCopy(creatureListeningPtr).GetIsFlying())
+        {
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + TypeToVerb() + Song::FAILED_STR_,
+                " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
+                    " is flying.",
+                NamePosition::SourceThenTarget);
+
+            return false;
+        }
         else
         {
             if (creature::Stats::Versus(creaturePlayingPtr,
@@ -354,6 +366,7 @@ namespace song
                         " into a magical slumber.",
                     NamePosition::SourceThenTarget);
 
+                combat::Encounter::Instance()->SetIsFlying(creatureListeningPtr, false);
                 return true;
             }
             else

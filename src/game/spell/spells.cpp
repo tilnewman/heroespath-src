@@ -33,6 +33,7 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/stats.hpp"
 #include "game/creature/conditions.hpp"
+#include "game/combat/encounter.hpp"
 
 #include "misc/real.hpp"
 #include "misc/random.hpp"
@@ -202,6 +203,7 @@ namespace spell
             creatureCastUponPtr->ConditionAdd(creature::Conditions::AsleepNatural);
             condsAddedVec.push_back(creature::Conditions::AsleepNatural);
             actionPhraseCNP = ActionPhrase();
+            combat::Encounter::Instance()->SetIsFlying(creatureCastUponPtr, false);
             return true;
         }
     }
@@ -277,6 +279,14 @@ namespace spell
         {
             actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
                                                 " is already tripped.",
+                                                "",
+                                                NamePosition::TargetBefore);
+            return false;
+        }
+        else if (combat::Encounter::Instance()->GetTurnInfoCopy(creatureCastUponPtr).GetIsFlying())
+        {
+            actionPhraseCNP = ContentAndNamePos(Spell::FAILED_BECAUSE_STR_,
+                                                " flying creatures can't be tripped.",
                                                 "",
                                                 NamePosition::TargetBefore);
             return false;
