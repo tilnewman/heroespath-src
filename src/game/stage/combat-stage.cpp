@@ -1287,25 +1287,24 @@ namespace stage
         }
         else
         {
-            //set Pixie creatures to initially flying
-            //while this doesn't technically make them fly, the call to restoreInfo_.Restore()
-            //will actually set them flying
-            {
-                combat::CombatNodePVec_t combatNodesPVec;
-                combatDisplayStagePtr_->GetCombatNodes(combatNodesPVec);
+            //Set initially flying creatures flying.
+            //While this doesn't technically set the flying state in Encounter,
+            //the call to restoreInfo_.Restore() below will.
+            combat::CombatNodePVec_t combatNodesPVec;
+            combatDisplayStagePtr_->GetCombatNodes(combatNodesPVec);
 
-                for (auto const nextComabtNodeCPtr : combatNodesPVec)
+            for (auto const nextComabtNodeCPtr : combatNodesPVec)
+            {
+                if ((creature::race::WillInitiallyFly(
+                        nextComabtNodeCPtr->Creature()->Race().Which())) ||
+                    (creature::role::WillInitiallyFly(
+                        nextComabtNodeCPtr->Creature()->Role().Which())))
                 {
-                    if ((creature::race::WillInitiallyFly(
-                            nextComabtNodeCPtr->Creature()->Race().Which())) ||
-                        (creature::role::WillInitiallyFly(
-                            nextComabtNodeCPtr->Creature()->Role().Which())))
-                    {
-                        nextComabtNodeCPtr->IsFlying(true);
-                    }
+                    nextComabtNodeCPtr->IsFlying(true);
                 }
-                restoreInfo_.Save(combatDisplayStagePtr_);
             }
+
+            restoreInfo_.Save(combatDisplayStagePtr_);
         }
 
         //CombatDisplay Zoom Sliderbar
@@ -1345,6 +1344,7 @@ namespace stage
         EntityAdd(zoomLabelTextRegionUPtr_.get());
         EntityAdd(zoomSliderBarUPtr_.get());
 
+        SetupTurnBoxButtons(nullptr, true);
         MoveTurnBoxObjectsOffScreen();
         restoreInfo_.Restore(combatDisplayStagePtr_);
         SetUserActionAllowed(false);
@@ -2939,7 +2939,7 @@ namespace stage
                                                          turnActionInfo_,
                                                          fightResult_,
                                                          true,
-                                                         true), false);
+                                                         true), true);
 
             return true;
         }
@@ -3083,7 +3083,9 @@ namespace stage
     void CombatStage::SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_CPTRC,
                                           const bool                     WILL_DISABLE_ALL)
     {
-        if (CREATURE_CPTRC->IsPlayerCharacter() && (WILL_DISABLE_ALL == false))
+        if ((CREATURE_CPTRC != nullptr) &&
+            CREATURE_CPTRC->IsPlayerCharacter() &&
+            (WILL_DISABLE_ALL == false))
         {
             //attack button
             auto const MOT_ATTACK_STR(

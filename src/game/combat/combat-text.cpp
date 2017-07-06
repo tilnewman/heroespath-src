@@ -265,7 +265,7 @@ namespace combat
             return "Cannot Land because not currently flying.";
         }
 
-        return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;
+        return TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_;
     }
 
 

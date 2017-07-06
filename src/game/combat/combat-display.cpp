@@ -1248,6 +1248,7 @@ namespace combat
             << std::boolalpha << IS_FLYING << ") was given a CREATURE_CPTRC that was null.");
 
         combatTree_.GetNode(CREATURE_CPTRC)->IsFlying(IS_FLYING);
+        Encounter::Instance()->SetIsFlying(CREATURE_CPTRC, IS_FLYING);
     }
 
 
