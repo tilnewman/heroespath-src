@@ -176,11 +176,15 @@ namespace combat
         //at this point HEALTH_ADJ is negative
         auto const DAMAGE_ABS{ std::abs(HEALTH_ADJ) };
 
+        //logic needed to determine if damage will kill
+        auto const IS_NONPLAYER_CHARACTER{ creatureDefendingPtrC->IsPlayerCharacter() == false };
+        auto const IS_DAMAGE_DOUBLE{ (DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() * 2)) };
+        auto const WILL_DAMAGE_KILL{ (DAMAGE_ABS >= creatureDefendingPtrC->HealthCurrent()) };
+        auto const NOT_PIXIE{ (creatureDefendingPtrC->IsPixie() == false) };
+
         //check if the damage will kill
         if (IS_ALREADY_UNCONSCIOUS ||
-            ((creatureDefendingPtrC->IsPlayerCharacter() == false) &&
-            ((DAMAGE_ABS > (creatureDefendingPtrC->HealthNormal() * 2) ||
-                (DAMAGE_ABS >= creatureDefendingPtrC->HealthCurrent())))))
+            (IS_NONPLAYER_CHARACTER && ((IS_DAMAGE_DOUBLE && NOT_PIXIE) || WILL_DAMAGE_KILL)))
         {
             creatureDefendingPtrC->HealthCurrentSet(0);
             creatureDefendingPtrC->ConditionAdd(Conditions::Dead);
