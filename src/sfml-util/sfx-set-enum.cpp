@@ -57,7 +57,7 @@ namespace sfml_util
             case ProjectileMiss:    { return "ProjectileMiss"; }
             case MeleeMiss:         { return "MeleeMiss"; }
             case FistHit:           { return "FistHit"; }
-            case BreathHit:         { return "BreathHit"; }
+            case BreathHitSylavin:  { return "BreathHitSylavin"; }
             case TendrilHit:        { return "TendrilHit"; }
             case WhipHit:           { return "WhipHit"; }
             case WhipMiss:          { return "WhipMiss"; }

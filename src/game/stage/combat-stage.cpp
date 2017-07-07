@@ -2971,14 +2971,7 @@ namespace stage
                                                          true), false);
 
             SetTurnActionPhase(TurnActionPhase::Roar);
-
-            //not implemented yet so skip to end of turn with AppendStatusMessage()
-            AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
-                                                         turnActionInfo_,
-                                                         fightResult_,
-                                                         true,
-                                                         true), false);
-
+            StartPerformAnim();
             return true;
         }
     }
@@ -3657,7 +3650,16 @@ namespace stage
                 SetAnimPhase(AnimPhase::Spell);
                 break;
             }
+
             case TurnActionPhase::Roar:
+            {
+                combatSoundEffects_.PlayRoar(turnCreaturePtr_);
+
+                //TODO need to implement this
+
+                break;
+            }
+
             case TurnActionPhase::Pounce:
             case TurnActionPhase::None:
             case TurnActionPhase::Count:
@@ -3902,38 +3904,38 @@ namespace stage
 
     bool CombatStage::HandleMiscCancelTasks()
     {
-//cancel summary view if visible or even just starting
-if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
-{
-    combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
-    return true;
-}
+        //cancel summary view if visible or even just starting
+        if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
+        {
+            combatDisplayStagePtr_->CancelSummaryViewAndStartTransitionBack();
+            return true;
+        }
 
-//cancel pause if paused
-if (IsPaused())
-{
-    isPauseCanceled_ = true;
-    return true;
-}
+        //cancel pause if paused
+        if (IsPaused())
+        {
+            isPauseCanceled_ = true;
+            return true;
+        }
 
-//this interrupts a status animation in progress...
-if (willClrShkInitStatusMsg_)
-{
-    willClrShkInitStatusMsg_ = false;
-    combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
-    return true;
-}
+        //this interrupts a status animation in progress...
+        if (willClrShkInitStatusMsg_)
+        {
+            willClrShkInitStatusMsg_ = false;
+            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+            return true;
+        }
 
-//...and so does this
-if (TurnPhase::StatusAnim == turnPhase_)
-{
-    SetTurnPhase(TurnPhase::PostTurnPause);
-    StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
-    combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
-    return true;
-}
+        //...and so does this
+        if (TurnPhase::StatusAnim == turnPhase_)
+        {
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            StartPause(POST_TURN_PAUSE_SEC_, "PostTurn");
+            combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
+            return true;
+        }
 
-return false;
+        return false;
     }
 
 
@@ -3961,7 +3963,7 @@ return false;
             if (soundEffectsPlayedSet_.find(EFFECT_HIT_PAIR) == soundEffectsPlayedSet_.end())
             {
                 soundEffectsPlayedSet_.insert(EFFECT_HIT_PAIR);
-                combatSoundEffects_.PlayHitOrMiss(HIT_INFO);
+                combatSoundEffects_.PlayHitOrMiss(turnCreaturePtr_, HIT_INFO);
             }
         }
     }

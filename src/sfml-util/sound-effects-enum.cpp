@@ -135,8 +135,9 @@ namespace sfml_util
             case FistHit6:          { return "fist-hit-6"; }
             case FistHit7:          { return "fist-hit-7"; }
             case FistHit8:          { return "fist-hit-8"; }
-            case BreathHit1:        { return "breath-hit-1"; }
-            case BreathHit2:        { return "breath-hit-2"; }
+            case BreathHitFirebrand:{ return "firebrand"; }
+            case BreathHitSylavin1: { return "sylavin-1"; }
+            case BreathHitSylavin2: { return "sylavin-2"; }
             case TendrilHit1:       { return "tendril-hit-1"; }
             case TendrilHit2:       { return "tendril-hit-2"; }
             case TendrilHit3:       { return "tendril-hit-3"; }
@@ -199,19 +200,45 @@ namespace sfml_util
             case SpellPoison:       { return "poison"; }
             case SpellFrighten:     { return "fright"; }
             case SpellPoisonCloud:  { return "poison-cloud"; }
-            case SongRallyDrum:         { return "rally-drum"; }
-            case SongSpiritResonance:   { return "spirit-resonance"; }
-            case SongRousingRhythm:     { return "rousing-rhythm"; }
-            case SongTripBeat:          { return "trip-beat"; }
-            case SongPanicStrings:      { return "panic-strings"; }
-            case SongLullaby:           { return "lullaby"; }
-            case CombatWin1:            { return "win-1"; }
-            case CombatWin2:            { return "win-2"; }
-            case CombatWin3:            { return "win-3"; }
-            case CombatLose1:           { return "lose-1"; }
-            case CombatLose2:           { return "lose-2"; }
-            case CombatLose3:           { return "lose-3"; }
-            case None:                  { return "None"; }
+            case SongRallyDrum:                 { return "rally-drum"; }
+            case SongSpiritResonance:           { return "spirit-resonance"; }
+            case SongRousingRhythm:             { return "rousing-rhythm"; }
+            case SongTripBeat:                  { return "trip-beat"; }
+            case SongPanicStrings:              { return "panic-strings"; }
+            case SongLullaby:                   { return "lullaby"; }
+            case CombatWin1:                    { return "win-1"; }
+            case CombatWin2:                    { return "win-2"; }
+            case CombatWin3:                    { return "win-3"; }
+            case CombatLose1:                   { return "lose-1"; }
+            case CombatLose2:                   { return "lose-2"; }
+            case CombatLose3:                   { return "lose-3"; }
+            case CharacterDeath:                { return "character-death"; }
+            case RoarDragonFirebrandHatchling:  { return "dragon-firebrand-hatchling"; }
+            case RoarDragonFirebrandWhelp:      { return "dragon-firebrand-hatchling"; }
+            case RoarDragonFirebrandFledgling:  { return "dragon-firebrand-fledgling"; }
+            case RoarDragonFirebrandJuvenile:   { return "dragon-firebrand-juvenile"; }
+            case RoarDragonFirebrandAdult:      { return "dragon-firebrand-adult"; }
+            case RoarDragonFirebrandWyrm:       { return "dragon-firebrand-wyrm"; }
+            case RoarDragonFirebrandSkycaster:  { return "dragon-firebrand-skycaster"; }
+            case RoarDragonFirebrandElder:      { return "dragon-firebrand-elder"; }
+            case RoarDragonSylavinHatchling:    { return "dragon-sylavin-hatchling"; }
+
+            //There is no sylavin whelp sfx yet, so re-use the hatchling sfx.  zTn 2017-7-6
+            case RoarDragonSylavinWhelp:        { return "dragon-sylavin-hatchling"; }
+
+            case RoarDragonSylavinFledgling:    { return "dragon-sylavin-fledgling"; }
+            case RoarDragonSylavinJuvenile:     { return "dragon-sylavin-juvenile"; }
+            case RoarDragonSylavinAdult:        { return "dragon-sylavin-adult"; }
+            case RoarDragonSylavinWyrm:         { return "dragon-sylavin-wyrm"; }
+            case RoarDragonSylavinSkycaster:    { return "dragon-sylavin-skycaster"; }
+            case RoarDragonSylavinElder:        { return "dragon-sylavin-elder"; }
+            case RoarWolfenPup:                 { return "wolfen-pup"; }
+            case RoarWolfenJuvenile:            { return "wolfen-juvenile"; }
+            case RoarWolfenAdult:               { return "wolfen-adult"; }
+            case RoarWolfenNoble:               { return "wolfen-noble"; }
+            case RoarWolfenHighborn:            { return "wolfen-highborn"; }
+            case RoarWolfenElder:               { return "wolfen-elder"; }
+            case None:                          { return "None"; }
             case Count:
             case Random:
             default:
@@ -332,8 +359,9 @@ namespace sfml_util
             case FistHit6:
             case FistHit7:
             case FistHit8:              { return "sound-effects/combat/fist-hit"; }
-            case BreathHit1:
-            case BreathHit2:            { return "sound-effects/combat/breath-hit"; }
+            case BreathHitFirebrand:
+            case BreathHitSylavin1:
+            case BreathHitSylavin2:     { return "sound-effects/combat/breath-hit"; }
             case TendrilHit1:
             case TendrilHit2:
             case TendrilHit3:
@@ -407,7 +435,30 @@ namespace sfml_util
             case CombatWin3:
             case CombatLose1:
             case CombatLose2:
-            case CombatLose3:           { return "sound-effects/combat"; }
+            case CombatLose3:
+            case CharacterDeath:                { return "sound-effects/combat"; }
+            case RoarDragonFirebrandHatchling:
+            case RoarDragonFirebrandWhelp:
+            case RoarDragonFirebrandFledgling:
+            case RoarDragonFirebrandJuvenile:
+            case RoarDragonFirebrandAdult:
+            case RoarDragonFirebrandWyrm:
+            case RoarDragonFirebrandSkycaster:
+            case RoarDragonFirebrandElder:
+            case RoarDragonSylavinHatchling:
+            case RoarDragonSylavinWhelp:
+            case RoarDragonSylavinFledgling:
+            case RoarDragonSylavinJuvenile:
+            case RoarDragonSylavinAdult:
+            case RoarDragonSylavinWyrm:
+            case RoarDragonSylavinSkycaster:
+            case RoarDragonSylavinElder:
+            case RoarWolfenPup:
+            case RoarWolfenJuvenile:
+            case RoarWolfenAdult:
+            case RoarWolfenNoble:
+            case RoarWolfenHighborn:
+            case RoarWolfenElder:               { return "sound-effects/combat/roar"; }
             case Count:
             case None:
             case Random:

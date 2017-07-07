@@ -34,6 +34,11 @@
 
 namespace game
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace item
 {
     class Item;
@@ -66,10 +71,11 @@ namespace combat
     public:
         CombatSoundEffects();
 
-        void PlayShoot(const item::ItemPtr_t);
-        void PlayHitOrMiss(const HitInfo &);
-        void PlaySpell(const spell::SpellPtr_t);
-        void PlaySong(const song::SongPtr_t);
+        void PlayShoot(const item::ItemPtr_t) const;
+        void PlayHitOrMiss(const creature::CreaturePtr_t, const HitInfo &) const;
+        void PlaySpell(const spell::SpellPtr_t) const;
+        void PlaySong(const song::SongPtr_t) const;
+        void PlayRoar(const creature::CreaturePtr_t) const;
     };
 
 }

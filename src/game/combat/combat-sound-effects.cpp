@@ -35,6 +35,7 @@
 #include "game/log-macros.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/song/song.hpp"
+#include "game/creature/creature.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -48,7 +49,7 @@ namespace combat
     {}
 
 
-    void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR)
+    void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((WEAPON_PTR != nullptr),
             "game::combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_PTR.");
@@ -78,7 +79,8 @@ namespace combat
     }
 
 
-    void CombatSoundEffects::PlayHitOrMiss(const HitInfo & HIT_INFO)
+    void CombatSoundEffects::PlayHitOrMiss(const creature::CreaturePtr_t CREATURE_PTR,
+                                           const HitInfo &               HIT_INFO) const
     {
         auto const WEAPON_PTR{ HIT_INFO.Weapon() };
         if (WEAPON_PTR == nullptr)
@@ -121,10 +123,17 @@ namespace combat
                 sfml_util::SoundManager::Instance()->GetSfxSet(
                     sfml_util::SfxSet::TendrilHit).PlayRandom();
             }
-            else if (WEAPON_TYPE & item::weapon_type::Breath)
+            else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
+                     (CREATURE_PTR->Role().Which() == creature::role::Firebrand))
+            {
+                sfml_util::SoundManager::Instance()->
+                    SoundEffectPlay(sfml_util::sound_effect::BreathHitFirebrand);
+            }
+            else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
+                     (CREATURE_PTR->Role().Which() == creature::role::Sylavin))
             {
                 sfml_util::SoundManager::Instance()->GetSfxSet(
-                    sfml_util::SfxSet::BreathHit).PlayRandom();
+                    sfml_util::SfxSet::BreathHitSylavin).PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Claws)
             {
@@ -288,7 +297,9 @@ namespace combat
             }
             else
             {
-                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss(weapon=\""
+                M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayHitOrMiss("
+                    << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
+                    << "\", weapon=\""
                     << WEAPON_PTR->Name() << "\", category=\""
                     << item::category::ToString(WEAPON_PTR->Category(), false)
                     << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
@@ -298,7 +309,7 @@ namespace combat
     }
 
 
-    void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR)
+    void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR) const
     {
         switch (SPELL_PTR->Which())
         {
@@ -387,7 +398,7 @@ namespace combat
     }
 
 
-    void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR)
+    void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR) const
     {
         switch (SONG_PTR->Which())
         {
@@ -433,6 +444,173 @@ namespace combat
                 M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlaySong(" << SONG_PTR->Name()
                     << ") failed to play a sound effect.");
             }
+        }
+    }
+
+
+    void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        auto const ROLE{ CREATURE_PTR->Role().Which() };
+        if (ROLE == creature::role::Wolfen)
+        {
+            switch (CREATURE_PTR->WolfenClass())
+            {
+                case creature::wolfen_class::Pup:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenPup);
+                    return;
+                }
+                case creature::wolfen_class::Juvenile:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenJuvenile);
+                    return;
+                }
+                case creature::wolfen_class::Adult:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenAdult);
+                    return;
+                }
+                case creature::wolfen_class::Noble:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenNoble);
+                    return;
+                }
+                case creature::wolfen_class::Highborn:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenHighborn);
+                    return;
+                }
+                case creature::wolfen_class::Elder:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarWolfenElder);
+                    return;
+                }
+                case creature::wolfen_class::Count:
+                default:
+                {}
+            }
+        }
+        else if (ROLE == creature::role::Firebrand)
+        {
+            switch (CREATURE_PTR->DragonClass())
+            {
+                case creature::dragon_class::Hatchling:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandHatchling);
+                    return;
+                }
+                case creature::dragon_class::Whelp:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandWhelp);
+                    return;
+                }
+                case creature::dragon_class::Fledgling:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandFledgling);
+                    return;
+                }
+                case creature::dragon_class::Juvenile:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandJuvenile);
+                    return;
+                }
+                case creature::dragon_class::Adult:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandAdult);
+                    return;
+                }
+                case creature::dragon_class::Wyrm:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandWyrm);
+                    return;
+                }
+                case creature::dragon_class::Skycaster: {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandSkycaster);
+                    return;
+                }
+                case creature::dragon_class::Elder:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonFirebrandElder);
+                    return;
+                }
+                case creature::dragon_class::Count:
+                default:
+                {}
+            }
+        }
+        else if (ROLE == creature::role::Sylavin)
+        {
+            switch (CREATURE_PTR->DragonClass())
+            {
+                case creature::dragon_class::Hatchling:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinHatchling);
+                    return;
+                }
+                case creature::dragon_class::Whelp:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinWhelp);
+                    return;
+                }
+                case creature::dragon_class::Fledgling:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinFledgling);
+                    return;
+                }
+                case creature::dragon_class::Juvenile:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinJuvenile);
+                    return;
+                }
+                case creature::dragon_class::Adult:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinAdult);
+                    return;
+                }
+                case creature::dragon_class::Wyrm:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinWyrm);
+                    return;
+                }
+                case creature::dragon_class::Skycaster: {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinSkycaster);
+                    return;
+                }
+                case creature::dragon_class::Elder:
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                        sfml_util::sound_effect::RoarDragonSylavinElder);
+                    return;
+                }
+                case creature::dragon_class::Count:
+                default:
+                {}
+            }
+
+            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayRoar("
+                << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
+                << ") failed to find an sfx to play.");
         }
     }
 

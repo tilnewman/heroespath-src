@@ -47,11 +47,17 @@ namespace creature
         for (std::size_t i(0); i < (rank_class::Count-1); ++i)
         {
             const rank_class::Enum NEXT_RANK_TYPE(static_cast<rank_class::Enum>(i));
+
             std::ostringstream ss;
             ss << "heroespath-rankclass-" << ToString(NEXT_RANK_TYPE) << "-rankmax";
-            rankCumulative += static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt(ss.str()));
+
+            rankCumulative += static_cast<stats::Rank_t>(
+                GameDataFile::Instance()->GetCopyInt(ss.str()));
+
             if (RANK_PARAM <= rankCumulative)
+            {
                 return NEXT_RANK_TYPE;
+            }
         }
 
         return static_cast<rank_class::Enum>(rank_class::Count - 1);
@@ -65,20 +71,29 @@ namespace creature
 
         if (E == GrandMaster)
         {
-            min = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt("heroespath-rankclass-" + ToString(Master) + "-rankmax") + 1);
+            min = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt(
+                "heroespath-rankclass-" + ToString(Master) + "-rankmax") + 1);
+
             max = 0;
             return std::make_pair(min, max);
         }
         else if (E == Novice)
         {
             min = 1;
-            max = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt("heroespath-rankclass-" + ToString(Novice) + "-rankmax"));
+            max = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt(
+                "heroespath-rankclass-" + ToString(Novice) + "-rankmax"));
+
             return std::make_pair(min, max);
         }
         else
         {
-            min = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt("heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(E - 1)) + "-rankmax") + 1);
-            max = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt("heroespath-rankclass-" + ToString(E) + "-rankmax"));
+            min = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt(
+                "heroespath-rankclass-" + ToString(
+                    static_cast<rank_class::Enum>(E - 1)) + "-rankmax") + 1);
+
+            max = static_cast<stats::Rank_t>(GameDataFile::Instance()->GetCopyInt(
+                "heroespath-rankclass-" + ToString(E) + "-rankmax"));
+
             return std::make_pair(min, max);
         }
     }

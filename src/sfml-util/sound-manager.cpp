@@ -294,12 +294,12 @@ namespace sfml_util
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::FistHit)] =
             SoundEffectsSet(FIST_HIT_SOUNDS_ENUM_VEC);
 
-        const SoundEffectEnumVec_t BREATH_HIT_SOUNDS_ENUM_VEC = {
-            sound_effect::BreathHit1,
-            sound_effect::BreathHit2 };
+        const SoundEffectEnumVec_t BREATH_HIT_SYLAVIN_SOUNDS_ENUM_VEC = {
+            sound_effect::BreathHitSylavin1,
+            sound_effect::BreathHitSylavin2 };
 
-        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::BreathHit)] =
-            SoundEffectsSet(BREATH_HIT_SOUNDS_ENUM_VEC);
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::BreathHitSylavin)] =
+            SoundEffectsSet(BREATH_HIT_SYLAVIN_SOUNDS_ENUM_VEC);
 
         const SoundEffectEnumVec_t TENDRILS_HIT_SOUNDS_ENUM_VEC = {
             sound_effect::TendrilHit1,
