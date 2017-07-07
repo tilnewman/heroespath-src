@@ -2115,7 +2115,12 @@ namespace stage
                 combatAnimationUPtr_->DeathAnimStart( { CREATURE_PTR } );
 
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
-                //TODO SOUNDEFFECT play creature death sound effect here
+
+                //This is where the non-player death sfx is played,
+                //so it can coincide with the non-player death animation.
+                //Player death sfx is played in HandleKilledCreatures().
+                combatSoundEffects_.PlayDeath(CREATURE_PTR);
+
                 return;
             }
 
@@ -2294,7 +2299,6 @@ namespace stage
                 SetTurnPhase(TurnPhase::DeathAnim);
                 combatAnimationUPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
-                //TODO SOUNDEFFECT play creature death sound effect here
             }
             return;
         }
@@ -3816,6 +3820,7 @@ namespace stage
 
     void CombatStage::HandleKilledCreatures()
     {
+        auto wasPlayerKilled{ false };
         auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
         {
@@ -3823,7 +3828,22 @@ namespace stage
             {
                 combat::Encounter::Instance()->HandleKilledCreature(
                     NEXT_CREATURE_EFFECT.GetCreature());
+
+                //This is where player death sfx are played.
+                //Non-player death sfx is played elsewhere in this file
+                //where the death anim starts.
+                if (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter())
+                {
+                    wasPlayerKilled = true;
+                    combatSoundEffects_.PlayDeath(NEXT_CREATURE_EFFECT.GetCreature());
+                }
             }
+        }
+
+        if (wasPlayerKilled)
+        {
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                sfml_util::sound_effect::CharacterDeath);
         }
     }
 

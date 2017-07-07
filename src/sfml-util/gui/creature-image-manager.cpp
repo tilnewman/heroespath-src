@@ -1709,6 +1709,7 @@ namespace gui
         if (RACE == race::Shade)
         {
             outputVec.push_back("shade-1.png");
+            outputVec.push_back("shade-2.png");
             return;
         }
 

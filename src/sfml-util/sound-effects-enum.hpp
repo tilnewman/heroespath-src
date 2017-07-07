@@ -302,6 +302,11 @@ namespace sfml_util
             DeathThing1,
             DeathThing2,
             DeathThing3,
+            DeathWitch,
+            DeathGriffin,
+            DeathWolf,
+            DeathBoar,
+            DeathLionboar,
             Count,
             None,
             Random

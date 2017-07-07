@@ -38,6 +38,7 @@
 #include "game/creature/creature.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/vectors.hpp"
 
 
 namespace game
@@ -611,6 +612,268 @@ namespace combat
             M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayRoar("
                 << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
                 << ") failed to find an sfx to play.");
+        }
+    }
+
+
+    void CombatSoundEffects::PlayDeath(const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        sfml_util::SoundEffectEnumVec_t sfxVec;
+        GetDeathSfx(CREATURE_PTR, sfxVec);
+
+        if (sfxVec.empty())
+        {
+            M_HP_LOG_ERR("game::combat::CombatSoundEffects::PlayDeath("
+                << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
+                << ") failed to find an sfx to play.");
+        }
+        else
+        {
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                misc::Vector::SelectRandom(sfxVec) );
+        }
+    }
+
+
+    void CombatSoundEffects::GetDeathSfx(creature::CreaturePtr_t           CREATURE_PTR,
+                                         sfml_util::SoundEffectEnumVec_t & sfxVec_OutParam) const
+    {
+        switch (CREATURE_PTR->Race().Which())
+        {
+            case creature::race::Human:
+            case creature::race::Gnome:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman3);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman4);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman5);
+
+                if (CREATURE_PTR->Sex() == creature::sex::Male)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale1);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale2);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale3);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale4);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale5);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale6);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale7);
+                }
+                else if (CREATURE_PTR->Sex() == creature::sex::Female)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale1);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale3);
+                }
+                return;
+            }
+            case creature::race::Halfling:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHuman4);
+
+                if (CREATURE_PTR->Sex() == creature::sex::Male)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale3);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale5);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale6);
+                }
+                else if (CREATURE_PTR->Sex() == creature::sex::Female)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale2);
+                }
+                return;
+            }
+            case creature::race::Pixie:
+            {
+                if (CREATURE_PTR->Sex() == creature::sex::Male)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale2);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanMale4);
+                }
+                else
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale1);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale2);
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale3);
+                }
+                return;
+            }
+            case creature::race::Werewolf:
+            case creature::race::Wolfen:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathWolf);
+                return;
+            }
+            case creature::race::Hydra:
+            case creature::race::Dragon:
+            case creature::race::Wyvern:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathDragon1a);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathDragon1b);
+                return;
+            }
+            case creature::race::Newt:
+            case creature::race::Goblin:
+            case creature::race::Pug:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastSmallRaspy1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastSmallRaspy2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastSmallRaspy3);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastSmallRaspy4);
+                return;
+            }
+            case creature::race::Troll:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastRaugh1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastRaugh2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastRaugh3);
+                return;
+            }
+            case creature::race::Orc:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast5);
+                return;
+            }
+            case creature::race::Beetle:
+            case creature::race::Spider:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSpider1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSpider2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSpider3);
+                return;
+            }
+            case creature::race::Bog:
+            {
+                if (CREATURE_PTR->Role().Which() == creature::role::Smasher)
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast3);
+                }
+                else
+                {
+                    sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastSmallRaspy4);
+                }
+                return;
+            }
+            case creature::race::CaveCrawler:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathThing1);
+                return;
+            }
+            case creature::race::LizardWalker:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastTalker1);
+                return;
+            }
+            case creature::race::Minotaur:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast1);
+                return;
+            }
+            case creature::race::Ogre:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastBig1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastBig2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastBig3);
+                return;
+            }
+            case creature::race::Plant:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastWet);
+                return;
+            }
+            case creature::race::Shade:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathGhostly1a);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathGhostly1b);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathGhostly1c);
+                return;
+            }
+            case creature::race::Skeleton:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy3);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy4);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy5);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathCreepy6);
+                return;
+            }
+            case creature::race::Boar:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBoar);
+                return;
+            }
+            case creature::race::Demon:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHowlDemon);
+                return;
+            }
+            case creature::race::Griffin:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathGriffin);
+                return;
+            }
+            case creature::race::Lion:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathLion);
+                return;
+            }
+            case creature::race::Wereboar:
+            case creature::race::LionBoar:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathLionboar);
+                return;
+            }
+            case creature::race::Naga:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastTalker2Roar);
+                return;
+            }
+            case creature::race::Ramonaut:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast3);
+                return;
+            }
+            case creature::race::Serpent:
+            case creature::race::Cobra:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake3);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake4);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake5);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathSnake6);
+                return;
+            }
+            case creature::race::Werebear:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast4);
+                return;
+            }
+            case creature::race::Werecat:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathThing3);
+                return;
+            }
+            case creature::race::Werebat:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathThing2);
+                return;
+            }
+            case creature::race::Giant:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastHuge1a);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastHuge1b);
+                return;
+            }
+            case creature::race::Ghoul:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast6);
+                return;
+            }
+            case creature::race::Count:
+            default:
+            {}
         }
     }
 

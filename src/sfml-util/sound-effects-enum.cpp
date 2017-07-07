@@ -305,6 +305,11 @@ namespace sfml_util
             case DeathThing1:                   { return "thing-1"; }
             case DeathThing2:                   { return "thing-2"; }
             case DeathThing3:                   { return "thing-3"; }
+            case DeathWitch:                    { return "witch"; }
+            case DeathGriffin:                  { return "griffin"; }
+            case DeathWolf:                     { return "wolf"; }
+            case DeathBoar:                     { return "boar"; }
+            case DeathLionboar:                 { return "lionboar"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -592,7 +597,12 @@ namespace sfml_util
             case DeathSpider3:
             case DeathThing1:
             case DeathThing2:
-            case DeathThing3:               { return "sound-effects/combat/death"; }
+            case DeathThing3:
+            case DeathWitch:
+            case DeathGriffin:
+            case DeathWolf:
+            case DeathBoar:
+            case DeathLionboar:                 { return "sound-effects/combat/death"; }
             case Count:
             case None:
             case Random:

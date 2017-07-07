@@ -28,6 +28,7 @@
 // combat-sound-effects.hpp
 //
 #include "game/combat/fight-results.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
 
 #include <memory>
 
@@ -76,6 +77,10 @@ namespace combat
         void PlaySpell(const spell::SpellPtr_t) const;
         void PlaySong(const song::SongPtr_t) const;
         void PlayRoar(const creature::CreaturePtr_t) const;
+        void PlayDeath(const creature::CreaturePtr_t) const;
+
+    private:
+        void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SoundEffectEnumVec_t &) const;
     };
 
 }

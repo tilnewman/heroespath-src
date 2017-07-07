@@ -205,6 +205,7 @@ namespace combat
                                      condsRemovedVec);
             }
 
+
             return;
         }
 
