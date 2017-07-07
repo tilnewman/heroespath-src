@@ -1068,23 +1068,24 @@ namespace stage
                 static int totalTestCount{ static_cast<int>(
                     static_cast<float>(game::creature::race::Count) *
                     static_cast<float>(game::creature::role::Count)  *
-                    1.182f) };
+                    1.0f) };
 
+                const std::size_t RANK_BASE{ 10 };
                 const std::size_t RANK_MAX{ [&]()
                     {
                         if (RACE_ENUM == creature::race::Dragon)
                         {
-                            return GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
                                 "heroespath-creature-dragon-class-rank-min-Elder");
                         }
                         else if (RACE_ENUM == creature::race::Wolfen)
                         {
-                            return GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
                                 "heroespath-creature-wolfen-class-rank-min-Elder");
                         }
                         else
                         {
-                            return GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
                                 "heroespath-rankclass-Master-rankmax");
                         }
                     }() };
@@ -1109,7 +1110,7 @@ namespace stage
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
 
-                    auto characterPtr( new non_player::Character(
+                    auto characterUPtr = std::make_unique<non_player::Character>(
                         nameSS.str(),
                         creature::sex::Male,
                         creature::BodyType::Make_FromRaceAndRole(RACE_ENUM,
@@ -1119,14 +1120,12 @@ namespace stage
                         STATS,
                         10,
                         rankIndex,
-                        static_cast<stats::Exp_t>(rankIndex * 10'000)) );
+                        static_cast<stats::Exp_t>(rankIndex * 10'000) );
 
                     non_player::ownership::InventoryFactory::Instance()->
-                        PopulateCreatureInventory(characterPtr);
+                        PopulateCreatureInventory(characterUPtr.get());
 
-                    characterPtr->SetCurrentWeaponsToBest();
-
-                    delete characterPtr;
+                    characterUPtr->SetCurrentWeaponsToBest();
                 }
 
                 std::ostringstream ss;
