@@ -238,6 +238,73 @@ namespace sfml_util
             case RoarWolfenNoble:               { return "wolfen-noble"; }
             case RoarWolfenHighborn:            { return "wolfen-highborn"; }
             case RoarWolfenElder:               { return "wolfen-elder"; }
+            case DeathBeast1:                   { return "beast-1"; }
+            case DeathBeast2:                   { return "beast-2"; }
+            case DeathBeast3:                   { return "beast-3"; }
+            case DeathBeast4:                   { return "beast-4"; }
+            case DeathBeast5:                   { return "beast-5"; }
+            case DeathBeast6:                   { return "beast-6"; }
+            case DeathBeast7:                   { return "beast-7"; }
+            case DeathBeast8aGroan:             { return "beast-8a-groan"; }
+            case DeathBeast8bGroan:             { return "beast-8b-groan"; }
+            case DeathBeastBig1:                { return "beast-big-1"; }
+            case DeathBeastBig2:                { return "beast-big-2"; }
+            case DeathBeastBig3:                { return "beast-big-3"; }
+            case DeathBeastCaveTroll1:          { return "beast-cave-troll-1"; }
+            case DeathBeastCaveTroll2:          { return "beast-cave-troll-2"; }
+            case DeathBeastCaveTroll3:          { return "beast-cave-troll-3"; }
+            case DeathBeastHuge1a:              { return "beast-huge-1a"; }
+            case DeathBeastHuge1b:              { return "beast-huge-1b"; }
+            case DeathBeastRaugh1:              { return "beast-raugh-1"; }
+            case DeathBeastRaugh2:              { return "beast-raugh-2"; }
+            case DeathBeastRaugh3:              { return "beast-raugh-3"; }
+            case DeathBeastSmallRaspy1:         { return "beast-small-raspy-1"; }
+            case DeathBeastSmallRaspy2:         { return "beast-small-raspy-2"; }
+            case DeathBeastSmallRaspy3:         { return "beast-small-raspy-3"; }
+            case DeathBeastSmallRaspy4:         { return "beast-small-raspy-4"; }
+            case DeathBeastTalker1:             { return "beast-talker-1"; }
+            case DeathBeastTalker2Roar:         { return "beast-talker-2-roar"; }
+            case DeathBeastWet:                 { return "beast-wet"; }
+            case DeathCreepy1:                  { return "creepy-1"; }
+            case DeathCreepy2:                  { return "creepy-2"; }
+            case DeathCreepy3:                  { return "creepy-3"; }
+            case DeathCreepy4:                  { return "creepy-4"; }
+            case DeathCreepy5:                  { return "creepy-5"; }
+            case DeathCreepy6:                  { return "creepy-6"; }
+            case DeathDragon1a:                 { return "dragon-1a"; }
+            case DeathDragon1b:                 { return "dragon-1b"; }
+            case DeathGhostly1a:                { return "ghostly-1a"; }
+            case DeathGhostly1b:                { return "ghostly-1b"; }
+            case DeathGhostly1c:                { return "ghostly-1c"; }
+            case DeathHowlDemon:                { return "howl-demon"; }
+            case DeathHuman1:                   { return "human-1"; }
+            case DeathHuman2:                   { return "human-2"; }
+            case DeathHuman3:                   { return "human-3"; }
+            case DeathHuman4:                   { return "human-4"; }
+            case DeathHuman5:                   { return "human-5"; }
+            case DeathHumanFemale1:             { return "human-female-1"; }
+            case DeathHumanFemale2:             { return "human-female-2"; }
+            case DeathHumanFemale3:             { return "human-female-3"; }
+            case DeathHumanMale1:               { return "human-male-1"; }
+            case DeathHumanMale2:               { return "human-male-2"; }
+            case DeathHumanMale3:               { return "human-male-3"; }
+            case DeathHumanMale4:               { return "human-male-4"; }
+            case DeathHumanMale5:               { return "human-male-5"; }
+            case DeathHumanMale6:               { return "human-male-6"; }
+            case DeathHumanMale7:               { return "human-male-7"; }
+            case DeathLion:                     { return "lion"; }
+            case DeathSnake1:                   { return "snake-1"; }
+            case DeathSnake2:                   { return "snake-2"; }
+            case DeathSnake3:                   { return "snake-3"; }
+            case DeathSnake4:                   { return "snake-4"; }
+            case DeathSnake5:                   { return "snake-5"; }
+            case DeathSnake6:                   { return "snake-6"; }
+            case DeathSpider1:                  { return "spider-1"; }
+            case DeathSpider2:                  { return "spider-2"; }
+            case DeathSpider3:                  { return "spider-3"; }
+            case DeathThing1:                   { return "thing-1"; }
+            case DeathThing2:                   { return "thing-2"; }
+            case DeathThing3:                   { return "thing-3"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -459,6 +526,73 @@ namespace sfml_util
             case RoarWolfenNoble:
             case RoarWolfenHighborn:
             case RoarWolfenElder:               { return "sound-effects/combat/roar"; }
+            case DeathBeast1:
+            case DeathBeast2:
+            case DeathBeast3:
+            case DeathBeast4:
+            case DeathBeast5:
+            case DeathBeast6:
+            case DeathBeast7:
+            case DeathBeast8aGroan:
+            case DeathBeast8bGroan:
+            case DeathBeastBig1:
+            case DeathBeastBig2:
+            case DeathBeastBig3:
+            case DeathBeastCaveTroll1:
+            case DeathBeastCaveTroll2:
+            case DeathBeastCaveTroll3:
+            case DeathBeastHuge1a:
+            case DeathBeastHuge1b:
+            case DeathBeastRaugh1:
+            case DeathBeastRaugh2:
+            case DeathBeastRaugh3:
+            case DeathBeastSmallRaspy1:
+            case DeathBeastSmallRaspy2:
+            case DeathBeastSmallRaspy3:
+            case DeathBeastSmallRaspy4:
+            case DeathBeastTalker1:
+            case DeathBeastTalker2Roar:
+            case DeathBeastWet:
+            case DeathCreepy1:
+            case DeathCreepy2:
+            case DeathCreepy3:
+            case DeathCreepy4:
+            case DeathCreepy5:
+            case DeathCreepy6:
+            case DeathDragon1a:
+            case DeathDragon1b:
+            case DeathGhostly1a:
+            case DeathGhostly1b:
+            case DeathGhostly1c:
+            case DeathHowlDemon:
+            case DeathHuman1:
+            case DeathHuman2:
+            case DeathHuman3:
+            case DeathHuman4:
+            case DeathHuman5:
+            case DeathHumanFemale1:
+            case DeathHumanFemale2:
+            case DeathHumanFemale3:
+            case DeathHumanMale1:
+            case DeathHumanMale2:
+            case DeathHumanMale3:
+            case DeathHumanMale4:
+            case DeathHumanMale5:
+            case DeathHumanMale6:
+            case DeathHumanMale7:
+            case DeathLion:
+            case DeathSnake1:
+            case DeathSnake2:
+            case DeathSnake3:
+            case DeathSnake4:
+            case DeathSnake5:
+            case DeathSnake6:
+            case DeathSpider1:
+            case DeathSpider2:
+            case DeathSpider3:
+            case DeathThing1:
+            case DeathThing2:
+            case DeathThing3:               { return "sound-effects/combat/death"; }
             case Count:
             case None:
             case Random:
