@@ -1380,17 +1380,10 @@ namespace combat
             "game::combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() "
             << "returned no attackable creatures.");
 
-        auto const LIVE_ATTBLE_NP_CRTS_PVEC{
-            creature::Algorithms::FindByAlive(attackableNonPlayerCreaturesPVec) };
-
-        M_ASSERT_OR_LOGANDTHROW_SS((LIVE_ATTBLE_NP_CRTS_PVEC.empty() == false),
-            "game::combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() returned "
-            << "no LIVING attackable creatures.");
-
         //attack those with the lowest relative health first, which will correspond
         //to the health bar seen on screen
         auto const LIVE_ATTBLE_LOWH_NP_CRTS_PVEC{
-            creature::Algorithms::FindLowestHealthRatio(LIVE_ATTBLE_NP_CRTS_PVEC) };
+            creature::Algorithms::FindLowestHealthRatio(attackableNonPlayerCreaturesPVec) };
 
         M_ASSERT_OR_LOGANDTHROW_SS((LIVE_ATTBLE_LOWH_NP_CRTS_PVEC.empty() == false),
             "game::combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() returned "

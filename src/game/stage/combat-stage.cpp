@@ -1268,10 +1268,6 @@ namespace stage
             state::GameStateFactory::Instance()->NewGame(partyPtr);
 
             combat::Encounter::Instance()->StartTasks();
-
-            //TODO TEMP REMOVE -test create that can't take action
-            combat::Encounter::Instance()->NonPlayerParty().Characters()[0]->
-                ConditionAdd(creature::Conditions::Stone);
         }
 
         //combat display
@@ -2116,8 +2112,8 @@ namespace stage
 
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
 
-                //This is where the non-player death sfx is played,
-                //so it can coincide with the non-player death animation.
+                //This one of two places where non-player death sfx is played,
+                //so it can coincide with the non-player death animation start.
                 //Player death sfx is played in HandleKilledCreatures().
                 combatSoundEffects_.PlayDeath(CREATURE_PTR);
 
@@ -2299,6 +2295,14 @@ namespace stage
                 SetTurnPhase(TurnPhase::DeathAnim);
                 combatAnimationUPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
+
+                //This one of two places where non-player death sfx is played,
+                //so it can coincide with the non-player death animation start.
+                //Player death sfx is played in HandleKilledCreatures().
+                for (auto const NEXT_CREATURE_PTR : killedNonPlayerCreaturesPVec)
+                {
+                    combatSoundEffects_.PlayDeath(NEXT_CREATURE_PTR);
+                }
             }
             return;
         }
@@ -3829,9 +3833,9 @@ namespace stage
                 combat::Encounter::Instance()->HandleKilledCreature(
                     NEXT_CREATURE_EFFECT.GetCreature());
 
-                //This is where player death sfx are played.
+                //This is where player death sfx is played.
                 //Non-player death sfx is played elsewhere in this file
-                //where the death anim starts.
+                //(in two other places actually) where the enemy death anim starts.
                 if (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter())
                 {
                     wasPlayerKilled = true;

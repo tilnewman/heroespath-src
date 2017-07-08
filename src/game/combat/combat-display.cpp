@@ -810,48 +810,41 @@ namespace combat
             return 0;
         }
 
-        if (CREATURE_CPTRC->IsHoldingProjectileWeapon())
+        auto const IS_FLYING{ Encounter::Instance()->
+            GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying() };
+
+        if (CREATURE_CPTRC->IsHoldingProjectileWeapon() ||
+            (IS_FLYING))
         {
-            auto const ORIG_SIZE{ pVec_OutParam.size() };
-            creature::Algorithms::PlayersByType(pVec_OutParam, WILL_FIND_PLAYERS, true);
-            auto const FINAL_SIZE{ pVec_OutParam.size() };
-            return FINAL_SIZE - ORIG_SIZE;
+            return creature::Algorithms::PlayersByType(pVec_OutParam, WILL_FIND_PLAYERS, true);
         }
         else
         {
-            creature::CreaturePVec_t creaturesAllAround;
-            if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying())
-            {
-                creaturesAllAround = creature::Algorithms::PlayersByType(WILL_FIND_PLAYERS,
-                                                                         true,
-                                                                         false);
-            }
-            else
-            {
-                FindCreaturesAllRoundOfType(creaturesAllAround,
-                                            CREATURE_CPTRC,
-                                            WILL_FIND_PLAYERS);
-            }
+            auto const ALLAROUND_CREATURES_PVEC{ [&]()
+                {
+                    creature::CreaturePVec_t creaturesAllAround;
+                    FindCreaturesAllRoundOfType(creaturesAllAround,
+                                                CREATURE_CPTRC,
+                                                WILL_FIND_PLAYERS,
+                                                true);
+                    return creaturesAllAround;
+                }() };
+            
+            auto const NOTFLYING_ALLAROUND_CREATURES_PVEC{
+                creature::Algorithms::FindByFlying(ALLAROUND_CREATURES_PVEC, false) };
 
-            creature::CreaturePVec_t creaturesAllAroundFlyingMatch;
-            if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying() == false)
-            {
-                creaturesAllAroundFlyingMatch = creature::Algorithms::FindByFlying(
-                    creaturesAllAround, false);
-            }
-            else
-            {
-                creaturesAllAroundFlyingMatch = creaturesAllAround;
-            }
+            auto const REACHABLE_CREATURES_PVEC{ ((IS_FLYING) ?
+                ALLAROUND_CREATURES_PVEC :
+                NOTFLYING_ALLAROUND_CREATURES_PVEC) };
 
-            if (creaturesAllAroundFlyingMatch.empty() == false)
+            if (REACHABLE_CREATURES_PVEC.empty() == false)
             {
-                std::copy(creaturesAllAroundFlyingMatch.begin(),
-                          creaturesAllAroundFlyingMatch.end(),
+                std::copy(REACHABLE_CREATURES_PVEC.begin(),
+                          REACHABLE_CREATURES_PVEC.end(),
                           back_inserter(pVec_OutParam));
             }
 
-            return creaturesAllAroundFlyingMatch.size();
+            return REACHABLE_CREATURES_PVEC.size();
         }
     }
 
@@ -859,7 +852,8 @@ namespace combat
     std::size_t CombatDisplay::FindCreaturesAllRoundOfType(
         creature::CreaturePVec_t & pVec_OutParam,
         creature::CreatureCPtrC_t  CREATURE_CPTRC,
-        const bool                 WILL_FIND_PLAYERS) const
+        const bool                 WILL_FIND_PLAYERS,
+        const bool                 LIVING_ONLY) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_CPTRC != nullptr),
             "game::combat::CombatDisplay::FindCreaturesAllRoundOfType("
@@ -882,8 +876,12 @@ namespace combat
                 (NEXT_COMBATNODE_PTR->Creature() != CREATURE_CPTRC) &&
                 (NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
-                ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_PTR->Creature());
+                if ((LIVING_ONLY == false) ||
+                    (LIVING_ONLY && (NEXT_COMBATNODE_PTR->Creature()->IsDead() == false)))
+                {
+                    ++count;
+                    pVec_OutParam.push_back(NEXT_COMBATNODE_PTR->Creature());
+                }
             }
         }
 
@@ -1127,8 +1125,9 @@ namespace combat
         const int BLOCKING_POS_NEW((ATTEMPTING_BLOCKING_POS_INCREMENT) ?
             (BLOCKING_POS  + 1) : (BLOCKING_POS - 1));
 
-        const std::size_t SHOULDER_TO_SHOULDER_COUNT_AT_NEW_POS(
-            combatTree_.VertexCountByBlockingPos(BLOCKING_POS_NEW));
+        creature::CreaturePVec_t ignoreMePVec;
+        const std::size_t SHOULDER_TO_SHOULDER_COUNT_AT_NEW_POS{
+            GetObstacleCreaturesAtBlockingPos(ignoreMePVec, BLOCKING_POS_NEW) };
 
         //check if attempting to move into a shoulder-to-shoulder line
         //that already has too many creatures
@@ -1142,7 +1141,7 @@ namespace combat
         }
 
         //Check if attempting to move into a shoulder-to-shoulder line that
-        //has more than two creatures of the opposite party.
+        //has an opposing creature blocking.
         const CombatTree::VertexVec_t VERT_VEC(combatTree_.Vertexes());
         std::size_t oppositePartyCreatureCount(0);
         for (auto const & NEXT_VERT_PAIR : VERT_VEC)
@@ -1543,6 +1542,29 @@ namespace combat
         auto const NEXT_NODE_SPTR{ combatTree_.GetNodeSPtr(NEXT_NODE_ID) };
         combatTree_.RemoveVertex(NEXT_NODE_ID, true);
         RemoveCombatNode(NEXT_NODE_SPTR);
+    }
+
+
+    std::size_t CombatDisplay::GetObstacleCreaturesAtBlockingPos(
+        creature::CreaturePVec_t & pVec_OutParam, const int BLOCKING_POS) const
+    {
+        CombatNodePVec_t combatNodesPVec;
+        combatTree_.GetCombatNodes(combatNodesPVec);
+
+        std::size_t count{ 0 };
+        for (auto const NEXT_COMBAT_NODE_PTR : combatNodesPVec)
+        {
+            auto const NEXT_CREATURE_PTR{ NEXT_COMBAT_NODE_PTR->Creature() };
+            if ((NEXT_COMBAT_NODE_PTR->GetBlockingPos() == BLOCKING_POS) &&
+                (NEXT_CREATURE_PTR->IsDead() == false) &&
+                (Encounter::Instance()->GetTurnInfoCopy(NEXT_CREATURE_PTR).GetIsFlying() == false))
+            {
+                ++count;
+                pVec_OutParam.push_back(NEXT_CREATURE_PTR);
+            }
+        }
+
+        return count;
     }
 
 
