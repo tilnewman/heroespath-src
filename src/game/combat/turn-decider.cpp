@@ -1267,18 +1267,19 @@ namespace combat
         auto const BLOCKING_DISTANCE_TO_TARGET{ COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
             CREATURE_DECIDING_CPTRC, TARGET_CREATURE_PTR) };
         
-        if (BLOCKING_DISTANCE_TO_TARGET < 0)
+        if ((BLOCKING_DISTANCE_TO_TARGET < 0) &&
+            COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, true).empty())
         {
             return TurnActionInfo(TurnAction::Advance);
         }
-        else if (BLOCKING_DISTANCE_TO_TARGET > 0)
+
+        if ((BLOCKING_DISTANCE_TO_TARGET > 0) &&
+            COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, false).empty())
         {
             return TurnActionInfo(TurnAction::Retreat);
         }
-        else
-        {
-            return TurnActionInfo();
-        }
+        
+        return TurnActionInfo();
     }
 
 }

@@ -1126,54 +1126,37 @@ namespace combat
             (BLOCKING_POS  + 1) : (BLOCKING_POS - 1));
 
         creature::CreaturePVec_t ignoreMePVec;
-        const std::size_t SHOULDER_TO_SHOULDER_COUNT_AT_NEW_POS{
-            GetObstacleCreaturesAtBlockingPos(ignoreMePVec, BLOCKING_POS_NEW) };
+        const std::size_t OBSTACLE_CREATURE_COUNT_AT_NEW_POS{
+            GetObstacleCreaturesAtBlockingPos(ignoreMePVec, CREATURE_CPTRC, BLOCKING_POS_NEW) };
 
         //check if attempting to move into a shoulder-to-shoulder line
         //that already has too many creatures
-        if (SHOULDER_TO_SHOULDER_COUNT_AT_NEW_POS > SHOULDER_TO_SHOULDER_MAX_)
+        if (OBSTACLE_CREATURE_COUNT_AT_NEW_POS > SHOULDER_TO_SHOULDER_MAX_)
         {
             std::ostringstream ss;
             ss << "Cannot " << ADVANCE_OR_RETREAT_STR << "because there are too many ("
-                << "at least " << SHOULDER_TO_SHOULDER_MAX_ << ") other creatures in the way.";
+                << OBSTACLE_CREATURE_COUNT_AT_NEW_POS << ") opposing creatres in the way."
+                << "  The limit is " << SHOULDER_TO_SHOULDER_MAX_ << ".";
 
             return ss.str();
         }
 
         //Check if attempting to move into a shoulder-to-shoulder line that
         //has an opposing creature blocking.
-        const CombatTree::VertexVec_t VERT_VEC(combatTree_.Vertexes());
-        std::size_t oppositePartyCreatureCount(0);
-        for (auto const & NEXT_VERT_PAIR : VERT_VEC)
+        CombatNodePVec_t combatNodesPVec;
+        combatTree_.GetCombatNodes(combatNodesPVec);
+        for (auto const & NEXT_COMBATNODE_PTR : combatNodesPVec)
         {
-            if ((NEXT_VERT_PAIR.second->GetBlockingPos() == BLOCKING_POS_NEW) &&
-                (NEXT_VERT_PAIR.second->Creature()->IsPlayerCharacter() !=
-                    CREATURE_CPTRC->IsPlayerCharacter()))
+            auto const NEXT_CREATURE_PTR{ NEXT_COMBATNODE_PTR->Creature() };
+
+            if ((NEXT_COMBATNODE_PTR->GetBlockingPos() == BLOCKING_POS_NEW) &&
+                (NEXT_CREATURE_PTR->IsPlayerCharacter() != CREATURE_CPTRC->IsPlayerCharacter()) &&
+                (Encounter::Instance()->GetTurnInfoCopy(NEXT_CREATURE_PTR).GetTurnActionInfo().
+                    Action() == TurnAction::Block))
             {
-                if (Encounter::Instance()->GetTurnInfoCopy(NEXT_VERT_PAIR.second->Creature()).
-                    GetTurnActionInfo().Action() == TurnAction::Block)
-                {
-                    return "Cannot " + ADVANCE_OR_RETREAT_STR +
-                        " because there is a creature blocking.";
-                }
-                else
-                {
-                    if (NEXT_VERT_PAIR.second->Creature())
-                    {
-                        ++oppositePartyCreatureCount;
-                    }
-                }
+                return "Cannot " + ADVANCE_OR_RETREAT_STR +
+                    " because there is a creature blocking.";
             }
-        }
-
-        if (oppositePartyCreatureCount >= SHOULDER_TO_SHOULDER_OPPOSITE_TYPE_MAX_)
-        {
-            std::ostringstream ss;
-            ss << "Cannot " << ADVANCE_OR_RETREAT_STR
-                << " because there are too many enemy creatures ("
-                << oppositePartyCreatureCount << ") blocking the way.";
-
-            return ss.str();
         }
 
         return "";
@@ -1546,7 +1529,9 @@ namespace combat
 
 
     std::size_t CombatDisplay::GetObstacleCreaturesAtBlockingPos(
-        creature::CreaturePVec_t & pVec_OutParam, const int BLOCKING_POS) const
+        creature::CreaturePVec_t &    pVec_OutParam,
+        const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR,
+        const int                     BLOCKING_POS) const
     {
         CombatNodePVec_t combatNodesPVec;
         combatTree_.GetCombatNodes(combatNodesPVec);
@@ -1557,7 +1542,10 @@ namespace combat
             auto const NEXT_CREATURE_PTR{ NEXT_COMBAT_NODE_PTR->Creature() };
             if ((NEXT_COMBAT_NODE_PTR->GetBlockingPos() == BLOCKING_POS) &&
                 (NEXT_CREATURE_PTR->IsDead() == false) &&
-                (Encounter::Instance()->GetTurnInfoCopy(NEXT_CREATURE_PTR).GetIsFlying() == false))
+                (Encounter::Instance()->GetTurnInfoCopy(
+                    NEXT_CREATURE_PTR).GetIsFlying() == false) &&
+                (NEXT_CREATURE_PTR->IsPlayerCharacter() ==
+                    CREATURE_ATTEMPTING_PTR->IsPlayerCharacter()))
             {
                 ++count;
                 pVec_OutParam.push_back(NEXT_CREATURE_PTR);

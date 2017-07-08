@@ -271,8 +271,10 @@ namespace combat
         void HandleCombatNodeElimination(const creature::CreaturePtr_t);
         void HandleCombatNodeElimination(const combat::CombatNodePtr_t);
 
-        std::size_t GetObstacleCreaturesAtBlockingPos(creature::CreaturePVec_t & pVec_OutParam,
-                                                      const int                  BLOCKING_POS) const;
+        std::size_t GetObstacleCreaturesAtBlockingPos(
+            creature::CreaturePVec_t &    pVec_OutParam,
+            const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR,
+            const int                     BLOCKING_POS) const;
 
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
