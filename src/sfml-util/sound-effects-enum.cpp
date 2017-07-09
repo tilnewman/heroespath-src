@@ -136,8 +136,7 @@ namespace sfml_util
             case FistHit7:          { return "fist-hit-7"; }
             case FistHit8:          { return "fist-hit-8"; }
             case BreathHitFirebrand:{ return "firebrand"; }
-            case BreathHitSylavin1: { return "sylavin-1"; }
-            case BreathHitSylavin2: { return "sylavin-2"; }
+            case BreathHitSylavin:  { return "sylavin"; }
             case TendrilHit1:       { return "tendril-hit-1"; }
             case TendrilHit2:       { return "tendril-hit-2"; }
             case TendrilHit3:       { return "tendril-hit-3"; }
@@ -432,8 +431,7 @@ namespace sfml_util
             case FistHit7:
             case FistHit8:              { return "sound-effects/combat/fist-hit"; }
             case BreathHitFirebrand:
-            case BreathHitSylavin1:
-            case BreathHitSylavin2:     { return "sound-effects/combat/breath-hit"; }
+            case BreathHitSylavin:      { return "sound-effects/combat/breath-hit"; }
             case TendrilHit1:
             case TendrilHit2:
             case TendrilHit3:

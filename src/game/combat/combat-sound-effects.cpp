@@ -133,8 +133,8 @@ namespace combat
             else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
                      (CREATURE_PTR->Role().Which() == creature::role::Sylavin))
             {
-                sfml_util::SoundManager::Instance()->GetSfxSet(
-                    sfml_util::SfxSet::BreathHitSylavin).PlayRandom();
+                sfml_util::SoundManager::Instance()->
+                    SoundEffectPlay(sfml_util::sound_effect::BreathHitSylavin);
             }
             else if (WEAPON_TYPE & item::weapon_type::Claws)
             {
