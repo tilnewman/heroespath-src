@@ -163,7 +163,8 @@ namespace weapon
         LoadDetailsForKey("Fists");
         LoadDetailsForKey("Tendrils");
         LoadDetailsForKey("Knife");
-        LoadDetailsForKey("Breath");
+        LoadDetailsForKey("BreathFirebrand");
+        LoadDetailsForKey("BreathSylavin");
     }
 
 

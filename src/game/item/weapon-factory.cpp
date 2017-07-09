@@ -266,23 +266,25 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::Breath);
         weaponInfo.is_breath = true;
 
-        auto const BREATH_DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails("Breath") );
+        //Hydras and other dragons use the Firebrand breath weapon.
+        auto const BREATH_DETAILS_TITLE{ ((CREATURE_CPTRC->Role().Which() ==
+            creature::role::Sylavin) ? "BreathSylavin": "BreathFirebrand") };
+
+        auto const BREATH_DETAILS{ WeaponDetailLoader::Instance()->LookupWeaponDetails(
+            BREATH_DETAILS_TITLE) };
 
         std::ostringstream ssName;
         ssName << ((CREATURE_CPTRC->Role().Which() == creature::role::Firebrand) ?
-            "Fiery" : "Toxic Freezing") << " " << BREATH_DETAILS.name;
+            "Fiery" : "Toxic Freezing") << " Breath";
 
         std::ostringstream ssDesc;
         if (CREATURE_CPTRC->Role().Which() == creature::role::Sylavin)
         {
-            ssDesc << "The poisonous freezing breath of a " << CREATURE_CPTRC->Role().Name()
-                << " " << CREATURE_CPTRC->Race().Name() << ".";
+            ssDesc << "The toxic and freezing breath of a Sylavin dragon.";
         }
         else
         {
-            ssDesc << "The flaming breath of a " << CREATURE_CPTRC->Role().Name()
-                << " " << CREATURE_CPTRC->Race().Name() << ".";
+            ssDesc << "The fiery breath of a dragon.";
         }
 
         auto itemPtr{ ItemWarehouse::Instance()->Store(
