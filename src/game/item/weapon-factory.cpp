@@ -271,7 +271,7 @@ namespace weapon
 
         std::ostringstream ssName;
         ssName << ((CREATURE_CPTRC->Role().Which() == creature::role::Firebrand) ?
-            "flaming" : "freezing") << " " << BREATH_DETAILS.name;
+            "Fiery" : "Toxic Freezing") << " " << BREATH_DETAILS.name;
 
         std::ostringstream ssDesc;
         if (CREATURE_CPTRC->Role().Which() == creature::role::Sylavin)
