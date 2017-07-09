@@ -1392,7 +1392,7 @@ namespace combat
         //skip creatures who are not a threat
         auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                LIVE_ATTBLE_LOWH_NP_CRTS_PVEC, false) };
+                LIVE_ATTBLE_LOWH_NP_CRTS_PVEC, false, true) };
 
         //attack those that are temporarily disabled first
         auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC{

@@ -350,7 +350,8 @@ namespace creature
 
     const CreaturePVec_t Algorithms::FindByConditionMeaningNotAThreatPermenantly(
         const CreaturePVec_t & CREATURE_PVEC,
-        const bool HAS_CONDITION)
+        const bool             HAS_CONDITION,
+        const bool             WILL_INCLUDE_UNCONSCIOUS)
     {
         CreaturePVec_t creaturesThatAreStillAThreatVec;
 
@@ -362,9 +363,10 @@ namespace creature
         std::copy_if(CREATURE_PVEC.begin(),
                      CREATURE_PVEC.end(),
                      back_inserter(creaturesThatAreStillAThreatVec),
-                     [HAS_CONDITION]
+                     [&]
                      (const CreaturePtr_t CCPTR)
-                     { return CCPTR->HasConditionNotAThreatPerm() == HAS_CONDITION; });
+                     { return CCPTR->HasConditionNotAThreatPerm(WILL_INCLUDE_UNCONSCIOUS) ==
+                         HAS_CONDITION; });
 
         return creaturesThatAreStillAThreatVec;
     }
@@ -372,7 +374,7 @@ namespace creature
 
     const CreaturePVec_t Algorithms::FindByConditionMeaningNotAThreatTemporarily(
         const CreaturePVec_t & CREATURE_PVEC,
-        const bool HAS_CONDITION)
+        const bool             HAS_CONDITION)
     {
         CreaturePVec_t creaturesWithCondsButAreStillAThreatVec;
 
@@ -468,8 +470,9 @@ namespace creature
     }
 
 
-    const CreaturePVec_t Algorithms::FindByProjectileWeapons(const CreaturePVec_t & CREATURE_PVEC,
-                                                             const bool IS_HOLDING_PROJ_WEAPON)
+    const CreaturePVec_t Algorithms::FindByProjectileWeapons(
+        const CreaturePVec_t & CREATURE_PVEC,
+        const bool             IS_HOLDING_PROJ_WEAPON)
     {
         CreaturePVec_t byProjectileWeaponPVec;
 
@@ -544,6 +547,64 @@ namespace creature
         }
 
         return canTakeActionPVec;
+    }
+
+
+    const CreaturePVec_t Algorithms::FindByCondition(
+        const CreaturePVec_t &  CREATURE_PVEC,
+        const Conditions::Enum  COND_ENUM,
+        const bool              HAS_ALL,
+        const bool              HAS_CONDITION)
+    {
+        return FindByCondition(CREATURE_PVEC,
+                               CondEnumVec_t(1, COND_ENUM ),
+                               HAS_ALL,
+                               HAS_CONDITION);
+    }
+
+
+    const CreaturePVec_t Algorithms::FindByCondition(
+        const CreaturePVec_t & CREATURE_PVEC,
+        const CondEnumVec_t &  CONDS_VEC,
+        const bool             HAS_ALL,
+        const bool             HAS_CONDITION)
+    {
+        CreaturePVec_t havingConditionPVec;
+
+        if (CREATURE_PVEC.empty() == false)
+        {
+            std::copy_if(CREATURE_PVEC.begin(),
+                         CREATURE_PVEC.end(),
+                         back_inserter(havingConditionPVec),
+                         [&](const creature::CreaturePtr_t PTR)
+                            {
+                                if (HAS_ALL)
+                                {
+                                    auto hasAll{ true };
+                                    for (auto const NEXT_COND_ENUM : CONDS_VEC)
+                                    {
+                                        if (PTR->HasCondition(NEXT_COND_ENUM) != HAS_CONDITION)
+                                        {
+                                            hasAll = false;
+                                        }
+                                    }
+                                    return hasAll;
+                                }
+                                else
+                                {
+                                    for (auto const NEXT_COND_ENUM : CONDS_VEC)
+                                    {
+                                        if (PTR->HasCondition(NEXT_COND_ENUM) == HAS_CONDITION)
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }
+                            });
+        }
+
+        return havingConditionPVec;
     }
 
 }

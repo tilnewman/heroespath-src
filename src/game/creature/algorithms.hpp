@@ -29,6 +29,7 @@
 //
 #include "game/creature/race-enum.hpp"
 #include "game/creature/role-enum.hpp"
+#include "game/creature/condition-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -93,17 +94,60 @@ namespace creature
         static void SortByLowestHealthRatio(CreaturePVec_t &);
         static const CreaturePVec_t FindLowestHealthRatio(const CreaturePVec_t &);
 
-        static const CreaturePVec_t FindByConditionMeaningNotAThreatPermenantly(const CreaturePVec_t &, const bool HAS_CONDITION = true);
-        static const CreaturePVec_t FindByConditionMeaningNotAThreatTemporarily(const CreaturePVec_t &, const bool HAS_CONDITION = true);
+        static const CreaturePVec_t FindByConditionMeaningNotAThreatPermenantly(
+            const CreaturePVec_t &,
+            const bool HAS_CONDITION = true,
+            const bool WILL_INCLUDE_UNCONSCIOUS = false);
 
-        static const CreaturePVec_t FindByRace(const CreaturePVec_t &, const race::Enum, const bool IS_GIVEN_RACE = true);
-        static const CreaturePVec_t FindByRole(const CreaturePVec_t &, const role::Enum, const bool IS_GIVEN_ROLE = true);
-        static const CreaturePVec_t FindBySpellCaster(const CreaturePVec_t &, const bool CAN_CAST = true);
-        static const CreaturePVec_t FindByBeast(const CreaturePVec_t &, const bool IS_BEAST = true);
-        static const CreaturePVec_t FindByProjectileWeapons(const CreaturePVec_t &, const bool IS_HOLDING_PROJ_WEAPON = true);
-        static const CreaturePVec_t FindByCanFly(const CreaturePVec_t &, const bool CAN_FLY = true);
-        static const CreaturePVec_t FindByFlying(const CreaturePVec_t &, const bool IS_FLYING = true);
-        static const CreaturePVec_t FindByCanTakeAction(const CreaturePVec_t &, const bool CAN_TAKE_ACTION = true);
+        static const CreaturePVec_t FindByConditionMeaningNotAThreatTemporarily(
+            const CreaturePVec_t &,
+            const bool HAS_CONDITION = true);
+
+        static const CreaturePVec_t FindByRace(
+            const CreaturePVec_t &,
+            const race::Enum,
+            const bool IS_GIVEN_RACE = true);
+
+        static const CreaturePVec_t FindByRole(
+            const CreaturePVec_t &,
+            const role::Enum,
+            const bool IS_GIVEN_ROLE = true);
+
+        static const CreaturePVec_t FindBySpellCaster(
+            const CreaturePVec_t &,
+            const bool CAN_CAST = true);
+
+        static const CreaturePVec_t FindByBeast(
+            const CreaturePVec_t &,
+            const bool IS_BEAST = true);
+
+        static const CreaturePVec_t FindByProjectileWeapons(
+            const CreaturePVec_t &,
+            const bool IS_HOLDING_PROJ_WEAPON = true);
+
+        static const CreaturePVec_t FindByCanFly(
+            const CreaturePVec_t &,
+            const bool CAN_FLY = true);
+
+        static const CreaturePVec_t FindByFlying(
+            const CreaturePVec_t &,
+            const bool IS_FLYING = true);
+
+        static const CreaturePVec_t FindByCanTakeAction(
+            const CreaturePVec_t &,
+            const bool CAN_TAKE_ACTION = true);
+
+        static const CreaturePVec_t FindByCondition(
+            const CreaturePVec_t &,
+            const Conditions::Enum,
+            const bool HAS_ALL = true,
+            const bool HAS_CONDITION = true);
+
+        static const CreaturePVec_t FindByCondition(
+            const CreaturePVec_t &,
+            const CondEnumVec_t &,
+            const bool HAS_ALL = true,
+            const bool HAS_CONDITION = true);
     };
 
 }

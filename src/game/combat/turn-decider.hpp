@@ -144,9 +144,13 @@ namespace combat
             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC);
 
         static const TurnActionInfo DecideIfAdvancingTowardNonMostDesiredTarget(
-            const TurnInfo &               TURN_INFO,
+            const TurnInfo &               CREATURE_DECIDING_TURN_INFO,
             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
             CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC);
+
+        static void AdjustCreatueVecForMurderousIntent(
+            const TurnInfo &           CREATURE_DECIDING_TURN_INFO,
+            creature::CreaturePVec_t & pVec_OutParam);
 
     private:
         static const EffectTypeVec_t HARM_EFFECTTYPES_VEC_;

@@ -786,7 +786,8 @@ namespace stage
             "heroespath-fight-archer-projectile-accuracy-bonus-ratio",
             "heroespath-fight-archer-projectile-rank-bonus-ratio",
             "heroespath-fight-chance-conditions-added-from-damage-ratio",
-            "heroespath-fight-rank-damage-bonus-ratio"
+            "heroespath-fight-rank-damage-bonus-ratio",
+            "heroespath-fight-chance-enemies-ignore-unconscious"
         };
 
         static std::size_t keyIndex{ 0 };

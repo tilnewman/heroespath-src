@@ -1298,6 +1298,12 @@ namespace stage
                 {
                     nextComabtNodeCPtr->IsFlying(true);
                 }
+
+                if (nextComabtNodeCPtr->Creature()->IsPlayerCharacter() == false)
+                {
+                    nextComabtNodeCPtr->Creature()->Stats().Get(stats::stat::Accuracy).ModifyCurrent(50);
+                    nextComabtNodeCPtr->Creature()->Stats().Get(stats::stat::Strength).ModifyCurrent(50);
+                }
             }
 
             restoreInfo_.Save(combatDisplayStagePtr_);
@@ -3201,7 +3207,7 @@ namespace stage
             auto const MOT_SKIP_STR(combat::Text::MouseOverTextSkipStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            skipTBoxButtonSPtr_->SetIsDisabled(MOT_POUNCE_STR !=
+            skipTBoxButtonSPtr_->SetIsDisabled(MOT_SKIP_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
             skipTBoxButtonSPtr_->SetMouseHoverText(MOT_SKIP_STR);
@@ -4021,7 +4027,7 @@ namespace stage
                 {
                     didAnyPlayersRunAway = true;
                 }
-                else if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm() == false)
+                else if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(true) == false)
                 {
                     areAllNonRunawaysIncapacitated = false;
                 }
@@ -4045,7 +4051,7 @@ namespace stage
         auto areAllIncapacitated{ true };
         for (auto const NEXT_LIVING_PTR : ALL_LIVING_PVEC)
         {
-            if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm() == false)
+            if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(true) == false)
             {
                 areAllIncapacitated = false;
             }

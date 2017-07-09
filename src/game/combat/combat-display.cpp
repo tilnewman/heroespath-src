@@ -1151,6 +1151,7 @@ namespace combat
 
             if ((NEXT_COMBATNODE_PTR->GetBlockingPos() == BLOCKING_POS_NEW) &&
                 (NEXT_CREATURE_PTR->IsPlayerCharacter() != CREATURE_CPTRC->IsPlayerCharacter()) &&
+                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(true) == false) &&
                 (Encounter::Instance()->GetTurnInfoCopy(NEXT_CREATURE_PTR).GetTurnActionInfo().
                     Action() == TurnAction::Block))
             {
@@ -1541,7 +1542,7 @@ namespace combat
         {
             auto const NEXT_CREATURE_PTR{ NEXT_COMBAT_NODE_PTR->Creature() };
             if ((NEXT_COMBAT_NODE_PTR->GetBlockingPos() == BLOCKING_POS) &&
-                (NEXT_CREATURE_PTR->IsDead() == false) &&
+                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(true) == false) &&
                 (Encounter::Instance()->GetTurnInfoCopy(
                     NEXT_CREATURE_PTR).GetIsFlying() == false) &&
                 (NEXT_CREATURE_PTR->IsPlayerCharacter() ==

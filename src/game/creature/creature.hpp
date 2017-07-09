@@ -208,7 +208,7 @@ namespace creature
 
         bool HasCondition(const Conditions::Enum) const;
         bool HasConditionNotAThreatTemp() const;
-        bool HasConditionNotAThreatPerm() const;
+        bool HasConditionNotAThreatPerm(const bool WILL_INCLUDE_UNCONSCIOUS = false) const;
 
         std::size_t GetWorstConditionSeverity() const;
 

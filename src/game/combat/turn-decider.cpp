@@ -37,6 +37,7 @@
 #include "game/creature/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/phase-enum.hpp"
+#include "game/game-data-file.hpp"
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -277,20 +278,6 @@ namespace combat
             return TurnActionInfo(TurnAction::ChangeWeapon);
         }
 
-        //Okay, so we are reaching this end point in the logic tree much more
-        //often than anticipated, so try and attack here if possible, ignoring
-        //the most desired target.
-        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() && 
-            (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false))
-        {
-            M_HP_LOG_WRN("game::Combat::TurnDecider::Decide("
-                << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
-                << ") forced to take last-chance attack combat option.");
-
-                return TurnActionInfo(TurnAction::Attack, { misc::Vector::SelectRandom(
-                    LIVING_PLAYERS_IN_ATTACK_RANGE) });
-        }
-
         //see if there is a player to advance towards who is not the most desired target
         auto const IF_ADVANCING_TURNACTIONINFO{ DecideIfAdvancingTowardNonMostDesiredTarget(
             TURN_INFO, CREATURE_DECIDING_CPTRC, COMBAT_DISPLAY_CPTRC) };
@@ -299,7 +286,27 @@ namespace combat
         {
             return IF_ADVANCING_TURNACTIONINFO;
         }
-        
+
+        //Okay, so we are reaching this end point in the logic tree much more
+        //often than anticipated, so try and attack here if possible, ignoring
+        //the most desired target.
+        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() && 
+            (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false))
+        {
+            creature::CreaturePVec_t desiredTargetsInRangePVec{ LIVING_PLAYERS_IN_ATTACK_RANGE };
+            AdjustCreatueVecForMurderousIntent(TURN_INFO, desiredTargetsInRangePVec);
+
+            if (desiredTargetsInRangePVec.empty() == false)
+            {
+                M_HP_LOG_WRN("game::Combat::TurnDecider::Decide("
+                    << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
+                    << ") forced to take last-chance attack combat option.");
+
+                return TurnActionInfo(TurnAction::Attack, { misc::Vector::SelectRandom(
+                    LIVING_PLAYERS_IN_ATTACK_RANGE) });
+            }
+        }
+
         //At this point nothing was chosen to be done, so block instead
         return TurnActionInfo(TurnAction::Block);
     }
@@ -368,18 +375,22 @@ namespace combat
                 ALL_LIVING_PLAYERS_PVEC, false) };
         
         //...but accept those 'not a threat' if no other choice
-        auto const AVAILABLE_TARGETS_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
+        auto const AVAILABLE_TARGETS_PRE_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
             ALL_LIVING_PLAYERS_PVEC :
             ALL_LIVING_THREAT_PLAYERS_PVEC) };
 
+        creature::CreaturePVec_t availableTargetsPVec{ AVAILABLE_TARGETS_PRE_PVEC };
+
+        AdjustCreatueVecForMurderousIntent(CREATURE_DECIDING_TURN_INFO, availableTargetsPVec);
+
         //prefer those reachable considering flying...
         auto const REACHABLE_AVAILABLE_TARGETS_PVEC{ ((IS_FLYING) ?
-            AVAILABLE_TARGETS_PVEC :
-            creature::Algorithms::FindByFlying(AVAILABLE_TARGETS_PVEC, false)) };
+            availableTargetsPVec :
+            creature::Algorithms::FindByFlying(availableTargetsPVec, false)) };
 
         //...but accept those 'not reachable' if no other choice
         auto const POSSIBLE_TARGETS_PVEC{ ((REACHABLE_AVAILABLE_TARGETS_PVEC.empty()) ?
-            AVAILABLE_TARGETS_PVEC :
+            availableTargetsPVec :
             REACHABLE_AVAILABLE_TARGETS_PVEC) };
 
         //prefer those closest
@@ -1220,7 +1231,7 @@ namespace combat
 
 
     const TurnActionInfo TurnDecider::DecideIfAdvancingTowardNonMostDesiredTarget(
-        const TurnInfo &               TURN_INFO,
+        const TurnInfo &               CREATURE_DECIDING_TURN_INFO,
         const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
         CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
@@ -1232,9 +1243,9 @@ namespace combat
         }
 
         //prefer players still a threat...
-        auto const ALL_LIVING_THREAT_PLAYERS_PVEC{
+        auto ALL_LIVING_THREAT_PLAYERS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                ALL_LIVING_PLAYERS_PVEC, false) };
+                ALL_LIVING_PLAYERS_PVEC, false, true) };
 
         //...but accept those 'not a threat' if no other choice
         auto const AVAILABLE_TARGETS_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
@@ -1242,7 +1253,7 @@ namespace combat
             ALL_LIVING_THREAT_PLAYERS_PVEC) };
 
         //must be reachable given flying or not
-        auto const REACHABLE_AVAILABLE_TARGETS_PVEC{ ((TURN_INFO.GetIsFlying()) ?
+        auto const REACHABLE_AVAILABLE_TARGETS_PVEC{ ((CREATURE_DECIDING_TURN_INFO.GetIsFlying()) ?
             AVAILABLE_TARGETS_PVEC :
             creature::Algorithms::FindByFlying(AVAILABLE_TARGETS_PVEC, false)) };
 
@@ -1280,6 +1291,41 @@ namespace combat
         }
         
         return TurnActionInfo();
+    }
+
+    void TurnDecider::AdjustCreatueVecForMurderousIntent(
+        const TurnInfo &           CREATURE_DECIDING_TURN_INFO, 
+        creature::CreaturePVec_t & pVec_OutParam)
+    {   
+        //determine if any available targets are unconscious
+        auto const ARE_ANY_TARGETS_UNCONSCIOUS{ [&]()
+            {
+                for (auto const NEXT_TARGET_CREATURE_PTR : pVec_OutParam)
+                {
+                    if (NEXT_TARGET_CREATURE_PTR->HasCondition(creature::Conditions::Unconscious))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }() };
+        
+        if (ARE_ANY_TARGETS_UNCONSCIOUS &&
+            (CREATURE_DECIDING_TURN_INFO.GetStrategyInfo().Refine() &
+                combat::strategy::RefineType::Murderer))
+        {
+            //If a murderer and some available targets are unconscious, then only target those
+            pVec_OutParam = creature::Algorithms::FindByCondition(pVec_OutParam,
+                creature::Conditions::Unconscious);
+        }
+        else if (ARE_ANY_TARGETS_UNCONSCIOUS &&
+                 (misc::random::Float(1.0f) < GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-fight-chance-enemies-ignore-unconscious")))
+        {
+            //most of the time, don't consider unconscious targets
+            pVec_OutParam = creature::Algorithms::FindByCondition(pVec_OutParam,
+                creature::Conditions::Unconscious, true, false);
+        }
     }
 
 }
