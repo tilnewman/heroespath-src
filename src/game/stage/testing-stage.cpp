@@ -819,22 +819,26 @@ namespace stage
                 "game::stage::TestingStage::TestAnimations() Starting Tests...");
         }
 
-        const long ANIM_FRAME_SLEEP_MS{ 10 };
+        const long ANIM_FRAME_SLEEP_MS{ 0 };
 
         //test single-texture animations
         static std::vector<AnimInfo> animInfoVec{
-            AnimInfo("media-anim-image-burst",             128, 128),
+            AnimInfo("media-anim-image-burst",             120, 120),
             AnimInfo("media-anim-images-candleflame",      128, 128),
             AnimInfo("media-anim-image-dualswirl",         140, 140),
-            AnimInfo("media-anim-image-explosion",         102, 102),
+            AnimInfo("media-anim-image-explosion1",        100, 100),
+            AnimInfo("media-anim-image-explosion2",        100, 100),
+            AnimInfo("media-anim-image-explosion3",        100, 100),
             AnimInfo("media-anim-images-explosion-small",  128, 128),
             AnimInfo("media-anim-image-firetorch",         128, 256),
             AnimInfo("media-anim-image-flash-sparkle",     128, 128),
-            AnimInfo("media-anim-image-flash",             102, 102),
-            AnimInfo("media-anim-image-puff",               86,  86),
-            AnimInfo("media-anim-image-puffhalf",          102, 102),
+            AnimInfo("media-anim-image-flash",             128, 128),
+            AnimInfo("media-anim-image-puff",               80,  80),
+            AnimInfo("media-anim-image-puffhalf",          100, 100),
             AnimInfo("media-anim-image-selectswirl",       140, 140),
-            AnimInfo("media-anim-image-smoke",             171, 165)
+            AnimInfo("media-anim-image-smoke",             164, 164),
+            AnimInfo("media-anim-image-splash2",           120, 120),
+            AnimInfo("media-anim-image-splash3",           240, 240)
         };
 
         static auto isNewSingleTextureAnimation{ true };
@@ -876,7 +880,7 @@ namespace stage
             "media-anim-images-dir-smokesiwrl",
             "media-anim-images-dir-spiderflare",
             "media-anim-images-dir-symbolreduce",
-            "media-anim-images-dir-whiteburst",
+            "media-anim-images-dir-splash1"
         };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
