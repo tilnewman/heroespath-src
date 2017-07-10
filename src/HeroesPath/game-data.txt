@@ -280,6 +280,11 @@ heroespath-creature-race-desc-Pug=heroespath-creature-race-desc-Pug
 heroespath-creature-race-desc-Wyvern=heroespath-creature-race-desc-Wyvern
 heroespath-creature-race-desc-Giant=heroespath-creature-race-desc-Giant
 heroespath-creature-race-desc-Ghoul=heroespath-creature-race-desc-Ghoul
+heroespath-creature-race-desc-Bat=heroespath-creature-race-desc-Bat
+heroespath-creature-race-desc-Witch=heroespath-creature-race-desc-Witch
+heroespath-creature-race-desc-Golem=heroespath-creature-race-desc-Golem
+heroespath-creature-race-desc-Harpy=heroespath-creature-race-desc-Harpy
+heroespath-creature-race-desc-ThreeHeadedHound=heroespath-creature-race-desc-ThreeHeadedHound
 
 #Title Descriptions
 heroespath-creature-title-ProtectorOfThornberry-desc=Standing bravely against the Goblin hoards alongside the Thornberry town guards has earned you this title.  The townsfolk will recognize you and may even give you favorable prices and other benefits.
@@ -763,6 +768,11 @@ heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Ghoul=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Beetle=0.9
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Boar=0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Bat=0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Witch=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Golem=-0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-Harpy=-0.35
+heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-race-ThreeHeadedHound=0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Gnome=-0.5
@@ -803,6 +813,11 @@ heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Ghoul=-0.2
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Beetle=-0.9
 heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Boar=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Bat=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Witch=0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Golem=-0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-Harpy=-0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Practical-chance-adjustment-race-ThreeHeadedHound=-0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Gnome=0.5
@@ -843,6 +858,11 @@ heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Ghoul=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Beetle=-0.9
 heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Boar=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Bat=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Witch=0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Golem=0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-Harpy=0.5
+heroespath-nonplayer-ownershipprofile-collectortype-Collector-chance-adjustment-race-ThreeHeadedHound=-0.9
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Human=0.0
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Gnome=0.5
@@ -883,6 +903,11 @@ heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-ra
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Ghoul=-0.5
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Beetle=-0.9
 heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Boar=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Bat=-0.9
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Witch=0.0
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Golem=0.0
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-Harpy=0.0
+heroespath-nonplayer-ownershipprofile-collectortype-Hoarder-chance-adjustment-race-ThreeHeadedHound=-0.9
 #
 #
 heroespath-nonplayer-ownershipprofile-collectortype-Minimalist-chance-adjustment-role-Archer=0.15
@@ -1092,6 +1117,11 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Giant=0.8
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Ghoul=0.25
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Beetle=0.99
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Boar=0.99
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Bat=0.99
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Witch=0.01
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Golem=0.1
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-Harpy=0.1
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Rarely-race-ThreeHeadedHound=0.99
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Human=0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Gnome=0.5
@@ -1132,6 +1162,11 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Giant=0
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Ghoul=0.5
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Beetle=0.005
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Boar=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Bat=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Witch=0.2
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Golem=0.2
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-Harpy=0.2
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Religous-race-ThreeHeadedHound=0.005
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Human=0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Gnome=0.1
@@ -1172,6 +1207,11 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Giant=0.
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Ghoul=0.25
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Beetle=0.005
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Boar=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Bat=0.005
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Witch=0.79
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Golem=0.7
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-Harpy=0.7
+heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-Magical-race-ThreeHeadedHound=0.005
 #
 #
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-Rarely-role-Beastmaster=-0.1
@@ -1337,6 +1377,11 @@ heroespath-nonplayer-ownershipprofile-complexitytype-race-Pug=Moderate
 heroespath-nonplayer-ownershipprofile-complexitytype-race-Wyvern=Complex
 heroespath-nonplayer-ownershipprofile-complexitytype-race-Giant=Complex
 heroespath-nonplayer-ownershipprofile-complexitytype-race-Ghoul=Simple
+heroespath-nonplayer-ownershipprofile-complexitytype-race-Bat=Animal
+heroespath-nonplayer-ownershipprofile-complexitytype-race-Witch=Complex
+heroespath-nonplayer-ownershipprofile-complexitytype-race-Golem=Moderate
+heroespath-nonplayer-ownershipprofile-complexitytype-race-Harpy=Moderate
+heroespath-nonplayer-ownershipprofile-complexitytype-race-ThreeHeadedHound=Animal
 #
 heroespath-nonplayer-ownershipprofile-complexitytype-role-Beastmaster=Complex
 heroespath-nonplayer-ownershipprofile-complexitytype-role-Sorcerer=Complex
@@ -1588,6 +1633,11 @@ heroespath-nonplayer-combat-strategy-race-Pug=          Select | Refine | Advanc
 heroespath-nonplayer-combat-strategy-race-Wyvern=       Select | Refine | Advance | RoarFreq | FlyFreq | FlyPounceFreq | StandingPounceFreq
 heroespath-nonplayer-combat-strategy-race-Giant=        Select | Refine | Advance | RoarFreq
 heroespath-nonplayer-combat-strategy-race-Ghoul=        Select | Refine | Advance
+heroespath-nonplayer-combat-strategy-race-Bat=          Select | Refine | Advance
+heroespath-nonplayer-combat-strategy-race-Witch=        Select | Refine | Advance
+heroespath-nonplayer-combat-strategy-race-Golem=        Select | Refine | Advance
+heroespath-nonplayer-combat-strategy-race-Harpy=        Select | Refine | Advance
+heroespath-nonplayer-combat-strategy-race-ThreeHeadedHound=Select | Refine | Advance
 
 #non-player character combat strategy adjustments by role
 heroespath-nonplayer-combat-strategy-adjustment-role-Beastmaster=   Select | Refine | Advance | RoarFreq | CastFreq | FlyFreq | FlyPounceFreq | StandingPounceFreq

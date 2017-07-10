@@ -698,6 +698,20 @@ namespace combat
                 }
                 return;
             }
+            case creature::race::Witch:
+            case creature::race::Harpy:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale1);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale2);
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathHumanFemale3);
+                return;
+            }
+            case creature::race::Golem:
+            {
+                sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeastCaveTroll1);
+                return;
+            }
+            case creature::race::ThreeHeadedHound:
             case creature::race::Werewolf:
             case creature::race::Wolfen:
             {
@@ -855,6 +869,7 @@ namespace combat
                 sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathThing3);
                 return;
             }
+            case creature::race::Bat:
             case creature::race::Werebat:
             {
                 sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathThing2);

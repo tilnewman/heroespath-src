@@ -446,6 +446,7 @@ namespace creature
                 if      (RACE_ENUM == creature::race::Demon)  return BASE;
                 else if (RACE_ENUM == creature::race::Dragon) return MINOR;
                 else if (RACE_ENUM == creature::race::Pixie)  return BASE;
+                else if (RACE_ENUM == creature::race::Witch)  return BASE;
                 else return 0;
             }
             case stats::stat::Count:

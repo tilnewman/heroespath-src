@@ -1722,12 +1722,45 @@ namespace gui
 
         if (RACE == race::Werebat)
         {
+            outputVec.push_back("werebat-1.png");
+            outputVec.push_back("werebat-2.png");
+            return;
+        }
+
+        if (RACE == race::Bat)
+        {
+            outputVec.push_back("bat-1.png");
+            outputVec.push_back("bat-2.png");
+            outputVec.push_back("bat-3.png");
+            return;
+        }
+
+        if (RACE == race::Witch)
+        {
             for (std::size_t i(1); i <= 5; ++i)
             {
                 std::ostringstream ss;
-                ss << "werebat-" << i << ".png";
+                ss << "witch-" << i << ".png";
                 outputVec.push_back(ss.str());
             }
+            return;
+        }
+
+        if (RACE == race::Golem)
+        {
+            outputVec.push_back("golem.png");
+            return;
+        }
+
+        if (RACE == race::Harpy)
+        {
+            outputVec.push_back("harpy.png");
+            return;
+        }
+
+        if (RACE == race::ThreeHeadedHound)
+        {
+            outputVec.push_back("hound-three-headed.png");
             return;
         }
 

@@ -81,7 +81,12 @@ namespace creature
             case Ghoul:        { return "Ghoul"; }
             case Beetle:       { return "Beetle"; }
             case Boar:         { return "Boar"; }
-            case Count:        { return ""; }
+            case Bat:               { return "Bat"; }
+            case Witch:             { return "Witch"; }
+            case Golem:             { return "Golem"; }
+            case Harpy:             { return "Harpy"; }
+            case ThreeHeadedHound:  { return "ThreeHeadedHound"; }
+            case Count:
             default:
             {
                 std::ostringstream ss;
@@ -136,6 +141,9 @@ namespace creature
             case Naga:
             case Pug:
             case Giant:
+            case Witch:
+            case Golem:
+            case Harpy:
             case Ghoul: { return true; }
             case Wolfen:
             case Dragon:
@@ -156,6 +164,8 @@ namespace creature
             case Werebat:
             case Wyvern:
             case Beetle:
+            case Bat:
+            case ThreeHeadedHound:
             case Boar: { return false; }
             case Count:
             default:
@@ -204,12 +214,17 @@ namespace creature
             case Werewolf:
             case Beetle:
             case Boar:
+            case Witch:
+            case Golem:
+            case ThreeHeadedHound:
             case Skeleton:  { return false; }
             case Demon:
             case Shade:
             case Griffin:
             case Werebat:
             case Wyvern:
+            case Bat:
+            case Harpy:
             case Dragon:    { return true; }
             case Count:
             default:
@@ -227,7 +242,9 @@ namespace creature
         return ((E == race::Pixie) ||
                 (E == race::Shade) ||
                 (E == race::Griffin) ||
-                (E == race::Werebat));
+                (E == race::Werebat) ||
+                (E == race::Bat) ||
+                (E == race::Harpy));
     }
 
 }

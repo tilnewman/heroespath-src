@@ -169,21 +169,23 @@ namespace creature
     {
         switch (RACE)
         {
-            case creature::race::Enum::Human:
-            case creature::race::Enum::Troll:
-            case creature::race::Enum::Ogre:
-            case creature::race::Enum::Halfling:
-            case creature::race::Enum::Pug:
-            case creature::race::Enum::Gnome:   { return Make_Humanoid(); }
-            case creature::race::Enum::Pixie:   { return Make_Pixie(); }
-            case creature::race::Enum::Lion:
-            case creature::race::Enum::Wolfen:  { return Make_Wolfen(); }
-            case creature::race::Enum::Dragon:  { return Make_Dragon(); }
-            case creature::race::Enum::Goblin:
-            case creature::race::Enum::Orc:     { return Make_Humanoid(true, true); }
-            case creature::race::Enum::Newt:    { return Make_Humanoid(false, true); }
-            case creature::race::Enum::Spider:  { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 8, 6, true, false, false, false); }
-            case creature::race::Enum::Bog:
+            case creature::race::Human:
+            case creature::race::Troll:
+            case creature::race::Ogre:
+            case creature::race::Halfling:
+            case creature::race::Pug:
+            case creature::race::Witch:
+            case creature::race::Golem:
+            case creature::race::Gnome:   { return Make_Humanoid(); }
+            case creature::race::Pixie:   { return Make_Pixie(); }
+            case creature::race::Lion:
+            case creature::race::Wolfen:  { return Make_Wolfen(); }
+            case creature::race::Dragon:  { return Make_Dragon(); }
+            case creature::race::Goblin:
+            case creature::race::Orc:     { return Make_Humanoid(true, true); }
+            case creature::race::Newt:    { return Make_Humanoid(false, true); }
+            case creature::race::Spider:  { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 8, 6, true, false, false, false); }
+            case creature::race::Bog:
             {
                 if (ROLE == role::Spike)
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 4, 2, false, true, false, false, true, true);
@@ -200,11 +202,11 @@ namespace creature
                 //Grunt
                 return BodyType::Make_Humanoid(false, false, false);
             }
-            case creature::race::Enum::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
-            case creature::race::Enum::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, false, 0, true); }
-            case creature::race::Enum::LizardWalker:{ return Make_Humanoid(true, true, true); }
-            case creature::race::Enum::Minotaur:    { return Make_Humanoid(false, false, true, true); }
-            case creature::race::Enum::Plant:
+            case creature::race::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
+            case creature::race::Hydra:       { return BodyType(item::material::Flesh, item::material::Scale, 6, 0, 4, 12, true, true, true, false, true, false, false, 0, true); }
+            case creature::race::LizardWalker:{ return Make_Humanoid(true, true, true); }
+            case creature::race::Minotaur:    { return Make_Humanoid(false, false, true, true); }
+            case creature::race::Plant:
             {
                 if (ROLE == role::Pod)
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 0, 0, 1, true, true, false, false, false, true, false, 4);
@@ -221,8 +223,8 @@ namespace creature
                 //Whelp
                 return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
             }
-            case creature::race::Enum::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
-            case creature::race::Enum::Skeleton:
+            case creature::race::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
+            case creature::race::Skeleton:
             {
                 if (ROLE == role::Chieftain)
                     return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, false, false, true);
@@ -236,9 +238,9 @@ namespace creature
                 //um...default skeleton
                 return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, false, false, false);
             }
-            case creature::race::Enum::Beetle:  { return BodyType(item::material::Scale, item::material::Nothing, 1, 0, 4, 4, true, true, false, false, false, false, false); }
-            case creature::race::Enum::Boar:    { return BodyType(item::material::Hide, item::material::Nothing, 1, 0, 4, 2, true, false, false, false, true, false, false); }
-            case creature::race::Enum::Demon:
+            case creature::race::Beetle:  { return BodyType(item::material::Scale, item::material::Nothing, 1, 0, 4, 4, true, true, false, false, false, false, false); }
+            case creature::race::Boar:    { return BodyType(item::material::Hide, item::material::Nothing, 1, 0, 4, 2, true, false, false, false, true, false, false); }
+            case creature::race::Demon:
             {
                 if (ROLE == role::Skeleton)
                     return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, true, true, true, false, false);
@@ -255,30 +257,33 @@ namespace creature
                 //Wing
                 return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
             }
-            case creature::race::Enum::Griffin:
+            case creature::race::Harpy: { return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, false, true, true, false, false, false, false); }
+            case creature::race::Griffin:
             {
                 if (ROLE == role::Whelp)
                     return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 2, 2, true, true, true, false, true, false, true);
 
                 return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 4, 2, true, true, true, false, true, false, true);
             }
-            case creature::race::Enum::LionBoar:    { return BodyType(item::material::Hide,  item::material::Nothing, 1, 0, 4, 2, true, false, false, false, true, false, true); }
-            case creature::race::Enum::Naga:        { return BodyType(item::material::Scale, item::material::Nothing, 1, 2, 0, 2, true, true,  false, true,  true, false, false); }
-            case creature::race::Enum::Ramonaut:    { return BodyType(item::material::Hide,  item::material::Nothing, 1, 0, 4, 2, false, false, false, false, true, true, true); }
-            case creature::race::Enum::Serpent:
-            case creature::race::Enum::Cobra:       { return BodyType(item::material::Scale, item::material::Nothing, 1, 0, 0, 2, true, false, false, false, true, false, false);  }
-            case creature::race::Enum::Werebear:    { return BodyType(item::material::Hide, item::material::Fur, 1, 2, 2, 2, true, true, false, true, false, true, false); }
-            case creature::race::Enum::Wereboar:    { return BodyType(item::material::Hide, item::material::Fur, 1, 0, 4, 2, true, true, false, false, false, true, true); }
-            case creature::race::Enum::Werecat:     { return BodyType(item::material::Hide, item::material::Fur, 1, 0, 4, 2, true, true, false, false, true, false, false); }
-            case creature::race::Enum::Werewolf:    { return BodyType(item::material::Hide, item::material::Fur, 1, 2, 2, 2, true, true, false, true, true, false, false); }
-            case creature::race::Enum::Wyvern:
+            case creature::race::LionBoar:    { return BodyType(item::material::Hide,  item::material::Nothing, 1, 0, 4, 2, true, false, false, false, true, false, true); }
+            case creature::race::Naga:        { return BodyType(item::material::Scale, item::material::Nothing, 1, 2, 0, 2, true, true,  false, true,  true, false, false); }
+            case creature::race::Ramonaut:    { return BodyType(item::material::Hide,  item::material::Nothing, 1, 0, 4, 2, false, false, false, false, true, true, true); }
+            case creature::race::Serpent:
+            case creature::race::Cobra:       { return BodyType(item::material::Scale, item::material::Nothing, 1, 0, 0, 2, true, false, false, false, true, false, false);  }
+            case creature::race::Werebear:    { return BodyType(item::material::Hide, item::material::Fur, 1, 2, 2, 2, true, true, false, true, false, true, false); }
+            case creature::race::Wereboar:    { return BodyType(item::material::Hide, item::material::Fur, 1, 0, 4, 2, true, true, false, false, false, true, true); }
+            case creature::race::Werecat:     { return BodyType(item::material::Hide, item::material::Fur, 1, 0, 4, 2, true, true, false, false, true, false, false); }
+            case creature::race::ThreeHeadedHound:
+            case creature::race::Werewolf:    { return BodyType(item::material::Hide, item::material::Fur, 1, 2, 2, 2, true, true, false, true, true, false, false); }
+            case creature::race::Wyvern:
             {
                 BodyType wyvernBodyType( Make_Dragon() );
                 wyvernBodyType.num_arms_ = 0;
                 return wyvernBodyType;
             }
-            case creature::race::Enum::Werebat:     { return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, false, false, false, 0); }
-            case creature::race::Enum::Ghoul:
+            case creature::race::Bat:
+            case creature::race::Werebat:     { return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, false, false, false, 0); }
+            case creature::race::Ghoul:
             {
                 BodyType ghoulBodyType( Make_Humanoid(false, false, false, false) );
 
@@ -294,7 +299,7 @@ namespace creature
 
                 return ghoulBodyType;
             }
-            case creature::race::Enum::Giant:
+            case creature::race::Giant:
             {
                 BodyType giantBodyType( Make_Humanoid(false, false, false, false) );
 
@@ -310,7 +315,7 @@ namespace creature
 
                 return giantBodyType;
             }
-            case creature::race::Enum::Count:
+            case creature::race::Count:
             default: { break; }
         }
 

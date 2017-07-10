@@ -80,6 +80,11 @@ namespace creature
             Wyvern,
             Giant,
             Ghoul,
+            Bat,
+            Witch,
+            Golem,
+            Harpy,
+            ThreeHeadedHound,
             Count
         };
 
