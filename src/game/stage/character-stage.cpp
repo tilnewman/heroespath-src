@@ -978,7 +978,7 @@ namespace stage
         const float ANIM_SCALE(sfml_util::MapByRes(1.0f, 3.0f));
         smokeAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
             "Smoke",
-            GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-smoke"),
+            GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-smokeswirl"),
             200.0f,
             200.0f,
             0.035f,

@@ -46,6 +46,24 @@ namespace game
 namespace stage
 {
 
+    struct AnimInfo
+    {
+        AnimInfo(const std::string & KEY,
+                 const unsigned WIDTH,
+                 const unsigned HEIGHT)
+        :
+            key      (KEY),
+            width    (WIDTH),
+            height   (HEIGHT),
+            is_tested(false)
+        {}
+
+        std::string key;
+        unsigned int width;
+        unsigned int height;
+        bool is_tested;
+    };
+
     using StrSizePair_t     = std::pair<std::string, std::size_t>;
     using StrSizePairVec_t  = std::vector<StrSizePair_t>;
 
@@ -96,6 +114,12 @@ namespace stage
                                         const sf::Color &     COLOR);
 
         bool TestInventoryFactory();
+
+        bool TestSingleTextureAnimationManager(const std::string & MEDIA_PATH_KEY,
+                                               const unsigned int  WIDTH,
+                                               const unsigned int  HEIGHT,
+                                               const long          SLEEP_MS,
+                                               const bool          IS_NEW);
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;

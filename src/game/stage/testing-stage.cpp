@@ -819,24 +819,65 @@ namespace stage
                 "game::stage::TestingStage::TestAnimations() Starting Tests...");
         }
 
+        const long ANIM_FRAME_SLEEP_MS{ 10 };
+
+        //test single-texture animations
+        static std::vector<AnimInfo> animInfoVec{
+            AnimInfo("media-anim-image-burst",             128, 128),
+            AnimInfo("media-anim-images-candleflame",      128, 128),
+            AnimInfo("media-anim-image-dualswirl",         140, 140),
+            AnimInfo("media-anim-image-explosion",         102, 102),
+            AnimInfo("media-anim-images-explosion-small",  128, 128),
+            AnimInfo("media-anim-image-firetorch",         128, 256),
+            AnimInfo("media-anim-image-flash-sparkle",     128, 128),
+            AnimInfo("media-anim-image-flash",             102, 102),
+            AnimInfo("media-anim-image-puff",               86,  86),
+            AnimInfo("media-anim-image-puffhalf",          102, 102),
+            AnimInfo("media-anim-image-selectswirl",       140, 140),
+            AnimInfo("media-anim-image-smoke",             171, 165)
+        };
+
+        static auto isNewSingleTextureAnimation{ true };
+        static std::size_t singleTextureAnimIndex{ 0 };
+
+        if (singleTextureAnimIndex < animInfoVec.size())
+        {
+            if (animInfoVec[singleTextureAnimIndex].is_tested == false)
+            {
+                animInfoVec[singleTextureAnimIndex].is_tested = TestSingleTextureAnimationManager(
+                    animInfoVec[singleTextureAnimIndex].key,
+                    animInfoVec[singleTextureAnimIndex].width,
+                    animInfoVec[singleTextureAnimIndex].height,
+                    ANIM_FRAME_SLEEP_MS,
+                    isNewSingleTextureAnimation);
+
+                isNewSingleTextureAnimation = false;
+            }
+            else
+            {
+                ++singleTextureAnimIndex;
+                isNewSingleTextureAnimation = true;
+            }
+
+            return false;
+        }
+
+        //test multi-texture animations
         static std::vector<std::string> multiTexturedAnimPathKeyVec =
         {
             "media-anim-images-dir-dualcharge",
             "media-anim-images-dir-explosion",
-            "media-anim-images-dir-firesmall",
             "media-anim-images-dir-inferno",
             "media-anim-images-dir-lightningball",
             "media-anim-images-dir-lightningbolt",
             "media-anim-images-dir-orbcharge",
             "media-anim-images-dir-orbshimmer",
             "media-anim-images-dir-shimmer",
-            "media-anim-images-dir-smoke",
+            "media-anim-images-dir-smokesiwrl",
             "media-anim-images-dir-spiderflare",
             "media-anim-images-dir-symbolreduce",
             "media-anim-images-dir-whiteburst",
         };
-
-        const long ANIM_FRAME_SLEEP_MS{ 0 };
 
         static std::size_t multiTexturedAnimIndex{ 0 };
         if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
@@ -868,102 +909,35 @@ namespace stage
             }
         }
 
-        static auto isNewSingleTextureAnimation{ true };
-
-        static auto hasAnimationBeenTested_CandleFlame{ false };
-        if (false == hasAnimationBeenTested_CandleFlame)
-        {
-            if (TestSingleTextureAnimation("media-anim-images-candleflame",
-                                           isNewSingleTextureAnimation,
-                                           128,
-                                           128,
-                                           sf::BlendAlpha,
-                                           sf::Color::White) == false)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-                isNewSingleTextureAnimation = false;
-                return false;
-            }
-            else
-            {
-                singleTextureAnimSPtr_.reset();
-                isNewSingleTextureAnimation = true;
-                hasAnimationBeenTested_CandleFlame = true;
-            }
-        }
-
-        static auto hasAnimationBeenTested_ExplosionSmall{ false };
-        if (false == hasAnimationBeenTested_ExplosionSmall)
-        {
-            if (TestSingleTextureAnimation("media-anim-images-explosion-small",
-                                           isNewSingleTextureAnimation,
-                                           128,
-                                           128,
-                                           sf::BlendAlpha,
-                                           sf::Color::White) == false)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-                isNewSingleTextureAnimation = false;
-                return false;
-            }
-            else
-            {
-                singleTextureAnimSPtr_.reset();
-                isNewSingleTextureAnimation = true;
-                hasAnimationBeenTested_ExplosionSmall = true;
-            }
-        }
-
-        static auto hasAnimationBeenTested_FireTorch{ false };
-        if (false == hasAnimationBeenTested_FireTorch)
-        {
-            if (TestSingleTextureAnimation("media-anim-image-firetorch",
-                                           isNewSingleTextureAnimation,
-                                           128,
-                                           256,
-                                           sf::BlendAlpha,
-                                           sf::Color::White) == false)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-                isNewSingleTextureAnimation = false;
-                return false;
-            }
-            else
-            {
-                singleTextureAnimSPtr_.reset();
-                isNewSingleTextureAnimation = true;
-                hasAnimationBeenTested_FireTorch = true;
-            }
-        }
-
-        static auto hasAnimationBeenTested_FlashSparkle{ false };
-        if (false == hasAnimationBeenTested_FlashSparkle)
-        {
-            if (TestSingleTextureAnimation("media-anim-image-flash-sparkle",
-                                           isNewSingleTextureAnimation,
-                                           128,
-                                           128,
-                                           sf::BlendAdd,
-                                           sf::Color::Cyan) == false)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-                isNewSingleTextureAnimation = false;
-                return false;
-            }
-            else
-            {
-                singleTextureAnimSPtr_.reset();
-                isNewSingleTextureAnimation = true;
-                hasAnimationBeenTested_FlashSparkle = true;
-            }
-        }
-
         LoopManager::Instance()->TestingStrAppend(
             "game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
 
         return true;
     }
 
+
+    bool TestingStage::TestSingleTextureAnimationManager(const std::string & MEDIA_PATH_KEY,
+                                                         const unsigned int  WIDTH,
+                                                         const unsigned int  HEIGHT,
+                                                         const long          SLEEP_MS,
+                                                         const bool          IS_NEW)
+    {
+        if (TestSingleTextureAnimation(MEDIA_PATH_KEY,
+                                       IS_NEW,
+                                       WIDTH,
+                                       HEIGHT,
+                                       sf::BlendAlpha,
+                                       sf::Color::White) == false)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS));
+            return false;
+        }
+        else
+        {
+            singleTextureAnimSPtr_.reset();
+            return true;
+        }
+    }
 
     bool TestingStage::TestMultiTextureAnimation(
         const std::string & MEDIA_PATH_KEY_STR,

@@ -153,7 +153,7 @@ namespace stage
                                                       "Smoke Animation",
                                                       "Posted on OpenGameArt.org by MrBeast\nwww.opengameart.org/users/mrbeast\nUnder the Public Domain Dedication CC0 1.0 Universal License\nwww.creativecommons.org/publicdomain/zero/1.0",
                                                       credit_media_type::AnimMultiTexture,
-                                                      "media-anim-images-dir-smoke",
+                                                      "media-anim-images-dir-smokeswirl",
                                                       sfml_util::MapByRes(1.0f, 3.0f),
                                                       sf::Vector2f(0.0f, 0.0f),
                                                       0.05f));
