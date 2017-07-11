@@ -37,6 +37,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gradient-info.hpp"
+#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/radio-button.hpp"
@@ -166,7 +167,7 @@ namespace stage
         smokeAnimDrifterX_      (smokeAnimmaxX_, sfml_util::Display::Instance()->GetWinWidth() - 200.0f, 0.05f, 0.5f),
         smokeAnimDrifterY_      (0.0f, 300.0f, 0.05f, 0.5f),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        smokeAnimSPtr_          (),
+        smokeAnimUPtr_          (),
         backButtonSPtr_         ( std::make_shared<MenuButton>("Back", "back_button_normal.png", "back_button_lit.png") ),
         saveButtonSPtr_         ( std::make_shared<MenuButton>("Save", "save_button_normal.png", "save_button_lit.png") ),
         helpButtonSPtr_         ( std::make_shared<MenuButton>("Help", "help_button_normal.png", "help_button_lit.png") ),
@@ -975,17 +976,13 @@ namespace stage
 
         //smoke animation
         //Note:  Keep this last to be added to the enitySVec_ in this function
-        const float ANIM_SCALE(sfml_util::MapByRes(1.0f, 3.0f));
-        smokeAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
-            "Smoke",
-            GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-smokeswirl"),
-            200.0f,
-            200.0f,
-            0.035f,
-            ANIM_SCALE,
-            ANIM_SCALE);
+        smokeAnimUPtr_ = sfml_util::AnimationFactory::Make(sfml_util::Animations::SmokeSwirl,
+                                                           sfml_util::MapByRes(1.0f, 3.0f),
+                                                           0.035f,
+                                                           sf::Color::White,
+                                                           sf::BlendAlpha);
 
-        EntityAdd(smokeAnimSPtr_.get());
+        EntityAdd(smokeAnimUPtr_.get());
 
         //setup initial config of radio buttons
         AdjustRoleRadioButtonsForRace(static_cast<game::creature::race::Enum>(0));
@@ -1741,21 +1738,22 @@ namespace stage
         }
 
         //drift the position of the smoke anim
-        smokeAnimSPtr_->SetEntityPos(smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS), smokeAnimDrifterY_.Update(ELAPSED_TIME_SECONDS));
+        smokeAnimUPtr_->SetEntityPos(smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS),
+            smokeAnimDrifterY_.Update(ELAPSED_TIME_SECONDS));
 
         //ramp the smoke anim speed up and down when the spacebar is held
         if (isAnimStats_)
         {
-            if (smokeAnimSPtr_->TimeBetweenFrames() >= 0.01f)
+            if (smokeAnimUPtr_->TimePerFrame() >= 0.01f)
             {
-                smokeAnimSPtr_->TimeBetweenFramesAdj(ELAPSED_TIME_SECONDS * 0.02f * -1.0f);
+                smokeAnimUPtr_->TimePerFrameAdj(ELAPSED_TIME_SECONDS * 0.02f * -1.0f);
             }
         }
         else
         {
-            if (smokeAnimSPtr_->TimeBetweenFrames() <= 0.05f)
+            if (smokeAnimUPtr_->TimePerFrame() <= 0.05f)
             {
-                smokeAnimSPtr_->TimeBetweenFramesAdj(ELAPSED_TIME_SECONDS * 0.01f);
+                smokeAnimUPtr_->TimePerFrameAdj(ELAPSED_TIME_SECONDS * 0.01f);
             }
         }
 
@@ -2269,8 +2267,8 @@ namespace stage
             if (initialRollCounter_ <= 6)
                 numToUse = initialRollCounter_++;
 
-            const float SMOKE_ANIM_MID_X(smokeAnimSPtr_->GetEntityPos().x + (smokeAnimSPtr_->GetEntityRegion().width * 0.5f) - 10.0f);
-            const float SMOKE_ANIM_MID_Y(smokeAnimSPtr_->GetEntityPos().y + (smokeAnimSPtr_->GetEntityRegion().height * 0.5f) - 10.0f);
+            const float SMOKE_ANIM_MID_X(smokeAnimUPtr_->GetEntityPos().x + (smokeAnimUPtr_->GetEntityRegion().width * 0.5f) - 10.0f);
+            const float SMOKE_ANIM_MID_Y(smokeAnimUPtr_->GetEntityPos().y + (smokeAnimUPtr_->GetEntityRegion().height * 0.5f) - 10.0f);
             const float ANIM_NUM_TARGET_X(statsFirstNumPosLeft_ + ((NEXT_VAL < 10) ? 10.0f : 0.0f) - 10.0f);
 
             switch (numToUse)

@@ -42,160 +42,182 @@ namespace game
 namespace stage
 {
 
-    Credit::Credit(sf::FloatRect &                  creditsRegion,
-                   const std::string &              TITLE,
-                   const std::string &              CONTENT_TEXT,
-                   const credit_media_type::Enum    MEDIA_TYPE,
-                   const std::string &              MEDIA_PATH,
-                   const float                      MEDIA_SCALE,
-                   const sf::Vector2f &             MEDIA_POS_ADJUSTMENT,
-                   const float                      ANIM_FRAME_TIME_SEC,
-                   const unsigned int               ANIM_FRAME_COUNT,
-                   const unsigned int               ANIM_FRAME_SIZE_HORIZ,
-                   const unsigned int               ANIM_FRAME_SIZE_VERT)
+    Credit::Credit(sf::FloatRect &     trackingRect,
+                   const std::string & TITLE_TEXT,
+                   const std::string & CONTENT_TEXT)
     :
-        titleTextRegionUPtr_  (),
-        contentTextRegionUPtr_(),
-        contentType_          (MEDIA_TYPE),
-        path_                 (MEDIA_PATH),
-        posAdj_               (MEDIA_POS_ADJUSTMENT),
-        texture_              (),
-        sprite_               (),
-        multiTextureAnimSPtr_ (),
-        singleTextureAnimSPtr_()
+        titleTextUPtr_  (),
+        contentTextUPtr_(),
+        mediaType_      (MediaType::Text),
+        mediaPathKey_   (""),
+        texture_        (),
+        sprite_         (),
+        animUPtr_       ()
     {
-        Setup(creditsRegion,
-              TITLE,
+        Setup(trackingRect,
+              TITLE_TEXT,
               sfml_util::FontManager::Instance()->Font_Typical(),
               sfml_util::FontManager::Instance()->Size_Smallish(),
               CONTENT_TEXT,
-              MEDIA_TYPE,
-              MEDIA_PATH,
-              MEDIA_SCALE,
-              MEDIA_POS_ADJUSTMENT,
-              ANIM_FRAME_TIME_SEC,
-              ANIM_FRAME_COUNT,
-              ANIM_FRAME_SIZE_HORIZ,
-              ANIM_FRAME_SIZE_VERT);
+              mediaType_,
+              mediaPathKey_,
+              1.0f,
+              sfml_util::Animations::Count,
+              1.0f,
+              0.0f);
     }
 
 
-    Credit::Credit(sf::FloatRect &                  creditsRegion,
-                   const std::string &              TITLE,
-                   const sfml_util::FontPtr_t       FONT_PTR,
-                   const std::string &              CONTENT_TEXT,
-                   const credit_media_type::Enum    MEDIA_TYPE,
-                   const std::string &              MEDIA_PATH,
-                   const float                      MEDIA_SCALE)
+    Credit::Credit(sf::FloatRect &                   trackingRect,
+                   const std::string &               TITLE_TEXT,
+                   const std::string &               CONTENT_TEXT,
+                   const sfml_util::Animations::Enum ANIM_ENUM,
+                   const float                       ANIM_SCALE,
+                   const float                       ANIM_FRAME_TIME_SEC)
     :
-        titleTextRegionUPtr_  (),
-        contentTextRegionUPtr_(),
-        contentType_          (MEDIA_TYPE),
-        path_                 (MEDIA_PATH),
-        posAdj_               (sf::Vector2f(0.0f, 0.0f)),
-        texture_              (),
-        sprite_               (),
-        multiTextureAnimSPtr_ (),
-        singleTextureAnimSPtr_()
+        titleTextUPtr_  (),
+        contentTextUPtr_(),
+        mediaType_      (MediaType::Anim),
+        mediaPathKey_   (sfml_util::Animations::MediaPathKey(ANIM_ENUM)),
+        texture_        (),
+        sprite_         (),
+        animUPtr_       ()
     {
-        Setup(creditsRegion,
-              TITLE,
-              FONT_PTR,
-              sfml_util::FontManager::Instance()->Size_Larger(),
+        Setup(trackingRect,
+              TITLE_TEXT,
+              sfml_util::FontManager::Instance()->Font_Typical(),
+              sfml_util::FontManager::Instance()->Size_Smallish(),
               CONTENT_TEXT,
-              MEDIA_TYPE,
-              MEDIA_PATH,
-              MEDIA_SCALE,
-              sf::Vector2f(0.0f, 0.0f),
-              0.0f,
-              0,
-              0,
-              0);
+              mediaType_,
+              mediaPathKey_,
+              1.0f,
+              sfml_util::Animations::Count,
+              ANIM_SCALE,
+              ANIM_FRAME_TIME_SEC);
     }
 
 
-    void Credit::Setup(sf::FloatRect &                  creditsRegion,
-                       const std::string &              TITLE,
-                       const sfml_util::FontPtr_t       TITLE_FONT_PTR,
-                       const unsigned int               TITLE_FONT_SIZE,
-                       const std::string &              CONTENT_TEXT,
-                       const credit_media_type::Enum    MEDIA_TYPE,
-                       const std::string &              MEDIA_PATH,
-                       const float                      MEDIA_SCALE,
-                       const sf::Vector2f &             MEDIA_POS_ADJUSTMENT,
-                       const float                      ANIM_FRAME_TIME_SEC,
-                       const unsigned int               ANIM_FRAME_COUNT,
-                       const unsigned int               ANIM_FRAME_SIZE_HORIZ,
-                       const unsigned int               ANIM_FRAME_SIZE_VERT)
+    Credit::Credit(sf::FloatRect &     trackingRect,
+                   const std::string & TITLE_TEXT,
+                   const std::string & CONTENT_TEXT,
+                   const std::string & IMAGE_PATH_KEY,
+                   const float         IMAGE_SCALE)
+    :
+        titleTextUPtr_  (),
+        contentTextUPtr_(),
+        mediaType_      (MediaType::Image),
+        mediaPathKey_   (IMAGE_PATH_KEY),
+        texture_        (),
+        sprite_         (),
+        animUPtr_       ()
     {
-        const float VERT_PAD_SMALL(0.0f);
+        Setup(trackingRect,
+              TITLE_TEXT,
+              sfml_util::FontManager::Instance()->Font_Typical(),
+              sfml_util::FontManager::Instance()->Size_Smallish(),
+              CONTENT_TEXT,
+              mediaType_,
+              mediaPathKey_,
+              IMAGE_SCALE,
+              sfml_util::Animations::Count,
+              1.0f,
+              0.0f);
+    }
 
-        if (MEDIA_TYPE == credit_media_type::Image)
+
+    Credit::Credit(sf::FloatRect &                   trackingRect,
+                   const std::string &               TITLE_TEXT,
+                   const sfml_util::FontPtr_t        FONT_PTR,
+                   const std::string &               CONTENT_TEXT)
+    :
+        titleTextUPtr_  (),
+        contentTextUPtr_(),
+        mediaType_      (MediaType::Image),
+        mediaPathKey_   ("media-images-logos-openfontlicense"),
+        texture_        (),
+        sprite_         (),
+        animUPtr_       ()
+    {
+        Setup(trackingRect,
+              TITLE_TEXT,
+              FONT_PTR,
+              sfml_util::FontManager::Instance()->Size_Smallish(),
+              CONTENT_TEXT,
+              mediaType_,
+              mediaPathKey_,
+              sfml_util::MapByRes(1.5f, 5.75f),
+              sfml_util::Animations::Count,
+              1.0f,
+              0.0f);
+    }
+
+
+    void Credit::Setup(sf::FloatRect &                   trackingRect,
+                       const std::string &               TITLE_TEXT,
+                       const sfml_util::FontPtr_t        TITLE_FONT_PTR,
+                       const unsigned int                TITLE_FONT_SIZE,
+                       const std::string &               CONTENT_TEXT,
+                       const MediaType::Enum             MEDIA_TYPE,
+                       const std::string &               MEDIA_PATH,
+                       const float                       MEDIA_SCALE,
+                       const sfml_util::Animations::Enum ANIM_ENUM,
+                       const float                       ANIM_SCALE,
+                       const float                       ANIM_FRAME_TIME_SEC)
+    {
+        if (MEDIA_TYPE == MediaType::Image)
         {
-            sfml_util::LoadImageOrTexture<sf::Texture>(texture_, GameDataFile::Instance()->GetMediaPath(MEDIA_PATH));
+            sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH));
+
             texture_.setSmooth(true);
             sprite_.setTexture(texture_);
             sprite_.setScale(MEDIA_SCALE, MEDIA_SCALE);
 
-            sprite_.setPosition(PositionMedia(sf::Vector2f(sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height),
-                                                           creditsRegion,
-                                                           MEDIA_POS_ADJUSTMENT));
+            auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f)) -
+                (sprite_.getGlobalBounds().width * 0.5f) };
 
-            creditsRegion.top += sprite_.getGlobalBounds().height + VERT_PAD_SMALL;
+            auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) -
+                (sprite_.getGlobalBounds().height * 0.5f) };
+
+            sprite_.setPosition(POS_LEFT, POS_TOP);
+
+            trackingRect.top += sprite_.getGlobalBounds().height;
         }
-        else if (MEDIA_TYPE == credit_media_type::AnimSingleTexture)
+        else if (MEDIA_TYPE == MediaType::Anim)
         {
-            const sf::Vector2f POS_V(PositionMedia(sf::Vector2f(0.0f, 0.0f),
-                                                   creditsRegion,
-                                                   MEDIA_POS_ADJUSTMENT));
+            //inital size and pos are default (zeros)
+            animUPtr_ = sfml_util::AnimationFactory::Make(ANIM_ENUM,
+                                                          sf::FloatRect(),
+                                                          ANIM_FRAME_TIME_SEC);
 
-            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
-                "Credit_",
-                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
-                POS_V.x,
-                POS_V.y,
-                ANIM_FRAME_SIZE_HORIZ,
-                ANIM_FRAME_SIZE_VERT,
-                ANIM_FRAME_TIME_SEC,
-                ANIM_FRAME_COUNT);
+            //correct size and position
+            auto const WIDTH{ animUPtr_->OrigSize().x * ANIM_SCALE };
+            auto const HEIGHT{ animUPtr_->OrigSize().y * ANIM_SCALE };
 
-            singleTextureAnimSPtr_->MoveEntityPos((singleTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
+            auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f)) -
+                (WIDTH * 0.5f) };
 
-            creditsRegion.top += singleTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
+            auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) -
+                (HEIGHT * 0.5f) };
+            
+            animUPtr_->SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT) );
+
+            //account for height of animation
+            trackingRect.top += animUPtr_->GetEntityRegion().height;
         }
-        else if (MEDIA_TYPE == credit_media_type::AnimMultiTexture)
-        {
-            const sf::Vector2f POS_V(PositionMedia(sf::Vector2f(0.0f, 0.0f),
-                                                   creditsRegion,
-                                                   MEDIA_POS_ADJUSTMENT));
-
-            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
-                "Credit_" + TITLE,
-                GameDataFile::Instance()->GetMediaPath(MEDIA_PATH),
-                POS_V.x,
-                POS_V.y,
-                ANIM_FRAME_TIME_SEC,
-                MEDIA_SCALE,
-                MEDIA_SCALE);
-
-            multiTextureAnimSPtr_->MoveEntityPos((multiTextureAnimSPtr_->GetEntityRegion().width * -0.5f), 0.0f);
-
-            creditsRegion.top += multiTextureAnimSPtr_->GetEntityRegion().height + VERT_PAD_SMALL;
-        }
-
-        const sfml_util::gui::TextInfo TEXT_INFO_TITLE(TITLE,
+        
+        const sfml_util::gui::TextInfo TEXT_INFO_TITLE(TITLE_TEXT,
                                                        TITLE_FONT_PTR,
                                                        TITLE_FONT_SIZE,
                                                        sf::Color(255, 255, 255, 200),
                                                        sfml_util::Justified::Center);
 
-        titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CreditTitle_" + TITLE, TEXT_INFO_TITLE, creditsRegion);
+        titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, trackingRect);
 
-        if (TITLE != " ")
+        if (TITLE_TEXT != " ")
         {
-            creditsRegion.top += titleTextRegionUPtr_->
-                GetEntityRegion().height + VERT_PAD_SMALL;
+            trackingRect.top += titleTextUPtr_->GetEntityRegion().height;
         }
 
         sfml_util::gui::TextInfo textInfoContent(
@@ -206,44 +228,38 @@ namespace stage
             sfml_util::Justified::Center);
 
         //if there is a lot of text (multi-lined), reduce the size to look better
-        if (boost::algorithm::icontains(CONTENT_TEXT, "\n"))
-        {
-            textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 50));
-        }
+        textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 20)) *
+                std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n');
+        
+        contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("CreditContent",
+                                                                        textInfoContent,
+                                                                        trackingRect);
 
-        contentTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
-            "CreditContent", textInfoContent, creditsRegion));
+        trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
 
-        creditsRegion.top += contentTextRegionUPtr_->GetEntityRegion().height;
-
-        const float SPACE_BETWEEN_CREDITS(sfml_util::MapByRes(100.0f, 200.0f));
-        creditsRegion.top += SPACE_BETWEEN_CREDITS;
+        //add space between credits
+        trackingRect.top += sfml_util::MapByRes(100.0f, 200.0f);
     }
 
 
     void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        if (titleTextRegionUPtr_.get() != nullptr)
+        if (titleTextUPtr_.get() != nullptr)
         {
-            target.draw( * titleTextRegionUPtr_, states);
+            target.draw( * titleTextUPtr_, states);
         }
 
-        if (contentTextRegionUPtr_.get() != nullptr)
+        if (contentTextUPtr_.get() != nullptr)
         {
-            target.draw( * contentTextRegionUPtr_, states);
+            target.draw( * contentTextUPtr_, states);
         }
 
-        if (multiTextureAnimSPtr_.get() != nullptr)
+        if (animUPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->draw(target, states);
+            animUPtr_->draw(target, states);
         }
 
-        if (singleTextureAnimSPtr_.get() != nullptr)
-        {
-            singleTextureAnimSPtr_->draw(target, states);
-        }
-
-        if (credit_media_type::Image == contentType_)
+        if (MediaType::Image == mediaType_)
         {
             target.draw(sprite_, states);
         }
@@ -252,53 +268,31 @@ namespace stage
 
     void Credit::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (multiTextureAnimSPtr_.get() != nullptr)
+        if (animUPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
-        }
-
-        if (singleTextureAnimSPtr_.get() != nullptr)
-        {
-            singleTextureAnimSPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
+            animUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
         }
     }
 
 
     void Credit::Move(const float ADJ_HORIZ, const float ADJ_VERT)
     {
-        if (titleTextRegionUPtr_.get() != nullptr)
+        if (titleTextUPtr_.get() != nullptr)
         {
-            titleTextRegionUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+            titleTextUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
-        if (contentTextRegionUPtr_.get() != nullptr)
+        if (contentTextUPtr_.get() != nullptr)
         {
-            contentTextRegionUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+            contentTextUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
         sprite_.move(ADJ_HORIZ, ADJ_VERT);
 
-        if (multiTextureAnimSPtr_.get() != nullptr)
+        if (animUPtr_.get() != nullptr)
         {
-            multiTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
+            animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
-
-        if (singleTextureAnimSPtr_.get() != nullptr)
-        {
-            singleTextureAnimSPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
-        }
-    }
-
-
-    const sf::Vector2f Credit::PositionMedia(const sf::Vector2f &  MEDIA_SIZE,
-                                             const sf::FloatRect & CREDITS_REGION,
-                                             const sf::Vector2f &  POS_ADJUSTMENTS)
-    {
-        sf::Vector2f v;
-        v.y = CREDITS_REGION.top;
-        v.x = (CREDITS_REGION.left + (CREDITS_REGION.width * 0.5f)) - (MEDIA_SIZE.x * 0.5f);
-        v += POS_ADJUSTMENTS;
-        return v;
     }
 
 }

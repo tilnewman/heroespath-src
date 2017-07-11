@@ -28,7 +28,7 @@
 // credit.hpp
 //
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/animation.hpp"
+#include "sfml-util/animation-factory.hpp"
 
 #include <memory>
 #include <string>
@@ -49,14 +49,13 @@ namespace game
 namespace stage
 {
 
-    struct credit_media_type
+    struct MediaType
     {
         enum Enum
         {
-            None = 0,
+            Text = 0,
             Image,
-            AnimSingleTexture,
-            AnimMultiTexture,
+            Anim,
             Count
         };
     };
@@ -66,39 +65,44 @@ namespace stage
     class Credit
     {
     public:
-        Credit(sf::FloatRect &               creditsRegion,
-               const std::string &           TITLE,
-               const std::string &           CONTENT_TEXT,
-               const credit_media_type::Enum MEDIA_TYPE            = credit_media_type::None,
-               const std::string &           MEDIA_PATH            = "",
-               const float                   MEDIA_SCALE           = 1.0f,
-               const sf::Vector2f &          MEDIA_POS_ADJUSTMENT  = sf::Vector2f(0.0f, 0.0f),
-               const float                   ANIM_FRAME_TIME_SEC   = 0.0f,
-               const unsigned int            ANIM_FRAME_COUNT      = 0,
-               const unsigned int            ANIM_FRAME_SIZE_HORIZ = 0,
-               const unsigned int            ANIM_FRAME_SIZE_VERT  = 0);
+        //use to create text only credits
+        Credit(sf::FloatRect &     trackingRect,
+               const std::string & TITLE_TEXT,
+               const std::string & CONTENT_TEXT);
 
-        Credit(sf::FloatRect &               creditsRegion,
-               const std::string &           TITLE,
-               const sfml_util::FontPtr_t    FONT_PTR,
-               const std::string &           CONTENT_TEXT,
-               const credit_media_type::Enum MEDIA_TYPE  = credit_media_type::Image,
-               const std::string &           MEDIA_PATH  = "media-images-logos-openfontlicense",
-               const float                   MEDIA_SCALE = sfml_util::MapByRes(1.5f, 5.75f));
+        //use to create animation credits
+        Credit(sf::FloatRect &                   trackingRect,
+               const std::string &               TITLE_TEXT,
+               const std::string &               CONTENT_TEXT,
+               const sfml_util::Animations::Enum ANIM_ENUM,
+               const float                       ANIM_SCALE,   
+               const float                       ANIM_FRAME_TIME_SEC);
 
-        void Setup(sf::FloatRect &                  creditsRegion,
-                   const std::string &              TITLE,
-                   const sfml_util::FontPtr_t       TITLE_FONT_PTR,
-                   const unsigned int               TITLE_FONT_SIZE,
-                   const std::string &              CONTENT_TEXT,
-                   const credit_media_type::Enum    MEDIA_TYPE,
-                   const std::string &              MEDIA_PATH,
-                   const float                      MEDIA_SCALE,
-                   const sf::Vector2f &             MEDIA_POS_ADJUSTMENT,
-                   const float                      ANIM_FRAME_TIME_SEC,
-                   const unsigned int               ANIM_FRAME_COUNT,
-                   const unsigned int               ANIM_FRAME_SIZE_HORIZ,
-                   const unsigned int               ANIM_FRAME_SIZE_VERT);
+        //use to create general image credits
+        Credit(sf::FloatRect &     trackingRect,
+               const std::string & TITLE_TEXT,
+               const std::string & CONTENT_TEXT,
+               const std::string & IMAGE_PATH_KEY,
+               const float         IMAGE_SCALE);
+
+        //specialization used to create font (image) credits
+        Credit(sf::FloatRect &            trackingRect,
+               const std::string &        TITLE_TEXT,
+               const sfml_util::FontPtr_t FONT_PTR,
+               const std::string &        CONTENT_TEXT);
+
+        //used to help construct all types of credits
+        void Setup(sf::FloatRect &                   trackingRect,
+                   const std::string &               TITLE_TEXT,
+                   const sfml_util::FontPtr_t        TITLE_FONT_PTR,
+                   const unsigned int                TITLE_FONT_SIZE,
+                   const std::string &               CONTENT_TEXT,
+                   const MediaType::Enum             MEDIA_TYPE,
+                   const std::string &               MEDIA_PATH,
+                   const float                       MEDIA_SCALE,
+                   const sfml_util::Animations::Enum ANIM_ENUM,
+                   const float                       ANIM_SCALE,
+                   const float                       ANIM_FRAME_TIME_SEC);
 
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
 
@@ -106,20 +110,14 @@ namespace stage
 
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);
 
-        const sf::Vector2f PositionMedia(const sf::Vector2f &  MEDIA_SIZE,
-                                         const sf::FloatRect & CREDITS_REGION,
-                                         const sf::Vector2f &  POS_ADJUSTMENTS);
-
     private:
-        sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t contentTextRegionUPtr_;
-        credit_media_type::Enum          contentType_;
-        std::string                      path_;
-        sf::Vector2f                     posAdj_;
+        sfml_util::gui::TextRegionUPtr_t titleTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t contentTextUPtr_;
+        MediaType::Enum                  mediaType_;
+        std::string                      mediaPathKey_;
         sf::Texture                      texture_;
         sf::Sprite                       sprite_;
-        sfml_util::MultiTextureAnimationSPtr_t multiTextureAnimSPtr_;
-        sfml_util::SingleTextureAnimationSPtr_t singleTextureAnimSPtr_;
+        sfml_util::AnimationUPtr_t       animUPtr_;
     };
 
     using CreditSPtr_t = std::shared_ptr<Credit>;

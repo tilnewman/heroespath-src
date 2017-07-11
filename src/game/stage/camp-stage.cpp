@@ -34,7 +34,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
-#include "sfml-util/animation.hpp"
+#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 
@@ -75,7 +75,7 @@ namespace stage
         campfireTexture_   (),
         campfireSprite_    (),
         backgroundImage_   ("media-images-backgrounds-tile-darkknot"),
-        fireAnim1SPtr_     (),
+        fireAnimUPtr_      (),
         showNewGamePopup1_ (false),
         showNewGamePopup2_ (false),
         showNewGamePopup3_ (false),
@@ -151,16 +151,15 @@ namespace stage
         campfireSprite_.setPosition(SCREEN_WIDTH_ - CAMPFIRE_BOUNDS_BEFORE.width - 75.0f, SCREEN_HEIGHT_ - CAMPFIRE_BOUNDS_BEFORE.height - 60.0f);
 
         //campfire animation
-        fireAnim1SPtr_.reset( new sfml_util::MultiTextureAnimation("Fire1",
-                                                                   GameDataFile::Instance()->GetMediaPath("media-anim-images-dir-inferno"),
-                                                                   (SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width) - 85.0f,
-                                                                   (SCREEN_HEIGHT_ - campfireSprite_.getGlobalBounds().height) - 175.0f,
-                                                                   0.05f,
-                                                                   1.20f,
-                                                                   1.20f,
-                                                                   sf::Color::White,
-                                                                   sf::BlendAdd) );
-        EntityAdd(fireAnim1SPtr_.get());
+        fireAnimUPtr_ = sfml_util::AnimationFactory::Make(sfml_util::Animations::Inferno,
+                                                                    1.2f,
+                                                                    0.05f);
+
+        fireAnimUPtr_->SetEntityPos(
+            (SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width) - 85.0f,
+            (SCREEN_HEIGHT_ - campfireSprite_.getGlobalBounds().height) - 175.0f);
+        
+        EntityAdd(fireAnimUPtr_.get());
 
         //TEMP TODO REMOVE -make a party to test this stage with
         auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };

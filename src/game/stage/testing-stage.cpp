@@ -69,9 +69,8 @@ namespace game
 namespace stage
 {
 
-    const std::size_t                       TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
-    sfml_util::MultiTextureAnimationSPtr_t  TestingStage::multiTextureAnimSPtr_;
-    sfml_util::SingleTextureAnimationSPtr_t TestingStage::singleTextureAnimSPtr_;
+    const std::size_t          TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
+    sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
 
 
     TestingStage::TestingStage()
@@ -112,16 +111,10 @@ namespace stage
     {
         Stage::Draw(target, STATES);
 
-        if (multiTextureAnimSPtr_.get() != nullptr)
+        if (animUPtr_.get() != nullptr)
         {
             target.draw(animBGSprite_, STATES);
-            multiTextureAnimSPtr_->draw(target, STATES);
-        }
-
-        if (singleTextureAnimSPtr_.get() != nullptr)
-        {
-            target.draw(animBGSprite_, STATES);
-            singleTextureAnimSPtr_->draw(target, STATES);
+            animUPtr_->draw(target, STATES);
         }
 
         auto const IMAGE_POS_TOP{ 1.0f };
@@ -821,184 +814,39 @@ namespace stage
 
         const long ANIM_FRAME_SLEEP_MS{ 0 };
 
-        //test single-texture animations
-        static std::vector<AnimInfo> animInfoVec{
-            AnimInfo("media-anim-image-burst",             120, 120),
-            AnimInfo("media-anim-images-candleflame",      128, 128),
-            AnimInfo("media-anim-image-dualswirl",         140, 140),
-            AnimInfo("media-anim-image-explosion1",        100, 100),
-            AnimInfo("media-anim-image-explosion2",        100, 100),
-            AnimInfo("media-anim-image-explosion3",        100, 100),
-            AnimInfo("media-anim-images-explosion-small",  128, 128),
-            AnimInfo("media-anim-image-firetorch",         128, 256),
-            AnimInfo("media-anim-image-flash-sparkle",     128, 128),
-            AnimInfo("media-anim-image-flash",             128, 128),
-            AnimInfo("media-anim-image-puff",               80,  80),
-            AnimInfo("media-anim-image-puffhalf",          100, 100),
-            AnimInfo("media-anim-image-selectswirl",       140, 140),
-            AnimInfo("media-anim-image-smoke",             164, 164),
-            AnimInfo("media-anim-image-splash2",           120, 120),
-            AnimInfo("media-anim-image-splash3",           240, 240)
-        };
+        static std::size_t animIndex{ 0 };
 
-        static auto isNewSingleTextureAnimation{ true };
-        static std::size_t singleTextureAnimIndex{ 0 };
-
-        if (singleTextureAnimIndex < animInfoVec.size())
+        if (animIndex < sfml_util::Animations::Count)
         {
-            if (animInfoVec[singleTextureAnimIndex].is_tested == false)
+            if (animUPtr_.get() == nullptr)
             {
-                animInfoVec[singleTextureAnimIndex].is_tested = TestSingleTextureAnimationManager(
-                    animInfoVec[singleTextureAnimIndex].key,
-                    animInfoVec[singleTextureAnimIndex].width,
-                    animInfoVec[singleTextureAnimIndex].height,
-                    ANIM_FRAME_SLEEP_MS,
-                    isNewSingleTextureAnimation);
+                auto const ENUM{ static_cast<sfml_util::Animations::Enum>(animIndex) };
+                
+                std::ostringstream ss;
+                ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
+                LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                isNewSingleTextureAnimation = false;
+                animUPtr_ = sfml_util::AnimationFactory::Make(
+                    static_cast<sfml_util::Animations::Enum>(animIndex),
+                    sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f),
+                    ANIM_FRAME_SLEEP_MS,
+                    sf::Color::White,
+                    ((ENUM == sfml_util::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd));
             }
-            else
+
+            if (animUPtr_->UpdateTime(0.02f))
             {
-                ++singleTextureAnimIndex;
-                isNewSingleTextureAnimation = true;
+                animUPtr_.reset();
+                ++animIndex;
             }
 
             return false;
-        }
-
-        //test multi-texture animations
-        static std::vector<std::string> multiTexturedAnimPathKeyVec =
-        {
-            "media-anim-images-dir-dualcharge",
-            "media-anim-images-dir-explosion",
-            "media-anim-images-dir-inferno",
-            "media-anim-images-dir-lightningball",
-            "media-anim-images-dir-lightningbolt",
-            "media-anim-images-dir-orbcharge",
-            "media-anim-images-dir-orbshimmer",
-            "media-anim-images-dir-shimmer",
-            "media-anim-images-dir-smokesiwrl",
-            "media-anim-images-dir-spiderflare",
-            "media-anim-images-dir-symbolreduce",
-            "media-anim-images-dir-splash1"
-        };
-
-        static std::size_t multiTexturedAnimIndex{ 0 };
-        if (multiTexturedAnimIndex < multiTexturedAnimPathKeyVec.size())
-        {
-            static auto isNewAnimation{ true };
-
-            sf::Color color{ sf::Color::White };
-            if (0 == multiTexturedAnimIndex)       color = sf::Color::Red;
-            else if (6 == multiTexturedAnimIndex)  color = sf::Color::Green;
-            else if (7 == multiTexturedAnimIndex)  color = sf::Color::Yellow;
-            else if (8 == multiTexturedAnimIndex)  color = sf::Color::Cyan;
-            else if (11 == multiTexturedAnimIndex) color = sf::Color::Magenta;
-            else if (12 == multiTexturedAnimIndex) color = sf::Color::Cyan;
-
-            if (TestMultiTextureAnimation(multiTexturedAnimPathKeyVec[multiTexturedAnimIndex],
-                                          isNewAnimation,
-                                          color) == false)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-                isNewAnimation = false;
-                return false;
-            }
-            else
-            {
-                multiTextureAnimSPtr_.reset();
-                isNewAnimation = true;
-                ++multiTexturedAnimIndex;
-                return false;
-            }
         }
 
         LoopManager::Instance()->TestingStrAppend(
             "game::stage::TestingStage::TestAnimations() ALL Tests Passed.");
 
         return true;
-    }
-
-
-    bool TestingStage::TestSingleTextureAnimationManager(const std::string & MEDIA_PATH_KEY,
-                                                         const unsigned int  WIDTH,
-                                                         const unsigned int  HEIGHT,
-                                                         const long          SLEEP_MS,
-                                                         const bool          IS_NEW)
-    {
-        if (TestSingleTextureAnimation(MEDIA_PATH_KEY,
-                                       IS_NEW,
-                                       WIDTH,
-                                       HEIGHT,
-                                       sf::BlendAlpha,
-                                       sf::Color::White) == false)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS));
-            return false;
-        }
-        else
-        {
-            singleTextureAnimSPtr_.reset();
-            return true;
-        }
-    }
-
-    bool TestingStage::TestMultiTextureAnimation(
-        const std::string & MEDIA_PATH_KEY_STR,
-        const bool          WILL_REBUILD_ANIMATION_OBJECT,
-        const sf::Color &   COLOR)
-    {
-        if (WILL_REBUILD_ANIMATION_OBJECT)
-        {
-            std::ostringstream ss;
-            ss << "TestMultiTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
-            LoopManager::Instance()->TestingStrAppend(ss.str());
-
-            multiTextureAnimSPtr_ = std::make_shared<sfml_util::MultiTextureAnimation>(
-                "TestMultiTextureAnimation_" + MEDIA_PATH_KEY_STR,
-                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
-                0.0f,
-                0.0f,
-                0.06f);
-
-            multiTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
-            multiTextureAnimSPtr_->SetTargetSize( sf::Vector2f(512.0f, 512.0f) );
-        }
-
-        return multiTextureAnimSPtr_->UpdateTime(0.02f);
-    }
-
-
-    bool TestingStage::TestSingleTextureAnimation(
-        const std::string &   MEDIA_PATH_KEY_STR,
-        const bool            WILL_REBUILD_ANIMATION_OBJECT,
-        const unsigned int    FRAME_WIDTH,
-        const unsigned int    FRAME_HEIGHT,
-        const sf::BlendMode & BLEND_MODE,
-        const sf::Color &     COLOR)
-    {
-        if (WILL_REBUILD_ANIMATION_OBJECT)
-        {
-            std::ostringstream ss;
-            ss << "TestSingleTextureAnimation() \"" << MEDIA_PATH_KEY_STR << "\"";
-            LoopManager::Instance()->TestingStrAppend(ss.str());
-
-            singleTextureAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
-                "TestSingleTextureAnimation_" + MEDIA_PATH_KEY_STR,
-                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
-                0.0f,
-                0.0f,
-                FRAME_WIDTH,
-                FRAME_HEIGHT,
-                0.06f,
-                0,
-                BLEND_MODE);
-
-            singleTextureAnimSPtr_->ColorTransition(sf::Color::White, COLOR);
-            singleTextureAnimSPtr_->SetTargetSize(sf::Vector2f(512.0f, 512.0f) );
-        }
-
-        return singleTextureAnimSPtr_->UpdateTime(0.02f);
     }
 
 

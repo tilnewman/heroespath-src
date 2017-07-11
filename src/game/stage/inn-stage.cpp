@@ -35,7 +35,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/animation.hpp"
+#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 
@@ -60,7 +60,7 @@ namespace stage
         backgroundImage_   ("media-images-backgrounds-tile-darkknot"),
         candleTexture_     (),
         candleSprite_      (),
-        candleAnimSPtr_    (),
+        candleAnimUPtr_    (),
         ouroborosUPtr_     (),
         bottomSymbol_      ()
     {}
@@ -90,18 +90,13 @@ namespace stage
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 
         //candle anim
-        candleAnimSPtr_ = std::make_shared<sfml_util::SingleTextureAnimation>(
-            "Candle",
-            GameDataFile::Instance()->GetMediaPath("media-anim-images-candleflame"),
-            SCREEN_WIDTH_ - 225.0f,
-            SCREEN_HEIGHT_ - 290.0f,
-            128,
-            128,
-            0.05f,
-            64,
-            sf::BlendAdd);
+        candleAnimUPtr_ = sfml_util::AnimationFactory::Make(sfml_util::Animations::CandleFlame,
+                                                            1.0f,
+                                                            0.05f);
 
-        EntityAdd(candleAnimSPtr_.get());
+        candleAnimUPtr_->SetEntityPos(SCREEN_WIDTH_ - 225.0f, SCREEN_HEIGHT_ - 290.0f);
+
+        EntityAdd(candleAnimUPtr_.get());
     }
 
 

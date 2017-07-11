@@ -30,7 +30,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/animation.hpp"
+#include "sfml-util/animation-factory.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/stats/stat-set.hpp"
@@ -45,24 +45,6 @@ namespace game
 {
 namespace stage
 {
-
-    struct AnimInfo
-    {
-        AnimInfo(const std::string & KEY,
-                 const unsigned WIDTH,
-                 const unsigned HEIGHT)
-        :
-            key      (KEY),
-            width    (WIDTH),
-            height   (HEIGHT),
-            is_tested(false)
-        {}
-
-        std::string key;
-        unsigned int width;
-        unsigned int height;
-        bool is_tested;
-    };
 
     using StrSizePair_t     = std::pair<std::string, std::size_t>;
     using StrSizePairVec_t  = std::vector<StrSizePair_t>;
@@ -101,30 +83,12 @@ namespace stage
         bool TestImageSet();
         bool PerformGameDataFileTests();
         bool TestAnimations();
-
-        bool TestMultiTextureAnimation(const std::string &  MEDIA_PATH_KEY_STR,
-                                       const bool           WILL_REBUILD_ANIMATION_OBJECT,
-                                       const sf::Color &    COLOR);
-
-        bool TestSingleTextureAnimation(const std::string &   MEDIA_PATH_KEY_STR,
-                                        const bool            WILL_REBUILD_ANIMATION_OBJECT,
-                                        const unsigned int    FRAME_WIDTH,
-                                        const unsigned int    FRAME_HEIGHT,
-                                        const sf::BlendMode & BLEND_MODE,
-                                        const sf::Color &     COLOR);
-
         bool TestInventoryFactory();
-
-        bool TestSingleTextureAnimationManager(const std::string & MEDIA_PATH_KEY,
-                                               const unsigned int  WIDTH,
-                                               const unsigned int  HEIGHT,
-                                               const long          SLEEP_MS,
-                                               const bool          IS_NEW);
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
-        static sfml_util::MultiTextureAnimationSPtr_t multiTextureAnimSPtr_;
-        static sfml_util::SingleTextureAnimationSPtr_t singleTextureAnimSPtr_;
+        static sfml_util::AnimationUPtr_t animUPtr_;
+
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;

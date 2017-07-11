@@ -36,7 +36,7 @@
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/text-animation.hpp"
-#include "sfml-util/animation.hpp"
+#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/song-animation.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
@@ -138,18 +138,14 @@ namespace combat
         selectAnimCombatNodePtr_         (nullptr),
         sparksAnimUVec_                  (),
         cloudAnimUVec_                   (),
-        singleTextureAnimUVec_           (),
-        multiTextureAnimUVec_            (),
-        singleTextureSizeMap_            (),
+        animUVec_                        (),
         songAnimUVec_                    (),
         sparkleAnimUVec_                 (),
         textAnimUVec_                    (),
         runAnimCombatNodePtr_            (nullptr),
         runAnimPosVTarget_               (0.0f, 0.0f),
         runAnimPosVOrig_                 (0.0f, 0.0f)
-    {
-        singleTextureSizeMap_[ANIM_MEDIA_PATH_KEY_STR_SPARKLE_] = sf::Vector2f(128.0f, 128.0f);
-    }
+    {}
 
 
     void CombatAnimation::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -171,19 +167,11 @@ namespace combat
             NEXT_CLOUDANIM_UPTR->draw(target, STATES);
         }
 
-        for (auto const & NEXT_SINGLETEXTANIM_UPTR : singleTextureAnimUVec_)
+        for (auto const & NEXT_ANIM_UPTR : animUVec_)
         {
-            if (NEXT_SINGLETEXTANIM_UPTR->IsFinished() == false)
+            if (NEXT_ANIM_UPTR->IsFinished() == false)
             {
-                NEXT_SINGLETEXTANIM_UPTR->draw(target, STATES);
-            }
-        }
-
-        for (auto const & NEXT_MULTITEXTANIM_UPTR : multiTextureAnimUVec_)
-        {
-            if (NEXT_MULTITEXTANIM_UPTR->IsFinished() == false)
-            {
-                NEXT_MULTITEXTANIM_UPTR->draw(target, STATES);
+                NEXT_ANIM_UPTR->draw(target, STATES);
             }
         }
 
@@ -788,101 +776,101 @@ namespace combat
 
             case spell::Spells::Bandage:
             {
-                SetupSingleTextureAnims(TARGETS_PVEC,
-                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
-                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                        sf::Color::White,
-                                        sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::FlashSparkle,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                sf::Color::White,
+                                sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Sleep:
             {
-                SetupMultiTextureAnims(TARGETS_PVEC,
-                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
-                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
-                                       sf::Color::White,
-                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::Shimmer,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                                sf::Color::White,
+                                sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
 
             case spell::Spells::Awaken:
             {
-                SetupSingleTextureAnims(TARGETS_PVEC,
-                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
-                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                        sf::Color::White,
-                                        sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::FlashSparkle,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                sf::Color::White,
+                                sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Trip:
             {
-                SetupMultiTextureAnims(TARGETS_PVEC,
-                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
-                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
-                                       sf::Color::White,
-                                       sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::Shimmer,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
+                                sf::Color::White,
+                                sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Lift:
             {
-                SetupSingleTextureAnims(TARGETS_PVEC,
-                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
-                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                        sf::Color::White,
-                                        sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::FlashSparkle,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                sf::Color::White,
+                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
                 return;
             }
 
             case spell::Spells::Daze:
             {
-                SetupMultiTextureAnims(TARGETS_PVEC,
-                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
-                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                       sf::Color::White,
-                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::Shimmer,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                sf::Color::White,
+                                sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Panic:
             {
-                SetupMultiTextureAnims(TARGETS_PVEC,
-                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
-                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                       sf::Color::White,
-                                       sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::Shimmer,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                                sf::Color::White,
+                                sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
 
             case spell::Spells::ClearMind:
             {
-                SetupSingleTextureAnims(TARGETS_PVEC,
-                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
-                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
-                                        sf::Color::White,
-                                        sf::Color::White);
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::FlashSparkle,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
+                                sf::Color::White,
+                                sf::Color::White);
                 return;
             }
 
             case spell::Spells::Poison:
             {
-                SetupMultiTextureAnims(TARGETS_PVEC,
-                                       ANIM_MEDIA_PATH_KEY_STR_SHIMMER_,
-                                       ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
-                                       sf::Color::White,
-                                       sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::Shimmer,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                                sf::Color::White,
+                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Antidote:
             {
-                SetupSingleTextureAnims(TARGETS_PVEC,
-                                        ANIM_MEDIA_PATH_KEY_STR_SPARKLE_,
-                                        ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                        sf::Color::White,
-                                        sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(TARGETS_PVEC,
+                                sfml_util::Animations::FlashSparkle,
+                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                                sf::Color::White,
+                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
@@ -919,21 +907,12 @@ namespace combat
         else
         {
             auto areAllAnimsFinished{ true };
-            for (auto & nextSingleTextAnimUPtr : singleTextureAnimUVec_)
+            for (auto & nextAnimUPtr : animUVec_)
             {
-                if (nextSingleTextAnimUPtr->IsFinished() == false)
+                if (nextAnimUPtr->IsFinished() == false)
                 {
                     areAllAnimsFinished = false;
-                    nextSingleTextAnimUPtr->UpdateTime(ELAPSED_TIME_SEC);
-                }
-            }
-
-            for (auto & nextMultiTextAnimUPtr : multiTextureAnimUVec_)
-            {
-                if (nextMultiTextAnimUPtr->IsFinished() == false)
-                {
-                    areAllAnimsFinished = false;
-                    nextMultiTextAnimUPtr->UpdateTime(ELAPSED_TIME_SEC);
+                    nextAnimUPtr->UpdateTime(ELAPSED_TIME_SEC);
                 }
             }
 
@@ -954,8 +933,7 @@ namespace combat
         }
         else
         {
-            singleTextureAnimUVec_.clear();
-            multiTextureAnimUVec_.clear();
+            animUVec_.clear();
         }
     }
 
@@ -1053,58 +1031,14 @@ namespace combat
     }
 
 
-    void CombatAnimation::SetupSingleTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
-                                                  const std::string &              MEDIA_PATH_KEY,
-                                                  const float                      FRAME_DELAY_SEC,
-                                                  const sf::Color &                COLOR_FROM,
-                                                  const sf::Color &                COLOR_TO)
+    void CombatAnimation::SetupAnimations(
+        const combat::CombatNodePVec_t &  TARGETS_PVEC,
+        const sfml_util::Animations::Enum ENUM,
+        const float                       FRAME_DELAY_SEC,
+        const sf::Color &                 COLOR_FROM,
+        const sf::Color &                 COLOR_TO)
     {
-        singleTextureAnimUVec_.clear();
-
-        sf::Vector2f sizeV(128.0f, 128.0f);
-        auto const FOUND_ITR{ singleTextureSizeMap_.find(MEDIA_PATH_KEY) };
-        if (FOUND_ITR != singleTextureSizeMap_.end())
-        {
-            sizeV = FOUND_ITR->second;
-        }
-
-        for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
-        {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
-            {
-                continue;
-            }
-
-            auto const REGION{ sfml_util::MakeMinimalSquareAndCenter(
-                NEXT_COMBATNODE_PTR->GetEntityRegion()) };
-
-            singleTextureAnimUVec_.push_back(std::make_unique<sfml_util::SingleTextureAnimation>(
-                "CombatAnimation's_" + MEDIA_PATH_KEY,
-                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY),
-                REGION.left,
-                REGION.top,
-                sizeV.x,
-                sizeV.y,
-                FRAME_DELAY_SEC,
-                0,
-                sf::BlendAdd) );
-
-            singleTextureAnimUVec_[singleTextureAnimUVec_.size() - 1]->
-                ColorTransition(COLOR_FROM, COLOR_TO);
-
-            singleTextureAnimUVec_[singleTextureAnimUVec_.size() - 1]->
-                SetTargetSize( sf::Vector2f(REGION.width, REGION.height) );
-        }
-    }
-
-
-    void CombatAnimation::SetupMultiTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
-                                                 const std::string &              MEDIA_PATH_KEY,
-                                                 const float                      FRAME_DELAY_SEC,
-                                                 const sf::Color &                COLOR_FROM,
-                                                 const sf::Color &                COLOR_TO)
-    {
-        multiTextureAnimUVec_.clear();
+        animUVec_.clear();
 
         for (auto const NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
@@ -1117,7 +1051,7 @@ namespace combat
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             //grow the shimmer animation to better cover the creature image
-            if (MEDIA_PATH_KEY == ANIM_MEDIA_PATH_KEY_STR_SHIMMER_)
+            if (ENUM == sfml_util::Animations::Shimmer)
             {
                 auto const ADJ{ sfml_util::MapByRes(40.0f, 120.0f) };
                 region.left -= ADJ * 0.5f;
@@ -1126,22 +1060,12 @@ namespace combat
                 region.height += ADJ * 2.0f;
             }
 
-            multiTextureAnimUVec_.push_back( std::make_unique<sfml_util::MultiTextureAnimation>(
-                "CombatAnimation's_" + MEDIA_PATH_KEY,
-                game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY),
-                region.left,
-                region.top,
+            animUVec_.push_back( sfml_util::AnimationFactory::Make(
+                ENUM,
+                region,
                 FRAME_DELAY_SEC,
-                1.0f,
-                1.0f,
-                sf::Color::White,
-                sf::BlendAdd) );
-
-            multiTextureAnimUVec_[multiTextureAnimUVec_.size() - 1]->
-                ColorTransition(COLOR_FROM, COLOR_TO);
-
-            multiTextureAnimUVec_[multiTextureAnimUVec_.size() - 1]->
-                SetTargetSize( sf::Vector2f(region.width, region.height) );
+                COLOR_FROM,
+                COLOR_TO) );
         }
     }
 

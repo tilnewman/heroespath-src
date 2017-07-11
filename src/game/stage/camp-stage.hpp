@@ -44,8 +44,8 @@
 
 namespace sfml_util
 {
-    class MultiTextureAnimation;
-    using MultiTextureAnimationSPtr_t = std::shared_ptr<MultiTextureAnimation>;
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
 }
 
 namespace game
@@ -98,7 +98,7 @@ namespace stage
         sf::Texture campfireTexture_;
         sf::Sprite campfireSprite_;
         sfml_util::gui::BackgroundImage backgroundImage_;
-        sfml_util::MultiTextureAnimationSPtr_t fireAnim1SPtr_;
+        sfml_util::AnimationUPtr_t fireAnimUPtr_;
         bool showNewGamePopup1_;
         bool showNewGamePopup2_;
         bool showNewGamePopup3_;

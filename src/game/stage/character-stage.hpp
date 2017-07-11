@@ -32,7 +32,6 @@
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/gradient.hpp"
-#include "sfml-util/animation.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -59,6 +58,9 @@
 //forward declarations
 namespace sfml_util
 {
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
+
 namespace gui
 {
 namespace box
@@ -265,11 +267,11 @@ namespace stage
         float attribVertOffset1_;
         float attribVertOffset2_;
         //
-        float                                  smokeAnimmaxX_;
-        sfml_util::sliders::Drifter<float>     smokeAnimDrifterX_;
-        sfml_util::sliders::Drifter<float>     smokeAnimDrifterY_;
-        sfml_util::gui::BackgroundImage        backgroundImage_;
-        sfml_util::MultiTextureAnimationSPtr_t smokeAnimSPtr_;
+        float                              smokeAnimmaxX_;
+        sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
+        sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
+        sfml_util::gui::BackgroundImage    backgroundImage_;
+        sfml_util::AnimationUPtr_t         smokeAnimUPtr_;
         //
         MenuButtonSPtr_t backButtonSPtr_;
         MenuButtonSPtr_t saveButtonSPtr_;

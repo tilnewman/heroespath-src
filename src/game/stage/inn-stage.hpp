@@ -41,8 +41,8 @@
 
 namespace sfml_util
 {
-    class SingleTextureAnimation;
-    using SingleTextureAnimationSPtr_t = std::shared_ptr<SingleTextureAnimation>;
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
 }
 namespace game
 {
@@ -79,7 +79,7 @@ namespace stage
         sfml_util::gui::BackgroundImage backgroundImage_;
         sf::Texture candleTexture_;
         sf::Sprite  candleSprite_;
-        sfml_util::SingleTextureAnimationSPtr_t candleAnimSPtr_;
+        sfml_util::AnimationUPtr_t candleAnimUPtr_;
         OuroborosUPtr_t ouroborosUPtr_;
         BottomSymbol bottomSymbol_;
     };

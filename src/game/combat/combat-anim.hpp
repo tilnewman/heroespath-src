@@ -30,6 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/shaker.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/animation-enum.hpp"
 
 #include "game/stats/types.hpp"
 
@@ -41,13 +42,9 @@
 
 namespace sfml_util
 {
-    class SingleTextureAnimation;
-    using SingleTextureAnimationUPtr_t = std::unique_ptr<SingleTextureAnimation>;
-    using SingleTextureAnimationUVec_t = std::vector<SingleTextureAnimationUPtr_t>;
-
-    class MultiTextureAnimation;
-    using MultiTextureAnimationUPtr_t = std::unique_ptr<MultiTextureAnimation>;
-    using MultiTextureAnimationUVec_t = std::vector<MultiTextureAnimationUPtr_t>;
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
+    using AnimationUVec_t = std::vector<AnimationUPtr_t>;
 
 namespace animation
 {
@@ -102,9 +99,6 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t  = CombatNode *;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
-
-
-    using MediaPathSizeMap_t = std::map<std::string, sf::Vector2f>;
 
 
     //All the info required to shake a creature image on the battlefield.
@@ -231,17 +225,11 @@ namespace combat
         bool PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC);
         void PoisonCloudAnimStop();
 
-        void SetupSingleTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
-                                     const std::string &              MEDIA_PATH_KEY,
-                                     const float                      FRAME_DELAY_SEC,
-                                     const sf::Color &                COLOR_FROM,
-                                     const sf::Color &                COLOR_TO);
-
-        void SetupMultiTextureAnims(const combat::CombatNodePVec_t & TARGETS_PVEC,
-                                    const std::string &              MEDIA_PATH_KEY,
-                                    const float                      FRAME_DELAY_SEC,
-                                    const sf::Color &                COLOR_FROM,
-                                    const sf::Color &                COLOR_TO);
+        void SetupAnimations(const combat::CombatNodePVec_t &  TARGETS_PVEC,
+                             const sfml_util::Animations::Enum ENUM,
+                             const float                       FRAME_DELAY_SEC,
+                             const sf::Color &                 COLOR_FROM,
+                             const sf::Color &                 COLOR_TO);
 
         void SongAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
         bool SongAnimUpdate(const float ELAPSED_TIME_SEC);
@@ -318,9 +306,7 @@ namespace combat
         sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
 
         //members that control animations in general
-        sfml_util::SingleTextureAnimationUVec_t singleTextureAnimUVec_;
-        sfml_util::MultiTextureAnimationUVec_t multiTextureAnimUVec_;
-        MediaPathSizeMap_t singleTextureSizeMap_;
+        sfml_util::AnimationUVec_t animUVec_;
 
         sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
         sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
