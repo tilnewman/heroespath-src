@@ -237,6 +237,7 @@ namespace combat
 
         void SparkleAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
         bool SparkleAnimUpdate(const float ELAPSED_TIME_SEC);
+        bool SparkleAnimIsDone();
         void SparkleAnimStop();
 
         void TextAnimStart(const stats::Health_t &       DAMAGE,

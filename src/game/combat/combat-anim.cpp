@@ -183,6 +183,14 @@ namespace combat
             }
         }
 
+        for (auto & NEXT_SPARKLEANIM_PTR : sparkleAnimUVec_)
+        {
+            if (NEXT_SPARKLEANIM_PTR->IsFinished() == false)
+            {
+                NEXT_SPARKLEANIM_PTR->draw(target, STATES);
+            }
+        }
+
         for (auto const & NEXT_TEXTANIM_UPTR : textAnimUVec_)
         {
             if (NEXT_TEXTANIM_UPTR->IsFinished() == false)
@@ -1139,7 +1147,7 @@ namespace combat
                 0.5f,
                 10.0f,
                 0.5f,
-                6.0f,
+                3.0f,
                 4.0f,
                 0.5f) );
         }
@@ -1159,6 +1167,22 @@ namespace combat
         }
 
         return areAllSparkleAnimFinished;
+    }
+
+
+    bool CombatAnimation::SparkleAnimIsDone()
+    {
+        auto areAllAnimsDone{ true };
+        for (auto const & NEXT_SPARKLEANIM_UPTR : sparkleAnimUVec_)
+        {
+            if ((NEXT_SPARKLEANIM_UPTR.get() != nullptr) &&
+                (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
+            {
+                areAllAnimsDone = false;
+            }
+        }
+
+        return areAllAnimsDone;
     }
 
 

@@ -1529,8 +1529,14 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::Spell == animPhase_))
         {
+            if (combatAnimationUPtr_->SparkleAnimIsDone() == false)
+            {
+                combatAnimationUPtr_->SparkleAnimUpdate(ELAPSED_TIME_SEC);
+            }
+
             if (combatAnimationUPtr_->SpellAnimUpdate(spellBeingCastPtr_, ELAPSED_TIME_SEC))
             {
+                combatAnimationUPtr_->SparkleAnimStop();
                 combatAnimationUPtr_->SpellAnimStop(spellBeingCastPtr_);
                 HandleApplyDamageTasks();
                 SetAnimPhase(AnimPhase::PostSpellPause);
@@ -3654,6 +3660,9 @@ namespace stage
                 combatAnimationUPtr_->SpellAnimStart(spellBeingCastPtr_,
                                                      turnCreaturePtr_,
                                                      combatNodesCastUponPVec);
+
+                combatAnimationUPtr_->SparkleAnimStart(
+                    { combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_) } );
 
                 SetAnimPhase(AnimPhase::Spell);
                 break;
