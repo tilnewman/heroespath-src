@@ -1449,6 +1449,37 @@ namespace sfml_util
                 COMBAT_DESC_TEXTINFO,
                 COMBAT_DESC_RECT);
         }
+        else if (POPUP_INFO_.Type() == game::Popup::SystemError)
+        {
+            sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                        GetMediaPath("media-images-misc-error"));
+
+            combatBgTexture_.setSmooth(true);
+            sfml_util::Mask(combatBgTexture_, sf::Color::White);
+            combatBgSprite_.setTexture(combatBgTexture_, true);
+            combatBgSprite_.setColor( sf::Color(255, 255, 255, 32) );
+
+            auto const HORIZ_RESCALE{ textRegion_.width /
+                static_cast<float>(combatBgTexture_.getSize().x) };
+
+            combatBgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
+
+            if (combatBgSprite_.getGlobalBounds().height > textRegion_.height)
+            {
+                auto VERT_RESCALE{ textRegion_.height /
+                    static_cast<float>(combatBgTexture_.getSize().y) };
+
+                combatBgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
+            }
+
+            auto const BG_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
+                (combatBgSprite_.getGlobalBounds().width * 0.5f) };
+
+            auto const BG_POS_TOP{ (textRegion_.top + (textRegion_.height * 0.5f)) -
+                (combatBgSprite_.getGlobalBounds().height * 0.5f) };
+
+            combatBgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
+        }
     }
 
 
@@ -1515,6 +1546,11 @@ namespace sfml_util
             target.draw(combatBgSprite_, STATES);
             target.draw( * combatTitleUPtr_, STATES);
             target.draw( * combatDescUPtr_, STATES);
+        }
+        else if (POPUP_INFO_.Type() == game::Popup::SystemError)
+        {
+            //The SystemError popup uses CombatOver popup's texture and sprite.
+            target.draw(combatBgSprite_, STATES);
         }
 
         if (POPUP_INFO_.Type() == game::Popup::CharacterSelection)

@@ -50,6 +50,7 @@ namespace game
             case Spellbook:                     { return "Spellbook"; }
             case MusicSheet:                    { return "MusicSheet"; }
             case CombatOver:                    { return "CombatOver"; }
+            case SystemError:                   { return "SystemError"; }
             case Count:
             default:
             {

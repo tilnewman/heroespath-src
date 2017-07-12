@@ -225,7 +225,7 @@ namespace gui
                                                         const Justified::Enum         JUSTIFIED,
                                                         const sound_effect::Enum      SOUND_EFFECT,
                                                         const game::Popup::Enum WHICH_POPUP,
-                                                        const unsigned int            FONT_SIZE)
+                                                        const unsigned int            FONT_SIZE) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
@@ -244,7 +244,7 @@ namespace gui
                                                         const PopupButtons::Enum BUTTONS,
                                                         const Justified::Enum    JUSTIFIED,
                                                         const sound_effect::Enum SOUND_EFFECT,
-                                                        const unsigned int       FONT_SIZE)
+                                                        const unsigned int       FONT_SIZE) const
     {
         sfml_util::gui::TextInfo ti(TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE));
         ti.color = TEXT_COLOR;
@@ -265,7 +265,7 @@ namespace gui
         const sfml_util::TextureVec_t & TEXTURE_VEC,
         const bool                      ARE_IMAGES_CREATURES,
         const sound_effect::Enum        SOUND_EFFECT,
-        const unsigned int              FONT_SIZE)
+        const unsigned int              FONT_SIZE) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
@@ -280,7 +280,7 @@ namespace gui
                                                         const std::string & PROMPT_TEXT,
                                                         const std::size_t   THE_MIN,
                                                         const std::size_t   THE_MAX,
-                                                        const unsigned int  FONT_SIZE)
+                                                        const unsigned int  FONT_SIZE) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
@@ -294,7 +294,7 @@ namespace gui
         const std::string &              POPUP_NAME,
         const std::string &              PROMPT_TEXT,
         const std::vector<std::string> & INVALID_TEXT_VEC,
-        const unsigned int               FONT_SIZE)
+        const unsigned int               FONT_SIZE) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT,
@@ -317,13 +317,14 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &      POPUP_NAME,
-                                                        const std::string &      PROMPT_TEXT,
-                                                        const sf::Texture &      FROM_IMAGE,
-                                                        const sf::Texture &      TO_IMAGE,
-                                                        const PopupButtons::Enum BUTTONS,
-                                                        const unsigned int       FONT_SIZE,
-                                                        const sound_effect::Enum SOUND_EFFECT)
+    const game::PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &      POPUP_NAME,
+        const std::string &      PROMPT_TEXT,
+        const sf::Texture &      FROM_IMAGE,
+        const sf::Texture &      TO_IMAGE,
+        const PopupButtons::Enum BUTTONS,
+        const unsigned int       FONT_SIZE,
+        const sound_effect::Enum SOUND_EFFECT) const
     {
         sfml_util::TextureVec_t textureVec;
         textureVec.push_back(FROM_IMAGE);
@@ -350,7 +351,7 @@ namespace gui
     const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(
         const std::string &                 POPUP_NAME,
         const game::creature::CreaturePtr_t CREATURE_CPTR,
-        const std::size_t                   INITIAL_SELECTION)
+        const std::size_t                   INITIAL_SELECTION) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ",
@@ -375,7 +376,7 @@ namespace gui
     const game::PopupInfo PopupManager::CreateMusicPopupInfo(
         const std::string &                 POPUP_NAME,
         const game::creature::CreaturePtr_t CREATURE_CPTR,
-        const std::size_t                   INITIAL_SELECTION)
+        const std::size_t                   INITIAL_SELECTION) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ",
@@ -399,7 +400,7 @@ namespace gui
 
     const game::PopupInfo PopupManager::CreateCombatOverPopupInfo(
         const std::string &                 POPUP_NAME,
-        const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED)
+        const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
     {
         return game::PopupInfo(POPUP_NAME,
                                TextInfoDefault(" ",
@@ -409,6 +410,50 @@ namespace gui
                                ((HOW_COMBAT_ENDED == game::combat::CombatEnd::Ran) ?
                                    PopupButtons::Continue : PopupButtons::YesNo),
                                HOW_COMBAT_ENDED);
+    }
+
+
+    const game::PopupInfo PopupManager::CreateSystemErrorPopupInfo(
+        const std::string & POPUP_NAME,
+        const std::string & GENERAL_ERROR_MSG,
+        const std::string & TECH_ERROR_MSG,
+        const std::string & TITLE_MSG) const
+    {
+        std::ostringstream ss;
+        
+        if (TITLE_MSG.empty())
+        {
+            ss << "Congradulations, you have discovered a BUG!";
+        }
+        else
+        {
+            ss << TITLE_MSG;
+        }
+
+        ss << "\n\n";
+
+        if (GENERAL_ERROR_MSG.empty() == false)
+        {
+            ss << GENERAL_ERROR_MSG << "\n\n";
+        }
+
+        if (TECH_ERROR_MSG.empty() == false)
+        {
+            ss << TECH_ERROR_MSG;
+        }
+
+        return game::PopupInfo(POPUP_NAME,
+                               TextInfoDefault(
+                                   ss.str(),
+                                   sfml_util::Justified::Center,
+                                   sfml_util::FontManager::Instance()->Size_Smallish()),
+                               sfml_util::PopupButtons::Continue,
+                               sfml_util::PopupImage::Regular,
+                               GetScaleForImage(PopupImage::Regular),
+                               game::Popup::SystemError,
+                               sfml_util::sound_effect::PromptWarn,
+                               sfml_util::PopupButtonColor::Dark,
+                               false);
     }
 
 

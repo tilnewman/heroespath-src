@@ -39,6 +39,8 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 
+#include "game/loop-manager.hpp"
+
 #include <sstream>
 #include <exception>
 

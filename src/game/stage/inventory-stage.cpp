@@ -688,19 +688,36 @@ namespace stage
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
                  (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {   
-            const spell::SpellPVec_t SPELLS_PVEC( creaturePtr_->SpellsPVec() );
+            const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
-                "game::stage::InventoryStage::HandleCallback(POPUP_RESPONSE, selection="
+                "game::stage::InventoryStage::HandleCallback(SPELL, selection="
                 << POPUP_RESPONSE.Selection() << ") Selection was greater than SpellPVec.size="
                 << SPELLS_PVEC.size());
 
             auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
             M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ),
-                "game::stage::InventoryStage::HandleCallback(POPUP_RESPONSE, selection="
+                "game::stage::InventoryStage::HandleCallback(SPELL, selection="
                 << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
 
             creaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
             return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
+        }
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
+                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+        {
+            const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
+            M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
+                "game::stage::InventoryStage::HandleCallback(SONG, selection="
+                << POPUP_RESPONSE.Selection() << ") Selection was greater than SongPVec.size="
+                << SONGS_PVEC.size());
+
+            auto const songPtr{ SONGS_PVEC.at(POPUP_RESPONSE.Selection()) };
+            M_ASSERT_OR_LOGANDTHROW_SS((songPtr != nullptr),
+                "game::stage::InventoryStage::HandleCallback(SONG, selection="
+                << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
+
+            creaturePtr_->LastSongPlayedNum(POPUP_RESPONSE.Selection());
+            return HandleSong(SONGS_PVEC[POPUP_RESPONSE.Selection()]);
         }
 
         return false;
@@ -922,7 +939,8 @@ namespace stage
                 return HandleAchievementDisplay();
             }
 
-            if (KEY_EVENT.code == sf::Keyboard::B)
+            if ((KEY_EVENT.code == sf::Keyboard::B) ||
+                (KEY_EVENT.code == sf::Keyboard::Escape))
             {
                 return HandleBack();
             }
@@ -3505,12 +3523,13 @@ namespace stage
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::stage::InventoryStage::HandleCast_Step2_SelectTargetOrPerformOnAll"
+            ssErr << "game:: stage:: InventoryStage:: HandleCast Step2 SelectTargetOrPerformOnAll"
                 << "(spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
                 << TargetType::ToString(spellBeingCastPtr_->Target())
                 << " which is not yet supported while in Inventory stage.";
 
-            throw std::runtime_error(ssErr.str());
+            SystemErrorPopup("Casting this type of spell is not yet supported from the inventory.",
+                ssErr.str());
         }
         
         return false;
@@ -3690,6 +3709,22 @@ namespace stage
                 return false;
             }
         }
+    }
+
+
+    bool InventoryStage::HandleSong(const song::SongPtr_t)
+    {
+        return true;
+    }
+
+
+    void InventoryStage::SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
+                                          const std::string & TECH_ERROR_MSG,
+                                          const std::string & TITLE_MSG)
+    {
+        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+                CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
+                    TECH_ERROR_MSG, TITLE_MSG));
     }
 
 }

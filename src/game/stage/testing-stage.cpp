@@ -715,7 +715,8 @@ namespace stage
             "media-images-misc-note4",
             "media-images-misc-note5",
             "media-images-misc-note6",
-            "media-images-misc-x"
+            "media-images-misc-x",
+            "media-images-misc-error"
         };
 
         static std::size_t imageIndex{ 0 };

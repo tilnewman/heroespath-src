@@ -49,6 +49,7 @@ namespace game
             Spellbook,
             MusicSheet,
             CombatOver,
+            SystemError,
             Count
         };
 

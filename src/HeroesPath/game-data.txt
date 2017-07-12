@@ -126,6 +126,7 @@ media-images-misc-note4=                    image/misc/note4.png
 media-images-misc-note5=                    image/misc/note5.png
 media-images-misc-note6=                    image/misc/note6.png
 media-images-misc-x=                        image/misc/x.png
+media-images-misc-error=                    image/misc/error.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

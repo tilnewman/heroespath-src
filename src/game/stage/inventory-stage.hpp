@@ -212,6 +212,10 @@ namespace stage
         bool HandleCast_Step3_DisplayResults();
         void ForceSelectionAndDrawOfListBox();
         bool HandleSpellsOrSongs();
+        bool HandleSong(const song::SongPtr_t);
+        void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
+                              const std::string & TECH_ERROR_MSG,
+                              const std::string & TITLE_MSG = "");
 
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
