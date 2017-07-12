@@ -49,6 +49,15 @@
 
 namespace sfml_util
 {
+    namespace animation
+    {
+        class SparkleAnimation;
+        using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
+
+        class SongAnimation;
+        using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
+    }
+
 namespace gui
 {
     class TextRegion;
@@ -375,6 +384,8 @@ namespace stage
         std::size_t creatureEffectIndex_;
         std::size_t hitInfoIndex_;
         combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
+        sfml_util::animation::SparkleAnimationUPtr_t sparkleAnimUPtr_;
+        sfml_util::animation::SongAnimationUPtr_t songAnimUPtr_;
 
         //members that control combat action restrictions
         creature::CreaturePtr_t turnCreaturePtr_;

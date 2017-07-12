@@ -34,6 +34,8 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/sparkle-animation.hpp"
+#include "sfml-util/song-animation.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -226,6 +228,8 @@ namespace stage
         creatureEffectIndex_       (0),
         hitInfoIndex_              (0),
         combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>()),
+        sparkleAnimUPtr_           (),
+        songAnimUPtr_              (),
         turnCreaturePtr_           (TURN_CREATURE_PTR),
         currentPhase_              (CURRENT_PHASE),
         hasTakenActionSpellOrSong_ (false)
@@ -906,6 +910,7 @@ namespace stage
         buttonPVec_.push_back(dropButtonUPtr_.get());
 
         SetupButtons();
+
         ForceSelectionAndDrawOfListBox();
     }
 
@@ -928,6 +933,19 @@ namespace stage
             target.draw(detailViewSprite_, statesBlendAdd);
 
             detailViewTextUPtr_->draw(target, STATES);
+        }
+
+        auto newBlendModeStates{ STATES };
+        newBlendModeStates.blendMode = sf::BlendAdd;
+
+        if (sparkleAnimUPtr_.get() != nullptr)
+        {   
+            target.draw( * sparkleAnimUPtr_, newBlendModeStates);
+        }
+
+        if (songAnimUPtr_.get() != nullptr)
+        {
+            target.draw( * songAnimUPtr_, newBlendModeStates);
         }
     }
 
@@ -1503,14 +1521,14 @@ namespace stage
                 if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
                 {
                     sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
-                    detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
-                    if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
-                    {
-                        isAchievementDisplaying_ = false;
-                        isDetailViewFadingIn_ = true;
-                        detailViewTimerSec_ = 0.0f;
-                        detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
-                    }
+detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
+if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
+{
+    isAchievementDisplaying_ = false;
+    isDetailViewFadingIn_ = true;
+    detailViewTimerSec_ = 0.0f;
+    detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+}
                 }
             }
 
@@ -1598,6 +1616,28 @@ namespace stage
                 detailViewQuads_[1].position = sf::Vector2f(POS_RIGHT, POS_TOP);
                 detailViewQuads_[2].position = sf::Vector2f(POS_RIGHT, POS_BOTTOM);
                 detailViewQuads_[3].position = sf::Vector2f(POS_LEFT, POS_BOTTOM);
+            }
+
+            if (sparkleAnimUPtr_.get() != nullptr)
+            {
+                sparkleAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
+
+                if (sparkleAnimUPtr_->IsFinished())
+                {
+                    sparkleAnimUPtr_.reset();
+                    HandleCast_Step3_DisplayResults();
+                }
+            }
+
+            if (songAnimUPtr_.get() != nullptr)
+            {
+                songAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
+
+                if (songAnimUPtr_->IsFinished())
+                {
+                    songAnimUPtr_.reset();
+                    HandleSong_Step2_DisplayResults();
+                }
             }
         }
 
@@ -3563,7 +3603,15 @@ namespace stage
 
         hasTakenActionSpellOrSong_ = true;
 
-        HandleCast_Step3_DisplayResults();
+        sparkleAnimUPtr_ = std::make_unique<sfml_util::animation::SparkleAnimation>(
+            creatureSprite_.getGlobalBounds(),
+            sfml_util::MapByRes(0.333f, 1.33f),
+            0.5f,
+            10.0f,
+            0.5f,
+            4.0f,
+            4.0f,
+            0.5f);
     }
 
 
@@ -3757,7 +3805,23 @@ namespace stage
 
             hasTakenActionSpellOrSong_ = true;
 
-            return HandleSong_Step2_DisplayResults();
+            songAnimUPtr_ = std::make_unique<sfml_util::animation::SongAnimation>(
+                creatureSprite_.getGlobalBounds(),
+                0.1f,
+                sfml_util::MapByRes(0.1f, 0.25f),
+                0.25f,
+                sfml_util::MapByRes(0.35f, 0.9f),
+                0.25f,
+                6.0f,
+                0.75f,
+                3.5f,
+                1.25f,
+                0.5f,
+                1.0f,
+                0.0f);
+
+            //return true, because NOT displaying another popup
+            return true;
         }
     }
 
