@@ -484,9 +484,9 @@ namespace sfml_util
         }
 
         //...and to exit the app on escape keypresses
-        if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::Escape))
+        if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::F1))
         {
-            M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED.  Bail.");
+            M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             game::LoopManager::Instance()->Goto_Exit();
         }
