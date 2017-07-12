@@ -55,6 +55,7 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
 #include "game/combat/fight.hpp"
@@ -219,10 +220,11 @@ namespace stage
         detailViewTextUPtr_        (),
         detailViewSlider_          (DETAILVIEW_SLIDER_SPEED_),
         spellBeingCastPtr_         (nullptr),
-        spellTurnActionInfo_       (),
-        spellFightResult_          (),
-        spellCreatureEffectIndex_  (0),
-        spellHitInfoIndex_         (0),
+        songBeingPlayedPtr_        (nullptr),
+        turnActionInfo_            (),
+        fightResult_               (),
+        creatureEffectIndex_       (0),
+        hitInfoIndex_              (0),
         combatSoundEffectsUPtr_    (std::make_unique<combat::CombatSoundEffects>()),
         turnCreaturePtr_           (TURN_CREATURE_PTR),
         currentPhase_              (CURRENT_PHASE),
@@ -366,7 +368,11 @@ namespace stage
     {
         isWaitingOnPopup_ = false;
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELL_RESULT_)
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SONG_RESULT_)
+        {
+            return HandleSong_Step2_DisplayResults();
+        }
+        else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELL_RESULT_)
         {
             return HandleCast_Step3_DisplayResults();
         }
@@ -702,7 +708,7 @@ namespace stage
             creaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
             return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
         }
-        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
+        else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_) &&
                  (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
         {
             const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
@@ -717,7 +723,7 @@ namespace stage
                 << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
 
             creaturePtr_->LastSongPlayedNum(POPUP_RESPONSE.Selection());
-            return HandleSong(SONGS_PVEC[POPUP_RESPONSE.Selection()]);
+            return HandleSong_Step1_Play(SONGS_PVEC[POPUP_RESPONSE.Selection()]);
         }
 
         return false;
@@ -3541,10 +3547,10 @@ namespace stage
     {
         combatSoundEffectsUPtr_->PlaySpell(spellBeingCastPtr_);
 
-        spellTurnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_,
+        turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_,
                                                       TARGET_CREATURES_PVEC);
 
-        spellFightResult_ = combat::FightClub::Cast(spellBeingCastPtr_,
+        fightResult_ = combat::FightClub::Cast(spellBeingCastPtr_,
                                                     creaturePtr_,
                                                     TARGET_CREATURES_PVEC);
 
@@ -3552,8 +3558,8 @@ namespace stage
         SetupCreatureStats();
         SetupCenterText();
 
-        spellCreatureEffectIndex_ = 0;
-        spellHitInfoIndex_ = 0;
+        creatureEffectIndex_ = 0;
+        hitInfoIndex_ = 0;
 
         hasTakenActionSpellOrSong_ = true;
 
@@ -3563,51 +3569,49 @@ namespace stage
 
     bool InventoryStage::HandleCast_Step3_DisplayResults()
     {
-        if (spellBeingCastPtr_ != nullptr)
-        {
-            bool isFightResultCollapsed{ false };
-            auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
-                creaturePtr_,
-                spellTurnActionInfo_,
-                spellFightResult_,
-                false,
-                spellCreatureEffectIndex_,
-                spellHitInfoIndex_,
-                isFightResultCollapsed) };
-
-            auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
-                POPUP_NAME_SPELL_RESULT_,
-                ACTION_TEXT,
-                sfml_util::PopupButtons::Okay,
-                sfml_util::PopupImage::Regular,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::None,
-                game::Popup::Generic,
-                sfml_util::FontManager::Instance()->Size_Normal()) };
-
-            auto const CREATURE_EFFECTS_VEC{ spellFightResult_.Effects() };
-            
-            auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[
-                spellCreatureEffectIndex_].GetHitInfoVec() };
-
-            if (isFightResultCollapsed || (++spellHitInfoIndex_ >= HIT_INFO_VEC.size()))
-            {
-                spellHitInfoIndex_ = 0;
-                if (isFightResultCollapsed ||
-                    (++spellCreatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
-                {
-                    spellBeingCastPtr_ = nullptr;
-                }
-            }
-
-            LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
-            isWaitingOnPopup_ = true;
-            return false;
-        }
-        else
+        if (spellBeingCastPtr_ == nullptr)
         {
             return true;
         }
+
+        bool isFightResultCollapsed{ false };
+        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
+            creaturePtr_,
+            turnActionInfo_,
+            fightResult_,
+            false,
+            creatureEffectIndex_,
+            hitInfoIndex_,
+            isFightResultCollapsed) };
+
+        auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_SPELL_RESULT_,
+            ACTION_TEXT,
+            sfml_util::PopupButtons::Okay,
+            sfml_util::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::None,
+            game::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Normal()) };
+
+        auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+            
+        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[
+            creatureEffectIndex_].GetHitInfoVec() };
+
+        if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
+        {
+            hitInfoIndex_ = 0;
+            if (isFightResultCollapsed ||
+                (++creatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
+            {
+                spellBeingCastPtr_ = nullptr;
+            }
+        }
+
+        LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+        isWaitingOnPopup_ = true;
+        return false;
     }
 
 
@@ -3648,6 +3652,8 @@ namespace stage
                 }
 
                 PopupRejectionWindow(ss.str(), true);
+
+                //return false because one popup is replacing another
                 return false;
             }
             else if (hasTakenActionSpellOrSong_)
@@ -3665,6 +3671,8 @@ namespace stage
                 }
 
                 PopupRejectionWindow(ss.str(), true);
+                
+                //return false because one popup is replacing another
                 return false;
             }
         }
@@ -3681,12 +3689,10 @@ namespace stage
                         creaturePtr_->LastSpellCastNum()) };
 
                 LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
-                return true;
             }
             else
             {
                 PopupRejectionWindow(CAN_CAST_STR, true);
-                return false;
             }
         }
         else
@@ -3701,20 +3707,107 @@ namespace stage
                         creaturePtr_->LastSongPlayedNum()) };
 
                 LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
-                return true;
             }
             else
             {
                 PopupRejectionWindow(CAN_PLAY_STR, true);
-                return false;
             }
+        }
+
+        //return false because one popup is replacing another
+        return false;
+    }
+
+
+    bool InventoryStage::HandleSong_Step1_Play(const song::SongPtr_t SONG_PTR)
+    {
+        if (SONG_PTR->Target() == TargetType::QuestSpecific)
+        {
+            std::ostringstream ssErr;
+            ssErr << "game:: stage:: InventoryStage:: HandleSong"
+                << "(song=" << SONG_PTR->Name() << ") had a target_type of "
+                << TargetType::ToString(SONG_PTR->Target())
+                << " which is not yet supported while in Inventory stage.";
+
+            SystemErrorPopup(
+                "Playing this type of song is not yet supported from the inventory.",
+                ssErr.str());
+
+            //return false because one popup is replacing another
+            return false;
+        }
+        else
+        {
+            songBeingPlayedPtr_ = SONG_PTR;
+            combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
+
+            auto const TARGETS_PVEC{ ((SONG_PTR->Target() == TargetType::AllCompanions) ?
+                creature::Algorithms::Players(false) :
+                creature::Algorithms::NonPlayers(true)) };
+
+            turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
+            fightResult_ = combat::FightClub::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
+
+            SetupCreatureDetails(false);
+            SetupCreatureStats();
+            SetupCenterText();
+
+            creatureEffectIndex_ = 0;
+            hitInfoIndex_ = 0;
+
+            hasTakenActionSpellOrSong_ = true;
+
+            return HandleSong_Step2_DisplayResults();
         }
     }
 
 
-    bool InventoryStage::HandleSong(const song::SongPtr_t)
+    bool InventoryStage::HandleSong_Step2_DisplayResults()
     {
-        return true;
+        if (songBeingPlayedPtr_ == nullptr)
+        {
+            //return false because one popup is NOT replacing another
+            return true;
+        }
+
+        bool isFightResultCollapsed{ false };
+        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(creaturePtr_,
+                                                                turnActionInfo_,
+                                                                fightResult_,
+                                                                false,
+                                                                creatureEffectIndex_,
+                                                                hitInfoIndex_,
+                                                                isFightResultCollapsed) };
+
+        auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_SONG_RESULT_,
+            ACTION_TEXT,
+            sfml_util::PopupButtons::Okay,
+            sfml_util::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::None,
+            game::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Normal()) };
+
+        auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
+
+        if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
+        {
+            hitInfoIndex_ = 0;
+
+            if (isFightResultCollapsed ||
+                (++creatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
+            {
+                songBeingPlayedPtr_ = nullptr;
+            }
+        }
+
+        LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+        isWaitingOnPopup_ = true;
+
+        //return false because one popup is replacing another
+        return false;
     }
 
 

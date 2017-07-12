@@ -212,7 +212,8 @@ namespace stage
         bool HandleCast_Step3_DisplayResults();
         void ForceSelectionAndDrawOfListBox();
         bool HandleSpellsOrSongs();
-        bool HandleSong(const song::SongPtr_t);
+        bool HandleSong_Step1_Play(const song::SongPtr_t);
+        bool HandleSong_Step2_DisplayResults();
         void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
                               const std::string & TECH_ERROR_MSG,
                               const std::string & TITLE_MSG = "");
@@ -286,31 +287,31 @@ namespace stage
         CharViewMap_t               characterViewMap_;
 
         //members responsible for animating view changes
-        bool                        isSliderAnimating_;
-        bool                        isSlidingLeft_;
-        bool                        isViewForcedToItems_;
-        ViewType                    viewToChangeTo_;
-        float                       sliderAnimTimerSec_;
-        float                       detailsPosLeft_;
-        float                       centerPosLeft_;
-        bool                        isImageSliding_;
-        bool                        isDetailsSliding_;
-        bool                        isCenterSliding_;
-        bool                        isStatsSliding_;
-        bool                        isListBoxSliding_;
-        bool                        isDescBoxSliding_;
-        bool                        isImageSlidingDone_;
-        bool                        isDetailsSlidingDone_;
-        bool                        isCenterSlidingDone_;
-        bool                        isStatsSlidingDone_;
-        bool                        isListBoxSlidingDone_;
-        bool                        isDescBoxSlidingDone_;
-        bool                        hasImageChanged_;
-        bool                        hasDetailsChanged_;
-        bool                        hasCenterChanged_;
-        bool                        hasStatsChanged_;
-        bool                        hasListBoxChanged_;
-        bool                        hasDescBoxChanged_;
+        bool     isSliderAnimating_;
+        bool     isSlidingLeft_;
+        bool     isViewForcedToItems_;
+        ViewType viewToChangeTo_;
+        float    sliderAnimTimerSec_;
+        float    detailsPosLeft_;
+        float    centerPosLeft_;
+        bool     isImageSliding_;
+        bool     isDetailsSliding_;
+        bool     isCenterSliding_;
+        bool     isStatsSliding_;
+        bool     isListBoxSliding_;
+        bool     isDescBoxSliding_;
+        bool     isImageSlidingDone_;
+        bool     isDetailsSlidingDone_;
+        bool     isCenterSlidingDone_;
+        bool     isStatsSlidingDone_;
+        bool     isListBoxSlidingDone_;
+        bool     isDescBoxSlidingDone_;
+        bool     hasImageChanged_;
+        bool     hasDetailsChanged_;
+        bool     hasCenterChanged_;
+        bool     hasStatsChanged_;
+        bool     hasListBoxChanged_;
+        bool     hasDescBoxChanged_;
         sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> detailsSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> centerSlider_;
@@ -366,12 +367,13 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
-        //members that support spell casting
+        //members that support spell casting (and song playing)
         spell::SpellPtr_t spellBeingCastPtr_;
-        combat::TurnActionInfo spellTurnActionInfo_;
-        combat::FightResult spellFightResult_;
-        std::size_t spellCreatureEffectIndex_;
-        std::size_t spellHitInfoIndex_;
+        song::SongPtr_t songBeingPlayedPtr_;
+        combat::TurnActionInfo turnActionInfo_;
+        combat::FightResult fightResult_;
+        std::size_t creatureEffectIndex_;
+        std::size_t hitInfoIndex_;
         combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
 
         //members that control combat action restrictions

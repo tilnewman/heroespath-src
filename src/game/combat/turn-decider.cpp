@@ -816,12 +816,15 @@ namespace combat
             CREATURE_DECIDING_CPTRC->CanCastSpellByEffectType(EffectType::CreatureHarmDamage) };
 
         //determine if casting a spell
-        if ((CAN_CAST_HEALING_SPELLS || CAN_CAST_ATTACK_SPELLS) && (TURN_INFO.GetStrategyInfo().CastFreq() != strategy::FrequencyType::Never))
+        if ((CAN_CAST_HEALING_SPELLS || CAN_CAST_ATTACK_SPELLS) &&
+            (TURN_INFO.GetStrategyInfo().CastFreq() != strategy::FrequencyType::Never))
         {
             //heal self if needed
             if ((CAN_CAST_HEALING_SPELLS) && (CREATURE_DECIDING_CPTRC->HealthRatio() < 0.26f))
             {
-                return DecideSpell(CREATURE_DECIDING_CPTRC, CREATURE_DECIDING_CPTRC, { EffectType::CreatureHelpHeal });
+                return DecideSpell(CREATURE_DECIDING_CPTRC,
+                                   CREATURE_DECIDING_CPTRC,
+                                   { EffectType::CreatureHelpHeal });
             }
 
             std::size_t maxCastCount{ 0 };
@@ -1150,7 +1153,9 @@ namespace combat
                 << spellPtr->Name() << "\") had a TargetType of \""
                 << TargetType::ToString(spellPtr->Target()) << "\" -which is not yet supported.";
 
-            throw std::runtime_error(ssErr.str());
+            M_HP_LOG_ERR(ssErr.str());
+
+            return TurnActionInfo();
         }
 
         return TurnActionInfo(spellPtr, targetedCreaturesPVec);
