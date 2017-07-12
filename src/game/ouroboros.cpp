@@ -52,8 +52,16 @@ namespace game
         shadeDrifter_   (5.0f, 25.0f, 0.1f, 0.75f),
         rotSpeedDrifter_(1.0f, 10.0f, 0.25f, 0.75f)
     {
-        const std::string IMAGE_PATH_KEY((WILL_INVERT) ? "media-images-gui-accents-ouroboros-black" : "media-images-gui-accents-ouroboros-white");
-        sfml_util::LoadImageOrTexture<sf::Texture>(texture_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));
+        sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
+        
+        texture_.setSmooth(true);
+
+        if (WILL_INVERT == false)
+        {
+            sfml_util::Invert(texture_);
+        }
+
         sprite_.setTexture(texture_);
         sprite_.setScale(sfml_util::MapByRes(0.45f, 2.25f), sfml_util::MapByRes(0.45f, 2.25f));
         sprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (sprite_.getGlobalBounds().width * 0.5f), (SCREEN_HEIGHT_ * 0.5f) - (sprite_.getGlobalBounds().height * 0.5f) + sfml_util::MapByRes(5.0f, 65.0f));

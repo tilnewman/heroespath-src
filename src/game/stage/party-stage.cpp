@@ -319,7 +319,7 @@ namespace stage
     void PartyStage::Setup()
     {
         //ouroboros
-        ouroborosUPtr_.reset( new Ouroboros("PartyStage's") );
+        ouroborosUPtr_ = std::make_unique<Ouroboros>("PartyStage's");
         EntityAdd(ouroborosUPtr_.get());
 
         //back button

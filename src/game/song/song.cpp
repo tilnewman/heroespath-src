@@ -66,7 +66,19 @@ namespace song
         targetType_     (TARGET_TYPE),
         verbThirdPerson_(VERB_THIRD_PERSON),
         verbPastTense_  (VERB_PAST_TENSE)
-    {}
+    {
+        //only some TargetTypes are valid for songs
+        M_ASSERT_OR_LOGANDTHROW_SS((
+            (TARGET_TYPE == TargetType::AllCompanions) ||
+            (TARGET_TYPE == TargetType::AllOpponents) ||
+            (TARGET_TYPE == TargetType::QuestSpecific)),
+            "game::song::Song::Constructor(which=" << Songs::ToString(WHICH) << ", song_type="
+            << SongType::ToString(TYPE) << ", effect_type=" << EffectType::ToString(EFFECT_TYPE)
+            << ", mana_cost=" << MANA_COST << ", rank=" << RANK
+            << ") had an invalid TargetType of " << TargetType::ToString(TARGET_TYPE)
+            << ".  The only allowed TargetTypes are AllCompanions, AllOpponents, and "
+            << "QuestSpecific.");
+    }
 
 
     Song::~Song()

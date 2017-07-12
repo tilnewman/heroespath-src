@@ -321,7 +321,7 @@ namespace creature
         void LastSpellCastNum(const std::size_t N)              { lastSpellCastNum_ = N; }
 
         std::size_t LastSongPlayedNum() const                   { return lastSongPlayedNum_; }
-        void LastSongPlayedtNum(const std::size_t N)            { lastSongPlayedNum_ = N; }
+        void LastSongPlayedNum(const std::size_t N)             { lastSongPlayedNum_ = N; }
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);

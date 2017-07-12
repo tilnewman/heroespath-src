@@ -211,7 +211,7 @@ namespace stage
 
     bool TestingStage::KeyPress(const sf::Event::KeyEvent & KE)
     {
-        if (KE.code == sf::Keyboard::Escape)
+        if (KE.code == sf::Keyboard::F1)
         {
             sleepMilliseconds_ = 0;
         }
@@ -689,12 +689,9 @@ namespace stage
             "media-images-logos-darkwoodpaper",
             "media-images-logos-openfontlicense",
             "media-images-gui-accents-symbol1",
-            "media-images-gui-accents-symbol1-inv",
             "media-images-gui-accents-symbol2",
-            "media-images-gui-accents-symbol2-inv",
             "media-images-gui-accents-symbol3",
-            "media-images-gui-accents-ouroboros-white",
-            "media-images-gui-accents-ouroboros-black",
+            "media-images-gui-accents-ouroboros",
             "media-images-campfire",
             "media-images-combat-dart",
             "media-images-combat-arrow1",
@@ -829,7 +826,7 @@ namespace stage
                 animUPtr_ = sfml_util::AnimationFactory::Make(
                     static_cast<sfml_util::Animations::Enum>(animIndex),
                     sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f),
-                    ANIM_FRAME_SLEEP_MS,
+                    0.05f,
                     sf::Color::White,
                     ((ENUM == sfml_util::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd));
             }
@@ -839,6 +836,8 @@ namespace stage
                 animUPtr_.reset();
                 ++animIndex;
             }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
 
             return false;
         }

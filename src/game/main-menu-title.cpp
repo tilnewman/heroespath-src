@@ -62,16 +62,24 @@ namespace game
                               const float         SYMBOL_SCALE_HORIZ,
                               const float         SYMBOL_SCALE_VERT)
     {
-        const std::string IMAGE_PATH_KEY((WILL_INVERT_SYMBOL) ? "media-images-gui-accents-symbol2-inv" : "media-images-gui-accents-symbol2");
-        sfml_util::LoadImageOrTexture<sf::Texture>(symbolTexture_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));
+        sfml_util::LoadImageOrTexture<sf::Texture>(symbolTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
 
         symbolTexture_.setSmooth(true);
         symbolSprite_.setTexture( symbolTexture_);
 
+        if (WILL_INVERT_SYMBOL)
+        {
+            sfml_util::Invert(symbolTexture_);
+        }
+
         if (TITLE_IMAGE_FILENAME.empty() == false)
         {
             willDrawTitle_ = true;
-            const std::string TITLE_IMAGE_PATH(std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append(TITLE_IMAGE_FILENAME));
+            
+            auto const TITLE_IMAGE_PATH{ GameDataFile::Instance()->
+                GetMediaPath("media-images-buttons-mainmenu-dir") + TITLE_IMAGE_FILENAME };
+
             sfml_util::LoadImageOrTexture<sf::Texture>(titleTexture_, TITLE_IMAGE_PATH);
             titleTexture_.setSmooth(true);
             titleSprite_.setTexture( titleTexture_ );

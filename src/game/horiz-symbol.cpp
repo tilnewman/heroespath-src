@@ -125,17 +125,29 @@ namespace game
                              const float       VERT_POS_OFFSET,
                              const sf::Color & COLOR)
     {
-        const std::string IMAGE_PATH_KEY((WILL_INVERT_COLOR) ? "media-images-gui-accents-symbol1-inv" : "media-images-gui-accents-symbol1");
-        sfml_util::LoadImageOrTexture<sf::Texture>(texture_, GameDataFile::Instance()->GetMediaPath(IMAGE_PATH_KEY));
+        sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
+
+        texture_.setSmooth(true);
+
+        if (WILL_INVERT_COLOR)
+        {
+            sfml_util::Invert(texture_);
+        }
+
         sprite_.setTexture(texture_);
 
         float widthToUse(SCREEN_WIDTH);
         if (widthToUse < 0.0f)
+        {
             widthToUse = sfml_util::Display::Instance()->GetWinWidth();
+        }
 
         float heightToUse(SCREEN_HEIGHT);
         if (heightToUse < 0.0f)
+        {
             heightToUse = sfml_util::Display::Instance()->GetWinHeight();
+        }
 
         halfScreenWidth_ = (widthToUse * 0.5f);
         screenHeight_ = heightToUse;
