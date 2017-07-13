@@ -59,6 +59,10 @@ namespace animation
     {
         sprite_.setPosition(posV_);
         sprite_.setScale(0.0f, 0.0f);
+        sprite_.setColor( sf::Color(static_cast<sf::Uint8>(200 + misc::random::Int(55)),
+                                    static_cast<sf::Uint8>(200 + misc::random::Int(55)),
+                                    static_cast<sf::Uint8>(200 + misc::random::Int(55)),
+                                    static_cast<sf::Uint8>(80 + misc::random::Int(150))) );
     }
 
 
