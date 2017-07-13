@@ -329,16 +329,17 @@ namespace song
         creature::CreaturePtr_t   creatureListeningPtr,
         stats::Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
-        creature::CondEnumVec_t & condsRemovedVec,
+        creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical))
+        if ((creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural)) &&
+            (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical)))
         {
             actionPhraseCNP = ContentAndNamePos(
                 "",
                 "'s " + TypeToVerb() + Song::FAILED_STR_,
                 " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false) +
-                    " is already under a magical sleep.",
+                    " is already sleeping.",
                 NamePosition::SourceThenTarget);
 
             return false;
@@ -351,19 +352,13 @@ namespace song
                                       true,
                                       true))
             {
-                if (creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
-                {
-                    creatureListeningPtr->ConditionRemove(creature::Conditions::AsleepNatural);
-                    condsRemovedVec.push_back(creature::Conditions::AsleepNatural);
-                }
-
-                creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepMagical);
-                condsAddedVec.push_back(creature::Conditions::AsleepMagical);
+                creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepNatural);
+                condsAddedVec.push_back(creature::Conditions::AsleepNatural);
 
                 actionPhraseCNP = ContentAndNamePos(
                     "",
                     "'s " + TypeToVerb() + " puts ",
-                        " into a magical slumber.",
+                    " into a peaceful slumber.",
                     NamePosition::SourceThenTarget);
 
                 combat::Encounter::Instance()->SetIsFlying(creatureListeningPtr, false);
