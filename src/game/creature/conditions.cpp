@@ -158,6 +158,12 @@ namespace condition
             }
         }
 
+        //can't get up if can't take action
+        if (creaturePtr->CanTakeAction() == false)
+        {
+            return;
+        }
+
         if (creature::Stats::Test(creaturePtr, stats::stat::Strength, 0.0f, true, true))
         {
             creaturePtr->ConditionRemove(Conditions::Pounced);
