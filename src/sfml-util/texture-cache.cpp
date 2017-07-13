@@ -333,8 +333,7 @@ namespace sfml_util
             cacheUVec_[INDEX] = std::make_unique<sf::Texture>();
         }
 
-        sfml_util::LoadImageOrTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR);
-        cacheUVec_[INDEX]->setSmooth(WILL_SMOOTH);
+        sfml_util::LoadTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
         return INDEX;
     }
 

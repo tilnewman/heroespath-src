@@ -204,7 +204,6 @@ namespace sfml_util
         combatTitleUPtr_           (),
         combatDescUPtr_            ()
     {
-        backgroundTexture_.setSmooth(true);
         backgroundSprite_.setTexture(backgroundTexture_);
     }
 
@@ -626,10 +625,9 @@ namespace sfml_util
         }
 
         //setup red x symbol image
-        sfml_util::LoadImageOrTexture(xSymbolTexture_,
+        sfml_util::LoadTexture(xSymbolTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
         //
-        xSymbolTexture_.setSmooth(true);
         xSymbolSprite_.setTexture(xSymbolTexture_);
         xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
 
@@ -915,7 +913,6 @@ namespace sfml_util
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_,
                 POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
 
-            playerTexture_.setSmooth(true);
             sfml_util::Invert(playerTexture_);
             sfml_util::Mask(playerTexture_, sf::Color::White);
             //
@@ -1142,7 +1139,6 @@ namespace sfml_util
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(playerTexture_,
                 POPUP_INFO_.CreaturePtr()->ImageFilename(), true);
 
-            playerTexture_.setSmooth(true);
             sfml_util::Invert(playerTexture_);
             sfml_util::Mask(playerTexture_, sf::Color::White);
             //
@@ -1302,7 +1298,7 @@ namespace sfml_util
                     sfml_util::SoundManager::Instance()->GetSfxSet(
                         sfml_util::SfxSet::CombatWin).PlayRandom();
 
-                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                    sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
                         GetMediaPath("media-images-combat-crossswords"));
 
                     break;
@@ -1313,7 +1309,7 @@ namespace sfml_util
                     sfml_util::SoundManager::Instance()->GetSfxSet(
                         sfml_util::SfxSet::CombatLose).PlayRandom();
 
-                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                    sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
                         GetMediaPath("media-images-combat-crossbones"));
 
                     break;
@@ -1326,14 +1322,13 @@ namespace sfml_util
                     sfml_util::SoundManager::Instance()->GetSfxSet(
                         sfml_util::SfxSet::CombatLose).PlayRandom();
 
-                    sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+                    sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
                         GetMediaPath("media-images-combat-run"));
 
                     break;
                 }
             }
 
-            combatBgTexture_.setSmooth(true);
             sfml_util::Invert(combatBgTexture_);
             sfml_util::Mask(combatBgTexture_, sf::Color::White);
             combatBgSprite_.setTexture(combatBgTexture_, true);
@@ -1451,10 +1446,9 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::SystemError)
         {
-            sfml_util::LoadImageOrTexture(combatBgTexture_, game::GameDataFile::Instance()->
+            sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
                         GetMediaPath("media-images-misc-error"));
 
-            combatBgTexture_.setSmooth(true);
             sfml_util::Mask(combatBgTexture_, sf::Color::White);
             combatBgSprite_.setTexture(combatBgTexture_, true);
             combatBgSprite_.setColor( sf::Color(255, 255, 255, 32) );
@@ -2156,7 +2150,6 @@ namespace sfml_util
                 textureCurr_ = POPUP_INFO_.ImagesAt(imageIndex_);
             }
 
-            textureCurr_.setSmooth(true);
             if (POPUP_INFO_.AreImagesCreatures())
             {
                 sfml_util::Invert(textureCurr_);
@@ -2364,9 +2357,9 @@ namespace sfml_util
         }
 
         //setup spell image
-        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_, SPELL_CPTRC->Which());
-        spellTexture_.setSmooth(true);
-        //
+        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_,
+                                                           SPELL_CPTRC->Which());
+        
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
@@ -2582,9 +2575,9 @@ namespace sfml_util
         }
 
         //setup song image
-        sfml_util::gui::SongImageManager::Instance()->Get(spellTexture_, SONG_CPTRC->Which());
-        spellTexture_.setSmooth(true);
-        //
+        sfml_util::gui::SongImageManager::Instance()->Get(spellTexture_,
+                                                          SONG_CPTRC->Which());
+        
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);

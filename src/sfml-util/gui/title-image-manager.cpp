@@ -151,7 +151,7 @@ namespace gui
             pathToUse = placeHlderFilePathObj_;
         }
 
-        sfml_util::LoadImageOrTexture(texture, pathToUse.string());
+        sfml_util::LoadTexture(texture, pathToUse.string());
     }
 
 }

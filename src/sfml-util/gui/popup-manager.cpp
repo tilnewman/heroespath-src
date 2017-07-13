@@ -29,7 +29,6 @@
 //
 #include "popup-manager.hpp"
 
-#include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -39,6 +38,11 @@
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+
+#include "misc/random.hpp"
+
+#include <boost/algorithm/algorithm.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <sstream>
 #include <exception>
@@ -158,7 +162,7 @@ namespace gui
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) /
             bfs::path(WINDOW_FILE_NAME)));
 
-        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
+        sfml_util::LoadTexture(texture, PATH_OBJ.string());
     }
 
 
@@ -620,15 +624,13 @@ namespace gui
 
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
-        sfml_util::LoadImageOrTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(
+        sfml_util::LoadTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(
             misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
 
         if (misc::random::Bool())
         {
             sfml_util::FlipHoriz(texture);
         }
-
-        texture.setSmooth(true);
     }
 
 

@@ -125,7 +125,7 @@ namespace gui
 
     void ConditionImageManager::Get(sf::Texture & texture, game::creature::Conditions::Enum ENUM) const
     {
-        sfml_util::LoadImageOrTexture(texture, MakeFilepath(ENUM).string());
+        sfml_util::LoadTexture(texture, MakeFilepath(ENUM).string());
     }
 
 

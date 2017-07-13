@@ -57,12 +57,17 @@ namespace animation
         //start half way so everything moves fast at first and then slows down
         slider_       (std::max(1.0f, SPEED))
     {
+        sprite_.setPosition(0.0f, 0.0f);
+        sprite_.setScale(1.0f, 1.0f);
+        sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
+                          sprite_.getLocalBounds().height * 0.5f);
+        sprite_.setRotation(misc::random::Int(360));
+        
         sprite_.setPosition(posV_);
         sprite_.setScale(0.0f, 0.0f);
         sprite_.setColor( sf::Color(static_cast<sf::Uint8>(200 + misc::random::Int(55)),
                                     static_cast<sf::Uint8>(200 + misc::random::Int(55)),
-                                    static_cast<sf::Uint8>(200 + misc::random::Int(55)),
-                                    static_cast<sf::Uint8>(80 + misc::random::Int(150))) );
+                                    static_cast<sf::Uint8>(200 + misc::random::Int(55))) );
     }
 
 
@@ -72,6 +77,14 @@ namespace animation
         {
             return true;
         }
+
+        //rotate
+        sprite_.setPosition(0.0f, 0.0f);
+        sprite_.setScale(1.0f, 1.0f);
+        sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
+                          sprite_.getLocalBounds().height * 0.5f);
+        sprite_.rotate(misc::random::Float(0.5f, 3.0f));
+
         
         auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
@@ -82,9 +95,10 @@ namespace animation
 
         sprite_.setScale(SCALE, SCALE);
 
-        auto const POS_LEFT{ posV_.x - (sprite_.getGlobalBounds().width * 0.5f) };
-        auto const POS_TOP{ posV_.y - (sprite_.getGlobalBounds().height * 0.5f) };
-        sprite_.setPosition(POS_LEFT, POS_TOP);
+        sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
+                          sprite_.getLocalBounds().height * 0.5f);
+
+        sprite_.setPosition(posV_);
         
         //check if done animating
         isFinished_ = slider_.GetIsDone();
@@ -121,10 +135,18 @@ namespace animation
         durationTimerSec_        (0.0f),
         isFinished_              (false),
         sparkTexture1_           (),
+        sparkTexture2_           (),
+        sparkTexture3_           (),
         sparkleVec_              ()
     {
-        LoadImageOrTexture(sparkTexture1_, game::GameDataFile::Instance()->GetMediaPath(
-            "media-images-misc-spark"));
+        LoadTexture(sparkTexture1_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark1"));
+
+        LoadTexture(sparkTexture2_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark2"));
+
+        LoadTexture(sparkTexture3_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark3"));
 
         sparkleVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
     }
@@ -150,8 +172,25 @@ namespace animation
             auto const POS_LEFT{ ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
             auto const POS_TOP{ ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
 
+            const sf::Texture * const TEXTURE_PTR{ [&]()
+                {
+                    auto const RAND{ misc::random::Int(2) };
+                    if (RAND == 0)
+                    {
+                        return &sparkTexture1_;
+                    }
+                    else if (RAND == 1)
+                    {
+                        return &sparkTexture2_;
+                    }
+                    else
+                    {
+                        return &sparkTexture3_;
+                    }
+                }() };
+
             sparkleVec_.push_back( Sparkle(
-                sparkTexture1_,
+                * TEXTURE_PTR,
                 sf::Vector2f(POS_LEFT, POS_TOP),
                 ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
                 ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_)) );

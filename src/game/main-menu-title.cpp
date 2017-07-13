@@ -62,11 +62,10 @@ namespace game
                               const float         SYMBOL_SCALE_HORIZ,
                               const float         SYMBOL_SCALE_VERT)
     {
-        sfml_util::LoadImageOrTexture<sf::Texture>(symbolTexture_,
+        sfml_util::LoadTexture(symbolTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
 
-        symbolTexture_.setSmooth(true);
-        symbolSprite_.setTexture( symbolTexture_);
+        symbolSprite_.setTexture(symbolTexture_, true);
 
         if (WILL_INVERT_SYMBOL)
         {
@@ -80,9 +79,8 @@ namespace game
             auto const TITLE_IMAGE_PATH{ GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") + TITLE_IMAGE_FILENAME };
 
-            sfml_util::LoadImageOrTexture<sf::Texture>(titleTexture_, TITLE_IMAGE_PATH);
-            titleTexture_.setSmooth(true);
-            titleSprite_.setTexture( titleTexture_ );
+            sfml_util::LoadTexture(titleTexture_, TITLE_IMAGE_PATH);
+            titleSprite_.setTexture(titleTexture_, true);
         }
 
         SetPositionAndSize(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);

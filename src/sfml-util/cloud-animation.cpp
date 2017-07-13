@@ -165,13 +165,13 @@ namespace animation
         cloudTexture3_           (),
         cloudVec_                ()
     {
-        LoadImageOrTexture(cloudTexture1_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture1_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud1"));
 
-        LoadImageOrTexture(cloudTexture2_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture2_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud2"));
 
-        LoadImageOrTexture(cloudTexture3_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture3_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud3"));
 
         cloudVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);

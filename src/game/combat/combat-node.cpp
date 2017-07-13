@@ -133,7 +133,6 @@ namespace combat
             CREATURE_PTR->ImageFilename(),
             CREATURE_PTR->IsPlayerCharacter());
 
-        texture_.setSmooth(true);
         sprite_.setTexture(texture_);
 
         //sprite color
@@ -630,7 +629,7 @@ namespace combat
         {
             crossBonesTextureUPtr_ = std::make_unique<sf::Texture>();
 
-            sfml_util::LoadImageOrTexture( * crossBonesTextureUPtr_,
+            sfml_util::LoadTexture( * crossBonesTextureUPtr_,
                 GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
 
             crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);    

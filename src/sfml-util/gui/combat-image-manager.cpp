@@ -141,7 +141,7 @@ namespace gui
         const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) /
             bfs::path(CombatImageType::Filename(E))));
 
-        sfml_util::LoadImageOrTexture(texture, PATH_OBJ.string());
+        sfml_util::LoadTexture(texture, PATH_OBJ.string());
 
         if (WILL_FLIP_HORIZ)
         {

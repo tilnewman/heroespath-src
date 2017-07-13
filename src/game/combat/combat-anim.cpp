@@ -294,8 +294,8 @@ namespace combat
         }
 
         //load the projectile image
-        sfml_util::LoadImageOrTexture(projAnimTexture_,
-                                      game::GameDataFile::Instance()->GetMediaPath(pathKey));
+        sfml_util::LoadTexture(projAnimTexture_,
+            game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
         //establish the creature positions
         sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};

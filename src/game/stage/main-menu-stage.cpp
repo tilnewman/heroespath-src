@@ -95,8 +95,9 @@ namespace stage
     void MainMenuStage::Setup()
     {
         //title image
-        sfml_util::LoadImageOrTexture<sf::Texture>(titleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
-        titleTexture_.setSmooth(true);
+        sfml_util::LoadTexture(titleTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
+
         titleSprite_.setTexture(titleTexture_);
         const float TITLE_IMAGE_SCALE(sfml_util::MapByRes(0.5f, 3.0f));
         titleSprite_.setScale(TITLE_IMAGE_SCALE, TITLE_IMAGE_SCALE);

@@ -118,7 +118,7 @@ namespace gui
         //load the texture if not loaded already
         if (false == bgInfo_.hasTexture)
         {
-            sfml_util::LoadImageOrTexture(bgInfo_.texture, bgInfo_.path);
+            sfml_util::LoadTexture(bgInfo_.texture, bgInfo_.path);
         }
 
         //set to repeated in case the region is bigger than the texture (if we need to tile)

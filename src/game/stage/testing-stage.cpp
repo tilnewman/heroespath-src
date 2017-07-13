@@ -98,10 +98,9 @@ namespace stage
         ouroborosUPtr_ = std::make_unique<Ouroboros>("TestingStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        sfml_util::LoadImageOrTexture(animBGTexture_,
+        sfml_util::LoadTexture(animBGTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
 
-        animBGTexture_.setSmooth(true);
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
     }
@@ -727,7 +726,7 @@ namespace stage
             LoopManager::Instance()->TestingStrAppend(ss.str());
 
             sf::Texture texture;
-            sfml_util::LoadImageOrTexture(texture,
+            sfml_util::LoadTexture(texture,
                 GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
 
             TestingImageSet(texture);

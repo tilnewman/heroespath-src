@@ -107,6 +107,8 @@ namespace animation
         float durationTimerSec_;
         bool isFinished_;
         sf::Texture sparkTexture1_;
+        sf::Texture sparkTexture2_;
+        sf::Texture sparkTexture3_;
         SparkleVec_t sparkleVec_;
     };
 

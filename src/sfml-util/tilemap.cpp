@@ -33,10 +33,13 @@
 #include "sfml-util/loaders.hpp"
 
 #include "game/log-macros.hpp"
+
 #include "misc/assertlogandthrow.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/algorithm.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <sstream>
 #include <exception>
@@ -737,7 +740,7 @@ namespace map
                                                   (bfs::path("..") /
                                                    bfs::path(tileImage.path_rel)));
 
-        sfml_util::LoadImageOrTexture(tileImage.texture, tileImage.path_obj.string());
+        sfml_util::LoadTexture(tileImage.texture, tileImage.path_obj.string());
 
         tilesImageVec_.push_back(tileImage);
     }

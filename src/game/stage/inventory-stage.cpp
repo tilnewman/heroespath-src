@@ -737,9 +737,8 @@ namespace stage
     void InventoryStage::Setup()
     {
         //paper background
-        sfml_util::LoadImageOrTexture<sf::Texture>(paperBgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
-        paperBgTexture_.setSmooth(true);
-        paperBgSprite_.setTexture(paperBgTexture_ );
+        sfml_util::LoadTexture(paperBgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
+        paperBgSprite_.setTexture(paperBgTexture_);
         paperBgSprite_.setScale(SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x), SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
@@ -2172,7 +2171,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         sfml_util::Invert(creatureTexture_);
         sfml_util::Mask(creatureTexture_, sf::Color::White);
-        creatureTexture_.setSmooth(true);
         creatureSprite_.setTexture(creatureTexture_, true);
         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
         creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
@@ -3145,8 +3143,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         }
 
         sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_PTR);
-        detailViewTexture_.setSmooth(true);
-
         detailViewSprite_.setTexture(detailViewTexture_);
         detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
         const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
@@ -3203,9 +3199,10 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             return;
         }
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(detailViewTexture_, CREATURE_CPTRC->ImageFilename(), true);
-        detailViewTexture_.setSmooth(true);
-
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(detailViewTexture_,
+                                                                   CREATURE_CPTRC->ImageFilename(),
+                                                                   true);
+        
         detailViewSprite_.setTexture(detailViewTexture_);
         detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
         detailViewSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);

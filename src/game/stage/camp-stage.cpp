@@ -144,7 +144,7 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //campfire background image
-        sfml_util::LoadImageOrTexture<sf::Texture>(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
+        sfml_util::LoadTexture(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
         campfireSprite_.setTexture(campfireTexture_);
         campfireSprite_.setScale(0.8f, 0.8f);
         auto const CAMPFIRE_BOUNDS_BEFORE{ campfireSprite_.getGlobalBounds() };

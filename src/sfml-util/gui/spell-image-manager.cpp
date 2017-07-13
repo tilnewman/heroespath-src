@@ -125,7 +125,7 @@ namespace gui
 
     void SpellImageManager::Get(sf::Texture & texture, game::spell::Spells::Enum ENUM) const
     {
-        sfml_util::LoadImageOrTexture(texture, MakeFilepath(ENUM).string());
+        sfml_util::LoadTexture(texture, MakeFilepath(ENUM).string());
     }
 
 

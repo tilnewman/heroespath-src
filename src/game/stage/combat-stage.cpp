@@ -1215,6 +1215,7 @@ namespace stage
             player::Initial::Setup(thiefPtr);
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
+        /*
         {
             const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
                                               STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
@@ -1238,7 +1239,7 @@ namespace stage
             player::Initial::Setup(clericPtr);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
-        /*
+        */
         {
             const stats::StatSet SORCERER_STATS(
                 1             +       misc::random::Int(STAT_RAND),
@@ -1263,7 +1264,7 @@ namespace stage
             player::Initial::Setup(sorcererPtr);
             partyPtr->Add(sorcererPtr, errMsgIgnored);
         }
-        */
+        
         {
             const stats::StatSet SYLAVIN_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
                                                STAT_BASE_HIGH + misc::random::Int(STAT_RAND),

@@ -125,10 +125,8 @@ namespace game
                              const float       VERT_POS_OFFSET,
                              const sf::Color & COLOR)
     {
-        sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+        sfml_util::LoadTexture(texture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
-
-        texture_.setSmooth(true);
 
         if (WILL_INVERT_COLOR)
         {

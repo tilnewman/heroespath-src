@@ -201,25 +201,25 @@ namespace gui
         //up image is required
         if (IMAGE_PATH_UP.empty() == false)
         {
-            sfml_util::LoadImageOrTexture(up, IMAGE_PATH_UP);
+            sfml_util::LoadTexture(up, IMAGE_PATH_UP);
             hasUp = true;
         }
         //down, over, disabled images are not required
         if (IMAGE_PATH_DOWN.empty() == false)
         {
-            sfml_util::LoadImageOrTexture(down, IMAGE_PATH_DOWN);
+            sfml_util::LoadTexture(down, IMAGE_PATH_DOWN);
             hasDown = true;
         }
 
         if (IMAGE_PATH_OVER.empty() == false)
         {
-            sfml_util::LoadImageOrTexture(over, IMAGE_PATH_OVER);
+            sfml_util::LoadTexture(over, IMAGE_PATH_OVER);
             hasOver = true;
         }
 
         if (IMAGE_PATH_DISABLED.empty() == false)
         {
-            sfml_util::LoadImageOrTexture(disabled, IMAGE_PATH_DISABLED);
+            sfml_util::LoadTexture(disabled, IMAGE_PATH_DISABLED);
             hasDisabled = true;
         }
 
@@ -462,26 +462,6 @@ namespace gui
         }
 
         buttonSprite_.setPosition( GetEntityPos() );
-
-        if (hasUp_)
-        {
-            textureUp_.setSmooth(true);
-        }
-
-        if (hasDown_)
-        {
-            textureDown_.setSmooth(true);
-        }
-
-        if (hasOver_)
-        {
-            textureOver_.setSmooth(true);
-        }
-
-        if (hasDisabled_)
-        {
-            textureDisabled_.setSmooth(true);
-        }
 
         SetScale(scale_);
 

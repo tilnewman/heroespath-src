@@ -168,30 +168,23 @@ namespace animation
         noteTexture6_            (),
         noteVec_                 ()
     {
-        LoadImageOrTexture(noteTexture1_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture1_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note1"));
         
-        LoadImageOrTexture(noteTexture2_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture2_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note2"));
 
-        LoadImageOrTexture(noteTexture3_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture3_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note3"));
 
-        LoadImageOrTexture(noteTexture4_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture4_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note4"));
 
-        LoadImageOrTexture(noteTexture5_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture5_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note5"));
 
-        LoadImageOrTexture(noteTexture6_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(noteTexture6_, game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-note6"));
-
-        noteTexture1_.setSmooth(true);
-        noteTexture2_.setSmooth(true);
-        noteTexture3_.setSmooth(true);
-        noteTexture4_.setSmooth(true);
-        noteTexture5_.setSmooth(true);
-        noteTexture6_.setSmooth(true);
 
         noteVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
     }

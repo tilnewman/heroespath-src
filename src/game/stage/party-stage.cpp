@@ -596,7 +596,6 @@ namespace stage
                     GetImage(mouseOverTexture_, itemSPtr->CHARACTER_CPTR->ImageFilename());
 
                 isMouseOverTexture_ = true;
-                mouseOverTexture_.setSmooth(true);
                 mouseOverSprite_.setTexture(mouseOverTexture_ );
                 mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(mouseOverTexture_.getSize().x), static_cast<int>(mouseOverTexture_.getSize().y)) );
                 mouseOverSprite_.setScale(0.0f, 0.0f);

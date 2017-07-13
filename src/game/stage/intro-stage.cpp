@@ -82,9 +82,9 @@ namespace stage
 
     void IntroStage::Setup()
     {
-        sfml_util::LoadImageOrTexture<sf::Texture>(titleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-title-paper"));
-        titleTexture_.setSmooth(true);
-
+        sfml_util::LoadTexture(titleTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-title-paper"));
+        
         titleSprite_.setTexture(titleTexture_);
         const float SCALE(sfml_util::MapByRes(0.75f, 3.0f));
         titleSprite_.setScale(SCALE, SCALE);

@@ -52,11 +52,9 @@ namespace game
         shadeDrifter_   (5.0f, 25.0f, 0.1f, 0.75f),
         rotSpeedDrifter_(1.0f, 10.0f, 0.25f, 0.75f)
     {
-        sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+        sfml_util::LoadTexture(texture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
         
-        texture_.setSmooth(true);
-
         if (WILL_INVERT == false)
         {
             sfml_util::Invert(texture_);

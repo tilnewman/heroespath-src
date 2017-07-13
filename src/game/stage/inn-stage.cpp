@@ -75,7 +75,7 @@ namespace stage
     void InnStage::Setup()
     {
         //title symbol
-        sfml_util::LoadImageOrTexture<sf::Texture>(titleSymbolTexture_, GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
+        sfml_util::LoadTexture(titleSymbolTexture_, GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
         titleSymbolSprite_.setTexture(titleSymbolTexture_);
         titleSymbolSprite_.setScale(0.60f, 0.60f);
         titleSymbolSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
@@ -85,7 +85,7 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //candle
-        sfml_util::LoadImageOrTexture<sf::Texture>(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));
+        sfml_util::LoadTexture(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));
         candleSprite_.setTexture(candleTexture_);
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 

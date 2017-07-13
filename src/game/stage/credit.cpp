@@ -166,10 +166,9 @@ namespace stage
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            sfml_util::LoadImageOrTexture<sf::Texture>(texture_,
+            sfml_util::LoadTexture(texture_,
                 GameDataFile::Instance()->GetMediaPath(MEDIA_PATH));
 
-            texture_.setSmooth(true);
             sprite_.setTexture(texture_);
             sprite_.setScale(MEDIA_SCALE, MEDIA_SCALE);
 

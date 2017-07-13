@@ -882,7 +882,6 @@ namespace gui
 
         if (didLoadTexture)
         {
-            texture.setSmooth(true);
             sf::Sprite sprite(texture);
 
             if (IS_SELECTED_ITEM)

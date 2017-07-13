@@ -68,6 +68,7 @@ namespace animation
         sprite_.setScale(1.0f, 1.0f);
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
         sprite_.rotate(misc::random::Float(360.0f));
+        sprite_.setOrigin(0.0f, 0.0f);
         //
         sprite_.setPosition(startPosV_);
         sprite_.setScale(startScale_, startScale_);
@@ -89,6 +90,7 @@ namespace animation
         sprite_.setScale(1.0f, 1.0f);
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
         sprite_.rotate(rotationSpeed_ * SLIDER_POS);
+        //sprite_.setOrigin(0.0f, 0.0f);
 
         //set position
         auto const POS_X{ startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS) };
@@ -141,10 +143,24 @@ namespace animation
         emitTimerSec_            (0.0f),
         durationTimerSec_        (0.0f),
         isFinished_              (false),
-        sparkTexture_            (),
+        sparkTexture1_           (),
+        sparkTexture2_           (),
+        sparkTexture3_           (),
         sparkVec_                ()
     {
-        LoadImageOrTexture(sparkTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark"));
+        LoadTexture(sparkTexture1_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark1"));
+
+        LoadTexture(sparkTexture2_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark2"));
+
+        LoadTexture(sparkTexture3_, game::GameDataFile::Instance()->
+            GetMediaPath("media-images-misc-spark3"));
+
+        sfml_util::Mask(sparkTexture1_);
+        sfml_util::Mask(sparkTexture2_);
+        sfml_util::Mask(sparkTexture3_);
+
         sparkVec_.reserve(static_cast<std::size_t>((1.0f / SEC_PER_EMIT_) * DURATION_SEC) + 2);
     }
 
@@ -173,8 +189,25 @@ namespace animation
             auto const TARGET_HORIZ_SPAN{ misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
             auto const END_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
+            const sf::Texture * const TEXTURE_PTR{ [&]()
+                {
+                    auto const RAND{ misc::random::Int(2) };
+                    if (RAND == 0)
+                    {
+                        return & sparkTexture1_;
+                    }
+                    else if (RAND == 1)
+                    {
+                        return & sparkTexture2_;
+                    }
+                    else
+                    {
+                        return & sparkTexture3_;
+                    }
+                }() };
+
             sparkVec_.push_back( Spark(
-                sparkTexture_,
+                * TEXTURE_PTR,
                 sf::Vector2f(START_POS_LEFT, START_POS_TOP),
                 sf::Vector2f(END_POS_LEFT, END_POS_TOP),
                 ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),

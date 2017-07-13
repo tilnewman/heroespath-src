@@ -130,7 +130,7 @@ namespace gui
 
     void SongImageManager::Get(sf::Texture & texture, game::song::Songs::Enum ENUM) const
     {
-        sfml_util::LoadImageOrTexture(texture, MakeFilepath(ENUM).string());
+        sfml_util::LoadTexture(texture, MakeFilepath(ENUM).string());
     }
 
 

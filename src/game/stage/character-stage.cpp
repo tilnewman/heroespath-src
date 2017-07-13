@@ -532,7 +532,6 @@ namespace stage
         {
             sf::Texture texture;
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, NEXT_FILENAME_STR, true);
-            texture.setSmooth(true);
             characterTextureVec.push_back(texture);
         }
 

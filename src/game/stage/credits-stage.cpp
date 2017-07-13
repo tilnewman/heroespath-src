@@ -90,8 +90,9 @@ namespace stage
 
         //title
         {
-            sfml_util::LoadImageOrTexture<sf::Texture>(hpTitleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
-            hpTitleTexture_.setSmooth(true);
+            sfml_util::LoadTexture(hpTitleTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
+
             bpTitleSprite_.setTexture(hpTitleTexture_);
             const float SCALE(sfml_util::MapByRes(0.6f, 1.5f));
             bpTitleSprite_.setScale(SCALE, SCALE);
