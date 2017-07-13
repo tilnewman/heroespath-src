@@ -77,6 +77,7 @@
 #include "game/item/armor-factory.hpp"
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
+#include "game/song/song.hpp"
 #include "game/stats/stat-enum.hpp"
 
 #include "misc/real.hpp"
@@ -95,6 +96,7 @@ namespace stage
 {
 
     const std::string CombatStage::POPUP_NAME_SPELLBOOK_      { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_MUSICSHEET_     { "MUSICSHEE_POPUP_WINDOW_NAME" };
     const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_ { "COMBAT_OVER_WIN_POPUP_WINDOW_NAME" };
     const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_{ "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME" };
     const std::string CombatStage::POPUP_NAME_COMBATOVER_RAN_ { "COMBAT_OVER_RAN_POPUP_WINDOW_NAME" };
@@ -183,6 +185,7 @@ namespace stage
         turnActionPhase_            (TurnActionPhase::None),
         animPhase_                  (AnimPhase::NotAnimating),
         spellBeingCastPtr_          (nullptr),
+        songBeingPlayedPtr_         (nullptr),
         performReportEffectIndex_   (0),
         performReportHitIndex_      (0),
         zoomSliderOrigPos_          (0.0f),
@@ -255,7 +258,9 @@ namespace stage
         testingTextRegionUPtr_      (),
         pauseTitle_                 (""),
         clickTimerSec_              (-1.0f),//any negative value will work here
-        clickPosV_                  (0.0f, 0.0f)
+        clickPosV_                  (0.0f, 0.0f),
+        isSongAnim1Done_            (false),
+        isSongAnim2Done_            (false)
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -396,19 +401,47 @@ namespace stage
 
     bool CombatStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
     {
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
+        {
+            if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
+            {
+                const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
+                
+                M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
+                    "game::stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
+                    << POPUP_RESPONSE.Selection() << ") Selection was greater than SongPVec.size="
+                    << SONGS_PVEC.size());
+
+                auto const songPtr{ SONGS_PVEC.at(POPUP_RESPONSE.Selection()) };
+
+                M_ASSERT_OR_LOGANDTHROW_SS((songPtr != nullptr),
+                    "game::stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
+                    << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
+
+                turnCreaturePtr_->LastSongPlayedNum(POPUP_RESPONSE.Selection());
+
+                songBeingPlayedPtr_ = songPtr;
+                HandleSong_Step2_PerformOnTargets();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
         {
             if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
-                    "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection="
+                    "game::stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
                     << POPUP_RESPONSE.Selection() << ") Selection was greater than SpellPVec.size="
                     << SPELLS_PVEC.size());
 
                 auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
                 M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr ),
-                    "game::stage::CombatStage::HandleCallback(POPUP_RESPONSE, selection="
+                    "game::stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
                     << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
 
                 turnCreaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
@@ -1545,6 +1578,38 @@ namespace stage
         }
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (AnimPhase::Song == animPhase_))
+        {
+            if (false == isSongAnim1Done_)
+            {
+                if (combatAnimationUPtr_->SongAnimUpdate(ELAPSED_TIME_SEC))
+                {
+                    isSongAnim1Done_ = true;
+                }
+            }
+
+            if (false == isSongAnim2Done_)
+            {
+                if (combatAnimationUPtr_->SparkleAnimUpdate(ELAPSED_TIME_SEC))
+                {
+                    isSongAnim2Done_ = true;
+                }
+            }
+
+            if (isSongAnim1Done_ && isSongAnim2Done_)
+            {   
+                isSongAnim1Done_ = false;
+                isSongAnim2Done_ = false;
+                
+                HandleApplyDamageTasks();
+                SetAnimPhase(AnimPhase::PostSongPause);
+
+                //use the same pause length that spells use
+                StartPause(POST_SPELL_ANIM_PAUSE_SEC_, "PostSong");
+            }
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::MoveToward == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
@@ -2065,7 +2130,8 @@ namespace stage
         }
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
-            (AnimPhase::PostSpellPause == animPhase_))
+            ((AnimPhase::PostSpellPause == animPhase_) ||
+             (AnimPhase::PostSongPause == animPhase_)))
         {
             SetAnimPhase(AnimPhase::NotAnimating);
             SetTurnPhase(TurnPhase::PerformReport);
@@ -2608,6 +2674,7 @@ namespace stage
 
         turnCreaturePtr_ = nullptr;
         spellBeingCastPtr_ = nullptr;
+        songBeingPlayedPtr_ = nullptr;
 
         MoveTurnBoxObjectsOffScreen();
 
@@ -2694,8 +2761,74 @@ namespace stage
 
     bool CombatStage::HandleSong_Step1_ValidatePlayAndSelectSong()
     {
-        //TODO
-        return false;
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextPlayStr(turnCreaturePtr_,
+                                                                     combatDisplayStagePtr_) );
+
+        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
+        {
+            QuickSmallPopup(MOUSEOVER_STR, false, true);
+            return false;
+        }
+        else
+        {
+            SetUserActionAllowed(false);
+            SetTurnActionPhase(TurnActionPhase::PlaySong);
+
+            auto const POPUP_INFO{
+                sfml_util::gui::PopupManager::Instance()->CreateMusicPopupInfo(
+                    POPUP_NAME_MUSICSHEET_,
+                    turnCreaturePtr_,
+                    turnCreaturePtr_->LastSongPlayedNum()) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            return true;
+        }
+    }
+
+
+    void CombatStage::HandleSong_Step2_PerformOnTargets()
+    {
+        if ((songBeingPlayedPtr_->Target() == TargetType::Item) ||
+            (songBeingPlayedPtr_->Target() == TargetType::QuestSpecific))
+        {
+            std::ostringstream ssErr;
+            ssErr << "game:: stage:: CombatStage:: HandleCast Step2 SelectTargetOrPerformOnAll("
+                << "spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
+                << TargetType::ToString(spellBeingCastPtr_->Target())
+                << " which is not yet supported in combat stage.";
+
+            SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
+
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            SetAnimPhase(AnimPhase::NotAnimating);
+            SetTurnActionPhase(TurnActionPhase::None);
+        }
+        else
+        {
+            SetUserActionAllowed(false);
+
+            auto creaturesListeningPVec{
+                ((songBeingPlayedPtr_->Target() == TargetType::AllCompanions) ?
+                    creature::Algorithms::Players(true) :
+                        creature::Algorithms::NonPlayers(true)) };
+
+            combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesListeningPVec);
+            turnActionInfo_ = combat::TurnActionInfo(songBeingPlayedPtr_, creaturesListeningPVec);
+            combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
+
+            fightResult_ = combat::FightClub::PlaySong(songBeingPlayedPtr_,
+                                                       turnCreaturePtr_,
+                                                       creaturesListeningPVec);
+
+            SetTurnActionPhase(TurnActionPhase::PlaySong);
+            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+            isShortPostZoomOutPause_ = true;
+            auto creaturesToCenterOnPVec{ creaturesListeningPVec };
+            creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+            combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
+            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+            SetupTurnBox();
+        }
     }
 
 
@@ -2748,12 +2881,16 @@ namespace stage
         else
         {
             std::ostringstream ssErr;
-            ssErr << "game::stage::CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll(spell="
-                << spellBeingCastPtr_->Name() << ") had a target_type of "
+            ssErr << "game:: stage:: CombatStage:: HandleCast Step2 SelectTargetOrPerformOnAll("
+                << "spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
                 << TargetType::ToString(spellBeingCastPtr_->Target())
                 << " which is not yet supported in combat stage.";
 
-            throw std::runtime_error(ssErr.str());
+            SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
+
+            SetTurnPhase(TurnPhase::PostTurnPause);
+            SetAnimPhase(AnimPhase::NotAnimating);
+            SetTurnActionPhase(TurnActionPhase::None);
         }
     }
 
@@ -2772,14 +2909,12 @@ namespace stage
                                                creaturesToCastUponPVec);
 
         SetTurnActionPhase(TurnActionPhase::Cast);
-
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
         isShortPostZoomOutPause_ = true;
         auto creaturesToCenterOnPVec{ creaturesToCastUponPVec };
         creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
         combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
-
         SetupTurnBox();
     }
 
@@ -3123,7 +3258,7 @@ namespace stage
                     CREATURE_CPTRC, combatDisplayStagePtr_));
 
                 castTBoxButtonSPtr_->SetIsDisabled(MOT_PLAY_STR !=
-                    combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
+                    combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_);
 
                 castTBoxButtonSPtr_->SetMouseHoverText(MOT_PLAY_STR);
             }
@@ -3647,22 +3782,18 @@ namespace stage
 
                 combatSoundEffects_.PlaySpell(spellBeingCastPtr_);
 
-                //get a vec of CombatNodePtr_t for each creature being cast upon
+                //start sparkle anim for creature doing the casting
+                combatAnimationUPtr_->SparkleAnimStart(
+                { combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_) });
+
+                //start anim for creatures being cast upon
                 creature::CreaturePVec_t creaturesCastUponPVec;
                 fightResult_.EffectedCreatures(creaturesCastUponPVec);
-                combat::CombatNodePVec_t combatNodesCastUponPVec;
-                for (auto const NEXT_CREATURE_PTR : creaturesCastUponPVec)
-                {
-                    combatNodesCastUponPVec.push_back(
-                        combatDisplayStagePtr_->GetCombatNodeForCreature(NEXT_CREATURE_PTR) );
-                }
 
                 combatAnimationUPtr_->SpellAnimStart(spellBeingCastPtr_,
                                                      turnCreaturePtr_,
-                                                     combatNodesCastUponPVec);
-
-                combatAnimationUPtr_->SparkleAnimStart(
-                    { combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtr_) } );
+                                                     combatDisplayStagePtr_->
+                    GetCombatNodesForCreatures(creaturesCastUponPVec));
 
                 SetAnimPhase(AnimPhase::Spell);
                 break;
@@ -3674,6 +3805,31 @@ namespace stage
 
                 //TODO need to implement this
 
+                break;
+            }
+
+            case TurnActionPhase::PlaySong:
+            {
+                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
+                                                             turnActionInfo_,
+                                                             fightResult_,
+                                                             true,
+                                                             true), false);
+
+                combatSoundEffects_.PlaySong(songBeingPlayedPtr_);
+
+                //start the song animation for the bard playing the music
+                combatAnimationUPtr_->SongAnimStart( { combatDisplayStagePtr_->
+                    GetCombatNodeForCreature(turnCreaturePtr_) } );
+
+                //start the sparkle animation for all creatures listening to the song
+                creature::CreaturePVec_t creaturesListeningPVec;
+                fightResult_.EffectedCreatures(creaturesListeningPVec);
+
+                combatAnimationUPtr_->SparkleAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodesForCreatures(creaturesListeningPVec) );
+
+                SetAnimPhase(AnimPhase::Song);
                 break;
             }
 
@@ -3726,6 +3882,7 @@ namespace stage
             case TurnActionPhase::Advance:          { return "Advance"; }
             case TurnActionPhase::Retreat:          { return "Retreat"; }
             case TurnActionPhase::Cast:             { return "Cast"; }
+            case TurnActionPhase::PlaySong:         { return "PlaySong"; }
             case TurnActionPhase::Roar:             { return "Roar"; }
             case TurnActionPhase::Pounce:           { return "Pounce"; }
             case TurnActionPhase::Run:              { return "Run"; }
@@ -3764,6 +3921,8 @@ namespace stage
             case AnimPhase::PostImpactPause:     { return "PostImpactPause"; }
             case AnimPhase::Spell:               { return "Spell"; }
             case AnimPhase::PostSpellPause:      { return "PostSpellPause"; }
+            case AnimPhase::Song:                { return "Song"; }
+            case AnimPhase::PostSongPause:       { return "PostSongPause"; }
             case AnimPhase::MoveBack:            { return "MoveBack"; }
             case AnimPhase::Run:                 { return "Run"; }
             case AnimPhase::FinalPause:          { return "FinalPause"; }
@@ -4084,6 +4243,16 @@ namespace stage
         turnCreaturePtr_ = nullptr;
         combatAnimationUPtr_->EndOfCombatCleanup();
         combatDisplayStagePtr_->EndOfCombatCleanup();
+    }
+
+
+    void CombatStage::SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
+                                       const std::string & TECH_ERROR_MSG,
+                                       const std::string & TITLE_MSG)
+    {
+        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+            CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
+                TECH_ERROR_MSG, TITLE_MSG));
     }
 
 }

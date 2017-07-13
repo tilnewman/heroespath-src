@@ -176,6 +176,7 @@ namespace stage
             Advance,
             Retreat,
             Cast,
+            PlaySong,
             Roar,
             Pounce,
             Run,
@@ -195,6 +196,8 @@ namespace stage
             MoveBack,
             Spell,
             PostSpellPause,
+            Song,
+            PostSongPause,
             Run,
             FinalPause,
             Count
@@ -239,6 +242,7 @@ namespace stage
         bool HandleAttack();
         bool HandleFight();
         bool HandleSong_Step1_ValidatePlayAndSelectSong();
+        void HandleSong_Step2_PerformOnTargets();
         bool HandleCast_Step1_ValidateCastAndSelectSpell();
         void HandleCast_Step2_SelectTargetOrPerformOnAll();
         void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
@@ -270,10 +274,28 @@ namespace stage
 
         void UpdateTestingText();
 
-        inline void SetTurnPhase(const TurnPhase TP)                { turnPhase_ = TP; UpdateTestingText(); }
-        inline void SetPreTurnPhase(const PreTurnPhase PTP)         { preTurnPhase_ = PTP; UpdateTestingText(); }
-        inline void SetAnimPhase(const AnimPhase AP)                { animPhase_ = AP; UpdateTestingText(); }
-        inline void SetTurnActionPhase(const TurnActionPhase TAP)   { turnActionPhase_ = TAP; UpdateTestingText(); }
+        inline void SetTurnPhase(const TurnPhase TP)
+        {
+            turnPhase_ = TP; UpdateTestingText();
+        }
+
+        inline void SetPreTurnPhase(const PreTurnPhase PTP)
+        {
+            preTurnPhase_ = PTP;
+            UpdateTestingText();
+        }
+
+        inline void SetAnimPhase(const AnimPhase AP)
+        {
+            animPhase_ = AP;
+            UpdateTestingText();
+        }
+
+        inline void SetTurnActionPhase(const TurnActionPhase TAP)
+        {
+            turnActionPhase_ = TAP;
+            UpdateTestingText();
+        }
 
         TurnActionPhase GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t) const;
         TurnActionPhase GetTurnActionPhaseFromFightResult(const combat::FightResult &) const;
@@ -295,8 +317,13 @@ namespace stage
 
         void EndOfCombatCleanup();
 
+        void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
+                              const std::string & TECH_ERROR_MSG,
+                              const std::string & TITLE_MSG = "");
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
+        static const std::string POPUP_NAME_MUSICSHEET_;
         static const std::string POPUP_NAME_COMBATOVER_WIN_;
         static const std::string POPUP_NAME_COMBATOVER_LOSE_;
         static const std::string POPUP_NAME_COMBATOVER_RAN_;
@@ -371,6 +398,7 @@ namespace stage
         TurnActionPhase                  turnActionPhase_;
         AnimPhase                        animPhase_;
         spell::SpellPtr_t                spellBeingCastPtr_;
+        song::SongPtr_t                  songBeingPlayedPtr_;
         std::size_t                      performReportEffectIndex_;
         std::size_t                      performReportHitIndex_;
         float                            zoomSliderOrigPos_;
@@ -445,6 +473,10 @@ namespace stage
         //members supporting double-click
         float clickTimerSec_;
         sf::Vector2f clickPosV_;
+
+        //members that support playing songs
+        bool isSongAnim1Done_;
+        bool isSongAnim2Done_;
     };
 
 }
