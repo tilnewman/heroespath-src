@@ -29,6 +29,8 @@ heroespath-fight-archer-projectile-rank-bonus-ratio=        0.333
 heroespath-fight-chance-conditions-added-from-damage-ratio= 0.5
 heroespath-fight-rank-damage-bonus-ratio=                   0.333
 heroespath-fight-chance-enemies-ignore-unconscious=         0.98
+heroespath-fight-chance-daunted-will-retreat=               0.25
+heroespath-fight-chance-panicked-will-retreat=              0.666
 
 #directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
 system-media-dir-linux=../../heroespath-media/

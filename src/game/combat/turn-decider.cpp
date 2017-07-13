@@ -783,6 +783,22 @@ namespace combat
     {
         if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, false).empty())
         {
+            //separate chance to retreat if daunted
+            if ((CREATURE_DECIDING_CPTRC->HasCondition(creature::Conditions::Daunted) &&
+                (misc::random::Float() < GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-chance-daunted-will-retreat"))))
+            {
+                return TurnActionInfo(TurnAction::Retreat);
+            }
+
+            //separate chance to retreat if panicked
+            if ((CREATURE_DECIDING_CPTRC->HasCondition(creature::Conditions::Panic) &&
+                (misc::random::Float() < GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-chance-panicked-will-retreat"))))
+            {
+                return TurnActionInfo(TurnAction::Retreat);
+            }
+
             if (((TURN_INFO.GetStrategyInfo().Retreat() == strategy::RetreatType::Coward) && (NUM_PLAYERS_IN_MELEE_RANGE > 0)) ||
                 ((TURN_INFO.GetStrategyInfo().Retreat() == strategy::RetreatType::Wary) && (NUM_PLAYERS_IN_MELEE_RANGE > NUM_FELLOWS_IN_MELEE_RANGE)) ||
                 (NUM_PLAYERS_IN_MELEE_RANGE >= TURN_INFO.GetStrategyInfo().OutnumberedRetreatCount()))
