@@ -196,6 +196,12 @@ namespace condition
             }
         }
 
+        //don't get up if can't take action
+        if (creaturePtr->CanTakeAction() == false)
+        {
+            return;
+        }
+
         creaturePtr->ConditionRemove(Conditions::Tripped);
 
         const ContentAndNamePos CNP(" gets up after being tripped.", NamePosition::TargetBefore);
