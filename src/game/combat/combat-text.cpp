@@ -901,7 +901,9 @@ namespace combat
             return "(error: TURN_ACTION_INFO.Spell() null)";
         }
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{
+            SummarizeFightResult(CREATURE_ATTACKING_PTR, FIGHT_RESULT) };
+
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
@@ -1025,7 +1027,9 @@ namespace combat
             return "(error: TURN_ACTION_INFO.Song() null)";
         }
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{
+            SummarizeFightResult(CREATURE_ATTACKING_PTR, FIGHT_RESULT) };
+
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
@@ -1191,17 +1195,19 @@ namespace combat
     {
         switch (misc::random::Int(4))
         {
-        case 0: { return "You face"; }
-        case 1: { return "Before you rage"; }
-        case 2: { return "Before you stand"; }
-        case 3: { return "Attacking you are"; }
-        case 4:
-        default: { return "You encounter"; }
+            case 0: { return "You face"; }
+            case 1: { return "Before you rage"; }
+            case 2: { return "Before you stand"; }
+            case 3: { return "Attacking you are"; }
+            case 4:
+            default: { return "You encounter"; }
         }
     }
 
 
-    const FightResultSummary Text::SummarizeFightResult(const FightResult & FIGHT_RESULT)
+    const FightResultSummary Text::SummarizeFightResult(
+        const creature::CreaturePtr_t CREATURE_INITIATING_PTR, 
+        const FightResult &           FIGHT_RESULT)
     {
         auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
         auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
@@ -1217,7 +1223,18 @@ namespace combat
             return FightResultSummary();
         }
 
+        creature::CreaturePVec_t effectedCreaturesPVec;
+        FIGHT_RESULT.EffectedCreatures(effectedCreaturesPVec);
+
+        if (effectedCreaturesPVec.empty())
+        {
+            return FightResultSummary();
+        }
+
         FightResultSummary frs;
+
+        frs.areResistedNotEffected_ = (CREATURE_INITIATING_PTR->IsPlayerCharacter() ==
+            effectedCreaturesPVec[0]->IsPlayerCharacter());
 
         frs.hit_type = FIRST_HIT_INFO.TypeOfHit();
 

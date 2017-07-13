@@ -63,6 +63,7 @@ namespace combat
         CreatureHitInfoVec_t effected_vec;
         CreatureHitInfoVec_t resisted_vec;
         CreatureHitInfoVec_t already_vec;
+        bool areResistedNotEffected_;
 
         std::size_t PtrCount() const;
 

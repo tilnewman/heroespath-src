@@ -158,7 +158,14 @@ namespace combat
                     postSS << ", but ";
                 }
 
-                postSS << resisted_vec.size() << " resisted";
+                if (areResistedNotEffected_)
+                {
+                    postSS << resisted_vec.size() << " were not effected";
+                }
+                else
+                {
+                    postSS << resisted_vec.size() << " resisted";
+                }
             }
 
             if (already_vec.empty() == false)

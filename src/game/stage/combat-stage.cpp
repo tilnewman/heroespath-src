@@ -582,8 +582,8 @@ namespace stage
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
 
-        //the enemy turn action text can run long and thus needs to be constrained further
-        auto const PAD{ 25.0f };
+        //the enemy turn action text can run long and thus needs to be constrained
+        auto const PAD{ 40.0f };
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 

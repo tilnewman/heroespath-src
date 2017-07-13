@@ -203,7 +203,9 @@ namespace combat
 
         static const std::string InitialCombatStatusMessagePrefix();
 
-        static const FightResultSummary SummarizeFightResult(const FightResult &);
+        static const FightResultSummary SummarizeFightResult(
+            const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
+            const FightResult &);
 
         static bool SummarizeCreatureEffect(FightResultSummary &   frs,
                                             const CreatureEffect & CREATURE_EFFECT);
