@@ -206,7 +206,6 @@ namespace combat
         static const FightResultSummary SummarizeFightResult(const FightResult &);
 
         static bool SummarizeCreatureEffect(FightResultSummary &   frs,
-                                            const HitInfo &        FIRST_HIT_INFO,
                                             const CreatureEffect & CREATURE_EFFECT);
     };
 

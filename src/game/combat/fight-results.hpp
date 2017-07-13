@@ -31,6 +31,7 @@
 #include "creature-effect.hpp"
 
 #include <vector>
+#include <utility>
 
 
 namespace game
@@ -50,14 +51,18 @@ namespace item
 namespace combat
 {
 
+    using CreatureHitInfoPair_t = std::pair<creature::CreaturePtr_t, HitInfo>;
+    using CreatureHitInfoVec_t = std::vector<CreatureHitInfoPair_t>;
+
+    //Summarizes many HitInfo objects from a FightResult.
     struct FightResultSummary
     {
         HitType::Enum hit_type;
         song::SongPtr_t song_ptr;
         spell::SpellPtr_t spell_ptr;
-        creature::CreaturePVec_t effected_pvec;
-        creature::CreaturePVec_t resisted_pvec;
-        creature::CreaturePVec_t already_pvec;
+        CreatureHitInfoVec_t effected_vec;
+        CreatureHitInfoVec_t resisted_vec;
+        CreatureHitInfoVec_t already_vec;
 
         std::size_t PtrCount() const;
 

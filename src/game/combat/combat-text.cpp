@@ -834,7 +834,7 @@ namespace combat
         if ((SPELL_PTR->Target() == TargetType::AllCompanions) ||
             (SPELL_PTR->Target() == TargetType::AllOpponents))
         {
-            ss << " effecting " << FIGHT_RESULT.Count();
+            ss << " at " << FIGHT_RESULT.Count();
         }
 
         ss << ".";
@@ -864,7 +864,7 @@ namespace combat
         }
         else if (FIGHT_RESULT.Count() > 1)
         {
-            ss << "effecting " << FIGHT_RESULT.Count();
+            ss << "at " << FIGHT_RESULT.Count();
 
             auto const FIRST_CREATURE_PTR{ FIGHT_RESULT.Effects()[0].GetCreature() };
             if (FIRST_CREATURE_PTR->IsPlayerCharacter())
@@ -956,7 +956,7 @@ namespace combat
         if ((SONG_PTR->Target() == TargetType::AllCompanions) ||
             (SONG_PTR->Target() == TargetType::AllOpponents))
         {
-            ss << " effecting " << FIGHT_RESULT.Count();
+            ss << " at " << FIGHT_RESULT.Count();
         }
 
         ss << ".";
@@ -988,7 +988,7 @@ namespace combat
         }
         else if (FIGHT_RESULT.Count() > 1)
         {
-            ss << "effecting " << FIGHT_RESULT.Count();
+            ss << "at " << FIGHT_RESULT.Count();
 
             auto const FIRST_CREATURE_PTR{ FIGHT_RESULT.Effects()[0].GetCreature() };
             if (FIRST_CREATURE_PTR->IsPlayerCharacter())
@@ -1206,7 +1206,7 @@ namespace combat
         auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
         auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
 
-        if (CREATURE_EFFECTS_COUNT < 2)
+        if (CREATURE_EFFECTS_COUNT <= 1)
         {
             return FightResultSummary();
         }
@@ -1221,6 +1221,13 @@ namespace combat
 
         frs.hit_type = FIRST_HIT_INFO.TypeOfHit();
 
+        if ((HitType::Roar != frs.hit_type) &&
+            (HitType::Song != frs.hit_type) &&
+            (HitType::Spell != frs.hit_type))
+        {
+            return FightResultSummary();
+        }
+
         if (FIRST_HIT_INFO.TypeOfHit() == HitType::Spell)
         {
             frs.spell_ptr = FIRST_HIT_INFO.SpellPtr();
@@ -1230,13 +1237,9 @@ namespace combat
             frs.song_ptr = FIRST_HIT_INFO.SongPtr();
         }
 
-        //Note:  First pass will compare FIRST_HIT_INFO to itself,
-        //       but that is intended normal behavior.
         for (std::size_t i(0); i<CREATURE_EFFECTS_COUNT; ++i)
         {
-            if (SummarizeCreatureEffect(frs,
-                                        FIRST_HIT_INFO,
-                                        CREATURE_EFFECT_VEC[i]) == false)
+            if (SummarizeCreatureEffect(frs, CREATURE_EFFECT_VEC[i]) == false)
             {
                 return FightResultSummary();
             }
@@ -1247,47 +1250,57 @@ namespace combat
 
 
     bool Text::SummarizeCreatureEffect(FightResultSummary &   frs,
-                                       const HitInfo &        FIRST_HIT_INFO,
                                        const CreatureEffect & CREATURE_EFFECT)
     {
-        auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
-        if (HIT_INFO_VEC.size() != 1)
+        auto const NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        if (NEXT_HIT_INFO_VEC.size() != 1)
         {
             return false;
         }
 
-        auto const HIT_INFO{ HIT_INFO_VEC[0] };
+        auto const NEXT_HIT_INFO{ NEXT_HIT_INFO_VEC[0] };
+        auto const NEXT_ACTION_STR{ NEXT_HIT_INFO.ActionPhrase().Compose("", "") };
 
-        if (HIT_INFO.IsCloseEnoughToEqual(FIRST_HIT_INFO) == false)
+        if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_)) ||
+            (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_)))
         {
-            return false;
-        }
+            if (boost::algorithm::contains(NEXT_ACTION_STR, "already"))
+            {
+                if (frs.already_vec.empty() ||
+                    (frs.already_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+                {
+                    frs.already_vec.push_back(
+                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
 
-        auto const ACTION_STR{ HIT_INFO.ActionPhrase().Compose("", "") };
+                    return true;
+                }
+            }
+            else if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::RESISTED_STR_)) ||
+                     (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::RESISTED_STR_)))
+            {
+                if (frs.resisted_vec.empty() ||
+                    (frs.resisted_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+                {
+                    frs.resisted_vec.push_back(
+                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
 
-        if ((boost::algorithm::contains(ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_)) ||
-            (boost::algorithm::contains(ACTION_STR, song::Song::FAILED_STR_)))
-        {
-            if (boost::algorithm::contains(ACTION_STR, "already"))
-            {
-                frs.already_pvec.push_back(CREATURE_EFFECT.GetCreature());
-            }
-            else if ((boost::algorithm::contains(ACTION_STR, spell::Spell::RESISTED_STR_)) ||
-                     (boost::algorithm::contains(ACTION_STR, song::Song::RESISTED_STR_)))
-            {
-                frs.resisted_pvec.push_back(CREATURE_EFFECT.GetCreature());
-            }
-            else
-            {
-                return false;
+                    return true;
+                }
             }
         }
         else
         {
-            frs.effected_pvec.push_back(CREATURE_EFFECT.GetCreature());
+            if (frs.effected_vec.empty() ||
+                (frs.effected_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+            {
+                frs.effected_vec.push_back(
+                    std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
+                
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
 }

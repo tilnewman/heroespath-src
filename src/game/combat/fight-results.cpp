@@ -50,7 +50,7 @@ namespace combat
 
     std::size_t FightResultSummary::PtrCount() const
     {
-        return (effected_pvec.size() + resisted_pvec.size() + already_pvec.size());
+        return (effected_vec.size() + resisted_vec.size() + already_vec.size());
     }
 
 
@@ -92,13 +92,9 @@ namespace combat
         {
             return spell_ptr->VerbThirdPerson();
         }
-        else if (HitType::Roar == hit_type)
+        else //roar case
         {
             return "panics";
-        }
-        else
-        {
-            return "";
         }
     }
 
@@ -115,56 +111,43 @@ namespace combat
         std::ostringstream preSS;
         preSS << FIGHTING_CREATURE_NAME;
 
-        switch (hit_type)
+        if (HitType::Spell == hit_type)
         {
-            case HitType::Spell:
-            {
-                preSS << " casts " << spell_ptr->Name();
-                break;
-            }
-            case HitType::Song:
-            {
-                preSS << song_ptr->ActionPhrasePreamble() << " playing " << song_ptr->Name();
-                break;
-            }
-            case HitType::Roar:
-            {
-                preSS << " roars";
-                break;
-            }
-            case HitType::Count:
-            case HitType::Weapon:
-            case HitType::Pounce:
-            case HitType::Condition:
-            default:
-            {
-                return "";
-            }
+            preSS << " casts " << spell_ptr->Name();
+        }
+        else if (HitType::Song == hit_type)
+        {
+            //intentionally no prepend of empty space so that preamble can start with "'s"
+            preSS << song_ptr->ActionPhrasePreamble() << " playing " << song_ptr->Name();
+        }
+        else
+        {
+            preSS << " roars";
         }
 
         preSS << " at " << PtrCount();
 
         std::ostringstream postSS;
-        if (resisted_pvec.empty() && already_pvec.empty())
+        if (resisted_vec.empty() && already_vec.empty())
         {
             postSS << " and " << VerbThirdPerson() << " ALL of them";
         }
-        else if (effected_pvec.empty() && already_pvec.empty())
+        else if (effected_vec.empty() && already_vec.empty())
         {
             postSS << " but ALL resisted";
         }
-        else if (effected_pvec.empty() && resisted_pvec.empty())
+        else if (effected_vec.empty() && resisted_vec.empty())
         {
             postSS << " but ALL were already " << VERB_PAST_TENSE;
         }
         else
         {
-            if (effected_pvec.empty() == false)
+            if (effected_vec.empty() == false)
             {
-                postSS << " and " << VerbThirdPerson() << " " << effected_pvec.size();
+                postSS << " and " << VerbThirdPerson() << "  " << effected_vec.size();
             }
 
-            if (resisted_pvec.empty() == false)
+            if (resisted_vec.empty() == false)
             {
                 if (postSS.str().empty())
                 {
@@ -175,12 +158,12 @@ namespace combat
                     postSS << ", but ";
                 }
 
-                postSS << resisted_pvec.size() << " resisted";
+                postSS << resisted_vec.size() << " resisted";
             }
 
-            if (already_pvec.empty() == false)
+            if (already_vec.empty() == false)
             {
-                postSS << ", and " << already_pvec.size() << " were already " << VERB_PAST_TENSE;
+                postSS << ", and " << already_vec.size() << " were already " << VERB_PAST_TENSE;
             }
         }
 
@@ -213,7 +196,8 @@ namespace combat
             }
         }
 
-        return HitInfo();//invalid HitInfo object
+        //invalid HitInfo object
+        return HitInfo();
     }
 
 

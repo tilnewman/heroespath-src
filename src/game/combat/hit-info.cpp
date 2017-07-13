@@ -456,8 +456,6 @@ namespace combat
             }
         }
 
-        ss << ", \"" << actionPhraseCNP_.Compose("(source)", "(target)") << "\"";
-
         ss << ", was_hit=" << std::boolalpha << WasHit()
             << ", damage=" << damage_
             << ", was_kill=" << WasKill()
