@@ -154,6 +154,9 @@ namespace ownership
         complexity_type::Enum complexityType;
     };
 
+
+    float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT);
+
 }
 }
 }

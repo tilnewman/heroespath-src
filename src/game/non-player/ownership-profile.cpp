@@ -34,6 +34,8 @@
 #include "game/game-data-file.hpp"
 
 #include "misc/random.hpp"
+#include "misc/handy-types.hpp"
+#include "stringutil/stringhelp.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -174,52 +176,53 @@ namespace ownership
 
 
     collector_type::Enum collector_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
-    {
-        //adjust for race
-        const std::string RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
-        const float CHANCE_BASE( GameDataFile::Instance()->GetCopyFloat(
+    {        
+        auto const CHANCE_BASE( GameDataFile::Instance()->GetCopyFloat(
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-base") );
 
-        std::ostringstream ss;
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Minimalist-chance-adjustment-race-" << RACE_STR;
-        float chanceMinimalist(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
+        //adjust for race
+        auto const RACE_STR{ creature::race::ToString(CHARACTER_PTR->Race().Which()) };
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Practical-chance-adjustment-race-" << RACE_STR;
-        float chancePractical(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
+        auto const RACE_KEY{
+            "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-" +
+            RACE_STR };
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Collector-chance-adjustment-race-" << RACE_STR;
-        float chanceCollector(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
+        auto const RACE_COLLECTOR_PARTS_STR{ GameDataFile::Instance()->GetCopyStr(RACE_KEY) };
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Hoarder-chance-adjustment-race-" << RACE_STR;
-        float chanceHoarder(CHANCE_BASE + GameDataFile::Instance()->GetCopyFloat(ss.str()));
+        misc::StrVec_t racePartsVec;
+        appbase::stringhelp::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
+
+        M_ASSERT_OR_LOGANDTHROW_SS((racePartsVec.size() == 4),
+            "game::non_player::ownership::collector_type::FromCreature("
+            << CHARACTER_PTR->NameAndRaceAndRole() << ") failed to read four values from the key="
+            << RACE_KEY);
+        
+        float chanceMinimalist(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[0]));
+        float chancePractical(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[1]));
+        float chanceCollector(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[2]));
+        float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
 
         //adjust for roles
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Minimalist-chance-adjustment-race-" << RACE_STR;
-        chanceMinimalist += GameDataFile::Instance()->GetCopyFloat(ss.str());
+        auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role().Which()) };
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Practical-chance-adjustment-race-" << RACE_STR;
-        chancePractical += GameDataFile::Instance()->GetCopyFloat(ss.str());
+        auto const ROLE_KEY{
+            "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-" +
+            ROLE_STR };
+            
+        auto const ROLE_COLLECTOR_PARTS_STR{ GameDataFile::Instance()->GetCopyStr(ROLE_KEY) };
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Collector-chance-adjustment-race-" << RACE_STR;
-        chanceCollector += GameDataFile::Instance()->GetCopyFloat(ss.str());
+        misc::StrVec_t rolePartsVec;
+        appbase::stringhelp::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
 
-        ss.str("");
-        ss << "heroespath-nonplayer-ownershipprofile-collectortype-"
-            << "Hoarder-chance-adjustment-race-" << RACE_STR;
-        chanceHoarder += GameDataFile::Instance()->GetCopyFloat(ss.str());
+        M_ASSERT_OR_LOGANDTHROW_SS((rolePartsVec.size() == 4),
+            "game::non_player::ownership::collector_type::FromCreature("
+            << CHARACTER_PTR->NameAndRaceAndRole() << ") failed to read four values from the key="
+            << ROLE_KEY);
+
+        chanceMinimalist += ConvertStringToFloat(ROLE_KEY, rolePartsVec[0]);
+        chancePractical += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
+        chanceCollector += ConvertStringToFloat(ROLE_KEY, rolePartsVec[2]);
+        chanceHoarder += ConvertStringToFloat(ROLE_KEY, rolePartsVec[3]);
 
         //enforce min
         {
@@ -307,48 +310,68 @@ namespace ownership
 
         //adjust for race
         {
-            const std::string RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
+            auto const RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
 
-            std::ostringstream ss;
-            ss << "heroespath-nonplayer-ownershipprofile-"
-                << "ownsmagictype-chance-Rarely-race-" << RACE_STR;
+            auto const RACE_KEY{
+                "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" +
+                RACE_STR };
 
-            chanceRarely += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            auto const RACE_OWNSMAGIC_PARTS_STR{ GameDataFile::Instance()->GetCopyStr(RACE_KEY) };
 
-            ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-"
-                << "ownsmagictype-chance-Religous-race-" << RACE_STR;
+            misc::StrVec_t racePartsVec;
+            appbase::stringhelp::SplitByChar(RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
 
-            chanceReligous += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            M_ASSERT_OR_LOGANDTHROW_SS((racePartsVec.size() == 3),
+                "game::non_player::ownership::owns_magic_type::FromCreature("
+                << CHARACTER_PTR->NameAndRaceAndRole()
+                << ") failed to read three values from the key="
+                << RACE_KEY);
 
-            ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-"
-                << "ownsmagictype-chance-Magical-race-" << RACE_STR;
+            auto const RARELY_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
+            auto const RELIGIOUS_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
+            auto const MAGICAL_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
 
-            chanceMagical += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            //Why do these values have to add up to one?
+            //After the role adjustments below the values most definitely don't sum to 1.0...?
+            //zTn -2017-7-14
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc::IsRealOne(RARELY_RACE_ADJ + RELIGIOUS_RACE_ADJ + MAGICAL_RACE_ADJ)),
+                "game::non_player::ownership::owns_magic_type::FromCreature("
+                << CHARACTER_PTR->NameAndRaceAndRole()
+                << ") found key "<< RACE_KEY << "=" << RACE_OWNSMAGIC_PARTS_STR
+                << " -but those values do not add up to one.");
+
+            chanceRarely += RARELY_RACE_ADJ;
+            chanceReligous += RELIGIOUS_RACE_ADJ;
+            chanceMagical += MAGICAL_RACE_ADJ;
         }
 
         //adjust for role
         {
-            const std::string ROLE_STR( creature::role::ToString(CHARACTER_PTR->Role().Which()) );
+            auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role().Which()) };
 
             std::ostringstream ss;
             ss << "heroespath-nonplayer-ownershipprofile-"
                 << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
 
-            chanceRarely += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            auto const ROLE_KEY{
+                "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-" +
+                ROLE_STR };
 
-            ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-"
-                << "ownsmagictype-chance-adjustment-Religous-role-" << ROLE_STR;
+            auto const ROLE_OWNSMAGIC_PARTS_STR{ GameDataFile::Instance()->GetCopyStr(ROLE_KEY) };
 
-            chanceReligous += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            misc::StrVec_t rolePartsVec;
+            appbase::stringhelp::SplitByChar(ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
 
-            ss.str("");
-            ss << "heroespath-nonplayer-ownershipprofile-"
-                << "ownsmagictype-chance-adjustment-Magical-role-" << ROLE_STR;
+            M_ASSERT_OR_LOGANDTHROW_SS((rolePartsVec.size() == 3),
+                "game::non_player::ownership::owns_magic_type::FromCreature("
+                << CHARACTER_PTR->NameAndRaceAndRole()
+                << ") failed to read three values from the key="
+                << ROLE_KEY);
 
-            chanceMagical += GameDataFile::Instance()->GetCopyFloat(ss.str());
+            chanceRarely += ConvertStringToFloat(ROLE_KEY, rolePartsVec[0]);
+            chanceReligous += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
+            chanceMagical += ConvertStringToFloat(ROLE_KEY, rolePartsVec[2]);
         }
 
         //enforce min
@@ -485,6 +508,24 @@ namespace ownership
                        owns_magic_type::FromCreature(CHARACTER_PTR),
                        complexity_type::FromCreature(CHARACTER_PTR));
     }
+
+
+    float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT)
+    {
+        try
+        {
+            return boost::lexical_cast<float>(STR_FLOAT);
+        }
+        catch (...)
+        {
+            std::ostringstream ss;
+            ss << "game::non_player::ownership::ConvertStringToFloat(key=" << KEY
+               << ", STR_FLOAT=" << STR_FLOAT << " unable to convert that str to a float.";
+
+            throw std::runtime_error(ss.str());
+        }
+    }
+
 
 }
 }
