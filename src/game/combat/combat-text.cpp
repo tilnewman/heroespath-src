@@ -289,7 +289,7 @@ namespace combat
 
 
     const std::string Text::MouseOverTextPounceStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
+        const creature::CreaturePtrC_t,
         CombatDisplayCPtrC_t)
     {
         /*
