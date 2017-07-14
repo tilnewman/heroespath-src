@@ -292,6 +292,7 @@ namespace combat
         const creature::CreaturePtrC_t CREATURE_CPTRC,
         CombatDisplayCPtrC_t)
     {
+        /*
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
@@ -304,6 +305,9 @@ namespace combat
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_;
+        */
+
+        return "Pounce is not yet implemented.";
     }
 
 
