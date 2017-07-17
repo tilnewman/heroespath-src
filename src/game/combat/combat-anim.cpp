@@ -1143,7 +1143,7 @@ namespace combat
 
             sparkleAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparkleAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                sfml_util::MapByRes(0.333f, 1.33f),
+                sfml_util::MapByRes(0.333f, 1.0f),
                 0.5f,
                 10.0f,
                 0.5f,
