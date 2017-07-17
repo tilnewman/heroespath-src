@@ -1277,12 +1277,13 @@ namespace combat
     {
         using namespace creature;
 
-        auto const LIVING_OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
-            ! creatureRoaringPtrC->IsPlayerCharacter(), true) };
+        CreaturePVec_t listeningCreaturesPVec;
+        COMBAT_DISPLAY_CPTRC->GetCreaturesInRoaringDistance(creatureRoaringPtrC,
+                                                            listeningCreaturesPVec);
 
         //update player's TurnActionInfo
         Encounter::Instance()->SetTurnActionInfo(creatureRoaringPtrC,
-            TurnActionInfo(TurnAction::Roar, LIVING_OPPONENT_CREATURES_PVEC) );
+            TurnActionInfo(TurnAction::Roar, listeningCreaturesPVec) );
 
         CreatureEffectVec_t creatureEffectsVec;
 
@@ -1292,7 +1293,7 @@ namespace combat
         //Give each defending creature a chance to resist being panicked.
         //The farther away each defending creature is the better chance
         //of resisting he/she/it has.
-        for (auto const NEXT_DEFEND_CREATURE_PTR : LIVING_OPPONENT_CREATURES_PVEC)
+        for (auto const NEXT_DEFEND_CREATURE_PTR : listeningCreaturesPVec)
         {
             if (NEXT_DEFEND_CREATURE_PTR->HasCondition(Conditions::Panic))
             {
@@ -1354,8 +1355,10 @@ namespace combat
             }
             else
             {
-                const ContentAndNamePos CNP(" resisted the fear.",
-                                            NamePosition::TargetBefore);
+                const ContentAndNamePos CNP("",
+                                            " resisted the fear of ",
+                                            "'s roar.",
+                                            NamePosition::TargetThenSource);
 
                 const HitInfo HIT_INFO(false, HitType::Roar, CNP);
 

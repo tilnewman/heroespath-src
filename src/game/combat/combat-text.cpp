@@ -458,7 +458,7 @@ namespace combat
 
             case combat::TurnAction::Roar:
             {
-                ss << "Roar Action Text TODO";
+                ss << CREATURE_ATTACKING_PTR->Name() << " Roars...";
                 break;
             }
 
@@ -519,20 +519,20 @@ namespace combat
         else if (TURN_ACTION == combat::TurnAction::Cast)
         {
             return CastDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                                    TURN_ACTION_INFO,
-                                                    FIGHT_RESULT,
-                                                    EFFECT_INDEX,
-                                                    HIT_INDEX,
-                                                    wasCollapsed);
+                                              TURN_ACTION_INFO,
+                                              FIGHT_RESULT,
+                                              EFFECT_INDEX,
+                                              HIT_INDEX,
+                                              wasCollapsed);
         }
         else if (TURN_ACTION == combat::TurnAction::PlaySong)
         {
             return PlaySongDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                                        TURN_ACTION_INFO,
-                                                        FIGHT_RESULT,
-                                                        EFFECT_INDEX,
-                                                        HIT_INDEX,
-                                                        wasCollapsed);
+                                                  TURN_ACTION_INFO,
+                                                  FIGHT_RESULT,
+                                                  EFFECT_INDEX,
+                                                  HIT_INDEX,
+                                                  wasCollapsed);
         }
         else if (TURN_ACTION == combat::TurnAction::Block)
         {
@@ -542,6 +542,15 @@ namespace combat
                               WILL_USE_NAME,
                               false,
                               false);
+        }
+        else if (TURN_ACTION == combat::TurnAction::Roar)
+        {
+            return RoarDescriptionFullVersion(CREATURE_ATTACKING_PTR,
+                                              TURN_ACTION_INFO,
+                                              FIGHT_RESULT,
+                                              EFFECT_INDEX,
+                                              HIT_INDEX,
+                                              wasCollapsed);
         }
         else
         {
@@ -891,7 +900,7 @@ namespace combat
 
 
     const std::string Text::CastDescriptionFullVersion(
-        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+        const creature::CreaturePtr_t CREATURE_CASTING_PTR,
         const TurnActionInfo &        TURN_ACTION_INFO,
         const FightResult &           FIGHT_RESULT,
         const std::size_t             EFFECT_INDEX,
@@ -905,33 +914,33 @@ namespace combat
             return "(error: TURN_ACTION_INFO.Spell() null)";
         }
 
-        auto const FIGHT_RESULT_SUMMARY{
-            SummarizeFightResult(CREATURE_ATTACKING_PTR, FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_CASTING_PTR,
+                                                              FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
-            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
+            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_CASTING_PTR->Name(),
                 TURN_ACTION_INFO.Spell()->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
         {
-            return "(error: EFFECT_INDEX out of range)";
+            return "(error: cast EFFECT_INDEX out of range)";
         }
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
-            return "(error: HIT_INDEX out of range)";
+            return "(error: cast HIT_INDEX out of range)";
         }
 
         auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
 
         std::ostringstream ss;
 
-        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ATTACKING_PTR->Name(),
+        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_CASTING_PTR->Name(),
                                               CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
@@ -1017,7 +1026,7 @@ namespace combat
 
 
     const std::string Text::PlaySongDescriptionFullVersion(
-        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+        const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
         const TurnActionInfo &        TURN_ACTION_INFO,
         const FightResult &           FIGHT_RESULT,
         const std::size_t             EFFECT_INDEX,
@@ -1032,32 +1041,32 @@ namespace combat
         }
 
         auto const FIGHT_RESULT_SUMMARY{
-            SummarizeFightResult(CREATURE_ATTACKING_PTR, FIGHT_RESULT) };
+            SummarizeFightResult(CREATURE_PLAYINGING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
-            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ATTACKING_PTR->Name(),
+            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_PLAYINGING_PTR->Name(),
                 TURN_ACTION_INFO.Song()->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
         {
-            return "(error: EFFECT_INDEX out of range)";
+            return "(error: song EFFECT_INDEX out of range)";
         }
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
-            return "(error: HIT_INDEX out of range)";
+            return "(error: song HIT_INDEX out of range)";
         }
 
         auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
 
         std::ostringstream ss;
 
-        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ATTACKING_PTR->Name(),
+        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_PLAYINGING_PTR->Name(),
                                               CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
@@ -1070,6 +1079,48 @@ namespace combat
         {
             ss << " doing " << std::abs(DAMAGE) << " damage.";
         }
+
+        return ss.str();
+    }
+
+
+    const std::string Text::RoarDescriptionFullVersion(
+        const creature::CreaturePtr_t CREATURE_ROARING_PTR,
+        const TurnActionInfo &,
+        const FightResult &           FIGHT_RESULT,
+        const std::size_t             EFFECT_INDEX,
+        const std::size_t             HIT_INDEX,
+        bool &                        wasCollapsed)
+    {
+        wasCollapsed = false;
+        
+        auto const FIGHT_RESULT_SUMMARY{
+            SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
+
+        if (FIGHT_RESULT_SUMMARY.IsValid())
+        {
+            wasCollapsed = true;
+            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_ROARING_PTR->Name(), "roared");
+        }
+
+        if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
+        {
+            return "(error: roar EFFECT_INDEX out of range)";
+        }
+
+        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+
+        if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
+        {
+            return "(error: roar HIT_INDEX out of range)";
+        }
+
+        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+
+        std::ostringstream ss;
+
+        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ROARING_PTR->Name(),
+            CREATURE_EFFECT.GetCreature()->Name());
 
         return ss.str();
     }
@@ -1283,7 +1334,8 @@ namespace combat
         auto const NEXT_ACTION_STR{ NEXT_HIT_INFO.ActionPhrase().Compose("", "") };
 
         if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_)) ||
-            (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_)))
+            (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_)) ||
+            (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
         {
             if (boost::algorithm::contains(NEXT_ACTION_STR, "already"))
             {
@@ -1297,7 +1349,8 @@ namespace combat
                 }
             }
             else if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::RESISTED_STR_)) ||
-                     (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::RESISTED_STR_)))
+                     (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::RESISTED_STR_)) ||
+                     (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
             {
                 if (frs.resisted_vec.empty() ||
                     (frs.resisted_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))

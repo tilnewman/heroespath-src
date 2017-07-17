@@ -209,6 +209,8 @@ namespace stage
             PostSpellPause,
             Song,
             PostSongPause,
+            Roar,
+            PostRoarPause,
             Run,
             FinalPause,
             Count
@@ -340,6 +342,8 @@ namespace stage
                                       const int                             COUNT = 1);
 
         bool HandleAchievementPopups();
+
+        void PerformRoarEffects();
 
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;

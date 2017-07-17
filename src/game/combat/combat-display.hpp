@@ -276,6 +276,10 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR,
             const int                     BLOCKING_POS) const;
 
+        std::size_t GetCreaturesInRoaringDistance(
+            const creature::CreaturePtr_t CREATURE_ROARING_PTR,
+            creature::CreaturePVec_t &    creaturesInRoaringDistancePVec_OutParam) const;
+
     protected:
         inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
 

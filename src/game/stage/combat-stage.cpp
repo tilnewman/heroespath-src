@@ -1629,6 +1629,23 @@ namespace stage
         }
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
+            (AnimPhase::Roar == animPhase_) &&
+            (TurnActionPhase::Roar == turnActionPhase_))
+        {
+            slider_.Update(ELAPSED_TIME_SEC);
+            if (slider_.GetIsDone())
+            {
+                combatAnimationUPtr_->ShakeAnimStop(nullptr);
+                PerformRoarEffects();
+                SetAnimPhase(AnimPhase::PostRoarPause);
+
+                //use the same pause length that spells use
+                StartPause(POST_SPELL_ANIM_PAUSE_SEC_, "PostRoar");
+            }
+            return;
+        }
+
+        if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::MoveToward == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
@@ -2150,7 +2167,8 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             ((AnimPhase::PostSpellPause == animPhase_) ||
-             (AnimPhase::PostSongPause == animPhase_)))
+             (AnimPhase::PostSongPause == animPhase_) ||
+              (AnimPhase::PostRoarPause == animPhase_)))
         {
             SetAnimPhase(AnimPhase::NotAnimating);
             SetTurnPhase(TurnPhase::PerformReport);
@@ -3143,9 +3161,18 @@ namespace stage
         auto const MOUSEOVER_STR( combat::Text::MouseOverTextRoarStr(turnCreaturePtr_,
                                                                      combatDisplayStagePtr_) );
 
+        creature::CreaturePVec_t creaturesToCenterOnPVec;
+        combatDisplayStagePtr_->GetCreaturesInRoaringDistance(turnCreaturePtr_,
+                                                              creaturesToCenterOnPVec);
+
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
+            return false;
+        }
+        else if (creaturesToCenterOnPVec.empty())
+        {
+            QuickSmallPopup("There are no creatures in range to roar at.", false, true);
             return false;
         }
         else
@@ -3154,7 +3181,7 @@ namespace stage
 
             turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Roar);
             combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-            fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
+            fightResult_ = combat::FightResult();
 
             AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
                                                          turnActionInfo_,
@@ -3162,8 +3189,13 @@ namespace stage
                                                          true,
                                                          true), false);
 
+            creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+            combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
+            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetTurnActionPhase(TurnActionPhase::Roar);
-            StartPerformAnim();
+            SetTurnPhase(TurnPhase::CenterAndZoomOut);
+            isShortPostZoomOutPause_ = true;
+            SetupTurnBox();
             return true;
         }
     }
@@ -3846,8 +3878,18 @@ namespace stage
             {
                 combatSoundEffects_.PlayRoar(turnCreaturePtr_);
 
-                //TODO need to implement this
+                creature::CreaturePVec_t creaturesToShakePVec{
+                    creature::Algorithms::NonPlayers(true) };
 
+                creaturesToShakePVec.push_back(turnCreaturePtr_);
+
+                combatAnimationUPtr_->ShakeAnimStart(creaturesToShakePVec,
+                                                     ANIM_IMPACT_SHAKE_SLIDER_SPEED_,
+                                                     true);
+
+                slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
+                
+                SetAnimPhase(AnimPhase::Roar);
                 break;
             }
 
@@ -3969,6 +4011,8 @@ namespace stage
             case AnimPhase::Song:                { return "Song"; }
             case AnimPhase::PostSongPause:       { return "PostSongPause"; }
             case AnimPhase::MoveBack:            { return "MoveBack"; }
+            case AnimPhase::Roar:                { return "Roar"; }
+            case AnimPhase::PostRoarPause:       { return "PostRoarPause"; }
             case AnimPhase::Run:                 { return "Run"; }
             case AnimPhase::FinalPause:          { return "FinalPause"; }
             case AnimPhase::Count:
@@ -4516,6 +4560,12 @@ namespace stage
             //return false because a popup will follow a popup
             return false;
         }
+    }
+
+
+    void CombatStage::PerformRoarEffects()
+    {
+        fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
     }
 
 }

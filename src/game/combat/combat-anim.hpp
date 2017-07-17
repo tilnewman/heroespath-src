@@ -190,6 +190,10 @@ namespace combat
         //The Shake Animation wiggles a creature on the battlefield back and forth.
         static float ShakeAnimDistance(const bool WILL_DOUBLE);
 
+        void ShakeAnimStart(creature::CreaturePVec_t & CREATURE_PVEC,
+                            const float                SLIDER_SPEED,
+                            const bool                 WILL_DOUBLE_SHAKE_DISTANCE);
+
         void ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
                             const float               SLIDER_SPEED,
                             const bool                WILL_DOUBLE_SHAKE_DISTANCE);

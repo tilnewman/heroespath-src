@@ -669,7 +669,7 @@ namespace combat
 
     void CombatAnimation::ImpactAnimStop()
     {
-        //stop ALL creature shaking
+        //nullptr means stop ALL creature shaking
         ShakeAnimStop(nullptr);
     }
 
@@ -687,9 +687,20 @@ namespace combat
     }
 
 
+    void CombatAnimation::ShakeAnimStart(creature::CreaturePVec_t & CREATURE_PVEC,
+                                         const float                SLIDER_SPEED,
+                                         const bool                 WILL_DOUBLE_SHAKE_DISTANCE)
+    {
+        for (auto const NEXT_CREATURE_PTR : CREATURE_PVEC)
+        {
+            ShakeAnimStart(NEXT_CREATURE_PTR, SLIDER_SPEED, WILL_DOUBLE_SHAKE_DISTANCE);
+        }
+    }
+
+
     void CombatAnimation::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
-                                    const float               SLIDER_SPEED,
-                                    const bool                WILL_DOUBLE_SHAKE_DISTANCE)
+                                         const float               SLIDER_SPEED,
+                                         const bool                WILL_DOUBLE_SHAKE_DISTANCE)
     {
         auto combatNodePtr{ combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC) };
         if (combatNodePtr != nullptr)

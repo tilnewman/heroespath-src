@@ -160,7 +160,7 @@ namespace combat
             const FightResult &    FIGHT_RESULT);
 
         static const std::string CastDescriptionFullVersion(
-            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_CASTING_PTR,
             const TurnActionInfo &        TURN_ACTION_INFO,
             const FightResult &           FIGHT_RESULT,
             const std::size_t             EFFECT_INDEX,
@@ -176,7 +176,15 @@ namespace combat
             const FightResult &    FIGHT_RESULT);
 
         static const std::string PlaySongDescriptionFullVersion(
-            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
+            const TurnActionInfo &        TURN_ACTION_INFO,
+            const FightResult &           FIGHT_RESULT,
+            const std::size_t             EFFECT_INDEX,
+            const std::size_t             HIT_INDEX,
+            bool &                        wasCollapsed);
+
+        static const std::string RoarDescriptionFullVersion(
+            const creature::CreaturePtr_t CREATURE_ROARING_PTR,
             const TurnActionInfo &        TURN_ACTION_INFO,
             const FightResult &           FIGHT_RESULT,
             const std::size_t             EFFECT_INDEX,

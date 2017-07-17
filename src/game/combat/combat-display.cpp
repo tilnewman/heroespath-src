@@ -1557,6 +1557,29 @@ namespace combat
     }
 
 
+    std::size_t CombatDisplay::GetCreaturesInRoaringDistance(
+        const creature::CreaturePtr_t CREATURE_ROARING_PTR,
+        creature::CreaturePVec_t &    creaturesInRoaringDistancePVec_OutParam) const
+    {
+        std::size_t count{ 0 };
+
+        auto const OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
+            (CREATURE_ROARING_PTR->IsPlayerCharacter() == false), true) };
+
+        for (auto const NEXT_OPPONENT_CREATURE_PTR : OPPONENT_CREATURES_PVEC)
+        {
+            if (std::abs(combatTree_.GetBlockingDistanceBetween(CREATURE_ROARING_PTR,
+                NEXT_OPPONENT_CREATURE_PTR)) <= 2)
+            {
+                creaturesInRoaringDistancePVec_OutParam.push_back(NEXT_OPPONENT_CREATURE_PTR);
+                ++count;
+            }
+        }
+
+        return count;
+    }
+
+
     void CombatDisplay::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         if (isCombatOver_)
