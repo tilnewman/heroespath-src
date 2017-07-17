@@ -35,6 +35,7 @@
 #include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
+#include <limits>
 
 
 namespace game
@@ -136,18 +137,24 @@ namespace creature
     }
 
 
-    TitlePtr_t Achievement::Increment(const CreaturePtr_t CREATURE_PTR)
+    TitlePtr_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
-            "game::creature::Achievement::Increment() was given a null CREATURE_PTR.");
+        //Keep incrementing past the count of the final Title so the player can track
+        //progress even if there are no more Titles to earn.  Don't stop until the
+        //count reaches a large recognizeable limit...something with lots of 9's...
+        if (999'999'999 == count_)
+        {
+            return nullptr;
+        }
 
         ++count_;
 
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
             auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_TITLE_COUNT_PAIR.second) };
+
             if ((NEXT_TITLE_PTR->AchievementCount() == count_) &&
-                (NEXT_TITLE_PTR->IsRoleInList(CREATURE_PTR->Role().Which())))
+                (NEXT_TITLE_PTR->IsRoleInList(ROLE_ENUM)))
             {
                 return NEXT_TITLE_PTR;
             }

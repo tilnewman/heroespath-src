@@ -46,6 +46,7 @@
 #include "game/combat/fight-results.hpp"
 #include "game/combat/combat-sound-effects.hpp"
 #include "game/combat/combat-restore-info.hpp"
+#include "game/creature/achievement-enum.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -82,6 +83,9 @@ namespace creature
     using CreaturePtrC_t  = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+
+    class Title;
+    using TitlePtr_t = Title *;
 }
 namespace combat
 {
@@ -103,6 +107,11 @@ namespace stage
 {
 
     using SizePairSet_t = std::set<std::pair<std::size_t, std::size_t>>;
+
+    using CreatureTitlePair_t = std::pair<creature::CreaturePtr_t,
+        std::pair<creature::TitlePtr_t, creature::TitlePtr_t> >;
+
+    using CreatureTitleVec_t = std::vector<CreatureTitlePair_t>;
 
 
     //A Stage class that allows camping characters
@@ -161,6 +170,8 @@ namespace stage
             DeathAnim,
             RepositionAnim,
             PostTurnPause,
+            Achievements,
+            End,
             Count
         };
 
@@ -321,12 +332,22 @@ namespace stage
                               const std::string & TECH_ERROR_MSG,
                               const std::string & TITLE_MSG = "");
 
+        //returns true if any Titles were conferred
+        bool PopulateAchievementsVec();
+
+        void HandleAchievementEnqueue(const creature::CreaturePtr_t         CREATURE_PTR,
+                                      const creature::AchievementType::Enum ACH_ENUM,
+                                      const int                             COUNT = 1);
+
+        bool HandleAchievementPopups();
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
         static const std::string POPUP_NAME_MUSICSHEET_;
         static const std::string POPUP_NAME_COMBATOVER_WIN_;
         static const std::string POPUP_NAME_COMBATOVER_LOSE_;
         static const std::string POPUP_NAME_COMBATOVER_RAN_;
+        static const std::string POPUP_NAME_ACHIEVEMENT_;
         //
         static const float PAUSE_LONG_SEC_;
         static const float PAUSE_MEDIUM_SEC_;
@@ -348,6 +369,8 @@ namespace stage
         static const float POST_IMPACT_ANIM_PAUSE_SEC_;
         static const float CONDITION_EFFECT_PAUSE_SEC_;
         static const float POST_SPELL_ANIM_PAUSE_SEC_;
+        static const float ACHIEVEMENT_PAUSE_SEC_;
+        static const float END_PAUSE_SEC_;
         //
         static const float DOUBLE_CLICK_WINDOW_SEC_;
         //
@@ -477,6 +500,9 @@ namespace stage
         //members that support playing songs
         bool isSongAnim1Done_;
         bool isSongAnim2Done_;
+
+        //members that support achievements and titles
+        CreatureTitleVec_t creatureTitleVec_;
     };
 
 }

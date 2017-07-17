@@ -26,7 +26,7 @@
 #define GAME_POPUPINFO_INCLUDED
 //
 // popup-info.hpp
-//  A class the encapsulates everything about a popup
+//  A class that encapsulates everything about a popup
 //  window except for drawing details such as position etc.
 //
 #include "sfml-util/sfml-graphics.hpp"
@@ -49,6 +49,9 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
+
+    class Title;
+    using TitlePtr_t = Title *;
 }
 
     //encapsulates all the info about a popup window except for screen position
@@ -71,7 +74,11 @@ namespace creature
                   const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_,
                   const creature::CreaturePtr_t           CREATURE_CPTR        = nullptr,
                   const std::size_t                       INITIAL_SELECTION    = 0,
-                  const bool                              ARE_IMAGES_CREATURES = false);
+                  const bool                              ARE_IMAGES_CREATURES = false,
+                  const std::string &                     TITLE_TEXT           = "",
+                  const std::string &                     DESC_TEXT            = "",
+                  const creature::TitlePtr_t              FROM_TITLE_PTR       = nullptr,
+                  const creature::TitlePtr_t              TO_TITLE_PTR         = nullptr);
 
         //use this constructor for boxed popups with no background image
         PopupInfo(const std::string &                     NAME,
@@ -136,6 +143,10 @@ namespace creature
         inline bool                              AreImagesCreatures() const { return areImgsCreatures_; }
         inline const std::vector<std::string> &  TextVec() const            { return textVec_; }
         inline combat::CombatEnd::Enum           HowCombatEnded() const     { return howCombatEnded_; }
+        inline creature::TitlePtr_t              TitleFromPtr() const       { return titleFromPtr_; }
+        inline creature::TitlePtr_t              TitleToPtr() const         { return titleToPtr_; }
+        inline const std::string                 TitleText() const          { return titleText_; }
+        inline const std::string                 DescText() const           { return descText_; }
 
         inline const sf::Texture & ImagesAt(const std::size_t I) const
         {
@@ -180,6 +191,10 @@ namespace creature
         bool                              areImgsCreatures_;
         std::vector<std::string>          textVec_;
         combat::CombatEnd::Enum           howCombatEnded_;
+        creature::TitlePtr_t              titleFromPtr_;
+        creature::TitlePtr_t              titleToPtr_;
+        std::string                       titleText_;
+        std::string                       descText_;
     };
 
 

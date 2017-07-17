@@ -208,7 +208,7 @@ namespace creature
             case EverMark:                  { return "EverMark"; }
             case MeleeMaster:               { return "MeleeMaster"; }
             case SteadyStriker:             { return "SteadyStriker"; }
-            case OrderOfTheSteadyBlade:     { return "OrderOfTheSteadyBlade"; }
+            case OrderOfTheEverWarrior:     { return "OrderOfTheEverWarrior"; }
             //
             case DragonOfTheUnblinkingEye:      { return "DragonOfTheUnblinkingEye"; }
             case DragonOfTheCurlingClaw:        { return "DragonOfTheCurlingClaw"; }
@@ -398,7 +398,7 @@ namespace creature
             case EverMark:                  { return "Ever Mark"; }
             case MeleeMaster:               { return "Melee Master"; }
             case SteadyStriker:             { return "Steady Striker"; }
-            case OrderOfTheSteadyBlade:     { return "Order of the Steady Blade"; }
+            case OrderOfTheEverWarrior:     { return "Order of the Ever Warrior"; }
             //
             case DragonOfTheUnblinkingEye:      { return "Dragon of the Unblinking Eye"; }
             case DragonOfTheCurlingClaw:        { return "Dragon of the Curling Claw"; }

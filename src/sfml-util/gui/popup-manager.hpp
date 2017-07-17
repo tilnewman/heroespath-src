@@ -51,6 +51,9 @@ namespace creature
 {
     class Creature;
     using CreaturePtr = Creature *;
+
+    class Title;
+    using TitlePtr_t = Title *;
 }
 }
 
@@ -208,14 +211,13 @@ namespace gui
                 FontManager::Instance()->Size_Large()) const;
 
         //use this function to make image fade/transition popup windows
-        const game::PopupInfo CreatePopupInfo(
-            const std::string &      POPUP_NAME,
-            const std::string &      PROMPT_TEXT,
-            const sf::Texture &      FROM_IMAGE,
-            const sf::Texture &      TO_IMAGE,
-            const PopupButtons::Enum BUTTONS      = PopupButtons::Okay,
-            const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Normal(),
-            const sound_effect::Enum SOUND_EFFECT = sound_effect::PromptGeneric) const;
+        const game::PopupInfo CreateImageFadePopupInfo(
+            const std::string &                 POPUP_NAME,
+            const game::creature::CreaturePtr_t CREATURE_PTR,
+            const game::creature::TitlePtr_t    FROM_TITLE_PTR,
+            const game::creature::TitlePtr_t    TO_TITLE_PTR,
+            const sf::Texture * const           FROM_IMAGE_PTR,
+            const sf::Texture * const           TO_IMAGE_PTR) const;
 
         //use this function to make the spellbook popup window
         const game::PopupInfo CreateSpellbookPopupInfo(
@@ -223,7 +225,7 @@ namespace gui
             const game::creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION) const;
 
-        //use this function to make the spellbook popup window
+        //use this function to make the music sheet popup window
         const game::PopupInfo CreateMusicPopupInfo(
             const std::string &                 POPUP_NAME,
             const game::creature::CreaturePtr_t CREATURE_CPTR,
@@ -234,6 +236,7 @@ namespace gui
             const std::string &                 POPUP_NAME,
             const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
 
+        //use this function t make the system error popup window
         const game::PopupInfo CreateSystemErrorPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & GENERAL_ERROR_MSG,

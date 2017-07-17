@@ -309,6 +309,7 @@ namespace sfml_util
             case DeathWolf:                     { return "wolf"; }
             case DeathBoar:                     { return "boar"; }
             case DeathLionboar:                 { return "lionboar"; }
+            case Achievement:                   { return "achievement"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -601,6 +602,7 @@ namespace sfml_util
             case DeathWolf:
             case DeathBoar:
             case DeathLionboar:                 { return "sound-effects/combat/death"; }
+            case Achievement:                   { return "sound-effects/misc"; }
             case Count:
             case None:
             case Random:

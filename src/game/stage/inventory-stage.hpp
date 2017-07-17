@@ -213,7 +213,7 @@ namespace stage
         item::ItemPtr_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         void SetupDetailViewItem(const item::ItemPtr_t);
-        void SetupDetailViewCreature(creature::CreatureCPtrC_t CREATURE_CPTRC);
+        void SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR);
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
         bool HandleCast_Step1_TargetSelection(const spell::SpellPtr_t);

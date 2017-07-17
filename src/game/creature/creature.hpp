@@ -295,7 +295,7 @@ namespace creature
 
         item::Weight_t WeightCanCarry() const;
 
-        inline const Achievements AchievementsCopy() const      { return achievements_; }
+        inline Achievements & GetAchievements()                 { return achievements_; }
 
         inline bool CanFly() const                              { return (race::CanFly(race_.Which()) && role::CanFly(role_.Which())); }
 

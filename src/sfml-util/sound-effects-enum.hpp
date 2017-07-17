@@ -306,6 +306,7 @@ namespace sfml_util
             DeathWolf,
             DeathBoar,
             DeathLionboar,
+            Achievement,
             Count,
             None,
             Random

@@ -466,7 +466,7 @@ heroespath-creature-title-Warrior-desc=                 You have earned this Tit
 heroespath-creature-title-EverMark-desc=                You have earned this Title after successfully hitting enemies in combat, and your skills have increased as a reward.
 heroespath-creature-title-MeleeMaster-desc=             You have earned this Title after successfully hitting enemies in combat, and your skills have increased as a reward.
 heroespath-creature-title-SteadyStriker-desc=           You have earned this Title after successfully hitting enemies in combat, and your skills have increased as a reward.
-heroespath-creature-title-OrderOfTheSteadyBlade-desc=   You have earned this Title after successfully hitting enemies in combat, and your skills have increased as a reward.
+heroespath-creature-title-OrderOfTheEverWarrior-desc=   You have earned this Title after successfully hitting enemies in combat, and your skills have increased as a reward.
 #
 heroespath-creature-title-DragonOfTheUnblinkingEye-desc=    You have earned this Title after successfully attacking enemies while flying, and your skills have increased as a reward.
 heroespath-creature-title-DragonOfTheCurlingClaw-desc=      You have earned this Title after successfully attacking enemies while flying, and your skills have increased as a reward.

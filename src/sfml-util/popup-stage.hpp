@@ -280,8 +280,8 @@ namespace sfml_util
         //members supporting CombatOver
         sf::Texture combatBgTexture_;
         sf::Sprite combatBgSprite_;
-        gui::TextRegionUPtr_t combatTitleUPtr_;
-        gui::TextRegionUPtr_t combatDescUPtr_;
+        gui::TextRegionUPtr_t titleUPtr_;
+        gui::TextRegionUPtr_t descUPtr_;
     };
 
     using PopupStagePtr_t = PopupStage *;

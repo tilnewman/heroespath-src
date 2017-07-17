@@ -329,6 +329,7 @@ namespace creature
         creaturePtr->IncreaseExp(expBonus_);
 
         creaturePtr->HealthNormalAdj(healthBonus_);
+        creaturePtr->HealthCurrentAdj(healthBonus_);
     }
 
 }

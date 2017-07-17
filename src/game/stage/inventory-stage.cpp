@@ -3191,16 +3191,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     }
 
 
-    void InventoryStage::SetupDetailViewCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void InventoryStage::SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        if (CREATURE_CPTRC == nullptr)
+        if (CREATURE_PTR == nullptr)
         {
             detailViewTextUPtr_.reset();
             return;
         }
 
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(detailViewTexture_,
-                                                                   CREATURE_CPTRC->ImageFilename(),
+                                                                   CREATURE_PTR->ImageFilename(),
                                                                    true);
         
         detailViewSprite_.setTexture(detailViewTexture_);
@@ -3209,29 +3209,29 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::MapByRes(0.0f, 50.0f));
 
         std::ostringstream ss;
-        creature::Achievements a(CREATURE_CPTRC->AchievementsCopy());
+        auto const & A(CREATURE_PTR->GetAchievements());
 
         const std::string NOMORE_TITLE_MSG_STR("  (There are no more titles to earn)");
 
-        creature::TitleCPtrC_t ENEMIESFACED_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::EnemiesFaced));
-        creature::TitleCPtrC_t MELEEHITS_NEXT_TITLE_CPTR       (a.GetNextTitle(creature::AchievementType::MeleeHits));
-        creature::TitleCPtrC_t BATTLESSURVIVED_NEXT_TITLE_CPTR (a.GetNextTitle(creature::AchievementType::BattlesSurvived));
-        creature::TitleCPtrC_t PROJECTILEHITS_NEXT_TITLE_CPTR  (a.GetNextTitle(creature::AchievementType::ProjectileHits));
-        creature::TitleCPtrC_t BEASTMINDLINKS_NEXT_TITLE_CPTR  (a.GetNextTitle(creature::AchievementType::BeastMindLinks));
-        creature::TitleCPtrC_t DODGEDSTANDING_NEXT_TITLE_CPTR  (a.GetNextTitle(creature::AchievementType::DodgedStanding));
-        creature::TitleCPtrC_t DODGEDFLYING_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::DodgedFlying));
-        creature::TitleCPtrC_t LOCKSPICKED_NEXT_TITLE_CPTR     (a.GetNextTitle(creature::AchievementType::LocksPicked));
-        creature::TitleCPtrC_t BACKSTABSHITS_NEXT_TITLE_CPTR   (a.GetNextTitle(creature::AchievementType::BackstabsHits));
-        creature::TitleCPtrC_t SONGSPLAYED_NEXT_TITLE_CPTR     (a.GetNextTitle(creature::AchievementType::SongsPlayed));
-        creature::TitleCPtrC_t SPIRITSLIFTED_NEXT_TITLE_CPTR   (a.GetNextTitle(creature::AchievementType::SpiritsLifted));
-        creature::TitleCPtrC_t BEASTROARS_NEXT_TITLE_CPTR      (a.GetNextTitle(creature::AchievementType::BeastRoars));
-        creature::TitleCPtrC_t MOONHOWLS_NEXT_TITLE_CPTR       (a.GetNextTitle(creature::AchievementType::MoonHowls));
-        creature::TitleCPtrC_t PACKACTIONS_NEXT_TITLE_CPTR     (a.GetNextTitle(creature::AchievementType::PackActions));
-        creature::TitleCPtrC_t FLYINGATTACKHITS_NEXT_TITLE_CPTR(a.GetNextTitle(creature::AchievementType::FlyingAttackHits));
-        creature::TitleCPtrC_t TURNSINFLIGHT_NEXT_TITLE_CPTR   (a.GetNextTitle(creature::AchievementType::TurnsInFlight));
-        creature::TitleCPtrC_t SPELLSCAST_NEXT_TITLE_CPTR      (a.GetNextTitle(creature::AchievementType::SpellsCast));
-        creature::TitleCPtrC_t HEALTHGIVEN_NEXT_TITLE_CPTR     (a.GetNextTitle(creature::AchievementType::HealthGiven));
-        creature::TitleCPtrC_t HEALTHTRADED_NEXT_TITLE_CPTR    (a.GetNextTitle(creature::AchievementType::HealthTraded));
+        creature::TitleCPtrC_t ENEMIESFACED_NEXT_TITLE_CPTR    (A.GetNextTitle(creature::AchievementType::EnemiesFaced));
+        creature::TitleCPtrC_t MELEEHITS_NEXT_TITLE_CPTR       (A.GetNextTitle(creature::AchievementType::MeleeHits));
+        creature::TitleCPtrC_t BATTLESSURVIVED_NEXT_TITLE_CPTR (A.GetNextTitle(creature::AchievementType::BattlesSurvived));
+        creature::TitleCPtrC_t PROJECTILEHITS_NEXT_TITLE_CPTR  (A.GetNextTitle(creature::AchievementType::ProjectileHits));
+        creature::TitleCPtrC_t BEASTMINDLINKS_NEXT_TITLE_CPTR  (A.GetNextTitle(creature::AchievementType::BeastMindLinks));
+        creature::TitleCPtrC_t DODGEDSTANDING_NEXT_TITLE_CPTR  (A.GetNextTitle(creature::AchievementType::DodgedStanding));
+        creature::TitleCPtrC_t DODGEDFLYING_NEXT_TITLE_CPTR    (A.GetNextTitle(creature::AchievementType::DodgedFlying));
+        creature::TitleCPtrC_t LOCKSPICKED_NEXT_TITLE_CPTR     (A.GetNextTitle(creature::AchievementType::LocksPicked));
+        creature::TitleCPtrC_t BACKSTABSHITS_NEXT_TITLE_CPTR   (A.GetNextTitle(creature::AchievementType::BackstabsHits));
+        creature::TitleCPtrC_t SONGSPLAYED_NEXT_TITLE_CPTR     (A.GetNextTitle(creature::AchievementType::SongsPlayed));
+        creature::TitleCPtrC_t SPIRITSLIFTED_NEXT_TITLE_CPTR   (A.GetNextTitle(creature::AchievementType::SpiritsLifted));
+        creature::TitleCPtrC_t BEASTROARS_NEXT_TITLE_CPTR      (A.GetNextTitle(creature::AchievementType::BeastRoars));
+        creature::TitleCPtrC_t MOONHOWLS_NEXT_TITLE_CPTR       (A.GetNextTitle(creature::AchievementType::MoonHowls));
+        creature::TitleCPtrC_t PACKACTIONS_NEXT_TITLE_CPTR     (A.GetNextTitle(creature::AchievementType::PackActions));
+        creature::TitleCPtrC_t FLYINGATTACKHITS_NEXT_TITLE_CPTR(A.GetNextTitle(creature::AchievementType::FlyingAttackHits));
+        creature::TitleCPtrC_t TURNSINFLIGHT_NEXT_TITLE_CPTR   (A.GetNextTitle(creature::AchievementType::TurnsInFlight));
+        creature::TitleCPtrC_t SPELLSCAST_NEXT_TITLE_CPTR      (A.GetNextTitle(creature::AchievementType::SpellsCast));
+        creature::TitleCPtrC_t HEALTHGIVEN_NEXT_TITLE_CPTR     (A.GetNextTitle(creature::AchievementType::HealthGiven));
+        creature::TitleCPtrC_t HEALTHTRADED_NEXT_TITLE_CPTR    (A.GetNextTitle(creature::AchievementType::HealthTraded));
 
         std::string enemiesFacedNextTitleStr        (NOMORE_TITLE_MSG_STR);
         std::string meleeHitsNextTitleStr           (NOMORE_TITLE_MSG_STR);
@@ -3256,7 +3256,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (ENEMIESFACED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (ENEMIESFACED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::EnemiesFaced).Count())
+            ss << ", need  " << (ENEMIESFACED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::EnemiesFaced).Count())
                << " more to achieve \"" << ENEMIESFACED_NEXT_TITLE_CPTR->Name() << "\"";
             enemiesFacedNextTitleStr = ss.str();
         }
@@ -3264,7 +3264,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (MELEEHITS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (MELEEHITS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::MeleeHits).Count())
+            ss << ", need  " << (MELEEHITS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::MeleeHits).Count())
                << " more to achieve \"" << MELEEHITS_NEXT_TITLE_CPTR->Name() << "\"";
             meleeHitsNextTitleStr = ss.str();
         }
@@ -3272,7 +3272,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (BATTLESSURVIVED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss  << ", need  " << (BATTLESSURVIVED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::BattlesSurvived).Count())
+            ss  << ", need  " << (BATTLESSURVIVED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::BattlesSurvived).Count())
                 << " more to achieve \"" << BATTLESSURVIVED_NEXT_TITLE_CPTR->Name() << "\"";
             battlesSurvivedNextTitleStr = ss.str();
         }
@@ -3280,7 +3280,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (PROJECTILEHITS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (PROJECTILEHITS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::ProjectileHits).Count())
+            ss << ", need  " << (PROJECTILEHITS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::ProjectileHits).Count())
                << " more to achieve \"" << PROJECTILEHITS_NEXT_TITLE_CPTR->Name() << "\"";
             projectileHitsNextTitleStr = ss.str();
         }
@@ -3288,7 +3288,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (BEASTMINDLINKS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (BEASTMINDLINKS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::BeastMindLinks).Count())
+            ss << ", need  " << (BEASTMINDLINKS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::BeastMindLinks).Count())
                << " more to achieve \"" << BEASTMINDLINKS_NEXT_TITLE_CPTR->Name() << "\"";
             beastMindLinksNextTitleStr = ss.str();
         }
@@ -3296,7 +3296,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (DODGEDSTANDING_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (DODGEDSTANDING_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::DodgedStanding).Count())
+            ss << ", need  " << (DODGEDSTANDING_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::DodgedStanding).Count())
                << " more to achieve \"" << DODGEDSTANDING_NEXT_TITLE_CPTR->Name() << "\"";
             dodgedStandingNextTitleStr = ss.str();
         }
@@ -3304,7 +3304,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (DODGEDFLYING_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (DODGEDFLYING_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::DodgedFlying).Count())
+            ss << ", need  " << (DODGEDFLYING_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::DodgedFlying).Count())
                << " more to achieve \"" << DODGEDFLYING_NEXT_TITLE_CPTR->Name() << "\"";
             dodgedFlyingNextTitleStr = ss.str();
         }
@@ -3312,7 +3312,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (LOCKSPICKED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (LOCKSPICKED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::LocksPicked).Count())
+            ss << ", need  " << (LOCKSPICKED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::LocksPicked).Count())
                << " more to achieve \"" << LOCKSPICKED_NEXT_TITLE_CPTR->Name() << "\"";
             locksPickedNextTitleStr = ss.str();
         }
@@ -3320,7 +3320,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (BACKSTABSHITS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (BACKSTABSHITS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::BackstabsHits).Count())
+            ss << ", need  " << (BACKSTABSHITS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::BackstabsHits).Count())
                << " more to achieve \"" << BACKSTABSHITS_NEXT_TITLE_CPTR->Name() << "\"";
             backstabsHitsNextTitleStr = ss.str();
         }
@@ -3328,7 +3328,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (SONGSPLAYED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (SONGSPLAYED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::SongsPlayed).Count())
+            ss << ", need  " << (SONGSPLAYED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::SongsPlayed).Count())
                << " more to achieve \"" << SONGSPLAYED_NEXT_TITLE_CPTR->Name() << "\"";
             songsPlayedNextTitleStr = ss.str();
         }
@@ -3336,7 +3336,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (SPIRITSLIFTED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (SPIRITSLIFTED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::SpiritsLifted).Count())
+            ss << ", need  " << (SPIRITSLIFTED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::SpiritsLifted).Count())
                << " more to achieve \"" << SPIRITSLIFTED_NEXT_TITLE_CPTR->Name() << "\"";
             spiritsLiftedNextTitleStr = ss.str();
         }
@@ -3344,7 +3344,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (BEASTROARS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (BEASTROARS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::BeastRoars).Count())
+            ss << ", need  " << (BEASTROARS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::BeastRoars).Count())
                << " more to achieve \"" << BEASTROARS_NEXT_TITLE_CPTR->Name() << "\"";
             beastRoarsNextTitleStr = ss.str();
         }
@@ -3352,7 +3352,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (MOONHOWLS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (MOONHOWLS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::MoonHowls).Count())
+            ss << ", need  " << (MOONHOWLS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::MoonHowls).Count())
                << " more to achieve \"" << MOONHOWLS_NEXT_TITLE_CPTR->Name() << "\"";
             moonHowlsNextTitleStr = ss.str();
         }
@@ -3360,7 +3360,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (PACKACTIONS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (PACKACTIONS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::PackActions).Count())
+            ss << ", need  " << (PACKACTIONS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::PackActions).Count())
                << " more to achieve \"" << PACKACTIONS_NEXT_TITLE_CPTR->Name() << "\"";
             packActionsNextTitleStr = ss.str();
         }
@@ -3368,7 +3368,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (FLYINGATTACKHITS_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (FLYINGATTACKHITS_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::FlyingAttackHits).Count())
+            ss << ", need  " << (FLYINGATTACKHITS_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::FlyingAttackHits).Count())
                << " more to achieve \"" << FLYINGATTACKHITS_NEXT_TITLE_CPTR->Name() << "\"";
             flyingAttackHitsNextTitleStr = ss.str();
         }
@@ -3376,7 +3376,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (TURNSINFLIGHT_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (TURNSINFLIGHT_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::TurnsInFlight).Count())
+            ss << ", need  " << (TURNSINFLIGHT_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::TurnsInFlight).Count())
                << " more to achieve \"" << TURNSINFLIGHT_NEXT_TITLE_CPTR->Name() << "\"";
             turnsInFlightNextTitleStr = ss.str();
         }
@@ -3384,7 +3384,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (SPELLSCAST_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (SPELLSCAST_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::SpellsCast).Count())
+            ss << ", need  " << (SPELLSCAST_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::SpellsCast).Count())
                << " more to achieve \"" << SPELLSCAST_NEXT_TITLE_CPTR->Name() << "\"";
             spellsCastNextTitleStr = ss.str();
         }
@@ -3392,7 +3392,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (HEALTHGIVEN_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (HEALTHGIVEN_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::HealthGiven).Count())
+            ss << ", need  " << (HEALTHGIVEN_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::HealthGiven).Count())
                << " more to achieve \"" << HEALTHGIVEN_NEXT_TITLE_CPTR->Name() << "\"";
             healthGivenNextTitleStr = ss.str();
         }
@@ -3400,88 +3400,88 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         if (HEALTHTRADED_NEXT_TITLE_CPTR != nullptr)
         {
             ss.str("");
-            ss << ", need  " << (HEALTHTRADED_NEXT_TITLE_CPTR->AchievementCount() - a.AchievementCopy(creature::AchievementType::HealthTraded).Count())
+            ss << ", need  " << (HEALTHTRADED_NEXT_TITLE_CPTR->AchievementCount() - A.Get(creature::AchievementType::HealthTraded).Count())
                << " more to achieve \"" << HEALTHTRADED_NEXT_TITLE_CPTR->Name() << "\"";
             healthTradedNextTitleStr = ss.str();
         }
 
-        auto const ROLE{ CREATURE_CPTRC->Role().Which() };
+        auto const ROLE{ CREATURE_PTR->Role().Which() };
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::BackstabsHits).Name()     << ":                "      << a.AchievementCopy(creature::AchievementType::BackstabsHits).Count()      << backstabsHitsNextTitleStr;
-        const std::string BACKSTABHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BackstabsHits).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::BackstabsHits).Name()     << ":                "      << A.Get(creature::AchievementType::BackstabsHits).Count()      << backstabsHitsNextTitleStr;
+        const std::string BACKSTABHITS_FINAL_STR((A.Get(creature::AchievementType::BackstabsHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::BattlesSurvived).Name()   << ":             "         << a.AchievementCopy(creature::AchievementType::BattlesSurvived).Count()    << battlesSurvivedNextTitleStr;
-        const std::string BATTLESSURVIVED_FINAL_STR((a.AchievementCopy(creature::AchievementType::BattlesSurvived).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::BattlesSurvived).Name()   << ":             "         << A.Get(creature::AchievementType::BattlesSurvived).Count()    << battlesSurvivedNextTitleStr;
+        const std::string BATTLESSURVIVED_FINAL_STR((A.Get(creature::AchievementType::BattlesSurvived).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::BeastMindLinks).Name()    << ":          "            << a.AchievementCopy(creature::AchievementType::BeastMindLinks).Count()     << beastMindLinksNextTitleStr;
-        const std::string BEASTMINDLINKS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastMindLinks).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::BeastMindLinks).Name()    << ":          "            << A.Get(creature::AchievementType::BeastMindLinks).Count()     << beastMindLinksNextTitleStr;
+        const std::string BEASTMINDLINKS_FINAL_STR((A.Get(creature::AchievementType::BeastMindLinks).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::BeastRoars).Name()        << ":                   "   << a.AchievementCopy(creature::AchievementType::BeastRoars).Count()         << beastRoarsNextTitleStr;
-        const std::string BEASTROARS_FINAL_STR((a.AchievementCopy(creature::AchievementType::BeastRoars).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::BeastRoars).Name()        << ":                   "   << A.Get(creature::AchievementType::BeastRoars).Count()         << beastRoarsNextTitleStr;
+        const std::string BEASTROARS_FINAL_STR((A.Get(creature::AchievementType::BeastRoars).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::FlyingAttackHits).Name()  << ":         "             << a.AchievementCopy(creature::AchievementType::FlyingAttackHits).Count()   << flyingAttackHitsNextTitleStr;
-        const std::string FLYINGATTACKHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::FlyingAttackHits).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::FlyingAttackHits).Name()  << ":         "             << A.Get(creature::AchievementType::FlyingAttackHits).Count()   << flyingAttackHitsNextTitleStr;
+        const std::string FLYINGATTACKHITS_FINAL_STR((A.Get(creature::AchievementType::FlyingAttackHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::DodgedFlying).Name()      << ":      "                << a.AchievementCopy(creature::AchievementType::DodgedFlying).Count()       << dodgedFlyingNextTitleStr;
-        const std::string DODGEDFLYING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedFlying).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::DodgedFlying).Name()      << ":      "                << A.Get(creature::AchievementType::DodgedFlying).Count()       << dodgedFlyingNextTitleStr;
+        const std::string DODGEDFLYING_FINAL_STR((A.Get(creature::AchievementType::DodgedFlying).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::DodgedStanding).Name()    << ":  "                    << a.AchievementCopy(creature::AchievementType::DodgedStanding).Count()     << dodgedStandingNextTitleStr;
-        const std::string DODGEDSTANDING_FINAL_STR((a.AchievementCopy(creature::AchievementType::DodgedStanding).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::DodgedStanding).Name()    << ":  "                    << A.Get(creature::AchievementType::DodgedStanding).Count()     << dodgedStandingNextTitleStr;
+        const std::string DODGEDSTANDING_FINAL_STR((A.Get(creature::AchievementType::DodgedStanding).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::EnemiesFaced).Name()      << ":               "       << a.AchievementCopy(creature::AchievementType::EnemiesFaced).Count()       << enemiesFacedNextTitleStr;
-        const std::string ENEMIESFACED_FINAL_STR((a.AchievementCopy(creature::AchievementType::EnemiesFaced).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::EnemiesFaced).Name()      << ":               "       << A.Get(creature::AchievementType::EnemiesFaced).Count()       << enemiesFacedNextTitleStr;
+        const std::string ENEMIESFACED_FINAL_STR((A.Get(creature::AchievementType::EnemiesFaced).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::HealthGiven).Name()       << ":                 "     << a.AchievementCopy(creature::AchievementType::HealthGiven).Count()        << healthGivenNextTitleStr;
-        const std::string HEALTHGIVEN_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthGiven).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::HealthGiven).Name()       << ":                 "     << A.Get(creature::AchievementType::HealthGiven).Count()        << healthGivenNextTitleStr;
+        const std::string HEALTHGIVEN_FINAL_STR((A.Get(creature::AchievementType::HealthGiven).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::HealthTraded).Name()      << ":                "      << a.AchievementCopy(creature::AchievementType::HealthTraded).Count()       << healthTradedNextTitleStr;
-        const std::string HEALTHTRADED_FINAL_STR((a.AchievementCopy(creature::AchievementType::HealthTraded).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::HealthTraded).Name()      << ":                "      << A.Get(creature::AchievementType::HealthTraded).Count()       << healthTradedNextTitleStr;
+        const std::string HEALTHTRADED_FINAL_STR((A.Get(creature::AchievementType::HealthTraded).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::LocksPicked).Name()       << ":                  "    << a.AchievementCopy(creature::AchievementType::LocksPicked).Count()        << locksPickedNextTitleStr;
-        const std::string LOCKSPICKED_FINAL_STR((a.AchievementCopy(creature::AchievementType::LocksPicked).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::LocksPicked).Name()       << ":                  "    << A.Get(creature::AchievementType::LocksPicked).Count()        << locksPickedNextTitleStr;
+        const std::string LOCKSPICKED_FINAL_STR((A.Get(creature::AchievementType::LocksPicked).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::MeleeHits).Name()         << ":                    "  << a.AchievementCopy(creature::AchievementType::MeleeHits).Count()          << meleeHitsNextTitleStr;
-        const std::string MELEEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MeleeHits).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::MeleeHits).Name()         << ":                    "  << A.Get(creature::AchievementType::MeleeHits).Count()          << meleeHitsNextTitleStr;
+        const std::string MELEEHITS_FINAL_STR((A.Get(creature::AchievementType::MeleeHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::MoonHowls).Name()         << ":                  "    << a.AchievementCopy(creature::AchievementType::MoonHowls).Count()          << moonHowlsNextTitleStr;
-        const std::string MOONHOWLS_FINAL_STR((a.AchievementCopy(creature::AchievementType::MoonHowls).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::MoonHowls).Name()         << ":                  "    << A.Get(creature::AchievementType::MoonHowls).Count()          << moonHowlsNextTitleStr;
+        const std::string MOONHOWLS_FINAL_STR((A.Get(creature::AchievementType::MoonHowls).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::PackActions).Name()       << ":                  "    << a.AchievementCopy(creature::AchievementType::PackActions).Count()        << packActionsNextTitleStr;
-        const std::string PACKACTIONS_FINAL_STR((a.AchievementCopy(creature::AchievementType::PackActions).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::PackActions).Name()       << ":                  "    << A.Get(creature::AchievementType::PackActions).Count()        << packActionsNextTitleStr;
+        const std::string PACKACTIONS_FINAL_STR((A.Get(creature::AchievementType::PackActions).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::ProjectileHits).Name()    << ":               "       << a.AchievementCopy(creature::AchievementType::ProjectileHits).Count()     << projectileHitsNextTitleStr;
-        const std::string PROJECTILEHITS_FINAL_STR((a.AchievementCopy(creature::AchievementType::ProjectileHits).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::ProjectileHits).Name()    << ":               "       << A.Get(creature::AchievementType::ProjectileHits).Count()     << projectileHitsNextTitleStr;
+        const std::string PROJECTILEHITS_FINAL_STR((A.Get(creature::AchievementType::ProjectileHits).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::SongsPlayed).Name()       << ":                 "     << a.AchievementCopy(creature::AchievementType::SongsPlayed).Count()        << songsPlayedNextTitleStr;
-        const std::string SONGSPLAYED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SongsPlayed).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::SongsPlayed).Name()       << ":                 "     << A.Get(creature::AchievementType::SongsPlayed).Count()        << songsPlayedNextTitleStr;
+        const std::string SONGSPLAYED_FINAL_STR((A.Get(creature::AchievementType::SongsPlayed).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::SpellsCast).Name()        << ":                    "  << a.AchievementCopy(creature::AchievementType::SpellsCast).Count()         << spellsCastNextTitleStr;
-        const std::string SPELLSCAST_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpellsCast).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::SpellsCast).Name()        << ":                    "  << A.Get(creature::AchievementType::SpellsCast).Count()         << spellsCastNextTitleStr;
+        const std::string SPELLSCAST_FINAL_STR((A.Get(creature::AchievementType::SpellsCast).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::SpiritsLifted).Name()     << ":                 "     << a.AchievementCopy(creature::AchievementType::SpiritsLifted).Count()      << spiritsLiftedNextTitleStr;
-        const std::string SPIRITSLIFTED_FINAL_STR((a.AchievementCopy(creature::AchievementType::SpiritsLifted).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::SpiritsLifted).Name()     << ":                 "     << A.Get(creature::AchievementType::SpiritsLifted).Count()      << spiritsLiftedNextTitleStr;
+        const std::string SPIRITSLIFTED_FINAL_STR((A.Get(creature::AchievementType::SpiritsLifted).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
-        ss << "\n" << a.AchievementCopy(creature::AchievementType::TurnsInFlight).Name()     << ":              "        << a.AchievementCopy(creature::AchievementType::TurnsInFlight).Count()      << turnsInFlightNextTitleStr;
-        const std::string TURNSINFLIGHT_FINAL_STR((a.AchievementCopy(creature::AchievementType::TurnsInFlight).IsRoleInList(ROLE)) ? ss.str() : "");
+        ss << "\n" << A.Get(creature::AchievementType::TurnsInFlight).Name()     << ":              "        << A.Get(creature::AchievementType::TurnsInFlight).Count()      << turnsInFlightNextTitleStr;
+        const std::string TURNSINFLIGHT_FINAL_STR((A.Get(creature::AchievementType::TurnsInFlight).IsRoleInList(ROLE)) ? ss.str() : "");
 
         ss.str("");
         ss << "\n"

@@ -26,7 +26,7 @@
 #define GAME_CREATURE_Title_INCLUDED
 //
 // title.hpp
-//  Code that places a Creature under a permenant condition.
+//  Code that grants a player status and bonuses after a number of Achievements.
 //
 #include "game/stats/stat-set.hpp"
 #include "game/creature/role-enum.hpp"
@@ -46,7 +46,12 @@ namespace creature
     class Creature;
 
 
-    //base class for all conditions
+    //A Title is earned after a certain number of Achievements.  (see ACHIEVEMENT_COUNT)
+    //Titles can also be earned by specific quest events.  (see Titles::ProtectorOfThornberry)
+    //Each Title is one in an ordered number.  (see Titles::Enum and ACHIEVEMENT_INDEX)
+    //Titles hold the enum of the Achievement that earns them.  (see ACHIEVEMENT_TYPE)
+    //Titles hold a vec of all the roles that are allowed to earn them. (see ROLES_VEC)
+    //Once earned, a Title changes the player that earned it.  (see ..._BONUS)
     class Title
     {
         //prevent copy construction
@@ -58,7 +63,10 @@ namespace creature
     public:
         explicit Title(const Titles::Enum          TITLE             = Titles::Count,
                        const AchievementType::Enum ACHIEVEMENT_TYPE  = AchievementType::None,
-                       const std::size_t           ACHIEVEMENT_INDEX = 0, //0 is invalid, valid indexs always start at one
+
+                       //0 is invalid, valid indexs always start at one
+                       const std::size_t           ACHIEVEMENT_INDEX = 0,
+
                        const std::size_t           ACHIEVEMENT_COUNT = 0,
                        const RoleVec_t &           ROLES_VEC         = RoleVec_t(),
                        const stats::StatSet &      STATS_BONUS       = stats::StatSet(),

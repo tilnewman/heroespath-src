@@ -201,8 +201,8 @@ namespace sfml_util
         songCurrentPtr_            (nullptr),
         combatBgTexture_           (),
         combatBgSprite_            (),
-        combatTitleUPtr_           (),
-        combatDescUPtr_            ()
+        titleUPtr_                 (),
+        descUPtr_                  ()
     {
         backgroundSprite_.setTexture(backgroundTexture_);
     }
@@ -405,7 +405,7 @@ namespace sfml_util
         //sound effect
         if (POPUP_INFO_.SoundEffect() != sound_effect::None)
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(POPUP_INFO_.SoundEffect());
+            SoundManager::Instance()->SoundEffectPlay(POPUP_INFO_.SoundEffect());
         }
 
         //darken the box gold bars a bit
@@ -804,9 +804,51 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
-            const float IMAGE_PAD(10.0f);
-            const float IMAGE_REGION_TOP(textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD);
-            const float IMAGE_REGION_HEIGHT((textRegion_.top + textRegion_.height) - IMAGE_REGION_TOP);
+            const sfml_util::gui::TextInfo TITLE_TEXTINFO(
+                POPUP_INFO_.TitleText(),
+                sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+                sfml_util::FontManager::Instance()->Size_Large(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sf::BlendAlpha,
+                sf::Text::Bold,
+                sfml_util::Justified::Center);
+
+            auto titleRegion{ textRegion_ };
+            titleRegion.height = 0.0f;
+
+            titleUPtr_ = std::make_unique<gui::TextRegion>("ImageFadePopupTitle",
+                                                           TITLE_TEXTINFO,
+                                                           titleRegion);
+
+            const sfml_util::gui::TextInfo DESC_TEXTINFO(
+                POPUP_INFO_.DescText(),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                sfml_util::FontManager::Color_GrayDarker(),
+                sfml_util::Justified::Center);
+
+            auto descRegion{ textRegion_ };
+            descRegion.height = 0.0f;
+
+            descUPtr_ = std::make_unique<gui::TextRegion>("ImageFadePopupDesc",
+                                                           DESC_TEXTINFO,
+                                                           descRegion);
+            
+            descRegion = descUPtr_->GetEntityRegion();
+
+            descUPtr_->SetEntityPos(descUPtr_->GetEntityPos().x,
+                                    (textRegion_.top + textRegion_.height) - descRegion.height);
+
+            auto const IMAGE_PAD(sfml_util::MapByRes(15.0f, 35.0f));
+
+            auto const IMAGE_TOP(textRegionUPtr_->GetEntityRegion().top +
+                textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD);
+
+            auto const FREE_SPACE_VERT(descUPtr_->GetEntityPos().y - (IMAGE_TOP + IMAGE_PAD));
+            auto const FREE_SPACE_HORIZ{ textRegion_.width };
+            auto const IMAGE_MAX_DIMM{ sfml_util::MapByRes(256.0f, 768.0f) };
+            auto const IMAGE_WIDTH{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
+            auto const IMAGE_HEIGHT{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_VERT) };
 
             if (POPUP_INFO_.ImagesCount() == 1)
             {
@@ -818,21 +860,30 @@ namespace sfml_util
                 imageSpriteCurr_.setTexture(POPUP_INFO_.ImagesAt(1), true);
             }
 
-            float newScale(1.0f);
-            if (imageSpriteCurr_.getLocalBounds().height > IMAGE_REGION_HEIGHT)
-            {
-                newScale = IMAGE_REGION_HEIGHT / imageSpriteCurr_.getLocalBounds().height;
-            }
-
+            //scale the image to fit in the free space
             //assume POPUP_INFO_.ImagesAt(0) and POPUP_INFO_.ImagesAt(1) are the same size
-            imageSpritePrev_.setScale(newScale, newScale);
-            imageSpriteCurr_.setScale(newScale, newScale);
+            imageSpritePrev_.setScale(1.0f, 1.0f);
+            imageSpriteCurr_.setScale(1.0f, 1.0f);
+            auto SCALE_VERT{ IMAGE_HEIGHT / imageSpriteCurr_.getGlobalBounds().height };
+            imageSpritePrev_.setScale(SCALE_VERT, SCALE_VERT);
+            imageSpriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
+            
+            if (imageSpriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
+            {
+                auto const SCALE_HORIZ{ IMAGE_WIDTH / imageSpriteCurr_.getGlobalBounds().width };
+                imageSpritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+                imageSpriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            }
+            
+            imageSpritePrev_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
+                (imageSpritePrev_.getGlobalBounds().width * 0.5f),
+                                         (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) -
+                (imageSpritePrev_.getGlobalBounds().height * 0.5f));
 
-            imageSpritePrev_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) - (imageSpritePrev_.getGlobalBounds().width * 0.5f),
-                                         (IMAGE_REGION_TOP + (IMAGE_REGION_HEIGHT * 0.5f)) - (imageSpritePrev_.getGlobalBounds().height * 0.5f));
-
-            imageSpriteCurr_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) - (imageSpriteCurr_.getGlobalBounds().width * 0.5f),
-                                         (IMAGE_REGION_TOP + (IMAGE_REGION_HEIGHT * 0.5f)) - (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
+            imageSpriteCurr_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
+                (imageSpriteCurr_.getGlobalBounds().width * 0.5f),
+                                         (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) -
+                (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
 
             imageSpriteCurr_.setColor(sf::Color(255, 255, 255, 0));
         }
@@ -1376,17 +1427,17 @@ namespace sfml_util
                 sf::Text::Bold,
                 sfml_util::Justified::Center);
 
-            combatTitleUPtr_ = std::make_unique<gui::TextRegion>(
+            titleUPtr_ = std::make_unique<gui::TextRegion>(
                 "CombatOverPopupTitle",
                 COMBAT_TITLE_TEXTINFO,
                 sf::FloatRect());
 
             auto const TITLE_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
-                (combatTitleUPtr_->GetEntityRegion().width * 0.5f) };
+                (titleUPtr_->GetEntityRegion().width * 0.5f) };
 
             auto const TITLE_POS_TOP{ textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
 
-            combatTitleUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
+            titleUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
             auto const DESC_TEXT{ [&]()
                 {
@@ -1431,15 +1482,15 @@ namespace sfml_util
 
             const sf::FloatRect COMBAT_DESC_RECT(
                 textRegion_.left,
-                combatTitleUPtr_->GetEntityRegion().top +
-                    combatTitleUPtr_->GetEntityRegion().height +
+                titleUPtr_->GetEntityRegion().top +
+                    titleUPtr_->GetEntityRegion().height +
                     sfml_util::MapByRes(20.0f, 60.0f),
                 textRegion_.width,
                 textRegion_.height -
-                    (combatTitleUPtr_->GetEntityRegion().height +
+                    (titleUPtr_->GetEntityRegion().height +
                         (sfml_util::MapByRes(20.0f, 60.0f) * 2.0f)));
 
-            combatDescUPtr_ = std::make_unique<gui::TextRegion>(
+            descUPtr_ = std::make_unique<gui::TextRegion>(
                 "CombatOverPopupDesc",
                 COMBAT_DESC_TEXTINFO,
                 COMBAT_DESC_RECT);
@@ -1513,8 +1564,14 @@ namespace sfml_util
         }
         else if (POPUP_INFO_.Type() == game::Popup::ImageFade)
         {
-            target.draw(imageSpritePrev_, STATES);
+            if (POPUP_INFO_.Images().size() > 1)
+            {
+                target.draw(imageSpritePrev_, STATES);
+            }
+
             target.draw(imageSpriteCurr_, STATES);
+            target.draw( * titleUPtr_, STATES);
+            target.draw( * descUPtr_, STATES);
         }
         else if ((POPUP_INFO_.Type() == game::Popup::Spellbook) ||
                  (POPUP_INFO_.Type() == game::Popup::MusicSheet))
@@ -1538,8 +1595,8 @@ namespace sfml_util
         else if (POPUP_INFO_.Type() == game::Popup::CombatOver)
         {
             target.draw(combatBgSprite_, STATES);
-            target.draw( * combatTitleUPtr_, STATES);
-            target.draw( * combatDescUPtr_, STATES);
+            target.draw( * titleUPtr_, STATES);
+            target.draw( * descUPtr_, STATES);
         }
         else if (POPUP_INFO_.Type() == game::Popup::SystemError)
         {
@@ -1981,7 +2038,8 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::C) ||
                 (KEY_EVENT.code == sf::Keyboard::Space) ||
-                (KEY_EVENT.code == sf::Keyboard::Return))
+                (KEY_EVENT.code == sf::Keyboard::Return) ||
+                (KEY_EVENT.code == sf::Keyboard::Escape))
             {
                 SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
@@ -1993,7 +2051,8 @@ namespace sfml_util
         {
             if ((KEY_EVENT.code == sf::Keyboard::Space) ||
                 (KEY_EVENT.code == sf::Keyboard::O) ||
-                (KEY_EVENT.code == sf::Keyboard::Return))
+                (KEY_EVENT.code == sf::Keyboard::Return) ||
+                (KEY_EVENT.code == sf::Keyboard::Escape))
             {
                 SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);

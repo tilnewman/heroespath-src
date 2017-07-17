@@ -96,7 +96,7 @@ namespace creature
         inventory_        (INVENTORY),
         dateTimeCreated_  (DATE_TIME),
         spellsVec_        (SPELL_VEC),
-        achievements_     (),
+        achievements_     (NAME, ROLE.Which()),
         currWeaponsPVec_  (),
         manaCurrent_      (MANA),
         manaNormal_       (MANA),

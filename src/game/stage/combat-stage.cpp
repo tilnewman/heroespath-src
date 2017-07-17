@@ -42,6 +42,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
 
 #include "game/game.hpp"
 #include "game/phase-enum.hpp"
@@ -100,6 +101,7 @@ namespace stage
     const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_ { "COMBAT_OVER_WIN_POPUP_WINDOW_NAME" };
     const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_{ "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME" };
     const std::string CombatStage::POPUP_NAME_COMBATOVER_RAN_ { "COMBAT_OVER_RAN_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_ACHIEVEMENT_    { "ACHIEVEMENT_POPUP_WINDOW_NAME" };
     //
     const float CombatStage::PAUSE_LONG_SEC_                { 6.0f };
     const float CombatStage::PAUSE_MEDIUM_SEC_              { 3.0f };
@@ -121,6 +123,8 @@ namespace stage
     const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_    { PAUSE_ZERO_SEC_ };
     const float CombatStage::CONDITION_EFFECT_PAUSE_SEC_    { PAUSE_LONG_SEC_ };
     const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_     { PAUSE_SHORT_SEC_ };
+    const float CombatStage::ACHIEVEMENT_PAUSE_SEC_         { PAUSE_ZERO_SEC_ };
+    const float CombatStage::END_PAUSE_SEC_                 { PAUSE_ZERO_SEC_ };
     //
     const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_{ 0.4f };
     //
@@ -260,7 +264,8 @@ namespace stage
         clickTimerSec_              (-1.0f),//any negative value will work here
         clickPosV_                  (0.0f, 0.0f),
         isSongAnim1Done_            (false),
-        isSongAnim2Done_            (false)
+        isSongAnim2Done_            (false),
+        creatureTitleVec_           ()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -401,7 +406,11 @@ namespace stage
 
     bool CombatStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
     {
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ACHIEVEMENT_)
+        {
+            return HandleAchievementPopups();
+        }
+        else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
         {
             if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
@@ -1332,6 +1341,15 @@ namespace stage
                 {
                     nextComabtNodeCPtr->IsFlying(true);
                 }
+
+                //TODO TEMP REMOVE -when done testing achievements
+                if (nextComabtNodeCPtr->Creature()->IsPlayerCharacter())
+                {
+                    for (int i(0); i < 49; ++i)
+                    {
+                        
+                    }
+                }
             }
 
             restoreInfo_.Save(combatDisplayStagePtr_);
@@ -2167,6 +2185,7 @@ namespace stage
         if (TurnPhase::ConditionEffectPause == turnPhase_)
         {
             //check for death by condition effect
+            //use the condEffFightResult_
             auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
             if ((CREATURE_EFFECTS_VEC.empty() == false) &&
                 (CREATURE_EFFECTS_VEC[0].WasKill()) &&
@@ -2185,9 +2204,9 @@ namespace stage
 
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
 
-                //This one of two places where non-player death sfx is played,
+                //This the first of two places where non-player death sfx is played,
                 //so it can coincide with the non-player death animation start.
-                //Player death sfx is played in HandleKilledCreatures().
+                //Player death sfx is played in HandleApplyDamageTasks().
                 combatSoundEffects_.PlayDeath(CREATURE_PTR);
 
                 return;
@@ -2200,9 +2219,8 @@ namespace stage
                 fightResult_ = combat::FightResult(combat::CreatureEffect(turnCreaturePtr_,
                     combat::HitInfoVec_t(1, conditionEffectsVec_[conditionEffectsIndex_])));
 
-                HandleApplyDamageTasks();
-
                 SetTurnPhase(TurnPhase::ConditionEffectPause);
+                HandleApplyDamageTasks();
                 StartPause(CONDITION_EFFECT_PAUSE_SEC_, "ConditionEffectPause");
             }
             else
@@ -2369,9 +2387,9 @@ namespace stage
                 combatAnimationUPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
 
-                //This one of two places where non-player death sfx is played,
+                //This is the second of two places where non-player death sfx is played,
                 //so it can coincide with the non-player death animation start.
-                //Player death sfx is played in HandleKilledCreatures().
+                //Player death sfx is played in HandleApplyDamageTasks().
                 for (auto const NEXT_CREATURE_PTR : killedNonPlayerCreaturesPVec)
                 {
                     combatSoundEffects_.PlayDeath(NEXT_CREATURE_PTR);
@@ -2381,6 +2399,28 @@ namespace stage
         }
 
         if (TurnPhase::PostTurnPause == turnPhase_)
+        {
+            if (PopulateAchievementsVec())
+            {
+                SetTurnPhase(TurnPhase::Achievements);
+                StartPause(ACHIEVEMENT_PAUSE_SEC_, "Achievement");
+            }
+            else
+            {
+                SetTurnPhase(TurnPhase::End);
+                StartPause(END_PAUSE_SEC_, "End");
+            }
+
+            return;
+        }
+
+        if (TurnPhase::Achievements == turnPhase_)
+        {
+            HandleAchievementPopups();
+            return;
+        }
+
+        if (TurnPhase::End == turnPhase_)
         {
             //end-of-turn tasks here
             HandleKilledCreatures();
@@ -2686,6 +2726,8 @@ namespace stage
 
         conditionEffectsWillSkip_ = false;
 
+        creatureTitleVec_.clear();
+
         HandleWin();
         HandleLose();
     }
@@ -2749,8 +2791,8 @@ namespace stage
         }
         else
         {
-            //can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because the player
-            //must select which non_player creature to fight first
+            //Can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because
+            //the player must select which non_player creature to fight first.
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
             combatDisplayStagePtr_->SetScrollingAllowed(true);
             SetTurnPhase(TurnPhase::TargetSelect);
@@ -3864,6 +3906,8 @@ namespace stage
             case TurnPhase::DeathAnim:                  { return "DeathAnim"; }
             case TurnPhase::RepositionAnim:             { return "RepositionAnim"; }
             case TurnPhase::PostTurnPause:              { return "PostTurnPause"; }
+            case TurnPhase::Achievements:               { return "Achievements"; }
+            case TurnPhase::End:                        { return "End"; }
             case TurnPhase::Count:
             default:                                    { return ""; }
         }
@@ -3967,7 +4011,8 @@ namespace stage
     }
 
 
-    CombatStage::TurnActionPhase CombatStage::GetTurnActionPhaseFromFightResult(const combat::FightResult & FIGHT_RESULT) const
+    CombatStage::TurnActionPhase CombatStage::GetTurnActionPhaseFromFightResult(
+        const combat::FightResult & FIGHT_RESULT) const
     {
         //Note: Assume it is not possible for a weapon attack to target multiple creatures
         auto const HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
@@ -4011,7 +4056,9 @@ namespace stage
         std::vector<stats::Health_t> damageVec;
         combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
+
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
+        
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
         {
             if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
@@ -4254,6 +4301,221 @@ namespace stage
         LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
             CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
                 TECH_ERROR_MSG, TITLE_MSG));
+    }
+
+
+    bool CombatStage::PopulateAchievementsVec()
+    {
+        creatureTitleVec_.clear();
+
+        //BeastMindLinks
+        //MoonHowls
+        //PackActions
+        //TODO -these achievements are probably not going to be implemented
+
+        //LocksPicked
+        //BattlesSurvived
+        //EnemiesFaced
+        //TODO -these achievements must be handled elsewhere
+        
+        //HealthGiven
+        //HealthTraded
+        //BackstabsHits
+        //SpiritsLifted
+        //TODO -these achievements still need to be implemented
+        
+        //gather achievements from fightResult_
+        auto const IS_TURN_CREATURE_FLYING{ combat::Encounter::Instance()->
+            GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying() };
+
+        auto flyingAttackHits{ 0 };
+        auto meleeHits{ 0 };
+        auto projectileHits{ 0 };
+        creature::CreaturePVec_t playersDodgedStandingPVec;
+        creature::CreaturePVec_t playersDodgedFlyingPVec;
+        auto didCastSpell{ false };
+        auto didPlaySong{ false };
+        auto didRoar{ false };
+
+        auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+        for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
+        {   
+            auto const NEXT_EFFECTED_CREATURE_PTR{ NEXT_CREATURE_EFFECT.GetCreature() };
+        
+            auto const IS_EFFECTED_CREATURE_FLYING{ combat::Encounter::Instance()->
+                GetTurnInfoCopy(NEXT_EFFECTED_CREATURE_PTR).GetIsFlying() };
+
+            auto const & HIT_INFO_VEC{ NEXT_CREATURE_EFFECT.GetHitInfoVec() };
+            for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
+            {
+                if (turnCreaturePtr_->IsPlayerCharacter())
+                {
+                    if (NEXT_HIT_INFO.TypeOfHit() == combat::HitType::Spell)
+                    {
+                        didCastSpell = true;
+                    }
+                    else if (NEXT_HIT_INFO.TypeOfHit() == combat::HitType::Song)
+                    {
+                        didPlaySong = true;
+                    }
+                    else if (NEXT_HIT_INFO.TypeOfHit() == combat::HitType::Roar)
+                    {
+                        didRoar = true;
+                    }
+                    else if ((NEXT_EFFECTED_CREATURE_PTR->IsPlayerCharacter() == false) &&
+                             (NEXT_HIT_INFO.TypeOfHit() == combat::HitType::Weapon) &&
+                             (NEXT_HIT_INFO.Weapon() != nullptr) &&
+                              NEXT_HIT_INFO.WasHit())
+                    {
+                        if (IS_TURN_CREATURE_FLYING)
+                        {
+                            ++flyingAttackHits;
+                        }
+
+                        if (NEXT_HIT_INFO.Weapon()->WeaponType() & item::weapon_type::Projectile)
+                        {
+                            ++projectileHits;
+                        }
+                        else if (NEXT_HIT_INFO.Weapon()->WeaponType() & item::weapon_type::Melee)
+                        {
+                            ++meleeHits;
+                        }
+                    }
+                }
+                else if ((turnCreaturePtr_->IsPlayerCharacter() == false) &&
+                         NEXT_EFFECTED_CREATURE_PTR->IsPlayerCharacter() &&
+                         (NEXT_HIT_INFO.WasHit() == false))
+                {
+                    if (IS_EFFECTED_CREATURE_FLYING)
+                    {
+                        playersDodgedFlyingPVec.push_back(NEXT_EFFECTED_CREATURE_PTR);
+                    }
+                    else
+                    {
+                        playersDodgedStandingPVec.push_back(NEXT_EFFECTED_CREATURE_PTR);
+                    }
+                }
+            }
+        }
+
+        HandleAchievementEnqueue(turnCreaturePtr_,
+                                 creature::AchievementType::FlyingAttackHits,
+                                 flyingAttackHits);
+
+        HandleAchievementEnqueue(turnCreaturePtr_,
+                                 creature::AchievementType::MeleeHits,
+                                 meleeHits);
+
+        HandleAchievementEnqueue(turnCreaturePtr_,
+                                 creature::AchievementType::ProjectileHits,
+                                 projectileHits);
+
+        for (auto const NEXT_DODGING_CREATURE_PTR : playersDodgedStandingPVec)
+        {
+            HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
+                                     creature::AchievementType::DodgedStanding);
+        }
+        
+        for (auto const NEXT_DODGING_CREATURE_PTR : playersDodgedFlyingPVec)
+        {
+            HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
+                                     creature::AchievementType::DodgedFlying);
+        }
+
+        if (didPlaySong)
+        {
+            HandleAchievementEnqueue(turnCreaturePtr_,
+                                     creature::AchievementType::SongsPlayed);
+        }
+
+        if (didRoar)
+        {
+            HandleAchievementEnqueue(turnCreaturePtr_,
+                                     creature::AchievementType::BeastRoars);
+        }
+
+        if (turnCreaturePtr_->IsPlayerCharacter() && IS_TURN_CREATURE_FLYING)
+        {
+            HandleAchievementEnqueue(turnCreaturePtr_,
+                                     creature::AchievementType::TurnsInFlight);
+        }
+
+        if (didCastSpell)
+        {
+            HandleAchievementEnqueue(turnCreaturePtr_,
+                                     creature::AchievementType::SpellsCast);
+        }
+
+        return (creatureTitleVec_.empty() == false);
+    }
+
+
+    void CombatStage::HandleAchievementEnqueue(
+        const creature::CreaturePtr_t         CREATURE_PTR,
+        const creature::AchievementType::Enum ACH_ENUM,
+        const int                             COUNT)
+    {
+        for (int i(0); i < COUNT; ++i)
+        {   
+            auto const ORIG_TITLE_PTR{ CREATURE_PTR->GetAchievements().GetCurrentTitle(ACH_ENUM) };
+            auto const NEW_TITLE_PTR{ CREATURE_PTR->GetAchievements().Increment(ACH_ENUM) };
+
+            if ((NEW_TITLE_PTR != nullptr) && (ORIG_TITLE_PTR != NEW_TITLE_PTR))
+            {
+                creatureTitleVec_.push_back(std::make_pair(CREATURE_PTR,
+                    std::make_pair(ORIG_TITLE_PTR, NEW_TITLE_PTR)));
+            }
+        }
+    }
+
+
+    bool CombatStage::HandleAchievementPopups()
+    {
+        if (creatureTitleVec_.empty())
+        {
+            SetTurnPhase(TurnPhase::End);
+            StartPause(END_PAUSE_SEC_, "End");
+            return true;
+        }
+        else
+        {
+            auto const TITLE_PAIR{ creatureTitleVec_[0] };
+            
+            //here is where the Title actually changes the creature
+            TITLE_PAIR.second.second->Change(TITLE_PAIR.first);
+            
+            creatureTitleVec_.erase( std::remove(creatureTitleVec_.begin(),
+                                                 creatureTitleVec_.end(),
+                                                 TITLE_PAIR),
+                                        creatureTitleVec_.end() );
+            
+            sf::Texture fromTexture;
+            if (TITLE_PAIR.second.first != nullptr)
+            {
+                sfml_util::gui::TitleImageManager::Instance()->Get(fromTexture,
+                    TITLE_PAIR.second.first->Which());
+            }
+            
+            sf::Texture toTexture;
+            if (TITLE_PAIR.second.second != nullptr)
+            {
+                sfml_util::gui::TitleImageManager::Instance()->Get(toTexture,
+                    TITLE_PAIR.second.second->Which());
+            }
+
+            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->
+                CreateImageFadePopupInfo(POPUP_NAME_ACHIEVEMENT_,
+                                            TITLE_PAIR.first,
+                                            TITLE_PAIR.second.first,
+                                            TITLE_PAIR.second.second,
+                                            & fromTexture,
+                                            & toTexture) };
+            
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+
+            //return false because a popup will follow a popup
+            return false;
+        }
     }
 
 }

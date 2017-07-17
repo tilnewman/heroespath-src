@@ -206,7 +206,7 @@ namespace creature
             EverMark,
             MeleeMaster,
             SteadyStriker,
-            OrderOfTheSteadyBlade,
+            OrderOfTheEverWarrior,
             //
             DragonOfTheUnblinkingEye,
             DragonOfTheCurlingClaw,

@@ -38,6 +38,8 @@
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+#include "game/creature/title.hpp"
+#include "game/creature/creature.hpp"
 
 #include "misc/random.hpp"
 
@@ -321,34 +323,92 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(
-        const std::string &      POPUP_NAME,
-        const std::string &      PROMPT_TEXT,
-        const sf::Texture &      FROM_IMAGE,
-        const sf::Texture &      TO_IMAGE,
-        const PopupButtons::Enum BUTTONS,
-        const unsigned int       FONT_SIZE,
-        const sound_effect::Enum SOUND_EFFECT) const
+    const game::PopupInfo PopupManager::CreateImageFadePopupInfo(
+        const std::string &                 POPUP_NAME,
+        const game::creature::CreaturePtr_t CREATURE_PTR,
+        const game::creature::TitlePtr_t    FROM_TITLE_PTR,
+        const game::creature::TitlePtr_t    TO_TITLE_PTR,
+        const sf::Texture * const           FROM_IMAGE_PTR,
+        const sf::Texture * const           TO_IMAGE_PTR) const
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((TO_IMAGE_PTR != nullptr),
+            "sfml_util::gui::PopupManager::CreateImageFadePopupInfo(\""
+            << POPUP_NAME << "\")  TO_IMAGE_PTR was null.");
+
+        std::ostringstream titleSS;
+        titleSS << "New Title!";
+
+        std::ostringstream descSS;
+        descSS << "Congradulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount()
+            << " " << game::creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType())
+            << " " << CREATURE_PTR->Name();
+
+        if (FROM_TITLE_PTR == nullptr)
+        {
+            descSS << " has earned the title of "
+                << game::creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+        }
+        else
+        {
+            descSS << " has transitioned from a "
+                << game::creature::Titles::Name(FROM_TITLE_PTR->Which())
+                << " to a "
+                << game::creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+        }
+
+        descSS << "  This title comes with the following stats bonus: "
+            << TO_TITLE_PTR->StatBonus().ToStringCurrent(false, true, true, true, true) << ".";
+
+        if (TO_TITLE_PTR->ExpBonus() > 0)
+        {
+            descSS << "  There is also an experience bonus of " << TO_TITLE_PTR->ExpBonus()
+                << "!  " << CREATURE_PTR->Name() << "'s experience is now " << CREATURE_PTR->Exp()
+                << "!!";
+        }
+
+        if (TO_TITLE_PTR->HealthBonus() > 0)
+        {
+            descSS << "  There is also a health bonus of " << TO_TITLE_PTR->HealthBonus() << "!  "
+                << CREATURE_PTR->Name() << "'s maximum health is now "
+                << CREATURE_PTR->HealthNormal() << "!!";
+        }
+
+        if (TO_TITLE_PTR->RankBonus() > 0)
+        {
+            descSS << "  There is even a rank bonus of " << TO_TITLE_PTR->RankBonus() << "!  "
+                << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";
+        }
+
         sfml_util::TextureVec_t textureVec;
-        textureVec.push_back(FROM_IMAGE);
-        textureVec.push_back(TO_IMAGE);
+        if ((FROM_TITLE_PTR != nullptr) && (FROM_IMAGE_PTR != nullptr))
+        {
+            textureVec.push_back( * FROM_IMAGE_PTR);
+        }
+
+        textureVec.push_back( * TO_IMAGE_PTR);
 
         return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT,
+                               TextInfoDefault(" ",
                                                sfml_util::Justified::Center,
-                                               FONT_SIZE),
-                               BUTTONS,
-                               PopupImage::Regular,
-                               GetScaleForImage(PopupImage::Regular),
+                                               FontManager::Instance()->Size_Normal()),
+                               sfml_util::PopupButtons::Okay,
+                               PopupImage::Large,
+                               sfml_util::MapByRes(1.5f, 4.5f),
                                game::Popup::ImageFade,
-                               SOUND_EFFECT,
+                               sfml_util::sound_effect::Achievement,
                                sfml_util::PopupButtonColor::Dark,
                                true,
                                std::vector<std::size_t>(),
                                textureVec,
                                std::vector<std::string>(),
-                               100.0f);
+                               100.0f,
+                               CREATURE_PTR,
+                               0,
+                               false,
+                               titleSS.str(),
+                               descSS.str(),
+                               FROM_TITLE_PTR,
+                               TO_TITLE_PTR);
     }
 
 
