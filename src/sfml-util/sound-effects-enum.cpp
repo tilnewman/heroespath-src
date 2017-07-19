@@ -310,6 +310,42 @@ namespace sfml_util
             case DeathBoar:                     { return "boar"; }
             case DeathLionboar:                 { return "lionboar"; }
             case Achievement:                   { return "achievement"; }
+            case TreasureOpen1:                 { return "open1"; }
+            case TreasureOpen2:                 { return "open2"; }
+            case TreasureOpen3:                 { return "open3"; }
+            case TreasureOpen4:                 { return "open4"; }
+            case TreasureOpen5:                 { return "open5"; }
+            case TreasureOpen6:                 { return "open6"; }
+            case TreasureOpen7:                 { return "open7"; }
+            case TreasureOpen8:                 { return "open8"; }
+            case TreasureOpen9:                 { return "open9"; }
+            case TreasurePicking1:              { return "picking1"; }
+            case TreasurePicking2:              { return "picking2"; }
+            case TreasurePicking3:              { return "picking3"; }
+            case TreasurePicking4:              { return "picking4"; }
+            case TreasurePicking5:              { return "picking5"; }
+            case TreasurePicking6:              { return "picking6"; }
+            case TreasurePicking7:              { return "picking7"; }
+            case TreasureUnlock:                { return "unlock"; }
+            case TrapBang:                      { return "trap-bang"; }
+            case TrapBoom:                      { return "trap-boom"; }
+            case TrapChiaowahh:                 { return "trap-chiaowahh"; }
+            case TrapChungSplutter:             { return "trap-chung-splutter"; }
+            case TrapFire:                      { return "trap-fire"; }
+            case TrapFireball:                  { return "trap-fireball"; }
+            case TrapGasExhale:                 { return "trap-gas-exhale"; }
+            case TrapGasLeak:                   { return "trap-gas-leak"; }
+            case TrapGhost1:                    { return "trap-ghost1"; }
+            case TrapGhost2:                    { return "trap-ghost2"; }
+            case TrapInferno:                   { return "trap-inferno"; }
+            case TrapMetalBang:                 { return "trap-metal-bang"; }
+            case TrapMetal:                     { return "trap-metal"; }
+            case TrapPop:                       { return "trap-pop"; }
+            case TrapSparksAhh:                 { return "trap-sparks-ahh"; }
+            case TrapSparksHiss:                { return "trap-sparks-hiss"; }
+            case TrapSpiritShortHiss:           { return "trap-spirit-short-hiss"; }
+            case TrapSplatDunk:                 { return "trap-splat-dunk"; }
+            case TrapSplutter:                  { return "trap-splutter"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -325,9 +361,7 @@ namespace sfml_util
 
     const std::string sound_effect::Filename(const sound_effect::Enum E)
     {
-        std::ostringstream ss;
-        ss << ToString(E) << ".ogg";
-        return ss.str();
+        return ToString(E) + ".ogg";
     }
 
 
@@ -603,6 +637,42 @@ namespace sfml_util
             case DeathBoar:
             case DeathLionboar:                 { return "sound-effects/combat/death"; }
             case Achievement:                   { return "sound-effects/misc"; }
+            case TreasureOpen1:
+            case TreasureOpen2:
+            case TreasureOpen3:
+            case TreasureOpen4:
+            case TreasureOpen5:
+            case TreasureOpen6:
+            case TreasureOpen7:
+            case TreasureOpen8:
+            case TreasureOpen9:
+            case TreasurePicking1:
+            case TreasurePicking2:
+            case TreasurePicking3:
+            case TreasurePicking4:
+            case TreasurePicking5:
+            case TreasurePicking6:
+            case TreasurePicking7:
+            case TreasureUnlock:
+            case TrapBang:
+            case TrapBoom:
+            case TrapChiaowahh:
+            case TrapChungSplutter:
+            case TrapFire:
+            case TrapFireball:
+            case TrapGasExhale:
+            case TrapGasLeak:
+            case TrapGhost1:
+            case TrapGhost2:
+            case TrapInferno:
+            case TrapMetalBang:
+            case TrapMetal:
+            case TrapPop:
+            case TrapSparksAhh:
+            case TrapSparksHiss:
+            case TrapSpiritShortHiss:
+            case TrapSplatDunk:
+            case TrapSplutter:                  { return "sound-effects/treasure-stage"; }
             case Count:
             case None:
             case Random:

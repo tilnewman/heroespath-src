@@ -414,6 +414,32 @@ namespace sfml_util
 
         soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::CombatLose)] =
             SoundEffectsSet(COMBATLOSE_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t TREASURE_OPEN_SOUNDS_ENUM_VEC = {
+            sound_effect::TreasureOpen1,
+            sound_effect::TreasureOpen2,
+            sound_effect::TreasureOpen3,
+            sound_effect::TreasureOpen4,
+            sound_effect::TreasureOpen5,
+            sound_effect::TreasureOpen6,
+            sound_effect::TreasureOpen7,
+            sound_effect::TreasureOpen8,
+            sound_effect::TreasureOpen9 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::TreasureOpen)] =
+            SoundEffectsSet(TREASURE_OPEN_SOUNDS_ENUM_VEC);
+
+        const SoundEffectEnumVec_t TREASURE_PICKING_SOUNDS_ENUM_VEC = {
+            sound_effect::TreasurePicking1,
+            sound_effect::TreasurePicking2,
+            sound_effect::TreasurePicking3,
+            sound_effect::TreasurePicking4,
+            sound_effect::TreasurePicking5,
+            sound_effect::TreasurePicking6,
+            sound_effect::TreasurePicking7 };
+
+        soundEffectsSetVec_[static_cast<std::size_t>(SfxSet::TreasurePicking)] =
+            SoundEffectsSet(TREASURE_PICKING_SOUNDS_ENUM_VEC);
     }
 
 
