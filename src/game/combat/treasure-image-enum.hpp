@@ -22,46 +22,36 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOOPSTATE_INCLUDED
-#define GAME_LOOPSTATE_INCLUDED
+#ifndef GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED
+#define GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED
 //
-// loop-state-enum.hpp
-//  An enum describing the game loop state.
+// treasure-image-enum.hpp
 //
 #include <string>
 
 
 namespace game
 {
+namespace combat
+{
 
-    struct LoopState
+    struct TreasureImage
     {
         enum Enum
         {
-            None = 0,
-            Intro,
-            MainMenu,
-            LoadGameMenu,
-            CharacterCreation,
-            PartyCreation,
-            Adventure,
-            Combat,
-            Camp,
-            Inn,
-            Query,
-            Popup,
-            Credits,
-            Settings,
-            Exit,
-            Inventory,
-            Treasure,
-            Test,
+            BonePile = 0,
+            ChestClosed,
+            ChestOpen,
+            LockboxClosed,
+            LockboxOpen,
             Count
         };
 
-        static const std::string ToString(const LoopState::Enum E);
-        static LoopState::Enum FromString(const std::string & ENUM_STR);
+        static const std::string ToString(const TreasureImage::Enum);
+        static const std::string ToKey(const TreasureImage::Enum);
     };
 
 }
-#endif //GAME_LOOPSTATE_INCLUDED
+}
+
+#endif //GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED

@@ -28,7 +28,9 @@
 // role-enum.cpp
 //
 #include "role-enum.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include <exception>
 #include <sstream>
 

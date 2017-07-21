@@ -45,6 +45,17 @@ namespace creature
 namespace stage
 {
 
+    class LoopCmd_AddStage_Treasure : public sfml_util::LoopCmd
+    {
+    public:
+        explicit LoopCmd_AddStage_Treasure(sfml_util::ILoopSPtr_t & loopSPtr);
+        virtual ~LoopCmd_AddStage_Treasure();
+        virtual bool Execute();
+    };
+
+    using LoopCmd_AddStage_TreasureSPtr_t = std::shared_ptr<LoopCmd_AddStage_Treasure>;
+
+
     class LoopCmd_AddStage_Camp : public sfml_util::LoopCmd
     {
     public:

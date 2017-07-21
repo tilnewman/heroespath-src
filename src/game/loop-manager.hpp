@@ -113,6 +113,7 @@ namespace game
         void Goto_LoadGameMenu();
         void Goto_Combat(const bool WILL_ADVANCE_TURN);
         void Goto_Test();
+        void Goto_Treasure();
 
         void Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
@@ -186,6 +187,7 @@ namespace game
         void TransitionTo_LoadGameMenu();
         void TransitionTo_Combat(const bool WILL_ADVANCE_TURN);
         void TransitionTo_Test();
+        void TransitionTo_Treasure();
 
         void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                                     const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,

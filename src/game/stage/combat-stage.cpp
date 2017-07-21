@@ -1341,15 +1341,6 @@ namespace stage
                 {
                     nextComabtNodeCPtr->IsFlying(true);
                 }
-
-                //TODO TEMP REMOVE -when done testing achievements
-                if (nextComabtNodeCPtr->Creature()->IsPlayerCharacter())
-                {
-                    for (int i(0); i < 49; ++i)
-                    {
-                        
-                    }
-                }
             }
 
             restoreInfo_.Save(combatDisplayStagePtr_);

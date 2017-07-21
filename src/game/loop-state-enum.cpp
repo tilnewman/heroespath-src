@@ -58,6 +58,7 @@ namespace game
             case Settings:          { return "Settings"; }
             case Exit:              { return "Exit"; }
             case Inventory:         { return "Inventory"; }
+            case Treasure:          { return "Treasure"; }
             case Test:              { return "Test"; }
             case Count:
             default:
@@ -73,33 +74,65 @@ namespace game
     LoopState::Enum LoopState::FromString(const std::string & ENUM_STR)
     {
         if (ENUM_STR == ToString(Intro))
+        {
             return Intro;
+        }
         else if (ENUM_STR == ToString(MainMenu))
+        {
             return MainMenu;
+        }
         else if (ENUM_STR == ToString(LoadGameMenu))
+        {
             return LoadGameMenu;
+        }
         else if (ENUM_STR == ToString(CharacterCreation))
+        {
             return CharacterCreation;
+        }
         else if (ENUM_STR == ToString(PartyCreation))
+        {
             return PartyCreation;
+        }
         else if (ENUM_STR == ToString(Adventure))
+        {
             return Adventure;
+        }
         else if (ENUM_STR == ToString(Combat))
+        {
             return Combat;
+        }
         else if (ENUM_STR == ToString(Camp))
+        {
             return Camp;
+        }
         else if (ENUM_STR == ToString(Inn))
+        {
             return Inn;
+        }
         else if (ENUM_STR == ToString(Query))
+        {
             return Query;
+        }
         else if (ENUM_STR == ToString(Credits))
+        {
             return Credits;
+        }
         else if (ENUM_STR == ToString(Settings))
+        {
             return Settings;
+        }
         else if (ENUM_STR == ToString(Inventory))
+        {
             return Inventory;
+        }
+        else if (ENUM_STR == ToString(Treasure))
+        {
+            return Treasure;
+        }
         else if (ENUM_STR == ToString(Test))
+        {
             return Test;
+        }
         else
         {
             std::ostringstream ss;

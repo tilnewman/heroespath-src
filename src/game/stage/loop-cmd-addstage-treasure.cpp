@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,46 +24,35 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOOPSTATE_INCLUDED
-#define GAME_LOOPSTATE_INCLUDED
 //
-// loop-state-enum.hpp
-//  An enum describing the game loop state.
+// loop-cmd-addstage-treasure.cpp
 //
-#include <string>
+#include "loop-cmd-addstage.hpp"
+#include "game/stage/treasure-stage.hpp"
 
 
 namespace game
 {
+namespace stage
+{
 
-    struct LoopState
+    LoopCmd_AddStage_Treasure::LoopCmd_AddStage_Treasure(sfml_util::ILoopSPtr_t & loopSPtr)
+    :
+        LoopCmd("AddStage_\"Treasure\"", loopSPtr)
+    {}
+
+
+    LoopCmd_AddStage_Treasure::~LoopCmd_AddStage_Treasure()
+    {}
+
+
+    bool LoopCmd_AddStage_Treasure::Execute()
     {
-        enum Enum
-        {
-            None = 0,
-            Intro,
-            MainMenu,
-            LoadGameMenu,
-            CharacterCreation,
-            PartyCreation,
-            Adventure,
-            Combat,
-            Camp,
-            Inn,
-            Query,
-            Popup,
-            Credits,
-            Settings,
-            Exit,
-            Inventory,
-            Treasure,
-            Test,
-            Count
-        };
-
-        static const std::string ToString(const LoopState::Enum E);
-        static LoopState::Enum FromString(const std::string & ENUM_STR);
-    };
+        auto treasureStagePtr( new game::stage::TreasureStage() );
+        treasureStagePtr->Setup();
+        iLoopSPtr_->AddStage(treasureStagePtr);
+        return true;
+    }
 
 }
-#endif //GAME_LOOPSTATE_INCLUDED
+}
