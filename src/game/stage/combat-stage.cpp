@@ -1310,7 +1310,7 @@ namespace stage
             //TEMP TODO REMOVE create new game and player party object
             state::GameStateFactory::Instance()->NewGame(partyPtr);
 
-            combat::Encounter::Instance()->StartTasks();
+            combat::Encounter::Instance()->BeginCombatTasks();
         }
 
         //combat display
@@ -2086,7 +2086,7 @@ namespace stage
     {
         std::ostringstream ss;
         ss << combat::Text::InitialCombatStatusMessagePrefix() << " "
-            << combat::Encounter::Instance()->NonPlayerParty().Summary() << "!";
+            << combat::Encounter::Instance()->LivingNonPlayerParty().Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
         statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
@@ -4322,7 +4322,7 @@ namespace stage
     void CombatStage::EndOfCombatCleanup()
     {
         hasCombatEnded_ = true;
-        combat::Encounter::Instance()->EndTasks();
+        combat::Encounter::Instance()->EndCombatTasks();
         turnCreaturePtr_ = nullptr;
         combatAnimationUPtr_->EndOfCombatCleanup();
         combatDisplayStagePtr_->EndOfCombatCleanup();

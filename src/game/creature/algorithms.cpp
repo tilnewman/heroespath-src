@@ -102,7 +102,8 @@ namespace creature
                                        const bool       LIVING_ONLY,
                                        const bool       INCLUDE_RUNAWAYS)
     {
-        auto const NONPLAYERS_PVEC(combat::Encounter::Instance()->NonPlayerParty().Characters());
+        auto const NONPLAYERS_PVEC{
+            combat::Encounter::Instance()->LivingNonPlayerParty().Characters() };
 
         std::size_t count{ 0 };
         for (auto const NEXT_NONPLAYER_PTR : NONPLAYERS_PVEC)

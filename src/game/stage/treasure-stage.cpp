@@ -39,6 +39,7 @@
 #include "game/combat/encounter.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
+#include "game/creature/algorithms.hpp"
 
 //TODO TEMP REMOVE -once done testing
 #include "game/player/party.hpp"
@@ -79,6 +80,7 @@ namespace stage
 
     TreasureStage::~TreasureStage()
     {
+        combat::Encounter::Instance()->EndTreasureStageTasks();
         ClearAllEntities();
     }
 
@@ -100,57 +102,6 @@ namespace stage
             auto const SCALE_VERT{ SCREEN_HEIGHT / bgSprite_.getLocalBounds().height };
             bgSprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         }
-
-        //corpse image
-        {
-            sfml_util::LoadTexture(corpseTexture_,
-                GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
-
-            corpseSprite_.setTexture(corpseTexture_);
-
-            auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
-            auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
-
-            auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
-                corpseSprite_.getLocalBounds().width };
-
-            corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-            if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
-            {
-                auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
-                    corpseSprite_.getLocalBounds().height };
-
-                corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
-            }
-
-            auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
-                (corpseSprite_.getGlobalBounds().width * 0.5f) };
-
-            auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
-                corpseSprite_.getGlobalBounds().height) };
-
-            corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
-            corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
-        }
-
-        //coins image
-        sfml_util::LoadTexture(coinsTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
-
-        coinsSprite_.setTexture(coinsTexture_);
-
-        auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
-        
-        auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
-            2.0f };
-
-        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
-
-        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
-
-        //set initial treasure image
-        SetupTreasureImage( GetInitialTreasureImageFromEnemyParty() );
 
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
@@ -307,17 +258,73 @@ namespace stage
 
         //TODO TEMP REMOVE -once finished testing
         //create a fake collection of dead creatures, using the predetermined initial encounter
-        combat::Encounter::Instance()->StartTasks();
+        combat::Encounter::Instance()->BeginCombatTasks();
 
-        auto const ENEMY_CHARACTERS_PVEC{
-            combat::Encounter::Instance()->NonPlayerParty().Characters() };
-        
-        for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARACTERS_PVEC)
+        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
+        for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
         {
-            combat::Encounter::Instance()->HandleKilledCreature(NEXT_ENEMY_CHARACTER_PTR);
+            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
         }
 
-        combat::Encounter::Instance()->EndTasks();
+        combat::Encounter::Instance()->EndCombatTasks();
+        combat::Encounter::Instance()->BeginTreasureStageTasks();
+
+        //corpse image
+        {
+            sfml_util::LoadTexture(corpseTexture_,
+                GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
+
+            corpseSprite_.setTexture(corpseTexture_);
+
+            auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
+            auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
+
+            auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
+                corpseSprite_.getLocalBounds().width };
+
+            corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+
+            if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
+            {
+                auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
+                    corpseSprite_.getLocalBounds().height };
+
+                corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
+            }
+
+            auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
+                (corpseSprite_.getGlobalBounds().width * 0.5f) };
+
+            auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
+                corpseSprite_.getGlobalBounds().height) };
+
+            corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
+            corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
+        }
+
+        //coins image
+        sfml_util::LoadTexture(coinsTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
+
+        coinsSprite_.setTexture(coinsTexture_);
+
+        auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
+
+        auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
+            2.0f };
+
+        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
+
+        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
+
+        //set initial treasure image
+        SetupTreasureImage(GetInitialTreasureImageFromEnemyParty());
+
+        //TODO setup initial popup text, either
+        // - all enemies ran away so there is no looting or treasure
+        // - x bodies lay dead before you on the battlefield, loot their bodies for equipment?
+        // - x bodies lay dead before you on the battlefield, but they were animals so they
+        //     have no equipment or treasure to loot.  Press a key to continue adventuring.
     }
 
 
@@ -402,10 +409,12 @@ namespace stage
                       std::back_inserter(corpseKeyStrVec));
         }
 
-        if (corpseKeyStrVec.empty())
+        if (DEAD_ENEMY_CHARACTERS_PVEC.empty() || corpseKeyStrVec.empty())
         {
             M_HP_LOG_ERR("game::stage::TreasureStage::GetCorpseImageKeyFromEnemyParty() "
-                << "was unable to gather any key strings.  Using default image.");
+                << "was unable to gather any key strings.  Using default image.  "
+                << "DEAD_ENEMY_CHARACTERS_PVEC.size()=" << DEAD_ENEMY_CHARACTERS_PVEC.size()
+                << ", corpseKeyStrVec.size()=" << corpseKeyStrVec.size());
 
             auto const DEFAULT_CORPSE_KEY_STR_VEC{
                 GetCorpseImageKeyFromRace(creature::race::Human) };

@@ -177,12 +177,12 @@ namespace combat
         }
         InitialPlayerPartyCombatTreeSetup();
         //
-        auto const NONPLAYER_CHAR_PVEC( Encounter::Instance()->NonPlayerParty().Characters() );
-        for (auto const NEXT_CHARACTER_PTR : NONPLAYER_CHAR_PVEC)
+        auto const NONPLAYER_CREATURES_PVEC( creature::Algorithms::NonPlayers() );
+        for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURES_PVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
                 std::make_shared<combat::CombatNode>(
-                    NEXT_CHARACTER_PTR,
+                    NEXT_CREATURE_PTR,
                     creature::NameInfo::Instance()->DefaultFont(),
                     nameCharSizeCurr_) );
 

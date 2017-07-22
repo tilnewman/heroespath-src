@@ -44,6 +44,7 @@ namespace non_player
 
 
     //Singleton responsible for the lifetimes of player::Character objects.
+    //This class does not new the objects, but it does delete them.
     class CharacterWarehouse
     {
         //prevent copy constructor

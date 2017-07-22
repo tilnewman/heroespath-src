@@ -42,10 +42,12 @@
 #include "game/combat/party-factory.hpp"
 #include "game/state/game-state.hpp"
 #include "game/state/world-state.hpp"
-#include "misc/assertlogandthrow.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/item/item.hpp"
+#include "game/item/item-warehouse.hpp"
 
 #include "misc/vectors.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>
@@ -71,20 +73,22 @@ namespace combat
         turnOverPVec_             (),
         turnIndex_                (0),
         turnInfoMap_              (),
-        turnCreaturePtr_          ()
+        turnCreaturePtr_          (),
+        deadNonPlayerItemsHeld_   (),
+        deadNonPlayerItemsCached_ ()
     {
         M_HP_LOG_DBG("Singleton Construction: Encounter");
-        FreeThenResetNonPlayerParty();
+        FreeThenResetLivingNonPlayerParty();
         FreeThenResetDeadNonPlayerParty();
         FreeThenResetRunawayNonPlayerParty();
-        EmptyRunawayPlayersVec();
+        runawayPlayersVec_.clear();
     }
 
 
     Encounter::~Encounter()
     {
         M_HP_LOG_DBG("Singleton Destruction: Encounter");
-        FreeThenResetNonPlayerParty();
+        FreeThenResetLivingNonPlayerParty();
         FreeThenResetDeadNonPlayerParty();
         FreeThenResetRunawayNonPlayerParty();
     }
@@ -124,12 +128,12 @@ namespace combat
     }
 
 
-    non_player::Party & Encounter::NonPlayerParty()
+    non_player::Party & Encounter::LivingNonPlayerParty()
     {
         if (nonPlayerPartyUPtr_.get() == nullptr)
         {
             std::ostringstream ss;
-            ss << "game::combat::Encounter::NonPlayerParty() called when ptr was null.";
+            ss << "game::combat::Encounter::LivingNonPlayerParty() called when ptr was null.";
             throw std::runtime_error(ss.str());
         }
         else
@@ -208,7 +212,7 @@ namespace combat
 
     void Encounter::Setup_First()
     {
-        FreeThenResetNonPlayerParty();
+        FreeThenResetLivingNonPlayerParty();
         nonPlayerPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
     }
 
@@ -229,17 +233,20 @@ namespace combat
     }
 
 
-    void Encounter::StartTasks()
+    void Encounter::BeginCombatTasks()
     {
         //nonPlayerPartyUPtr_ must be left alone because it will have already been populated
-        FreeThenResetDeadNonPlayerParty();
-        EmptyRunawayPlayersVec();
-
+        
         roundCounter_ = 0;
         Game::Instance()->State().World().EncoundterCountInc();
 
+        //TODO move this to the adventure stage
+        //TODO Encounter will need a function that plays combat music and that takes a bool
+        //     for whether or not to play the same music or to pick new music.
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
 
+        //TODO This will need to be triggered by the Adventure stage and moved to it's own
+        //     object responsible for creating random sets of creatures for each fight.
         if (Game::Instance()->State().IsNewGame())
         {
             GenerateFirstEncounter();
@@ -251,37 +258,112 @@ namespace combat
     }
 
 
-    void Encounter::EndTasks()
+    void Encounter::EndCombatTasks()
     {
         //At the end of this function:
-        //  - runawayPlayersVec_ should be empty of pointer copies
-        //  - nonPlayerPartyUPtr_ should have all owned pointers moved to deadNonPlayerPartyUPtr_
-        //  - deadNonPlayerPartyUPtr_ should hold all dead and not dead pointers for looting
-        //  - runawayNonPlayerPartyUPtr_ should have free'd all it's pointers so they don't
-        //    contribute to looting.
-
-        //leave deadNonPlayerPartyUPtr_ alone so that looting can occur
-
-        //Move all remaining enemy creatures (stoned etc) in the party to
-        //deadNonPlayerPartyUPtr_ so that they are all available for looting.
+        //  - runawayPlayersVec_ should be empty
+        //  - nonPlayerPartyUPtr_ should be emptied into deadNonPlayerPartyUPtr_
+        //  - deadNonPlayerPartyUPtr_ owns all enemy pointers for looting in Treasure Stage
+        //  - runawayNonPlayerPartyUPtr_ should be empty, having all it's pointers
+        //    free'd because they will not contribute to looting during Treasure Stage.
+        //  - So all should be empty except deadNonPlayerPartyUPtr_ unless all enemies ran away.
+        
+        //Move all remaining enemy creatures (stoned, incapacitated, etc) in the party to
+        //deadNonPlayerPartyUPtr_ so that they are all available for looting in Treasure Stage.
         auto const ENEMY_CHARATER_PVEC{ nonPlayerPartyUPtr_->Characters() };
         for (auto const NEXT_ENEMY_CHARACTER_PTR : ENEMY_CHARATER_PVEC)
         {
             HandleKilledCreature(NEXT_ENEMY_CHARACTER_PTR);
         }
 
-        //delete runaway player character pointer copies
-        EmptyRunawayPlayersVec();
+        //null runaway player character pointer copies
+        runawayPlayersVec_.clear();
 
         //Free runaway non-player character pointers so they will NOT
-        //contribute to looting.
+        //contribute to looting in Treasure Stage.
         FreeThenResetRunawayNonPlayerParty();
         
+        turnCreaturePtr_ = nullptr;
         turnOverPVec_.clear();
         turnInfoMap_.clear();
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;
+    }
+
+
+    void Encounter::BeginTreasureStageTasks()
+    {
+        //At the end of this function:
+        //  - All (non-bodypart) item pointers in deadNonPlayerPartyUPtr_ will be moved
+        //    to deadNonPlayerItemsHeld_.
+        //
+        //  - All generated item pointers for the treasure owned by deadNonPlayerPartyUPtr_
+        //    will be in deadNonPlayerItemsCached_.
+        //
+
+        //move non-bodypart item pointers into deadNonPlayerItemsHeld_
+        auto const DEAD_NONPLAYER_CHARACTER_PVEC{ deadNonPlayerPartyUPtr_->Characters() };
+        for (auto const NEXT_CHARACTER_PTR : DEAD_NONPLAYER_CHARACTER_PVEC)
+        {
+            //unequip non-bodypart items
+            auto const ITEMS_EQUIPPED_PVEC{ NEXT_CHARACTER_PTR->Inventory().ItemsEquipped() };
+            for (auto const NEXT_EQUIPPED_ITEM_PTR : ITEMS_EQUIPPED_PVEC)
+            {
+                if (NEXT_EQUIPPED_ITEM_PTR->IsBodypart() == false)
+                {
+                    NEXT_CHARACTER_PTR->ItemUnEquip(NEXT_EQUIPPED_ITEM_PTR);
+                }
+            }
+
+            //move non-bodypart item pointers into deadNonPlayerItemsHeld_
+            auto const ITEMS_UNEQUIPPED_PVEC{ NEXT_CHARACTER_PTR->Inventory().Items() };
+            for (auto const NEXT_UNEQUIPPED_ITEM_PTR : ITEMS_UNEQUIPPED_PVEC)
+            {
+                if (NEXT_UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
+                {
+                    NEXT_CHARACTER_PTR->ItemRemove(NEXT_UNEQUIPPED_ITEM_PTR);
+                    deadNonPlayerItemsHeld_.items_pvec.push_back(NEXT_UNEQUIPPED_ITEM_PTR);
+                }
+            }
+        }
+
+        //create cached treasure
+        TreasureFactory::Make(deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsCached_);
+    }
+
+
+    void Encounter::EndTreasureStageTasks()
+    {
+        //At the end of this function:
+        //  - All item pointers in deadNonPlayerItemsHeld_ and deadNonPlayerItemsCached_
+        //    will be free'd by the ItemWarehouse.
+        //  - Everything in deadNonPlayerItemsHeld_ and deadNonPlayerItemsCached_ will be
+        //    zero'd.
+        //  - deadNonPlayerPartyUPtr_ will be empty and all it's held pointers free'd.
+        //
+
+        for (auto nextItemPtr : deadNonPlayerItemsHeld_.items_pvec)
+        {
+            item::ItemWarehouse::Instance()->Free(nextItemPtr);
+        }
+        
+        deadNonPlayerItemsHeld_.items_pvec.clear();
+        deadNonPlayerItemsHeld_.coins = 0;
+        deadNonPlayerItemsHeld_.gems = 0;
+        deadNonPlayerItemsHeld_.meteor_shards = 0;
+
+        for (auto nextItemPtr : deadNonPlayerItemsCached_.items_pvec)
+        {
+            item::ItemWarehouse::Instance()->Free(nextItemPtr);
+        }
+
+        deadNonPlayerItemsCached_.items_pvec.clear();
+        deadNonPlayerItemsCached_.coins = 0;
+        deadNonPlayerItemsCached_.gems = 0;
+        deadNonPlayerItemsCached_.meteor_shards = 0;
+
+        FreeThenResetDeadNonPlayerParty();
     }
 
 
@@ -297,7 +379,7 @@ namespace combat
 
         //no need to null out turnCreaturePtr_
 
-        //move from the enemyParty to the deadNonPlayerParty for later loot collection
+        //move from the enemyParty to the deadNonPlayerParty for later use by the Treasure Stage
         if (CREATURE_CPTRC->IsPlayerCharacter() == false)
         {
             auto killedCharacterPtr{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
@@ -386,7 +468,7 @@ namespace combat
     }
 
 
-    void Encounter::FreeThenResetNonPlayerParty()
+    void Encounter::FreeThenResetLivingNonPlayerParty()
     {
         FreeThenReset(nonPlayerPartyUPtr_);
     }

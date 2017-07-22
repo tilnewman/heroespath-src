@@ -116,7 +116,7 @@ namespace ownership
     {
         enum Enum
         {
-            //...nothing really
+            //...nothing
             Animal = 0,
 
             //shortbow/longbow/blowpipe, rings,

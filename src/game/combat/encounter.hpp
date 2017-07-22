@@ -30,6 +30,7 @@
 //
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/turn-info.hpp"
+#include "game/combat/treasure.hpp"
 
 #include <memory>
 #include <vector>
@@ -82,7 +83,7 @@ namespace combat
         static void Release();
 
         //the player party is kept by the State object
-        non_player::Party & NonPlayerParty();
+        non_player::Party & LivingNonPlayerParty();
         non_player::Party & DeadNonPlayerParty();
         non_player::Party & RunawayNonPlayerParty();
 
@@ -99,7 +100,10 @@ namespace combat
 
         void Setup_First();
 
-        inline creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
+        inline creature::CreaturePtr_t CurrentTurnCreature() const
+        {
+            return turnCreaturePtr_;
+        }
         
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
@@ -113,15 +117,18 @@ namespace combat
             turnInfoMap_[P].SetIsFlying(B);
         }
 
-        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
+        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P,
+                                      const TurnActionInfo &         TAI)
         {
             turnInfoMap_[P].SetTurnActionInfo(TAI);
         }
 
         void HandleKilledCreature(creature::CreatureCPtrC_t);
         void IncrementTurn();
-        void StartTasks();
-        void EndTasks();
+        void BeginCombatTasks();
+        void EndCombatTasks();
+        void BeginTreasureStageTasks();
+        void EndTreasureStageTasks();
 
         void HandleRunawayPlayer(const creature::CreaturePtr_t);
         void HandleRunawayNonPlayer(const creature::CreaturePtr_t);
@@ -132,17 +139,16 @@ namespace combat
         void SortAndSetTurnCreature();
 
         //These functions are where all non-player charater pointers are free'd
-        void FreeThenResetNonPlayerParty();
+        void FreeThenResetLivingNonPlayerParty();
         void FreeThenResetDeadNonPlayerParty();
         void FreeThenResetRunawayNonPlayerParty();
         void FreeThenReset(non_player::PartyUPtr_t &);
 
-        inline void EmptyRunawayPlayersVec() { runawayPlayersVec_.clear(); }
-
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
         
-        //non-player character pointers are owned by these party objects
+        //Non-player character pointers are owned by these party objects.
+        //Each non-player character pointer must only ever be in one of these vecs.
         non_player::PartyUPtr_t nonPlayerPartyUPtr_;
         non_player::PartyUPtr_t deadNonPlayerPartyUPtr_;
         non_player::PartyUPtr_t runawayNonPlayerPartyUPtr_;
@@ -155,7 +161,15 @@ namespace combat
         creature::CreaturePVec_t turnOverPVec_;
         std::size_t              turnIndex_;
         TurnInfoMap_t            turnInfoMap_;
+
+        //this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtr_t  turnCreaturePtr_;
+
+        //contains all items the dead enemies were wearing or holding when killed
+        ItemCache deadNonPlayerItemsHeld_;
+
+        //conatins all the items the dead enemies were holding in the chest/lockbox
+        ItemCache deadNonPlayerItemsCached_;
     };
 
 }

@@ -44,6 +44,7 @@ namespace item
 
 
     //Singleton responsible for the lifetimes of item objects.
+    //This class does not new the objects, but it does delete them.
     class ItemWarehouse
     {
         //prevent copy constructor
