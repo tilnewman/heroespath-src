@@ -81,15 +81,26 @@ namespace creature
             case Spike:         { return "Spike"; }
             case Skeleton:      { return "Skeleton"; }
             case Ranger:        { return "Ranger"; }
-            case Desert:        { return "Desert"; }
             case Water:         { return "Water"; }
             case Blacksmith:    { return "Blacksmith"; }
-            case Witch:         { return "Witch"; }
+            case Spider:        { return "Spider"; }
+            case Beetle:        { return "Beetle"; }
+            case Boar:          { return "Boar"; }
+            case Lion:          { return "Lion"; }
+            case Ramonaut:      { return "Ramonaut"; }
+            case Serpent:       { return "Serpent"; }
+            case Bat:           { return "Bat"; }
+            case Ghost:         { return "Ghost"; }
+            case Cat:           { return "Cat"; }
+            case Wolf:          { return "Wolf"; }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::creature::player::role::Enum::Name(" << E << ")_InvalidValueError.";
+
+                ss << "game::creature::player::role::Enum::ToString(" << E
+                    << ")_InvalidValueError.";
+                
                 throw std::range_error(ss.str());
             }
         }
@@ -119,13 +130,16 @@ namespace creature
         return ((E == role::Firebrand) ||
                 (E == role::Sylavin) ||
                 (E == role::Wing) ||
-                (E == role::Whelp));
+                (E == role::Whelp) ||
+                (E == role::Bat));
     }
 
 
     bool role::WillInitiallyFly(const role::Enum E)
     {
-        return ((E == role::Wing) || (E == role::Whelp));
+        return ((E == role::Wing) ||
+                (E == role::Whelp) ||
+                (E == role::Bat));
     }
 
 }

@@ -247,5 +247,317 @@ namespace creature
                 (E == race::Harpy));
     }
 
+
+    const RoleVec_t race::Roles(const race::Enum E)
+    {
+        switch (E)
+        {
+            case Human:
+            {
+                return { role::Knight,
+                         role::Archer,
+                         role::Bard,
+                         role::Beastmaster,
+                         role::Cleric,
+                         role::Knight,
+                         role::Thief,
+                         role::Sorcerer,
+                         role::Ranger,
+                         role::Trader,
+                         role::Drunk,
+                         role::Brute,
+                         role::Smasher,
+                         role::Soldier,
+                         role::Blacksmith,
+                         role::Shaman,
+                         role::Grunt };
+            }
+            case Gnome:
+            {
+                return { role::Bard,
+                         role::Cleric,
+                         role::Sorcerer,
+                         role::Knight,
+                         role::Beastmaster,
+                         role::Archer,
+                         role::Thief,
+                         role::Grunt };
+            }
+            case Pixie:
+            {
+                return { role::Beastmaster,
+                         role::Sorcerer,
+                         role::Cleric,
+                         role::Bard };
+            }
+            case Goblin:
+            {
+                return { role::Thief,
+                         role::Sorcerer,
+                         role::Brute,
+                         role::Archer,
+                         role::Captain,
+                         role::Chieftain,
+                         role::Shaman,
+                         role::Trader,
+                         role::Grunt };
+            }
+            case Troll:
+            {
+                return { role::Berserker,
+                         role::Brute,
+                         role::Chieftain,
+                         role::Grunt,
+                         role::Mountain,
+                         role::Shaman,
+                         role::Smasher,
+                         role::Strangler,
+                         role::Warlord };
+            }
+            case Orc:
+            {
+                return { role::Berserker,
+                         role::Chieftain,
+                         role::Elder,
+                         role::FourArmed,
+                         role::Captain,
+                         role::Mountain,
+                         role::Spike,
+                         role::Grunt,
+                         role::Shaman,
+                         role::Smasher,
+                         role::Warlord };
+            }
+            case Newt:
+            {
+                return { role::Chieftain,
+                         role::Cleric,
+                         role::Elder,
+                         role::Sorcerer,
+                         role::Trader,
+                         role::Grunt };
+            }
+            case Bog:
+            {
+                return { role::Chieftain,
+                         role::Smasher,
+                         role::Sorcerer,
+                         role::Shaman,
+                         role::Spike,
+                         role::Tendrilus,
+                         role::Wing,
+                         role::Whelp,
+                         role::Grunt };
+            }
+            case LizardWalker:
+            {
+                return { role::Whelp,
+                         role::Sorcerer,
+                         role::Captain,
+                         role::Chieftain,
+                         role::Spike,
+                         role::Shaman,
+                         role::Grunt };
+            }
+            case Minotaur:
+            {
+                return { role::Grunt,
+                         role::Brute,
+                         role::FourArmed,
+                         role::Mountain,
+                         role::Shaman,
+                         role::Warlord,
+                         role::Grunt };
+            }
+            case Ogre:
+            {
+                return { role::Berserker,
+                         role::Brute,
+                         role::Elder,
+                         role::FourArmed,
+                         role::Giant,
+                         role::Mountain,
+                         role::Warlord,
+                         role::Captain,
+                         role::Chieftain,
+                         role::Shaman,
+                         role::Spike,
+                         role::Grunt };
+            }
+            case Halfling:
+            {
+                return { role::Shaman,
+                         role::Chieftain,
+                         role::Captain,
+                         role::Grunt };
+            }
+            case Naga:
+            {
+                return { role::Grunt };
+            }
+            case Pug:
+            {
+                return { role::Archer,
+                         role::Cleric,
+                         role::Grunt };
+            }
+            case Giant:
+            {
+                return { role::Smasher,
+                         role::Strangler,
+                         role::Warlord,
+                         role::Mountain,
+                         role::Grunt,
+                         role::Brute };
+            }
+            case Ghoul:
+            {
+                return { role::Strangler,
+                         role::Spike,
+                         role::Mountain,
+                         role::Grunt };
+            }
+            case Wolfen:
+            {
+                return { role::Wolfen, role::TwoHeaded };
+            }
+            case Spider:
+            {
+                return { role::Spider };
+            }
+            case CaveCrawler:
+            {
+                return { role::Mountain };
+            }
+            case Hydra:
+            {
+                return { role::Wing };
+            }
+            case Plant:
+            {
+                return { role::Smasher,
+                         role::Tendrilus,
+                         role::Pod,
+                         role::Strangler};
+            }
+            case Lion:
+            case LionBoar:
+            {
+                return { role::Lion };
+            }
+            case Ramonaut:
+            {
+                return { role::Ramonaut };
+            }
+            case Serpent:
+            {
+                return { role::Serpent, role::Water };
+            }
+            case Cobra:
+            {
+                return { role::Serpent };
+            }
+            case Werebear:
+            {
+                return { role::Elder,
+                         role::Grunt,
+                         role::Mountain };
+            }
+            case Wereboar:
+            {
+                return { role::Boar };
+            }
+            case Werecat:
+            {
+                return { role::Cat };
+            }
+            case Werewolf:
+            {
+                return { role::Wolf };
+            }
+            case Beetle:
+            {
+                return { role::Beetle };
+            }
+            case Boar:
+            {
+                return { role::Boar };
+            }
+            case Witch:
+            {
+                return { role::Elder,
+                         role::Ghost,
+                         role::Strangler,
+                         role::Mountain,
+                         role::Sorcerer };
+            }
+            case Golem:
+            {
+                return { role::Brute };
+            }
+            case ThreeHeadedHound:
+            {
+                return { role::Mountain };
+            }
+            case Skeleton:
+            {
+                return { role::Chieftain,
+                         role::FourArmed,
+                         role::Mountain,
+                         role::Grunt };
+            }
+            case Demon:
+            {
+                return { role::Skeleton,
+                         role::Spike,
+                         role::Strangler,
+                         role::Whelp,
+                         role::Wing,
+                         role::Grunt };
+            }
+            case Shade:
+            {
+                return { role::Ghost };
+            }
+            case Griffin:
+            {
+                return { role::Whelp, role::Wing };
+            }
+            case Werebat:
+            {
+                return { role::Bat };
+            }
+            case Wyvern:
+            {
+                return { role::Whelp, role::Wing };
+            }
+            case Bat:
+            {
+                return { role::Bat };
+            }
+            case Harpy:
+            {
+                return { role::Wing };
+            }
+            case Dragon:
+            {
+                return { role::Firebrand, role::Sylavin };
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::creature::race::HasTorso(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    bool race::RaceRoleMatch(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM)
+    {
+        return (race::ToString(RACE_ENUM) == role::ToString(ROLE_ENUM));
+    }
+
 }
 }

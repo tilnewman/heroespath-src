@@ -96,17 +96,14 @@ namespace creature
 
         const std::string ToString() const;
 
-        static inline const BodyType Make_Humanoid( const bool HAS_FANGS = false,
-                                                    const bool HAS_CLAWS = false,
-                                                    const bool HAS_TAIL  = false,
-                                                    const bool HAS_HORNS = false)
-        {
-            return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, HAS_FANGS, HAS_CLAWS, false, true, HAS_TAIL, false, HAS_HORNS);
-        }
+        static const BodyType Make_Humanoid(const bool HAS_FANGS = false,
+                                            const bool HAS_CLAWS = false,
+                                            const bool HAS_TAIL  = false,
+                                            const bool HAS_HORNS = false);
 
-        static inline const BodyType Make_Wolfen() { return BodyType(item::material::Flesh, item::material::Fur, 1, 0, 4, 2, true, true, false, false, true); }
-        static inline const BodyType Make_Dragon() { return BodyType(item::material::Scale, item::material::Scale, 1, 0, 4, 2, true, true, true, false, true, true, true, 0, true); }
-        static inline const BodyType Make_Pixie()  { return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, false, false, true); }
+        static const BodyType Make_Wolfen(const role::Enum ROLE_ENUM = role::Wolfen);
+        static const BodyType Make_Dragon();
+        static const BodyType Make_Pixie();
 
         static const BodyType Make_FromRaceAndRole(const creature::race::Enum RACE, const creature::role::Enum ROLE);
 

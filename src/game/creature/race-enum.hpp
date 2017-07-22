@@ -28,6 +28,8 @@
 // race-enum.hpp
 //  An enumeration of all Races.
 //
+#include "game/creature/role-enum.hpp"
+
 #include <string>
 
 
@@ -95,6 +97,8 @@ namespace creature
         static bool HasTorso(const race::Enum);
         static bool CanFly(const race::Enum);
         static bool WillInitiallyFly(const race::Enum);
+        static const RoleVec_t Roles(const race::Enum);
+        static bool RaceRoleMatch(const race::Enum, const role::Enum);
     };
 
 }

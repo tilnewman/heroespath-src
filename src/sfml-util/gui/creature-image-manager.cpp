@@ -125,45 +125,24 @@ namespace gui
 
         if (raceIndex < static_cast<int>(game::creature::race::Count))
         {
-            static int totalTestIndex{ 0 };
-
             auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
             auto const RACE_STR { game::creature::race::ToString(RACE_ENUM) };
+            auto const ROLE_VEC{ game::creature::race::Roles(RACE_ENUM) };
 
-            if (roleIndex < static_cast<int>(game::creature::role::Count))
+            if (roleIndex < static_cast<int>(ROLE_VEC.size()))
             {
-                auto const ROLE_ENUM{ static_cast<game::creature::role::Enum>(roleIndex) };
+                auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                 auto const ROLE_STR { game::creature::role::ToString(ROLE_ENUM) };
 
                 if (sexIndex < static_cast<int>(game::creature::sex::Count))
                 {
-                    static int totalTestCount{ static_cast<int>(
-                        (static_cast<float>(game::creature::race::Count) *
-                         static_cast<float>(game::creature::role::Count) *
-                         static_cast<float>(game::creature::sex::Count))  *
-                        1.5f) };
-
-                    static std::size_t i{ 0 };
+                    static std::size_t fileIndex{ 0 };
 
                     auto const SEX_ENUM{ static_cast<game::creature::sex::Enum>(sexIndex) };
                     auto const SEX_STR { game::creature::sex::ToString(SEX_ENUM) };
 
                     //test to ensure that BodyType maker will not throw
                     auto const BODY_TYPE{ game::creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM) };
-
-                    //skip sex unknown for Gnomes and Dragons
-                    if (SEX_ENUM == game::creature::sex::Unknown)
-                    {
-                        if ((RACE_ENUM == game::creature::race::Gnome) ||
-                            (RACE_ENUM == game::creature::race::Dragon))
-                        {
-                            i = 0;
-                            classIndex = 0;
-                            ++sexIndex;
-                            ++totalTestIndex;
-                            return false;
-                        }
-                    }
 
                     if (RACE_ENUM == game::creature::race::Wolfen)
                     {
@@ -177,60 +156,56 @@ namespace gui
 
                             M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (wolfen_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", wolfen_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
 
-                            if (i < filenamesVec.size())
+                            if (fileIndex < filenamesVec.size())
                             {
                                 sf::Texture texture;
-                                cimSPtr->GetImage(texture, filenamesVec.at(i));
+                                cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
                                 game::LoopManager::Instance()->TestingImageSet(texture);
 
                                 std::ostringstream ss;
-                                ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
+                                ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(fileIndex);
                                 game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                                ++i;
+                                ++fileIndex;
                                 return false;
                             }
 
-                            i = 0;
+                            fileIndex = 0;
                             ++classIndex;
-                            ++totalTestIndex;
                             return false;
                         }
                     }
                     else if (RACE_ENUM == game::creature::race::Dragon)
                     {
-                        if ((ROLE_ENUM == game::creature::role::Firebrand) || (ROLE_ENUM == game::creature::role::Sylavin))
+                        if (classIndex < static_cast<int>(game::creature::dragon_class::Count))
                         {
-                            if (classIndex < static_cast<int>(game::creature::dragon_class::Count))
+                            auto const CLASS_ENUM{ static_cast<game::creature::dragon_class::Enum>(classIndex) };
+                            auto const CLASS_STR { game::creature::dragon_class::ToString(CLASS_ENUM) };
+
+                            std::vector<std::string> filenamesVec;
+                            cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, game::creature::wolfen_class::Count, CLASS_ENUM);
+
+                            M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
+
+                            if (fileIndex < filenamesVec.size())
                             {
-                                auto const CLASS_ENUM{ static_cast<game::creature::dragon_class::Enum>(classIndex) };
-                                auto const CLASS_STR { game::creature::dragon_class::ToString(CLASS_ENUM) };
+                                sf::Texture texture;
+                                cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
+                                game::LoopManager::Instance()->TestingImageSet(texture);
 
-                                std::vector<std::string> filenamesVec;
-                                cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, game::creature::wolfen_class::Count, CLASS_ENUM);
+                                std::ostringstream ss;
+                                ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(fileIndex);
+                                game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                                M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
-
-                                if (i < filenamesVec.size())
-                                {
-                                    sf::Texture texture;
-                                    cimSPtr->GetImage(texture, filenamesVec.at(i));
-                                    game::LoopManager::Instance()->TestingImageSet(texture);
-
-                                    std::ostringstream ss;
-                                    ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(i);
-                                    game::LoopManager::Instance()->TestingStrAppend(ss.str());
-
-                                    ++i;
-                                    return false;
-                                }
-
-                                i = 0;
-                                ++classIndex;
-                                ++totalTestIndex;
+                                ++fileIndex;
                                 return false;
                             }
+
+                            fileIndex = 0;
+                            ++classIndex;
+                            return false;
                         }
+                        
                     }
                     else
                     {
@@ -239,38 +214,35 @@ namespace gui
 
                         M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", GetFilenames() failed to return anything.");
 
-                        if (i < filenamesVec.size())
+                        if (fileIndex < filenamesVec.size())
                         {
                             sf::Texture texture;
-                            cimSPtr->GetImage(texture, filenamesVec.at(i));
+                            cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
                             game::LoopManager::Instance()->TestingImageSet(texture);
 
                             std::ostringstream ss;
-                            ss << " CreatureImageManager (" << totalTestCount - totalTestIndex << ") Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(i);
+                            ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(fileIndex);
                             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                            ++i;
+                            ++fileIndex;
                             return false;
                         }
                     }
 
-                    i = 0;
+                    fileIndex = 0;
                     classIndex = 0;
                     ++sexIndex;
-                    ++totalTestIndex;
                     return false;
                 }
 
                 sexIndex = 0;
                 ++roleIndex;
-                ++totalTestIndex;
                 return false;
             }
 
             sexIndex = 0;
             roleIndex = 0;
             ++raceIndex;
-            ++totalTestIndex;
             return false;
         }
 
@@ -408,8 +380,11 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("troll-1.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("troll-1.png");
+                return;
+            }
         }
 
         if (RACE == race::Orc)
@@ -486,8 +461,11 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("orc-grunt-1.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("orc-grunt-1.png");
+                return;
+            }
         }
 
         if (RACE == race::Newt)
@@ -522,16 +500,19 @@ namespace gui
                 return;
             }
 
-            for(std::size_t i(1); i<=6; ++i)
+            if (ROLE == role::Grunt)
             {
-                std::ostringstream ss;
-                ss << "newt-" << i << ".png";
-                outputVec.push_back(ss.str());
+                for (std::size_t i(1); i <= 6; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "newt-" << i << ".png";
+                    outputVec.push_back(ss.str());
+                }
+                return;
             }
-            return;
         }
 
-        if (RACE == race::Spider)
+        if ((RACE == race::Spider) && (ROLE == role::Spider))
         {
             for (std::size_t i(1); i <= 9; ++i)
             {
@@ -592,13 +573,16 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("bog-grunt-1.png");
-            outputVec.push_back("bog-grunt-2.png");
-            outputVec.push_back("bog-grunt-3.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("bog-grunt-1.png");
+                outputVec.push_back("bog-grunt-2.png");
+                outputVec.push_back("bog-grunt-3.png");
+                return;
+            }
         }
 
-        if (RACE == race::CaveCrawler)
+        if ((RACE == race::CaveCrawler) && (ROLE == role::Mountain))
         {
             outputVec.push_back("cave-crawler-1.png");
             outputVec.push_back("cave-crawler-2.png");
@@ -606,7 +590,7 @@ namespace gui
             return;
         }
 
-        if (RACE == race::Hydra)
+        if ((RACE == race::Hydra) && (ROLE == role::Wing))
         {
             outputVec.push_back("hydra-1.png");
             return;
@@ -667,13 +651,16 @@ namespace gui
                 }
             }
 
-            for(std::size_t i(1); i<=12; ++i)
+            if (ROLE == role::Grunt)
             {
-                std::ostringstream ss;
-                ss << "lizard-walker-" << i << ".png";
-                outputVec.push_back(ss.str());
+                for (std::size_t i(1); i <= 12; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "lizard-walker-" << i << ".png";
+                    outputVec.push_back(ss.str());
+                }
+                return;
             }
-            return;
         }
 
         if (RACE == race::Minotaur)
@@ -716,9 +703,12 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("minotaur-1.png");
-            outputVec.push_back("minotaur-2.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("minotaur-1.png");
+                outputVec.push_back("minotaur-2.png");
+                return;
+            }
         }
 
         if (RACE == race::Ogre)
@@ -783,17 +773,20 @@ namespace gui
                 return;
             }
 
-            if (ROLE == role::Whelp)
+            if (ROLE == role::Spike)
             {
-                outputVec.push_back("ogre-whelp.png");
+                outputVec.push_back("ogre-spike.png");
                 return;
             }
 
-            outputVec.push_back("ogre-1.png");
-            outputVec.push_back("ogre-2.png");
-            outputVec.push_back("ogre-3.png");
-            outputVec.push_back("ogre-4.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("ogre-1.png");
+                outputVec.push_back("ogre-2.png");
+                outputVec.push_back("ogre-3.png");
+                outputVec.push_back("ogre-4.png");
+                return;
+            }
         }
 
         if (RACE == race::Plant)
@@ -804,6 +797,12 @@ namespace gui
                 return;
             }
 
+            if (ROLE == role::Strangler)
+            {
+                outputVec.push_back("plant-strangler.png");
+                return;
+            }
+
             if (ROLE == role::Tendrilus)
             {
                 outputVec.push_back("plant-tendrilus-1.png");
@@ -811,15 +810,12 @@ namespace gui
                 return;
             }
 
-            if (ROLE == role::Whelp)
+            if (ROLE == role::Pod)
             {
-                outputVec.push_back("plant-whelp.png");
+                outputVec.push_back("plant-pod-1.png");
+                outputVec.push_back("plant-pod-2.png");
                 return;
             }
-
-            outputVec.push_back("plant-pod-1.png");
-            outputVec.push_back("plant-pod-2.png");
-            return;
         }
 
         if (RACE == race::Skeleton)
@@ -842,13 +838,16 @@ namespace gui
                 return;
             }
 
-            for (std::size_t i(1); i <= 8; ++i)
+            if (ROLE == role::Grunt)
             {
-                std::ostringstream ss;
-                ss << "skeleton-" << i << ".png";
-                outputVec.push_back(ss.str());
+                for (std::size_t i(1); i <= 8; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "skeleton-" << i << ".png";
+                    outputVec.push_back(ss.str());
+                }
+                return;
             }
-            return;
         }
 
         if (RACE == race::Werebear)
@@ -866,17 +865,20 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("werebear-1.png");
-            return;
+            if (ROLE == role::Mountain)
+            {
+                outputVec.push_back("werebear-mountain.png");
+                return;
+            }
         }
 
-        if (RACE == race::Beetle)
+        if ((RACE == race::Beetle) && (ROLE == role::Beetle))
         {
             outputVec.push_back("beetle-giant.png");
             return;
         }
 
-        if (RACE == race::Boar)
+        if ((RACE == race::Boar) && (ROLE == role::Boar))
         {
             outputVec.push_back("boar-1.png");
             return;
@@ -920,13 +922,16 @@ namespace gui
                 return;
             }
 
-            for (std::size_t i(1); i <= 9; ++i)
+            if (ROLE == role::Grunt)
             {
-                std::ostringstream ss;
-                ss << "demon-" << i << ".png";
-                outputVec.push_back(ss.str());
+                for (std::size_t i(1); i <= 9; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "demon-" << i << ".png";
+                    outputVec.push_back(ss.str());
+                }
+                return;
             }
-            return;
         }
 
         if (RACE == race::Ghoul)
@@ -943,10 +948,18 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("ghoul-1.png");
-            outputVec.push_back("ghoul-2.png");
-            outputVec.push_back("ghoul-3.png");
-            return;
+            if (ROLE == role::Mountain)
+            {
+                outputVec.push_back("ghoul-mountain.png");
+                return;
+            }
+
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("ghoul-1.png");
+                outputVec.push_back("ghoul-2.png");
+                return;
+            }
         }
 
         if (RACE == race::Griffin)
@@ -957,8 +970,11 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("griffin-1.png");
-            return;
+            if (ROLE == role::Wing)
+            {
+                outputVec.push_back("griffin-1.png");
+                return;
+            }
         }
 
         if (RACE == race::Giant)
@@ -995,8 +1011,11 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("giant-1.png");
-            return;
+            if (ROLE == role::Brute)
+            {
+                outputVec.push_back("giant-brute.png");
+                return;
+            }
         }
 
         if (RACE == race::Goblin)
@@ -1047,12 +1066,14 @@ namespace gui
             {
                 if (SEX == sex::Female)
                 {
-                    outputVec.push_back("goblin-trader-female.png");
+                    outputVec.push_back("goblin-trader-female-1.png");
+                    outputVec.push_back("goblin-trader-female-2.png");
                     return;
                 }
                 else
                 {
-                    outputVec.push_back("goblin-trader-male.png");
+                    outputVec.push_back("goblin-trader-male-1.png");
+                    outputVec.push_back("goblin-trader-male-2.png");
                     return;
                 }
             }
@@ -1086,29 +1107,6 @@ namespace gui
                     }
                     return;
                 }
-            }
-
-            if (SEX == sex::Female)
-            {
-                outputVec.push_back("goblin-1.png");
-                outputVec.push_back("goblin-2.png");
-                outputVec.push_back("goblin-female-1.png");
-                outputVec.push_back("goblin-female-2.png");
-                outputVec.push_back("goblin-female-3.png");
-                outputVec.push_back("goblin-female-4.png");
-                return;
-            }
-            else
-            {
-                 outputVec.push_back("goblin-1.png");
-                 outputVec.push_back("goblin-2.png");
-                 outputVec.push_back("goblin-3.png");
-                 outputVec.push_back("goblin-male-1.png");
-                 outputVec.push_back("goblin-male-2.png");
-                 outputVec.push_back("goblin-male-3.png");
-                 outputVec.push_back("goblin-male-4.png");
-                 outputVec.push_back( "goblin-male-5.png");
-                 return;
             }
         }
 
@@ -1235,7 +1233,7 @@ namespace gui
 
             if (ROLE == role::Thief)
             {
-                outputVec.push_back("gnome-1.png");
+                outputVec.push_back("gnome-grunt.png");
                 outputVec.push_back("gnome-2.png");
                 outputVec.push_back("gnome-3.png");
                 outputVec.push_back("gnome-6.png");
@@ -1249,8 +1247,11 @@ namespace gui
                 return;
             }
 
-            outputVec.push_back("gnome-1.png");
-            return;
+            if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("gnome-grunt.png");
+                return;
+            }
         }
 
         if (RACE == race::Human)
@@ -1430,7 +1431,7 @@ namespace gui
                     outputVec.push_back("ranger-human-male-4.png");
                     outputVec.push_back("ranger-human-male-5.png");
                     outputVec.push_back("ranger-human-male-6.png");
-                     return;
+                    return;
                 }
             }
 
@@ -1519,68 +1520,61 @@ namespace gui
                 return;
             }
 
-            if (ROLE == role::Witch)
+            if (ROLE == role::Grunt)
             {
-                outputVec.push_back("witch-1.png");
-                outputVec.push_back("witch-2.png");
-                outputVec.push_back("witch-3.png");
-                outputVec.push_back("witch-4.png");
-                outputVec.push_back("witch-5.png");
-                return;
-            }
-
-            if (SEX == sex::Female)
-            {
-                outputVec.push_back("human-1.png");
-                outputVec.push_back("human-2.png");
-                outputVec.push_back("human-3.png");
-                outputVec.push_back("human-4.png");
-                outputVec.push_back("human-5.png");
-                outputVec.push_back("human-6.png");
-                outputVec.push_back("human-8.png");
-                outputVec.push_back("human-9.png");
-                outputVec.push_back("human-10.png");
-                outputVec.push_back("human-12.png");
-                outputVec.push_back("human-13.png");
-                outputVec.push_back("human-female-1.png");
-                outputVec.push_back("human-female-2.png");
-                outputVec.push_back("human-female-3.png");
-                outputVec.push_back("human-female-4.png");
-                outputVec.push_back("human-female-5.png");
-                outputVec.push_back("human-female-6.png");
-                outputVec.push_back("human-female-7.png");
-                outputVec.push_back("human-female-8.png");
-                outputVec.push_back("human-female-9.png");
-                outputVec.push_back("human-female-10.png");
-                outputVec.push_back("human-female-11.png");
-                outputVec.push_back("human-female-12.png");
-                outputVec.push_back("human-female-13.png");
-                outputVec.push_back("human-female-14.png");
-                return;
-            }
-            else
-            {
-                outputVec.push_back("human-1.png");
-                outputVec.push_back("human-2.png");
-                outputVec.push_back("human-3.png");
-                outputVec.push_back("human-4.png");
-                outputVec.push_back("human-5.png");
-                outputVec.push_back("human-6.png");
-                outputVec.push_back("human-7.png");
-                outputVec.push_back("human-8.png");
-                outputVec.push_back("human-9.png");
-                outputVec.push_back("human-10.png");
-                outputVec.push_back("human-11.png");
-                outputVec.push_back("human-12.png");
-                outputVec.push_back("human-13.png");
-                outputVec.push_back("human-male-1.png");
-                outputVec.push_back("human-male-2.png");
-                outputVec.push_back("human-male-3.png");
-                outputVec.push_back("human-male-4.png");
-                outputVec.push_back("human-male-5.png");
-                outputVec.push_back("human-male-6.png");
-                outputVec.push_back("human-male-7.png");
-                return;
+                if (SEX == sex::Female)
+                {
+                    outputVec.push_back("human-1.png");
+                    outputVec.push_back("human-2.png");
+                    outputVec.push_back("human-3.png");
+                    outputVec.push_back("human-4.png");
+                    outputVec.push_back("human-5.png");
+                    outputVec.push_back("human-6.png");
+                    outputVec.push_back("human-8.png");
+                    outputVec.push_back("human-9.png");
+                    outputVec.push_back("human-10.png");
+                    outputVec.push_back("human-12.png");
+                    outputVec.push_back("human-13.png");
+                    outputVec.push_back("human-female-1.png");
+                    outputVec.push_back("human-female-2.png");
+                    outputVec.push_back("human-female-3.png");
+                    outputVec.push_back("human-female-4.png");
+                    outputVec.push_back("human-female-5.png");
+                    outputVec.push_back("human-female-6.png");
+                    outputVec.push_back("human-female-7.png");
+                    outputVec.push_back("human-female-8.png");
+                    outputVec.push_back("human-female-9.png");
+                    outputVec.push_back("human-female-10.png");
+                    outputVec.push_back("human-female-11.png");
+                    outputVec.push_back("human-female-12.png");
+                    outputVec.push_back("human-female-13.png");
+                    outputVec.push_back("human-female-14.png");
+                    return;
+                }
+                else
+                {
+                    outputVec.push_back("human-1.png");
+                    outputVec.push_back("human-2.png");
+                    outputVec.push_back("human-3.png");
+                    outputVec.push_back("human-4.png");
+                    outputVec.push_back("human-5.png");
+                    outputVec.push_back("human-6.png");
+                    outputVec.push_back("human-7.png");
+                    outputVec.push_back("human-8.png");
+                    outputVec.push_back("human-9.png");
+                    outputVec.push_back("human-10.png");
+                    outputVec.push_back("human-11.png");
+                    outputVec.push_back("human-12.png");
+                    outputVec.push_back("human-13.png");
+                    outputVec.push_back("human-male-1.png");
+                    outputVec.push_back("human-male-2.png");
+                    outputVec.push_back("human-male-3.png");
+                    outputVec.push_back("human-male-4.png");
+                    outputVec.push_back("human-male-5.png");
+                    outputVec.push_back("human-male-6.png");
+                    outputVec.push_back("human-male-7.png");
+                    return;
+                }
             }
         }
 
@@ -1589,13 +1583,25 @@ namespace gui
             if (SEX == sex::Female)
             {
                 if (ROLE == role::Beastmaster)
+                {
                     outputVec.push_back("pixie-beastmaster-female.png");
+                    return;
+                }
                 else if (ROLE == role::Sorcerer)
+                {
                     outputVec.push_back("pixie-female-3.png");
+                    return;
+                }
                 else if (ROLE == role::Cleric)
+                {
                     outputVec.push_back("pixie-female-5.png");
+                    return;
+                }
                 else if (ROLE == role::Bard)
+                {
                     outputVec.push_back("pixie-female-4.png");
+                    return;
+                }
                 else
                 {
                     outputVec.push_back("pixie-1.png");
@@ -1605,23 +1611,26 @@ namespace gui
                     outputVec.push_back("pixie-female-3.png");
                     outputVec.push_back("pixie-female-4.png");
                     outputVec.push_back("pixie-female-5.png");
+                    return;
                 }
             }
             else
             {
                 if (ROLE == role::Beastmaster)
+                {
                     outputVec.push_back("pixie-beastmaster-male.png");
-                else if (ROLE == role::Sorcerer)
-                    outputVec.push_back("pixie-1.png");
-                else
+                    return;
+                }
+                else if ((ROLE == role::Sorcerer) ||
+                         (ROLE == role::Cleric) ||
+                         (ROLE == role::Bard))
                 {
                     outputVec.push_back("pixie-1.png");
                     outputVec.push_back("pixie-2.png");
                     outputVec.push_back("pixie-male-1.png");
+                    return;
                 }
             }
-
-            return;
         }
 
         if (RACE == race::Wolfen)
@@ -1634,10 +1643,13 @@ namespace gui
                     return;
                 }
 
-                outputVec.push_back("wolfen-1.png");
-                outputVec.push_back("wolfen-2.png");
-                outputVec.push_back("wolfen-3.png");
-                return;
+                if (ROLE == role::Wolfen)
+                {
+                    outputVec.push_back("wolfen-1.png");
+                    outputVec.push_back("wolfen-2.png");
+                    outputVec.push_back("wolfen-3.png");
+                    return;
+                }
             }
             else
             {
@@ -1657,27 +1669,41 @@ namespace gui
 
         if (RACE == race::Halfling)
         {
-            if (ROLE == role::Shaman) { outputVec.push_back("halfling-shaman.png"); return; }
-            if (ROLE == role::Chieftain) { outputVec.push_back("halfling-chieftain.png"); return; }
-            if (ROLE == role::Captain) { outputVec.push_back("halfling-captain.png"); return; }
-
-            outputVec.push_back("halfling-1.png");
-            return;
+            if (ROLE == role::Shaman)
+            {
+                outputVec.push_back("halfling-shaman.png");
+                return;
+            }
+            else if (ROLE == role::Chieftain)
+            {
+                outputVec.push_back("halfling-chieftain.png");
+                return;
+            }
+            else if (ROLE == role::Captain)
+            {
+                outputVec.push_back("halfling-captain.png");
+                return;
+            }
+            else if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("halfling-1.png");
+                return;
+            }
         }
 
-        if (RACE == race::Lion)
+        if ((RACE == race::Lion) && (ROLE == role::Lion))
         {
             outputVec.push_back("lion.png");
             return;
         }
 
-        if (RACE == race::LionBoar)
+        if ((RACE == race::LionBoar) && (ROLE == role::Lion))
         {
             outputVec.push_back("lion-boar.png");
             return;
         }
 
-        if (RACE == race::Naga)
+        if ((RACE == race::Naga) && (ROLE == role::Grunt))
         {
             outputVec.push_back("naga.png");
             return;
@@ -1685,14 +1711,24 @@ namespace gui
 
         if (RACE == race::Pug)
         {
-            if (ROLE == role::Archer) { outputVec.push_back("pug-archer.png"); return; }
-            if (ROLE == role::Cleric) { outputVec.push_back("pug-cleric.png"); return; }
-
-            outputVec.push_back("pug-grunt.png");
-            return;
+            if (ROLE == role::Archer)
+            {
+                outputVec.push_back("pug-archer.png");
+                return;
+            }
+            else if (ROLE == role::Cleric)
+            {
+                outputVec.push_back("pug-cleric.png");
+                return;
+            }
+            else if (ROLE == role::Grunt)
+            {
+                outputVec.push_back("pug-grunt.png");
+                return;
+            }
         }
 
-        if (RACE == race::Ramonaut)
+        if ((RACE == race::Ramonaut) && (ROLE == role::Ramonaut))
         {
             outputVec.push_back("ramonaut.png");
             return;
@@ -1700,34 +1736,40 @@ namespace gui
 
         if (RACE == race::Serpent)
         {
-            if (ROLE == role::Water) { outputVec.push_back("serpent-water.png"); return; }
-
-            outputVec.push_back("serpent-desert.png");
-            return;
+            if (ROLE == role::Water)
+            {
+                outputVec.push_back("serpent-water.png");
+                return;
+            }
+            else if (ROLE == role::Serpent)
+            {
+                outputVec.push_back("serpent-desert.png");
+                return;
+            }
         }
 
-        if (RACE == race::Shade)
+        if ((RACE == race::Shade) && (ROLE == role::Ghost))
         {
             outputVec.push_back("shade-1.png");
             outputVec.push_back("shade-2.png");
             return;
         }
 
-        if (RACE == race::Cobra)
+        if ((RACE == race::Cobra) && (ROLE == role::Serpent))
         {
             outputVec.push_back("cobra-1.png");
             outputVec.push_back("cobra-2.png");
             return;
         }
 
-        if (RACE == race::Werebat)
+        if ((RACE == race::Werebat) && (ROLE == role::Bat))
         {
             outputVec.push_back("werebat-1.png");
             outputVec.push_back("werebat-2.png");
             return;
         }
 
-        if (RACE == race::Bat)
+        if ((RACE == race::Bat) && (ROLE == role::Bat))
         {
             outputVec.push_back("bat-1.png");
             outputVec.push_back("bat-2.png");
@@ -1737,46 +1779,64 @@ namespace gui
 
         if (RACE == race::Witch)
         {
-            for (std::size_t i(1); i <= 5; ++i)
+            if (ROLE == role::Elder)
             {
-                std::ostringstream ss;
-                ss << "witch-" << i << ".png";
-                outputVec.push_back(ss.str());
+                outputVec.push_back("witch-elder.png");
+                return;
             }
-            return;
+            else if (ROLE == role::Ghost)
+            {
+                outputVec.push_back("witch-ghost.png");
+                return;
+            }
+            else if (ROLE == role::Strangler)
+            {
+                outputVec.push_back("witch-strangler.png");
+                return;
+            }
+            else if (ROLE == role::Mountain)
+            {
+                outputVec.push_back("witch-mountain.png");
+                return;
+            }
+            else if (ROLE == role::Sorcerer)
+            {
+                outputVec.push_back("witch-1.png");
+                return;
+            }
         }
 
-        if (RACE == race::Golem)
+        if ((RACE == race::Golem) && (ROLE == role::Brute))
         {
             outputVec.push_back("golem.png");
             return;
         }
 
-        if (RACE == race::Harpy)
+        if ((RACE == race::Harpy) && (ROLE == role::Wing))
         {
             outputVec.push_back("harpy.png");
             return;
         }
 
-        if (RACE == race::ThreeHeadedHound)
+        if ((RACE == race::ThreeHeadedHound) && (ROLE == role::Mountain))
         {
             outputVec.push_back("hound-three-headed.png");
             return;
         }
 
-        if (RACE == race::Wereboar)
+        if ((RACE == race::Wereboar) && (ROLE == role::Boar))
         {
             outputVec.push_back("wereboar.png");
             return;
         }
 
-        if (RACE == race::Werecat)
+        if ((RACE == race::Werecat) && (ROLE == role::Cat))
         {
             outputVec.push_back("werecat.png");
             return;
         }
 
-        if (RACE == race::Werewolf)
+        if ((RACE == race::Werewolf) && (ROLE == role::Wolf))
         {
             outputVec.push_back("werewolf.png");
             return;
@@ -1789,10 +1849,12 @@ namespace gui
                 outputVec.push_back("wyvern-whelp.png");
                 return;
             }
-
-            outputVec.push_back("wyvern-1.png");
-            outputVec.push_back("wyvern-2.png");
-            return;
+            else if (ROLE == role::Wing)
+            {
+                outputVec.push_back("wyvern-1.png");
+                outputVec.push_back("wyvern-2.png");
+                return;
+            }
         }
 
         std::ostringstream ss;

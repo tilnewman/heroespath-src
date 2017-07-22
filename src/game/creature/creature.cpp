@@ -104,6 +104,14 @@ namespace creature
         songsVec_         (SONG_VEC),
         lastSongPlayedNum_(0)
     {
+        //verify valid RACE and ROLE combination
+        auto const ROLE_VEC{ race::Roles(race_.Which()) };
+        M_ASSERT_OR_LOGANDTHROW_SS((std::find(ROLE_VEC.begin(),
+                                              ROLE_VEC.end(),
+                                              role_.Which()) != ROLE_VEC.end()),
+            "game::creature::Creature::Constructor(race=" << race_.Name()
+            << ", role=" << role_.Name() << ") invalid race/role combination.");
+
         //set the default condition if not already there
         if (conditionsVec_.empty())
         {
@@ -129,7 +137,7 @@ namespace creature
         {
             ss << Race().Name();
 
-            if (Role().Which() != role::Wolfen)
+            if (race::RaceRoleMatch(Race().Which(), Role().Which()) == false)
             {
                 ss << " " << Role().Name();
             }

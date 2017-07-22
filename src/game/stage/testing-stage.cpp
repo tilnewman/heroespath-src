@@ -317,13 +317,6 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Animations{ false };
-        if (false == hasTestingCompleted_Animations)
-        {
-            hasTestingCompleted_Animations = TestAnimations();
-            return;
-        }
-
         static auto hasTestingCompleted_ImageSet{ false };
         if (false == hasTestingCompleted_ImageSet)
         {
@@ -334,7 +327,7 @@ namespace stage
         static auto hasTestingCompleted_Spells{ false };
         if (false == hasTestingCompleted_Spells)
         {
-            hasTestingCompleted_Spells = game::spell::Warehouse::Test();
+            hasTestingCompleted_Spells = spell::Warehouse::Test();
             return;
         }
 
@@ -349,7 +342,7 @@ namespace stage
         static auto hasTestingCompleted_Songs{ false };
         if (false == hasTestingCompleted_Songs)
         {
-            hasTestingCompleted_Songs = game::song::Warehouse::Test();
+            hasTestingCompleted_Songs = song::Warehouse::Test();
             return;
         }
 
@@ -431,18 +424,10 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_SoundManager{ false };
-        if (false == hasTestingCompleted_SoundManager)
-        {
-            hasTestingCompleted_SoundManager =
-                sfml_util::SoundManager::Instance()->Test();
-            return;
-        }
-
         static auto hasTestingCompleted_InventoryFactory{ false };
         if (false == hasTestingCompleted_InventoryFactory)
         {
-            hasTestingCompleted_InventoryFactory = TestInventoryFactory();;
+            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
             return;
         }
 
@@ -451,6 +436,21 @@ namespace stage
         {
             hasTestingCompleted_CreatureImageManager =
                 sfml_util::gui::CreatureImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_Animations{ false };
+        if (false == hasTestingCompleted_Animations)
+        {
+            hasTestingCompleted_Animations = TestAnimations();
+            return;
+        }
+
+        static auto hasTestingCompleted_SoundManager{ false };
+        if (false == hasTestingCompleted_SoundManager)
+        {
+            hasTestingCompleted_SoundManager =
+                sfml_util::SoundManager::Instance()->Test();
             return;
         }
 
@@ -892,48 +892,25 @@ namespace stage
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            game::LoopManager::Instance()->TestingStrAppend(
+            LoopManager::Instance()->TestingStrAppend(
                 "game::stage::TestingStage::TestInventoryFactory() Starting Tests...");
         }
 
         static auto raceIndex{ 0 };
         static auto roleIndex{ 0 };
 
-        if (raceIndex < static_cast<int>(game::creature::race::Count))
+        if (raceIndex < static_cast<int>(creature::race::Count))
         {
-            static int totalTestIndex{ 0 };
+            auto const RACE_ENUM{ static_cast<creature::race::Enum>(raceIndex) };
+            auto const RACE_STR{ creature::race::ToString(RACE_ENUM) };
+            auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
 
-            auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
-            auto const RACE_STR{ game::creature::race::ToString(RACE_ENUM) };
-
-            if (roleIndex < static_cast<int>(game::creature::role::Count))
+            if (roleIndex < static_cast<int>(ROLE_VEC.size()))
             {
-                auto const ROLE_ENUM{ static_cast<game::creature::role::Enum>(roleIndex) };
-                auto const ROLE_STR{ game::creature::role::ToString(ROLE_ENUM) };
+                auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
 
-                if ((RACE_ENUM == creature::race::Dragon) &&
-                    (ROLE_ENUM != creature::role::Sylavin) &&
-                    (ROLE_ENUM != creature::role::Firebrand))
-                {
-                    ++roleIndex;
-                    ++totalTestIndex;
-                    return false;
-                }
-
-                if ((RACE_ENUM == creature::race::Wolfen) &&
-                    (ROLE_ENUM != creature::role::Wolfen))
-                {
-                    ++roleIndex;
-                    ++totalTestIndex;
-                    return false;
-                }
-
-                static int totalTestCount{ static_cast<int>(
-                    static_cast<float>(game::creature::race::Count) *
-                    static_cast<float>(game::creature::role::Count)  *
-                    1.0f) };
-
-                const std::size_t RANK_BASE{ 10 };
+                const std::size_t RANK_BASE{ 50 };
                 const std::size_t RANK_MAX{ [&]()
                     {
                         if (RACE_ENUM == creature::race::Dragon)
@@ -956,8 +933,7 @@ namespace stage
                 for(std::size_t rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
                 {
                     std::ostringstream ss;
-                    ss << " InventoryFactory (" << totalTestCount - totalTestIndex
-                        << ") Testing rank=" << rankIndex << " with race="
+                    ss << " InventoryFactory Testing rank=" << rankIndex << " with race="
                         << RACE_STR << " and role=" << ROLE_STR;
 
                     M_HP_LOG_DBG(ss.str());
@@ -992,23 +968,21 @@ namespace stage
                 }
 
                 std::ostringstream ss;
-                ss << " InventoryFactory (" << totalTestCount - totalTestIndex << ") Tested "
-                    << RANK_MAX << " ranks with race=" << RACE_STR << " role=" << ROLE_STR;
+                ss << " InventoryFactory Tested " << RANK_MAX << " ranks with race="
+                    << RACE_STR << " role=" << ROLE_STR;
 
-                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                LoopManager::Instance()->TestingStrAppend(ss.str());
 
                 ++roleIndex;
-                ++totalTestIndex;
                 return false;
             }
 
             roleIndex = 0;
             ++raceIndex;
-            ++totalTestIndex;
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
+        LoopManager::Instance()->TestingStrAppend(
             "game::stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
 
         return true;

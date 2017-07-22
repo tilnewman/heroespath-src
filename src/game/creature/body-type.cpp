@@ -165,6 +165,34 @@ namespace creature
     }
 
 
+
+    const BodyType BodyType::Make_Humanoid(const bool HAS_FANGS,
+                                           const bool HAS_CLAWS,
+                                           const bool HAS_TAIL,
+                                           const bool HAS_HORNS)
+    {
+        return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, HAS_FANGS, HAS_CLAWS, false, true, HAS_TAIL, false, HAS_HORNS);
+    }
+
+
+    const BodyType BodyType::Make_Wolfen(const role::Enum ROLE_ENUM)
+    {
+        return BodyType(item::material::Flesh, item::material::Fur, ((ROLE_ENUM == role::TwoHeaded) ? 2 : 1), 0, 4, 2, true, true, false, false, true);
+    }
+
+
+    const BodyType BodyType::Make_Dragon()
+    {
+        return BodyType(item::material::Scale, item::material::Scale, 1, 0, 4, 2, true, true, true, false, true, true, true, 0, true);
+    }
+
+
+    const BodyType BodyType::Make_Pixie()
+    {
+        return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, false, false, true);
+    }
+
+
     const BodyType BodyType::Make_FromRaceAndRole(const creature::race::Enum RACE, const creature::role::Enum ROLE)
     {
         switch (RACE)
@@ -179,7 +207,7 @@ namespace creature
             case creature::race::Gnome:   { return Make_Humanoid(); }
             case creature::race::Pixie:   { return Make_Pixie(); }
             case creature::race::Lion:
-            case creature::race::Wolfen:  { return Make_Wolfen(); }
+            case creature::race::Wolfen:  { return Make_Wolfen(ROLE); }
             case creature::race::Dragon:  { return Make_Dragon(); }
             case creature::race::Goblin:
             case creature::race::Orc:     { return Make_Humanoid(true, true); }
@@ -188,18 +216,26 @@ namespace creature
             case creature::race::Bog:
             {
                 if (ROLE == role::Spike)
+                {
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 4, 2, false, true, false, false, true, true);
+                }
 
                 if (ROLE == role::Tendrilus)
+                {
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 4, 2, false, true, false, true, true, false, false, 4);
+                }
 
                 if (ROLE == role::Whelp)
+                {
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 4, 2, true, true, false, false, true, true);
+                }
 
                 if (ROLE == role::Wing)
+                {
                     return BodyType(item::material::Flesh, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
+                }
 
-                //Grunt
+                //all others
                 return BodyType::Make_Humanoid(false, false, false);
             }
             case creature::race::CaveCrawler: { return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 6, 4, true, true, false, false, false, false); }
@@ -209,31 +245,44 @@ namespace creature
             case creature::race::Plant:
             {
                 if (ROLE == role::Pod)
+                {
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 0, 0, 1, true, true, false, false, false, true, false, 4);
+                }
 
                 if (ROLE == role::Smasher)
+                {
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, false, true, false, false, false, true, true);
+                }
 
                 if (ROLE == role::Strangler)
+                {
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 0, 2, 2, false, false, false, false, false, false, false, 2);
+                }
 
                 if (ROLE == role::Tendrilus)
+                {
                     return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 0, true, false, false, false, false, true, true, 8);
+                }
 
-                //Whelp
-                return BodyType(item::material::Plant, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, false, false, false);
+                break;
             }
             case creature::race::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
             case creature::race::Skeleton:
             {
                 if (ROLE == role::Chieftain)
+                {
                     return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, false, false, true);
+                }
 
                 if (ROLE == role::FourArmed)
+                {
                     return BodyType(item::material::Bone, item::material::Nothing, 1, 4, 2, 2, false, true, false, true, false, false, false);
+                }
 
                 if (ROLE == role::Mountain)
+                {
                     return BodyType(item::material::Bone, item::material::Fur, 1, 2, 2, 2, false, true, false, true, false, false, false);
+                }
 
                 //um...default skeleton
                 return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, false, false, false);
@@ -243,27 +292,51 @@ namespace creature
             case creature::race::Demon:
             {
                 if (ROLE == role::Skeleton)
+                {
                     return BodyType(item::material::Bone, item::material::Nothing, 1, 2, 2, 2, false, true, true, true, true, false, false);
+                }
 
                 if (ROLE == role::Spike)
+                {
                     return BodyType(item::material::Scale, item::material::Nothing, 1, 2, 2, 2, false, true, false, true, true, true, true);
+                }
 
                 if (ROLE == role::Strangler)
+                {
                     return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, false, true, true, false, false);
+                }
 
                 if (ROLE == role::Whelp)
-                    return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 8, 2, false, true, true, false, false, false, false);
+                {
+                    return BodyType(item::material::Flesh, item::material::Nothing, 1, 0, 8, 4, false, true, true, false, false, false, false);
+                }
 
-                //Wing
-                return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
+                if (ROLE == role::Wing)
+                {
+                    return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, true, true, true, false, true, true, true);
+                }
+
+                if (ROLE == role::Grunt)
+                {
+                    return BodyType(item::material::Scale, item::material::Nothing, 1, 2, 2, 2, true, true, true, true, true, true, true);
+                }
+
+                break;
             }
             case creature::race::Harpy: { return BodyType(item::material::Hide, item::material::Nothing, 1, 2, 2, 2, false, true, true, false, false, false, false); }
             case creature::race::Griffin:
             {
                 if (ROLE == role::Whelp)
+                {
                     return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 2, 2, true, true, true, false, true, false, true);
+                }
 
-                return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 4, 2, true, true, true, false, true, false, true);
+                if (ROLE == role::Wing)
+                {
+                    return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 4, 2, true, true, true, false, true, false, true);
+                }
+
+                break;
             }
             case creature::race::LionBoar:    { return BodyType(item::material::Hide,  item::material::Nothing, 1, 0, 4, 2, true, false, false, false, true, false, true); }
             case creature::race::Naga:        { return BodyType(item::material::Scale, item::material::Nothing, 1, 2, 0, 2, true, true,  false, true,  true, false, false); }
@@ -320,7 +393,10 @@ namespace creature
         }
 
         std::ostringstream ss;
-        ss << "game::creature::BodyType::Make_FromRace(race=" << RACE << ", role=" << ROLE << ") -these values failed to create a BodyType.";
+
+        ss << "game::creature::BodyType::Make_FromRace(race=" << RACE << ", role=" << ROLE
+            << ") -these values failed to create a BodyType.";
+        
         throw std::range_error(ss.str());
     }
 

@@ -78,10 +78,18 @@ namespace creature
             Spike,
             Skeleton,
             Ranger,
-            Desert,
             Water,
             Blacksmith,
-            Witch,
+            Spider,
+            Beetle,
+            Boar,
+            Lion,
+            Ramonaut,
+            Serpent,
+            Bat,
+            Ghost,
+            Cat,
+            Wolf,
             Count
         };
 

@@ -3535,7 +3535,8 @@ namespace stage
         {
             titleSS << turnCreaturePtr_->Race().Name();
 
-            if (turnCreaturePtr_->Race().Which() != creature::race::Wolfen)
+            if (creature::race::RaceRoleMatch(
+                turnCreaturePtr_->Race().Which(), turnCreaturePtr_->Role().Which()) == false)
             {
                 titleSS << " " << turnCreaturePtr_->Role().Name();
             }

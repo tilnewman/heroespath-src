@@ -284,7 +284,8 @@ namespace combat
     }
 
 
-    void SummaryView::SetupAndStartTransition(CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
+    void SummaryView::SetupAndStartTransition(CombatNodePtr_t       combatNodePtr,
+                                              const sf::FloatRect & COMBAT_REGION)
     {
         itemWithTextVec_.clear();
 
@@ -297,7 +298,8 @@ namespace combat
 
         ss << creaturePtr->Race().Name();
 
-        if (creaturePtr->Role().Which() != creature::role::Wolfen)
+        if (creature::race::RaceRoleMatch(
+            creaturePtr->Race().Which(), creaturePtr->Role().Which()) == false)
         {
             ss << ", " + creaturePtr->Role().Name();
         }

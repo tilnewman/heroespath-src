@@ -319,7 +319,8 @@ namespace stage
                 << " the " << creature::sex::ToString(newCharacterUPtr->Sex())
                 << " " << newCharacterUPtr->Race().Name();
 
-            if (creature::race::Wolfen != newCharacterUPtr->Race().Which())
+            if (creature::race::RaceRoleMatch(
+                newCharacterUPtr->Race().Which(), newCharacterUPtr->Role().Which()) == false)
             {
                 sss << " " << newCharacterUPtr->Role().Name();
             }
@@ -414,7 +415,7 @@ namespace stage
             {
                 ss << creature::race::Name(RACE) << " ";
 
-                if (RACE != creature::race::Wolfen)
+                if (creature::race::RaceRoleMatch(RACE, ROLE) == false)
                 {
                     ss << creature::role::Name(ROLE);
                 }
