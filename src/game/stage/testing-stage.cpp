@@ -671,7 +671,7 @@ namespace stage
         static std::vector<std::string> imagePathKeyVec =
         {
             "media-images-gui-elements",
-            "media-images-title-paper",
+            "media-images-title-intro",
             "media-images-title-blacksymbol",
             "media-images-backgrounds-tile-darkknot",
             "media-images-backgrounds-tile-runes",

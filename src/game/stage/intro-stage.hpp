@@ -55,6 +55,9 @@ namespace stage
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
     private:
+        void PositionTitleImage();
+
+    private:
         sf::Texture titleTexture_;
         sf::Sprite  titleSprite_;
         std::size_t initialDrawHoldCounter_;

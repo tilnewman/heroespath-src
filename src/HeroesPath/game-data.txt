@@ -83,7 +83,7 @@ media-anim-images-dir-splash1=      image/anim/splash-white_m_50x47x24
 
 #images
 media-images-gui-elements=                  image/gui/elements/gui-elements-lamoot.png
-media-images-title-paper=                   image/title/title_paper.png
+media-images-title-intro=                   image/title/title-intro.jpg
 media-images-title-blacksymbol=             image/title/title.png
 media-images-backgrounds-tile-darkknot=     image/gui/backgrounds/knot-dark.png
 media-images-backgrounds-tile-runes=        image/tile/hp-symbol-stone.jpg

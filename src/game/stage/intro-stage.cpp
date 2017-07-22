@@ -47,7 +47,11 @@ namespace stage
 
     IntroStage::IntroStage()
     :
-        Stage        ("Intro", 0.0f, 0.0f, sfml_util::Display::Instance()->GetWinWidth(), sfml_util::Display::Instance()->GetWinHeight()),
+        Stage        ("Intro",
+                      0.0f,
+                      0.0f,
+                      sfml_util::Display::Instance()->GetWinWidth(),
+                      sfml_util::Display::Instance()->GetWinHeight()),
         titleTexture_(),
         titleSprite_ (),
         initialDrawHoldCounter_(0)
@@ -58,7 +62,9 @@ namespace stage
     {
         //If the theme music volume was changed just because this was the
         //Intro Stage, then set it back again once leaving the Intro Stage.
-        sfml_util::MusicOperatorSPtr_t musicOperatorSPtr(sfml_util::SoundManager::Instance()->MusicOperator(sfml_util::music::Theme));
+        auto musicOperatorSPtr(sfml_util::SoundManager::Instance()->MusicOperator(
+            sfml_util::music::Theme));
+
         if (musicOperatorSPtr.get() != nullptr)
         {
             const float CURRENT_VOLUME(musicOperatorSPtr->Volume());
@@ -71,7 +77,10 @@ namespace stage
                 }
                 else
                 {
-                    musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME, ((CURRENT_VOLUME < INTENDED_VOLUME) ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                    musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME,
+                        ((CURRENT_VOLUME < INTENDED_VOLUME) ?
+                            sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ :
+                                sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
                 }
             }
         }
@@ -83,13 +92,14 @@ namespace stage
     void IntroStage::Setup()
     {
         sfml_util::LoadTexture(titleTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-title-paper"));
+            GameDataFile::Instance()->GetMediaPath("media-images-title-intro"));
         
         titleSprite_.setTexture(titleTexture_);
-        const float SCALE(sfml_util::MapByRes(0.75f, 3.0f));
+
+        const float SCALE(sfml_util::MapByRes(0.4f, 2.5f));
         titleSprite_.setScale(SCALE, SCALE);
-        titleSprite_.setPosition((sfml_util::Display::Instance()->GetWinWidth()  * 0.5f) - (titleSprite_.getGlobalBounds().width * 0.5f),
-                                 (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (titleSprite_.getGlobalBounds().height * 0.5f));
+
+        PositionTitleImage();
     }
 
 
@@ -111,11 +121,21 @@ namespace stage
 
     void IntroStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        const float NEW_SCALE(titleSprite_.getScale().x * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)));
+        auto const NEW_SCALE(titleSprite_.getScale().x * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)));
         titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
+        PositionTitleImage();
+    }
 
-        titleSprite_.setPosition((sfml_util::Display::Instance()->GetWinWidth()  * 0.5f) - (titleSprite_.getGlobalBounds().width * 0.5f),
-                                 (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (titleSprite_.getGlobalBounds().height * 0.5f));
+
+    void IntroStage::PositionTitleImage()
+    {
+        auto const TITLE_POS_LEFT{ (StageRegionWidth()  * 0.5f) -
+            (titleSprite_.getGlobalBounds().width * 0.5f) };
+
+        auto const TITLE_POS_TOP{ (StageRegionHeight() * 0.5f) -
+            (titleSprite_.getGlobalBounds().height * 0.5f) };
+
+        titleSprite_.setPosition(TITLE_POS_LEFT, TITLE_POS_TOP);
     }
 
 }
