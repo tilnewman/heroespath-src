@@ -27,6 +27,8 @@
 //
 // character-warehouse.hpp (player)
 //
+#include "game/warehouse.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -47,10 +49,10 @@ namespace player
     class CharacterWarehouse
     {
         //prevent copy constructor
-        CharacterWarehouse(const CharacterWarehouse &);
+        CharacterWarehouse(const CharacterWarehouse &) =delete;
 
         //prevent copy assignment
-        CharacterWarehouse & operator=(const CharacterWarehouse &);
+        CharacterWarehouse & operator=(const CharacterWarehouse &) =delete;
 
         //prevent non-singleton construction
         CharacterWarehouse();
@@ -67,7 +69,7 @@ namespace player
 
     private:
         static std::unique_ptr<CharacterWarehouse> instanceUPtr_;
-        CharacterUVec_t characterUVec_;
+        Warehouse<Character> warehouse_;
     };
 
 }

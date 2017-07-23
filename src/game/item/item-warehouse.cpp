@@ -29,13 +29,8 @@
 //
 #include "item-warehouse.hpp"
 
-#include "game/item/item.hpp"
 #include "game/log-macros.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-
-#include <sstream>
-#include <exception>
+#include "game/item/item.hpp"
 
 
 namespace game
@@ -48,7 +43,7 @@ namespace item
 
     ItemWarehouse::ItemWarehouse()
     :
-        itemUVec_()
+        warehouse_()
     {
         M_HP_LOG_DBG("Singleton Construction: ItemWarehouse");
     }
@@ -89,6 +84,7 @@ namespace item
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
             "game::item::ItemWarehouse::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -96,61 +92,18 @@ namespace item
     ItemPtr_t ItemWarehouse::Store(const ItemPtr_t ITEM_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "game::item::ItemWarehouse::Store() given a nullptr.");
+            "game::item::ItemWarehouse::Store() given nullptr.");
 
-        std::size_t indexToSaveAt{ itemUVec_.size() };
-
-        //ensure this item is not already stored
-        //along the way, look for an abandoned index to use with indexToSaveAt
-        auto const NUM_ITEMS{ indexToSaveAt };
-        for (std::size_t i(0); i<NUM_ITEMS; ++i)
-        {
-            auto const NEXT_ITEM_PTR{ itemUVec_[i].get() };
-            if (NEXT_ITEM_PTR == ITEM_PTR)
-            {
-                std::ostringstream ss;
-                ss << "game::item::ItemWarehouse::Store(item="
-                    << ITEM_PTR->Name() << ") was already in the warehouse.";
-                throw std::runtime_error(ss.str());
-            }
-            else if (NEXT_ITEM_PTR == nullptr)
-            {
-                indexToSaveAt = i;
-            }
-        }
-
-        if (indexToSaveAt < NUM_ITEMS)
-        {
-            itemUVec_[indexToSaveAt].reset(ITEM_PTR);
-            return itemUVec_[indexToSaveAt].get();
-        }
-        else
-        {
-            std::unique_ptr<Item> tempUPtr;
-            tempUPtr.reset(ITEM_PTR);
-            itemUVec_.push_back(std::move(tempUPtr));
-            return itemUVec_[itemUVec_.size() - 1].get();
-        }
+        return warehouse_.Store(ITEM_PTR, ITEM_PTR->Name());
     }
 
 
-    void ItemWarehouse::Free(ItemPtr_t & itemPtr)
+    void ItemWarehouse::Free(ItemPtr_t & item_ptr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
-            "game::item::ItemWarehouse::Free() given a nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((item_ptr != nullptr),
+            "game::item::ItemWarehouse::Free() given nullptr.");
 
-        for (auto & nextItemUPtr : itemUVec_)
-        {
-            if (nextItemUPtr.get() == itemPtr)
-            {
-                itemPtr = nullptr;
-                nextItemUPtr.reset();
-                return;
-            }
-        }
-
-        M_HP_LOG_ERR("game::item::ItemWarehouse::Free((" << itemPtr << ")"
-            << itemPtr->Name() << ") item not found in the warehouse.");
+        warehouse_.Free(item_ptr, item_ptr->Name());
     }
 
 }

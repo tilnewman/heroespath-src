@@ -27,6 +27,8 @@
 //
 // item-warehouse.hpp
 //
+#include "game/warehouse.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -48,10 +50,10 @@ namespace item
     class ItemWarehouse
     {
         //prevent copy constructor
-        ItemWarehouse(const ItemWarehouse &);
+        ItemWarehouse(const ItemWarehouse &) =delete;
 
         //prevent copy assignment
-        ItemWarehouse & operator=(const ItemWarehouse &);
+        ItemWarehouse & operator=(const ItemWarehouse &) =delete;
 
         //prevent non-singleton construction
         ItemWarehouse();
@@ -68,7 +70,7 @@ namespace item
 
     private:
         static std::unique_ptr<ItemWarehouse> instanceUPtr_;
-        ItemUVec_t itemUVec_;
+        Warehouse<Item> warehouse_;
     };
 
 }

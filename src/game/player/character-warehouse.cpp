@@ -29,13 +29,8 @@
 //
 #include "character-warehouse.hpp"
 
-#include "game/player/character.hpp"
 #include "game/log-macros.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-
-#include <sstream>
-#include <exception>
+#include "game/player/character.hpp"
 
 
 namespace game
@@ -48,7 +43,7 @@ namespace player
 
     CharacterWarehouse::CharacterWarehouse()
     :
-        characterUVec_()
+        warehouse_()
     {
         M_HP_LOG_DBG("Singleton Construction: Player CharacterWarehouse");
     }
@@ -97,62 +92,18 @@ namespace player
     CharacterPtr_t CharacterWarehouse::Store(const CharacterPtr_t CHARACTER_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CHARACTER_PTR != nullptr),
-            "game::player::CharacterWarehouse::Store() given a nullptr.");
+            "game::player::CharacterWarehouse::Store() given nullptr.");
 
-        std::size_t indexToSaveAt{ characterUVec_.size() };
-
-        //Ensure this item is not already stored, and along the way,
-        //look for an abandoned slot to use as indexToSaveAt.
-        auto const NUM_CHARACTERS{ indexToSaveAt };
-        for (std::size_t i(0); i<NUM_CHARACTERS; ++i)
-        {
-            auto const NEXT_CHARACTER_PTR{ characterUVec_[i].get() };
-            if (NEXT_CHARACTER_PTR == CHARACTER_PTR)
-            {
-                std::ostringstream ss;
-                ss << "game::player::CharacterWarehouse::Store((" << CHARACTER_PTR << ")"
-                    << " name=\"" << CHARACTER_PTR->Name() << "\") was already in the warehouse.";
-
-                throw std::runtime_error(ss.str());
-            }
-            else if (NEXT_CHARACTER_PTR == nullptr)
-            {
-                indexToSaveAt = i;
-            }
-        }
-
-        if (indexToSaveAt < NUM_CHARACTERS)
-        {
-            characterUVec_[indexToSaveAt].reset(CHARACTER_PTR);
-            return characterUVec_[indexToSaveAt].get();
-        }
-        else
-        {
-            CharacterUPtr_t tempUPtr;
-            tempUPtr.reset(CHARACTER_PTR);
-            characterUVec_.push_back( std::move(tempUPtr) );
-            return characterUVec_[characterUVec_.size() - 1].get();
-        }
+        return warehouse_.Store(CHARACTER_PTR, CHARACTER_PTR->Name());
     }
 
 
-    void CharacterWarehouse::Free(CharacterPtr_t & creaturePtr)
+    void CharacterWarehouse::Free(CharacterPtr_t & character_ptr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((creaturePtr != nullptr),
-            "game::player::CharacterWarehouse::Free() given a nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((character_ptr != nullptr),
+            "game::player::CharacterWarehouse::Free() given nullptr.");
 
-        for (auto & nextCharacterUPtr : characterUVec_)
-        {
-            if (nextCharacterUPtr.get() == creaturePtr)
-            {
-                creaturePtr = nullptr;
-                nextCharacterUPtr.reset();
-                return;
-            }
-        }
-
-        M_HP_LOG_ERR("game::player::CharacterWarehouse::Free((" << creaturePtr
-            << ") name=\"" << creaturePtr->Name() << "\") not found in the warehouse.");
+        warehouse_.Free(character_ptr, character_ptr->Name());
     }
 
 }
