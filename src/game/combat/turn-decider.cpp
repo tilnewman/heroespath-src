@@ -1055,10 +1055,10 @@ namespace combat
                      []
                      (const spell::SpellPtr_t S_PTR)
                      {
-                        return ((S_PTR->EffectType() != EffectType::ItemHarmBreak) &&
-                                (S_PTR->EffectType() != EffectType::ItemHarmMisc) &&
-                                (S_PTR->EffectType() != EffectType::ItemHelpFix) &&
-                                (S_PTR->EffectType() != EffectType::ItemHelpMisc) &&
+                        return ((S_PTR->Effect() != EffectType::ItemHarmBreak) &&
+                                (S_PTR->Effect() != EffectType::ItemHarmMisc) &&
+                                (S_PTR->Effect() != EffectType::ItemHelpFix) &&
+                                (S_PTR->Effect() != EffectType::ItemHelpMisc) &&
                                 (S_PTR->ValidPhases() & Phase::Combat) );
                      });
 
@@ -1089,7 +1089,7 @@ namespace combat
                          []
                          (const spell::SpellPtr_t S_PTR)
                          {
-                             return (S_PTR->EffectType() != EffectType::CreatureHelpHeal);
+                             return (S_PTR->Effect() != EffectType::CreatureHelpHeal);
                          });
         }
 
@@ -1112,7 +1112,7 @@ namespace combat
 
         return DecideSpell(CREATURE_DECIDING_CPTRC,
                            MOST_DESIRED_TARGET_CPTRC,
-                           { spellToCastPtr->EffectType() });
+                           { spellToCastPtr->Effect() });
     }
 
 
@@ -1208,7 +1208,7 @@ namespace combat
                         for (auto const NEXT_SPELL_EFFECTTYPE : SPELL_EFFECTTYPE_VEC)
                         {
                             if ((S_PTR->ValidPhases() & Phase::Combat) &&
-                                (NEXT_SPELL_EFFECTTYPE == S_PTR->EffectType()))
+                                (NEXT_SPELL_EFFECTTYPE == S_PTR->Effect()))
                             {
                                 return true;
                             }

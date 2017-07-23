@@ -92,7 +92,7 @@ namespace song
 
         inline Songs::Enum Which() const            { return which_; }
         inline SongType::Enum Type() const          { return type_; }
-        inline EffectType::Enum EffectType() const  { return effectType_; }
+        inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const      { return validPhases_; }
         inline stats::Mana_t ManaCost() const       { return manaCost_; }
         inline stats::Rank_t Rank() const           { return rank_; }

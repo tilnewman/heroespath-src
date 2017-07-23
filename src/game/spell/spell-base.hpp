@@ -88,7 +88,7 @@ namespace spell
         const std::string DescComplete() const;
 
         inline Spells::Enum Which() const           { return which_; }
-        inline EffectType::Enum EffectType() const  { return effectType_; }
+        inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const      { return validPhases_; }
         inline stats::Mana_t ManaCost() const       { return manaCost_; }
         inline stats::Rank_t Rank() const           { return rank_; }

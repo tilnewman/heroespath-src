@@ -964,8 +964,8 @@ namespace combat
 
                 turnInfo.SetWasHitLastTurn(false);
 
-                if ((SPELL_CPTR->EffectType() == EffectType::CreatureHarmDamage) ||
-                    (SPELL_CPTR->EffectType() == EffectType::CreatureHarmMisc))
+                if ((SPELL_CPTR->Effect() == EffectType::CreatureHarmDamage) ||
+                    (SPELL_CPTR->Effect() == EffectType::CreatureHarmMisc))
                 {
                     if (turnInfo.GetFirstAttackedByCreature() == nullptr)
                     {
@@ -1119,8 +1119,8 @@ namespace combat
 
                 turnInfo.SetWasHitLastTurn(false);
 
-                if ((SONG_CPTR->EffectType() == EffectType::CreatureHarmDamage) ||
-                    (SONG_CPTR->EffectType() == EffectType::CreatureHarmDamage))
+                if ((SONG_CPTR->Effect() == EffectType::CreatureHarmDamage) ||
+                    (SONG_CPTR->Effect() == EffectType::CreatureHarmDamage))
                 {
                     if (turnInfo.GetFirstAttackedByCreature() == nullptr)
                     {

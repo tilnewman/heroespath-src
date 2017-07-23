@@ -1229,7 +1229,7 @@ namespace creature
         for (auto const NEXT_SPELL_ENUM : spellsVec_)
         {
             auto const NEXT_EFFECT_TYPE_SOURCE{
-                spell::Warehouse::Get(NEXT_SPELL_ENUM)->EffectType() };
+                spell::Warehouse::Get(NEXT_SPELL_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
@@ -1329,7 +1329,7 @@ namespace creature
         for (auto const NEXT_SONG_ENUM : songsVec_)
         {
             auto const NEXT_EFFECT_TYPE_SOURCE{
-                song::Warehouse::Get(NEXT_SONG_ENUM)->EffectType() };
+                song::Warehouse::Get(NEXT_SONG_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
