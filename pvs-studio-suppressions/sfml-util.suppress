@@ -511,4 +511,76 @@
     <CodeCurrent>3610363650</CodeCurrent>
     <CodeNext>510061026</CodeNext>
   </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282091839</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282108943</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sparkle-animation.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getLocalBounds()' expression repeatedly.</Message>
+    <CodePrev>4258579635</CodePrev>
+    <CodeCurrent>1700161657</CodeCurrent>
+    <CodeNext>3129218508</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...PerPixel) ? _ : DESKTOP_R...</Message>
+    <CodePrev>3637619819</CodePrev>
+    <CodeCurrent>113599565</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'winUPtr_-&gt;getSettings()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2849518274</CodeCurrent>
+    <CodeNext>1245033722</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...sPerPixel = _;.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1432187348</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...epthBits) ? _ : winPtr-&gt;g...</Message>
+    <CodePrev>2738796</CodePrev>
+    <CodeCurrent>1983729261</CodeCurrent>
+    <CodeNext>8230705</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...PerPixel) ? _ : VM_PARAM....</Message>
+    <CodePrev>3484268</CodePrev>
+    <CodeCurrent>48241247</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
 </NewDataSet>

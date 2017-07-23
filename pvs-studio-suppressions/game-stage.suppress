@@ -663,4 +663,268 @@
     <CodeCurrent>1373424404</CodeCurrent>
     <CodeNext>2585980597</CodeNext>
   </game-stage>
+  <game-stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282091839</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282108943</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>treasure-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'corpseSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3119422089</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>treasure-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'treasureSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>705259294</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>credit.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>424765915</CodePrev>
+    <CodeCurrent>864401198</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'POPUP_RESPONSE.Info()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2036688246</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>494252987</CodePrev>
+    <CodeCurrent>955727058</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>2097033013</CodePrev>
+    <CodeCurrent>3953582599</CodeCurrent>
+    <CodeNext>852703837</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>3000028981</CodePrev>
+    <CodeCurrent>831713232</CodeCurrent>
+    <CodeNext>4227753014</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'POPUP_RESPONSE.Info()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2036612006</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ChangeIndex(_);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3740507023</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ditionNames(_) &lt;&lt; "\n".</Message>
+    <CodePrev>3175973568</CodePrev>
+    <CodeCurrent>1602460081</CodeCurrent>
+    <CodeNext>2439</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>871216424</CodePrev>
+    <CodeCurrent>183360608</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>359963919</CodeCurrent>
+    <CodeNext>1946920206</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>1952468832</CodeCurrent>
+    <CodeNext>670730182</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3343503880</CodeCurrent>
+    <CodeNext>1757655441</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>902017232</CodeCurrent>
+    <CodeNext>478083827</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>1882936785</CodeCurrent>
+    <CodeNext>2391928891</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3941051325</CodeCurrent>
+    <CodeNext>1824456911</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3322326568</CodeCurrent>
+    <CodeNext>3905154267</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3929040592</CodeCurrent>
+    <CodeNext>3166647596</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>720923528</CodeCurrent>
+    <CodeNext>3780270853</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3806058092</CodeCurrent>
+    <CodeNext>2092763867</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>2865342363</CodeCurrent>
+    <CodeNext>2438092617</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3475268754</CodeCurrent>
+    <CodeNext>1360968298</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3485756046</CodeCurrent>
+    <CodeNext>1360953954</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>3861161423</CodeCurrent>
+    <CodeNext>424767386</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>2735584040</CodeCurrent>
+    <CodeNext>3906625535</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>2754282009</CodeCurrent>
+    <CodeNext>3511807153</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>1670764847</CodeCurrent>
+    <CodeNext>3363794845</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>645652587</CodeCurrent>
+    <CodeNext>2578922986</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>77233</CodePrev>
+    <CodeCurrent>665306643</CodeCurrent>
+    <CodeNext>1505184071</CodeNext>
+  </game-stage>
 </NewDataSet>

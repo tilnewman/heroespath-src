@@ -111,4 +111,20 @@
     <CodeCurrent>2305296811</CodeCurrent>
     <CodeNext>2315782575</CodeNext>
   </game-item>
+  <game-item>
+    <FileName>item-type-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...: { return _; }.</Message>
+    <CodePrev>72614839</CodePrev>
+    <CodeCurrent>576373691</CodeCurrent>
+    <CodeNext>36443047</CodeNext>
+  </game-item>
+  <game-item>
+    <FileName>weapon-factory.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'CREATURE_CPTRC-&gt;Role()' expression repeatedly.</Message>
+    <CodePrev>1258579147</CodePrev>
+    <CodeCurrent>184139426</CodeCurrent>
+    <CodeNext>4291393247</CodeNext>
+  </game-item>
 </NewDataSet>
