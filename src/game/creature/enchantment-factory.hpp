@@ -22,16 +22,20 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
-#define GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
+#ifndef GAME_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED
+#define GAME_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED
 //
-// enchantment-warehouse.hpp
-//  Responsible for managing the lifetime of all enchantment objects.
+// enchantment-factory.hpp
+//  Responsibel for making (new'ing) all Enchantment objects.
 //
-#include "game/warehouse.hpp"
+#include "game/creature/enchantment-type.hpp"
+#include "game/creature/condition-enum.hpp"
+#include "game/stats/stat-set.hpp"
+#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 
+#include <string>
 #include <memory>
-#include <vector>
 
 
 namespace game
@@ -42,37 +46,42 @@ namespace creature
     //forward declarations
     class Enchantment;
     using EnchantmentPtr_t = Enchantment *;
-    
 
-    //Singleton responsible for the lifetimes of Enchantment objects.
-    //This class does not new the objects, but it does delete them.
-    class EnchantmentWarehouse
+
+    //Responsible for making all Enchantment objects, and automatically
+    //storing them in the EnchantmentWarehouse for safe keeping.
+    class EnchantmentFactory
     {
-        //prevent copy constructor
-        EnchantmentWarehouse(const EnchantmentWarehouse &) =delete;
+        //prevent copy construction
+        EnchantmentFactory(const EnchantmentFactory &) =delete;
 
         //prevent copy assignment
-        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) =delete;
+        EnchantmentFactory & operator=(const EnchantmentFactory &) =delete;
 
         //prevent non-singleton construction
-        EnchantmentWarehouse();
+        EnchantmentFactory();
 
     public:
-        ~EnchantmentWarehouse();
+        ~EnchantmentFactory();
 
-        static EnchantmentWarehouse * Instance();
+        static EnchantmentFactory * Instance();
         static void Acquire();
         static void Release();
 
-        EnchantmentPtr_t Store(const EnchantmentPtr_t);
-        void Free(EnchantmentPtr_t &);
+        EnchantmentPtr_t Make(
+            const std::string &         NAME,
+            const EnchantmentType::Enum TYPE              = EnchantmentType::None,
+            const stats::Mana_t         MANA_ADJ          = 0,
+            const stats::Armor_t        ARMOR_RATING_ADJ  = 0,
+            const stats::StatSet &      STAT_ADJ_SET      = stats::StatSet(),
+            const stats::StatMultSet &  STAT_MULT_ADJ_SET = stats::StatMultSet(),
+            const CondEnumVec_t &       CONDS_VEC         = CondEnumVec_t()) const;
 
     private:
-        static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;
-        Warehouse<Enchantment> warehouse_;
+        static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
     };
 
 }
 }
 
-#endif //GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
+#endif //GAME_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED

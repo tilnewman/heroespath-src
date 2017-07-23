@@ -25,12 +25,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// enchantment-warehouse.cpp
+// enchantment-factory.cpp
 //
-#include "enchantment-warehouse.hpp"
+#include "enchantment-factory.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/creature/enchantment.hpp"
+#include "game/creature/enchantment-warehouse.hpp"
+
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace game
@@ -38,28 +41,26 @@ namespace game
 namespace creature
 {
 
-    std::unique_ptr<EnchantmentWarehouse> EnchantmentWarehouse::instanceUPtr_{ nullptr };
+    std::unique_ptr<EnchantmentFactory> EnchantmentFactory::instanceUPtr_{ nullptr };
 
 
-    EnchantmentWarehouse::EnchantmentWarehouse()
-    :
-        warehouse_()
+    EnchantmentFactory::EnchantmentFactory()
     {
-        M_HP_LOG_DBG("Singleton Construction: EnchantmentWarehouse");
+        M_HP_LOG_DBG("Singleton Construction: EnchantmentFactory");
     }
 
 
-    EnchantmentWarehouse::~EnchantmentWarehouse()
+    EnchantmentFactory::~EnchantmentFactory()
     {
-        M_HP_LOG_DBG("Singleton Destruction: EnchantmentWarehouse");
+        M_HP_LOG_DBG("Singleton Destruction: EnchantmentFactory");
     }
 
 
-    EnchantmentWarehouse * EnchantmentWarehouse::Instance()
+    EnchantmentFactory * EnchantmentFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): EnchantmentWarehouse");
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): EnchantmentFactory");
             Acquire();
         }
 
@@ -67,43 +68,44 @@ namespace creature
     }
 
 
-    void EnchantmentWarehouse::Acquire()
+    void EnchantmentFactory::Acquire()
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new EnchantmentWarehouse);
+            instanceUPtr_.reset(new EnchantmentFactory);
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: EnchantmentWarehouse");
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: EnchantmentFactory");
         }
     }
 
 
-    void EnchantmentWarehouse::Release()
+    void EnchantmentFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::creature::EnchantmentWarehouse::Release() found instanceUPtr that was null.");
+            "game::creature::EnchantmentFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
 
-    EnchantmentPtr_t EnchantmentWarehouse::Store(const EnchantmentPtr_t ENCHANTMENT_PTR)
+    EnchantmentPtr_t EnchantmentFactory::Make(
+        const std::string &         NAME,
+        const EnchantmentType::Enum TYPE,
+        const stats::Mana_t         MANA_ADJ,
+        const stats::Armor_t        ARMOR_RATING_ADJ,
+        const stats::StatSet &      STAT_ADJ_SET,
+        const stats::StatMultSet &  STAT_MULT_ADJ_SET,
+        const CondEnumVec_t &       CONDS_VEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
-            "game::creature::EnchantmentWarehouse::Store() given nullptr.");
-
-        return warehouse_.Store(ENCHANTMENT_PTR, ENCHANTMENT_PTR->Name());
-    }
-
-
-    void EnchantmentWarehouse::Free(EnchantmentPtr_t & enchantment_ptr)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((enchantment_ptr != nullptr),
-            "game::creature::EnchantmentWarehouse::Free() given nullptr.");
-
-        warehouse_.Free(enchantment_ptr, enchantment_ptr->Name());
+        return EnchantmentWarehouse::Instance()->Store( new Enchantment(NAME,
+                                                                        TYPE,
+                                                                        MANA_ADJ,
+                                                                        ARMOR_RATING_ADJ,
+                                                                        STAT_ADJ_SET,
+                                                                        STAT_MULT_ADJ_SET,
+                                                                        CONDS_VEC) );
     }
 
 }

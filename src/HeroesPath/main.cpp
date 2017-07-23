@@ -55,6 +55,7 @@
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/enchantment-warehouse.hpp"
+#include "game/creature/enchantment-factory.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/spell/spell-warehouse.hpp"
 #include "game/state/game-state-factory.hpp"
@@ -173,6 +174,7 @@ int main(int argc, char * argv[])
         //load game assets Stage 2
         sfml_util::TextureCache::Acquire();
         game::creature::EnchantmentWarehouse::Acquire();
+        game::creature::EnchantmentFactory::Acquire();
         game::item::ItemWarehouse::Acquire();
         game::player::CharacterWarehouse::Acquire();
         game::non_player::CharacterWarehouse::Acquire();
@@ -293,6 +295,7 @@ int main(int argc, char * argv[])
         game::player::CharacterWarehouse::Release();
         game::non_player::CharacterWarehouse::Release();
         game::item::ItemWarehouse::Release();
+        game::creature::EnchantmentFactory::Release();
         game::creature::EnchantmentWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();

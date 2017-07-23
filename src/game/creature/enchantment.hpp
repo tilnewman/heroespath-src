@@ -29,7 +29,7 @@
 //  Similar to a Condition, an enchantment is something that changes a creature.
 //
 #include "game/creature/enchantment-type.hpp"
-#include "game/creature/condition.hpp"
+#include "game/creature/condition-enum.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/item/types.hpp"
 #include "game/stats/types.hpp"
