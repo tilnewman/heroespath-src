@@ -54,7 +54,8 @@ namespace creature
     class Enchantment
     {
     public:
-        Enchantment(const EnchantmentType::Enum TYPE              = EnchantmentType::None,
+        Enchantment(const std::string &         NAME              = "",
+                    const EnchantmentType::Enum TYPE              = EnchantmentType::None,
                     const stats::Mana_t         MANA_ADJ          = 0,
                     const stats::Armor_t        ARMOR_RATING_ADJ  = 0,
                     const stats::StatSet &      STAT_ADJ_SET      = stats::StatSet(),
@@ -63,6 +64,7 @@ namespace creature
 
         virtual ~Enchantment();
 
+        inline const std::string Name() const                    { return name_; }
         inline EnchantmentType::Enum Type() const                { return type_; }
         inline stats::Mana_t ManaAdj() const                     { return manaAdj_; }
         inline stats::Armor_t ArmorRatingAdj() const             { return armorRatingAdj_; }
@@ -101,6 +103,7 @@ namespace creature
         virtual inline void CreatureChangeRemove(const CreaturePtr_t) {}
 
     private:
+        std::string             name_;
         EnchantmentType::Enum   type_;
         stats::Mana_t           manaAdj_;
         stats::Armor_t          armorRatingAdj_;
@@ -113,6 +116,7 @@ namespace creature
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
+            ar & name_;
             ar & type_;
             ar & manaAdj_;
             ar & armorRatingAdj_;

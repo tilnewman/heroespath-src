@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,10 +22,15 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
+#define GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
 //
-// enchantment.cpp
+// enchantment-warehouse.hpp
 //
-#include "enchantment.hpp"
+#include "game/warehouse.hpp"
+
+#include <memory>
+#include <vector>
 
 
 namespace game
@@ -35,26 +38,40 @@ namespace game
 namespace creature
 {
 
-    Enchantment::Enchantment(const std::string &         NAME,
-                             const EnchantmentType::Enum TYPE,
-                             const stats::Mana_t         MANA_ADJ,
-                             const stats::Armor_t        ARMOR_RATING_ADJ,
-                             const stats::StatSet &      STAT_ADJ_SET,
-                             const stats::StatMultSet &  STAT_MULT_ADJ_SET,
-                             const CondEnumVec_t &       CONDS_VEC)
-    :
-        name_               (NAME),
-        type_               (TYPE),
-        manaAdj_            (MANA_ADJ),
-        armorRatingAdj_     (ARMOR_RATING_ADJ),
-        statsDirectAdjSet_  (STAT_ADJ_SET),
-        statsMultAdjSet_    (STAT_MULT_ADJ_SET),
-        condsVec_           (CONDS_VEC)
-    {}
+    //forward declarations
+    class Enchantment;
+    using EnchantmentPtr_t = Enchantment *;
+    
 
+    //Singleton responsible for the lifetimes of Enchantment objects.
+    //This class does not new the objects, but it does delete them.
+    class EnchantmentWarehouse
+    {
+        //prevent copy constructor
+        EnchantmentWarehouse(const EnchantmentWarehouse &) = delete;
 
-    Enchantment::~Enchantment()
-    {}
+        //prevent copy assignment
+        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;
+
+        //prevent non-singleton construction
+        EnchantmentWarehouse();
+
+    public:
+        ~EnchantmentWarehouse();
+
+        static EnchantmentWarehouse * Instance();
+        static void Acquire();
+        static void Release();
+
+        EnchantmentPtr_t Store(const EnchantmentPtr_t);
+        void Free(EnchantmentPtr_t &);
+
+    private:
+        static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;
+        Warehouse<Enchantment> warehouse_;
+    };
 
 }
 }
+
+#endif //GAME_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED

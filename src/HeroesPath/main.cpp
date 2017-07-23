@@ -47,7 +47,6 @@
 #include "sfml-util/gui/combat-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 
-#include "game/combat/strategy-details.hpp"
 #include "game/loop-manager.hpp"
 #include "game/logger.hpp"
 #include "game/game-data-file.hpp"
@@ -55,17 +54,19 @@
 #include "game/game.hpp"
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/condition-warehouse.hpp"
+#include "game/creature/enchantment-warehouse.hpp"
+#include "game/creature/name-info.hpp"
 #include "game/spell/spell-warehouse.hpp"
 #include "game/state/game-state-factory.hpp"
+#include "game/combat/encounter.hpp"
 #include "game/combat/party-factory.hpp"
-#include "game/creature/name-info.hpp"
+#include "game/combat/strategy-details.hpp"
 #include "game/item/armor-details.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/weapon-details.hpp"
 #include "game/item/item-warehouse.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-ratings.hpp"
-#include "game/combat/encounter.hpp"
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
@@ -171,6 +172,7 @@ int main(int argc, char * argv[])
         
         //load game assets Stage 2
         sfml_util::TextureCache::Acquire();
+        game::creature::EnchantmentWarehouse::Acquire();
         game::item::ItemWarehouse::Acquire();
         game::player::CharacterWarehouse::Acquire();
         game::non_player::CharacterWarehouse::Acquire();
@@ -291,6 +293,7 @@ int main(int argc, char * argv[])
         game::player::CharacterWarehouse::Release();
         game::non_player::CharacterWarehouse::Release();
         game::item::ItemWarehouse::Release();
+        game::creature::EnchantmentWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
