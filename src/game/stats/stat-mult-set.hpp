@@ -29,6 +29,8 @@
 //
 #include "game/stats/stat-enum.hpp"
 
+#include "misc/boost-serialize-includes.hpp"
+
 #include <string>
 
 
@@ -37,7 +39,7 @@ namespace game
 namespace stats
 {
 
-    //Stores float versions of stats.
+    //Stores modifications to stats as multiples for each.
     class StatMultSet
     {
     public:
@@ -71,6 +73,19 @@ namespace stats
         float lck_;
         float spd_;
         float int_;
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & str_;
+            ar & acc_;
+            ar & cha_;
+            ar & lck_;
+            ar & spd_;
+            ar & int_;
+        }
     };
 
 
