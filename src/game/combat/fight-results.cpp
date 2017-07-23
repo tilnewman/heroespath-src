@@ -60,6 +60,42 @@ namespace combat
     {}
 
 
+    FightResultSummary::FightResultSummary(const FightResultSummary & FRS)
+    :
+        hit_type                (FRS.hit_type),
+
+        //The lifetime of these objects is not managed by this class.
+        //Usage is short-term observation only, so ptr copying is safe.
+        song_ptr                (FRS.song_ptr),
+        spell_ptr               (FRS.spell_ptr),
+
+        effected_vec            (FRS.effected_vec),
+        resisted_vec            (FRS.resisted_vec),
+        already_vec             (FRS.already_vec),
+        areResistedNotEffected_ (FRS.areResistedNotEffected_)
+    {}
+
+
+    FightResultSummary & FightResultSummary::operator=(const FightResultSummary & FRS)
+    {
+        if ( & FRS != this)
+        {
+            hit_type                = FRS.hit_type;       
+
+            //see copy constructor comment regarding these pointers
+            song_ptr                = FRS.song_ptr;
+            spell_ptr               = FRS.spell_ptr;
+
+            effected_vec            = FRS.effected_vec;
+            resisted_vec            = FRS.resisted_vec;
+            already_vec             = FRS.already_vec;
+            areResistedNotEffected_ = FRS.areResistedNotEffected_;
+        }
+
+        return *this;
+    }
+
+
     std::size_t FightResultSummary::PtrCount() const
     {
         return (effected_vec.size() + resisted_vec.size() + already_vec.size());
