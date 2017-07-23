@@ -370,6 +370,7 @@ namespace ownership
         if (COVER_TYPE != item::armor::cover_type::Count)
         {
             chance::CoverChanceMap_t::const_iterator ITER( CHANCES.cover_map.find(COVER_TYPE) );
+            
             M_ASSERT_OR_LOGANDTHROW_SS((ITER != CHANCES.cover_map.end()),
                 "game::non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
                 << " find \"" << COVER_TYPE << "\".");
@@ -507,7 +508,7 @@ namespace ownership
                 chance::SizeChanceMap_t::const_iterator CITER_SMALL(
                     WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small));
 
-                if (CITER_SMALL != chance::SizeChanceMap_t::const_iterator())
+                if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
                 {
                     if (RAND < CITER_SMALL->second)
                     {
@@ -520,9 +521,16 @@ namespace ownership
                     chance::SizeChanceMap_t::const_iterator CITER_MED(
                         WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Medium));
 
-                    if (CITER_MED != chance::SizeChanceMap_t::const_iterator())
+                    if (CITER_MED != WEAPON_CHANCES.knife.size_map.end())
                     {
-                        if (RAND < (CITER_SMALL->second + CITER_MED->second))
+                        float chance{ CITER_MED->second };
+                        
+                        if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
+                        {
+                            chance += CITER_SMALL->second;
+                        }
+
+                        if (RAND < chance)
                         {
                             knifeSize = sfml_util::Size::Medium;
                         }

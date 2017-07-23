@@ -331,10 +331,10 @@ namespace combat
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            condsAddedVec_.erase(std::remove(condsRemovedVec_.begin(),
-                                             condsRemovedVec_.end(),
-                                             NEXT_CONDITION_TO_REMOVE_ENUM),
-                                 condsRemovedVec_.end());
+            condsRemovedVec_.erase(std::remove(condsRemovedVec_.begin(),
+                                               condsRemovedVec_.end(),
+                                               NEXT_CONDITION_TO_REMOVE_ENUM),
+                                   condsRemovedVec_.end());
         }
 
         return true;

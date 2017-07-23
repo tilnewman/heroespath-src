@@ -338,7 +338,7 @@ namespace text_render
         //zTn Um...where did this 8.0f come from?  2016/10/26
         renderText.total_height = textPos.y + 8.0f + MARGINS.bottom + MARGINS.top;
 
-        renderText.vec_vec = textSnippetVecVec;
+        renderText.vec_vec = std::move(textSnippetVecVec);
     }
 
 

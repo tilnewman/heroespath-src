@@ -41,7 +41,7 @@ namespace sfml_util
         const float            SCALE,
         const float            TIME_PER_FRAME_SEC,
         const sf::Color &      COLOR,
-        const sf::BlendMode    BLEND_MODE)
+        const sf::BlendMode &  BLEND_MODE)
     {
         return Make(ENUM, SCALE, TIME_PER_FRAME_SEC, COLOR, COLOR, BLEND_MODE);
     }
@@ -53,7 +53,7 @@ namespace sfml_util
         const float            TIME_PER_FRAME_SEC,
         const sf::Color &      COLOR_FROM,
         const sf::Color &      COLOR_TO,
-        const sf::BlendMode    BLEND_MODE)
+        const sf::BlendMode &  BLEND_MODE)
     {
         //initial position is the origin, and the initial size is default
         sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
@@ -79,7 +79,7 @@ namespace sfml_util
         const sf::FloatRect &  REGION,
         const float            TIME_PER_FRAME_SEC,
         const sf::Color &      COLOR,
-        const sf::BlendMode    BLEND_MODE)
+        const sf::BlendMode &  BLEND_MODE)
     {
         return Make(ENUM, REGION, TIME_PER_FRAME_SEC, COLOR, COLOR, BLEND_MODE);
     }
@@ -91,7 +91,7 @@ namespace sfml_util
         const float            TIME_PER_FRAME_SEC,
         const sf::Color &      COLOR_FROM,
         const sf::Color &      COLOR_TO,
-        const sf::BlendMode    BLEND_MODE)
+        const sf::BlendMode &  BLEND_MODE)
     {
         if (Animations::IsMultiTexture(ENUM))
         {

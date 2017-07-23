@@ -2701,7 +2701,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
             else
             {
-                invalidTextVec[i] = "";
+                invalidTextVec[i].clear();
             }
         }
 

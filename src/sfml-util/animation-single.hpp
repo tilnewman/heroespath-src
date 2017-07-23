@@ -50,7 +50,7 @@ namespace sfml_util
         AnimationSingleTexture(const Animations::Enum ENUM,
                                const sf::FloatRect &  REGION,
                                const float            TIME_PER_FRAME_SEC,
-                               const sf::BlendMode    BLEND_MODE,
+                               const sf::BlendMode &  BLEND_MODE,
                                const sf::Color &      COLOR_FROM,
                                const sf::Color &      COLOR_TO);
 

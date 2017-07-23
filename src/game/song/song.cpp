@@ -126,7 +126,7 @@ namespace song
 
     bool Song::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
     {
-        return "Nothing to do.";
+        return false;
     }
 
 
