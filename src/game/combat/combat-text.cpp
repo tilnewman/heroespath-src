@@ -1093,7 +1093,7 @@ namespace combat
         bool &                        wasCollapsed)
     {
         wasCollapsed = false;
-        
+       
         auto const FIGHT_RESULT_SUMMARY{
             SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
 
@@ -1261,7 +1261,7 @@ namespace combat
 
 
     const FightResultSummary Text::SummarizeFightResult(
-        const creature::CreaturePtr_t CREATURE_INITIATING_PTR, 
+        const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
         const FightResult &           FIGHT_RESULT)
     {
         auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
@@ -1369,7 +1369,7 @@ namespace combat
             {
                 frs.effected_vec.push_back(
                     std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
-                
+               
                 return true;
             }
         }

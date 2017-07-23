@@ -123,7 +123,7 @@ namespace creature
     };
 
     using EnchantmentPtr_t = Enchantment *;
-    
+   
 
 }
 }

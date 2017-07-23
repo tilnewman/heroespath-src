@@ -422,7 +422,7 @@ namespace creature
     bool Creature::HasConditionNotAThreatPerm(const bool WILL_INCLUDE_UNCONSCIOUS) const
     {
         return (HasCondition(Conditions::Dead) ||
-                HasCondition(Conditions::Stone) || 
+                HasCondition(Conditions::Stone) ||
                 (WILL_INCLUDE_UNCONSCIOUS && HasCondition(Conditions::Unconscious)));
     }
 

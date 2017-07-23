@@ -833,7 +833,7 @@ namespace sfml_util
             descUPtr_ = std::make_unique<gui::TextRegion>("ImageFadePopupDesc",
                                                            DESC_TEXTINFO,
                                                            descRegion);
-            
+           
             descRegion = descUPtr_->GetEntityRegion();
 
             descUPtr_->SetEntityPos(descUPtr_->GetEntityPos().x,
@@ -867,14 +867,14 @@ namespace sfml_util
             auto SCALE_VERT{ IMAGE_HEIGHT / imageSpriteCurr_.getGlobalBounds().height };
             imageSpritePrev_.setScale(SCALE_VERT, SCALE_VERT);
             imageSpriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
-            
+           
             if (imageSpriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
             {
                 auto const SCALE_HORIZ{ IMAGE_WIDTH / imageSpriteCurr_.getGlobalBounds().width };
                 imageSpritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
                 imageSpriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
             }
-            
+           
             imageSpritePrev_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
                 (imageSpritePrev_.getGlobalBounds().width * 0.5f),
                                          (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) -
@@ -1354,7 +1354,7 @@ namespace sfml_util
 
                     break;
                 }
-            
+           
                 case game::combat::CombatEnd::Lose:
                 {
                     sfml_util::SoundManager::Instance()->GetSfxSet(
@@ -2418,7 +2418,7 @@ namespace sfml_util
         //setup spell image
         sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_,
                                                            SPELL_CPTRC->Which());
-        
+       
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
@@ -2636,7 +2636,7 @@ namespace sfml_util
         //setup song image
         sfml_util::gui::SongImageManager::Instance()->Get(spellTexture_,
                                                           SONG_CPTRC->Which());
-        
+       
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);

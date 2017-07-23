@@ -855,7 +855,7 @@ namespace stage
             if (animUPtr_.get() == nullptr)
             {
                 auto const ENUM{ static_cast<sfml_util::Animations::Enum>(animIndex) };
-                
+               
                 std::ostringstream ss;
                 ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
                 LoopManager::Instance()->TestingStrAppend(ss.str());

@@ -698,7 +698,7 @@ namespace stage
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
                  (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
-        {   
+        {  
             const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
                 "game::stage::InventoryStage::HandleCallback(SPELL, selection="
@@ -760,7 +760,7 @@ namespace stage
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
             sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f));
-        
+       
             insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
         EntityAdd(insTextRegionUPtr_.get());
 
@@ -939,7 +939,7 @@ namespace stage
         newBlendModeStates.blendMode = sf::BlendAdd;
 
         if (sparkleAnimUPtr_.get() != nullptr)
-        {   
+        {  
             target.draw( * sparkleAnimUPtr_, newBlendModeStates);
         }
 
@@ -1096,22 +1096,22 @@ namespace stage
                         {
                             isImageSliding_ = true;
                         }
-                        
+                       
                         if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
                         {
                             isDetailsSliding_ = true;
                         }
-                        
+                       
                         if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
                         {
                             isCenterSliding_ = true;
                         }
-                        
+                       
                         if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
                         {
                             isListBoxSliding_ = true;
                         }
-                        
+                       
                         if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
                         {
                             isStatsSliding_ = true;
@@ -1126,22 +1126,22 @@ namespace stage
                             isStatsSliding_ = true;
                             isDescBoxSliding_ = true;
                         }
-                        
+                       
                         if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
                         {
                             isCenterSliding_ = true;
                         }
-                        
+                       
                         if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
                         {
                             isDetailsSliding_ = true;
                         }
-                        
+                       
                         if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
                         {
                             isListBoxSliding_ = true;
                         }
-                        
+                       
                         if ((false == isImageSlidingDone_) && (false == isImageSliding_))
                         {
                             isImageSliding_ = true;
@@ -2637,7 +2637,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             {
                 ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
             }
-            
+           
             if (ss.str().empty() == false)
             {
                 SetDescBoxText(ss.str());
@@ -2684,7 +2684,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
         const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
-        
+       
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
 
@@ -3203,7 +3203,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(detailViewTexture_,
                                                                    CREATURE_PTR->ImageFilename(),
                                                                    true);
-        
+       
         detailViewSprite_.setTexture(detailViewTexture_);
         detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
         detailViewSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -3551,7 +3551,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
 
     bool InventoryStage::HandleCast_Step1_TargetSelection(const spell::SpellPtr_t SPELL_PTR)
-    {   
+    {  
         spellBeingCastPtr_ = SPELL_PTR;
 
         if (spellBeingCastPtr_->Target() == TargetType::SingleCompanion)
@@ -3575,7 +3575,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             SystemErrorPopup("Casting this type of spell is not yet supported from the inventory.",
                 ssErr.str());
         }
-        
+       
         return false;
     }
 
@@ -3641,7 +3641,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
-            
+           
         auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[
             creatureEffectIndex_].GetHitInfoVec() };
 
@@ -3669,10 +3669,10 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         keyEvent.code = sf::Keyboard::Down;
         equippedListBoxSPtr_->KeyRelease(keyEvent);
-        
+       
         keyEvent.code = sf::Keyboard::Up;
         equippedListBoxSPtr_->KeyRelease(keyEvent);
-        
+       
         equippedListBoxSPtr_->WillPlaySoundEffects(true);
     }
 
@@ -3717,7 +3717,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                 }
 
                 PopupRejectionWindow(ss.str(), true);
-                
+               
                 //return false because one popup is replacing another
                 return false;
             }

@@ -91,9 +91,9 @@ namespace ownership
             const std::string NEXT_WEALTH_TYPE_NAME( wealth_type::ToString(NEXT_WEALTH_TYPE) );
 
             std::ostringstream ss;
-            ss << "heroespath-wealthtype-chance-" << RANK_TYPE_STR << "-" 
+            ss << "heroespath-wealthtype-chance-" << RANK_TYPE_STR << "-"
                 << NEXT_WEALTH_TYPE_NAME << "-one-in";
-            
+           
             const std::string NEXT_VALUE_STR( GameDataFile::Instance()->GetCopyStr(ss.str()) );
 
             if (NEXT_VALUE_STR == "remaining")
@@ -176,7 +176,7 @@ namespace ownership
 
 
     collector_type::Enum collector_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
-    {        
+    {       
         auto const CHANCE_BASE( GameDataFile::Instance()->GetCopyFloat(
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-base") );
 
@@ -196,7 +196,7 @@ namespace ownership
             "game::non_player::ownership::collector_type::FromCreature("
             << CHARACTER_PTR->NameAndRaceAndRole() << ") failed to read four values from the key="
             << RACE_KEY);
-        
+       
         float chanceMinimalist(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[0]));
         float chancePractical(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[1]));
         float chanceCollector(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[2]));
@@ -208,7 +208,7 @@ namespace ownership
         auto const ROLE_KEY{
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-" +
             ROLE_STR };
-            
+           
         auto const ROLE_COLLECTOR_PARTS_STR{ GameDataFile::Instance()->GetCopyStr(ROLE_KEY) };
 
         misc::StrVec_t rolePartsVec;

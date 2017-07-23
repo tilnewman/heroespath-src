@@ -415,7 +415,7 @@ namespace stage
             if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
             {
                 const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
-                
+               
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
                     "game::stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
                     << POPUP_RESPONSE.Selection() << ") Selection was greater than SongPVec.size="
@@ -1076,7 +1076,7 @@ namespace stage
                                       creature::Race(creature::race::Human),
                                       creature::Role(creature::role::Knight),
                                       KNIGHT_STATS) };
-            
+           
             player::Initial::Setup(knightPtr);
             partyPtr->Add(knightPtr, errMsgIgnored);
         }
@@ -1128,7 +1128,7 @@ namespace stage
             player::Initial::Setup(archerPtr);
             partyPtr->Add(archerPtr, errMsgIgnored);
         }
-        
+       
         {
             const stats::StatSet WOLFEN_STATS(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
                                               STAT_BASE_HIGH + 4 + misc::random::Int(STAT_RAND),
@@ -1176,7 +1176,7 @@ namespace stage
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
         }
-        
+       
         {
             const stats::StatSet BEASTMASTER_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
                                                    STAT_BASE_MED  + misc::random::Int(STAT_RAND),
@@ -1200,7 +1200,7 @@ namespace stage
             player::Initial::Setup(bmPtr);
             partyPtr->Add(bmPtr, errMsgIgnored);
         }
-        
+       
         {
             const stats::StatSet THEIF_STATS(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
                                              STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
@@ -1224,7 +1224,7 @@ namespace stage
             player::Initial::Setup(thiefPtr);
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
-        
+       
         {
             const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
                                               STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
@@ -1297,7 +1297,7 @@ namespace stage
             player::Initial::Setup(sylavinPtr);
             partyPtr->Add(sylavinPtr, errMsgIgnored);
         }
-        
+       
         if (restoreInfo_.HasRestored())
         {
             preTurnPhase_ = PreTurnPhase::End;
@@ -1419,7 +1419,7 @@ namespace stage
             fightTBoxButtonSPtr_->draw(target, STATES);
             castTBoxButtonSPtr_->draw(target, STATES);
             runTBoxButtonSPtr_->draw(target, STATES);
-            
+           
             advanceTBoxButtonSPtr_->draw(target, STATES);
             retreatTBoxButtonSPtr_->draw(target, STATES);
             flyTBoxButtonSPtr_->draw(target, STATES);
@@ -1528,7 +1528,7 @@ namespace stage
                 combatDisplayStagePtr_->HandleCombatNodeElimination(CREATURE_PTR);
                 combat::Encounter::Instance()->Runaway(CREATURE_PTR);
                 combatDisplayStagePtr_->PositionCombatTreeCells(true);
-                
+               
                 SetAnimPhase(AnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::RepositionAnim);
                 isRepositionAnimAfterRun_ = true;
@@ -1607,10 +1607,10 @@ namespace stage
             }
 
             if (isSongAnim1Done_ && isSongAnim2Done_)
-            {   
+            {  
                 isSongAnim1Done_ = false;
                 isSongAnim2Done_ = false;
-                
+               
                 HandleApplyDamageTasks();
                 SetAnimPhase(AnimPhase::PostSongPause);
 
@@ -3261,7 +3261,7 @@ namespace stage
                                                              fightResult_,
                                                              true,
                                                              true), false);
-                
+               
                 SetTurnActionPhase(TurnActionPhase::Run);
                 StartPerformAnim();
                 return true;
@@ -3424,10 +3424,10 @@ namespace stage
             landTBoxButtonSPtr_->SetIsDisabled(true);
             flyTBoxButtonSPtr_->SetIsDisabled(true);
             pounceTBoxButtonSPtr_->SetIsDisabled(true);
-            roarTBoxButtonSPtr_->SetIsDisabled(true); 
+            roarTBoxButtonSPtr_->SetIsDisabled(true);
             skipTBoxButtonSPtr_->SetIsDisabled(true);
             blockTBoxButtonSPtr_->SetIsDisabled(true);
-            
+           
             attackTBoxButtonSPtr_->SetMouseHoverText("");
             fightTBoxButtonSPtr_->SetMouseHoverText("");
             castTBoxButtonSPtr_->SetMouseHoverText("");
@@ -3697,7 +3697,7 @@ namespace stage
 
         weaponTBoxTextRegionUPtr_->SetText(weaponHoldingSS.str());
 
-        weaponTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) - 
+        weaponTBoxTextRegionUPtr_->SetEntityPos((turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f)) -
             (weaponTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f), (titleTBoxTextRegionUPtr_->
                 GetEntityRegion().top + titleTBoxTextRegionUPtr_->GetEntityRegion().height) -
                     VERT_POS_SHIFT);
@@ -3880,7 +3880,7 @@ namespace stage
                                                      true);
 
                 slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
-                
+               
                 SetAnimPhase(AnimPhase::Roar);
                 break;
             }
@@ -4094,7 +4094,7 @@ namespace stage
         creature::CreaturePVec_t killedCreaturesPVec;
 
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
-        
+       
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
         {
             if (NEXT_CREATURE_EFFECT.GetCreature() != nullptr)
@@ -4161,7 +4161,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
         fightResult_ = combat::FightClub::Fight(turnCreaturePtr_, creatureToAttackPtr);
-        
+       
         AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
                                                              turnActionInfo_,
                                                              fightResult_,
@@ -4353,13 +4353,13 @@ namespace stage
         //BattlesSurvived
         //EnemiesFaced
         //TODO -these achievements must be handled elsewhere
-        
+       
         //HealthGiven
         //HealthTraded
         //BackstabsHits
         //SpiritsLifted
         //TODO -these achievements still need to be implemented
-        
+       
         //gather achievements from fightResult_
         auto const IS_TURN_CREATURE_FLYING{ combat::Encounter::Instance()->
             GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying() };
@@ -4375,9 +4375,9 @@ namespace stage
 
         auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS_VEC)
-        {   
+        {  
             auto const NEXT_EFFECTED_CREATURE_PTR{ NEXT_CREATURE_EFFECT.GetCreature() };
-        
+       
             auto const IS_EFFECTED_CREATURE_FLYING{ combat::Encounter::Instance()->
                 GetTurnInfoCopy(NEXT_EFFECTED_CREATURE_PTR).GetIsFlying() };
 
@@ -4451,7 +4451,7 @@ namespace stage
             HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
                                      creature::AchievementType::DodgedStanding);
         }
-        
+       
         for (auto const NEXT_DODGING_CREATURE_PTR : playersDodgedFlyingPVec)
         {
             HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
@@ -4492,7 +4492,7 @@ namespace stage
         const int                             COUNT)
     {
         for (int i(0); i < COUNT; ++i)
-        {   
+        {  
             auto const ORIG_TITLE_PTR{ CREATURE_PTR->GetAchievements().GetCurrentTitle(ACH_ENUM) };
             auto const NEW_TITLE_PTR{ CREATURE_PTR->GetAchievements().Increment(ACH_ENUM) };
 
@@ -4516,22 +4516,22 @@ namespace stage
         else
         {
             auto const TITLE_PAIR{ creatureTitleVec_[0] };
-            
+           
             //here is where the Title actually changes the creature
             TITLE_PAIR.second.second->Change(TITLE_PAIR.first);
-            
+           
             creatureTitleVec_.erase( std::remove(creatureTitleVec_.begin(),
                                                  creatureTitleVec_.end(),
                                                  TITLE_PAIR),
                                         creatureTitleVec_.end() );
-            
+           
             sf::Texture fromTexture;
             if (TITLE_PAIR.second.first != nullptr)
             {
                 sfml_util::gui::TitleImageManager::Instance()->Get(fromTexture,
                     TITLE_PAIR.second.first->Which());
             }
-            
+           
             sf::Texture toTexture;
             if (TITLE_PAIR.second.second != nullptr)
             {
@@ -4546,7 +4546,7 @@ namespace stage
                                             TITLE_PAIR.second.second,
                                             & fromTexture,
                                             & toTexture) };
-            
+           
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
 
             //return false because a popup will follow a popup

@@ -80,7 +80,7 @@ namespace combat
     {
         if ( & FRS != this)
         {
-            hit_type                = FRS.hit_type;       
+            hit_type                = FRS.hit_type;      
 
             //see copy constructor comment regarding these pointers
             song_ptr                = FRS.song_ptr;
