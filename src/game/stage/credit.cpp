@@ -228,7 +228,7 @@ namespace stage
 
         //if there is a lot of text (multi-lined), reduce the size to look better
         textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 20)) *
-                std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n');
+            static_cast<unsigned int>(std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n'));
         
         contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("CreditContent",
                                                                         textInfoContent,

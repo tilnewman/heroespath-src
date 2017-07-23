@@ -1578,7 +1578,7 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R)
     {
-        if ( std::tie(L.name_,
+        if ( (std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -1614,7 +1614,7 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_) == false)
+                         R.lastSongPlayedNum_)) == false)
         {
             return false;
         }
@@ -1640,7 +1640,7 @@ namespace creature
 
     bool operator<(const Creature & L, const Creature & R)
     {
-        if ( std::tie(L.name_,
+        if ( (std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -1676,7 +1676,7 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_) == true)
+                         R.lastSongPlayedNum_)) == true)
         {
             return true;
         }

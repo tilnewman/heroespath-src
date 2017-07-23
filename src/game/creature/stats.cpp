@@ -202,7 +202,7 @@ namespace creature
             }
         }
 
-        rollBaseSum /= STAT_ENUM_VEC.size();
+        rollBaseSum /= static_cast<int>(STAT_ENUM_VEC.size());
 
         auto const RANK_BONUS{ static_cast<stats::Stat_t>(
             static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_RATIO) };

@@ -74,6 +74,7 @@ namespace gui
         popupLargeTexture_             (),
         popupLargeSidebarTextue_       (),
         popupSpellbookTexture_         (),
+        popupMusicSheetTexture_        (),
         accentPathsVec_                ()
     {
         M_HP_LOG_DBG("Singleton Construction: PopupManager");

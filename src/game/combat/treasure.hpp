@@ -60,6 +60,8 @@ namespace combat
     //both on enemy creatures and cached in the chest/lockbox.
     struct ItemCache
     {
+        ItemCache();
+
         item::Coin_t     coins;
         item::Meteor_t   meteor_shards;
         item::Gem_t      gems;

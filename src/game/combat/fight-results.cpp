@@ -48,6 +48,18 @@ namespace game
 namespace combat
 {
 
+    FightResultSummary::FightResultSummary()
+    :
+        hit_type                (HitType::Count),
+        song_ptr                (nullptr),
+        spell_ptr               (nullptr),
+        effected_vec            (),
+        resisted_vec            (),
+        already_vec             (),
+        areResistedNotEffected_ (false)
+    {}
+
+
     std::size_t FightResultSummary::PtrCount() const
     {
         return (effected_vec.size() + resisted_vec.size() + already_vec.size());

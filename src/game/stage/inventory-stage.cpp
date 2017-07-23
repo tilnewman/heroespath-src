@@ -200,6 +200,7 @@ namespace stage
         gatherButtonUPtr_          (),
         equipButtonUPtr_           (),
         unequipButtonUPtr_         (),
+        dropButtonUPtr_            (),
         buttonPVec_                (),
         actionType_                (ActionType::Count),
         contentType_               (ContentType::Count),

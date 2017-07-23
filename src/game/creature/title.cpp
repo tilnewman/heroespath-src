@@ -267,7 +267,7 @@ namespace creature
 
     bool operator<(const Title & L, const Title & R)
     {
-        if ( std::tie(L.title_,
+        if ( (std::tie(L.title_,
                       L.achievementCount_,
                       L.achievementIndex_,
                       L.rankBonus_,
@@ -281,7 +281,7 @@ namespace creature
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_) == true)
+                        R.fileName_)) == true)
         {
             return true;
         }
@@ -292,7 +292,7 @@ namespace creature
 
     bool operator==(const Title & L, const Title & R)
     {
-        if ( std::tie(L.title_,
+        if ( (std::tie(L.title_,
                         L.achievementCount_,
                         L.achievementIndex_,
                         L.rankBonus_,
@@ -306,7 +306,7 @@ namespace creature
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_) == false)
+                        R.fileName_)) == false)
         {
             return false;
         }

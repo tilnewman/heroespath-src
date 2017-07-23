@@ -57,6 +57,8 @@ namespace combat
     //Summarizes many HitInfo objects from a FightResult.
     struct FightResultSummary
     {
+        FightResultSummary();
+
         HitType::Enum hit_type;
         song::SongPtr_t song_ptr;
         spell::SpellPtr_t spell_ptr;

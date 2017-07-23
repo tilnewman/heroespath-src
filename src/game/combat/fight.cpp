@@ -788,7 +788,6 @@ namespace combat
         if ((damageFinal > 0) &&
             (creatureDefendingPtrC->Race().Which() == creature::race::Pixie))
         {
-            auto PIXIE_DAMAGE_ADJ_RATIOB{ 0.0f };
             auto const PIXIE_DAMAGE_FLOOR{ GameDataFile::Instance()->GetCopyInt(
                 "heroespath-fight-pixie-damage-floor") };
 
@@ -801,7 +800,6 @@ namespace combat
                 auto const PIXIE_DAMAGE_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
                     "heroespath-fight-pixie-damage-adj-ratio") };
 
-                PIXIE_DAMAGE_ADJ_RATIOB = PIXIE_DAMAGE_ADJ_RATIO;
                 damageFinal = static_cast<stats::Health_t>(static_cast<float>(damageFinal) *
                     PIXIE_DAMAGE_ADJ_RATIO);
             }

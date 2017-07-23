@@ -41,6 +41,15 @@ namespace game
 namespace combat
 {
 
+    ItemCache::ItemCache()
+    :
+        coins        (0),
+        meteor_shards(0),
+        gems         (0),
+        items_pvec   ()
+    {}
+
+
     game::item::Weight_t ItemCache::Weight() const
     {
         game::item::Weight_t sum{ 0 };
