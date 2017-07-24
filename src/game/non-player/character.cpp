@@ -154,7 +154,7 @@ namespace non_player
 
     bool operator<(const Character & L, const Character & R)
     {
-        if ((std::tie(L.name_,
+        if ( std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -190,22 +190,22 @@ namespace non_player
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_)) == true)
+                         R.lastSongPlayedNum_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.titlesVec_, R.titlesVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.titlesVec_, R.titlesVec_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_))
         {
             return true;
         }

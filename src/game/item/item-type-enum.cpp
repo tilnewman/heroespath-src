@@ -50,8 +50,7 @@ namespace item
         }
         else
         {
-            if (E & category::Magical)   ss << "magical";
-            if (E & category::Weapon)    ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
+            if (E & category::Weapon)    ss << "weapon";
             if (E & category::Armor)     ss << ((ss.str().empty()) ? "" : ", ") << "armor";
             if (E & category::Useable)   ss << ((ss.str().empty()) ? "" : ", ") << "useable";
             if (E & category::Equippable)ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
@@ -61,19 +60,6 @@ namespace item
             if (E & category::TwoHanded) ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
             if (E & category::QuestItem) ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
             if (E & category::Edible)    ss << ((ss.str().empty()) ? "" : ", ") << "edible";
-
-            if ((E & category::EnchantsOnlyWhenEquipped) && (E & category::EnchantsWhenHeld))
-            {
-                ss << ((ss.str().empty()) ? "" : " and ")
-                    << "works an enchantment when held or equipped";
-            }
-            else
-            {
-                if (E & category::EnchantsWhenHeld)
-                    ss << ((ss.str().empty()) ? "" : " and ") << "enchants when held";
-                else if (E & category::EnchantsOnlyWhenEquipped)
-                    ss << ((ss.str().empty()) ? "" : " and ") << "enchants when equipped";
-            }
         }
 
         if (ss.str().empty())
@@ -84,9 +70,13 @@ namespace item
         }
 
         if (WILL_WRAP)
+        {
             return "(" + ss.str() + ")";
+        }
         else
+        {
             return ss.str();
+        }
     }
 
 
@@ -199,11 +189,17 @@ namespace item
     const std::string material::ToReadableString(const item::material::Enum E)
     {
         if (E == material::SoftLeather)
+        {
             return "Soft-Leather";
+        }
         else if (E == material::HardLeather)
+        {
             return "Hard-Leather";
+        }
         else
+        {
             return ToString(E);
+        }
     }
 
 

@@ -44,18 +44,18 @@ namespace creature
 
         if (E == None)
         {
-            ss << "None";
+            return "";
         }
         else
         {
             if (E & AllowsFlight)
             {
-                ss << "allows flying during combat";
+                ss << "Allows flying during combat";
             }
 
             if (E & AllowsCurse)
             {
-                ss << ((ss.str().empty()) ? "" : ", ") << "allows casting the Curse spell";
+                ss << ((ss.str().empty()) ? "" : "  ") << "Allows casting the Curse spell";
             }
         }
 

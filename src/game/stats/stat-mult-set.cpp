@@ -29,10 +29,13 @@
 //
 #include "stat-mult-set.hpp"
 
+#include "game/stats/stat-set.hpp"
+
 #include "misc/real.hpp"
 
 #include <tuple>
 #include <sstream>
+#include <iomanip>
 
 
 namespace game
@@ -107,6 +110,42 @@ namespace stats
         {
             return ss.str();
         }
+    }
+
+
+    const std::string StatMultSet::ToStringDesc(const stats::StatSet * STAT_SET_PTR) const
+    {
+        std::ostringstream ss;
+        ss << ToStringHelper("Str", STAT_SET_PTR->Str().Current(), str_, false);
+        ss << ToStringHelper("Acc", STAT_SET_PTR->Acc().Current(), acc_);
+        ss << ToStringHelper("Cha", STAT_SET_PTR->Cha().Current(), cha_);
+        ss << ToStringHelper("Lck", STAT_SET_PTR->Lck().Current(), lck_);
+        ss << ToStringHelper("Spd", STAT_SET_PTR->Spd().Current(), spd_);
+        ss << ToStringHelper("Int", STAT_SET_PTR->Int().Current(), int_);
+        return ss.str();
+    }
+
+
+    const std::string StatMultSet::ToStringHelper(const std::string & NAME,
+                                                  const Stat_t        VALUE,
+                                                  const float         MULT,
+                                                  const bool          WILL_PREFIX) const
+    {
+        std::ostringstream ss;
+
+        auto const NEW_VALUE{ static_cast<Stat_t>(VALUE * MULT) };
+        auto const DIFF{ NEW_VALUE - VALUE };
+        if (DIFF != 0)
+        {
+            if (WILL_PREFIX)
+            {
+                ss << ", ";
+            }
+
+            ss << NAME << " " << ((DIFF > 0) ? "+" : "") << DIFF;
+        }
+
+        return ss.str();
     }
 
 

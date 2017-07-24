@@ -667,10 +667,6 @@ namespace combat
                 ITEM_DESC_RECT);
 
             std::ostringstream infoSS;
-            if (nextItemText.item_ptr->IsMagical())
-            {
-                infoSS << "(Magical)";
-            }
 
             if (nextItemText.item_ptr->Category() & item::category::QuestItem)
             {

@@ -267,7 +267,7 @@ namespace creature
 
     bool operator<(const Title & L, const Title & R)
     {
-        if ( (std::tie(L.title_,
+        if ( std::tie(L.title_,
                       L.achievementCount_,
                       L.achievementIndex_,
                       L.rankBonus_,
@@ -281,37 +281,41 @@ namespace creature
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_)) == true)
+                        R.fileName_))
         {
             return true;
         }
-
-        return misc::Vector::OrderlessCompareLess(L.rolesVec_, R.rolesVec_);
+        else
+        {
+            return misc::Vector::OrderlessCompareLess(L.rolesVec_, R.rolesVec_);
+        }
     }
 
 
     bool operator==(const Title & L, const Title & R)
     {
-        if ( (std::tie(L.title_,
+        if (   std::tie(L.title_,
                         L.achievementCount_,
                         L.achievementIndex_,
                         L.rankBonus_,
                         L.expBonus_,
                         L.statBonus_,
                         L.fileName_)
-               ==
+               !=
                std::tie(R.title_,
                         R.achievementCount_,
                         R.achievementIndex_,
                         R.rankBonus_,
                         R.expBonus_,
                         R.statBonus_,
-                        R.fileName_)) == false)
+                        R.fileName_))
         {
             return false;
         }
-
-        return misc::Vector::OrderlessCompareEqual(L.rolesVec_, R.rolesVec_);
+        else
+        {
+            return misc::Vector::OrderlessCompareEqual(L.rolesVec_, R.rolesVec_);
+        }
     }
 
 

@@ -29,6 +29,10 @@
 //
 #include "enchantment.hpp"
 
+#include "game/creature/creature.hpp"
+
+#include <sstream>
+
 
 namespace game
 {
@@ -55,6 +59,38 @@ namespace creature
 
     Enchantment::~Enchantment()
     {}
+
+
+    const std::string Enchantment::EffectStr(const CreaturePtr_t CREATURE_PTR) const
+    {
+        std::ostringstream ss;
+
+        ss << EnchantmentType::ToString(type_);
+
+        if (WillAdjMana())
+        {
+            ss << SepIfEmpty(ss.str()) << Plus(manaAdj_) << manaAdj_ << " mana";
+        }
+
+        if (WillAdjArmorRating())
+        {
+            ss << SepIfEmpty(ss.str()) << Plus(armorRatingAdj_) << armorRatingAdj_ << " armor rating";
+        }
+
+        if (WillAdjStatsDirect())
+        {
+            ss << SepIfEmpty(ss.str()) << statsDirectAdjSet_.ToStringCurrent(false, true, true, true, true);
+        }
+        
+        if (WillAdjStatsMult())
+        {
+            const stats::StatSet STAT_SET{ CREATURE_PTR->Stats() };
+            ss << SepIfEmpty(ss.str()) << statsMultAdjSet_.ToStringDesc( & STAT_SET);
+        }
+
+        return ss.str();
+    }
+
 
 }
 }

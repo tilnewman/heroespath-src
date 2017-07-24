@@ -171,18 +171,20 @@ namespace sfml_util
         {
             return false;
         }
-
-        return (std::tie(L.currentlyPlaying_,
-                         L.previouslyPlaying_,
-                         L.willRandomize_,
-                         L.fadeInMult_,
-                         L.volume_)
-            ==
-            std::tie(R.currentlyPlaying_,
-                     R.previouslyPlaying_,
-                     R.willRandomize_,
-                     R.fadeInMult_,
-                     R.volume_));
+        else
+        {
+            return (std::tie(L.currentlyPlaying_,
+                             L.previouslyPlaying_,
+                             L.willRandomize_,
+                             L.fadeInMult_,
+                             L.volume_)
+                ==
+                std::tie(R.currentlyPlaying_,
+                         R.previouslyPlaying_,
+                         R.willRandomize_,
+                         R.fadeInMult_,
+                         R.volume_));
+        }
     }
 
 }

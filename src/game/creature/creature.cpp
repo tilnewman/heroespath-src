@@ -1578,7 +1578,7 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R)
     {
-        if ( (std::tie(L.name_,
+        if ( std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -1596,7 +1596,7 @@ namespace creature
                       L.manaNormal_,
                       L.lastSpellCastNum_,
                       L.lastSongPlayedNum_)
-                ==
+                !=
                 std::tie(R.name_,
                          R.imageFilename_,
                          R.sex_,
@@ -1614,7 +1614,7 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_)) == false)
+                         R.lastSongPlayedNum_))
         {
             return false;
         }
@@ -1640,7 +1640,7 @@ namespace creature
 
     bool operator<(const Creature & L, const Creature & R)
     {
-        if ( (std::tie(L.name_,
+        if ( std::tie(L.name_,
                       L.imageFilename_,
                       L.sex_,
                       L.bodyType_,
@@ -1676,22 +1676,22 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_)) == true)
+                         R.lastSongPlayedNum_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.titlesVec_, R.titlesVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.titlesVec_, R.titlesVec_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.conditionsVec_, R.conditionsVec_))
         {
             return true;
         }
 
-        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_) == true)
+        if (misc::Vector::OrderlessCompareLess(L.songsVec_, R.songsVec_))
         {
             return true;
         }

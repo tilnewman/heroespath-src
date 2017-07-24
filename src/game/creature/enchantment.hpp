@@ -38,6 +38,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 
 namespace game
@@ -99,8 +100,21 @@ namespace creature
             return (WillAdjStatsDirect() || WillAdjStatsMult());
         }
 
+        virtual const std::string EffectStr(const CreaturePtr_t) const;
+
         virtual inline void CreatureChangeApply(const CreaturePtr_t) {}
         virtual inline void CreatureChangeRemove(const CreaturePtr_t) {}
+
+    private:
+        inline const std::string Plus(const int X) const
+        {
+            return ((X > 0) ? "+" : "");
+        }
+
+        inline const std::string SepIfEmpty(const std::string & S) const
+        {
+            return ((S.empty()) ? "" : ", ");
+        }
 
     private:
         std::string             name_;
@@ -127,7 +141,7 @@ namespace creature
     };
 
     using EnchantmentPtr_t = Enchantment *;
-   
+    using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
 }
 }

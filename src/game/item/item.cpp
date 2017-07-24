@@ -29,7 +29,14 @@
 //
 #include "item.hpp"
 
+#include "game/creature/enchantment-warehouse.hpp"
+
+#include "misc/vectors.hpp"
+#include "misc/assertlogandthrow.hpp"
+
 #include <tuple>
+#include <sstream>
+#include <exception>
 
 
 namespace game
@@ -73,11 +80,18 @@ namespace item
         imageFilename_   (IMAGE_FILENAME),
         weaponInfo_      (WEAPON_INFO),
         armorInfo_       (ARMOR_INFO),
-        isPixie_         (false)//see constructor
+        isPixie_         (IS_PIXIE_ITEM),//see constructor body
+        enchantmentsVec_ ()
     {
-        if (IS_PIXIE_ITEM)
+        //adjust the weight for pixie items
+        if (isPixie_)
         {
-            IsPixie(true, true);
+            weight_ /= 250;
+
+            if (weight_ < 1)
+            {
+                weight_ = 1;
+            }
         }
     }
 
@@ -86,31 +100,46 @@ namespace item
     {}
 
 
-    bool Item::IsMagical() const
+    void Item::EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR)
     {
-        return (category::IsMagical(category_)    ||
-                material::IsMagical(materialPri_) ||
-                material::IsMagical(materialSec_));
+        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
+            "game::item::Item::EnchantmentAdd() was given a null ptr.");
+
+        enchantmentsVec_.push_back(ENCHANTMENT_PTR);
     }
 
 
-    void Item::IsPixie(const bool IS_PIXIE, const bool WILL_ADJUST_WEIGHT)
+    void Item::EnchantmentRemoveAndFree(creature::EnchantmentPtr_t enchantement_ptr)
     {
-        if ((isPixie_ != IS_PIXIE) && WILL_ADJUST_WEIGHT)
-        {
-            weight_ /= 250;
+        M_ASSERT_OR_LOGANDTHROW_SS((enchantement_ptr != nullptr),
+            "game::item::Item::EnchantmentRemoveAndFree() was given a null ptr.");
 
-            if (weight_ < 1)
-                weight_ = 1;
+        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsVec_)
+        {
+            if (NEXT_ENCHANTMENT_PTR == enchantement_ptr)
+            {
+                enchantmentsVec_.erase(std::remove(enchantmentsVec_.begin(),
+                                                   enchantmentsVec_.end(),
+                                                   enchantement_ptr),
+                                       enchantmentsVec_.end());
+
+                creature::EnchantmentWarehouse::Instance()->Free(enchantement_ptr);
+                return;
+            }
         }
 
-        isPixie_ = IS_PIXIE;
+        std::ostringstream ss;
+        
+        ss << "game::item::Item::EnchantmentRemoveAndFree(" << enchantement_ptr->Name()
+            << ") but the pointer to that enchantment was not found.";
+
+        throw std::runtime_error(ss.str());
     }
 
 
     bool operator<(const Item & L, const Item & R)
     {
-        return std::tie(L.name_,
+        if (   std::tie(L.name_,
                         L.desc_,
                         L.price_,
                         L.weight_,
@@ -146,49 +175,61 @@ namespace item
                         R.imageFilename_,
                         R.weaponInfo_,
                         R.armorInfo_,
-                        R.isPixie_);
+                        R.isPixie_) )
+        {
+            return true;
+        }
+
+        return misc::Vector::OrderlessCompareLess(L.enchantmentsVec_, R.enchantmentsVec_);
     }
 
 
     bool operator==(const Item & L, const Item & R)
     {
-        return std::tie(L.name_,
-                        L.desc_,
-                        L.price_,
-                        L.weight_,
-                        L.damageMin_,
-                        L.damageMax_,
-                        L.armorRating_,
-                        L.exclusiveToRole_,
-                        L.armorType_,
-                        L.weaponType_,
-                        L.category_,
-                        L.miscType_,
-                        L.materialPri_,
-                        L.materialSec_,
-                        L.imageFilename_,
-                        L.weaponInfo_,
-                        L.armorInfo_,
-                        L.isPixie_)
-               ==
-               std::tie(R.name_,
-                        R.desc_,
-                        R.price_,
-                        R.weight_,
-                        R.damageMin_,
-                        R.damageMax_,
-                        R.armorRating_,
-                        R.exclusiveToRole_,
-                        R.armorType_,
-                        R.weaponType_,
-                        R.category_,
-                        R.miscType_,
-                        R.materialPri_,
-                        R.materialSec_,
-                        R.imageFilename_,
-                        R.weaponInfo_,
-                        R.armorInfo_,
-                        R.isPixie_);
+        if (std::tie(L.name_,
+                     L.desc_,
+                     L.price_,
+                     L.weight_,
+                     L.damageMin_,
+                     L.damageMax_,
+                     L.armorRating_,
+                     L.exclusiveToRole_,
+                     L.armorType_,
+                     L.weaponType_,
+                     L.category_,
+                     L.miscType_,
+                     L.materialPri_,
+                     L.materialSec_,
+                     L.imageFilename_,
+                     L.weaponInfo_,
+                     L.armorInfo_,
+                     L.isPixie_)
+             !=
+             std::tie(R.name_,
+                      R.desc_,
+                      R.price_,
+                      R.weight_,
+                      R.damageMin_,
+                      R.damageMax_,
+                      R.armorRating_,
+                      R.exclusiveToRole_,
+                      R.armorType_,
+                      R.weaponType_,
+                      R.category_,
+                      R.miscType_,
+                      R.materialPri_,
+                      R.materialSec_,
+                      R.imageFilename_,
+                      R.weaponInfo_,
+                      R.armorInfo_,
+                      R.isPixie_))
+        {
+            return false;
+        }
+        else
+        {
+            return misc::Vector::OrderlessCompareLess(L.enchantmentsVec_, R.enchantmentsVec_);
+        }
     }
 
 }

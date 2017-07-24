@@ -45,7 +45,7 @@ namespace creature
             AllowsCurse  = 1 << 1
         };
 
-        const std::string ToString(const Enum);
+        static const std::string ToString(const Enum);
     };
 
 }

@@ -47,7 +47,7 @@ namespace item
             ChangesCreature = 1 << 3
         };
 
-        const std::string ToString(const Enum);
+        static const std::string ToString(const Enum);
     };
 
 }

@@ -28,6 +28,7 @@
 // stat-mult-set.hpp
 //
 #include "game/stats/stat-enum.hpp"
+#include "game/stats/types.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 
@@ -38,6 +39,9 @@ namespace game
 {
 namespace stats
 {
+
+    class StatSet;
+
 
     //Stores modifications to stats as multiples for each.
     class StatMultSet
@@ -63,8 +67,16 @@ namespace stats
 
         const std::string ToString(const bool WILL_WRAP = false) const;
 
+        const std::string ToStringDesc(const stats::StatSet * STAT_SET_PTR) const;
+
         friend bool operator==(const StatMultSet & L, const StatMultSet & R);
         friend bool operator<(const StatMultSet & L, const StatMultSet & R);
+
+    private:
+        const std::string ToStringHelper(const std::string & NAME,
+                                         const Stat_t        VALUE,
+                                         const float         MULT,
+                                         const bool          WILL_PREFIX = true) const;
 
     private:
         float str_;

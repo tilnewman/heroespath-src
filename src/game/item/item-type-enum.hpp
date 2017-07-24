@@ -43,19 +43,16 @@ namespace item
         enum Enum : unsigned int
         {
             Broken                   = 0, //useless, unable to do or be used for anything
-            Magical                  = 1 << 0,
-            Weapon                   = 1 << 1,
-            Armor                    = 1 << 2,
-            Useable                  = 1 << 3,
-            Equippable               = 1 << 4,
-            BodyPart                 = 1 << 5,
-            Wearable                 = 1 << 6, //if not wearable then it must be one or two-handed
-            OneHanded                = 1 << 7,
-            TwoHanded                = 1 << 8,
-            EnchantsWhenHeld         = 1 << 9,
-            EnchantsOnlyWhenEquipped = 1 << 10,
-            QuestItem                = 1 << 11,
-            Edible                   = 1 << 12
+            Weapon                   = 1 << 0,
+            Armor                    = 1 << 1,
+            Useable                  = 1 << 2,
+            Equippable               = 1 << 3,
+            BodyPart                 = 1 << 4,
+            Wearable                 = 1 << 5, //if not wearable then it must be one or two-handed
+            OneHanded                = 1 << 6,
+            TwoHanded                = 1 << 7,
+            QuestItem                = 1 << 8,
+            Edible                   = 1 << 9
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
@@ -66,8 +63,7 @@ namespace item
         inline static bool IsWearable(const category::Enum E)  { return (E & category::Wearable); }
         inline static bool IsOneHanded(const category::Enum E) { return (E & category::OneHanded); }
         inline static bool IsTwoHanded(const category::Enum E) { return (E & category::TwoHanded); }
-        inline static bool IsEnchanted(const category::Enum E) { return ((E & category::EnchantsWhenHeld) || (E & category::EnchantsOnlyWhenEquipped)); }
-        inline static bool IsMagical(const category::Enum E)   { return (((E & category::Magical)) || IsEnchanted(E)); }
+        inline static bool IsEdible(const category::Enum E)    { return (E & category::Edible); }
     };
 
 

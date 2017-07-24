@@ -435,13 +435,13 @@ namespace item
 
     bool operator==(const Inventory & L, const Inventory & R)
     {
-        if ( (std::tie(L.coins_,
+        if ( std::tie(L.coins_,
                       L.meteorShards_,
                       L.gems_)
-               ==
+               !=
                std::tie(R.coins_,
                         R.meteorShards_,
-                        R.gems_)) == false)
+                        R.gems_))
         {
             return false;
         }
