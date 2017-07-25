@@ -81,7 +81,7 @@ namespace item
         weaponInfo_      (WEAPON_INFO),
         armorInfo_       (ARMOR_INFO),
         isPixie_         (IS_PIXIE_ITEM),//see constructor body
-        enchantmentsVec_ ()
+        enchantmentsPVec_ ()
     {
         //adjust the weight for pixie items
         if (isPixie_)
@@ -97,7 +97,9 @@ namespace item
 
 
     Item::~Item()
-    {}
+    {
+        EnchantmentRemoveAndFreeAll();
+    }
 
 
     void Item::EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR)
@@ -105,7 +107,7 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
             "game::item::Item::EnchantmentAdd() was given a null ptr.");
 
-        enchantmentsVec_.push_back(ENCHANTMENT_PTR);
+        enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
     }
 
 
@@ -114,14 +116,14 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((enchantement_ptr != nullptr),
             "game::item::Item::EnchantmentRemoveAndFree() was given a null ptr.");
 
-        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsVec_)
+        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
         {
             if (NEXT_ENCHANTMENT_PTR == enchantement_ptr)
             {
-                enchantmentsVec_.erase(std::remove(enchantmentsVec_.begin(),
-                                                   enchantmentsVec_.end(),
+                enchantmentsPVec_.erase(std::remove(enchantmentsPVec_.begin(),
+                                                   enchantmentsPVec_.end(),
                                                    enchantement_ptr),
-                                       enchantmentsVec_.end());
+                                       enchantmentsPVec_.end());
 
                 creature::EnchantmentWarehouse::Instance()->Free(enchantement_ptr);
                 return;
@@ -134,6 +136,16 @@ namespace item
             << ") but the pointer to that enchantment was not found.";
 
         throw std::runtime_error(ss.str());
+    }
+
+
+    void Item::EnchantmentRemoveAndFreeAll()
+    {
+        auto const ENCHANTMENT_PVEC_COPY{ enchantmentsPVec_ };
+        for (auto nextEnchantmentPtr: ENCHANTMENT_PVEC_COPY)
+        {
+            EnchantmentRemoveAndFree(nextEnchantmentPtr);
+        }
     }
 
 
@@ -180,7 +192,7 @@ namespace item
             return true;
         }
 
-        return misc::Vector::OrderlessCompareLess(L.enchantmentsVec_, R.enchantmentsVec_);
+        return misc::Vector::OrderlessCompareLess(L.enchantmentsPVec_, R.enchantmentsPVec_);
     }
 
 
@@ -228,7 +240,7 @@ namespace item
         }
         else
         {
-            return misc::Vector::OrderlessCompareLess(L.enchantmentsVec_, R.enchantmentsVec_);
+            return misc::Vector::OrderlessCompareEqual(L.enchantmentsPVec_, R.enchantmentsPVec_);
         }
     }
 

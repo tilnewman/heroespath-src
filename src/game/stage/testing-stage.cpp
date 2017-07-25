@@ -508,13 +508,13 @@ namespace stage
         TestStatSetsCurrentAndNormal("Base Set Identity", actualSet, expectedSet);
 
         actualSet = STAT_SET_BASE;
-        actualSet.ModifyCurrent(STAT_SET_MOD1);
+        actualSet.ModifyCurrentAndActual(STAT_SET_MOD1);
         const stats::StatSet STAT_SET_BASE_MOD1{12, 11, 14, 9, 16, 7};
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_MOD1);
         TestStatSetsCurrentAndNormal("Base Set Mod1 Current", actualSet, expectedSet);
 
-        actualSet.ModifyCurrent(STAT_SET_MOD1.CreateInvertCopy());
+        actualSet.ModifyCurrentAndActual(STAT_SET_MOD1.CreateInvertCopy());
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal(
             "Base Set Mod1 INV Current (should be back to Base)", actualSet, expectedSet);
@@ -522,7 +522,7 @@ namespace stage
         actualSet = STAT_SET_BASE;
         for (int i(0); i < 10; ++i)
         {
-            actualSet.ModifyCurrent(STAT_SET_MOD1);
+            actualSet.ModifyCurrentAndActual(STAT_SET_MOD1);
         }
         const stats::StatSet STAT_SET_BASE_MOD1_X10(12, 2, 32, 0, 52, 0);
         expectedSet = STAT_SET_BASE;
@@ -531,7 +531,7 @@ namespace stage
 
         for (int i(0); i < 10; ++i)
         {
-            actualSet.ModifyCurrent(STAT_SET_MOD1.CreateInvertCopy());
+            actualSet.ModifyCurrentAndActual(STAT_SET_MOD1.CreateInvertCopy());
         }
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);

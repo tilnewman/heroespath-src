@@ -75,7 +75,7 @@ namespace stats
     }
 
 
-    bool Stat::ModifyCurrent(const Stat_t MODIFIER)
+    bool Stat::ModifyCurrentAndActual(const Stat_t MODIFIER)
     {
         actual_ += MODIFIER;
         current_ += MODIFIER;

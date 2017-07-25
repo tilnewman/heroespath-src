@@ -327,7 +327,7 @@ namespace creature
 
         //titles are permenant, so they effect both the normal and current stat values
         creaturePtr->Stats().ModifyNormal(statBonus_);
-        creaturePtr->Stats().ModifyCurrent(statBonus_);
+        creaturePtr->Stats().ModifyCurrentAndActual(statBonus_);
 
         creaturePtr->IncreaseRank(rankBonus_);
         creaturePtr->IncreaseExp(expBonus_);

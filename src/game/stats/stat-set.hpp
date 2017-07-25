@@ -67,9 +67,6 @@ namespace stats
 
         virtual ~StatSet();
 
-        void ModifyNormal(const StatSet & SET);
-        void ModifyCurrent(const StatSet & SET);
-
         const std::string ToStringNormal(const bool WILL_WRAP         = true,
                                          const bool WILL_ABBR         = true,
                                          const bool WILL_SKIP_ZEROS   = false,
@@ -113,14 +110,15 @@ namespace stats
         void ResetNormal(const StatSet & NEW_NORMAL_SET);
         void ResetActual(const StatSet & NEW_ACTUAL_SET);
 
-        //operates on Current NOT Actual
+        //only affects Normal values
+        void ModifyNormal(const StatSet &);
+
+        //Calculates the new value based on Current and the given StatSet's Current,
+        //and then sets Actual and Current to that new value.
+        void ModifyCurrentAndActual(const StatSet &);
+
+        //Naturally, this has no effect on stats with (Actual < 0) or (Current == 0).
         void ModifyCurrentAndActual(const StatMultSet &);
-
-        //actual values are adjusted by this function
-        void ModifyCurrentToNormal();
-
-        //Returns an inverse-modifier StatSet that can later be used with ModifyCurrent() to undo the changes made with this function call.
-        const StatSet ModifyCurrentToValid(const StatSet &);
 
         //returns true if any values were changed
         bool ForceValidNormal();

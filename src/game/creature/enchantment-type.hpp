@@ -40,9 +40,13 @@ namespace creature
     {
         enum Enum : unsigned int
         {
-            None         = 0,
-            AllowsFlight = 1 << 0,
-            AllowsCurse  = 1 << 1
+            None            = 0,
+            WhenUsed        = 1 << 0,
+            WhenHeld        = 1 << 1,
+            WhenEquipped    = 1 << 2,
+            ChangesCreature = 1 << 3,
+            AllowsFlight    = 1 << 4,
+            AllowsCurse     = 1 << 5
         };
 
         static const std::string ToString(const Enum);

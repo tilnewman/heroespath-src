@@ -48,9 +48,26 @@ namespace creature
         }
         else
         {
+            if (E & WhenUsed)
+            {
+                ss << "Active when used";
+            }
+
+            if (E & WhenHeld)
+            {
+                ss << "Active when held";
+            }
+
+            if (E & WhenEquipped)
+            {
+                ss << "Active when Equipped";
+            }
+
+            //intentionally no text for "ChangesCreature"
+
             if (E & AllowsFlight)
             {
-                ss << "Allows flying during combat";
+                ss << ((ss.str().empty()) ? "" : "  ") << "Allows flying during combat";
             }
 
             if (E & AllowsCurse)

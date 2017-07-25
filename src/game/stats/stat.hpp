@@ -69,12 +69,13 @@ namespace stats
         inline bool IsActualAndNormal() const                       { return (IsActual() && IsNormal()); }
 
         //returns true if normal_ was prevented from going below zero
+        //This is your 'goto' function for default 'modifying' behavior.
         bool ModifyNormal(const Stat_t MODIFIER);
         inline bool ModifyNormal(const Stat & MODIFIER)             { return ModifyNormal(MODIFIER.Current()); }
 
         //returns true if current_ was prevented from going below zero
-        bool ModifyCurrent(const Stat_t MODIFIER);
-        inline void ModifyCurrent(const Stat & MODIFIER)            { ModifyCurrent(MODIFIER.Current()); }
+        bool ModifyCurrentAndActual(const Stat_t MODIFIER);
+        inline void ModifyCurrentAndActual(const Stat & MODIFIER)   { ModifyCurrentAndActual(MODIFIER.Current()); }
 
         //no bounds checking is performed by these functions
         inline void ResetActual(const Stat_t S)                     { actual_ = S; }
@@ -102,7 +103,7 @@ namespace stats
         void Invert();
 
         inline bool ForceValidNormal()                              { return ModifyNormal(0); }
-        inline bool ForceValidCurrent()                             { return ModifyCurrent(0); }
+        inline bool ForceValidCurrent()                             { return ModifyCurrentAndActual(0); }
         inline bool ForceValidAll()                                 { const bool A{ForceValidNormal()}; const bool B{ForceValidCurrent()}; return (A || B); }
 
         inline Stat_t NormalReduced() const                         { return Reduce(normal_); }

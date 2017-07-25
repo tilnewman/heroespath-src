@@ -109,23 +109,6 @@ namespace stats
     {}
 
 
-    void StatSet::ModifyNormal(const StatSet & SET)
-    {
-        for (auto & nextStat : statVec_)
-        {
-            nextStat.ModifyNormal(SET.GetCopy(nextStat.Which()));
-        }
-    }
-
-
-    void StatSet::ModifyCurrent(const StatSet & SET)
-    {
-        for (auto & nextStat : statVec_)
-        {
-            nextStat.ModifyCurrent(SET.GetCopy(nextStat.Which()));
-        }
-    }
-
 
     const std::string StatSet::ToStringNormal(const bool WILL_WRAP,
                                               const bool WILL_ABBR,
@@ -401,47 +384,32 @@ namespace stats
     }
 
 
+    void StatSet::ModifyNormal(const StatSet & STAT_SET)
+    {
+        for (auto & nextStat : statVec_)
+        {
+            nextStat.ModifyNormal(STAT_SET.GetCopy(nextStat.Which()));
+        }
+    }
+
+
+    void StatSet::ModifyCurrentAndActual(const StatSet & STAT_SET)
+    {
+        for (auto & nextStat : statVec_)
+        {
+            nextStat.ModifyCurrentAndActual(STAT_SET.GetCopy(nextStat.Which()));
+        }
+    }
+
+
     void StatSet::ModifyCurrentAndActual(const StatMultSet & STAT_MULT_SET)
     {
         for (auto & nextStat : statVec_)
         {
-            nextStat.ResetCurrentAndActual( static_cast<stats::Stat_t>(
-                static_cast<float>(nextStat.Current()) * STAT_MULT_SET.Get(nextStat.Which())) );
+            //If (Actual <= 0) then (Current == 0) and this multiplying will have no effect.
+            nextStat.ResetCurrentAndActual(static_cast<stats::Stat_t>(
+                static_cast<float>(nextStat.Current()) * STAT_MULT_SET.Get(nextStat.Which())));
         }
-    }
-
-
-    void StatSet::ModifyCurrentToNormal()
-    {
-        for (auto & nextStat : statVec_)
-        {
-            auto const NEXT_NORMAL_VALUE{ Get(nextStat.Which()).Normal() };
-            auto const NEXT_CURRENT_VALUE{ Get(nextStat.Which()).Current() };
-            nextStat.ModifyCurrent(NEXT_NORMAL_VALUE - NEXT_CURRENT_VALUE);
-        }
-    }
-
-
-    const StatSet StatSet::ModifyCurrentToValid(const StatSet & SET)
-    {
-        StatSet inverseSet;
-
-        for (auto & nextStat : statVec_)
-        {
-            auto const NEXT_TARGET_VALUE{ SET.GetCopy(nextStat.Which()).Current() };
-            if (NEXT_TARGET_VALUE != Stat::VAL_INVALID_)
-            {
-                auto const NEXT_CURRENT_VALUE{ nextStat.Current() };
-                nextStat.ModifyCurrent(NEXT_TARGET_VALUE - NEXT_CURRENT_VALUE);
-                inverseSet.Get(nextStat.Which()).ResetAll(NEXT_CURRENT_VALUE - NEXT_TARGET_VALUE);
-            }
-            else
-            {
-                inverseSet.Get(nextStat.Which()).ResetAll(0);
-            }
-        }
-
-        return inverseSet;
     }
 
 

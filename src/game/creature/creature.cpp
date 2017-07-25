@@ -102,7 +102,8 @@ namespace creature
         manaNormal_       (MANA),
         lastSpellCastNum_ (0),
         songsVec_         (SONG_VEC),
-        lastSongPlayedNum_(0)
+        lastSongPlayedNum_(0),
+        enchantmentsPVec_ ()
     {
         //verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_.Which()) };
@@ -123,7 +124,9 @@ namespace creature
 
 
     Creature::~Creature()
-    {}
+    {
+        //Items and their Enchantments are free'd when the Inventory is destructed.
+    }
 
 
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
@@ -192,10 +195,22 @@ namespace creature
         stats_.ResetCurrentAndActualToNormal();
 
         auto const CONDITIONS_PVEC{ ConditionsPVec() };
-
         for (auto const NEXT_COND_PTR : CONDITIONS_PVEC)
         {
             stats_.ModifyCurrentAndActual(NEXT_COND_PTR->StatMult());
+        }
+
+        for (auto NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+        {
+            if (NEXT_ENCHANTMENT_PTR->WillAdjStatsDirect())
+            {
+                stats_.ModifyCurrentAndActual(NEXT_ENCHANTMENT_PTR->StatDirectAdjSet());
+            }
+            
+            if (NEXT_ENCHANTMENT_PTR->WillAdjStatsMult())
+            {
+                stats_.ModifyCurrentAndActual(NEXT_ENCHANTMENT_PTR->StatMultAdjSet());
+            }
         }
     }
 
@@ -532,6 +547,7 @@ namespace creature
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
+            HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, true);
         }
         else
         {
@@ -579,6 +595,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
             "Creature::ItemRemove() was given a null ITEM_PTR.");
 
+        HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, false);
         inventory_.ItemRemove(ITEM_PTR);
     }
 
@@ -591,6 +608,7 @@ namespace creature
         const std::string IS_ALLOWED_STR( ItemIsEquipAllowed(ITEM_PTR) );
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
+            HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
             inventory_.ItemEquip(ITEM_PTR);
             SetCurrentWeaponsToBest();
         }
@@ -968,6 +986,7 @@ namespace creature
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
         }
 
+        HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
         inventory_.ItemUnEquip(ITEM_PTR);
         SetCurrentWeaponsToBestIfInvalidated();
         return ITEM_ACTION_SUCCESS_STR_;
@@ -1450,6 +1469,36 @@ namespace creature
     }
 
 
+    void Creature::EnchantmentApplyOrRemove(const EnchantmentPtr_t ENCHANTMENT_PTR,
+                                            const bool             WILL_APPLY)
+    {
+        if (WILL_APPLY)
+        {
+            if (ENCHANTMENT_PTR->Type() & EnchantmentType::ChangesCreature)
+            {
+                ENCHANTMENT_PTR->CreatureChangeApply(this);
+            }
+
+            enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
+            ReCalculateStats();
+        }
+        else
+        {
+            if (ENCHANTMENT_PTR->Type() & EnchantmentType::ChangesCreature)
+            {
+                ENCHANTMENT_PTR->CreatureChangeRemove(this);
+            }
+
+            enchantmentsPVec_.erase(std::remove(enchantmentsPVec_.begin(),
+                enchantmentsPVec_.end(),
+                ENCHANTMENT_PTR),
+                enchantmentsPVec_.end());
+
+            ReCalculateStats();
+        }
+    }
+
+
     item::Weight_t Creature::WeightCanCarry() const
     {
         item::Weight_t base(5000);
@@ -1634,6 +1683,11 @@ namespace creature
             return false;
         }
 
+        if (misc::Vector::OrderlessCompareEqual(L.enchantmentsPVec_, R.enchantmentsPVec_) == false)
+        {
+            return false;
+        }
+
         return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
@@ -1696,7 +1750,26 @@ namespace creature
             return true;
         }
 
+        if (misc::Vector::OrderlessCompareLess(L.enchantmentsPVec_, R.enchantmentsPVec_))
+        {
+            return true;
+        }
+
         return misc::Vector::OrderlessCompareLess(L.spellsVec_, R.spellsVec_);
+    }
+
+
+    void Creature::HandleEnachantments(const EnchantmentPVec_t &   PVEC,
+                                       const EnchantmentType::Enum TYPE,
+                                       const bool                  WILL_APPLY)
+    {
+        for (auto const NEXT_ENCHANTMENT_PTR : PVEC)
+        {
+            if (NEXT_ENCHANTMENT_PTR->Type() & TYPE)
+            {
+                EnchantmentApplyOrRemove(NEXT_ENCHANTMENT_PTR, WILL_APPLY);
+            }
+        }
     }
 
 }

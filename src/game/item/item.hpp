@@ -182,12 +182,14 @@ namespace item
 
         inline const creature::EnchantmentPVec_t & Enchantments() const
         {
-            return enchantmentsVec_;
+            return enchantmentsPVec_;
         }
 
         void EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR);
 
         void EnchantmentRemoveAndFree(creature::EnchantmentPtr_t);
+
+        void EnchantmentRemoveAndFreeAll();
 
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
@@ -211,7 +213,10 @@ namespace item
         weapon::WeaponInfo   weaponInfo_;
         armor::ArmorInfo     armorInfo_;
         bool                 isPixie_;
-        creature::EnchantmentPVec_t enchantmentsVec_;
+
+        //The Item class owns the Enchantment objects and is responsible
+        //for their lifetimes.
+        creature::EnchantmentPVec_t enchantmentsPVec_;
 
     private:
         friend class boost::serialization::access;
@@ -236,7 +241,7 @@ namespace item
             ar & weaponInfo_;
             ar & armorInfo_;
             ar & isPixie_;
-            ar & enchantmentsVec_;
+            ar & enchantmentsPVec_;
         }
     };
 

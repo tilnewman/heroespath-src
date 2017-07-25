@@ -31,9 +31,10 @@
 #include "sfml-util/date-time.hpp"
 #include "misc/boost-serialize-includes.hpp"
 
-#include "game/creature/condition-enum.hpp"
 #include "game/item/types.hpp"
 #include "game/item/inventory.hpp"
+#include "game/creature/enchantment-type.hpp"
+#include "game/creature/condition-enum.hpp"
 #include "game/creature/role.hpp"
 #include "game/creature/race.hpp"
 #include "game/creature/rank.hpp"
@@ -84,6 +85,10 @@ namespace creature
     class Condition;
     using ConditionPtr_t  = Condition *;
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
+
+    class Enchantment;
+    using EnchantmentPtr_t = Enchantment *;
+    using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
 
     //unique ID for all creatures
@@ -323,11 +328,19 @@ namespace creature
         std::size_t LastSongPlayedNum() const                   { return lastSongPlayedNum_; }
         void LastSongPlayedNum(const std::size_t N)             { lastSongPlayedNum_ = N; }
 
+        inline const EnchantmentPVec_t Enchantments() const     { return enchantmentsPVec_; }
+
+        void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
     protected:
         const item::ItemPVecVec_t ComposeWeaponsList() const;
+
+        void HandleEnachantments(const EnchantmentPVec_t &   PVEC,
+                                 const EnchantmentType::Enum TYPE,
+                                 const bool                  WILL_APPLY);
 
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
@@ -346,7 +359,7 @@ namespace creature
         stats::Health_t     healthNormal_;
         stats::Rank_t       rank_;
         stats::Exp_t        experience_;
-        CondEnumVec_t  conditionsVec_;
+        CondEnumVec_t       conditionsVec_;
         TitleEnumVec_t      titlesVec_;
         item::Inventory     inventory_;
         sfml_util::DateTime dateTimeCreated_;
@@ -358,6 +371,12 @@ namespace creature
         std::size_t         lastSpellCastNum_;
         song::SongVec_t     songsVec_;
         std::size_t         lastSongPlayedNum_;
+
+        //The Creature class is not responsible for the lifetime of
+        //Enchantment objects, the Item class is.  This vector of
+        //pointers is just for short term observation, and is not
+        //serialized with the Creature class when the game is saved.
+        EnchantmentPVec_t enchantmentsPVec_;
 
     private:
         friend class boost::serialization::access;
