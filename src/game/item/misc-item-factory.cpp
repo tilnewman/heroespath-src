@@ -31,9 +31,11 @@
 
 #include "sfml-util/gui/item-image-manager.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
-#include "game/log-macros.hpp"
+#include "game/creature/enchantment.hpp"
+#include "game/creature/enchantment-factory.hpp"
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -166,6 +168,8 @@ namespace misc
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
             GetImageFilename(itemPtr));
+        
+        creature::EnchantmentFactory::Instance()->MakeStoreAttach_Wand(itemPtr);
 
         return itemPtr;
     }

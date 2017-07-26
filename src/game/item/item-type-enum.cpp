@@ -424,6 +424,62 @@ namespace item
     }
 
 
+    int material::Bonus(const material::Enum E)
+    {
+        switch (E)
+        {
+            case Nothing    :
+            case Ether      :
+            case Gas        :
+            case Blood      :
+            case Water      :
+            case Dirt       :
+            case Acid       :
+            case Paper      :
+            case Glass      :
+            case Feathers   :
+            case Fur        :
+            case Hair       :
+            case Flesh      :
+            case Rope       :
+            case Cloth      :
+            case Hide       :
+            case SoftLeather:
+            case HardLeather:
+            case Plant      :
+            case Claw       :
+            case Scale      :
+            case Horn       : { return 0; }
+            case Bone       : { return 1; }
+            case Tooth      : { return 0; }
+            case Wood       : { return 0; }
+            case Tin        : { return 2; }
+            case Bronze     : { return 3; }
+            case Iron       : { return 4; }
+            case Stone      : { return 0; }
+            case Obsidian   : { return 5; }
+            case Steel      : { return 6; }
+            case Silver     : { return 7; }
+            case Amethyst   : { return 8; }
+            case Emerald    : { return 9; }
+            case Pearl      : { return 0; }
+            case Ruby       : { return 10; }
+            case Lapis      : { return 11; }
+            case Sapphire   : { return 12; }
+            case Gold       : { return 13; }
+            case Platinum   : { return 14; }
+            case Diamond    : { return 15; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::material::Bonus(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
     bool material::IsMagical(const material::Enum PRI, const material::Enum SEC)
     {
         return ContainsEther(PRI, SEC);

@@ -39,21 +39,26 @@ namespace game
 namespace creature
 {
 
-    Enchantment::Enchantment(const std::string &         NAME,
-                             const EnchantmentType::Enum TYPE,
+    Enchantment::Enchantment(const EnchantmentType::Enum TYPE,
+                             const int                   USE_COUNT, //negative means infinite
                              const stats::Mana_t         MANA_ADJ,
                              const stats::Armor_t        ARMOR_RATING_ADJ,
                              const stats::StatSet &      STAT_ADJ_SET,
                              const stats::StatMultSet &  STAT_MULT_ADJ_SET,
-                             const CondEnumVec_t &       CONDS_VEC)
+                             const CondEnumVec_t &       CONDS_VEC,
+                             const float                 SPELL_BONUS_RATIO,
+                             const float                 SONG_BONUS_RATIO)
     :
-        name_               (NAME),
         type_               (TYPE),
+        useCountOrig_       (USE_COUNT),
+        useCountRemaining_  (USE_COUNT),
         manaAdj_            (MANA_ADJ),
         armorRatingAdj_     (ARMOR_RATING_ADJ),
         statsDirectAdjSet_  (STAT_ADJ_SET),
         statsMultAdjSet_    (STAT_MULT_ADJ_SET),
-        condsVec_           (CONDS_VEC)
+        condsVec_           (CONDS_VEC),
+        spellBonusRatio_    (SPELL_BONUS_RATIO),
+        songBonusRatio_     (SONG_BONUS_RATIO)
     {}
 
 
@@ -67,6 +72,18 @@ namespace creature
 
         ss << EnchantmentType::ToString(type_);
 
+        if (IsUseableEver())
+        {
+            if (useCountRemaining_ > 0)
+            {
+                ss << SepIfEmpty(ss.str()) << useCountRemaining_ << " uses left";
+            }
+            else if (useCountRemaining_ == 0)
+            {
+                ss << SepIfEmpty(ss.str()) << "cannot be used again";
+            }
+        }
+
         if (WillAdjMana())
         {
             ss << SepIfEmpty(ss.str()) << Plus(manaAdj_) << manaAdj_ << " mana";
@@ -77,6 +94,16 @@ namespace creature
             ss << SepIfEmpty(ss.str()) << Plus(armorRatingAdj_) << armorRatingAdj_ << " armor rating";
         }
 
+        if (spellBonusRatio_ > 0.0f)
+        {
+            ss << SepIfEmpty(ss.str()) << "+" << static_cast<int>(spellBonusRatio_ * 100.0f) << "% spell chance";
+        }
+
+        if (songBonusRatio_ > 0.0f)
+        {
+            ss << SepIfEmpty(ss.str()) << "+" << static_cast<int>(songBonusRatio_ * 100.0f) << "% song chance";
+        }
+
         if (WillAdjStatsDirect())
         {
             ss << SepIfEmpty(ss.str()) << statsDirectAdjSet_.ToStringCurrent(false, true, true, true, true);
@@ -84,8 +111,7 @@ namespace creature
         
         if (WillAdjStatsMult())
         {
-            const stats::StatSet STAT_SET{ CREATURE_PTR->Stats() };
-            ss << SepIfEmpty(ss.str()) << statsMultAdjSet_.ToStringDesc( & STAT_SET);
+            ss << SepIfEmpty(ss.str()) << statsMultAdjSet_.ToStringDesc(CREATURE_PTR);
         }
 
         return ss.str();

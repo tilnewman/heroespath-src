@@ -94,7 +94,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
             "game::creature::EnchantmentWarehouse::Store() given nullptr.");
 
-        return warehouse_.Store(ENCHANTMENT_PTR, ENCHANTMENT_PTR->Name());
+        return warehouse_.Store(ENCHANTMENT_PTR, ENCHANTMENT_PTR->EffectStr());
     }
 
 
@@ -103,7 +103,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((enchantment_ptr != nullptr),
             "game::creature::EnchantmentWarehouse::Free() given nullptr.");
 
-        warehouse_.Free(enchantment_ptr, enchantment_ptr->Name());
+        warehouse_.Free(enchantment_ptr, enchantment_ptr->EffectStr());
     }
 
 }

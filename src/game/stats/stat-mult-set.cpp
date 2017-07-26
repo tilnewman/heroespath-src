@@ -29,6 +29,7 @@
 //
 #include "stat-mult-set.hpp"
 
+#include "game/creature/creature.hpp"
 #include "game/stats/stat-set.hpp"
 
 #include "misc/real.hpp"
@@ -113,15 +114,31 @@ namespace stats
     }
 
 
-    const std::string StatMultSet::ToStringDesc(const stats::StatSet * STAT_SET_PTR) const
+    const std::string StatMultSet::ToStringDesc(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         std::ostringstream ss;
-        ss << ToStringHelper("Str", STAT_SET_PTR->Str().Current(), str_, false);
-        ss << ToStringHelper("Acc", STAT_SET_PTR->Acc().Current(), acc_);
-        ss << ToStringHelper("Cha", STAT_SET_PTR->Cha().Current(), cha_);
-        ss << ToStringHelper("Lck", STAT_SET_PTR->Lck().Current(), lck_);
-        ss << ToStringHelper("Spd", STAT_SET_PTR->Spd().Current(), spd_);
-        ss << ToStringHelper("Int", STAT_SET_PTR->Int().Current(), int_);
+
+        if (CREATURE_PTR == nullptr)
+        {
+            ss << ToStringHelper("Str", str_, ss.str());
+            ss << ToStringHelper("Acc", acc_, ss.str());
+            ss << ToStringHelper("Cha", cha_, ss.str());
+            ss << ToStringHelper("Lck", lck_, ss.str());
+            ss << ToStringHelper("Spd", spd_, ss.str());
+            ss << ToStringHelper("Int", int_, ss.str());
+
+        }
+        else
+        {
+            auto const & STAT_SET{ CREATURE_PTR->Stats() };
+            ss << ToStringHelper("Str", STAT_SET.Str().Current(), str_, ss.str());
+            ss << ToStringHelper("Acc", STAT_SET.Acc().Current(), acc_, ss.str());
+            ss << ToStringHelper("Cha", STAT_SET.Cha().Current(), cha_, ss.str());
+            ss << ToStringHelper("Lck", STAT_SET.Lck().Current(), lck_, ss.str());
+            ss << ToStringHelper("Spd", STAT_SET.Spd().Current(), spd_, ss.str());
+            ss << ToStringHelper("Int", STAT_SET.Int().Current(), int_, ss.str());
+        }
+
         return ss.str();
     }
 
@@ -129,7 +146,7 @@ namespace stats
     const std::string StatMultSet::ToStringHelper(const std::string & NAME,
                                                   const Stat_t        VALUE,
                                                   const float         MULT,
-                                                  const bool          WILL_PREFIX) const
+                                                  const std::string & PREFIX) const
     {
         std::ostringstream ss;
 
@@ -137,12 +154,33 @@ namespace stats
         auto const DIFF{ NEW_VALUE - VALUE };
         if (DIFF != 0)
         {
-            if (WILL_PREFIX)
+            if (PREFIX.empty() == false)
             {
                 ss << ", ";
             }
 
             ss << NAME << " " << ((DIFF > 0) ? "+" : "") << DIFF;
+        }
+
+        return ss.str();
+    }
+
+
+    const std::string StatMultSet::ToStringHelper(const std::string & NAME,
+                                                  const float         VALUE,
+                                                  const std::string & PREFIX) const
+    {
+        std::ostringstream ss;
+
+        if (misc::IsRealOne(VALUE) == false)
+        {
+            if (PREFIX.empty() == false)
+            {
+                ss << ", ";
+            }
+
+            ss << ((VALUE > 99.999f) ? std::setprecision(4) : std::setprecision(3))
+                << NAME << ":" << VALUE;
         }
 
         return ss.str();

@@ -37,11 +37,13 @@
 
 namespace game
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace stats
 {
-
-    class StatSet;
-
 
     //Stores modifications to stats as multiples for each.
     class StatMultSet
@@ -67,7 +69,7 @@ namespace stats
 
         const std::string ToString(const bool WILL_WRAP = false) const;
 
-        const std::string ToStringDesc(const stats::StatSet * STAT_SET_PTR) const;
+        const std::string ToStringDesc(const creature::CreaturePtr_t CREATURE_PTR = nullptr) const;
 
         friend bool operator==(const StatMultSet & L, const StatMultSet & R);
         friend bool operator<(const StatMultSet & L, const StatMultSet & R);
@@ -76,7 +78,11 @@ namespace stats
         const std::string ToStringHelper(const std::string & NAME,
                                          const Stat_t        VALUE,
                                          const float         MULT,
-                                         const bool          WILL_PREFIX = true) const;
+                                         const std::string & PREFIX) const;
+
+        const std::string ToStringHelper(const std::string & NAME,
+                                         const float         VALUE,
+                                         const std::string & PREFIX) const;
 
     private:
         float str_;

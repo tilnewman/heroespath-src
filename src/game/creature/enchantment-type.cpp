@@ -50,7 +50,7 @@ namespace creature
         {
             if (E & WhenUsed)
             {
-                ss << "Active when used";
+                ss << "Useable";
             }
 
             if (E & WhenHeld)
@@ -64,6 +64,11 @@ namespace creature
             }
 
             //intentionally no text for "ChangesCreature"
+
+            if (E & AllowsCasting)
+            {
+                ss << ((ss.str().empty()) ? "" : "  ") << "Allows casting spells";
+            }
 
             if (E & AllowsFlight)
             {

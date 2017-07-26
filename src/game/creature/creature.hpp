@@ -342,6 +342,8 @@ namespace creature
                                  const EnchantmentType::Enum TYPE,
                                  const bool                  WILL_APPLY);
 
+        bool HasEnchantmentType(const EnchantmentType::Enum) const;
+
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
         static std::size_t globalSerialNumber_;

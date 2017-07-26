@@ -55,25 +55,41 @@ namespace creature
     class Enchantment
     {
     public:
-        Enchantment(const std::string &         NAME              = "",
-                    const EnchantmentType::Enum TYPE              = EnchantmentType::None,
+        Enchantment(const EnchantmentType::Enum TYPE              = EnchantmentType::None,
+                    const int                   USE_COUNT         = 0, //negative means infinite
                     const stats::Mana_t         MANA_ADJ          = 0,
                     const stats::Armor_t        ARMOR_RATING_ADJ  = 0,
                     const stats::StatSet &      STAT_ADJ_SET      = stats::StatSet(),
                     const stats::StatMultSet &  STAT_MULT_ADJ_SET = stats::StatMultSet(),
-                    const CondEnumVec_t &       CONDS_VEC         = CondEnumVec_t());
+                    const CondEnumVec_t &       CONDS_VEC         = CondEnumVec_t(),
+                    const float                 SPELL_BOUNS_RATIO = 0.0f,
+                    const float                 SONG_BONUS_RATIO  = 0.0f);
 
         virtual ~Enchantment();
 
-        inline const std::string Name() const                    { return name_; }
         inline EnchantmentType::Enum Type() const                { return type_; }
+        inline int UseCountOrig() const                          { return useCountOrig_; }
+        inline int UseeCountRemaining() const                    { return useCountRemaining_;}
         inline stats::Mana_t ManaAdj() const                     { return manaAdj_; }
         inline stats::Armor_t ArmorRatingAdj() const             { return armorRatingAdj_; }
         inline const stats::StatSet & StatDirectAdjSet() const   { return statsDirectAdjSet_; }
         inline const stats::StatMultSet & StatMultAdjSet() const { return statsMultAdjSet_; }
         inline const CondEnumVec_t & Conditions() const          { return condsVec_; }
-
+        inline float SpellBonusRatio() const                     { return spellBonusRatio_; }
+        inline float SongBonusRatio() const                      { return songBonusRatio_; }
+        
         inline bool HasType(const EnchantmentType::Enum E) const { return (type_ & E); }
+
+        inline bool IsUseableEver() const
+        {
+            //negative useCountOrig_ means infinite
+            return ((type_ & EnchantmentType::WhenUsed) && (useCountOrig_ != 0));
+        }
+
+        inline bool IsUseableNow() const
+        {
+            return (IsUseableEver() && (useCountRemaining_ > 0));
+        }
 
         inline bool WillAdjMana() const
         {
@@ -100,7 +116,7 @@ namespace creature
             return (WillAdjStatsDirect() || WillAdjStatsMult());
         }
 
-        virtual const std::string EffectStr(const CreaturePtr_t) const;
+        virtual const std::string EffectStr(const CreaturePtr_t CREATURE_PTR = nullptr) const;
 
         virtual inline void CreatureChangeApply(const CreaturePtr_t) {}
         virtual inline void CreatureChangeRemove(const CreaturePtr_t) {}
@@ -117,26 +133,37 @@ namespace creature
         }
 
     private:
-        std::string             name_;
         EnchantmentType::Enum   type_;
+
+        //negative values mean infinite uses
+        int                     useCountOrig_;
+        int                     useCountRemaining_;
+
         stats::Mana_t           manaAdj_;
         stats::Armor_t          armorRatingAdj_;
         stats::StatSet          statsDirectAdjSet_;
         stats::StatMultSet      statsMultAdjSet_;
         CondEnumVec_t           condsVec_;
 
+        //valid values range from [0.0, 0.99]
+        float                   spellBonusRatio_;
+        float                   songBonusRatio_;
+
     private:
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & name_;
             ar & type_;
+            ar & useCountOrig_;
+            ar & useCountRemaining_;
             ar & manaAdj_;
             ar & armorRatingAdj_;
             ar & statsDirectAdjSet_;
             ar & statsMultAdjSet_;
             ar & condsVec_;
+            ar & spellBonusRatio_;
+            ar & songBonusRatio_;
         }
     };
 

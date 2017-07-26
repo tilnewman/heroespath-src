@@ -45,8 +45,9 @@ namespace creature
             WhenHeld        = 1 << 1,
             WhenEquipped    = 1 << 2,
             ChangesCreature = 1 << 3,
-            AllowsFlight    = 1 << 4,
-            AllowsCurse     = 1 << 5
+            AllowsCasting   = 1 << 4,
+            AllowsFlight    = 1 << 5,
+            AllowsCurse     = 1 << 6
         };
 
         static const std::string ToString(const Enum);

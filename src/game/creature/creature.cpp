@@ -1233,6 +1233,11 @@ namespace creature
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
         }
 
+        if (HasEnchantmentType(EnchantmentType::AllowsCasting) == false)
+        {
+            return RESPONSE_PREFIX + " has no wand or other casting item" + RESPONSE_POSTFIX;
+        }
+
         return "";
     }
 
@@ -1770,6 +1775,20 @@ namespace creature
                 EnchantmentApplyOrRemove(NEXT_ENCHANTMENT_PTR, WILL_APPLY);
             }
         }
+    }
+
+
+    bool Creature::HasEnchantmentType(const EnchantmentType::Enum TYPE_ENUM) const
+    {
+        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+        {
+            if (NEXT_ENCHANTMENT_PTR->Type() & TYPE_ENUM)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

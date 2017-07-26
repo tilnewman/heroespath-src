@@ -177,6 +177,7 @@ namespace item
         static float WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
         static float WeightMultPri(const material::Enum MATERIAL_PRI);
         static float WeightMultSec(const material::Enum MATERIAL_SEC);
+        static int Bonus(const material::Enum);
 
         static bool IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsLiquid(const material::Enum MATERIAL);
