@@ -50,34 +50,37 @@ namespace creature
         {
             if (E & WhenUsed)
             {
-                ss << "Useable";
+                ss << "when used:";
             }
-
-            if (E & WhenHeld)
+            else  if (E & WhenHeld)
             {
-                ss << "Active when held";
+                ss << "when held:";
             }
-
-            if (E & WhenEquipped)
+            else if (E & WhenEquipped)
             {
-                ss << "Active when Equipped";
+                ss << "when equipped:";
             }
 
             //intentionally no text for "ChangesCreature"
 
             if (E & AllowsCasting)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "Allows casting spells";
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting spells";
             }
 
             if (E & AllowsFlight)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "Allows flying during combat";
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows flying";
             }
 
             if (E & AllowsCurse)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "Allows casting the Curse spell";
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting curse";
+            }
+
+            if (E & AllowsBless)
+            {
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting bless";
             }
         }
 
