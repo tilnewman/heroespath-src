@@ -418,7 +418,7 @@ namespace ownership
 
         //determine
         auto const RAND(misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
-
+        
         if (RAND < chanceMagical)
         {
             return Magical;

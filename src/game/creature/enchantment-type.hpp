@@ -48,7 +48,8 @@ namespace creature
             AllowsCasting   = 1 << 4,
             AllowsFlight    = 1 << 5,
             AllowsCurse     = 1 << 6,
-            AllowsBless     = 1 << 7
+            AllowsBless     = 1 << 7,
+            BreaksAfterUses = 1 << 8
         };
 
         static const std::string ToString(const Enum);

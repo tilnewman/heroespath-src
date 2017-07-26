@@ -146,16 +146,17 @@ namespace item
             case Plant      : { return "Plant"; }
             case Flesh      : { return "Flesh"; }
             case Hide       : { return "Hide"; }
-            case Feathers   : { return "Feathers"; }
+            case Feather    : { return "Feather"; }
             case Fur        : { return "Fur"; }
             case Hair       : { return "Hair"; }
             case Scale      : { return "Scale"; }
             case Obsidian   : { return "Obsidian"; }
+            case Jade       : { return "Jade"; }
             case Amethyst   : { return "Amethyst"; }
             case Emerald    : { return "Emerald"; }
             case Pearl      : { return "Pearl"; }
             case Ruby       : { return "Ruby"; }
-            case Lapis      : { return "Lapis"; }
+            case Lazuli     : { return "Lazuli"; }
             case Sapphire   : { return "Sapphire"; }
             case Diamond    : { return "Diamond"; }
             case Glass      : { return "Glass"; }
@@ -217,13 +218,13 @@ namespace item
             case Nothing    :
             case Ether      :
             case Gas        :
-            case Blood      :
             case Water      :
-            case Dirt       :
+            case Blood      :
             case Acid       :
+            case Dirt       :
             case Paper      :
             case Glass      :
-            case Feathers   :
+            case Feather    :
             case Fur        :
             case Hair       : { return 0; }
             case Flesh      : { return 1; }
@@ -239,21 +240,22 @@ namespace item
             case Bone       : { return 15; }
             case Tooth      : { return 16; }
             case Wood       : { return 17; }
-            case Tin        : { return 20; }
-            case Bronze     : { return 21; }
-            case Iron       : { return 22; }
-            case Stone      : { return 23; }
-            case Obsidian   : { return 24; }
-            case Steel      : { return 25; }
-            case Silver     : { return 26; }
-            case Amethyst   : { return 27; }
-            case Emerald    : { return 28; }
-            case Pearl      : { return 29; }
-            case Ruby       : { return 30; }
-            case Lapis      : { return 31; }
-            case Sapphire   : { return 32; }
-            case Gold       : { return 35; }
-            case Platinum   : { return 40; }
+            case Stone      : { return 20; }
+            case Obsidian   : { return 21; }
+            case Tin        : { return 25; }
+            case Bronze     : { return 26; }
+            case Iron       : { return 27; }
+            case Steel      : { return 28; }
+            case Jade       : { return 29; }
+            case Amethyst   : { return 30; }
+            case Emerald    : { return 31; }
+            case Pearl      : { return 32; }
+            case Ruby       : { return 33; }
+            case Lazuli     : { return 34; }
+            case Silver     : { return 35; }
+            case Sapphire   : { return 36; }
+            case Gold       : { return 40; }
+            case Platinum   : { return 45; }
             case Diamond    : { return 50; }
             case Count:
             default:
@@ -289,49 +291,50 @@ namespace item
     {
         switch (MATERIAL_PRI)
         {
+            case Nothing    : { return 0; }
+            case Ether      : { return 0; }
+            case Gas        : { return 0; }
+            case Water      : { return 0; }
+            case Blood      : { return 0; }
+            case Acid       : { return 100; }
+            case Dirt       : { return 0; }
+            case Paper      : { return 0; }
+            case Glass      : { return 10; }
+            case Feather    : { return 0; }
+            case Fur        : { return 8; }
+            case Hair       : { return 0; }
+            case Flesh      : { return 0; }
+            case Rope       : { return 0; }
             case Cloth      : { return 0; }
+            case Hide       : { return 7; }
             case SoftLeather: { return 5; }
             case HardLeather: { return 10; }
-            case Bone       : { return 12; }
-            case Wood       : { return 14; }
-            case Tin        : { return 30; }
-            case Bronze     : { return 31; }
-            case Iron       : { return 35; }
-            case Steel      : { return 40; }
-            case Silver     : { return 500; }
-            case Gold       : { return 2000; }
-            case Platinum   : { return 10000; }
-            case Stone      : { return 0; }
-            case Obsidian   : { return 1000; }
-            case Amethyst   : { return 2000; }
-            case Emerald    : { return 3000; }
-            case Pearl      : { return 8000; }
-            case Ruby       : { return 4000; }
-            case Lapis      : { return 5000; }
-            case Sapphire   : { return 6000; }
-            case Diamond    : { return 10000; }
-            case Claw       : { break; }
-            case Horn       : { break; }
-            case Tooth      : { break; }
-            case Ether      : { break; }
-            case Glass      : { return 10; }
-            case Gas        : { break; }
-            case Blood      : { break; }
-            case Paper      : { break; }
-            case Rope       : { break; }
-            case Plant      : { break; }
-            case Flesh      : { break; }
-            case Hide       : { return 7; }
-            case Feathers   : { break; }
-            case Fur        : { return 8; }
-            case Hair       : { break; }
+            case Plant      : { return 0; }
+            case Claw       : { return 4; }
             case Scale      : { return 1000; }
-            case Water      : { break; }
-            case Dirt       : { break; }
-            case Acid       : { return 100; }
-            case Nothing    : { return 0; }
-            case Count:
-            default:
+            case Horn       : { return 6; }
+            case Bone       : { return 12; }
+            case Tooth      : { return 5; }
+            case Wood       : { return 0; }
+            case Stone      : { return 0; }
+            case Obsidian   : { return 20; }
+            case Tin        : { return 30; }
+            case Bronze     : { return 32; }
+            case Iron       : { return 36; }
+            case Steel      : { return 40; }
+            case Jade       : { return 100; }
+            case Amethyst   : { return 200; }
+            case Emerald    : { return 300; }
+            case Pearl      : { return 500; }
+            case Ruby       : { return 600; }
+            case Lazuli     : { return 700; }
+            case Silver     : { return 1000; }
+            case Sapphire   : { return 2000; }
+            case Gold       : { return 5000; }
+            case Platinum   : { return 7500; }
+            case Diamond    : { return 10000; }
+            case Count      :
+            default         :
             {
                 std::ostringstream ss;
 
@@ -341,8 +344,6 @@ namespace item
                 throw std::range_error(ss.str());
             }
         }
-
-        return 0;
     }
 
 
@@ -381,7 +382,7 @@ namespace item
             case Blood      : { return 1.55f; }
             case Flesh      : { return 1.6f; }
             case Hide       : { return 1.35f; }
-            case Feathers   : { return 0.5f; }
+            case Feather    : { return 0.5f; }
             case Fur        : { return 0.75f; }
             case Hair       : { return 0.5f; }
             case Scale      : { return 0.9f; }
@@ -389,11 +390,12 @@ namespace item
             case Wood       : { return 1.85f; }
             case Dirt       : { return 1.9f; }
             case Obsidian   : { return 2.2f; }
+            case Jade       : { return 2.1f; }
             case Amethyst   : { return 2.1f; }
             case Emerald    : { return 2.15f; }
             case Pearl      : { return 1.2f; }
             case Ruby       : { return 2.2f; }
-            case Lapis      : { return 2.5f; }
+            case Lazuli      : { return 2.5f; }
             case Sapphire   : { return 2.1f; }
             case Diamond    : { return 2.6f; }
             case Stone      : { return 3.0f; }
@@ -437,7 +439,7 @@ namespace item
             case Acid       :
             case Paper      :
             case Glass      :
-            case Feathers   :
+            case Feather    :
             case Fur        :
             case Hair       :
             case Flesh      :
@@ -453,24 +455,25 @@ namespace item
             case Bone       : { return 1; }
             case Tooth      : { return 0; }
             case Wood       : { return 0; }
-            case Tin        : { return 2; }
-            case Bronze     : { return 3; }
-            case Iron       : { return 4; }
-            case Stone      : { return 0; }
-            case Obsidian   : { return 5; }
-            case Steel      : { return 6; }
-            case Silver     : { return 7; }
-            case Amethyst   : { return 8; }
-            case Emerald    : { return 9; }
-            case Pearl      : { return 0; }
-            case Ruby       : { return 10; }
-            case Lapis      : { return 11; }
-            case Sapphire   : { return 12; }
-            case Gold       : { return 13; }
-            case Platinum   : { return 14; }
-            case Diamond    : { return 15; }
-            case Count:
-            default:
+            case Stone      : { return 2; }
+            case Obsidian   : { return 3; }
+            case Tin        : { return 4; }
+            case Bronze     : { return 5; }
+            case Iron       : { return 6; }
+            case Steel      : { return 7; }
+            case Jade       : { return 8; }
+            case Amethyst   : { return 9; }
+            case Emerald    : { return 10; }
+            case Pearl      : { return 11; }
+            case Ruby       : { return 12; }
+            case Lazuli     : { return 13; }
+            case Silver     : { return 14; }
+            case Sapphire   : { return 15; }
+            case Gold       : { return 16; }
+            case Platinum   : { return 17; }
+            case Diamond    : { return 18; }
+            case Count      :
+            default         :
             {
                 std::ostringstream ss;
                 ss << "game::item::material::Bonus(" << E << ")_InvalidValueError.";
@@ -510,7 +513,7 @@ namespace item
                 (MATERIAL == material::Plant)       ||
                 (MATERIAL == material::Flesh)       ||
                 (MATERIAL == material::Hide)        ||
-                (MATERIAL == material::Feathers)    ||
+                (MATERIAL == material::Feather)     ||
                 (MATERIAL == material::Fur)         ||
                 (MATERIAL == material::Hair)        ||
                 (MATERIAL == material::Paper)       ||
@@ -560,16 +563,17 @@ namespace item
             case material::Plant      : { fireDamageRatio = 0.85f;  break; }
             case material::Flesh      : { fireDamageRatio = 0.9f;   break; }
             case material::Hide       : { fireDamageRatio = 0.77f;  break; }
-            case material::Feathers   : { fireDamageRatio = 1.0f;   break; }
+            case material::Feather    : { fireDamageRatio = 1.0f;   break; }
             case material::Fur        : { fireDamageRatio = 1.0f;   break; }
             case material::Hair       : { fireDamageRatio = 2.0f;   break; }
             case material::Scale      : { fireDamageRatio = 0.1f;   break; }
             case material::Obsidian   : { fireDamageRatio = 0.0f;   break; }
+            case material::Jade       : { fireDamageRatio = 0.0f;   break; }
             case material::Amethyst   : { fireDamageRatio = 0.0f;   break; }
             case material::Emerald    : { fireDamageRatio = 0.0f;   break; }
             case material::Pearl      : { fireDamageRatio = 0.01f;  break; }
             case material::Ruby       : { fireDamageRatio = 0.0f;   break; }
-            case material::Lapis      : { fireDamageRatio = 0.0f;   break; }
+            case material::Lazuli     : { fireDamageRatio = 0.0f;   break; }
             case material::Sapphire   : { fireDamageRatio = 0.0f;   break; }
             case material::Diamond    : { fireDamageRatio = 0.0f;   break; }
             case material::Glass      : { fireDamageRatio = 0.9f;   break; }
@@ -613,16 +617,17 @@ namespace item
             case material::Plant      : { fireDamageRatio += 0.4f;   break; }
             case material::Flesh      : { fireDamageRatio += 0.4f;   break; }
             case material::Hide       : { fireDamageRatio += 0.1f;   break; }
-            case material::Feathers   : { fireDamageRatio += 0.2f;   break; }
+            case material::Feather    : { fireDamageRatio += 0.2f;   break; }
             case material::Fur        : { fireDamageRatio += 0.3f;   break; }
             case material::Hair       : { fireDamageRatio += 0.5f;   break; }
             case material::Scale      : { fireDamageRatio -= 0.75f;  break; }
             case material::Obsidian   : { fireDamageRatio -= 0.5f;   break; }
+            case material::Jade       : { fireDamageRatio -= 0.5f;   break; }
             case material::Amethyst   : { fireDamageRatio -= 0.5f;   break; }
             case material::Emerald    : { fireDamageRatio -= 0.5f;   break; }
             case material::Pearl      : { fireDamageRatio -= 0.5f;   break; }
             case material::Ruby       : { fireDamageRatio -= 0.5f;   break; }
-            case material::Lapis      : { fireDamageRatio -= 0.5f;   break; }
+            case material::Lazuli     : { fireDamageRatio -= 0.5f;   break; }
             case material::Sapphire   : { fireDamageRatio -= 0.5f;   break; }
             case material::Diamond    : { fireDamageRatio -= 0.5f;   break; }
             case material::Glass      : { break; }
@@ -684,11 +689,12 @@ namespace item
     bool material::IsStone(const material::Enum PRI)
     {
         return ((PRI == material::Stone)    ||
+                (PRI == material::Jade)     ||
                 (PRI == material::Obsidian) ||
                 (PRI == material::Amethyst) ||
                 (PRI == material::Emerald)  ||
                 (PRI == material::Ruby)     ||
-                (PRI == material::Lapis)    ||
+                (PRI == material::Lazuli)   ||
                 (PRI == material::Sapphire));
     }
 
@@ -711,11 +717,12 @@ namespace item
     bool material::IsJewel(const material::Enum MATERIAL)
     {
         return ((MATERIAL == material::Amethyst) ||
+                (MATERIAL == material::Jade)     ||
                 (MATERIAL == material::Emerald)  ||
                 (MATERIAL == material::Ruby)     ||
                 (MATERIAL == material::Sapphire) ||
                 (MATERIAL == material::Pearl)    ||
-                (MATERIAL == material::Lapis)    ||
+                (MATERIAL == material::Lazuli)   ||
                 (MATERIAL == material::Diamond));
     }
 

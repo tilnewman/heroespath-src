@@ -29,6 +29,7 @@
 //
 #include "misc/boost-string-includes.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/combat/strategy-enums.hpp"
 #include "game/combat/strategy-info.hpp"
 
@@ -123,16 +124,20 @@ namespace strategy
             {
                 auto total{ 0.0f };
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
+                {
                     total += NEXT_ENUMCHANCE_PAIR.second;
+                }
 
                 auto const RAND{ misc::random::Float(0.0f, total) };
-
+                
                 auto subtotal{ 0.0f };
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                 {
                     subtotal += NEXT_ENUMCHANCE_PAIR.second;
                     if (RAND < subtotal)
+                    {
                         return NEXT_ENUMCHANCE_PAIR.first;
+                    }
                 }
 
                 return ENUM_CHANCE_MAP.begin()->first;

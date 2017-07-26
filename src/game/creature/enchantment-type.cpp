@@ -62,6 +62,7 @@ namespace creature
             }
 
             //intentionally no text for "ChangesCreature"
+            // " " for "BreaksAfterUses"
 
             if (E & AllowsCasting)
             {
@@ -82,6 +83,8 @@ namespace creature
             {
                 ss << ((ss.str().empty()) ? "" : "  ") << "allows casting bless";
             }
+
+
         }
 
         if (ss.str().empty())

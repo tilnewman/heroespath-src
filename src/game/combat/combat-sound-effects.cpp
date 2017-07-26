@@ -211,12 +211,13 @@ namespace combat
                     }
 
                     case item::material::Stone:
+                    case item::material::Jade:
                     case item::material::Obsidian:
                     case item::material::Amethyst:
                     case item::material::Emerald:
                     case item::material::Pearl:
                     case item::material::Ruby:
-                    case item::material::Lapis:
+                    case item::material::Lazuli:
                     case item::material::Sapphire:
                     case item::material::Diamond:
                     {
@@ -260,7 +261,7 @@ namespace combat
                             sfml_util::SfxSet::MaterialHitMetal).PlayRandom();
                     }
 
-                    case item::material::Feathers:
+                    case item::material::Feather:
                     case item::material::Fur:
                     case item::material::Hair:
                     case item::material::Glass:

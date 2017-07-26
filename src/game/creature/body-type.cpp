@@ -328,12 +328,12 @@ namespace creature
             {
                 if (ROLE == role::Whelp)
                 {
-                    return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 2, 2, true, true, true, false, true, false, true);
+                    return BodyType(item::material::Flesh, item::material::Feather, 1, 0, 2, 2, true, true, true, false, true, false, true);
                 }
 
                 if (ROLE == role::Wing)
                 {
-                    return BodyType(item::material::Flesh, item::material::Feathers, 1, 0, 4, 2, true, true, true, false, true, false, true);
+                    return BodyType(item::material::Flesh, item::material::Feather, 1, 0, 4, 2, true, true, true, false, true, false, true);
                 }
 
                 break;

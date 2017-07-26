@@ -145,7 +145,9 @@ namespace ownership
                                    item::Coin_t &  coinsMin_OutParam,
                                    item::Coin_t &  coinsMax_OutParam)
     {
-        const std::string KEY_STR("heroespath-nonplayer-coins-bounds-" + wealth_type::ToString(PROFILE.wealthType) );
+        const std::string KEY_STR("heroespath-nonplayer-coins-bounds-"
+            + wealth_type::ToString(PROFILE.wealthType) );
+
         const std::string VALUE_STR( GameDataFile::Instance()->GetCopyStr(KEY_STR) );
 
         using StrVec_t = std::vector<std::string>;
@@ -190,33 +192,52 @@ namespace ownership
     }
 
 
-    const chance::ClothingChances ChanceFactory::Make_ClothingChances(const Profile &                  PROFILE,
-                                                                      const non_player::CharacterPtr_t CHARACTER_PTR)
+    const chance::ClothingChances ChanceFactory::Make_ClothingChances(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR)
     {
-        chance::ClothingChances clothingChances( Make_ClothingMaterialChances(PROFILE, CHARACTER_PTR) );
+        using namespace item;
+
+        chance::ClothingChances clothingChances(
+            Make_ClothingMaterialChances(PROFILE, CHARACTER_PTR) );
 
         //capes, cloaks, and robes are mutually exclusive, so pre-select which (if any) are worn
-        if (clothingChances.cover_map[item::armor::cover_type::Cloak].IsOwned())
+        if (clothingChances.cover_map[armor::cover_type::Cloak].IsOwned())
         {
-            clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleCertain();
-            clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[
+                armor::cover_type::Cloak].SetCountChanceSingleCertain();
+
+            clothingChances.cover_map
+                [armor::cover_type::Cape].SetCountChanceSingleNoChance();
+
+            clothingChances.cover_map[
+                armor::cover_type::Robe].SetCountChanceSingleNoChance();
         }
         else
         {
-            if (clothingChances.cover_map[item::armor::cover_type::Robe].IsOwned())
+            if (clothingChances.cover_map[armor::cover_type::Robe].IsOwned())
             {
-                clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingleCertain();
+                clothingChances.cover_map[
+                    armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+
+                clothingChances.cover_map[
+                    armor::cover_type::Cape].SetCountChanceSingleNoChance();
+
+                clothingChances.cover_map[
+                    armor::cover_type::Robe].SetCountChanceSingleCertain();
             }
             else
             {
-                if (clothingChances.cover_map[item::armor::cover_type::Cape].IsOwned())
+                if (clothingChances.cover_map[armor::cover_type::Cape].IsOwned())
                 {
-                    clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-                    clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingleCertain();
-                    clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingleNoChance();
+                    clothingChances.cover_map[
+                        armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+
+                    clothingChances.cover_map[
+                        armor::cover_type::Cape].SetCountChanceSingleCertain();
+
+                    clothingChances.cover_map[
+                        armor::cover_type::Robe].SetCountChanceSingleNoChance();
                 }
             }
         }
@@ -226,52 +247,68 @@ namespace ownership
         if ((BODY_TYPE.NumArms() != 2) || (BODY_TYPE.HasWings() == true))
         {
             clothingChances.shirt.SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
         }
 
         if (BODY_TYPE.IsBiped())
-            clothingChances.pants.SetCountChanceSingleCertain();//In this game, every 'humaniod' gets pants...Deal with it.
+        {
+            //In this game, every 'humaniod' gets pants...Deal with it.
+            clothingChances.pants.SetCountChanceSingleCertain();
+        }
         else
         {
             clothingChances.pants.SetCountChanceSingleNoChance();
             clothingChances.boots.SetCountChanceSingleNoChance();
             clothingChances.shirt.SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-            clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+            clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
         }
 
         if ((BODY_TYPE.HasFingers() == false) || (BODY_TYPE.HasClaws() == true))
+        {
             clothingChances.gloves.SetCountChanceSingleNoChance();
+        }
 
         if (BODY_TYPE.IsBiped() == false)
+        {
             clothingChances.pants.SetCountChanceSingleNoChance();
+        }
 
         if (BODY_TYPE.HasFangs() == true)
-            clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+        {
+            clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+        }
 
         if (BODY_TYPE.IsSerpentine())
+        {
             clothingChances = chance::ClothingChances::NoClothes();
+        }
 
         if (BODY_TYPE.NumHeads() != 1)
-            clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+        {
+            clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+        }
 
         return clothingChances;
     }
 
 
-    const chance::WeaponChances ChanceFactory::Make_WeaponChances(const Profile &                  PROFILE,
-                                                                  const non_player::CharacterPtr_t CHARACTER_PTR)
+    const chance::WeaponChances ChanceFactory::Make_WeaponChances(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         chance::WeaponChances weaponChances( chance::WeaponChances::NoWeapon() );
 
         WeaponSetVec_t weaponSetVec;
         LookupPossibleWeaponsByRole(CHARACTER_PTR->Role().Which(), weaponSetVec);
 
-        for(auto const & NEXT_WEAPON_SET : weaponSetVec)
+        for (auto const & NEXT_WEAPON_SET : weaponSetVec)
+        {
             PopulateWeaponChances(weaponChances, NEXT_WEAPON_SET, PROFILE, CHARACTER_PTR);
+        }
 
         //Add weapons based on body type
         auto const BODY{ CHARACTER_PTR->Body() };
@@ -292,8 +329,9 @@ namespace ownership
     }
 
 
-    const chance::ArmorChances ChanceFactory::Make_ArmorChances(const Profile &                  PROFILE,
-                                                                const non_player::CharacterPtr_t CHARACTER_PTR)
+    const chance::ArmorChances ChanceFactory::Make_ArmorChances(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         auto armorChances{ chance::ArmorChances::NoArmor() };
         LookupPossibleArmorByRole(PROFILE, CHARACTER_PTR, armorChances);
@@ -311,20 +349,21 @@ namespace ownership
             armorChances.helm_map.clear();
         }
 
-        //TODO more body-type restrictions
-
-        //TODO -what else here?
-
         return armorChances;
     }
 
 
-    const chance::ItemChancePair_t ChanceFactory::Make_MiscItemChances(const Profile &,
-                                                                       const non_player::CharacterPtr_t)
+    const chance::ItemChancePair_t ChanceFactory::Make_MiscItemChances(
+        const Profile &,
+        const non_player::CharacterPtr_t)
     {
         chance::ItemChancePair_t miscItems;
 
-        //TODO
+        //Leave this as is for now, since there will be code elsewhere that determines
+        //what items are left behind by a party of enemies (non-player characters) after
+        //combat as treasure.  Since misc items are not used by enemies during combat,
+        //there is no need for misc items at this point, wait until after combat treasure
+        //is determined.
 
         return miscItems;
     }
@@ -338,9 +377,11 @@ namespace ownership
         //find the total chance of all weapon possibilities combined
         float chanceCombined(0.0f);
         for (auto const & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
+        {
             chanceCombined += NEXT_WEAPONINFO_CHANCE_PAIR.second;
+        }
 
-        if (misc::IsRealClose(chanceCombined, 0.0f))
+        if ((misc::IsRealClose(chanceCombined, 0.0f)) || (chanceCombined < 0.0f))
         {
             return;
         }
@@ -367,8 +408,11 @@ namespace ownership
                     break;
                 }
             }
+
             if (willBreak)
+            {
                 break;
+            }
 
             //At this point there is guaranteed to be at least one false bool in numberSelectedVec
 
@@ -420,6 +464,8 @@ namespace ownership
                 weaponChances.has_breath = true;
             }
 
+            using namespace item;
+
             if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_knife ||
                 NEXT_WEAPONINFO_CHANCE_PAIR.first.is_dagger)
             {
@@ -440,20 +486,20 @@ namespace ownership
                 chance::MaterialChanceMap_t typicalKnifePrimaryMaterials;
                 if (PROFILE.complexityType == complexity_type::Simple)
                 {
-                    typicalKnifePrimaryMaterials[item::material::Stone] = 0.75f;
-                    typicalKnifePrimaryMaterials[item::material::Bone]  = 0.25f;
+                    typicalKnifePrimaryMaterials[material::Stone] = 0.75f;
+                    typicalKnifePrimaryMaterials[material::Bone]  = 0.25f;
                 }
                 else if (PROFILE.complexityType == complexity_type::Moderate)
                 {
-                    typicalKnifePrimaryMaterials[item::material::Stone] = 0.05f;
-                    typicalKnifePrimaryMaterials[item::material::Bone]  = 0.05f;
-                    typicalKnifePrimaryMaterials[item::material::Steel] = 0.70f;
-                    typicalKnifePrimaryMaterials[item::material::Iron]  = 0.20f;
+                    typicalKnifePrimaryMaterials[material::Stone] = 0.05f;
+                    typicalKnifePrimaryMaterials[material::Bone]  = 0.05f;
+                    typicalKnifePrimaryMaterials[material::Steel] = 0.70f;
+                    typicalKnifePrimaryMaterials[material::Iron]  = 0.20f;
                 }
                 else
                 {
-                    typicalKnifePrimaryMaterials[item::material::Steel] = 0.9f;
-                    typicalKnifePrimaryMaterials[item::material::Iron] = 0.1f;
+                    typicalKnifePrimaryMaterials[material::Steel] = 0.9f;
+                    typicalKnifePrimaryMaterials[material::Iron] = 0.1f;
                 }
 
                 PopulateWeaponMaterials(WEAPON_NAME,
@@ -471,11 +517,14 @@ namespace ownership
                 const std::string WEAPON_NAME((NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff) ?
                     "Quarterstaff" : "Staff");
 
-                weaponChances.staff.SetCountChanceIncrementAndEquip(NEXT_WEAPONINFO_CHANCE_PAIR.second);
-                weaponChances.staff.is_quarterstaff = NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff;
+                weaponChances.staff.SetCountChanceIncrementAndEquip(
+                    NEXT_WEAPONINFO_CHANCE_PAIR.second);
+
+                weaponChances.staff.is_quarterstaff =
+                    NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff;
 
                 chance::MaterialChanceMap_t typicalStaffPrimaryMaterials;
-                typicalStaffPrimaryMaterials[item::material::Wood] = 1.0f;
+                typicalStaffPrimaryMaterials[material::Wood] = 1.0f;
 
                 PopulateWeaponMaterials(WEAPON_NAME,
                                         typicalStaffPrimaryMaterials,
@@ -487,186 +536,225 @@ namespace ownership
 
             {
                 chance::MaterialChanceMap_t typicalAxePrimaryMaterials;
-                typicalAxePrimaryMaterials[item::material::Wood] = 1.0f;
+                typicalAxePrimaryMaterials[material::Wood] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.axe != item::weapon::axe_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.axe != weapon::axe_type::Count)
                 {
-                    SetWeaponChances<item::weapon::axe_type::Enum>(item::weapon::axe_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.axe),
-                                                                   NEXT_WEAPONINFO_CHANCE_PAIR.first.axe,
-                                                                   NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                   PROFILE,
-                                                                   CHARACTER_PTR,
-                                                                   typicalAxePrimaryMaterials,
-                                                                   weaponChances.axe_map);
+                    SetWeaponChances<weapon::axe_type::Enum>(
+                        weapon::axe_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.axe),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.axe,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalAxePrimaryMaterials,
+                        weaponChances.axe_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::Axe)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Axe)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::axe_type::Count));
-                    for (int i(0); i < item::weapon::axe_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::axe_type::Count));
+
+                    for (int i(0); i < weapon::axe_type::Count; ++i)
                     {
-                        const item::weapon::axe_type::Enum TYPE(static_cast<item::weapon::axe_type::Enum>(i));
-                        SetWeaponChances<item::weapon::axe_type::Enum>(item::weapon::axe_type::ToString(TYPE),
-                                                                        TYPE,
-                                                                        CHANCE_PER_WEAPON,
-                                                                        PROFILE,
-                                                                        CHARACTER_PTR,
-                                                                        typicalAxePrimaryMaterials,
-                                                                        weaponChances.axe_map);
+                        auto const TYPE(static_cast<weapon::axe_type::Enum>(i));
+
+                        SetWeaponChances<weapon::axe_type::Enum>(
+                            weapon::axe_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalAxePrimaryMaterials,
+                            weaponChances.axe_map);
                     }
                 }
             }
 
             {
                 chance::MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
-                typicalBladedStaffPrimaryMaterials[item::material::Wood] = 1.0f;
+                typicalBladedStaffPrimaryMaterials[material::Wood] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff != item::weapon::bladedstaff_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff !=
+                    weapon::bladedstaff_type::Count)
                 {
-                    SetWeaponChances<item::weapon::bladedstaff_type::Enum>(item::weapon::bladedstaff_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff),
-                                                                           NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff,
-                                                                           NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                           PROFILE,
-                                                                           CHARACTER_PTR,
-                                                                           typicalBladedStaffPrimaryMaterials,
-                                                                           weaponChances.bladedstaff_map);
+                    SetWeaponChances<weapon::bladedstaff_type::Enum>(
+                        weapon::bladedstaff_type::ToString(
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalBladedStaffPrimaryMaterials,
+                        weaponChances.bladedstaff_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::BladedStaff)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type ==
+                    weapon_type::BladedStaff)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::bladedstaff_type::Count));
-                    for (int i(0); i < item::weapon::bladedstaff_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::bladedstaff_type::Count));
+
+                    for (int i(0); i < weapon::bladedstaff_type::Count; ++i)
                     {
-                        const item::weapon::bladedstaff_type::Enum TYPE(static_cast<item::weapon::bladedstaff_type::Enum>(i));
-                        SetWeaponChances<item::weapon::bladedstaff_type::Enum>(item::weapon::bladedstaff_type::ToString(TYPE),
-                                                                               TYPE,
-                                                                               CHANCE_PER_WEAPON,
-                                                                               PROFILE,
-                                                                               CHARACTER_PTR,
-                                                                               typicalBladedStaffPrimaryMaterials,
-                                                                               weaponChances.bladedstaff_map);
+                        auto const TYPE(static_cast<weapon::bladedstaff_type::Enum>(i));
+
+                        SetWeaponChances<weapon::bladedstaff_type::Enum>(
+                            weapon::bladedstaff_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalBladedStaffPrimaryMaterials,
+                            weaponChances.bladedstaff_map);
                     }
                 }
             }
 
             {
                 chance::MaterialChanceMap_t typicalClubPrimaryMaterials;
-                typicalClubPrimaryMaterials[item::material::Wood] = 1.0f;
+                typicalClubPrimaryMaterials[material::Wood] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.club != item::weapon::club_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.club != weapon::club_type::Count)
                 {
-                    SetWeaponChances<item::weapon::club_type::Enum>(item::weapon::club_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.club),
-                                                                    NEXT_WEAPONINFO_CHANCE_PAIR.first.club,
-                                                                    NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                    PROFILE,
-                                                                    CHARACTER_PTR,
-                                                                    typicalClubPrimaryMaterials,
-                                                                    weaponChances.club_map);
+                    SetWeaponChances<weapon::club_type::Enum>(
+                        weapon::club_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.club),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.club,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalClubPrimaryMaterials,
+                        weaponChances.club_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::Club)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Club)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::club_type::Count));
-                    for (int i(0); i < item::weapon::club_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::club_type::Count));
+
+                    for (int i(0); i < weapon::club_type::Count; ++i)
                     {
-                        const item::weapon::club_type::Enum TYPE(static_cast<item::weapon::club_type::Enum>(i));
-                        SetWeaponChances<item::weapon::club_type::Enum>(item::weapon::club_type::ToString(TYPE),
-                                                                        TYPE,
-                                                                        CHANCE_PER_WEAPON,
-                                                                        PROFILE,
-                                                                        CHARACTER_PTR,
-                                                                        typicalClubPrimaryMaterials,
-                                                                        weaponChances.club_map);
+                        auto const TYPE(static_cast<weapon::club_type::Enum>(i));
+
+                        SetWeaponChances<weapon::club_type::Enum>(
+                            weapon::club_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalClubPrimaryMaterials,
+                            weaponChances.club_map);
                     }
                 }
             }
 
             {
                 chance::MaterialChanceMap_t typicalProjectilePrimaryMaterials;
-                typicalProjectilePrimaryMaterials[item::material::Wood] = 1.0f;
+                typicalProjectilePrimaryMaterials[material::Wood] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile != item::weapon::projectile_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile !=
+                    weapon::projectile_type::Count)
                 {
-                    SetWeaponChances<item::weapon::projectile_type::Enum>(item::weapon::projectile_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile),
-                                                                          NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile,
-                                                                          NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                          PROFILE,
-                                                                          CHARACTER_PTR,
-                                                                          typicalProjectilePrimaryMaterials,
-                                                                          weaponChances.projectile_map);
+                    SetWeaponChances<weapon::projectile_type::Enum>(
+                        weapon::projectile_type::ToString(
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalProjectilePrimaryMaterials,
+                        weaponChances.projectile_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::Projectile)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type ==
+                    weapon_type::Projectile)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::projectile_type::Count));
-                    for (int i(0); i < item::weapon::projectile_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::projectile_type::Count));
+
+                    for (int i(0); i < weapon::projectile_type::Count; ++i)
                     {
-                        const item::weapon::projectile_type::Enum TYPE(static_cast<item::weapon::projectile_type::Enum>(i));
-                        SetWeaponChances<item::weapon::projectile_type::Enum>(item::weapon::projectile_type::ToString(TYPE),
-                                                                              TYPE,
-                                                                              CHANCE_PER_WEAPON,
-                                                                              PROFILE,
-                                                                              CHARACTER_PTR,
-                                                                              typicalProjectilePrimaryMaterials,
-                                                                              weaponChances.projectile_map);
+                        const weapon::projectile_type::Enum TYPE(
+                            static_cast<weapon::projectile_type::Enum>(i));
+
+                        SetWeaponChances<weapon::projectile_type::Enum>(
+                            weapon::projectile_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalProjectilePrimaryMaterials,
+                            weaponChances.projectile_map);
                     }
                 }
             }
 
             {
                 chance::MaterialChanceMap_t typicalSwordPrimaryMaterials;
-                typicalSwordPrimaryMaterials[item::material::Steel] = 1.0f;
+                typicalSwordPrimaryMaterials[material::Steel] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.sword != item::weapon::sword_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.sword !=
+                    weapon::sword_type::Count)
                 {
-                    SetWeaponChances<item::weapon::sword_type::Enum>(item::weapon::sword_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.sword),
-                                                                     NEXT_WEAPONINFO_CHANCE_PAIR.first.sword,
-                                                                     NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                     PROFILE,
-                                                                     CHARACTER_PTR,
-                                                                     typicalSwordPrimaryMaterials,
-                                                                     weaponChances.sword_map);
+                    SetWeaponChances<weapon::sword_type::Enum>(
+                        weapon::sword_type::ToString(
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.sword),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.sword,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalSwordPrimaryMaterials,
+                        weaponChances.sword_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::Sword)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Sword)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::sword_type::Count));
-                    for (int i(0); i < item::weapon::sword_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::sword_type::Count));
+
+                    for (int i(0); i < weapon::sword_type::Count; ++i)
                     {
-                        const item::weapon::sword_type::Enum TYPE(static_cast<item::weapon::sword_type::Enum>(i));
-                        SetWeaponChances<item::weapon::sword_type::Enum>(item::weapon::sword_type::ToString(TYPE),
-                                                                         TYPE,
-                                                                         CHANCE_PER_WEAPON,
-                                                                         PROFILE,
-                                                                         CHARACTER_PTR,
-                                                                         typicalSwordPrimaryMaterials,
-                                                                         weaponChances.sword_map);
+                        auto const TYPE(static_cast<weapon::sword_type::Enum>(i));
+
+                        SetWeaponChances<weapon::sword_type::Enum>(
+                            weapon::sword_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalSwordPrimaryMaterials,
+                            weaponChances.sword_map);
                     }
                 }
             }
 
             {
                 chance::MaterialChanceMap_t typicalWhipPrimaryMaterials;
-                typicalWhipPrimaryMaterials[item::material::Steel] = 1.0f;
+                typicalWhipPrimaryMaterials[material::Steel] = 1.0f;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.whip != item::weapon::whip_type::Count)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.whip != weapon::whip_type::Count)
                 {
-                    SetWeaponChances<item::weapon::whip_type::Enum>(item::weapon::whip_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.whip),
-                                                                    NEXT_WEAPONINFO_CHANCE_PAIR.first.whip,
-                                                                    NEXT_WEAPONINFO_CHANCE_PAIR.second,
-                                                                    PROFILE,
-                                                                    CHARACTER_PTR,
-                                                                    typicalWhipPrimaryMaterials,
-                                                                    weaponChances.whip_map);
+                    SetWeaponChances<weapon::whip_type::Enum>(
+                        weapon::whip_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.whip),
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.whip,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.second,
+                        PROFILE,
+                        CHARACTER_PTR,
+                        typicalWhipPrimaryMaterials,
+                        weaponChances.whip_map);
                 }
-                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == item::weapon_type::Whip)
+                else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Whip)
                 {
-                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second / static_cast<float>(item::weapon::whip_type::Count));
-                    for (int i(0); i < item::weapon::whip_type::Count; ++i)
+                    const float CHANCE_PER_WEAPON(NEXT_WEAPONINFO_CHANCE_PAIR.second /
+                        static_cast<float>(weapon::whip_type::Count));
+
+                    for (int i(0); i < weapon::whip_type::Count; ++i)
                     {
-                        const item::weapon::whip_type::Enum TYPE(static_cast<item::weapon::whip_type::Enum>(i));
-                        SetWeaponChances<item::weapon::whip_type::Enum>(item::weapon::whip_type::ToString(TYPE),
-                                                                        TYPE,
-                                                                        CHANCE_PER_WEAPON,
-                                                                        PROFILE,
-                                                                        CHARACTER_PTR,
-                                                                        typicalWhipPrimaryMaterials,
-                                                                        weaponChances.whip_map);
+                        auto const TYPE(static_cast<weapon::whip_type::Enum>(i));
+
+                        SetWeaponChances<weapon::whip_type::Enum>(
+                            weapon::whip_type::ToString(TYPE),
+                            TYPE,
+                            CHANCE_PER_WEAPON,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            typicalWhipPrimaryMaterials,
+                            weaponChances.whip_map);
                     }
                 }
             }
@@ -859,7 +947,10 @@ namespace ownership
                                         armorChanceVal,
                                         PROFILE,
                                         CHARACTER_PTR,
-                                        false);//materials will be forced to make sense by ArmorFactory::Make_Helm()
+
+                                        //materials will be forced to make sense by
+                                        //ArmorFactory::Make_Helm()
+                                        false);
             }
 
             if (ARMOR_NAME_STR == "MailCoif")
@@ -1242,13 +1333,19 @@ namespace ownership
 
         //adjustments that make higher ranks have special materials that are more rare
         for (auto & nextMapPair : chanceMapCool)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapMetal)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapPrecious)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
+        }
 
         //adjustments that make more wealth equal better chances for special materials
         const float WEALTH_CHANCE_ADJUSTMENT(GameDataFile::Instance()->GetCopyFloat(
@@ -1261,34 +1358,57 @@ namespace ownership
 
         //adjustments that make more wealth equal already acquired special materials more rare
         for (auto & nextMapPair : chanceMapCool)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapMetal)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapPrecious)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
+        }
 
         //collector adjustments
         if ((PROFILE.collectorType & collector_type::Collector) > 0)
         {
             //adjustments that make collectors more likely to have special materials
-            chanceCool += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Cool");
-            chanceMetal += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Metal");
-            chancePrecious += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Precious");
+            chanceCool += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Cool");
+
+            chanceMetal += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Metal");
+
+            chancePrecious += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Precious");
 
             //adjustments that make collector's already acquired special materials more rare
-            const float CHANCE_DIV_COOL(GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Cool"));
+            const float CHANCE_DIV_COOL(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Cool"));
+
             for (auto & nextMapPair : chanceMapCool)
+            {
                 nextMapPair.second /= CHANCE_DIV_COOL;
-            //
-            const float CHANCE_DIV_METAL(GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Metal"));
+            }
+
+            const float CHANCE_DIV_METAL(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Metal"));
+
             for (auto & nextMapPair : chanceMapMetal)
+            {
                 nextMapPair.second /= CHANCE_DIV_METAL;
-            //
-            const float CHANCE_DIV_PRECIOUS(GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Precious"));
+            }
+
+            const float CHANCE_DIV_PRECIOUS(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Precious"));
+
             for (auto & nextMapPair : chanceMapPrecious)
+            {
                 nextMapPair.second /= CHANCE_DIV_PRECIOUS;
+            }
         }
 
         //adjust for item weight that can make special materials less likely
@@ -1328,33 +1448,53 @@ namespace ownership
             else
             {
                 if (RAND < chanceMetal)
+                {
                     materialsMap_OutParam = chanceMapMetal;
+                }
                 else
+                {
                     materialsMap_OutParam = chanceMapPrecious;
+                }
             }
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS((materialsMap_OutParam.empty() == false),
             "game::non_player::ownership::ChanceFactory::Make_MaterialChancesPrimary(\""
             << CHARACTER_PTR->Name() << "\") final materials map was empty.");
+
+        for (auto & nextPair : materialsMap_OutParam)
+        {
+            if (nextPair.second < 0.0f)
+            {
+                nextPair.second = 0.0f;
+            }
+        }
     }
 
 
-    void ChanceFactory::Make_MaterialChancesSecondary(const Profile &                  PROFILE,
-                                                      const non_player::CharacterPtr_t CHARACTER_PTR,
-                                                      chance::MaterialChanceMap_t &    materialsMap_OutParam)
+    void ChanceFactory::Make_MaterialChancesSecondary(
+        const Profile &                  PROFILE,
+        const non_player::CharacterPtr_t CHARACTER_PTR,
+        chance::MaterialChanceMap_t &    materialsMap_OutParam)
     {
         //establish the base chances for a secondary material
-        float chanceCool(    1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-secondary-chance-base-Cool-onein") );
-        float chanceMetal(   1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-secondary-chance-base-Metal-onein"));
-        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat("heroespath-material-secondary-chance-base-Precious-onein"));
-        //
+        float chanceCool(    1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Cool-onein") );
+
+        float chanceMetal(   1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Metal-onein"));
+
+        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Precious-onein"));
+
         chance::MaterialChanceMap_t chanceMapCool( Make_MaterialChanceMapCool() );
         chance::MaterialChanceMap_t chanceMapMetal( Make_MaterialChanceMapMetal() );
         chance::MaterialChanceMap_t chanceMapPrecious( Make_MaterialChanceMapPrecious() );
 
         //adjustments that make higher ranks more likely to have special materials
-        const float RANK_DIVISOR( static_cast<float>(GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax")) );
+        const float RANK_DIVISOR( static_cast<float>(GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-rankclass-Master-rankmax")) );
+
         const float RANK_CHANCE_INCREASE(static_cast<float>(CHARACTER_PTR->Rank()) / RANK_DIVISOR);
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
@@ -1362,13 +1502,19 @@ namespace ownership
 
         //adjustments that make higher ranks already acquired special materials more rare
         for (auto & nextMapPair : chanceMapCool)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapMetal)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapPrecious)
+        {
             nextMapPair.second /= RANK_CHANCE_INCREASE;
+        }
 
         //adjustments that make more wealth equal better chances for special materials
         const float WEALTH_CHANCE_ADJUSTMENT( GameDataFile::Instance()->GetCopyFloat(
@@ -1381,34 +1527,57 @@ namespace ownership
 
         //adjustments that make more wealth equal already acquired special materials more rare
         for (auto & nextMapPair : chanceMapCool)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapMetal)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
-        //
+        }
+
         for (auto & nextMapPair : chanceMapPrecious)
+        {
             nextMapPair.second += WEALTH_CHANCE_ADJUSTMENT;
+        }
 
         //collector adjustments
         if ((PROFILE.collectorType & collector_type::Collector) > 0)
         {
             //adjustments that make collectors more likely to have special materials
-            chanceCool += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Cool");
-            chanceMetal += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Metal");
-            chancePrecious += GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-base-increase-Precious");
+            chanceCool += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Cool");
+
+            chanceMetal += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Metal");
+
+            chancePrecious += GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-base-increase-Precious");
 
             //adjustments that make collector's already acquired special materials more rare
-            const float CHANCE_DIV_COOL( GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Cool") );
+            const float CHANCE_DIV_COOL(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Cool"));
+
             for (auto & nextMapPair : chanceMapCool)
+            {
                 nextMapPair.second /= CHANCE_DIV_COOL;
-            //
-            const float CHANCE_DIV_METAL( GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Metal") );
+            }
+
+            const float CHANCE_DIV_METAL(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Metal"));
+
             for (auto & nextMapPair : chanceMapMetal)
+            {
                 nextMapPair.second /= CHANCE_DIV_METAL;
-            //
-            const float CHANCE_DIV_PRECIOUS( GameDataFile::Instance()->GetCopyFloat("heroespath-material-collector-chance-per-divisor-Precious") );
+            }
+
+            const float CHANCE_DIV_PRECIOUS(GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Precious"));
+
             for (auto & nextMapPair : chanceMapPrecious)
+            {
                 nextMapPair.second /= CHANCE_DIV_PRECIOUS;
+            }
         }
 
         RestrictMaterialsByComplexity(PROFILE.complexityType,
@@ -1438,9 +1607,21 @@ namespace ownership
             else
             {
                 if (RAND < chanceMetal)
+                {
                     materialsMap_OutParam = chanceMapMetal;
+                }
                 else
+                {
                     materialsMap_OutParam = chanceMapPrecious;
+                }
+            }
+        }
+
+        for (auto & nextPair : materialsMap_OutParam)
+        {
+            if (nextPair.second < 0.0f)
+            {
+                nextPair.second = 0.0f;
             }
         }
     }
@@ -1459,6 +1640,7 @@ namespace ownership
         {
             const std::string NEXT_VALUE_STR(GameDataFile::Instance()->GetCopyStr(
                 PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX));
+
             if (NEXT_VALUE_STR == "remaining")
             {
                 materialWithRemainingChance = NEXT_MATERIAL;
@@ -1478,7 +1660,9 @@ namespace ownership
         }
 
         if (materialWithRemainingChance != item::material::Nothing)
+        {
             materialChanceMap[materialWithRemainingChance] = 1.0f - cumulativeChance;
+        }
 
         return materialChanceMap;
     }
@@ -1493,9 +1677,10 @@ namespace ownership
                                                          item::material::Horn,
                                                          item::material::Tooth,
                                                          item::material::Bronze,
+                                                         item::material::Jade,
                                                          item::material::Obsidian,
                                                          item::material::Scale,
-                                                         item::material::Lapis,
+                                                         item::material::Lazuli,
                                                          item::material::Gold,
                                                          item::material::Pearl };
 
@@ -1511,14 +1696,15 @@ namespace ownership
     {
         if (materialChanceMapPrecious_.empty())
         {
-            const chance::MaterialVec_t MATERIAL_VEC = { item::material::Amethyst,
+            const chance::MaterialVec_t MATERIAL_VEC = { item::material::Jade,
+                                                         item::material::Amethyst,
                                                          item::material::Emerald,
                                                          item::material::Silver,
-                                                         item::material::Pearl,
+                                                         item::material::Lazuli,
                                                          item::material::Gold,
                                                          item::material::Platinum,
                                                          item::material::Ruby,
-                                                         item::material::Lapis,
+                                                         item::material::Pearl,
                                                          item::material::Sapphire,
                                                          item::material::Diamond };
 
@@ -1570,28 +1756,36 @@ namespace ownership
         chance::ClothingChances clothingChances;
 
         clothingChances.boots = itemChancesBase;
-        clothingChances.boots.SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "boots", MIN_VAL, MAX_VAL));
+        clothingChances.boots.SetCountChanceSingle(GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "boots", MIN_VAL, MAX_VAL));
 
         clothingChances.gloves = itemChancesBase;
-        clothingChances.gloves.SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "gloves", MIN_VAL, MAX_VAL));
+        clothingChances.gloves.SetCountChanceSingle(GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "gloves", MIN_VAL, MAX_VAL));
 
+        //lets just say everybody gets pants...
         clothingChances.pants = itemChancesBase;
-        clothingChances.pants.SetCountChanceSingleCertain();//lets just say everybody gets pants...
+        clothingChances.pants.SetCountChanceSingleCertain();
 
         clothingChances.shirt = itemChancesBase;
-        clothingChances.shirt.SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "shirt", MIN_VAL, MAX_VAL));
+        clothingChances.shirt.SetCountChanceSingle(GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "shirt", MIN_VAL, MAX_VAL));
 
         clothingChances.vest = itemChancesBase;
-        clothingChances.vest.SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "vest", MIN_VAL, MAX_VAL));
+        clothingChances.vest.SetCountChanceSingle(GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "vest", MIN_VAL, MAX_VAL));
 
         clothingChances.cover_map[item::armor::cover_type::Cape] = itemChancesBase;
-        clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "cape", MIN_VAL, MAX_VAL));
+        clothingChances.cover_map[item::armor::cover_type::Cape].SetCountChanceSingle(
+            GetFloatFromGameDataFile(WEARABLE_STR_BASE + "cape", MIN_VAL, MAX_VAL));
 
         clothingChances.cover_map[item::armor::cover_type::Cloak] = itemChancesBase;
-        clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "cloak", MIN_VAL, MAX_VAL));
+        clothingChances.cover_map[item::armor::cover_type::Cloak].SetCountChanceSingle(
+            GetFloatFromGameDataFile(WEARABLE_STR_BASE + "cloak", MIN_VAL, MAX_VAL));
 
         clothingChances.cover_map[item::armor::cover_type::Robe] = itemChancesBase;
-        clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingle(GetFloatFromGameDataFile(WEARABLE_STR_BASE + "robe", MIN_VAL, MAX_VAL));
+        clothingChances.cover_map[item::armor::cover_type::Robe].SetCountChanceSingle(
+            GetFloatFromGameDataFile(WEARABLE_STR_BASE + "robe", MIN_VAL, MAX_VAL));
 
         return clothingChances;
     }

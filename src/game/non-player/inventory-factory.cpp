@@ -340,8 +340,8 @@ namespace ownership
         {
             itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Gauntlets(
                 item::armor::base_type::Plain,
-                CHANCES.boots.RandomMaterialPri(),
-                CHANCES.boots.RandomMaterialSec()));
+                CHANCES.gloves.RandomMaterialPri(),
+                CHANCES.gloves.RandomMaterialSec()));
         }
 
         if (CHANCES.pants.IsOwned())
@@ -369,7 +369,7 @@ namespace ownership
         const item::armor::cover_type::Enum COVER_TYPE( CHANCES.RandomCoverType() );
         if (COVER_TYPE != item::armor::cover_type::Count)
         {
-            chance::CoverChanceMap_t::const_iterator ITER( CHANCES.cover_map.find(COVER_TYPE) );
+            auto ITER{ CHANCES.cover_map.find(COVER_TYPE) };
             
             M_ASSERT_OR_LOGANDTHROW_SS((ITER != CHANCES.cover_map.end()),
                 "game::non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"

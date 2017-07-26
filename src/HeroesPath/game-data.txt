@@ -692,85 +692,87 @@ heroespath-wealthtype-chance-GrandMaster-Lavish-one-in=4
 heroespath-wealthtype-chance-GrandMaster-Royal-one-in=remaining
 
 #material base chances 'cool'
-heroespath-material-chance-base-cool-Stone-onein=remaining
-heroespath-material-chance-base-cool-Bone-onein=9
-heroespath-material-chance-base-cool-Horn-onein=10
-heroespath-material-chance-base-cool-Tooth-onein=11
-heroespath-material-chance-base-cool-Bronze-onein=12
+heroespath-material-chance-base-cool-Stone-onein=   remaining
+heroespath-material-chance-base-cool-Bone-onein=    9
+heroespath-material-chance-base-cool-Horn-onein=    10
+heroespath-material-chance-base-cool-Tooth-onein=   11
+heroespath-material-chance-base-cool-Bronze-onein=  12
+heroespath-material-chance-base-cool-Jade-onein=    14
 heroespath-material-chance-base-cool-Obsidian-onein=16
-heroespath-material-chance-base-cool-Scale-onein=20
-heroespath-material-chance-base-cool-Lapis-onein=24
-heroespath-material-chance-base-cool-Gold-onein=40
-heroespath-material-chance-base-cool-Pearl-onein=50
+heroespath-material-chance-base-cool-Scale-onein=   20
+heroespath-material-chance-base-cool-Lazuli-onein=  24
+heroespath-material-chance-base-cool-Gold-onein=    40
+heroespath-material-chance-base-cool-Pearl-onein=   50
 
 #material base chances 'precious'
-heroespath-material-chance-base-precious-Amethyst-onein=remaining
-heroespath-material-chance-base-precious-Emerald-onein=9
-heroespath-material-chance-base-precious-Silver-onein=10
-heroespath-material-chance-base-precious-Lapis-onein=11
-heroespath-material-chance-base-precious-Gold-onein=16
-heroespath-material-chance-base-precious-Platinum-onein=18
-heroespath-material-chance-base-precious-Ruby-onein=20
-heroespath-material-chance-base-precious-Pearl-onein=30
-heroespath-material-chance-base-precious-Sapphire-onein=40
-heroespath-material-chance-base-precious-Diamond-onein=50
+heroespath-material-chance-base-precious-Jade-onein=        remaining
+heroespath-material-chance-base-precious-Amethyst-onein=    6
+heroespath-material-chance-base-precious-Emerald-onein=     7
+heroespath-material-chance-base-precious-Silver-onein=      8
+heroespath-material-chance-base-precious-Lazuli-onein=      9
+heroespath-material-chance-base-precious-Gold-onein=        12
+heroespath-material-chance-base-precious-Platinum-onein=    14
+heroespath-material-chance-base-precious-Ruby-onein=        18
+heroespath-material-chance-base-precious-Pearl-onein=       24
+heroespath-material-chance-base-precious-Sapphire-onein=    30
+heroespath-material-chance-base-precious-Diamond-onein=     50
 
 #material base chances 'metals'
-heroespath-material-chance-base-metal-Tin-onein=remaining
-heroespath-material-chance-base-metal-Bronze-onein=6
-heroespath-material-chance-base-metal-Iron-onein=7
-heroespath-material-chance-base-metal-Steel-onein=8
-heroespath-material-chance-base-metal-Silver-onein=16
-heroespath-material-chance-base-metal-Gold-onein=32
-heroespath-material-chance-base-metal-Platinum-onein=64
+heroespath-material-chance-base-metal-Tin-onein=        remaining
+heroespath-material-chance-base-metal-Bronze-onein=     4
+heroespath-material-chance-base-metal-Iron-onein=       6
+heroespath-material-chance-base-metal-Steel-onein=      8
+heroespath-material-chance-base-metal-Silver-onein=     20
+heroespath-material-chance-base-metal-Gold-onein=       40
+heroespath-material-chance-base-metal-Platinum-onein=   60
 
 #primary material type base chances
-heroespath-material-primary-chance-base-Cool-onein=60
-heroespath-material-primary-chance-base-Metal-onein=30
-heroespath-material-primary-chance-base-Precious-onein=150
+heroespath-material-primary-chance-base-Cool-onein=     60
+heroespath-material-primary-chance-base-Metal-onein=    30
+heroespath-material-primary-chance-base-Precious-onein= 150
 
 #material chance base adjustment based on wealth
-heroespath-material-wealth-chance-base-adjustment-Destitute=-0.05
-heroespath-material-wealth-chance-base-adjustment-Poor=-0.001
-heroespath-material-wealth-chance-base-adjustment-LowerMiddle=0.0
-heroespath-material-wealth-chance-base-adjustment-UpperMiddle=0.05
-heroespath-material-wealth-chance-base-adjustment-Rich=0.075
-heroespath-material-wealth-chance-base-adjustment-Lavish=0.5
-heroespath-material-wealth-chance-base-adjustment-Royal=0.99
+heroespath-material-wealth-chance-base-adjustment-Destitute=    -0.05
+heroespath-material-wealth-chance-base-adjustment-Poor=         -0.001
+heroespath-material-wealth-chance-base-adjustment-LowerMiddle=  0.0
+heroespath-material-wealth-chance-base-adjustment-UpperMiddle=  0.05
+heroespath-material-wealth-chance-base-adjustment-Rich=         0.075
+heroespath-material-wealth-chance-base-adjustment-Lavish=       0.5
+heroespath-material-wealth-chance-base-adjustment-Royal=        0.99
 
 #material base chance increase if collector
-heroespath-material-collector-chance-base-increase-Cool=0.1
-heroespath-material-collector-chance-base-increase-Metal=0.075
-heroespath-material-collector-chance-base-increase-Precious=0.05
+heroespath-material-collector-chance-base-increase-Cool=        0.1
+heroespath-material-collector-chance-base-increase-Metal=       0.075
+heroespath-material-collector-chance-base-increase-Precious=    0.05
 
 #material chance increase if collector (per material)
-heroespath-material-collector-chance-per-divisor-Cool=0.45
-heroespath-material-collector-chance-per-divisor-Metal=0.35
-heroespath-material-collector-chance-per-divisor-Precious=0.25
+heroespath-material-collector-chance-per-divisor-Cool=      0.45
+heroespath-material-collector-chance-per-divisor-Metal=     0.35
+heroespath-material-collector-chance-per-divisor-Precious=  0.25
 
 #secondary material type base chances
-heroespath-material-secondary-chance-base-Cool-onein=40
-heroespath-material-secondary-chance-base-Metal-onein=20
-heroespath-material-secondary-chance-base-Precious-onein=100
+heroespath-material-secondary-chance-base-Cool-onein=       40
+heroespath-material-secondary-chance-base-Metal-onein=      20
+heroespath-material-secondary-chance-base-Precious-onein=   100
 
 #player character initial health by race
-heroespath-player-race-health-initial-Human=20
-heroespath-player-race-health-initial-Gnome=16
-heroespath-player-race-health-initial-Pixie=12
-heroespath-player-race-health-initial-Wolfen=18
-heroespath-player-race-health-initial-Dragon=22
+heroespath-player-race-health-initial-Human=    20
+heroespath-player-race-health-initial-Gnome=    16
+heroespath-player-race-health-initial-Pixie=    12
+heroespath-player-race-health-initial-Wolfen=   18
+heroespath-player-race-health-initial-Dragon=   22
 
 #player character initial health adjustment by role
-heroespath-player-role-health-adjustment-initial-Archer=3
-heroespath-player-role-health-adjustment-initial-Bard=0
-heroespath-player-role-health-adjustment-initial-Beastmaster=4
-heroespath-player-role-health-adjustment-initial-Cleric=-3
-heroespath-player-role-health-adjustment-initial-Firebrand=4
-heroespath-player-role-health-adjustment-initial-Knight=10
-heroespath-player-role-health-adjustment-initial-Sorcerer=-4
-heroespath-player-role-health-adjustment-initial-Sylavin=1
-heroespath-player-role-health-adjustment-initial-Thief=-3
-heroespath-player-role-health-adjustment-initial-Wolfen=0
+heroespath-player-role-health-adjustment-initial-Archer=        3
+heroespath-player-role-health-adjustment-initial-Bard=          0
+heroespath-player-role-health-adjustment-initial-Beastmaster=   4
+heroespath-player-role-health-adjustment-initial-Cleric=        -3
+heroespath-player-role-health-adjustment-initial-Firebrand=     4
+heroespath-player-role-health-adjustment-initial-Knight=        10
+heroespath-player-role-health-adjustment-initial-Sorcerer=      -4
+heroespath-player-role-health-adjustment-initial-Sylavin=       1
+heroespath-player-role-health-adjustment-initial-Thief=         -3
+heroespath-player-role-health-adjustment-initial-Wolfen=        0
 
 #wealth bounds based on wealth_type
 heroespath-nonplayer-coins-bounds-Destitute=0,10

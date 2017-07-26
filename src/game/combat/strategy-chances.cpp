@@ -222,7 +222,9 @@ namespace strategy
         //Handle case where chances do not add up exactly to one, or 100%.
 
         if (FREQ_CHANCE_MAP.empty())
+        {
             return FrequencyType::Never;
+        }
 
         //Find chance total of all FrequencyTypes, and make a vec of all that have a certain (one) or higher than certain chance.
         auto totalOfAllFreqTypes{0.0f};
@@ -252,7 +254,9 @@ namespace strategy
             {
                 subtotal += NEXT_FREQCHANCE_PAIR.second;
                 if (RAND < subtotal)
+                {
                     return NEXT_FREQCHANCE_PAIR.first;
+                }
             }
 
             return cretainOrHigherFreqTypeVec[cretainOrHigherFreqTypeVec.size() - 1].first;
@@ -270,7 +274,9 @@ namespace strategy
             {
                 subtotal += NEXT_FREQCHANCE_PAIR.second;
                 if (RAND < subtotal)
+                {
                     return NEXT_FREQCHANCE_PAIR.first;
+                }
             }
 
             if (DO_CHANCES_TOTAL_ONE_OR_LESS)
@@ -328,7 +334,9 @@ namespace strategy
             {
                 subtotal += NEXT_COUNTCHANCE_PAIR.second;
                 if (RAND < subtotal)
+                {
                     return NEXT_COUNTCHANCE_PAIR.first;
+                }
             }
 
             return OUTNUMBER_RETREAT_CHANCE_MAP.begin()->first;

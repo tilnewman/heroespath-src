@@ -81,13 +81,15 @@ namespace chance
             chanceSubTotal += NEXT_MAP_PAIR.second;
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(chanceSubTotal, 0.0f) == false),
+        M_ASSERT_OR_LOGANDTHROW_SS(((misc::IsRealZero(chanceSubTotal) == false) &&
+            (chanceSubTotal > 0.0f)),
             "game::non_player::ownership::chance::MappedRandomFloatChance(T=\""
-            << boost::typeindex::type_id<T>().pretty_name()
-            << "\") called when the map's chance total is zero.");
+                << boost::typeindex::type_id<T>().pretty_name()
+                << "\", size=" << MAP.size()
+                << ") called when the map's chance total is zero or less.");
 
         const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
-
+        
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR : MAP)
         {
@@ -230,7 +232,7 @@ namespace chance
         }
 
         const float RAND( misc::random::Float(0.0f, chanceSubTotal) );
-
+        
         float cumulativeChance(0.0f);
         for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
         {
