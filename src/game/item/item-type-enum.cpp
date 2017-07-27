@@ -168,7 +168,7 @@ namespace item
             case Claw       : { return "Claw"; }
             case Horn       : { return "Horn"; }
             case Tooth      : { return "Tooth"; }
-            case Ether      : { return "Ether"; }
+            case Spirit     : { return "Spirit"; }
             case Tin        : { return "Tin"; }
             case Gold       : { return "Gold"; }
             case Iron       : { return "Iron"; }
@@ -216,7 +216,7 @@ namespace item
         switch (MATERIAL_PRI)
         {
             case Nothing    :
-            case Ether      :
+            case Spirit     :
             case Gas        :
             case Water      :
             case Blood      :
@@ -292,7 +292,7 @@ namespace item
         switch (MATERIAL_PRI)
         {
             case Nothing    : { return 0; }
-            case Ether      : { return 0; }
+            case Spirit     : { return 0; }
             case Gas        : { return 0; }
             case Water      : { return 0; }
             case Blood      : { return 0; }
@@ -365,7 +365,7 @@ namespace item
         switch (MATERIAL_PRI)
         {
             case Nothing    : { return 0.0f; }
-            case Ether      : { return 0.0f; }
+            case Spirit     : { return 0.0f; }
             case Gas        : { return 0.001f; }
             case Plant      : { return 0.9f; }
             case Cloth      : { return 0.9f; }
@@ -431,7 +431,7 @@ namespace item
         switch (E)
         {
             case Nothing    :
-            case Ether      :
+            case Spirit     :
             case Gas        :
             case Blood      :
             case Water      :
@@ -485,7 +485,7 @@ namespace item
 
     bool material::IsMagical(const material::Enum PRI, const material::Enum SEC)
     {
-        return ContainsEther(PRI, SEC);
+        return ContainsSpirit(PRI, SEC);
     }
 
 
@@ -501,7 +501,7 @@ namespace item
     {
         return ((IsLiquid(MATERIAL) == false) &&
                 (MATERIAL != material::Gas)   &&
-                (MATERIAL != material::Ether));
+                (MATERIAL != material::Spirit));
     }
 
 
@@ -528,9 +528,9 @@ namespace item
     }
 
 
-    bool material::ContainsEther(const material::Enum PRI, const material::Enum SEC)
+    bool material::ContainsSpirit(const material::Enum PRI, const material::Enum SEC)
     {
-        return ((PRI == material::Ether) || (SEC == material::Ether));
+        return ((PRI == material::Spirit) || (SEC == material::Spirit));
     }
 
 
@@ -585,7 +585,7 @@ namespace item
             case material::Claw       : { fireDamageRatio = 0.1f;   break; }
             case material::Horn       : { fireDamageRatio = 0.1f;   break; }
             case material::Tooth      : { fireDamageRatio = 0.05f;  break; }
-            case material::Ether      : { fireDamageRatio = 0.0f;   break; }
+            case material::Spirit     : { fireDamageRatio = 0.0f;   break; }
             case material::Gold       : { fireDamageRatio = 0.01f;  break; }
             case material::Iron       : { fireDamageRatio = 0.01f;  break; }
             case material::Tin        : { fireDamageRatio = 0.01f;  break; }
@@ -639,7 +639,7 @@ namespace item
             case material::Claw       : { fireDamageRatio -= 0.1f;   break; }
             case material::Horn       : { fireDamageRatio -= 0.1f;   break; }
             case material::Tooth      : { fireDamageRatio -= 0.1f;   break; }
-            case material::Ether      : { break; }
+            case material::Spirit     : { break; }
             case material::Gold       : { fireDamageRatio -= 0.5f;   break; }
             case material::Iron       : { fireDamageRatio -= 0.5f;   break; }
             case material::Tin        : { fireDamageRatio -= 0.5f;   break; }

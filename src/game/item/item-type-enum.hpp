@@ -117,53 +117,55 @@ namespace item
 
     struct material
     {
-
         enum Enum
         {
-            //Use 'Nothing' as default instead of 'Error' or 'Count' so that an Item's
-            //materialSec_ member can be 'Nothing'.
+            //Use Nothing as default instead of Error so that an Item's
+            //materialSec_ can be Nothing.
             Nothing = 0,
-            Wood,
-            HardLeather,
-            SoftLeather,
-            Bone,
+
+            //what Ghosts and Shades are made of
+            Spirit,
+
+            Gas,
             Water,
-            Dirt,
+            Blood,
             Acid,
-            Stone,
-            Plant,
-            Flesh,
-            Scale,
-            Hide,
+            Dirt,
+            Paper,
+            Glass,
             Feather,
             Fur,
             Hair,
+            Flesh,
+            Rope,
+            Cloth,
+            Hide,
+            SoftLeather,
+            HardLeather,
+            Plant,
+            Claw,
+            Scale,
+            Horn,
+            Bone,
+            Tooth,
+            Wood,
+            Stone,
             Obsidian,
+            Tin,        // 18 /  7.3 -modulus of rigidity / density
+            Bronze,     // 45 /  7.5
+            Iron,       // 41 /  7.8
+            Steel,      // 77 /  8.0
             Jade,
             Amethyst,
             Emerald,
             Pearl,
             Ruby,
             Lazuli,
-            Sapphire,
-            Diamond,
-            Glass,
-            Gas,
-            Blood,
-            Paper,
-            Rope,
-            Cloth,
-            Claw,
-            Horn,
-            Tooth,
-            Ether,      //what ghosts and spirits are made of
-            Tin,        // 18 /  7.3 -modulus of rigidity / density
-            Gold,       // 27 / 19.3
-            Iron,       // 41 /  7.8
-            Bronze,     // 45 /  7.5
             Silver,     // 48 / 10.5
-            Steel,      // 77 /  8.0
-            Platinum,    // 82 / 21.5
+            Sapphire,
+            Gold,       // 27 / 19.3
+            Platinum,   // 82 / 21.5
+            Diamond,
             Count
         };
 
@@ -185,7 +187,7 @@ namespace item
         static bool IsSolid(const material::Enum MATERIAL);
         static bool IsBendy(const material::Enum MATERIAL);
         static bool IsRigid(const material::Enum MATERIAL);
-        static bool ContainsEther(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static float FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);

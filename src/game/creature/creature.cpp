@@ -727,6 +727,11 @@ namespace creature
                 resultSS << "Can't wear guantlets without fingers." << SEP;
             }
 
+            if ((ARMOR_TYPE & item::armor_type::Gauntlets) && (Body().HasArms() == false))
+            {
+                resultSS << "Can't wear guantlets without arms." << SEP;
+            }
+
             if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHead() == false))
             {
                 resultSS << race_.Name() << "'s can't wear helms because they have no head." << SEP;

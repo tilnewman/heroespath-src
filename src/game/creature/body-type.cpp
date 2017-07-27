@@ -152,7 +152,7 @@ namespace creature
         if (num_tendrils_ > 0)
             ss << " with " << num_tendrils_ << " tendrils";
 
-        if (skinMaterialInner_ == item::material::Ether)
+        if (skinMaterialInner_ == item::material::Spirit)
             ss << " made of ghostly ether";
         else
         {
@@ -266,7 +266,7 @@ namespace creature
 
                 break;
             }
-            case creature::race::Shade:   { return BodyType(item::material::Ether, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
+            case creature::race::Shade:   { return BodyType(item::material::Spirit, item::material::Nothing, 1, 2, 0, 2, false, true, false, true, false, false, false); }
             case creature::race::Skeleton:
             {
                 if (ROLE == role::Chieftain)

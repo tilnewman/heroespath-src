@@ -267,7 +267,7 @@ namespace combat
                     case item::material::Glass:
                     case item::material::Gas:
                     case item::material::Paper:
-                    case item::material::Ether:
+                    case item::material::Spirit:
                     case item::material::Dirt:
                     case item::material::Nothing:
                     case item::material::Count:

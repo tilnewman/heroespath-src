@@ -91,7 +91,7 @@ namespace creature
         };
 
         static const std::string ToString(const race::Enum);
-        inline static const std::string Name(const race::Enum E) { return ToString(E); }
+        static const std::string Name(const race::Enum);
         static const std::string Desc(const race::Enum);
         static const std::string Abbr(const race::Enum);
         static bool HasTorso(const race::Enum);

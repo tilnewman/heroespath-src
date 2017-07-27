@@ -97,6 +97,19 @@ namespace creature
     }
 
 
+    const std::string race::Name(const race::Enum E)
+    {
+        if (E == Spider)
+        {
+            return "Giant Spider";
+        }
+        else
+        {
+            return ToString(E);
+        }
+    }
+
+
     const std::string race::Desc(const race::Enum E)
     {
         std::ostringstream ss;

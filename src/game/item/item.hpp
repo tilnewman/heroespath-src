@@ -120,9 +120,9 @@ namespace item
             return material::IsRigid(materialPri_);
         }
 
-        inline bool ContainsEther() const
+        inline bool ContainsSpirit() const
         {
-            return material::ContainsEther(materialPri_, materialSec_);
+            return material::ContainsSpirit(materialPri_, materialSec_);
         }
 
         inline bool IsBloody() const
