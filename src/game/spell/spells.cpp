@@ -143,7 +143,7 @@ namespace spell
     {
         auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
-            stats::stat::Intelligence,
+            stats::stat::Charm,
             8,
             0,
             0.5f,
