@@ -42,19 +42,20 @@ namespace item
     {
         enum Enum : unsigned int
         {
-            Broken      = 0, //useless, unable to do or be used for anything
-            Weapon      = 1 << 0,
-            Armor       = 1 << 1,
-            Useable     = 1 << 2,
-            Equippable  = 1 << 3,
-            BodyPart    = 1 << 4,
-            Wearable    = 1 << 5, //if not wearable then it must be one or two-handed
-            OneHanded   = 1 << 6,
-            TwoHanded   = 1 << 7,
-            QuestItem   = 1 << 8,
-            Edible      = 1 << 9,
-            Blessed     = 1 << 10,
-            Cursed      = 1 << 11
+            Broken          = 0, //useless, unable to do or be used for anything
+            Weapon          = 1 << 0,
+            Armor           = 1 << 1,
+            Useable         = 1 << 2,
+            Equippable      = 1 << 3,
+            BodyPart        = 1 << 4,
+            Wearable        = 1 << 5, //if not wearable then it must be one or two-handed
+            OneHanded       = 1 << 6,
+            TwoHanded       = 1 << 7,
+            QuestItem       = 1 << 8,
+            Edible          = 1 << 9,
+            Blessed         = 1 << 10,
+            Cursed          = 1 << 11,
+            AllowsCasting   = 1 << 12
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);

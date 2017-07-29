@@ -1238,7 +1238,7 @@ namespace creature
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
         }
 
-        if (HasEnchantmentType(EnchantmentType::AllowsCasting) == false)
+        if (inventory_.CountItemOfCategory(item::category::AllowsCasting) == 0)
         {
             return RESPONSE_PREFIX + " has no wand or other casting item" + RESPONSE_POSTFIX;
         }

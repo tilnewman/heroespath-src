@@ -50,8 +50,7 @@ namespace creature
             BoundToItem         = 1 << 6,
             AllowsFlight        = 1 << 7,
             CurseWithoutItem    = 1 << 8,
-            BlessWithoutItem    = 1 << 9,
-            AllowsCasting       = 1 << 10
+            BlessWithoutItem    = 1 << 9
         };
 
         static const std::string ToString(const Enum);

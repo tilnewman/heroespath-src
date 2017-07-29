@@ -96,8 +96,7 @@ namespace creature
                                                   const float         SPELL_BONUS_RATIO)
     {
         MakeStoreAttach(itemPtr,
-                        static_cast<EnchantmentType::Enum>(EnchantmentType::WhenHeld |
-                                                           EnchantmentType::AllowsCasting),
+                        static_cast<EnchantmentType::Enum>(EnchantmentType::WhenHeld),
                         0,
                         MANA_BONUS,
                         0,

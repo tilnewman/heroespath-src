@@ -50,18 +50,19 @@ namespace item
         }
         else
         {
-            if (E & category::Weapon)    ss << "weapon";
-            if (E & category::Armor)     ss << ((ss.str().empty()) ? "" : ", ") << "armor";
-            if (E & category::Useable)   ss << ((ss.str().empty()) ? "" : ", ") << "useable";
-            if (E & category::Equippable)ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
-            if (E & category::BodyPart)  ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
-            if (E & category::Wearable)  ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
-            if (E & category::OneHanded) ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
-            if (E & category::TwoHanded) ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
-            if (E & category::QuestItem) ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
-            if (E & category::Edible)    ss << ((ss.str().empty()) ? "" : ", ") << "edible";
-            if (E & category::Blessed)   ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
-            if (E & category::Cursed)    ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
+            if (E & category::Weapon)       ss << "weapon";
+            if (E & category::Armor)        ss << ((ss.str().empty()) ? "" : ", ") << "armor";
+            if (E & category::Useable)      ss << ((ss.str().empty()) ? "" : ", ") << "useable";
+            if (E & category::Equippable)   ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
+            if (E & category::BodyPart)     ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
+            if (E & category::Wearable)     ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
+            if (E & category::OneHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
+            if (E & category::TwoHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
+            if (E & category::QuestItem)    ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
+            if (E & category::Edible)       ss << ((ss.str().empty()) ? "" : ", ") << "edible";
+            if (E & category::Blessed)      ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
+            if (E & category::Cursed)       ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
+            if (E & category::AllowsCasting)ss << ((ss.str().empty()) ? "" : ", ") << "allows casting";
         }
 
         if (ss.str().empty())
