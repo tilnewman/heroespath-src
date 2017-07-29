@@ -115,7 +115,6 @@ namespace item
             case Cape:                  { return "Cape"; }
             case Cat:                   { return "Cat"; }
             case Chains:                { return "Chains"; }
-            case Charm:                 { return "Charm"; }
             case Charm_Crown:           { return "Charm_Crown"; }
             case Charm_Feather:         { return "Charm_Feather"; }
             case Charm_Fist:            { return "Charm_Fist"; }
@@ -275,7 +274,6 @@ namespace item
             case Cape:
             case Cat:
             case Chains:
-            case Charm:
             case Chest:
             case Cloak:
             case Conch:

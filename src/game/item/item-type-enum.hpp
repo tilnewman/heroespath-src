@@ -94,7 +94,6 @@ namespace item
             Cape,
             Cat,
             Chains,
-            Charm,
             Charm_Crown,
             Charm_Feather,
             Charm_Fist,

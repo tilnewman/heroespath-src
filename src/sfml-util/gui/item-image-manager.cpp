@@ -887,7 +887,6 @@ namespace gui
 
         switch (ITEM_ENUM)
         {
-            case game::item::misc_type::Charm:
             case game::item::misc_type::Amulet:
             case game::item::misc_type::Pendant:
             case game::item::misc_type::Medallion:
@@ -1210,6 +1209,12 @@ namespace gui
             case game::item::misc_type::Bracelet_Hourglass:
             case game::item::misc_type::Bracelet_Key:
             case game::item::misc_type::Bracelet_Mask:
+            case game::item::misc_type::Brooch_Crown:
+            case game::item::misc_type::Brooch_Feather:
+            case game::item::misc_type::Brooch_Fist:
+            case game::item::misc_type::Brooch_Hourglass:
+            case game::item::misc_type::Brooch_Key:
+            case game::item::misc_type::Brooch_Mask:
             case game::item::misc_type::Braid:
             case game::item::misc_type::Cameo:
             case game::item::misc_type::Cat:
@@ -1276,36 +1281,6 @@ namespace gui
                     game::item::misc_type::ToString(ITEM_ENUM)), "_", "-") };
 
                 filenames.push_back(STR + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Crown:
-            {
-                filenames.push_back("pin-crown" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Feather:
-            {
-                filenames.push_back("pin-feather" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Fist:
-            {
-                filenames.push_back("pin-fist" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Hourglass:
-            {
-                filenames.push_back("pin-hourglass" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Key:
-            {
-                filenames.push_back("pin-key" + FILE_EXT_STR_);
-                return filenames;
-            }
-            case game::item::misc_type::Brooch_Mask:
-            {
-                filenames.push_back("pin-mask" + FILE_EXT_STR_);
                 return filenames;
             }
             case game::item::misc_type::NotMisc:
