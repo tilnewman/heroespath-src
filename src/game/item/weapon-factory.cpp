@@ -420,7 +420,9 @@ namespace weapon
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if ((SWORD_TYPE == sword_type::Knightlysword) || (SWORD_TYPE == sword_type::Claymore))
+        {
             exclusiveRole = creature::role::Knight;
+        }
 
         const WeaponDetails DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)));
@@ -435,7 +437,8 @@ namespace weapon
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable | DETAILS.handedness),
+                                        category::Equippable |
+                                        DETAILS.handedness),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee |
                                            weapon_type::Bladed |

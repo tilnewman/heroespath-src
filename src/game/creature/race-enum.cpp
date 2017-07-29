@@ -28,7 +28,9 @@
 // race-enum.hpp
 //
 #include "race-enum.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include <exception>
 #include <sstream>
 

@@ -42,28 +42,22 @@ namespace item
     {
         enum Enum : unsigned int
         {
-            Broken                   = 0, //useless, unable to do or be used for anything
-            Weapon                   = 1 << 0,
-            Armor                    = 1 << 1,
-            Useable                  = 1 << 2,
-            Equippable               = 1 << 3,
-            BodyPart                 = 1 << 4,
-            Wearable                 = 1 << 5, //if not wearable then it must be one or two-handed
-            OneHanded                = 1 << 6,
-            TwoHanded                = 1 << 7,
-            QuestItem                = 1 << 8,
-            Edible                   = 1 << 9
+            Broken      = 0, //useless, unable to do or be used for anything
+            Weapon      = 1 << 0,
+            Armor       = 1 << 1,
+            Useable     = 1 << 2,
+            Equippable  = 1 << 3,
+            BodyPart    = 1 << 4,
+            Wearable    = 1 << 5, //if not wearable then it must be one or two-handed
+            OneHanded   = 1 << 6,
+            TwoHanded   = 1 << 7,
+            QuestItem   = 1 << 8,
+            Edible      = 1 << 9,
+            Blessed     = 1 << 10,
+            Cursed      = 1 << 11
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
-
-        inline static bool IsBroken(const category::Enum E)    { return (E == category::Broken); }
-        inline static bool IsArmor(const category::Enum E)     { return (E & category::Armor); }
-        inline static bool IsWeapon(const category::Enum E)    { return (E & category::Weapon); }
-        inline static bool IsWearable(const category::Enum E)  { return (E & category::Wearable); }
-        inline static bool IsOneHanded(const category::Enum E) { return (E & category::OneHanded); }
-        inline static bool IsTwoHanded(const category::Enum E) { return (E & category::TwoHanded); }
-        inline static bool IsEdible(const category::Enum E)    { return (E & category::Edible); }
     };
 
 
@@ -73,46 +67,126 @@ namespace item
         {
             NotMisc = 0,
             Amulet,
-            Pendant,
-            Medallion,
-            Necklas,
+            Ankh_Necklace,
+            Armband,
             Bag,
+            Balm_Pot,
+            Beard,
+            Bird_Claw,
+            Bone,
+            Bone_Whistle,
             Book,
-            Tome,
-            Charm,
+            Bracelet_Crown,
+            Bracelet_Feather,
+            Bracelet_Fist,
+            Bracelet_Hourglass,
+            Bracelet_Key,
+            Bracelet_Mask,
+            Braid,
+            Brooch_Crown,
+            Brooch_Feather,
+            Brooch_Fist,
+            Brooch_Hourglass,
+            Brooch_Key,
+            Brooch_Mask,
+            Cameo,
             Cape,
+            Cat,
+            Chains,
+            Charm,
+            Charm_Crown,
+            Charm_Feather,
+            Charm_Fist,
+            Charm_Hourglass,
+            Charm_Key,
+            Charm_Mask,
+            Chest,
             Cloak,
-            Robe,
+            Conch,
             Crown,
+            Crumhorn,
+            Devil_Horn,
             Doll,
             Drink,
-            Potion,
+            DrumLute,
+            Eye,
+            Finger,
+            Fingerclaw,
+            Flag,
+            Frog,
+            Gecko,
+            Ghost_Sheet,
+            Gizzard,
             Goblet,
             Herbs,
             Hourglass,
+            Hurdy_Gurdy,
+            Icicle,
+            Iguana,
+            Imp_Tail,
             Key,
             Lantern,
-            Torch,
+            Leaf,
+            Legtie,
+            Litch_Hand,
+            Lizard,
             Lockbox,
-            Chest,
             LockPicks,
+            Lyre,
+            Magnifying_Glass,
             Mask,
+            Medallion,
             Mirror,
-            DrumLute,
-            Scroll,
+            Mummy_Hand,
+            Necklace,
+            Nose,
             Orb,
+            Paw,
+            Pendant,
+            Petrified_Snake,
+            Pin_Book,
+            Pin_Clover,
+            Pin_Foot,
+            Pin_Nymph,
+            Pin_Quiver,
+            Pipe_And_Tabor,
+            Potion,
+            Rainmaker,
+            Rat_Juju,
+            Rattlesnake_Tail,
+            Recorder,
+            Relic,
             Ring,
-            Skull,
-            Shard,
+            Robe,
             Salve,
+            Scepter,
+            Scroll,
+            Seeds,
+            Shard,
+            Shark_Tooth_Necklace,
+            Skull,
+            Spider_Eggs,
+            Spyglass,
+            Tome,
+            Tongue,
+            Tooth,
+            Tooth_Necklace,
+            Torch,
+            Troll_Figure,
+            Trophy,
+            Tuning_Fork,
+            Turtle_Shell,
+            Unicorn_Horn,
+            Viol,
             Wand,
+            Warhorse_Marionette,
+            Weasel_Totem,
             Count
         };
 
         static const std::string ToString(const misc_type::Enum);
-        inline static bool IsMusicalInstrument(const misc_type::Enum E)
-        {
-            return (E == DrumLute); }
+        static const std::string Name(const misc_type::Enum);
+        static bool IsMusicalInstrument(const misc_type::Enum E);
     };
 
     struct material

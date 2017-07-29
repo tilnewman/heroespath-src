@@ -60,6 +60,8 @@ namespace item
             if (E & category::TwoHanded) ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
             if (E & category::QuestItem) ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
             if (E & category::Edible)    ss << ((ss.str().empty()) ? "" : ", ") << "edible";
+            if (E & category::Blessed)   ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
+            if (E & category::Cursed)    ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
         }
 
         if (ss.str().empty())
@@ -84,41 +86,122 @@ namespace item
     {
         switch (E)
         {
-            case NotMisc          : { return "NotMisc"; }
-            case Amulet           : { return "Amulet"; }
-            case Bag              : { return "Bag"; }
-            case Pendant          : { return "Pendant"; }
-            case Medallion        : { return "Medallion"; }
-            case Necklas          : { return "Necklas"; }
-            case Book             : { return "Book"; }
-            case Tome             : { return "Tome"; }
-            case Charm            : { return "Charm"; }
-            case Cape             : { return "Cape"; }
-            case Cloak            : { return "Cloak"; }
-            case Robe             : { return "Robe"; }
-            case Crown            : { return "Crown"; }
-            case Doll             : { return "Doll"; }
-            case Drink            : { return "Drink"; }
-            case Potion           : { return "Potion"; }
-            case Goblet           : { return "Goblet"; }
-            case Herbs            : { return "Herbs"; }
-            case Hourglass        : { return "Hourglass"; }
-            case Key              : { return "Key"; }
-            case Lantern          : { return "Lantern"; }
-            case Torch            : { return "Torch"; }
-            case Lockbox          : { return "Lockbox"; }
-            case Chest            : { return "Chest"; }
-            case LockPicks        : { return "LockPicks"; }
-            case Mask             : { return "Mask"; }
-            case Mirror           : { return "Mirror"; }
-            case DrumLute         : { return "DrumLute"; }
-            case Scroll           : { return "Scroll"; }
-            case Orb              : { return "Orb"; }
-            case Ring             : { return "Ring"; }
-            case Skull            : { return "Skull"; }
-            case Shard            : { return "Shard"; }
-            case Salve            : { return "Salve"; }
-            case Wand             : { return "Wand"; }
+            case NotMisc:               { return "NotMisc"; }
+            case Amulet:                { return "Amulet"; }
+            case Ankh_Necklace:         { return "Ankh_Necklace"; }
+            case Armband:               { return "Armband"; }
+            case Bag:                   { return "Bag"; }
+            case Balm_Pot:              { return "Balm_Pot"; }
+            case Beard:                 { return "Beard"; }
+            case Bird_Claw:             { return "Bird_Claw"; }
+            case Bone:                  { return "Bone"; }
+            case Bone_Whistle:          { return "Bone_Whistle"; }
+            case Book:                  { return "Book"; }
+            case Bracelet_Crown:        { return "Bracelet_Crown"; }
+            case Bracelet_Feather:      { return "Bracelet_Feather"; }
+            case Bracelet_Fist:         { return "Bracelet_Fist"; }
+            case Bracelet_Hourglass:    { return "Bracelet_Hourglass"; }
+            case Bracelet_Key:          { return "Bracelet_Key"; }
+            case Bracelet_Mask:         { return "Bracelet_Mask"; }
+            case Braid:                 { return "Braid"; }
+            case Brooch_Crown:          { return "Brooch_Crown"; }
+            case Brooch_Feather:        { return "Brooch_Feather"; }
+            case Brooch_Fist:           { return "Brooch_Fist"; }
+            case Brooch_Hourglass:      { return "Brooch_Hourglass"; }
+            case Brooch_Key:            { return "Brooch_Key"; }
+            case Brooch_Mask:           { return "Brooch_Mask"; }
+            case Cameo:                 { return "Cameo"; }
+            case Cape:                  { return "Cape"; }
+            case Cat:                   { return "Cat"; }
+            case Chains:                { return "Chains"; }
+            case Charm:                 { return "Charm"; }
+            case Charm_Crown:           { return "Charm_Crown"; }
+            case Charm_Feather:         { return "Charm_Feather"; }
+            case Charm_Fist:            { return "Charm_Fist"; }
+            case Charm_Hourglass:       { return "Charm_Hourglass"; }
+            case Charm_Key:             { return "Charm_Key"; }
+            case Charm_Mask:            { return "Charm_Mask"; }
+            case Chest:                 { return "Chest"; }
+            case Cloak:                 { return "Cloak"; }
+            case Conch:                 { return "Conch"; }
+            case Crown:                 { return "Crown"; }
+            case Crumhorn:              { return "Crumhorn"; }
+            case Devil_Horn:            { return "Devil_Horn"; }
+            case Doll:                  { return "Doll"; }
+            case Drink:                 { return "Drink"; }
+            case DrumLute:              { return "DrumLute"; }
+            case Eye:                   { return "Eye"; }
+            case Finger:                { return "Finger"; }
+            case Fingerclaw:            { return "Fingerclaw"; }
+            case Flag:                  { return "Flag"; }
+            case Frog:                  { return "Frog"; }
+            case Gecko:                 { return "Gecko"; }
+            case Ghost_Sheet:           { return "Ghost_Sheet"; }
+            case Gizzard:               { return "Gizzard"; }
+            case Goblet:                { return "Goblet"; }
+            case Herbs:                 { return "Herbs"; }
+            case Hourglass:             { return "Hourglass"; }
+            case Hurdy_Gurdy:           { return "Hurdy_Gurdy"; }
+            case Icicle:                { return "Icicle"; }
+            case Iguana:                { return "Iguana"; }
+            case Imp_Tail:              { return "Imp_Tail"; }
+            case Key:                   { return "Key"; }
+            case Lantern:               { return "Lantern"; }
+            case Leaf:                  { return "Leaf"; }
+            case Legtie:                { return "Legtie"; }
+            case Litch_Hand:            { return "Litch_Hand"; }
+            case Lizard:                { return "Lizard"; }
+            case Lockbox:               { return "Lockbox"; }
+            case LockPicks:             { return "LockPicks"; }
+            case Lyre:                  { return "Lyre"; }
+            case Magnifying_Glass:      { return "Magnifying_Glass"; }
+            case Mask:                  { return "Mask"; }
+            case Medallion:             { return "Medallion"; }
+            case Mirror:                { return "Mirror"; }
+            case Mummy_Hand:            { return "Mummy_Hand"; }
+            case Necklace:              { return "Necklace"; }
+            case Nose:                  { return "Nose"; }
+            case Orb:                   { return "Orb"; }
+            case Paw:                   { return "Paw"; }
+            case Pendant:               { return "Pendant"; }
+            case Petrified_Snake:       { return "Petrified_Snake"; }
+            case Pin_Book:              { return "Pin_Book"; }
+            case Pin_Clover:            { return "Pin_Clover"; }
+            case Pin_Foot:              { return "Pin_Foot"; }
+            case Pin_Nymph:             { return "Pin_Nymph"; }
+            case Pin_Quiver:            { return "Pin_Quiver"; }
+            case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
+            case Potion:                { return "Potion"; }
+            case Rainmaker:             { return "Rainmaker"; }
+            case Rat_Juju:              { return "Rat_Juju"; }
+            case Rattlesnake_Tail:      { return "Rattlesnake_Tail"; }
+            case Recorder:              { return "Recorder"; }
+            case Relic:                 { return "Relic"; }
+            case Ring:                  { return "Ring"; }
+            case Robe:                  { return "Robe"; }
+            case Salve:                 { return "Salve"; }
+            case Scepter:               { return "Scepter"; }
+            case Scroll:                { return "Scroll"; }
+            case Seeds:                 { return "Seeds"; }
+            case Shard:                 { return "Shard"; }
+            case Shark_Tooth_Necklace:  { return "Shark_Tooth_Necklace"; }
+            case Skull:                 { return "Skull"; }
+            case Spider_Eggs:           { return "Spider_Eggs"; }
+            case Spyglass:              { return "Spyglass"; }
+            case Tome:                  { return "Tome"; }
+            case Tongue:                { return "Tongue"; }
+            case Tooth:                 { return "Tooth"; }
+            case Tooth_Necklace:        { return "Tooth_Necklace"; }
+            case Torch:                 { return "Torch"; }
+            case Troll_Figure:          { return "Troll_Figure"; }
+            case Trophy:                { return "Trophy"; }
+            case Tuning_Fork:           { return "Tuning_Fork"; }
+            case Turtle_Shell:          { return "Turtle_Shell"; }
+            case Unicorn_Horn:          { return "Unicorn_Horn"; }
+            case Viol:                  { return "Viol"; }
+            case Wand:                  { return "Wand"; }
+            case Warhorse_Marionette:   { return "Warhorse_Marionette"; }
+            case Weasel_Totem:          { return "Weasel_Totem"; }
             case Count:
             default:
             {
@@ -127,6 +210,148 @@ namespace item
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+    const std::string misc_type::Name(const misc_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotMisc:
+            case Ankh_Necklace:         { return "Ankh Necklace"; }
+            case Balm_Pot:              { return "Pot of Balm"; }
+            case Bird_Claw:             { return "Raven Claw"; }
+            case Bone_Whistle:          { return "Dragon Bone Whistle"; }
+            case Bracelet_Crown:        { return "Crown Bracelet"; }
+            case Bracelet_Feather:      { return "Feather Bracelet"; }
+            case Bracelet_Fist:         { return "Fist Bracelet"; }
+            case Bracelet_Hourglass:    { return "Hourglass Bracelet"; }
+            case Bracelet_Key:          { return "Key Bracelet"; }
+            case Bracelet_Mask:         { return "Mask Bracelet"; }
+            case Brooch_Crown:          { return "Crown Brooch"; }
+            case Brooch_Feather:        { return "Feather Brooch"; }
+            case Brooch_Fist:           { return "Fist Brooch"; }
+            case Brooch_Hourglass:      { return "Hourglass Brooch"; }
+            case Brooch_Key:            { return "Key Brooch"; }
+            case Brooch_Mask:           { return "Mask Brooch"; }
+            case Charm_Crown:           { return "Crown Charm"; }
+            case Charm_Feather:         { return "Feather Charm"; }
+            case Charm_Fist:            { return "Fist Charm"; }
+            case Charm_Hourglass:       { return "Hourglass Charm"; }
+            case Charm_Key:             { return "Key Charm"; }
+            case Charm_Mask:            { return "Mask Charm"; }
+            case Devil_Horn:            { return "Devil Horn"; }
+            case Ghost_Sheet:           { return "Ghost Sheet"; }
+            case Hurdy_Gurdy:           { return "Hurdy-Gurdy"; }
+            case Imp_Tail:              { return "Imp Tail"; }
+            case Litch_Hand:            { return "Litch Hand"; }
+            case Magnifying_Glass:      { return "Magnifying Glass"; }
+            case Petrified_Snake:       { return "Petrified Snake"; }
+            case Pin_Book:              { return "Arcane Tome Pin"; }
+            case Pin_Clover:            { return "Leprechaun Clover Pin"; }
+            case Pin_Foot:              { return "Titan's Foot Pin"; }
+            case Pin_Nymph:             { return "Jeweled Nymph Pin"; }
+            case Pin_Quiver:            { return "King's Quiver Pin"; }
+            case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
+            case Rat_Juju:              { return "Rat Juju"; }
+            case Rattlesnake_Tail:      { return "Rattlesnake Tail"; }
+            case Shark_Tooth_Necklace:  { return "Shark Tooth Necklace"; }
+            case Spider_Eggs:           { return "Spider Eggs"; }
+            case Tooth_Necklace:        { return "Vampire Tooth Necklace"; }
+            case Troll_Figure:          { return "Troll Figure"; }
+            case Tuning_Fork:           { return "Tuning Fork"; }
+            case Turtle_Shell:          { return "Turtle Shell"; }
+            case Unicorn_Horn:          { return "Unicorn Horn"; }
+            case Warhorse_Marionette:   { return "Warhorse Marionette"; }
+            case Weasel_Totem:          { return "Weasel Totem"; }
+            case Amulet:
+            case Armband:
+            case Bag:
+            case Beard:
+            case Bone:
+            case Book:
+            case Braid:
+            case Cameo:
+            case Cape:
+            case Cat:
+            case Chains:
+            case Charm:
+            case Chest:
+            case Cloak:
+            case Conch:
+            case Crown:
+            case Crumhorn:
+            case Doll:
+            case Drink:
+            case DrumLute:
+            case Eye:
+            case Finger:
+            case Fingerclaw:
+            case Flag:
+            case Frog:
+            case Gecko:
+            case Gizzard:
+            case Goblet:
+            case Herbs:
+            case Hourglass:
+            case Icicle:
+            case Iguana:
+            case Key:
+            case Lantern:
+            case Leaf:
+            case Legtie:
+            case Lizard:
+            case Lockbox:
+            case LockPicks:
+            case Lyre:
+            case Mask:
+            case Medallion:
+            case Mirror:
+            case Mummy_Hand:
+            case Necklace:
+            case Nose:
+            case Orb:
+            case Paw:
+            case Pendant:
+            case Potion:
+            case Rainmaker:
+            case Recorder:
+            case Relic:
+            case Ring:
+            case Robe:
+            case Salve:
+            case Scepter:
+            case Scroll:
+            case Seeds:
+            case Skull:
+            case Shard:
+            case Spyglass:
+            case Torch:
+            case Tome:
+            case Tongue:
+            case Tooth:
+            case Trophy:
+            case Viol:
+            case Wand: { return misc_type::ToString(E); }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::misc_type::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    bool misc_type::IsMusicalInstrument(const misc_type::Enum E)
+    {
+        return ((E == DrumLute) ||
+                (E == Crumhorn) ||
+                (E == Hurdy_Gurdy) ||
+                (E == Lyre) ||
+                (E == Pipe_And_Tabor) ||
+                (E == Recorder) ||
+                (E == Viol));
     }
 
 

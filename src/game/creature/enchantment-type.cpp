@@ -62,29 +62,22 @@ namespace creature
             }
 
             //intentionally no text for "ChangesCreature"
-            // " " for "BreaksAfterUses"
-
-            if (E & AllowsCasting)
-            {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting spells";
-            }
+            // " " for "RemoveAfterUse"
 
             if (E & AllowsFlight)
             {
                 ss << ((ss.str().empty()) ? "" : "  ") << "allows flying";
             }
 
-            if (E & AllowsCurse)
+            if (E & CurseWithoutItem)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting curse";
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting curse without a cursed item";
             }
 
-            if (E & AllowsBless)
+            if (E & BlessWithoutItem)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting bless";
+                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting bless without a blessed item";
             }
-
-
         }
 
         if (ss.str().empty())

@@ -438,12 +438,13 @@ namespace gui
 
         //test misc items
         static auto miscIndex{ 1 };
-        static auto isJeweled{ false };
+        static auto isJeweled{ true };
+        static auto isBone{ false };
         if (miscIndex < static_cast<int>(game::item::misc_type::Count))
         {
             auto const ENUM{ static_cast<game::item::misc_type::Enum>(miscIndex) };
             auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
-            auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled);
+            auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled, isBone);
 
             M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
                 "sfml_util::gui::ItemImageManager::Test() While testing misc item #" << miscIndex
@@ -606,18 +607,20 @@ namespace gui
     void ItemImageManager::Load(sf::Texture &                     texture,
                                 const game::item::misc_type::Enum ITEM_ENUM,
                                 const bool                        IS_JEWELED,
+                                const bool                        IS_BONE,
                                 const bool                        WILL_RANDOMIZE) const
     {
-        Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, WILL_RANDOMIZE));
+        Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, IS_BONE, WILL_RANDOMIZE));
     }
 
 
     const std::string ItemImageManager::GetImageFilename(
         const game::item::misc_type::Enum ITEM_ENUM,
         const bool                        IS_JEWELED,
+        const bool                        IS_BONE,
         const bool                        WILL_RANDOMIZE) const
     {
-        auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM, IS_JEWELED));
+        auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM, IS_JEWELED, IS_BONE));
 
         M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
             "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
@@ -658,7 +661,10 @@ namespace gui
         }
         else if (ITEM_PTR->MiscType() != misc_type::NotMisc)
         {
-            return GetImageFilename(ITEM_PTR->MiscType(), ITEM_PTR->IsJeweled(), WILL_RANDOMIZE);
+            return GetImageFilename(ITEM_PTR->MiscType(),
+                                    ITEM_PTR->IsJeweled(),
+                                    (ITEM_PTR->MaterialPrimary() == game::item::material::Bone),
+                                    WILL_RANDOMIZE);
         }
         else
         {
@@ -874,6 +880,7 @@ namespace gui
 
     const std::vector<std::string> ItemImageManager::GetImageFilenames(
         const game::item::misc_type::Enum ITEM_ENUM,
+        const bool                        IS_BONE,
         const bool                        IS_JEWELED) const
     {
         std::vector<std::string> filenames;
@@ -893,9 +900,9 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Necklas:
+            case game::item::misc_type::Necklace:
             {
-                filenames.push_back("necklas-1" + FILE_EXT_STR_);
+                filenames.push_back("necklace" + FILE_EXT_STR_);
                 return filenames;
             }
             case game::item::misc_type::Bag:
@@ -957,7 +964,7 @@ namespace gui
             case game::item::misc_type::Drink:
             case game::item::misc_type::Potion:
             {
-                for (auto i(1); i <= 30; ++i)
+                for (auto i(1); i <= 33; ++i)
                 {
                     std::ostringstream ss;
                     ss << "potion-" << i << FILE_EXT_STR_;
@@ -1017,7 +1024,7 @@ namespace gui
             }
             case game::item::misc_type::Torch:
             {
-                for (auto i(1); i <= 5; ++i)
+                for (auto i(1); i <= 2; ++i)
                 {
                     std::ostringstream ss;
                     ss << "torch-" << i << FILE_EXT_STR_;
@@ -1047,7 +1054,12 @@ namespace gui
             }
             case game::item::misc_type::LockPicks:
             {
-                filenames.push_back("lockpicks" + FILE_EXT_STR_);
+                for (auto i(1); i <= 7; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "lockpicks-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
                 return filenames;
             }
             case game::item::misc_type::Mask:
@@ -1072,7 +1084,12 @@ namespace gui
             }
             case game::item::misc_type::DrumLute:
             {
-                filenames.push_back("drumlute" + FILE_EXT_STR_);
+                for (auto i(1); i <= 21; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "drumlute-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
                 return filenames;
             }
             case game::item::misc_type::Scroll:
@@ -1099,12 +1116,16 @@ namespace gui
             {   
                 if (IS_JEWELED)
                 {
-                    for (auto i(1); i <= 14; ++i)
+                    for (auto i(1); i <= 24; ++i)
                     {
                         std::ostringstream ss;
                         ss << "ring-jeweled-" << i << FILE_EXT_STR_;
                         filenames.push_back(ss.str());
                     }
+                }
+                else if (IS_BONE)
+                {
+                    filenames.push_back("ring-bone" + FILE_EXT_STR_);
                 }
                 else
                 {
@@ -1149,7 +1170,7 @@ namespace gui
             }
             case game::item::misc_type::Wand:
             {
-                for (auto i(1); i <= 9; ++i)
+                for (auto i(1); i <= 11; ++i)
                 {
                     std::ostringstream ss;
                     ss << "wand-" << i << FILE_EXT_STR_;
@@ -1157,12 +1178,144 @@ namespace gui
                 }
                 return filenames;
             }
+            case game::item::misc_type::Scepter:
+            {
+                for (auto i(1); i <= 26; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "scepter-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
+            case game::item::misc_type::Balm_Pot:
+            {
+                for (auto i(1); i <= 3; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "balm-pot-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
+            case game::item::misc_type::Ankh_Necklace:
+            case game::item::misc_type::Armband:
+            case game::item::misc_type::Beard:
+            case game::item::misc_type::Bird_Claw:
+            case game::item::misc_type::Bone_Whistle:
+            case game::item::misc_type::Bone:
+            case game::item::misc_type::Bracelet_Crown:
+            case game::item::misc_type::Bracelet_Feather:
+            case game::item::misc_type::Bracelet_Fist:
+            case game::item::misc_type::Bracelet_Hourglass:
+            case game::item::misc_type::Bracelet_Key:
+            case game::item::misc_type::Bracelet_Mask:
+            case game::item::misc_type::Braid:
+            case game::item::misc_type::Cameo:
+            case game::item::misc_type::Cat:
+            case game::item::misc_type::Chains:
+            case game::item::misc_type::Charm_Crown:
+            case game::item::misc_type::Charm_Feather:
+            case game::item::misc_type::Charm_Fist:
+            case game::item::misc_type::Charm_Hourglass:
+            case game::item::misc_type::Charm_Key:
+            case game::item::misc_type::Charm_Mask:
+            case game::item::misc_type::Conch:
+	        case game::item::misc_type::Crumhorn:
+	        case game::item::misc_type::Devil_Horn:
+	        case game::item::misc_type::Eye:
+	        case game::item::misc_type::Finger:
+	        case game::item::misc_type::Fingerclaw:
+	        case game::item::misc_type::Flag:
+	        case game::item::misc_type::Frog:
+	        case game::item::misc_type::Gecko:
+	        case game::item::misc_type::Ghost_Sheet:
+	        case game::item::misc_type::Gizzard:
+	        case game::item::misc_type::Hurdy_Gurdy:
+	        case game::item::misc_type::Icicle:
+	        case game::item::misc_type::Iguana:
+	        case game::item::misc_type::Imp_Tail:
+	        case game::item::misc_type::Leaf:
+	        case game::item::misc_type::Legtie:
+	        case game::item::misc_type::Litch_Hand:
+	        case game::item::misc_type::Lizard:
+	        case game::item::misc_type::Lyre:
+	        case game::item::misc_type::Magnifying_Glass:
+	        case game::item::misc_type::Mummy_Hand:
+	        case game::item::misc_type::Nose:
+	        case game::item::misc_type::Paw:
+	        case game::item::misc_type::Petrified_Snake:
+	        case game::item::misc_type::Pin_Book:
+	        case game::item::misc_type::Pin_Clover:
+	        case game::item::misc_type::Pin_Foot:
+	        case game::item::misc_type::Pin_Nymph:
+	        case game::item::misc_type::Pin_Quiver:
+	        case game::item::misc_type::Pipe_And_Tabor:
+	        case game::item::misc_type::Rainmaker:
+	        case game::item::misc_type::Rat_Juju:
+	        case game::item::misc_type::Rattlesnake_Tail:
+	        case game::item::misc_type::Recorder:
+            case game::item::misc_type::Relic:
+	        case game::item::misc_type::Seeds:
+	        case game::item::misc_type::Shark_Tooth_Necklace:
+	        case game::item::misc_type::Spider_Eggs:
+	        case game::item::misc_type::Spyglass:
+	        case game::item::misc_type::Tongue:
+	        case game::item::misc_type::Tooth_Necklace:
+	        case game::item::misc_type::Tooth:
+	        case game::item::misc_type::Troll_Figure:
+            case game::item::misc_type::Trophy:
+	        case game::item::misc_type::Tuning_Fork:
+	        case game::item::misc_type::Turtle_Shell:
+	        case game::item::misc_type::Unicorn_Horn:
+	        case game::item::misc_type::Viol:
+	        case game::item::misc_type::Warhorse_Marionette:
+	        case game::item::misc_type::Weasel_Totem:
+            {
+                auto const STR{ boost::replace_all_copy(boost::to_lower_copy(
+                    game::item::misc_type::ToString(ITEM_ENUM)), "_", "-") };
+
+                filenames.push_back(STR + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Crown:
+            {
+                filenames.push_back("pin-crown" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Feather:
+            {
+                filenames.push_back("pin-feather" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Fist:
+            {
+                filenames.push_back("pin-fist" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Hourglass:
+            {
+                filenames.push_back("pin-hourglass" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Key:
+            {
+                filenames.push_back("pin-key" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case game::item::misc_type::Brooch_Mask:
+            {
+                filenames.push_back("pin-mask" + FILE_EXT_STR_);
+                return filenames;
+            }
             case game::item::misc_type::NotMisc:
             case game::item::misc_type::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(misc_type::Enum=" << ITEM_ENUM << ")_UnknownOrInvalidValueError.";
+                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(misc_type::Enum="
+                    << ITEM_ENUM << ")_UnknownOrInvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }

@@ -86,6 +86,7 @@ namespace gui
             sf::Texture &                     texture,
             const game::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
+            const bool                        IS_BONE = false,
             const bool                        WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(
@@ -105,11 +106,13 @@ namespace gui
         const std::string GetImageFilename(
             const game::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
+            const bool                        IS_BONE = false,
             const bool                        WILL_RANDOMIZE = false) const;
 
         const std::vector<std::string> GetImageFilenames(
             const game::item::misc_type::Enum ITEM_ENUM,
-            const bool                        IS_JEWELED = false) const;
+            const bool                        IS_JEWELED = false,
+            const bool                        IS_BONE = false) const;
 
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;
