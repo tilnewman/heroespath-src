@@ -111,7 +111,6 @@ namespace item
         }
 
     private:
-
         stats::Armor_t ClothesSetRating(const item::material::Enum) const;
         stats::Armor_t LesserArmorSetRating(const item::material::Enum) const;
         stats::Armor_t GreaterArmorSetRating(const item::material::Enum) const;

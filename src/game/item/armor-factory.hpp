@@ -83,6 +83,7 @@ namespace armor
 
         //primary material is always cloth
         static ItemPtr_t Make_Pants(const base_type::Enum TYPE,
+                                    const material::Enum  MATERIAL_PRI,
                                     const material::Enum  MATERIAL_SEC = material::Nothing,
                                     const bool            IS_PIXIE_ITEM = false);
 

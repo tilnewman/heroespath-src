@@ -64,10 +64,15 @@ namespace item
                                            const std::string &  EXTRA_NAME = "",
                                            const bool           IS_PIXIE_ITEM = false);
 
-        static const std::string Make_DescClasped(const std::string &  DESC,
+        static const std::string Make_Desc_Clasped(const std::string & DESC,
                                                   const material::Enum MATERIAL_PRI,
                                                   const material::Enum MATERIAL_SEC,
                                                   const bool           IS_PIXIE_ITEM = false);
+
+        static const std::string Make_Desc_BladdedStaff(const std::string &  BASE_NAME,
+                                                        const bool           IS_SPEAR,
+                                                        const material::Enum MATERIAL_PRI,
+                                                        const material::Enum MATERIAL_SEC);
 
         static void AdjustPrice(Coin_t & price,
                                 const material::Enum MATERIAL_PRI,

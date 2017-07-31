@@ -151,25 +151,31 @@ namespace item
             {
                 ssDesc << " with a ";
 
-                if (material::IsRigid(MATERIAL_SEC) == false)
+                if (material::IsRigid(MATERIAL_SEC))
                 {
-                    ssDesc << EXTRA_NAME << RandomCoatedPhrase() << " ";
-                }
+                    ssDesc << material::ToReadableString(MATERIAL_SEC) << " ";
 
-                ssDesc << material::ToReadableString(MATERIAL_SEC);
-
-                if (material::IsJewel(MATERIAL_SEC))
-                {
-                    ssDesc << " " << RandomJeweledAdjective() << " " << EXTRA_NAME;
+                    if (material::IsJewel(MATERIAL_SEC))
+                    {
+                        ssDesc << RandomJeweledAdjective()
+                            << " ";
+                    }
+                    else if (material::IsPrecious(MATERIAL_SEC))
+                    {
+                        //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                        ssDesc << RandomAdornedAdjective()
+                            << " ";
+                    }
+                    
+                    ssDesc << EXTRA_NAME;
                 }
-                else if (material::IsPrecious(MATERIAL_SEC))
+                else
                 {
-                    //at this point we know MATERIAL_SEC is either silver/gold/platinum
-                    ssDesc << RandomAdornedAdjective() << " " << EXTRA_NAME;
-                }
-                else if (material::IsRigid(MATERIAL_SEC))
-                {
-                    ssDesc << " " << EXTRA_NAME;
+                    ssDesc << material::ToReadableString(MATERIAL_SEC)
+                        << " "
+                        << RandomCoatedPhrase()
+                        << " "
+                        << EXTRA_NAME;
                 }
             }
         }
@@ -179,7 +185,7 @@ namespace item
     }
 
 
-    const std::string FactoryBase::Make_DescClasped(const std::string &  DESC,
+    const std::string FactoryBase::Make_Desc_Clasped(const std::string &  DESC,
                                                     const material::Enum MATERIAL_PRI,
                                                     const material::Enum MATERIAL_SEC,
                                                     const bool           IS_PIXIE_ITEM)
@@ -230,6 +236,59 @@ namespace item
         }
 
         ssDesc << ".";
+        return ssDesc.str();
+    }
+
+
+    const std::string FactoryBase::Make_Desc_BladdedStaff(const std::string &  BASE_NAME,
+                                                          const bool           IS_SPEAR,
+                                                          const material::Enum MATERIAL_PRI,
+                                                          const material::Enum MATERIAL_SEC)
+    {
+        std::ostringstream ssDesc;
+        ssDesc << "A "
+            << BASE_NAME
+            << " made of "
+            << material::ToReadableString(MATERIAL_PRI);
+
+        if ((MATERIAL_SEC != MATERIAL_PRI) && (MATERIAL_SEC != material::Nothing))
+        {
+            if (material::IsJewel(MATERIAL_SEC))
+            {
+                ssDesc << " "
+                    << RandomJeweledAdjective()
+                    << " with ";
+            }
+            else if (material::IsPrecious(MATERIAL_SEC))
+            {
+                //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                ssDesc << " "
+                    << RandomAdornedAdjective()
+                    << " with ";
+            }
+            else if (material::IsRigid(MATERIAL_SEC))
+            {
+                if (IS_SPEAR)
+                {
+                    ssDesc << " tipped with ";
+                }
+                else
+                {
+                    ssDesc << " bladed with ";
+                }
+            }
+            else if (material::IsLiquid(MATERIAL_SEC))
+            {
+                ssDesc << " and coated in ";
+            }
+            else
+            {
+                ssDesc << " and ";
+            }
+
+            ssDesc << material::ToReadableString(MATERIAL_SEC) << ".";
+        }
+
         return ssDesc.str();
     }
 

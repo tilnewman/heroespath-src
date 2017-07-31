@@ -123,7 +123,7 @@ namespace armor
             {
                 if (material::IsJewel(MATERIAL_SEC))
                 {
-                    ssName << "jeweled ";
+                    ssName << FactoryBase::RandomJeweledAdjective() << " ";
                 }
                 else
                 {
@@ -132,7 +132,8 @@ namespace armor
             }
             else if (material::IsLiquid(MATERIAL_SEC))
             {
-                ssName << " and " << material::ToReadableString(MATERIAL_SEC) << " covered ";
+                ssName << " and " << material::ToReadableString(MATERIAL_SEC)
+                    << " " << FactoryBase::RandomCoatedAdjective() << " ";
             }
             else
             {
@@ -149,7 +150,7 @@ namespace armor
             {
                 if (material::IsJewel(MATERIAL_SEC))
                 {
-                    ssDesc << " and jeweled with ";
+                    ssDesc << " and " << FactoryBase::RandomJeweledAdjective() << " with ";
                 }
                 else
                 {
@@ -158,7 +159,7 @@ namespace armor
             }
             else if (material::IsLiquid(MATERIAL_SEC))
             {
-                ssDesc << " and is covered in ";
+                ssDesc << " and is " << FactoryBase::RandomCoatedAdjective() << " in ";
             }
             else
             {
@@ -267,14 +268,18 @@ namespace armor
         armorInfo.is_gauntlets = true;
         armorInfo.base = TYPE;
 
-        std::string gauntletName("Gloves");
-        if (TYPE != item::armor::base_type::Plain)
-        {
-            gauntletName = item::armor::base_type::ToString(TYPE) + "Gauntlets";
-        }
-
         const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(gauntletName) );
+            ArmorDetailLoader::Instance()->LookupArmorDetails([TYPE]()
+            {
+                if (TYPE != item::armor::base_type::Plain)
+                {
+                    return item::armor::base_type::ToString(TYPE) + "Gauntlets";
+                }
+                else
+                {
+                    return std::string("Gloves");
+                }
+            }()));
 
         Coin_t price(DETAILS.price);
         Weight_t weight(DETAILS.weight);
@@ -320,6 +325,7 @@ namespace armor
 
 
     ItemPtr_t ArmorFactory::Make_Pants(const base_type::Enum TYPE,
+                                       const material::Enum  MATERIAL_PRI,
                                        const material::Enum  MATERIAL_SEC,
                                        const bool            IS_PIXIE_ITEM)
     {
@@ -327,8 +333,22 @@ namespace armor
         armorInfo.is_pants = true;
         armorInfo.base = TYPE;
 
-        const material::Enum MATERIAL_PRI(material::Cloth);
-
+        auto const MATERIAL_PRI_TO_USE{ [&]()
+            {
+                if (TYPE == base_type::Plain)
+                {
+                    return material::Cloth;
+                }
+                else if (TYPE == base_type::Scale)
+                {
+                    return material::Scale;
+                }
+                else
+                {
+                    return MATERIAL_PRI;
+                }
+            }()};
+        
         const ArmorDetails DETAILS(
             ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Pants") );
@@ -337,12 +357,12 @@ namespace armor
         Weight_t weight(DETAILS.weight);
         stats::Armor_t armorRating(DETAILS.armor_rating);
 
-        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
-        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
+        AdjustPrice(price, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM);
+        AdjustWeight(weight, MATERIAL_PRI_TO_USE, MATERIAL_SEC);
 
         //Prevent secondary material from altering the armor rating,
         //since it is only the material of the clasp.
-        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
+        AdjustArmorRating(armorRating, MATERIAL_PRI_TO_USE, material::Nothing);
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -357,15 +377,15 @@ namespace armor
         }
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
-            Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Name(DETAILS.name, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(armorCategory |
                                         category::Equippable |
                                         category::Wearable),
             misc_type::NotMisc,
             weapon_type::NotAWeapon,
             armor_type::Pants,
-            MATERIAL_PRI,
+            MATERIAL_PRI_TO_USE,
             MATERIAL_SEC,
             "",
             price,
@@ -486,7 +506,7 @@ namespace armor
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
             misc_type::NotMisc,
             weapon_type::NotAWeapon,
@@ -598,7 +618,7 @@ namespace armor
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
-            Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
+            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
                                         category::Wearable),
@@ -649,7 +669,7 @@ namespace armor
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_DescClasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
                                         category::Wearable),

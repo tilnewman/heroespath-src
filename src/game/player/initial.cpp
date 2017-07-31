@@ -209,7 +209,7 @@ namespace player
         if (ROLE_ENUM == creature::role::Archer)
         {
             auto shortbowPtr{ weapon::WeaponFactory::Make_Projectile(
-                weapon::projectile_type::Shortbow, material::Nothing) };
+                weapon::projectile_type::Shortbow, material::Wood, material::Nothing) };
 
             characterPtrC->ItemAdd(shortbowPtr);
             characterPtrC->ItemEquip(shortbowPtr);
@@ -251,8 +251,10 @@ namespace player
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
 
-            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(
-                armor::base_type::Plain, HardOrSoftLeatherRand(), characterPtrC->IsPixie()));
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain,
+                                                               HardOrSoftLeatherRand(),
+                                                               material::Tin,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
@@ -292,8 +294,10 @@ namespace player
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
 
-            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(
-                armor::base_type::Plain, HardOrSoftLeatherRand(), characterPtrC->IsPixie()));
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain,
+                                                                HardOrSoftLeatherRand(),
+                                                                material::Tin,
+                                                                characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
@@ -318,8 +322,10 @@ namespace player
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
 
-            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(
-                armor::base_type::Plain, HardOrSoftLeatherRand(), characterPtrC->IsPixie()));
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain,
+                                                               HardOrSoftLeatherRand(),
+                                                               material::Tin,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
@@ -350,8 +356,10 @@ namespace player
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
 
-            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(
-                armor::base_type::Plain, HardOrSoftLeatherRand(), characterPtrC->IsPixie()));
+            ItemPtr_t pantsPtr(armor::ArmorFactory::Make_Pants(armor::base_type::Plain,
+                                                               HardOrSoftLeatherRand(),
+                                                               material::Tin,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);

@@ -552,7 +552,8 @@ namespace weapon
 
 
     ItemPtr_t WeaponFactory::Make_Whip(const whip_type::Enum WHIP_TYPE,
-                                       const material::Enum MATERIAL_SEC)
+                                       const material::Enum  MATERIAL_PRI,
+                                       const material::Enum  MATERIAL_SEC)
     {
         WeaponInfo weaponInfo(weapon_type::Whip);
         weaponInfo.whip = WHIP_TYPE;
@@ -569,17 +570,17 @@ namespace weapon
         {
             case whip_type::Bullwhip:
             {
-                materialPri = material::SoftLeather;
+                materialPri = material::HardLeather;
                 break;
             }
             case whip_type::Flail:
             {
-                materialPri = material::Wood;
+                materialPri = MATERIAL_PRI;
                 break;
             }
             case whip_type::MaceAndChain:
             {
-                materialPri = material::Steel;
+                materialPri = MATERIAL_PRI;
                 break;
             }
             case whip_type::Count:
@@ -623,6 +624,7 @@ namespace weapon
 
 
     ItemPtr_t WeaponFactory::Make_Projectile(const projectile_type::Enum PROJ_TYPE,
+                                             const material::Enum        MATERIAL_PRI,
                                              const material::Enum        MATERIAL_SEC)
     {
         WeaponInfo weaponInfo(weapon_type::Projectile);
@@ -635,39 +637,33 @@ namespace weapon
         Coin_t price(DETAILS.price);
         Weight_t weight(DETAILS.weight);
 
-        material::Enum materialPri(material::Count);
         weapon_type::Enum weaponType(weapon_type::NotAWeapon);
 
         switch (PROJ_TYPE)
         {
             case projectile_type::Blowpipe:
             {
-                materialPri = material::Wood;
                 weaponType = weapon_type::Blowpipe;
                 break;
             }
             case projectile_type::Sling:
             {
-                materialPri = material::SoftLeather;
                 weaponType = weapon_type::Sling;
                 break;
             }
             case projectile_type::Shortbow:
             case projectile_type::Longbow:
             {
-                materialPri = material::Wood;
                 weaponType = weapon_type::Bow;
                 break;
             }
             case projectile_type::CompositeBow:
             {
-                materialPri = material::Horn;
                 weaponType = weapon_type::Bow;
                 break;
             }
             case projectile_type::Crossbow:
             {
-                materialPri = material::Wood;
                 weaponType = weapon_type::Crossbow;
                 break;
             }
@@ -681,12 +677,12 @@ namespace weapon
             }
         }
 
-        AdjustPrice(price, materialPri, MATERIAL_SEC);
-        AdjustWeight(weight, materialPri, MATERIAL_SEC);
+        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
+        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
-            Make_Name(DETAILS.name, materialPri, MATERIAL_SEC),
-            Make_Desc(DETAILS.description, materialPri, MATERIAL_SEC, "grip"),
+            Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
+            Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "grip"),
             static_cast<category::Enum>(category::Weapon |
                                         category::TwoHanded |
                                         category::Equippable |
@@ -694,7 +690,7 @@ namespace weapon
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Projectile | weaponType),
             armor_type::NotArmor,
-            materialPri,
+            MATERIAL_PRI,
             MATERIAL_SEC,
             "",
             price,
@@ -783,39 +779,17 @@ namespace weapon
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         weapon_type::Enum spearWeapon(weapon_type::BladedStaff);
-        if ((STAFF_TYPE == bladedstaff_type::Spear) ||
-            (STAFF_TYPE == bladedstaff_type::ShortSpear))
-            spearWeapon = weapon_type::Spear;
+        auto const IS_SPEAR{ ((STAFF_TYPE == bladedstaff_type::Spear) ||
+                              (STAFF_TYPE == bladedstaff_type::ShortSpear)) };
 
-        std::ostringstream ssDesc;
-        ssDesc << "A " << DETAILS.name << " made of "
-            << material::ToReadableString(MATERIAL_PRI);
-
-        if ((MATERIAL_SEC != MATERIAL_PRI) && (MATERIAL_SEC != material::Nothing))
+        if (IS_SPEAR)
         {
-            if (material::IsJewel(MATERIAL_SEC))
-                ssDesc << " and jeweled with ";
-            else if (material::IsPrecious(MATERIAL_SEC))
-                ssDesc << " and adorned with ";
-            else if (material::IsRigid(MATERIAL_SEC))
-            {
-                if ((STAFF_TYPE == bladedstaff_type::Spear) ||
-                    (STAFF_TYPE == bladedstaff_type::ShortSpear))
-                    ssDesc << " and tipped with ";
-                else
-                    ssDesc << " and bladed with ";
-            }
-            else if (material::IsLiquid(MATERIAL_SEC))
-                ssDesc << " and coated in ";
-            else
-                ssDesc << " and ";
-
-            ssDesc << material::ToReadableString(MATERIAL_SEC) << ".";
+            spearWeapon = weapon_type::Spear;
         }
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
-            ssDesc.str(),
+            Make_Desc_BladdedStaff(DETAILS.name, IS_SPEAR, MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Weapon |
                                         category::Equippable |
                                         DETAILS.handedness),

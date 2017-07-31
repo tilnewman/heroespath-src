@@ -155,6 +155,7 @@ namespace item
             Pin_Foot,
             Pin_Nymph,
             Pin_Quiver,
+            Pin_Hourglass,
             Pipe_And_Tabor,
             Potion,
             Rabbit_Foot,

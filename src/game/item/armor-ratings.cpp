@@ -123,7 +123,7 @@ namespace item
 
         auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1, false) };
         auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(base_type::Plain) };
-        auto const PANTS_PTR{ ArmorFactory::Make_Pants(base_type::Plain) };
+        auto const PANTS_PTR{ ArmorFactory::Make_Pants(base_type::Plain, material::Cloth) };
         auto const BOOTS_PTR{ ArmorFactory::Make_Boots(base_type::Plain, MATERIAL_ENUM) };
         auto const VEST_PTR{ ArmorFactory::Make_Cover(cover_type::Vest, MATERIAL_ENUM) };
         auto const CLOAK_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, MATERIAL_ENUM) };
@@ -154,7 +154,7 @@ namespace item
             base_type::Plain : base_type::Mail) };
 
         auto const GAUNTLETS_PTR{ ArmorFactory::Make_Gauntlets(BASE_TYPE, E) };
-        auto const PANTS_PTR{ ArmorFactory::Make_Pants(BASE_TYPE) };
+        auto const PANTS_PTR{ ArmorFactory::Make_Pants(BASE_TYPE, E) };
         auto const BOOTS_PTR{ ArmorFactory::Make_Boots(BASE_TYPE, E) };
         auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(BASE_TYPE) };
         auto const BRACER_PTR{ ArmorFactory::Make_Bracer(BASE_TYPE, E) };

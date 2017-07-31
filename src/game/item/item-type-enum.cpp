@@ -176,6 +176,7 @@ namespace item
             case Pin_Foot:              { return "Pin_Foot"; }
             case Pin_Nymph:             { return "Pin_Nymph"; }
             case Pin_Quiver:            { return "Pin_Quiver"; }
+            case Pin_Hourglass:         { return "Pin_Hourglass"; }
             case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
             case Potion:                { return "Potion"; }
             case Rabbit_Foot:           { return "Rabbit_Foot"; }
@@ -259,6 +260,7 @@ namespace item
             case Pin_Foot:              { return "Titan's Foot Pin"; }
             case Pin_Nymph:             { return "Jeweled Nymph Pin"; }
             case Pin_Quiver:            { return "King's Quiver Pin"; }
+            case Pin_Hourglass:         { return "Hourglass Pin"; }
             case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
             case Rabbit_Foot:           { return "Rabbit Foot"; }
             case Rat_Juju:              { return "Rat Juju"; }

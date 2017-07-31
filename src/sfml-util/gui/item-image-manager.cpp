@@ -1261,6 +1261,7 @@ namespace gui
 	        case game::item::misc_type::Pin_Foot:
 	        case game::item::misc_type::Pin_Nymph:
 	        case game::item::misc_type::Pin_Quiver:
+            case game::item::misc_type::Pin_Hourglass:
 	        case game::item::misc_type::Pipe_And_Tabor:
             case game::item::misc_type::Rabbit_Foot:
 	        case game::item::misc_type::Rainmaker:

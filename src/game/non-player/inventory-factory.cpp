@@ -679,7 +679,9 @@ namespace ownership
                     << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
 
                 itemsPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->
-                    Make_Projectile(PROJECTILE_TYPE, CITER->second.RandomMaterialSec()));
+                    Make_Projectile(PROJECTILE_TYPE,
+                                    CITER->second.RandomMaterialPri(),
+                                    CITER->second.RandomMaterialSec()));
 
                 break;
             }
@@ -726,7 +728,9 @@ namespace ownership
                 
                 itemsPtrVecPair.first.push_back(
                     item::weapon::WeaponFactory::Instance()->Make_Whip(
-                        WHIP_TYPE, CITER->second.RandomMaterialSec()));
+                        WHIP_TYPE, 
+                        CITER->second.RandomMaterialPri(),
+                        CITER->second.RandomMaterialSec()));
 
                 break;
             }

@@ -106,11 +106,13 @@ namespace weapon
         //pri material determined by WHIP_TYPE, sec material describes
         //the handle or its decoration
         static ItemPtr_t Make_Whip(const whip_type::Enum WHIP_TYPE,
+                                   const material::Enum  MATERIAL_PRI,
                                    const material::Enum  MATERIAL_SEC);
 
         //pri material determined by PROJ_TYPE, sec material describes
         //the handle or its decoration
         static ItemPtr_t Make_Projectile(const projectile_type::Enum PROJ_TYPE,
+                                         const material::Enum        MATERIAL_PRI,
                                          const material::Enum        MATERIAL_SEC);
 
         static ItemPtr_t Make_Staff(const bool           IS_QUARTERSTAFF,
