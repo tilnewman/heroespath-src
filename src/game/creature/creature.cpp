@@ -1654,7 +1654,8 @@ namespace creature
                       L.manaCurrent_,
                       L.manaNormal_,
                       L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_)
+                      L.lastSongPlayedNum_,
+                      L.traitSet_)
                 !=
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1673,7 +1674,8 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_))
+                         R.lastSongPlayedNum_,
+                         R.traitSet_))
         {
             return false;
         }
@@ -1721,7 +1723,8 @@ namespace creature
                       L.manaCurrent_,
                       L.manaNormal_,
                       L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_)
+                      L.lastSongPlayedNum_,
+                      L.traitSet_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1740,7 +1743,8 @@ namespace creature
                          R.manaCurrent_,
                          R.manaNormal_,
                          R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_))
+                         R.lastSongPlayedNum_,
+                         R.traitSet_))
         {
             return true;
         }

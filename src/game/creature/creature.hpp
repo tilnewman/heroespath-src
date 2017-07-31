@@ -29,7 +29,6 @@
 //  A base class for all creatures
 //
 #include "sfml-util/date-time.hpp"
-#include "misc/boost-serialize-includes.hpp"
 
 #include "game/item/types.hpp"
 #include "game/item/inventory.hpp"
@@ -47,6 +46,9 @@
 #include "game/spell/spell-enum.hpp"
 #include "game/effect-type-enum.hpp"
 #include "game/song/song-enum.hpp"
+#include "game/stats/traits-set.hpp"
+
+#include "misc/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>
@@ -332,6 +334,8 @@ namespace creature
 
         void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
 
+        inline stats::TraitSet & Traits()                       { return traitSet_; }
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
@@ -373,6 +377,7 @@ namespace creature
         std::size_t         lastSpellCastNum_;
         song::SongVec_t     songsVec_;
         std::size_t         lastSongPlayedNum_;
+        stats::TraitSet     traitSet_;
 
         //The Creature class is not responsible for the lifetime of
         //Enchantment objects, the Item class is.  This vector of
@@ -409,6 +414,7 @@ namespace creature
             ar & lastSpellCastNum_;
             ar & songsVec_;
             ar & lastSongPlayedNum_;
+            ar & traitSet_;
         }
     };
 
