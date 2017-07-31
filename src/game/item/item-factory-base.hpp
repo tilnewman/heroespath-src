@@ -82,6 +82,17 @@ namespace item
                                       const material::Enum MATERIAL_PRI,
                                       const material::Enum MATERIAL_SEC);
 
+        static const std::string RandomCoatedPhrase();
+
+        static const std::string RandomCoatedAdjective();
+
+        static const std::string RandomJeweledAdjective();
+        
+        static const std::string RandomAdornedAdjective();
+
+        static const std::string RandomChainNoun();
+
+        static const std::string RandomClaspNoun();
     };
 
 }//namespace item

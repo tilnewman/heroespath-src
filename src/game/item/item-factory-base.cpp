@@ -29,9 +29,10 @@
 //
 #include "item-factory-base.hpp"
 
-#include "misc/boost-string-includes.hpp"
-
 #include "game/item/item.hpp"
+
+#include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 
 #include <sstream>
 
@@ -62,19 +63,32 @@ namespace item
         {
             if (material::IsJewel(MATERIAL_SEC))
             {
-                ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " jeweled ";
+                ssName << "and "
+                    << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomJeweledAdjective()
+                    << " ";
             }
             else if (material::IsPrecious(MATERIAL_SEC))
             {
-                ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " adorned ";
+                ssName << "and "
+                    << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomAdornedAdjective()
+                    << " ";
             }
             else if (material::IsLiquid(MATERIAL_SEC))
             {
-                ssName << material::ToReadableString(MATERIAL_SEC) << "coated ";
+                ssName << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomCoatedAdjective()
+                    << " ";
             }
             else
             {
-                ssName << "and " << material::ToReadableString(MATERIAL_SEC) << " ";
+                ssName << "and "
+                    << material::ToReadableString(MATERIAL_SEC)
+                    << " ";
             }
         }
 
@@ -106,7 +120,9 @@ namespace item
         ssDesc << DESC;
 
         if (IS_PIXIE_ITEM)
+        {
             ssDesc << ", Pixie sized,";
+        }
 
         ssDesc << " made of " << material::ToReadableString(MATERIAL_PRI);
         if ((MATERIAL_SEC != material::Nothing) && (MATERIAL_PRI != MATERIAL_SEC))
@@ -117,16 +133,16 @@ namespace item
 
                 if (material::IsJewel(MATERIAL_SEC))
                 {
-                    ssDesc << "jeweled with ";
+                    ssDesc << RandomJeweledAdjective() << " with ";
                 }
                 else if (material::IsPrecious(MATERIAL_SEC))
                 {
                     //at this point we know MATERIAL_SEC is either silver/gold/platinum
-                    ssDesc << "decorated with ";
+                    ssDesc << RandomAdornedAdjective() << " with ";
                 }
                 else if (material::IsLiquid(MATERIAL_SEC))
                 {
-                    ssDesc << "covered in ";
+                    ssDesc << RandomCoatedPhrase() << " ";
                 }
 
                 ssDesc << material::ToString(MATERIAL_SEC);
@@ -137,18 +153,19 @@ namespace item
 
                 if (material::IsRigid(MATERIAL_SEC) == false)
                 {
-                    ssDesc << EXTRA_NAME << " covered in ";
+                    ssDesc << EXTRA_NAME << RandomCoatedPhrase() << " ";
                 }
 
                 ssDesc << material::ToReadableString(MATERIAL_SEC);
 
                 if (material::IsJewel(MATERIAL_SEC))
                 {
-                    ssDesc << " jeweled " << EXTRA_NAME;
+                    ssDesc << " " << RandomJeweledAdjective() << " " << EXTRA_NAME;
                 }
                 else if (material::IsPrecious(MATERIAL_SEC))
                 {
-                    ssDesc << " adorned " << EXTRA_NAME;
+                    //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                    ssDesc << RandomAdornedAdjective() << " " << EXTRA_NAME;
                 }
                 else if (material::IsRigid(MATERIAL_SEC))
                 {
@@ -171,7 +188,9 @@ namespace item
         ssDesc << DESC;
 
         if (IS_PIXIE_ITEM)
+        {
             ssDesc << ", Pixie sized,";
+        }
 
         ssDesc << " made of " << material::ToReadableString(MATERIAL_PRI);
 
@@ -179,19 +198,30 @@ namespace item
         {
             if (material::IsJewel(MATERIAL_SEC))
             {
-                ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " jeweled clasp";
+                ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC)
+                    << RandomJeweledAdjective()
+                    << " "
+                    << RandomClaspNoun();
             }
             else if (material::IsMetal(MATERIAL_SEC))
             {
-                ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " chain";
+                ssDesc << " with a "
+                    << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomChainNoun();
             }
             else if (material::IsLiquid(MATERIAL_SEC))
             {
-                ssDesc << " covered in " << material::ToReadableString(MATERIAL_SEC);
+                ssDesc << " "
+                    << RandomCoatedPhrase() 
+                    << material::ToReadableString(MATERIAL_SEC);
             }
             else if (material::IsRigid(MATERIAL_SEC))
             {
-                ssDesc << " with a " << material::ToReadableString(MATERIAL_SEC) << " clasp";
+                ssDesc << " with a "
+                    << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomClaspNoun();
             }
             else
             {
@@ -232,6 +262,93 @@ namespace item
                                         const material::Enum MATERIAL_SEC)
     {
         armorRating += material::ArmorRatingBonus(MATERIAL_PRI, MATERIAL_SEC);
+    }
+
+
+    const std::string FactoryBase::RandomCoatedPhrase()
+    {
+        if (misc::random::Bool())
+        {
+            return "dripping with";
+        }
+        else
+        {
+            return RandomCoatedAdjective() + " in";
+        }
+    }
+
+
+    const std::string FactoryBase::RandomCoatedAdjective()
+    {
+        switch (misc::random::Int(3))
+        {
+            case 0:  { return "covered"; }
+            case 1:  { return "soaked"; }
+            case 2:  { return "coated"; }
+            case 3:
+            default: { return "drenched"; }
+        }
+    }
+
+
+    const std::string FactoryBase::RandomJeweledAdjective()
+    {
+        auto const RAND{ misc::random::Int(2) };
+        if (RAND == 0)
+        {
+            return "jeweled";
+        }
+        else if (RAND == 1)
+        {
+            return "gemmed";
+        }
+        else
+        {
+            return "bejeweled";
+        }
+    }
+
+
+    const std::string FactoryBase::RandomAdornedAdjective()
+    {
+        auto const RAND{ misc::random::Int(2) };
+        if (RAND == 0)
+        {
+            return "adorned";
+        }
+        else if (RAND == 1)
+        {
+            return "decorated";
+        }
+        else
+        {
+            return "trimmed with";
+        }
+    }
+
+
+    const std::string FactoryBase::RandomChainNoun()
+    {
+        switch (misc::random::Int(3))
+        {
+            case 1:  { return "tie"; }
+            case 2:  { return "tether"; }
+            case 3:  { return "fastener"; }
+            case 0:
+            default: { return "chain"; }
+        }
+    }
+
+
+    const std::string FactoryBase::RandomClaspNoun()
+    {
+        switch(misc::random::Int(2))
+        {
+            case 1:  { return "clasp"; }
+            case 2:  { return "tether"; }
+            case 0:
+            default: { return "fastener"; }
+        }
     }
 
 }
