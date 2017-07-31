@@ -1200,6 +1200,7 @@ namespace gui
             case game::item::misc_type::Ankh_Necklace:
             case game::item::misc_type::Armband:
             case game::item::misc_type::Beard:
+            case game::item::misc_type::Bell:
             case game::item::misc_type::Bird_Claw:
             case game::item::misc_type::Bone_Whistle:
             case game::item::misc_type::Bone:
@@ -1225,6 +1226,7 @@ namespace gui
             case game::item::misc_type::Charm_Hourglass:
             case game::item::misc_type::Charm_Key:
             case game::item::misc_type::Charm_Mask:
+            case game::item::misc_type::Chimes:
             case game::item::misc_type::Conch:
 	        case game::item::misc_type::Crumhorn:
 	        case game::item::misc_type::Devil_Horn:
@@ -1236,6 +1238,10 @@ namespace gui
 	        case game::item::misc_type::Gecko:
 	        case game::item::misc_type::Ghost_Sheet:
 	        case game::item::misc_type::Gizzard:
+            case game::item::misc_type::Gong:
+            case game::item::misc_type::Handbag:
+            case game::item::misc_type::Headdress:
+            case game::item::misc_type::Horn:
 	        case game::item::misc_type::Hurdy_Gurdy:
 	        case game::item::misc_type::Icicle:
 	        case game::item::misc_type::Iguana:
@@ -1256,6 +1262,7 @@ namespace gui
 	        case game::item::misc_type::Pin_Nymph:
 	        case game::item::misc_type::Pin_Quiver:
 	        case game::item::misc_type::Pipe_And_Tabor:
+            case game::item::misc_type::Rabbit_Foot:
 	        case game::item::misc_type::Rainmaker:
 	        case game::item::misc_type::Rat_Juju:
 	        case game::item::misc_type::Rattlesnake_Tail:
@@ -1273,6 +1280,7 @@ namespace gui
 	        case game::item::misc_type::Tuning_Fork:
 	        case game::item::misc_type::Turtle_Shell:
 	        case game::item::misc_type::Unicorn_Horn:
+            case game::item::misc_type::Veil:
 	        case game::item::misc_type::Viol:
 	        case game::item::misc_type::Warhorse_Marionette:
 	        case game::item::misc_type::Weasel_Totem:

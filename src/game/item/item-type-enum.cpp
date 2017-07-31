@@ -94,6 +94,7 @@ namespace item
             case Bag:                   { return "Bag"; }
             case Balm_Pot:              { return "Balm_Pot"; }
             case Beard:                 { return "Beard"; }
+            case Bell:                  { return "Bell"; }
             case Bird_Claw:             { return "Bird_Claw"; }
             case Bone:                  { return "Bone"; }
             case Bone_Whistle:          { return "Bone_Whistle"; }
@@ -122,6 +123,7 @@ namespace item
             case Charm_Key:             { return "Charm_Key"; }
             case Charm_Mask:            { return "Charm_Mask"; }
             case Chest:                 { return "Chest"; }
+            case Chimes:                { return "Chimes"; }
             case Cloak:                 { return "Cloak"; }
             case Conch:                 { return "Conch"; }
             case Crown:                 { return "Crown"; }
@@ -139,8 +141,12 @@ namespace item
             case Ghost_Sheet:           { return "Ghost_Sheet"; }
             case Gizzard:               { return "Gizzard"; }
             case Goblet:                { return "Goblet"; }
+            case Gong:                  { return "Gong"; }
+            case Handbag:               { return "Handbag"; }
             case Herbs:                 { return "Herbs"; }
+            case Headdress:             { return "Headdress"; }
             case Hourglass:             { return "Hourglass"; }
+            case Horn:                  { return "Horn"; }
             case Hurdy_Gurdy:           { return "Hurdy_Gurdy"; }
             case Icicle:                { return "Icicle"; }
             case Iguana:                { return "Iguana"; }
@@ -172,6 +178,7 @@ namespace item
             case Pin_Quiver:            { return "Pin_Quiver"; }
             case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
             case Potion:                { return "Potion"; }
+            case Rabbit_Foot:           { return "Rabbit_Foot"; }
             case Rainmaker:             { return "Rainmaker"; }
             case Rat_Juju:              { return "Rat_Juju"; }
             case Rattlesnake_Tail:      { return "Rattlesnake_Tail"; }
@@ -198,6 +205,7 @@ namespace item
             case Tuning_Fork:           { return "Tuning_Fork"; }
             case Turtle_Shell:          { return "Turtle_Shell"; }
             case Unicorn_Horn:          { return "Unicorn_Horn"; }
+            case Veil:                  { return "Veil"; }
             case Viol:                  { return "Viol"; }
             case Wand:                  { return "Wand"; }
             case Warhorse_Marionette:   { return "Warhorse_Marionette"; }
@@ -252,6 +260,7 @@ namespace item
             case Pin_Nymph:             { return "Jeweled Nymph Pin"; }
             case Pin_Quiver:            { return "King's Quiver Pin"; }
             case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
+            case Rabbit_Foot:           { return "Rabbit Foot"; }
             case Rat_Juju:              { return "Rat Juju"; }
             case Rattlesnake_Tail:      { return "Rattlesnake Tail"; }
             case Shark_Tooth_Necklace:  { return "Shark Tooth Necklace"; }
@@ -267,6 +276,7 @@ namespace item
             case Armband:
             case Bag:
             case Beard:
+            case Bell:
             case Bone:
             case Book:
             case Braid:
@@ -275,6 +285,7 @@ namespace item
             case Cat:
             case Chains:
             case Chest:
+            case Chimes:
             case Cloak:
             case Conch:
             case Crown:
@@ -290,7 +301,11 @@ namespace item
             case Gecko:
             case Gizzard:
             case Goblet:
+            case Gong:
+            case Handbag:
+            case Headdress:
             case Herbs:
+            case Horn:
             case Hourglass:
             case Icicle:
             case Iguana:
@@ -329,6 +344,7 @@ namespace item
             case Tongue:
             case Tooth:
             case Trophy:
+            case Veil:
             case Viol:
             case Wand: { return misc_type::ToString(E); }
             case Count:
