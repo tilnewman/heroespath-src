@@ -667,7 +667,7 @@ namespace combat
             WEAPON_PTR->DamageMin(), WEAPON_PTR->DamageMax()) };
 
         //If weapon is fist and creature attacking is wearing gauntlets, then triple the damage.
-        stats::Health_t extraFistGauntletDamage{ 0 };
+        stats::Health_t extraDamage{ 0 };
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Fists)
         {
             auto const EQUIPPED_ITEMS_PVEC{ creatureAttackingPtrC->Inventory().ItemsEquipped() };
@@ -676,13 +676,20 @@ namespace combat
                 if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Gauntlets) &&
                     (NEXT_ITEM_PTR->Armor_Info().base != item::armor::base_type::Plain))
                 {
-                    extraFistGauntletDamage = 2 * DAMAGE_FROM_WEAPON_RAW;
+                    extraDamage = 2 * DAMAGE_FROM_WEAPON_RAW;
                     break;
                 }
             }
         }
 
-        auto const DAMAGE_FROM_WEAPON{ DAMAGE_FROM_WEAPON_RAW + extraFistGauntletDamage };
+        //If weapon is bite and creature has fangs, then tripple the damage.
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bite) &&
+            (creatureAttackingPtrC->Body().HasFangs()))
+        {
+            extraDamage = DAMAGE_FROM_WEAPON_RAW;
+        }
+
+        auto const DAMAGE_FROM_WEAPON{ DAMAGE_FROM_WEAPON_RAW + extraDamage };
 
         //add extra damage based on rank
         auto const RANK_DAMAGE_BONUS_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
