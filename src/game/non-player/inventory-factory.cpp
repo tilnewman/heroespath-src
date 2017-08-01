@@ -38,12 +38,11 @@
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
 
+#include <string>
+#include <sstream>
 #include <iterator>//for back_inserter
 #include <exception>
 #include <algorithm>
-#include <sstream>
-#include <string>
-#include <map>
 
 
 namespace game

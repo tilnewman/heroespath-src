@@ -83,6 +83,38 @@ namespace item
     }
 
 
+    const std::string unique_type::ToString(const Enum E)
+    {
+        switch (E)
+        {
+            case NotUnique: { return "NotUnqiue"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ssErr;
+                ssErr << "game::item::unique_type::ToString(" << E << ")_InvalidValueError";
+                throw std::range_error(ssErr.str());
+            }
+        }
+    }
+
+
+    const std::string unique_type::Name(const Enum E)
+    {
+        switch (E)
+        {
+            case NotUnique: { return "NotUnqiue"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ssErr;
+                ssErr << "game::item::unique_type::Name(" << E << ")_InvalidValueError";
+                throw std::range_error(ssErr.str());
+            }
+        }
+    }
+
+
     const std::string misc_type::ToString(const misc_type::Enum E)
     {
         switch (E)

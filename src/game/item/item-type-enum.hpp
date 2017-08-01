@@ -30,6 +30,7 @@
 //
 #include "game/item/types.hpp"
 #include "game/stats/types.hpp"
+
 #include <string>
 
 
@@ -59,6 +60,20 @@ namespace item
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
+    };
+
+
+    struct unique_type
+    {
+        enum Enum
+        {
+            NotUnique = 0,
+            //TODO
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
     };
 
 

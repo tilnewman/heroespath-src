@@ -61,7 +61,8 @@ namespace item
                const creature::role::Enum EXCLUSIVE_TO_ROLE,
                const weapon::WeaponInfo & WEAPON_INFO,
                const armor::ArmorInfo &   ARMOR_INFO,
-               const bool                 IS_PIXIE_ITEM)
+               const bool                 IS_PIXIE_ITEM,
+               const unique_type::Enum    UNIQUE_TYPE)
     :
         name_            (NAME),
         desc_            (DESC),
@@ -81,7 +82,8 @@ namespace item
         weaponInfo_      (WEAPON_INFO),
         armorInfo_       (ARMOR_INFO),
         isPixie_         (IS_PIXIE_ITEM),//see constructor body
-        enchantmentsPVec_ ()
+        uniqueType_      (UNIQUE_TYPE),
+        enchantmentsPVec_()
     {
         //adjust the weight for pixie items
         if (isPixie_)
@@ -150,6 +152,61 @@ namespace item
     }
 
 
+    const std::string Item::BaseName() const
+    {
+        if ((uniqueType_ != unique_type::NotUnique) &&
+            (uniqueType_ != unique_type::Count))
+        {
+            return unique_type::Name(uniqueType_);
+        }
+
+        if ((miscType_ != misc_type::NotMisc) &&
+            (miscType_ != misc_type::Count))
+        {
+            return misc_type::Name(miscType_);
+        }
+
+        if ((weaponType_ & weapon_type::NotAWeapon) == false)
+        {
+            if (weaponType_ & weapon_type::Axe)         { return "Axe"; }
+            if (weaponType_ & weapon_type::Bite)        { return "Bite"; }
+            if (weaponType_ & weapon_type::BladedStaff) { return "Bladdedstaff"; }
+            if (weaponType_ & weapon_type::Blowpipe)    { return "Blowpipe"; }
+            if (weaponType_ & weapon_type::Breath)      { return "Breath"; }
+            if (weaponType_ & weapon_type::Bow)         { return "Bow"; }
+            if (weaponType_ & weapon_type::Claws)       { return "Claws"; }
+            if (weaponType_ & weapon_type::Club)        { return "Club"; }
+            if (weaponType_ & weapon_type::Crossbow)    { return "Crossbow"; }
+            if (weaponType_ & weapon_type::Fists)       { return "Fists"; }
+            if (weaponType_ & weapon_type::Knife)       { return "Knife"; }
+            if (weaponType_ & weapon_type::Sling)       { return "Sling"; }
+            if (weaponType_ & weapon_type::Spear)       { return "Spear"; }
+            if (weaponType_ & weapon_type::Staff)       { return "Staff"; }
+            if (weaponType_ & weapon_type::Sword)       { return "Sword"; }
+            if (weaponType_ & weapon_type::Tendrils)    { return "Tendrils"; }
+            if (weaponType_ & weapon_type::Whip)        { return "Whip"; }
+        }
+        
+        if ((armorType_ & armor_type::NotArmor) == false)
+        {
+            if (armorType_ & armor_type::Aventail)  { return "Aventail"; }
+            if (armorType_ & armor_type::Boots)     { return "Boots"; }
+            if (armorType_ & armor_type::Bracer)    { return "Bracer"; }
+            if (armorType_ & armor_type::Covering)  { return "Cover"; }
+            if (armorType_ & armor_type::Gauntlets) { return "Gauntlets"; }
+            if (armorType_ & armor_type::Helm)      { return "Helm"; }
+            if (armorType_ & armor_type::Pants)     { return "Pants"; }
+            if (armorType_ & armor_type::Sheild)    { return "Shield"; }
+            if (armorType_ & armor_type::Shirt)     { return "Shirt"; }
+            if (armorType_ & armor_type::Skin)      { return "Skin"; }
+        }
+
+        std::ostringstream ssErr;
+        ssErr << "game::item::Item::BaseName(\"" << Name() << "\") found no base name.";
+        throw std::runtime_error(ssErr.str());
+    }
+
+
     bool operator<(const Item & L, const Item & R)
     {
         if (   std::tie(L.name_,
@@ -169,7 +226,8 @@ namespace item
                         L.imageFilename_,
                         L.weaponInfo_,
                         L.armorInfo_,
-                        L.isPixie_)
+                        L.isPixie_,
+                        L.uniqueType_)
                <
                std::tie(R.name_,
                         R.desc_,
@@ -188,7 +246,8 @@ namespace item
                         R.imageFilename_,
                         R.weaponInfo_,
                         R.armorInfo_,
-                        R.isPixie_) )
+                        R.isPixie_,
+                        R.uniqueType_) )
         {
             return true;
         }
@@ -216,7 +275,8 @@ namespace item
                      L.imageFilename_,
                      L.weaponInfo_,
                      L.armorInfo_,
-                     L.isPixie_)
+                     L.isPixie_,
+                     L.uniqueType_)
              !=
              std::tie(R.name_,
                       R.desc_,
@@ -235,7 +295,8 @@ namespace item
                       R.imageFilename_,
                       R.weaponInfo_,
                       R.armorInfo_,
-                      R.isPixie_))
+                      R.isPixie_,
+                      R.uniqueType_))
         {
             return false;
         }

@@ -36,11 +36,11 @@
 #include "game/item/weapon-info.hpp"
 #include "game/game-data-file.hpp"
 
-#include <memory>
 #include <map>
+#include <string>
+#include <memory>
 #include <vector>
 #include <cstddef> //for std::size_t
-#include <string>
 
 
 namespace game

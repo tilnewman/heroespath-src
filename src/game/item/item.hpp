@@ -35,6 +35,7 @@
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/armor-info.hpp"
+#include "game/item/item-profile.hpp"
 #include "game/creature/role-enum.hpp"
 #include "game/creature/enchantment.hpp"
 
@@ -75,7 +76,8 @@ namespace item
                       const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
                       const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
                       const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
-                      const bool                 IS_PIXIE_ITEM      = false);
+                      const bool                 IS_PIXIE_ITEM      = false,
+                      const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique);
 
         virtual ~Item();
 
@@ -191,6 +193,10 @@ namespace item
 
         void EnchantmentRemoveAndFreeAll();
 
+        inline unique_type::Enum UniqueType() const { return uniqueType_; }
+
+        const std::string BaseName() const;
+
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
 
@@ -213,6 +219,7 @@ namespace item
         weapon::WeaponInfo   weaponInfo_;
         armor::ArmorInfo     armorInfo_;
         bool                 isPixie_;
+        unique_type::Enum    uniqueType_;
 
         //The Item class owns the Enchantment objects and is responsible
         //for their lifetimes.
@@ -242,6 +249,7 @@ namespace item
             ar & armorInfo_;
             ar & isPixie_;
             ar & enchantmentsPVec_;
+            ar & uniqueType_;
         }
     };
 

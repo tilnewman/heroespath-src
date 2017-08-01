@@ -44,13 +44,10 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <algorithm>
-#include <exception>
 #include <utility>
 #include <sstream>
-#include <vector>
-#include <map>
-#include <string>
+#include <algorithm>
+#include <exception>
 
 
 namespace game
