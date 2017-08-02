@@ -30,9 +30,10 @@
 //
 #include "game/creature/condition.hpp"
 #include "game/creature/creature.hpp"
-#include "game/stats/stat-mult-set.hpp"
+#include "game/stats/traits-set.hpp"
 
 #include <string>
+#include <utility>
 
 
 namespace game
@@ -56,7 +57,13 @@ namespace condition
         Bold() : Condition(
             Conditions::Bold,
             false,
-            stats::StatMultSet(1.33f, 1.33f, 1.33f, 1.33f, 1.33f, 1.33f)) {}
+            stats::TraitSet( { 
+                std::make_pair(stats::Traits::Strength, 25),
+                std::make_pair(stats::Traits::Accuracy, 25),
+                std::make_pair(stats::Traits::Charm, 25),
+                std::make_pair(stats::Traits::Luck, 25),
+                std::make_pair(stats::Traits::Speed, 25),
+                std::make_pair(stats::Traits::Intelligence, 25) } ) ) {}
 
         virtual ~Bold() {}
     };
@@ -68,7 +75,13 @@ namespace condition
         Heroic() : Condition(
             Conditions::Heroic,
             false,
-            stats::StatMultSet(1.66f, 1.66f, 1.66f, 1.66f, 1.66f, 1.66f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, 50),
+                std::make_pair(stats::Traits::Accuracy, 50),
+                std::make_pair(stats::Traits::Charm, 50),
+                std::make_pair(stats::Traits::Luck, 50),
+                std::make_pair(stats::Traits::Speed, 50),
+                std::make_pair(stats::Traits::Intelligence, 50) } ) ) {}
 
         virtual ~Heroic() {}
     };
@@ -80,7 +93,11 @@ namespace condition
         Daunted() : Condition(
             Conditions::Daunted,
             false,
-            stats::StatMultSet(1.0f, 0.75f, 0.75f, 1.0f, 0.85f, 0.75f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Accuracy, -25),
+                std::make_pair(stats::Traits::Charm, -25),
+                std::make_pair(stats::Traits::Speed, -16),
+                std::make_pair(stats::Traits::Intelligence, -25) } ) ) {}
 
         virtual ~Daunted() {}
     };
@@ -92,7 +109,11 @@ namespace condition
         Panic() : Condition(
             Conditions::Panic,
             false,
-            stats::StatMultSet(1.0f, 0.5f, 0.5f, 1.0f, 0.75f, 0.5f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Accuracy, -50),
+                std::make_pair(stats::Traits::Charm, -50),
+                std::make_pair(stats::Traits::Speed, -33),
+                std::make_pair(stats::Traits::Intelligence, -50) } ) ) {}
 
         virtual ~Panic() {}
     };
@@ -104,7 +125,10 @@ namespace condition
         Tripped() : Condition(
             Conditions::Tripped,
             false,
-            stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -75),
+                std::make_pair(stats::Traits::Accuracy, -75),
+                std::make_pair(stats::Traits::Speed, -75) } ) ) {}
 
         virtual ~Tripped() {}
 
@@ -120,7 +144,10 @@ namespace condition
         Pounced() : Condition(
             Conditions::Pounced,
             false,
-            stats::StatMultSet(0.25f, 0.25f, 1.0f, 1.0f, 0.25f, 1.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -75),
+                std::make_pair(stats::Traits::Accuracy, -75),
+                std::make_pair(stats::Traits::Speed, -75) } ) ) {}
 
         virtual ~Pounced() {}
 
@@ -136,7 +163,11 @@ namespace condition
         Dazed() : Condition(
             Conditions::Dazed,
             false,
-            stats::StatMultSet(0.5f, (1.0f / 3.0f), 1.0f, 1.0f, (1.0f / 3.0f), 0.5f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -50),
+                std::make_pair(stats::Traits::Accuracy, -66),
+                std::make_pair(stats::Traits::Speed, -66),
+                std::make_pair(stats::Traits::Intelligence, -50) } ) ) {}
         
         virtual ~Dazed() {}
 
@@ -152,7 +183,12 @@ namespace condition
         Unconscious() : Condition(
             Conditions::Unconscious,
             false,
-            stats::StatMultSet(0.0f, 0.0f, 0.5f, 1.0f, 0.0f, 0.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -9999),
+                std::make_pair(stats::Traits::Accuracy, -9999),
+                std::make_pair(stats::Traits::Charm, -9999),
+                std::make_pair(stats::Traits::Speed, -9999),
+                std::make_pair(stats::Traits::Intelligence, -9999), } ) ) {}
 
         virtual ~Unconscious() {}
     };
@@ -164,7 +200,12 @@ namespace condition
         Stone() : Condition(
             Conditions::Stone,
             true,
-            stats::StatMultSet(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -9999),
+                std::make_pair(stats::Traits::Accuracy, -9999),
+                std::make_pair(stats::Traits::Charm, -9999),
+                std::make_pair(stats::Traits::Speed, -9999),
+                std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
         
         virtual ~Stone() {}
     };
@@ -176,7 +217,13 @@ namespace condition
         Dead() : Condition(
             Conditions::Dead,
             false,
-            stats::StatMultSet(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -9999),
+                std::make_pair(stats::Traits::Accuracy, -9999),
+                std::make_pair(stats::Traits::Charm, -9999),
+                std::make_pair(stats::Traits::Luck, -9999),
+                std::make_pair(stats::Traits::Speed, -9999),
+                std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
         
         virtual ~Dead() {}
     };
@@ -188,7 +235,11 @@ namespace condition
         AsleepNatural() : Condition(
             Conditions::AsleepNatural,
             false,
-            stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -9999),
+                std::make_pair(stats::Traits::Accuracy, -9999),
+                std::make_pair(stats::Traits::Speed, -9999) } ) ) {}
+
         virtual ~AsleepNatural() {}
 
         virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
@@ -203,7 +254,10 @@ namespace condition
         AsleepMagical() : Condition(
             Conditions::AsleepMagical,
             true,
-            stats::StatMultSet(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -9999),
+                std::make_pair(stats::Traits::Accuracy, -9999),
+                std::make_pair(stats::Traits::Speed, -9999) } ) ) {}
         
         virtual ~AsleepMagical() {}
 
@@ -219,7 +273,10 @@ namespace condition
         Poisoned() : Condition(
             Conditions::Poisoned,
             false,
-            stats::StatMultSet(0.75f, 1.0f, 0.5f, 1.0f, 0.75f, 1.0f)) {}
+            stats::TraitSet( {
+                std::make_pair(stats::Traits::Strength, -25),
+                std::make_pair(stats::Traits::Charm, -50),
+                std::make_pair(stats::Traits::Speed, -25) } ) ) {}
         
         virtual ~Poisoned() {}
         

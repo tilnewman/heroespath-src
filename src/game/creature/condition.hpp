@@ -31,7 +31,7 @@
 //
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/stat-set.hpp"
-#include "game/stats/stat-mult-set.hpp"
+#include "game/stats/traits-set.hpp"
 #include "game/combat/hit-info.hpp"
 
 #include <memory>
@@ -60,22 +60,22 @@ namespace creature
         Condition & operator=(const Condition &) =delete;
 
     public:
-        explicit Condition(const Conditions::Enum     TYPE          = Conditions::Good,
-                           const bool                 IS_MAGICAL    = false,
-                           const stats::StatMultSet & STAT_MULT_SET = stats::StatMultSet());
+        explicit Condition(const Conditions::Enum  TYPE       = Conditions::Good,
+                           const bool              IS_MAGICAL = false,
+                           const stats::TraitSet & TRAIT_SET  = stats::TraitSet());
 
         virtual ~Condition();
 
-        inline const std::string Name() const               { return Conditions::Name(type_); }
-        inline Conditions::Enum Which() const               { return type_; }
-        inline const std::string Desc() const               { return Conditions::Desc(type_); }
+        inline const std::string Name() const       { return Conditions::Name(type_); }
+        inline Conditions::Enum Which() const       { return type_; }
+        inline const std::string Desc() const       { return Conditions::Desc(type_); }
         const std::string ToString() const;
         const std::string LongDesc() const;
-        inline std::size_t Severity() const                 { return condition::Severity::Get(type_); }
-        inline bool IsMagical() const                       { return isMagical_; }
-        inline const stats::StatMultSet StatMult() const    { return statMultSet_; }
+        inline std::size_t Severity() const         { return condition::Severity::Get(type_); }
+        inline bool IsMagical() const               { return isMagical_; }
+        inline const stats::TraitSet Traits() const { return traitSet_; }
 
-        //These two functions do not alter stats, see creature.cpp::ConditionAdd() for that
+        //These two functions do not alter traits
         virtual void InitialChange(CreaturePtrC_t) const;
         virtual void FinalChange(CreaturePtrC_t) const;
 
@@ -87,9 +87,9 @@ namespace creature
         friend bool operator==(const Condition & L, const Condition & R);
 
     private:
-        Conditions::Enum   type_;
-        bool               isMagical_;
-        stats::StatMultSet statMultSet_;
+        Conditions::Enum type_;
+        bool             isMagical_;
+        stats::TraitSet  traitSet_;
     };
 
     using ConditionPtr_t = Condition *;

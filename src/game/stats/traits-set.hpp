@@ -46,7 +46,7 @@ namespace stats
         TraitSet(const TraitValueVec_t & TRAITS_VEC = TraitValueVec_t());
 
         RatioStat & Get(const Traits::Enum E);
-        const RatioStat & GetCopy(const Traits::Enum E);
+        const RatioStat & GetCopy(const Traits::Enum E) const;
 
         const std::string ToString(const bool WILL_WRAP = false,
                                    const bool WILL_ABBR = false) const;

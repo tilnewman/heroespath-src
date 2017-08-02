@@ -61,7 +61,7 @@ namespace stats
     }
 
 
-    const RatioStat & TraitSet::GetCopy(const Traits::Enum E)
+    const RatioStat & TraitSet::GetCopy(const Traits::Enum E) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "game::stats::TraitSet::GetCopy("
             << E << ")_InvalidValueError");

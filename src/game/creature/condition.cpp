@@ -41,13 +41,13 @@ namespace game
 namespace creature
 {
 
-    Condition::Condition(const Conditions::Enum     TYPE,
-                         const bool                 IS_MAGICAL,
-                         const stats::StatMultSet & STAT_MULT_SET)
+    Condition::Condition(const Conditions::Enum  TYPE,
+                         const bool              IS_MAGICAL,
+                         const stats::TraitSet & TRAIT_SET)
     :
-        type_       (TYPE),
-        isMagical_  (IS_MAGICAL),
-        statMultSet_(STAT_MULT_SET)
+        type_     (TYPE),
+        isMagical_(IS_MAGICAL),
+        traitSet_ (TRAIT_SET)
     {}
 
 
@@ -66,7 +66,12 @@ namespace creature
         }
 
         ss  << ".  " << Conditions::Desc(type_);
-        ss << "  Stat Mults: " << statMultSet_.ToString(true);
+        
+        auto const TRAIT_STR{ traitSet_.ToString(false, false) };
+        if (TRAIT_STR.empty() == false)
+        {
+            ss << "  Traits: " << TRAIT_STR;
+        }
 
         return ss.str();
     }
@@ -76,17 +81,16 @@ namespace creature
     {
         std::ostringstream ss;
         ss << Conditions::Desc(type_);
-        ss << "  Stat Multipliers: " << statMultSet_.ToString(true);
-        if (Conditions::Good != type_)
+
+        if (isMagical_)
         {
-            if (isMagical_)
-            {
-                ss << " (a magical condition), ";
-            }
-            else
-            {
-                ss << ", ";
-            }
+            ss << " (a magical condition)";
+        }
+
+        auto const TRAIT_STR{ traitSet_.ToString(false, false) };
+        if (TRAIT_STR.empty() == false)
+        {
+            ss << "  Traits: " << TRAIT_STR;
         }
 
         ss << ".";
@@ -98,11 +102,11 @@ namespace creature
     {
         return std::tie(L.type_,
                         L.isMagical_,
-                        L.statMultSet_)
+                        L.traitSet_)
                <
                std::tie(R.type_,
                         R.isMagical_,
-                        R.statMultSet_);
+                        R.traitSet_);
     }
 
 
@@ -110,11 +114,11 @@ namespace creature
     {
         return std::tie(L.type_,
                         L.isMagical_,
-                        L.statMultSet_)
+                        L.traitSet_)
                ==
                std::tie(R.type_,
                         R.isMagical_,
-                        R.statMultSet_);
+                        R.traitSet_);
     }
 
 

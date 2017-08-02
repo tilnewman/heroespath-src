@@ -30,9 +30,9 @@
 //
 #include "game/creature/enchantment-type.hpp"
 #include "game/creature/condition-enum.hpp"
-#include "game/stats/stat-set.hpp"
-#include "game/item/types.hpp"
 #include "game/stats/types.hpp"
+#include "game/stats/traits-set.hpp"
+#include "game/item/types.hpp"
 #include "game/item/item-type-enum.hpp"
 
 #include <string>
@@ -74,22 +74,13 @@ namespace creature
         static void Acquire();
         static void Release();
 
-        void MakeStoreAttach_Wand(item::ItemPtr_t     itemPtr,
-                                  const stats::Mana_t MANA_BONUS        = 0,
-                                  const float         SPELL_BONUS_RATIO = 0.0f);
-
     private:
         void MakeStoreAttach(
             item::ItemPtr_t             itemPtr,
             const EnchantmentType::Enum TYPE,
-            const int                   USE_COUNT           = 0, //negative means infinite
-            const stats::Mana_t         MANA_ADJ            = 0,
-            const stats::Armor_t        ARMOR_RATING_ADJ    = 0,
-            const stats::StatSet &      STAT_ADJ_SET        = stats::StatSet(),
-            const stats::StatMultSet &  STAT_MULT_ADJ_SET   = stats::StatMultSet(),
-            const CondEnumVec_t &       CONDS_VEC           = CondEnumVec_t(),
-            const float                 SPELL_BONUS_RATIO   = 0.0f,
-            const float                 SONG_BONUS_RATIO    = 0.0f) const;
+            const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
+            const int                   USE_COUNT = 0, //negative means infinite
+            const CondEnumVec_t &       CONDS_VEC = CondEnumVec_t()) const;
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;

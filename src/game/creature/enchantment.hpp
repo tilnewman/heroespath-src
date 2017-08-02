@@ -30,9 +30,9 @@
 //
 #include "game/creature/enchantment-type.hpp"
 #include "game/creature/condition-enum.hpp"
-#include "game/stats/stat-set.hpp"
-#include "game/item/types.hpp"
+#include "game/stats/traits-set.hpp"
 #include "game/stats/types.hpp"
+#include "game/item/types.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 
@@ -55,29 +55,18 @@ namespace creature
     class Enchantment
     {
     public:
-        Enchantment(const EnchantmentType::Enum TYPE              = EnchantmentType::None,
-                    const int                   USE_COUNT         = 0, //negative means infinite
-                    const stats::Mana_t         MANA_ADJ          = 0,
-                    const stats::Armor_t        ARMOR_RATING_ADJ  = 0,
-                    const stats::StatSet &      STAT_ADJ_SET      = stats::StatSet(),
-                    const stats::StatMultSet &  STAT_MULT_ADJ_SET = stats::StatMultSet(),
-                    const CondEnumVec_t &       CONDS_VEC         = CondEnumVec_t(),
-                    const float                 SPELL_BOUNS_RATIO = 0.0f,
-                    const float                 SONG_BONUS_RATIO  = 0.0f);
+        Enchantment(const EnchantmentType::Enum TYPE      = EnchantmentType::None,
+                    const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
+                    const int                   USE_COUNT = 0, //negative means infinite
+                    const CondEnumVec_t &       CONDS_VEC = CondEnumVec_t());
 
         virtual ~Enchantment();
 
         inline EnchantmentType::Enum Type() const                { return type_; }
         inline int UseCountOrig() const                          { return useCountOrig_; }
         inline int UseeCountRemaining() const                    { return useCountRemaining_;}
-        inline stats::Mana_t ManaAdj() const                     { return manaAdj_; }
-        inline stats::Armor_t ArmorRatingAdj() const             { return armorRatingAdj_; }
-        inline const stats::StatSet & StatDirectAdjSet() const   { return statsDirectAdjSet_; }
-        inline const stats::StatMultSet & StatMultAdjSet() const { return statsMultAdjSet_; }
+        inline const stats::TraitSet & Traits() const            { return traitSet_; }
         inline const CondEnumVec_t & Conditions() const          { return condsVec_; }
-        inline float SpellBonusRatio() const                     { return spellBonusRatio_; }
-        inline float SongBonusRatio() const                      { return songBonusRatio_; }
-        
         inline bool HasType(const EnchantmentType::Enum E) const { return (type_ & E); }
 
         inline bool IsUseableEver() const
@@ -89,31 +78,6 @@ namespace creature
         inline bool IsUseableNow() const
         {
             return (IsUseableEver() && (useCountRemaining_ > 0));
-        }
-
-        inline bool WillAdjMana() const
-        {
-            return (manaAdj_ != 0);
-        }
-
-        inline bool WillAdjArmorRating() const
-        {
-            return (armorRatingAdj_ != 0);
-        }
-
-        inline bool WillAdjStatsDirect() const
-        {
-            return (statsDirectAdjSet_ != stats::StatSet());
-        }
-
-        inline bool WillAdjStatsMult() const
-        {
-            return (statsMultAdjSet_ != stats::StatMultSet());
-        }
-
-        inline bool WillAdjStats() const
-        {
-            return (WillAdjStatsDirect() || WillAdjStatsMult());
         }
 
         virtual const std::string EffectStr(const CreaturePtr_t CREATURE_PTR = nullptr) const;
@@ -139,15 +103,8 @@ namespace creature
         int                     useCountOrig_;
         int                     useCountRemaining_;
 
-        stats::Mana_t           manaAdj_;
-        stats::Armor_t          armorRatingAdj_;
-        stats::StatSet          statsDirectAdjSet_;
-        stats::StatMultSet      statsMultAdjSet_;
+        stats::TraitSet         traitSet_;
         CondEnumVec_t           condsVec_;
-
-        //valid values range from [0.0, 0.99]
-        float                   spellBonusRatio_;
-        float                   songBonusRatio_;
 
     private:
         friend class boost::serialization::access;
@@ -157,13 +114,8 @@ namespace creature
             ar & type_;
             ar & useCountOrig_;
             ar & useCountRemaining_;
-            ar & manaAdj_;
-            ar & armorRatingAdj_;
-            ar & statsDirectAdjSet_;
-            ar & statsMultAdjSet_;
+            ar & traitSet_;
             ar & condsVec_;
-            ar & spellBonusRatio_;
-            ar & songBonusRatio_;
         }
     };
 

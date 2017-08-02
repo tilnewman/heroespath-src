@@ -156,8 +156,6 @@ namespace creature
 
         inline stats::StatSet & Stats()                         { return stats_; }
 
-        void ReCalculateStats();
-
         inline dragon_class::Enum DragonClass() const           { return dragon_class::ClassFromRank( Rank() ); }
         inline wolfen_class::Enum WolfenClass() const           { return wolfen_class::ClassFromRank( Rank() ); }
 
@@ -335,6 +333,8 @@ namespace creature
         void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
 
         inline stats::TraitSet & Traits()                       { return traitSet_; }
+
+        void ReCalculateTraitBonuses();
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);

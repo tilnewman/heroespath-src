@@ -91,44 +91,18 @@ namespace creature
     }
 
 
-    void EnchantmentFactory::MakeStoreAttach_Wand(item::ItemPtr_t     itemPtr,
-                                                  const stats::Mana_t MANA_BONUS,
-                                                  const float         SPELL_BONUS_RATIO)
-    {
-        MakeStoreAttach(itemPtr,
-                        static_cast<EnchantmentType::Enum>(EnchantmentType::WhenHeld),
-                        0,
-                        MANA_BONUS,
-                        0,
-                        stats::StatSet(),
-                        stats::StatMultSet(),
-                        CondEnumVec_t(),
-                        SPELL_BONUS_RATIO );
-    }
-
-
     void EnchantmentFactory::MakeStoreAttach(
         item::ItemPtr_t             itemPtr,
         const EnchantmentType::Enum TYPE,
+        const stats::TraitSet &     TRAIT_SET,
         const int                   USE_COUNT,//negative means infinite
-        const stats::Mana_t         MANA_ADJ,
-        const stats::Armor_t        ARMOR_RATING_ADJ,
-        const stats::StatSet &      STAT_ADJ_SET,
-        const stats::StatMultSet &  STAT_MULT_ADJ_SET,
-        const CondEnumVec_t &       CONDS_VEC,
-        const float                 SPELL_BONUS_RATIO,
-        const float                 SONG_BONUS_RATIO) const
+        const CondEnumVec_t &       CONDS_VEC) const
     {
         itemPtr->EnchantmentAdd( EnchantmentWarehouse::Instance()->Store( new Enchantment(
             TYPE,
+            TRAIT_SET,
             USE_COUNT,
-            MANA_ADJ,
-            ARMOR_RATING_ADJ,
-            STAT_ADJ_SET,
-            STAT_MULT_ADJ_SET,
-            CONDS_VEC,
-            SPELL_BONUS_RATIO,
-            SONG_BONUS_RATIO) ) );
+            CONDS_VEC) ) );
     }
 
 }

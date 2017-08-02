@@ -119,7 +119,7 @@ namespace creature
             ConditionAdd(Conditions::Good);
         }
 
-        ReCalculateStats();
+        ReCalculateTraitBonuses();
     }
 
 
@@ -188,32 +188,6 @@ namespace creature
             return boost::algorithm::to_lower_copy(ss.str());
         }
     }
-
-
-    void Creature::ReCalculateStats()
-    {
-        stats_.ResetCurrentAndActualToNormal();
-
-        auto const CONDITIONS_PVEC{ ConditionsPVec() };
-        for (auto const NEXT_COND_PTR : CONDITIONS_PVEC)
-        {
-            stats_.ModifyCurrentAndActual(NEXT_COND_PTR->StatMult());
-        }
-
-        for (auto NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
-        {
-            if (NEXT_ENCHANTMENT_PTR->WillAdjStatsDirect())
-            {
-                stats_.ModifyCurrentAndActual(NEXT_ENCHANTMENT_PTR->StatDirectAdjSet());
-            }
-            
-            if (NEXT_ENCHANTMENT_PTR->WillAdjStatsMult())
-            {
-                stats_.ModifyCurrentAndActual(NEXT_ENCHANTMENT_PTR->StatMultAdjSet());
-            }
-        }
-    }
-
 
     const std::string Creature::RankClassName() const
     {
@@ -338,7 +312,7 @@ namespace creature
                 if (ALLOW_CHANGES)
                 {
                     condition::Warehouse::Get(E)->InitialChange(this);
-                    ReCalculateStats();
+                    ReCalculateTraitBonuses();
                 }
 
                 return true;
@@ -377,7 +351,7 @@ namespace creature
 
         if (wasAnyConditionRemoved)
         {
-            ReCalculateStats();
+            ReCalculateTraitBonuses();
         }
 
         return wasAnyConditionRemoved;
@@ -396,7 +370,7 @@ namespace creature
 
         conditionsVec_.clear();
         ConditionAdd(Conditions::Good);
-        ReCalculateStats();
+        ReCalculateTraitBonuses();
         return ORIG_COND_COUNT;
     }
 
@@ -1490,7 +1464,7 @@ namespace creature
             }
 
             enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
-            ReCalculateStats();
+            ReCalculateTraitBonuses();
         }
         else
         {
@@ -1504,7 +1478,7 @@ namespace creature
                 ENCHANTMENT_PTR),
                 enchantmentsPVec_.end());
 
-            ReCalculateStats();
+            ReCalculateTraitBonuses();
         }
     }
 
@@ -1555,6 +1529,33 @@ namespace creature
 
         return (base +
             ((static_cast<item::Weight_t>(stats_.Str().Current()) * multiplier) / divisor));
+    }
+
+
+    void Creature::ReCalculateTraitBonuses()
+    {
+        for (int i(0); i < stats::Traits::Count; ++i)
+        {
+            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+
+            int traitPercent{ 0 };
+
+            for (auto const NEXT_COND_ENUM : conditionsVec_)
+            {
+                traitPercent += condition::Warehouse::Get(NEXT_COND_ENUM)->
+                    Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
+            }
+
+            for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+            {
+                traitPercent += NEXT_ENCHANTMENT_PTR->
+                    Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
+            }
+
+            traitPercent += traitSet_.GetCopy(NEXT_TRAIT_ENUM).Normal();
+
+            traitSet_.Get(NEXT_TRAIT_ENUM).CurrentSet(traitPercent);
+        }
     }
 
 
