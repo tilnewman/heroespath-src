@@ -883,13 +883,15 @@ namespace gui
         const bool                        IS_BONE,
         const bool                        IS_JEWELED) const
     {
+        using namespace game::item;
+
         std::vector<std::string> filenames;
 
         switch (ITEM_ENUM)
         {
-            case game::item::misc_type::Amulet:
-            case game::item::misc_type::Pendant:
-            case game::item::misc_type::Medallion:
+            case misc_type::Amulet:
+            case misc_type::Pendant:
+            case misc_type::Medallion:
             {
                 for (auto i(1); i <= 23; ++i)
                 {
@@ -899,12 +901,12 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Necklace:
+            case misc_type::Necklace:
             {
                 filenames.push_back("necklace" + FILE_EXT_STR_);
                 return filenames;
             }
-            case game::item::misc_type::Bag:
+            case misc_type::Bag:
             {
                 for (auto i(1); i <= 8; ++i)
                 {
@@ -914,8 +916,8 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Tome:
-            case game::item::misc_type::Book:
+            case misc_type::Tome:
+            case misc_type::Book:
             {
                 for (auto i(1); i <= 5; ++i)
                 {
@@ -925,22 +927,22 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Cape:
+            case misc_type::Cape:
             {
                 filenames.push_back("cape" + FILE_EXT_STR_);
                 return filenames;
             }
-            case game::item::misc_type::Cloak:
+            case misc_type::Cloak:
             {
                 filenames.push_back("cloak" + FILE_EXT_STR_);
                 return filenames;
             }
-            case game::item::misc_type::Robe:
+            case misc_type::Robe:
             {
                 filenames.push_back("robe" + FILE_EXT_STR_);
                 return filenames;
             }
-            case game::item::misc_type::Crown:
+            case misc_type::Crown:
             {
                 for (auto i(1); i <= 12; ++i)
                 {
@@ -950,7 +952,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Doll:
+            case misc_type::Doll:
             {
                 for (auto i(1); i <= 16; ++i)
                 {
@@ -960,8 +962,8 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Drink:
-            case game::item::misc_type::Potion:
+            case misc_type::Drink:
+            case misc_type::Potion:
             {
                 for (auto i(1); i <= 33; ++i)
                 {
@@ -971,7 +973,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Goblet:
+            case misc_type::Goblet:
             {
                 for (auto i(1); i <= 8; ++i)
                 {
@@ -981,7 +983,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Herbs:
+            case misc_type::Herbs:
             {
                 for (auto i(1); i <= 34; ++i)
                 {
@@ -991,7 +993,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Hourglass:
+            case misc_type::Hourglass:
             {
                 for (auto i(1); i <= 3; ++i)
                 {
@@ -1001,7 +1003,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Key:
+            case misc_type::Key:
             {
                 for (auto i(1); i <= 11; ++i)
                 {
@@ -1011,7 +1013,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Lantern:
+            case misc_type::Lantern:
             {
                 for (auto i(1); i <= 18; ++i)
                 {
@@ -1021,7 +1023,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Torch:
+            case misc_type::Torch:
             {
                 for (auto i(1); i <= 2; ++i)
                 {
@@ -1031,7 +1033,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Lockbox:
+            case misc_type::Lockbox:
             {
                 for (auto i(1); i <= 8; ++i)
                 {
@@ -1041,7 +1043,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Chest:
+            case misc_type::Chest:
             {
                 for (auto i(1); i <= 14; ++i)
                 {
@@ -1051,7 +1053,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::LockPicks:
+            case misc_type::LockPicks:
             {
                 for (auto i(1); i <= 7; ++i)
                 {
@@ -1061,7 +1063,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Mask:
+            case misc_type::Mask:
             {
                 for (auto i(1); i <= 6; ++i)
                 {
@@ -1071,7 +1073,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Mirror:
+            case misc_type::Mirror:
             {
                 for (auto i(1); i <= 10; ++i)
                 {
@@ -1081,7 +1083,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::DrumLute:
+            case misc_type::DrumLute:
             {
                 for (auto i(1); i <= 21; ++i)
                 {
@@ -1091,7 +1093,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Scroll:
+            case misc_type::Scroll:
             {
                 for (auto i(1); i <= 13; ++i)
                 {
@@ -1101,7 +1103,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Orb:
+            case misc_type::Orb:
             {
                 for (auto i(1); i <= 9; ++i)
                 {
@@ -1111,7 +1113,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Ring:
+            case misc_type::Ring:
             {   
                 if (IS_JEWELED)
                 {
@@ -1137,7 +1139,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Skull:
+            case misc_type::Skull:
             {
                 for (auto i(1); i <= 11; ++i)
                 {
@@ -1147,7 +1149,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Shard:
+            case misc_type::Shard:
             {
                 for (auto i(1); i <= 7; ++i)
                 {
@@ -1157,7 +1159,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Salve:
+            case misc_type::Salve:
             {
                 for (auto i(1); i <= 9; ++i)
                 {
@@ -1167,7 +1169,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Wand:
+            case misc_type::Wand:
             {
                 for (auto i(1); i <= 11; ++i)
                 {
@@ -1177,7 +1179,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Scepter:
+            case misc_type::Scepter:
             {
                 for (auto i(1); i <= 26; ++i)
                 {
@@ -1187,7 +1189,7 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Balm_Pot:
+            case misc_type::Balm_Pot:
             {
                 for (auto i(1); i <= 3; ++i)
                 {
@@ -1197,103 +1199,116 @@ namespace gui
                 }
                 return filenames;
             }
-            case game::item::misc_type::Ankh_Necklace:
-            case game::item::misc_type::Armband:
-            case game::item::misc_type::Beard:
-            case game::item::misc_type::Bell:
-            case game::item::misc_type::Bird_Claw:
-            case game::item::misc_type::Bone_Whistle:
-            case game::item::misc_type::Bone:
-            case game::item::misc_type::Bracelet_Crown:
-            case game::item::misc_type::Bracelet_Feather:
-            case game::item::misc_type::Bracelet_Fist:
-            case game::item::misc_type::Bracelet_Hourglass:
-            case game::item::misc_type::Bracelet_Key:
-            case game::item::misc_type::Bracelet_Mask:
-            case game::item::misc_type::Brooch_Crown:
-            case game::item::misc_type::Brooch_Feather:
-            case game::item::misc_type::Brooch_Fist:
-            case game::item::misc_type::Brooch_Hourglass:
-            case game::item::misc_type::Brooch_Key:
-            case game::item::misc_type::Brooch_Mask:
-            case game::item::misc_type::Braid:
-            case game::item::misc_type::Cameo:
-            case game::item::misc_type::Cat:
-            case game::item::misc_type::Chains:
-            case game::item::misc_type::Charm_Crown:
-            case game::item::misc_type::Charm_Feather:
-            case game::item::misc_type::Charm_Fist:
-            case game::item::misc_type::Charm_Hourglass:
-            case game::item::misc_type::Charm_Key:
-            case game::item::misc_type::Charm_Mask:
-            case game::item::misc_type::Chimes:
-            case game::item::misc_type::Conch:
-	        case game::item::misc_type::Crumhorn:
-	        case game::item::misc_type::Devil_Horn:
-	        case game::item::misc_type::Eye:
-	        case game::item::misc_type::Finger:
-	        case game::item::misc_type::Fingerclaw:
-	        case game::item::misc_type::Flag:
-	        case game::item::misc_type::Frog:
-	        case game::item::misc_type::Gecko:
-	        case game::item::misc_type::Ghost_Sheet:
-	        case game::item::misc_type::Gizzard:
-            case game::item::misc_type::Gong:
-            case game::item::misc_type::Handbag:
-            case game::item::misc_type::Headdress:
-            case game::item::misc_type::Horn:
-	        case game::item::misc_type::Hurdy_Gurdy:
-	        case game::item::misc_type::Icicle:
-	        case game::item::misc_type::Iguana:
-	        case game::item::misc_type::Imp_Tail:
-	        case game::item::misc_type::Leaf:
-	        case game::item::misc_type::Legtie:
-	        case game::item::misc_type::Litch_Hand:
-	        case game::item::misc_type::Lizard:
-	        case game::item::misc_type::Lyre:
-	        case game::item::misc_type::Magnifying_Glass:
-	        case game::item::misc_type::Mummy_Hand:
-	        case game::item::misc_type::Nose:
-	        case game::item::misc_type::Paw:
-	        case game::item::misc_type::Petrified_Snake:
-	        case game::item::misc_type::Pin_Book:
-	        case game::item::misc_type::Pin_Clover:
-	        case game::item::misc_type::Pin_Foot:
-	        case game::item::misc_type::Pin_Nymph:
-	        case game::item::misc_type::Pin_Quiver:
-            case game::item::misc_type::Pin_Hourglass:
-	        case game::item::misc_type::Pipe_And_Tabor:
-            case game::item::misc_type::Rabbit_Foot:
-	        case game::item::misc_type::Rainmaker:
-	        case game::item::misc_type::Rat_Juju:
-	        case game::item::misc_type::Rattlesnake_Tail:
-	        case game::item::misc_type::Recorder:
-            case game::item::misc_type::Relic:
-	        case game::item::misc_type::Seeds:
-	        case game::item::misc_type::Shark_Tooth_Necklace:
-	        case game::item::misc_type::Spider_Eggs:
-	        case game::item::misc_type::Spyglass:
-	        case game::item::misc_type::Tongue:
-	        case game::item::misc_type::Tooth_Necklace:
-	        case game::item::misc_type::Tooth:
-	        case game::item::misc_type::Troll_Figure:
-            case game::item::misc_type::Trophy:
-	        case game::item::misc_type::Tuning_Fork:
-	        case game::item::misc_type::Turtle_Shell:
-	        case game::item::misc_type::Unicorn_Horn:
-            case game::item::misc_type::Veil:
-	        case game::item::misc_type::Viol:
-	        case game::item::misc_type::Warhorse_Marionette:
-	        case game::item::misc_type::Weasel_Totem:
+            case misc_type::Ankh_Necklace:
+            case misc_type::Armband:
+            case misc_type::Beard:
+            case misc_type::Bell:
+            case misc_type::Bird_Claw:
+            case misc_type::Bone_Whistle:
+            case misc_type::Bone:
+            case misc_type::Bracelet_Crown:
+            case misc_type::Bracelet_Feather:
+            case misc_type::Bracelet_Fist:
+            case misc_type::Bracelet_Hourglass:
+            case misc_type::Bracelet_Key:
+            case misc_type::Bracelet_Mask:
+            case misc_type::Brooch_Crown:
+            case misc_type::Brooch_Feather:
+            case misc_type::Brooch_Fist:
+            case misc_type::Brooch_Hourglass:
+            case misc_type::Brooch_Key:
+            case misc_type::Brooch_Mask:
+            case misc_type::Braid:
+            case misc_type::Cameo:
+            case misc_type::Cat:
+            case misc_type::Chains:
+            case misc_type::Charm_Crown:
+            case misc_type::Charm_Feather:
+            case misc_type::Charm_Fist:
+            case misc_type::Charm_Hourglass:
+            case misc_type::Charm_Key:
+            case misc_type::Charm_Mask:
+            case misc_type::Chimes:
+            case misc_type::Conch:
+	        case misc_type::Crumhorn:
+	        case misc_type::Devil_Horn:
+	        case misc_type::Eye:
+            case misc_type::Feather:
+	        case misc_type::Finger:
+	        case misc_type::Fingerclaw:
+	        case misc_type::Flag:
+	        case misc_type::Frog:
+	        case misc_type::Gecko:
+	        case misc_type::Ghost_Sheet:
+	        case misc_type::Gizzard:
+            case misc_type::Gong:
+            case misc_type::Grave_Ornament:
+            case misc_type::Handbag:
+            case misc_type::Hanky:
+            case misc_type::Headdress:
+            case misc_type::Hide:
+            case misc_type::Horn:
+            case misc_type::Horseshoe:
+	        case misc_type::Hurdy_Gurdy:
+	        case misc_type::Icicle:
+	        case misc_type::Iguana:
+	        case misc_type::Imp_Tail:
+	        case misc_type::Leaf:
+	        case misc_type::Legtie:
+	        case misc_type::Litch_Hand:
+	        case misc_type::Lizard:
+	        case misc_type::Lyre:
+	        case misc_type::Magnifying_Glass:
+	        case misc_type::Mummy_Hand:
+            case misc_type::Noose:
+	        case misc_type::Nose:
+	        case misc_type::Paw:
+	        case misc_type::Petrified_Snake:
+	        case misc_type::Pin_Book:
+	        case misc_type::Pin_Clover:
+	        case misc_type::Pin_Foot:
+	        case misc_type::Pin_Nymph:
+	        case misc_type::Pin_Quiver:
+            case misc_type::Pin_Hourglass:
+	        case misc_type::Pipe_And_Tabor:
+            case misc_type::Rabbit_Foot:
+	        case misc_type::Rainmaker:
+	        case misc_type::Rat_Juju:
+	        case misc_type::Rattlesnake_Tail:
+	        case misc_type::Recorder:
+            case misc_type::Relic:
+            case misc_type::Scale:
+            case misc_type::Scythe:
+	        case misc_type::Seeds:
+            case misc_type::Salamander:
+	        case misc_type::Shark_Tooth_Necklace:
+            case misc_type::Shroud:
+            case misc_type::Skink:
+	        case misc_type::Spider_Eggs:
+	        case misc_type::Spyglass:
+            case misc_type::Talisman:
+	        case misc_type::Tongue:
+	        case misc_type::Tooth_Necklace:
+	        case misc_type::Tooth:
+	        case misc_type::Troll_Figure:
+            case misc_type::Trophy:
+	        case misc_type::Tuning_Fork:
+	        case misc_type::Turtle_Shell:
+	        case misc_type::Unicorn_Horn:
+            case misc_type::Veil:
+	        case misc_type::Viol:
+	        case misc_type::Warhorse_Marionette:
+	        case misc_type::Weasel_Totem:
+            case misc_type::Wolfen_Fur:
             {
                 auto const STR{ boost::replace_all_copy(boost::to_lower_copy(
-                    game::item::misc_type::ToString(ITEM_ENUM)), "_", "-") };
+                    misc_type::ToString(ITEM_ENUM)), "_", "-") };
 
                 filenames.push_back(STR + FILE_EXT_STR_);
                 return filenames;
             }
-            case game::item::misc_type::NotMisc:
-            case game::item::misc_type::Count:
+            case misc_type::NotMisc:
+            case misc_type::Count:
             default:
             {
                 std::ostringstream ss;

@@ -63,20 +63,6 @@ namespace item
     };
 
 
-    struct unique_type
-    {
-        enum Enum
-        {
-            NotUnique = 0,
-            //TODO
-            Count
-        };
-
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum);
-    };
-
-
     struct misc_type
     {
         enum Enum
@@ -127,6 +113,7 @@ namespace item
             Drink,
             DrumLute,
             Eye,
+            Feather,
             Finger,
             Fingerclaw,
             Flag,
@@ -136,10 +123,14 @@ namespace item
             Gizzard,
             Goblet,
             Gong,
+            Grave_Ornament,
             Handbag,
+            Hanky,
             Headdress,
             Herbs,
+            Hide,
             Horn,
+            Horseshoe,
             Hourglass,
             Hurdy_Gurdy,
             Icicle,
@@ -160,6 +151,7 @@ namespace item
             Mirror,
             Mummy_Hand,
             Necklace,
+            Noose,
             Nose,
             Orb,
             Paw,
@@ -181,15 +173,21 @@ namespace item
             Relic,
             Ring,
             Robe,
+            Salamander,
             Salve,
+            Scale,
             Scepter,
             Scroll,
+            Scythe,
             Seeds,
             Shard,
             Shark_Tooth_Necklace,
+            Shroud,
+            Skink,
             Skull,
             Spider_Eggs,
             Spyglass,
+            Talisman,
             Tome,
             Tongue,
             Tooth,
@@ -205,6 +203,7 @@ namespace item
             Wand,
             Warhorse_Marionette,
             Weasel_Totem,
+            Wolfen_Fur,
             Count
         };
 
@@ -212,6 +211,139 @@ namespace item
         static const std::string Name(const misc_type::Enum);
         static bool IsMusicalInstrument(const misc_type::Enum E);
     };
+
+
+    struct unique_type
+    {
+        enum Enum
+        {
+            NotUnique = 0,
+            BasiliskTonge,
+            BerserkersBeard,
+            BishopsHanky,
+            BleedingTrophy,
+            BloodyDragonScale,
+            BottleOfBansheeScreams,
+            BraceletCrown,
+            BraceletFeather,
+            BraceletFist,
+            BraceletHourglass,
+            BraceletKey,
+            BraceletMask,
+            BroochCrown,
+            BroochFeather,
+            BroochFist,
+            BroochHourglass,
+            BroochKey,
+            BroochMask,
+            BurialShroud,
+            CharmCrown,
+            CharmFeather,
+            CharmFist,
+            CharmHourglass,
+            CharmKey,
+            CharmMask,
+            ChimeraBone,
+            CobraTooth,
+            CommandersCape,
+            CopperTroll,
+            CrystalCat,
+            CrystalChimes,
+            CyclopsEye,
+            DemonDiary,
+            DoveBloodVial,
+            DragonToothWhistle,
+            DriedFrog,
+            DriedGecko,
+            DriedIguana,
+            DriedLizard,
+            DriedSalamander,
+            DriedSkink,
+            DriedToad,
+            DriedTurtle,
+            DruidLeaf,
+            EvilRabbitsFoot,
+            ExoticGoldenGong,
+            FanaticsFlag,
+            FriarsChronicle,
+            FuneralRecord,
+            GeneralsCape,
+            GhostSheet,
+            GiantOwlEye,
+            GriffinFeather,
+            HangmansNoose,
+            HawkEye,
+            HobgoblinNose,
+            HoboRing,
+            HolyEpic,
+            HornOfTheHorde,
+            ImpTail,
+            IslanderHeaddress,
+            JeweledAnkhNecklace,
+            JeweledHandbag,
+            JeweledPrincessVeil,
+            KingsCape,
+            LastRitesScroll,
+            MacabreManuscript,
+            MadRatJuju,
+            MagicHorseshoe,
+            MagnifyingGlass,
+            MendicantRing,
+            MinotaurHide,
+            MonkRing,
+            MortuaryOrnament,
+            MournersMask,
+            PantherPaw,
+            PinArcaneTome,
+            PinHourglass,
+            PinJeweledNymph,
+            PinKingsQuiver,
+            PinLeprechaunClover,
+            PinTitansFoot,
+            PixieBell,
+            PriestRing,
+            RascalMask,
+            RattlesnakeTail,
+            RavenClaw,
+            ReaperScythe,
+            RegalCaptainsFlag,
+            RequiemRegister,
+            RoyalScoutSpyglass,
+            SaintCameoPin,
+            SaintsJournal,
+            SanguineRelic,
+            ScorpionStingerFingerclaw,
+            ScoundrelSack,
+            SepultureDecoration,
+            ShadeCloak,
+            ShamanRainmaker,
+            SharkToothNecklace,
+            SirenConch,
+            SpecterChains,
+            SpecterRobe,
+            SprintersLegtie,
+            SwindlersBag,
+            TribalFlag,
+            TricksterPouch,
+            TuningFork,
+            TurtleShell,
+            VampiresToothNecklace,
+            ViperFangFingerclaw,
+            VultureGizzard,
+            WarhorseMarionette,
+            WarTrumpet,
+            WeaselTotem,
+            WolfenFur,
+            WraithTalisman,
+            ZombieSeeds,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+        static misc_type::Enum MiscType(const Enum);
+    };
+
 
     struct material
     {
