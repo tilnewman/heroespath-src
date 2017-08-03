@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// ratio-stat.hpp
+// trait.cpp
 //
-#include "ratio-stat.hpp"
+#include "trait.hpp"
 
 #include <sstream>
 
@@ -37,8 +37,8 @@ namespace game
 namespace stats
 {
 
-    RatioStat::RatioStat(const Traits::Enum TYPE,
-                         const int          NORMAL)
+    Trait::Trait(const Traits::Enum TYPE,
+                 const stats::Trait_t      NORMAL)
     :
         type_   (TYPE),
         normal_ (NORMAL),
@@ -46,7 +46,7 @@ namespace stats
     {}
 
 
-    const std::string RatioStat::ToString(const bool WILL_PREPEND_PLUS) const
+    const std::string Trait::ToString(const bool WILL_PREPEND_PLUS) const
     {
         std::ostringstream ss;
 

@@ -28,7 +28,7 @@
 // party-factory.hpp
 //  A singleton class that creates parties of creatures that confront the player characters.
 //
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 
 #include <memory>
 #include <vector>

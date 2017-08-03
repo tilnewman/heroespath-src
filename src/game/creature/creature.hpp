@@ -30,12 +30,15 @@
 //
 #include "sfml-util/date-time.hpp"
 
-#include "game/item/types.hpp"
+#include "game/effect-type-enum.hpp"
+#include "game/stats/types.hpp"
+#include "game/stats/traits-set.hpp"
+#include "game/stats/stat-set.hpp"
 #include "game/item/inventory.hpp"
 #include "game/creature/enchantment-type.hpp"
 #include "game/creature/condition-enum.hpp"
-#include "game/creature/role.hpp"
-#include "game/creature/race.hpp"
+#include "game/creature/role-enum.hpp"
+#include "game/creature/race-enum.hpp"
 #include "game/creature/rank.hpp"
 #include "game/creature/title-enum.hpp"
 #include "game/creature/sex-enum.hpp"
@@ -44,9 +47,7 @@
 #include "game/creature/wolfen-class-enum.hpp"
 #include "game/creature/achievements.hpp"
 #include "game/spell/spell-enum.hpp"
-#include "game/effect-type-enum.hpp"
 #include "game/song/song-enum.hpp"
-#include "game/stats/traits-set.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 
@@ -116,19 +117,19 @@ namespace creature
         explicit Creature(const std::string &         NAME            = "no_name_error",
                           const sex::Enum             SEX             = creature::sex::Unknown,
                           const BodyType &            BODY_TYPE       = BodyType(),
-                          const creature::Race &      RACE            = creature::Race(creature::race::Count_PlayerRaces),
-                          const creature::Role &      ROLE            = creature::Role(creature::role::PlayerRoleCount),
+                          const race::Enum &          RAE             = race::Enum::Count_PlayerRaces,
+                          const role::Enum &          ROLE            = role::Enum::PlayerRoleCount,
                           const stats::StatSet &      STATS           = stats::StatSet(),
-                          const stats::Health_t       HEALTH          = 0,
-                          const stats::Rank_t         RANK            = 1,
-                          const stats::Exp_t          EXPERIENCE      = 0,
-                          const CondEnumVec_t &  CONDITIONS_VEC  = CondEnumVec_t(),
+                          const stats::Trait_t        HEALTH          = 0,
+                          const stats::Trait_t        RANK            = 1,
+                          const stats::Trait_t        EXPERIENCE      = 0,
+                          const CondEnumVec_t &       CONDITIONS_VEC  = CondEnumVec_t(),
                           const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
                           const item::Inventory &     INVENTORY       = item::Inventory(),
                           const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                           const std::string &         IMAGE_FILENAME  = "",
                           const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
-                          const stats::Mana_t         MANA            = 0,
+                          const stats::Trait_t        MANA            = 0,
                           const song::SongVec_t &     SONG_VEC        = song::SongVec_t());
 
         virtual ~Creature();
@@ -147,51 +148,134 @@ namespace creature
         void ImageFilename(const std::string & S)               { imageFilename_ = S; }
 
         inline sex::Enum Sex() const                            { return sex_; }
-        inline const std::string SexName() const                { return creature::sex::ToString(sex_); }
 
-        inline const creature::Race Race() const                { return race_; }
+        inline const std::string SexName() const
+        {
+            return creature::sex::ToString(sex_);
+        }
 
-        inline bool IsPixie() const                             { return (race_.Which() == race::Pixie); }
-        inline bool IsBeast() const                             { return ((race::HasTorso(race_.Which()) == false) || (Body().IsHumanoid() == false)); }
+        inline race::Enum Race() const                          { return race_; }
+        inline const std::string RaceName() const               { return race::Name(race_); }
+        inline bool IsPixie() const
+        {
+            return (race_ == race::Pixie);
+        }
+        
+        inline bool IsBeast() const
+        {
+            return ((race::HasTorso(race_) == false) ||
+                    (Body().IsHumanoid() == false));
+        }
 
-        inline stats::StatSet & Stats()                         { return stats_; }
+        inline dragon_class::Enum DragonClass() const
+        {
+            return dragon_class::ClassFromRank( Rank() );
+        }
 
-        inline dragon_class::Enum DragonClass() const           { return dragon_class::ClassFromRank( Rank() ); }
-        inline wolfen_class::Enum WolfenClass() const           { return wolfen_class::ClassFromRank( Rank() ); }
+        inline wolfen_class::Enum WolfenClass() const
+        {
+            return wolfen_class::ClassFromRank( Rank() );
+        }
 
-        inline stats::Rank_t Rank() const                       { return rank_; }
-        inline rank_class::Enum RankClass() const               { return rank_class::FromRank(rank_); }
+        inline stats::Trait_t Rank() const                      { return rank_; }
+
+        inline rank_class::Enum RankClass() const
+        {
+            return rank_class::FromRank(Rank());
+        }
+
         const std::string RankClassName() const;
         float RankRatio() const;
 
-        inline void IncreaseRank(const stats::Rank_t R)         { rank_ += R; }
-        inline stats::Exp_t Exp() const                         { return experience_; }
-        inline void IncreaseExp(const stats::Exp_t E)           { experience_ += E; }
+        inline stats::Trait_t IncreaseRank(const stats::Trait_t R)
+        {
+            rank_ += R;
+            return rank_;
+        }
 
-        inline const creature::Role Role() const                { return role_; }
+        inline stats::Trait_t Exp() const                       { return experience_; }
+
+        inline stats::Trait_t IncreaseExp(const stats::Trait_t E)
+        {
+            experience_ += E;
+            return experience_;
+        }
+
+        inline stats::Trait_t HealthCurrent() const             { return healthCurrent_; }
+        inline void HealthCurrentSet(const stats::Trait_t X)    { healthCurrent_ = X; }
+        inline stats::Trait_t HealthNormal() const              { return healthNormal_; }
+        inline void HealthNormalSet(const stats::Trait_t X)     { healthNormal_ = X; }
+        inline void HealthReset()                               { healthCurrent_ = healthNormal_; }
+
+        stats::Trait_t HealthCurrentAdj(const stats::Trait_t);
+        stats::Trait_t HealthNormalAdj(const stats::Trait_t);
+
+        inline role::Enum Role() const                          { return role_; }
+        inline const std::string RoleName() const               { return role::Name(role_); }
 
         void TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES = true);
         inline const TitleEnumVec_t Titles() const              { return titlesVec_; }
         const TitlePVec_t TitlesPVec() const;
 
-        inline stats::Health_t HealthCurrent() const            { return healthCurrent_; }
-        inline stats::Health_t HealthNormal() const             { return healthNormal_; }
-        inline void HealthCurrentAdj(const stats::Health_t C)   { healthCurrent_ += C; }
-        inline void HealthNormalAdj(const stats::Health_t C)    { healthNormal_ += C; }
-        inline void HealthCurrentSet(const stats::Health_t H)   { healthCurrent_ = H; }
-        inline void HealthNormalSet(const stats::Health_t H)    { healthNormal_ = H; }
-        
         inline float HealthRatio() const
         {
             return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_);
         }
-        
-        const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
-        
-        inline stats::Health_t HealthMissing() const
+
+        inline stats::Trait_t HealthMissing() const
         {
-            return HealthNormal() - HealthCurrent();
+            return healthNormal_ - healthCurrent_;
         }
+
+        inline stats::Trait_t ManaMissing() const
+        {
+            return (TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
+        }
+
+        inline bool IsDead() const                              { return HasCondition(Conditions::Dead); }
+        inline bool IsAlive() const                             { return ! IsDead(); }
+
+        inline stats::Trait_t Strength() const
+        {
+            return TraitWorking(stats::Traits::Strength);
+        }
+
+        inline stats::Trait_t Accuracy() const
+        {
+            return TraitWorking(stats::Traits::Accuracy);
+        }
+
+        inline stats::Trait_t Charm() const
+        {
+            return TraitWorking(stats::Traits::Charm);
+        }
+
+        inline stats::Trait_t Luck() const
+        {
+            return TraitWorking(stats::Traits::Luck);
+        }
+
+        inline stats::Trait_t Speed() const
+        {
+            return TraitWorking(stats::Traits::Speed);
+        }
+
+        inline stats::Trait_t Intelligence() const
+        {
+            return TraitWorking(stats::Traits::Intelligence);
+        }
+
+        inline const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
+
+        inline const UniqueTraits_t UniqueTraits() const
+        {
+            return UniqueTraits_t(std::make_tuple(Name(),
+                                                  role_,
+                                                  DateTimeCreated(),
+                                                  serialNumber_));
+        }
+
+        const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
         
         //returns true only if the condition was actually added, and not a duplicate, etc.
         //prevents duplicate conditions
@@ -219,9 +303,6 @@ namespace creature
 
         bool HasMagicalCondition() const;
 
-        inline bool IsDead() const                              { return HasCondition(Conditions::Dead); }
-        inline bool IsAlive() const                             { return ! IsDead(); }
-
         //assumes descending sort, not wrapped, no and appended, and with ellipsis if needed
         const std::string ConditionNames(const std::size_t MAX_TO_LIST  = 0,
                                          const size_t      MIN_SEVERITY = condition::Severity::ALL);
@@ -229,12 +310,12 @@ namespace creature
         inline bool CanTakeAction() const                       { return CanTakeActionStr().empty(); }
         const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        inline const item::Inventory & Inventory() const         { return inventory_; }
+        inline const item::Inventory & Inventory() const        { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
-        inline bool CoinsAdj(const item::Coin_t A)              { return inventory_.CoinsAdj(A); }
-        inline bool MeteorShardsAdj(const item::Meteor_t A)     { return inventory_.MeteorShardsAdj(A); }
-        inline bool GemsAdj(const item::Gem_t A)                { return inventory_.GemsAdj(A); }
+        inline bool CoinsAdj(const stats::Trait_t A)            { return inventory_.CoinsAdj(A); }
+        inline bool MeteorShardsAdj(const stats::Trait_t A)     { return inventory_.MeteorShardsAdj(A); }
+        inline bool GemsAdj(const stats::Trait_t A)             { return inventory_.GemsAdj(A); }
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.
@@ -262,11 +343,7 @@ namespace creature
         const std::string WeaponsString() const;
         const std::string ArmorString() const;
 
-        stats::Armor_t ArmorRating() const;
-
-        inline const sfml_util::DateTime DateTimeCreated() const{ return dateTimeCreated_; }
-
-        inline const UniqueTraits_t UniqueTraits() const        { return UniqueTraits_t( std::make_tuple(Name(), Role().Which(), DateTimeCreated(), serialNumber_) ); }
+        stats::Trait_t ArmorRating() const;
 
         //spell related functions
         inline bool CanCastSpells() const                       { return CanCastSpellsStr().empty(); }
@@ -284,40 +361,30 @@ namespace creature
         bool SpellRemove(const spell::Spells::Enum);
 
         //song related functions
-        inline bool CanPlaySongs() const { return CanPlaySongsStr().empty(); }
+        inline bool CanPlaySongs() const                        { return CanPlaySongsStr().empty(); }
 
         const std::string CanPlaySongsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
         bool CanPlaySongsByEffectType(const EffectType::Enum) const;
         bool CanPlaySongsByEffectType(const EffectTypeVec_t &) const;
 
-        inline song::SongVec_t Songs() const { return songsVec_; }
+        inline song::SongVec_t Songs() const                    { return songsVec_; }
 
         const song::SongPVec_t SongsPVec() const;
 
         bool SongAdd(const song::Songs::Enum);
         bool SongRemove(const song::Songs::Enum);
 
-        item::Weight_t WeightCanCarry() const;
+        stats::Trait_t WeightCanCarry() const;
 
         inline Achievements & GetAchievements()                 { return achievements_; }
 
-        inline bool CanFly() const                              { return (race::CanFly(race_.Which()) && role::CanFly(role_.Which())); }
+        inline bool CanFly() const
+        {
+            return (race::CanFly(race_) && role::CanFly(role_));
+        }
 
         const std::string ToString() const;
-
-        inline stats::Mana_t ManaCurrent() const                { return manaCurrent_; }
-        inline void ManaCurrentSet(const stats::Mana_t M)       { manaCurrent_ = M; }
-        void ManaCurrentAdj(const stats::Mana_t ADJ);
-
-        inline stats::Mana_t ManaNormal() const                 { return manaNormal_; }
-        inline void ManaNormalSet(const stats::Mana_t M)        { manaNormal_ = M; }
-        void ManaNormalAdj(const stats::Mana_t ADJ);
-
-        inline stats::Mana_t ManaMissing() const
-        {
-            return (ManaNormal() - ManaCurrent());
-        }
 
         //should only be called after loading a saved game
         void StoreItemsInWarehouseAfterLoad();
@@ -332,9 +399,23 @@ namespace creature
 
         void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
 
-        inline stats::TraitSet & Traits()                       { return traitSet_; }
+        inline stats::TraitSet & Traits()                       { return actualSet_; }
 
         void ReCalculateTraitBonuses();
+
+        inline int TraitNormal(const stats::Traits::Enum E) const
+        {
+            return actualSet_.GetCopy(E).Normal();
+        }
+
+        stats::Trait_t TraitWorking(const stats::Traits::Enum) const;
+        stats::Trait_t TraitActual(const stats::Traits::Enum) const;
+        stats::Trait_t TraitNormalAdj(const stats::Traits::Enum, const int);
+
+        const std::string TraitModifiedString(const stats::Traits::Enum E,
+                                              const bool                WILL_WRAP) const;
+
+        void StatTraitsModify(const stats::StatSet &);
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
@@ -357,14 +438,10 @@ namespace creature
         std::string         imageFilename_;
         sex::Enum           sex_;
         BodyType            bodyType_;
-        creature::Race      race_;
-        creature::Role      role_;
+        race::Enum          race_;
+        role::Enum          role_;
         stats::StatSet      stats_;
         SerialNumber_t      serialNumber_;
-        stats::Health_t     healthCurrent_;
-        stats::Health_t     healthNormal_;
-        stats::Rank_t       rank_;
-        stats::Exp_t        experience_;
         CondEnumVec_t       conditionsVec_;
         TitleEnumVec_t      titlesVec_;
         item::Inventory     inventory_;
@@ -372,12 +449,26 @@ namespace creature
         spell::SpellVec_t   spellsVec_;
         Achievements        achievements_;
         item::ItemPVec_t    currWeaponsPVec_;
-        stats::Mana_t       manaCurrent_;
-        stats::Mana_t       manaNormal_;
         std::size_t         lastSpellCastNum_;
         song::SongVec_t     songsVec_;
         std::size_t         lastSongPlayedNum_;
-        stats::TraitSet     traitSet_;
+        stats::Trait_t      healthCurrent_;
+        stats::Trait_t      healthNormal_;
+        stats::Trait_t      rank_;
+        stats::Trait_t      experience_;
+
+        //actualSet_.Normal is the actual non-ratio non-bonus standing value.
+        //actualSet_.Current is the actual WORKING, >=0, non-ratio non-bonus value.
+        //bonusSet_.Normal is the standing bonus value.
+        //bonusSet_.Current is sum of all percent adjustments from conditions and enchantments.
+        //
+        //All can be + or -.
+        //
+        //Needing the actual true non-ratio non-bonus standing value that might be < 0,
+        //is not expected, but if the situation arises use TraitActual().  For all normal
+        //situations where the working value (that is never < 0) is needed, use TraitWorking().
+        stats::TraitSet actualSet_;
+        stats::TraitSet bonusSet_;
 
         //The Creature class is not responsible for the lifetime of
         //Enchantment objects, the Item class is.  This vector of
@@ -396,12 +487,7 @@ namespace creature
             ar & bodyType_;
             ar & race_;
             ar & role_;
-            ar & stats_;
             ar & serialNumber_;
-            ar & healthCurrent_;
-            ar & healthNormal_;
-            ar & rank_;
-            ar & experience_;
             ar & conditionsVec_;
             ar & titlesVec_;
             ar & inventory_;
@@ -409,22 +495,23 @@ namespace creature
             ar & spellsVec_;
             ar & achievements_;
             ar & currWeaponsPVec_;
-            ar & manaCurrent_;
-            ar & manaNormal_;
             ar & lastSpellCastNum_;
             ar & songsVec_;
             ar & lastSongPlayedNum_;
-            ar & traitSet_;
+            ar & actualSet_;
+            ar & bonusSet_;
         }
     };
 
 
     bool operator==(const Creature & L, const Creature & R);
 
+
     inline bool operator!=(const Creature & L, const Creature & R)
     {
         return ! (L == R);
     }
+
 
     bool operator<(const Creature & L, const Creature & R);
 
@@ -438,4 +525,5 @@ namespace creature
     
 }
 }
+
 #endif //GAME_CREATURE_INCLUDED

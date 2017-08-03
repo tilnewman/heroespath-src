@@ -29,7 +29,7 @@
 //  Functions that determine what treasure a defeated enemy party has.
 //
 #include "game/combat/treasure-image-enum.hpp"
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 
 #include <vector>
 
@@ -62,12 +62,12 @@ namespace combat
     {
         ItemCache();
 
-        item::Coin_t     coins;
-        item::Meteor_t   meteor_shards;
-        item::Gem_t      gems;
+        stats::Trait_t     coins;
+        stats::Trait_t   meteor_shards;
+        stats::Trait_t      gems;
         item::ItemPVec_t items_pvec;
 
-        item::Weight_t Weight() const;
+        stats::Trait_t Weight() const;
     };
 
 
@@ -81,9 +81,9 @@ namespace combat
 
     private:
         //These functions are only called if the creature's ownership complexity is not Animal.
-        static item::Coin_t MakeCoinsForCreature(const creature::CreaturePtr_t);
-        static item::Gem_t MakeGemsForCreature(const creature::CreaturePtr_t);
-        static item::Meteor_t MakeShardsForCreature(const creature::CreaturePtr_t);
+        static stats::Trait_t MakeCoinsForCreature(const creature::CreaturePtr_t);
+        static stats::Trait_t MakeGemsForCreature(const creature::CreaturePtr_t);
+        static stats::Trait_t MakeShardsForCreature(const creature::CreaturePtr_t);
         static std::size_t MakeItemsForCreature(const creature::CreaturePtr_t, item::ItemPVec_t &);
     };
 

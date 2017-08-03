@@ -44,11 +44,11 @@ namespace game
 namespace item
 {
 
-    Inventory::Inventory(const Coin_t       COINS,
-                         const Meteor_t     METEOR_SHARDS,
-                         const Gem_t        GEMS,
-                         const ItemPVec_t & ITEMS_SVEC,
-                         const ItemPVec_t & EQUIPPED_ITEMS_SVEC)
+    Inventory::Inventory(const stats::Trait_t COINS,
+                         const stats::Trait_t METEOR_SHARDS,
+                         const stats::Trait_t GEMS,
+                         const ItemPVec_t &   ITEMS_SVEC,
+                         const ItemPVec_t &   EQUIPPED_ITEMS_SVEC)
     :
         coins_           (COINS),
         meteorShards_    (METEOR_SHARDS),
@@ -64,7 +64,7 @@ namespace item
     }
 
 
-    bool Inventory::CoinsAdj(const Coin_t A)
+    bool Inventory::CoinsAdj(const stats::Trait_t A)
     {
         coins_ += A;
 
@@ -80,7 +80,7 @@ namespace item
     }
 
 
-    bool Inventory::MeteorShardsAdj(const Meteor_t A)
+    bool Inventory::MeteorShardsAdj(const stats::Trait_t A)
     {
         meteorShards_ += A;
 
@@ -96,7 +96,7 @@ namespace item
     }
 
 
-    bool Inventory::GemsAdj(const Gem_t A)
+    bool Inventory::GemsAdj(const stats::Trait_t A)
     {
         gems_ += A;
 
@@ -112,9 +112,9 @@ namespace item
     }
 
 
-    Weight_t Inventory::Weight() const
+    stats::Trait_t Inventory::Weight() const
     {
-        Weight_t totalWeight(0);
+        stats::Trait_t totalWeight(0);
 
         for (auto const NEXT_ITEM_PTR : itemsPVec_)
         {
@@ -356,9 +356,9 @@ namespace item
     }
 
 
-    stats::Armor_t Inventory::ArmorRating() const
+    stats::Trait_t Inventory::ArmorRating() const
     {
-        stats::Armor_t armorRating(0);
+        stats::Trait_t armorRating(0);
 
         for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {

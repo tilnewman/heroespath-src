@@ -79,7 +79,6 @@
 #include "game/item/algorithms.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/song/song.hpp"
-#include "game/stats/stat-enum.hpp"
 
 #include "misc/real.hpp"
 #include "misc/random.hpp"
@@ -310,7 +309,7 @@ namespace stage
             }
             else
             {
-                if (turnCreaturePtr_->Role().Which() == creature::role::Bard)
+                if (turnCreaturePtr_->Role() == creature::role::Bard)
                 {
                     return HandleSong_Step1_ValidatePlayAndSelectSong();
                 }
@@ -1097,8 +1096,8 @@ namespace stage
             auto firebrandPtr{  new player::Character(FIREBRAND_NAME,
                                                       creature::sex::Male,
                                                       creature::BodyType::Make_Dragon(),
-                                                      creature::Race(creature::race::Dragon),
-                                                      creature::Role(creature::role::Firebrand),
+                                                      creature::race::Dragon,
+                                                      creature::role::Firebrand,
                                                       FIREBRAND_STATS) };
 
             player::Initial::Setup(firebrandPtr);
@@ -1169,8 +1168,8 @@ namespace stage
             auto bardPtr{ new player::Character(BARD_NAME,
                                                 creature::sex::Male,
                                                 creature::BodyType::Make_Humanoid(),
-                                                creature::Race(creature::race::Human),
-                                                creature::Role(creature::role::Bard),
+                                                creature::race::Human,
+                                                creature::role::Bard,
                                                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
@@ -1193,8 +1192,8 @@ namespace stage
             auto bmPtr{ new player::Character(BEASTMASTER_NAME,
                                               creature::sex::Male,
                                               creature::BodyType::Make_Humanoid(),
-                                              creature::Race(creature::race::Human),
-                                              creature::Role(creature::role::Beastmaster),
+                                              creature::race::Human,
+                                              creature::role::Beastmaster,
                                               BEASTMASTER_STATS) };
 
             player::Initial::Setup(bmPtr);
@@ -1217,8 +1216,8 @@ namespace stage
             auto thiefPtr{ new player::Character(THEIF_NAME,
                                                  creature::sex::Male,
                                                  creature::BodyType::Make_Humanoid(),
-                                                 creature::Race(creature::race::Gnome),
-                                                 creature::Role(creature::role::Thief),
+                                                 creature::race::Gnome,
+                                                 creature::role::Thief,
                                                  THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
@@ -1241,8 +1240,8 @@ namespace stage
             auto clericPtr{ new player::Character(CLERIC_NAME,
                                                   creature::sex::Female,
                                                   creature::BodyType::Make_Pixie(),
-                                                  creature::Race(creature::race::Pixie),
-                                                  creature::Role(creature::role::Cleric),
+                                                  creature::race::Pixie,
+                                                  creature::role::Cleric,
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
@@ -1290,8 +1289,8 @@ namespace stage
             auto sylavinPtr{ new player::Character(SYLAVIN_NAME,
                                                    creature::sex::Male,
                                                    creature::BodyType::Make_Dragon(),
-                                                   creature::Race(creature::race::Dragon),
-                                                   creature::Role(creature::role::Sylavin),
+                                                   creature::race::Dragon,
+                                                   creature::role::Sylavin,
                                                    SYLAVIN_STATS) };
 
             player::Initial::Setup(sylavinPtr);
@@ -1335,9 +1334,9 @@ namespace stage
             for (auto const nextComabtNodeCPtr : combatNodesPVec)
             {
                 if ((creature::race::WillInitiallyFly(
-                        nextComabtNodeCPtr->Creature()->Race().Which())) ||
+                        nextComabtNodeCPtr->Creature()->Race())) ||
                     (creature::role::WillInitiallyFly(
-                        nextComabtNodeCPtr->Creature()->Role().Which())))
+                        nextComabtNodeCPtr->Creature()->Role())))
                 {
                     nextComabtNodeCPtr->IsFlying(true);
                 }
@@ -1986,7 +1985,7 @@ namespace stage
             if (KE.code == sf::Keyboard::S)
             {
                 if ((turnCreaturePtr_ != nullptr) &&
-                    (turnCreaturePtr_->Role().Which() == creature::role::Bard))
+                    (turnCreaturePtr_->Role() == creature::role::Bard))
                 {
                     return HandleSong_Step1_ValidatePlayAndSelectSong();
                 }
@@ -3246,7 +3245,7 @@ namespace stage
         else
         {
             //run away works if flying, and if not flying it is a test of speed
-            if ((creature::Stats::Test(turnCreaturePtr_, stats::stat::Speed, 0.0f, true, true)) ||
+            if ((creature::Stats::Test(turnCreaturePtr_, stats::Traits::Speed, 0.0f, true, true)) ||
                 (combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying()))
             {
                 SetUserActionAllowed(false);
@@ -3316,7 +3315,7 @@ namespace stage
 
             //cast/play button
             if ((turnCreaturePtr_ != nullptr) &&
-                (turnCreaturePtr_->Role().Which() == creature::role::Bard))
+                (turnCreaturePtr_->Role() == creature::role::Bard))
             {
                 castTBoxButtonSPtr_->SetText("(S)ong");
 
@@ -3486,6 +3485,7 @@ namespace stage
 
             weaponsSS << ":  " << CURR_WEAPONS_STR;
         }
+
         const std::string HOLDING_WEAPON_STR(weaponsSS.str());
 
         std::ostringstream titleSS;
@@ -3505,27 +3505,37 @@ namespace stage
 
             weaponHoldingSS << HOLDING_WEAPON_STR;
 
-            const stats::StatSet STATS(turnCreaturePtr_->Stats());
-
-            infoSS << " "   << STATS.Str().Abbr(true) << ":   "  << STATS.Str().Normal() << " " << STATS.Str().ModifiedCurrentStr(true)
-                   << "\n " << STATS.Acc().Abbr(true) << ":  "   << STATS.Acc().Normal() << " " << STATS.Acc().ModifiedCurrentStr(true)
-                   << "\n " << STATS.Cha().Abbr(true) << ":  "   << STATS.Cha().Normal() << " " << STATS.Cha().ModifiedCurrentStr(true)
-                   << "\n " << STATS.Lck().Abbr(true) << ":  "   << STATS.Lck().Normal() << " " << STATS.Lck().ModifiedCurrentStr(true)
-                   << "\n " << STATS.Spd().Abbr(true) << ":  "   << STATS.Spd().Normal() << " " << STATS.Spd().ModifiedCurrentStr(true)
-                   << "\n " << STATS.Int().Abbr(true) << ":    " << STATS.Int().Normal() << " " << STATS.Int().ModifiedCurrentStr(true)
-                   << "\nHealth:  " << turnCreaturePtr_->HealthCurrent() << "/" << turnCreaturePtr_->HealthNormal()
+            infoSS << " Str:   "  << turnCreaturePtr_->TraitNormal(stats::Traits::Strength)
+                   << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Strength, true)
+                   << "\n Acc:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Accuracy)
+                   << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true)
+                   << "\n Cha:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Charm)
+                   << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Charm, true)
+                   << "\n Lck:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Luck)
+                   << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Luck, true)
+                   << "\n Spd:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Speed)
+                   << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Speed, true)
+                   << "\n Int:    " << turnCreaturePtr_->TraitNormal(stats::Traits::Intelligence)
+                   << " "
+                   << turnCreaturePtr_->TraitModifiedString(stats::Traits::Intelligence, true)
+                   << "\nHealth:  " << turnCreaturePtr_->HealthCurrent()
+                   << "/" << turnCreaturePtr_->HealthNormal()
                    << "\nCondition";
 
             if (turnCreaturePtr_->Conditions().size() > 1)
+            {
                 infoSS << "s";
+            }
 
             infoSS << ":  " << turnCreaturePtr_->ConditionNames(6);
 
             armorSS << "Armor Rating: " << turnCreaturePtr_->ArmorRating();
 
-            if (turnCreaturePtr_->ManaNormal() > 0)
+            auto const MANA_NORMAL{ turnCreaturePtr_->TraitNormal(stats::Traits::Mana) };
+            if (MANA_NORMAL > 0)
             {
-                armorSS << "\n\nMana: " << turnCreaturePtr_->ManaCurrent() << "/" << turnCreaturePtr_->ManaNormal();
+                armorSS << "\n\nMana: " << turnCreaturePtr_->TraitWorking(stats::Traits::Mana)
+                    << "/" << MANA_NORMAL;
             }
 
             preambleSS.str(EMPTY_STR);
@@ -3533,12 +3543,12 @@ namespace stage
         }
         else if (IsNonPlayerCharacterTurnValid())
         {
-            titleSS << turnCreaturePtr_->Race().Name();
+            titleSS << turnCreaturePtr_->RaceName();
 
             if (creature::race::RaceRoleMatch(
-                turnCreaturePtr_->Race().Which(), turnCreaturePtr_->Role().Which()) == false)
+                turnCreaturePtr_->Race(), turnCreaturePtr_->Role()) == false)
             {
-                titleSS << " " << turnCreaturePtr_->Role().Name();
+                titleSS << " " << turnCreaturePtr_->RoleName();
             }
 
             //turn box weapon text (or text that indicates that a creature cannot take their turn)
@@ -4089,7 +4099,7 @@ namespace stage
     void CombatStage::HandleApplyDamageTasks()
     {
         //create a vec of all creatures damaged and killed this turn
-        std::vector<stats::Health_t> damageVec;
+        std::vector<stats::Trait_t> damageVec;
         combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
 

@@ -130,8 +130,8 @@ namespace non_player
         //count all race/role combinations
         for (auto const NEXT_CHAR_PTR : charactersPVec_)
         {
-            raceRoleMap[ std::make_pair(NEXT_CHAR_PTR->Race().Name(),
-                NEXT_CHAR_PTR->Role().Name()) ]++;
+            raceRoleMap[ std::make_pair(NEXT_CHAR_PTR->RaceName(),
+                NEXT_CHAR_PTR->RoleName()) ]++;
         }
 
         //make a single string summary of all race/role combinations

@@ -209,7 +209,7 @@ namespace combat
         for (auto const & NEXT_VERTEX : vertexList_)
         {
             if ((NEXT_VERTEX.second->Creature() != nullptr) &&
-                (NEXT_VERTEX.second->Creature()->Role().Which() == ROLE))
+                (NEXT_VERTEX.second->Creature()->Role() == ROLE))
             {
                 ++count;
                 IdVec_OutParam.push_back(NEXT_VERTEX.first);
@@ -227,7 +227,7 @@ namespace combat
         for (auto const & NEXT_VERTEX : vertexList_)
         {
             if ((NEXT_VERTEX.second->Creature() != nullptr) &&
-                (NEXT_VERTEX.second->Creature()->Race().Which() == RACE))
+                (NEXT_VERTEX.second->Creature()->Race() == RACE))
             {
                 ++count;
                 IdVec_OutParam.push_back(NEXT_VERTEX.first);

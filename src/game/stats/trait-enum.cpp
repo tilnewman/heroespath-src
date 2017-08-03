@@ -42,15 +42,14 @@ namespace stats
     {
         switch (E)
         {
-            case Health:            { return "Health"; }
-            case Mana:              { return "Mana"; }
-            case ArmorRating:       { return "ArmorRating"; }
             case Strength:          { return "Strength"; }
             case Accuracy:          { return "Accuracy"; }
             case Charm:             { return "Charm"; }
             case Luck:              { return "Luck"; }
             case Speed:             { return "Speed"; }
             case Intelligence:      { return "Intelligence"; }
+            case Mana:              { return "Mana"; }
+            case ArmorRating:       { return "ArmorRating"; }
             case MagicCast:         { return "MagicCast"; }
             case MagicEffect:       { return "MagicEffect"; }
             case MagicResist:       { return "MagicResist"; }
@@ -102,15 +101,14 @@ namespace stats
     {
         switch (E)
         {
-            case Health:            { return "Hlth"; }
-            case Mana:              { return "Man"; }
-            case ArmorRating:       { return "ArmRat"; }
             case Strength:          { return "Str"; }
             case Accuracy:          { return "Acc"; }
             case Charm:             { return "Cha"; }
             case Luck:              { return "Lck"; }
             case Speed:             { return "Spd"; }
             case Intelligence:      { return "Int"; }
+            case Mana:              { return "Man"; }
+            case ArmorRating:       { return "ArmRat"; }
             case MagicCast:         { return "MagCst"; }
             case MagicEffect:       { return "MagEff"; }
             case MagicResist:       { return "MagRes"; }
@@ -139,14 +137,14 @@ namespace stats
             case BlessResist:       { return "BlsRes"; }
             case HitPower:          { return "HitPower"; }
             case HitCritical:       { return "HitCri"; }
-            case FireDamage:        { return "FireDmg"; }
-            case FireResist:        { return "FireRes"; }
-            case FrostDamage:       { return "FrostDmg"; }
-            case FrostResist:       { return "FrostRes"; }
-            case HonorDamage:       { return "HonorDmg"; }
-            case HonorResist:       { return "HonorRes"; }
-            case ShadowDamage:      { return "ShadowDmg"; }
-            case ShadowResist:      { return "ShadowRes"; }
+            case FireDamage:        { return "FirDmg"; }
+            case FireResist:        { return "FirRes"; }
+            case FrostDamage:       { return "FrtDmg"; }
+            case FrostResist:       { return "FrtRes"; }
+            case HonorDamage:       { return "HnrDmg"; }
+            case HonorResist:       { return "HnrRes"; }
+            case ShadowDamage:      { return "ShaDmg"; }
+            case ShadowResist:      { return "ShaRes"; }
             case Count:
             default:
             {
@@ -162,15 +160,14 @@ namespace stats
     {
         switch (E)
         {
-            case Health:            { return "Health Bonus"; }
-            case Mana:              { return "Mana Bonus"; }
-            case ArmorRating:       { return "Armor Rating Bonus"; }
             case Strength:          { return "Strength Bonus"; }
             case Accuracy:          { return "Accuracy Bonus"; }
             case Charm:             { return "Charm Bonus"; }
             case Luck:              { return "Luck Bonus"; }
             case Speed:             { return "Speed Bonus"; }
             case Intelligence:      { return "Intelligence Bonus"; }
+            case Mana:              { return "Mana Bonus"; }
+            case ArmorRating:       { return "Armor Rating Bonus"; }
             case MagicCast:         { return "Magic/Alchemy Chance"; }
             case MagicEffect:       { return "Magic Effect"; }
             case MagicResist:       { return "Magic Resistance"; }

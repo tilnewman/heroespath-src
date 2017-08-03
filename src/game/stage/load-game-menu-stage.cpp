@@ -294,7 +294,7 @@ namespace stage
 
             ss.str("");
             ss  << CHAR_PVEC[i]->Name()
-                << ", " << CHAR_PVEC[i]->Role().Name()
+                << ", " << CHAR_PVEC[i]->RoleName()
                 << ", rank: " << CHAR_PVEC[i]->Rank();
 
             descTextInfo.text = ss.str();

@@ -72,7 +72,6 @@
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
 #include "game/song/song-warehouse.hpp"
-#include "game/stats/stat.hpp"
 
 #include "misc/random.hpp"
 #include "misc/platform.hpp"
@@ -169,7 +168,6 @@ int main(int argc, char * argv[])
         game::spell::Warehouse::Fill();
         game::song::Warehouse::Fill();
         sfml_util::FontManager::Fill();
-        game::stats::Stat::SetReduceRatio();
         
         //load game assets Stage 2
         sfml_util::TextureCache::Acquire();

@@ -67,7 +67,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -96,7 +96,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -123,7 +123,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -152,7 +152,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -179,7 +179,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -208,7 +208,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -236,7 +236,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -263,7 +263,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -292,7 +292,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -319,7 +319,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -348,7 +348,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &        healthAdj,
+            stats::Trait_t &        healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -375,7 +375,7 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;

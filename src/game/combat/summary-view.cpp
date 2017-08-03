@@ -291,17 +291,17 @@ namespace combat
 
         auto creaturePtr{ combatNodePtr->Creature() };
         std::ostringstream ss;
-        if (creaturePtr->Name() != creaturePtr->Race().Name())
+        if (creaturePtr->Name() != creaturePtr->RaceName())
         {
             ss << creaturePtr->Name() << "\n";
         }
 
-        ss << creaturePtr->Race().Name();
+        ss << creaturePtr->RaceName();
 
         if (creature::race::RaceRoleMatch(
-            creaturePtr->Race().Which(), creaturePtr->Role().Which()) == false)
+            creaturePtr->Race(), creaturePtr->Role()) == false)
         {
-            ss << ", " + creaturePtr->Role().Name();
+            ss << ", " + creaturePtr->RoleName();
         }
 
         const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(

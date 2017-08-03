@@ -242,7 +242,7 @@ namespace stage
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 const creature::race::Enum NEXT_CHAR_RACE(
-                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Race().Which());
+                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Race());
 
                 if ((creature::race::Dragon == NEXT_CHAR_RACE) ||
                     (creature::race::Wolfen == NEXT_CHAR_RACE))
@@ -257,7 +257,7 @@ namespace stage
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 const creature::role::Enum NEXT_CHAR_ROLE(
-                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Role().Which());
+                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Role());
 
                 if (NEXT_CHAR_ROLE == creature::role::Beastmaster)
                 {
@@ -374,11 +374,11 @@ namespace stage
             ssCharText << NEXT_CHAR_PTR->Name() << "'s_CharacterListing";
 
             ssTitle.str("");
-            ssTitle << NEXT_CHAR_PTR->Name() << ", " << NEXT_CHAR_PTR->Race().Name();
+            ssTitle << NEXT_CHAR_PTR->Name() << ", " << NEXT_CHAR_PTR->RaceName();
 
-            if (NEXT_CHAR_PTR->Race().Which() != creature::race::Wolfen)
+            if (NEXT_CHAR_PTR->Race() != creature::race::Wolfen)
             {
-                ssTitle << ", " << NEXT_CHAR_PTR->Role().Name();
+                ssTitle << ", " << NEXT_CHAR_PTR->RoleName();
             }
 
             textInfo.text = ssTitle.str();
@@ -636,15 +636,15 @@ namespace stage
                 std::ostringstream ss;
                 ss << "\"" << mouseOverCharPtr_->Name() << "\"\n"
                    << mouseOverCharPtr_->SexName() << ", "
-                   << mouseOverCharPtr_->Race().Name() << ", "
-                   << mouseOverCharPtr_->Role().Name() << "\n"
+                   << mouseOverCharPtr_->RaceName() << ", "
+                   << mouseOverCharPtr_->RoleName() << "\n"
                    << "Created on " << mouseOverCharPtr_->DateTimeCreated().date.ToString() << " at " << mouseOverCharPtr_->DateTimeCreated().time.ToString() << "\n\n"
-                   << "Strength:        "      << mouseOverCharPtr_->Stats().Str().Normal() << "\n"
-                   << "Accuracy:       "       << mouseOverCharPtr_->Stats().Acc().Normal() << "\n"
-                   << "Charm:           "      << mouseOverCharPtr_->Stats().Cha().Normal() << "\n"
-                   << "Luck:              "    << mouseOverCharPtr_->Stats().Lck().Normal() << "\n"
-                   << "Speed:            "     << mouseOverCharPtr_->Stats().Spd().Normal() << "\n"
-                   << "Intelligence:    "      << mouseOverCharPtr_->Stats().Int().Normal();
+                   << "Strength:        "      << mouseOverCharPtr_->Strength() << "\n"
+                   << "Accuracy:       "       << mouseOverCharPtr_->Accuracy() << "\n"
+                   << "Charm:           "      << mouseOverCharPtr_->Charm() << "\n"
+                   << "Luck:              "    << mouseOverCharPtr_->Luck() << "\n"
+                   << "Speed:            "     << mouseOverCharPtr_->Speed() << "\n"
+                   << "Intelligence:    "      << mouseOverCharPtr_->Intelligence();
 
                 const sf::FloatRect TEXT_RECT(MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_ + mouseOverSprite_.getGlobalBounds().width + MOUSE_OVER_IMAGE_PAD_,
                                               MOUSE_OVER_POPUP_POS_TOP_ + (MOUSE_OVER_IMAGE_PAD_ * 2.0f),

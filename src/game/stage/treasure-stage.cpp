@@ -127,8 +127,8 @@ namespace stage
             auto firebrandPtr{  new player::Character(FIREBRAND_NAME,
                                                       creature::sex::Male,
                                                       creature::BodyType::Make_Dragon(),
-                                                      creature::Race(creature::race::Dragon),
-                                                      creature::Role(creature::role::Firebrand),
+                                                      creature::race::Dragon,
+                                                      creature::role::Firebrand,
                                                       FIREBRAND_STATS) };
 
             player::Initial::Setup(firebrandPtr);
@@ -151,8 +151,8 @@ namespace stage
             auto bardPtr{ new player::Character(BARD_NAME,
                                                 creature::sex::Male,
                                                 creature::BodyType::Make_Humanoid(),
-                                                creature::Race(creature::race::Human),
-                                                creature::Role(creature::role::Bard),
+                                                creature::race::Human,
+                                                creature::role::Bard,
                                                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
@@ -175,8 +175,8 @@ namespace stage
             auto bmPtr{ new player::Character(BEASTMASTER_NAME,
                                               creature::sex::Male,
                                               creature::BodyType::Make_Humanoid(),
-                                              creature::Race(creature::race::Human),
-                                              creature::Role(creature::role::Beastmaster),
+                                              creature::race::Human,
+                                              creature::role::Beastmaster,
                                               BEASTMASTER_STATS) };
 
             player::Initial::Setup(bmPtr);
@@ -199,8 +199,8 @@ namespace stage
             auto thiefPtr{ new player::Character(THEIF_NAME,
                                                  creature::sex::Male,
                                                  creature::BodyType::Make_Humanoid(),
-                                                 creature::Race(creature::race::Gnome),
-                                                 creature::Role(creature::role::Thief),
+                                                 creature::race::Gnome,
+                                                 creature::role::Thief,
                                                  THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
@@ -223,8 +223,8 @@ namespace stage
             auto clericPtr{ new player::Character(CLERIC_NAME,
                                                   creature::sex::Female,
                                                   creature::BodyType::Make_Pixie(),
-                                                  creature::Race(creature::race::Pixie),
-                                                  creature::Role(creature::role::Cleric),
+                                                  creature::race::Pixie,
+                                                  creature::role::Cleric,
                                                   CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
@@ -247,8 +247,8 @@ namespace stage
             auto sylavinPtr{ new player::Character(SYLAVIN_NAME,
                                                    creature::sex::Male,
                                                    creature::BodyType::Make_Dragon(),
-                                                   creature::Race(creature::race::Dragon),
-                                                   creature::Role(creature::role::Sylavin),
+                                                   creature::race::Dragon,
+                                                   creature::role::Sylavin,
                                                    SYLAVIN_STATS) };
 
             player::Initial::Setup(sylavinPtr);
@@ -402,7 +402,7 @@ namespace stage
         for (auto const NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
         {
             auto const CORPSE_KEY_STR_VEC{ GetCorpseImageKeyFromRace(
-                NEXT_ENEMY_CHARACTER_PTR->Race().Which()) };
+                NEXT_ENEMY_CHARACTER_PTR->Race()) };
 
             std::copy(CORPSE_KEY_STR_VEC.begin(),
                       CORPSE_KEY_STR_VEC.end(),

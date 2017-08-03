@@ -293,7 +293,7 @@ namespace item
     }
 
 
-    void FactoryBase::AdjustPrice(Coin_t &             price,
+    void FactoryBase::AdjustPrice(stats::Trait_t &     price,
                                   const material::Enum MATERIAL_PRI,
                                   const material::Enum MATERIAL_SEC,
                                   const bool           IS_PIXIE_ITEM)
@@ -302,21 +302,21 @@ namespace item
 
         if (IS_PIXIE_ITEM)
         {
-            price = static_cast<Coin_t>(static_cast<float>(price) * 1.5f);
+            price = static_cast<stats::Trait_t>(static_cast<float>(price) * 1.5f);
         }
     }
 
 
-    void FactoryBase::AdjustWeight(Weight_t &           weight,
+    void FactoryBase::AdjustWeight(stats::Trait_t &     weight,
                                    const material::Enum MATERIAL_PRI,
                                    const material::Enum MATERIAL_SEC)
     {
-        weight = static_cast<Weight_t>(static_cast<float>(weight) *
+        weight = static_cast<stats::Trait_t>(static_cast<float>(weight) *
             material::WeightMult(MATERIAL_PRI, MATERIAL_SEC));
     }
 
 
-    void FactoryBase::AdjustArmorRating(stats::Armor_t &    armorRating,
+    void FactoryBase::AdjustArmorRating(stats::Trait_t &    armorRating,
                                         const material::Enum MATERIAL_PRI,
                                         const material::Enum MATERIAL_SEC)
     {

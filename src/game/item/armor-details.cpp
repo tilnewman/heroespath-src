@@ -184,7 +184,7 @@ namespace armor
             CleanStringField(fieldsVec[1], false) );
 
         armorDetails.price = StringFieldToInt("Price", fieldsVec[2]);
-        armorDetails.weight = static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
+        armorDetails.weight = static_cast<stats::Trait_t>(StringFieldToInt("Weight", fieldsVec[3]));
         armorDetails.armor_rating = StringFieldToInt("ArmorRating", fieldsVec[4]);
         armorDetails.description = CleanStringField(fieldsVec[5], false);
 

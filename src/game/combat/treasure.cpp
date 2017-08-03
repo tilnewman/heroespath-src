@@ -50,9 +50,9 @@ namespace combat
     {}
 
 
-    game::item::Weight_t ItemCache::Weight() const
+    game::stats::Trait_t ItemCache::Weight() const
     {
-        game::item::Weight_t sum{ 0 };
+        game::stats::Trait_t sum{ 0 };
 
         for (auto const NEXT_ITEM_PTR : items_pvec)
         {
@@ -100,7 +100,7 @@ namespace combat
     }
 
 
-    game::item::Coin_t TreasureFactory::MakeCoinsForCreature(
+    game::stats::Trait_t TreasureFactory::MakeCoinsForCreature(
         const creature::CreaturePtr_t)
     {
         //TODO
@@ -108,7 +108,7 @@ namespace combat
     }
 
 
-    item::Gem_t TreasureFactory::MakeGemsForCreature(
+    stats::Trait_t TreasureFactory::MakeGemsForCreature(
         const creature::CreaturePtr_t)
     {
         //TODO
@@ -116,7 +116,7 @@ namespace combat
     }
 
 
-    item::Meteor_t TreasureFactory::MakeShardsForCreature(
+    stats::Trait_t TreasureFactory::MakeShardsForCreature(
         const creature::CreaturePtr_t)
     {
         //TODO

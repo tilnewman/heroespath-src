@@ -35,7 +35,8 @@
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/title-enum.hpp"
-#include "game/item/types.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
 #include "game/stats/types.hpp"
 
 #include <memory>
@@ -58,8 +59,6 @@ namespace item
 
 namespace creature
 {
-    class Race;
-    class Role;
     class BodyType;
 }
 
@@ -83,19 +82,19 @@ namespace non_player
         explicit Character(const std::string &              NAME           = "no_name_error",
                            const creature::sex::Enum        SEX            = creature::sex::Unknown,
                            const creature::BodyType &       BODY_TYPE      = creature::BodyType(),
-                           const creature::Race &           RACE           = creature::Race(creature::race::Count_PlayerRaces),
-                           const creature::Role &           ROLE           = creature::Role(creature::role::Count),
+                           const creature::race::Enum &     RACE           = creature::race::Count_PlayerRaces,
+                           const creature::role::Enum &     ROLE           = creature::role::PlayerRoleCount,
                            const stats::StatSet &           STATS          = stats::StatSet(),
-                           const stats::Health_t            HEALTH         = 0,
-                           const stats::Rank_t              RANK           = 1,
-                           const stats::Exp_t               EXPERIENCE     = 0,
+                           const stats::Trait_t             HEALTH         = 0,
+                           const stats::Trait_t             RANK           = 1,
+                           const stats::Trait_t             EXPERIENCE     = 0,
                            const creature::CondEnumVec_t &  CONDITIONS_VEC = creature::CondEnumVec_t(),
                            const creature::TitleEnumVec_t & TITLES_VEC     = creature::TitleEnumVec_t(),
                            const item::Inventory &          INVENTORY      = item::Inventory(),
                            const sfml_util::DateTime &      DATE_TIME      = sfml_util::DateTime(),
                            const std::string &              IMAGE_FILENAME = "",
                            const spell::SpellVec_t &        SPELLS_VEC     = spell::SpellVec_t(),
-                           const stats::Mana_t              MANA           = 0,
+                           const stats::Trait_t             MANA           = 0,
                            const song::SongVec_t &          SONG_VEC       = song::SongVec_t());
 
         virtual ~Character();

@@ -28,8 +28,7 @@
 // traits-set.hpp
 //
 #include "trait-enum.hpp"
-#include "ratio-stat.hpp"
-
+#include "trait.hpp"
 #include "misc/boost-serialize-includes.hpp"
 
 #include <vector>
@@ -45,31 +44,39 @@ namespace stats
     public:
         TraitSet(const TraitValueVec_t & TRAITS_VEC = TraitValueVec_t());
 
-        RatioStat & Get(const Traits::Enum E);
-        const RatioStat & GetCopy(const Traits::Enum E) const;
+        Trait & Get(const Traits::Enum E);
+        const Trait & GetCopy(const Traits::Enum E) const;
 
-        const std::string ToString(const bool WILL_WRAP = false,
-                                   const bool WILL_ABBR = false) const;
+        const std::string ToString(const bool WILL_WRAP,
+                                   const bool WILL_ABBR,
+                                   const bool WILL_PREVENT_NEGATIVE,
+                                   const bool WILL_PREFIX_PERCENT) const;
+
+        const std::string StatsString(const bool WILL_WRAP) const;
 
         friend bool operator==(const TraitSet & L, const TraitSet & R);
         friend bool operator<(const TraitSet & L, const TraitSet & R);
 
     private:
-        RatioStatVec_t statVec_;
+        const std::string StatStringHelper(const stats::Traits::Enum,
+                                           const bool                WILL_PREFIX = true) const;
+
+    private:
+        TraitVec_t traitVec_;
     
     private:
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & statVec_;
+            ar & traitVec_;
         }
     };
 
 
     inline bool operator==(const TraitSet & L, const TraitSet & R)
     {
-        return (L.statVec_ == R.statVec_);
+        return (L.traitVec_ == R.traitVec_);
     }
 
 
@@ -81,7 +88,7 @@ namespace stats
 
     inline bool operator<(const TraitSet & L, const TraitSet & R)
     {
-        return (L.statVec_ < R.statVec_);
+        return (L.traitVec_ < R.traitVec_);
     }
 
 }

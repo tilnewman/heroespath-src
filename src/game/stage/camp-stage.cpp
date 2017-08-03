@@ -162,12 +162,12 @@ namespace stage
         EntityAdd(fireAnimUPtr_.get());
 
         //TEMP TODO REMOVE -make a party to test this stage with
-        auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
-        auto c2Ptr{ new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
-        auto c3Ptr{ new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::Race(creature::race::Wolfen),  creature::Role(creature::role::Wolfen)) };
-        auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Gnome),   creature::Role(creature::role::Thief)) };
-        auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Cleric)) };
-        auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::Race(creature::race::Human),   creature::Role(creature::role::Beastmaster)) };
+        auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Wolfen,  creature::role::Wolfen) };
+        auto c2Ptr{ new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::race::Wolfen,  creature::role::Wolfen) };
+        auto c3Ptr{ new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::race::Wolfen,  creature::role::Wolfen) };
+        auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Gnome,   creature::role::Thief) };
+        auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::race::Human,   creature::role::Cleric) };
+        auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Human,   creature::role::Beastmaster) };
         player::PartyPtr_t partyPtr{ new player::Party() };
         std::string errMsgIgnored{ "" };
         partyPtr->Add(c1Ptr, errMsgIgnored);
@@ -381,8 +381,8 @@ namespace stage
                     << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and " : "")
                     << NEXT_BEAST_PTR->Name() << " ";
 
-                if (NEXT_BEAST_PTR->Race().Which() == creature::race::Dragon)
-                    ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role().Which()) << " Dragon";
+                if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
+                    ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role()) << " Dragon";
                 else
                     ss << "the Wolfen";
 
@@ -400,7 +400,7 @@ namespace stage
                 ss  << ((appendedFirstName) ? ", " : "")
                     << (((NONLOAD_NONBEAST_PVEC.size() > 1) && ((NONLOAD_NONBEAST_PVEC.size() - 1) == i++)) ? "and " : "")
                     << NEXT_CHAR_PTR->Name() << " the "
-                    << creature::race::ToString(NEXT_CHAR_PTR->Race().Which()) << " " << creature::role::ToString(NEXT_CHAR_PTR->Role().Which());
+                    << creature::race::ToString(NEXT_CHAR_PTR->Race()) << " " << creature::role::ToString(NEXT_CHAR_PTR->Role());
 
                 appendedFirstName = true;
             }
@@ -417,8 +417,8 @@ namespace stage
                         << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and " : "")
                         << NEXT_BEAST_SPTR->Name() << " ";
 
-                    if (NEXT_BEAST_SPTR->Race().Which() == creature::race::Dragon)
-                        ss << "the " << creature::role::ToString(NEXT_BEAST_SPTR->Role().Which()) << " Dragon";
+                    if (NEXT_BEAST_SPTR->Race() == creature::race::Dragon)
+                        ss << "the " << creature::role::ToString(NEXT_BEAST_SPTR->Role()) << " Dragon";
                     else
                         ss << "the Wolfen";
 

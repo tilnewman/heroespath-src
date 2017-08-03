@@ -74,7 +74,7 @@ namespace combat
 
         bool GetWasHit() const;
 
-        stats::Health_t GetDamageTotal() const;
+        stats::Trait_t GetDamageTotal() const;
 
         const creature::CondEnumVec_t GetAllCondsAdded() const;
         const creature::CondEnumVec_t GetAllCondsRemoved() const;

@@ -123,8 +123,8 @@ namespace ownership
                                               const float         MAX);
 
         static void Make_Coins(const Profile & PROFILE,
-                               item::Coin_t &  coinsMin_OutParam,
-                               item::Coin_t &  coinsMax_OutParam);
+                               stats::Trait_t &  coinsMin_OutParam,
+                               stats::Trait_t &  coinsMax_OutParam);
 
         static const chance::ClothingChances Make_ClothingChances(
             const Profile &                  PROFILE,
@@ -166,7 +166,7 @@ namespace ownership
             const Profile &                     PROFILE,
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-            const item::Weight_t                ITEM_WEIGHT,
+            const stats::Trait_t                ITEM_WEIGHT,
             chance::MaterialChanceMap_t &       materialsMap_OutParam);
 
         static void Make_MaterialChancesSecondary(const Profile &,
@@ -199,7 +199,7 @@ namespace ownership
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             chance::MaterialChanceMap_t &       materialsMapPri,
             chance::MaterialChanceMap_t &       materialsMapSec,
-            const item::Weight_t                WEIGHT);
+            const stats::Trait_t                WEIGHT);
 
         template<typename T>
         static bool SetWeaponChances(

@@ -48,8 +48,8 @@ namespace stage
     class AnimNum : public sf::Drawable
     {
     public:
-        AnimNum(const stats::Stat_t              VALUE,
-                const stats::stat::Enum          WHICH_STAT,
+        AnimNum(const stats::Trait_t             VALUE,
+                const stats::Traits::Enum        WHICH_STAT,
                 const float                      START_LEFT,
                 const float                      START_TOP,
                 const float                      TARGET_LEFT,
@@ -63,17 +63,17 @@ namespace stage
         //returns true once the target is reached
         bool UpdateTime(const float ELAPSED_TIME_SEC);
 
-        inline bool IsDoneMoving() const            { return isDoneMoving_; }
-        inline bool IsDoneFading() const            { return isDoneFading_; }
-        inline bool WillFade() const                { return willFade_; }
-        inline void WillFadeSet(const bool B)       { willFade_ = B; }
-        inline bool IgnoreMe() const                { return ignoreMe_; }
-        inline void SetIgnoreMe()                   { ignoreMe_ = true; }
-        inline stats::stat::Enum Which() const      { return whichStat_; }
-        inline stats::Stat_t Value() const          { return value_; }
-        inline void ValueSet(const stats::Stat_t S) { value_ = S; }
-        inline bool IsHeldDown() const              { return isHeldDown_; }
-        inline void MouseUp()                       { isHeldDown_ = false; }
+        inline bool IsDoneMoving() const                { return isDoneMoving_; }
+        inline bool IsDoneFading() const                { return isDoneFading_; }
+        inline bool WillFade() const                    { return willFade_; }
+        inline void WillFadeSet(const bool B)           { willFade_ = B; }
+        inline bool IgnoreMe() const                    { return ignoreMe_; }
+        inline void SetIgnoreMe()                       { ignoreMe_ = true; }
+        inline stats::Traits::Enum Which() const        { return whichStat_; }
+        inline stats::Trait_t Value() const             { return value_; }
+        inline void ValueSet(const stats::Trait_t S)    { value_ = S; }
+        inline bool IsHeldDown() const                  { return isHeldDown_; }
+        inline void MouseUp()                           { isHeldDown_ = false; }
 
         inline void SetPosY(const float TOP)
         {
@@ -103,8 +103,8 @@ namespace stage
         friend bool operator==(const AnimNum & L, const AnimNum & R);
 
     private:
-        stats::Stat_t value_;
-        stats::stat::Enum whichStat_;
+        stats::Trait_t value_;
+        stats::Traits::Enum whichStat_;
         bool      ignoreMe_;
         sf::Uint8 colorVal_;
         float     startLeft_;
@@ -124,10 +124,13 @@ namespace stage
         float     prevPosX_;
     };
 
+
     using AnimNumSPtr_t = std::shared_ptr<AnimNum>;
     using AnimNumSVec_t = std::vector<AnimNumSPtr_t>;
 
+
     bool operator==(const AnimNum & L, const AnimNum & R);
+
 
     inline bool operator!=(const AnimNum & L, const AnimNum & R)
     {

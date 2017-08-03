@@ -31,7 +31,7 @@
 #include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/types.hpp"
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/armor-info.hpp"
@@ -68,11 +68,11 @@ namespace item
                       const material::Enum       MATERIAL_PRIMARY   = material::Nothing,
                       const material::Enum       MATERIAL_SECONDARY = material::Nothing,
                       const std::string &        IMAGE_FILENAME     = "",
-                      const Coin_t               PRICE              = Coin_t(0),
-                      const Weight_t             WEIGHT             = Weight_t(0),
-                      const stats::Health_t      DAMAGE_MIN         = 0,
-                      const stats::Health_t      DAMAGE_MAX         = 0,
-                      const stats::Armor_t       ARMOR_RATING       = 0,
+                      const stats::Trait_t       PRICE              = stats::Trait_t(0),
+                      const stats::Trait_t       WEIGHT             = stats::Trait_t(0),
+                      const stats::Trait_t       DAMAGE_MIN         = 0,
+                      const stats::Trait_t       DAMAGE_MAX         = 0,
+                      const stats::Trait_t       ARMOR_RATING       = 0,
                       const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
                       const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
                       const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
@@ -102,12 +102,12 @@ namespace item
         inline bool IsArmorType(const armor_type::Enum E) const     { return (armorType_ & E); }
         inline bool IsMiscType(const misc_type::Enum E) const       { return (miscType_ & E); }
         
-        inline Coin_t Price() const                                 { return price_; }
-        inline Weight_t Weight() const                              { return weight_; }
+        inline stats::Trait_t Price() const                         { return price_; }
+        inline stats::Trait_t Weight() const                        { return weight_; }
 
-        inline stats::Health_t DamageMin() const                    { return damageMin_; }
-        inline stats::Health_t DamageMax() const                    { return damageMax_; }
-        inline stats::Armor_t  ArmorRating() const                  { return armorRating_; }
+        inline stats::Trait_t DamageMin() const                     { return damageMin_; }
+        inline stats::Trait_t DamageMax() const                     { return damageMax_; }
+        inline stats::Trait_t  ArmorRating() const                  { return armorRating_; }
 
         inline bool IsBroken() const        { return (category_ == category::Broken); }
         inline bool IsArmor() const         { return (category_ & category::Armor); }
@@ -203,11 +203,11 @@ namespace item
     protected:
         std::string          name_;
         std::string          desc_;
-        Coin_t               price_;
-        Weight_t             weight_;
-        stats::Health_t      damageMin_;
-        stats::Health_t      damageMax_;
-        stats::Armor_t       armorRating_;
+        stats::Trait_t       price_;
+        stats::Trait_t       weight_;
+        stats::Trait_t       damageMin_;
+        stats::Trait_t       damageMax_;
+        stats::Trait_t       armorRating_;
         creature::role::Enum exclusiveToRole_;
         armor_type::Enum     armorType_;
         weapon_type::Enum    weaponType_;
@@ -260,7 +260,9 @@ namespace item
 
     bool operator<(const Item & L, const Item & R);
 
+
     bool operator==(const Item & L, const Item & R);
+
 
     inline bool operator!=(const Item & L, const Item & R)
     {

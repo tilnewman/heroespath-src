@@ -194,7 +194,7 @@ namespace weapon
             CleanStringField(fieldsVec[1], false) );
         
         weaponDetails.price = StringFieldToInt("Price", fieldsVec[2]);
-        weaponDetails.weight = static_cast<Weight_t>(StringFieldToInt("Weight", fieldsVec[3]));
+        weaponDetails.weight = static_cast<stats::Trait_t>(StringFieldToInt("Weight", fieldsVec[3]));
 
         weaponDetails.damage_min = StringFieldToInt("DamageMin", fieldsVec[4]);
         weaponDetails.damage_max = StringFieldToInt("DamageMax", fieldsVec[5]);

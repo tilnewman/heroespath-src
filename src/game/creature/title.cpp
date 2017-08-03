@@ -32,7 +32,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/title.hpp"
-#include "game/creature/role.hpp"
+#include "game/creature/role-enum.hpp"
 
 #include "sfml-util/gui/title-image-manager.hpp"
 
@@ -48,15 +48,27 @@ namespace game
 namespace creature
 {
 
+    RoleVec_t Title::ROLEVEC_ALL_PLAYER_ROLES_ = { role::Knight,
+                                                   role::Archer,
+                                                   role::Bard,
+                                                   role::Thief,
+                                                   role::Beastmaster,
+                                                   role::Sorcerer,
+                                                   role::Cleric,
+                                                   role::Sylavin,
+                                                   role::Firebrand,
+                                                   role::Wolfen };
+
+
     Title::Title(const Titles::Enum          TITLE,
                  const AchievementType::Enum ACHIEVEMENT_TYPE,
                  const std::size_t           ACHIEVEMENT_INDEX,
                  const std::size_t           ACHIEVEMENT_COUNT,
                  const RoleVec_t &           ROLES_VEC,
                  const stats::StatSet &      STATS_BONUS,
-                 const stats::Rank_t         RANK_BONUS,
-                 const stats::Exp_t          EXPERIENCE_BONUS,
-                 const stats::Health_t       HEALTH_BONUS)
+                 const stats::Trait_t        RANK_BONUS,
+                 const stats::Trait_t        EXPERIENCE_BONUS,
+                 const stats::Trait_t        HEALTH_BONUS)
     :
         title_           (TITLE),
         achievementType_ (ACHIEVEMENT_TYPE),
@@ -73,38 +85,30 @@ namespace creature
             "game::creature::Title::Title(title_enum=role::Count" 
             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
             << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
-            << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
-            << Role::CharacterRoleString(ROLES_VEC) << ") was given an invalid TITLE enum.");
+            << ") was given an invalid TITLE enum.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((Titles::ToString(TITLE).empty() == false),
             "game::creature::Title::Title(title_enum=" << TITLE << ", ach_enum="
             << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
-            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
-            << STATS_BONUS.ToStringCurrent(true, true, true)
-            << ", roles=" << Role::CharacterRoleString(ROLES_VEC)
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
             << ") was given an invalid TITLE.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((ROLES_VEC.empty() == false),
             "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum="
             << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
-            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
-            << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
-            << Role::CharacterRoleString(ROLES_VEC) << ") was given an empty role vector.");
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
+            << ") was given an empty role vector.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((ACHIEVEMENT_TYPE != AchievementType::Count),
             "game::creature::Title::Title(title=" << Titles::ToString(TITLE) << ", ach_enum="
             << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus="
-            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS << ", stat_bonus="
-            << STATS_BONUS.ToStringCurrent(true, true, true) << ", roles="
-            << Role::CharacterRoleString(ROLES_VEC)
+            << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
             << ") was given an AchievementType of 'Count'.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((((ACHIEVEMENT_TYPE != AchievementType::None) &&
             (ACHIEVEMENT_COUNT == 0)) == false), "game::creature::Title::Title(title="
             << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
-            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS << ", exp_bonus="
-            << EXPERIENCE_BONUS << ", stat_bonus=" << STATS_BONUS.ToStringCurrent(true, true, true)
-            << ", roles=" << Role::CharacterRoleString(ROLES_VEC)
+            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS 
             << ") was given a valid AchievementType but the achievement count was zero.");
 
         //construct filename
@@ -139,7 +143,7 @@ namespace creature
         std::ostringstream ss;
         ss << Titles::Name(title_);
 
-        if (Role::ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
+        if (ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
         {
             ss << ", for all roles";
         }
@@ -179,7 +183,7 @@ namespace creature
             ss << "health_bonus=" << healthBonus_ << SEP_STR;
         }
 
-        const std::string STATS_STR(statBonus_.ToStringNormal(true, true, true, true));
+        const std::string STATS_STR(statBonus_.ToString(true));
         if (STATS_STR.empty() == false)
         {
             ss << "stat_bonuses=" << STATS_STR;
@@ -204,7 +208,7 @@ namespace creature
 
         ss << "  This title can be earned by ";
 
-        if (Role::ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
+        if (ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
         {
             ss << "ALL roles";
         }
@@ -251,7 +255,7 @@ namespace creature
 
         ss << ".  ";
 
-        const std::string STATS_STR(statBonus_.ToStringNormal(false, false, true, true));
+        const std::string STATS_STR(statBonus_.ToString(true));
         if (STATS_STR.empty())
         {
             ss << "Stats are not modified by this title.";
@@ -326,12 +330,9 @@ namespace creature
             << "\"  was given a null creaturePtr.");
 
         //titles are permenant, so they effect both the normal and current stat values
-        creaturePtr->Stats().ModifyNormal(statBonus_);
-        creaturePtr->Stats().ModifyCurrentAndActual(statBonus_);
-
+        creaturePtr->StatTraitsModify(statBonus_);
         creaturePtr->IncreaseRank(rankBonus_);
         creaturePtr->IncreaseExp(expBonus_);
-
         creaturePtr->HealthNormalAdj(healthBonus_);
         creaturePtr->HealthCurrentAdj(healthBonus_);
     }

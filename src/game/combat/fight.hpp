@@ -70,9 +70,9 @@ namespace combat
     //all the functions required to allow two creatures to engage in one turn of fighting
     struct FightClub
     {
-        static stats::Stat_t IsValuetHigherThanRatioOfStat(
-            const stats::Stat_t STAT_VALUE,
-            const stats::Stat_t STAT_MAX,
+        static stats::Trait_t IsValuetHigherThanRatioOfStat(
+            const stats::Trait_t STAT_VALUE,
+            const stats::Trait_t STAT_MAX,
             const float         RATIO);
 
         static const FightResult Fight(
@@ -84,14 +84,14 @@ namespace combat
         static void HandleDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
             HitInfoVec_t &            hitInfoVec,
-            const stats::Health_t     HEALTH_ADJ,
+            const stats::Trait_t     HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             const bool                CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
-            const stats::Health_t     DAMAGE_ABS,
+            const stats::Trait_t     DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);
@@ -147,7 +147,7 @@ namespace combat
             creature::CreaturePtrC_t creatureDefendingPtrC,
             const bool               WILL_FORCE_HIT = false);
 
-        static stats::Health_t DetermineDamage(
+        static stats::Trait_t DetermineDamage(
             const item::ItemPtr_t    WEAPON_PTR,
             creature::CreaturePtrC_t creatureAttackingPtrC,
             creature::CreaturePtrC_t creatureDefendingPtrC,

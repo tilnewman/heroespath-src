@@ -70,8 +70,8 @@ namespace song
              const SongType::Enum   SONG_TYPE,
              const EffectType::Enum EFFECT_TYPE,
              const Phase::Enum      VALID_PHASES,
-             const stats::Mana_t    MANA_COST,
-             const stats::Rank_t    RANK,
+             const stats::Trait_t    MANA_COST,
+             const stats::Trait_t    RANK,
              const TargetType::Enum TARGET_TYPE,
              const std::string &    VERB_THIRD_PERSON,
              const std::string &    VERB_PAST_TENSE);
@@ -94,15 +94,15 @@ namespace song
         inline SongType::Enum Type() const          { return type_; }
         inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const      { return validPhases_; }
-        inline stats::Mana_t ManaCost() const       { return manaCost_; }
-        inline stats::Rank_t Rank() const           { return rank_; }
+        inline stats::Trait_t ManaCost() const       { return manaCost_; }
+        inline stats::Trait_t Rank() const           { return rank_; }
         inline TargetType::Enum Target() const      { return targetType_; }
 
         //Allows the spell to change the target creature.
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const = 0;
@@ -125,9 +125,9 @@ namespace song
         Songs::Enum      which_;
         SongType::Enum   type_;
         EffectType::Enum effectType_;
-        stats::Rank_t    rank_;
+        stats::Trait_t    rank_;
         Phase::Enum      validPhases_;
-        stats::Mana_t    manaCost_;
+        stats::Trait_t    manaCost_;
         TargetType::Enum targetType_;
         std::string      verbThirdPerson_;
         std::string      verbPastTense_;

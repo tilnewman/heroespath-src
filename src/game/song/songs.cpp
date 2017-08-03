@@ -44,7 +44,7 @@ namespace song
     bool RallyDrum::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -63,7 +63,7 @@ namespace song
         else
         {
             if (creature::Stats::Test(creaturePlayingPtr,
-                                      { stats::stat::Intelligence, stats::stat::Charm},
+                                      { stats::Traits::Intelligence, stats::Traits::Charm},
                                       0.5f,
                                       true,
                                       true))
@@ -97,19 +97,18 @@ namespace song
     bool SpiritResonance::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
         auto const RATIO{ creature::Stats::Ratio(
             creaturePlayingPtr,
-            { stats::stat::Intelligence, stats::stat::Charm },
-            false,
+            { stats::Traits::Intelligence, stats::Traits::Charm },
             true,
             true) };
 
-        auto const MANA_GAIN_ORIG{ static_cast<stats::Mana_t>(10.0f * RATIO) };
+        auto const MANA_GAIN_ORIG{ static_cast<stats::Trait_t>(10.0f * RATIO) };
 
         auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
 
@@ -118,7 +117,7 @@ namespace song
 
         if (MANA_GAIN_FINAL > 0)
         {
-            creatureListeningPtr->ManaCurrentAdj(MANA_GAIN_FINAL);
+            creatureListeningPtr->TraitNormalAdj(stats::Traits::Mana, MANA_GAIN_FINAL);
 
             std::ostringstream ss;
             ss << "'s mana for " << MANA_GAIN_FINAL << ".";
@@ -147,7 +146,7 @@ namespace song
     bool RousingRhythm::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -198,7 +197,7 @@ namespace song
     bool TripBeat::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -228,12 +227,11 @@ namespace song
         else
         {
             if (creature::Stats::Versus(creaturePlayingPtr,
-                                        { stats::stat::Intelligence, stats::stat::Charm },
+                                        { stats::Traits::Intelligence, stats::Traits::Charm },
                                         creatureListeningPtr,
                                         {},
                                         0,
                                         0,
-                                        false,
                                         true,
                                         true,
                                         true,
@@ -268,7 +266,7 @@ namespace song
     bool PanicStrings::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -287,12 +285,11 @@ namespace song
         else
         {
             if (creature::Stats::Versus(creaturePlayingPtr,
-                                        { stats::stat::Intelligence, stats::stat::Charm},
+                                        { stats::Traits::Intelligence, stats::Traits::Charm},
                                         creatureListeningPtr,
                                         {},
                                         0,
                                         0,
-                                        false,
                                         true,
                                         true,
                                         true,
@@ -327,7 +324,7 @@ namespace song
     bool Lullaby::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -347,7 +344,7 @@ namespace song
         else
         {
             if (creature::Stats::Test(creaturePlayingPtr,
-                                      { stats::stat::Intelligence, stats::stat::Charm},
+                                      { stats::Traits::Intelligence, stats::Traits::Charm},
                                       0.5f,
                                       true,
                                       true))

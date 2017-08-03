@@ -115,7 +115,7 @@ namespace combat
                                            13 + misc::random::Int(5),  //spd
                                            3  + misc::random::Int(5) );//int
 
-        const stats::Health_t GOBLIN_HEALTH(10 + misc::random::Int(10));
+        const stats::Trait_t GOBLIN_HEALTH(10 + misc::random::Int(10));
 
         const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ? 
             creature::sex::Male : creature::sex::Female);
@@ -125,8 +125,8 @@ namespace combat
             GOBLIN_SEX,
             creature::BodyType::Make_FromRaceAndRole(creature::race::Goblin,
                                                      creature::role::Grunt),
-            creature::Race(creature::race::Goblin),
-            creature::Role(creature::role::Grunt),
+            creature::race::Goblin,
+            creature::role::Grunt,
             GOBLIN_STATS,
             GOBLIN_HEALTH) );
 

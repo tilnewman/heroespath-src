@@ -104,9 +104,9 @@ namespace stage
     //encapsulates a stat modifier that is drawn to the screen
     struct StatModText : public sf::Drawable
     {
-        StatModText(const stats::stat::Enum STAT,
+        StatModText(const stats::Traits::Enum STAT,
                     const std::string &     NAME, //name of race or role
-                    const stats::Stat_t     VAL,
+                    const stats::Trait_t     VAL,
                     const float             POS_LEFT,
                     const float             POS_TOP)
         :
@@ -141,8 +141,8 @@ namespace stage
             target.draw( * text_region_sptr, states);
         }
 
-        stats::Stat_t value;
-        stats::stat::Enum stat;
+        stats::Trait_t value;
+        stats::Traits::Enum stat;
         sfml_util::gui::TextRegionSPtr_t text_region_sptr;
     };
 
@@ -187,14 +187,14 @@ namespace stage
 
         //on error the pos for Intelligence is returned
         //depends on members attribVertOffset1_ and attribVertOffset2_ being set before running
-        float GetAttributeNumPosTop(const stats::stat::Enum STAT);
+        float GetAttributeNumPosTop(const stats::Traits::Enum STAT);
 
         void SetupRaceDescriptionBox();
         void SetupRoleDescriptionBox();
         void SetupAttrDescriptionBox();
 
         //returns true if any text was set that needs to be displayed
-        bool GetStatHelpText(const stats::stat::Enum WHICH_STAT,
+        bool GetStatHelpText(const stats::Traits::Enum WHICH_STAT,
                              sfml_util::gui::TextInfo & textInfo) const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
@@ -209,13 +209,13 @@ namespace stage
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
 
-        //these functions return stats::stat::Count on error or none result
-        stats::stat::Enum GetHeldDownStat() const;
-        stats::stat::Enum GetStatAbove(const stats::stat::Enum STAT) const;
-        stats::stat::Enum GetStatBelow(const stats::stat::Enum STAT) const;
+        //these functions return stats::Traits::Count on error or none result
+        stats::Traits::Enum GetHeldDownStat() const;
+        stats::Traits::Enum GetStatAbove(const stats::Traits::Enum STAT) const;
+        stats::Traits::Enum GetStatBelow(const stats::Traits::Enum STAT) const;
 
         //returns a value less than zero on error
-        float GetStatPosTop(const stats::stat::Enum STAT) const;
+        float GetStatPosTop(const stats::Traits::Enum STAT) const;
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
@@ -228,7 +228,7 @@ namespace stage
 
         void ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS);
 
-        void SwapAttributes(const stats::stat::Enum A, const stats::stat::Enum B);
+        void SwapAttributes(const stats::Traits::Enum A, const stats::Traits::Enum B);
 
         void HandleStuckAnims(const float ELAPSED_TIME_SEC);
 
@@ -237,6 +237,9 @@ namespace stage
         void ResetForNewCharacterCreation();
 
     private:
+        static const stats::Trait_t STAT_INVALID_;
+        static const stats::Trait_t STAT_INITIAL_MAX_;
+        //
         static const sfml_util::gui::ColorSet GUI_DEFAULT_COLORSET_;
         static const sf::Color LIGHT_TEXT_COLOR_;
         static const sf::Color DESC_TEXT_COLOR_;
@@ -319,8 +322,8 @@ namespace stage
         AnimNumSVec_t fixedStatsSVec_;
         int           initialRollCounter_;
         //
-        float             dragStartY_;
-        stats::stat::Enum closestDragStat_;
+        float dragStartY_;
+        stats::Traits::Enum closestDragStat_;
         //
         sfml_util::gui::RadioButtonSetSPtr_t raceRadioButtonSPtr_;
         sfml_util::gui::TextRegionUPtr_t     racetDescTextRegionUPtr_;

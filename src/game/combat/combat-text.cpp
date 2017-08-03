@@ -243,7 +243,7 @@ namespace combat
 
         if (CREATURE_CPTRC->CanFly() == false)
         {
-            return CREATURE_CPTRC->Race().Name() + "s cannot fly.";
+            return CREATURE_CPTRC->RaceName() + "s cannot fly.";
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;

@@ -61,18 +61,18 @@ namespace creature
         Title & operator=(const Title &) =delete;
 
     public:
-        explicit Title(const Titles::Enum          TITLE             = Titles::Count,
-                       const AchievementType::Enum ACHIEVEMENT_TYPE  = AchievementType::None,
+        explicit Title(const Titles::Enum     TITLE                 = Titles::Count,
+                       const AchievementType::Enum ACHIEVEMENT_TYPE = AchievementType::None,
 
                        //0 is invalid, valid indexs always start at one
-                       const std::size_t           ACHIEVEMENT_INDEX = 0,
+                       const std::size_t      ACHIEVEMENT_INDEX     = 0,
 
-                       const std::size_t           ACHIEVEMENT_COUNT = 0,
-                       const RoleVec_t &           ROLES_VEC         = RoleVec_t(),
-                       const stats::StatSet &      STATS_BONUS       = stats::StatSet(),
-                       const stats::Rank_t         RANK_BONUS        = 0,
-                       const stats::Exp_t          EXPERIENCE_BONUS  = 0,
-                       const stats::Health_t       HEALTH_BONUS      = 0);
+                       const std::size_t      ACHIEVEMENT_COUNT     = 0,
+                       const RoleVec_t &      ROLES_VEC             = RoleVec_t(),
+                       const stats::StatSet & STATS_BONUS           = stats::StatSet(),
+                       const stats::Trait_t   RANK_BONUS            = 0,
+                       const stats::Trait_t   EXPERIENCE_BONUS      = 0,
+                       const stats::Trait_t   HEALTH_BONUS          = 0);
 
         virtual ~Title();
 
@@ -87,9 +87,9 @@ namespace creature
         inline virtual const RoleVec_t RolesCopy() const                { return rolesVec_; }
         inline virtual bool IsRoleInList(const role::Enum E) const      { return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end()); }
         inline virtual const std::string ImageFilename() const          { return fileName_; }
-        inline virtual stats::Rank_t RankBonus() const                  { return rankBonus_; }
-        inline virtual stats::Exp_t ExpBonus() const                    { return expBonus_; }
-        inline virtual stats::Health_t HealthBonus() const              { return healthBonus_; }
+        inline virtual stats::Trait_t RankBonus() const                 { return rankBonus_; }
+        inline virtual stats::Trait_t ExpBonus() const                  { return expBonus_; }
+        inline virtual stats::Trait_t HealthBonus() const               { return healthBonus_; }
 
         virtual const std::string ToString() const;
         virtual const std::string LongDesc() const;
@@ -100,17 +100,20 @@ namespace creature
         friend bool operator<(const Title & L, const Title & R);
         friend bool operator==(const Title & L, const Title & R);
 
+    public:
+        static RoleVec_t ROLEVEC_ALL_PLAYER_ROLES_;
+
     protected:
         Titles::Enum          title_;
         AchievementType::Enum achievementType_;
         std::size_t           achievementCount_;
         std::size_t           achievementIndex_;
         RoleVec_t             rolesVec_;
-        stats::Rank_t         rankBonus_;
-        stats::Exp_t          expBonus_;
+        stats::Trait_t        rankBonus_;
+        stats::Trait_t        expBonus_;
         stats::StatSet        statBonus_;
         std::string           fileName_;
-        stats::Health_t       healthBonus_;
+        stats::Trait_t        healthBonus_;
     };
 
 

@@ -67,7 +67,7 @@ namespace creature
 
         ss  << ".  " << Conditions::Desc(type_);
         
-        auto const TRAIT_STR{ traitSet_.ToString(false, false) };
+        auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
             ss << "  Traits: " << TRAIT_STR;
@@ -87,7 +87,7 @@ namespace creature
             ss << " (a magical condition)";
         }
 
-        auto const TRAIT_STR{ traitSet_.ToString(false, false) };
+        auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
             ss << "  Traits: " << TRAIT_STR;

@@ -125,8 +125,8 @@ namespace ownership
         const Profile &                  PROFILE,
         const non_player::CharacterPtr_t CHARACTER_PTR)
     {
-        item::Coin_t coinsMin(0);
-        item::Coin_t coinsMax(0);
+        stats::Trait_t coinsMin(0);
+        stats::Trait_t coinsMax(0);
         Make_Coins(PROFILE, coinsMin, coinsMax);
 
         return chance::InventoryChances(coinsMin,
@@ -139,8 +139,8 @@ namespace ownership
 
 
     void ChanceFactory::Make_Coins(const Profile & PROFILE,
-                                   item::Coin_t &  coinsMin_OutParam,
-                                   item::Coin_t &  coinsMax_OutParam)
+                                   stats::Trait_t &  coinsMin_OutParam,
+                                   stats::Trait_t &  coinsMax_OutParam)
     {
         const std::string KEY_STR("heroespath-nonplayer-coins-bounds-"
             + wealth_type::ToString(PROFILE.wealthType) );
@@ -158,7 +158,7 @@ namespace ownership
 
         try
         {
-            coinsMin_OutParam = boost::lexical_cast<item::Coin_t>(strVec[0]);
+            coinsMin_OutParam = boost::lexical_cast<stats::Trait_t>(strVec[0]);
         }
         catch (...)
         {
@@ -173,7 +173,7 @@ namespace ownership
 
         try
         {
-            coinsMax_OutParam = boost::lexical_cast<item::Coin_t>(strVec[1]);
+            coinsMax_OutParam = boost::lexical_cast<stats::Trait_t>(strVec[1]);
         }
         catch (...)
         {
@@ -300,7 +300,7 @@ namespace ownership
         chance::WeaponChances weaponChances( chance::WeaponChances::NoWeapon() );
 
         WeaponSetVec_t weaponSetVec;
-        LookupPossibleWeaponsByRole(CHARACTER_PTR->Role().Which(), weaponSetVec);
+        LookupPossibleWeaponsByRole(CHARACTER_PTR->Role(), weaponSetVec);
 
         for (auto const & NEXT_WEAPON_SET : weaponSetVec)
         {
@@ -770,7 +770,7 @@ namespace ownership
 
         using StrVec_t = std::vector<std::string>;
 
-        const std::string ROLE_STR(creature::role::ToString(CHARACTER_PTR->Role().Which()));
+        const std::string ROLE_STR(creature::role::ToString(CHARACTER_PTR->Role()));
         const std::string KEY_STR("heroespath-nonplayer-armor-chances-role-" + ROLE_STR);
         const std::string VALUE_STR(GameDataFile::Instance()->GetCopyStr(KEY_STR));
 
@@ -785,7 +785,7 @@ namespace ownership
 
             M_ASSERT_OR_LOGANDTHROW_SS((piecesVec.size() >= 2),
                 "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\""
-                << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                << creature::role::ToString(CHARACTER_PTR->Role())
                 << "\") found value-str=\"" << VALUE_STR
                 << "\" which failed to be parsed into the required 2  or more comma sep fields.");
 
@@ -803,7 +803,7 @@ namespace ownership
             }
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealClose(-1.0f, armorChanceVal) == false),
                 "game::non_player::ownership::ChanceFactory::LookupPossibleArmorByRole(role=\""
-                << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                << creature::role::ToString(CHARACTER_PTR->Role())
                 << "\") found value-str=\"" << VALUE_STR << "\" which had float str=\""
                 << ARMOR_CHANCE_STR
                 << "\" which was unable to be parsed into a valid (!= -1) float.  ("
@@ -824,14 +824,14 @@ namespace ownership
             {
                 M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Count),
                     "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\""
-                    << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                    << creature::role::ToString(CHARACTER_PTR->Role())
                     << "\") found value-str=\"" << VALUE_STR
                     << "\" which had more than two comma sep fields, but the second field failed "
                     << "to be parsed as a valid item::armor::base_type::Enum.");
 
                 M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Plain),
                     "game::non_player::ownership::ChanceFactor::LookupPossibleArmorByRole(role=\""
-                    << creature::role::ToString(CHARACTER_PTR->Role().Which())
+                    << creature::role::ToString(CHARACTER_PTR->Role())
                     << "\") found value-str=\"" << VALUE_STR
                     << "\" which had more than two comma sep fields, but the second field failed "
                     << "to be parsed as a valid non-Plain item::armor::base_type::Enum.");
@@ -1301,7 +1301,7 @@ namespace ownership
         const Profile &                     PROFILE,
         const non_player::CharacterPtr_t    CHARACTER_PTR,
         const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-        const item::Weight_t                ITEM_WEIGHT,
+        const stats::Trait_t                ITEM_WEIGHT,
         chance::MaterialChanceMap_t &       materialsMap_OutParam)
     {
         //establish the base chances for a special primary material
@@ -1857,7 +1857,7 @@ namespace ownership
                                          const non_player::CharacterPtr_t    CREATURE_PTR,
                                          chance::MaterialChanceMap_t &       materialsMapPri,
                                          chance::MaterialChanceMap_t &       materialsMapSec,
-                                         const item::Weight_t                WEIGHT)
+                                         const stats::Trait_t                WEIGHT)
     {
         Make_MaterialChancesPrimary(PROFILE,
                                     CREATURE_PTR,

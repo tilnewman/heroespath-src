@@ -406,7 +406,7 @@ namespace creature
                          back_inserter(byRacePVec),
                          [RACE_ENUM, IS_GIVEN_RACE]
                          (CreatureCPtrC_t CPTRC)
-                         { return IS_GIVEN_RACE == (CPTRC->Race().Which() == RACE_ENUM); });
+                         { return IS_GIVEN_RACE == (CPTRC->Race() == RACE_ENUM); });
         }
 
         return byRacePVec;
@@ -426,7 +426,7 @@ namespace creature
                          back_inserter(byRolePVec),
                          [ROLE_ENUM, IS_GIVEN_ROLE]
                          (CreatureCPtrC_t CPTRC)
-                         { return IS_GIVEN_ROLE == (CPTRC->Role().Which() == ROLE_ENUM); } );
+                         { return IS_GIVEN_ROLE == (CPTRC->Role() == ROLE_ENUM); } );
         }
 
         return byRolePVec;

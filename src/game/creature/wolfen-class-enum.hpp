@@ -29,7 +29,7 @@
 //  An enumeration of all Wolfen classes as determined by Rank.
 //
 #include <string>
-#include "game/stats/types.hpp" //for Rank_t
+#include "game/stats/types.hpp" //for stats::Trait_t
 
 
 namespace game
@@ -53,7 +53,7 @@ namespace creature
         static const std::string Name(const wolfen_class::Enum);
         static const std::string Desc(const wolfen_class::Enum);
         inline static const std::string ToString(const wolfen_class::Enum E) { return Name(E); }
-        static wolfen_class::Enum ClassFromRank(const stats::Rank_t);
+        static wolfen_class::Enum ClassFromRank(const stats::Trait_t);
     };
 
 }

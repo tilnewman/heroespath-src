@@ -76,14 +76,14 @@ namespace spell
     bool Sparks::EffectCreature(
         creature::CreaturePtr_t   castingCreaturePtr,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &         healthAdj,
+        stats::Trait_t &         healthAdj,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
         auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
-            stats::stat::Intelligence,
+            stats::Traits::Intelligence,
             8,
             0,
             0.5f,
@@ -136,14 +136,14 @@ namespace spell
     bool Bandage::EffectCreature(
         creature::CreaturePtr_t   castingCreaturePtr,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &         healthAdj,
+        stats::Trait_t &         healthAdj,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
         auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
             castingCreaturePtr,
-            stats::stat::Charm,
+            stats::Traits::Charm,
             8,
             0,
             0.5f,
@@ -184,7 +184,7 @@ namespace spell
     bool Sleep::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -221,7 +221,7 @@ namespace spell
     bool Awaken::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -270,7 +270,7 @@ namespace spell
     bool Trip::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -315,7 +315,7 @@ namespace spell
     bool Lift::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -358,7 +358,7 @@ namespace spell
     bool Daze::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -393,7 +393,7 @@ namespace spell
     bool Panic::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -428,7 +428,7 @@ namespace spell
     bool ClearMind::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -477,7 +477,7 @@ namespace spell
     bool Poison::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -512,7 +512,7 @@ namespace spell
     bool Antidote::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -547,7 +547,7 @@ namespace spell
     bool PoisonCloud::EffectCreature(
         creature::CreaturePtr_t   castingCreaturePtr,
         creature::CreaturePtr_t   creatureCastUponPtr,
-        stats::Health_t &,
+        stats::Trait_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -563,12 +563,11 @@ namespace spell
         else
         {
             if (creature::Stats::Versus(castingCreaturePtr,
-                                        stats::stat::Intelligence,
+                                        stats::Traits::Intelligence,
                                         creatureCastUponPtr,
-                                        stats::stat::Count,
+                                        stats::Traits::Count,
                                         0,
                                         0,
-                                        false,
                                         true,
                                         true,
                                         true,

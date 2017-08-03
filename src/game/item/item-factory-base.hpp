@@ -74,16 +74,16 @@ namespace item
                                                         const material::Enum MATERIAL_PRI,
                                                         const material::Enum MATERIAL_SEC);
 
-        static void AdjustPrice(Coin_t & price,
+        static void AdjustPrice(stats::Trait_t &     price,
                                 const material::Enum MATERIAL_PRI,
                                 const material::Enum MATERIAL_SEC,
                                 const bool           IS_PIXIE_ITEM = false);
 
-        static void AdjustWeight(Weight_t & weight,
+        static void AdjustWeight(stats::Trait_t &     weight,
                                  const material::Enum MATERIAL_PRI,
                                  const material::Enum MATERIAL_SEC);
 
-        static void AdjustArmorRating(stats::Armor_t &     armorRating,
+        static void AdjustArmorRating(stats::Trait_t &     armorRating,
                                       const material::Enum MATERIAL_PRI,
                                       const material::Enum MATERIAL_SEC);
 

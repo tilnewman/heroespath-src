@@ -28,7 +28,7 @@
 // inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/non-player/ownership-chance-types.hpp"
 
@@ -106,7 +106,7 @@ namespace ownership
             const non_player::CharacterPtr_t CHARACTER_PTR,
             const bool                       HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
-        static item::Coin_t Make_Coins(const chance::InventoryChances & CHANCES);
+        static stats::Trait_t Make_Coins(const chance::InventoryChances & CHANCES);
 
         static bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC);
 

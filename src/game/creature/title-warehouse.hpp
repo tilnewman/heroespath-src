@@ -27,6 +27,7 @@
 //
 // title-warehouse.hpp
 //
+#include "game/creature/role-enum.hpp"
 #include "game/creature/title-enum.hpp"
 
 #include <memory>

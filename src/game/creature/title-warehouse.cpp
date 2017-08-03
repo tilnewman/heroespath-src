@@ -31,7 +31,7 @@
 
 #include "sfml-util/gui/title-image-manager.hpp"
 
-#include "game/creature/role.hpp"
+#include "game/creature/role-enum.hpp"
 #include "game/creature/title.hpp"
 #include "game/loop-manager.hpp"
 
@@ -56,25 +56,25 @@ namespace title
     {
         //Note:  Keep order in sync with game::creature::Titles::Enum
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::ProtectorOfThornberry, AchievementType::None, 0, 0, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(), 0, 500, 2) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::ProtectorOfThornberry, AchievementType::None, 0, 0, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(), 0, 500, 2) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Dodger,      AchievementType::DodgedStanding, 1, 50,    Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 1,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::FastFoot,    AchievementType::DodgedStanding, 2, 100,   Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 2,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::NimbleFoot,  AchievementType::DodgedStanding, 3, 200,   Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 3,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SwiftFoot,   AchievementType::DodgedStanding, 4, 500,   Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 1, 4,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeMover,  AchievementType::DodgedStanding, 5, 1000,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 2, 5,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeGrace,  AchievementType::DodgedStanding, 6, 2000,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 3, 6,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeDancer, AchievementType::DodgedStanding, 7, 5000,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 4, 7,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeShadow, AchievementType::DodgedStanding, 8, 10000, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 7, 10, 0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Dodger,      AchievementType::DodgedStanding, 1, 50,    Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 1,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::FastFoot,    AchievementType::DodgedStanding, 2, 100,   Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 2,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::NimbleFoot,  AchievementType::DodgedStanding, 3, 200,   Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 3,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SwiftFoot,   AchievementType::DodgedStanding, 4, 500,   Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 1, 4,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeMover,  AchievementType::DodgedStanding, 5, 1000,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 2, 5,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeGrace,  AchievementType::DodgedStanding, 6, 2000,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 3, 6,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeDancer, AchievementType::DodgedStanding, 7, 5000,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 4, 7,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::MeleeShadow, AchievementType::DodgedStanding, 8, 10000, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 7, 10, 0)) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyDodger,   AchievementType::DodgedFlying, 1, 20,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 1,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::FastWing,    AchievementType::DodgedFlying, 2, 40,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 2,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::NimbleWing,  AchievementType::DodgedFlying, 3, 80,  Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 3,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SwiftWing,   AchievementType::DodgedFlying, 4, 120, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 1, 4,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyMover,    AchievementType::DodgedFlying, 5, 200, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 2, 5,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::GraceWing,   AchievementType::DodgedFlying, 6, 300, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 3, 6,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyDancer,   AchievementType::DodgedFlying, 7, 450, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 4, 7,  0)) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyShadow,   AchievementType::DodgedFlying, 8, 650, Role::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 7, 10, 0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyDodger,   AchievementType::DodgedFlying, 1, 20,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 1,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::FastWing,    AchievementType::DodgedFlying, 2, 40,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 2,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::NimbleWing,  AchievementType::DodgedFlying, 3, 80,  Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 0, 3,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SwiftWing,   AchievementType::DodgedFlying, 4, 120, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 1, 4,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyMover,    AchievementType::DodgedFlying, 5, 200, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 2, 5,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::GraceWing,   AchievementType::DodgedFlying, 6, 300, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 3, 6,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyDancer,   AchievementType::DodgedFlying, 7, 450, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 4, 7,  0)) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SkyShadow,   AchievementType::DodgedFlying, 8, 650, Title::ROLEVEC_ALL_PLAYER_ROLES_, stats::StatSet(0, 0, 0, 7, 10, 0)) );
 
         titleUVec_.push_back( std::make_unique<Title>(Titles::Sneak,        AchievementType::BackstabsHits, 1, 10,   RoleVec_t { role::Thief }, stats::StatSet(0, 1,  0, 1,  0, 0), 0, 0, 0) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::Stalker,      AchievementType::BackstabsHits, 2, 50,   RoleVec_t { role::Thief }, stats::StatSet(0, 2,  0, 2,  0, 0), 0, 0, 0) );
@@ -166,15 +166,15 @@ namespace title
         titleUVec_.push_back( std::make_unique<Title>(Titles::Wizard,    AchievementType::SpellsCast, 7, 2000,   RoleVec_t{ role::Sylavin, role::Firebrand, role::Archer, role::Beastmaster, role::Bard, role::Thief, role::Cleric, role::Sorcerer }, stats::StatSet(0, 0, 0, 8,  0, 8),  1, 0, 30) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::Warlock,   AchievementType::SpellsCast, 8, 5000,   RoleVec_t{ role::Sylavin, role::Firebrand, role::Archer, role::Beastmaster, role::Bard, role::Thief, role::Cleric, role::Sorcerer }, stats::StatSet(0, 0, 0, 10, 0, 10), 2, 0, 50) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Undaunted,     AchievementType::EnemiesFaced, 1, 20,   RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0,  0, 0, 1,  0, 0),  0, 0,  5) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Daring,        AchievementType::EnemiesFaced, 2, 50,   RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(1,  0, 0, 2,  0, 1),  0, 0, 10) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Bold,          AchievementType::EnemiesFaced, 3, 100,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(2,  0, 0, 3,  0, 2),  0, 0, 15) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Brave,         AchievementType::EnemiesFaced, 4, 200,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(3,  0, 0, 4,  0, 3),  0, 0, 20) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Valorous,      AchievementType::EnemiesFaced, 5, 500,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(4,  0, 0, 5,  0, 4),  0, 0, 25) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Valiant,       AchievementType::EnemiesFaced, 6, 1000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(5,  0, 0, 6,  0, 5),  0, 0, 30) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Lionhearted,   AchievementType::EnemiesFaced, 7, 2000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(6,  0, 0, 7,  0, 6),  0, 0, 35) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Heroic,        AchievementType::EnemiesFaced, 8, 3000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(8,  0, 0, 8,  0, 8),  1, 0, 40) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Fearless,      AchievementType::EnemiesFaced, 9, 5000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(10, 0, 0, 10, 0, 10), 2, 0, 50) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Undaunted,     AchievementType::EnemiesFaced, 1, 20,   RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0,  0, 0, 1,  0, 0),  0, 0,  5) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Daring,        AchievementType::EnemiesFaced, 2, 50,   RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(1,  0, 0, 2,  0, 1),  0, 0, 10) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Bold,          AchievementType::EnemiesFaced, 3, 100,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(2,  0, 0, 3,  0, 2),  0, 0, 15) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Brave,         AchievementType::EnemiesFaced, 4, 200,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(3,  0, 0, 4,  0, 3),  0, 0, 20) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Valorous,      AchievementType::EnemiesFaced, 5, 500,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(4,  0, 0, 5,  0, 4),  0, 0, 25) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Valiant,       AchievementType::EnemiesFaced, 6, 1000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(5,  0, 0, 6,  0, 5),  0, 0, 30) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Lionhearted,   AchievementType::EnemiesFaced, 7, 2000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(6,  0, 0, 7,  0, 6),  0, 0, 35) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Heroic,        AchievementType::EnemiesFaced, 8, 3000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(8,  0, 0, 8,  0, 8),  1, 0, 40) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Fearless,      AchievementType::EnemiesFaced, 9, 5000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(10, 0, 0, 10, 0, 10), 2, 0, 50) );
 
         titleUVec_.push_back( std::make_unique<Title>(Titles::PawOfTheLunarPup,       AchievementType::MoonHowls, 1, 10,  RoleVec_t{ role::Wolfen }, stats::StatSet(1,  0, 0, 1,  0, 0), 0, 0, 5) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::PawOfTheYoungHowler,    AchievementType::MoonHowls, 2, 20,  RoleVec_t{ role::Wolfen }, stats::StatSet(2,  0, 0, 2,  0, 0), 0, 0, 10) );
@@ -185,14 +185,14 @@ namespace title
         titleUVec_.push_back( std::make_unique<Title>(Titles::PawOfTheGlowingOrb,     AchievementType::MoonHowls, 7, 500, RoleVec_t{ role::Wolfen }, stats::StatSet(8,  0, 0, 8,  0, 0), 1, 0, 40) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::PawOfTheCrescentLegion, AchievementType::MoonHowls, 8, 800, RoleVec_t{ role::Wolfen }, stats::StatSet(10, 0, 0, 10, 0, 0), 2, 0, 50) );
 
-        titleUVec_.push_back( std::make_unique<Title>(Titles::WindGlider,    AchievementType::TurnsInFlight, 1, 50,   RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 1,  1,  0), 0, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::LightFeather,  AchievementType::TurnsInFlight, 2, 100,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 2,  2,  0), 0, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::FreeFlyer,     AchievementType::TurnsInFlight, 3, 200,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 3,  3,  0), 0, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SteadyWing,    AchievementType::TurnsInFlight, 4, 500,  RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 4,  4,  0), 0, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::EverSoar,      AchievementType::TurnsInFlight, 5, 1000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 5,  5,  0), 0, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::SkySail,       AchievementType::TurnsInFlight, 6, 2000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 6,  6,  0), 1, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::Aerialist,     AchievementType::TurnsInFlight, 7, 3000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 8,  8,  0), 1, 0, 0) );
-        titleUVec_.push_back( std::make_unique<Title>(Titles::FeatherDancer, AchievementType::TurnsInFlight, 8, 5000, RoleVec_t{ Role::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 10, 10, 0), 2, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::WindGlider,    AchievementType::TurnsInFlight, 1, 50,   RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 1,  1,  0), 0, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::LightFeather,  AchievementType::TurnsInFlight, 2, 100,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 2,  2,  0), 0, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::FreeFlyer,     AchievementType::TurnsInFlight, 3, 200,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 3,  3,  0), 0, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SteadyWing,    AchievementType::TurnsInFlight, 4, 500,  RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 4,  4,  0), 0, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::EverSoar,      AchievementType::TurnsInFlight, 5, 1000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 5,  5,  0), 0, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::SkySail,       AchievementType::TurnsInFlight, 6, 2000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 6,  6,  0), 1, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::Aerialist,     AchievementType::TurnsInFlight, 7, 3000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 8,  8,  0), 1, 0, 0) );
+        titleUVec_.push_back( std::make_unique<Title>(Titles::FeatherDancer, AchievementType::TurnsInFlight, 8, 5000, RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ }, stats::StatSet(0, 0, 0, 10, 10, 0), 2, 0, 0) );
 
         titleUVec_.push_back( std::make_unique<Title>(Titles::PackFollower,  AchievementType::PackActions, 1, 20,   RoleVec_t{ role::Wolfen }, stats::StatSet(1,  1,  0, 0, 0, 0), 0, 0, 5) );
         titleUVec_.push_back( std::make_unique<Title>(Titles::PackMember,    AchievementType::PackActions, 2, 50,   RoleVec_t{ role::Wolfen }, stats::StatSet(2,  2,  0, 0, 0, 0), 0, 0, 10) );
@@ -241,11 +241,24 @@ namespace title
 
     TitlePtr_t Warehouse::Get(const Titles::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(((E >= 0) && (E < Titles::Count)),                 "game::creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < titleUVec_.size()), "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E) << "\") enum given was " << E << " but that was greater than (or equal to) the vec size of " << titleUVec_.size() << ".");
-        M_ASSERT_OR_LOGANDTHROW_SS((titleUVec_.empty() == false),                     "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E) << "\") called before vec was populated by Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS(((E >= 0) && (E < Titles::Count)),
+            "game::creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < titleUVec_.size()),
+            "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E)
+            << "\") enum given was " << E << " but that was greater than (or equal to) "
+            << "the vec size of " << titleUVec_.size() << ".");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((titleUVec_.empty() == false),
+            "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E)
+            << "\") called before vec was populated by Setup().");
+
         const TitlePtr_t TITLE_PTR(titleUVec_[static_cast<std::size_t>(E)].get());
-        M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR != nullptr),                            "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E) << "\") found a nullptr in the vector.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR != nullptr),
+            "game::creature::Titles::Warehouse::Get(\"" << Titles::ToString(E)
+            << "\") found a nullptr in the vector.");
+
         return TITLE_PTR;
     }
 
@@ -256,7 +269,8 @@ namespace title
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::creature::Titles::Warehouse::Test() Starting Tests...");
+            LoopManager::Instance()->TestingStrAppend(
+                "game::creature::Titles::Warehouse::Test() Starting Tests...");
         }
 
         static auto titleIndex{ 0 };
@@ -264,13 +278,35 @@ namespace title
         {
             auto const NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
             auto TITLE_PTR{ Get(NEXT_ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR != nullptr),                          "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in a nullptr being returned.");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Desc().empty() == false),            "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->LongDesc().empty() == false),        "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty LongDesc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->ImageFilename().empty() == false),   "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->RolesCopy().empty() == false),       "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty RolesVec().");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Which() == NEXT_ENUM),               "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") resulted in a Title with a different tile::Enum (\"" << Titles::ToString(TITLE_PTR->Which()) << "\")");
-            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),  "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM) << "\") Title is out of order.");
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR != nullptr),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in a nullptr being returned.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Desc().empty() == false),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in an empty Desc().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->LongDesc().empty() == false),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in an empty LongDesc().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->ImageFilename().empty() == false),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in an empty ImageFilename().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->RolesCopy().empty() == false),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in an empty RolesVec().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Which() == NEXT_ENUM),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") resulted in a Title with a different tile::Enum (\""
+                << Titles::ToString(TITLE_PTR->Which()) << "\")");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),
+                "game::creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
+                << "\") Title is out of order.");
+
             sf::Texture texture;
             sfml_util::gui::TitleImageManager::Instance()->Get(texture, NEXT_ENUM);
             LoopManager::Instance()->TestingImageSet(texture);
@@ -279,7 +315,9 @@ namespace title
             return false;
         }
 
-        LoopManager::Instance()->TestingStrAppend("game::creature::Titles::Warehouse::Test()  ALL TESTS PASSED.");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::creature::Titles::Warehouse::Test()  ALL TESTS PASSED.");
+
         return true;
     }
 

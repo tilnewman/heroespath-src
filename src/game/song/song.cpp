@@ -51,8 +51,8 @@ namespace song
                const SongType::Enum   TYPE,
                const EffectType::Enum EFFECT_TYPE,
                const Phase::Enum      VALID_PHASES,
-               const stats::Mana_t    MANA_COST,
-               const stats::Rank_t    RANK,
+               const stats::Trait_t    MANA_COST,
+               const stats::Trait_t    RANK,
                const TargetType::Enum TARGET_TYPE,
                const std::string &    VERB_THIRD_PERSON,
                const std::string &    VERB_PAST_TENSE)

@@ -32,7 +32,7 @@
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/traits-set.hpp"
 #include "game/stats/types.hpp"
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 

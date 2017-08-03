@@ -68,8 +68,8 @@ namespace player
     {
         if (characterPtrC->ImageFilename().empty())
         {
-             const std::string FILENAME(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(characterPtrC->Race().Which(),
-                                                                                                      characterPtrC->Role().Which(),
+             const std::string FILENAME(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(characterPtrC->Race(),
+                                                                                                      characterPtrC->Role(),
                                                                                                       characterPtrC->Sex(),
                                                                                                       true));
 
@@ -84,7 +84,7 @@ namespace player
 
         using namespace item;
 
-        auto const ROLE_ENUM{ characterPtrC->Role().Which() };
+        auto const ROLE_ENUM{ characterPtrC->Role() };
 
         if (ROLE_ENUM == creature::role::Knight)
         {
@@ -392,7 +392,7 @@ namespace player
 
         std::ostringstream ss;
         ss << "game::player::Initial::SetupInventory(\"" << characterPtrC->Name() << "\", race="
-            << characterPtrC->Race().Name() << ", role=" << characterPtrC->Role().Name()
+            << characterPtrC->RaceName() << ", role=" << characterPtrC->RoleName()
             << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
@@ -401,7 +401,7 @@ namespace player
 
     void Initial::SetupSpellsAndSongs(CharacterPtrC_t characterPtrC)
     {
-        auto const ROLE_ENUM{ characterPtrC->Role().Which() };
+        auto const ROLE_ENUM{ characterPtrC->Role() };
 
         if (ROLE_ENUM == creature::role::Cleric)
         {
@@ -440,49 +440,61 @@ namespace player
 
         if (BODY.HasBreath())
         {
-            auto const BREATH_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Breath(characterPtrC));
+            auto const BREATH_WEAPON_ITEM_PTR(
+                item::weapon::WeaponFactory::Instance()->Make_Breath(characterPtrC));
+
             characterPtrC->ItemAdd(BREATH_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(BREATH_WEAPON_ITEM_PTR);
         }
 
         if (BODY.HasClaws())
         {
-            auto const CLAWS_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Claws(characterPtrC));
+            auto const CLAWS_WEAPON_ITEM_PTR(
+                item::weapon::WeaponFactory::Instance()->Make_Claws(characterPtrC));
+
             characterPtrC->ItemAdd(CLAWS_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(CLAWS_WEAPON_ITEM_PTR);
         }
 
         if (BODY.HasBite())
         {
-            auto const BITE_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Bite(characterPtrC));
+            auto const BITE_WEAPON_ITEM_PTR(
+                item::weapon::WeaponFactory::Instance()->Make_Bite(characterPtrC));
+
             characterPtrC->ItemAdd(BITE_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(BITE_WEAPON_ITEM_PTR);
         }
 
         if ((BODY.IsHumanoid()) && (characterPtrC->IsPixie() == false))
         {
-            auto const FISTS_WEAPON_ITEM_PTR(item::weapon::WeaponFactory::Instance()->Make_Fists());
+            auto const FISTS_WEAPON_ITEM_PTR(
+                item::weapon::WeaponFactory::Instance()->Make_Fists());
+
             characterPtrC->ItemAdd(FISTS_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(FISTS_WEAPON_ITEM_PTR);
         }
     }
 
 
-    stats::Health_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
+    stats::Trait_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
     {
         std::ostringstream ss;
-        ss << "heroespath-player-race-health-initial-" << creature::race::ToString(CHARACTER_CPTRC->Race().Which());
-        const stats::Health_t HEALTH_BASE( GameDataFile::Instance()->GetCopyInt(ss.str()) );
+        ss << "heroespath-player-race-health-initial-"
+            << creature::race::ToString(CHARACTER_CPTRC->Race());
+
+        const stats::Trait_t HEALTH_BASE( GameDataFile::Instance()->GetCopyInt(ss.str()) );
 
         ss.str("");
-        ss << "heroespath-player-role-health-adjustment-initial-" << creature::role::ToString(CHARACTER_CPTRC->Role().Which());
+        ss << "heroespath-player-role-health-adjustment-initial-"
+            << creature::role::ToString(CHARACTER_CPTRC->Role());
+
         return HEALTH_BASE + GameDataFile::Instance()->GetCopyInt(ss.str());
     }
 
 
     void Initial::SetStartingHealth(CharacterPtrC_t characterPtrC)
     {
-        const stats::Health_t STARTING_HEALTH(GetStartingHealth(characterPtrC));
+        const stats::Trait_t STARTING_HEALTH(GetStartingHealth(characterPtrC));
         characterPtrC->HealthNormalSet(STARTING_HEALTH);
         characterPtrC->HealthCurrentSet(STARTING_HEALTH);
     }
@@ -490,21 +502,19 @@ namespace player
 
     void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
     {
-        auto const ROLE_ENUM{ characterPtrC->Role().Which() };
+        auto const ROLE_ENUM{ characterPtrC->Role() };
         if ((ROLE_ENUM == creature::role::Sorcerer) ||
             (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const STARTING_MANA{ characterPtrC->Stats().Int().Normal() / 2 };
-            characterPtrC->ManaNormalSet(STARTING_MANA);
-            characterPtrC->ManaCurrentSet(STARTING_MANA);
+            auto const INITIAL_MANA{ characterPtrC->TraitNormal(stats::Traits::Intelligence) / 2 };
+            characterPtrC->TraitNormalAdj(stats::Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const STARTING_MANA{ (characterPtrC->Stats().Int().Normal() +
-                characterPtrC->Stats().Cha().Normal()) / 4 };
+            auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence) +
+                characterPtrC->TraitNormal(stats::Traits::Charm)) / 4 };
 
-            characterPtrC->ManaNormalSet(STARTING_MANA);
-            characterPtrC->ManaCurrentSet(STARTING_MANA);
+            characterPtrC->TraitNormalAdj(stats::Traits::Mana, INITIAL_MANA);
         }
     }
 

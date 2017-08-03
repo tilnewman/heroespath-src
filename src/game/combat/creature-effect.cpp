@@ -91,9 +91,9 @@ namespace combat
     }
 
 
-    stats::Health_t CreatureEffect::GetDamageTotal() const
+    stats::Trait_t CreatureEffect::GetDamageTotal() const
     {
-        stats::Health_t damageTotal{ 0 };
+        stats::Trait_t damageTotal{ 0 };
 
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)
         {

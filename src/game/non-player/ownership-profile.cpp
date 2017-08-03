@@ -134,7 +134,7 @@ namespace ownership
     }
 
 
-    wealth_type::Enum wealth_type::FromRank(const stats::Rank_t RANK_VALUE)
+    wealth_type::Enum wealth_type::FromRank(const stats::Trait_t RANK_VALUE)
     {
         return FromRankType( creature::rank_class::FromRank(RANK_VALUE) );
     }
@@ -181,7 +181,7 @@ namespace ownership
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-base") );
 
         //adjust for race
-        auto const RACE_STR{ creature::race::ToString(CHARACTER_PTR->Race().Which()) };
+        auto const RACE_STR{ creature::race::ToString(CHARACTER_PTR->Race()) };
 
         auto const RACE_KEY{
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-" +
@@ -203,7 +203,7 @@ namespace ownership
         float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
 
         //adjust for roles
-        auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role().Which()) };
+        auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role()) };
 
         auto const ROLE_KEY{
             "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-" +
@@ -310,7 +310,7 @@ namespace ownership
 
         //adjust for race
         {
-            auto const RACE_STR( creature::race::ToString(CHARACTER_PTR->Race().Which()) );
+            auto const RACE_STR( creature::race::ToString(CHARACTER_PTR->Race()) );
 
             auto const RACE_KEY{
                 "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" +
@@ -348,7 +348,7 @@ namespace ownership
 
         //adjust for role
         {
-            auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role().Which()) };
+            auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role()) };
 
             std::ostringstream ss;
             ss << "heroespath-nonplayer-ownershipprofile-"
@@ -474,7 +474,7 @@ namespace ownership
         const complexity_type::Enum COMPLEXITY_BASED_ON_RACE(
             FromString(GameDataFile::Instance()->GetCopyStr(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-race-" +
-                creature::race::ToString(CHARACTER_PTR->Race().Which()))) );
+                creature::race::ToString(CHARACTER_PTR->Race()))) );
 
         if (COMPLEXITY_BASED_ON_RACE != complexity_type::Count)
         {
@@ -484,7 +484,7 @@ namespace ownership
         {
             return FromString( GameDataFile::Instance()->GetCopyStr(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-role-" +
-                creature::role::ToString(CHARACTER_PTR->Role().Which())) );
+                creature::role::ToString(CHARACTER_PTR->Role())) );
         }
     }
 

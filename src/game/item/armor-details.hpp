@@ -28,7 +28,7 @@
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
 //
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/non-player/ownership-profile.hpp"
 
@@ -59,9 +59,9 @@ namespace armor
 
         std::string     name;
         std::string     description;
-        item::Coin_t    price;
-        item::Weight_t  weight;
-        stats::Armor_t  armor_rating;
+        stats::Trait_t    price;
+        stats::Trait_t  weight;
+        stats::Trait_t  armor_rating;
         non_player::ownership::complexity_type::Enum complexity;
     };
 

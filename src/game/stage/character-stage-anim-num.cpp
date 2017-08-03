@@ -40,8 +40,8 @@ namespace game
 namespace stage
 {
 
-    AnimNum::AnimNum(const stats::Stat_t              VALUE,
-                     const stats::stat::Enum          WHICH_STAT,
+    AnimNum::AnimNum(const stats::Trait_t             VALUE,
+                     const stats::Traits::Enum        WHICH_STAT,
                      const float                      START_LEFT,
                      const float                      START_TOP,
                      const float                      TARGET_LEFT,
@@ -50,7 +50,7 @@ namespace stage
     :
         value_       (VALUE),
         whichStat_   (WHICH_STAT),
-        ignoreMe_    (VALUE < stats::Stat::VAL_MIN_),
+        ignoreMe_    (VALUE < 0),
         colorVal_    (100),
         startLeft_   (START_LEFT),
         startTop_    (START_TOP),

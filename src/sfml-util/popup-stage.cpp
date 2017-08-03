@@ -45,14 +45,15 @@
 #include "sfml-util/gui/song-image-manager.hpp"
 
 #include "game/game.hpp"
+#include "game/stats/trait-enum.hpp"
 #include "game/state/game-state.hpp"
 #include "game/player/party.hpp"
 #include "game/loop-manager.hpp"
 #include "game/log-macros.hpp"
 #include "game/creature/name-info.hpp"
 #include "game/creature/creature.hpp"
-#include "game/creature/race.hpp"
-#include "game/creature/role.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
 #include "game/spell/spell-base.hpp"
 #include "game/song/song.hpp"
 #include "game/game-data-file.hpp"
@@ -980,23 +981,23 @@ namespace sfml_util
 
             if (cPtr->IsBeast())
             {
-                ss << cPtr->Race().Name();
+                ss << cPtr->RaceName();
 
-                if (cPtr->Race().Which() != game::creature::race::Wolfen)
+                if (cPtr->Race() != game::creature::race::Wolfen)
                 {
-                    ss << ", " << cPtr->Role().Name();
+                    ss << ", " << cPtr->RoleName();
                 }
 
                 ss << " " << cPtr->RankClassName() << "\n";
             }
             else
             {
-                ss << cPtr->RankClassName() << " " << cPtr->Role().Name() << "\n" << cPtr->Race().Name() << "\n";
+                ss << cPtr->RankClassName() << " " << cPtr->RoleName() << "\n" << cPtr->RaceName() << "\n";
             }
 
             ss << "Rank:  " << cPtr->Rank() << "\n"
                << "Health:  " << cPtr->HealthCurrent() << "/" << cPtr->HealthNormal() << " " << cPtr->HealthPercentStr() << "\n"
-               << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
+               << "Mana:  " << cPtr->TraitWorking(game::stats::Traits::Mana) << "/" << cPtr->TraitNormal(game::stats::Traits::Mana) << "\n"
                << "\n";
 
             const sfml_util::gui::TextInfo DETAILS_TEXTINFO(ss.str(),
@@ -1206,25 +1207,26 @@ namespace sfml_util
 
             if (cPtr->IsBeast())
             {
-                ss << cPtr->Race().Name();
+                ss << cPtr->RaceName();
 
-                if (cPtr->Race().Which() != game::creature::race::Wolfen)
+                if (cPtr->Race() != game::creature::race::Wolfen)
                 {
-                    ss << ", " << cPtr->Role().Name();
+                    ss << ", " << cPtr->RoleName();
                 }
 
                 ss << " " << cPtr->RankClassName() << "\n";
             }
             else
             {
-                ss << cPtr->RankClassName() << " " << cPtr->Role().Name() << "\n"
-                    << cPtr->Race().Name() << "\n";
+                ss << cPtr->RankClassName() << " " << cPtr->RoleName() << "\n"
+                    << cPtr->RaceName() << "\n";
             }
 
             ss << "Rank:  " << cPtr->Rank() << "\n"
                << "Health:  " << cPtr->HealthCurrent() << "/" << cPtr->HealthNormal() << " "
                << cPtr->HealthPercentStr() << "\n"
-               << "Mana:  " << cPtr->ManaCurrent() << "/" << cPtr->ManaNormal() << "\n"
+               << "Mana:  " << cPtr->TraitWorking(game::stats::Traits::Mana) << "/"
+               << cPtr->TraitNormal(game::stats::Traits::Mana) << "\n"
                << "\n";
 
             const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
@@ -2906,9 +2908,11 @@ namespace sfml_util
     }
 
 
-    bool PopupStage::DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    bool PopupStage::DoesCharacterHaveEnoughManaToCastSpell(
+        const game::spell::SpellPtrC_t SPELL_CPTRC) const
     {
-        return (POPUP_INFO_.CreaturePtr()->ManaCurrent() >= SPELL_CPTRC->ManaCost());
+        return (POPUP_INFO_.CreaturePtr()->TraitWorking(game::stats::Traits::Mana) >=
+            SPELL_CPTRC->ManaCost());
     }
 
 
@@ -2920,7 +2924,8 @@ namespace sfml_util
 
     bool PopupStage::CanCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
     {
-        return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) && CanCastSpellInPhase(SPELL_CPTRC));
+        return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) &&
+            CanCastSpellInPhase(SPELL_CPTRC));
     }
 
 
@@ -2929,12 +2934,17 @@ namespace sfml_util
         if (CanCastSpell(listBoxSPtr_->GetSelected()->SPELL_CPTRC))
         {
             SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::SpellSelect).PlayRandom();
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, listBoxSPtr_->GetSelectedIndex());
+
+            game::LoopManager::Instance()->PopupWaitEnd(
+                Response::Select, listBoxSPtr_->GetSelectedIndex());
+
             return true;
         }
         else
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(
+                sound_effect::PromptWarn);
+
             if (FadeState::Waiting == fadeState_)
             {
                 fadeState_ = FadeState::Warning;
@@ -2945,9 +2955,11 @@ namespace sfml_util
     }
 
 
-    bool PopupStage::DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t SONG_CPTRC) const
+    bool PopupStage::DoesCharacterHaveEnoughManaToPlaySong(
+        const game::song::SongPtrC_t SONG_CPTRC) const
     {
-        return (POPUP_INFO_.CreaturePtr()->ManaCurrent() >= SONG_CPTRC->ManaCost());
+        return (POPUP_INFO_.CreaturePtr()->TraitWorking(game::stats::Traits::Mana) >=
+            SONG_CPTRC->ManaCost());
     }
 
 
@@ -2959,7 +2971,8 @@ namespace sfml_util
 
     bool PopupStage::CanPlaySong(const game::song::SongPtrC_t SONG_CPTRC) const
     {
-        return (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) && CanPlaySongInPhase(SONG_CPTRC));
+        return (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) &&
+            CanPlaySongInPhase(SONG_CPTRC));
     }
 
 
@@ -2978,12 +2991,17 @@ namespace sfml_util
                     SoundManager::Instance()->GetSfxSet(SfxSet::GuitarStrum).PlayRandom();
                 }
             }
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Select, listBoxSPtr_->GetSelectedIndex());
+
+            game::LoopManager::Instance()->PopupWaitEnd(
+                Response::Select, listBoxSPtr_->GetSelectedIndex());
+            
             return true;
         }
         else
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(sound_effect::PromptWarn);
+            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Prompt).Play(
+                sound_effect::PromptWarn);
+
             if (FadeState::Waiting == fadeState_)
             {
                 fadeState_ = FadeState::Warning;
@@ -3007,20 +3025,20 @@ namespace sfml_util
 
         std::ostringstream ss;
         ss << CREATURE_PTR->Name() << "\n"
-           << CREATURE_PTR->Race().Name();
+           << CREATURE_PTR->RaceName();
 
         if (CREATURE_PTR->IsBeast())
         {
-            if (CREATURE_PTR->Race().Which() != game::creature::race::Wolfen)
+            if (CREATURE_PTR->Race() != game::creature::race::Wolfen)
             {
-                ss << ", " << CREATURE_PTR->Role().Name();
+                ss << ", " << CREATURE_PTR->RoleName();
             }
             ss << " " << CREATURE_PTR->RankClassName() << "\n";
         }
         else
         {
             ss << " " << CREATURE_PTR->RankClassName() << " "
-                << CREATURE_PTR->Role().Name() << "\n";
+                << CREATURE_PTR->RoleName() << "\n";
         }
 
         ss << "Health:  " << CREATURE_PTR->HealthCurrent() << "/"

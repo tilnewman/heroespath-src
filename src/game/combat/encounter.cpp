@@ -419,7 +419,7 @@ namespace combat
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
             turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(
-                NEXT_CHAR_PTR->Race().Which(), NEXT_CHAR_PTR->Role().Which()).Make() );
+                NEXT_CHAR_PTR->Race(), NEXT_CHAR_PTR->Role()).Make() );
 
             turnInfoMap_[NEXT_CHAR_PTR] = turnInfo;
         }
@@ -456,7 +456,7 @@ namespace combat
                       creaturesThatHaveNotTakenTurnYetPVec.end(),
                       []
                       (const creature::CreaturePtr_t A, const creature::CreaturePtr_t B)
-                      { return A->Stats().Spd().Current() > B->Stats().Spd().Current(); });
+                      { return A->Speed() > B->Speed(); });
         }
 
         turnCreaturePtr_ = creaturesThatHaveNotTakenTurnYetPVec.at(0);

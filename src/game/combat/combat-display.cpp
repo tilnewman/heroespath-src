@@ -1646,7 +1646,7 @@ namespace combat
         }
         else
         {
-            return creaturePtr->Name() + " " + creaturePtr->Role().Name();
+            return creaturePtr->Name() + " " + creaturePtr->RoleName();
         }
     }
 

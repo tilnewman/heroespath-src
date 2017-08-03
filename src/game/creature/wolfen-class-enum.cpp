@@ -80,20 +80,37 @@ namespace creature
     }
 
 
-    wolfen_class::Enum wolfen_class::ClassFromRank(const stats::Rank_t RANK)
+    wolfen_class::Enum wolfen_class::ClassFromRank(const stats::Trait_t RANK)
     {
-        if (RANK >= GameDataFile::Instance()->GetCopySizet("heroespath-creature-wolfen-class-rank-min-Elder"))
+        if (RANK >= GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-wolfen-class-rank-min-Elder"))
+        {
             return wolfen_class::Elder;
-        else if (RANK >= GameDataFile::Instance()->GetCopySizet("heroespath-creature-wolfen-class-rank-min-Highborn"))
+        }
+        else if (RANK >= GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-wolfen-class-rank-min-Highborn"))
+        {
             return wolfen_class::Highborn;
-        else if (RANK >= GameDataFile::Instance()->GetCopySizet("heroespath-creature-wolfen-class-rank-min-Noble"))
+        }
+        else if (RANK >= GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-wolfen-class-rank-min-Noble"))
+        {
             return wolfen_class::Noble;
-        else if (RANK >= GameDataFile::Instance()->GetCopySizet("heroespath-creature-wolfen-class-rank-min-Adult"))
+        }
+        else if (RANK >= GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-wolfen-class-rank-min-Adult"))
+        {
             return wolfen_class::Adult;
-        else if (RANK >= GameDataFile::Instance()->GetCopySizet("heroespath-creature-wolfen-class-rank-min-Juvenile"))
+        }
+        else if (RANK >= GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-wolfen-class-rank-min-Juvenile"))
+        {
             return wolfen_class::Juvenile;
+        }
         else
+        {
             return wolfen_class::Pup;
+        }
     }
 
 }

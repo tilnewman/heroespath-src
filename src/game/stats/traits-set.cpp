@@ -41,47 +41,54 @@ namespace stats
 
     TraitSet::TraitSet(const TraitValueVec_t & TRAITS_VEC)
     :
-        statVec_()
+        traitVec_()
     {
-        statVec_.resize(static_cast<std::size_t>(Traits::Count));
+        traitVec_.resize(static_cast<std::size_t>(Traits::Count));
 
         for (auto const & NEXT_TRAIT_PAIR : TRAITS_VEC)
         {
-            statVec_[NEXT_TRAIT_PAIR.first].CurrAndNormSet(NEXT_TRAIT_PAIR.second);
+            traitVec_[NEXT_TRAIT_PAIR.first].CurrAndNormSet(NEXT_TRAIT_PAIR.second);
         }
     }
 
 
-    RatioStat & TraitSet::Get(const Traits::Enum E)
+    Trait & TraitSet::Get(const Traits::Enum E)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "game::stats::TraitSet::Get("
             << E << ")_InvalidValueError");
 
-        return statVec_[E];
+        return traitVec_[E];
     }
 
 
-    const RatioStat & TraitSet::GetCopy(const Traits::Enum E) const
+    const Trait & TraitSet::GetCopy(const Traits::Enum E) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "game::stats::TraitSet::GetCopy("
             << E << ")_InvalidValueError");
 
-        return statVec_[E];
+        return traitVec_[E];
     }
 
 
     const std::string TraitSet::ToString(const bool WILL_WRAP,
-                                          const bool WILL_ABBR) const
+                                         const bool WILL_ABBR,
+                                         const bool WILL_PREVENT_NEGATIVE,
+                                         const bool WILL_PREFIX_PERCENT) const
     {
         std::ostringstream ss;
 
-        for (std::size_t i(0); i < Traits::Count; ++i)
+        for (int i(0); i < Traits::Count; ++i)
         {
             auto const NEXT_ENUM{ static_cast<Traits::Enum>(i) };
-            auto const NEXT_CURR{ statVec_[i].Current() };
+            auto const NEXT_CURR{ traitVec_[static_cast<std::size_t>(i)].Current() };
 
             if (NEXT_CURR != 0)
             {
+                if ((NEXT_CURR < 0) && WILL_PREVENT_NEGATIVE)
+                {
+                    continue;
+                }
+
                 if (ss.str().empty() == false)
                 {
                     ss << ", ";
@@ -96,7 +103,12 @@ namespace stats
                     ss << Traits::Name(NEXT_ENUM);
                 }
 
-                ss << "=" << NEXT_CURR;
+                ss << " " << NEXT_CURR;
+                
+                if (WILL_PREFIX_PERCENT)
+                {
+                    ss << "%";
+                }
             }
         }
 
@@ -109,6 +121,53 @@ namespace stats
         {
             return RESULT_STR;
         }
+    }
+
+
+    const std::string TraitSet::StatsString(const bool WILL_WRAP) const
+    {
+        std::ostringstream ss;
+
+        ss << StatStringHelper(stats::Traits::Strength, false)
+            << StatStringHelper(stats::Traits::Accuracy)
+            << StatStringHelper(stats::Traits::Charm)
+            << StatStringHelper(stats::Traits::Luck)
+            << StatStringHelper(stats::Traits::Speed)
+            << StatStringHelper(stats::Traits::Intelligence);
+
+        if (WILL_WRAP)
+        {
+            return "(" + ss.str() + ")";
+        }
+        else
+        {
+            return ss.str();
+        }
+    }
+
+
+    const std::string TraitSet::StatStringHelper(const stats::Traits::Enum E,
+                                                 const bool                WILL_PREFIX) const
+    {
+        std::ostringstream ss;
+
+        if (WILL_PREFIX)
+        {
+            ss << ", ";
+        }
+
+        auto const TRAIT{ traitVec_[static_cast<std::size_t>(E)] };
+        
+        ss << stats::Traits::Abbr(E) << "=";
+
+        if (TRAIT.Current() != TRAIT.Normal())
+        {
+            ss << TRAIT.Current() << "/";
+        }
+
+        ss << TRAIT.Normal();
+
+        return ss.str();
     }
 
 }

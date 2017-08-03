@@ -478,14 +478,14 @@ namespace item
     }
 
 
-    stats::Armor_t material::ArmorRatingBonus(const material::Enum MATERIAL_PRI,
+    stats::Trait_t material::ArmorRatingBonus(const material::Enum MATERIAL_PRI,
                                               const material::Enum MATERIAL_SEC)
     {
         return ArmorRatingBonusPri(MATERIAL_PRI) + ArmorRatingBonusSec(MATERIAL_SEC);
     }
 
 
-    stats::Armor_t material::ArmorRatingBonusPri(const material::Enum MATERIAL_PRI)
+    stats::Trait_t material::ArmorRatingBonusPri(const material::Enum MATERIAL_PRI)
     {
         switch (MATERIAL_PRI)
         {
@@ -544,24 +544,24 @@ namespace item
     }
 
 
-    stats::Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
+    stats::Trait_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
         auto const SEC_MATERIAL_ARMOR_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-item-secondary-material-armor-adj-ratio") };
 
-        return static_cast<stats::Armor_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) *
+        return static_cast<stats::Trait_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) *
             SEC_MATERIAL_ARMOR_ADJ_RATIO);
     }
 
 
-    item::Coin_t material::PriceAdj(const material::Enum MATERIAL_PRI,
+    stats::Trait_t material::PriceAdj(const material::Enum MATERIAL_PRI,
                                     const material::Enum MATERIAL_SEC)
     {
         return PriceAdjPri(MATERIAL_PRI) + PriceAdjSec(MATERIAL_SEC);
     }
 
 
-    item::Coin_t material::PriceAdjPri(const material::Enum MATERIAL_PRI)
+    stats::Trait_t material::PriceAdjPri(const material::Enum MATERIAL_PRI)
     {
         switch (MATERIAL_PRI)
         {
@@ -621,7 +621,7 @@ namespace item
     }
 
 
-    item::Coin_t material::PriceAdjSec(const material::Enum E)
+    stats::Trait_t material::PriceAdjSec(const material::Enum E)
     {
         return PriceAdjPri(E) / 10;
     }

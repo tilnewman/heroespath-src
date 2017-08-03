@@ -246,8 +246,8 @@ namespace ownership
             [&](const item::ItemPtr_t PTR)
             {
                 return ((PTR->Armor_Info().cover == item::armor::cover_type::Vest) &&
-                        ((CHARACTER_PTR->Race().Which() == creature::race::Dragon) ||
-                         (CHARACTER_PTR->Race().Which() == creature::race::Wolfen)));
+                        ((CHARACTER_PTR->Race() == creature::race::Dragon) ||
+                         (CHARACTER_PTR->Race() == creature::race::Wolfen)));
             }),
             itemsPtrVecPair.first.end());
 
@@ -933,7 +933,7 @@ namespace ownership
     }
 
 
-    item::Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
+    stats::Trait_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
     {
         if (CHANCES.coins_min < CHANCES.coins_max)
         {

@@ -42,7 +42,6 @@
 #include "game/creature/condition-warehouse.hpp"
 #include "game/creature/condition-algorithms.hpp"
 #include "game/creature/title-warehouse.hpp"
-#include "game/song/song-warehouse.hpp"
 
 #include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -64,19 +63,19 @@ namespace creature
     Creature::Creature(const std::string &         NAME,
                        const sex::Enum             SEX,
                        const BodyType &            BODY_TYPE,
-                       const creature::Race &      RACE,
-                       const creature::Role &      ROLE,
+                       const race::Enum &          RACE,
+                       const role::Enum &          ROLE,
                        const stats::StatSet &      STATS,
-                       const stats::Health_t       HEALTH,
-                       const stats::Rank_t         RANK,
-                       const stats::Exp_t          EXPERIENCE,
+                       const stats::Trait_t        HEALTH,
+                       const stats::Trait_t        RANK,
+                       const stats::Trait_t        EXPERIENCE,
                        const CondEnumVec_t &       CONDITIONS_VEC,
                        const TitleEnumVec_t &      TITLE_VEC,
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
                        const spell::SpellVec_t &   SPELL_VEC,
-                       const stats::Mana_t         MANA,
+                       const stats::Trait_t        MANA,
                        const song::SongVec_t &     SONG_VEC)
     :
         name_             (NAME),
@@ -85,33 +84,40 @@ namespace creature
         bodyType_         (BODY_TYPE),
         race_             (RACE),
         role_             (ROLE),
-        stats_            (STATS),
         serialNumber_     (globalSerialNumber_++),
-        healthCurrent_    (HEALTH),
-        healthNormal_     (HEALTH),
-        rank_             (RANK),
-        experience_       (EXPERIENCE),
         conditionsVec_    (CONDITIONS_VEC),
         titlesVec_        (TITLE_VEC),
         inventory_        (INVENTORY),
         dateTimeCreated_  (DATE_TIME),
         spellsVec_        (SPELL_VEC),
-        achievements_     (NAME, ROLE.Which()),
+        achievements_     (NAME, ROLE),
         currWeaponsPVec_  (),
-        manaCurrent_      (MANA),
-        manaNormal_       (MANA),
         lastSpellCastNum_ (0),
         songsVec_         (SONG_VEC),
         lastSongPlayedNum_(0),
+        healthCurrent_    (HEALTH),
+        healthNormal_     (HEALTH),
+        rank_             (RANK),
+        experience_       (EXPERIENCE),
+        actualSet_        (),
+        bonusSet_         (),
         enchantmentsPVec_ ()
     {
+        actualSet_.Get(stats::Traits::Mana).NormalSet(MANA);
+        actualSet_.Get(stats::Traits::Strength).NormalSet(STATS.Str());
+        actualSet_.Get(stats::Traits::Accuracy).NormalSet(STATS.Acc());
+        actualSet_.Get(stats::Traits::Charm).NormalSet(STATS.Cha());
+        actualSet_.Get(stats::Traits::Luck).NormalSet(STATS.Lck());
+        actualSet_.Get(stats::Traits::Speed).NormalSet(STATS.Spd());
+        actualSet_.Get(stats::Traits::Intelligence).NormalSet(STATS.Int());
+
         //verify valid RACE and ROLE combination
-        auto const ROLE_VEC{ race::Roles(race_.Which()) };
+        auto const ROLE_VEC{ race::Roles(race_) };
         M_ASSERT_OR_LOGANDTHROW_SS((std::find(ROLE_VEC.begin(),
                                               ROLE_VEC.end(),
-                                              role_.Which()) != ROLE_VEC.end()),
-            "game::creature::Creature::Constructor(race=" << race_.Name()
-            << ", role=" << role_.Name() << ") invalid race/role combination.");
+                                              role_) != ROLE_VEC.end()),
+            "game::creature::Creature::Constructor(race=" << RaceName()
+            << ", role=" << RoleName() << ") invalid race/role combination.");
 
         //set the default condition if not already there
         if (conditionsVec_.empty())
@@ -138,11 +144,11 @@ namespace creature
         }
         else
         {
-            ss << Race().Name();
+            ss << RaceName();
 
-            if (race::RaceRoleMatch(Race().Which(), Role().Which()) == false)
+            if (race::RaceRoleMatch(race_, role_) == false)
             {
-                ss << " " << Role().Name();
+                ss << " " << RoleName();
             }
         }
 
@@ -160,8 +166,8 @@ namespace creature
     const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
         auto const NAME_STR(Name());
-        auto const RACE_STR(Race().Name());
-        auto const ROLE_STR(Role().Name());
+        auto const RACE_STR(RaceName());
+        auto const ROLE_STR(RoleName());
 
         std::ostringstream ss;
 
@@ -191,11 +197,11 @@ namespace creature
 
     const std::string Creature::RankClassName() const
     {
-        if (Race().Which() == creature::race::Dragon)
+        if (race_ == creature::race::Dragon)
         {
             return creature::dragon_class::Name(DragonClass());
         }
-        else if (Race().Which() == creature::race::Wolfen)
+        else if (race_ == creature::race::Wolfen)
         {
             return creature::wolfen_class::Name(WolfenClass());
         }
@@ -211,13 +217,49 @@ namespace creature
         const float GRANDMASTER_RANK(GameDataFile::Instance()->
             GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f);
 
-        auto rankRatio{ static_cast<float>(rank_) / GRANDMASTER_RANK };
+        auto rankRatio{ static_cast<float>(Rank()) / GRANDMASTER_RANK };
         if (rankRatio > 1.0f)
         {
             rankRatio = 1.0f;
         }
 
         return rankRatio;
+    }
+
+
+    stats::Trait_t Creature::HealthCurrentAdj(const stats::Trait_t X)
+    {
+        healthCurrent_ += X;
+
+        if (healthCurrent_ < 0)
+        {
+            healthCurrent_ = 0;
+        }
+
+        if (healthCurrent_ > healthNormal_)
+        {
+            healthCurrent_ = healthNormal_;
+        }
+
+        return healthCurrent_;
+    }
+
+
+    stats::Trait_t Creature::HealthNormalAdj(const stats::Trait_t X)
+    {
+        healthNormal_ += X;
+
+        if (healthNormal_ < 1)
+        {
+            healthNormal_ = 1;
+        }
+
+        if (healthNormal_ < healthCurrent_)
+        {
+            healthCurrent_ = healthNormal_;
+        }
+
+        return healthNormal_;
     }
 
 
@@ -553,10 +595,10 @@ namespace creature
 
         //verify armor vs race
         if (ITEM_PTR->IsArmor() &&
-            ((race_.Which() == race::Dragon) || (race_.Which() == race::Wolfen)))
+            ((race_ == race::Dragon) || (race_ == race::Wolfen)))
         {
             std::ostringstream ss;
-            ss << race::Name(race_.Which()) << "s cannot be given armor";
+            ss << race::Name(race_) << "s cannot be given armor";
             return ss.str();
         }
 
@@ -681,7 +723,7 @@ namespace creature
 
         if ((MISC_TYPE == item::misc_type::Ring) && (Body().HasFingers() == false))
         {
-            resultSS << race_.Name() << "'s can't wear rings because they have no fingers." << SEP;
+            resultSS << RaceName() << "'s can't wear rings because they have no fingers." << SEP;
         }
 
         const item::armor_type::Enum ARMOR_TYPE(ITEM_PTR->ArmorType());
@@ -708,12 +750,12 @@ namespace creature
 
             if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHead() == false))
             {
-                resultSS << race_.Name() << "'s can't wear helms because they have no head." << SEP;
+                resultSS << RaceName() << "'s can't wear helms because they have no head." << SEP;
             }
 
             if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHorns() == true))
             {
-                resultSS << race_.Name() << "'s can't wear helms becaus they have horns." << SEP;
+                resultSS << RaceName() << "'s can't wear helms becaus they have horns." << SEP;
             }
 
             if ((ARMOR_TYPE & item::armor_type::Aventail) &&
@@ -825,7 +867,7 @@ namespace creature
 
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
-        const creature::role::Enum ROLE(role_.Which());
+        const creature::role::Enum ROLE(role_);
         const creature::role::Enum EXCLUSIVE_ROLE(ITEM_PTR->ExclusiveRole());
         if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != ROLE))
         {
@@ -849,12 +891,12 @@ namespace creature
 
         if ((CATEGORY & item::category::BodyPart) == 0)
         {
-            if (race_.Which() == race::Dragon)
+            if (race_ == race::Dragon)
             {
                 return "Dragons can only equip body parts, such as skin, horns, claws, or bite.";
             }
 
-            if (race_.Which() == race::Wolfen)
+            if (race_ == race::Wolfen)
             {
                 return "Wolfens can only equip body parts, such as skin, claws, or bite.";
             }
@@ -1179,7 +1221,7 @@ namespace creature
     }
 
 
-    stats::Armor_t Creature::ArmorRating() const
+    stats::Trait_t Creature::ArmorRating() const
     {
         return inventory_.ArmorRating();
     }
@@ -1190,7 +1232,7 @@ namespace creature
         const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot cast because " : "");
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
-        if (role::Knight == role_.Which())
+        if (role::Knight == role_)
         {
             return RESPONSE_PREFIX + "knights cannot cast spells" + RESPONSE_POSTFIX;
         }
@@ -1207,7 +1249,7 @@ namespace creature
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells" + RESPONSE_POSTFIX;
         }
 
-        if (ManaCurrent() <= 0)
+        if (TraitWorking(stats::Traits::Mana) <= 0)
         {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
         }
@@ -1295,7 +1337,7 @@ namespace creature
         const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot play song because " : "");
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
-        if (role_.Which() != role::Bard)
+        if (role_ != role::Bard)
         {
             return RESPONSE_PREFIX + "only Bards can play magical songs" + RESPONSE_POSTFIX;
         }
@@ -1312,7 +1354,7 @@ namespace creature
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no songs" + RESPONSE_POSTFIX;
         }
 
-        if (ManaCurrent() <= 0)
+        if (TraitWorking(stats::Traits::Mana) <= 0)
         {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
         }
@@ -1395,13 +1437,15 @@ namespace creature
 
         ss << "\"" << name_ << "\""
             << ", " << sex::ToString(sex_)
-            << ", " << race::Name(race_.Which())
-            << ", " << role::Name(role_.Which())
-            << ", " << stats_.ToStringCurrent()
-            << ", " << stats_.ToStringNormal()
-            << ", health=" << healthCurrent_ << "/" << healthNormal_
-            << ", rank=" << rank_
-            << ", exp=" << experience_
+            << ", " << race::Name(race_)
+            << ", " << role::Name(role_)
+            << ", " << actualSet_.StatsString(false)
+            << ", health=" << healthCurrent_
+            << "/" << healthNormal_
+            << ", mana=" << TraitWorking(stats::Traits::Mana)
+            << "/" << TraitNormal(stats::Traits::Mana)
+            << ", rank=" << Rank()
+            << ", exp=" << Exp()
             << ", body[" << bodyType_.ToString() << "]"
             << ", serial#" << serialNumber_;
 
@@ -1420,30 +1464,6 @@ namespace creature
         ss << ", inventory=" << inventory_.ToString();
 
         return ss.str();
-    }
-
-
-    void Creature::ManaCurrentAdj(const stats::Mana_t ADJ)
-    {
-        manaCurrent_ += ADJ;
-        if (manaCurrent_ < 0)
-        {
-            manaCurrent_ = 0;
-        }
-        else if (manaCurrent_ > manaNormal_)
-        {
-            manaCurrent_ = manaNormal_;
-        }
-    }
-
-
-    void Creature::ManaNormalAdj(const stats::Mana_t ADJ)
-    {
-        manaNormal_ += ADJ;
-        if (manaNormal_ < 0)
-        {
-            manaNormal_ = 0;
-        }
     }
 
 
@@ -1483,58 +1503,58 @@ namespace creature
     }
 
 
-    item::Weight_t Creature::WeightCanCarry() const
+    stats::Trait_t Creature::WeightCanCarry() const
     {
-        item::Weight_t base(5000);
-        if (race::Gnome == race_.Which())
+        stats::Trait_t base(5000);
+        if (race::Gnome == race_)
         {
             base = 2500;
         }
-        else if (race::Pixie == race_.Which())
+        else if (race::Pixie == race_)
         {
             base = 10;
         }
-        else if (race::Human != race_.Which())
+        else if (race::Human != race_)
         {
             base = 3000;
         }
 
-        item::Weight_t multiplier(1000);
-        if (race::Gnome == race_.Which())
+        stats::Trait_t multiplier(1000);
+        if (race::Gnome == race_)
         {
             multiplier = 500;
         }
-        else if (race::Pixie == race_.Which())
+        else if (race::Pixie == race_)
         {
             multiplier = 100;
         }
-        else if (race::Human != race_.Which())
+        else if (race::Human != race_)
         {
             multiplier = 750;
         }
 
-        item::Weight_t divisor(2);
-        if (race::Gnome == race_.Which())
+        stats::Trait_t divisor(2);
+        if (race::Gnome == race_)
         {
             divisor = 4;
         }
-        else if (race::Pixie == race_.Which())
+        else if (race::Pixie == race_)
         {
             divisor = 50;
         }
-        else if (race::Human != race_.Which())
+        else if (race::Human != race_)
         {
             divisor = 3;
         }
 
         return (base +
-            ((static_cast<item::Weight_t>(stats_.Str().Current()) * multiplier) / divisor));
+            ((Strength() * multiplier) / divisor));
     }
 
 
     void Creature::ReCalculateTraitBonuses()
     {
-        for (int i(0); i < stats::Traits::Count; ++i)
+        for (int i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
 
@@ -1552,10 +1572,94 @@ namespace creature
                     Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
             }
 
-            traitPercent += traitSet_.GetCopy(NEXT_TRAIT_ENUM).Normal();
+            traitPercent += bonusSet_.GetCopy(NEXT_TRAIT_ENUM).Normal();
 
-            traitSet_.Get(NEXT_TRAIT_ENUM).CurrentSet(traitPercent);
+            bonusSet_.Get(NEXT_TRAIT_ENUM).CurrentSet(traitPercent);
+
+            auto const BONUS_RATIO{ static_cast<float>(traitPercent) / 100.0f };
+
+            auto const NORMAL_FLOAT{ static_cast<float>(actualSet_.GetCopy(
+                NEXT_TRAIT_ENUM).Normal()) };
+
+            actualSet_.Get(NEXT_TRAIT_ENUM).CurrentSet( static_cast<int>(NORMAL_FLOAT +
+                (NORMAL_FLOAT * BONUS_RATIO)) );
         }
+    }
+
+
+    stats::Trait_t Creature::TraitActual(const stats::Traits::Enum E) const
+    {
+        return actualSet_.GetCopy(E).Current();
+    }
+
+
+    stats::Trait_t Creature::TraitWorking(const stats::Traits::Enum E) const
+    {
+        auto const ACTUAL{ TraitActual(E) };
+        if (ACTUAL < 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return ACTUAL;
+        }
+    }
+
+
+    stats::Trait_t Creature::TraitNormalAdj(const stats::Traits::Enum E, const int ADJ)
+    {
+        actualSet_.Get(E).NormalAdj(ADJ);
+        ReCalculateTraitBonuses();
+        return actualSet_.GetCopy(E).Normal();
+    }
+
+
+
+    const std::string Creature::TraitModifiedString(const stats::Traits::Enum E,
+                                                    const bool                WILL_WRAP) const
+    {
+        auto const WORKING{ TraitWorking(E) };
+        auto const NORMAL{ TraitNormal(E) };
+
+        if (WORKING == NORMAL)
+        {
+            return "";
+        }
+        else
+        {
+            std::ostringstream ss;
+
+            if (WILL_WRAP)
+            {
+                ss << "(";
+            }
+
+            if (WORKING > NORMAL)
+            {
+                ss << "+";
+            }
+
+            ss << WORKING - NORMAL;
+
+            if (WILL_WRAP)
+            {
+                ss << ")";
+            }
+
+            return ss.str();
+        }
+    }
+
+
+    void Creature::StatTraitsModify(const stats::StatSet & STAT_SET)
+    {
+        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str());
+        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc());
+        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha());
+        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck());
+        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd());
+        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int());
     }
 
 
@@ -1646,17 +1750,16 @@ namespace creature
                       L.role_,
                       L.stats_,
                       L.serialNumber_,
+                      L.dateTimeCreated_,
+                      L.achievements_,
+                      L.lastSpellCastNum_,
+                      L.lastSongPlayedNum_,
                       L.healthCurrent_,
                       L.healthNormal_,
                       L.rank_,
                       L.experience_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.manaCurrent_,
-                      L.manaNormal_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.traitSet_)
+                      L.actualSet_,
+                      L.bonusSet_)
                 !=
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1666,17 +1769,16 @@ namespace creature
                          R.role_,
                          R.stats_,
                          R.serialNumber_,
+                         R.dateTimeCreated_,
+                         R.achievements_,
+                         R.lastSpellCastNum_,
+                         R.lastSongPlayedNum_,
                          R.healthCurrent_,
                          R.healthNormal_,
                          R.rank_,
                          R.experience_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.manaCurrent_,
-                         R.manaNormal_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.traitSet_))
+                         R.actualSet_,
+                         R.bonusSet_))
         {
             return false;
         }
@@ -1715,17 +1817,16 @@ namespace creature
                       L.role_,
                       L.stats_,
                       L.serialNumber_,
+                      L.dateTimeCreated_,
+                      L.achievements_,
+                      L.lastSpellCastNum_,
+                      L.lastSongPlayedNum_,
                       L.healthCurrent_,
                       L.healthNormal_,
                       L.rank_,
                       L.experience_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.manaCurrent_,
-                      L.manaNormal_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.traitSet_)
+                      L.actualSet_,
+                      L.bonusSet_)
                 <
                 std::tie(R.name_,
                          R.imageFilename_,
@@ -1735,17 +1836,16 @@ namespace creature
                          R.role_,
                          R.stats_,
                          R.serialNumber_,
+                         R.dateTimeCreated_,
+                         R.achievements_,
+                         R.lastSpellCastNum_,
+                         R.lastSongPlayedNum_,
                          R.healthCurrent_,
                          R.healthNormal_,
                          R.rank_,
                          R.experience_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.manaCurrent_,
-                         R.manaNormal_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.traitSet_))
+                         R.actualSet_,
+                         R.bonusSet_))
         {
             return true;
         }

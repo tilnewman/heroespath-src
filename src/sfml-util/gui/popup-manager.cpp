@@ -358,7 +358,7 @@ namespace gui
         }
 
         descSS << "  This title comes with the following stats bonus: "
-            << TO_TITLE_PTR->StatBonus().ToStringCurrent(false, true, true, true, true) << ".";
+            << TO_TITLE_PTR->StatBonus().ToString(false) << ".";
 
         if (TO_TITLE_PTR->ExpBonus() > 0)
         {

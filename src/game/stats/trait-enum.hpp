@@ -42,15 +42,16 @@ namespace stats
     {
         enum Enum
         {
-            Health = 0,
-            Mana,
-            ArmorRating,
-            Strength,
+            //Keep stats starting at zero and in order.
+            Strength = 0,
             Accuracy,
             Charm,
             Luck,
             Speed,
             Intelligence,
+            StatCount,
+            Mana = StatCount,
+            ArmorRating,
             MagicCast,
             MagicEffect,
             MagicResist,

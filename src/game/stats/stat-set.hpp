@@ -22,19 +22,15 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STATSET_INCLUDED
-#define GAME_STATSET_INCLUDED
+#ifndef GAME_STATS_STATSET_HPP_INCLUDED
+#define GAME_STATS_STATSET_HPP_INCLUDED
 //
 // stat-set.hpp
-//  The collection for of stats for all creatures
 //
-#include "misc/boost-serialize-includes.hpp"
-
-#include "game/stats/stat.hpp"
-#include "game/stats/stat-mult-set.hpp"
+#include "game/stats/types.hpp"
+#include "game/stats/trait-enum.hpp"
 
 #include <tuple>
-#include <string>
 
 
 namespace game
@@ -42,112 +38,48 @@ namespace game
 namespace stats
 {
 
-    //a collection of stats
+    //Convenience warpper for creature stat values.
+    //Because sometimes the TraitSet class is just cumbersome overkill.
     class StatSet
     {
     public:
-        //construct with all zeros for both normal_ and current_
-        StatSet();
+        StatSet(const stats::Trait_t STR = 0,
+                const stats::Trait_t ACC = 0,
+                const stats::Trait_t CHA = 0,
+                const stats::Trait_t LCK = 0,
+                const stats::Trait_t SPD = 0,
+                const stats::Trait_t INT = 0);
 
-        //construct with initial values only
-        StatSet(const Stat_t STR,
-                const Stat_t ACC,
-                const Stat_t CHA,
-                const Stat_t LCK,
-                const Stat_t SPD,
-                const Stat_t INT);
+        inline stats::Trait_t Str() const { return str_; }
+        inline stats::Trait_t Acc() const { return acc_; }
+        inline stats::Trait_t Cha() const { return cha_; }
+        inline stats::Trait_t Lck() const { return lck_; }
+        inline stats::Trait_t Spd() const { return spd_; }
+        inline stats::Trait_t Int() const { return int_; }
 
-        //specific constructor
-        StatSet(const Stat & STR,
-                const Stat & ACC,
-                const Stat & CHA,
-                const Stat & LCK,
-                const Stat & SPD,
-                const Stat & INT);
+        stats::Trait_t Get(const Traits::Enum) const;
+        void Set(const Traits::Enum, const stats::Trait_t);
 
-        virtual ~StatSet();
-
-        const std::string ToStringNormal(const bool WILL_WRAP         = true,
-                                         const bool WILL_ABBR         = true,
-                                         const bool WILL_SKIP_ZEROS   = false,
-                                         const bool WILL_ADD_PLUS     = false,
-                                         const bool WILL_SKIP_INVALID = false) const;
-
-        const std::string ToStringCurrent(const bool WILL_WRAP         = true,
-                                          const bool WILL_ABBR         = true,
-                                          const bool WILL_SKIP_ZEROS   = false,
-                                          const bool WILL_ADD_PLUS     = false,
-                                          const bool WILL_SKIP_INVALID = false) const;
-
-        const std::string ToStringTesting(const bool WILL_SHOW_ACTUAL = false) const;
-
-        void Invert();
-        const StatSet CreateInvertCopy() const;
-
-        //returns true if all stats are >= SET's stats
-        bool ChallengeNormal(const StatSet & SET) const;
-        bool ChallengeCurrent(const StatSet & SET) const;
-
-        Stat & Get(const stat::Enum);
-
-        const Stat GetCopy(const stat::Enum) const;
-
-        inline const Stat Str() const { return statVec_[stat::Strength]; }
-        inline const Stat Acc() const { return statVec_[stat::Accuracy]; }
-        inline const Stat Cha() const { return statVec_[stat::Charm]; }
-        inline const Stat Lck() const { return statVec_[stat::Luck]; }
-        inline const Stat Spd() const { return statVec_[stat::Speed]; }
-        inline const Stat Int() const { return statVec_[stat::Intelligence]; }
-
-        //no bounds checking or actual value adjustment is performed by these functions
-        void ResetCurrentToNormal();
-        void ResetCurrentAndActualToNormal();
-
-        //these functions are meant to only be used in testing
-        //these functions use the NEW_..._SET current values to reset values to
-        //no bounds checking or actual value adjustment is performed by these functions
-        void ResetCurrent(const StatSet & NEW_CURRENT_SET);
-        void ResetNormal(const StatSet & NEW_NORMAL_SET);
-        void ResetActual(const StatSet & NEW_ACTUAL_SET);
-
-        //only affects Normal values
-        void ModifyNormal(const StatSet &);
-
-        //Calculates the new value based on Current and the given StatSet's Current,
-        //and then sets Actual and Current to that new value.
-        void ModifyCurrentAndActual(const StatSet &);
-
-        //Naturally, this has no effect on stats with (Actual < 0) or (Current == 0).
-        void ModifyCurrentAndActual(const StatMultSet &);
-
-        //returns true if any values were changed
-        bool ForceValidNormal();
-        bool ForceValidCurrent();
-        bool ForceValidAll();
+        const std::string ToString(const bool WILL_WRAP) const;
 
         friend bool operator==(const StatSet & L, const StatSet & R);
         friend bool operator<(const StatSet & L, const StatSet & R);
 
-    public:
-        static const StatSet INVALID_STATSET_;
-
     private:
-        StatVec_t statVec_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & statVec_;
-        }
+        stats::Trait_t str_;
+        stats::Trait_t acc_;
+        stats::Trait_t cha_;
+        stats::Trait_t lck_;
+        stats::Trait_t spd_;
+        stats::Trait_t int_;
     };
 
 
     inline bool operator==(const StatSet & L, const StatSet & R)
     {
-        //statVec_ is ordered so simple comparison works
-        return (L.statVec_ == R.statVec_);
+        return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
+                ==
+               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
 
 
@@ -159,10 +91,13 @@ namespace stats
 
     inline bool operator<(const StatSet & L, const StatSet & R)
     {
-        //statVec_ is ordered so simple comparison works
-        return (L.statVec_ < R.statVec_);
+        return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
+                <
+               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
 
 }
 }
-#endif //GAME_ISTAT_INCLUDED
+
+
+#endif //GAME_STATS_STATSET_HPP_INCLUDED

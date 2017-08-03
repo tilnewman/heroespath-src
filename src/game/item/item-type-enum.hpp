@@ -28,7 +28,7 @@
 // item-type-enum.hpp
 //  Enumerations for all of an Item's various types.
 //
-#include "game/item/types.hpp"
+#include "game/stats/types.hpp"
 #include "game/stats/types.hpp"
 
 #include <string>
@@ -269,12 +269,12 @@ namespace item
 
         static const std::string ToString(const material::Enum);
         static const std::string ToReadableString(const material::Enum);
-        static stats::Armor_t ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
-        static stats::Armor_t ArmorRatingBonusPri(const material::Enum MATERIAL_PRI);
-        static stats::Armor_t ArmorRatingBonusSec(const material::Enum MATERIAL_SEC);
-        static item::Coin_t PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
-        static item::Coin_t PriceAdjPri(const material::Enum MATERIAL_PRI);
-        static item::Coin_t PriceAdjSec(const material::Enum MATERIAL_SEC);
+        static stats::Trait_t ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static stats::Trait_t ArmorRatingBonusPri(const material::Enum MATERIAL_PRI);
+        static stats::Trait_t ArmorRatingBonusSec(const material::Enum MATERIAL_SEC);
+        static stats::Trait_t PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static stats::Trait_t PriceAdjPri(const material::Enum MATERIAL_PRI);
+        static stats::Trait_t PriceAdjSec(const material::Enum MATERIAL_SEC);
         static float WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
         static float WeightMultPri(const material::Enum MATERIAL_PRI);
         static float WeightMultSec(const material::Enum MATERIAL_SEC);

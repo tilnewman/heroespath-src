@@ -1720,7 +1720,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (ViewType::Spells == view_)
         {
-            auto const ROLE_ENUM{ creaturePtr_->Role().Which() };
+            auto const ROLE_ENUM{ creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->SetText("(S)ongs");
@@ -1741,7 +1741,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         }
         else if (ViewType::Spells != view_)
         {
-            auto const ROLE_ENUM{ creaturePtr_->Role().Which() };
+            auto const ROLE_ENUM{ creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->SetText("(S)ongs");
@@ -2186,26 +2186,27 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
             << creaturePtr_->Name() << "\n"
             << creaturePtr_->SexName() << "\n"
-            << creaturePtr_->Race().Name();
+            << creaturePtr_->RaceName();
 
         if (creaturePtr_->IsBeast())
         {
-            if (creaturePtr_->Race().Which() != creature::race::Wolfen)
+            if (creaturePtr_->Race() != creature::race::Wolfen)
             {
-                ss << ", " << creaturePtr_->Role().Name();
+                ss << ", " << creaturePtr_->RoleName();
             }
             ss << " " << creaturePtr_->RankClassName() << "\n";
         }
         else
         {
             ss << " " << creaturePtr_->RankClassName() << " "
-                << creaturePtr_->Role().Name() << "\n";
+                << creaturePtr_->RoleName() << "\n";
         }
 
         ss << "Rank:  " << creaturePtr_->Rank() << "\n"
            << "Experience: " << creaturePtr_->Exp() << "\n"
-           << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal()
-           << " " << creaturePtr_->HealthPercentStr() << "\n"
+           << "Health:  " << creaturePtr_->HealthCurrent()
+           << "/" << creaturePtr_->HealthNormal()
+           << " " << creaturePtr_->HealthRatio()  << "%\n"
            << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
            << "\n";
 
@@ -2247,22 +2248,37 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::SetupCreatureStats()
     {
-        const stats::StatSet STATS(creaturePtr_->Stats());
+        const std::string STR_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Strength, true));
 
-        const std::string STR_MOD_STR(STATS.Str().ModifiedCurrentStr(true));
-        const std::string ACC_MOD_STR(STATS.Acc().ModifiedCurrentStr(true));
-        const std::string CHA_MOD_STR(STATS.Cha().ModifiedCurrentStr(true));
-        const std::string LCK_MOD_STR(STATS.Lck().ModifiedCurrentStr(true));
-        const std::string SPD_MOD_STR(STATS.Spd().ModifiedCurrentStr(true));
-        const std::string INT_MOD_STR(STATS.Int().ModifiedCurrentStr(true));
+        const std::string ACC_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Accuracy, true));
+
+        const std::string CHA_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Charm, true));
+
+        const std::string LCK_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Luck, true));
+
+        const std::string SPD_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Speed, true));
+
+        const std::string INT_MOD_STR(creaturePtr_->
+            TraitModifiedString(stats::Traits::Intelligence, true));
 
         std::ostringstream ss;
-        ss << "Strength:       "   << STATS.Str().Current() << " " << STR_MOD_STR << "\n"
-           << "Accuracy:      "    << STATS.Acc().Current() << " " << ACC_MOD_STR << "\n"
-           << "Charm:          "   << STATS.Cha().Current() << " " << CHA_MOD_STR << "\n"
-           << "Luck:             " << STATS.Lck().Current() << " " << LCK_MOD_STR << "\n"
-           << "Speed:            " << STATS.Spd().Current() << " " << SPD_MOD_STR << "\n"
-           << "Intelligence:   "   << STATS.Int().Current() << " " << INT_MOD_STR << "\n"
+        ss << "Strength:       " << creaturePtr_->Strength()
+           << " " << STR_MOD_STR << "\n"
+           << "Accuracy:      "  << creaturePtr_->Accuracy()
+           << " " << ACC_MOD_STR << "\n"
+           << "Charm:          " << creaturePtr_->Charm()
+           << " " << CHA_MOD_STR << "\n"
+           << "Luck:             " << creaturePtr_->Luck()
+           << " " << LCK_MOD_STR << "\n"
+           << "Speed:            " << creaturePtr_->Speed()
+           << " " << SPD_MOD_STR << "\n"
+           << "Intelligence:   " << creaturePtr_->Intelligence()
+           << " " << INT_MOD_STR << "\n"
            << "\n \n ";
 
         const sfml_util::gui::TextInfo STATS_TEXT_INFO(
@@ -2295,8 +2311,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
            << "Gems:  " << INVENTORY.Gems() << "\n"
            << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
-           << "Mana:  " << creaturePtr_->ManaCurrent() << "/"
-           << creaturePtr_->ManaNormal() << "\n"
+           << "Mana:  " << creaturePtr_->TraitWorking(stats::Traits::Mana) << "/"
+           << creaturePtr_->TraitNormal(stats::Traits::Mana) << "\n"
            << "Weight: " << INVENTORY.Weight() << "/"
            << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
@@ -2785,8 +2801,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Coin).PlayRandom();
 
-        creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(COUNT) * -1);
-        creatureToGiveToPtr->CoinsAdj(static_cast<item::Coin_t>(COUNT));
+        creaturePtr_->CoinsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
+        creatureToGiveToPtr->CoinsAdj(static_cast<stats::Trait_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " coins taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
@@ -2798,8 +2814,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Gem).PlayRandom();
 
-        creaturePtr_->GemsAdj(static_cast<item::Gem_t>(COUNT) * -1);
-        creatureToGiveToPtr->GemsAdj(static_cast<item::Gem_t>(COUNT));
+        creaturePtr_->GemsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
+        creatureToGiveToPtr->GemsAdj(static_cast<stats::Trait_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " gems taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
@@ -2811,8 +2827,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::MeteorShard).PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT) * -1);
-        creatureToGiveToPtr->MeteorShardsAdj(static_cast<item::Meteor_t>(COUNT));
+        creaturePtr_->MeteorShardsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
+        creatureToGiveToPtr->MeteorShardsAdj(static_cast<stats::Trait_t>(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
@@ -2829,7 +2845,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Coin_t NEXT_CREATURE_COINS_OWNED(nextCreaturePtr->Inventory().Coins());
+                const stats::Trait_t NEXT_CREATURE_COINS_OWNED(nextCreaturePtr->Inventory().Coins());
                 if (NEXT_CREATURE_COINS_OWNED > 0)
                 {
                     coinsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_COINS_OWNED);
@@ -2838,7 +2854,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        creaturePtr_->CoinsAdj(static_cast<item::Coin_t>(coinsOwnedByOtherPartyMembers));
+        creaturePtr_->CoinsAdj(static_cast<stats::Trait_t>(coinsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2861,7 +2877,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Gem_t NEXT_CREATURE_GEMS_OWNED(nextCreaturePtr->Inventory().Gems());
+                const stats::Trait_t NEXT_CREATURE_GEMS_OWNED(nextCreaturePtr->Inventory().Gems());
                 if (NEXT_CREATURE_GEMS_OWNED > 0)
                 {
                     gemsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_GEMS_OWNED);
@@ -2870,7 +2886,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        creaturePtr_->GemsAdj(static_cast<item::Gem_t>(gemsOwnedByOtherPartyMembers));
+        creaturePtr_->GemsAdj(static_cast<stats::Trait_t>(gemsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2893,7 +2909,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const item::Meteor_t NEXT_CREATURE_SHARDS_OWNED(nextCreaturePtr->Inventory().MeteorShards());
+                const stats::Trait_t NEXT_CREATURE_SHARDS_OWNED(nextCreaturePtr->Inventory().MeteorShards());
                 if (NEXT_CREATURE_SHARDS_OWNED > 0)
                 {
                     shardsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_SHARDS_OWNED);
@@ -2902,7 +2918,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        creaturePtr_->MeteorShardsAdj(static_cast<item::Meteor_t>(shardsOwnedByOtherPartyMembers));
+        creaturePtr_->MeteorShardsAdj(static_cast<stats::Trait_t>(shardsOwnedByOtherPartyMembers));
 
         if (WILL_POPUP)
         {
@@ -2922,13 +2938,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         HandleCoinsGather(false);
 
-        const item::Coin_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
+        const stats::Trait_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
 
-        const item::Coin_t HUMANOID_COUNT(static_cast<item::Coin_t>(
+        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(
             Game::Instance()->State().Party().GetNumHumanoid()));
 
-        const item::Coin_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
-        const item::Coin_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
+        const stats::Trait_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
+        const stats::Trait_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
@@ -2939,7 +2955,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        item::Coin_t toHandOut(COINS_LEFT_OVER);
+        stats::Trait_t toHandOut(COINS_LEFT_OVER);
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -2974,10 +2990,10 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         HandleGemsGather(false);
 
-        const item::Gem_t GEMS_TOTAL(creaturePtr_->Inventory().Gems());
-        const item::Gem_t HUMANOID_COUNT(static_cast<item::Gem_t>(Game::Instance()->State().Party().GetNumHumanoid()));
-        const item::Gem_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
-        const item::Gem_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
+        const stats::Trait_t GEMS_TOTAL(creaturePtr_->Inventory().Gems());
+        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(Game::Instance()->State().Party().GetNumHumanoid()));
+        const stats::Trait_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
+        const stats::Trait_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
@@ -2988,7 +3004,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        item::Gem_t toHandOut(GEMS_LEFT_OVER);
+        stats::Trait_t toHandOut(GEMS_LEFT_OVER);
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -3023,10 +3039,10 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         HandleMeteorShardsGather(false);
 
-        const item::Meteor_t METEORSHARDS_TOTAL(creaturePtr_->Inventory().MeteorShards());
-        const item::Meteor_t HUMANOID_COUNT(static_cast<item::Meteor_t>(Game::Instance()->State().Party().GetNumHumanoid()));
-        const item::Meteor_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
-        const item::Meteor_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
+        const stats::Trait_t METEORSHARDS_TOTAL(creaturePtr_->Inventory().MeteorShards());
+        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(Game::Instance()->State().Party().GetNumHumanoid()));
+        const stats::Trait_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
+        const stats::Trait_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
@@ -3037,7 +3053,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        item::Gem_t toHandOut(METEORSHARDS_LEFT_OVER);
+        stats::Trait_t toHandOut(METEORSHARDS_LEFT_OVER);
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -3406,7 +3422,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             healthTradedNextTitleStr = ss.str();
         }
 
-        auto const ROLE{ CREATURE_PTR->Role().Which() };
+        auto const ROLE{ CREATURE_PTR->Role() };
 
         ss.str("");
         ss << "\n" << A.Get(creature::AchievementType::BackstabsHits).Name()     << ":                "      << A.Get(creature::AchievementType::BackstabsHits).Count()      << backstabsHitsNextTitleStr;
@@ -3679,7 +3695,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     bool InventoryStage::HandleSpellsOrSongs()
     {
-        auto const IS_SPELLS{ ! (creaturePtr_->Role().Which() == creature::role::Bard) };
+        auto const IS_SPELLS{ ! (creaturePtr_->Role() == creature::role::Bard) };
 
         if (Phase::Combat == currentPhase_)
         {

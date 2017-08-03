@@ -51,8 +51,8 @@
 #include "game/ouroboros.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/body-type.hpp"
-#include "game/creature/race.hpp"
-#include "game/creature/role.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
 #include "game/creature/race-stats.hpp"
 #include "game/creature/role-stats.hpp"
 #include "game/creature/sex-enum.hpp"
@@ -146,6 +146,9 @@ namespace stage
     const std::string               CharacterStage::POPUP_NAME_HELP_2_("HelpMessage2");
     const std::string               CharacterStage::POPUP_NAME_HELP_3_("HelpMessage3");
     const std::string               CharacterStage::POPUP_NAME_IMAGE_SELECTION_("ImageSelection");
+    //
+    const stats::Trait_t            CharacterStage::STAT_INVALID_       { -1 };
+    const stats::Trait_t            CharacterStage::STAT_INITIAL_MAX_   { 20 };
 
 
     CharacterStage::CharacterStage()
@@ -208,7 +211,7 @@ namespace stage
         fixedStatsSVec_         (),
         initialRollCounter_     (0),
         dragStartY_             (-1.0f),
-        closestDragStat_        (stats::stat::Count),
+        closestDragStat_        (stats::Traits::Count),
         raceRadioButtonSPtr_    (),
         racetDescTextRegionUPtr_(),
         roleRadioButtonSPtr_    (),
@@ -283,19 +286,21 @@ namespace stage
 
             //setup the final StatSet for the character
             stats::StatSet statSetFinal(statSetBase_);
-            statSetFinal.ResetCurrentAndActualToNormal();
 
             //get all image filenames possible for the character
             std::vector<std::string> characterImageFilenamesVec;
-            sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
+            sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec,
+                                                                           RACE_ENUM,
+                                                                           ROLE_ENUM,
+                                                                           SEX_ENUM);
 
             //create the new character
             auto newCharacterUPtr = std::make_unique<player::Character>(
                 NAME,
                 SEX_ENUM,
                 creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
-                creature::Race(RACE_ENUM),
-                creature::Role(ROLE_ENUM),
+                RACE_ENUM,
+                ROLE_ENUM,
                 statSetFinal,
                 0,
                 1,
@@ -317,12 +322,12 @@ namespace stage
             sss << "\n"
                 << newCharacterUPtr->Name()
                 << " the " << creature::sex::ToString(newCharacterUPtr->Sex())
-                << " " << newCharacterUPtr->Race().Name();
+                << " " << newCharacterUPtr->RaceName();
 
             if (creature::race::RaceRoleMatch(
-                newCharacterUPtr->Race().Which(), newCharacterUPtr->Role().Which()) == false)
+                newCharacterUPtr->Race(), newCharacterUPtr->Role()) == false)
             {
-                sss << " " << newCharacterUPtr->Role().Name();
+                sss << " " << newCharacterUPtr->RoleName();
             }
 
             sss  << " saved.";
@@ -397,10 +402,10 @@ namespace stage
 
             //setup the final StatSet for the character
             stats::StatSet statSetFinal;
-            for (int i(0); i < stats::stat::Count; ++i)
+            for (int i(0); i < stats::Traits::StatCount; ++i)
             {
-                auto const NEXT_ENUM{ static_cast<stats::stat::Enum>(i) };
-                statSetFinal.Get(NEXT_ENUM).ResetAll(fixedStatsSVec_[NEXT_ENUM]->Value());
+                auto const NEXT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+                statSetFinal.Set(NEXT_ENUM, fixedStatsSVec_[NEXT_ENUM]->Value());
             }
 
             std::ostringstream ss;
@@ -423,12 +428,12 @@ namespace stage
 
             //const std::string PAD(" ");
             ss << " with:\n\n"
-               << "   Strength="     << statSetFinal.Get(stats::stat::Strength).Normal() << "\n"
-               << "   Accuracy="     << statSetFinal.Get(stats::stat::Accuracy).Normal() << "\n"
-               << "   Charm="        << statSetFinal.Get(stats::stat::Charm).Normal() << "\n"
-               << "   Luck="         << statSetFinal.Get(stats::stat::Luck).Normal() << "\n"
-               << "   Speed="        << statSetFinal.Get(stats::stat::Speed).Normal() << "\n"
-               << "   Intelligence=" << statSetFinal.Get(stats::stat::Intelligence).Normal() << "\n";
+               << "   Strength="     << statSetFinal.Str() << "\n"
+               << "   Accuracy="     << statSetFinal.Acc() << "\n"
+               << "   Charm="        << statSetFinal.Cha() << "\n"
+               << "   Luck="         << statSetFinal.Lck() << "\n"
+               << "   Speed="        << statSetFinal.Spd() << "\n"
+               << "   Intelligence=" << statSetFinal.Int() << "\n";
 
             LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CREATECONFIRM_,
                                                                                                                     ss.str(),
@@ -482,11 +487,11 @@ namespace stage
             ss << "The following attributes are blank: ";
 
             bool foundAnyToIgnore(false);
-            for (std::size_t i(0); i < stats::stat::Count; ++i)
+            for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
             {
                 if (fixedStatsSVec_[i]->IgnoreMe())
                 {
-                    ss << ((false == foundAnyToIgnore) ? "" : ", ") << stats::stat::Name(static_cast<stats::stat::Enum>(i));
+                    ss << ((false == foundAnyToIgnore) ? "" : ", ") << stats::Traits::Name(static_cast<stats::Traits::Enum>(i));
                     foundAnyToIgnore = true;
                 }
             }
@@ -900,7 +905,7 @@ namespace stage
 
         //Stat Labels
 
-        sfml_util::gui::TextInfo statTextInfo(statSetBase_.Str().Name(),
+        sfml_util::gui::TextInfo statTextInfo("Strength",
                                               sfml_util::FontManager::Instance()->Font_Typical(),
                                               38,
                                               LIGHT_TEXT_COLOR_,
@@ -913,27 +918,27 @@ namespace stage
             sf::FloatRect rect(STATS_POS_LEFT_, STATBOX_POS_TOP, 0.0f, 0.0f);
             strLabelTextRegion_.Setup(statTextInfo, rect);
 
-            statTextInfo.text = statSetBase_.Acc().Name();
+            statTextInfo.text = "Accuracy";
             rect.top += strLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine1PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             accLabelTextRegion_.Setup(statTextInfo, rect);
 
-            statTextInfo.text = statSetBase_.Cha().Name();
+            statTextInfo.text = "Charm";
             rect.top += accLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine2PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             chaLabelTextRegion_.Setup(statTextInfo, rect);
 
-            statTextInfo.text = statSetBase_.Lck().Name();
+            statTextInfo.text = "Luck";
             rect.top += chaLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine3PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             lckLabelTextRegion_.Setup(statTextInfo, rect);
 
-            statTextInfo.text = statSetBase_.Spd().Name();
+            statTextInfo.text = "Speed";
             rect.top += lckLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine4PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             spdLabelTextRegion_.Setup(statTextInfo, rect);
 
-            statTextInfo.text = statSetBase_.Int().Name();
+            statTextInfo.text = "Intelligence";
             rect.top += spdLabelTextRegion_.GetEntityRegion().height + STATS_TEXT_VERT_OFFSET;
             statsLine5PosTop_ = rect.top + STATS_LINE_VERT_OFFSET;
             intLabelTextRegion_.Setup(statTextInfo, rect);
@@ -951,28 +956,30 @@ namespace stage
             attribVertOffset2_ = (statsLine2PosTop_ - statsLine1PosTop_);
 
             //establish actual attribute number positions on screen
-            statsStrPosTop_ = GetAttributeNumPosTop(stats::stat::Strength);
-            statsAccPosTop_ = GetAttributeNumPosTop(stats::stat::Accuracy);
-            statsChaPosTop_ = GetAttributeNumPosTop(stats::stat::Charm);
-            statsLckPosTop_ = GetAttributeNumPosTop(stats::stat::Luck);
-            statsSpdPosTop_ = GetAttributeNumPosTop(stats::stat::Speed);
-            statsIntPosTop_ = GetAttributeNumPosTop(stats::stat::Intelligence);
+            statsStrPosTop_ = GetAttributeNumPosTop(stats::Traits::Strength);
+            statsAccPosTop_ = GetAttributeNumPosTop(stats::Traits::Accuracy);
+            statsChaPosTop_ = GetAttributeNumPosTop(stats::Traits::Charm);
+            statsLckPosTop_ = GetAttributeNumPosTop(stats::Traits::Luck);
+            statsSpdPosTop_ = GetAttributeNumPosTop(stats::Traits::Speed);
+            statsIntPosTop_ = GetAttributeNumPosTop(stats::Traits::Intelligence);
 
             statsLineVertPosDiff_ = statsIntPosTop_ - statsSpdPosTop_;
         }
 
         //fill the fixed stats vector with dummy values initially...
-        const std::size_t NUM_STATS(stats::stat::Count);
-        for (std::size_t i(0); i < NUM_STATS; ++i)
-            fixedStatsSVec_.push_back( AnimNumSPtr_t() );
+        const std::size_t NUM_TRAITS(stats::Traits::StatCount);
+        for (std::size_t i(0); i < NUM_TRAITS; ++i)
+        {
+            fixedStatsSVec_.push_back(AnimNumSPtr_t());
+        }
 
         //...then assign valid AnimNumSPtr_t objects with a value of zero
-        fixedStatsSVec_[stats::stat::Strength]      = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Strength,     statsFirstNumPosLeft_, statsStrPosTop_, statsFirstNumPosLeft_, statsStrPosTop_, statTextInfo);
-        fixedStatsSVec_[stats::stat::Accuracy]      = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Accuracy,     statsFirstNumPosLeft_, statsAccPosTop_, statsFirstNumPosLeft_, statsAccPosTop_, statTextInfo);
-        fixedStatsSVec_[stats::stat::Charm]         = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Charm,        statsFirstNumPosLeft_, statsChaPosTop_, statsFirstNumPosLeft_, statsChaPosTop_, statTextInfo);
-        fixedStatsSVec_[stats::stat::Luck]          = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Luck,         statsFirstNumPosLeft_, statsLckPosTop_, statsFirstNumPosLeft_, statsLckPosTop_, statTextInfo);
-        fixedStatsSVec_[stats::stat::Speed]         = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Speed,        statsFirstNumPosLeft_, statsSpdPosTop_, statsFirstNumPosLeft_, statsSpdPosTop_, statTextInfo);
-        fixedStatsSVec_[stats::stat::Intelligence]  = std::make_shared<AnimNum>(stats::Stat::VAL_INVALID_, stats::stat::Intelligence, statsFirstNumPosLeft_, statsIntPosTop_, statsFirstNumPosLeft_, statsIntPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Strength]      = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Strength,     statsFirstNumPosLeft_, statsStrPosTop_, statsFirstNumPosLeft_, statsStrPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Accuracy]      = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Accuracy,     statsFirstNumPosLeft_, statsAccPosTop_, statsFirstNumPosLeft_, statsAccPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Charm]         = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Charm,        statsFirstNumPosLeft_, statsChaPosTop_, statsFirstNumPosLeft_, statsChaPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Luck]          = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Luck,         statsFirstNumPosLeft_, statsLckPosTop_, statsFirstNumPosLeft_, statsLckPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Speed]         = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Speed,        statsFirstNumPosLeft_, statsSpdPosTop_, statsFirstNumPosLeft_, statsSpdPosTop_, statTextInfo);
+        fixedStatsSVec_[stats::Traits::Intelligence]  = std::make_shared<AnimNum>(STAT_INVALID_, stats::Traits::Intelligence, statsFirstNumPosLeft_, statsIntPosTop_, statsFirstNumPosLeft_, statsIntPosTop_, statTextInfo);
 
         //smoke animation
         //Note:  Keep this last to be added to the enitySVec_ in this function
@@ -991,19 +998,15 @@ namespace stage
     }
 
 
-    float CharacterStage::GetAttributeNumPosTop(const stats::stat::Enum STAT)
+    float CharacterStage::GetAttributeNumPosTop(const stats::Traits::Enum TRAIT_ENUM)
     {
-        switch (STAT)
-        {
-            case stats::stat::Strength:     { return statsLine1PosTop_ + attribVertOffset1_ + (0 * attribVertOffset2_); }
-            case stats::stat::Accuracy:     { return statsLine1PosTop_ + attribVertOffset1_ + (1 * attribVertOffset2_); }
-            case stats::stat::Charm:        { return statsLine1PosTop_ + attribVertOffset1_ + (2 * attribVertOffset2_); }
-            case stats::stat::Luck:         { return statsLine1PosTop_ + attribVertOffset1_ + (3 * attribVertOffset2_); }
-            case stats::stat::Speed:        { return statsLine1PosTop_ + attribVertOffset1_ + (4 * attribVertOffset2_); }
-            case stats::stat::Intelligence:
-            case stats::stat::Count:
-            default:                        { return statsLine1PosTop_ + attribVertOffset1_ + (5 * attribVertOffset2_); }
-        }
+        if (TRAIT_ENUM == stats::Traits::Strength)     { return statsLine1PosTop_ + attribVertOffset1_ + (0 * attribVertOffset2_); }
+        if (TRAIT_ENUM == stats::Traits::Accuracy)     { return statsLine1PosTop_ + attribVertOffset1_ + (1 * attribVertOffset2_); }
+        if (TRAIT_ENUM == stats::Traits::Charm)        { return statsLine1PosTop_ + attribVertOffset1_ + (2 * attribVertOffset2_); }
+        if (TRAIT_ENUM == stats::Traits::Luck)         { return statsLine1PosTop_ + attribVertOffset1_ + (3 * attribVertOffset2_); }
+        if (TRAIT_ENUM == stats::Traits::Speed)        { return statsLine1PosTop_ + attribVertOffset1_ + (4 * attribVertOffset2_); }
+        
+        return statsLine1PosTop_ + attribVertOffset1_ + (5 * attribVertOffset2_);
     }
 
 
@@ -1110,7 +1113,7 @@ namespace stage
 
         //strength
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Strength)
+        ss << stats::Traits::Name(stats::Traits::Strength)
            << PAD
            << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Strength")
            << "\n\n";
@@ -1119,7 +1122,7 @@ namespace stage
         auto const STRENGTH_BASE_TEXT{ ss.str() };
         
         //strength help text
-        GetStatHelpText(stats::stat::Strength, helpTextInfo);
+        GetStatHelpText(stats::Traits::Strength, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1133,7 +1136,7 @@ namespace stage
 
         //Accuracy
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Accuracy)
+        ss << stats::Traits::Name(stats::Traits::Accuracy)
             << PAD
             << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Accuracy")
             << "\n\n";
@@ -1148,7 +1151,7 @@ namespace stage
             sfml_util::Margins()) );
 
         //Accuracy help text
-        GetStatHelpText(stats::stat::Accuracy, helpTextInfo);
+        GetStatHelpText(stats::Traits::Accuracy, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1162,7 +1165,7 @@ namespace stage
 
         //Charm
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Charm)
+        ss << stats::Traits::Name(stats::Traits::Charm)
             << PAD
             << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Charm")
             << "\n\n";
@@ -1177,7 +1180,7 @@ namespace stage
             sfml_util::Margins()) );
 
         //charm help text
-        GetStatHelpText(stats::stat::Charm, helpTextInfo);
+        GetStatHelpText(stats::Traits::Charm, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {   
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1191,7 +1194,7 @@ namespace stage
 
         //Luck
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Luck)
+        ss << stats::Traits::Name(stats::Traits::Luck)
             << PAD
             << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Luck")
             << "\n\n";
@@ -1206,7 +1209,7 @@ namespace stage
             sfml_util::Margins()) );
 
         //Luck help text
-        GetStatHelpText(stats::stat::Luck, helpTextInfo);
+        GetStatHelpText(stats::Traits::Luck, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1220,7 +1223,7 @@ namespace stage
 
         //Speed
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Speed)
+        ss << stats::Traits::Name(stats::Traits::Speed)
             << PAD
             << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Speed")
             << "\n\n";
@@ -1235,7 +1238,7 @@ namespace stage
             sfml_util::Margins()) );
 
         //Speed help text
-        GetStatHelpText(stats::stat::Speed, helpTextInfo);
+        GetStatHelpText(stats::Traits::Speed, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1249,7 +1252,7 @@ namespace stage
 
         //Intelligence
         ss.str("");
-        ss << stats::stat::Name(stats::stat::Intelligence)
+        ss << stats::Traits::Name(stats::Traits::Intelligence)
             << PAD
             << GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Intelligence")
             << "\n\n";
@@ -1264,7 +1267,7 @@ namespace stage
             sfml_util::Margins()) );
 
         //Intelligence help text
-        GetStatHelpText(stats::stat::Intelligence, helpTextInfo);
+        GetStatHelpText(stats::Traits::Intelligence, helpTextInfo);
         if (false == helpTextInfo.text.empty())
         {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
@@ -1300,7 +1303,7 @@ namespace stage
     }
 
 
-    bool CharacterStage::GetStatHelpText(const stats::stat::Enum    WHICH_STAT,
+    bool CharacterStage::GetStatHelpText(const stats::Traits::Enum    WHICH_STAT,
                                          sfml_util::gui::TextInfo & textInfo) const
     {
         //bail if no values yet
@@ -1324,21 +1327,21 @@ namespace stage
 
         const creature::role::Enum WHICH_ROLE( ((static_cast<creature::race::Enum>(raceRadioButtonSPtr_->GetSelectedNumber()) == creature::race::Wolfen) ? creature::role::Wolfen : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())));
 
-        const stats::Stat_t STAT_VALUE(fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value());
+        const stats::Trait_t STAT_VALUE(fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value());
 
         std::ostringstream sss;
-        sss << "Your current " << stats::stat::ToString(WHICH_STAT) << " is only " << STAT_VALUE << ".";
+        sss << "Your current " << stats::Traits::ToString(WHICH_STAT) << " is only " << STAT_VALUE << ".";
         const std::string IS_ONLY_STR(sss.str());
 
-        const game::stats::Stat_t STAT_VALUE_LOW      { 10 };
-        const game::stats::Stat_t STAT_VALUE_MED      { 15 };
-        const game::stats::Stat_t STAT_VALUE_HIGH     { 20 };
-        const game::stats::Stat_t STAT_VALUE_HIGHEST  { 25 };
+        const game::stats::Trait_t STAT_VALUE_LOW      { 10 };
+        const game::stats::Trait_t STAT_VALUE_MED      { 15 };
+        const game::stats::Trait_t STAT_VALUE_HIGH     { 20 };
+        const game::stats::Trait_t STAT_VALUE_HIGHEST  { 25 };
 
         std::ostringstream ss;
         if (WHICH_ROLE == creature::role::Archer)
         {
-            if (WHICH_STAT == stats::stat::Accuracy)
+            if (WHICH_STAT == stats::Traits::Accuracy)
             {
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1352,7 +1355,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1366,7 +1369,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Speed)
+            if (WHICH_STAT == stats::Traits::Speed)
             {
                 if (STAT_VALUE < STAT_VALUE_LOW)
                 {
@@ -1382,7 +1385,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Bard)
         {
-            if (WHICH_STAT == stats::stat::Charm)
+            if (WHICH_STAT == stats::Traits::Charm)
             {
                 const std::string REASON_STR("Charm is important to Bards for magical song.");
 
@@ -1398,7 +1401,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Intelligence)
+            if (WHICH_STAT == stats::Traits::Intelligence)
             {
                 const std::string REASON_STR("Inteflligence is important to Bards for magical song.");
 
@@ -1414,7 +1417,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 const std::string REASON_STR("Strength is sometimes important to Bards if you want them to also be good fighters.");
 
@@ -1427,7 +1430,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Beastmaster)
         {
-            if (WHICH_STAT == stats::stat::Intelligence)
+            if (WHICH_STAT == stats::Traits::Intelligence)
             {
                 const std::string REASON_STR("A Beastmaster's primary attribute is Intelligence, for the magical bond they have to their animals.");
 
@@ -1443,7 +1446,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 const std::string REASON_STR("Strength is often important to Beastmasters because they can be good fighters.");
 
@@ -1456,7 +1459,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Cleric)
         {
-            if (WHICH_STAT == stats::stat::Charm)
+            if (WHICH_STAT == stats::Traits::Charm)
             {
                 const std::string REASON_STR("A Cleric's primary attribute is Charm so they can heal and be good diplomats.");
 
@@ -1472,7 +1475,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Intelligence)
+            if (WHICH_STAT == stats::Traits::Intelligence)
             {
                 const std::string REASON_STR("A Cleric is a kind of spell caster, so Intelligence is very important.");
 
@@ -1490,7 +1493,7 @@ namespace stage
         }
         else if ((WHICH_ROLE == creature::role::Firebrand) || (WHICH_ROLE == creature::role::Sylavin))
         {
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 const std::string REASON_STR("Dragons may be magical creatures, but make no mistake, they are fighters.  Strength is important to all types of Dragons.");
 
@@ -1506,7 +1509,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Intelligence)
+            if (WHICH_STAT == stats::Traits::Intelligence)
             {
                 const std::string REASON_STR("Dragons are magical creatures so Intelligence is important.");
 
@@ -1526,7 +1529,7 @@ namespace stage
         {
             const std::string REASON_STR("Knights are fighters, so they need Strength, Accuracy, and Speed -in that order.");
 
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1540,7 +1543,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Speed)
+            if (WHICH_STAT == stats::Traits::Speed)
             {
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1554,7 +1557,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Accuracy)
+            if (WHICH_STAT == stats::Traits::Accuracy)
             {
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1570,7 +1573,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Sorcerer)
         {
-            if (WHICH_STAT == stats::stat::Intelligence)
+            if (WHICH_STAT == stats::Traits::Intelligence)
             {
                 const std::string REASON_STR("A Sorcerer is first and foremost a spell caster, so Intelligence is very important.");
 
@@ -1586,7 +1589,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Speed)
+            if (WHICH_STAT == stats::Traits::Speed)
             {
                 const std::string REASON_STR("Sorcerers are typically physically weaker than the other adventurers.  Speed will be important for dodging attacks.");
 
@@ -1604,7 +1607,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Thief)
         {
-            if (WHICH_STAT == stats::stat::Speed)
+            if (WHICH_STAT == stats::Traits::Speed)
             {
                 const std::string REASON_STR("Thieves are typically physically weaker than the other adventurers.  Speed will be important for dodging attacks and for having fast fingers.");
 
@@ -1620,7 +1623,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Luck)
+            if (WHICH_STAT == stats::Traits::Luck)
             {
                 const std::string REASON_STR("Thieves need Luck more than any other attribute.");
 
@@ -1638,7 +1641,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Wolfen)
         {
-            if (WHICH_STAT == stats::stat::Strength)
+            if (WHICH_STAT == stats::Traits::Strength)
             {
                 const std::string REASON_STR("Wolfens are not in your party of adventurers for their looks, they are there to defense.  Strength for fighting is most important.");
 
@@ -1654,7 +1657,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Accuracy)
+            if (WHICH_STAT == stats::Traits::Accuracy)
             {
                 const std::string REASON_STR("A Wolfen's strong jaws are useless if they can't bite anything with them.  Accuracy is important.");
 
@@ -1670,7 +1673,7 @@ namespace stage
                 }
             }
 
-            if (WHICH_STAT == stats::stat::Speed)
+            if (WHICH_STAT == stats::Traits::Speed)
             {
                 const std::string REASON_STR("Wolfen's are fast for a reason, they need to avoid being hit with attacks.  Speed will be of primary importance for those on the front line of a fight.");
 
@@ -1823,17 +1826,27 @@ namespace stage
         //draw stat modifier texts
         const std::size_t NUM_STAT_MODS(statModifierTextVec_.size());
         for (std::size_t i(0); i < NUM_STAT_MODS; ++i)
+        {
             target.draw(statModifierTextVec_[i], STATES);
+        }
 
         //draw animating digits
         const std::size_t NUM_DIGITS(animStatsSVec_.size());
         for (std::size_t i(0); i < NUM_DIGITS; ++i)
+        {
             if (false == animStatsSVec_[i]->IgnoreMe())
+            {
                 target.draw( * animStatsSVec_[i], STATES);
+            }
+        }
 
-        for (std::size_t i(0); i < stats::stat::Count; ++i)
+        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        {
             if (false == fixedStatsSVec_[i]->IgnoreMe())
+            {
                 target.draw( * fixedStatsSVec_[i], STATES);
+            }
+        }
 
         /*
         //draw the rectangle defining the smoke anim drift boundary
@@ -1902,18 +1915,16 @@ namespace stage
     void CharacterStage::UndoAndClearStatModifierChanges()
     {
         //undo modifier changes to statSetBase
-        for (std::size_t s(0); s < stats::stat::Count; ++s)
+        for (std::size_t s(0); s < stats::Traits::StatCount; ++s)
         {
-            const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(s));
-
+            const stats::Traits::Enum NEXT_TRAIT_ENUM(static_cast<stats::Traits::Enum>(s));
             const std::size_t NUM_MODIFIERS(statModifierTextVec_.size());
-
             for (std::size_t m(0); m < NUM_MODIFIERS; ++m)
             {
-                if (NEXT_STAT_ENUM == statModifierTextVec_[m].stat)
+                if (NEXT_TRAIT_ENUM == statModifierTextVec_[m].stat)
                 {
-                    statSetBase_.Get(NEXT_STAT_ENUM).ModifyNormal(-1 * statModifierTextVec_[m].value);
-                    statSetBase_.Get(NEXT_STAT_ENUM).ResetCurrentAndActualToNormal();
+                    statSetBase_.Set(NEXT_TRAIT_ENUM, (statSetBase_.Get(NEXT_TRAIT_ENUM) +
+                        (-1 * statModifierTextVec_[m].value)));
                 }
             }
         }
@@ -1925,16 +1936,20 @@ namespace stage
 
     void CharacterStage::SetVisibleStatsToStatSetBase()
     {
-        for (std::size_t i(0); i < stats::stat::Count; ++i)
+        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
         {
-            const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
-            const stats::Stat_t     NEW_VAL       (statSetBase_.Get(NEXT_STAT_ENUM).Normal());
+            const stats::Traits::Enum NEXT_TRAIT_ENUM(static_cast<stats::Traits::Enum>(i));
+            const stats::Trait_t      NEW_VAL        (statSetBase_.Get(NEXT_TRAIT_ENUM));
 
             //prevent visible stats from showing negative numbers, but keep them in statSetBase_
             if (NEW_VAL < 0)
+            {
                 fixedStatsSVec_[i]->ValueSet(0);
+            }
             else
+            {
                 fixedStatsSVec_[i]->ValueSet(NEW_VAL);
+            }
 
             fixedStatsSVec_[i]->CreateNewTextRegion();
         }
@@ -1966,24 +1981,24 @@ namespace stage
 
         const std::string RACE_NAME_ABBR(creature::race::Abbr(RACE));
 
-        std::vector<stats::stat::Enum> preExistingStatVec;
+        std::vector<stats::Traits::Enum> preExistingStatVec;
 
-        for (std::size_t i(0); i<stats::stat::Count; ++i)
+        for (std::size_t i(0); i<stats::Traits::StatCount; ++i)
         {
-            const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
-            const stats::Stat_t NEXT_STAT_VAL(statSetRace_.Get(NEXT_STAT_ENUM).Normal());
+            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_STAT_VAL{ statSetRace_.Get(NEXT_TRAIT_ENUM) };
 
             if ((NEXT_STAT_VAL != 0) &&
-                (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
-                (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&
+                (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IgnoreMe()) &&
+                (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IsHeldDown()) &&
                 (initialRollCounter_ >= 6))
             {
-                preExistingStatVec.push_back(NEXT_STAT_ENUM);
-                statModifierTextVec_.push_back( StatModText(NEXT_STAT_ENUM,
+                preExistingStatVec.push_back(NEXT_TRAIT_ENUM);
+                statModifierTextVec_.push_back( StatModText(NEXT_TRAIT_ENUM,
                                                             RACE_NAME_ABBR,
                                                             NEXT_STAT_VAL,
                                                             statsFirstNumPosLeft_ + HORIZ_OFFSET,
-                                                            GetAttributeNumPosTop(NEXT_STAT_ENUM) + VERT_OFFSET) );
+                                                            GetAttributeNumPosTop(NEXT_TRAIT_ENUM) + VERT_OFFSET) );
             }
         }
 
@@ -1992,28 +2007,34 @@ namespace stage
 
         statSetRole_ = creature::RoleStatModifier::Get(ROLE_ENUM);
 
-        for (std::size_t i(0); i<stats::stat::Count; ++i)
+        for (std::size_t i(0); i<stats::Traits::StatCount; ++i)
         {
-            const stats::stat::Enum NEXT_STAT_ENUM(static_cast<stats::stat::Enum>(i));
-            const stats::Stat_t NEXT_STAT_VAL(statSetRole_.Get(NEXT_STAT_ENUM).Normal());
+            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_STAT_VAL{ statSetRole_.Get(NEXT_TRAIT_ENUM) };
 
             if ((NEXT_STAT_VAL != 0) &&
-                (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IgnoreMe()) &&
-                (false == fixedStatsSVec_[NEXT_STAT_ENUM]->IsHeldDown()) &&
+                (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IgnoreMe()) &&
+                (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IsHeldDown()) &&
                 (initialRollCounter_ >= 6))
             {
                 float extraHorizOffset(0.0f);
 
-                if (std::find(preExistingStatVec.begin(), preExistingStatVec.end(), NEXT_STAT_ENUM) == preExistingStatVec.end())
+                if (std::find(preExistingStatVec.begin(),
+                              preExistingStatVec.end(),
+                              NEXT_TRAIT_ENUM) == preExistingStatVec.end())
+                {
                     extraHorizOffset = 0.0f;
+                }
                 else
+                {
                     extraHorizOffset = sfml_util::MapByRes(60.0f, 200.0f);
+                }
 
-                statModifierTextVec_.push_back( StatModText(NEXT_STAT_ENUM,
+                statModifierTextVec_.push_back( StatModText(NEXT_TRAIT_ENUM,
                                                             ROLE_NAME_ABBR,
                                                             NEXT_STAT_VAL,
                                                             statsFirstNumPosLeft_ + HORIZ_OFFSET + extraHorizOffset,
-                                                            GetAttributeNumPosTop(NEXT_STAT_ENUM) + VERT_OFFSET) );
+                                                            GetAttributeNumPosTop(NEXT_TRAIT_ENUM) + VERT_OFFSET) );
             }
         }
     }
@@ -2024,61 +2045,82 @@ namespace stage
         const std::size_t NUM_MODIFIERS(statModifierTextVec_.size());
         for (std::size_t i(0); i < NUM_MODIFIERS; ++i)
         {
-            statSetBase_.Get(statModifierTextVec_[i].stat).ModifyNormal(statModifierTextVec_[i].value);
+            statSetBase_.Set(statModifierTextVec_[i].stat,
+                statSetBase_.Get(statModifierTextVec_[i].stat) + statModifierTextVec_[i].value);
         }
     }
 
 
-    stats::stat::Enum CharacterStage::GetHeldDownStat() const
+    stats::Traits::Enum CharacterStage::GetHeldDownStat() const
     {
-        if (fixedStatsSVec_[stats::stat::Strength]->IsHeldDown()) return stats::stat::Strength;
-        if (fixedStatsSVec_[stats::stat::Accuracy]->IsHeldDown()) return stats::stat::Accuracy;
-        if (fixedStatsSVec_[stats::stat::Charm]->IsHeldDown()) return stats::stat::Charm;
-        if (fixedStatsSVec_[stats::stat::Luck]->IsHeldDown()) return stats::stat::Luck;
-        if (fixedStatsSVec_[stats::stat::Speed]->IsHeldDown()) return stats::stat::Speed;
-        if (fixedStatsSVec_[stats::stat::Intelligence]->IsHeldDown()) return stats::stat::Intelligence;
-
-        return stats::stat::Count;
-    }
-
-
-    stats::stat::Enum CharacterStage::GetStatAbove(const stats::stat::Enum STAT) const
-    {
-        if (STAT == stats::stat::Accuracy)     return stats::stat::Strength;
-        if (STAT == stats::stat::Charm)        return stats::stat::Accuracy;
-        if (STAT == stats::stat::Luck)         return stats::stat::Charm;
-        if (STAT == stats::stat::Speed)        return stats::stat::Luck;
-        if (STAT == stats::stat::Intelligence) return stats::stat::Speed;
-
-        return stats::stat::Count;
-    }
-
-
-    stats::stat::Enum CharacterStage::GetStatBelow(const stats::stat::Enum STAT) const
-    {
-        if (STAT == stats::stat::Strength)  return stats::stat::Accuracy;
-        if (STAT == stats::stat::Accuracy)  return stats::stat::Charm;
-        if (STAT == stats::stat::Charm)     return stats::stat::Luck;
-        if (STAT == stats::stat::Luck)      return stats::stat::Speed;
-        if (STAT == stats::stat::Speed)     return stats::stat::Intelligence;
-
-        return stats::stat::Count;
-    }
-
-
-    float CharacterStage::GetStatPosTop(const stats::stat::Enum STAT) const
-    {
-        switch (STAT)
+        if (fixedStatsSVec_[stats::Traits::Strength]->IsHeldDown())
         {
-            case stats::stat::Strength:     { return statsStrPosTop_; }
-            case stats::stat::Accuracy:     { return statsAccPosTop_; }
-            case stats::stat::Charm:        { return statsChaPosTop_; }
-            case stats::stat::Luck:         { return statsLckPosTop_; }
-            case stats::stat::Speed:        { return statsSpdPosTop_; }
-            case stats::stat::Intelligence: { return statsIntPosTop_; }
-            case stats::stat::Count:
-            default:                        { return -1.0f; }
+            return stats::Traits::Strength;
         }
+
+        if (fixedStatsSVec_[stats::Traits::Accuracy]->IsHeldDown())
+        {
+            return stats::Traits::Accuracy;
+        }
+
+        if (fixedStatsSVec_[stats::Traits::Charm]->IsHeldDown())
+        {
+            return stats::Traits::Charm;
+        }
+
+        if (fixedStatsSVec_[stats::Traits::Luck]->IsHeldDown())
+        {
+            return stats::Traits::Luck;
+        }
+
+        if (fixedStatsSVec_[stats::Traits::Speed]->IsHeldDown())
+        {
+            return stats::Traits::Speed;
+        }
+
+        if (fixedStatsSVec_[stats::Traits::Intelligence]->IsHeldDown())
+        {
+            return stats::Traits::Intelligence;
+        }
+
+        return stats::Traits::Count;
+    }
+
+
+    stats::Traits::Enum CharacterStage::GetStatAbove(const stats::Traits::Enum STAT) const
+    {
+        if (STAT == stats::Traits::Accuracy)     return stats::Traits::Strength;
+        if (STAT == stats::Traits::Charm)        return stats::Traits::Accuracy;
+        if (STAT == stats::Traits::Luck)         return stats::Traits::Charm;
+        if (STAT == stats::Traits::Speed)        return stats::Traits::Luck;
+        if (STAT == stats::Traits::Intelligence) return stats::Traits::Speed;
+
+        return stats::Traits::Count;
+    }
+
+
+    stats::Traits::Enum CharacterStage::GetStatBelow(const stats::Traits::Enum STAT) const
+    {
+        if (STAT == stats::Traits::Strength)  return stats::Traits::Accuracy;
+        if (STAT == stats::Traits::Accuracy)  return stats::Traits::Charm;
+        if (STAT == stats::Traits::Charm)     return stats::Traits::Luck;
+        if (STAT == stats::Traits::Luck)      return stats::Traits::Speed;
+        if (STAT == stats::Traits::Speed)     return stats::Traits::Intelligence;
+
+        return stats::Traits::Count;
+    }
+
+
+    float CharacterStage::GetStatPosTop(const stats::Traits::Enum TRAIT_ENUM) const
+    {
+        if (TRAIT_ENUM == stats::Traits::Strength)     { return statsStrPosTop_; }
+        if (TRAIT_ENUM == stats::Traits::Accuracy)     { return statsAccPosTop_; }
+        if (TRAIT_ENUM == stats::Traits::Charm)        { return statsChaPosTop_; }
+        if (TRAIT_ENUM == stats::Traits::Luck)         { return statsLckPosTop_; }
+        if (TRAIT_ENUM == stats::Traits::Speed)        { return statsSpdPosTop_; }
+        if (TRAIT_ENUM == stats::Traits::Intelligence) { return statsIntPosTop_; }
+        
+        return -1.0f;
     }
 
 
@@ -2096,8 +2138,8 @@ namespace stage
         animStatsSVec_.clear();
 
         //snap to closest position when drag stops
-        const stats::stat::Enum HELD_DOWN_STAT( GetHeldDownStat() );
-        if (HELD_DOWN_STAT != stats::stat::Count)
+        const stats::Traits::Enum HELD_DOWN_STAT( GetHeldDownStat() );
+        if (HELD_DOWN_STAT != stats::Traits::Count)
         {
             sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
             fixedStatsSVec_[HELD_DOWN_STAT]->SetPosY(GetStatPosTop(HELD_DOWN_STAT));
@@ -2107,7 +2149,7 @@ namespace stage
 
         //clear isHeldDown status from all stat anim objects, and see if any were
         bool wereAnyHeldDown(false);
-        for (std::size_t i(0); i < stats::stat::Count; ++i)
+        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IsHeldDown())
             {
@@ -2136,9 +2178,13 @@ namespace stage
         if ((initialRollCounter_ >= 6) && (false == AreAnyAnimNumStillMoving()))
         {
             bool isNumberHeldDown(false);
-            for (std::size_t i(0); i < stats::stat::Count; ++i)
+            for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+            {
                 if (fixedStatsSVec_[i]->MouseDown(MOUSE_POS_V.x, MOUSE_POS_V.y))
+                {
                     isNumberHeldDown = true;
+                }
+            }
 
             //you can hold down the mouse button on a stat to see all stats at their base values
             if (isNumberHeldDown)
@@ -2175,9 +2221,13 @@ namespace stage
 
     bool CharacterStage::AreAnyStatsIgnored() const
     {
-        for (std::size_t i(0); i < stats::stat::Count; ++i)
+        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        {
             if (fixedStatsSVec_[i]->IgnoreMe())
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -2186,28 +2236,40 @@ namespace stage
     void CharacterStage::HandleAttributeDragging(const sf::Vector2f & MOUSE_POS_V)
     {
         //check there is a number being held down at all
-        const stats::stat::Enum STAT_HELD(GetHeldDownStat());
-        if (STAT_HELD == stats::stat::Count)
+        auto const STAT_HELD{ GetHeldDownStat() };
+        if (STAT_HELD == stats::Traits::Count)
+        {
             return;
+        }
 
         //can't drag if numbers are still animating
         if (isAnimStats_)
+        {
             return;
+        }
 
         if (AreAnyAnimNumStillMoving())
+        {
             return;
+        }
 
         //can't drag without a full set of attributes
         if (AreAnyStatsIgnored())
+        {
             return;
+        }
 
         //can't drag past the edges of the numbers box
         const float NEW_POS_Y(MOUSE_POS_V.y - 10.0f);
         if ((NEW_POS_Y > statsIntPosTop_) || (NEW_POS_Y < statsStrPosTop_))
+        {
             return;
+        }
 
         if (dragStartY_ < 0.0f)
+        {
             dragStartY_ = fixedStatsSVec_[STAT_HELD]->GetPos().y;
+        }
 
         const float DIFF(dragStartY_ - NEW_POS_Y);
         const float DIFF_MAX(statsLineVertPosDiff_ - (statsLineVertPosDiff_ / 3.0f));
@@ -2217,8 +2279,8 @@ namespace stage
 
         if (IS_MOVING_UP)
         {
-            const stats::stat::Enum STAT_ABOVE(GetStatAbove(STAT_HELD));
-            if ((STAT_ABOVE != stats::stat::Count) && (DIFF > DIFF_MAX))
+            auto const STAT_ABOVE{ GetStatAbove(STAT_HELD) };
+            if ((STAT_ABOVE != stats::Traits::Count) && (DIFF > DIFF_MAX))
             {
                 dragStartY_ -= statsLineVertPosDiff_;
                 fixedStatsSVec_[STAT_ABOVE]->SetPosY(fixedStatsSVec_[STAT_ABOVE]->GetPos().y + statsLineVertPosDiff_);
@@ -2231,8 +2293,8 @@ namespace stage
         }
         else
         {
-            const stats::stat::Enum STAT_BELOW(GetStatBelow(STAT_HELD));
-            if ((STAT_BELOW != stats::stat::Count) && (fabs(DIFF) > DIFF_MAX))
+            auto const STAT_BELOW{ GetStatBelow(STAT_HELD) };
+            if ((STAT_BELOW != stats::Traits::Count) && (fabs(DIFF) > DIFF_MAX))
             {
                 dragStartY_ += statsLineVertPosDiff_;
                 fixedStatsSVec_[STAT_BELOW]->SetPosY(fixedStatsSVec_[STAT_BELOW]->GetPos().y - statsLineVertPosDiff_);
@@ -2249,10 +2311,14 @@ namespace stage
     void CharacterStage::ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS)
     {
         if ((false == isAnimStats_) && (false == isWaitingForStats_))
+        {
             return;
+        }
 
         if (isAnimStats_)
+        {
             animStatsTimeCounterSec_ += ELAPSED_TIME_SECONDS;
+        }
 
         if ((isAnimStats_) && (animStatsTimeCounterSec_ > animStatsDelayPerSec_))
         {
@@ -2260,12 +2326,19 @@ namespace stage
             animStatsTimeCounterSec_ = 0.0f;
             animStatsDelayPerSec_ = misc::random::Float(0.05f, 0.25f);
 
-            sfml_util::gui::TextInfo textInfo(" ", sfml_util::FontManager::Instance()->Font_NumbersDefault1(), 40, sf::Color::White, sfml_util::Justified::Left);
-            const stats::Stat_t NEXT_VAL(misc::random::Int(stats::Stat::VAL_MIN_ + 1, stats::Stat::VAL_MAX_INITIAL_));
+            sfml_util::gui::TextInfo textInfo(" ",
+                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                40,
+                sf::Color::White,
+                sfml_util::Justified::Left);
+
+            auto const NEXT_VAL(misc::random::Int(1, STAT_INITIAL_MAX_));
 
             int numToUse(misc::random::Int(1, 6));
             if (initialRollCounter_ <= 6)
+            {
                 numToUse = initialRollCounter_++;
+            }
 
             const float SMOKE_ANIM_MID_X(smokeAnimUPtr_->GetEntityPos().x + (smokeAnimUPtr_->GetEntityRegion().width * 0.5f) - 10.0f);
             const float SMOKE_ANIM_MID_Y(smokeAnimUPtr_->GetEntityPos().y + (smokeAnimUPtr_->GetEntityRegion().height * 0.5f) - 10.0f);
@@ -2276,23 +2349,23 @@ namespace stage
             case 1:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Strength,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsStrPosTop_,
-                                                      textInfo);
-                animStatsSVec_.push_back( ansp );
+                    stats::Traits::Strength,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsStrPosTop_,
+                    textInfo);
+                animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFadeSPtr(fixedStatsSVec_[stats::stat::Strength]);
+                AnimNumSPtr_t toFadeSPtr(fixedStatsSVec_[stats::Traits::Strength]);
                 toFadeSPtr->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFadeSPtr(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFadeSPtr->CreateNewTextRegion();
                 holdFadeSPtr->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Strength] = holdFadeSPtr;
-                statSetBase_.Get(stats::stat::Strength).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Strength] = holdFadeSPtr;
+                statSetBase_.Set(stats::Traits::Strength, NEXT_VAL);
                 animStatsSVec_.push_back(toFadeSPtr);
                 break;
             }
@@ -2300,23 +2373,23 @@ namespace stage
             case 2:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Accuracy,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsAccPosTop_, textInfo);
+                    stats::Traits::Accuracy,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsAccPosTop_, textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::stat::Accuracy]);
+                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Accuracy]);
                 toFade->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFade(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFade->CreateNewTextRegion();
                 holdFade->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Accuracy] = holdFade;
-                statSetBase_.Get(stats::stat::Accuracy).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Accuracy] = holdFade;
+                statSetBase_.Set(stats::Traits::Accuracy, NEXT_VAL);
                 animStatsSVec_.push_back(toFade);
                 break;
             }
@@ -2324,24 +2397,24 @@ namespace stage
             case 3:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Charm,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsChaPosTop_,
-                                                      textInfo);
+                    stats::Traits::Charm,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsChaPosTop_,
+                    textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::stat::Charm]);
+                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Charm]);
                 toFade->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFade(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFade->CreateNewTextRegion();
                 holdFade->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Charm] = holdFade;
-                statSetBase_.Get(stats::stat::Charm).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Charm] = holdFade;
+                statSetBase_.Set(stats::Traits::Charm, NEXT_VAL);
                 animStatsSVec_.push_back(toFade);
                 break;
             }
@@ -2349,24 +2422,24 @@ namespace stage
             case 4:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Luck,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsLckPosTop_,
-                                                      textInfo);
+                    stats::Traits::Luck,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsLckPosTop_,
+                    textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::stat::Luck]);
+                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Luck]);
                 toFade->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFade(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFade->CreateNewTextRegion();
                 holdFade->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Luck] = holdFade;
-                statSetBase_.Get(stats::stat::Luck).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Luck] = holdFade;
+                statSetBase_.Set(stats::Traits::Luck, NEXT_VAL);
                 animStatsSVec_.push_back(toFade);
                 break;
             }
@@ -2374,24 +2447,24 @@ namespace stage
             case 5:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Speed,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsSpdPosTop_,
-                                                      textInfo);
+                    stats::Traits::Speed,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsSpdPosTop_,
+                    textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::stat::Speed]);
+                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Speed]);
                 toFade->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFade(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFade->CreateNewTextRegion();
                 holdFade->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Speed] = holdFade;
-                statSetBase_.Get(stats::stat::Speed).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Speed] = holdFade;
+                statSetBase_.Set(stats::Traits::Speed, NEXT_VAL);
                 animStatsSVec_.push_back(toFade);
                 break;
             }
@@ -2400,24 +2473,24 @@ namespace stage
             default:
             {
                 auto ansp = std::make_shared<AnimNum>(NEXT_VAL,
-                                                      stats::stat::Intelligence,
-                                                      SMOKE_ANIM_MID_X,
-                                                      SMOKE_ANIM_MID_Y,
-                                                      ANIM_NUM_TARGET_X,
-                                                      statsIntPosTop_,
-                                                      textInfo);
+                    stats::Traits::Intelligence,
+                    SMOKE_ANIM_MID_X,
+                    SMOKE_ANIM_MID_Y,
+                    ANIM_NUM_TARGET_X,
+                    statsIntPosTop_,
+                    textInfo);
 
                 animStatsSVec_.push_back(ansp);
 
-                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::stat::Intelligence]);
+                AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Intelligence]);
                 toFade->WillFadeSet(true);
                 //
                 AnimNumSPtr_t holdFade(animStatsSVec_[animStatsSVec_.size() - 1]);
                 holdFade->CreateNewTextRegion();
                 holdFade->WillFadeSet(false);
                 //
-                fixedStatsSVec_[stats::stat::Intelligence] = holdFade;
-                statSetBase_.Get(stats::stat::Intelligence).ResetAll(NEXT_VAL);
+                fixedStatsSVec_[stats::Traits::Intelligence] = holdFade;
+                statSetBase_.Set(stats::Traits::Intelligence, NEXT_VAL);
                 animStatsSVec_.push_back(toFade);
                 break;
             }
@@ -2426,16 +2499,19 @@ namespace stage
 
         //update each active animating fixed number, and check for any still moving
         bool areAnyFixedStillMoving(false);
-        for (std::size_t f(0); f < stats::stat::Count; ++f)
+        for (std::size_t f(0); f < stats::Traits::StatCount; ++f)
         {
             fixedStatsSVec_[f]->UpdateTime(ELAPSED_TIME_SECONDS);
 
             if (false == fixedStatsSVec_[f]->IsDoneMoving())
-                areAnyFixedStillMoving = true; //don't break here because UpdateTime() needs to be called on each
+            {
+                //don't break here because UpdateTime() needs to be called on each
+                areAnyFixedStillMoving = true;
+            }
         }
 
         //update each active animating number
-        const std::size_t NUM_DIGITS(animStatsSVec_.size());
+        auto const NUM_DIGITS(animStatsSVec_.size());
         for (std::size_t i(0); i < NUM_DIGITS; ++i)
         {
             if (false == animStatsSVec_[i]->IsDoneFading())
@@ -2445,11 +2521,13 @@ namespace stage
         }
 
         if (areAnyFixedStillMoving)
+        {
             isWaitingForStats_ = true;
+        }
     }
 
 
-    void CharacterStage::SwapAttributes(const stats::stat::Enum A, const stats::stat::Enum B)
+    void CharacterStage::SwapAttributes(const stats::Traits::Enum A, const stats::Traits::Enum B)
     {
         //swap the anim objects
         AnimNumSPtr_t tempSPtr(fixedStatsSVec_[static_cast<std::size_t>(B)]);
@@ -2457,9 +2535,9 @@ namespace stage
         fixedStatsSVec_[static_cast<std::size_t>(A)] = tempSPtr;
 
         //swap the underlying stat values
-        const stats::Stat_t TEMP_STAT(statSetBase_.Get(B).Normal());
-        statSetBase_.Get(B).ResetAll(statSetBase_.Get(A).Normal());
-        statSetBase_.Get(A).ResetAll(TEMP_STAT);
+        auto const TEMP_TRAIT{ statSetBase_.Get(B) };
+        statSetBase_.Set(B, statSetBase_.Get(A));
+        statSetBase_.Set(A, TEMP_TRAIT);
 
         sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
     }
@@ -2470,8 +2548,12 @@ namespace stage
         std::vector<std::size_t> stuckAnimIndexVec;
         const std::size_t NUM_ANIMS(animStatsSVec_.size());
         for (std::size_t i(0); i < NUM_ANIMS; ++i)
+        {
             if (animStatsSVec_[i]->UpdateTimer(ELAPSED_TIME_SEC))
+            {
                 stuckAnimIndexVec.push_back(i);
+            }
+        }
 
         const std::size_t NUM_STUCK_ANIMS(stuckAnimIndexVec.size());
         for (std::size_t i(0); i < NUM_STUCK_ANIMS; ++i)
@@ -2526,8 +2608,10 @@ namespace stage
         nameTextEntryBoxSPtr_->SetText("");
         statModifierTextVec_.clear();
 
-        for (std::size_t i(0); i < stats::stat::Count; ++i)
+        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        {
             fixedStatsSVec_[i]->SetIgnoreMe();
+        }
 
         SetupAttrDescriptionBox();
     }

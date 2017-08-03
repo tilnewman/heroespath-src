@@ -101,10 +101,10 @@ namespace misc
                                      const material::Enum MATERIAL_SEC,
                                      const bool           IS_PIXIE_ITEM)
     {
-        Coin_t price(5);
+        stats::Trait_t price(5);
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
 
-        Weight_t weight(20);
+        stats::Trait_t weight(20);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
@@ -138,10 +138,10 @@ namespace misc
                                      const material::Enum MATERIAL_SEC,
                                      const bool           IS_PIXIE_ITEM)
     {
-        Coin_t price(437);
+        stats::Trait_t price(437);
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
 
-        Weight_t weight(40);
+        stats::Trait_t weight(40);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
@@ -173,8 +173,8 @@ namespace misc
 
     ItemPtr_t ItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
     {
-        Coin_t price(1000);
-        Weight_t weight(350);
+        stats::Trait_t price(1000);
+        stats::Trait_t weight(350);
         std::string desc("An acoustic guitar with a round hollow body that can also be drummed.");
         
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);

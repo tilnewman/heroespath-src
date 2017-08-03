@@ -116,7 +116,7 @@ namespace item
     }
 
 
-    stats::Armor_t ArmorRatings::ClothesSetRating(
+    stats::Trait_t ArmorRatings::ClothesSetRating(
         const item::material::Enum MATERIAL_ENUM) const
     {
         using namespace item::armor;
@@ -139,7 +139,7 @@ namespace item
     }
 
 
-    stats::Armor_t ArmorRatings::LesserArmorSetRating(
+    stats::Trait_t ArmorRatings::LesserArmorSetRating(
         const item::material::Enum E) const
     {
         using namespace item::armor;
@@ -175,7 +175,7 @@ namespace item
     }
 
 
-    stats::Armor_t ArmorRatings::GreaterArmorSetRating(
+    stats::Trait_t ArmorRatings::GreaterArmorSetRating(
         const item::material::Enum E) const
     {
         using namespace item::armor;
@@ -211,9 +211,9 @@ namespace item
     }
 
 
-    stats::Armor_t ArmorRatings::GetTotalArmorRating(const ItemPVec_t & ITEM_PVEC) const
+    stats::Trait_t ArmorRatings::GetTotalArmorRating(const ItemPVec_t & ITEM_PVEC) const
     {
-        stats::Armor_t totalArmorRating{ 0 };
+        stats::Trait_t totalArmorRating{ 0 };
 
         for (auto const NEXT_ITEM_PTR : ITEM_PVEC)
         {

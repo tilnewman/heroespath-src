@@ -161,8 +161,8 @@ namespace combat
     {
         std::ostringstream ss;
         ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ?
-            "Player " : "NonPlayer ") << creaturePtr_->Race().Name()
-            << " " << creaturePtr_->Role().Name();
+            "Player " : "NonPlayer ") << creaturePtr_->RaceName()
+            << " " << creaturePtr_->RoleName();
 
         if (creaturePtr_->IsPlayerCharacter())
         {

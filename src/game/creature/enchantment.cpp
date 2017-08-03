@@ -56,7 +56,7 @@ namespace creature
     {}
 
 
-    const std::string Enchantment::EffectStr(const CreaturePtr_t CREATURE_PTR) const
+    const std::string Enchantment::EffectStr(const CreaturePtr_t) const
     {
         std::ostringstream ss;
 
@@ -74,7 +74,7 @@ namespace creature
             }
         }
 
-        auto const TRAITS_STR{ traitSet_.ToString(false, false) };
+        auto const TRAITS_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAITS_STR.empty() == false)
         {
             ss << "  Traits: " << TRAITS_STR;

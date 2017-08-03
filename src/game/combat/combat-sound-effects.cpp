@@ -125,13 +125,13 @@ namespace combat
                     sfml_util::SfxSet::TendrilHit).PlayRandom();
             }
             else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
-                     (CREATURE_PTR->Role().Which() == creature::role::Firebrand))
+                     (CREATURE_PTR->Role() == creature::role::Firebrand))
             {
                 sfml_util::SoundManager::Instance()->
                     SoundEffectPlay(sfml_util::sound_effect::BreathHitFirebrand);
             }
             else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
-                     (CREATURE_PTR->Role().Which() == creature::role::Sylavin))
+                     (CREATURE_PTR->Role() == creature::role::Sylavin))
             {
                 sfml_util::SoundManager::Instance()->
                     SoundEffectPlay(sfml_util::sound_effect::BreathHitSylavin);
@@ -452,7 +452,7 @@ namespace combat
 
     void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE{ CREATURE_PTR->Role().Which() };
+        auto const ROLE{ CREATURE_PTR->Role() };
         if (ROLE == creature::role::Wolfen)
         {
             switch (CREATURE_PTR->WolfenClass())
@@ -639,7 +639,7 @@ namespace combat
     void CombatSoundEffects::GetDeathSfx(creature::CreaturePtr_t           CREATURE_PTR,
                                          sfml_util::SoundEffectEnumVec_t & sfxVec_OutParam) const
     {
-        switch (CREATURE_PTR->Race().Which())
+        switch (CREATURE_PTR->Race())
         {
             case creature::race::Human:
             case creature::race::Gnome:
@@ -759,7 +759,7 @@ namespace combat
             }
             case creature::race::Bog:
             {
-                if (CREATURE_PTR->Role().Which() == creature::role::Smasher)
+                if (CREATURE_PTR->Role() == creature::role::Smasher)
                 {
                     sfxVec_OutParam.push_back(sfml_util::sound_effect::DeathBeast3);
                 }

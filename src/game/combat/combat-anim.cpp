@@ -1203,15 +1203,15 @@ namespace combat
     }
 
 
-    void CombatAnimation::TextAnimStart(const stats::Health_t &       DAMAGE,
+    void CombatAnimation::TextAnimStart(const stats::Trait_t &       DAMAGE,
                                         const combat::CombatNodePtr_t TARGET_PTR)
     {
-        TextAnimStart(std::vector<stats::Health_t>(1, DAMAGE),
+        TextAnimStart(std::vector<stats::Trait_t>(1, DAMAGE),
             combat::CombatNodePVec_t(1, TARGET_PTR));
     }
 
 
-    void CombatAnimation::TextAnimStart(const std::vector<stats::Health_t> & DAMAGE_VEC,
+    void CombatAnimation::TextAnimStart(const std::vector<stats::Trait_t> & DAMAGE_VEC,
                                         const combat::CombatNodePVec_t &     TARGETS_PVEC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((DAMAGE_VEC.size() == TARGETS_PVEC.size()),

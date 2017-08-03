@@ -147,7 +147,7 @@ namespace weapon
         ssName << CLAWS_DETAILS.name;
 
         std::ostringstream ssDesc;
-        ssDesc << "The sharp tearing claws of a " << CREATURE_CPTRC->Race().Name() << ".";
+        ssDesc << "The sharp tearing claws of a " << CREATURE_CPTRC->RaceName() << ".";
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             ssName.str(),
@@ -190,7 +190,7 @@ namespace weapon
         ssName << TENDRIL_DETAILS.name;
 
         std::ostringstream ssDesc;
-        ssDesc << "The writhing lengths of a " << CREATURE_CPTRC->Race().Name() << ".";
+        ssDesc << "The writhing lengths of a " << CREATURE_CPTRC->RaceName() << ".";
 
         auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
@@ -232,7 +232,7 @@ namespace weapon
         ssName << BITE_DETAILS.name;
 
         std::ostringstream ssDesc;
-        ssDesc << "The fanged jaws of a " << CREATURE_CPTRC->Race().Name() << ".";
+        ssDesc << "The fanged jaws of a " << CREATURE_CPTRC->RaceName() << ".";
 
         auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
@@ -267,18 +267,18 @@ namespace weapon
         weaponInfo.is_breath = true;
 
         //Hydras and other dragons use the Firebrand breath weapon.
-        auto const BREATH_DETAILS_TITLE{ ((CREATURE_CPTRC->Role().Which() ==
+        auto const BREATH_DETAILS_TITLE{ ((CREATURE_CPTRC->Role() ==
             creature::role::Sylavin) ? "BreathSylavin": "BreathFirebrand") };
 
         auto const BREATH_DETAILS{ WeaponDetailLoader::Instance()->LookupWeaponDetails(
             BREATH_DETAILS_TITLE) };
 
         std::ostringstream ssName;
-        ssName << ((CREATURE_CPTRC->Role().Which() == creature::role::Firebrand) ?
+        ssName << ((CREATURE_CPTRC->Role() == creature::role::Firebrand) ?
             "Fiery" : "Toxic Freezing") << " Breath";
 
         std::ostringstream ssDesc;
-        if (CREATURE_CPTRC->Role().Which() == creature::role::Sylavin)
+        if (CREATURE_CPTRC->Role() == creature::role::Sylavin)
         {
             ssDesc << "The toxic and freezing breath of a Sylavin dragon.";
         }
@@ -328,13 +328,13 @@ namespace weapon
         const WeaponDetails KNIFE_DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails("Knife") );
 
-        Coin_t price(KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC));
+        stats::Trait_t price(KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC));
 
-        Weight_t weight(static_cast<item::Weight_t>(static_cast<float>(KNIFE_DETAILS.weight) *
+        stats::Trait_t weight(static_cast<stats::Trait_t>(static_cast<float>(KNIFE_DETAILS.weight) *
             material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)));
 
-        stats::Health_t damageMin(KNIFE_DETAILS.damage_min);
-        stats::Health_t damageMax(KNIFE_DETAILS.damage_max);
+        stats::Trait_t damageMin(KNIFE_DETAILS.damage_min);
+        stats::Trait_t damageMax(KNIFE_DETAILS.damage_max);
         std::string nameDescriptor("");
         if (SIZE == sfml_util::Size::Large)
         {
@@ -427,8 +427,8 @@ namespace weapon
         const WeaponDetails DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)));
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -473,8 +473,8 @@ namespace weapon
         const WeaponDetails DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails(axe_type::ToString(AXE_TYPE)) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -518,8 +518,8 @@ namespace weapon
         const WeaponDetails DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails(club_type::ToString(CLUB_TYPE)) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -561,8 +561,8 @@ namespace weapon
         const WeaponDetails DETAILS(
             WeaponDetailLoader::Instance()->LookupWeaponDetails(whip_type::ToString(WHIP_TYPE)) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         material::Enum materialPri(material::Count);
 
@@ -634,8 +634,8 @@ namespace weapon
             WeaponDetailLoader::Instance()->LookupWeaponDetails(
                 projectile_type::ToString(PROJ_TYPE)) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         weapon_type::Enum weaponType(weapon_type::NotAWeapon);
 
@@ -721,8 +721,8 @@ namespace weapon
             WeaponDetailLoader::Instance()->LookupWeaponDetails(((IS_QUARTERSTAFF) ?
                 "Quarterstaff" : "Staff")) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -772,8 +772,8 @@ namespace weapon
             WeaponDetailLoader::Instance()->LookupWeaponDetails(
                 bladedstaff_type::ToString(STAFF_TYPE)) );
 
-        Coin_t price(DETAILS.price);
-        Weight_t weight(DETAILS.weight);
+        stats::Trait_t price(DETAILS.price);
+        stats::Trait_t weight(DETAILS.weight);
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);

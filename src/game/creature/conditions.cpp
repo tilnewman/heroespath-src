@@ -164,7 +164,7 @@ namespace condition
             return;
         }
 
-        if (creature::Stats::Test(creaturePtr, stats::stat::Strength, 0.0f, true, true))
+        if (creature::Stats::Test(creaturePtr, stats::Traits::Strength, 0.0f, true, true))
         {
             creaturePtr->ConditionRemove(Conditions::Pounced);
 
@@ -227,7 +227,7 @@ namespace condition
                                  combat::HitInfoVec_t & hitInfoVec,
                                  bool &) const
     {
-        if (creature::Stats::Test(creaturePtr, stats::stat::Strength, 0.0f, true, true) &&
+        if (creature::Stats::Test(creaturePtr, stats::Traits::Strength, 0.0f, true, true) &&
             (misc::random::Int(9) == 0))
         {
             creature::CondEnumVec_t condsRemoved;
@@ -257,7 +257,7 @@ namespace condition
         }
         else
         {
-            const stats::Health_t DAMAGE_BASE{ ((creaturePtr->IsPixie()) ?
+            const stats::Trait_t DAMAGE_BASE{ ((creaturePtr->IsPixie()) ?
                 0 : misc::random::Int(1, 5)) };
 
             auto const DAMAGE_RAND_MAX{ std::max(1, static_cast<int>(
@@ -265,7 +265,7 @@ namespace condition
 
             auto const DAMAGE_FROM_HEALTH_NORMAL{ misc::random::Int(1, DAMAGE_RAND_MAX) };
 
-            const stats::Health_t DAMAGE_FINAL{ -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL) };
+            const stats::Trait_t DAMAGE_FINAL{ -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL) };
 
             CondEnumVec_t condsAddedVec;
             CondEnumVec_t condsRemovedVec;

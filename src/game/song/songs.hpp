@@ -77,7 +77,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -103,7 +103,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -129,7 +129,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -155,7 +155,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -181,7 +181,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -207,7 +207,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Health_t &         healthAdj,
+            stats::Trait_t &         healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;

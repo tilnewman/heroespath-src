@@ -51,7 +51,7 @@ namespace combat
 {
 
     //stores the abs of the damage
-    using DamageCreaturePair_t = std::pair<stats::Health_t, creature::CreaturePtr_t>;
+    using DamageCreaturePair_t = std::pair<stats::Trait_t, creature::CreaturePtr_t>;
 
 
     //Everything needed to decide what a creature will do during their turn in combat.

@@ -32,7 +32,7 @@
 
 #include "game/creature/achievement-enum.hpp"
 #include "game/creature/title.hpp"
-#include "game/creature/role.hpp"
+#include "game/creature/role-enum.hpp"
 
 #include <memory>
 #include <string>

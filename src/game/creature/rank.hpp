@@ -52,10 +52,10 @@ namespace creature
             Count
         };
 
-        static rank_class::Enum FromRank(const stats::Rank_t RANK);
+        static rank_class::Enum FromRank(const stats::Trait_t RANK);
 
         //returns a second/max of zero to represent limitless
-        static std::pair<stats::Rank_t, stats::Rank_t> RankRangeByClass(const rank_class::Enum E);
+        static std::pair<stats::Trait_t, stats::Trait_t> RankRangeByClass(const rank_class::Enum E);
 
         static const std::string ToString(const rank_class::Enum E);
     };
