@@ -92,6 +92,7 @@ namespace item
             Brooch_Hourglass,
             Brooch_Key,
             Brooch_Mask,
+            Bust,
             Cameo,
             Cape,
             Cat,
@@ -110,10 +111,15 @@ namespace item
             Crumhorn,
             Devil_Horn,
             Doll,
+            Doll_Blessed,
+            Doll_Cursed,
+            Dried_Head,
             Drink,
             DrumLute,
             Eye,
             Feather,
+            Figurine_Blessed,
+            Figurine_Cursed,
             Finger,
             Fingerclaw,
             Flag,
@@ -165,6 +171,7 @@ namespace item
             Pin_Hourglass,
             Pipe_And_Tabor,
             Potion,
+            Puppet,
             Rabbit_Foot,
             Rainmaker,
             Rat_Juju,
@@ -342,6 +349,81 @@ namespace item
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
         static misc_type::Enum MiscType(const Enum);
+    };
+
+
+    struct named_type
+    {
+        enum Enum
+        {
+            NotNamed = 0,
+            Arctic,
+            Army,
+            Betrayer,
+            Burglar,
+            Burning,
+            Charlatans,
+            Charred,
+            Chill,
+            Dancing,
+            Daring,
+            Dark,
+            Dawn,
+            Diabolic,
+            Dusk,
+            Elite,
+            Fiendish,
+            Fiery,
+            Focus,
+            Frigid,
+            Frozen,
+            Gladiator,
+            Gloom,
+            Glory,
+            Heros,
+            Honest,
+            Icy,
+            Imposters,
+            Infernal,
+            Light,
+            Marauder,
+            Misery,
+            Moon,
+            Mountebank,
+            Nile,
+            Noble,
+            Pickpocket,
+            Princes,
+            Proud,
+            Pure,
+            Raging,
+            Ranger,
+            Samurai,
+            Searing,
+            Soldiers,
+            Sorrow,
+            Sun,
+            Thors,
+            Twilight,
+            Valiant,
+            Wardens,
+            Wicked,
+            Winter,
+            Woe,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+    };
+
+
+    struct set_type
+    {
+        enum Enum
+        {
+
+        };
     };
 
 

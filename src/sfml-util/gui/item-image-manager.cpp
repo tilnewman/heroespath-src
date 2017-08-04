@@ -1199,6 +1199,54 @@ namespace gui
                 }
                 return filenames;
             }
+            case misc_type::Doll_Blessed:
+            {
+                filenames.push_back("doll-1" + FILE_EXT_STR_);
+                filenames.push_back("doll-2" + FILE_EXT_STR_);
+                filenames.push_back("doll-4" + FILE_EXT_STR_);
+                filenames.push_back("doll-5" + FILE_EXT_STR_);
+                filenames.push_back("doll-6" + FILE_EXT_STR_);
+                filenames.push_back("doll-8" + FILE_EXT_STR_);
+                filenames.push_back("doll-9" + FILE_EXT_STR_);
+                filenames.push_back("doll-10" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case misc_type::Doll_Cursed:
+            {
+                filenames.push_back("doll-11" + FILE_EXT_STR_);
+                filenames.push_back("doll-12" + FILE_EXT_STR_);
+                filenames.push_back("doll-13" + FILE_EXT_STR_);
+                filenames.push_back("doll-14" + FILE_EXT_STR_);
+                filenames.push_back("doll-15" + FILE_EXT_STR_);
+                filenames.push_back("doll-16" + FILE_EXT_STR_);
+                return filenames;
+            }
+            case misc_type::Figurine_Blessed:
+            {
+                for (auto i(1); i <= 15; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "figurine-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
+            case misc_type::Figurine_Cursed:
+            {
+                for (auto i(1); i <= 15; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "figurine-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                for (auto i(1); i <= 4; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "figurine-evil-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
             case misc_type::Ankh_Necklace:
             case misc_type::Armband:
             case misc_type::Beard:
@@ -1219,6 +1267,7 @@ namespace gui
             case misc_type::Brooch_Key:
             case misc_type::Brooch_Mask:
             case misc_type::Braid:
+            case misc_type::Bust:
             case misc_type::Cameo:
             case misc_type::Cat:
             case misc_type::Chains:
@@ -1232,6 +1281,7 @@ namespace gui
             case misc_type::Conch:
 	        case misc_type::Crumhorn:
 	        case misc_type::Devil_Horn:
+            case misc_type::Dried_Head:
 	        case misc_type::Eye:
             case misc_type::Feather:
 	        case misc_type::Finger:
@@ -1271,6 +1321,7 @@ namespace gui
 	        case misc_type::Pin_Quiver:
             case misc_type::Pin_Hourglass:
 	        case misc_type::Pipe_And_Tabor:
+            case misc_type::Puppet:
             case misc_type::Rabbit_Foot:
 	        case misc_type::Rainmaker:
 	        case misc_type::Rat_Juju:

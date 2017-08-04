@@ -514,6 +514,7 @@ namespace item
             case Brooch_Hourglass:      { return "Brooch_Hourglass"; }
             case Brooch_Key:            { return "Brooch_Key"; }
             case Brooch_Mask:           { return "Brooch_Mask"; }
+            case Bust:                  { return "Bust"; }
             case Cameo:                 { return "Cameo"; }
             case Cape:                  { return "Cape"; }
             case Cat:                   { return "Cat"; }
@@ -532,10 +533,15 @@ namespace item
             case Crumhorn:              { return "Crumhorn"; }
             case Devil_Horn:            { return "Devil_Horn"; }
             case Doll:                  { return "Doll"; }
+            case Doll_Blessed:          { return "Doll_Blessed"; }
+            case Doll_Cursed:           { return "Doll_Cursed"; }
+            case Dried_Head:            { return "Dried_Head"; }
             case Drink:                 { return "Drink"; }
             case DrumLute:              { return "DrumLute"; }
             case Eye:                   { return "Eye"; }
             case Feather:               { return "Feather"; }
+            case Figurine_Blessed:      { return "Figurine_Blessed"; }
+            case Figurine_Cursed:       { return "Figurine_Cursed"; }
             case Finger:                { return "Finger"; }
             case Fingerclaw:            { return "Fingerclaw"; }
             case Flag:                  { return "Flag"; }
@@ -587,6 +593,7 @@ namespace item
             case Pin_Hourglass:         { return "Pin_Hourglass"; }
             case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
             case Potion:                { return "Potion"; }
+            case Puppet:                { return "Puppet"; }
             case Rabbit_Foot:           { return "Rabbit_Foot"; }
             case Rainmaker:             { return "Rainmaker"; }
             case Rat_Juju:              { return "Rat_Juju"; }
@@ -664,6 +671,11 @@ namespace item
             case Charm_Key:             { return "Key Charm"; }
             case Charm_Mask:            { return "Mask Charm"; }
             case Devil_Horn:            { return "Devil Horn"; }
+            case Doll_Blessed:          { return "Doll"; }
+            case Doll_Cursed:           { return "Doll"; }
+            case Dried_Head:            { return "Dried Head"; }
+            case Figurine_Blessed:      { return "Figurine"; }
+            case Figurine_Cursed:       { return "Figurine"; }
             case Ghost_Sheet:           { return "Ghost Sheet"; }
             case Grave_Ornament:        { return "Grave Ornament"; }
             case Hurdy_Gurdy:           { return "Hurdy-Gurdy"; }
@@ -699,6 +711,7 @@ namespace item
             case Bone:
             case Book:
             case Braid:
+            case Bust:
             case Cameo:
             case Cape:
             case Cat:
@@ -751,6 +764,7 @@ namespace item
             case Paw:
             case Pendant:
             case Potion:
+            case Puppet:
             case Rainmaker:
             case Recorder:
             case Relic:
@@ -785,6 +799,81 @@ namespace item
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    const std::string named_type::ToString(const named_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotNamed:      { return "NotNamed"; }
+            case Arctic:        { return "Arctic"; }
+            case Army:          { return "Army"; }
+            case Betrayer:      { return "Betrayer"; }
+            case Burglar:       { return "Burglar"; }
+            case Burning:       { return "Burning"; }
+            case Charlatans:    { return "Charlatans"; }
+            case Charred:       { return "Charred"; }
+            case Chill:         { return "Chill"; }
+            case Dancing:       { return "Dancing"; }
+            case Daring:        { return "Daring"; }
+            case Dark:          { return "Dark"; }
+            case Dawn:          { return "Dawn"; }
+            case Diabolic:      { return "Diabolic"; }
+            case Dusk:          { return "Dusk"; }
+            case Elite:         { return "Elite"; }
+            case Fiendish:      { return "Fiendish"; }
+            case Fiery:         { return "Fiery"; }
+            case Focus:         { return "Focus"; }
+            case Frigid:        { return "Frigid"; }
+            case Frozen:        { return "Frozen"; }
+            case Gladiator:     { return "Gladiator"; }
+            case Gloom:         { return "Gloom"; }
+            case Glory:         { return "Glory"; }
+            case Heros:         { return "Heros"; }
+            case Honest:        { return "Honest"; }
+            case Icy:           { return "Icy"; }
+            case Imposters:     { return "Imposters"; }
+            case Infernal:      { return "Infernal"; }
+            case Light:         { return "Light"; }
+            case Marauder:      { return "Marauder"; }
+            case Misery:        { return "Misery"; }
+            case Moon:          { return "Moon"; }
+            case Mountebank:    { return "Mountebank"; }
+            case Nile:          { return "Nile"; }
+            case Noble:         { return "Noble"; }
+            case Pickpocket:    { return "Pickpocket"; }
+            case Princes:       { return "Princes"; }
+            case Proud:         { return "Proud"; }
+            case Pure:          { return "Pure"; }
+            case Raging:        { return "Raging"; }
+            case Ranger:        { return "Ranger"; }
+            case Samurai:       { return "Samurai"; }
+            case Searing:       { return "Searing"; }
+            case Soldiers:      { return "Soldiers"; }
+            case Sorrow:        { return "Sorrow"; }
+            case Sun:           { return "Sun"; }
+            case Thors:         { return "Thors"; }
+            case Twilight:      { return "Twilight"; }
+            case Valiant:       { return "Valiant"; }
+            case Wardens:       { return "Wardens"; }
+            case Wicked:        { return "Wicked"; }
+            case Winter:        { return "Winter"; }
+            case Woe:           { return "Woe"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::named_type::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    const std::string named_type::Name(const named_type::Enum E)
+    {
+        return named_type::ToString(E);
     }
 
 
