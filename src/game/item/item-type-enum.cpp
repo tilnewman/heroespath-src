@@ -865,6 +865,8 @@ namespace item
             case Doll:
             case Drink:
             case DrumLute:
+            case Embryo:
+            case Egg:
             case Eye:
             case Feather:
             case Finger:
