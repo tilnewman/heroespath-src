@@ -563,7 +563,7 @@ namespace creature
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
-            HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, true);
+            EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, true);
         }
         else
         {
@@ -611,7 +611,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
             "Creature::ItemRemove() was given a null ITEM_PTR.");
 
-        HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, false);
+        EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, false);
         inventory_.ItemRemove(ITEM_PTR);
     }
 
@@ -624,7 +624,7 @@ namespace creature
         const std::string IS_ALLOWED_STR( ItemIsEquipAllowed(ITEM_PTR) );
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
-            HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
+            EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
             inventory_.ItemEquip(ITEM_PTR);
             SetCurrentWeaponsToBest();
         }
@@ -1007,7 +1007,7 @@ namespace creature
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
         }
 
-        HandleEnachantments(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
+        EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
         inventory_.ItemUnEquip(ITEM_PTR);
         SetCurrentWeaponsToBestIfInvalidated();
         return ITEM_ACTION_SUCCESS_STR_;
@@ -1874,9 +1874,9 @@ namespace creature
     }
 
 
-    void Creature::HandleEnachantments(const EnchantmentPVec_t &   PVEC,
-                                       const EnchantmentType::Enum TYPE,
-                                       const bool                  WILL_APPLY)
+    void Creature::EnchantmentsApplyOrRemoveByType(const EnchantmentPVec_t &   PVEC,
+                                                   const EnchantmentType::Enum TYPE,
+                                                   const bool                  WILL_APPLY)
     {
         for (auto const NEXT_ENCHANTMENT_PTR : PVEC)
         {

@@ -42,11 +42,35 @@ namespace game
     {
         std::ostringstream ss;
 
-        if (E & Phase::Combat)          ss << "Combat";
-        if (E & Phase::Exploring)       ss << ((ss.str().empty()) ? "" : ", ") << "Exploring";
-        if (E & Phase::Conversation)    ss << ((ss.str().empty()) ? "" : ", ") << "Conversation";
-        if (E & Phase::Quest)           ss << ((ss.str().empty()) ? "" : ", ") << "Quest";
-        if (E & Phase::Inventory)       ss << ((ss.str().empty()) ? "" : ", ") << "Inventory";
+        if (E == Phase::NotAPhase)
+        {
+            return "";
+        }
+
+        if (E & Phase::Combat)
+        {
+            ss << "Combat";
+        }
+
+        if (E & Phase::Exploring)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "Exploring";
+        }
+
+        if (E & Phase::Conversation)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "Conversation";
+        }
+
+        if (E & Phase::Quest)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "Quest";
+        }
+
+        if (E & Phase::Inventory)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "Inventory";
+        }
 
         if (ss.str().empty())
         {
@@ -56,22 +80,55 @@ namespace game
         }
 
         if (WILL_WRAP)
+        {
             return "(" + ss.str() + ")";
+        }
         else
+        {
             return ss.str();
+        }
     }
 
 
     Phase::Enum Phase::FromString(const std::string & S)
     {
+        if (S == Phase::ToString(Phase::NotAPhase, false))
+        {
+            return Phase::NotAPhase;
+        }
+
         auto lowerCaseStr{ boost::algorithm::to_lower_copy(S) };
 
         unsigned int x{ 0 };
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))         x = x & Phase::Combat;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))      x = x & Phase::Exploring;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))   x = x & Phase::Conversation;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))          x = x & Phase::Quest;
-        if (boost::contains(lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))      x = x & Phase::Inventory;
+        if (boost::contains(lowerCaseStr,
+                            boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))
+        {
+            x = x | Phase::Combat;
+        }
+
+        if (boost::contains(lowerCaseStr,
+                            boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))
+        {
+            x = x | Phase::Exploring;
+        }
+
+        if (boost::contains(lowerCaseStr,
+                            boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))
+        {
+            x = x | Phase::Conversation;
+        }
+
+        if (boost::contains(lowerCaseStr,
+                            boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))
+        {
+            x = x | Phase::Quest;
+        }
+
+        if (boost::contains(lowerCaseStr,
+                            boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))
+        {
+            x = x | Phase::Inventory;
+        }
 
         if (0 == x)
         {

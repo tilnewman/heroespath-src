@@ -423,9 +423,9 @@ namespace creature
     protected:
         const item::ItemPVecVec_t ComposeWeaponsList() const;
 
-        void HandleEnachantments(const EnchantmentPVec_t &   PVEC,
-                                 const EnchantmentType::Enum TYPE,
-                                 const bool                  WILL_APPLY);
+        void EnchantmentsApplyOrRemoveByType(const EnchantmentPVec_t &   PVEC,
+                                             const EnchantmentType::Enum TYPE,
+                                             const bool                  WILL_APPLY);
 
         bool HasEnchantmentType(const EnchantmentType::Enum) const;
 

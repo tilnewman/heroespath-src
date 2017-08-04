@@ -30,6 +30,7 @@
 #include "enchantment.hpp"
 
 #include "game/creature/creature.hpp"
+#include "game/creature/condition-algorithms.hpp"
 
 #include <sstream>
 
@@ -41,14 +42,13 @@ namespace creature
 
     Enchantment::Enchantment(const EnchantmentType::Enum TYPE,
                              const stats::TraitSet &     TRAIT_SET,
-                             const int                   USE_COUNT, //negative means infinite
-                             const CondEnumVec_t &       CONDS_VEC)
+                             const UseInfo &             USE_INFO,
+                             const SummonInfo &          SUMMON_INFO)
     :
-        type_             (TYPE),
-        useCountOrig_     (USE_COUNT),
-        useCountRemaining_(USE_COUNT),
-        traitSet_         (TRAIT_SET),
-        condsVec_         (CONDS_VEC)
+        type_       (TYPE),
+        traitSet_   (TRAIT_SET),
+        useInfo_    (USE_INFO),
+        summonInfo_ (SUMMON_INFO)
     {}
 
 
@@ -64,20 +64,53 @@ namespace creature
 
         if (IsUseableEver())
         {
-            if (useCountRemaining_ > 0)
+            auto const COUNT_REMAIN{ useInfo_.CountRemaining() };
+            if (COUNT_REMAIN > 0)
             {
-                ss << SepIfEmpty(ss.str()) << useCountRemaining_ << " uses left";
+                ss << SepIfNotEmpty(ss.str()) << COUNT_REMAIN << " uses left";
             }
-            else if (useCountRemaining_ == 0)
+            else if (COUNT_REMAIN == 0)
             {
-                ss << SepIfEmpty(ss.str()) << "cannot be used again";
+                ss << SepIfNotEmpty(ss.str()) << "cannot be used again";
             }
+            else
+            {
+                ss << SepIfNotEmpty(ss.str()) << "";
+            }
+
+            auto const SPELL{ useInfo_.Spell() };
+            if (SPELL != spell::Spells::Count)
+            {
+                ss << SepIfNotEmpty(ss.str()) << "casts the "
+                    << spell::Spells::Name(SPELL) << " spell";
+            }
+
+            auto const CONDS_REMOVED_VEC{ useInfo_.ConditionsRemoved() };
+            if (CONDS_REMOVED_VEC.empty())
+            {
+                ss << SepIfNotEmpty(ss.str()) << "removes the conditions: "
+                    << creature::condition::Algorithms::Names(CONDS_REMOVED_VEC, false, true);
+            }
+        }
+
+        if (useInfo_.RestrictedToPhase() != Phase::NotAPhase)
+        {
+            ss << SepIfNotEmpty(ss.str()) << ", use only during "
+                << Phase::ToString(useInfo_.RestrictedToPhase(), false);
         }
 
         auto const TRAITS_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAITS_STR.empty() == false)
         {
-            ss << "  Traits: " << TRAITS_STR;
+            ss << SepIfNotEmpty(ss.str()) << "Traits: " << TRAITS_STR;
+        }
+
+        if (summonInfo_.Rank() > 0)
+        {
+            ss << SepIfNotEmpty(ss.str()) << "summons a " << summonInfo_.Rank() << " rank "
+                << creature::race::Name(summonInfo_.Race())
+                << " " << creature::role::Name(summonInfo_.Role())
+                << " to fight for the party";
         }
         
         return ss.str();

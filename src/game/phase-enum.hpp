@@ -37,6 +37,7 @@ namespace game
     {
         enum Enum : unsigned int
         {
+            NotAPhase       = 0,
             Combat          = 1 << 0,
             Exploring       = 1 << 1,
             Conversation    = 1 << 2,

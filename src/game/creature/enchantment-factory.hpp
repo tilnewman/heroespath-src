@@ -29,6 +29,7 @@
 //  Responsibel for making (new'ing) all Enchantment objects.
 //
 #include "game/creature/enchantment-type.hpp"
+#include "game/creature/enchantment.hpp"
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/types.hpp"
 #include "game/stats/traits-set.hpp"
@@ -48,11 +49,6 @@ namespace item
 }
 namespace creature
 {
-
-    //forward declarations
-    class Enchantment;
-    using EnchantmentPtr_t = Enchantment *;
-
 
     //Responsible for making all Enchantment objects, and automatically
     //storing them in the EnchantmentWarehouse for safe keeping.
@@ -78,9 +74,9 @@ namespace creature
         void MakeStoreAttach(
             item::ItemPtr_t             itemPtr,
             const EnchantmentType::Enum TYPE,
-            const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
-            const int                   USE_COUNT = 0, //negative means infinite
-            const CondEnumVec_t &       CONDS_VEC = CondEnumVec_t()) const;
+            const stats::TraitSet &     TRAIT_SET   = {},
+            const UseInfo &             USE_INFO    = UseInfo(),
+            const SummonInfo &          SUMMON_INFO = SummonInfo()) const;
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;

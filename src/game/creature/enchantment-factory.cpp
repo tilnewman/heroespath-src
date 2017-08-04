@@ -30,7 +30,6 @@
 #include "enchantment-factory.hpp"
 
 #include "game/log-macros.hpp"
-#include "game/creature/enchantment.hpp"
 #include "game/creature/enchantment-warehouse.hpp"
 #include "game/item/item.hpp"
 
@@ -95,14 +94,14 @@ namespace creature
         item::ItemPtr_t             itemPtr,
         const EnchantmentType::Enum TYPE,
         const stats::TraitSet &     TRAIT_SET,
-        const int                   USE_COUNT,//negative means infinite
-        const CondEnumVec_t &       CONDS_VEC) const
+        const UseInfo &             USE_INFO,
+        const SummonInfo &          SUMMON_INFO) const
     {
         itemPtr->EnchantmentAdd( EnchantmentWarehouse::Instance()->Store( new Enchantment(
             TYPE,
             TRAIT_SET,
-            USE_COUNT,
-            CONDS_VEC) ) );
+            USE_INFO,
+            SUMMON_INFO) ) );
     }
 
     /*
