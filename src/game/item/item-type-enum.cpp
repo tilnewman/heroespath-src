@@ -83,6 +83,144 @@ namespace item
     }
 
 
+    const std::string set_type::ToString(const set_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotASet:               { return "NotASet"; }
+            case TheAssassins:          { return "TheAssassins"; }
+            case TheNeverwinter:        { return "TheNeverwinter"; }
+            case TheTickler:            { return "TheTickler"; }
+            case TheMagus:              { return "TheMagus"; }
+            case TheNecromancers:       { return "TheNecromancers"; }
+            case TheWarlocks:           { return "TheWarlocks"; }
+            case TheSages:              { return "TheSages"; }
+            case TheShamans:            { return "TheShamans"; }
+            case TheOracles:            { return "TheOracles"; }
+            case TheBalladeers:         { return "TheBalladeers"; }
+            case TheTroubadours:        { return "TheTroubadours"; }
+            case TheMuses:              { return "TheMuses"; }
+            case TheCavaliers:          { return "TheCavaliers"; }
+            case TheChampions:          { return "TheChampions"; }
+            case ThePaladins:           { return "ThePaladins"; }
+            case TheBerserkers:         { return "TheBerserkers"; }
+            case TheRosewood:           { return "TheRosewood"; }
+            case TheDragonslayers:      { return "TheDragonslayers"; }
+            case TheEventideRider:      { return "TheEventideRider"; }
+            case TheHunters:            { return "TheHunters"; }
+            case TheSureShot:           { return "TheSureShot"; }
+            case TheMarksmans:          { return "TheMarksmans"; }
+            case TheDeadeye:            { return "TheDeadeye"; }
+            case TheDuskRanger:         { return "TheDuskRanger"; }
+            case TheVenomBow:           { return "TheVenomBow"; }
+            case TheCritterChannelers:  { return "TheCritterChannelers"; }
+            case TheMammalianHead:      { return "TheMammalianHead"; }
+            case TheSavageTaskmasters:  { return "TheSavageTaskmasters"; }
+            case TheMonsterOverseers:   { return "TheMonsterOverseers"; }
+            case TheBeastRulers:        { return "TheBeastRulers"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ssErr;
+                ssErr << "game::item::set_type::ToString(" << E << ")_InvalidValueError";
+                throw std::range_error(ssErr.str());
+            }
+        }
+    }
+
+
+    const std::string set_type::Name(const set_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotASet:               { return "NotASet"; }
+            case TheAssassins:          { return "The Assassin's"; }
+            case TheNeverwinter:        { return "The Neverwinter"; }
+            case TheTickler:            { return "The Tickler's"; }
+            case TheMagus:              { return "The Magus'"; }
+            case TheNecromancers:       { return "The Necromancer's"; }
+            case TheWarlocks:           { return "The Warlock's"; }
+            case TheSages:              { return "The Sage's"; }
+            case TheShamans:            { return "The Shaman's"; }
+            case TheOracles:            { return "The Oracle's"; }
+            case TheBalladeers:         { return "The Balladeer's"; }
+            case TheTroubadours:        { return "The Troubadour's"; }
+            case TheMuses:              { return "The Muses'"; }
+            case TheCavaliers:          { return "The Cavalier's"; }
+            case TheChampions:          { return "The Champion's"; }
+            case ThePaladins:           { return "The Paladin's"; }
+            case TheBerserkers:         { return "The Berserker's"; }
+            case TheRosewood:           { return "The Rosewood"; }
+            case TheDragonslayers:      { return "The Dragonslayer's"; }
+            case TheEventideRider:      { return "The Eventide Rider's"; }
+            case TheHunters:            { return "The Hunter's"; }
+            case TheSureShot:           { return "The Sure Shot's"; }
+            case TheMarksmans:          { return "The Marksman's"; }
+            case TheDeadeye:            { return "The Deadeye's"; }
+            case TheDuskRanger:         { return "The Dusk Ranger's"; }
+            case TheVenomBow:           { return "The Venom Bow"; }
+            case TheCritterChannelers:  { return "The Critter Channeler's"; }
+            case TheMammalianHead:      { return "The Mammalian Head's"; }
+            case TheSavageTaskmasters:  { return "The Savage Taskmaster's"; }
+            case TheMonsterOverseers:   { return "The Monster Overseer's"; }
+            case TheBeastRulers:        { return "The Beast Ruler's"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ssErr;
+                ssErr << "game::item::set_type::Name(" << E << ")_InvalidValueError";
+                throw std::range_error(ssErr.str());
+            }
+        }
+    }
+
+
+    creature::role::Enum set_type::Role(const set_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotASet:               { return creature::role::Count; }
+            case TheAssassins:          { return creature::role::Thief; }
+            case TheTickler:            { return creature::role::Thief; }
+            case TheNeverwinter:        { return creature::role::Thief; }
+            case TheMagus:              { return creature::role::Sorcerer; }
+            case TheNecromancers:       { return creature::role::Sorcerer; }
+            case TheWarlocks:           { return creature::role::Sorcerer; }
+            case TheSages:              { return creature::role::Cleric; }
+            case TheShamans:            { return creature::role::Cleric; }
+            case TheOracles:            { return creature::role::Cleric; }
+            case TheBalladeers:         { return creature::role::Bard; }
+            case TheTroubadours:        { return creature::role::Bard; }
+            case TheMuses:              { return creature::role::Bard; }
+            case TheCavaliers:          { return creature::role::Knight; }
+            case TheChampions:          { return creature::role::Knight; }
+            case ThePaladins:           { return creature::role::Knight; }
+            case TheBerserkers:         { return creature::role::Knight; }
+            case TheRosewood:           { return creature::role::Knight; }
+            case TheDragonslayers:      { return creature::role::Knight; }
+            case TheEventideRider:      { return creature::role::Knight; }
+            case TheHunters:            { return creature::role::Archer; }
+            case TheSureShot:           { return creature::role::Archer; }
+            case TheMarksmans:          { return creature::role::Archer; }
+            case TheDeadeye:            { return creature::role::Archer; }
+            case TheDuskRanger:         { return creature::role::Archer; }
+            case TheVenomBow:           { return creature::role::Archer; }
+            case TheCritterChannelers:  { return creature::role::Beastmaster; }
+            case TheMammalianHead:      { return creature::role::Beastmaster; }
+            case TheSavageTaskmasters:  { return creature::role::Beastmaster; }
+            case TheMonsterOverseers:   { return creature::role::Beastmaster; }
+            case TheBeastRulers:        { return creature::role::Beastmaster; }
+            case Count:
+            default:
+            {
+                std::ostringstream ssErr;
+                ssErr << "game::item::set_type::Role(" << E << ")_InvalidValueError";
+                throw std::range_error(ssErr.str());
+            }
+        }
+    }
+
+
     const std::string unique_type::ToString(const Enum E)
     {
         switch (E)
@@ -538,6 +676,8 @@ namespace item
             case Dried_Head:            { return "Dried_Head"; }
             case Drink:                 { return "Drink"; }
             case DrumLute:              { return "DrumLute"; }
+            case Egg:                   { return "Egg"; }
+            case Embryo:                { return "Embryo"; }
             case Eye:                   { return "Eye"; }
             case Feather:               { return "Feather"; }
             case Figurine_Blessed:      { return "Figurine_Blessed"; }
@@ -795,7 +935,7 @@ namespace item
             default:
             {
                 std::ostringstream ss;
-                ss << "game::item::misc_type::ToString(" << E << ")_InvalidValueError.";
+                ss << "game::item::misc_type::Name(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

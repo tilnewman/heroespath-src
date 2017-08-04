@@ -29,7 +29,7 @@
 //  Enumerations for all of an Item's various types.
 //
 #include "game/stats/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/creature/role-enum.hpp"
 
 #include <string>
 
@@ -116,6 +116,8 @@ namespace item
             Dried_Head,
             Drink,
             DrumLute,
+            Embryo,
+            Egg,
             Eye,
             Feather,
             Figurine_Blessed,
@@ -214,9 +216,53 @@ namespace item
             Count
         };
 
-        static const std::string ToString(const misc_type::Enum);
-        static const std::string Name(const misc_type::Enum);
-        static bool IsMusicalInstrument(const misc_type::Enum E);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+        static bool IsMusicalInstrument(const Enum E);
+    };
+
+
+    struct set_type
+    {
+        enum Enum
+        {
+            NotASet = 0,
+            TheAssassins,
+            TheNeverwinter,
+            TheTickler,
+            TheMagus,
+            TheNecromancers,
+            TheWarlocks,
+            TheSages,
+            TheShamans,
+            TheOracles,
+            TheBalladeers,
+            TheTroubadours,
+            TheMuses,
+            TheCavaliers,
+            TheChampions,
+            ThePaladins,
+            TheBerserkers,
+            TheRosewood,
+            TheDragonslayers,
+            TheEventideRider,
+            TheHunters,
+            TheSureShot,
+            TheMarksmans,
+            TheDeadeye,
+            TheDuskRanger,
+            TheVenomBow,
+            TheCritterChannelers,
+            TheMammalianHead,
+            TheSavageTaskmasters,
+            TheMonsterOverseers,
+            TheBeastRulers,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+        static creature::role::Enum Role(const Enum);
     };
 
 
@@ -415,15 +461,6 @@ namespace item
 
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
-    };
-
-
-    struct set_type
-    {
-        enum Enum
-        {
-
-        };
     };
 
 

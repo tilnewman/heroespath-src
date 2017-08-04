@@ -263,6 +263,7 @@ namespace creature
     }
 
 
+    //At last count on 2017-8-3 there were 167 unique race/roles.
     const RoleVec_t race::Roles(const race::Enum E)
     {
         switch (E)

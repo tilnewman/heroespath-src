@@ -77,7 +77,8 @@ namespace item
                       const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
                       const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
                       const bool                 IS_PIXIE_ITEM      = false,
-                      const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique);
+                      const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique,
+                      const set_type::Enum       SET_TYPE           = set_type::NotASet);
 
         virtual ~Item();
 
@@ -220,6 +221,7 @@ namespace item
         armor::ArmorInfo     armorInfo_;
         bool                 isPixie_;
         unique_type::Enum    uniqueType_;
+        set_type::Enum       setType_;
 
         //The Item class owns the Enchantment objects and is responsible
         //for their lifetimes.
@@ -250,6 +252,7 @@ namespace item
             ar & isPixie_;
             ar & enchantmentsPVec_;
             ar & uniqueType_;
+            ar & setType_;
         }
     };
 

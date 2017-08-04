@@ -1282,6 +1282,8 @@ namespace gui
 	        case misc_type::Crumhorn:
 	        case misc_type::Devil_Horn:
             case misc_type::Dried_Head:
+            case misc_type::Embryo:
+            case misc_type::Egg:
 	        case misc_type::Eye:
             case misc_type::Feather:
 	        case misc_type::Finger:

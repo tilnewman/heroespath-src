@@ -53,16 +53,17 @@ namespace item
                const material::Enum       MATERIAL_PRIMARY,
                const material::Enum       MATERIAL_SECONDARY,
                const std::string &        IMAGE_FILENAME,
-               const stats::Trait_t               PRICE,
-               const stats::Trait_t             WEIGHT,
-               const stats::Trait_t      DAMAGE_MIN,
-               const stats::Trait_t      DAMAGE_MAX,
+               const stats::Trait_t       PRICE,
+               const stats::Trait_t       WEIGHT,
+               const stats::Trait_t       DAMAGE_MIN,
+               const stats::Trait_t       DAMAGE_MAX,
                const stats::Trait_t       ARMOR_RATING,
                const creature::role::Enum EXCLUSIVE_TO_ROLE,
                const weapon::WeaponInfo & WEAPON_INFO,
                const armor::ArmorInfo &   ARMOR_INFO,
                const bool                 IS_PIXIE_ITEM,
-               const unique_type::Enum    UNIQUE_TYPE)
+               const unique_type::Enum    UNIQUE_TYPE,
+               const set_type::Enum       SET_TYPE)
     :
         name_            (NAME),
         desc_            (DESC),
@@ -83,6 +84,7 @@ namespace item
         armorInfo_       (ARMOR_INFO),
         isPixie_         (IS_PIXIE_ITEM),//see constructor body
         uniqueType_      (UNIQUE_TYPE),
+        setType_         (SET_TYPE),
         enchantmentsPVec_()
     {
         //adjust the weight for pixie items
@@ -227,7 +229,8 @@ namespace item
                         L.weaponInfo_,
                         L.armorInfo_,
                         L.isPixie_,
-                        L.uniqueType_)
+                        L.uniqueType_,
+                        L.setType_)
                <
                std::tie(R.name_,
                         R.desc_,
@@ -247,7 +250,8 @@ namespace item
                         R.weaponInfo_,
                         R.armorInfo_,
                         R.isPixie_,
-                        R.uniqueType_) )
+                        R.uniqueType_,
+                        R.setType_) )
         {
             return true;
         }
@@ -276,7 +280,8 @@ namespace item
                      L.weaponInfo_,
                      L.armorInfo_,
                      L.isPixie_,
-                     L.uniqueType_)
+                     L.uniqueType_,
+                     L.setType_)
              !=
              std::tie(R.name_,
                       R.desc_,
@@ -296,7 +301,8 @@ namespace item
                       R.weaponInfo_,
                       R.armorInfo_,
                       R.isPixie_,
-                      R.uniqueType_))
+                      R.uniqueType_,
+                      R.setType_))
         {
             return false;
         }
