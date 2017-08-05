@@ -44,13 +44,13 @@ namespace creature
             WhenUsed            = 1 << 0,
             WhenHeld            = 1 << 1,
             WhenEquipped        = 1 << 2,
-            ChangesCreature     = 1 << 3,
-            RemoveAfterUse      = 1 << 4,
-            BoundToNothing      = 1 << 5,
-            BoundToItem         = 1 << 6,
-            AllowsFlight        = 1 << 7,
-            CurseWithoutItem    = 1 << 8,
-            BlessWithoutItem    = 1 << 9
+            RemoveAfterUse      = 1 << 3,
+            BoundToNothing      = 1 << 4,
+            BoundToItem         = 1 << 5,
+            AllowsFlight        = 1 << 6,
+            CurseWithoutItem    = 1 << 7,
+            BlessWithoutItem    = 1 << 8,
+            OnlyIfSetIsComplete = 1 << 9
         };
 
         static const std::string ToString(const Enum);

@@ -116,5 +116,60 @@ namespace creature
         return ss.str();
     }
 
+
+    int Enchantment::TreasureScore() const
+    {
+        using namespace stats;
+
+        int score{ 0 };
+
+        for (int i(1); i < Traits::Count; ++i)
+        {
+            auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
+            auto const NEXT_TRAIT_VALUE{ traitSet_.GetCopy(NEXT_TRAIT_ENUM).Current() };
+
+            if ((NEXT_TRAIT_ENUM == Traits::HealthGainAll) ||
+                (NEXT_TRAIT_ENUM == Traits::HealthGainMelee))
+            {
+                score += 3 * NEXT_TRAIT_VALUE;
+            }
+            else if ((NEXT_TRAIT_ENUM == Traits::AnimalResist) ||
+                     (NEXT_TRAIT_ENUM == Traits::ArmorRating) ||
+                     (NEXT_TRAIT_ENUM == Traits::Backstab) ||
+                     (NEXT_TRAIT_ENUM == Traits::CurseOnDamage) ||
+                     (NEXT_TRAIT_ENUM == Traits::DamageBonusAll) ||
+                     (NEXT_TRAIT_ENUM == Traits::DamageBonusMelee) ||
+                     (NEXT_TRAIT_ENUM == Traits::DamageBonusProj) ||
+                     (NEXT_TRAIT_ENUM == Traits::FindCoinsAmount) ||
+                     (NEXT_TRAIT_ENUM == Traits::PoisonOnAll) ||
+                     (NEXT_TRAIT_ENUM == Traits::PoisonOnMelee))
+            {
+                score += 2 * NEXT_TRAIT_VALUE;
+            }
+            else
+            {
+                score += NEXT_TRAIT_VALUE;
+            }
+        }
+
+        if (type_ & EnchantmentType::WhenHeld)
+        {
+            score += 50;
+        }
+
+        if (type_ & EnchantmentType::AllowsFlight)
+        {
+            score += 50;
+        }
+
+        if ((type_ & EnchantmentType::BlessWithoutItem) ||
+            (type_ & EnchantmentType::CurseWithoutItem))
+        {
+            score += 50;
+        }
+
+        return score;
+    }
+
 }
 }

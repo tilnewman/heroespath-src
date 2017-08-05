@@ -70,13 +70,31 @@ namespace creature
         static void Acquire();
         static void Release();
 
-    private:
-        void MakeStoreAttach(
+        //use to make/store/attach/return enchantments base on item type
+        item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t) const;
+
+        //use to make/store/attach/return custom enchantments
+        item::ItemPtr_t MakeStoreAttachReturn(
             item::ItemPtr_t             itemPtr,
             const EnchantmentType::Enum TYPE,
-            const stats::TraitSet &     TRAIT_SET   = {},
+            const stats::TraitSet &     TRAIT_SET,
             const UseInfo &             USE_INFO    = UseInfo(),
             const SummonInfo &          SUMMON_INFO = SummonInfo()) const;
+
+    private:
+        item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
+
+        Enchantment * MakeFromUniqueType(const item::unique_type::Enum,
+                                         const item::material::Enum) const;
+
+        Enchantment * MakeFromMiscType(const item::misc_type::Enum) const;
+        Enchantment * MakeFromSetType(const item::set_type::Enum) const;
+        Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
+
+        Enchantment * MakeFromNamedType(const item::named_type::Enum,
+                                        const item::material::Enum,
+                                        const bool IS_WEAPON,
+                                        const bool IS_ARMOR) const;
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;

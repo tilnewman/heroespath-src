@@ -40,14 +40,18 @@ namespace item
                              const armor_type::Enum  ARMOR,
                              const weapon_type::Enum WEAPON,
                              const unique_type::Enum UNIQUE,
-                             const misc_type::Enum   MISC)
+                             const misc_type::Enum   MISC,
+                             const set_type::Enum    SET,
+                             const named_type::Enum  NAMED)
     :
         baseName_   (BASE_NAME),
         category_   (CATEGORY),
         armor_      (ARMOR),
         weapon_     (WEAPON),
         unique_     (UNIQUE),
-        misc_       (MISC)
+        misc_       (MISC),
+        set_        (SET),
+        named_      (NAMED)
     {}
 
 }

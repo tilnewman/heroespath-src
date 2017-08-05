@@ -59,10 +59,10 @@ namespace item
             if (E & category::OneHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
             if (E & category::TwoHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
             if (E & category::QuestItem)    ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
-            if (E & category::Edible)       ss << ((ss.str().empty()) ? "" : ", ") << "edible";
             if (E & category::Blessed)      ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
             if (E & category::Cursed)       ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
             if (E & category::AllowsCasting)ss << ((ss.str().empty()) ? "" : ", ") << "allows casting";
+            if (E & category::ConsumedOnUse)ss << ((ss.str().empty()) ? "" : ", ") << "consumed upon use";
         }
 
         if (ss.str().empty())
@@ -94,9 +94,11 @@ namespace item
             case TheMagus:              { return "TheMagus"; }
             case TheNecromancers:       { return "TheNecromancers"; }
             case TheWarlocks:           { return "TheWarlocks"; }
+            case TheLichKings:          { return "TheLichKings"; }
             case TheSages:              { return "TheSages"; }
             case TheShamans:            { return "TheShamans"; }
             case TheOracles:            { return "TheOracles"; }
+            case TheAngelic:            { return "TheAngelic"; }
             case TheBalladeers:         { return "TheBalladeers"; }
             case TheTroubadours:        { return "TheTroubadours"; }
             case TheMuses:              { return "TheMuses"; }
@@ -140,9 +142,11 @@ namespace item
             case TheMagus:              { return "The Magus'"; }
             case TheNecromancers:       { return "The Necromancer's"; }
             case TheWarlocks:           { return "The Warlock's"; }
+            case TheLichKings:          { return "The Lich King's"; }
             case TheSages:              { return "The Sage's"; }
             case TheShamans:            { return "The Shaman's"; }
             case TheOracles:            { return "The Oracle's"; }
+            case TheAngelic:            { return "The Angelic"; }
             case TheBalladeers:         { return "The Balladeer's"; }
             case TheTroubadours:        { return "The Troubadour's"; }
             case TheMuses:              { return "The Muses'"; }
@@ -186,9 +190,11 @@ namespace item
             case TheMagus:              { return creature::role::Sorcerer; }
             case TheNecromancers:       { return creature::role::Sorcerer; }
             case TheWarlocks:           { return creature::role::Sorcerer; }
+            case TheLichKings:          { return creature::role::Sorcerer; }
             case TheSages:              { return creature::role::Cleric; }
             case TheShamans:            { return creature::role::Cleric; }
             case TheOracles:            { return creature::role::Cleric; }
+            case TheAngelic:            { return creature::role::Cleric; }
             case TheBalladeers:         { return creature::role::Bard; }
             case TheTroubadours:        { return creature::role::Bard; }
             case TheMuses:              { return creature::role::Bard; }
@@ -977,25 +983,31 @@ namespace item
             case Icy:           { return "Icy"; }
             case Imposters:     { return "Imposters"; }
             case Infernal:      { return "Infernal"; }
+            case Knaves:        { return "Knaves"; }
             case Light:         { return "Light"; }
             case Marauder:      { return "Marauder"; }
             case Misery:        { return "Misery"; }
             case Moon:          { return "Moon"; }
             case Mountebank:    { return "Mountebank"; }
+            case Muggers:       { return "Muggers"; }
             case Nile:          { return "Nile"; }
             case Noble:         { return "Noble"; }
             case Pickpocket:    { return "Pickpocket"; }
+            case Pirate:        { return "Pirate"; }
             case Princes:       { return "Princes"; }
             case Proud:         { return "Proud"; }
             case Pure:          { return "Pure"; }
             case Raging:        { return "Raging"; }
             case Ranger:        { return "Ranger"; }
+            case Robbers:       { return "Robbers"; }
             case Samurai:       { return "Samurai"; }
             case Searing:       { return "Searing"; }
             case Soldiers:      { return "Soldiers"; }
             case Sorrow:        { return "Sorrow"; }
             case Sun:           { return "Sun"; }
+            case Thief:         { return "Theif"; }
             case Thors:         { return "Thors"; }
+            case Thugs:         { return "Thugs"; }
             case Twilight:      { return "Twilight"; }
             case Valiant:       { return "Valiant"; }
             case Wardens:       { return "Wardens"; }
@@ -1015,7 +1027,76 @@ namespace item
 
     const std::string named_type::Name(const named_type::Enum E)
     {
-        return named_type::ToString(E);
+        switch (E)
+        {
+            case Charlatans:    { return "Charlatan's"; }
+            case Heros:         { return "Hero's"; }
+            case Imposters:     { return "Imposter's"; }
+            case Knaves:        { return "Knave's"; }
+            case Muggers:       { return "Mugger's"; }
+            case Princes:       { return "Prince's"; }
+            case Robbers:       { return "Robber's"; }
+            case Soldiers:      { return "Soldier's"; }
+            case Thors:         { return "Thor's"; }
+            case Thugs:         { return "Thug's"; }
+            case Wardens:       { return "Warden's"; }
+            case NotNamed:
+            case Arctic:
+            case Army:
+            case Betrayer:
+            case Burglar:
+            case Burning:
+            case Charred:
+            case Chill:
+            case Dancing:
+            case Daring:
+            case Dark:
+            case Dawn:
+            case Diabolic:
+            case Dusk:
+            case Elite:
+            case Fiendish:
+            case Fiery:
+            case Focus:
+            case Frigid:
+            case Frozen:
+            case Gladiator:
+            case Gloom:
+            case Glory:
+            case Honest:
+            case Icy:
+            case Infernal:
+            case Light:
+            case Marauder:
+            case Misery:
+            case Moon:
+            case Mountebank:
+            case Nile:
+            case Noble:
+            case Pickpocket:
+            case Pirate:
+            case Proud:
+            case Pure:
+            case Searing:
+            case Raging:
+            case Ranger:
+            case Samurai:
+            case Sorrow:
+            case Sun:
+            case Thief:
+            case Twilight:
+            case Valiant:
+            case Wicked:
+            case Winter:
+            case Woe:       { return named_type::ToString(E); }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::named_type::Name(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
     }
 
 

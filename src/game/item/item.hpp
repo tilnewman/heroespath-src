@@ -78,7 +78,8 @@ namespace item
                       const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
                       const bool                 IS_PIXIE_ITEM      = false,
                       const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique,
-                      const set_type::Enum       SET_TYPE           = set_type::NotASet);
+                      const set_type::Enum       SET_TYPE           = set_type::NotASet,
+                      const named_type::Enum     NAMED_TYPE         = named_type::NotNamed);
 
         virtual ~Item();
 
@@ -97,6 +98,9 @@ namespace item
         inline weapon_type::Enum WeaponType() const                 { return weaponType_; }
         inline armor_type::Enum ArmorType() const                   { return armorType_; }
         inline misc_type::Enum MiscType() const                     { return miscType_; }
+        inline unique_type::Enum UniqueType() const                 { return uniqueType_; }
+        inline set_type::Enum SetType() const                       { return setType_; }
+        inline named_type::Enum NamedType() const                   { return namedType_; }
 
         inline bool IsCategoryType(const category::Enum E) const    { return (category_ & E); }
         inline bool IsWeaponType(const weapon_type::Enum E) const   { return (weaponType_ & E); }
@@ -194,8 +198,6 @@ namespace item
 
         void EnchantmentRemoveAndFreeAll();
 
-        inline unique_type::Enum UniqueType() const { return uniqueType_; }
-
         const std::string BaseName() const;
 
         friend bool operator<(const Item & L, const Item & R);
@@ -222,6 +224,7 @@ namespace item
         bool                 isPixie_;
         unique_type::Enum    uniqueType_;
         set_type::Enum       setType_;
+        named_type::Enum     namedType_;
 
         //The Item class owns the Enchantment objects and is responsible
         //for their lifetimes.
@@ -250,9 +253,10 @@ namespace item
             ar & weaponInfo_;
             ar & armorInfo_;
             ar & isPixie_;
-            ar & enchantmentsPVec_;
             ar & uniqueType_;
             ar & setType_;
+            ar & namedType_;
+            ar & enchantmentsPVec_;
         }
     };
 

@@ -42,7 +42,7 @@ namespace stats
     class TraitSet
     {
     public:
-        TraitSet(const TraitValueVec_t & TRAITS_VEC = TraitValueVec_t());
+        TraitSet(const TraitValueVec_t & TRAITS_VEC = {});
 
         Trait & Get(const Traits::Enum E);
         const Trait & GetCopy(const Traits::Enum E) const;

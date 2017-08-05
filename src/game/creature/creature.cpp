@@ -1478,20 +1478,13 @@ namespace creature
     {
         if (WILL_APPLY)
         {
-            if (ENCHANTMENT_PTR->Type() & EnchantmentType::ChangesCreature)
-            {
-                ENCHANTMENT_PTR->CreatureChangeApply(this);
-            }
-
+            ENCHANTMENT_PTR->CreatureChangeApply(this);
             enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
             ReCalculateTraitBonuses();
         }
         else
         {
-            if (ENCHANTMENT_PTR->Type() & EnchantmentType::ChangesCreature)
-            {
-                ENCHANTMENT_PTR->CreatureChangeRemove(this);
-            }
+            ENCHANTMENT_PTR->CreatureChangeRemove(this);
 
             enchantmentsPVec_.erase(std::remove(enchantmentsPVec_.begin(),
                 enchantmentsPVec_.end(),

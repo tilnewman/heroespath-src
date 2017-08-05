@@ -63,7 +63,7 @@ namespace stats
             Backstab,
             HealthGainMelee,
             HealthGainAll,
-            DamageBonusAnimal,
+            AnimalResist,
             DamageBonusFist,
             DamageBonusMelee,
             DamageBonusProj,

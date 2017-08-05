@@ -170,6 +170,8 @@ namespace creature
         virtual inline void CreatureChangeRemove(const CreaturePtr_t)   {}
         virtual inline void UseEffect(const CreaturePtr_t)              {}
 
+        virtual int TreasureScore() const;
+
     private:
         inline const std::string SepIfNotEmpty(const std::string & S) const
         {

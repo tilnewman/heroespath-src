@@ -494,7 +494,7 @@ namespace gui
         //test item ToString() functions
         {
             static unsigned int categoryIndex{ 0 };
-            if (categoryIndex <= game::item::category::Edible)
+            if (categoryIndex <= game::item::category::ConsumedOnUse)
             {
                 auto const STR{ game::item::category::ToString(
                     static_cast<game::item::category::Enum>(categoryIndex), false) };

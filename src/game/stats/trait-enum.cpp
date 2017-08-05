@@ -61,7 +61,7 @@ namespace stats
             case Backstab:          { return "Backstab"; }
             case HealthGainMelee:   { return "HealthGainMelee"; }
             case HealthGainAll:     { return "HealthGainAll"; }
-            case DamageBonusAnimal: { return "DamageBonusAnimal"; }
+            case AnimalResist:      { return "AnimalResist"; }
             case DamageBonusFist:   { return "DamageBonusFist"; }
             case DamageBonusMelee:  { return "DamageBonusMelee"; }
             case DamageBonusProj:   { return "DamageBonusProj"; }
@@ -120,7 +120,7 @@ namespace stats
             case Backstab:          { return "Backstab"; }
             case HealthGainMelee:   { return "HlthGainMel"; }
             case HealthGainAll:     { return "HlthGainAll"; }
-            case DamageBonusAnimal: { return "DmgAnimal"; }
+            case AnimalResist:      { return "AnimalDmgRes"; }
             case DamageBonusFist:   { return "DmgFist"; }
             case DamageBonusMelee:  { return "DmgMel"; }
             case DamageBonusProj:   { return "DmgPrj"; }
@@ -179,7 +179,7 @@ namespace stats
             case Backstab:          { return "Backstab Chance"; }
             case HealthGainMelee:   { return "Health Gained on Melee Damage"; }
             case HealthGainAll:     { return "Health Gained on All Damage"; }
-            case DamageBonusAnimal: { return "Animal Damage Bonus"; }
+            case AnimalResist:      { return "Animal Damage Resistance"; }
             case DamageBonusFist:   { return "Fist Damage Bonus"; }
             case DamageBonusMelee:  { return "Melee Damage Bonus"; }
             case DamageBonusProj:   { return "Projectile Damage Bonus"; }
