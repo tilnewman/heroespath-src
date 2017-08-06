@@ -175,6 +175,7 @@ namespace armor
             ssDesc.str(),
             static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
+                                        category::Wearable |
                                         category::OneHanded),
             misc_type::NotMisc,
             weapon_type::NotAWeapon,
@@ -370,16 +371,10 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        category::Enum armorCategory(category::Armor);
-        if (TYPE == base_type::Plain)
-        {
-            armorCategory = category::Wearable;
-        }
-
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
-            static_cast<category::Enum>(armorCategory |
+            static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
                                         category::Wearable),
             misc_type::NotMisc,
@@ -432,16 +427,10 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        category::Enum armorCategory(category::Armor);
-        if (TYPE == base_type::Plain)
-        {
-            armorCategory = category::Wearable;
-        }
-
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-            static_cast<category::Enum>(armorCategory |
+            static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
                                         category::Wearable),
             misc_type::NotMisc,
@@ -498,16 +487,12 @@ namespace armor
             exclusiveRole = creature::role::Knight;
         }
 
-        category::Enum armorCategory(category::Armor);
-        if (TYPE == base_type::Plain)
-        {
-            armorCategory = category::Wearable;
-        }
-
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            static_cast<category::Enum>(armorCategory | category::Equippable | category::Wearable),
+            static_cast<category::Enum>(category::Armor |
+                                        category::Equippable |
+                                        category::Wearable),
             misc_type::NotMisc,
             weapon_type::NotAWeapon,
             armor_type::Shirt,

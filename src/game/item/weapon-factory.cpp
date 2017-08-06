@@ -419,13 +419,14 @@ namespace weapon
         weaponInfo.sword = SWORD_TYPE;
 
         creature::role::Enum exclusiveRole(creature::role::Count);
-        if ((SWORD_TYPE == sword_type::Knightlysword) || (SWORD_TYPE == sword_type::Claymore))
+        if ((SWORD_TYPE == sword_type::Knightlysword) ||
+            (SWORD_TYPE == sword_type::Claymore))
         {
             exclusiveRole = creature::role::Knight;
         }
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)));
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -470,8 +471,8 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::Axe);
         weaponInfo.axe = AXE_TYPE;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(axe_type::ToString(AXE_TYPE)) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(axe_type::ToString(AXE_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -515,8 +516,8 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::Club);
         weaponInfo.club = CLUB_TYPE;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(club_type::ToString(CLUB_TYPE)) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(club_type::ToString(CLUB_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -558,8 +559,8 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::Whip);
         weaponInfo.whip = WHIP_TYPE;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(whip_type::ToString(WHIP_TYPE)) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(whip_type::ToString(WHIP_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -630,9 +631,8 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::Projectile);
         weaponInfo.projectile = PROJ_TYPE;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(
-                projectile_type::ToString(PROJ_TYPE)) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(projectile_type::ToString(PROJ_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -717,9 +717,8 @@ namespace weapon
         weaponInfo.is_staff = ! IS_QUARTERSTAFF;
         weaponInfo.is_quarterstaff = IS_QUARTERSTAFF;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(((IS_QUARTERSTAFF) ?
-                "Quarterstaff" : "Staff")) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -768,9 +767,8 @@ namespace weapon
         WeaponInfo weaponInfo(weapon_type::BladedStaff);
         weaponInfo.bladedstaff = STAFF_TYPE;
 
-        const WeaponDetails DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails(
-                bladedstaff_type::ToString(STAFF_TYPE)) );
+        auto const DETAILS{ WeaponDetailLoader::Instance()->
+            LookupWeaponDetails(bladedstaff_type::ToString(STAFF_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);

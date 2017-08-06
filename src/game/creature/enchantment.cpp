@@ -32,6 +32,8 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/condition-algorithms.hpp"
 
+#include "game/combat/treasure-factory.hpp"
+
 #include <sstream>
 
 
@@ -119,52 +121,7 @@ namespace creature
 
     int Enchantment::TreasureScore() const
     {
-        using namespace stats;
-
-        int score{ 0 };
-
-        //TODO move this part of the calculation to treasure factory
-        for (int i(1); i < Traits::Count; ++i)
-        {
-            auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
-            auto const NEXT_TRAIT_VALUE{ traitSet_.GetCopy(NEXT_TRAIT_ENUM).Current() };
-            auto traitScore{ [NEXT_TRAIT_VALUE]()
-                {
-                    if (NEXT_TRAIT_VALUE >= 0)
-                    {
-                        return 10 * NEXT_TRAIT_VALUE;
-                    }
-                    else
-                    {
-                        return 5 * std::abs(NEXT_TRAIT_VALUE);
-                    }
-                }() };
-
-            if ((NEXT_TRAIT_ENUM == Traits::HealthGainAll) ||
-                (NEXT_TRAIT_ENUM == Traits::HealthGainMelee))
-            {
-                traitScore *= 10;
-            }
-            else if ((NEXT_TRAIT_ENUM == Traits::AnimalResist) ||
-                     (NEXT_TRAIT_ENUM == Traits::ArmorRating) ||
-                     (NEXT_TRAIT_ENUM == Traits::Backstab) ||
-                     (NEXT_TRAIT_ENUM == Traits::CurseOnDamage) ||
-                     (NEXT_TRAIT_ENUM == Traits::DamageBonusAll) ||
-                     (NEXT_TRAIT_ENUM == Traits::DamageBonusMelee) ||
-                     (NEXT_TRAIT_ENUM == Traits::DamageBonusProj) ||
-                     (NEXT_TRAIT_ENUM == Traits::FindCoinsAmount) ||
-                     (NEXT_TRAIT_ENUM == Traits::PoisonOnAll) ||
-                     (NEXT_TRAIT_ENUM == Traits::PoisonOnMelee))
-            {
-                traitScore *= 2;
-            }
-            else if (NEXT_TRAIT_ENUM == Traits::DamageBonusFist)
-            {
-                traitScore /= 4;
-            }
-
-            score += traitScore;
-        }
+        auto score{ combat::TreasureFactory::Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {

@@ -59,26 +59,26 @@ namespace item
                     const set_type::Enum    SET,
                     const named_type::Enum  NAMED);
 
-        const std::string BaseName() const      { return baseName_; }
-        category::Enum Category() const         { return category_; }
-        armor_type::Enum ArmorType() const      { return armor_; }
-        weapon_type::Enum WeaponType() const    { return weapon_; }
-        unique_type::Enum UniqueType() const    { return unique_; }
-        misc_type::Enum MiscType() const        { return misc_; }
-        set_type::Enum SetType() const          { return set_; }
-        named_type::Enum NamedType() const      { return named_; }
+        const std::string BaseName() const                      { return baseName_; }
+        category::Enum Category() const                         { return category_; }
+        armor_type::Enum ArmorType() const                      { return armor_; }
+        weapon_type::Enum WeaponType() const                    { return weapon_; }
+        unique_type::Enum UniqueType() const                    { return unique_; }
+        misc_type::Enum MiscType() const                        { return misc_; }
+        set_type::Enum SetType() const                          { return set_; }
+        named_type::Enum NamedType() const                      { return named_; }
 
-        armor::shield_type::Enum ShieldType() const { return shield_; }
-        armor::helm_type::Enum HelmType() const     { return helm_; }
-        armor::base_type::Enum BaseType() const     { return base_; }
-        armor::cover_type::Enum CoverType() const   { return cover_; }
+        armor::shield_type::Enum ShieldType() const             { return shield_; }
+        armor::helm_type::Enum HelmType() const                 { return helm_; }
+        armor::base_type::Enum BaseType() const                 { return base_; }
+        armor::cover_type::Enum CoverType() const               { return cover_; }
 
-        bool IsAventail() const     { return isAventail_; }
-        bool IsBracer() const       { return isBracer_; }
-        bool IsShirt() const        { return isShirt_; }
-        bool IsBoots() const        { return isBoots_; }
-        bool IsPants() const        { return isPants_; }
-        bool IsGauntlets() const    { return isGauntlets_; }
+        bool IsAventail() const                                 { return isAventail_; }
+        bool IsBracer() const                                   { return isBracer_; }
+        bool IsShirt() const                                    { return isShirt_; }
+        bool IsBoots() const                                    { return isBoots_; }
+        bool IsPants() const                                    { return isPants_; }
+        bool IsGauntlets() const                                { return isGauntlets_; }
 
         weapon::sword_type::Enum SwordType() const              { return sword_; }
         weapon::axe_type::Enum AxeType() const                  { return axe_; }
@@ -89,13 +89,15 @@ namespace item
 
         sfml_util::Size::Enum Size() const { return size_; }
 
-        bool IsKnife() const            { return isKnife_; }
-        bool IsDagger() const           { return isDagger_; }
-        bool IsStaff() const            { return isStaff_; }
-        bool IsQuarterStaff() const     { return isQStaff_; }
+        bool IsKnife() const                                    { return isKnife_; }
+        bool IsDagger() const                                   { return isDagger_; }
+        bool IsStaff() const                                    { return isStaff_; }
+        bool IsQuarterStaff() const                             { return isQStaff_; }
 
-        material::Enum MaterialPrimary() const      { return matPri_; }
-        material::Enum MaterialSecondary() const    { return matSec_; }
+        material::Enum MaterialPrimary() const                  { return matPri_; }
+        material::Enum MaterialSecondary() const                { return matSec_; }
+
+        int TreasureScore() const                               { return score_; }
 
         void SetUnique(const unique_type::Enum, const material::Enum);
         
@@ -260,6 +262,8 @@ namespace item
 
         material::Enum matPri_;
         material::Enum matSec_;
+
+        int score_;
     };
 
 
@@ -298,7 +302,8 @@ namespace item
                         L.isStaff_,
                         L.isQStaff_,
                         L.matPri_,
-                        L.matSec_)
+                        L.matSec_,
+                        L.score_)
                 ==
                std::tie(R.baseName_,
                         R.category_,
@@ -330,7 +335,8 @@ namespace item
                         R.isStaff_,
                         R.isQStaff_,
                         R.matPri_,
-                        R.matSec_);
+                        R.matSec_,
+                        R.score_);
     }
 
 
@@ -372,7 +378,8 @@ namespace item
                         L.isStaff_,
                         L.isQStaff_,
                         L.matPri_,
-                        L.matSec_)
+                        L.matSec_,
+                        L.score_)
                 <
                std::tie(R.baseName_,
                         R.category_,
@@ -404,7 +411,8 @@ namespace item
                         R.isStaff_,
                         R.isQStaff_,
                         R.matPri_,
-                        R.matSec_);
+                        R.matSec_,
+                        R.score_);
     }
 
 }
