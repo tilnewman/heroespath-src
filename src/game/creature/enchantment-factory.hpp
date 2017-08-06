@@ -38,6 +38,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 
 namespace game
@@ -81,11 +82,23 @@ namespace creature
             const UseInfo &             USE_INFO    = UseInfo(),
             const SummonInfo &          SUMMON_INFO = SummonInfo()) const;
 
+        int TreasureScore(const item::unique_type::Enum,
+                          const item::material::Enum) const;
+
+        int TreasureScore(const item::misc_type::Enum) const;
+
+        int TreasureScore(const item::set_type::Enum) const;
+
+        int TreasureScore(const item::named_type::Enum,
+                          const item::material::Enum,
+                          const bool IS_WEAPON,
+                          const bool IS_ARMOR) const;
+
     private:
         item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
 
-        Enchantment * MakeFromUniqueType(const item::unique_type::Enum,
-                                         const item::material::Enum) const;
+        std::vector<Enchantment *> MakeFromUniqueType(const item::unique_type::Enum,
+                                                      const item::material::Enum) const;
 
         Enchantment * MakeFromMiscType(const item::misc_type::Enum) const;
         Enchantment * MakeFromSetType(const item::set_type::Enum) const;

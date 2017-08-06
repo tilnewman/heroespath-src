@@ -123,15 +123,27 @@ namespace creature
 
         int score{ 0 };
 
+        //TODO move this part of the calculation to treasure factory
         for (int i(1); i < Traits::Count; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
             auto const NEXT_TRAIT_VALUE{ traitSet_.GetCopy(NEXT_TRAIT_ENUM).Current() };
+            auto traitScore{ [NEXT_TRAIT_VALUE]()
+                {
+                    if (NEXT_TRAIT_VALUE >= 0)
+                    {
+                        return 10 * NEXT_TRAIT_VALUE;
+                    }
+                    else
+                    {
+                        return 5 * std::abs(NEXT_TRAIT_VALUE);
+                    }
+                }() };
 
             if ((NEXT_TRAIT_ENUM == Traits::HealthGainAll) ||
                 (NEXT_TRAIT_ENUM == Traits::HealthGainMelee))
             {
-                score += 3 * NEXT_TRAIT_VALUE;
+                traitScore *= 10;
             }
             else if ((NEXT_TRAIT_ENUM == Traits::AnimalResist) ||
                      (NEXT_TRAIT_ENUM == Traits::ArmorRating) ||
@@ -144,28 +156,30 @@ namespace creature
                      (NEXT_TRAIT_ENUM == Traits::PoisonOnAll) ||
                      (NEXT_TRAIT_ENUM == Traits::PoisonOnMelee))
             {
-                score += 2 * NEXT_TRAIT_VALUE;
+                traitScore *= 2;
             }
-            else
+            else if (NEXT_TRAIT_ENUM == Traits::DamageBonusFist)
             {
-                score += NEXT_TRAIT_VALUE;
+                traitScore /= 4;
             }
+
+            score += traitScore;
         }
 
         if (type_ & EnchantmentType::WhenHeld)
         {
-            score += 50;
+            score += 350;
         }
 
         if (type_ & EnchantmentType::AllowsFlight)
         {
-            score += 50;
+            score += 200;
         }
 
         if ((type_ & EnchantmentType::BlessWithoutItem) ||
             (type_ & EnchantmentType::CurseWithoutItem))
         {
-            score += 50;
+            score += 300;
         }
 
         return score;

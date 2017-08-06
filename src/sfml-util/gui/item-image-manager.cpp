@@ -1316,12 +1316,12 @@ namespace gui
 	        case misc_type::Nose:
 	        case misc_type::Paw:
 	        case misc_type::Petrified_Snake:
-	        case misc_type::Pin_Book:
-	        case misc_type::Pin_Clover:
-	        case misc_type::Pin_Foot:
-	        case misc_type::Pin_Nymph:
-	        case misc_type::Pin_Quiver:
-            case misc_type::Pin_Hourglass:
+            case misc_type::Pin_Crown:
+            case misc_type::Pin_Feather:
+            case misc_type::Pin_Fist:
+	        case misc_type::Pin_Hourglass:
+            case misc_type::Pin_Key:
+            case misc_type::Pin_Mask:
 	        case misc_type::Pipe_And_Tabor:
             case misc_type::Puppet:
             case misc_type::Rabbit_Foot:
@@ -1336,6 +1336,12 @@ namespace gui
             case misc_type::Salamander:
 	        case misc_type::Shark_Tooth_Necklace:
             case misc_type::Shroud:
+            case misc_type::Signet_Crown:
+            case misc_type::Signet_Feather:
+            case misc_type::Signet_Fist:
+            case misc_type::Signet_Hourglass:
+            case misc_type::Signet_Key:
+            case misc_type::Signet_Mask:
             case misc_type::Skink:
 	        case misc_type::Spider_Eggs:
 	        case misc_type::Spyglass:

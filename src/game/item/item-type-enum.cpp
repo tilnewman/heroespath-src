@@ -294,6 +294,7 @@ namespace item
             case ImpTail:                   { return "ImpTail"; }
             case IslanderHeaddress:         { return "IslanderHeaddress"; }
             case JeweledAnkhNecklace:       { return "JeweledAnkhNecklace"; }
+            case JeweledArmband:            { return "JeweledArmband"; }
             case JeweledHandbag:            { return "JeweledHandbag"; }
             case JeweledPrincessVeil:       { return "JeweledPrincessVeil"; }
             case KingsCape:                 { return "KingsCape"; }
@@ -302,23 +303,25 @@ namespace item
             case MadRatJuju:                { return "MadRatJuju"; }
             case MagicHorseshoe:            { return "MagicHorseshoe"; }
             case MagnifyingGlass:           { return "MagnifyingGlass"; }
+            case ManaAmulet:                { return "ManaAmulet"; }
             case MendicantRing:             { return "MendicantRing"; }
             case MinotaurHide:              { return "MinotaurHide"; }
             case MonkRing:                  { return "MonkRing"; }
             case MortuaryOrnament:          { return "MortuaryOrnament"; }
             case MournersMask:              { return "MournersMask"; }
             case PantherPaw:                { return "PantherPaw"; }
-            case PinArcaneTome:             { return "PinArcaneTome"; }
+            case PinCrown:                  { return "PinCrown"; }
+            case PinFeather:                { return "PinFeather"; }
+            case PinFist:                   { return "PinFist"; }
             case PinHourglass:              { return "PinHourglass"; }
-            case PinJeweledNymph:           { return "PinJeweledNymph"; }
-            case PinKingsQuiver:            { return "PinKingsQuiver"; }
-            case PinLeprechaunClover:       { return "PinLeprechaunClover"; }
-            case PinTitansFoot:             { return "PinTitansFoot"; }
+            case PinKey:                    { return "PinKey"; }
+            case PinMask:                   { return "PinMask"; }
             case PixieBell:                 { return "PixieBell"; }
             case PriestRing:                { return "PriestRing"; }
             case RascalMask:                { return "RascalMask"; }
             case RattlesnakeTail:           { return "RattlesnakeTail"; }
             case RavenClaw:                 { return "RavenClaw"; }
+            case RazorFingerclaw:           { return "RazorFingerclaw"; }
             case ReaperScythe:              { return "ReaperScythe"; }
             case RegalCaptainsFlag:         { return "RegalCaptainsFlag"; }
             case RequiemRegister:           { return "RequiemRegister"; }
@@ -332,6 +335,12 @@ namespace item
             case ShadeCloak:                { return "ShadeCloak"; }
             case ShamanRainmaker:           { return "ShamanRainmaker"; }
             case SharkToothNecklace:        { return "SharkToothNecklace"; }
+            case SignetCrown:               { return "SignetCrown"; }
+            case SignetFeather:             { return "SignetFeather"; }
+            case SignetFist:                { return "SignetFist"; }
+            case SignetHourglass:           { return "SignetHourglass"; }
+            case SignetKey:                 { return "SignetKey"; }
+            case SignetMask:                { return "SignetMask"; }
             case SirenConch:                { return "SirenConch"; }
             case SpecterChains:             { return "SpecterChains"; }
             case SpecterRobe:               { return "SpecterRobe"; }
@@ -428,6 +437,7 @@ namespace item
             case ImpTail:                   { return "Imp Tail"; }
             case IslanderHeaddress:         { return "Islander Headdress"; }
             case JeweledAnkhNecklace:       { return "Jeweled Ankh Necklace"; }
+            case JeweledArmband:            { return "Jeweled Armband"; }
             case JeweledHandbag:            { return "Jeweled Handbag"; }
             case JeweledPrincessVeil:       { return "Jeweled Princess Veil"; }
             case KingsCape:                 { return "King's Cape"; }
@@ -436,23 +446,25 @@ namespace item
             case MadRatJuju:                { return "Mad Rat Juju"; }
             case MagicHorseshoe:            { return "Magic Horseshoe"; }
             case MagnifyingGlass:           { return "Magnifying Glass"; }
+            case ManaAmulet:                { return "Mana Amulet"; }
             case MendicantRing:             { return "Mendicant Ring"; }
             case MinotaurHide:              { return "Minotaur Hide"; }
             case MonkRing:                  { return "Monk Ring"; }
             case MortuaryOrnament:          { return "Mortuary Ornament"; }
             case MournersMask:              { return "Mourner's Mask"; }
             case PantherPaw:                { return "Panther Paw"; }
-            case PinArcaneTome:             { return "Arcane Tome Pin"; }
+            case PinCrown:                  { return "Crown Pin"; }
+            case PinFeather:                { return "Feather Pin"; }
+            case PinFist:                   { return "Fist Pin"; }
             case PinHourglass:              { return "Hourglass Pin"; }
-            case PinJeweledNymph:           { return "Jeweled Nymph Pin"; }
-            case PinKingsQuiver:            { return "King's Quiver Pin"; }
-            case PinLeprechaunClover:       { return "Leprechaun Clover Pin"; }
-            case PinTitansFoot:             { return "Titan's Foot Pin"; }
+            case PinKey:                    { return "Key Pin"; }
+            case PinMask:                   { return "Mask Pin"; }
             case PixieBell:                 { return "Pixie Bell"; }
             case PriestRing:                { return "Priest Ring"; }
             case RascalMask:                { return "Rascal Mask"; }
             case RattlesnakeTail:           { return "Rattlesnake Tail"; }
             case RavenClaw:                 { return "Raven Claw"; }
+            case RazorFingerclaw:           { return "Razor Fingerclaw"; }
             case ReaperScythe:              { return "Reaper Scythe"; }
             case RegalCaptainsFlag:         { return "Regal Captain's Flag"; }
             case RequiemRegister:           { return "Requiem Register"; }
@@ -466,6 +478,12 @@ namespace item
             case ShadeCloak:                { return "Shade Cloak"; }
             case ShamanRainmaker:           { return "Shaman Rainmaker"; }
             case SharkToothNecklace:        { return "Shark Tooth Necklace"; }
+            case SignetCrown:               { return "Crown Signet"; }
+            case SignetFeather:             { return "Feather Signet"; }
+            case SignetFist:                { return "Fist Signet"; }
+            case SignetHourglass:           { return "Hourglass Signet"; }
+            case SignetKey:                 { return "Key Signet"; }
+            case SignetMask:                { return "Mask Signet"; }
             case SirenConch:                { return "Siren Conch"; }
             case SpecterChains:             { return "Specter Chains"; }
             case SpecterRobe:               { return "Specter Robe"; }
@@ -562,6 +580,7 @@ namespace item
             case ImpTail:                   { return misc_type::Imp_Tail; }
             case IslanderHeaddress:         { return misc_type::Headdress; }
             case JeweledAnkhNecklace:       { return misc_type::Amulet; }
+            case JeweledArmband:            { return misc_type::Armband; }
             case JeweledHandbag:            { return misc_type::Handbag; }
             case JeweledPrincessVeil:       { return misc_type::Veil; }
             case KingsCape:                 { return misc_type::Cape; }
@@ -570,23 +589,25 @@ namespace item
             case MadRatJuju:                { return misc_type::Rat_Juju; }
             case MagicHorseshoe:            { return misc_type::Horseshoe; }
             case MagnifyingGlass:           { return misc_type::Magnifying_Glass; }
+            case ManaAmulet:                { return misc_type::Amulet; }
             case MendicantRing:             { return misc_type::Ring; }
             case MinotaurHide:              { return misc_type::Hide; }
             case MonkRing:                  { return misc_type::Ring; }
             case MortuaryOrnament:          { return misc_type::Grave_Ornament; }
             case MournersMask:              { return misc_type::Mask; }
             case PantherPaw:                { return misc_type::Paw; }
-            case PinArcaneTome:             { return misc_type::Tome; }
+            case PinCrown:                  { return misc_type::Pin_Crown; }
+            case PinFeather:                { return misc_type::Pin_Feather; }
+            case PinFist:                   { return misc_type::Pin_Fist; }
             case PinHourglass:              { return misc_type::Pin_Hourglass; }
-            case PinJeweledNymph:           { return misc_type::Pin_Nymph; }
-            case PinKingsQuiver:            { return misc_type::Pin_Quiver; }
-            case PinLeprechaunClover:       { return misc_type::Pin_Clover; }
-            case PinTitansFoot:             { return misc_type::Pin_Foot; }
+            case PinKey:                    { return misc_type::Pin_Key; }
+            case PinMask:                   { return misc_type::Pin_Mask; }
             case PixieBell:                 { return misc_type::Bell; }
             case PriestRing:                { return misc_type::Ring; }
             case RascalMask:                { return misc_type::Mask; }
             case RattlesnakeTail:           { return misc_type::Rattlesnake_Tail; }
             case RavenClaw:                 { return misc_type::Bird_Claw; }
+            case RazorFingerclaw:           { return misc_type::Fingerclaw; }
             case ReaperScythe:              { return misc_type::Scythe; }
             case RegalCaptainsFlag:         { return misc_type::Flag; }
             case RequiemRegister:           { return misc_type::Book; }
@@ -600,6 +621,12 @@ namespace item
             case ShadeCloak:                { return misc_type::Cloak; }
             case ShamanRainmaker:           { return misc_type::Rainmaker; }
             case SharkToothNecklace:        { return misc_type::Shark_Tooth_Necklace; }
+            case SignetCrown:               { return misc_type::Signet_Crown; }
+            case SignetFeather:             { return misc_type::Signet_Feather; }
+            case SignetFist:                { return misc_type::Signet_Fist; }
+            case SignetHourglass:           { return misc_type::Signet_Hourglass; }
+            case SignetKey:                 { return misc_type::Signet_Key; }
+            case SignetMask:                { return misc_type::Signet_Mask; }
             case SirenConch:                { return misc_type::Conch; }
             case SpecterChains:             { return misc_type::Chains; }
             case SpecterRobe:               { return misc_type::Robe; }
@@ -731,12 +758,12 @@ namespace item
             case Paw:                   { return "Paw"; }
             case Pendant:               { return "Pendant"; }
             case Petrified_Snake:       { return "Petrified_Snake"; }
-            case Pin_Book:              { return "Pin_Book"; }
-            case Pin_Clover:            { return "Pin_Clover"; }
-            case Pin_Foot:              { return "Pin_Foot"; }
-            case Pin_Nymph:             { return "Pin_Nymph"; }
-            case Pin_Quiver:            { return "Pin_Quiver"; }
+            case Pin_Crown:             { return "Pin_Crown"; }
+            case Pin_Feather:           { return "Pin_Feather"; }
+            case Pin_Fist:              { return "Pin_Fist"; }
             case Pin_Hourglass:         { return "Pin_Hourglass"; }
+            case Pin_Key:               { return "Pin_Key"; }
+            case Pin_Mask:              { return "Pin_Mask"; }
             case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
             case Potion:                { return "Potion"; }
             case Puppet:                { return "Puppet"; }
@@ -758,6 +785,12 @@ namespace item
             case Shard:                 { return "Shard"; }
             case Shark_Tooth_Necklace:  { return "Shark_Tooth_Necklace"; }
             case Shroud:                { return "Shroud"; }
+            case Signet_Crown:          { return "Signet_Crown"; }
+            case Signet_Feather:        { return "Signet_Feather"; }
+            case Signet_Fist:           { return "Signet_Fist"; }
+            case Signet_Hourglass:      { return "Signet_Hourglass"; }
+            case Signet_Key:            { return "Signet_Key"; }
+            case Signet_Mask:           { return "Signet_Mask"; }
             case Skink:                 { return "Skink"; }
             case Skull:                 { return "Skull"; }
             case Spider_Eggs:           { return "Spider_Eggs"; }
@@ -829,17 +862,23 @@ namespace item
             case Litch_Hand:            { return "Litch Hand"; }
             case Magnifying_Glass:      { return "Magnifying Glass"; }
             case Petrified_Snake:       { return "Petrified Snake"; }
-            case Pin_Book:              { return "Arcane Tome Pin"; }
-            case Pin_Clover:            { return "Leprechaun Clover Pin"; }
-            case Pin_Foot:              { return "Titan's Foot Pin"; }
-            case Pin_Nymph:             { return "Jeweled Nymph Pin"; }
-            case Pin_Quiver:            { return "King's Quiver Pin"; }
+            case Pin_Crown:             { return "Crown Pin"; }
+            case Pin_Feather:           { return "Feather Pin"; }
+            case Pin_Fist:              { return "Fist Pin"; }
             case Pin_Hourglass:         { return "Hourglass Pin"; }
+            case Pin_Key:               { return "Key Pin"; }
+            case Pin_Mask:              { return "Mask Pin"; }
             case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
             case Rabbit_Foot:           { return "Rabbit Foot"; }
             case Rat_Juju:              { return "Rat Juju"; }
             case Rattlesnake_Tail:      { return "Rattlesnake Tail"; }
             case Shark_Tooth_Necklace:  { return "Shark Tooth Necklace"; }
+            case Signet_Crown:          { return "Crown Signet"; }
+            case Signet_Feather:        { return "Feather Signet"; }
+            case Signet_Fist:           { return "Fist Signet"; }
+            case Signet_Hourglass:      { return "Hourglass Signet"; }
+            case Signet_Key:            { return "Key Signet"; }
+            case Signet_Mask:           { return "Mask Signet"; }
             case Spider_Eggs:           { return "Spider Eggs"; }
             case Tooth_Necklace:        { return "Vampire Tooth Necklace"; }
             case Troll_Figure:          { return "Troll Figure"; }
