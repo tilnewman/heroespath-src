@@ -94,6 +94,10 @@ namespace creature
                           const bool IS_WEAPON,
                           const bool IS_ARMOR) const;
 
+        int TreasureScore(const item::element_type::Enum,
+                          const bool IS_WEAPON,
+                          const item::material::Enum) const;
+
     private:
         item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
 
@@ -103,6 +107,10 @@ namespace creature
         Enchantment * MakeFromMiscType(const item::misc_type::Enum) const;
         Enchantment * MakeFromSetType(const item::set_type::Enum) const;
         Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
+
+        Enchantment * MakeFromElementType(const item::element_type::Enum,
+                                          const bool IS_WEAPON,
+                                          const item::material::Enum) const;
 
         Enchantment * MakeFromNamedType(const item::named_type::Enum,
                                         const item::material::Enum,

@@ -67,6 +67,7 @@ namespace item
         misc_type::Enum MiscType() const                        { return misc_; }
         set_type::Enum SetType() const                          { return set_; }
         named_type::Enum NamedType() const                      { return named_; }
+        element_type::Enum ElementType() const                  { return element_; }
 
         armor::shield_type::Enum ShieldType() const             { return shield_; }
         armor::helm_type::Enum HelmType() const                 { return helm_; }
@@ -99,121 +100,142 @@ namespace item
 
         int TreasureScore() const                               { return score_; }
 
-        void SetUnique(const unique_type::Enum, const material::Enum);
+        void SetUnique(const unique_type::Enum,
+                       const material::Enum,
+                       const element_type::Enum);
         
         void SetMisc(const misc_type::Enum);
         
         void SetShield(const armor::shield_type::Enum,
                        const material::Enum,
                        const material::Enum,
-                       const named_type::Enum NAMED_TYPE = named_type::NotNamed,
-                       const set_type::Enum   SET_TYPE   = set_type::NotASet);
+                       const named_type::Enum   NAMED_TYPE   = named_type::NotNamed,
+                       const set_type::Enum     SET_TYPE     = set_type::NotASet,
+                       const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetHelm(const armor::helm_type::Enum,
                      const material::Enum,
-                     const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                     const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                     const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                     const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                     const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                     const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                     const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetCover(const armor::cover_type::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetAventail(const armor::base_type::Enum,
                          const material::Enum,
-                         const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                         const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                         const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                         const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                         const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                         const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                         const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetBracer(const armor::base_type::Enum,
                        const material::Enum,
-                       const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                       const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                       const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                       const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                       const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                       const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                       const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetShirt(const armor::base_type::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetBoots(const armor::base_type::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetPants(const armor::base_type::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetGauntlets(const armor::base_type::Enum,
                           const material::Enum,
-                          const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                          const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                          const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                          const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                          const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                          const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                          const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetSword(const weapon::sword_type::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetAxe(const weapon::axe_type::Enum,
                     const material::Enum,
-                    const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                    const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                    const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                    const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                    const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                    const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                    const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetClub(const weapon::club_type::Enum,
                      const material::Enum,
-                     const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                     const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                     const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                     const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                     const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                     const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                     const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetWhip(const weapon::whip_type::Enum,
                      const material::Enum,
-                     const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                     const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                     const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                     const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                     const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                     const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                     const element_type::Enum ELEMENT_TYPE       = element_type::None);
         
         void SetProjectile(const weapon::projectile_type::Enum,
                            const material::Enum,
-                           const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                           const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                           const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                           const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                           const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                           const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                           const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetBladdedStaff(const weapon::bladedstaff_type::Enum,
                              const material::Enum,
-                             const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                             const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                             const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                             const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                             const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                             const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                             const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetKnife(const sfml_util::Size::Enum,
                       const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetDagger(const sfml_util::Size::Enum,
                        const material::Enum,
-                       const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                       const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                       const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                       const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                       const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                       const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                       const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetStaff(const material::Enum,
-                      const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                      const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                      const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                      const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         void SetQuarterStaff(const material::Enum,
-                             const material::Enum   MATERIAL_SECONDARY = material::Nothing,
-                             const named_type::Enum NAMED_TYPE         = named_type::NotNamed,
-                             const set_type::Enum   SET_TYPE           = set_type::NotASet);
+                             const material::Enum     MATERIAL_SECONDARY = material::Nothing,
+                             const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
+                             const set_type::Enum     SET_TYPE           = set_type::NotASet,
+                             const element_type::Enum ELEMENT_TYPE       = element_type::None);
 
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
@@ -222,17 +244,19 @@ namespace item
         void SetHelper(const material::Enum,
                        const material::Enum,
                        const named_type::Enum,
-                       const set_type::Enum);
+                       const set_type::Enum,
+                       const element_type::Enum);
 
     private:
-        std::string       baseName_;
-        category::Enum    category_;
-        armor_type::Enum  armor_;
-        weapon_type::Enum weapon_;
-        unique_type::Enum unique_;
-        misc_type::Enum   misc_;
-        set_type::Enum    set_;
-        named_type::Enum  named_;
+        std::string        baseName_;
+        category::Enum     category_;
+        armor_type::Enum   armor_;
+        weapon_type::Enum  weapon_;
+        unique_type::Enum  unique_;
+        misc_type::Enum    misc_;
+        set_type::Enum     set_;
+        named_type::Enum   named_;
+        element_type::Enum element_;
 
         armor::shield_type::Enum shield_;
         armor::helm_type::Enum   helm_;
@@ -280,6 +304,7 @@ namespace item
                         L.misc_,
                         L.set_,
                         L.named_,
+                        L.element_,
                         L.shield_,
                         L.helm_,
                         L.base_,
@@ -313,6 +338,7 @@ namespace item
                         R.misc_,
                         R.set_,
                         R.named_,
+                        R.element_,
                         R.shield_,
                         R.helm_,
                         R.base_,
@@ -356,6 +382,7 @@ namespace item
                         L.misc_,
                         L.set_,
                         L.named_,
+                        L.element_,
                         L.shield_,
                         L.helm_,
                         L.base_,
@@ -389,6 +416,7 @@ namespace item
                         R.misc_,
                         R.set_,
                         R.named_,
+                        R.element_,
                         R.shield_,
                         R.helm_,
                         R.base_,

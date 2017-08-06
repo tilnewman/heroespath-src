@@ -39,23 +39,17 @@ namespace game
 namespace item
 {
 
-    ItemProfile::ItemProfile(const std::string &     BASE_NAME,
-                             const category::Enum    CATEGORY,
-                             const armor_type::Enum  ARMOR,
-                             const weapon_type::Enum WEAPON,
-                             const unique_type::Enum UNIQUE,
-                             const misc_type::Enum   MISC,
-                             const set_type::Enum    SET,
-                             const named_type::Enum  NAMED)
+    ItemProfile::ItemProfile()
     :
-        baseName_   (BASE_NAME),
-        category_   (CATEGORY),
-        armor_      (ARMOR),
-        weapon_     (WEAPON),
-        unique_     (UNIQUE),
-        misc_       (MISC),
-        set_        (SET),
-        named_      (NAMED),
+        baseName_   (""),
+        category_   (category::None),
+        armor_      (armor_type::NotArmor),
+        weapon_     (weapon_type::NotAWeapon),
+        unique_     (unique_type::NotUnique),
+        misc_       (misc_type::NotMisc),
+        set_        (set_type::NotASet),
+        named_      (named_type::NotNamed),
+        element_    (element_type::None),
         shield_	    (armor::shield_type::Count),
         helm_	    (armor::helm_type::Count),
         base_	    (armor::base_type::Count),
@@ -83,16 +77,70 @@ namespace item
     {}
 
 
-    void ItemProfile::SetUnique(const unique_type::Enum E,
-                                const material::Enum    MATERIAL_PRIMARY)
+    ItemProfile::ItemProfile(const std::string &     BASE_NAME,
+                             const category::Enum    CATEGORY,
+                             const armor_type::Enum  ARMOR,
+                             const weapon_type::Enum WEAPON,
+                             const unique_type::Enum UNIQUE,
+                             const misc_type::Enum   MISC,
+                             const set_type::Enum    SET,
+                             const named_type::Enum  NAMED)
+    :
+        baseName_   (BASE_NAME),
+        category_   (CATEGORY),
+        armor_      (ARMOR),
+        weapon_     (WEAPON),
+        unique_     (UNIQUE),
+        misc_       (MISC),
+        set_        (SET),
+        named_      (NAMED),
+        element_    (element_type::None),
+        shield_	    (armor::shield_type::Count),
+        helm_	    (armor::helm_type::Count),
+        base_	    (armor::base_type::Count),
+        cover_	    (armor::cover_type::Count),
+        isAventail_ (false),
+        isBracer_   (false),
+        isShirt_    (false),
+        isBoots_    (false),
+        isPants_    (false),
+        isGauntlets_(false),
+        sword_	    (weapon::sword_type::Count),
+        axe_	    (weapon::axe_type::Count),
+        club_	    (weapon::club_type::Count),
+        whip_	    (weapon::whip_type::Count),
+        proj_	    (weapon::projectile_type::Count),
+        bstaff_	    (weapon::bladedstaff_type::Count),
+        size_	    (sfml_util::Size::Medium),
+        isKnife_	(false),
+        isDagger_	(false),
+        isStaff_	(false),
+        isQStaff_	(false),
+        matPri_     (material::Nothing),
+        matSec_     (material::Nothing),
+        score_      (0)
+    {}
+
+
+    void ItemProfile::SetUnique(const unique_type::Enum  E,
+                                const material::Enum     MATERIAL_PRIMARY,
+                                const element_type::Enum ELEMENT_TYPE)
     {
         unique_ = E;
         matPri_ = MATERIAL_PRIMARY;
         misc_ = unique_type::MiscType(E);
+
+        auto const IS_WEAPON{ ((E == unique_type::ViperFangFingerclaw) ||
+                               (E == unique_type::ScorpionStingerFingerclaw) ||
+                               (E == unique_type::RazorFingerclaw)) };
+
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(E, MATERIAL_PRIMARY));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(E, MATERIAL_PRIMARY) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          IS_WEAPON,
+                                                                          MATERIAL_PRIMARY));
     }
-        
+
 
     void ItemProfile::SetMisc(const misc_type::Enum E)
     {
@@ -121,10 +169,11 @@ namespace item
     
 
     void ItemProfile::SetShield(const armor::shield_type::Enum E,
-                                const material::Enum   MATERIAL_PRIMARY,
-                                const material::Enum   MATERIAL_SECONDARY,
-                                const named_type::Enum NAMED_TYPE,
-                                const set_type::Enum   SET_TYPE)
+                                const material::Enum           MATERIAL_PRIMARY,
+                                const material::Enum           MATERIAL_SECONDARY,
+                                const named_type::Enum         NAMED_TYPE,
+                                const set_type::Enum           SET_TYPE,
+                                const element_type::Enum       ELEMENT_TYPE)
     {
         shield_ = E;
 
@@ -135,22 +184,26 @@ namespace item
 
         armor_ = item::armor_type::Sheild;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetHelm(const armor::helm_type::Enum E,
-                              const material::Enum   MATERIAL_PRIMARY,
-                              const material::Enum   MATERIAL_SECONDARY,
-                              const named_type::Enum NAMED_TYPE,
-                              const set_type::Enum   SET_TYPE)
+                              const material::Enum         MATERIAL_PRIMARY,
+                              const material::Enum         MATERIAL_SECONDARY,
+                              const named_type::Enum       NAMED_TYPE,
+                              const set_type::Enum         SET_TYPE,
+                              const element_type::Enum     ELEMENT_TYPE)
     {
         helm_ = E;
 
@@ -160,209 +213,241 @@ namespace item
 
         armor_ = item::armor_type::Helm;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetCover(const armor::cover_type::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum          MATERIAL_PRIMARY,
+                               const material::Enum          MATERIAL_SECONDARY,
+                               const named_type::Enum        NAMED_TYPE,
+                               const set_type::Enum          SET_TYPE,
+                               const element_type::Enum      ELEMENT_TYPE)
     {
         cover_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Covering;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetAventail(const armor::base_type::Enum E,
-                                  const material::Enum   MATERIAL_PRIMARY,
-                                  const material::Enum   MATERIAL_SECONDARY,
-                                  const named_type::Enum NAMED_TYPE,
-                                  const set_type::Enum   SET_TYPE)
+                                  const material::Enum         MATERIAL_PRIMARY,
+                                  const material::Enum         MATERIAL_SECONDARY,
+                                  const named_type::Enum       NAMED_TYPE,
+                                  const set_type::Enum         SET_TYPE,
+                                  const element_type::Enum     ELEMENT_TYPE)
     {
         isAventail_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Aventail;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreAventail(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetBracer(const armor::base_type::Enum E,
-                                const material::Enum   MATERIAL_PRIMARY,
-                                const material::Enum   MATERIAL_SECONDARY,
-                                const named_type::Enum NAMED_TYPE,
-                                const set_type::Enum   SET_TYPE)
+                                const material::Enum         MATERIAL_PRIMARY,
+                                const material::Enum         MATERIAL_SECONDARY,
+                                const named_type::Enum       NAMED_TYPE,
+                                const set_type::Enum         SET_TYPE,
+                                const element_type::Enum     ELEMENT_TYPE)
     {
         isBracer_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Bracer;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreBracer(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetShirt(const armor::base_type::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum         MATERIAL_PRIMARY,
+                               const material::Enum         MATERIAL_SECONDARY,
+                               const named_type::Enum       NAMED_TYPE,
+                               const set_type::Enum         SET_TYPE,
+                               const element_type::Enum     ELEMENT_TYPE)
     {
         isShirt_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Shirt;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreShirt(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetBoots(const armor::base_type::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum         MATERIAL_PRIMARY,
+                               const material::Enum         MATERIAL_SECONDARY,
+                               const named_type::Enum       NAMED_TYPE,
+                               const set_type::Enum         SET_TYPE,
+                               const element_type::Enum     ELEMENT_TYPE)
     {
         isBoots_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Boots;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreBoots(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetPants(const armor::base_type::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum         MATERIAL_PRIMARY,
+                               const material::Enum         MATERIAL_SECONDARY,
+                               const named_type::Enum       NAMED_TYPE,
+                               const set_type::Enum         SET_TYPE,
+                               const element_type::Enum     ELEMENT_TYPE)
     {
         isPants_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Pants;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScorePants(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetGauntlets(const armor::base_type::Enum E,
-                                   const material::Enum   MATERIAL_PRIMARY,
-                                   const material::Enum   MATERIAL_SECONDARY,
-                                   const named_type::Enum NAMED_TYPE,
-                                   const set_type::Enum   SET_TYPE)
+                                   const material::Enum         MATERIAL_PRIMARY,
+                                   const material::Enum         MATERIAL_SECONDARY,
+                                   const named_type::Enum       NAMED_TYPE,
+                                   const set_type::Enum         SET_TYPE,
+                                   const element_type::Enum     ELEMENT_TYPE)
     {
         isGauntlets_ = true;
         base_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Armor |
                                                 category::Equippable |
                                                 category::Wearable);
 
         armor_ = item::armor_type::Gauntlets;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreGauntlets(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           false,
                                                                           true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          false,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetSword(const weapon::sword_type::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum           MATERIAL_PRIMARY,
+                               const material::Enum           MATERIAL_SECONDARY,
+                               const named_type::Enum         NAMED_TYPE,
+                               const set_type::Enum           SET_TYPE,
+                               const element_type::Enum       ELEMENT_TYPE)
     {
         using namespace item;
         using namespace item::weapon;
 
         sword_ = E;
-        
+
         auto const HANDED{ [E]()
             {
                 if ((E == sword_type::Claymore) ||
@@ -386,27 +471,31 @@ namespace item
                                                  weapon_type::Bladed |
                                                  weapon_type::Pointed);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetAxe(const weapon::axe_type::Enum E,
-                             const material::Enum   MATERIAL_PRIMARY,
-                             const material::Enum   MATERIAL_SECONDARY,
-                             const named_type::Enum NAMED_TYPE,
-                             const set_type::Enum   SET_TYPE)
+                             const material::Enum         MATERIAL_PRIMARY,
+                             const material::Enum         MATERIAL_SECONDARY,
+                             const named_type::Enum       NAMED_TYPE,
+                             const set_type::Enum         SET_TYPE,
+                             const element_type::Enum     ELEMENT_TYPE)
     {
         using namespace item::weapon;
 
         axe_ = E;
-        
+
         auto const HANDED{ [E]()
             {
                 if ((E == axe_type::Battleaxe) ||
@@ -429,22 +518,26 @@ namespace item
                                                  weapon_type::Axe |
                                                  weapon_type::Melee);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetClub(const weapon::club_type::Enum E,
-                              const material::Enum   MATERIAL_PRIMARY,
-                              const material::Enum   MATERIAL_SECONDARY,
-                              const named_type::Enum NAMED_TYPE,
-                              const set_type::Enum   SET_TYPE)
+                              const material::Enum          MATERIAL_PRIMARY,
+                              const material::Enum          MATERIAL_SECONDARY,
+                              const named_type::Enum        NAMED_TYPE,
+                              const set_type::Enum          SET_TYPE,
+                              const element_type::Enum      ELEMENT_TYPE)
     {
         using namespace item::weapon;
 
@@ -469,22 +562,26 @@ namespace item
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee |
                                                  weapon_type::Club);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetWhip(const weapon::whip_type::Enum E,
-                              const material::Enum   MATERIAL_PRIMARY,
-                              const material::Enum   MATERIAL_SECONDARY,
-                              const named_type::Enum NAMED_TYPE,
-                              const set_type::Enum   SET_TYPE)
+                              const material::Enum          MATERIAL_PRIMARY,
+                              const material::Enum          MATERIAL_SECONDARY,
+                              const named_type::Enum        NAMED_TYPE,
+                              const set_type::Enum          SET_TYPE,
+                              const element_type::Enum      ELEMENT_TYPE)
     {
         using namespace item::weapon;
 
@@ -509,22 +606,26 @@ namespace item
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee |
                                                  weapon_type::Whip);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
         
     
     void ItemProfile::SetProjectile(const weapon::projectile_type::Enum E,
-                                    const material::Enum   MATERIAL_PRIMARY,
-                                    const material::Enum   MATERIAL_SECONDARY,
-                                    const named_type::Enum NAMED_TYPE,
-                                    const set_type::Enum   SET_TYPE)
+                                    const material::Enum                MATERIAL_PRIMARY,
+                                    const material::Enum                MATERIAL_SECONDARY,
+                                    const named_type::Enum              NAMED_TYPE,
+                                    const set_type::Enum                SET_TYPE,
+                                    const element_type::Enum            ELEMENT_TYPE)
     {
         using namespace item;
         using namespace item::weapon;
@@ -545,28 +646,32 @@ namespace item
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Projectile | WEAPON_TYPE);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
     
     void ItemProfile::SetBladdedStaff(const weapon::bladedstaff_type::Enum E,
-                                      const material::Enum   MATERIAL_PRIMARY,
-                                      const material::Enum   MATERIAL_SECONDARY,
-                                      const named_type::Enum NAMED_TYPE,
-                                      const set_type::Enum   SET_TYPE)
+                                      const material::Enum                 MATERIAL_PRIMARY,
+                                      const material::Enum                 MATERIAL_SECONDARY,
+                                      const named_type::Enum               NAMED_TYPE,
+                                      const set_type::Enum                 SET_TYPE,
+                                      const element_type::Enum             ELEMENT_TYPE)
     {
         using namespace item;
         using namespace item::weapon;
 
         bstaff_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Weapon |
                                                 category::Equippable |
                                                 category::TwoHanded);
@@ -581,22 +686,26 @@ namespace item
                                                  POINTED_TYPE |
                                                  SPEAR_TYPE);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::Score(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetKnife(const sfml_util::Size::Enum E,
-                               const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+                               const material::Enum        MATERIAL_PRIMARY,
+                               const material::Enum        MATERIAL_SECONDARY,
+                               const named_type::Enum      NAMED_TYPE,
+                               const set_type::Enum        SET_TYPE,
+                               const element_type::Enum    ELEMENT_TYPE)
     {
         isKnife_ = true;
         size_ = E;
@@ -610,26 +719,30 @@ namespace item
                                                  weapon_type::Melee |
                                                  weapon_type::Pointed);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreKnife(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
     void ItemProfile::SetDagger(const sfml_util::Size::Enum E,
-                                const material::Enum   MATERIAL_PRIMARY,
-                                const material::Enum   MATERIAL_SECONDARY,
-                                const named_type::Enum NAMED_TYPE,
-                                const set_type::Enum   SET_TYPE)
+                                const material::Enum        MATERIAL_PRIMARY,
+                                const material::Enum        MATERIAL_SECONDARY,
+                                const named_type::Enum      NAMED_TYPE,
+                                const set_type::Enum        SET_TYPE,
+                                const element_type::Enum    ELEMENT_TYPE)
     {
         isDagger_ = true;
         size_ = E;
-        
+
         category_ = static_cast<category::Enum>(category::Weapon |
                                                 category::Equippable |
                                                 category::OneHanded);
@@ -639,24 +752,28 @@ namespace item
                                                  weapon_type::Melee |
                                                  weapon_type::Pointed);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreDagger(E) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
     
-    void ItemProfile::SetStaff(const material::Enum   MATERIAL_PRIMARY,
-                               const material::Enum   MATERIAL_SECONDARY,
-                               const named_type::Enum NAMED_TYPE,
-                               const set_type::Enum   SET_TYPE)
+    void ItemProfile::SetStaff(const material::Enum     MATERIAL_PRIMARY,
+                               const material::Enum     MATERIAL_SECONDARY,
+                               const named_type::Enum   NAMED_TYPE,
+                               const set_type::Enum     SET_TYPE,
+                               const element_type::Enum ELEMENT_TYPE)
     {
         isStaff_ = true;
-        
+
         category_ = static_cast<category::Enum>(category::Weapon |
                                                 category::Equippable |
                                                 category::TwoHanded);
@@ -664,24 +781,28 @@ namespace item
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff |
                                                  weapon_type::Melee);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreStaff() +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
     
-    void ItemProfile::SetQuarterStaff(const material::Enum   MATERIAL_PRIMARY,
-                                      const material::Enum   MATERIAL_SECONDARY,
-                                      const named_type::Enum NAMED_TYPE,
-                                      const set_type::Enum   SET_TYPE)
+    void ItemProfile::SetQuarterStaff(const material::Enum     MATERIAL_PRIMARY,
+                                      const material::Enum     MATERIAL_SECONDARY,
+                                      const named_type::Enum   NAMED_TYPE,
+                                      const set_type::Enum     SET_TYPE,
+                                      const element_type::Enum ELEMENT_TYPE)
     {
         isQStaff_ = true;
-        
+
         category_ = static_cast<category::Enum>(category::Weapon |
                                                 category::Equippable |
                                                 category::TwoHanded);
@@ -689,26 +810,31 @@ namespace item
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff |
                                                  weapon_type::Melee);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE);
+        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
         score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   combat::TreasureFactory::ScoreQuarterStaff() +
                   creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                           MATERIAL_PRIMARY,
                                                                           true,
                                                                           false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE));
+                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                          true,
+                                                                          MATERIAL_PRIMARY));
     }
 
 
-    void ItemProfile::SetHelper(const material::Enum   MATERIAL_PRIMARY,
-                                const material::Enum   MATERIAL_SECONDARY,
-                                const named_type::Enum NAMED_ENUM,
-                                const set_type::Enum   SET_ENUM)
+    void ItemProfile::SetHelper(const material::Enum     MATERIAL_PRIMARY,
+                                const material::Enum     MATERIAL_SECONDARY,
+                                const named_type::Enum   NAMED_ENUM,
+                                const set_type::Enum     SET_ENUM,
+                                const element_type::Enum ELEMENT_TYPE)
     {
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
         named_ = NAMED_ENUM;
         set_ = SET_ENUM;
+        element_ = ELEMENT_TYPE;
     }
 
 }

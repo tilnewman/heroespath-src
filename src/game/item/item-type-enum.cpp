@@ -44,15 +44,17 @@ namespace item
     {
         std::ostringstream ss;
 
-        if (E == category::Broken)
+        if (E == category::None)
         {
-            ss << "broken/useless";
+            return "";
         }
         else
         {
-            if (E & category::Weapon)       ss << "weapon";
+            if (E & category::Broken)       ss << "broken/useless";
+            else if (E & category::Useable) ss << "useable";
+            
+            if (E & category::Weapon)       ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
             if (E & category::Armor)        ss << ((ss.str().empty()) ? "" : ", ") << "armor";
-            if (E & category::Useable)      ss << ((ss.str().empty()) ? "" : ", ") << "useable";
             if (E & category::Equippable)   ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
             if (E & category::BodyPart)     ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
             if (E & category::Wearable)     ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
@@ -69,6 +71,76 @@ namespace item
         {
             std::ostringstream ssErr;
             ssErr << "game::item::category::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
+
+        if (WILL_WRAP)
+        {
+            return "(" + ss.str() + ")";
+        }
+        else
+        {
+            return ss.str();
+        }
+    }
+
+
+    const std::string element_type::ToString(const element_type::Enum E, const bool WILL_WRAP)
+    {
+        std::ostringstream ss;
+
+        if (E == element_type::None)
+        {
+            return "";
+        }
+        else
+        {
+            if (E & element_type::Fire)     ss << "Fire";
+            if (E & element_type::Frost)    ss << ((ss.str().empty()) ? "" : ", ") << "Frost";
+            if (E & element_type::Honor)    ss << ((ss.str().empty()) ? "" : ", ") << "Honor";
+            if (E & element_type::Shadow)   ss << ((ss.str().empty()) ? "" : ", ") << "Shadow";
+        }
+
+        if (ss.str().empty())
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::item::element_type::ToString(" << E << ")_InvalidValueError";
+            throw std::range_error(ssErr.str());
+        }
+
+        if (WILL_WRAP)
+        {
+            return "(" + ss.str() + ")";
+        }
+        else
+        {
+            return ss.str();
+        }
+    }
+
+
+    const std::string element_type::Name(const element_type::Enum E, const bool WILL_WRAP)
+    {
+        std::ostringstream ss;
+
+        if (E == element_type::None)
+        {
+            return "";
+        }
+        else
+        {
+            ss << "of ";
+
+            if (E & element_type::Fire)     ss << "Fire";
+            if (E & element_type::Frost)    ss << ((ss.str().empty()) ? "" : "and ") << "Frost";
+            if (E & element_type::Honor)    ss << ((ss.str().empty()) ? "" : "and ") << "Honor";
+            if (E & element_type::Shadow)   ss << ((ss.str().empty()) ? "" : "and ") << "Shadow";
+        }
+
+        if (ss.str().empty())
+        {
+            std::ostringstream ssErr;
+            ssErr << "game::item::element_type::Name(" << E << ")_InvalidValueError";
             throw std::range_error(ssErr.str());
         }
 

@@ -96,6 +96,19 @@ namespace creature
             "game::creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr version)"
             << " was given a null itemPtr.");
 
+        if ((itemPtr->IsArmor() || itemPtr->IsWeapon()) &&
+            (itemPtr->ElementType() != item::element_type::None))
+        {
+            auto const MADE_ECHANTMENT_PTR{ MakeFromElementType(itemPtr->ElementType(),
+                                                                itemPtr->IsWeapon(),
+                                                                itemPtr->MaterialPrimary()) };
+            
+            if (MADE_ECHANTMENT_PTR != nullptr)
+            {
+                MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
+            }
+        }
+
         if ((itemPtr->UniqueType() != item::unique_type::NotUnique) &&
             (itemPtr->UniqueType() != item::unique_type::Count))
         {
@@ -220,6 +233,17 @@ namespace creature
                                                       IS_WEAPON,
                                                       IS_ARMOR) };
 
+        auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
+        delete ENCHANTMENT_PTR;
+        return SCORE;
+    }
+
+
+    int EnchantmentFactory::TreasureScore(const item::element_type::Enum E,
+                                          const bool                     IS_WEAPON,
+                                          const item::material::Enum     MATERIAL_PRIMARY) const
+    {
+        auto const ENCHANTMENT_PTR{ MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
         return SCORE;
@@ -1140,7 +1164,9 @@ namespace creature
                                             EnchantmentType::WhenEquipped |
                                             EnchantmentType::BoundToItem),
                                         stats::TraitSet( {
-                                            std::make_pair(stats::Traits::DamageBonusMelee, 18) }) ) };
+                                            std::make_pair(stats::Traits::Charm, -13),
+                                            std::make_pair(stats::Traits::DamageBonusFist, 500),
+                                            std::make_pair(stats::Traits::DamageBonusMelee, 13) }) ) };
             }
             case item::unique_type::ReaperScythe:
             {
@@ -1229,8 +1255,9 @@ namespace creature
                                             EnchantmentType::BoundToItem),
                                         stats::TraitSet( {
                                             std::make_pair(stats::Traits::Charm, -18),
-                                            std::make_pair(stats::Traits::DamageBonusFist, 1000),
-                                            std::make_pair(stats::Traits::PoisonOnMelee, 22) }) ) };
+                                            std::make_pair(stats::Traits::DamageBonusFist, 500),
+                                            std::make_pair(stats::Traits::DamageBonusMelee, 18),
+                                            std::make_pair(stats::Traits::PoisonOnMelee, 18) }) ) };
             }
             case item::unique_type::ScoundrelSack:
             {
@@ -1458,9 +1485,10 @@ namespace creature
                                             EnchantmentType::WhenEquipped |
                                             EnchantmentType::BoundToItem),
                                         stats::TraitSet( {
-                                            std::make_pair(stats::Traits::Charm, -13),
+                                            std::make_pair(stats::Traits::Charm, -16),
                                             std::make_pair(stats::Traits::DamageBonusFist, 500),
-                                            std::make_pair(stats::Traits::PoisonOnMelee, 16) }) ) };
+                                            std::make_pair(stats::Traits::DamageBonusMelee, 16),
+                                            std::make_pair(stats::Traits::PoisonOnMelee, 13) }) ) };
             }
             case item::unique_type::VultureGizzard:
             {
@@ -2463,6 +2491,136 @@ namespace creature
                 return nullptr;
             }
         }
+    }
+
+
+    Enchantment * EnchantmentFactory::MakeFromElementType(
+        const item::element_type::Enum E,
+        const bool                     IS_WEAPON,
+        const item::material::Enum     MATERIAL_PRIMARY) const
+    {
+        using namespace item;
+
+        if (E == element_type::None)
+        {
+            return nullptr;
+        }
+
+        stats::TraitSet traits;
+
+        if ((MATERIAL_PRIMARY == material::Nothing) ||
+            (MATERIAL_PRIMARY == material::Count))
+        {
+            if (IS_WEAPON)
+            {
+                auto const DAMAGE{ 50 };
+
+                if (E & element_type::Fire)
+                {
+                    traits.Get(stats::Traits::FireDamage).CurrentSet(DAMAGE);
+                }
+               
+                if (E & element_type::Frost)
+                {
+                    traits.Get(stats::Traits::FrostDamage).CurrentSet(DAMAGE);
+                }
+
+                if (E & element_type::Honor)
+                {
+                    traits.Get(stats::Traits::HonorDamage).CurrentSet(DAMAGE);
+                }
+
+                if (E & element_type::Shadow)
+                {
+                    traits.Get(stats::Traits::ShadowDamage).CurrentSet(DAMAGE);
+                }
+            }
+            else
+            {
+                auto const RESISTANCE{ 13 };
+
+                if (E & element_type::Fire)
+                {
+                    traits.Get(stats::Traits::FireResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Frost)
+                {
+                    traits.Get(stats::Traits::FrostResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Honor)
+                {
+                    traits.Get(stats::Traits::HonorResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Shadow)
+                {
+                    traits.Get(stats::Traits::ShadowResist).CurrentSet(RESISTANCE);
+                }
+            }
+        }
+        else
+        {
+            auto const MAT_BONUS{ material::Bonus(MATERIAL_PRIMARY) };
+            
+            if (IS_WEAPON)
+            {
+                auto const DAMAGE_BASE{ 10 };
+                auto const DAMAGE_MULT{ 5 };
+                auto const DAMAGE{ DAMAGE_BASE + (MAT_BONUS * DAMAGE_MULT) };
+
+                if (E & element_type::Fire)
+                {
+                    traits.Get(stats::Traits::FireDamage).CurrentSet(DAMAGE);
+                }
+
+                if (E & element_type::Frost)
+                {
+                    traits.Get(stats::Traits::FrostDamage).CurrentSet(DAMAGE);
+                }
+
+                if (E & element_type::Honor)
+                {
+                    traits.Get(stats::Traits::HonorDamage).CurrentSet(DAMAGE);
+                }
+
+                if (E & element_type::Shadow)
+                {
+                    traits.Get(stats::Traits::ShadowDamage).CurrentSet(DAMAGE);
+                }
+            }
+            else
+            {
+                auto const RES_BASE{ 4.0f };
+                auto const RES_MULT{ 1.0f / 1.5f};
+
+                auto const RESISTANCE{ static_cast<int>(RES_BASE +
+                    (static_cast<float>(MAT_BONUS) * RES_MULT)) };
+
+                if (E & element_type::Fire)
+                {
+                    traits.Get(stats::Traits::FireResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Frost)
+                {
+                    traits.Get(stats::Traits::FrostResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Honor)
+                {
+                    traits.Get(stats::Traits::HonorResist).CurrentSet(RESISTANCE);
+                }
+
+                if (E & element_type::Shadow)
+                {
+                    traits.Get(stats::Traits::ShadowResist).CurrentSet(RESISTANCE);
+                }
+            }
+        }
+
+        return new Enchantment(EnchantmentType::WhenEquipped, traits);
     }
 
 

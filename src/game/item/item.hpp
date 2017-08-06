@@ -79,7 +79,8 @@ namespace item
                       const bool                 IS_PIXIE_ITEM      = false,
                       const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique,
                       const set_type::Enum       SET_TYPE           = set_type::NotASet,
-                      const named_type::Enum     NAMED_TYPE         = named_type::NotNamed);
+                      const named_type::Enum     NAMED_TYPE         = named_type::NotNamed,
+                      const element_type::Enum   ELEMENT_TYPE       = element_type::None);
 
         virtual ~Item();
 
@@ -101,6 +102,7 @@ namespace item
         inline unique_type::Enum UniqueType() const                 { return uniqueType_; }
         inline set_type::Enum SetType() const                       { return setType_; }
         inline named_type::Enum NamedType() const                   { return namedType_; }
+        inline element_type::Enum ElementType() const               { return elementType_; }
 
         inline bool IsCategoryType(const category::Enum E) const    { return (category_ & E); }
         inline bool IsWeaponType(const weapon_type::Enum E) const   { return (weaponType_ & E); }
@@ -225,6 +227,7 @@ namespace item
         unique_type::Enum    uniqueType_;
         set_type::Enum       setType_;
         named_type::Enum     namedType_;
+        element_type::Enum   elementType_;
 
         //The Item class owns the Enchantment objects and is responsible
         //for their lifetimes.
@@ -256,6 +259,7 @@ namespace item
             ar & uniqueType_;
             ar & setType_;
             ar & namedType_;
+            ar & elementType_;
             ar & enchantmentsPVec_;
         }
     };

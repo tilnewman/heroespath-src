@@ -64,7 +64,8 @@ namespace item
                const bool                 IS_PIXIE_ITEM,
                const unique_type::Enum    UNIQUE_TYPE,
                const set_type::Enum       SET_TYPE,
-               const named_type::Enum     NAMED_TYPE)
+               const named_type::Enum     NAMED_TYPE,
+               const element_type::Enum   ELEMENT_TYPE)
     :
         name_            (NAME),
         desc_            (DESC),
@@ -87,6 +88,7 @@ namespace item
         uniqueType_      (UNIQUE_TYPE),
         setType_         (SET_TYPE),
         namedType_       (NAMED_TYPE),
+        elementType_     (ELEMENT_TYPE),
         enchantmentsPVec_()
     {
         //adjust the weight for pixie items
@@ -233,7 +235,8 @@ namespace item
                         L.isPixie_,
                         L.uniqueType_,
                         L.setType_,
-                        L.namedType_)
+                        L.namedType_,
+                        L.elementType_)
                <
                std::tie(R.name_,
                         R.desc_,
@@ -255,7 +258,8 @@ namespace item
                         R.isPixie_,
                         R.uniqueType_,
                         R.setType_,
-                        R.namedType_) )
+                        R.namedType_,
+                        R.elementType_) )
         {
             return true;
         }
@@ -286,7 +290,8 @@ namespace item
                      L.isPixie_,
                      L.uniqueType_,
                      L.setType_,
-                     L.namedType_)
+                     L.namedType_,
+                     L.elementType_)
              !=
              std::tie(R.name_,
                       R.desc_,
@@ -308,7 +313,8 @@ namespace item
                       R.isPixie_,
                       R.uniqueType_,
                       R.setType_,
-                      R.namedType_))
+                      R.namedType_,
+                      R.elementType_))
         {
             return false;
         }

@@ -43,23 +43,40 @@ namespace item
     {
         enum Enum : unsigned int
         {
-            Broken          = 0, //useless, unable to do or be used for anything
-            Weapon          = 1 << 0,
-            Armor           = 1 << 1,
-            Useable         = 1 << 2,
-            Equippable      = 1 << 3,
-            BodyPart        = 1 << 4,
-            Wearable        = 1 << 5, //if not wearable then it must be one or two-handed
-            OneHanded       = 1 << 6,
-            TwoHanded       = 1 << 7,
-            QuestItem       = 1 << 8,
-            Blessed         = 1 << 9,
-            Cursed          = 1 << 10,
-            AllowsCasting   = 1 << 11,
-            ConsumedOnUse   = 1 << 12
+            None            = 0,
+            Broken          = 1 << 0, //useless, unable to do or be used for anything
+            Weapon          = 1 << 1,
+            Armor           = 1 << 2,
+            Useable         = 1 << 3,
+            Equippable      = 1 << 4,
+            BodyPart        = 1 << 5,
+            Wearable        = 1 << 6, //if not wearable then it must be one or two-handed
+            OneHanded       = 1 << 7,
+            TwoHanded       = 1 << 8,
+            QuestItem       = 1 << 9,
+            Blessed         = 1 << 10,
+            Cursed          = 1 << 11,
+            AllowsCasting   = 1 << 12,
+            ConsumedOnUse   = 1 << 13
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
+    };
+
+
+    struct element_type
+    {
+        enum Enum : unsigned int
+        {
+            None    = 0,
+            Fire    = 1 << 0,
+            Frost   = 1 << 1,
+            Honor   = 1 << 2,
+            Shadow  = 1 << 3
+        };
+
+        static const std::string ToString(const Enum, const bool WILL_WRAP = false);
+        static const std::string Name(const Enum, const bool WILL_WRAP = false);
     };
 
 
