@@ -73,7 +73,36 @@ namespace combat
         static int ScoreBoots(item::armor::base_type::Enum);
         static int ScorePants(item::armor::base_type::Enum);
         static int ScoreGauntlets(item::armor::base_type::Enum);
+
+
+        static const item::MaterialVecPair_t Materials(const item::weapon::axe_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::bladedstaff_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::club_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::projectile_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::sword_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::whip_type::Enum);
+
+        static const item::MaterialVecPair_t MaterialsKnife();
+        static const item::MaterialVecPair_t MaterialsDagger();
+        static const item::MaterialVecPair_t MaterialsStaff();
+        static const item::MaterialVecPair_t MaterialsQuarterStaff();
+
+        static const item::MaterialVecPair_t Materials(const item::armor::cover_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::armor::helm_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::armor::shield_type::Enum);
+
+        static const item::MaterialVecPair_t MaterialsAventail(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsBracer(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsShirt(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsBoots(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsPants(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsGauntlets(item::armor::base_type::Enum);
+    
+        static const item::MaterialVec_t MaterialsPrimaryFromArmorBaseType(const item::armor::base_type::Enum);
         
+        static const item::MaterialVecPair_t MaterialsFromBaseType(const item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsFromBaseTypeNoCloth(const item::armor::base_type::Enum);
+
     };
 
 }

@@ -50,6 +50,7 @@ namespace item
         set_        (set_type::NotASet),
         named_      (named_type::NotNamed),
         element_    (element_type::None),
+        isPixie_    (false),
         shield_	    (armor::shield_type::Count),
         helm_	    (armor::helm_type::Count),
         base_	    (armor::base_type::Count),
@@ -95,6 +96,7 @@ namespace item
         set_        (SET),
         named_      (NAMED),
         element_    (element_type::None),
+        isPixie_    (false),
         shield_	    (armor::shield_type::Count),
         helm_	    (armor::helm_type::Count),
         base_	    (armor::base_type::Count),
@@ -185,16 +187,15 @@ namespace item
         armor_ = item::armor_type::Sheild;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -214,16 +215,15 @@ namespace item
         armor_ = item::armor_type::Helm;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -232,7 +232,8 @@ namespace item
                                const material::Enum          MATERIAL_SECONDARY,
                                const named_type::Enum        NAMED_TYPE,
                                const set_type::Enum          SET_TYPE,
-                               const element_type::Enum      ELEMENT_TYPE)
+                               const element_type::Enum      ELEMENT_TYPE,
+                               const bool               IS_PIXIE)
     {
         cover_ = E;
 
@@ -242,17 +243,21 @@ namespace item
 
         armor_ = item::armor_type::Covering;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -273,16 +278,15 @@ namespace item
         armor_ = item::armor_type::Aventail;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreAventail(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -291,7 +295,8 @@ namespace item
                                 const material::Enum         MATERIAL_SECONDARY,
                                 const named_type::Enum       NAMED_TYPE,
                                 const set_type::Enum         SET_TYPE,
-                                const element_type::Enum     ELEMENT_TYPE)
+                                const element_type::Enum     ELEMENT_TYPE,
+                                const bool                   IS_PIXIE)
     {
         isBracer_ = true;
         base_ = E;
@@ -302,17 +307,21 @@ namespace item
 
         armor_ = item::armor_type::Bracer;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreBracer(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -321,7 +330,8 @@ namespace item
                                const material::Enum         MATERIAL_SECONDARY,
                                const named_type::Enum       NAMED_TYPE,
                                const set_type::Enum         SET_TYPE,
-                               const element_type::Enum     ELEMENT_TYPE)
+                               const element_type::Enum     ELEMENT_TYPE,
+                               const bool                   IS_PIXIE)
     {
         isShirt_ = true;
         base_ = E;
@@ -332,17 +342,21 @@ namespace item
 
         armor_ = item::armor_type::Shirt;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreShirt(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -351,7 +365,8 @@ namespace item
                                const material::Enum         MATERIAL_SECONDARY,
                                const named_type::Enum       NAMED_TYPE,
                                const set_type::Enum         SET_TYPE,
-                               const element_type::Enum     ELEMENT_TYPE)
+                               const element_type::Enum     ELEMENT_TYPE,
+                               const bool                   IS_PIXIE)
     {
         isBoots_ = true;
         base_ = E;
@@ -362,17 +377,21 @@ namespace item
 
         armor_ = item::armor_type::Boots;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreBoots(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -381,7 +400,8 @@ namespace item
                                const material::Enum         MATERIAL_SECONDARY,
                                const named_type::Enum       NAMED_TYPE,
                                const set_type::Enum         SET_TYPE,
-                               const element_type::Enum     ELEMENT_TYPE)
+                               const element_type::Enum     ELEMENT_TYPE,
+                               const bool                   IS_PIXIE)
     {
         isPants_ = true;
         base_ = E;
@@ -392,17 +412,21 @@ namespace item
 
         armor_ = item::armor_type::Pants;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScorePants(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -411,7 +435,8 @@ namespace item
                                    const material::Enum         MATERIAL_SECONDARY,
                                    const named_type::Enum       NAMED_TYPE,
                                    const set_type::Enum         SET_TYPE,
-                                   const element_type::Enum     ELEMENT_TYPE)
+                                   const element_type::Enum     ELEMENT_TYPE,
+                                   const bool                   IS_PIXIE)
     {
         isGauntlets_ = true;
         base_ = E;
@@ -422,17 +447,21 @@ namespace item
 
         armor_ = item::armor_type::Gauntlets;
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreGauntlets(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          false,
-                                                                          true) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          false,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              false);
     }
 
 
@@ -472,16 +501,15 @@ namespace item
                                                  weapon_type::Pointed);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -519,16 +547,15 @@ namespace item
                                                  weapon_type::Melee);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -563,16 +590,15 @@ namespace item
                                                  weapon_type::Club);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -607,16 +633,15 @@ namespace item
                                                  weapon_type::Whip);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
         
     
@@ -647,16 +672,15 @@ namespace item
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Projectile | WEAPON_TYPE);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
     
@@ -687,16 +711,15 @@ namespace item
                                                  SPEAR_TYPE);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::Score(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::Score(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -705,7 +728,8 @@ namespace item
                                const material::Enum        MATERIAL_SECONDARY,
                                const named_type::Enum      NAMED_TYPE,
                                const set_type::Enum        SET_TYPE,
-                               const element_type::Enum    ELEMENT_TYPE)
+                               const element_type::Enum    ELEMENT_TYPE,
+                               const bool                  IS_PIXIE)
     {
         isKnife_ = true;
         size_ = E;
@@ -719,17 +743,21 @@ namespace item
                                                  weapon_type::Melee |
                                                  weapon_type::Pointed);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreKnife(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::ScoreKnife(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -738,7 +766,8 @@ namespace item
                                 const material::Enum        MATERIAL_SECONDARY,
                                 const named_type::Enum      NAMED_TYPE,
                                 const set_type::Enum        SET_TYPE,
-                                const element_type::Enum    ELEMENT_TYPE)
+                                const element_type::Enum    ELEMENT_TYPE,
+                                const bool                  IS_PIXIE)
     {
         isDagger_ = true;
         size_ = E;
@@ -752,17 +781,21 @@ namespace item
                                                  weapon_type::Melee |
                                                  weapon_type::Pointed);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreDagger(E) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+        SetHelper(MATERIAL_PRIMARY,
+                  MATERIAL_SECONDARY,
+                  NAMED_TYPE,
+                  SET_TYPE,
+                  ELEMENT_TYPE,
+                  IS_PIXIE);
+
+        score_ = combat::TreasureFactory::ScoreDagger(E);
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
     
@@ -782,16 +815,15 @@ namespace item
                                                  weapon_type::Melee);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreStaff() +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::ScoreStaff();
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
     
@@ -811,16 +843,15 @@ namespace item
                                                  weapon_type::Melee);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
-                  combat::TreasureFactory::ScoreQuarterStaff() +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                          MATERIAL_PRIMARY,
-                                                                          true,
-                                                                          false) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                  creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                          true,
-                                                                          MATERIAL_PRIMARY));
+
+        score_ = combat::TreasureFactory::ScoreQuarterStaff();
+
+        score_ += ScoreHelper(MATERIAL_PRIMARY,
+                              MATERIAL_SECONDARY,
+                              NAMED_TYPE,
+                              SET_TYPE,
+                              ELEMENT_TYPE,
+                              true);
     }
 
 
@@ -828,13 +859,34 @@ namespace item
                                 const material::Enum     MATERIAL_SECONDARY,
                                 const named_type::Enum   NAMED_ENUM,
                                 const set_type::Enum     SET_ENUM,
-                                const element_type::Enum ELEMENT_TYPE)
+                                const element_type::Enum ELEMENT_TYPE,
+                                const bool               IS_PIXIE)
     {
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
         named_ = NAMED_ENUM;
         set_ = SET_ENUM;
         element_ = ELEMENT_TYPE;
+        isPixie_ = IS_PIXIE;
+    }
+
+
+    int ItemProfile::ScoreHelper(const item::material::Enum     MATERIAL_PRI,
+                                 const item::material::Enum     MATERIAL_SEC,
+                                 const item::named_type::Enum   NAMED_TYPE,
+                                 const item::set_type::Enum     SET_TYPE,
+                                 const item::element_type::Enum ELEMENT_TYPE,
+                                 const bool                     IS_WEAPON) const
+    {
+        return (combat::TreasureFactory::Score(MATERIAL_PRI, MATERIAL_SEC) +
+                creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
+                                                                        MATERIAL_PRI,
+                                                                        IS_WEAPON,
+                                                                        ! IS_WEAPON) +
+                creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                        IS_WEAPON,
+                                                                        MATERIAL_PRI));
     }
 
 }

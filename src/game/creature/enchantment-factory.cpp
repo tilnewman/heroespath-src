@@ -149,7 +149,9 @@ namespace creature
 
         if (itemPtr->MiscType() != item::misc_type::NotMisc)
         {
-            auto const MADE_ECHANTMENT_PTR{ MakeFromMiscType(itemPtr->MiscType()) };
+            auto const MADE_ECHANTMENT_PTR{ MakeFromMiscType(itemPtr->MiscType(),
+                                                             itemPtr->MaterialPrimary()) };
+
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
                 return MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
@@ -199,9 +201,10 @@ namespace creature
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::misc_type::Enum E) const
+    int EnchantmentFactory::TreasureScore(const item::misc_type::Enum E,
+                                          const item::material::Enum  MATERIAL_PRIMARY) const
     {
-        auto const ENCHANTMENT_PTR{ MakeFromMiscType(E) };
+        auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
         return SCORE;
@@ -1568,7 +1571,9 @@ namespace creature
     }
 
 
-    Enchantment * EnchantmentFactory::MakeFromMiscType(const item::misc_type::Enum E) const
+    Enchantment * EnchantmentFactory::MakeFromMiscType(
+        const item::misc_type::Enum E,
+        const item::material::Enum  MATERIAL_PRIMARY) const
     {
         if (E == item::misc_type::Spider_Eggs)
         {
@@ -1576,6 +1581,23 @@ namespace creature
                                    {},
                                    UseInfo(10, Phase::Combat),
                                    SummonInfo(3, race::Spider, role::Spider));
+        }
+        else if ((E == item::misc_type::LockPicks) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                       EnchantmentType::WhenEquipped |
+                                       EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Luck, 12 + MAT_BONUS),
+                                       std::make_pair(stats::Traits::Speed, 11 + (MAT_BONUS / 2)),
+                                       std::make_pair(stats::Traits::Backstab, 1 + (MAT_BONUS / 2)) }) );
+
+            //Lock Picks if equipped: 12% + material based +% lck, 11% + 1/2x material based +% spd, 1/2x material based % backstab
+
         }
         else
         {

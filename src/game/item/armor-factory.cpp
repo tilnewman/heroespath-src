@@ -100,12 +100,14 @@ namespace armor
         armorInfo.shield = SHIELD_TYPE;
 
         creature::role::Enum exclusiveRole(creature::role::Count);
-        if (SHIELD_TYPE == shield_type::Pavis)
-            exclusiveRole = creature::role::Knight;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::shield_type::ToString(SHIELD_TYPE)));
+        if (SHIELD_TYPE == shield_type::Pavis)
+        {
+            exclusiveRole = creature::role::Knight;
+        }
+
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::shield_type::ToString(SHIELD_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -206,9 +208,8 @@ namespace armor
         ArmorInfo armorInfo(armor_type::Helm);
         armorInfo.helm = HELM_TYPE;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::helm_type::ToString(HELM_TYPE)) );
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::helm_type::ToString(HELM_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -269,8 +270,7 @@ namespace armor
         armorInfo.is_gauntlets = true;
         armorInfo.base = TYPE;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails([TYPE]()
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails([TYPE]()
             {
                 if (TYPE != item::armor::base_type::Plain)
                 {
@@ -280,7 +280,7 @@ namespace armor
                 {
                     return std::string("Gloves");
                 }
-            }()));
+            }()) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -334,36 +334,19 @@ namespace armor
         armorInfo.is_pants = true;
         armorInfo.base = TYPE;
 
-        auto const MATERIAL_PRI_TO_USE{ [&]()
-            {
-                if (TYPE == base_type::Plain)
-                {
-                    return material::Cloth;
-                }
-                else if (TYPE == base_type::Scale)
-                {
-                    return material::Scale;
-                }
-                else
-                {
-                    return MATERIAL_PRI;
-                }
-            }()};
-        
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::base_type::ToString(TYPE) + "Pants") );
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::base_type::ToString(TYPE) + "Pants") };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
         stats::Trait_t armorRating(DETAILS.armor_rating);
 
-        AdjustPrice(price, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM);
-        AdjustWeight(weight, MATERIAL_PRI_TO_USE, MATERIAL_SEC);
+        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
+        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         //Prevent secondary material from altering the armor rating,
         //since it is only the material of the clasp.
-        AdjustArmorRating(armorRating, MATERIAL_PRI_TO_USE, material::Nothing);
+        AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -372,15 +355,15 @@ namespace armor
         }
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
-            Make_Name(DETAILS.name, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI_TO_USE, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
+            Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             static_cast<category::Enum>(category::Armor |
                                         category::Equippable |
                                         category::Wearable),
             misc_type::NotMisc,
             weapon_type::NotAWeapon,
             armor_type::Pants,
-            MATERIAL_PRI_TO_USE,
+            MATERIAL_PRI,
             MATERIAL_SEC,
             "",
             price,
@@ -410,8 +393,9 @@ namespace armor
         armorInfo.base = TYPE;
 
         const std::string TYPE_NAME_STR(item::armor::base_type::ToString(TYPE));
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(TYPE_NAME_STR + "Boots"));
+
+        auto const DETAILS{ ArmorDetailLoader::Instance()->
+            LookupArmorDetails(TYPE_NAME_STR + "Boots") };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -457,6 +441,7 @@ namespace armor
 
 
     ItemPtr_t ArmorFactory::Make_Shirt(const base_type::Enum TYPE,
+                                       const material::Enum  MATERIAL_PRI,
                                        const material::Enum  MATERIAL_SEC,
                                        const bool            IS_PIXIE_ITEM)
     {
@@ -464,10 +449,10 @@ namespace armor
         armorInfo.is_shirt = true;
         armorInfo.base = TYPE;
 
-        const material::Enum MATERIAL_PRI(material::Cloth);
         const std::string TYPE_NAME_STR(item::armor::base_type::ToString(TYPE));
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(TYPE_NAME_STR + "Shirt") );
+
+        auto const DETAILS{ ArmorDetailLoader::Instance()->
+            LookupArmorDetails(TYPE_NAME_STR + "Shirt") };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -479,7 +464,6 @@ namespace armor
         //Prevent secondary material from altering the armor rating,
         //since it is only the material of the clasp.
         AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
-
 
         creature::role::Enum exclusiveRole(creature::role::Count);
         if (TYPE == base_type::Plate)
@@ -525,9 +509,8 @@ namespace armor
         armorInfo.is_bracer = true;
         armorInfo.base = TYPE;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::base_type::ToString(TYPE) + "Bracers") );
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::base_type::ToString(TYPE) + "Bracers") };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -580,9 +563,8 @@ namespace armor
         armorInfo.is_aventail = true;
         armorInfo.base = TYPE;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::base_type::ToString(TYPE) + "Aventail") );
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::base_type::ToString(TYPE) + "Aventail") };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -637,9 +619,8 @@ namespace armor
         ArmorInfo armorInfo(armor_type::Covering);
         armorInfo.cover = COVER_TYPE;
 
-        const ArmorDetails DETAILS(
-            ArmorDetailLoader::Instance()->LookupArmorDetails(
-                item::armor::cover_type::ToString(COVER_TYPE)) );
+        auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+                item::armor::cover_type::ToString(COVER_TYPE)) };
 
         stats::Trait_t price(DETAILS.price);
         stats::Trait_t weight(DETAILS.weight);
@@ -682,7 +663,7 @@ namespace armor
 
 
     ItemPtr_t ArmorFactory::Make_Skin(const material::Enum MATERIAL,
-                                      const stats::Trait_t  CREATURE_RANK,
+                                      const stats::Trait_t CREATURE_RANK,
                                       const bool           IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo(armor_type::Skin);
@@ -695,6 +676,7 @@ namespace armor
         details.complexity = non_player::ownership::complexity_type::Simple;
         details.name = material::ToReadableString(MATERIAL) + " skin";
         details.price = 0;
+
         details.weight = static_cast<stats::Trait_t>(100.0f *
             material::WeightMult(MATERIAL, material::Nothing));
 

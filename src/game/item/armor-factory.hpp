@@ -94,6 +94,7 @@ namespace armor
 
         //primary material is always cloth, MATERIAL_SEC can be nothing
         static ItemPtr_t Make_Shirt(const base_type::Enum TYPE,
+                                    const material::Enum  MATERIAL_PRI = material::Cloth,
                                     const material::Enum  MATERIAL_SEC = material::Nothing,
                                     const bool            IS_PIXIE_ITEM = false);
 

@@ -245,8 +245,10 @@ namespace player
             characterPtrC->ItemAdd(bootsPtr);
             characterPtrC->ItemEquip(bootsPtr);
 
-            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(
-                armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain,
+                                                               material::Cloth,
+                                                               material::Nothing,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
@@ -288,8 +290,10 @@ namespace player
             characterPtrC->ItemAdd(bootsPtr);
             characterPtrC->ItemEquip(bootsPtr);
 
-            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(
-                armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain,
+                                                               material::Cloth,
+                                                               material::Nothing,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
@@ -316,8 +320,10 @@ namespace player
             characterPtrC->ItemAdd(bootsPtr);
             characterPtrC->ItemEquip(bootsPtr);
 
-            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(
-                armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain,
+                                                               material::Cloth,
+                                                               material::Nothing,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);
@@ -350,8 +356,10 @@ namespace player
             characterPtrC->ItemAdd(bootsPtr);
             characterPtrC->ItemEquip(bootsPtr);
 
-            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(
-                armor::base_type::Plain, material::Cloth, characterPtrC->IsPixie()));
+            ItemPtr_t shirtPtr(armor::ArmorFactory::Make_Shirt(armor::base_type::Plain,
+                                                               material::Cloth,
+                                                               material::Nothing,
+                                                               characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(shirtPtr);
             characterPtrC->ItemEquip(shirtPtr);

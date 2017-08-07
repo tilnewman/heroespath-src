@@ -85,7 +85,9 @@ namespace creature
         int TreasureScore(const item::unique_type::Enum,
                           const item::material::Enum) const;
 
-        int TreasureScore(const item::misc_type::Enum) const;
+        int TreasureScore(
+            const item::misc_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY = item::material::Nothing) const;
 
         int TreasureScore(const item::set_type::Enum) const;
 
@@ -104,7 +106,10 @@ namespace creature
         std::vector<Enchantment *> MakeFromUniqueType(const item::unique_type::Enum,
                                                       const item::material::Enum) const;
 
-        Enchantment * MakeFromMiscType(const item::misc_type::Enum) const;
+        Enchantment * MakeFromMiscType(
+            const item::misc_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY = item::material::Nothing) const;
+
         Enchantment * MakeFromSetType(const item::set_type::Enum) const;
         Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
 

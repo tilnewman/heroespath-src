@@ -377,7 +377,7 @@ namespace weapon
         ssName << nameDescriptor << baseName;
 
         std::ostringstream ssDesc;
-        ssDesc << "A " << nameDescriptor << baseName;
+        ssDesc << nameDescriptor << baseName;
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(ssName.str(), MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),

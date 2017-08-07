@@ -361,5 +361,237 @@ namespace combat
         return 30 + Score(E);
     }
 
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(const item::weapon::axe_type::Enum)
+    {
+        return item::material::CoreMetalAndCoreSecondary();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(
+        const item::weapon::bladedstaff_type::Enum)
+    {
+        return item::MaterialVecPair_t({ item::material::Wood }, item::material::CoreSecondary());
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(const item::weapon::club_type::Enum)
+    {
+        return item::material::CoreMetalAndCoreSecondary();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(
+        const item::weapon::projectile_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::weapon;
+
+        switch (E)
+        {
+            case projectile_type::Blowpipe:
+            {
+                return MaterialVecPair_t({ material::Wood,
+                                           material::Stone,
+                                           material::Bone,
+                                           material::Obsidian },
+                                         material::CoreSecondary());
+            }
+
+            case projectile_type::Sling:
+            {
+                return MaterialVecPair_t({ material::Rope }, material::CoreSecondary());
+            }
+            case projectile_type::Shortbow:
+            case projectile_type::Longbow:
+            {
+                return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+            }
+            case projectile_type::CompositeBow:
+            {
+                return MaterialVecPair_t({ material::Horn }, material::CoreSecondary());
+            }
+            case projectile_type::Crossbow:
+            {
+                return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+            }
+            case projectile_type::Count:
+            default:
+            {
+                return MaterialVecPair_t();
+            }
+        }
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(
+        const item::weapon::sword_type::Enum)
+    {
+        return item::material::CoreMetalAndCoreSecondary();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(
+        const item::weapon::whip_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::weapon;
+
+        if (E == whip_type::Bullwhip)
+        {
+            return MaterialVecPair_t({ material::SoftLeather }, material::CoreSecondary());
+        }
+        else
+        {
+            return material::CoreMetalAndCoreSecondary();
+        }
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsKnife()
+    {
+        return item::material::CorePrimaryNoPearlAndSecondary();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsDagger()
+    {
+        return MaterialsKnife();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsStaff()
+    {
+        return item::MaterialVecPair_t({ item::material::Wood }, item::material::CoreSecondary());
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsQuarterStaff()
+    {
+        return MaterialsStaff();
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(const item::armor::cover_type::Enum)
+    {
+        return item::MaterialVecPair_t({ item::material::Cloth,
+                                         item::material::SoftLeather,
+                                         item::material::HardLeather},
+                                       item::material::CoreSecondary());
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(const item::armor::helm_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::armor;
+
+        if (E == helm_type::Leather)
+        {
+            return item::MaterialVecPair_t({ material::HardLeather }, material::CoreSecondary());
+        }
+        else
+        {
+            return item::MaterialVecPair_t(material::CoreMetal(), material::CoreSecondary());
+        }
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::Materials(
+        const item::armor::shield_type::Enum)
+    {
+        item::MaterialVec_t v{ item::material::CoreMetal() };
+        v.push_back(item::material::Wood);
+        return item::MaterialVecPair_t(v, item::material::CoreSecondary());
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsAventail(
+        item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsBracer(item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsShirt(item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsBoots(item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseTypeNoCloth(E);
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsPants(item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsGauntlets(
+        item::armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const item::MaterialVec_t TreasureFactory::MaterialsPrimaryFromArmorBaseType(
+        const item::armor::base_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::armor;
+
+        switch(E)
+        {
+            case base_type::Scale: { return { material::Scale }; }
+            case base_type::Mail:
+            case base_type::Plate: { return { material::CoreMetal() }; }
+            case base_type::Plain: { return { material::Cloth,
+                                              material::SoftLeather,
+                                              material::HardLeather }; }
+            case base_type::Count:
+            default:               { return {}; }
+        }
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsFromBaseType(
+        const item::armor::base_type::Enum E)
+    {
+        return item::MaterialVecPair_t(MaterialsPrimaryFromArmorBaseType(E),
+            item::material::CoreSecondary());
+    }
+
+
+    const item::MaterialVecPair_t TreasureFactory::MaterialsFromBaseTypeNoCloth(
+        const item::armor::base_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::armor;
+
+        item::MaterialVec_t v;
+
+        if (E == base_type::Plain)
+        {
+            v.push_back(material::SoftLeather);
+            v.push_back(material::HardLeather);
+        }
+        else
+        {
+            v = MaterialsPrimaryFromArmorBaseType(E);
+        }
+
+        return item::MaterialVecPair_t(v, item::material::CoreSecondary());
+    }
+
 }
 }

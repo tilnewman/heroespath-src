@@ -71,6 +71,7 @@ namespace item
             }
             else if (material::IsPrecious(MATERIAL_SEC))
             {
+                //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
                 ssName << "and "
                     << material::ToReadableString(MATERIAL_SEC)
                     << " "
@@ -137,7 +138,7 @@ namespace item
                 }
                 else if (material::IsPrecious(MATERIAL_SEC))
                 {
-                    //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                    //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
                     ssDesc << RandomAdornedAdjective() << " with ";
                 }
                 else if (material::IsLiquid(MATERIAL_SEC))
@@ -162,7 +163,7 @@ namespace item
                     }
                     else if (material::IsPrecious(MATERIAL_SEC))
                     {
-                        //at this point we know MATERIAL_SEC is either silver/gold/platinum
+                        //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
                         ssDesc << RandomAdornedAdjective()
                             << " ";
                     }
@@ -259,9 +260,8 @@ namespace item
                     << RandomJeweledAdjective()
                     << " with ";
             }
-            else if (material::IsPrecious(MATERIAL_SEC))
+            else if (MATERIAL_SEC == material::Pearl)
             {
-                //at this point we know MATERIAL_SEC is either silver/gold/platinum
                 ssDesc << " "
                     << RandomAdornedAdjective()
                     << " with ";
@@ -270,11 +270,11 @@ namespace item
             {
                 if (IS_SPEAR)
                 {
-                    ssDesc << " tipped with ";
+                    ssDesc << " and tipped with ";
                 }
                 else
                 {
-                    ssDesc << " bladed with ";
+                    ssDesc << " and bladed with ";
                 }
             }
             else if (material::IsLiquid(MATERIAL_SEC))

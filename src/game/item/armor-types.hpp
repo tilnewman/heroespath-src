@@ -73,7 +73,7 @@ namespace armor
         static helm_type::Enum FromString(const std::string &);
     };
 
- 
+
     struct base_type
     {
         enum Enum
