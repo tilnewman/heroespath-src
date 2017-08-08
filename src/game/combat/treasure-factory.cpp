@@ -593,5 +593,1164 @@ namespace combat
         return item::MaterialVecPair_t(v, item::material::CoreSecondary());
     }
 
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfilesWeaponsSwords()
+    {
+        using namespace item;
+        using namespace item::weapon;
+
+        ItemProfileVec_t v;
+
+        for (int i(0); i < sword_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetSword( static_cast<sword_type::Enum>(i) );
+            v.push_back(thinProfile);
+        }
+
+        return v;
+    }
+
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfilesWeaponsProjectiles()
+    {
+        using namespace item;
+        using namespace item::weapon;
+
+        ItemProfileVec_t v;
+
+        for (int i(0); i < projectile_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetProjectile( static_cast<projectile_type::Enum>(i) );
+            v.push_back(thinProfile);
+        }
+
+        return v;
+    }
+
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfilesWeaponsAll()
+    {
+        using namespace item;
+        using namespace item::weapon;
+
+        ItemProfileVec_t v;
+
+        auto const SWORD_THIN_PROFILES_VEC{ ThinProfilesWeaponsSwords() };
+
+        std::copy(SWORD_THIN_PROFILES_VEC.begin(),
+                  SWORD_THIN_PROFILES_VEC.end(),
+                  std::back_inserter(v));
+
+        auto const PROJ_THIN_PROFILES_VEC{ ThinProfilesWeaponsProjectiles() };
+
+        std::copy(PROJ_THIN_PROFILES_VEC.begin(),
+                  PROJ_THIN_PROFILES_VEC.end(),
+                  std::back_inserter(v));
+
+        for (int i(0); i < axe_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetAxe(static_cast<axe_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < bladedstaff_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetBladedStaff(static_cast<bladedstaff_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < club_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetClub(static_cast<club_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < whip_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetWhip(static_cast<whip_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < sfml_util::Size::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetKnife(static_cast<sfml_util::Size::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < sfml_util::Size::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetDagger(static_cast<sfml_util::Size::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetStaff(material::Nothing);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetQuarterStaff(material::Nothing);
+            v.push_back(thinProfile);
+        }
+
+        return v;
+    }
+
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfilesArmor(
+        const bool WILL_INCLUDE_COVERINGS)
+    {
+        using namespace item;
+        using namespace item::armor;
+
+        ItemProfileVec_t v;
+
+        if (WILL_INCLUDE_COVERINGS)
+        {
+            for (int i(0); i < cover_type::Count; ++i)
+            {
+                item::ItemProfile thinProfile;
+                thinProfile.SetCover(static_cast<cover_type::Enum>(i));
+                v.push_back(thinProfile);
+            }
+        }
+
+        for (int i(0); i < helm_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetHelm(static_cast<helm_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        for (int i(0); i < shield_type::Count; ++i)
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetShield(static_cast<shield_type::Enum>(i));
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetAventail(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetBoots(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetBracer(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetGauntlets(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetPants(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetShirt(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        {
+            item::ItemProfile thinProfile;
+            thinProfile.SetGauntlets(base_type::Count);
+            v.push_back(thinProfile);
+        }
+
+        return v;
+    }
+
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfiles(const item::named_type::Enum E)
+    {
+        using namespace item;
+        using namespace item::armor;
+        using namespace item::weapon;
+
+        switch (E)
+        {
+            case item::named_type::Wicked:
+            case item::named_type::Fiendish:
+            case item::named_type::Infernal:
+            case item::named_type::Raging:
+            case item::named_type::Diabolic:
+            case item::named_type::Searing:
+            case item::named_type::Burning:
+            case item::named_type::Fiery:
+            case item::named_type::Icy:
+            case item::named_type::Winter:
+            case item::named_type::Frigid:
+            case item::named_type::Proud:
+            case item::named_type::Glory:
+            case item::named_type::Pure:
+            case item::named_type::Gloom:
+            case item::named_type::Twilight:
+            case item::named_type::Dusk:
+            case item::named_type::Dark:
+            case item::named_type::Betrayer:
+            {
+                return ThinProfilesWeaponsAll();
+            }
+
+            case item::named_type::Dancing:
+            case item::named_type::Marauder:
+            {
+                return ThinProfilesWeaponsSwords();
+            }
+
+            case item::named_type::Honest:
+            case item::named_type::Noble:
+            case item::named_type::Daring:
+            case item::named_type::Elite:
+            case item::named_type::Valiant:
+            case item::named_type::Heros:
+            case item::named_type::Light:
+            case item::named_type::Dawn:
+            case item::named_type::Sun:
+            case item::named_type::Sorrow:
+            case item::named_type::Woe:
+            case item::named_type::Misery:
+            case item::named_type::Moon:
+            {
+                return ThinProfilesArmor(true);
+            }
+
+            case item::named_type::Army:
+            case item::named_type::Charred:
+            case item::named_type::Chill:
+            case item::named_type::Frozen:
+            case item::named_type::Arctic:
+            {
+                return ThinProfilesArmor(false);
+            }
+
+            case item::named_type::Gladiator:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Buckler);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Kite);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Great);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Bascinet);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Kettle);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetAxe(axe_type::Handaxe);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBladedStaff(bladedstaff_type::Spear);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Gladius);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Shortsword);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Broadsword);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Soldiers:
+            {
+                item::ItemProfileVec_t v;
+
+                auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
+                auto const THINPROFILES_ARMOR_VEC{ ThinProfilesArmor(false) };
+
+                std::copy(THINPROFILES_WEAPONS_VEC.begin(),
+                          THINPROFILES_WEAPONS_VEC.end(),
+                          std::back_inserter(v));
+                
+                std::copy(THINPROFILES_ARMOR_VEC.begin(),
+                          THINPROFILES_ARMOR_VEC.end(),
+                          std::back_inserter(v));
+
+                return v;
+            }
+
+            case item::named_type::Wardens:
+            {
+                ItemProfileVec_t v{ ThinProfilesArmor(false) };
+
+                for (auto nextThinProfileArmor : v)
+                {
+                    nextThinProfileArmor.SetArmorTypeRestriction(armor::base_type::Plain);
+                }
+                
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Sheild); } ), v.end());
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Helm); } ), v.end());
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Shortsword);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Bascinet);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Buckler);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Princes:
+            {
+                ItemProfileVec_t v{ ThinProfilesArmor(false) };
+
+                for (auto nextThinProfileArmor : v)
+                {
+                    nextThinProfileArmor.SetArmorTypeRestriction(armor::base_type::Mail);
+                }
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Sheild); } ), v.end());
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Helm); } ), v.end());
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Rapier);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::MailCoif);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Kite);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Cape);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Ranger:
+            {
+                ItemProfileVec_t v{ ThinProfilesArmor(false) };
+
+                for (auto nextThinProfileArmor : v)
+                {
+                    nextThinProfileArmor.SetArmorTypeRestriction(armor::base_type::Plain);
+                }
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Sheild); } ), v.end());
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Helm); } ), v.end());
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetProjectile(projectile_type::Longbow);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Cloak);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Samurai:
+            {
+                ItemProfileVec_t v{ ThinProfilesArmor(false) };
+
+                for (auto nextThinProfileArmor : v)
+                {
+                    nextThinProfileArmor.SetArmorTypeRestriction(armor::base_type::Scale);
+                }
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Sheild); } ), v.end());
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Helm); } ), v.end());
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Longsword);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Leather);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Cape);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Thors:
+            {
+                ItemProfileVec_t v{ ThinProfilesArmor(false) };
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Sheild); } ), v.end());
+
+                v.erase(std::remove_if(v.begin(), v.end(),
+                    []
+                    (const ItemProfile & P)
+                    { return (P.ArmorType() & armor_type::Helm); } ), v.end());
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Broadsword);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Great);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Pavis);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+            case item::named_type::Nile:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(sword_type::Falcata);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(shield_type::Buckler);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(helm_type::Leather);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBracer();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Imposters:
+            case item::named_type::Pickpocket:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Robe);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Burglar:
+            case item::named_type::Mountebank:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Cloak);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Charlatans:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(cover_type::Vest);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Robbers:
+            case item::named_type::Thugs:
+            case item::named_type::Knaves:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetKnife();
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Muggers:
+            case item::named_type::Thief:
+            case item::named_type::Pirate:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetDagger();
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case item::named_type::Focus:
+            {
+                return ThinProfilesWeaponsProjectiles();
+            }
+
+            case item::named_type::NotNamed:
+            case item::named_type::Count:
+            default:
+            {
+                return {};
+            }
+        }
+    }
+
+
+    const item::ItemProfileVec_t TreasureFactory::ThinProfiles(const item::set_type::Enum E)
+    {
+        using namespace item;
+
+        switch (E)
+        {
+            case set_type::TheAssassins:
+            case set_type::TheTickler:
+            case set_type::TheNeverwinter:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Cloak);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetDagger();
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::LockPicks);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheMagus:
+            case set_type::TheNecromancers:
+            case set_type::TheWarlocks:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Robe);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::Wand);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheLichKings:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Robe);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::Litch_Hand);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheSages:
+            case set_type::TheShamans:
+            case set_type::TheOracles:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Robe);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::Wand);
+                    v.push_back(thinProfile);
+                }
+                
+                return v;
+            }
+
+            case set_type::TheAngelic:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Robe);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::Braid);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheBalladeers:
+            case set_type::TheTroubadours:
+            case set_type::TheMuses:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Vest);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetSword(weapon::sword_type::Longsword);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetMisc(misc_type::DrumLute);
+                    v.push_back(thinProfile);
+                }
+                
+                return v;
+            }
+
+            case set_type::TheCavaliers:
+            case set_type::TheChampions:
+            case set_type::ThePaladins:
+            case set_type::TheBerserkers:
+            case set_type::TheRosewood:
+            case set_type::TheDragonslayers:
+            case set_type::TheEventideRider:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBracer();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Cape);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(armor::shield_type::Pavis);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(armor::helm_type::Great);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetAventail();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheHunters:
+            case set_type::TheSureShot:
+            case set_type::TheMarksmans:
+            case set_type::TheDeadeye:
+            case set_type::TheDuskRanger:
+            case set_type::TheVenomBow:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBracer();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetCover(armor::cover_type::Vest);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(armor::helm_type::Archers);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::TheCritterChannelers:
+            case set_type::TheMammalianHead:
+            case set_type::TheSavageTaskmasters:
+            case set_type::TheMonsterOverseers:
+            case set_type::TheBeastRulers:
+            {
+                ItemProfileVec_t v;
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBoots();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetPants();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShirt();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetBracer();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetGauntlets();
+                    thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetShield(armor::shield_type::Kite);
+                    v.push_back(thinProfile);
+                }
+
+                {
+                    ItemProfile thinProfile;
+                    thinProfile.SetHelm(armor::helm_type::Bascinet);
+                    v.push_back(thinProfile);
+                }
+
+                return v;
+            }
+
+            case set_type::NotASet:
+            case set_type::Count:
+            default:
+            {
+                return {};
+            }
+        }
+    }
+
 }
 }

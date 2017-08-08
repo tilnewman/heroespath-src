@@ -74,6 +74,7 @@ namespace item
         isQStaff_	(false),
         matPri_     (material::Nothing),
         matSec_     (material::Nothing),
+        armorType_  (armor::base_type::Count),
         score_      (0)
     {}
 
@@ -120,23 +121,26 @@ namespace item
         isQStaff_	(false),
         matPri_     (material::Nothing),
         matSec_     (material::Nothing),
+        armorType_  (armor::base_type::Count),
         score_      (0)
     {}
 
 
     void ItemProfile::SetUnique(const unique_type::Enum  E,
                                 const material::Enum     MATERIAL_PRIMARY,
+                                const material::Enum     MATERIAL_SECONDARY,
                                 const element_type::Enum ELEMENT_TYPE)
     {
         unique_ = E;
         matPri_ = MATERIAL_PRIMARY;
+        matSec_ = MATERIAL_SECONDARY;
         misc_ = unique_type::MiscType(E);
 
         auto const IS_WEAPON{ ((E == unique_type::ViperFangFingerclaw) ||
                                (E == unique_type::ScorpionStingerFingerclaw) ||
                                (E == unique_type::RazorFingerclaw)) };
 
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY) +
+        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(E, MATERIAL_PRIMARY) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
                                                                           IS_WEAPON,
@@ -144,28 +148,44 @@ namespace item
     }
 
 
-    void ItemProfile::SetMisc(const misc_type::Enum E)
+    void ItemProfile::SetMisc(const misc_type::Enum E,
+                              const material::Enum  MATERIAL_PRIMARY,
+                              const material::Enum  MATERIAL_SECONDARY)
     {
         using namespace item;
 
         misc_ = E;
+        matPri_ = MATERIAL_PRIMARY;
+        matSec_ = MATERIAL_SECONDARY;
 
         if (E == misc_type::Cape)
         {
-            matPri_ = material::Cloth;
-            category_ = static_cast<category::Enum>(category::Armor |
+            category_ = static_cast<category::Enum>(category_ |
+                                                    category::Armor |
                                                     category::Equippable);
             armor_ = armor_type::Covering;
             cover_ = armor::cover_type::Cape;
+            score_ += combat::TreasureFactory::Score(armor::cover_type::Cape);
         }
         else if (E == misc_type::Cloak)
         {
-            matPri_ = material::Cloth;
-            category_ = static_cast<category::Enum>(category::Armor |
+            category_ = static_cast<category::Enum>(category_ |
+                                                    category::Armor |
                                                     category::Equippable |
                                                     category::Wearable);
             armor_ = armor_type::Covering;
             cover_ = armor::cover_type::Cloak;
+            score_ += combat::TreasureFactory::Score(armor::cover_type::Cloak);
+        }
+        else if (E == misc_type::LockPicks)
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+            score_ += combat::TreasureFactory::Score(matPri_, matSec_) + 200;
+        }
+        else if (E == misc_type::Spider_Eggs)
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Useable);
+            score_ += 500;
         }
     }
     
@@ -684,7 +704,7 @@ namespace item
     }
 
     
-    void ItemProfile::SetBladdedStaff(const weapon::bladedstaff_type::Enum E,
+    void ItemProfile::SetBladedStaff(const weapon::bladedstaff_type::Enum E,
                                       const material::Enum                 MATERIAL_PRIMARY,
                                       const material::Enum                 MATERIAL_SECONDARY,
                                       const named_type::Enum               NAMED_TYPE,
@@ -868,6 +888,7 @@ namespace item
         set_ = SET_ENUM;
         element_ = ELEMENT_TYPE;
         isPixie_ = IS_PIXIE;
+        role_ = set_type::Role(SET_ENUM);
     }
 
 
@@ -878,15 +899,23 @@ namespace item
                                  const item::element_type::Enum ELEMENT_TYPE,
                                  const bool                     IS_WEAPON) const
     {
-        return (combat::TreasureFactory::Score(MATERIAL_PRI, MATERIAL_SEC) +
-                creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
-                                                                        MATERIAL_PRI,
-                                                                        IS_WEAPON,
-                                                                        ! IS_WEAPON) +
-                creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
-                creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
-                                                                        IS_WEAPON,
-                                                                        MATERIAL_PRI));
+        if ((MATERIAL_PRI == item::material::Nothing) ||
+            (MATERIAL_PRI == item::material::Count))
+        {
+            return 0;
+        }
+        else
+        {
+            return (combat::TreasureFactory::Score(MATERIAL_PRI, MATERIAL_SEC) +
+                    creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
+                                                                            MATERIAL_PRI,
+                                                                            IS_WEAPON,
+                                                                            ! IS_WEAPON) +
+                    creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE) +
+                    creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
+                                                                            IS_WEAPON,
+                                                                            MATERIAL_PRI));
+        }
     }
 
 }

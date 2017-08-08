@@ -103,6 +103,13 @@ namespace combat
         static const item::MaterialVecPair_t MaterialsFromBaseType(const item::armor::base_type::Enum);
         static const item::MaterialVecPair_t MaterialsFromBaseTypeNoCloth(const item::armor::base_type::Enum);
 
+
+        static const item::ItemProfileVec_t ThinProfilesWeaponsSwords();
+        static const item::ItemProfileVec_t ThinProfilesWeaponsProjectiles();
+        static const item::ItemProfileVec_t ThinProfilesWeaponsAll();
+        static const item::ItemProfileVec_t ThinProfilesArmor(const bool WILL_INCLUDE_COVERINGS);
+        static const item::ItemProfileVec_t ThinProfiles(const item::named_type::Enum);
+        static const item::ItemProfileVec_t ThinProfiles(const item::set_type::Enum);
     };
 
 }

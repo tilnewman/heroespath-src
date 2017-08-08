@@ -52,7 +52,7 @@ namespace item
         {
             if (E & category::Broken)       ss << "broken/useless";
             else if (E & category::Useable) ss << "useable";
-            
+
             if (E & category::Weapon)       ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
             if (E & category::Armor)        ss << ((ss.str().empty()) ? "" : ", ") << "armor";
             if (E & category::Equippable)   ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
@@ -175,7 +175,7 @@ namespace item
             v.push_back( static_cast<element_type::Enum>(element_type::Fire |
                                                          element_type::Shadow) );
         }
-        
+
         if ((E & element_type::Frost) && (E & element_type::Honor))
         {
             v.push_back(static_cast<element_type::Enum>(element_type::Frost |
@@ -187,7 +187,7 @@ namespace item
             v.push_back(static_cast<element_type::Enum>(element_type::Frost |
                                                         element_type::Shadow));
         }
-        
+
         return v;
     }
 
@@ -293,37 +293,37 @@ namespace item
         switch (E)
         {
             case NotASet:               { return creature::role::Count; }
-            case TheAssassins:          { return creature::role::Thief; }
-            case TheTickler:            { return creature::role::Thief; }
+            case TheAssassins:
+            case TheTickler:
             case TheNeverwinter:        { return creature::role::Thief; }
-            case TheMagus:              { return creature::role::Sorcerer; }
-            case TheNecromancers:       { return creature::role::Sorcerer; }
-            case TheWarlocks:           { return creature::role::Sorcerer; }
+            case TheMagus:
+            case TheNecromancers:
+            case TheWarlocks:
             case TheLichKings:          { return creature::role::Sorcerer; }
-            case TheSages:              { return creature::role::Cleric; }
-            case TheShamans:            { return creature::role::Cleric; }
-            case TheOracles:            { return creature::role::Cleric; }
+            case TheSages:
+            case TheShamans:
+            case TheOracles:
             case TheAngelic:            { return creature::role::Cleric; }
-            case TheBalladeers:         { return creature::role::Bard; }
-            case TheTroubadours:        { return creature::role::Bard; }
+            case TheBalladeers:
+            case TheTroubadours:
             case TheMuses:              { return creature::role::Bard; }
-            case TheCavaliers:          { return creature::role::Knight; }
-            case TheChampions:          { return creature::role::Knight; }
-            case ThePaladins:           { return creature::role::Knight; }
-            case TheBerserkers:         { return creature::role::Knight; }
-            case TheRosewood:           { return creature::role::Knight; }
-            case TheDragonslayers:      { return creature::role::Knight; }
+            case TheCavaliers:
+            case TheChampions:
+            case ThePaladins:
+            case TheBerserkers:
+            case TheRosewood:
+            case TheDragonslayers:
             case TheEventideRider:      { return creature::role::Knight; }
-            case TheHunters:            { return creature::role::Archer; }
-            case TheSureShot:           { return creature::role::Archer; }
-            case TheMarksmans:          { return creature::role::Archer; }
-            case TheDeadeye:            { return creature::role::Archer; }
-            case TheDuskRanger:         { return creature::role::Archer; }
+            case TheHunters:
+            case TheSureShot:
+            case TheMarksmans:
+            case TheDeadeye:
+            case TheDuskRanger:
             case TheVenomBow:           { return creature::role::Archer; }
-            case TheCritterChannelers:  { return creature::role::Beastmaster; }
-            case TheMammalianHead:      { return creature::role::Beastmaster; }
-            case TheSavageTaskmasters:  { return creature::role::Beastmaster; }
-            case TheMonsterOverseers:   { return creature::role::Beastmaster; }
+            case TheCritterChannelers:
+            case TheMammalianHead:
+            case TheSavageTaskmasters:
+            case TheMonsterOverseers:
             case TheBeastRulers:        { return creature::role::Beastmaster; }
             case Count:
             default:
@@ -807,24 +807,24 @@ namespace item
             case BleedingTrophy:            { return MaterialVecPair_t({ material::CorePrimary() }, { material::Blood }); }
             case BloodyDragonScale:         { return MaterialVecPair_t({ material::Scale }, { material::Blood }); }
             case BottleOfBansheeScreams:    { return MaterialVecPair_t({ material::Glass }, { material::Spirit }); }
-            case BraceletCrown:             
-            case BraceletFeather:           
-            case BraceletFist:              
-            case BraceletHourglass:         
-            case BraceletKey:               
-            case BraceletMask:              
-            case BroochCrown:               
-            case BroochFeather:             
-            case BroochFist:                
-            case BroochHourglass:           
-            case BroochKey:                 
+            case BraceletCrown:
+            case BraceletFeather:
+            case BraceletFist:
+            case BraceletHourglass:
+            case BraceletKey:
+            case BraceletMask:
+            case BroochCrown:
+            case BroochFeather:
+            case BroochFist:
+            case BroochHourglass:
+            case BroochKey:
             case BroochMask:                { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
             case BurialShroud:              { return MaterialVecPair_t({ material::Cloth }, {}); }
-            case CharmCrown:                
-            case CharmFeather:              
-            case CharmFist:                 
-            case CharmHourglass:            
-            case CharmKey:                  
+            case CharmCrown:
+            case CharmFeather:
+            case CharmFist:
+            case CharmHourglass:
+            case CharmKey:
             case CharmMask:                 { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
             case ChimeraBone:               { return MaterialVecPair_t({ material::Bone }, {}); }
             case CobraTooth:                { return MaterialVecPair_t({ material::Tooth }, {}); }
@@ -841,13 +841,13 @@ namespace item
             case DemonDiary:                { return MaterialVecPair_t({ material::Paper }, {}); }
             case DoveBloodVial:             { return MaterialVecPair_t({ material::Glass }, {}); }
             case DragonToothWhistle:        { return MaterialVecPair_t({ material::Tooth }, {}); }
-            case DriedFrog:                 
-            case DriedGecko:                
-            case DriedIguana:               
-            case DriedLizard:               
-            case DriedSalamander:           
-            case DriedSkink:                
-            case DriedToad:                 
+            case DriedFrog:
+            case DriedGecko:
+            case DriedIguana:
+            case DriedLizard:
+            case DriedSalamander:
+            case DriedSkink:
+            case DriedToad:
             case DriedTurtle:               { return MaterialVecPair_t({ material::Flesh }, {}); }
             case DruidLeaf:
             {
@@ -894,11 +894,11 @@ namespace item
             case MortuaryOrnament:          { return MaterialVecPair_t({ material::Wood }, {}); }
             case MournersMask:              { return MaterialVecPair_t({ material::Wood }, {}); }
             case PantherPaw:                { return MaterialVecPair_t({ material::Flesh }, {}); }
-            case PinCrown:                  
-            case PinFeather:                
-            case PinFist:                   
-            case PinHourglass:              
-            case PinKey:                    
+            case PinCrown:
+            case PinFeather:
+            case PinFist:
+            case PinHourglass:
+            case PinKey:
             case PinMask:                   { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
             case PixieBell:                 { return MaterialVecPair_t({ material::Steel }, {}); }
             case PriestRing:                { return MaterialVecPair_t({ material::Gold }, {}); }
@@ -919,11 +919,11 @@ namespace item
             case ShadeCloak:                { return MaterialVecPair_t({ material::Cloth }, {}); }
             case ShamanRainmaker:           { return MaterialVecPair_t({ material::Wood }, {}); }
             case SharkToothNecklace:        { return MaterialVecPair_t({ material::Tooth }, {}); }
-            case SignetCrown:               
-            case SignetFeather:             
-            case SignetFist:                
-            case SignetHourglass:           
-            case SignetKey:                 
+            case SignetCrown:
+            case SignetFeather:
+            case SignetFist:
+            case SignetHourglass:
+            case SignetKey:
             case SignetMask:                { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
             case SirenConch:                { return MaterialVecPair_t({ material::Glass }, {}); }
             case SpecterChains:             { return MaterialVecPair_t({ material::Iron }, {}); }
@@ -1485,7 +1485,7 @@ namespace item
             elementType = static_cast<element_type::Enum>(element_type::Fire |
                                                           element_type::Frost);
         }
-        
+
         return elementType;
     }
 
@@ -1533,6 +1533,10 @@ namespace item
             v.push_back(material::Bone);
             v.push_back(material::Obsidian);
             return MaterialVecPair_t(v, {});
+        }
+        else if (E == misc_type::Spider_Eggs)
+        {
+            return MaterialVecPair_t({ material::Flesh }, {});
         }
         else
         {
@@ -1948,7 +1952,7 @@ namespace item
     {
         auto const CORE_METAL_VEC{ CoreMetal() };
         auto const CORE_JEWEL_VEC{ CoreJewel() };
-        
+
         std::vector<material::Enum> v;
         v.reserve(CORE_METAL_VEC.size() + CORE_JEWEL_VEC.size() + 3);
 
@@ -1967,13 +1971,13 @@ namespace item
     {
         auto const CORE_METAL_VEC{ CoreMetal() };
         auto const CORE_JEWEL_VEC{ CoreJewel() };
-        
+
         std::vector<material::Enum> v;
         v.reserve(CORE_METAL_VEC.size() + CORE_JEWEL_VEC.size() + 2);
 
         std::copy(CORE_METAL_VEC.begin(), CORE_METAL_VEC.end(), std::back_inserter(v));
         std::copy(CORE_JEWEL_VEC.begin(), CORE_JEWEL_VEC.end(), std::back_inserter(v));
-        
+
         v.push_back(material::Obsidian);
         v.push_back(material::Pearl);
 

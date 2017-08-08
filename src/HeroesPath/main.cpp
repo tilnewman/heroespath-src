@@ -68,6 +68,7 @@
 #include "game/item/item-warehouse.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-ratings.hpp"
+#include "game/item/item-profile-warehouse.hpp"
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
@@ -198,6 +199,7 @@ int main(int argc, char * argv[])
         game::non_player::ownership::InventoryFactory::Acquire();
         game::combat::Encounter::Acquire();
         game::item::ArmorRatings::Acquire();
+        game::item::ItemProfileWarehouse::Acquire();
 
         try
         {
@@ -214,6 +216,7 @@ int main(int argc, char * argv[])
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
             sfml_util::gui::PopupManager::Instance()->LoadAssets();
             game::item::ArmorRatings::Instance()->Setup();
+            game::item::ItemProfileWarehouse::Instance()->Setup();
 
             //create the game loop manager and run the game
             game::LoopManager::Acquire();
@@ -267,6 +270,7 @@ int main(int argc, char * argv[])
         }
 
         //unload stage 2
+        game::item::ItemProfileWarehouse::Release();
         game::item::ArmorRatings::Release();
         game::combat::Encounter::Release();
         game::non_player::ownership::InventoryFactory::Release();

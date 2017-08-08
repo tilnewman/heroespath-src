@@ -867,29 +867,42 @@ namespace creature
 
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
-        const creature::role::Enum ROLE(role_);
         const creature::role::Enum EXCLUSIVE_ROLE(ITEM_PTR->ExclusiveRole());
-        if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != ROLE))
+        if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != role_))
         {
             std::ostringstream ss;
-            ss << "Only " << creature::role::ToString(EXCLUSIVE_ROLE) << "s may use this item.";
+            ss << "Only " << creature::role::ToString(EXCLUSIVE_ROLE) << "s may equip this item.";
             return ss.str();
         }
 
-        const item::category::Enum CATEGORY(ITEM_PTR->Category());
-        const item::weapon_type::Enum WEAPON_TYPE(ITEM_PTR->WeaponType());
-        const item::material::Enum MATERIAL_PRI(ITEM_PTR->MaterialPrimary());
-        const item::material::Enum MATERIAL_SEC(ITEM_PTR->MaterialSecondary());
-        const item::misc_type::Enum MISC_TYPE(ITEM_PTR->MiscType());
+        auto const CATEGORY{ ITEM_PTR->Category() };
+        auto const WEAPON_TYPE{ ITEM_PTR->WeaponType() };
+        auto const MATERIAL_PRI{ ITEM_PTR->MaterialPrimary() };
+        auto const MISC_TYPE{ ITEM_PTR->MiscType() };
 
-        if ((ROLE != role::Knight) &&
+        if ((role_ != role::Knight) &&
             ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0) &&
             ((WEAPON_TYPE & item::weapon_type::Spear) == 0))
         {
-            return "Only knights may use non-simple-spear bladed staff weapons.";
+            return "Only knights may equip non-simple-spear bladed staff weapons.";
         }
 
-        if ((CATEGORY & item::category::BodyPart) == 0)
+        if ((role_ != role::Knight) &&
+            (ITEM_PTR->IsArmor()) &&
+            (ITEM_PTR->Armor_Info().base == item::armor::base_type::Plate))
+        {
+            return "Only knights may equip plate armor.";
+        }
+
+        if ((role_ != role::Knight) &&
+            (ITEM_PTR->IsArmor()) &&
+            ((ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Heater) ||
+             (ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Pavis)))
+        {
+            return "Only knights may equip Pavis or Heater shields.";
+        }
+
+        if (ITEM_PTR->IsBodypart() == false)
         {
             if (race_ == race::Dragon)
             {
@@ -902,84 +915,81 @@ namespace creature
             }
         }
 
-        if ((item::misc_type::IsMusicalInstrument(MISC_TYPE)) && (ROLE != role::Bard))
+        if ((item::misc_type::IsMusicalInstrument(MISC_TYPE)) && (role_ != role::Bard))
         {
             return "Only Bards can equip musical instruments.";
         }
 
-        if ((ROLE == role::Cleric) || (ROLE == role::Sorcerer))
+        if ((role_ == role::Cleric) || (role_ == role::Sorcerer))
         {
-            if (CATEGORY & item::category::Weapon)
+            if (ITEM_PTR->IsWeapon())
             {
                 if (((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0) &&
-                    ((WEAPON_TYPE & item::weapon_type::Crossbow) == 0) &&
                     ((WEAPON_TYPE & item::weapon_type::Knife) == 0) &&
                     ((WEAPON_TYPE & item::weapon_type::Sling) == 0) &&
                     ((WEAPON_TYPE & item::weapon_type::Staff) == 0) &&
                     ((WEAPON_TYPE & item::weapon_type::Whip) == 0))
                 {
                     std::ostringstream scSS;
-                    scSS << ((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
-                        << " can only use staffs, knives, daggers, whips, slings, "
-                        << "blowpipes and crossbows.";
+                    scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
+                        << " can only equip staffs, knives, daggers, whips, slings, "
+                        << "and blowpipes.";
                     return scSS.str();
                 }
             }
 
-            if (CATEGORY & item::category::Armor)
+            if (ITEM_PTR->IsArmor())
             {
                 if (((MATERIAL_PRI & item::material::Cloth) == 0) &&
                     ((MATERIAL_PRI & item::material::SoftLeather) == 0) &&
-                    ((MATERIAL_PRI & item::material::HardLeather) == 0) &&
-                    ((MATERIAL_SEC & item::material::Cloth) == 0) &&
-                    ((MATERIAL_SEC & item::material::SoftLeather) == 0) &&
-                    ((MATERIAL_SEC & item::material::HardLeather) == 0))
+                    ((MATERIAL_PRI & item::material::HardLeather) == 0))
                 {
                     std::ostringstream scSS;
-                    scSS << ((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
-                        << " can only use armor made from cloth or leather.";
+                    scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
+                        << " can only equip armor made from cloth or leather.";
                     return scSS.str();
                 }
             }
         }
 
-        if (ROLE == role::Bard)
+        if (role_ == role::Bard)
         {
             if ((WEAPON_TYPE & item::weapon_type::Axe) ||
                 (WEAPON_TYPE & item::weapon_type::Club))
             {
-                return "Bards cannot use axes or clubs made for war.";
+                return "Bards cannot equip axes or clubs made for war.";
             }
 
             if ((WEAPON_TYPE & item::weapon_type::BladedStaff) ||
                 (WEAPON_TYPE & item::weapon_type::Spear))
             {
-                return "Bards cannot use bladed staffs.";
+                return "Bards cannot equip bladed staffs.";
             }
         }
 
-        if (ROLE == role::Archer)
+        if (role_ == role::Archer)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) || (WEAPON_TYPE & item::weapon_type::Club))
+            if ((WEAPON_TYPE & item::weapon_type::Axe) ||
+                (WEAPON_TYPE & item::weapon_type::Club))
             {
-                return "Archers cannot use axes or clubs made for war.";
+                return "Archers cannot equip axes or clubs made for war.";
             }
 
             if ((WEAPON_TYPE & item::weapon_type::BladedStaff) ||
                 (WEAPON_TYPE & item::weapon_type::Spear))
             {
-                return "Archers cannot use bladed staffs.";
+                return "Archers cannot equip bladed staffs.";
             }
         }
 
-        if (ROLE == role::Thief)
+        if (role_ == role::Thief)
         {
             if ((CATEGORY & item::category::TwoHanded) &&
                 (CATEGORY & item::category::Weapon) &&
                 ((WEAPON_TYPE & item::weapon_type::Sling) == 0) &&
                 ((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0))
             {
-                return "Thieves cannot use two-handed weapons except for Slings and Blowpipes.";
+                return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
             }
 
             if (((WEAPON_TYPE & item::weapon_type::Axe) > 0) ||
@@ -987,7 +997,7 @@ namespace creature
                 ((WEAPON_TYPE & item::weapon_type::Club) > 0))
             {
                 std::ostringstream ss;
-                ss << "Thieves cannot use "
+                ss << "Thieves cannot equip "
                    << item::weapon_type::ToString(WEAPON_TYPE, false)<< "s.";
             }
         }

@@ -225,6 +225,13 @@ namespace item
         static const std::string ToString(const Enum, const bool WILL_WRAP = false);
         static const std::string Name(const Enum, const bool WILL_WRAP = false);
         static const std::vector<element_type::Enum> Combinations(const Enum);
+        static const std::vector<element_type::Enum> AllCombinations()
+        {
+            return Combinations(static_cast<element_type::Enum>(element_type::Fire |
+                                                                element_type::Frost |
+                                                                element_type::Honor |
+                                                                element_type::Shadow));
+        }
     };
 
     using ElementTypeVec_t = std::vector<element_type::Enum>;
