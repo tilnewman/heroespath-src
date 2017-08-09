@@ -87,7 +87,7 @@ namespace item
         weapon::club_type::Enum ClubType() const                { return club_; }
         weapon::whip_type::Enum WhipType() const                { return whip_; }
         weapon::projectile_type::Enum ProjectileType() const    { return proj_; }
-        weapon::bladedstaff_type::Enum BladdedStaffType() const { return bstaff_; }
+        weapon::bladedstaff_type::Enum BladedStaffType() const  { return bstaff_; }
 
         sfml_util::Size::Enum Size() const                      { return size_; }
 
@@ -104,6 +104,8 @@ namespace item
         creature::role::Enum Role() const                       { return role_; }
 
         int TreasureScore() const                               { return score_; }
+
+        const std::string ToString() const;
 
         void SetUnique(const unique_type::Enum,
                        const material::Enum MATERIAL_PRIMARY   = material::Nothing,

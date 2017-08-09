@@ -30,12 +30,18 @@
 #include "game/item/item-profile.hpp"
 
 #include <memory>
+#include <vector>
+#include <utility>
 
 
 namespace game
 {
 namespace item
 {
+
+    using BaseMaterialVecPair_t = std::pair<armor::base_type::Enum, MaterialVecPair_t>;
+    using BaseMaterialVecPairVec_t = std::vector<BaseMaterialVecPair_t>;
+
 
     //Responsible for storing an ItemProfile for each possible item in the game
     class ItemProfileWarehouse
@@ -61,7 +67,29 @@ namespace item
         inline const ItemProfileVec_t & Complete() const { return vec_; }
 
     private:
-        std::size_t SetupProfilesForMiscType(const item::misc_type::Enum);
+        void SetupFromThinProfile(const ItemProfile &    THIN_PROFILE,
+                                  const named_type::Enum NAMED_TYPE,
+                                  const set_type::Enum   SET_TYPE);
+
+        void SetupFromThinProfile(const ItemProfile &,
+                                  const named_type::Enum,
+                                  const set_type::Enum,
+                                  const element_type::Enum,
+                                  const material::Enum,
+                                  const material::Enum,
+                                  const armor::base_type::Enum);
+
+        void SetupFromThinProfile(const ItemProfile &,
+                                  const named_type::Enum,
+                                  const set_type::Enum,
+                                  const ElementTypeVec_t &,
+                                  const BaseMaterialVecPairVec_t &);
+
+        const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
+            const ItemProfile &    THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE);
+
+        void SetupProfilesForMiscType(const item::misc_type::Enum);
 
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;

@@ -1534,9 +1534,127 @@ namespace item
             v.push_back(material::Obsidian);
             return MaterialVecPair_t(v, {});
         }
-        else if (E == misc_type::Spider_Eggs)
+        else if ((E == misc_type::Spider_Eggs) ||
+                 (E == misc_type::Litch_Hand) ||
+                 (E == item::misc_type::Egg) ||
+                 (E == item::misc_type::Embryo) ||
+                 (E == item::misc_type::Petrified_Snake))
         {
             return MaterialVecPair_t({ material::Flesh }, {});
+        }
+        else if (E == misc_type::Wand)
+        {
+            MaterialVec_t v{ material::Wood, material::Glass };
+            material::AppendCorePrimaryNoPearl(v);
+            return MaterialVecPair_t(v, material::CoreSecondary());
+        }
+        else if (E == misc_type::Braid)
+        {
+            return MaterialVecPair_t({ material::Hair }, {});
+        }
+        else if (E == misc_type::DrumLute)
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Figurine_Blessed)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Wood,
+                                       material::Glass }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Figurine_Cursed)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Wood,
+                                       material::Bone,
+                                       material::Obsidian }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Doll_Blessed)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Wood,
+                                       material::Glass }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Doll_Cursed)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Wood,
+                                       material::Bone,
+                                       material::Obsidian }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Bust)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Wood,
+                                       material::Bone,
+                                       material::Obsidian,
+                                       material::Glass }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Puppet)
+        {
+            return MaterialVecPair_t({ material::Wood,
+                                       material::Cloth }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Dried_Head)
+        {
+            return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Goblet)
+        {
+            return MaterialVecPair_t({ material::Tin,
+                                       material::Bronze,
+                                       material::Silver,
+                                       material::Gold }, material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Balm_Pot)
+        {
+            return MaterialVecPair_t({ material::Bronze,
+                                       material::Silver,
+                                       material::Gold }, {});
+        }
+        else if (E == item::misc_type::Seeds)
+        {
+            return MaterialVecPair_t({ material::Plant }, {});
+        }
+        else if (E == item::misc_type::Mummy_Hand)
+        {
+            return MaterialVecPair_t({ material::Flesh }, { material::Cloth });
+        }
+        else if (E == item::misc_type::Shard)
+        {
+            return MaterialVecPair_t(material::CoreJewel(), {});
+        }
+        else if (E == item::misc_type::Orb)
+        {
+            return MaterialVecPair_t(material::CoreJewel(), { material::Wood });
+        }
+        else if (E == item::misc_type::Scepter)
+        {
+            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
+        }
+        else if (E == item::misc_type::Icicle)
+        {
+            return MaterialVecPair_t({ material::Glass }, {});
+        }
+        else if (E == item::misc_type::Finger)
+        {
+            return MaterialVecPair_t({ material::Stone }, {});
+        }
+        else if (E == item::misc_type::Unicorn_Horn)
+        {
+            return MaterialVecPair_t({ material::Horn }, {});
+        }
+        else if (E == item::misc_type::Devil_Horn)
+        {
+            return MaterialVecPair_t({ material::Horn }, {});
+        }
+        else if ((E == item::misc_type::Recorder) ||
+                 (E == item::misc_type::Viol) ||
+                 (E == item::misc_type::Pipe_And_Tabor) ||
+                 (E == item::misc_type::Lyre) ||
+                 (E == item::misc_type::Hurdy_Gurdy))
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
         }
         else
         {
@@ -1980,6 +2098,8 @@ namespace item
 
         v.push_back(material::Obsidian);
         v.push_back(material::Pearl);
+
+        v.push_back(material::Nothing);
 
         return v;
     }

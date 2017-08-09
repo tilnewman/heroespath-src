@@ -30,8 +30,9 @@
 #include "item-profile.hpp"
 
 #include "game/creature/enchantment-factory.hpp"
-
 #include "game/combat/treasure-factory.hpp"
+
+#include <sstream>
 
 
 namespace game
@@ -75,6 +76,7 @@ namespace item
         matPri_     (material::Nothing),
         matSec_     (material::Nothing),
         armorType_  (armor::base_type::Count),
+        role_       (creature::role::Count),
         score_      (0)
     {}
 
@@ -122,8 +124,216 @@ namespace item
         matPri_     (material::Nothing),
         matSec_     (material::Nothing),
         armorType_  (armor::base_type::Count),
+        role_       (creature::role::Count),
         score_      (0)
     {}
+
+
+    const std::string ItemProfile::ToString() const
+    {
+        std::ostringstream ss;
+
+        if (baseName_.empty() == false)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "base_name=" << baseName_;
+        }
+
+        if (category_ != 0)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "category="
+                << item::category::ToString(category_, true);
+        }
+
+        if (armor_ != 0)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "armor_type="
+                << item::armor_type::ToString(armor_, true);
+        }
+
+        if (weapon_ != 0)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "weapon_type="
+                << item::weapon_type::ToString(weapon_, true);
+        }
+
+        if ((unique_ != unique_type::NotUnique) && (unique_ != unique_type::Count))
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "unique_type="
+                << unique_type::ToString(unique_);
+        }
+
+        if ((misc_ != misc_type::NotMisc) && (misc_ != misc_type::Count))
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "misc_type="
+                << misc_type::ToString(misc_);
+        }
+
+        if ((set_ != set_type::NotASet) && (set_ != set_type::Count))
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "set_type="
+                << set_type::ToString(set_);
+        }
+
+        if ((named_ != named_type::NotNamed) && (named_ != named_type::Count))
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "named_type="
+                << named_type::ToString(named_);
+        }
+
+        if (element_ != item::element_type::None)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "element_type="
+                << element_type::ToString(element_);
+        }
+
+        if (isPixie_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Pixie)";
+        }
+
+        if (shield_ != armor::shield_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "shield_type="
+                << armor::shield_type::ToString(shield_);
+        }
+
+        if (helm_ != armor::helm_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "helm_type="
+                << armor::helm_type::ToString(helm_);
+        }
+
+        if (base_ != armor::base_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "base_type="
+                << armor::base_type::ToString(base_);
+        }
+
+        if (cover_ != armor::cover_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "cover_type="
+                << armor::cover_type::ToString(cover_);
+        }
+
+        if (isAventail_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Aventail)";
+        }
+
+        if (isBracer_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Bracer)";
+        }
+
+        if (isShirt_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Shirt)";
+        }
+
+        if (isBoots_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Boots)";
+        }
+
+        if (isPants_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Pants)";
+        }
+
+        if (isGauntlets_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Gauntlets)";
+        }
+
+        if (sword_ != weapon::sword_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "sword_type="
+                << weapon::sword_type::ToString(sword_);
+        }
+
+        if (axe_ != weapon::axe_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "axe_type="
+                << weapon::axe_type::ToString(axe_);
+        }
+
+        if (club_ != weapon::club_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "club_type="
+                << weapon::club_type::ToString(club_);
+        }
+
+        if (whip_ != weapon::whip_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "whip_type="
+                << weapon::whip_type::ToString(whip_);
+        }
+
+        if (proj_ != weapon::projectile_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "proj_type="
+                << weapon::projectile_type::ToString(proj_);
+        }
+
+        if (bstaff_ != weapon::bladedstaff_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "bstaff_type="
+                << weapon::bladedstaff_type::ToString(bstaff_);
+        }
+
+        if (isKnife_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Knife)";
+        }
+
+        if (isDagger_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Dagger)";
+        }
+
+        if (isStaff_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(Staff)";
+        }
+
+        if (isQStaff_)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "(QuarterStaff)";
+        }
+
+        if (size_ != sfml_util::Size::Medium)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "size="
+                << sfml_util::Size::ToString(size_);
+        }
+
+        if (((matPri_ == material::Nothing) && (matSec_ == material::Nothing)) == false)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "mat="
+                << ((matPri_ == material::Count) ? "(count)" : material::ToString(matPri_))
+                << ","
+                << ((matSec_ == material::Count) ? "(count)" : material::ToString(matSec_));
+        }
+
+        if (armorType_ != armor::base_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "armorTypeRestricted="
+                << armor::base_type::ToString(armorType_);
+        }
+
+        if (role_ != creature::role::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "role_restriction="
+                << creature::role::ToString(role_);
+        }
+
+        if (score_ != 0)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "score=" << score_;
+        }
+
+        return ss.str();
+    }
 
 
     void ItemProfile::SetUnique(const unique_type::Enum  E,

@@ -163,13 +163,13 @@ namespace item
         inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
             CoreMetalAndCoreSecondary()
         {
-            return std::make_pair(CoreMetal(), std::vector<material::Enum>());
+            return std::make_pair(CoreMetal(), CoreSecondary());
         }
 
         inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
             CoreJewelAndCoreSecondary()
         {
-            return std::make_pair(CoreJewel(), std::vector<material::Enum>());
+            return std::make_pair(CoreJewel(), CoreSecondary());
         }
 
         inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
@@ -178,7 +178,7 @@ namespace item
             std::vector<material::Enum> v;
             AppendCoreMetal(v);
             AppendCoreJewel(v);
-            return std::make_pair(v, std::vector<material::Enum>());
+            return std::make_pair(v, CoreSecondary());
         }
 
         inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
@@ -209,7 +209,7 @@ namespace item
 
     using MaterialVec_t = std::vector<material::Enum>;
     using MaterialVecPair_t = std::pair<MaterialVec_t, MaterialVec_t>;
-
+    
 
     struct element_type
     {

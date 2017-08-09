@@ -188,6 +188,12 @@ namespace creature
     int EnchantmentFactory::TreasureScore(const item::unique_type::Enum E,
                                           const item::material::Enum    MATERIAL_PRIMARY) const
     {
+        if ((E == item::unique_type::NotUnique) ||
+            (E == item::unique_type::Count))
+        {
+            return 0;
+        }
+
         auto const ENCHANTMENT_PTR_VEC{ MakeFromUniqueType(E, MATERIAL_PRIMARY) };
         
         int score{ 0 };
@@ -204,6 +210,12 @@ namespace creature
     int EnchantmentFactory::TreasureScore(const item::misc_type::Enum E,
                                           const item::material::Enum  MATERIAL_PRIMARY) const
     {
+        if ((E == item::misc_type::NotMisc) ||
+            (E == item::misc_type::Count))
+        {
+            return 0;
+        }
+
         auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
@@ -213,6 +225,12 @@ namespace creature
 
     int EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
     {
+        if ((E == item::set_type::NotASet) ||
+            (E == item::set_type::Count))
+        {
+            return 0;
+        }
+
         auto const INDV_ENCHANTMENT_PTR{ MakeFromSetType(E) };
         auto const COMP_ENCHANTMENT_PTR{ MakeFromSetCompleteType(E) };
 
@@ -231,6 +249,12 @@ namespace creature
                                           const bool                   IS_WEAPON,
                                           const bool                   IS_ARMOR) const
     {
+        if ((NAMED_ENUM == item::named_type::NotNamed) ||
+            (NAMED_ENUM == item::named_type::Count))
+        {
+            return 0;
+        }
+
         auto const ENCHANTMENT_PTR{ MakeFromNamedType(NAMED_ENUM,
                                                       MATERIAL_PRIMARY,
                                                       IS_WEAPON,
@@ -246,6 +270,11 @@ namespace creature
                                           const bool                     IS_WEAPON,
                                           const item::material::Enum     MATERIAL_PRIMARY) const
     {
+        if (E == item::element_type::None)
+        {
+            return 0;
+        }
+
         auto const ENCHANTMENT_PTR{ MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
