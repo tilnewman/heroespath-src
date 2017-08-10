@@ -114,7 +114,8 @@ namespace item
         
         void SetMisc(const misc_type::Enum,
                      const material::Enum MATERIAL_PRIMARY   = material::Nothing,
-                     const material::Enum MATERIAL_SECONDARY = material::Nothing);
+                     const material::Enum MATERIAL_SECONDARY = material::Nothing,
+                     const set_type::Enum SET_TYPE           = set_type::NotASet);
         
         void SetShield(const armor::shield_type::Enum,
                        const material::Enum     MATERIAL_PRIMARY   = material::Nothing,

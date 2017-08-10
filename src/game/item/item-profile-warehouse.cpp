@@ -32,6 +32,8 @@
 #include "game/log-macros.hpp"
 #include "game/combat/treasure-factory.hpp"
 
+#include "sfml-util/sfml-util.hpp"
+
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
 
@@ -98,6 +100,28 @@ namespace item
     void ItemProfileWarehouse::Setup()
     {
         vec_.clear();
+
+        //items from standard equipment
+        {
+            ItemProfileVec_t v;
+
+            auto const THINPROFILES_WEAPONS_VEC{ combat::TreasureFactory::ThinProfilesWeaponsAll() };
+            std::copy(THINPROFILES_WEAPONS_VEC.begin(),
+                      THINPROFILES_WEAPONS_VEC.end(),
+                      std::back_inserter(v));
+
+            auto const THINPROFILES_ARMOR_VEC{ combat::TreasureFactory::ThinProfilesArmor(true) };
+            std::copy(THINPROFILES_ARMOR_VEC.begin(),
+                      THINPROFILES_ARMOR_VEC.end(),
+                      std::back_inserter(v));
+
+            for (auto const & NEXT_THIN_PROFILE : v)
+            {
+                SetupFromThinProfile(NEXT_THIN_PROFILE,
+                                     named_type::NotNamed,
+                                     set_type::NotASet);
+            }
+        }
 
         //items from unique types
         for (int i(1); i < item::unique_type::Count; ++i)
@@ -201,28 +225,6 @@ namespace item
         SetupProfilesForMiscType(item::misc_type::Hurdy_Gurdy);
         SetupProfilesForMiscType(item::misc_type::Lyre);
 
-        //items from standard equipment
-        {
-            ItemProfileVec_t v;
-
-            auto const THINPROFILES_WEAPONS_VEC{ combat::TreasureFactory::ThinProfilesWeaponsAll() };
-            std::copy(THINPROFILES_WEAPONS_VEC.begin(),
-                      THINPROFILES_WEAPONS_VEC.end(),
-                      std::back_inserter(v));
-
-            auto const THINPROFILES_ARMOR_VEC{ combat::TreasureFactory::ThinProfilesArmor(true) };
-            std::copy(THINPROFILES_ARMOR_VEC.begin(),
-                      THINPROFILES_ARMOR_VEC.end(),
-                      std::back_inserter(v));
-
-            for (auto const & NEXT_THIN_PROFILE : v)
-            {
-                SetupFromThinProfile(NEXT_THIN_PROFILE,
-                                     named_type::NotNamed,
-                                     set_type::NotASet);
-            }
-        }
-
         //items from named equipment
         {
             for (int i(1); i < named_type::Count; ++i)
@@ -258,7 +260,9 @@ namespace item
                 }
             }
         }
-        M_HP_LOG("ItemProfileWarehouse Setup created " << vec_.size() << " profiles.");
+
+        std::sort(vec_.begin(), vec_.end());
+        vec_.erase(std::unique(vec_.begin(), vec_.end()), vec_.end());
     }
 
 
@@ -288,10 +292,13 @@ namespace item
                 }
             }() };
 
+        auto elementCombinationsVec{ element_type::Combinations(ELEMENT_TYPE) };
+        elementCombinationsVec.push_back(element_type::None);
+        
         SetupFromThinProfile(THIN_PROFILE,
                              NAMED_TYPE,
                              SET_TYPE,
-                             element_type::Combinations(ELEMENT_TYPE),
+                             elementCombinationsVec,
                              GetMaterialsFromThinProfile(THIN_PROFILE,
                                                          NAMED_TYPE));
     }
@@ -312,7 +319,8 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetMisc(THIN_PROFILE.MiscType(),
                                MATERIAL_PRI,
-                               MATERIAL_SEC);
+                               MATERIAL_SEC,
+                               SET_TYPE);
             vec_.push_back(fatProfile);
             return;
         }
@@ -679,15 +687,16 @@ namespace item
             "game::item::ItemProfileWarehouse(vector version, thin_profile="
             << THIN_PROFILE.ToString() << ") was given an empty " << "BASEMATERIAL_VEC_PAIR_VEC.");
 
-        if (ELEMENT_TYPE_VEC.empty())
+        for (auto const NEXT_ELEMENT_TYPE : ELEMENT_TYPE_VEC)
         {
-            for(auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
-            {   
+            for (auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
+            {
                 M_ASSERT_OR_LOGANDTHROW_SS((NEXT_BASEMATERIALVECPAIR.second.first.empty() == false),
-                    "game::item::ItemProfileWarehouse(vector version, non-element, thin_profile="
+                    "game::item::ItemProfileWarehouse(vector version, thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
                     << item::named_type::ToString(NAMED_TYPE)
                     << ", set_type=" << item::set_type::ToString(SET_TYPE)
+                    << ", element_type=" << item::element_type::ToString(NEXT_ELEMENT_TYPE, true)
                     << ", BASEMATERIAL_VEC_PAIR_VEC.size()=" << BASEMATERIAL_VEC_PAIR_VEC.size()
                     << ") was given an empty "
                     << "NEXT_BASEMATERIALVECPAIR.second.first (primary material vec).");
@@ -699,7 +708,7 @@ namespace item
                         SetupFromThinProfile(THIN_PROFILE,
                                              NAMED_TYPE,
                                              SET_TYPE,
-                                             element_type::None,
+                                             NEXT_ELEMENT_TYPE,
                                              NEXT_MATERIAL_PRI,
                                              material::Nothing,
                                              NEXT_BASEMATERIALVECPAIR.first);
@@ -711,55 +720,10 @@ namespace item
                             SetupFromThinProfile(THIN_PROFILE,
                                                  NAMED_TYPE,
                                                  SET_TYPE,
-                                                 element_type::None,
+                                                 NEXT_ELEMENT_TYPE,
                                                  NEXT_MATERIAL_PRI,
                                                  NEXT_MATERIAL_SEC,
                                                  NEXT_BASEMATERIALVECPAIR.first);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (auto const NEXT_ELEMENT_TYPE : ELEMENT_TYPE_VEC)
-            {
-                for (auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS((NEXT_BASEMATERIALVECPAIR.second.first.empty() == false),
-                        "game::item::ItemProfileWarehouse(vector version, non-element, thin_profile="
-                        << THIN_PROFILE.ToString() << ", named_type="
-                        << item::named_type::ToString(NAMED_TYPE)
-                        << ", set_type=" << item::set_type::ToString(SET_TYPE)
-                        << ", element_type=" << item::element_type::ToString(NEXT_ELEMENT_TYPE, true)
-                        << ", BASEMATERIAL_VEC_PAIR_VEC.size()=" << BASEMATERIAL_VEC_PAIR_VEC.size()
-                        << ") was given an empty "
-                        << "NEXT_BASEMATERIALVECPAIR.second.first (primary material vec).");
-
-                    for (auto const NEXT_MATERIAL_PRI : NEXT_BASEMATERIALVECPAIR.second.first)
-                    {
-                        if (NEXT_BASEMATERIALVECPAIR.second.second.empty())
-                        {
-                            SetupFromThinProfile(THIN_PROFILE,
-                                                 NAMED_TYPE,
-                                                 SET_TYPE,
-                                                 element_type::None,
-                                                 NEXT_MATERIAL_PRI,
-                                                 material::Nothing,
-                                                 NEXT_BASEMATERIALVECPAIR.first);
-                        }
-                        else
-                        {
-                            for (auto const NEXT_MATERIAL_SEC : NEXT_BASEMATERIALVECPAIR.second.second)
-                            {
-                                SetupFromThinProfile(THIN_PROFILE,
-                                                     NAMED_TYPE,
-                                                     SET_TYPE,
-                                                     NEXT_ELEMENT_TYPE,
-                                                     NEXT_MATERIAL_PRI,
-                                                     NEXT_MATERIAL_SEC,
-                                                     NEXT_BASEMATERIALVECPAIR.first);
-                            }
                         }
                     }
                 }

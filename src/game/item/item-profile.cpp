@@ -360,13 +360,21 @@ namespace item
 
     void ItemProfile::SetMisc(const misc_type::Enum E,
                               const material::Enum  MATERIAL_PRIMARY,
-                              const material::Enum  MATERIAL_SECONDARY)
+                              const material::Enum  MATERIAL_SECONDARY,
+                              const set_type::Enum  SET_TYPE)
     {
         using namespace item;
 
         misc_ = E;
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
+
+        if (0 == score_)
+        {
+            score_ += combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+        }
+
+        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE);
 
         if (E == misc_type::Cape)
         {
@@ -390,12 +398,66 @@ namespace item
         else if (E == misc_type::LockPicks)
         {
             category_ = static_cast<category::Enum>(category_ | category::Equippable);
-            score_ += combat::TreasureFactory::Score(matPri_, matSec_) + 200;
+            score_ += 200;
         }
         else if (E == misc_type::Spider_Eggs)
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
             score_ += 500;
+        }
+        else if ((E == item::misc_type::Wand) ||
+                 (E == item::misc_type::Petrified_Snake) ||
+                 (E == item::misc_type::Mummy_Hand) ||
+                 (E == item::misc_type::Shard) ||
+                 (E == item::misc_type::Orb) ||
+                 (E == item::misc_type::Scepter) ||
+                 (E == item::misc_type::Icicle) ||
+                 (E == item::misc_type::Finger) ||
+                 (E == item::misc_type::Unicorn_Horn) ||
+                 (E == item::misc_type::Devil_Horn))
+                 
+        {
+            category_ = static_cast<category::Enum>(category_ |
+                                                    category::AllowsCasting |
+                                                    category::Equippable);
+            score_ += 100;
+        }
+        else if ((E == item::misc_type::DrumLute) ||
+                 (E == item::misc_type::Lyre) ||
+                 (E == item::misc_type::Hurdy_Gurdy) ||
+                 (E == item::misc_type::Pipe_And_Tabor) ||
+                 (E == item::misc_type::Viol) ||
+                 (E == item::misc_type::Recorder))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+            score_ += 100;
+        }
+        else if ((E == item::misc_type::Bust) ||
+                 (E == item::misc_type::Figurine_Blessed) ||
+                 (E == item::misc_type::Doll_Blessed))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Blessed);
+            score_ += 50;
+        }
+        else if ((E == item::misc_type::Figurine_Cursed) ||
+                 (E == item::misc_type::Doll_Cursed))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Cursed);
+            score_ += 50;
+        }
+        else if ((E == item::misc_type::Puppet) ||
+                 (E == item::misc_type::Dried_Head))
+        {
+            score_ += 50;
+        }
+        else if ((E == item::misc_type::Goblet) ||
+                 (E == item::misc_type::Balm_Pot) ||
+                 (E == item::misc_type::Egg) ||
+                 (E == item::misc_type::Embryo) ||
+                 (E == item::misc_type::Seeds))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Useable);
+            score_ += 150;
         }
     }
     

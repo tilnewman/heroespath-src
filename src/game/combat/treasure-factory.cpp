@@ -116,7 +116,7 @@ namespace combat
                 }
             }() };
 
-        return 50 + ((BONUS_PRI * BONUS_PRI) * 2) + ((BONUS_SEC * BONUS_SEC) / 2);
+        return 50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3);
     }
 
 

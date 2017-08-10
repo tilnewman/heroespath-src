@@ -2087,18 +2087,18 @@ namespace item
 
     const std::vector<material::Enum> material::CoreSecondary()
     {
-        auto const CORE_METAL_VEC{ CoreMetal() };
         auto const CORE_JEWEL_VEC{ CoreJewel() };
 
         std::vector<material::Enum> v;
-        v.reserve(CORE_METAL_VEC.size() + CORE_JEWEL_VEC.size() + 2);
+        v.reserve(CORE_JEWEL_VEC.size() + 6);
 
-        std::copy(CORE_METAL_VEC.begin(), CORE_METAL_VEC.end(), std::back_inserter(v));
         std::copy(CORE_JEWEL_VEC.begin(), CORE_JEWEL_VEC.end(), std::back_inserter(v));
 
         v.push_back(material::Obsidian);
         v.push_back(material::Pearl);
-
+        v.push_back(material::Silver);
+        v.push_back(material::Gold);
+        v.push_back(material::Platinum);
         v.push_back(material::Nothing);
 
         return v;
@@ -2326,10 +2326,14 @@ namespace item
         }
 
         if (fireDamageRatio < 0.0f)
+        {
             fireDamageRatio = 0.0f;
+        }
 
         if (fireDamageRatio > 1.0f)
+        {
             fireDamageRatio = 1.0f;
+        }
 
         return fireDamageRatio;
     }
@@ -2406,9 +2410,6 @@ namespace item
     {
         std::ostringstream ss;
 
-        if (WILL_WRAP)
-            ss << "(";
-
         if (E == weapon_type::NotAWeapon)
         {
             ss << "not a weapon";
@@ -2446,9 +2447,13 @@ namespace item
         }
 
         if (WILL_WRAP)
-            ss << ")";
-
-        return ss.str();
+        {
+            return "(" + ss.str() + ")";
+        }
+        else
+        {
+            return ss.str();
+        }
     }
 
     weapon_type::Enum weapon_type::FromString(const std::string & S)
@@ -2485,9 +2490,6 @@ namespace item
     {
         std::ostringstream ss;
 
-        if (WILL_WRAP)
-            ss << "(";
-
         if (E == armor_type::NotArmor)
         {
             ss << "not armor";
@@ -2514,9 +2516,13 @@ namespace item
         }
 
         if (WILL_WRAP)
-            ss << ")";
-
-        return ss.str();
+        {
+            return "(" + ss.str() + ")";
+        }
+        else
+        {
+            return ss.str();
+        }
     }
 
 }

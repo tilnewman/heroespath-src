@@ -45,7 +45,9 @@ namespace misc
     {
         //appends A into B, stable unless WILL_UNIQUE
         template<typename T>
-        static void Append(const std::vector<T> & A_VEC, std::vector<T> & b_Vec, const bool WILL_UNIQUE = false)
+        static void Append(const std::vector<T> & A_VEC,
+                           std::vector<T> &       b_Vec,
+                           const bool             WILL_UNIQUE = false)
         {
             if (A_VEC.empty())
                 return;
@@ -60,7 +62,9 @@ namespace misc
 
 
         template<typename T>
-        static std::vector<T> And(const std::vector<T> & A_VEC, const std::vector<T> & B_VEC, const bool WILL_UNIQUE = false)
+        static std::vector<T> And(const std::vector<T> & A_VEC,
+                                  const std::vector<T> & B_VEC,
+                                  const bool             WILL_UNIQUE = false)
         {
             std::vector<T> finalVec;
 
@@ -76,7 +80,9 @@ namespace misc
 
             if (WILL_UNIQUE)
             {
-                finalVec.erase(std::unique(finalVec.begin(), finalVec.end()), finalVec.end());
+                finalVec.erase(std::unique(finalVec.begin(),
+                                           finalVec.end()),
+                                           finalVec.end());
             }
 
             return finalVec;
@@ -84,7 +90,8 @@ namespace misc
 
 
         template<typename T>
-        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC, const T toExclude)
+        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC,
+                                            const T                toExclude)
         {
             std::vector<T> v{ toExclude };
             return Exclude(ORIG_VEC, v);
@@ -92,7 +99,8 @@ namespace misc
 
 
         template<typename T>
-        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC, const std::vector<T> & TO_EXCLUDE_VEC)
+        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC,
+                                            const std::vector<T> & TO_EXCLUDE_VEC)
         {
             if (ORIG_VEC.empty())
                 return std::vector<T>();
@@ -136,34 +144,42 @@ namespace misc
         template<typename T>
         static T SelectRandom(const std::vector<T> & V)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false), "misc::Vector::SelectRandom() was given an empty vector.");
+            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false),
+                "misc::Vector::SelectRandom() was given an empty vector.");
+
             if (V.size() == 1)
             {
                 return V[0];
             }
             else
             {
-                return V[static_cast<std::size_t>(misc::random::Int(static_cast<int>(V.size()) - 1))];
+                return V[static_cast<std::size_t>(
+                    misc::random::Int(static_cast<int>(V.size()) - 1))];
             }
         }
 
 
         template<typename T>
-        static const std::string Join(const std::vector<T> & VEC,
-                                      const bool             WILL_WRAP     = false,
-                                      const bool             WILL_AND      = false,
-                                      const std::size_t      MAX_COUNT     = 0,
-                                      const bool             WILL_ELLIPSIS = false,
-                                      const std::string(*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string
-                                        {
-                                            std::ostringstream ss;
-                                            ss << x;
-                                            return ss.str();
-                                        },
-                                      bool(*ONLY_IF_FUNC)(const T) = [](const T) -> bool
-                                        {
-                                            return true;
-                                        })
+        static const std::string Join(
+            const std::vector<T> & VEC,
+            const bool             WILL_WRAP     = false,
+            const bool             WILL_AND      = false,
+            const std::size_t      MAX_COUNT     = 0,
+            const bool             WILL_ELLIPSIS = false,
+            const std::string(*TO_STRING_FUNC)(const T) =
+                []
+                (const T x) -> const std::string
+                {
+                    std::ostringstream ss;
+                    ss << x;
+                    return ss.str();
+                },
+            bool(*ONLY_IF_FUNC)(const T) =
+                []
+                (const T) -> bool
+                {
+                    return true;
+                })
         {
             const std::size_t VEC_ELEMENT_COUNT{ VEC.size() };
             if (VEC_ELEMENT_COUNT == 0)
@@ -241,28 +257,30 @@ namespace misc
                 sum += NEXT_VALUE;
             }
 
-            return sum / V.size();
+            return sum / static_cast<T>(V.size());
         }
 
 
         //skip the first value because that is an invalid framerate value
         template<typename T>
-        static T StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
+        static T StandardDeviation(const std::vector<T> & V,
+                                   const std::size_t      COUNT,
+                                   const T                AVERAGE)
         {
             if ((COUNT <= 1) || ((COUNT - 1) > V.size()))
             {
                 return static_cast<T>(0);
             }
 
-            T deviationSum{ 0 };
+            double deviationSum{ 0.0 };
 
             for (std::size_t i(1); i < (COUNT - 1); ++i)
             {
                 auto const NEXT_VALUE{ V[i] };
-                deviationSum += std::pow((NEXT_VALUE - AVERAGE), static_cast<T>(2));
+                deviationSum += std::pow(static_cast<double>(NEXT_VALUE - AVERAGE), 2);
             }
 
-            return std::sqrt(deviationSum / static_cast<T>(COUNT - 1));
+            return static_cast<T>(std::sqrt(deviationSum / static_cast<double>(COUNT - 1)));
         }
 
 
