@@ -34,6 +34,7 @@
 #include "game/log-macros.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
+#include "game/item/item-profile.hpp"
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -49,26 +50,26 @@ namespace item
 namespace misc
 {
 
-    std::unique_ptr<ItemFactory> ItemFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<MiscItemFactory> MiscItemFactory::instanceUPtr_{ nullptr };
 
 
-    ItemFactory::ItemFactory()
+    MiscItemFactory::MiscItemFactory()
     {
-        M_HP_LOG_DBG("Singleton Construction: ItemFactory");
+        M_HP_LOG_DBG("Singleton Construction: MiscItemFactory");
     }
 
 
-    ItemFactory::~ItemFactory()
+    MiscItemFactory::~MiscItemFactory()
     {
-        M_HP_LOG_DBG("Singleton Destruction: ItemFactory");
+        M_HP_LOG_DBG("Singleton Destruction: MiscItemFactory");
     }
 
 
-    ItemFactory * ItemFactory::Instance()
+    MiscItemFactory * MiscItemFactory::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ItemFactory");
+            M_HP_LOG_WRN("Singleton Instance() before Acquire(): MiscItemFactory");
             Acquire();
         }
 
@@ -76,40 +77,47 @@ namespace misc
     }
 
 
-    void ItemFactory::Acquire()
+    void MiscItemFactory::Acquire()
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ItemFactory);
+            instanceUPtr_.reset(new MiscItemFactory);
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: ItemFactory");
+            M_HP_LOG_WRN("Singleton Acquire() after Construction: MiscItemFactory");
         }
     }
 
 
-    void ItemFactory::Release()
+    void MiscItemFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::item::misc::ItemFactory::Release() found instanceUPtr that was null.");
+            "game::item::misc::MiscItemFactory::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
 
-    ItemPtr_t ItemFactory::Make_Ring(const material::Enum MATERIAL_PRI,
-                                     const material::Enum MATERIAL_SEC,
-                                     const bool           IS_PIXIE_ITEM)
+    ItemPtr_t MiscItemFactory::Make(const ItemProfile &)
+    {
+        //TODO
+        return nullptr;
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_Ring(const material::Enum MATERIAL_PRI,
+                                         const material::Enum MATERIAL_SEC)
     {
         stats::Trait_t price(5);
-        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
+        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
 
         stats::Trait_t weight(20);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
-            Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+            Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC),
+            Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, ""),
             static_cast<category::Enum>(category::Equippable | category::Wearable),
             misc_type::Ring,
             weapon_type::NotAWeapon,
@@ -118,14 +126,7 @@ namespace misc
             MATERIAL_SEC,
             "",
             price,
-            weight,
-            0,
-            0,
-            0,
-            creature::role::Count,
-            weapon::WeaponInfo(),
-            armor::ArmorInfo(),
-            IS_PIXIE_ITEM) ) };
+            weight) ) };
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
             GetImageFilename(itemPtr));
@@ -134,19 +135,18 @@ namespace misc
     }
 
 
-    ItemPtr_t ItemFactory::Make_Wand(const material::Enum MATERIAL_PRI,
-                                     const material::Enum MATERIAL_SEC,
-                                     const bool           IS_PIXIE_ITEM)
+    ItemPtr_t MiscItemFactory::Make_Wand(const material::Enum MATERIAL_PRI,
+                                         const material::Enum MATERIAL_SEC)
     {
         stats::Trait_t price(437);
-        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
+        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
 
         stats::Trait_t weight(40);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
-            Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
+            Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC),
+            Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Equippable),
             misc_type::Wand,
             weapon_type::NotAWeapon,
@@ -155,14 +155,7 @@ namespace misc
             MATERIAL_SEC,
             "",
             price,
-            weight,
-            0,
-            0,
-            0,
-            creature::role::Count,
-            weapon::WeaponInfo(),
-            armor::ArmorInfo(),
-            IS_PIXIE_ITEM) ) };
+            weight) ) };
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
             GetImageFilename(itemPtr));
@@ -171,11 +164,11 @@ namespace misc
     }
 
 
-    ItemPtr_t ItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
+    ItemPtr_t MiscItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
     {
         stats::Trait_t price(1000);
         stats::Trait_t weight(350);
-        std::string desc("An acoustic guitar with a round hollow body that can also be drummed.");
+        std::string desc("An acoustic guitar with a round hollow body that can be drummed.");
         
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);

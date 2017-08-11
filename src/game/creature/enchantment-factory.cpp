@@ -158,11 +158,6 @@ namespace creature
             }
         }
 
-        M_HP_LOG_ERR("game::creature::EnchantmentFactory::MakeStoreAttachReturn"
-            << "(itemPtr version) with misc_type="
-            << item::misc_type::ToString(itemPtr->MiscType())
-            << " -unable to create an enchantment based on any of the item's types.");
-
         return itemPtr;
     }
 
@@ -1624,9 +1619,158 @@ namespace creature
                                        std::make_pair(stats::Traits::Luck, 12 + MAT_BONUS),
                                        std::make_pair(stats::Traits::Speed, 11 + (MAT_BONUS / 2)),
                                        std::make_pair(stats::Traits::Backstab, 1 + (MAT_BONUS / 2)) }) );
+        }
+        else if ((E == item::misc_type::Wand) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
-            //Lock Picks if equipped: 12% + material based +% lck, 11% + 1/2x material based +% spd, 1/2x material based % backstab
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 11 + (MAT_BONUS / 2)) }) );
+        }
+        else if ((E == item::misc_type::Shard) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 11 + (MAT_BONUS / 2)),
+                                       std::make_pair(stats::Traits::MagicEffect, (MAT_BONUS / 2)) }) );
+        }
+        else if ((E == item::misc_type::Staff) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 11 + (MAT_BONUS / 2)),
+                                       std::make_pair(stats::Traits::MagicEffect, 11 + (MAT_BONUS / 2)),
+                                       std::make_pair(stats::Traits::MagicCast, 5 + (MAT_BONUS / 4)) }) );
+        }
+        else if ((E == item::misc_type::Orb) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 12 + MAT_BONUS),
+                                       std::make_pair(stats::Traits::MagicEffect, MAT_BONUS),
+                                       std::make_pair(stats::Traits::MagicCast, 1 + (MAT_BONUS / 2)) }) );
+        }
+        else if ((E == item::misc_type::Scepter) &&
+                 (MATERIAL_PRIMARY != item::material::Count) &&
+                 (MATERIAL_PRIMARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 14 + (MAT_BONUS * 2)),
+                                       std::make_pair(stats::Traits::MagicEffect, (MAT_BONUS * 2)),
+                                       std::make_pair(stats::Traits::MagicCast, MAT_BONUS) }) );
+        }
+        else if (E == item::misc_type::Petrified_Snake)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 10),
+                                       std::make_pair(stats::Traits::MagicEffect, 8),
+                                       std::make_pair(stats::Traits::MagicResist, 16),
+                                       std::make_pair(stats::Traits::PoisonOnAll, 33) }) );
+        }
+        else if (E == item::misc_type::Petrified_Snake)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 20),
+                                       std::make_pair(stats::Traits::MagicEffect, 16),
+                                       std::make_pair(stats::Traits::MagicResist, 16),
+                                       std::make_pair(stats::Traits::PanicOnSpell, 33),
+                                       std::make_pair(stats::Traits::CurseEffect, 33),
+                                       std::make_pair(stats::Traits::CurseResist, 33) }) );
+        }
+        else if (E == item::misc_type::Icicle)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 18),
+                                       std::make_pair(stats::Traits::MagicEffect, 18),
+                                       std::make_pair(stats::Traits::MagicCast, 13),
+                                       std::make_pair(stats::Traits::FrostDamage, 75),
+                                       std::make_pair(stats::Traits::FrostResist, 75) }) );
+        }
+        else if (E == item::misc_type::Finger)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Mana, 24),
+                                       std::make_pair(stats::Traits::MagicEffect, 13),
+                                       std::make_pair(stats::Traits::MagicCast, 18),
+                                       std::make_pair(stats::Traits::FireResist, 50),
+                                       std::make_pair(stats::Traits::FrostResist, 50),
+                                       std::make_pair(stats::Traits::HonorResist, 50),
+                                       std::make_pair(stats::Traits::ShadowResist, 50) }) );
+        }
+        else if (E == item::misc_type::Unicorn_Horn)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem |
+                                               EnchantmentType::BlessWithoutItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Charm, 16),
+                                       std::make_pair(stats::Traits::Luck, 13),
+                                       std::make_pair(stats::Traits::FindMagic, 26),
+                                       std::make_pair(stats::Traits::Mana, 28),
+                                       std::make_pair(stats::Traits::MagicEffect, 28),
+                                       std::make_pair(stats::Traits::MagicCast, 14),
+                                       std::make_pair(stats::Traits::BlessCast, 80),
+                                       std::make_pair(stats::Traits::BlessEffect, 80),
+                                       std::make_pair(stats::Traits::ShadowResist, 28) }) );
+        }
+        else if (E == item::misc_type::Devil_Horn)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                                               EnchantmentType::WhenEquipped |
+                                               EnchantmentType::BoundToItem |
+                                               EnchantmentType::CurseWithoutItem),
+                                   stats::TraitSet( {
+                                       std::make_pair(stats::Traits::Charm, -13),
+                                       std::make_pair(stats::Traits::Speed, 13),
+                                       std::make_pair(stats::Traits::Intelligence, 16),
+                                       std::make_pair(stats::Traits::FindMagic, 26),
+                                       std::make_pair(stats::Traits::Mana, 28),
+                                       std::make_pair(stats::Traits::MagicEffect, 28),
+                                       std::make_pair(stats::Traits::MagicCast, 14),
+                                       std::make_pair(stats::Traits::CurseCast, 80),
+                                       std::make_pair(stats::Traits::CurseEffect, 80),
+                                       std::make_pair(stats::Traits::ShadowDamage, 28) }) );
         }
         else
         {

@@ -197,8 +197,8 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(
-                material::Wood, material::Nothing, characterPtrC->IsPixie()));
+            ItemPtr_t wandPtr(misc::MiscItemFactory::Make_Wand(
+                material::Wood, material::Nothing));
 
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
@@ -261,7 +261,7 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t drumLutePtr(misc::ItemFactory::Make_DrumLute(characterPtrC->IsPixie()));
+            ItemPtr_t drumLutePtr(misc::MiscItemFactory::Make_DrumLute(characterPtrC->IsPixie()));
 
             characterPtrC->ItemAdd(drumLutePtr);
             characterPtrC->ItemEquip(drumLutePtr);
@@ -336,8 +336,8 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(
-                material::Glass, material::Nothing, characterPtrC->IsPixie()));
+            ItemPtr_t wandPtr(misc::MiscItemFactory::Make_Wand(
+                material::Glass, material::Nothing));
 
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
@@ -372,8 +372,8 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            ItemPtr_t wandPtr(misc::ItemFactory::Make_Wand(
-                material::Wood, material::Nothing, characterPtrC->IsPixie()));
+            ItemPtr_t wandPtr(misc::MiscItemFactory::Make_Wand(
+                material::Wood, material::Nothing));
 
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);

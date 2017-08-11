@@ -42,40 +42,43 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
 
+    class ItemProfile;
+
+
 namespace misc
 {
 
     //A singleton class responsible for making misc item objects.
-    class ItemFactory : public FactoryBase
+    class MiscItemFactory : public FactoryBase
     {
         //prevent copy construction
-        ItemFactory(const ItemFactory &) =delete;
+        MiscItemFactory(const MiscItemFactory &) =delete;
 
         //prevent copy assignment
-        ItemFactory & operator=(const ItemFactory &) =delete;
+        MiscItemFactory & operator=(const MiscItemFactory &) =delete;
 
         //prevent non-singleton construction
-        ItemFactory();
+        MiscItemFactory();
 
     public:
-        virtual ~ItemFactory();
+        virtual ~MiscItemFactory();
 
-        static ItemFactory * Instance();
+        static MiscItemFactory * Instance();
         static void Acquire();
         static void Release();
 
+        static ItemPtr_t Make(const ItemProfile &);
+
         static ItemPtr_t Make_Ring(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC,
-                                   const bool           IS_PIXIE_ITEM = false);
+                                   const material::Enum MATERIAL_SEC);
 
         static ItemPtr_t Make_Wand(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC,
-                                   const bool           IS_PIXIE_ITEM = false);
+                                   const material::Enum MATERIAL_SEC);
 
-        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE);
 
     private:
-        static std::unique_ptr<ItemFactory> instanceUPtr_;
+        static std::unique_ptr<MiscItemFactory> instanceUPtr_;
     };
 
 }

@@ -55,6 +55,7 @@
 #include "game/spell/spell-warehouse.hpp"
 #include "game/song/song-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
+#include "game/item/item-factory.hpp"
 
 #include "misc/real.hpp"
 
@@ -422,6 +423,13 @@ namespace stage
         {
             hasTestingCompleted_ItemImageManager =
                 sfml_util::gui::ItemImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_ItemFactory{ false };
+        if (false == hasTestingCompleted_ItemFactory)
+        {
+            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
             return;
         }
 

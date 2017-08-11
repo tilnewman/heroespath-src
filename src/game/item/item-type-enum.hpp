@@ -376,6 +376,7 @@ namespace item
             Skull,
             Spider_Eggs,
             Spyglass,
+            Staff,
             Talisman,
             Tome,
             Tongue,
@@ -398,8 +399,10 @@ namespace item
 
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
-        static bool IsMusicalInstrument(const Enum E);
+        static bool IsMusicalInstrument(const Enum);
         static const MaterialVecPair_t Materials(const Enum);
+        static bool IsStandaloneItem(const Enum);
+        static bool HasPixieVersion(const Enum);
     };
 
 

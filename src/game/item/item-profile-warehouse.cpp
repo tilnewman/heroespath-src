@@ -154,6 +154,7 @@ namespace item
                                     NEXT_ELEMENT_TYPE);
 
                         p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
+                                                              false,
                                                               NEXT_MATERIAL_PRIMARY,
                                                               item::material::Nothing);
 
@@ -177,8 +178,9 @@ namespace item
                                         NEXT_ELEMENT_TYPE);
 
                             p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
-                                                              NEXT_MATERIAL_PRIMARY,
-                                                              NEXT_MATERIAL_SECONDARY);
+                                                                  false,
+                                                                  NEXT_MATERIAL_PRIMARY,
+                                                                  NEXT_MATERIAL_SECONDARY);
 
                             vec_.push_back(p);
                             didAddProfile = true;
@@ -194,37 +196,18 @@ namespace item
         }
         
         //items from misc types
-        SetupProfilesForMiscType(item::misc_type::LockPicks);
-        SetupProfilesForMiscType(item::misc_type::Spider_Eggs);
-        SetupProfilesForMiscType(item::misc_type::Wand);
-        SetupProfilesForMiscType(item::misc_type::DrumLute);
-        SetupProfilesForMiscType(item::misc_type::Figurine_Blessed);
-        SetupProfilesForMiscType(item::misc_type::Figurine_Cursed);
-        SetupProfilesForMiscType(item::misc_type::Doll_Blessed);
-        SetupProfilesForMiscType(item::misc_type::Doll_Cursed);
-        SetupProfilesForMiscType(item::misc_type::Bust);
-        SetupProfilesForMiscType(item::misc_type::Puppet);
-        SetupProfilesForMiscType(item::misc_type::Dried_Head);
-        SetupProfilesForMiscType(item::misc_type::Goblet);
-        SetupProfilesForMiscType(item::misc_type::Balm_Pot);
-        SetupProfilesForMiscType(item::misc_type::Egg);
-        SetupProfilesForMiscType(item::misc_type::Embryo);
-        SetupProfilesForMiscType(item::misc_type::Seeds);
-        SetupProfilesForMiscType(item::misc_type::Petrified_Snake);
-        SetupProfilesForMiscType(item::misc_type::Mummy_Hand);
-        SetupProfilesForMiscType(item::misc_type::Shard);
-        SetupProfilesForMiscType(item::misc_type::Orb);
-        SetupProfilesForMiscType(item::misc_type::Scepter);
-        SetupProfilesForMiscType(item::misc_type::Icicle);
-        SetupProfilesForMiscType(item::misc_type::Finger);
-        SetupProfilesForMiscType(item::misc_type::Unicorn_Horn);
-        SetupProfilesForMiscType(item::misc_type::Devil_Horn);
-        SetupProfilesForMiscType(item::misc_type::Recorder);
-        SetupProfilesForMiscType(item::misc_type::Viol);
-        SetupProfilesForMiscType(item::misc_type::Pipe_And_Tabor);
-        SetupProfilesForMiscType(item::misc_type::Hurdy_Gurdy);
-        SetupProfilesForMiscType(item::misc_type::Lyre);
+        {
+            for (int i(1); i < misc_type::Count; ++i)
+            {
+                auto const NEXT_MISC_ENUM{ static_cast<misc_type::Enum>(i) };
 
+                if (misc_type::IsStandaloneItem(NEXT_MISC_ENUM))
+                {
+                    SetupProfilesForMiscType(NEXT_MISC_ENUM);
+                }
+            }
+        }
+        
         //items from named equipment
         {
             for (int i(1); i < named_type::Count; ++i)
@@ -261,6 +244,9 @@ namespace item
             }
         }
 
+        //okay...I can't find the bug in this ItemProfileWarehouse code that is creating duplicates
+        //so I'll just remove them here.  There are ~834,000 items before this erase and ~523,000
+        //after.  -zTn 2017-8-10
         std::sort(vec_.begin(), vec_.end());
         vec_.erase(std::unique(vec_.begin(), vec_.end()), vec_.end());
     }
@@ -318,10 +304,23 @@ namespace item
         {
             ItemProfile fatProfile;
             fatProfile.SetMisc(THIN_PROFILE.MiscType(),
+                               false,
                                MATERIAL_PRI,
                                MATERIAL_SEC,
                                SET_TYPE);
             vec_.push_back(fatProfile);
+
+            if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
+            {
+                ItemProfile fatProfilePixie;
+                fatProfilePixie.SetMisc(THIN_PROFILE.MiscType(),
+                                        true,
+                                        MATERIAL_PRI,
+                                        MATERIAL_SEC,
+                                        SET_TYPE);
+                vec_.push_back(fatProfilePixie);
+            }
+
             return;
         }
 
@@ -959,16 +958,22 @@ namespace item
             "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any "
             << " primary materials for misc_type=" << item::misc_type::ToString(E));
 
-        auto didAddProfile{ false };
+        auto const COUNT{ vec_.size() };
 
         for (auto const NEXT_MATERIAL_PRIMARY : MATERIALS.first)
         {
             if (MATERIALS.second.empty())
             {
                 ItemProfile p;
-                p.SetMisc(E, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
+                p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
                 vec_.push_back(p);
-                didAddProfile = true;
+
+                if (misc_type::HasPixieVersion(E))
+                {
+                    ItemProfile pPixie;
+                    pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
+                    vec_.push_back(pPixie);
+                }
             }
             else
             {
@@ -980,14 +985,20 @@ namespace item
                     }
 
                     ItemProfile p;
-                    p.SetMisc(E, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
+                    p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
                     vec_.push_back(p);
-                    didAddProfile = true;
+
+                    if (misc_type::HasPixieVersion(E))
+                    {
+                        ItemProfile pPixie;
+                        pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
+                        vec_.push_back(pPixie);
+                    }
                 }
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((didAddProfile),
+        M_ASSERT_OR_LOGANDTHROW_SS((vec_.size() != COUNT),
             "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any"
             << " valid material combinations for misc_type=" << item::misc_type::ToString(E));
     }

@@ -345,6 +345,7 @@ namespace item
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
         misc_ = unique_type::MiscType(E);
+        isPixie_ = false;
 
         auto const IS_WEAPON{ ((E == unique_type::ViperFangFingerclaw) ||
                                (E == unique_type::ScorpionStingerFingerclaw) ||
@@ -359,6 +360,7 @@ namespace item
 
 
     void ItemProfile::SetMisc(const misc_type::Enum E,
+                              const bool            IS_PIXIE,
                               const material::Enum  MATERIAL_PRIMARY,
                               const material::Enum  MATERIAL_SECONDARY,
                               const set_type::Enum  SET_TYPE)
@@ -368,6 +370,7 @@ namespace item
         misc_ = E;
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
+        isPixie_ = IS_PIXIE;
 
         if (0 == score_)
         {

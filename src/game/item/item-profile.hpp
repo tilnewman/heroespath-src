@@ -113,6 +113,7 @@ namespace item
                        const element_type::Enum ELEMENT_TYPE   = element_type::None);
         
         void SetMisc(const misc_type::Enum,
+                     const bool           IS_PIXIE           = false,
                      const material::Enum MATERIAL_PRIMARY   = material::Nothing,
                      const material::Enum MATERIAL_SECONDARY = material::Nothing,
                      const set_type::Enum SET_TYPE           = set_type::NotASet);

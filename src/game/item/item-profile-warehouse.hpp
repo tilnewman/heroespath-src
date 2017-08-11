@@ -64,7 +64,7 @@ namespace item
 
         void Setup();
 
-        inline const ItemProfileVec_t & Complete() const { return vec_; }
+        inline const ItemProfileVec_t & Get() const { return vec_; }
 
     private:
         void SetupFromThinProfile(const ItemProfile &    THIN_PROFILE,

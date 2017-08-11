@@ -759,7 +759,7 @@ namespace gui
         {
             if (IS_JEWELED)
             {
-                return "staff-special-2" + FILE_EXT_STR_;
+                return "staff-2" + FILE_EXT_STR_;
             }
             else
             {
@@ -1243,6 +1243,16 @@ namespace gui
                 {
                     std::ostringstream ss;
                     ss << "figurine-evil-" << i << FILE_EXT_STR_;
+                    filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
+            case misc_type::Staff:
+            {
+                for (auto i(1); i <= 21; ++i)
+                {
+                    std::ostringstream ss;
+                    ss << "staff-" << i << FILE_EXT_STR_;
                     filenames.push_back(ss.str());
                 }
                 return filenames;

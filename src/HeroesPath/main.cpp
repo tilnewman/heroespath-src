@@ -69,6 +69,7 @@
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-ratings.hpp"
 #include "game/item/item-profile-warehouse.hpp"
+#include "game/item/item-factory.hpp"
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
@@ -200,6 +201,7 @@ int main(int argc, char * argv[])
         game::combat::Encounter::Acquire();
         game::item::ArmorRatings::Acquire();
         game::item::ItemProfileWarehouse::Acquire();
+        game::item::ItemFactory::Acquire();
 
         try
         {
@@ -270,6 +272,7 @@ int main(int argc, char * argv[])
         }
 
         //unload stage 2
+        game::item::ItemFactory::Release();
         game::item::ItemProfileWarehouse::Release();
         game::item::ArmorRatings::Release();
         game::combat::Encounter::Release();
