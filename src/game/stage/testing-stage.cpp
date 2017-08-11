@@ -73,6 +73,7 @@ namespace stage
 
     const std::size_t          TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
     sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
+    const int                  TestingStage::IMAGE_COUNT_MAX_{ 11 };
 
 
     TestingStage::TestingStage()
@@ -85,7 +86,9 @@ namespace stage
         testingBlurbsVec_  (),
         sleepMilliseconds_ (0),
         animBGTexture_     (),
-        animBGSprite_      ()
+        animBGSprite_      (),
+        imageCount_        (0),
+        willImageCheck_    (false)
     {}
 
 
@@ -212,39 +215,48 @@ namespace stage
 
     bool TestingStage::KeyPress(const sf::Event::KeyEvent & KE)
     {
-        if (KE.code == sf::Keyboard::F1)
+        if (false == willImageCheck_)
         {
-            sleepMilliseconds_ = 0;
-        }
-        else
-        {
-            auto const SPEED1{ 0 };
-            auto const SPEED2{ 500 };
-            auto const SPEED3{ 1'000 };
-            auto const SPEED4{ 3'000 };
-            if (sleepMilliseconds_ == SPEED1)
+            if (KE.code == sf::Keyboard::F1)
             {
-                sleepMilliseconds_ = SPEED2;
-                LoopManager::Instance()->TestingStrAppend("System Tests Speed = 2");
-            }
-            else if (sleepMilliseconds_ == SPEED2)
-            {
-                sleepMilliseconds_ = SPEED3;
-                LoopManager::Instance()->TestingStrAppend("System Tests Speed = 3");
-            }
-            else if (sleepMilliseconds_ == SPEED3)
-            {
-                sleepMilliseconds_ = SPEED4;
-                LoopManager::Instance()->TestingStrAppend("System Tests Speed = 4");
+                sleepMilliseconds_ = 0;
             }
             else
             {
-                sleepMilliseconds_ = SPEED1;
-                LoopManager::Instance()->TestingStrAppend("System Tests Speed = 1");
+                auto const SPEED1{ 0 };
+                auto const SPEED2{ 500 };
+                auto const SPEED3{ 1'000 };
+                auto const SPEED4{ 3'000 };
+                if (sleepMilliseconds_ == SPEED1)
+                {
+                    sleepMilliseconds_ = SPEED2;
+                    LoopManager::Instance()->TestingStrAppend("System Tests Speed = 2");
+                }
+                else if (sleepMilliseconds_ == SPEED2)
+                {
+                    sleepMilliseconds_ = SPEED3;
+                    LoopManager::Instance()->TestingStrAppend("System Tests Speed = 3");
+                }
+                else if (sleepMilliseconds_ == SPEED3)
+                {
+                    sleepMilliseconds_ = SPEED4;
+                    LoopManager::Instance()->TestingStrAppend("System Tests Speed = 4");
+                }
+                else
+                {
+                    sleepMilliseconds_ = SPEED1;
+                    LoopManager::Instance()->TestingStrAppend("System Tests Speed = 1");
+                }
             }
         }
 
         return true;
+    }
+
+
+    void TestingStage::UpdateMouseDown(const sf::Vector2f &)
+    {
+        imageCount_ = 0;
     }
 
 
@@ -285,6 +297,7 @@ namespace stage
     void TestingStage::TestingImageSet(const sf::Texture & TEXTURE)
     {
         textureList_.push_back(TEXTURE);
+        ++imageCount_;
     }
 
 
@@ -293,6 +306,11 @@ namespace stage
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (LoopManager::Instance()->IsFading())
+        {
+            return;
+        }
+
+        if (willImageCheck_ && (IMAGE_COUNT_MAX_ <= imageCount_))
         {
             return;
         }

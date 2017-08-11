@@ -67,6 +67,7 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
         virtual bool KeyPress(const sf::Event::KeyEvent &);
+        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
 
         void TestingStrAppend(const std::string &);
         void TestingStrIncrement(const std::string &);
@@ -88,6 +89,7 @@ namespace stage
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
         static sfml_util::AnimationUPtr_t animUPtr_;
+        static const int IMAGE_COUNT_MAX_;
 
     private:
         const float SCREEN_WIDTH_;
@@ -98,6 +100,8 @@ namespace stage
         int sleepMilliseconds_;
         sf::Texture animBGTexture_;
         sf::Sprite animBGSprite_;
+        int imageCount_;
+        bool willImageCheck_;
     };
 
 }
