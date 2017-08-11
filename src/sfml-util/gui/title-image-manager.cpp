@@ -147,7 +147,7 @@ namespace gui
 
         if (bfs::exists(pathToUse) == false)
         {
-            M_HP_LOG("sfml_util::gui::TitleImageManager::Get(title=\"" << TITLE_PTR->Name() << "\", title_filename=\"" << TITLE_PTR->ImageFilename() << "\") was unable to find the image for a title at: \"" << pathToUse.string() << "\".");
+            M_HP_LOG_ERR("sfml_util::gui::TitleImageManager::Get(title=\"" << TITLE_PTR->Name() << "\", title_filename=\"" << TITLE_PTR->ImageFilename() << "\") was unable to find the image for a title at: \"" << pathToUse.string() << "\".");
             pathToUse = placeHlderFilePathObj_;
         }
 
