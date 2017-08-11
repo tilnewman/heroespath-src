@@ -1555,9 +1555,9 @@ namespace item
         }
         else if ((E == misc_type::Spider_Eggs) ||
                  (E == misc_type::Litch_Hand) ||
-                 (E == item::misc_type::Egg) ||
-                 (E == item::misc_type::Embryo) ||
-                 (E == item::misc_type::Petrified_Snake))
+                 (E == misc_type::Egg) ||
+                 (E == misc_type::Embryo) ||
+                 (E == misc_type::Petrified_Snake))
         {
             return MaterialVecPair_t({ material::Flesh }, {});
         }
@@ -1576,33 +1576,33 @@ namespace item
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Figurine_Blessed)
+        else if (E == misc_type::Figurine_Blessed)
         {
             return MaterialVecPair_t({ material::Stone,
                                        material::Wood,
                                        material::Glass }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Figurine_Cursed)
+        else if (E == misc_type::Figurine_Cursed)
         {
             return MaterialVecPair_t({ material::Stone,
                                        material::Wood,
                                        material::Bone,
                                        material::Obsidian }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Doll_Blessed)
+        else if (E == misc_type::Doll_Blessed)
         {
             return MaterialVecPair_t({ material::Stone,
                                        material::Wood,
                                        material::Glass }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Doll_Cursed)
+        else if (E == misc_type::Doll_Cursed)
         {
             return MaterialVecPair_t({ material::Stone,
                                        material::Wood,
                                        material::Bone,
                                        material::Obsidian }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Bust)
+        else if (E == misc_type::Bust)
         {
             return MaterialVecPair_t({ material::Stone,
                                        material::Wood,
@@ -1610,71 +1610,75 @@ namespace item
                                        material::Obsidian,
                                        material::Glass }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Puppet)
+        else if (E == misc_type::Puppet)
         {
             return MaterialVecPair_t({ material::Wood,
                                        material::Cloth }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Dried_Head)
+        else if (E == misc_type::Dried_Head)
         {
             return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Goblet)
+        else if (E == misc_type::Goblet)
         {
             return MaterialVecPair_t({ material::Tin,
                                        material::Bronze,
                                        material::Silver,
                                        material::Gold }, material::CoreSecondary());
         }
-        else if (E == item::misc_type::Balm_Pot)
+        else if (E == misc_type::Balm_Pot)
         {
             return MaterialVecPair_t({ material::Bronze,
                                        material::Silver,
                                        material::Gold }, {});
         }
-        else if (E == item::misc_type::Seeds)
+        else if (E == misc_type::Seeds)
         {
             return MaterialVecPair_t({ material::Plant }, {});
         }
-        else if (E == item::misc_type::Mummy_Hand)
+        else if (E == misc_type::Mummy_Hand)
         {
             return MaterialVecPair_t({ material::Flesh }, { material::Cloth });
         }
-        else if (E == item::misc_type::Shard)
+        else if (E == misc_type::Shard)
         {
             return MaterialVecPair_t(material::CoreJewel(), {});
         }
-        else if (E == item::misc_type::Orb)
+        else if (E == misc_type::Orb)
         {
             return MaterialVecPair_t(material::CoreJewel(), { material::Wood });
         }
-        else if (E == item::misc_type::Scepter)
+        else if (E == misc_type::Scepter)
         {
             return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
         }
-        else if (E == item::misc_type::Icicle)
+        else if (E == misc_type::Icicle)
         {
             return MaterialVecPair_t({ material::Glass }, {});
         }
-        else if (E == item::misc_type::Finger)
+        else if (E == misc_type::Finger)
         {
             return MaterialVecPair_t({ material::Stone }, {});
         }
-        else if (E == item::misc_type::Unicorn_Horn)
+        else if (E == misc_type::Unicorn_Horn)
         {
             return MaterialVecPair_t({ material::Horn }, {});
         }
-        else if (E == item::misc_type::Devil_Horn)
+        else if (E == misc_type::Devil_Horn)
         {
             return MaterialVecPair_t({ material::Horn }, {});
         }
-        else if ((E == item::misc_type::Recorder) ||
-                 (E == item::misc_type::Viol) ||
-                 (E == item::misc_type::Pipe_And_Tabor) ||
-                 (E == item::misc_type::Lyre) ||
-                 (E == item::misc_type::Hurdy_Gurdy))
+        else if ((E == misc_type::Recorder) ||
+                 (E == misc_type::Viol) ||
+                 (E == misc_type::Pipe_And_Tabor) ||
+                 (E == misc_type::Lyre) ||
+                 (E == misc_type::Hurdy_Gurdy))
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+        }
+        else if (E == misc_type::Ring)
+        {
+            return MaterialVecPair_t(material::CorePrimary(), material::CoreSecondary());
         }
         else
         {
@@ -1685,37 +1689,42 @@ namespace item
 
     bool misc_type::IsStandaloneItem(const misc_type::Enum E)
     {
-        return ((E == item::misc_type::LockPicks) ||
-                (E == item::misc_type::Spider_Eggs) ||
-                (E == item::misc_type::Wand) ||
-                (E == item::misc_type::DrumLute) ||
-                (E == item::misc_type::Figurine_Blessed) ||
-                (E == item::misc_type::Figurine_Cursed) ||
-                (E == item::misc_type::Doll_Blessed) ||
-                (E == item::misc_type::Doll_Cursed) ||
-                (E == item::misc_type::Bust) ||
-                (E == item::misc_type::Puppet) ||
-                (E == item::misc_type::Dried_Head) ||
-                (E == item::misc_type::Goblet) ||
-                (E == item::misc_type::Balm_Pot) ||
-                (E == item::misc_type::Egg) ||
-                (E == item::misc_type::Embryo) ||
-                (E == item::misc_type::Seeds) ||
-                (E == item::misc_type::Petrified_Snake) ||
-                (E == item::misc_type::Mummy_Hand) ||
-                (E == item::misc_type::Shard) ||
-                (E == item::misc_type::Orb) ||
-                (E == item::misc_type::Scepter) ||
-                (E == item::misc_type::Icicle) ||
-                (E == item::misc_type::Finger) ||
-                (E == item::misc_type::Unicorn_Horn) ||
-                (E == item::misc_type::Devil_Horn) ||
-                (E == item::misc_type::Recorder) ||
-                (E == item::misc_type::Viol) ||
-                (E == item::misc_type::Pipe_And_Tabor) ||
-                (E == item::misc_type::Hurdy_Gurdy) ||
-                (E == item::misc_type::Lyre) ||
-                (E == item::misc_type::Staff));
+        //Note:  Keep in sync with:
+        //          MiscItemFactory::Make()
+        //          misc_type::Materials()
+        //          ItemProfile::SetMisc()
+        return ((E == misc_type::LockPicks) ||
+                (E == misc_type::Spider_Eggs) ||
+                (E == misc_type::Wand) ||
+                (E == misc_type::DrumLute) ||
+                (E == misc_type::Figurine_Blessed) ||
+                (E == misc_type::Figurine_Cursed) ||
+                (E == misc_type::Doll_Blessed) ||
+                (E == misc_type::Doll_Cursed) ||
+                (E == misc_type::Bust) ||
+                (E == misc_type::Puppet) ||
+                (E == misc_type::Dried_Head) ||
+                (E == misc_type::Goblet) ||
+                (E == misc_type::Balm_Pot) ||
+                (E == misc_type::Egg) ||
+                (E == misc_type::Embryo) ||
+                (E == misc_type::Seeds) ||
+                (E == misc_type::Petrified_Snake) ||
+                (E == misc_type::Mummy_Hand) ||
+                (E == misc_type::Shard) ||
+                (E == misc_type::Orb) ||
+                (E == misc_type::Scepter) ||
+                (E == misc_type::Icicle) ||
+                (E == misc_type::Finger) ||
+                (E == misc_type::Unicorn_Horn) ||
+                (E == misc_type::Devil_Horn) ||
+                (E == misc_type::Recorder) ||
+                (E == misc_type::Viol) ||
+                (E == misc_type::Pipe_And_Tabor) ||
+                (E == misc_type::Hurdy_Gurdy) ||
+                (E == misc_type::Lyre) ||
+                (E == misc_type::Staff) ||
+                (E == misc_type::Ring));
     }
 
 

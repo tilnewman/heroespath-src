@@ -73,16 +73,16 @@ namespace item
             {
                 //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
                 ssName << "and "
-                    << material::ToReadableString(MATERIAL_SEC)
-                    << " "
                     << RandomAdornedAdjective()
+                    << " "
+                    << material::ToReadableString(MATERIAL_SEC)
                     << " ";
             }
             else if (material::IsLiquid(MATERIAL_SEC))
             {
-                ssName << material::ToReadableString(MATERIAL_SEC)
+                ssName << RandomCoatedAdjective()
                     << " "
-                    << RandomCoatedAdjective()
+                    << material::ToReadableString(MATERIAL_SEC)
                     << " ";
             }
             else
@@ -139,7 +139,7 @@ namespace item
                 else if (material::IsPrecious(MATERIAL_SEC))
                 {
                     //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
-                    ssDesc << RandomAdornedAdjective() << " with ";
+                    ssDesc << RandomAdornedAdjective() << " ";
                 }
                 else if (material::IsLiquid(MATERIAL_SEC))
                 {

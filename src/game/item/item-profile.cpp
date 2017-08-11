@@ -417,13 +417,26 @@ namespace item
                  (E == item::misc_type::Icicle) ||
                  (E == item::misc_type::Finger) ||
                  (E == item::misc_type::Unicorn_Horn) ||
-                 (E == item::misc_type::Devil_Horn))
-                 
+                 (E == item::misc_type::Devil_Horn) ||
+                 (E == item::misc_type::Staff))
         {
             category_ = static_cast<category::Enum>(category_ |
                                                     category::AllowsCasting |
                                                     category::Equippable);
             score_ += 100;
+
+            if (E == item::misc_type::Staff)
+            {
+                isStaff_ = true;
+
+                category_ = static_cast<category::Enum>(category_ |
+                                                        category::Weapon |
+                                                        category::Equippable |
+                                                        category::TwoHanded);
+
+                weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff |
+                                                         weapon_type::Melee);
+            }
         }
         else if ((E == item::misc_type::DrumLute) ||
                  (E == item::misc_type::Lyre) ||
@@ -433,6 +446,7 @@ namespace item
                  (E == item::misc_type::Recorder))
         {
             category_ = static_cast<category::Enum>(category_ | category::Equippable);
+            role_ = creature::role::Bard;
             score_ += 100;
         }
         else if ((E == item::misc_type::Bust) ||
@@ -461,6 +475,13 @@ namespace item
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
             score_ += 150;
+        }
+        else if (E == item::misc_type::Ring)
+        {
+            category_ = static_cast<category::Enum>(category_ |
+                                                    category::Equippable |
+                                                    category::Wearable);
+            score_ += 20;
         }
     }
     

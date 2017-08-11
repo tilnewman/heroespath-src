@@ -69,13 +69,49 @@ namespace misc
 
         static ItemPtr_t Make(const ItemProfile &);
 
-        static ItemPtr_t Make_Ring(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC);
+        static ItemPtr_t Make_BalmPot(const ItemProfile &);
+        static ItemPtr_t Make_Bust(const ItemProfile &);
+        static ItemPtr_t Make_DevilHorn(const ItemProfile &);
+        static ItemPtr_t Make_DollBlessed(const ItemProfile &);
+        static ItemPtr_t Make_DollCursed(const ItemProfile &);
+        static ItemPtr_t Make_DriedHead(const ItemProfile &);
+        static ItemPtr_t Make_DrumLute(const ItemProfile &);
+        static ItemPtr_t Make_Egg(const ItemProfile &);
+        static ItemPtr_t Make_Embryo(const ItemProfile &);
+        static ItemPtr_t Make_FigurineBlessed(const ItemProfile &);
+        static ItemPtr_t Make_FigurineCursed(const ItemProfile &);
+        static ItemPtr_t Make_Finger(const ItemProfile &);
+        static ItemPtr_t Make_Goblet(const ItemProfile &);
+        static ItemPtr_t Make_HurdyGurdy(const ItemProfile &);
+        static ItemPtr_t Make_Icicle(const ItemProfile &);
+        static ItemPtr_t Make_LockPicks(const ItemProfile &);
+        static ItemPtr_t Make_Lyre(const ItemProfile &);
+        static ItemPtr_t Make_MummyHand(const ItemProfile &);
+        static ItemPtr_t Make_Orb(const ItemProfile &);
+        static ItemPtr_t Make_PetrifiedSnake(const ItemProfile &);
+        static ItemPtr_t Make_PipeAndTabor(const ItemProfile &);
+        static ItemPtr_t Make_Puppet(const ItemProfile &);
+        static ItemPtr_t Make_Recorder(const ItemProfile &);
+        static ItemPtr_t Make_Ring(const ItemProfile &);
+        static ItemPtr_t Make_Scepter(const ItemProfile &);
+        static ItemPtr_t Make_Seeds(const ItemProfile &);
+        static ItemPtr_t Make_Shard(const ItemProfile &);
+        static ItemPtr_t Make_SpiderEggs(const ItemProfile &);
+        static ItemPtr_t Make_Staff(const ItemProfile &);
+        static ItemPtr_t Make_UnicornHorn(const ItemProfile &);
+        static ItemPtr_t Make_Viol(const ItemProfile &);
+        static ItemPtr_t Make_Wand(const ItemProfile &);
 
-        static ItemPtr_t Make_Wand(const material::Enum MATERIAL_PRI,
-                                   const material::Enum MATERIAL_SEC);
-
-        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE);
+        //to support the older InventoryFactory
+        static ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
+        static ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
+        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
+        
+    private:
+        static ItemPtr_t Make_Helper(const ItemProfile &  PROFILE,
+                                     const stats::Trait_t BASE_PRICE,
+                                     const stats::Trait_t BASE_WEIGHT,
+                                     const std::string &  BASE_DESC = "");
 
     private:
         static std::unique_ptr<MiscItemFactory> instanceUPtr_;

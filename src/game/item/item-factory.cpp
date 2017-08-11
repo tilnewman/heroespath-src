@@ -107,9 +107,6 @@ namespace item
 
         static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->Get() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((allItemProfilesVec.empty() == false),
-            "game::item::ItemFactory::Test() found an empty allItemProfilesVec.");
-
         static auto hasTestedMakingItems_NamedEquipment{ false };
         if (false == hasTestedMakingItems_NamedEquipment)
         {
@@ -218,13 +215,6 @@ namespace item
             for (auto iter{ MISC_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
             {
                 auto itemPtr{ Instance()->Make( * iter) };
-
-                M_ASSERT_OR_LOGANDTHROW_SS((misc_type::IsStandaloneItem(itemPtr->MiscType())),
-                    "game::item::ItemFactory::Test() found a misc_type that was not stand-alone: "
-                    << "Item=\"" << itemPtr->Name()
-                    << "\", ItemProfile=[" << iter->ToString()
-                    << "], misc_type=" << misc_type::ToString(itemPtr->MiscType()));
-
                 TestItem("misc_type", itemPtr, * iter);
                 ItemWarehouse::Instance()->Free(itemPtr);
             }
@@ -241,7 +231,7 @@ namespace item
         if (false == hasTestedMakingItems_ElementEquipment)
         {
             auto ELEMENT_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                                allItemProfilesVec.end(),
+                                                   allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
@@ -398,7 +388,7 @@ namespace item
             << "\", profile=[" << ITEM_PROFILE.ToString()
             << "]) created a broken item.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->Category() == category::None),
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->Category() != category::None),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
             << "\", profile=[" << ITEM_PROFILE.ToString()
@@ -416,6 +406,12 @@ namespace item
 
             throw std::runtime_error(ss.str());
         }
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->ImageFilename().empty() == false),
+            "game::item::ItemFactory::TestItem(which_test="
+            << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
+            << "\", profile=[" << ITEM_PROFILE.ToString()
+            << "]) created an item with no/empty image filename.");
     }
 
 

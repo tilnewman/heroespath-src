@@ -249,6 +249,16 @@ namespace item
         //after.  -zTn 2017-8-10
         std::sort(vec_.begin(), vec_.end());
         vec_.erase(std::unique(vec_.begin(), vec_.end()), vec_.end());
+
+        //okay...I can't find the bug that allows items with the same material as pri and sec,
+        //so I'll just remove them here.
+        vec_.erase(std::remove_if(vec_.begin(), vec_.end(),
+            [](const ItemProfile & P)
+            {
+                return (P.MaterialPrimary() == P.MaterialSecondary());
+            }), vec_.end());
+
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size() << " items.");
     }
 
 
