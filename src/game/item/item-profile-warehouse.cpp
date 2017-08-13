@@ -324,11 +324,18 @@ namespace item
             }
         }
 
+        auto const RAW_COUNT{ vec_.size() };
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << RAW_COUNT << " raw items.");
+
         //okay...I can't find the bug in this ItemProfileWarehouse code that is creating duplicates
         //so I'll just remove them here.  There are ~834,000 items before this erase and ~523,000
         //after.  -zTn 2017-8-10
         std::sort(vec_.begin(), vec_.end());
         vec_.erase(std::unique(vec_.begin(), vec_.end()), vec_.end());
+
+        auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - vec_.size() };
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << DUPLICATE_PROFILE_COUNT
+            << " duplicate profiles.");
 
         //okay...I can't find the bug that allows items with the same material as pri and sec,
         //so I'll just remove them here.
@@ -338,7 +345,11 @@ namespace item
                 return (P.MaterialPrimary() == P.MaterialSecondary());
             }), vec_.end());
 
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size() << " items.");
+        auto const DUPLICATE_MATERIALS_COUNT{ RAW_COUNT - DUPLICATE_PROFILE_COUNT - vec_.size() };
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << DUPLICATE_MATERIALS_COUNT
+            << " duplicate material items.");
+
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size() << " final items.");
     }
 
 
