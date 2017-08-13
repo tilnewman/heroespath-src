@@ -33,6 +33,8 @@
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/armor-info.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -105,14 +107,18 @@ namespace gui
 
         const std::string GetImageFilename(
             const game::item::misc_type::Enum ITEM_ENUM,
-            const bool                        IS_JEWELED = false,
-            const bool                        IS_BONE = false,
-            const bool                        WILL_RANDOMIZE = false) const;
+            const bool                        IS_JEWELED     = false,
+            const bool                        IS_BONE        = false,
+            const bool                        WILL_RANDOMIZE = false,
+            const game::creature::race::Enum  RACE_ENUM = game::creature::race::Count,
+            const game::creature::role::Enum  ROLE_ENUM = game::creature::role::Count) const;
 
         const std::vector<std::string> GetImageFilenames(
             const game::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
-            const bool                        IS_BONE = false) const;
+            const bool                        IS_BONE    = false,
+            const game::creature::race::Enum  RACE_ENUM  = game::creature::race::Count,
+            const game::creature::role::Enum  ROLE_ENUM  = game::creature::role::Count) const;
 
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;

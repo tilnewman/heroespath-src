@@ -31,11 +31,13 @@
 
 #include "game/log-macros.hpp"
 #include "game/combat/treasure-factory.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 
-#include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <exception>
@@ -240,6 +242,84 @@ namespace item
                     SetupFromThinProfile(NEXT_SET_THINPROFILE,
                                          named_type::NotNamed,
                                          NEXT_SET_ENUM);
+                }
+            }
+        }
+
+        //summoning items
+        {
+            auto const MATERIALS_VEC{ material::CorePrimaryNoPearl() };
+            
+            using namespace creature;
+            for (int raceIndex(0); raceIndex < race::Count; ++raceIndex)
+            {
+                auto const RACE_ENUM{ static_cast<race::Enum>(raceIndex) };
+
+                auto const ROLES_VEC{ race::Roles(RACE_ENUM) };
+
+                for (auto const ROLE_ENUM : ROLES_VEC)
+                {
+                    auto const ORIGINS_VEC{ race::OriginTypes(RACE_ENUM, ROLE_ENUM) };
+                    for (auto const ORIGIN_ENUM : ORIGINS_VEC)
+                    {
+                        if (ORIGIN_ENUM == origin_type::Statue)
+                        {
+                            for (auto const NEXT_MATERIAL : MATERIALS_VEC)
+                            {
+                                ItemProfile p;
+                                
+                                p.SetMisc(misc_type::Summoning_Statue,
+                                          false,
+                                          NEXT_MATERIAL,
+                                          material::Nothing,
+                                          set_type::NotASet);
+
+                                p.Summoning( SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+                                vec_.push_back(p);
+                            }
+                        }
+                        else
+                        {
+                            auto const MISC_TYPE{ [ORIGIN_ENUM]()
+                                {
+                                    if (ORIGIN_ENUM == origin_type::Egg)
+                                    {
+                                        return misc_type::Egg;
+                                    }
+                                    else if (ORIGIN_ENUM == origin_type::Embryo)
+                                    {
+                                        return misc_type::Embryo;
+                                    }
+                                    else
+                                    {
+                                        return misc_type::Seeds;
+                                    }
+                                }() };
+
+                            auto const MATERIAL{ [ORIGIN_ENUM]()
+                                {
+                                    if (ORIGIN_ENUM == origin_type::Seeds)
+                                    {
+                                        return material::Plant;
+                                    }
+                                    else
+                                    {
+                                        return material::Flesh;
+                                    }
+                                }() };
+
+                            ItemProfile p;
+                                
+                            p.SetMisc(MISC_TYPE,
+                                      false,
+                                      MATERIAL,
+                                      material::Nothing,
+                                      set_type::NotASet);
+
+                            p.Summoning( SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+                            vec_.push_back(p);
+                        }
+                    }
                 }
             }
         }

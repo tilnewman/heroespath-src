@@ -44,28 +44,29 @@ namespace game
 namespace item
 {
 
-    Item::Item(const std::string &        NAME,
-               const std::string &        DESC,
-               const category::Enum       CATEGORY,
-               const misc_type::Enum      MISC_TYPE,
-               const weapon_type::Enum    WEAPON_TYPE,
-               const armor_type::Enum     ARMOR_TYPE,
-               const material::Enum       MATERIAL_PRIMARY,
-               const material::Enum       MATERIAL_SECONDARY,
-               const std::string &        IMAGE_FILENAME,
-               const stats::Trait_t       PRICE,
-               const stats::Trait_t       WEIGHT,
-               const stats::Trait_t       DAMAGE_MIN,
-               const stats::Trait_t       DAMAGE_MAX,
-               const stats::Trait_t       ARMOR_RATING,
-               const creature::role::Enum EXCLUSIVE_TO_ROLE,
-               const weapon::WeaponInfo & WEAPON_INFO,
-               const armor::ArmorInfo &   ARMOR_INFO,
-               const bool                 IS_PIXIE_ITEM,
-               const unique_type::Enum    UNIQUE_TYPE,
-               const set_type::Enum       SET_TYPE,
-               const named_type::Enum     NAMED_TYPE,
-               const element_type::Enum   ELEMENT_TYPE)
+    Item::Item(const std::string &          NAME,
+               const std::string &          DESC,
+               const category::Enum         CATEGORY,
+               const misc_type::Enum        MISC_TYPE,
+               const weapon_type::Enum      WEAPON_TYPE,
+               const armor_type::Enum       ARMOR_TYPE,
+               const material::Enum         MATERIAL_PRIMARY,
+               const material::Enum         MATERIAL_SECONDARY,
+               const std::string &          IMAGE_FILENAME,
+               const stats::Trait_t         PRICE,
+               const stats::Trait_t         WEIGHT,
+               const stats::Trait_t         DAMAGE_MIN,
+               const stats::Trait_t         DAMAGE_MAX,
+               const stats::Trait_t         ARMOR_RATING,
+               const creature::role::Enum   EXCLUSIVE_TO_ROLE,
+               const weapon::WeaponInfo &   WEAPON_INFO,
+               const armor::ArmorInfo &     ARMOR_INFO,
+               const bool                   IS_PIXIE_ITEM,
+               const unique_type::Enum      UNIQUE_TYPE,
+               const set_type::Enum         SET_TYPE,
+               const named_type::Enum       NAMED_TYPE,
+               const element_type::Enum     ELEMENT_TYPE,
+               const creature::SummonInfo & SUMMON_INFO)
     :
         name_            (NAME),
         desc_            (DESC),
@@ -89,6 +90,7 @@ namespace item
         setType_         (SET_TYPE),
         namedType_       (NAMED_TYPE),
         elementType_     (ELEMENT_TYPE),
+        summonInfo_      (SUMMON_INFO),
         enchantmentsPVec_()
     {
         //adjust the weight for pixie items
@@ -236,6 +238,7 @@ namespace item
                         L.uniqueType_,
                         L.setType_,
                         L.namedType_,
+                        L.summonInfo_,
                         L.elementType_)
                <
                std::tie(R.name_,
@@ -259,6 +262,7 @@ namespace item
                         R.uniqueType_,
                         R.setType_,
                         R.namedType_,
+                        R.summonInfo_,
                         R.elementType_) )
         {
             return true;
@@ -291,6 +295,7 @@ namespace item
                      L.uniqueType_,
                      L.setType_,
                      L.namedType_,
+                     L.summonInfo_,
                      L.elementType_)
              !=
              std::tie(R.name_,
@@ -314,6 +319,7 @@ namespace item
                       R.uniqueType_,
                       R.setType_,
                       R.namedType_,
+                      R.summonInfo_,
                       R.elementType_))
         {
             return false;

@@ -59,28 +59,29 @@ namespace item
         Item & operator=(const Item &) =delete;
 
     public:
-        explicit Item(const std::string &        NAME               = "no_name_error",
-                      const std::string &        DESC               = "no-desc_error",
-                      const category::Enum       CATEGORY           = category::Broken,
-                      const misc_type::Enum      MISC_TYPE          = misc_type::NotMisc,
-                      const weapon_type::Enum    WEAPON_TYPE        = weapon_type::NotAWeapon,
-                      const armor_type::Enum     ARMOR_TYPE         = armor_type::NotArmor,
-                      const material::Enum       MATERIAL_PRIMARY   = material::Nothing,
-                      const material::Enum       MATERIAL_SECONDARY = material::Nothing,
-                      const std::string &        IMAGE_FILENAME     = "",
-                      const stats::Trait_t       PRICE              = stats::Trait_t(0),
-                      const stats::Trait_t       WEIGHT             = stats::Trait_t(0),
-                      const stats::Trait_t       DAMAGE_MIN         = 0,
-                      const stats::Trait_t       DAMAGE_MAX         = 0,
-                      const stats::Trait_t       ARMOR_RATING       = 0,
-                      const creature::role::Enum EXCLUSIVE_TO_ROLE  = creature::role::Count,
-                      const weapon::WeaponInfo & WEAPON_INFO        = weapon::WeaponInfo(),
-                      const armor::ArmorInfo &   ARMOR_INFO         = armor::ArmorInfo(),
-                      const bool                 IS_PIXIE_ITEM      = false,
-                      const unique_type::Enum    UNIQUE_TYPE        = unique_type::NotUnique,
-                      const set_type::Enum       SET_TYPE           = set_type::NotASet,
-                      const named_type::Enum     NAMED_TYPE         = named_type::NotNamed,
-                      const element_type::Enum   ELEMENT_TYPE       = element_type::None);
+        explicit Item(const std::string &          NAME               = "no_name_error",
+                      const std::string &          DESC               = "no-desc_error",
+                      const category::Enum         CATEGORY           = category::Broken,
+                      const misc_type::Enum        MISC_TYPE          = misc_type::NotMisc,
+                      const weapon_type::Enum      WEAPON_TYPE        = weapon_type::NotAWeapon,
+                      const armor_type::Enum       ARMOR_TYPE         = armor_type::NotArmor,
+                      const material::Enum         MATERIAL_PRIMARY   = material::Nothing,
+                      const material::Enum         MATERIAL_SECONDARY = material::Nothing,
+                      const std::string &          IMAGE_FILENAME     = "",
+                      const stats::Trait_t         PRICE              = stats::Trait_t(0),
+                      const stats::Trait_t         WEIGHT             = stats::Trait_t(0),
+                      const stats::Trait_t         DAMAGE_MIN         = 0,
+                      const stats::Trait_t         DAMAGE_MAX         = 0,
+                      const stats::Trait_t         ARMOR_RATING       = 0,
+                      const creature::role::Enum   EXCLUSIVE_TO_ROLE  = creature::role::Count,
+                      const weapon::WeaponInfo &   WEAPON_INFO        = weapon::WeaponInfo(),
+                      const armor::ArmorInfo &     ARMOR_INFO         = armor::ArmorInfo(),
+                      const bool                   IS_PIXIE_ITEM      = false,
+                      const unique_type::Enum      UNIQUE_TYPE        = unique_type::NotUnique,
+                      const set_type::Enum         SET_TYPE           = set_type::NotASet,
+                      const named_type::Enum       NAMED_TYPE         = named_type::NotNamed,
+                      const element_type::Enum     ELEMENT_TYPE       = element_type::None,
+                      const creature::SummonInfo & SUMMON_INFO        = creature::SummonInfo());
 
         virtual ~Item();
 
@@ -114,7 +115,7 @@ namespace item
 
         inline stats::Trait_t DamageMin() const                     { return damageMin_; }
         inline stats::Trait_t DamageMax() const                     { return damageMax_; }
-        inline stats::Trait_t  ArmorRating() const                  { return armorRating_; }
+        inline stats::Trait_t ArmorRating() const                   { return armorRating_; }
 
         inline bool IsBroken() const        { return (category_ == category::Broken); }
         inline bool IsArmor() const         { return (category_ & category::Armor); }
@@ -194,6 +195,11 @@ namespace item
             return enchantmentsPVec_;
         }
 
+        inline void AddCategory(const category::Enum E)
+        {
+            category_ = static_cast<category::Enum>(category_ | E);
+        }
+
         void EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR);
 
         void EnchantmentRemoveAndFree(creature::EnchantmentPtr_t);
@@ -208,6 +214,8 @@ namespace item
         inline void SetNamedType(const named_type::Enum E)          { namedType_ = E; }
         inline void SetMiscType(const misc_type::Enum E)            { miscType_ = E; }
         inline void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
+        inline void SetSummonInfo(const creature::SummonInfo & SI)  { summonInfo_ = SI; }
+        inline const creature::SummonInfo & GetSummonInfo() const   { return summonInfo_; }
 
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
@@ -235,6 +243,7 @@ namespace item
         set_type::Enum       setType_;
         named_type::Enum     namedType_;
         element_type::Enum   elementType_;
+        creature::SummonInfo summonInfo_;
 
         //The Item class owns the Enchantment objects and is responsible
         //for their lifetimes.
@@ -267,6 +276,7 @@ namespace item
             ar & setType_;
             ar & namedType_;
             ar & elementType_;
+            ar & summonInfo_;
             ar & enchantmentsPVec_;
         }
     };

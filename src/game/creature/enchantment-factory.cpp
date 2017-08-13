@@ -32,6 +32,7 @@
 #include "game/log-macros.hpp"
 #include "game/creature/enchantment-warehouse.hpp"
 #include "game/item/item.hpp"
+#include "game/creature/enchantments.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -166,8 +167,7 @@ namespace creature
         item::ItemPtr_t             itemPtr,
         const EnchantmentType::Enum TYPE,
         const stats::TraitSet &     TRAIT_SET,
-        const UseInfo &             USE_INFO,
-        const SummonInfo &          SUMMON_INFO) const
+        const UseInfo &             USE_INFO) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
             "game::creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr/details version)"
@@ -175,8 +175,7 @@ namespace creature
 
         return MakeStoreAttachReturn(itemPtr, new Enchantment(TYPE,
                                                               TRAIT_SET,
-                                                              USE_INFO,
-                                                              SUMMON_INFO));
+                                                              USE_INFO));
     }
 
 
@@ -621,8 +620,7 @@ namespace creature
             }
             case item::unique_type::CrystalChimes:
             {
-                //TODO return a custom enchantment that has a use effect
-                return {};
+                return { new Enchantment_CrystalChimes() };
             }
             case item::unique_type::CyclopsEye:
             {
@@ -648,7 +646,13 @@ namespace creature
                                             std::make_pair(stats::Traits::CurseResist, 33) }) ) };
             }
             case item::unique_type::DoveBloodVial:
+            {
+                return { new Enchantment_DoveBloodVial() };
+            }
             case item::unique_type::DragonToothWhistle:
+            {
+                return { new Enchantment_DragonToothWhistle() };
+            }
             case item::unique_type::DriedFrog:
             case item::unique_type::DriedGecko:
             case item::unique_type::DriedIguana:
@@ -658,8 +662,7 @@ namespace creature
             case item::unique_type::DriedToad:
             case item::unique_type::DriedTurtle:
             {
-                //TODO return a custom enchantment that has a use effect
-                return {};
+                return { new Enchantment_DriedEdible() };
             }
             case item::unique_type::DruidLeaf:
             {
@@ -697,8 +700,7 @@ namespace creature
             }
             case item::unique_type::ExoticGoldenGong:
             {
-                //TODO
-                return {};
+                return { new Enchantment_GoldenGong() };
             }
             case item::unique_type::FanaticsFlag:
             {
@@ -995,7 +997,6 @@ namespace creature
             }
             case item::unique_type::MagnifyingGlass:
             {
-                //TODO
                 return {};
             }
             case item::unique_type::ManaAmulet:
@@ -1140,8 +1141,7 @@ namespace creature
             }
             case item::unique_type::PixieBell:
             {
-                //TODO
-                return {};
+                return { new Enchantment_PixieBell() };
             }
             case item::unique_type::PriestRing:
             {
@@ -1320,7 +1320,6 @@ namespace creature
             }
             case item::unique_type::ShamanRainmaker:
             {
-                //TODO needs to be a custom enchantment so the use case is implemented
                 return { new Enchantment( static_cast<EnchantmentType::Enum>(
                                             EnchantmentType::WhenHeld |
                                             EnchantmentType::BoundToItem),
@@ -1331,7 +1330,8 @@ namespace creature
                                             std::make_pair(stats::Traits::MagicCast, 8), 
                                             std::make_pair(stats::Traits::MagicEffect, 18), 
                                             std::make_pair(stats::Traits::BlessCast, 16),
-                                            std::make_pair(stats::Traits::BlessEffect, 33) }) ) };
+                                            std::make_pair(stats::Traits::BlessEffect, 33) }) ),
+                        new Enchantment_ShamanRainmaker() };
             }
             case item::unique_type::SharkToothNecklace:
             {
@@ -1414,14 +1414,14 @@ namespace creature
             }
             case item::unique_type::SpecterChains:
             {
-                //TODO needs to be a custom enchantment so the use case is implemented
                 return { new Enchantment( static_cast<EnchantmentType::Enum>(
                                             EnchantmentType::WhenHeld |
                                             EnchantmentType::BoundToItem),
                                         stats::TraitSet( {
                                             std::make_pair(stats::Traits::Strength, 18),
                                             std::make_pair(stats::Traits::Encounter, -6),
-                                            std::make_pair(stats::Traits::Charm, 13) }) ) };
+                                            std::make_pair(stats::Traits::Charm, 13) }) ),
+                        new Enchantment_SpecterChains() };
             }
             case item::unique_type::SpecterRobe:
             {
@@ -1519,8 +1519,7 @@ namespace creature
             }
             case item::unique_type::VultureGizzard:
             {
-                //TODO
-                return {};
+                return { new Enchantment_VultureGizzard() };
             }
             case item::unique_type::WarhorseMarionette:
             {
@@ -1536,8 +1535,7 @@ namespace creature
             }
             case item::unique_type::WarTrumpet:
             {
-                //TODO
-                return {};
+                return { new Enchantment_WarTrumpet() };
             }
             case item::unique_type::WeaselTotem:
             {
@@ -1562,7 +1560,6 @@ namespace creature
             }
             case item::unique_type::WraithTalisman:
             {
-                //TODO need use enchantment implemented
                 return { new Enchantment( static_cast<EnchantmentType::Enum>(
                                             EnchantmentType::WhenHeld |
                                             EnchantmentType::BoundToItem),
@@ -1575,11 +1572,6 @@ namespace creature
                                             std::make_pair(stats::Traits::CurseCast, 13),
                                             std::make_pair(stats::Traits::CurseEffect, 33),
                                             std::make_pair(stats::Traits::CurseResist, 33), }) ) };
-            }
-            case item::unique_type::ZombieSeeds:
-            {
-                //TODO
-                return {};
             }
             case item::unique_type::NotUnique:
             case item::unique_type::Count:
@@ -1603,8 +1595,7 @@ namespace creature
         {
             return new Enchantment(EnchantmentType::WhenUsed,
                                    {},
-                                   UseInfo(10, Phase::Combat),
-                                   SummonInfo(3, race::Spider, role::Spider));
+                                   UseInfo(10, Phase::Combat));
         }
         else if ((E == item::misc_type::LockPicks) &&
                  (MATERIAL_PRIMARY != item::material::Count) &&

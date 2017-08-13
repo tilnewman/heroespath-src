@@ -54,40 +54,6 @@ namespace creature
     using CreaturePtr_t = Creature *;
 
 
-    //all the 'summoning' info about an enchantment
-    class SummonInfo
-    {
-    public:
-        SummonInfo(const int                  RANK = 0,
-                   const creature::race::Enum RACE = creature::race::Enum::Count,
-                   const creature::role::Enum ROLE = creature::role::Enum::Count)
-        :
-            rank_(RANK),
-            race_(RACE),
-            role_(ROLE)
-        {}
-
-        inline int Rank() const                  { return rank_; }
-        inline creature::race::Enum Race() const { return race_; }
-        inline creature::role::Enum Role() const { return role_; }
-
-    private:
-        int rank_;
-        creature::race::Enum race_;
-        creature::role::Enum role_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & rank_;
-            ar & race_;
-            ar & role_;
-        }
-    };
-
-
     //all the 'use' info about an enchantment
     class UseInfo
     {
@@ -139,10 +105,9 @@ namespace creature
     class Enchantment
     {
     public:
-        Enchantment(const EnchantmentType::Enum TYPE        = EnchantmentType::None,
-                    const stats::TraitSet &     TRAIT_SET   = {},
-                    const UseInfo &             USE_INFO    = UseInfo(),
-                    const SummonInfo &          SUMMON_INFO = SummonInfo());
+        Enchantment(const EnchantmentType::Enum TYPE      = EnchantmentType::None,
+                    const stats::TraitSet &     TRAIT_SET = {},
+                    const UseInfo &             USE_INFO  = UseInfo());
 
         virtual ~Enchantment();
 
@@ -151,7 +116,6 @@ namespace creature
         inline const stats::TraitSet & Traits() const           { return traitSet_; }
         inline const UseInfo & Use() const                      { return useInfo_; }
         inline void UseCountConsume()                           { useInfo_.CountConsume(); }
-        inline const SummonInfo & Summon() const                { return summonInfo_; }
         
         inline bool IsUseableEver() const
         {
@@ -182,7 +146,6 @@ namespace creature
         EnchantmentType::Enum   type_;
         stats::TraitSet         traitSet_;
         UseInfo                 useInfo_;
-        SummonInfo              summonInfo_;
 
     private:
         friend class boost::serialization::access;
@@ -192,7 +155,6 @@ namespace creature
             ar & type_;
             ar & traitSet_;
             ar & useInfo_;
-            ar & summonInfo_;
         }
     };
 

@@ -36,10 +36,14 @@
 #include "game/loop-manager.hpp"
 #include "game/non-player/ownership-profile.hpp"
 #include "game/item/armor-details.hpp"
+#include "game/creature/wolfen-class-enum.hpp"
+#include "game/creature/dragon-class-enum.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+
+#include "sfml-util/gui/creature-image-manager.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -447,8 +451,9 @@ namespace gui
             auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled, isBone);
 
             M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
-                "sfml_util::gui::ItemImageManager::Test() While testing misc item #" << miscIndex
-                << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha << isJeweled
+                "sfml_util::gui::ItemImageManager::Test() While testing misc item #"
+                << miscIndex << " \"" << ENUM_STR << "\", is_jeweled="
+                << std::boolalpha << isJeweled
                 << ", GetImageFilenames() returned an empty vector.");
 
             static std::size_t fileIndex{ 0 };
@@ -457,8 +462,9 @@ namespace gui
                 auto const NEXT_FILENAME{ FILENAMES_VEC[fileIndex] };
 
                 M_ASSERT_OR_LOGANDTHROW_SS((NEXT_FILENAME.empty() == false),
-                    "sfml_util::gui::ItemImageManager::Test() (rand)  While testing misc item #"
-                    << miscIndex << " \"" << ENUM_STR << "\", filename #" << fileIndex
+                    "sfml_util::gui::ItemImageManager::Test() (rand)  "
+                    << "While testing misc item #" << miscIndex << " \""
+                    << ENUM_STR << "\", filename #" << fileIndex
                     << ", is_jeweled=" << std::boolalpha << isJeweled
                     << ", found an empty filename string.");
 
@@ -618,14 +624,21 @@ namespace gui
         const game::item::misc_type::Enum ITEM_ENUM,
         const bool                        IS_JEWELED,
         const bool                        IS_BONE,
-        const bool                        WILL_RANDOMIZE) const
+        const bool                        WILL_RANDOMIZE,
+        const game::creature::race::Enum  RACE_ENUM,
+        const game::creature::role::Enum  ROLE_ENUM) const
     {
-        auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM, IS_JEWELED, IS_BONE));
+        auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM,
+                                                   IS_JEWELED,
+                                                   IS_BONE,
+                                                   RACE_ENUM,
+                                                   ROLE_ENUM));
 
         M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
             "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
             << game::item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled="
             << std::boolalpha << IS_JEWELED << ", will_rand=" << WILL_RANDOMIZE
+            << ", race=" << RACE_ENUM << ", role=" << ROLE_ENUM
             << ") unable to get any filenames for those settings.");
 
         if (WILL_RANDOMIZE)
@@ -642,8 +655,8 @@ namespace gui
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::ItemPtr_t ITEM_PTR,
-        const bool                  WILL_RANDOMIZE) const
+        const game::item::ItemPtr_t      ITEM_PTR,
+        const bool                       WILL_RANDOMIZE) const
     {
         using namespace game::item;
 
@@ -664,7 +677,9 @@ namespace gui
             return GetImageFilename(ITEM_PTR->MiscType(),
                                     ITEM_PTR->IsJeweled(),
                                     (ITEM_PTR->MaterialPrimary() == game::item::material::Bone),
-                                    WILL_RANDOMIZE);
+                                    WILL_RANDOMIZE,
+                                    ITEM_PTR->GetSummonInfo().Race(),
+                                    ITEM_PTR->GetSummonInfo().Role());
         }
         else
         {
@@ -881,7 +896,9 @@ namespace gui
     const std::vector<std::string> ItemImageManager::GetImageFilenames(
         const game::item::misc_type::Enum ITEM_ENUM,
         const bool                        IS_BONE,
-        const bool                        IS_JEWELED) const
+        const bool                        IS_JEWELED,
+        const game::creature::race::Enum  RACE_ENUM,
+        const game::creature::role::Enum  ROLE_ENUM) const
     {
         using namespace game::item;
 
@@ -1254,6 +1271,27 @@ namespace gui
                     std::ostringstream ss;
                     ss << "staff-" << i << FILE_EXT_STR_;
                     filenames.push_back(ss.str());
+                }
+                return filenames;
+            }
+            case misc_type::Summoning_Statue:
+            {
+                if ((RACE_ENUM == game::creature::race::Count) ||
+                    (ROLE_ENUM == game::creature::role::Count))
+                {
+                    filenames.push_back("figurine-1" + FILE_EXT_STR_);
+                }
+                else
+                {
+                    sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
+                        filenames,
+                        RACE_ENUM,
+                        ROLE_ENUM,
+                        ((::misc::random::Bool()) ?
+                            game::creature::sex::Male :
+                            game::creature::sex::Female),
+                        game::creature::wolfen_class::Adult,
+                        game::creature::dragon_class::Adult);
                 }
                 return filenames;
             }

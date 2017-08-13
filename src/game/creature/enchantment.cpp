@@ -44,13 +44,11 @@ namespace creature
 
     Enchantment::Enchantment(const EnchantmentType::Enum TYPE,
                              const stats::TraitSet &     TRAIT_SET,
-                             const UseInfo &             USE_INFO,
-                             const SummonInfo &          SUMMON_INFO)
+                             const UseInfo &             USE_INFO)
     :
-        type_       (TYPE),
-        traitSet_   (TRAIT_SET),
-        useInfo_    (USE_INFO),
-        summonInfo_ (SUMMON_INFO)
+        type_    (TYPE),
+        traitSet_(TRAIT_SET),
+        useInfo_ (USE_INFO)
     {}
 
 
@@ -107,14 +105,6 @@ namespace creature
             ss << SepIfNotEmpty(ss.str()) << "Traits: " << TRAITS_STR;
         }
 
-        if (summonInfo_.Rank() > 0)
-        {
-            ss << SepIfNotEmpty(ss.str()) << "summons a " << summonInfo_.Rank() << " rank "
-                << creature::race::Name(summonInfo_.Race())
-                << " " << creature::role::Name(summonInfo_.Role())
-                << " to fight for the party";
-        }
-        
         return ss.str();
     }
 

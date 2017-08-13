@@ -1858,12 +1858,22 @@ namespace gui
         }
 
         std::ostringstream ss;
-        ss  << "CreatureImageManager::GetCharacterFilenames(race=" << game::creature::race::ToString(RACE)
-            << ", role=" << game::creature::role::ToString(ROLE)
-            << ", sex=" << game::creature::sex::ToString(SEX)
+        ss  << "CreatureImageManager::GetCharacterFilenames(race="
+            << ((RACE == game::creature::race::Count) ?
+                "(count)" :
+                game::creature::race::ToString(RACE))
+            << ", role="
+            << ((ROLE == game::creature::role::Count) ?
+                "(count)" :
+                game::creature::role::ToString(ROLE))
+            << ", sex="
+            << ((SEX == game::creature::sex::Count) ?
+                "(count)" :
+                game::creature::sex::ToString(SEX))
             << ", wolfen_class=" << WOLFEN_CLASS
             << ", dragon_class=" << DRAGON_CLASS
             << ") -No filenames found for that creature information.";
+
         throw std::runtime_error(ss.str());
     }
 

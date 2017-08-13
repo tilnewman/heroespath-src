@@ -53,18 +53,19 @@ namespace item
             if (E & category::Broken)       ss << "broken/useless";
             else if (E & category::Useable) ss << "useable";
 
-            if (E & category::Weapon)       ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
-            if (E & category::Armor)        ss << ((ss.str().empty()) ? "" : ", ") << "armor";
-            if (E & category::Equippable)   ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
-            if (E & category::BodyPart)     ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
-            if (E & category::Wearable)     ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
-            if (E & category::OneHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
-            if (E & category::TwoHanded)    ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
-            if (E & category::QuestItem)    ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
-            if (E & category::Blessed)      ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
-            if (E & category::Cursed)       ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
-            if (E & category::AllowsCasting)ss << ((ss.str().empty()) ? "" : ", ") << "allows casting";
-            if (E & category::ConsumedOnUse)ss << ((ss.str().empty()) ? "" : ", ") << "consumed upon use";
+            if (E & category::Weapon)         ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
+            if (E & category::Armor)          ss << ((ss.str().empty()) ? "" : ", ") << "armor";
+            if (E & category::Equippable)     ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
+            if (E & category::BodyPart)       ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
+            if (E & category::Wearable)       ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
+            if (E & category::OneHanded)      ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
+            if (E & category::TwoHanded)      ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
+            if (E & category::QuestItem)      ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
+            if (E & category::Blessed)        ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
+            if (E & category::Cursed)         ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
+            if (E & category::AllowsCasting)  ss << ((ss.str().empty()) ? "" : ", ") << "allows casting";
+            if (E & category::ConsumedOnUse)  ss << ((ss.str().empty()) ? "" : ", ") << "consumed upon use";
+            if (E & category::ShowsEnemyInfo) ss << ((ss.str().empty()) ? "" : ", ") << "shows enemy info";
         }
 
         if (ss.str().empty())
@@ -467,7 +468,6 @@ namespace item
             case WeaselTotem:               { return "WeaselTotem"; }
             case WolfenFur:                 { return "WolfenFur"; }
             case WraithTalisman:            { return "WraithTalisman"; }
-            case ZombieSeeds:               { return "ZombieSeeds"; }
             case Count:
             default:
             {
@@ -610,7 +610,6 @@ namespace item
             case WeaselTotem:               { return "Weasel Totem"; }
             case WolfenFur:                 { return "Wolfen Fur"; }
             case WraithTalisman:            { return "Wraith Talisman"; }
-            case ZombieSeeds:               { return "Zombie Seeds"; }
             case Count:
             default:
             {
@@ -753,7 +752,6 @@ namespace item
             case WeaselTotem:               { return misc_type::Weasel_Totem; }
             case WolfenFur:                 { return misc_type::Wolfen_Fur; }
             case WraithTalisman:            { return misc_type::Talisman; }
-            case ZombieSeeds:               { return misc_type::Seeds; }
             case Count:
             default:
             {
@@ -947,10 +945,146 @@ namespace item
             case WeaselTotem:               { return MaterialVecPair_t({ material::Wood }, {}); }
             case WolfenFur:                 { return MaterialVecPair_t({ material::Fur }, {}); }
             case WraithTalisman:            { return MaterialVecPair_t({ material::Wood }, {}); }
-            case ZombieSeeds:               { return MaterialVecPair_t({ material::Plant }, {}); }
             case NotUnique:
             case Count:
             default:                        { return MaterialVecPair_t({}, {}); }
+        }
+    }
+
+
+    bool unique_type::IsUseable(const unique_type::Enum E)
+    {
+        switch (E)
+        {
+            case CrystalChimes:
+            case DoveBloodVial:
+            case DragonToothWhistle:
+            case DriedFrog:
+            case DriedGecko:
+            case DriedIguana:
+            case DriedLizard:
+            case DriedSalamander:
+            case DriedSkink:
+            case DriedToad:
+            case DriedTurtle:
+            case ExoticGoldenGong:
+            case MagnifyingGlass:
+            case PixieBell:
+            case ShamanRainmaker:
+            case SpecterChains:
+            case VultureGizzard:
+            case WarTrumpet:
+            case WraithTalisman:        { return true; }
+            case NotUnique:
+            case BasiliskTonge:
+            case BerserkersBeard:
+            case BishopsHanky:
+            case BleedingTrophy:
+            case BloodyDragonScale:
+            case BottleOfBansheeScreams:
+            case BraceletCrown:
+            case BraceletFeather:
+            case BraceletFist:
+            case BraceletHourglass:
+            case BraceletKey:
+            case BraceletMask:
+            case BroochCrown:
+            case BroochFeather:
+            case BroochFist:
+            case BroochHourglass:
+            case BroochKey:
+            case BroochMask:
+            case BurialShroud:
+            case CharmCrown:
+            case CharmFeather:
+            case CharmFist:
+            case CharmHourglass:
+            case CharmKey:
+            case CharmMask:
+            case ChimeraBone:
+            case CobraTooth:
+            case CommandersCape:
+            case CopperTroll:
+            case CrystalCat:
+            case CyclopsEye:
+            case DemonDiary:
+            case DruidLeaf:
+            case EvilRabbitsFoot:
+            case FanaticsFlag:
+            case FriarsChronicle:
+            case FuneralRecord:
+            case GeneralsCape:
+            case GhostSheet:
+            case GiantOwlEye:
+            case GriffinFeather:
+            case HangmansNoose:
+            case HawkEye:
+            case HobgoblinNose:
+            case HoboRing:
+            case HolyEpic:
+            case HornOfTheHorde:
+            case ImpTail:
+            case IslanderHeaddress:
+            case JeweledAnkhNecklace:
+            case JeweledArmband:
+            case JeweledHandbag:
+            case JeweledPrincessVeil:
+            case KingsCape:
+            case LastRitesScroll:
+            case MacabreManuscript:
+            case MadRatJuju:
+            case MagicHorseshoe:
+            case ManaAmulet:
+            case MendicantRing:
+            case MinotaurHide:
+            case MonkRing:
+            case MortuaryOrnament:
+            case MournersMask:
+            case PantherPaw:
+            case PinCrown:
+            case PinFeather:
+            case PinFist:
+            case PinHourglass:
+            case PinKey:
+            case PinMask:
+            case PriestRing:
+            case RascalMask:
+            case RattlesnakeTail:
+            case RavenClaw:
+            case RazorFingerclaw:
+            case ReaperScythe:
+            case RegalCaptainsFlag:
+            case RequiemRegister:
+            case RoyalScoutSpyglass:
+            case SaintCameoPin:
+            case SaintsJournal:
+            case SanguineRelic:
+            case ScorpionStingerFingerclaw:
+            case ScoundrelSack:
+            case SepultureDecoration:
+            case ShadeCloak:
+            case SharkToothNecklace:
+            case SignetCrown:
+            case SignetFeather:
+            case SignetFist:
+            case SignetHourglass:
+            case SignetKey:
+            case SignetMask:
+            case SirenConch:
+            case SpecterRobe:
+            case SprintersLegtie:
+            case SwindlersBag:
+            case TribalFlag:
+            case TricksterPouch:
+            case TuningFork:
+            case TurtleShell:
+            case VampiresToothNecklace:
+            case ViperFangFingerclaw:
+            case WarhorseMarionette:
+            case WeaselTotem:
+            case WolfenFur:
+            case Count:
+            default:                    { return false; }
         }
     }
 
@@ -1095,6 +1229,7 @@ namespace item
             case Spider_Eggs:           { return "Spider_Eggs"; }
             case Spyglass:              { return "Spyglass"; }
             case Staff:                 { return "Staff"; }
+            case Summoning_Statue:      { return "Summoning_Statue"; }
             case Talisman:              { return "Talisman"; }
             case Tome:                  { return "Tome"; }
             case Tongue:                { return "Tongue"; }
@@ -1180,6 +1315,7 @@ namespace item
             case Signet_Key:            { return "Key Signet"; }
             case Signet_Mask:           { return "Mask Signet"; }
             case Spider_Eggs:           { return "Spider Eggs"; }
+            case Summoning_Statue:      { return "Summoning Statue"; }
             case Tooth_Necklace:        { return "Vampire Tooth Necklace"; }
             case Troll_Figure:          { return "Troll Figure"; }
             case Tuning_Fork:           { return "Tuning Fork"; }
@@ -1679,6 +1815,10 @@ namespace item
         else if (E == misc_type::Ring)
         {
             return MaterialVecPair_t(material::CorePrimary(), material::CoreSecondary());
+        }
+        else if (E == misc_type::Summoning_Statue)
+        {
+            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
         }
         else
         {

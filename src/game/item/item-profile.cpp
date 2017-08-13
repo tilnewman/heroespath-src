@@ -332,6 +332,14 @@ namespace item
             ss << ((ss.str().empty()) ? "" : ", ") << "score=" << score_;
         }
 
+        if (summonInfo_.OriginType() != creature::origin_type::Count)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ")
+                << creature::origin_type::ToString(summonInfo_.OriginType())
+                << " summoning a " << creature::race::ToString(summonInfo_.Race())
+                << " " << creature::role::ToString(summonInfo_.Role());
+        }
+
         return ss.str();
     }
 
@@ -674,7 +682,7 @@ namespace item
                               ELEMENT_TYPE,
                               false);
     }
-
+    
 
     void ItemProfile::SetBoots(const armor::base_type::Enum E,
                                const material::Enum         MATERIAL_PRIMARY,

@@ -27,6 +27,7 @@
 //
 // item-profile.hpp
 //
+#include "game/creature/race-enum.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/armor-types.hpp"
 #include "game/item/weapon-types.hpp"
@@ -59,51 +60,54 @@ namespace item
                     const set_type::Enum    SET,
                     const named_type::Enum  NAMED);
 
-        const std::string BaseName() const                      { return baseName_; }
-        category::Enum Category() const                         { return category_; }
-        armor_type::Enum ArmorType() const                      { return armor_; }
-        weapon_type::Enum WeaponType() const                    { return weapon_; }
-        unique_type::Enum UniqueType() const                    { return unique_; }
-        misc_type::Enum MiscType() const                        { return misc_; }
-        set_type::Enum SetType() const                          { return set_; }
-        named_type::Enum NamedType() const                      { return named_; }
-        element_type::Enum ElementType() const                  { return element_; }
-        bool IsPixie() const                                    { return isPixie_; }
+        inline const std::string BaseName() const                      { return baseName_; }
+        inline category::Enum Category() const                         { return category_; }
+        inline armor_type::Enum ArmorType() const                      { return armor_; }
+        inline weapon_type::Enum WeaponType() const                    { return weapon_; }
+        inline unique_type::Enum UniqueType() const                    { return unique_; }
+        inline misc_type::Enum MiscType() const                        { return misc_; }
+        inline set_type::Enum SetType() const                          { return set_; }
+        inline named_type::Enum NamedType() const                      { return named_; }
+        inline element_type::Enum ElementType() const                  { return element_; }
+        inline bool IsPixie() const                                    { return isPixie_; }
 
-        armor::shield_type::Enum ShieldType() const             { return shield_; }
-        armor::helm_type::Enum HelmType() const                 { return helm_; }
-        armor::base_type::Enum BaseType() const                 { return base_; }
-        armor::cover_type::Enum CoverType() const               { return cover_; }
+        inline armor::shield_type::Enum ShieldType() const              { return shield_; }
+        inline armor::helm_type::Enum HelmType() const                  { return helm_; }
+        inline armor::base_type::Enum BaseType() const                  { return base_; }
+        inline armor::cover_type::Enum CoverType() const                { return cover_; }
 
-        bool IsAventail() const                                 { return isAventail_; }
-        bool IsBracer() const                                   { return isBracer_; }
-        bool IsShirt() const                                    { return isShirt_; }
-        bool IsBoots() const                                    { return isBoots_; }
-        bool IsPants() const                                    { return isPants_; }
-        bool IsGauntlets() const                                { return isGauntlets_; }
+        inline bool IsAventail() const                                  { return isAventail_; }
+        inline bool IsBracer() const                                    { return isBracer_; }
+        inline bool IsShirt() const                                     { return isShirt_; }
+        inline bool IsBoots() const                                     { return isBoots_; }
+        inline bool IsPants() const                                     { return isPants_; }
+        inline bool IsGauntlets() const                                 { return isGauntlets_; }
 
-        weapon::sword_type::Enum SwordType() const              { return sword_; }
-        weapon::axe_type::Enum AxeType() const                  { return axe_; }
-        weapon::club_type::Enum ClubType() const                { return club_; }
-        weapon::whip_type::Enum WhipType() const                { return whip_; }
-        weapon::projectile_type::Enum ProjectileType() const    { return proj_; }
-        weapon::bladedstaff_type::Enum BladedStaffType() const  { return bstaff_; }
+        inline weapon::sword_type::Enum SwordType() const               { return sword_; }
+        inline weapon::axe_type::Enum AxeType() const                   { return axe_; }
+        inline weapon::club_type::Enum ClubType() const                 { return club_; }
+        inline weapon::whip_type::Enum WhipType() const                 { return whip_; }
+        inline weapon::projectile_type::Enum ProjectileType() const     { return proj_; }
+        inline weapon::bladedstaff_type::Enum BladedStaffType() const   { return bstaff_; }
 
-        sfml_util::Size::Enum Size() const                      { return size_; }
+        inline sfml_util::Size::Enum Size() const                       { return size_; }
 
-        bool IsKnife() const                                    { return isKnife_; }
-        bool IsDagger() const                                   { return isDagger_; }
-        bool IsStaff() const                                    { return isStaff_; }
-        bool IsQuarterStaff() const                             { return isQStaff_; }
+        inline bool IsKnife() const                                     { return isKnife_; }
+        inline bool IsDagger() const                                    { return isDagger_; }
+        inline bool IsStaff() const                                     { return isStaff_; }
+        inline bool IsQuarterStaff() const                              { return isQStaff_; }
 
-        material::Enum MaterialPrimary() const                  { return matPri_; }
-        material::Enum MaterialSecondary() const                { return matSec_; }
+        inline material::Enum MaterialPrimary() const                   { return matPri_; }
+        inline material::Enum MaterialSecondary() const                 { return matSec_; }
 
-        armor::base_type::Enum ArmorTypeRestriction() const     { return armorType_; }
+        inline armor::base_type::Enum ArmorTypeRestriction() const      { return armorType_; }
 
-        creature::role::Enum Role() const                       { return role_; }
+        inline creature::role::Enum Role() const                        { return role_; }
 
-        int TreasureScore() const                               { return score_; }
+        inline int TreasureScore() const                                { return score_; }
+
+        inline const creature::SummonInfo Summoning() const             { return summonInfo_; }
+        inline void Summoning(const creature::SummonInfo & S)           { summonInfo_ = S; }
 
         const std::string ToString() const;
 
@@ -326,6 +330,8 @@ namespace item
         creature::role::Enum role_;
 
         int score_;
+
+        creature::SummonInfo summonInfo_;
     };
 
 
@@ -369,7 +375,8 @@ namespace item
                         L.matSec_,
                         L.armorType_,
                         L.role_,
-                        L.score_)
+                        L.score_,
+                        L.summonInfo_)
                 ==
                std::tie(R.baseName_,
                         R.category_,
@@ -406,7 +413,8 @@ namespace item
                         R.matSec_,
                         R.armorType_,
                         R.role_,
-                        R.score_);
+                        R.score_,
+                        R.summonInfo_);
     }
 
 
@@ -453,7 +461,8 @@ namespace item
                         L.matSec_,
                         L.armorType_,
                         L.role_,
-                        L.score_)
+                        L.score_,
+                        L.summonInfo_)
                 <
                std::tie(R.baseName_,
                         R.category_,
@@ -490,7 +499,8 @@ namespace item
                         R.matSec_,
                         R.armorType_,
                         R.role_,
-                        R.score_);
+                        R.score_,
+                        R.summonInfo_);
     }
 
 }

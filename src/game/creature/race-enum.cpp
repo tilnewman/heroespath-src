@@ -40,6 +40,25 @@ namespace game
 namespace creature
 {
 
+    const std::string origin_type::ToString(const origin_type::Enum E)
+    {
+        switch (E)
+        {
+            case Statue:    { return "Statue"; }
+            case Egg:       { return "Egg"; }
+            case Embryo:    { return "Embryo"; }
+            case Seeds:     { return "Seeds"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::creature::origin_type::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
     const std::string race::ToString(const race::Enum E)
     {
         switch (E)
@@ -573,6 +592,97 @@ namespace creature
     bool race::RaceRoleMatch(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM)
     {
         return (race::ToString(RACE_ENUM) == role::ToString(ROLE_ENUM));
+    }
+
+
+    const OriginTypeVec_t race::OriginTypes(const race::Enum RACE, const role::Enum ROLE)
+    {
+        OriginTypeVec_t v(1, origin_type::Statue);
+
+        switch (RACE)
+        {
+            case race::Human:
+            case race::Orc:
+            case race::Minotaur:
+            case race::Ogre:
+            case race::Halfling:
+            case race::Pug:
+            case race::Giant:
+            case race::Wolfen:
+            case race::Lion:
+            case race::LionBoar:
+            case race::Ramonaut:
+            case race::Boar:
+            {
+                v.push_back(origin_type::Embryo);
+                break;
+            }
+            case race::Demon:
+            case race::Gnome:
+            case race::Newt:
+            case race::Bog:
+            case race::Plant:
+            {
+                v.push_back(origin_type::Seeds);
+                break;
+            }
+            case race::Pixie:
+            case race::Goblin:
+            case race::Troll:
+            case race::Hydra:
+            {
+                v.push_back(origin_type::Egg);
+                v.push_back(origin_type::Seeds);
+                break;
+            }
+            case race::LizardWalker:
+            case race::Naga:
+            case race::Harpy:
+            case race::Dragon:
+            case race::Griffin:
+            case race::Serpent:
+            case race::Cobra:
+            case race::Wyvern:
+            {
+                v.push_back(origin_type::Egg);
+                break;
+            }
+            case race::Shade:
+            case race::Skeleton:
+            case race::Witch:
+            case race::Golem:
+            case race::Ghoul:
+            case race::Spider:
+            case race::CaveCrawler:
+            case race::Werebear:
+            case race::Wereboar:
+            case race::Werecat:
+            case race::Werewolf:
+            case race::Werebat:
+            case race::Beetle:
+            case race::Bat:
+            case race::ThreeHeadedHound:
+            case race::Count:
+            default:
+            {
+                break;
+            }
+        }
+
+        if (ROLE == role::Tendrilus)
+        {
+            v.push_back(origin_type::Seeds);
+        }
+        else if ((ROLE == role::Wing) ||
+                 (ROLE == role::Whelp) ||
+                 (ROLE == role::Tendrilus))
+        {
+            v.push_back(origin_type::Egg);
+        }
+        
+        std::sort(v.begin(), v.end());
+        v.erase(std::unique(v.begin(), v.end()), v.end());
+        return v;
     }
 
 }

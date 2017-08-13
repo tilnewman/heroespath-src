@@ -28,15 +28,36 @@
 // race-enum.hpp
 //  An enumeration of all Races.
 //
+#include "misc/boost-serialize-includes.hpp"
+
 #include "game/creature/role-enum.hpp"
 
+#include <tuple>
 #include <string>
+#include <vector>
 
 
 namespace game
 {
 namespace creature
 {
+
+    struct origin_type
+    {
+        enum Enum
+        {
+            Statue = 0,
+            Egg,
+            Embryo,
+            Seeds,
+            Count
+        };
+
+        static const std::string ToString(const Enum E);
+    };
+
+    using OriginTypeVec_t = std::vector<origin_type::Enum>;
+
 
     struct race
     {
@@ -99,7 +120,83 @@ namespace creature
         static bool WillInitiallyFly(const race::Enum);
         static const RoleVec_t Roles(const race::Enum);
         static bool RaceRoleMatch(const race::Enum, const role::Enum);
+        static const OriginTypeVec_t OriginTypes(const race::Enum, const role::Enum);
     };
+
+
+    class SummonInfo
+    {
+    public:
+        SummonInfo(const origin_type::Enum ORIGIN    = origin_type::Count,
+                   const race::Enum        RACE      = creature::race::Count,
+                   const role::Enum        ROLE      = creature::role::Count,
+                   const std::size_t       USE_COUNT = 0)
+        :
+            origin_ (ORIGIN),
+            race_   (RACE),
+            role_   (ROLE),
+            count_  (((ORIGIN == origin_type::Seeds) ? 10 : USE_COUNT))
+        {}
+
+        inline origin_type::Enum OriginType() const { return origin_; }
+        inline race::Enum Race() const              { return race_; }
+        inline role::Enum Role() const              { return role_; }
+        inline std::size_t Count() const            { return count_; }
+
+        friend bool operator==(const SummonInfo & L, const SummonInfo & R);
+        friend bool operator<(const SummonInfo & L, const SummonInfo & R);
+
+    private:
+        origin_type::Enum origin_;
+        race::Enum race_;
+        role::Enum role_;
+        std::size_t count_;
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & origin_;
+            ar & race_;
+            ar & role_;
+            ar & count_;
+        }
+    };
+
+
+    inline bool operator==(const SummonInfo & L, const SummonInfo & R)
+    {
+        return (std::tie(L.origin_,
+                         L.race_,
+                         L.role_,
+                         L.count_)
+                 ==
+                std::tie(R.origin_,
+                         R.race_,
+                         R.role_,
+                         R.count_));
+    }
+
+
+    inline bool operator!=(const SummonInfo & L, const SummonInfo & R)
+    {
+        return ! (L == R);
+    }
+
+
+    inline bool operator<(const SummonInfo & L, const SummonInfo & R)
+    {
+        return (std::tie(L.origin_,
+                         L.race_,
+                         L.role_,
+                         L.count_)
+                 <
+                std::tie(R.origin_,
+                         R.race_,
+                         R.role_,
+                         R.count_));
+    }
 
 }
 }

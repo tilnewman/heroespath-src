@@ -608,6 +608,18 @@ namespace item
                 SetTypesAndReturn(PROFILE, misc::MiscItemFactory::Instance()->Make(PROFILE)));
         }
 
+        if (PROFILE.UniqueType() == unique_type::MagnifyingGlass)
+        {
+            itemPtr->AddCategory(category::ShowsEnemyInfo);
+        }
+
+        if (item::unique_type::IsUseable(PROFILE.UniqueType()))
+        {
+            itemPtr->AddCategory(category::Useable);
+        }
+
+        itemPtr->SetSummonInfo(PROFILE.Summoning());
+        
         M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
             "game::item::ItemFactory::Make(profile=" << PROFILE.ToString()
             << ") failed to create an item based on that profile.");

@@ -79,8 +79,7 @@ namespace creature
             item::ItemPtr_t             itemPtr,
             const EnchantmentType::Enum TYPE,
             const stats::TraitSet &     TRAIT_SET,
-            const UseInfo &             USE_INFO    = UseInfo(),
-            const SummonInfo &          SUMMON_INFO = SummonInfo()) const;
+            const UseInfo &             USE_INFO    = UseInfo()) const;
 
         int TreasureScore(const item::unique_type::Enum,
                           const item::material::Enum) const;

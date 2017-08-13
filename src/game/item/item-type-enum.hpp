@@ -59,7 +59,8 @@ namespace item
             Blessed         = 1 << 10,
             Cursed          = 1 << 11,
             AllowsCasting   = 1 << 12,
-            ConsumedOnUse   = 1 << 13
+            ConsumedOnUse   = 1 << 13,
+            ShowsEnemyInfo  = 1 << 14
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
@@ -377,6 +378,7 @@ namespace item
             Spider_Eggs,
             Spyglass,
             Staff,
+            Summoning_Statue,
             Talisman,
             Tome,
             Tongue,
@@ -583,7 +585,6 @@ namespace item
             WeaselTotem,
             WolfenFur,
             WraithTalisman,
-            ZombieSeeds,
             Count
         };
 
@@ -592,6 +593,7 @@ namespace item
         static misc_type::Enum MiscType(const Enum);
         static element_type::Enum ElementTypes(const Enum);
         static const MaterialVecPair_t Materials(const Enum);
+        static bool IsUseable(const Enum);
     };
 
 
