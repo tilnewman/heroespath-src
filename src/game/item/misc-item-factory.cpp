@@ -37,6 +37,7 @@
 #include "game/item/item-profile.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/weapon-details.hpp"
+#include "game/item/armor-details.hpp"
 #include "game/creature/enchantment-factory.hpp"
 
 #include "misc/boost-string-includes.hpp"
@@ -104,8 +105,13 @@ namespace misc
 
     ItemPtr_t MiscItemFactory::Make(const ItemProfile & PROFILE)
     {
+        if (PROFILE.MiscType() == misc_type::Amulet)            { return Make_Amulet(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Armband)           { return Make_Armband(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Veil)              { return Make_Veil(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Balm_Pot)          { return Make_BalmPot(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Braid)             { return Make_Braid(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Bust)              { return Make_Bust(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Cape)              { return Make_Cape(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Devil_Horn)        { return Make_DevilHorn(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Doll_Blessed)      { return Make_DollBlessed(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Doll_Cursed)       { return Make_DollCursed(PROFILE); }
@@ -116,9 +122,11 @@ namespace misc
         if (PROFILE.MiscType() == misc_type::Figurine_Blessed)  { return Make_FigurineBlessed(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Figurine_Cursed)   { return Make_FigurineCursed(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Finger)            { return Make_Finger(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Fingerclaw)        { return Make_Fingerclaw(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Goblet)            { return Make_Goblet(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Hurdy_Gurdy)       { return Make_HurdyGurdy(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Icicle)            { return Make_Icicle(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Litch_Hand)        { return Make_Litchhand(PROFILE); }
         if (PROFILE.MiscType() == misc_type::LockPicks)         { return Make_LockPicks(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Lyre)              { return Make_Lyre(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Mummy_Hand)        { return Make_MummyHand(PROFILE); }
@@ -144,15 +152,107 @@ namespace misc
     }
 
 
+    ItemPtr_t MiscItemFactory::Make_Amulet(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 42);
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_Armband(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 62);
+    }
+
+
     ItemPtr_t MiscItemFactory::Make_BalmPot(const ItemProfile & PROFILE)
     {
-        return Make_Helper(PROFILE, 746, 233);
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 233);
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_Braid(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 16);
     }
 
 
     ItemPtr_t MiscItemFactory::Make_Bust(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, 231, 188);
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_Cape(const ItemProfile & PROFILE)
+    {
+        auto price{ PROFILE.TreasureScore() };
+        AdjustPrice(price,
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    PROFILE.IsPixie());
+
+        auto weight{ 111 };
+        AdjustWeight(weight,
+                     PROFILE.MaterialPrimary(),
+                     PROFILE.MaterialSecondary());
+
+        auto const BASE_NAME{ [PROFILE]()
+            {
+                if ((PROFILE.UniqueType() == unique_type::Count) ||
+                    (PROFILE.UniqueType() == unique_type::NotUnique))
+                {
+                    return misc_type::Name(PROFILE.MiscType());
+                }
+                else
+                {
+                    return unique_type::Name(PROFILE.UniqueType());
+                }
+            }() };
+
+        auto const DESC_PREFIX{ "A " + boost::to_lower_copy(BASE_NAME) + " " };
+
+        armor::ArmorInfo armorInfo(armor_type::Covering);
+        armorInfo.cover = armor::cover_type::Cape;
+
+        auto const DETAILS{ armor::ArmorDetailLoader::Instance()->
+            LookupArmorDetails(armor::cover_type::ToString(armor::cover_type::Cape)) };
+
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
+            Make_Name(BASE_NAME,
+                      PROFILE.MaterialPrimary(),
+                      PROFILE.MaterialSecondary(),
+                      PROFILE.IsPixie()),
+            Make_Desc(DESC_PREFIX,
+                      PROFILE.MaterialPrimary(),
+                      PROFILE.MaterialSecondary(),
+                      "",
+                      PROFILE.IsPixie()),
+            PROFILE.Category(),
+            PROFILE.MiscType(),
+            weapon_type::NotAWeapon,
+            PROFILE.ArmorType(),
+            PROFILE.MaterialPrimary(),
+            PROFILE.MaterialSecondary(),
+            "",
+            price,
+            weight,
+            0,
+            0,
+            DETAILS.armor_rating,
+            creature::role::Count,
+            weapon::WeaponInfo(),
+            armorInfo,
+            PROFILE.IsPixie(),
+            PROFILE.UniqueType(),
+            PROFILE.SetType(),
+            PROFILE.NamedType(),
+            PROFILE.ElementType()) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+            GetImageFilename(itemPtr));
+
+        creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
+        
+        return itemPtr;
     }
 
 
@@ -219,6 +319,12 @@ namespace misc
     }
 
 
+    ItemPtr_t MiscItemFactory::Make_Fingerclaw(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 30);
+    }
+
+
     ItemPtr_t MiscItemFactory::Make_Goblet(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 44);
@@ -234,6 +340,12 @@ namespace misc
     ItemPtr_t MiscItemFactory::Make_Icicle(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 26);
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_Litchhand(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 37);
     }
 
 
@@ -383,6 +495,12 @@ namespace misc
     }
 
 
+    ItemPtr_t MiscItemFactory::Make_Veil(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 39);
+    }
+
+
     ItemPtr_t MiscItemFactory::Make_Viol(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 233);
@@ -509,7 +627,18 @@ namespace misc
                      PROFILE.MaterialPrimary(),
                      PROFILE.MaterialSecondary());
 
-        auto const BASE_NAME{ item::misc_type::Name(PROFILE.MiscType()) };
+        auto const BASE_NAME{ [PROFILE]()
+            {
+                if ((PROFILE.UniqueType() == item::unique_type::Count) ||
+                    (PROFILE.UniqueType() == item::unique_type::NotUnique))
+                {
+                    return item::misc_type::Name(PROFILE.MiscType());
+                }
+                else
+                {
+                    return item::unique_type::Name(PROFILE.UniqueType());
+                }
+            }() };
 
         auto const DESC_PREFIX{ ((BASE_DESC.empty()) ?
             ("A " + boost::to_lower_copy(BASE_NAME) + " ") :

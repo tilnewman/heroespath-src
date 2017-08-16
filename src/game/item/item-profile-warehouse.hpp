@@ -28,6 +28,7 @@
 // item-profile-warehouse.hpp
 //
 #include "game/item/item-profile.hpp"
+#include "game/stats/traits-set.hpp"
 
 #include <memory>
 #include <vector>
@@ -66,6 +67,35 @@ namespace item
 
         inline const ItemProfileVec_t & Get() const { return vec_; }
 
+        static int Score(const stats::TraitSet &);
+
+        static int Score(const item::material::Enum PRI,
+            const item::material::Enum SEC = item::material::Nothing);
+
+        static int Score(const item::weapon::axe_type::Enum);
+        static int Score(const item::weapon::bladedstaff_type::Enum);
+        static int Score(const item::weapon::club_type::Enum);
+        static int Score(const item::weapon::projectile_type::Enum);
+        static int Score(const item::weapon::sword_type::Enum);
+        static int Score(const item::weapon::whip_type::Enum);
+
+        static int ScoreKnife(const sfml_util::Size::Enum);
+        static int ScoreDagger(const sfml_util::Size::Enum);
+        static int ScoreStaff();
+        static int ScoreQuarterStaff();
+
+        static int Score(const item::armor::base_type::Enum);
+        static int Score(const item::armor::cover_type::Enum);
+        static int Score(const item::armor::helm_type::Enum);
+        static int Score(const item::armor::shield_type::Enum);
+
+        static int ScoreAventail(item::armor::base_type::Enum);
+        static int ScoreBracer(item::armor::base_type::Enum);
+        static int ScoreShirt(item::armor::base_type::Enum);
+        static int ScoreBoots(item::armor::base_type::Enum);
+        static int ScorePants(item::armor::base_type::Enum);
+        static int ScoreGauntlets(item::armor::base_type::Enum);
+
     private:
         void SetupFromThinProfile(const ItemProfile &    THIN_PROFILE,
                                   const named_type::Enum NAMED_TYPE,
@@ -90,6 +120,41 @@ namespace item
             const named_type::Enum NAMED_TYPE);
 
         void SetupProfilesForMiscType(const item::misc_type::Enum);
+
+        static const item::MaterialVecPair_t Materials(const item::weapon::axe_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::bladedstaff_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::club_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::projectile_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::sword_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::weapon::whip_type::Enum);
+
+        static const item::MaterialVecPair_t MaterialsKnife();
+        static const item::MaterialVecPair_t MaterialsDagger();
+        static const item::MaterialVecPair_t MaterialsStaff();
+        static const item::MaterialVecPair_t MaterialsQuarterStaff();
+
+        static const item::MaterialVecPair_t Materials(const item::armor::cover_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::armor::helm_type::Enum);
+        static const item::MaterialVecPair_t Materials(const item::armor::shield_type::Enum);
+
+        static const item::MaterialVecPair_t MaterialsAventail(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsBracer(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsShirt(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsBoots(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsPants(item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsGauntlets(item::armor::base_type::Enum);
+
+        static const item::MaterialVec_t MaterialsPrimaryFromArmorBaseType(const item::armor::base_type::Enum);
+
+        static const item::MaterialVecPair_t MaterialsFromBaseType(const item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t MaterialsFromBaseTypeNoCloth(const item::armor::base_type::Enum);
+
+        static const item::ItemProfileVec_t ThinProfilesWeaponsSwords();
+        static const item::ItemProfileVec_t ThinProfilesWeaponsProjectiles();
+        static const item::ItemProfileVec_t ThinProfilesWeaponsAll();
+        static const item::ItemProfileVec_t ThinProfilesArmor(const bool WILL_INCLUDE_COVERINGS);
+        static const item::ItemProfileVec_t ThinProfiles(const item::named_type::Enum);
+        static const item::ItemProfileVec_t ThinProfiles(const item::set_type::Enum);
 
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;

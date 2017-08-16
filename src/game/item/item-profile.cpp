@@ -30,7 +30,7 @@
 #include "item-profile.hpp"
 
 #include "game/creature/enchantment-factory.hpp"
-#include "game/combat/treasure-factory.hpp"
+#include "game/item/item-profile-warehouse.hpp"
 
 #include <sstream>
 
@@ -77,7 +77,9 @@ namespace item
         matSec_     (material::Nothing),
         armorType_  (armor::base_type::Count),
         role_       (creature::role::Count),
-        score_      (0)
+        score_      (0),
+        summonInfo_ (),
+        religious_  (0.0f)
     {}
 
 
@@ -90,43 +92,17 @@ namespace item
                              const set_type::Enum    SET,
                              const named_type::Enum  NAMED)
     :
-        baseName_   (BASE_NAME),
-        category_   (CATEGORY),
-        armor_      (ARMOR),
-        weapon_     (WEAPON),
-        unique_     (UNIQUE),
-        misc_       (MISC),
-        set_        (SET),
-        named_      (NAMED),
-        element_    (element_type::None),
-        isPixie_    (false),
-        shield_	    (armor::shield_type::Count),
-        helm_	    (armor::helm_type::Count),
-        base_	    (armor::base_type::Count),
-        cover_	    (armor::cover_type::Count),
-        isAventail_ (false),
-        isBracer_   (false),
-        isShirt_    (false),
-        isBoots_    (false),
-        isPants_    (false),
-        isGauntlets_(false),
-        sword_	    (weapon::sword_type::Count),
-        axe_	    (weapon::axe_type::Count),
-        club_	    (weapon::club_type::Count),
-        whip_	    (weapon::whip_type::Count),
-        proj_	    (weapon::projectile_type::Count),
-        bstaff_	    (weapon::bladedstaff_type::Count),
-        size_	    (sfml_util::Size::Medium),
-        isKnife_	(false),
-        isDagger_	(false),
-        isStaff_	(false),
-        isQStaff_	(false),
-        matPri_     (material::Nothing),
-        matSec_     (material::Nothing),
-        armorType_  (armor::base_type::Count),
-        role_       (creature::role::Count),
-        score_      (0)
-    {}
+        ItemProfile()
+    {
+        baseName_   = BASE_NAME;
+        category_   = CATEGORY;
+        armor_      = ARMOR;
+        weapon_     = WEAPON;
+        unique_     = UNIQUE;
+        misc_       = MISC;
+        set_        = SET;
+        named_      = NAMED;
+    }
 
 
     const std::string ItemProfile::ToString() const
@@ -340,6 +316,11 @@ namespace item
                 << " " << creature::role::ToString(summonInfo_.Role());
         }
 
+        if (religious_ > 0.0f)
+        {
+            ss << ((ss.str().empty()) ? "" : ", ") << "religious_ratio=" << religious_;
+        }
+
         return ss.str();
     }
 
@@ -354,12 +335,13 @@ namespace item
         matSec_ = MATERIAL_SECONDARY;
         misc_ = unique_type::MiscType(E);
         isPixie_ = false;
+        religious_ = unique_type::ReligiousRatio(E);
 
         auto const IS_WEAPON{ ((E == unique_type::ViperFangFingerclaw) ||
                                (E == unique_type::ScorpionStingerFingerclaw) ||
                                (E == unique_type::RazorFingerclaw)) };
 
-        score_ = (combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
+        score_ = (ItemProfileWarehouse::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(E, MATERIAL_PRIMARY) +
                   creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
                                                                           IS_WEAPON,
@@ -380,9 +362,14 @@ namespace item
         matSec_ = MATERIAL_SECONDARY;
         isPixie_ = IS_PIXIE;
 
+        if (misc::IsRealZero(religious_))
+        {
+            religious_ = misc_type::ReligiousRatio(E);
+        }
+
         if (0 == score_)
         {
-            score_ += combat::TreasureFactory::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+            score_ += ItemProfileWarehouse::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
 
         score_ += creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE);
@@ -394,7 +381,7 @@ namespace item
                                                     category::Equippable);
             armor_ = armor_type::Covering;
             cover_ = armor::cover_type::Cape;
-            score_ += combat::TreasureFactory::Score(armor::cover_type::Cape);
+            score_ += ItemProfileWarehouse::Score(armor::cover_type::Cape);
         }
         else if (E == misc_type::Cloak)
         {
@@ -404,12 +391,20 @@ namespace item
                                                     category::Wearable);
             armor_ = armor_type::Covering;
             cover_ = armor::cover_type::Cloak;
-            score_ += combat::TreasureFactory::Score(armor::cover_type::Cloak);
+            score_ += ItemProfileWarehouse::Score(armor::cover_type::Cloak);
         }
         else if (E == misc_type::LockPicks)
         {
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-            score_ += 200;
+            EquippableHelper(200);
+        }
+        else if ((E == misc_type::Fingerclaw) ||
+                 (E == misc_type::Amulet) ||
+                 (E == misc_type::Armband) ||
+                 (E == misc_type::Veil) ||
+                 (E == misc_type::Litch_Hand) ||
+                 (E == misc_type::Braid))
+        {
+            EquippableHelper(0);
         }
         else if (E == misc_type::Spider_Eggs)
         {
@@ -512,7 +507,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -540,7 +535,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -574,7 +569,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -603,7 +598,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -638,7 +633,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -673,7 +668,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -708,7 +703,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -743,7 +738,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -778,7 +773,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -826,7 +821,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -872,7 +867,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -915,7 +910,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -958,7 +953,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -997,7 +992,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1036,7 +1031,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::Score(E);
+        score_ = ItemProfileWarehouse::Score(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1074,7 +1069,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::ScoreKnife(E);
+        score_ = ItemProfileWarehouse::ScoreKnife(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1112,7 +1107,7 @@ namespace item
                   ELEMENT_TYPE,
                   IS_PIXIE);
 
-        score_ = combat::TreasureFactory::ScoreDagger(E);
+        score_ = ItemProfileWarehouse::ScoreDagger(E);
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1140,7 +1135,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::ScoreStaff();
+        score_ = ItemProfileWarehouse::ScoreStaff();
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1168,7 +1163,7 @@ namespace item
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
-        score_ = combat::TreasureFactory::ScoreQuarterStaff();
+        score_ = ItemProfileWarehouse::ScoreQuarterStaff();
 
         score_ += ScoreHelper(MATERIAL_PRIMARY,
                               MATERIAL_SECONDARY,
@@ -1210,7 +1205,7 @@ namespace item
         }
         else
         {
-            return (combat::TreasureFactory::Score(MATERIAL_PRI, MATERIAL_SEC) +
+            return (ItemProfileWarehouse::Score(MATERIAL_PRI, MATERIAL_SEC) +
                     creature::EnchantmentFactory::Instance()->TreasureScore(NAMED_TYPE,
                                                                             MATERIAL_PRI,
                                                                             IS_WEAPON,
@@ -1220,6 +1215,13 @@ namespace item
                                                                             IS_WEAPON,
                                                                             MATERIAL_PRI));
         }
+    }
+
+
+    void ItemProfile::EquippableHelper(const int SCORE_BONUS)
+    {
+        category_ = static_cast<category::Enum>(category_ | category::Equippable);
+        score_ += SCORE_BONUS;
     }
 
 }

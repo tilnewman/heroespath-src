@@ -405,6 +405,7 @@ namespace item
         static const MaterialVecPair_t Materials(const Enum);
         static bool IsStandaloneItem(const Enum);
         static bool HasPixieVersion(const Enum);
+        static float ReligiousRatio(const Enum);
     };
 
 
@@ -594,6 +595,7 @@ namespace item
         static element_type::Enum ElementTypes(const Enum);
         static const MaterialVecPair_t Materials(const Enum);
         static bool IsUseable(const Enum);
+        static float ReligiousRatio(const Enum);
     };
 
 

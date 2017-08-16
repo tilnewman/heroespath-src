@@ -28,8 +28,10 @@
 // treasure.hpp
 //  Functions that determine what treasure a defeated enemy party has.
 //
-#include "game/combat/treasure-image-enum.hpp"
 #include "game/stats/types.hpp"
+#include "game/item/treasure-info.hpp"
+#include "game/item/item-profile.hpp"
+#include "game/combat/treasure-image-enum.hpp"
 
 #include <vector>
 
@@ -48,11 +50,6 @@ namespace non_player
     using CharacterPtr_t = Character *;
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
 }
-namespace creature
-{
-    class Creature;
-    using CreaturePtr_t = Creature *;
-}
 namespace combat
 {
 
@@ -62,9 +59,8 @@ namespace combat
     {
         ItemCache();
 
-        stats::Trait_t     coins;
-        stats::Trait_t   meteor_shards;
-        stats::Trait_t      gems;
+        stats::Trait_t coins {0};
+        stats::Trait_t gems {0};
         item::ItemPVec_t items_pvec;
 
         stats::Trait_t Weight() const;
@@ -80,11 +76,19 @@ namespace combat
                                         ItemCache &                         items_OutParam);
 
     private:
-        //These functions are only called if the creature's ownership complexity is not Animal.
-        static stats::Trait_t MakeCoinsForCreature(const creature::CreaturePtr_t);
-        static stats::Trait_t MakeGemsForCreature(const creature::CreaturePtr_t);
-        static stats::Trait_t MakeShardsForCreature(const creature::CreaturePtr_t);
-        static std::size_t MakeItemsForCreature(const creature::CreaturePtr_t, item::ItemPVec_t &);
+        static const item::TreasureInfo MakeTreasureInfo(const non_player::CharacterPVec_t &);
+
+        static void SelectItems(const stats::Trait_t TREASURE_SCORE,
+                                const bool           IS_RELIGIOUS,
+                                ItemCache &          items_OutParam);
+
+        static void RemoveTreasureScoresHigherThan(const stats::Trait_t,
+                                                   item::ItemProfileVec_t &,
+                                                   const bool IS_RELIGIOUS);
+
+        static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
+
+        static double TreasureScoreToWeight(const int);
     };
 
 }

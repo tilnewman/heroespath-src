@@ -70,6 +70,7 @@
 #include "game/item/armor-ratings.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 #include "game/item/item-factory.hpp"
+#include "game/item/misc-item-factory.hpp"
 #include "game/player/character-warehouse.hpp"
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
@@ -179,6 +180,7 @@ int main(int argc, char * argv[])
         game::player::CharacterWarehouse::Acquire();
         game::non_player::CharacterWarehouse::Acquire();
         game::item::weapon::WeaponFactory::Acquire();
+        game::item::misc::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
         sfml_util::gui::PopupManager::Acquire();
@@ -296,6 +298,7 @@ int main(int argc, char * argv[])
         sfml_util::gui::PopupManager::Release();
         sfml_util::SoundManager::Release();
         game::GameDataFile::Release();
+        game::item::misc::MiscItemFactory::Release();
         game::item::weapon::WeaponFactory::Release();
         game::player::CharacterWarehouse::Release();
         game::non_player::CharacterWarehouse::Release();

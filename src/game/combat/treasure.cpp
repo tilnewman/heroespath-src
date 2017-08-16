@@ -29,11 +29,17 @@
 //
 #include "treasure.hpp"
 
+#include "game/game-data-file.hpp"
 #include "game/item/item.hpp"
+#include "game/item/item-factory.hpp"
+#include "game/item/item-profile-warehouse.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/creature/creature.hpp"
 #include "game/non-player/character.hpp"
 #include "game/non-player/ownership-profile.hpp"
+
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 
 namespace game
@@ -44,7 +50,6 @@ namespace combat
     ItemCache::ItemCache()
     :
         coins        (0),
-        meteor_shards(0),
         gems         (0),
         items_pvec   ()
     {}
@@ -82,11 +87,13 @@ namespace combat
                 areAllDeadEnemiesNonCarriers = false;
             }
 
-            items_OutParam.coins += MakeCoinsForCreature(NEXT_CHARACTER_PTR);
-            items_OutParam.gems += MakeGemsForCreature(NEXT_CHARACTER_PTR);
-            items_OutParam.meteor_shards += MakeShardsForCreature(NEXT_CHARACTER_PTR);
+            auto const TREASURE_INFO{ MakeTreasureInfo(CHARACTER_PVEC) };
+            
+            items_OutParam.coins = TREASURE_INFO.Coin();
+            items_OutParam.gems = TREASURE_INFO.Gem();
 
-            MakeItemsForCreature(NEXT_CHARACTER_PTR, items_OutParam.items_pvec);
+            SelectItems(TREASURE_INFO.Magic(), false, items_OutParam);
+            SelectItems(TREASURE_INFO.Religious(), true, items_OutParam);
         }
 
         if (areAllDeadEnemiesNonCarriers)
@@ -100,36 +107,165 @@ namespace combat
     }
 
 
-    game::stats::Trait_t TreasureFactory::MakeCoinsForCreature(
-        const creature::CreaturePtr_t)
+    const item::TreasureInfo TreasureFactory::MakeTreasureInfo(
+        const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {
-        //TODO
-        return 0;
+        item::TreasureInfo tInfoSum;
+
+        for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
+        {
+            tInfoSum += creature::race::TreasureScore(
+                NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
+        }
+
+        auto const COIN_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Coin()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
+        
+        auto const COIN_RAND_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Coin()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
+
+        auto const COIN{ COIN_BASE + misc::random::Int(COIN_RAND_BASE) };
+
+        auto const GEM_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Gem()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-base")) };
+
+        auto const GEM_RAND_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Gem()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
+
+        auto const GEM{ GEM_BASE + misc::random::Int(GEM_RAND_BASE) };
+
+        auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Magic()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
+
+        auto const MAGIC_RAND_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Magic()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
+
+        auto const MAGIC{ MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE) };
+
+        auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Religious()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
+
+        auto const RELIGIOUS_RAND_BASE{ static_cast<stats::Trait_t>(
+            static_cast<float>(tInfoSum.Religious()) *
+                GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
+
+        auto const RELIGIOUS{ RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE) };
+
+        return item::TreasureInfo(COIN, GEM, MAGIC, RELIGIOUS);
     }
 
 
-    stats::Trait_t TreasureFactory::MakeGemsForCreature(
-        const creature::CreaturePtr_t)
+    void TreasureFactory::SelectItems(const stats::Trait_t TREASURE_SCORE,
+                                      const bool           IS_RELIGIOUS,
+                                      ItemCache &          items_OutParam)
     {
-        //TODO
-        return 0;
+        auto const AMOUNT_BASE{ static_cast<int>(static_cast<double>(TREASURE_SCORE) *
+            GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-base")) };
+
+        auto const AMOUNT_RAND{ misc::random::Int(TREASURE_SCORE - AMOUNT_BASE) };
+
+        auto amount{ AMOUNT_BASE + AMOUNT_RAND };
+
+        auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
+
+        //Some items are 0% religious, and need to be removed if selecting a religious item.
+        if (IS_RELIGIOUS)
+        {
+            profiles.erase(std::remove_if(
+                profiles.begin(),
+                profiles.end(),
+                [](const auto & PROFILE)
+                {
+                    return (PROFILE.TreasureScore(true) == 0);
+                }), profiles.end());
+        }
+        
+        RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+
+        while (profiles.empty() == false)
+        {
+            auto const NEXT_ITEM_TO_ADD_PROFILE{ profiles[SelectRandomWeighted(profiles)] };
+            
+            profiles.erase(std::remove(profiles.begin(),
+                                       profiles.end(),
+                                       NEXT_ITEM_TO_ADD_PROFILE), profiles.end());
+
+            items_OutParam.items_pvec.push_back( item::ItemFactory::Instance()->Make(
+                NEXT_ITEM_TO_ADD_PROFILE));
+
+            amount -= NEXT_ITEM_TO_ADD_PROFILE.TreasureScore();
+            RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+        }
     }
 
 
-    stats::Trait_t TreasureFactory::MakeShardsForCreature(
-        const creature::CreaturePtr_t)
+    void TreasureFactory::RemoveTreasureScoresHigherThan(
+        const stats::Trait_t REMOVE_IF_HIGHER,
+        item::ItemProfileVec_t & profiles,
+        const bool IS_RELIGIOUS)
     {
-        //TODO
-        return 0;
+        if ((REMOVE_IF_HIGHER <= 0) || profiles.empty())
+        {
+            return;
+        }
+        
+        profiles.erase(std::remove_if(
+            profiles.begin(),
+            profiles.end(),
+            [REMOVE_IF_HIGHER, IS_RELIGIOUS](const auto & PROFILE)
+            {
+                return (PROFILE.TreasureScore(IS_RELIGIOUS) > REMOVE_IF_HIGHER);
+            }), profiles.end());
     }
 
 
-    std::size_t TreasureFactory::MakeItemsForCreature(
-        const creature::CreaturePtr_t,
-        item::ItemPVec_t &)
+    std::size_t TreasureFactory::SelectRandomWeighted(const item::ItemProfileVec_t & PROFILES_ORIG)
     {
-        //TODO
-        return 0;
+        M_ASSERT_OR_LOGANDTHROW_SS((PROFILES_ORIG.empty() == false),
+            "game::combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
+
+        auto profiles{ PROFILES_ORIG };
+
+        std::sort(profiles.begin(),
+                  profiles.end(),
+                  [](const auto & A, const auto & B)
+                    {
+                        return (A.TreasureScore() < B.TreasureScore());
+                    });
+
+        double weightSum{ 0.0 };
+
+        for (auto const & NEXT_PROFILE : profiles)
+        {
+            weightSum += TreasureScoreToWeight(NEXT_PROFILE.TreasureScore());
+        }
+
+        auto const RAND{ misc::random::Double(weightSum) };
+
+        double runningWeight{ 0.0 };
+        for (std::size_t i(0); i<profiles.size(); ++i)
+        {
+            runningWeight += TreasureScoreToWeight(profiles[i].TreasureScore());
+            if (RAND < runningWeight)
+            {
+                return i;
+            }
+        }
+
+        return profiles.size() - 1;
+    }
+
+
+    double TreasureFactory::TreasureScoreToWeight(const int TREASURE_SCORE)
+    {
+        return 1.0 / (static_cast<double>(TREASURE_SCORE) * 0.1);
     }
 
 }

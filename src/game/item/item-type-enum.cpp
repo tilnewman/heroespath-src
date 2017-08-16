@@ -1089,6 +1089,143 @@ namespace item
     }
 
 
+    float unique_type::ReligiousRatio(const unique_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotUnique:                 { return 0.0f; }
+            case CrystalChimes:             { return 0.0f; }
+            case DoveBloodVial:             { return 0.1f; }
+            case DragonToothWhistle:        { return 0.0f; }
+            case DriedFrog:                 { return 0.0f; }
+            case DriedGecko:                { return 0.0f; }
+            case DriedIguana:               { return 0.0f; }
+            case DriedLizard:               { return 0.0f; }
+            case DriedSalamander:           { return 0.0f; }
+            case DriedSkink:                { return 0.0f; }
+            case DriedToad:                 { return 0.0f; }
+            case DriedTurtle:               { return 0.0f; }
+            case ExoticGoldenGong:          { return 0.0f; }
+            case MagnifyingGlass:           { return 0.0f; }
+            case PixieBell:                 { return 0.0f; }
+            case ShamanRainmaker:           { return 0.9f; }
+            case SpecterChains:             { return 0.1f; }
+            case VultureGizzard:            { return 0.0f; }
+            case WarTrumpet:                { return 0.0f; }
+            case WraithTalisman:            { return 0.5f; }
+            case BasiliskTonge:             { return 0.0f; }
+            case BerserkersBeard:           { return 0.0f; }
+            case BishopsHanky:              { return 0.99f; }
+            case BleedingTrophy:            { return 0.5f; }
+            case BloodyDragonScale:         { return 0.0f; }
+            case BottleOfBansheeScreams:    { return 0.0f; }
+            case BraceletCrown:             { return 0.0f; }
+            case BraceletFeather:           { return 0.0f; }
+            case BraceletFist:              { return 0.0f; }
+            case BraceletHourglass:         { return 0.0f; }
+            case BraceletKey:               { return 0.0f; }
+            case BraceletMask:              { return 0.0f; }
+            case BroochCrown:               { return 0.0f; }
+            case BroochFeather:             { return 0.0f; }
+            case BroochFist:                { return 0.0f; }
+            case BroochHourglass:           { return 0.0f; }
+            case BroochKey:                 { return 0.0f; }
+            case BroochMask:                { return 0.0f; }
+            case BurialShroud:              { return 0.8f; }
+            case CharmCrown:                { return 0.0f; }
+            case CharmFeather:              { return 0.0f; }
+            case CharmFist:                 { return 0.0f; }
+            case CharmHourglass:            { return 0.0f; }
+            case CharmKey:                  { return 0.0f; }
+            case CharmMask:                 { return 0.0f; }
+            case ChimeraBone:               { return 0.0f; }
+            case CobraTooth:                { return 0.0f; }
+            case CommandersCape:            { return 0.0f; }
+            case CopperTroll:               { return 0.0f; }
+            case CrystalCat:                { return 0.0f; }
+            case CyclopsEye:                { return 0.0f; }
+            case DemonDiary:                { return 0.75f; }
+            case DruidLeaf:                 { return 0.9f; }
+            case EvilRabbitsFoot:           { return 0.5f; }
+            case FanaticsFlag:              { return 0.0f; }
+            case FriarsChronicle:           { return 0.8f; }
+            case FuneralRecord:             { return 0.8f; }
+            case GeneralsCape:              { return 0.0f; }
+            case GhostSheet:                { return 0.8f; }
+            case GiantOwlEye:               { return 0.0f; }
+            case GriffinFeather:            { return 0.0f; }
+            case HangmansNoose:             { return 0.0f; }
+            case HawkEye:                   { return 0.0f; }
+            case HobgoblinNose:             { return 0.0f; }
+            case HoboRing:                  { return 0.0f; }
+            case HolyEpic:                  { return 0.9f; }
+            case HornOfTheHorde:            { return 0.0f; }
+            case ImpTail:                   { return 0.0f; }
+            case IslanderHeaddress:         { return 0.0f; }
+            case JeweledAnkhNecklace:       { return 0.0f; }
+            case JeweledArmband:            { return 0.0f; }
+            case JeweledHandbag:            { return 0.0f; }
+            case JeweledPrincessVeil:       { return 0.0f; }
+            case KingsCape:                 { return 0.0f; }
+            case LastRitesScroll:           { return 0.9f; }
+            case MacabreManuscript:         { return 0.75f; }
+            case MadRatJuju:                { return 0.0f; }
+            case MagicHorseshoe:            { return 0.0f; }
+            case ManaAmulet:                { return 0.2f; }
+            case MendicantRing:             { return 0.75f; }
+            case MinotaurHide:              { return 0.0f; }
+            case MonkRing:                  { return 0.9f; }
+            case MortuaryOrnament:          { return 0.8f; }
+            case MournersMask:              { return 0.0f; }
+            case PantherPaw:                { return 0.0f; }
+            case PinCrown:                  { return 0.0f; }
+            case PinFeather:                { return 0.0f; }
+            case PinFist:                   { return 0.0f; }
+            case PinHourglass:              { return 0.0f; }
+            case PinKey:                    { return 0.0f; }
+            case PinMask:                   { return 0.0f; }
+            case PriestRing:                { return 0.99f; }
+            case RascalMask:                { return 0.0f; }
+            case RattlesnakeTail:           { return 0.0f; }
+            case RavenClaw:                 { return 0.0f; }
+            case RazorFingerclaw:           { return 0.0f; }
+            case ReaperScythe:              { return 0.0f; }
+            case RegalCaptainsFlag:         { return 0.0f; }
+            case RequiemRegister:           { return 0.9f; }
+            case RoyalScoutSpyglass:        { return 0.0f; }
+            case SaintCameoPin:             { return 0.9f; }
+            case SaintsJournal:             { return 0.9f; }
+            case SanguineRelic:             { return 0.5f; }
+            case ScorpionStingerFingerclaw: { return 0.0f; }
+            case ScoundrelSack:             { return 0.0f; }
+            case SepultureDecoration:       { return 0.65f; }
+            case ShadeCloak:                { return 0.5f; }
+            case SharkToothNecklace:        { return 0.0f; }
+            case SignetCrown:               { return 0.0f; }
+            case SignetFeather:             { return 0.0f; }
+            case SignetFist:                { return 0.0f; }
+            case SignetHourglass:           { return 0.0f; }
+            case SignetKey:                 { return 0.0f; }
+            case SignetMask:                { return 0.0f; }
+            case SirenConch:                { return 0.0f; }
+            case SpecterRobe:               { return 0.2f; }
+            case SprintersLegtie:           { return 0.0f; }
+            case SwindlersBag:              { return 0.0f; }
+            case TribalFlag:                { return 0.0f; }
+            case TricksterPouch:            { return 0.0f; }
+            case TuningFork:                { return 0.0f; }
+            case TurtleShell:               { return 0.0f; }
+            case VampiresToothNecklace:     { return 0.0f; }
+            case ViperFangFingerclaw:       { return 0.0f; }
+            case WarhorseMarionette:        { return 0.0f; }
+            case WeaselTotem:               { return 0.0f; }
+            case WolfenFur:                 { return 0.0f; }
+            case Count:                     { return 0.0f; }
+            default:                        { return 0.0f; }
+        }
+    }
+
+
     const std::string misc_type::ToString(const misc_type::Enum E)
     {
         switch (E)
@@ -1865,6 +2002,18 @@ namespace item
                 (E == misc_type::Lyre) ||
                 (E == misc_type::Staff) ||
                 (E == misc_type::Ring));
+    }
+
+
+    float misc_type::ReligiousRatio(const misc_type::Enum E)
+    {
+        if (E == misc_type::Figurine_Blessed)   { return 0.9f; }
+        if (E == misc_type::Figurine_Cursed)    { return 0.9f; }
+        if (E == misc_type::Doll_Blessed)       { return 0.9f; }
+        if (E == misc_type::Doll_Cursed)        { return 0.9f; }
+        if (E == misc_type::Bust)               { return 0.6f; }
+        if (E == misc_type::Dried_Head)         { return 0.75f; }
+        return 0.0f;
     }
 
 

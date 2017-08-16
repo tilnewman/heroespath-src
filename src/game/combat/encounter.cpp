@@ -351,7 +351,6 @@ namespace combat
         deadNonPlayerItemsHeld_.items_pvec.clear();
         deadNonPlayerItemsHeld_.coins = 0;
         deadNonPlayerItemsHeld_.gems = 0;
-        deadNonPlayerItemsHeld_.meteor_shards = 0;
 
         for (auto nextItemPtr : deadNonPlayerItemsCached_.items_pvec)
         {
@@ -361,7 +360,6 @@ namespace combat
         deadNonPlayerItemsCached_.items_pvec.clear();
         deadNonPlayerItemsCached_.coins = 0;
         deadNonPlayerItemsCached_.gems = 0;
-        deadNonPlayerItemsCached_.meteor_shards = 0;
 
         FreeThenResetDeadNonPlayerParty();
     }

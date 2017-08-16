@@ -69,8 +69,12 @@ namespace misc
 
         static ItemPtr_t Make(const ItemProfile &);
 
+        static ItemPtr_t Make_Amulet(const ItemProfile &);
+        static ItemPtr_t Make_Armband(const ItemProfile &);
         static ItemPtr_t Make_BalmPot(const ItemProfile &);
+        static ItemPtr_t Make_Braid(const ItemProfile &);
         static ItemPtr_t Make_Bust(const ItemProfile &);
+        static ItemPtr_t Make_Cape(const ItemProfile &);
         static ItemPtr_t Make_DevilHorn(const ItemProfile &);
         static ItemPtr_t Make_DollBlessed(const ItemProfile &);
         static ItemPtr_t Make_DollCursed(const ItemProfile &);
@@ -81,9 +85,11 @@ namespace misc
         static ItemPtr_t Make_FigurineBlessed(const ItemProfile &);
         static ItemPtr_t Make_FigurineCursed(const ItemProfile &);
         static ItemPtr_t Make_Finger(const ItemProfile &);
+        static ItemPtr_t Make_Fingerclaw(const ItemProfile &);
         static ItemPtr_t Make_Goblet(const ItemProfile &);
         static ItemPtr_t Make_HurdyGurdy(const ItemProfile &);
         static ItemPtr_t Make_Icicle(const ItemProfile &);
+        static ItemPtr_t Make_Litchhand(const ItemProfile &);
         static ItemPtr_t Make_LockPicks(const ItemProfile &);
         static ItemPtr_t Make_Lyre(const ItemProfile &);
         static ItemPtr_t Make_MummyHand(const ItemProfile &);
@@ -99,6 +105,7 @@ namespace misc
         static ItemPtr_t Make_SpiderEggs(const ItemProfile &);
         static ItemPtr_t Make_Staff(const ItemProfile &);
         static ItemPtr_t Make_UnicornHorn(const ItemProfile &);
+        static ItemPtr_t Make_Veil(const ItemProfile &);
         static ItemPtr_t Make_Viol(const ItemProfile &);
         static ItemPtr_t Make_Wand(const ItemProfile &);
 

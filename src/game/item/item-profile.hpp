@@ -104,10 +104,23 @@ namespace item
 
         inline creature::role::Enum Role() const                        { return role_; }
 
-        inline int TreasureScore() const                                { return score_; }
+        inline int TreasureScore(const bool IS_RELIGIOUS = false) const
+        {
+            if (IS_RELIGIOUS)
+            {
+                return static_cast<int>(static_cast<float>(score_) * religious_);
+            }
+            else
+            {
+                return score_;
+            }
+        }
 
         inline const creature::SummonInfo Summoning() const             { return summonInfo_; }
         inline void Summoning(const creature::SummonInfo & S)           { summonInfo_ = S; }
+
+        inline float Religious() const                                  { return religious_; }
+        inline void Religious(const float F)                            { religious_ = F; }
 
         const std::string ToString() const;
 
@@ -283,6 +296,8 @@ namespace item
                         const item::element_type::Enum ELEMENT_TYPE,
                         const bool                     IS_WEAPON) const;
 
+        void EquippableHelper(const int SCORE_BONUS);
+
     private:
         std::string        baseName_;
         category::Enum     category_;
@@ -332,6 +347,8 @@ namespace item
         int score_;
 
         creature::SummonInfo summonInfo_;
+
+        float religious_;
     };
 
 

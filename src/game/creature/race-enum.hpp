@@ -30,6 +30,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/item/treasure-info.hpp"
 #include "game/creature/role-enum.hpp"
 
 #include <tuple>
@@ -121,6 +122,7 @@ namespace creature
         static const RoleVec_t Roles(const race::Enum);
         static bool RaceRoleMatch(const race::Enum, const role::Enum);
         static const OriginTypeVec_t OriginTypes(const race::Enum, const role::Enum);
+        static const item::TreasureInfo TreasureScore(const race::Enum, const role::Enum);
     };
 
 

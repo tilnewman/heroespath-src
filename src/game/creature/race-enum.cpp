@@ -685,5 +685,118 @@ namespace creature
         return v;
     }
 
+
+    const item::TreasureInfo race::TreasureScore(const race::Enum RACE_ENUM,
+                                                 const role::Enum ROLE_ENUM)
+    {
+        stats::Trait_t coin{ 0 }, gem{ 0 }, magic{ 0 }, rel{ 0 };
+
+        switch (RACE_ENUM)
+        {
+            case race::Human:            { coin += 50;  gem += 25;  magic += 100; rel += 50;  break; }
+            case race::Orc:              { coin += 30;  gem += 15;  magic += 60;  rel += 20;  break; }
+            case race::Minotaur:         { coin += 20;  gem += 5;   magic += 50;  rel += 10;  break; }
+            case race::Ogre:             { coin += 15;  gem += 5;   magic += 66;  rel += 25;  break; }
+            case race::Halfling:         { coin += 70;  gem += 50;  magic += 90;  rel += 50;  break; }
+            case race::Pug:              { coin += 40;  gem += 10;  magic += 20;  rel += 30;  break; }
+            case race::Giant:            { coin += 30;  gem += 10;  magic += 65;  rel += 30;  break; }
+            case race::Wolfen:           { coin += 0;   gem += 5;   magic += 10;  rel += 10;  break; }
+            case race::Lion:             { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::LionBoar:         { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Ramonaut:         { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Boar:             { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Demon:            { coin += 200; gem += 100; magic += 200; rel += 200; break; }
+            case race::Gnome:            { coin += 150; gem += 50;  magic += 120; rel += 40;  break; }
+            case race::Newt:             { coin += 30;  gem += 10;  magic += 25;  rel += 20;  break; }
+            case race::Bog:              { coin += 10;  gem += 0;   magic += 20;  rel += 0;   break; }
+            case race::Plant:            { coin += 0;   gem += 0;   magic += 5;   rel += 0;   break; }
+            case race::Pixie:            { coin += 100; gem += 75;  magic += 125; rel += 50;  break; }
+            case race::Goblin:           { coin += 50;  gem += 12;  magic += 50;  rel += 25;  break; }
+            case race::Troll:            { coin += 40;  gem += 20;  magic += 75;  rel += 30;  break; }
+            case race::Hydra:            { coin += 180; gem += 95;  magic += 180; rel += 100; break; }
+            case race::LizardWalker:     { coin += 100; gem += 20;  magic += 100; rel += 40;  break; }
+            case race::Naga:             { coin += 133; gem += 30;  magic += 133; rel += 60;  break; }
+            case race::Harpy:            { coin += 100; gem += 18;  magic += 100; rel += 80;  break; }
+            case race::Dragon:           { coin += 300; gem += 200; magic += 300; rel += 150; break; }
+            case race::Griffin:          { coin += 75;  gem += 20;  magic += 75;  rel += 20;  break; }
+            case race::Serpent:          { coin += 0;   gem += 0;   magic += 0;   rel += 30;  break; }
+            case race::Cobra:            { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Wyvern:           { coin += 80;  gem += 35;  magic += 80;  rel += 50;  break; }
+            case race::Shade:            { coin += 70;  gem += 100; magic += 150; rel += 100; break; }
+            case race::Skeleton:         { coin += 100; gem += 35;  magic += 100; rel += 50;  break; }
+            case race::Witch:            { coin += 90;  gem += 125; magic += 180; rel += 300; break; }
+            case race::Golem:            { coin += 45;  gem += 70;  magic += 150; rel += 50;  break; }
+            case race::Ghoul:            { coin += 30;  gem += 30;  magic += 60;  rel += 60;  break; }
+            case race::Spider:           { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::CaveCrawler:      { coin += 10;  gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Werebear:         { coin += 0;   gem += 0;   magic += 50;  rel += 0;   break; }
+            case race::Wereboar:         { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Werecat:          { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Werewolf:         { coin += 0;   gem += 10;  magic += 100; rel += 50;  break; }
+            case race::Werebat:          { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Beetle:           { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Bat:              { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::ThreeHeadedHound: { coin += 0;   gem += 0;   magic += 0;   rel += 0;   break; }
+            case race::Count:
+            default:                     { break; }
+        }
+
+        switch (ROLE_ENUM)
+        {
+            case role::Archer:        { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Bard:          { coin += 20; gem += 20;  magic += 30; rel += 10;  break; }
+            case role::Beastmaster:   { coin += 0;  gem += 10;  magic += 20; rel += 20;  break; }
+            case role::Cleric:        { coin += 0;  gem += 60;  magic += 50; rel += 50;  break; }
+            case role::Knight:        { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Sorcerer:      { coin += 0;  gem += 70;  magic += 50; rel += 20;  break; }
+            case role::Thief:         { coin += 0;  gem += 5;   magic += 20; rel += 0;   break; }
+            case role::Firebrand:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Sylavin:       { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Wolfen:        { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Thug:          { coin += 15; gem += 2;   magic += 15; rel += 0;   break; }
+            case role::Mugger:        { coin += 25; gem += 3;   magic += 25; rel += 0;   break; }
+            case role::Drunk:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Grunt:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Brute:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Berserker:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Mountain:      { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Captain:       { coin += 50; gem += 10;  magic += 20; rel += 5;   break; }
+            case role::Chieftain:     { coin += 50; gem += 20;  magic += 50; rel += 20;  break; }
+            case role::Trader:        { coin += 30; gem += 10;  magic += 20; rel += 15;  break; }
+            case role::Warlord:       { coin += 50; gem += 30;  magic += 30; rel += 10;  break; }
+            case role::Shaman:        { coin += 10; gem += 100; magic += 50; rel += 100; break; }
+            case role::Smasher:       { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Strangler:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Soldier:       { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::TwoHeaded:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Giant:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Elder:         { coin += 10; gem += 75;  magic += 90; rel += 50;  break; }
+            case role::FourArmed:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Tendrilus:     { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Wing:          { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Whelp:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Pod:           { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Spike:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Skeleton:      { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Ranger:        { coin += 0;  gem += 10;  magic += 0;  rel += 0;   break; }
+            case role::Water:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Blacksmith:    { coin += 0;  gem += 0;   magic += 10; rel += 0;   break; }
+            case role::Spider:        { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Beetle:        { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Boar:          { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Lion:          { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Ramonaut:      { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Serpent:       { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Bat:           { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Ghost:         { coin += 0;  gem += 50;  magic += 0;  rel += 0;   break; }
+            case role::Cat:           { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Wolf:          { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            case role::Count:         { coin += 0;  gem += 0;   magic += 0;  rel += 0;   break; }
+            default: { break; }
+        }
+
+        return item::TreasureInfo(coin, gem, magic, rel);
+    }
+
 }
 }
