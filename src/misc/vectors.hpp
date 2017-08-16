@@ -56,6 +56,7 @@ namespace misc
 
             if (WILL_UNIQUE)
             {
+                std::sort(b_Vec.begin(), b_Vec.end());
                 b_Vec.erase(std::unique(b_Vec.begin(), b_Vec.end()), b_Vec.end());
             }
         }
@@ -80,6 +81,7 @@ namespace misc
 
             if (WILL_UNIQUE)
             {
+                std::sort(finalVec.begin(), finalVec.end());
                 finalVec.erase(std::unique(finalVec.begin(),
                                            finalVec.end()),
                                            finalVec.end());

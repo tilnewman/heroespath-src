@@ -847,6 +847,7 @@ namespace combat
 
         if (IdVec_OutParam.size() > 1)
         {
+            std::sort(IdVec_OutParam.begin(), IdVec_OutParam.end());
             IdVec_OutParam.erase(std::unique(IdVec_OutParam.begin(),
                                              IdVec_OutParam.end()),
                                              IdVec_OutParam.end());
@@ -880,6 +881,7 @@ namespace combat
 
         if (NodePVec_OutParam.size() > 1)
         {
+            std::sort(NodePVec_OutParam.begin(), NodePVec_OutParam.end());
             NodePVec_OutParam.erase(std::unique(NodePVec_OutParam.begin(),
                                                 NodePVec_OutParam.end()), NodePVec_OutParam.end());
         }
@@ -912,6 +914,7 @@ namespace combat
 
         if (NodePVec_OutParam.size() > 1)
         {
+            std::sort(NodePVec_OutParam.begin(), NodePVec_OutParam.end());
             NodePVec_OutParam.erase(std::unique(NodePVec_OutParam.begin(),
                                                 NodePVec_OutParam.end()), NodePVec_OutParam.end());
         }

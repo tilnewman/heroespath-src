@@ -553,6 +553,7 @@ namespace combat
 
         if (selectedPlayersPVec.size() > 1)
         {
+            std::sort(selectedPlayersPVec.begin(), selectedPlayersPVec.end());
             selectedPlayersPVec.erase(std::unique(selectedPlayersPVec.begin(),
                                                   selectedPlayersPVec.end()),
                                       selectedPlayersPVec.end());
@@ -733,6 +734,7 @@ namespace combat
 
         if (refinedTargetsPVec.size() > 1)
         {
+            std::sort(refinedTargetsPVec.begin(), refinedTargetsPVec.end());
             refinedTargetsPVec.erase(std::unique(refinedTargetsPVec.begin(),
                                                  refinedTargetsPVec.end()),
                                                  refinedTargetsPVec.end());
