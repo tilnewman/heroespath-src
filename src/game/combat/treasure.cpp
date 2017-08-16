@@ -87,7 +87,7 @@ namespace combat
                 areAllDeadEnemiesNonCarriers = false;
             }
 
-            auto const TREASURE_INFO{ MakeTreasureInfo(CHARACTER_PVEC) };
+            auto const TREASURE_INFO{ MakeRandTreasureInfo(CHARACTER_PVEC) };
             
             items_OutParam.coins = TREASURE_INFO.Coin();
             items_OutParam.gems = TREASURE_INFO.Gem();
@@ -107,7 +107,7 @@ namespace combat
     }
 
 
-    const item::TreasureInfo TreasureFactory::MakeTreasureInfo(
+    const item::TreasureInfo TreasureFactory::MakeRandTreasureInfo(
         const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {
         item::TreasureInfo tInfoSum;
@@ -166,13 +166,7 @@ namespace combat
                                       const bool           IS_RELIGIOUS,
                                       ItemCache &          items_OutParam)
     {
-        auto const AMOUNT_BASE{ static_cast<int>(static_cast<double>(TREASURE_SCORE) *
-            GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-base")) };
-
-        auto const AMOUNT_RAND{ misc::random::Int(TREASURE_SCORE - AMOUNT_BASE) };
-
-        auto amount{ AMOUNT_BASE + AMOUNT_RAND };
-
+        auto amount{ TREASURE_SCORE };
         auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
 
         //Some items are 0% religious, and need to be removed if selecting a religious item.

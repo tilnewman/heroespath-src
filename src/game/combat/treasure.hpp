@@ -76,7 +76,7 @@ namespace combat
                                         ItemCache &                         items_OutParam);
 
     private:
-        static const item::TreasureInfo MakeTreasureInfo(const non_player::CharacterPVec_t &);
+        static const item::TreasureInfo MakeRandTreasureInfo(const non_player::CharacterPVec_t &);
 
         static void SelectItems(const stats::Trait_t TREASURE_SCORE,
                                 const bool           IS_RELIGIOUS,
