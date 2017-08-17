@@ -1550,8 +1550,7 @@ namespace creature
             divisor = 3;
         }
 
-        return (base +
-            ((Strength() * multiplier) / divisor));
+        return (base + ((Strength() * multiplier) / divisor));
     }
 
 
@@ -1578,45 +1577,22 @@ namespace creature
             traitPercent += bonusSet_.GetCopy(NEXT_TRAIT_ENUM).Normal();
 
             bonusSet_.Get(NEXT_TRAIT_ENUM).CurrentSet(traitPercent);
-
-            auto const BONUS_RATIO{ static_cast<float>(traitPercent) / 100.0f };
-
-            auto const NORMAL_FLOAT{ static_cast<float>(actualSet_.GetCopy(
-                NEXT_TRAIT_ENUM).Normal()) };
-
-            actualSet_.Get(NEXT_TRAIT_ENUM).CurrentSet( static_cast<int>(NORMAL_FLOAT +
-                (NORMAL_FLOAT * BONUS_RATIO)) );
         }
     }
 
 
-    stats::Trait_t Creature::TraitActual(const stats::Traits::Enum E) const
+    const stats::TraitSet Creature::TraitsWorking() const
     {
-        return actualSet_.GetCopy(E).Current();
-    }
-
-
-    stats::Trait_t Creature::TraitWorking(const stats::Traits::Enum E) const
-    {
-        auto const ACTUAL{ TraitActual(E) };
-        if (ACTUAL < 0)
+        stats::TraitSet set;
+        for (int i(0); i < stats::Traits::Count; ++i)
         {
-            return 0;
+            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            set.Get(NEXT_TRAIT_ENUM).NormalSet(TraitNormal(NEXT_TRAIT_ENUM));
+            set.Get(NEXT_TRAIT_ENUM).CurrentSet(TraitWorking(NEXT_TRAIT_ENUM));
         }
-        else
-        {
-            return ACTUAL;
-        }
+
+        return set;
     }
-
-
-    stats::Trait_t Creature::TraitNormalAdj(const stats::Traits::Enum E, const int ADJ)
-    {
-        actualSet_.Get(E).NormalAdj(ADJ);
-        ReCalculateTraitBonuses();
-        return actualSet_.GetCopy(E).Normal();
-    }
-
 
 
     const std::string Creature::TraitModifiedString(const stats::Traits::Enum E,

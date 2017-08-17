@@ -515,14 +515,16 @@ namespace player
             (ROLE_ENUM == creature::role::Cleric))
         {
             auto const INITIAL_MANA{ characterPtrC->TraitNormal(stats::Traits::Intelligence) / 2 };
-            characterPtrC->TraitNormalAdj(stats::Traits::Mana, INITIAL_MANA);
+            characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
+            characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
             auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence) +
                 characterPtrC->TraitNormal(stats::Traits::Charm)) / 4 };
 
-            characterPtrC->TraitNormalAdj(stats::Traits::Mana, INITIAL_MANA);
+            characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
+            characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
         }
     }
 

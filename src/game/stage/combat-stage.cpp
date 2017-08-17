@@ -3505,17 +3505,17 @@ namespace stage
 
             weaponHoldingSS << HOLDING_WEAPON_STR;
 
-            infoSS << " Str:   "  << turnCreaturePtr_->TraitNormal(stats::Traits::Strength)
+            infoSS << " Str:   "  << turnCreaturePtr_->TraitCurrent(stats::Traits::Strength)
                    << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Strength, true)
-                   << "\n Acc:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Accuracy)
+                   << "\n Acc:  "   << turnCreaturePtr_->TraitCurrent(stats::Traits::Accuracy)
                    << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true)
-                   << "\n Cha:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Charm)
+                   << "\n Cha:  "   << turnCreaturePtr_->TraitCurrent(stats::Traits::Charm)
                    << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Charm, true)
-                   << "\n Lck:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Luck)
+                   << "\n Lck:  "   << turnCreaturePtr_->TraitCurrent(stats::Traits::Luck)
                    << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Luck, true)
-                   << "\n Spd:  "   << turnCreaturePtr_->TraitNormal(stats::Traits::Speed)
+                   << "\n Spd:  "   << turnCreaturePtr_->TraitCurrent(stats::Traits::Speed)
                    << " " << turnCreaturePtr_->TraitModifiedString(stats::Traits::Speed, true)
-                   << "\n Int:    " << turnCreaturePtr_->TraitNormal(stats::Traits::Intelligence)
+                   << "\n Int:    " << turnCreaturePtr_->TraitCurrent(stats::Traits::Intelligence)
                    << " "
                    << turnCreaturePtr_->TraitModifiedString(stats::Traits::Intelligence, true)
                    << "\nHealth:  " << turnCreaturePtr_->HealthCurrent()

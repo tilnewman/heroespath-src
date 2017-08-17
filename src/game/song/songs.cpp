@@ -117,7 +117,7 @@ namespace song
 
         if (MANA_GAIN_FINAL > 0)
         {
-            creatureListeningPtr->TraitNormalAdj(stats::Traits::Mana, MANA_GAIN_FINAL);
+            creatureListeningPtr->TraitCurrentAdj(stats::Traits::Mana, MANA_GAIN_FINAL);
 
             std::ostringstream ss;
             ss << "'s mana for " << MANA_GAIN_FINAL << ".";

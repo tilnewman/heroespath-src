@@ -399,8 +399,6 @@ namespace creature
 
         void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
 
-        inline stats::TraitSet & Traits()                       { return actualSet_; }
-
         void ReCalculateTraitBonuses();
 
         inline int TraitNormal(const stats::Traits::Enum E) const
@@ -408,9 +406,70 @@ namespace creature
             return actualSet_.GetCopy(E).Normal();
         }
 
-        stats::Trait_t TraitWorking(const stats::Traits::Enum) const;
-        stats::Trait_t TraitActual(const stats::Traits::Enum) const;
-        stats::Trait_t TraitNormalAdj(const stats::Traits::Enum, const int);
+        inline stats::Trait_t TraitNormalAdj(
+            const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        {
+            return actualSet_.Get(E).NormalAdj(ADJ);
+        }
+
+        inline void TraitNormalSet(
+            const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        {
+            actualSet_.Get(E).NormalSet(NEW_VALUE);
+        }
+
+        inline stats::Trait_t TraitCurrent(const stats::Traits::Enum E) const
+        {
+            return actualSet_.GetCopy(E).Current();
+        }
+
+        inline stats::Trait_t TraitCurrentAdj(
+            const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        {
+            return actualSet_.Get(E).CurrentAdj(ADJ);
+        }
+
+        inline void TraitCurrentSet(
+            const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        {
+            actualSet_.Get(E).CurrentSet(NEW_VALUE);
+        }
+
+        inline stats::Trait_t TraitWorking(const stats::Traits::Enum E) const
+        {
+            auto const ACTUAL{ TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E)) };
+            return (ACTUAL < 0.0f) ? 0 : static_cast<stats::Trait_t>(ACTUAL);
+        }
+
+        inline stats::Trait_t TraitBonusNormal(const stats::Traits::Enum E) const
+        {
+            return bonusSet_.GetCopy(E).Normal();
+        }
+
+        inline stats::Trait_t TraitBonusNormalAdj(
+            const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        {
+            auto const NEW_NORMAL{ bonusSet_.Get(E).NormalAdj(ADJ) };
+            ReCalculateTraitBonuses();
+            return NEW_NORMAL;
+        }
+
+        inline stats::Trait_t TraitBonusCurrent(const stats::Traits::Enum E) const
+        {
+            return bonusSet_.GetCopy(E).Current();
+        }
+
+        inline float TraitBonusActualAsRatio(const stats::Traits::Enum E) const
+        {
+            return static_cast<float>(bonusSet_.GetCopy(E).Current()) / 100.0f;
+        }
+
+        const stats::TraitSet TraitsWorking() const;
+
+        inline const stats::TraitSet TraitsBonuses() const
+        {
+            return bonusSet_;
+        }
 
         const std::string TraitModifiedString(const stats::Traits::Enum E,
                                               const bool                WILL_WRAP) const;
@@ -457,16 +516,35 @@ namespace creature
         stats::Trait_t      rank_;
         stats::Trait_t      experience_;
 
-        //actualSet_.Normal is the actual non-ratio non-bonus standing value.
-        //actualSet_.Current is the actual WORKING, >=0, non-ratio non-bonus value.
-        //bonusSet_.Normal is the standing bonus value.
-        //bonusSet_.Current is sum of all percent adjustments from conditions and enchantments.
         //
-        //All can be + or -.
+        //actualSet_.Normal   -The non-percent, non-bonus, positive, standing value,
+        //                     unaffected by bonuses.  For example, this would be
+        //                     Mana/Stats normal or max value.  See TraitNormal().
         //
-        //Needing the actual true non-ratio non-bonus standing value that might be < 0,
-        //is not expected, but if the situation arises use TraitActual().  For all normal
-        //situations where the working value (that is never < 0) is needed, use TraitWorking().
+        //actualSet_.Current  -The non-percent, non-bonus, positive, current value,
+        //                     unaffected by bonuses.  See TraitCurrent().
+        //
+        //bonusSet_.Normal    -The percent, bonus, standing value.  See TraitBonusNormal().
+        //                     This is a permenant bonus, not from a temporary source
+        //                     (enchantment or condition), but from a permenant source
+        //                     (rank increase or title).
+        //
+        //bonusSet_.Current   -The percent, sum of all bonuses from temp sources
+        //                     (enchantments and conditions).  See TraitBonusCurrent()
+        //                     and ReCalculateTraitBonuses().
+        //
+        //  Things with normal/current values like Mana/Stats:
+        //      Get using TraitWorking() which applies bonuses and ensures >=0.
+        //      Adjust normal with TraitNormalAdj() and current with TraitCurrentAdj().
+        //      Get the entire set with TraitsWorking().
+        //
+        //  Things that are only bonuses like Backstab/HitPower/Surprise:
+        //      Get with TraitBonusCurrent() which is the sum of all temp/perm sources.
+        //      Set permanent bonuses with TraitBonusNormalAdj(), which calls the 
+        //      ReCalculateTraitBonuses() function changing bonusSet_.Current and what
+        //      TraitBonusCurrent() returns.
+        //      Get the entire set with TraitsBonuses();
+        //      
         stats::TraitSet actualSet_;
         stats::TraitSet bonusSet_;
 
