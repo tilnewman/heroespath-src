@@ -208,14 +208,26 @@ namespace item
 
         const std::string BaseName() const;
 
+        inline void SetName(const std::string & NEW_NAME)           { name_ = NEW_NAME; }
         inline void SetElementType(const element_type::Enum E)      { elementType_ = E; }
         inline void SetUniqueType(const unique_type::Enum E)        { uniqueType_ = E; }
         inline void SetSetType(const set_type::Enum E)              { setType_ = E; }
         inline void SetNamedType(const named_type::Enum E)          { namedType_ = E; }
         inline void SetMiscType(const misc_type::Enum E)            { miscType_ = E; }
         inline void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
+        
         inline void SetSummonInfo(const creature::SummonInfo & SI)  { summonInfo_ = SI; }
         inline const creature::SummonInfo & GetSummonInfo() const   { return summonInfo_; }
+
+        inline bool IsSummoning() const
+        {
+            return summonInfo_.WillSummon();
+        }
+
+        inline bool IsEnchanted() const
+        {
+            return ((enchantmentsPVec_.empty() == false) || IsSummoning());
+        }
 
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);

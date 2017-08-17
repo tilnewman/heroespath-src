@@ -254,7 +254,9 @@ namespace creature
                                                       IS_WEAPON,
                                                       IS_ARMOR) };
 
-        auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
+        //the additional 200 is to raise the score of all named items
+        auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() + 200 };
+
         delete ENCHANTMENT_PTR;
         return SCORE;
     }

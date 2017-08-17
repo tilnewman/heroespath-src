@@ -103,6 +103,9 @@ namespace item
     {
         vec_.clear();
 
+        //As of 2017-8-17 there were 849299 raw item profiles created before reductions.
+        vec_.reserve(1'000'000);
+
         //items from standard equipment
         {
             ItemProfileVec_t v;
@@ -274,7 +277,9 @@ namespace item
                                           material::Nothing,
                                           set_type::NotASet);
 
-                                p.Summoning( SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+                                p.SetSummoningAndAdjustScore(
+                                    SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+
                                 vec_.push_back(p);
                             }
                         }
@@ -309,14 +314,16 @@ namespace item
                                 }() };
 
                             ItemProfile p;
-                                
+
                             p.SetMisc(MISC_TYPE,
                                       false,
                                       MATERIAL,
                                       material::Nothing,
                                       set_type::NotASet);
 
-                            p.Summoning( SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+                            p.SetSummoningAndAdjustScore(
+                                SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+
                             vec_.push_back(p);
                         }
                     }
@@ -345,11 +352,14 @@ namespace item
                 return (P.MaterialPrimary() == P.MaterialSecondary());
             }), vec_.end());
 
+        vec_.shrink_to_fit();
+
         auto const DUPLICATE_MATERIALS_COUNT{ RAW_COUNT - DUPLICATE_PROFILE_COUNT - vec_.size() };
         M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << DUPLICATE_MATERIALS_COUNT
-            << " duplicate material items.");
+            << " duplicate material profiles.");
 
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size() << " final items.");
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size()
+            << " final profiles, with a vector_capacity=" << vec_.capacity() << ".");
 
         //calculate item profile treasure score statistics
         std::sort(vec_.begin(),
@@ -365,7 +375,7 @@ namespace item
         std::vector<int> scores;
         scores.reserve(vec_.size());
         
-        auto const DIVISION{ 500 };
+        auto const DIVISION{ 200 };
         auto const NUM_DIVISIONS{ (vec_[vec_.size() - 1].TreasureScore() / DIVISION) + 1 };
         std::vector<int> divisionCounts(static_cast<std::size_t>(NUM_DIVISIONS), 0);
         
@@ -388,13 +398,14 @@ namespace item
             << ", std_dev=" << misc::Vector::StandardDeviation(scores, scores.size(), MEAN)
             << ", inverse_sum=" << inverseSum);
 
-        for (int i(0); i < static_cast<int>(divisionCounts.size()); ++i)
+        /*for (int i(0); i < static_cast<int>(divisionCounts.size()); ++i)
         {
             M_HP_LOG_DBG("ItemProfileWarehouse::Setup() TreasureScore Stats Counts: ["
                 << i * DIVISION
                 << "-" << (i + 1) * DIVISION
                 << "]\t\t =" << divisionCounts[static_cast<std::size_t>(i)] );
         }
+        */
     }
 
 

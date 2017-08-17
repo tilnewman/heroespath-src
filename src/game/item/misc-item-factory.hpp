@@ -104,6 +104,7 @@ namespace misc
         static ItemPtr_t Make_Shard(const ItemProfile &);
         static ItemPtr_t Make_SpiderEggs(const ItemProfile &);
         static ItemPtr_t Make_Staff(const ItemProfile &);
+        static ItemPtr_t Make_SummoningStatue(const ItemProfile &);
         static ItemPtr_t Make_UnicornHorn(const ItemProfile &);
         static ItemPtr_t Make_Veil(const ItemProfile &);
         static ItemPtr_t Make_Viol(const ItemProfile &);

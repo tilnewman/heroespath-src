@@ -27,6 +27,7 @@
 //
 // types.hpp
 //
+#include <utility>
 
 
 namespace game
@@ -35,6 +36,7 @@ namespace stats
 {
 
     using Trait_t = int;
+    using TraitPair_t = std::pair<Trait_t, Trait_t>;
 
 }
 }

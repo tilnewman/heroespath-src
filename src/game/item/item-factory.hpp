@@ -67,6 +67,7 @@ namespace item
 
     private:
         ItemPtr_t SetTypesAndReturn(const ItemProfile &, ItemPtr_t) const;
+        void AppendElementTypeToName(ItemPtr_t, const ItemProfile &) const;
 
     private:
         static std::unique_ptr<ItemFactory> instanceUPtr_;

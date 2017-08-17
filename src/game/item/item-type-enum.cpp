@@ -193,6 +193,20 @@ namespace item
     }
 
 
+    bool element_type::IsValid(const element_type::Enum E)
+    {
+        if (((E & element_type::Fire) && (E & element_type::Frost)) ||
+            ((E & element_type::Honor) && (E & element_type::Shadow)))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
     const std::string set_type::ToString(const set_type::Enum E)
     {
         switch (E)

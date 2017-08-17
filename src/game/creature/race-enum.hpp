@@ -30,6 +30,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/stats/types.hpp"
 #include "game/item/treasure-info.hpp"
 #include "game/creature/role-enum.hpp"
 
@@ -54,7 +55,8 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const Enum E);
+        static const std::string ToString(const Enum);
+        static std::size_t UseCount(const Enum);
     };
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
@@ -123,6 +125,8 @@ namespace creature
         static bool RaceRoleMatch(const race::Enum, const role::Enum);
         static const OriginTypeVec_t OriginTypes(const race::Enum, const role::Enum);
         static const item::TreasureInfo TreasureScore(const race::Enum, const role::Enum);
+        static const std::string RaceRoleName(const race::Enum, const role::Enum);
+        static const stats::TraitPair_t RaceRoleRanks(const race::Enum, const role::Enum);
     };
 
 
@@ -131,19 +135,19 @@ namespace creature
     public:
         SummonInfo(const origin_type::Enum ORIGIN    = origin_type::Count,
                    const race::Enum        RACE      = creature::race::Count,
-                   const role::Enum        ROLE      = creature::role::Count,
-                   const std::size_t       USE_COUNT = 0)
+                   const role::Enum        ROLE      = creature::role::Count)
         :
             origin_ (ORIGIN),
             race_   (RACE),
             role_   (ROLE),
-            count_  (((ORIGIN == origin_type::Seeds) ? 10 : USE_COUNT))
+            count_  (origin_type::UseCount(ORIGIN))
         {}
 
         inline origin_type::Enum OriginType() const { return origin_; }
         inline race::Enum Race() const              { return race_; }
         inline role::Enum Role() const              { return role_; }
         inline std::size_t Count() const            { return count_; }
+        inline bool WillSummon() const              { return count_ != 0; }
 
         friend bool operator==(const SummonInfo & L, const SummonInfo & R);
         friend bool operator<(const SummonInfo & L, const SummonInfo & R);

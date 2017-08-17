@@ -117,7 +117,13 @@ namespace item
         }
 
         inline const creature::SummonInfo Summoning() const             { return summonInfo_; }
-        inline void Summoning(const creature::SummonInfo & S)           { summonInfo_ = S; }
+
+        inline bool WillSummon() const
+        {
+            return summonInfo_.WillSummon();
+        }
+
+        void SetSummoningAndAdjustScore(const creature::SummonInfo &);
 
         inline float Religious() const                                  { return religious_; }
         inline void Religious(const float F)                            { religious_ = F; }

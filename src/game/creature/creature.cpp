@@ -144,12 +144,7 @@ namespace creature
         }
         else
         {
-            ss << RaceName();
-
-            if (race::RaceRoleMatch(race_, role_) == false)
-            {
-                ss << " " << RoleName();
-            }
+            ss << race::RaceRoleName(race_, role_);
         }
 
         if (IS_FIRST_LETTER_CAPS)
@@ -177,12 +172,7 @@ namespace creature
         }
         else
         {
-            ss << NAME_STR << " the " << RACE_STR;
-        }
-
-        if (RACE_STR != ROLE_STR)
-        {
-            ss << " " << ROLE_STR;
+            ss << NAME_STR << " the " << race::RaceRoleName(race_, role_);
         }
 
         if (IS_FIRST_LETTER_CAPS)

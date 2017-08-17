@@ -233,6 +233,7 @@ namespace item
                                                                 element_type::Honor |
                                                                 element_type::Shadow));
         }
+        static bool IsValid(const Enum);
     };
 
     using ElementTypeVec_t = std::vector<element_type::Enum>;

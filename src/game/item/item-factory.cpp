@@ -412,6 +412,12 @@ namespace item
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
             << "\", profile=[" << ITEM_PROFILE.ToString()
             << "]) created an item with no/empty image filename.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((element_type::IsValid(ITEM_PTR->ElementType())),
+            "game::item::ItemFactory::TestItem(which_test="
+            << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
+            << "\", profile=[" << ITEM_PROFILE.ToString()
+            << "]) created an item with an invalid element_type.");
     }
 
 
@@ -619,6 +625,8 @@ namespace item
         }
 
         itemPtr->SetSummonInfo(PROFILE.Summoning());
+
+        AppendElementTypeToName(itemPtr, PROFILE);
         
         M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
             "game::item::ItemFactory::Make(profile=" << PROFILE.ToString()
@@ -667,6 +675,16 @@ namespace item
         }
 
         return itemPtr;
+    }
+
+
+    void ItemFactory::AppendElementTypeToName(
+        ItemPtr_t itemPtr, const ItemProfile & PROFILE) const
+    {
+        if (PROFILE.ElementType() != element_type::None)
+        {
+            itemPtr->SetName(itemPtr->Name() + " " + element_type::Name(PROFILE.ElementType()));
+        }
     }
 
 }

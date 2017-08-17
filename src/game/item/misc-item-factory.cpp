@@ -141,6 +141,7 @@ namespace misc
         if (PROFILE.MiscType() == misc_type::Shard)             { return Make_Shard(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Spider_Eggs)       { return Make_SpiderEggs(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Staff)             { return Make_Staff(PROFILE); }
+        if (PROFILE.MiscType() == misc_type::Summoning_Statue)  { return Make_SummoningStatue(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Unicorn_Horn)      { return Make_UnicornHorn(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Viol)              { return Make_Viol(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Wand)              { return Make_Wand(PROFILE); }
@@ -486,6 +487,12 @@ namespace misc
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
         
         return itemPtr;
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_SummoningStatue(const ItemProfile & PROFILE)
+    {
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
     }
 
 

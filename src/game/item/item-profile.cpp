@@ -105,6 +105,28 @@ namespace item
     }
 
 
+    void ItemProfile::SetSummoningAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
+    {
+        summonInfo_ = SUMMON_INFO;
+        
+        //Use a creature's rank min/max to establish a kind of combined power/worth/value
+        //summon score, then append that to the summoning item's score.
+
+        auto const CREATURE_RANK_PAIR{
+            creature::race::RaceRoleRanks(SUMMON_INFO.Race(), SUMMON_INFO.Role()) };
+
+        auto const CREATURE_RANK_AVG{
+            static_cast<double>(CREATURE_RANK_PAIR.first + CREATURE_RANK_PAIR.second) / 2.0 };
+
+        auto const SUMMON_COUNT{ static_cast<double>(SUMMON_INFO.Count()) };
+
+        auto const SUMMON_SCORE{ static_cast<int>( std::sqrt(
+            static_cast<double>(CREATURE_RANK_AVG * SUMMON_COUNT)) * 150.0) };
+
+        score_ += SUMMON_SCORE;
+    }
+
+
     const std::string ItemProfile::ToString() const
     {
         std::ostringstream ss;
@@ -312,8 +334,8 @@ namespace item
         {
             ss << ((ss.str().empty()) ? "" : ", ")
                 << creature::origin_type::ToString(summonInfo_.OriginType())
-                << " summoning a " << creature::race::ToString(summonInfo_.Race())
-                << " " << creature::role::ToString(summonInfo_.Role());
+                << " summoning a "
+                << creature::race::RaceRoleName(summonInfo_.Race(), summonInfo_.Role());
         }
 
         if (religious_ > 0.0f)
@@ -410,6 +432,11 @@ namespace item
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
             score_ += 500;
+        }
+        else if (E == misc_type::Summoning_Statue)
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Useable);
+            score_ += 100;
         }
         else if ((E == item::misc_type::Wand) ||
                  (E == item::misc_type::Petrified_Snake) ||
