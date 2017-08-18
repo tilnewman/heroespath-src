@@ -830,19 +830,19 @@ namespace item
             case BroochFist:
             case BroochHourglass:
             case BroochKey:
-            case BroochMask:                { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case BroochMask:                { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
             case BurialShroud:              { return MaterialVecPair_t({ material::Cloth }, {}); }
             case CharmCrown:
             case CharmFeather:
             case CharmFist:
             case CharmHourglass:
             case CharmKey:
-            case CharmMask:                 { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case CharmMask:                 { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
             case ChimeraBone:               { return MaterialVecPair_t({ material::Bone }, {}); }
             case CobraTooth:                { return MaterialVecPair_t({ material::Tooth }, {}); }
-            case CommandersCape:            { return MaterialVecPair_t({ material::Cloth }, { material::Steel }); }
+            case CommandersCape:            { return MaterialVecPair_t({ material::Cloth }, material::CoreSecondary()); }
             case CopperTroll:               { return MaterialVecPair_t({ material::Bronze }, {}); }
-            case CrystalCat:                { return MaterialVecPair_t({ material::Glass }, {}); }
+            case CrystalCat:                { return MaterialVecPair_t({ material::Glass }, material::CoreSecondary()); }
             case CrystalChimes:             { return MaterialVecPair_t({ material::Glass }, {}); }
             case CyclopsEye:
             {
@@ -865,14 +865,14 @@ namespace item
             {
                 MaterialVec_t v{ material::CoreMetal() };
                 material::AppendCoreJewel(v);
-                return MaterialVecPair_t(v, {});
+                return MaterialVecPair_t(v, material::CoreSecondary());
             }
-            case EvilRabbitsFoot:           { return MaterialVecPair_t({ material::Flesh }, {}); }
+            case EvilRabbitsFoot:           { return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary()); }
             case ExoticGoldenGong:          { return MaterialVecPair_t({ material::Gold }, { material::Wood }); }
             case FanaticsFlag:              { return MaterialVecPair_t({ material::Cloth}, {}); }
             case FriarsChronicle:           { return MaterialVecPair_t({ material::Paper }, {}); }
             case FuneralRecord:             { return MaterialVecPair_t({ material::Paper }, {}); }
-            case GeneralsCape:              { return MaterialVecPair_t({ material::Cloth}, { material::Silver }); }
+            case GeneralsCape:              { return MaterialVecPair_t({ material::Cloth}, material::CoreSecondary()); }
             case GhostSheet:                { return MaterialVecPair_t({ material::Cloth }, {}); }
             case GiantOwlEye:               { return MaterialVecPair_t({ material::Flesh }, {}); }
             case GriffinFeather:            { return MaterialVecPair_t({ material::Feather }, {}); }
@@ -888,46 +888,46 @@ namespace item
             {
                 MaterialVec_t v{ material::CoreMetal() };
                 material::AppendCoreJewel(v);
-                return MaterialVecPair_t(v, {});
+                return MaterialVecPair_t(v, material::CoreSecondary());
             }
-            case JeweledArmband:            { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case JeweledArmband:            { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
             case JeweledHandbag:
-            case JeweledPrincessVeil:       { return MaterialVecPair_t({ material::CoreJewel() }, { material::Cloth }); }
-            case KingsCape:                 { return MaterialVecPair_t({ material::Cloth }, { material::Gold}); }
+            case JeweledPrincessVeil:       { return MaterialVecPair_t({ material::Cloth }, material::CoreJewel()); }
+            case KingsCape:                 { return MaterialVecPair_t({ material::Cloth }, material::CoreJewel()); }
             case LastRitesScroll:           { return MaterialVecPair_t({ material::Paper }, {}); }
             case MacabreManuscript:         { return MaterialVecPair_t({ material::Paper }, {}); }
             case MadRatJuju:                { return MaterialVecPair_t({ material::Bronze }, { material::Pearl }); }
-            case MagicHorseshoe:            { return MaterialVecPair_t({ material::Iron }, {}); }
-            case MagnifyingGlass:           { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
-            case ManaAmulet:                { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case MagicHorseshoe:            { return MaterialVecPair_t({ material::Iron }, material::CoreSecondary()); }
+            case MagnifyingGlass:           { return MaterialVecPair_t({ material::CorePrimary() }, { material::Glass }); }
+            case ManaAmulet:                { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
             case MendicantRing:             { return MaterialVecPair_t({ material::Iron }, {}); }
             case MinotaurHide:              { return MaterialVecPair_t({ material::Hide }, {}); }
-            case MonkRing:                  { return MaterialVecPair_t({ material::Gold }, {}); }
-            case MortuaryOrnament:          { return MaterialVecPair_t({ material::Wood }, {}); }
-            case MournersMask:              { return MaterialVecPair_t({ material::Wood }, {}); }
+            case MonkRing:                  { return MaterialVecPair_t({ material::Gold }, material::CoreSecondary()); }
+            case MortuaryOrnament:          { return MaterialVecPair_t({ material::Wood }, material::CoreSecondary()); }
+            case MournersMask:              { return MaterialVecPair_t({ material::Wood }, material::CoreSecondary()); }
             case PantherPaw:                { return MaterialVecPair_t({ material::Flesh }, {}); }
             case PinCrown:
             case PinFeather:
             case PinFist:
             case PinHourglass:
             case PinKey:
-            case PinMask:                   { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
-            case PixieBell:                 { return MaterialVecPair_t({ material::Steel }, {}); }
-            case PriestRing:                { return MaterialVecPair_t({ material::Gold }, {}); }
-            case RascalMask:                { return MaterialVecPair_t({ material::Wood }, {}); }
+            case PinMask:                   { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
+            case PixieBell:                 { return MaterialVecPair_t({ material::Steel }, material::CoreSecondary()); }
+            case PriestRing:                { return MaterialVecPair_t({ material::Gold }, material::CoreSecondary()); }
+            case RascalMask:                { return MaterialVecPair_t({ material::Wood }, material::CoreSecondary()); }
             case RattlesnakeTail:           { return MaterialVecPair_t({ material::Flesh }, {}); }
             case RavenClaw:                 { return MaterialVecPair_t({ material::Flesh }, {}); }
-            case RazorFingerclaw:           { return MaterialVecPair_t({ material::Steel }, {}); }
+            case RazorFingerclaw:           { return MaterialVecPair_t({ material::Steel }, material::CoreJewel()); }
             case ReaperScythe:              { return MaterialVecPair_t({ material::Wood }, { material::Steel }); }
             case RegalCaptainsFlag:         { return MaterialVecPair_t({ material::Cloth }, {}); }
             case RequiemRegister:           { return MaterialVecPair_t({ material::Paper }, {}); }
             case RoyalScoutSpyglass:        { return MaterialVecPair_t({ material::Steel }, { material::Glass }); }
-            case SaintCameoPin:             { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case SaintCameoPin:             { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreJewel()); }
             case SaintsJournal:             { return MaterialVecPair_t({ material::Paper }, {}); }
             case SanguineRelic:             { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
-            case ScorpionStingerFingerclaw: { return MaterialVecPair_t({ material::Steel }, {}); }
+            case ScorpionStingerFingerclaw: { return MaterialVecPair_t({ material::Steel }, material::CoreJewel()); }
             case ScoundrelSack:             { return MaterialVecPair_t({ material::Cloth }, {}); }
-            case SepultureDecoration:       { return MaterialVecPair_t({ material::Wood }, {}); }
+            case SepultureDecoration:       { return MaterialVecPair_t({ material::Wood }, material::CoreJewel()); }
             case ShadeCloak:                { return MaterialVecPair_t({ material::Cloth }, {}); }
             case ShamanRainmaker:           { return MaterialVecPair_t({ material::Wood }, {}); }
             case SharkToothNecklace:        { return MaterialVecPair_t({ material::Tooth }, {}); }
@@ -936,12 +936,12 @@ namespace item
             case SignetFist:
             case SignetHourglass:
             case SignetKey:
-            case SignetMask:                { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
+            case SignetMask:                { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreSecondary()); }
             case SirenConch:                { return MaterialVecPair_t({ material::Glass }, {}); }
             case SpecterChains:             { return MaterialVecPair_t({ material::Iron }, {}); }
             case SpecterRobe:               { return MaterialVecPair_t({ material::Wood }, {}); }
             case SprintersLegtie:           { return MaterialVecPair_t({ material::Cloth }, {}); }
-            case SwindlersBag:              { return MaterialVecPair_t({ material::Cloth }, {}); }
+            case SwindlersBag:              { return MaterialVecPair_t({ material::Cloth, material::SoftLeather }, {}); }
             case TribalFlag:                { return MaterialVecPair_t({ material::Cloth }, {}); }
             case TricksterPouch:            { return MaterialVecPair_t({ material::Cloth }, {}); }
             case TuningFork:                { return MaterialVecPair_t({ material::CoreMetal() }, {}); }
@@ -958,7 +958,7 @@ namespace item
             case WarTrumpet:                { return MaterialVecPair_t({ material::CoreMetal() }, {}); }
             case WeaselTotem:               { return MaterialVecPair_t({ material::Wood }, {}); }
             case WolfenFur:                 { return MaterialVecPair_t({ material::Fur }, {}); }
-            case WraithTalisman:            { return MaterialVecPair_t({ material::Wood }, {}); }
+            case WraithTalisman:            { return MaterialVecPair_t({ material::Wood }, material::CoreJewel()); }
             case NotUnique:
             case Count:
             default:                        { return MaterialVecPair_t({}, {}); }
