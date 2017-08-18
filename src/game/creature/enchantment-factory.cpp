@@ -234,7 +234,8 @@ namespace creature
         delete INDV_ENCHANTMENT_PTR;
         delete COMP_ENCHANTMENT_PTR;
 
-        return SCORE;
+        //the additional 100 is to raise the score of all set items
+        return SCORE + 100;
     }
 
 
@@ -254,11 +255,12 @@ namespace creature
                                                       IS_WEAPON,
                                                       IS_ARMOR) };
 
-        //the additional 200 is to raise the score of all named items
-        auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() + 200 };
+        auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
 
         delete ENCHANTMENT_PTR;
-        return SCORE;
+
+        //the additional 450 is to raise the score of all named items
+        return SCORE + 450;
     }
 
 
@@ -274,7 +276,9 @@ namespace creature
         auto const ENCHANTMENT_PTR{ MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
-        return SCORE;
+
+        //the additional 750 is to raise the score of all elemental items
+        return SCORE + 750;
     }
 
 

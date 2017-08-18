@@ -368,6 +368,8 @@ namespace item
                   creature::EnchantmentFactory::Instance()->TreasureScore(ELEMENT_TYPE,
                                                                           IS_WEAPON,
                                                                           MATERIAL_PRIMARY));
+
+        score_ += 750;
     }
 
 

@@ -361,51 +361,14 @@ namespace item
         M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size()
             << " final profiles, with a vector_capacity=" << vec_.capacity() << ".");
 
-        //calculate item profile treasure score statistics
         std::sort(vec_.begin(),
                   vec_.end(),
                   [](const auto & A, const auto & B)
                     {
                         return A.TreasureScore() < B.TreasureScore();
                     });
-
-        long sum{ 0 };
-        double inverseSum{ 0.0 };
-
-        std::vector<int> scores;
-        scores.reserve(vec_.size());
-
-        auto const DIVISION{ 200 };
-        auto const NUM_DIVISIONS{ (vec_[vec_.size() - 1].TreasureScore() / DIVISION) + 1 };
-        std::vector<int> divisionCounts(static_cast<std::size_t>(NUM_DIVISIONS), 0);
-
-        for (auto const & NEXT_PROFILE : vec_)
-        {
-            auto const NEXT_TREASURE_SCORE{ NEXT_PROFILE.TreasureScore() };
-            sum += NEXT_TREASURE_SCORE;
-            inverseSum += 1.0 / static_cast<double>(NEXT_TREASURE_SCORE);
-            scores.push_back(NEXT_TREASURE_SCORE);
-            ++divisionCounts[static_cast<std::size_t>(NEXT_TREASURE_SCORE / DIVISION)];
-        }
-
-        auto const MEAN{ static_cast<int>(sum / static_cast<long>(vec_.size())) };
-
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() TreasureScore Stats:  "
-            << "min=" << vec_[0].TreasureScore()
-            << ", mean=" << MEAN
-            << ", median=" << vec_[vec_.size() / 2].TreasureScore()
-            << ", max=" << vec_[vec_.size() - 1].TreasureScore()
-            << ", std_dev=" << misc::Vector::StandardDeviation(scores, scores.size(), MEAN)
-            << ", inverse_sum=" << inverseSum);
-
-        /*for (int i(0); i < static_cast<int>(divisionCounts.size()); ++i)
-        {
-            M_HP_LOG_DBG("ItemProfileWarehouse::Setup() TreasureScore Stats Counts: ["
-                << i * DIVISION
-                << "-" << (i + 1) * DIVISION
-                << "]\t\t =" << divisionCounts[static_cast<std::size_t>(i)] );
-        }
-        */
+        
+        //LogStatistics();
     }
 
 
@@ -2876,6 +2839,155 @@ namespace item
                 return {};
             }
         }
+    }
+
+
+    void ItemProfileWarehouse::LogStatistics()
+    {
+        struct ItemSet
+        {
+            ItemSet(std::string NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
+                :
+                name(std::move(NAME)),
+                division(DIVISION_SIZE),
+                profiles(),
+                scores(),
+                divCountsScore(static_cast<std::size_t>((PROFILES[PROFILES.size() - 1].TreasureScore() / DIVISION_SIZE) + 1), 0),
+                sum(0)
+            {}
+
+            std::string name;
+            int division;
+            std::vector<ItemProfile> profiles;
+            std::vector<int> scores;
+            std::vector<int> divCountsScore;
+            long sum;
+
+            void Add(const ItemProfile & P)
+            {
+                profiles.push_back(P);
+                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore() / division)];
+                sum += P.TreasureScore();
+                scores.push_back(P.TreasureScore());
+            }
+
+            void Log() const
+            {
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                auto const MEAN{ static_cast<int>(sum / static_cast<long>(scores.size())) };
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\"\tcount=" << profiles.size()
+                    << ", min=" << scores[0]
+                    << ", mean=" << MEAN
+                    << ", median=" << scores[scores.size() / 2]
+                    << ", max=" << scores[scores.size() - 1]
+                    << ", std_dev=" << misc::Vector::StandardDeviation(scores, scores.size(), MEAN));
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
+                {
+                    M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                        << "\" Treasure Score Division [" << d * division
+                        << "-" << (d + 1) * division
+                        << "]\t\t =" << divCountsScore[static_cast<std::size_t>(d)]);
+                }
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
+                {
+                    auto const DIV_SCORE_START{ d * division };
+
+                    auto const FIRST_WITH_SCORE_ITER{ std::find_if(profiles.begin(),
+                        profiles.end(),
+                        [DIV_SCORE_START](const auto & P)
+                    {
+                        return P.TreasureScore() >= DIV_SCORE_START;
+                    }) };
+
+                    int i{ 0 };
+                    auto iter{ FIRST_WITH_SCORE_ITER };
+                    for (; iter != profiles.end() && i < 10; ++iter, ++i)
+                    {
+                        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                            << "\" Sample: " << iter->TreasureScore()
+                            << "\t" << iter->ToString());
+                    }
+                }
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+            }
+        };
+
+        ItemSet treasureScoreSet("TreasureScore", 500, vec_);
+        ItemSet equipmentSet("Equipment", 200, vec_);
+        ItemSet standardEquipmentSet("StandardEquipment", 200, vec_);
+        ItemSet uniqueSet("Unique", 500, vec_);
+        ItemSet setSet("Set", 500, vec_);
+        ItemSet namedSet("Named", 500, vec_);
+        ItemSet elementalSet("Elemental", 500, vec_);
+
+        for (auto const & PROFILE : vec_)
+        {
+            treasureScoreSet.Add(PROFILE);
+
+            if (PROFILE.IsEquipment())
+            {
+                equipmentSet.Add(PROFILE);
+
+                if (PROFILE.IsStandard())
+                {
+                    standardEquipmentSet.Add(PROFILE);
+                }
+            }
+
+            if ((PROFILE.IsUnique() == true) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == false))
+            {
+                uniqueSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == true) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == false))
+            {
+                setSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == true) &&
+                (PROFILE.IsElemental() == false))
+            {
+                namedSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == true))
+            {
+                elementalSet.Add(PROFILE);
+            }
+        }
+
+        treasureScoreSet.Log();
+        equipmentSet.Log();
+        standardEquipmentSet.Log();
+        uniqueSet.Log();
+        setSet.Log();
+        namedSet.Log();
+        elementalSet.Log();
     }
 
 }

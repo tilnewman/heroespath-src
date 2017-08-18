@@ -156,6 +156,8 @@ namespace item
         static const item::ItemProfileVec_t ThinProfiles(const item::named_type::Enum);
         static const item::ItemProfileVec_t ThinProfiles(const item::set_type::Enum);
 
+        void LogStatistics();
+
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
         ItemProfileVec_t vec_;

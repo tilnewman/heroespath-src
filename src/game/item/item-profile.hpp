@@ -128,6 +128,59 @@ namespace item
         inline float Religious() const                                  { return religious_; }
         inline void Religious(const float F)                            { religious_ = F; }
 
+        inline bool IsWeapon() const
+        {
+            return (weapon_ != weapon_type::NotAWeapon);
+        }
+
+        inline bool IsArmor() const
+        {
+            return (armor_ != armor_type::NotArmor);
+        }
+        
+        inline bool IsEquipment() const
+        {
+            return (IsWeapon() || IsArmor());
+        }
+
+        inline bool IsMisc() const
+        {
+            return ((misc_ != misc_type::Count) && (misc_ != misc_type::NotMisc));
+        }
+
+        inline bool IsUnique() const
+        {
+            return ((unique_ != unique_type::Count) && (unique_ != unique_type::NotUnique));
+        }
+
+        inline bool IsSet() const
+        {
+            return ((set_ != set_type::Count) && (set_ != set_type::NotASet));
+        }
+
+        inline bool IsNamed() const
+        {
+            return ((named_ != named_type::Count) && (named_ != named_type::NotNamed));
+        }
+
+        inline bool IsElemental() const
+        {
+            return (element_ != element_type::None);
+        }
+
+        inline bool IsStandard() const
+        {
+            return ((IsUnique() == false) &&
+                    (IsSet() == false) &&
+                    (IsNamed() == false) &&
+                    (IsElemental() == false));
+        }
+
+        inline bool IsStandardEquipment() const
+        {
+            return (IsStandard() && IsEquipment());
+        }
+
         const std::string ToString() const;
 
         void SetUnique(const unique_type::Enum,
