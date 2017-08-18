@@ -158,7 +158,7 @@ namespace stage
             player::Initial::Setup(bardPtr);
             partyPtr->Add(bardPtr, errMsgIgnored);
         }
-       
+
         {
             const stats::StatSet BEASTMASTER_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
                                                    STAT_BASE_MED  + misc::random::Int(STAT_RAND),
@@ -182,7 +182,7 @@ namespace stage
             player::Initial::Setup(bmPtr);
             partyPtr->Add(bmPtr, errMsgIgnored);
         }
-       
+
         {
             const stats::StatSet THEIF_STATS(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
                                              STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
@@ -206,7 +206,7 @@ namespace stage
             player::Initial::Setup(thiefPtr);
             partyPtr->Add(thiefPtr, errMsgIgnored);
         }
-       
+
         {
             const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
                                               STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
@@ -230,7 +230,7 @@ namespace stage
             player::Initial::Setup(clericPtr);
             partyPtr->Add(clericPtr, errMsgIgnored);
         }
-       
+
         {
             const stats::StatSet SYLAVIN_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
                                                STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
@@ -450,7 +450,7 @@ namespace stage
                          "media-images-bones-skull-humaniod-pile-2",
                          "media-images-bones-skull-humaniod-pile-3" };
             }
-           
+
             case creature::race::Wyvern:
             case creature::race::Dragon:
             case creature::race::Hydra:
@@ -495,12 +495,12 @@ namespace stage
             {
                 return { "media-images-bones-skull-minotaur" };
             }
-           
+
             case creature::race::Plant:
             {
                 return { "media-images-bones-skull-animal-1" };
             }
-           
+
             case creature::race::Beetle:
             {
                 return { "media-images-bones-beetle" };
@@ -537,7 +537,7 @@ namespace stage
             {
                 return { "media-images-bones-skull-snake" };
             }
-           
+
             case creature::race::Werecat:
             {
                 return { "media-images-bones-cat" };
@@ -550,7 +550,7 @@ namespace stage
             {
                 return { "media-images-bones-skull-giant" };
             }
-           
+
             case creature::race::Bat:
             case creature::race::Werebat:
             {

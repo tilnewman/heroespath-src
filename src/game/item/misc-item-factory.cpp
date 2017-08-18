@@ -145,7 +145,7 @@ namespace misc
         if (PROFILE.MiscType() == misc_type::Unicorn_Horn)      { return Make_UnicornHorn(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Viol)              { return Make_Viol(PROFILE); }
         if (PROFILE.MiscType() == misc_type::Wand)              { return Make_Wand(PROFILE); }
-        
+
         M_HP_LOG_ERR("game::item::misc::MiscItemFactory::Make(profile=[" << PROFILE.ToString()
             << "]) was unable to make an item with that profile.");
 
@@ -252,7 +252,7 @@ namespace misc
             GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-        
+
         return itemPtr;
     }
 
@@ -485,7 +485,7 @@ namespace misc
             GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-        
+
         return itemPtr;
     }
 
@@ -544,7 +544,7 @@ namespace misc
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
              GetImageFilename(itemPtr));
- 
+
         return itemPtr;
     }
 
@@ -573,7 +573,7 @@ namespace misc
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
             GetImageFilename(itemPtr));
-        
+
         return itemPtr;
     }
 
@@ -583,7 +583,7 @@ namespace misc
         stats::Trait_t price(1000);
         stats::Trait_t weight(350);
         std::string desc("An acoustic guitar with a round hollow body that can be drummed.");
-        
+
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);
 
@@ -611,9 +611,9 @@ namespace misc
 
         itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
              GetImageFilename(itemPtr));
- 
+
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-        
+
         return itemPtr;
     }
 
@@ -686,7 +686,7 @@ namespace misc
             GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-        
+
         return itemPtr;
     }
 

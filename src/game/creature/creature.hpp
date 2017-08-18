@@ -160,7 +160,7 @@ namespace creature
         {
             return (race_ == race::Pixie);
         }
-        
+
         inline bool IsBeast() const
         {
             return ((race::HasTorso(race_) == false) ||
@@ -276,7 +276,7 @@ namespace creature
         }
 
         const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
-        
+
         //returns true only if the condition was actually added, and not a duplicate, etc.
         //prevents duplicate conditions
         //calls Condition::Change() on this creature after adding
@@ -491,7 +491,7 @@ namespace creature
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
         static std::size_t globalSerialNumber_;
-        
+
     protected:
         std::string         name_;
         std::string         imageFilename_;
@@ -540,11 +540,11 @@ namespace creature
         //
         //  Things that are only bonuses like Backstab/HitPower/Surprise:
         //      Get with TraitBonusCurrent() which is the sum of all temp/perm sources.
-        //      Set permanent bonuses with TraitBonusNormalAdj(), which calls the 
+        //      Set permanent bonuses with TraitBonusNormalAdj(), which calls the
         //      ReCalculateTraitBonuses() function changing bonusSet_.Current and what
         //      TraitBonusCurrent() returns.
         //      Get the entire set with TraitsBonuses();
-        //      
+        //
         stats::TraitSet actualSet_;
         stats::TraitSet bonusSet_;
 
@@ -600,7 +600,7 @@ namespace creature
     using CreatureCPtrC_t = const Creature * const;
     using CreatureUPtr_t  = std::unique_ptr<Creature>;
     using CreaturePVec_t  = std::vector<CreaturePtr_t>;
-    
+
 }
 }
 

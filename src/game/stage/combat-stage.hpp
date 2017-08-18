@@ -488,7 +488,7 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t roarTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t pounceTBoxButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t runTBoxButtonSPtr_;
-       
+
         //members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;

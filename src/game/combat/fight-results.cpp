@@ -80,7 +80,7 @@ namespace combat
     {
         if ( & FRS != this)
         {
-            hit_type                = FRS.hit_type;      
+            hit_type                = FRS.hit_type;
 
             //see copy constructor comment regarding these pointers
             song_ptr                = FRS.song_ptr;
@@ -108,7 +108,7 @@ namespace combat
         {
             return false;
         }
-        
+
         if ((HitType::Roar != hit_type) &&
             (HitType::Song != hit_type) &&
             (HitType::Spell != hit_type))
@@ -125,7 +125,7 @@ namespace combat
         {
             return false;
         }
-        
+
         return true;
     }
 

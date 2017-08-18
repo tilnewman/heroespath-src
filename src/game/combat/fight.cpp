@@ -1069,7 +1069,7 @@ namespace combat
                   << " creatures listening.  There should have been only 1.";
             throw std::runtime_error(ssErr.str());
         }
-        
+
         //update player's TurnInfo
         auto playerTurnInfo{ Encounter::Instance()->GetTurnInfoCopy(creaturePlayingPtr) };
         playerTurnInfo.SongCountIncrement();

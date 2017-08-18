@@ -114,7 +114,7 @@ namespace misc
         static ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
         static ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
         static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
-        
+
     private:
         static ItemPtr_t Make_Helper(const ItemProfile &  PROFILE,
                                      const stats::Trait_t BASE_PRICE,

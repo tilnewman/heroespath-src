@@ -152,7 +152,7 @@ namespace item
                     if (MATERIALS.second.empty())
                     {
                         ItemProfile p;
-                        
+
                         p.SetUnique(NEXT_UNIQUE_ENUM,
                                     NEXT_MATERIAL_PRIMARY,
                                     item::material::Nothing,
@@ -176,7 +176,7 @@ namespace item
                             }
 
                             ItemProfile p;
-                            
+
                             p.SetUnique(NEXT_UNIQUE_ENUM,
                                         NEXT_MATERIAL_PRIMARY,
                                         NEXT_MATERIAL_SECONDARY,
@@ -199,7 +199,7 @@ namespace item
                     << item::unique_type::ToString(NEXT_UNIQUE_ENUM));
             }
         }
-        
+
         //items from misc types
         {
             for (int i(1); i < misc_type::Count; ++i)
@@ -212,7 +212,7 @@ namespace item
                 }
             }
         }
-        
+
         //items from named equipment
         {
             for (int i(1); i < named_type::Count; ++i)
@@ -252,7 +252,7 @@ namespace item
         //summoning items
         {
             auto const MATERIALS_VEC{ material::CorePrimaryNoPearl() };
-            
+
             using namespace creature;
             for (int raceIndex(0); raceIndex < race::Count; ++raceIndex)
             {
@@ -270,7 +270,7 @@ namespace item
                             for (auto const NEXT_MATERIAL : MATERIALS_VEC)
                             {
                                 ItemProfile p;
-                                
+
                                 p.SetMisc(misc_type::Summoning_Statue,
                                           false,
                                           NEXT_MATERIAL,
@@ -374,11 +374,11 @@ namespace item
 
         std::vector<int> scores;
         scores.reserve(vec_.size());
-        
+
         auto const DIVISION{ 200 };
         auto const NUM_DIVISIONS{ (vec_[vec_.size() - 1].TreasureScore() / DIVISION) + 1 };
         std::vector<int> divisionCounts(static_cast<std::size_t>(NUM_DIVISIONS), 0);
-        
+
         for (auto const & NEXT_PROFILE : vec_)
         {
             auto const NEXT_TREASURE_SCORE{ NEXT_PROFILE.TreasureScore() };
@@ -387,7 +387,7 @@ namespace item
             scores.push_back(NEXT_TREASURE_SCORE);
             ++divisionCounts[static_cast<std::size_t>(NEXT_TREASURE_SCORE / DIVISION)];
         }
-        
+
         auto const MEAN{ static_cast<int>(sum / static_cast<long>(vec_.size())) };
 
         M_HP_LOG_DBG("ItemProfileWarehouse::Setup() TreasureScore Stats:  "
@@ -489,7 +489,7 @@ namespace item
 
         auto elementCombinationsVec{ element_type::Combinations(ELEMENT_TYPE) };
         elementCombinationsVec.push_back(element_type::None);
-        
+
         SetupFromThinProfile(THIN_PROFILE,
                              NAMED_TYPE,
                              SET_TYPE,
@@ -2573,7 +2573,7 @@ namespace item
                     thinProfile.SetMisc(misc_type::Wand);
                     v.push_back(thinProfile);
                 }
-                
+
                 return v;
             }
 
@@ -2675,7 +2675,7 @@ namespace item
                     thinProfile.SetMisc(misc_type::DrumLute);
                     v.push_back(thinProfile);
                 }
-                
+
                 return v;
             }
 

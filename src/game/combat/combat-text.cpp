@@ -1094,7 +1094,7 @@ namespace combat
         bool &                        wasCollapsed)
     {
         wasCollapsed = false;
-       
+
         auto const FIGHT_RESULT_SUMMARY{
             SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
 
@@ -1371,7 +1371,7 @@ namespace combat
             {
                 frs.effected_vec.push_back(
                     std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
-               
+
                 return true;
             }
         }

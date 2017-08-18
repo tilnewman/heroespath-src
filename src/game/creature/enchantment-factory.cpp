@@ -103,7 +103,7 @@ namespace creature
             auto const MADE_ECHANTMENT_PTR{ MakeFromElementType(itemPtr->ElementType(),
                                                                 itemPtr->IsWeapon(),
                                                                 itemPtr->MaterialPrimary()) };
-            
+
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
                 MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
@@ -115,7 +115,7 @@ namespace creature
         {
             auto const MADE_ECHANTMENT_PTR_VEC{ MakeFromUniqueType(itemPtr->UniqueType(),
                                                                    itemPtr->MaterialPrimary()) };
-            
+
             for(auto const NEXT_ENCHANTMENT_PTR : MADE_ECHANTMENT_PTR_VEC)
             {
                 MakeStoreAttachReturn(itemPtr, NEXT_ENCHANTMENT_PTR);
@@ -189,7 +189,7 @@ namespace creature
         }
 
         auto const ENCHANTMENT_PTR_VEC{ MakeFromUniqueType(E, MATERIAL_PRIMARY) };
-        
+
         int score{ 0 };
         for (auto const NEXT_ENCHANTMENT_PTR : ENCHANTMENT_PTR_VEC)
         {
@@ -289,7 +289,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((enchantmentPtr != nullptr),
             "game::creature::EnchantmentFactory::MakeStoreAttachReturn(item=" << itemPtr->Name()
             << ") was given a null enchantmentPtr.");
-        
+
         itemPtr->EnchantmentAdd( EnchantmentWarehouse::Instance()->Store(enchantmentPtr) );
 
         return itemPtr;
@@ -503,11 +503,11 @@ namespace creature
                                         stats::TraitSet( {
                                             std::make_pair(stats::Traits::Charm, -28),
                                             std::make_pair(stats::Traits::Luck, -16),
-                                            std::make_pair(stats::Traits::CurseCast, 18), 
-                                            std::make_pair(stats::Traits::CurseEffect, 50), 
-                                            std::make_pair(stats::Traits::CurseResist, 50), 
-                                            std::make_pair(stats::Traits::ShadowResist, -33), 
-                                            std::make_pair(stats::Traits::FindReligious, 18), 
+                                            std::make_pair(stats::Traits::CurseCast, 18),
+                                            std::make_pair(stats::Traits::CurseEffect, 50),
+                                            std::make_pair(stats::Traits::CurseResist, 50),
+                                            std::make_pair(stats::Traits::ShadowResist, -33),
+                                            std::make_pair(stats::Traits::FindReligious, 18),
                                             std::make_pair(stats::Traits::BlessResist, 33) }) ) };
             }
             case item::unique_type::CharmCrown:
@@ -578,7 +578,7 @@ namespace creature
                                         stats::TraitSet( {
                                             std::make_pair(stats::Traits::MagicResist, 18),
                                             std::make_pair(stats::Traits::Charm, -50),
-                                            std::make_pair(stats::Traits::Intelligence, 13), 
+                                            std::make_pair(stats::Traits::Intelligence, 13),
                                             std::make_pair(stats::Traits::FindMagic, 8) }) ) };
             }
             case item::unique_type::CobraTooth:
@@ -644,7 +644,7 @@ namespace creature
                                             std::make_pair(stats::Traits::ShadowDamage, 13),
                                             std::make_pair(stats::Traits::ShadowResist, 33),
                                             std::make_pair(stats::Traits::CurseCast, 22),
-                                            std::make_pair(stats::Traits::CurseEffect, 33), 
+                                            std::make_pair(stats::Traits::CurseEffect, 33),
                                             std::make_pair(stats::Traits::CurseResist, 33) }) ) };
             }
             case item::unique_type::DoveBloodVial:
@@ -679,7 +679,7 @@ namespace creature
                                             std::make_pair(stats::Traits::Mana, (MAT_BONUS * 2)),
                                             std::make_pair(stats::Traits::FindReligious, 1 + (MAT_BONUS / 2)),
                                             std::make_pair(stats::Traits::MagicCast, 1 + (MAT_BONUS / 2)),
-                                            std::make_pair(stats::Traits::MagicEffect, MAT_BONUS), 
+                                            std::make_pair(stats::Traits::MagicEffect, MAT_BONUS),
                                             std::make_pair(stats::Traits::MagicResist, MAT_BONUS) }) ) };
             }
             case item::unique_type::EvilRabbitsFoot:
@@ -691,9 +691,9 @@ namespace creature
                                             std::make_pair(stats::Traits::Luck, -66),
                                             std::make_pair(stats::Traits::Surprise, 6),
                                             std::make_pair(stats::Traits::Encounter, 6),
-                                            std::make_pair(stats::Traits::FindMagic, -6), 
+                                            std::make_pair(stats::Traits::FindMagic, -6),
                                             std::make_pair(stats::Traits::BlessCast, -66),
-                                            std::make_pair(stats::Traits::BlessEffect, -66), 
+                                            std::make_pair(stats::Traits::BlessEffect, -66),
                                             std::make_pair(stats::Traits::BlessResist, -66),
                                             std::make_pair(stats::Traits::CurseCast, 66),
                                             std::make_pair(stats::Traits::CurseEffect, 666),
@@ -881,8 +881,8 @@ namespace creature
                                             std::make_pair(stats::Traits::Charm, 16),
                                             std::make_pair(stats::Traits::Mana, 13),
                                             std::make_pair(stats::Traits::MagicCast, 8),
-                                            std::make_pair(stats::Traits::MagicResist, 18), 
-                                            std::make_pair(stats::Traits::CurseResist, 18), 
+                                            std::make_pair(stats::Traits::MagicResist, 18),
+                                            std::make_pair(stats::Traits::CurseResist, 18),
                                             std::make_pair(stats::Traits::FindReligious, 13),
                                             std::make_pair(stats::Traits::Encounter, -8),
                                             std::make_pair(stats::Traits::ShadowResist, 20) }) ) };
@@ -1119,7 +1119,7 @@ namespace creature
                                             EnchantmentType::BoundToItem),
                                         stats::TraitSet( {
                     std::make_pair(stats::Traits::Speed, MAT_BONUS) }) ) };
-            
+
             }
             case item::unique_type::PinKey:
             {
@@ -1329,8 +1329,8 @@ namespace creature
                                             std::make_pair(stats::Traits::Charm, 8),
                                             std::make_pair(stats::Traits::Encounter, 8),
                                             std::make_pair(stats::Traits::FindMagic, 13),
-                                            std::make_pair(stats::Traits::MagicCast, 8), 
-                                            std::make_pair(stats::Traits::MagicEffect, 18), 
+                                            std::make_pair(stats::Traits::MagicCast, 8),
+                                            std::make_pair(stats::Traits::MagicEffect, 18),
                                             std::make_pair(stats::Traits::BlessCast, 16),
                                             std::make_pair(stats::Traits::BlessEffect, 33) }) ),
                         new Enchantment_ShamanRainmaker() };
@@ -1928,10 +1928,10 @@ namespace creature
                                             std::make_pair(stats::Traits::BlessEffect, 13),
                                             std::make_pair(stats::Traits::CurseResist, 13),
                                             std::make_pair(stats::Traits::AnimalResist, 13),
-                                            std::make_pair(stats::Traits::FindReligious, 10), 
-                                            std::make_pair(stats::Traits::FindMagic, 5), 
-                                            std::make_pair(stats::Traits::FireResist, 13), 
-                                            std::make_pair(stats::Traits::FrostResist, 13), 
+                                            std::make_pair(stats::Traits::FindReligious, 10),
+                                            std::make_pair(stats::Traits::FindMagic, 5),
+                                            std::make_pair(stats::Traits::FireResist, 13),
+                                            std::make_pair(stats::Traits::FrostResist, 13),
                                             std::make_pair(stats::Traits::HonorResist, 13),
                                             std::make_pair(stats::Traits::ShadowResist, 13) }) );
             }
@@ -2212,7 +2212,7 @@ namespace creature
             }
         }
     }
-    
+
 
     Enchantment * EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum E) const
     {
@@ -2384,10 +2384,10 @@ namespace creature
                                             std::make_pair(stats::Traits::BlessEffect, 22),
                                             std::make_pair(stats::Traits::CurseResist, 22),
                                             std::make_pair(stats::Traits::AnimalResist, 12),
-                                            std::make_pair(stats::Traits::FindReligious, 20), 
-                                            std::make_pair(stats::Traits::FindMagic, 20), 
-                                            std::make_pair(stats::Traits::FireResist, 20), 
-                                            std::make_pair(stats::Traits::FrostResist, 20), 
+                                            std::make_pair(stats::Traits::FindReligious, 20),
+                                            std::make_pair(stats::Traits::FindMagic, 20),
+                                            std::make_pair(stats::Traits::FireResist, 20),
+                                            std::make_pair(stats::Traits::FrostResist, 20),
                                             std::make_pair(stats::Traits::HonorResist, 20),
                                             std::make_pair(stats::Traits::ShadowResist, 20) }) );
             }
@@ -2707,7 +2707,7 @@ namespace creature
                 {
                     traits.Get(stats::Traits::FireDamage).CurrentSet(DAMAGE);
                 }
-               
+
                 if (E & element_type::Frost)
                 {
                     traits.Get(stats::Traits::FrostDamage).CurrentSet(DAMAGE);
@@ -2751,7 +2751,7 @@ namespace creature
         else
         {
             auto const MAT_BONUS{ material::Bonus(MATERIAL_PRIMARY) };
-            
+
             if (IS_WEAPON)
             {
                 auto const DAMAGE_BASE{ 10 };
@@ -3045,7 +3045,7 @@ namespace creature
                                                 std::make_pair(stats::Traits::HonorDamage, 22) }
                                             ) );
                 }
-                
+
                 if (IS_ARMOR)
                 {
                     return new Enchantment( static_cast<EnchantmentType::Enum>(

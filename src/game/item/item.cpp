@@ -141,7 +141,7 @@ namespace item
         }
 
         std::ostringstream ss;
-        
+
         ss << "game::item::Item::EnchantmentRemoveAndFree("
             << enchantement_ptr->EffectStr(nullptr)
             << ") but the pointer to that enchantment was not found.";
@@ -194,7 +194,7 @@ namespace item
             if (weaponType_ & weapon_type::Tendrils)    { return "Tendrils"; }
             if (weaponType_ & weapon_type::Whip)        { return "Whip"; }
         }
-        
+
         if ((armorType_ & armor_type::NotArmor) == false)
         {
             if (armorType_ & armor_type::Aventail)  { return "Aventail"; }

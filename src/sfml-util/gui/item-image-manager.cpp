@@ -865,7 +865,7 @@ namespace gui
         using namespace game::item;
 
         auto const PRI_MATERIAL{ ITEM_PTR->MaterialPrimary() };
-        
+
         if (PRI_MATERIAL == material::Plant)
         {
             return "plant" + FILE_EXT_STR_;
@@ -1131,7 +1131,7 @@ namespace gui
                 return filenames;
             }
             case misc_type::Ring:
-            {   
+            {
                 if (IS_JEWELED)
                 {
                     for (auto i(1); i <= 24; ++i)

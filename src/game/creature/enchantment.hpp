@@ -116,7 +116,7 @@ namespace creature
         inline const stats::TraitSet & Traits() const           { return traitSet_; }
         inline const UseInfo & Use() const                      { return useInfo_; }
         inline void UseCountConsume()                           { useInfo_.CountConsume(); }
-        
+
         inline bool IsUseableEver() const
         {
             //negative useCountOrig_ means infinite

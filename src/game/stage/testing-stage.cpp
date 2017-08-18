@@ -495,7 +495,7 @@ namespace stage
         /*
         LoopManager::Instance()->TestingStrAppend(
             "game::stage::TestingStage::PerformStatsTests() Starting Tests...");
-        
+
         const stats::StatSet STAT_SET_ZEROS(0, 0, 0, 0, 0, 0);
         stats::StatSet actualSet;
         TestStatSetsCurrentAndNormal("Empty Set Initial Values", actualSet, STAT_SET_ZEROS);
@@ -632,7 +632,7 @@ namespace stage
             */
     }
 
-    
+
     void TestingStage::TestStatSetsCurrentAndNormal(const std::string &,
                                                     const stats::StatSet &,
                                                     const stats::StatSet &)
@@ -886,7 +886,7 @@ namespace stage
             if (animUPtr_.get() == nullptr)
             {
                 auto const ENUM{ static_cast<sfml_util::Animations::Enum>(animIndex) };
-               
+
                 std::ostringstream ss;
                 ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
                 LoopManager::Instance()->TestingStrAppend(ss.str());

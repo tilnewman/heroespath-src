@@ -88,7 +88,7 @@ namespace combat
             }
 
             auto const TREASURE_INFO{ MakeRandTreasureInfo(CHARACTER_PVEC) };
-            
+
             items_OutParam.coins = TREASURE_INFO.Coin();
             items_OutParam.gems = TREASURE_INFO.Gem();
 
@@ -121,7 +121,7 @@ namespace combat
         auto const COIN_BASE{ static_cast<stats::Trait_t>(
             static_cast<float>(tInfoSum.Coin()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
-        
+
         auto const COIN_RAND_BASE{ static_cast<stats::Trait_t>(
             static_cast<float>(tInfoSum.Coin()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
@@ -209,7 +209,7 @@ namespace combat
         {
             return;
         }
-        
+
         profiles.erase(std::remove_if(
             profiles.begin(),
             profiles.end(),

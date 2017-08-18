@@ -80,7 +80,7 @@ namespace stats
 
         std::ostringstream ss;
 
-        ss << "game::stats::StatSet::Set(" << E << ", new_value=" << NEW_VALUE 
+        ss << "game::stats::StatSet::Set(" << E << ", new_value=" << NEW_VALUE
             << ")_InvalidValueError.";
 
         throw std::range_error(ss.str());
@@ -95,7 +95,7 @@ namespace stats
         {
             ss << "Str " << ((str_ > 0) ? "+" : "") << str_;
         }
-        
+
         if (acc_ != 0)
         {
             ss << "Acc " << ((acc_ > 0) ? "+" : "") << acc_;

@@ -222,8 +222,8 @@ namespace sfml_util
     {
         RemoveByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR));
     }
-   
-   
+
+
     void TextureCache::RemoveByPath(const std::string & PATH_TO_TEXTURE_STR)
     {
         auto const FOUND_ITER{ strToVecMap_.find(PATH_TO_TEXTURE_STR) };
@@ -235,7 +235,7 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second.empty() == false),
             "sfml_util::TextureCache::RemoveByPath(\"" << PATH_TO_TEXTURE_STR
             << ") failed because strToVecMap_ entry was an empty vec.");
-       
+
         RemoveByIndexVec(FOUND_ITER->second);
     }
 

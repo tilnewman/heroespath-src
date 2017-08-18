@@ -74,7 +74,7 @@ namespace sfml_util
         sprite_.setPosition(REGION.left, REGION.top);
         sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
         sprite_.setColor(colorFrom_);
-       
+
         //verify the sizes of all loaded textures match what is in animtion-enum.cpp
         auto const ORIG_SIZE_VU{ sf::Vector2u(static_cast<unsigned>(origSizeV_.x),
             static_cast<unsigned>(origSizeV_.y)) };
@@ -86,7 +86,7 @@ namespace sfml_util
 
             auto const NEXT_SIZE_VU{ TextureCache::Instance()->
                 GetByIndex(NEXT_TEXTURE_ID).getSize() };
-           
+
             M_ASSERT_OR_LOGANDTHROW_SS(((NEXT_SIZE_VU.x == ORIG_SIZE_VU.x) &&
                 (NEXT_SIZE_VU.y == ORIG_SIZE_VU.y)), "sfml_util::AnimationMultiTexture::"
                 << "Constructor() found texture #" << i << " was not the correct size.  "

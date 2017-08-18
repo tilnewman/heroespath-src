@@ -73,7 +73,7 @@ namespace sfml_util
         sprite_.setPosition(GetEntityPos());
         sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
         sprite_.setColor(colorFrom_);
-       
+
         auto const TEXTURE_WIDTH { static_cast<int>(sprite_.getLocalBounds().width) };
         auto const TEXTURE_HEIGHT{ static_cast<int>(sprite_.getLocalBounds().height) };
 

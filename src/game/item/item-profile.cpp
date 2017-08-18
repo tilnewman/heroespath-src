@@ -108,7 +108,7 @@ namespace item
     void ItemProfile::SetSummoningAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
     {
         summonInfo_ = SUMMON_INFO;
-        
+
         //Use a creature's rank min/max to establish a kind of combined power/worth/value
         //summon score, then append that to the summoning item's score.
 
@@ -514,7 +514,7 @@ namespace item
             score_ += 20;
         }
     }
-    
+
 
     void ItemProfile::SetShield(const armor::shield_type::Enum E,
                                 const material::Enum           MATERIAL_PRIMARY,
@@ -704,7 +704,7 @@ namespace item
                               ELEMENT_TYPE,
                               false);
     }
-    
+
 
     void ItemProfile::SetBoots(const armor::base_type::Enum E,
                                const material::Enum         MATERIAL_PRIMARY,
@@ -887,7 +887,7 @@ namespace item
                                                 category::Equippable |
                                                 HANDED);
 
-        
+
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Bladed |
                                                  weapon_type::Axe |
                                                  weapon_type::Melee);
@@ -989,8 +989,8 @@ namespace item
                               ELEMENT_TYPE,
                               true);
     }
-        
-    
+
+
     void ItemProfile::SetProjectile(const weapon::projectile_type::Enum E,
                                     const material::Enum                MATERIAL_PRIMARY,
                                     const material::Enum                MATERIAL_SECONDARY,
@@ -1029,7 +1029,7 @@ namespace item
                               true);
     }
 
-    
+
     void ItemProfile::SetBladedStaff(const weapon::bladedstaff_type::Enum E,
                                       const material::Enum                 MATERIAL_PRIMARY,
                                       const material::Enum                 MATERIAL_SECONDARY,
@@ -1144,7 +1144,7 @@ namespace item
                               true);
     }
 
-    
+
     void ItemProfile::SetStaff(const material::Enum     MATERIAL_PRIMARY,
                                const material::Enum     MATERIAL_SECONDARY,
                                const named_type::Enum   NAMED_TYPE,
@@ -1172,7 +1172,7 @@ namespace item
                               true);
     }
 
-    
+
     void ItemProfile::SetQuarterStaff(const material::Enum     MATERIAL_PRIMARY,
                                       const material::Enum     MATERIAL_SECONDARY,
                                       const named_type::Enum   NAMED_TYPE,

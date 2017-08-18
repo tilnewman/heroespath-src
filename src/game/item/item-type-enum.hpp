@@ -187,7 +187,7 @@ namespace item
         {
             return std::make_pair(CorePrimaryNoPearl(), CoreSecondary());
         }
-        
+
         static bool IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsLiquid(const material::Enum MATERIAL);
         static bool IsSolid(const material::Enum MATERIAL);
@@ -210,7 +210,7 @@ namespace item
 
     using MaterialVec_t = std::vector<material::Enum>;
     using MaterialVecPair_t = std::pair<MaterialVec_t, MaterialVec_t>;
-    
+
 
     struct element_type
     {

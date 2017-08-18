@@ -42,7 +42,7 @@ namespace creature
     //forward declarations
     class Enchantment;
     using EnchantmentPtr_t = Enchantment *;
-    
+
 
     //Singleton responsible for the lifetimes of Enchantment objects.
     //This class does not new the objects, but it does delete them.

@@ -221,10 +221,10 @@ namespace combat
 
         auto const OFFSCREEN_TEXTURE_SIZE_X(((sfml_util::Display::Instance()->GetWinWidthu()  /
             BG_TEXTUER_SIZE.x) + 1) * BG_TEXTUER_SIZE.x);
-       
+
         auto const OFFSCREEN_TEXTURE_SIZE_Y(((sfml_util::Display::Instance()->GetWinHeightu() /
             BG_TEXTUER_SIZE.y) + 1) * BG_TEXTUER_SIZE.y);
-       
+
         offScreenTexture_.create(OFFSCREEN_TEXTURE_SIZE_X, OFFSCREEN_TEXTURE_SIZE_Y);
         offScreenTexture_.clear(sf::Color::Transparent);
         offScreenTexture_.setRepeated(true);
@@ -334,7 +334,7 @@ namespace combat
 
             nameCharSizeCurr_ = static_cast<unsigned int>(
                 static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ORIG_ZOOM_LEVEL);
-           
+
             PositionCombatTreeCells(false);
         }
 
@@ -546,7 +546,7 @@ namespace combat
 
         const float POSITIONING_BETWEEN_SPACER_HORIZ_ZOOM_ADJ(
             POSITIONING_BETWEEN_SPACER_HORIZ_ * zoomLevel_);
-       
+
         const float POSITIONING_BETWEEN_SPACER_VERT_ZOOM_ADJ(
             POSITIONING_BETWEEN_SPACER_VERT_ * zoomLevel_);
 
@@ -829,7 +829,7 @@ namespace combat
                                                 true);
                     return creaturesAllAround;
                 }() };
-           
+
             auto const NOTFLYING_ALLAROUND_CREATURES_PVEC{
                 creature::Algorithms::FindByFlying(ALLAROUND_CREATURES_PVEC, false) };
 

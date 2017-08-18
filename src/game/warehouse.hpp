@@ -127,7 +127,7 @@ namespace game
         std::vector< std::unique_ptr<T> > uPtrVec_;
     };
 
- 
+
 }
 
 #endif //GAME_WAREHOUSE_HPP_INCLUDED

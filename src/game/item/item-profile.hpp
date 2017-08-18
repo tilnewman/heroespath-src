@@ -134,13 +134,13 @@ namespace item
                        const material::Enum MATERIAL_PRIMARY   = material::Nothing,
                        const material::Enum MATERIAL_SECONDARY = material::Nothing,
                        const element_type::Enum ELEMENT_TYPE   = element_type::None);
-        
+
         void SetMisc(const misc_type::Enum,
                      const bool           IS_PIXIE           = false,
                      const material::Enum MATERIAL_PRIMARY   = material::Nothing,
                      const material::Enum MATERIAL_SECONDARY = material::Nothing,
                      const set_type::Enum SET_TYPE           = set_type::NotASet);
-        
+
         void SetShield(const armor::shield_type::Enum,
                        const material::Enum     MATERIAL_PRIMARY   = material::Nothing,
                        const material::Enum     MATERIAL_SECONDARY = material::Nothing,
@@ -237,7 +237,7 @@ namespace item
                      const named_type::Enum   NAMED_TYPE         = named_type::NotNamed,
                      const set_type::Enum     SET_TYPE           = set_type::NotASet,
                      const element_type::Enum ELEMENT_TYPE       = element_type::None);
-        
+
         void SetProjectile(const weapon::projectile_type::Enum,
                            const material::Enum     MATERIAL_PRIMARY   = material::Nothing,
                            const material::Enum     MATERIAL_SECONDARY = material::Nothing,
@@ -314,7 +314,7 @@ namespace item
         set_type::Enum     set_;
         named_type::Enum   named_;
         element_type::Enum element_;
-        
+
         bool isPixie_;
 
         armor::shield_type::Enum shield_;
@@ -337,7 +337,7 @@ namespace item
         weapon::bladedstaff_type::Enum  bstaff_;
 
         sfml_util::Size::Enum size_;
-        
+
         bool isKnife_;
         bool isDagger_;
         bool isStaff_;
@@ -360,7 +360,7 @@ namespace item
 
     using ItemProfileVec_t = std::vector<ItemProfile>;
 
-    
+
     inline bool operator==(const ItemProfile & L, const ItemProfile & R)
     {
         return std::tie(L.baseName_,
@@ -445,8 +445,8 @@ namespace item
     {
         return ! (L == R);
     }
-    
-    
+
+
     inline bool operator<(const ItemProfile & L, const ItemProfile & R)
     {
         return std::tie(L.baseName_,

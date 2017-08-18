@@ -131,7 +131,7 @@ namespace item
 
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() All named_type items passed testing.");
-            
+
             allItemProfilesVec.erase(NAMED_TYPE_ITER, allItemProfilesVec.end());
             hasTestedMakingItems_NamedEquipment = true;
             return false;
@@ -627,11 +627,11 @@ namespace item
         itemPtr->SetSummonInfo(PROFILE.Summoning());
 
         AppendElementTypeToName(itemPtr, PROFILE);
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
             "game::item::ItemFactory::Make(profile=" << PROFILE.ToString()
             << ") failed to create an item based on that profile.");
-        
+
         return itemPtr;
     }
 

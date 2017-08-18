@@ -236,7 +236,7 @@ namespace combat
     void Encounter::BeginCombatTasks()
     {
         //nonPlayerPartyUPtr_ must be left alone because it will have already been populated
-        
+
         roundCounter_ = 0;
         Game::Instance()->State().World().EncoundterCountInc();
 
@@ -267,7 +267,7 @@ namespace combat
         //  - runawayNonPlayerPartyUPtr_ should be empty, having all it's pointers
         //    free'd because they will not contribute to looting during Treasure Stage.
         //  - So all should be empty except deadNonPlayerPartyUPtr_ unless all enemies ran away.
-        
+
         //Move all remaining enemy creatures (stoned, incapacitated, etc) in the party to
         //deadNonPlayerPartyUPtr_ so that they are all available for looting in Treasure Stage.
         auto const ENEMY_CHARATER_PVEC{ nonPlayerPartyUPtr_->Characters() };
@@ -282,7 +282,7 @@ namespace combat
         //Free runaway non-player character pointers so they will NOT
         //contribute to looting in Treasure Stage.
         FreeThenResetRunawayNonPlayerParty();
-        
+
         turnCreaturePtr_ = nullptr;
         turnOverPVec_.clear();
         turnInfoMap_.clear();
@@ -347,7 +347,7 @@ namespace combat
         {
             item::ItemWarehouse::Instance()->Free(nextItemPtr);
         }
-        
+
         deadNonPlayerItemsHeld_.items_pvec.clear();
         deadNonPlayerItemsHeld_.coins = 0;
         deadNonPlayerItemsHeld_.gems = 0;

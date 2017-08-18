@@ -120,26 +120,26 @@ namespace sfml_util
             }
         }
     }
-    
+
     bool Animations::IsMultiTexture(const Enum E)
     {
         switch (E)
         {
-            case Burst:          
-            case CandleFlame:    
+            case Burst:
+            case CandleFlame:
             case DualSwirl:
-            case ExplosionSmall: 
+            case ExplosionSmall:
             case ExplosionMedium1:
             case ExplosionMedium2:
             case ExplosionMedium3:
-            case FireTorch:      
-            case Flash:          
-            case FlashSparkle:   
-            case Puff:           
-            case PuffShort:      
-            case SelectSwirl:    
-            case Smoke:          
-            case SplashMagenta1: 
+            case FireTorch:
+            case Flash:
+            case FlashSparkle:
+            case Puff:
+            case PuffShort:
+            case SelectSwirl:
+            case Smoke:
+            case SplashMagenta1:
             case SplashMagenta2: { return false; }
             case DualCharge:
             case ExplosionLarge:
@@ -163,7 +163,7 @@ namespace sfml_util
         }
     }
 
-    
+
     const std::pair<int, int> Animations::SizePair(const Enum E)
     {
         switch (E)

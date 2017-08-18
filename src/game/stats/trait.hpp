@@ -62,7 +62,7 @@ namespace stats
         inline const std::string Desc() const       { return Traits::Desc(type_); }
         inline stats::Trait_t Normal() const        { return normal_; }
         inline stats::Trait_t Current() const       { return current_; }
-        
+
         inline float NormalRatio() const    { return static_cast<float>(current_) / 100.0f; }
         inline float CurrentRatio() const   { return static_cast<float>(normal_) / 100.0f; }
 

@@ -104,7 +104,7 @@ namespace stats
                 }
 
                 ss << " " << NEXT_CURR;
-                
+
                 if (WILL_PREFIX_PERCENT)
                 {
                     ss << "%";
@@ -157,7 +157,7 @@ namespace stats
         }
 
         auto const TRAIT{ traitVec_[static_cast<std::size_t>(E)] };
-        
+
         ss << stats::Traits::Abbr(E) << "=";
 
         if (TRAIT.Current() != TRAIT.Normal())
