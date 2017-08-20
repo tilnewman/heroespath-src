@@ -135,12 +135,12 @@ namespace item
 
         static int Bonus(const material::Enum);
 
-        static const std::vector<material::Enum> CoreMetal();
-        static const std::vector<material::Enum> CoreJewel();
-        static const std::vector<material::Enum> CoreMisc();
+        static const std::vector<material::Enum> CoreMetal(const bool WILL_INCLUDE_NOTHING = false);
+        static const std::vector<material::Enum> CoreJewel(const bool WILL_INCLUDE_NOTHING = false);
+        static const std::vector<material::Enum> CoreMisc(const bool WILL_INCLUDE_NOTHING = false);
         static const std::vector<material::Enum> CorePrimary();
         static const std::vector<material::Enum> CorePrimaryNoPearl();
-        static const std::vector<material::Enum> CoreSecondary();
+        static const std::vector<material::Enum> CoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
 
         static void AppendCoreMetal(std::vector<material::Enum> &);
         static void AppendCoreJewel(std::vector<material::Enum> &);

@@ -53,7 +53,7 @@ namespace item
 
     ItemProfileWarehouse::ItemProfileWarehouse()
     :
-        vec_()
+        profiles_()
     {
         M_HP_LOG_DBG("Singleton Construction: ItemProfileWarehouse");
     }
@@ -101,34 +101,58 @@ namespace item
 
     void ItemProfileWarehouse::Setup()
     {
-        vec_.clear();
+        profiles_.clear();
 
         //As of 2017-8-17 there were 849299 raw item profiles created before reductions.
-        vec_.reserve(1'000'000);
+        profiles_.reserve(1'000'000);
 
-        //items from standard equipment
-        {
-            ItemProfileVec_t v;
+        Setup_StandardEquipmen();
+        Setup_UniqueItems();
+        Setup_MiscItems();
+        Setup_NamedEquipment();
+        Setup_SetEquipment();
+        Setup_SummoningItems();
 
-            auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
-            std::copy(THINPROFILES_WEAPONS_VEC.begin(),
-                      THINPROFILES_WEAPONS_VEC.end(),
-                      std::back_inserter(v));
+        Setup_EliminateDuplicates();
+        
+        //Sorting by treasure score will help speed up later uses of profiles_
+        // during gameplay, and is required before Setup_LogStatistics().
+        std::sort(profiles_.begin(),
+                  profiles_.end(),
+                  [](const auto & A, const auto & B)
+                    {
+                        return A.TreasureScore() < B.TreasureScore();
+                    });
 
-            auto const THINPROFILES_ARMOR_VEC{ ThinProfilesArmor(true) };
-            std::copy(THINPROFILES_ARMOR_VEC.begin(),
-                      THINPROFILES_ARMOR_VEC.end(),
-                      std::back_inserter(v));
+        //Setup_LogStatistics();
+    }
 
-            for (auto const & NEXT_THIN_PROFILE : v)
+
+    void ItemProfileWarehouse::Setup_StandardEquipmen()
+    {
+        auto setupThinProfile = [&](const auto & THIN_PROFILE)
             {
-                SetupFromThinProfile(NEXT_THIN_PROFILE,
+                SetupFromThinProfile(THIN_PROFILE,
                                      named_type::NotNamed,
                                      set_type::NotASet);
-            }
-        }
+            };
 
-        //items from unique types
+        auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
+        
+        std::for_each(THINPROFILES_WEAPONS_VEC.begin(),
+                      THINPROFILES_WEAPONS_VEC.end(),
+                      setupThinProfile);
+
+        auto const THINPROFILES_ARMOR_VEC{ ThinProfilesArmor(true) };
+
+        std::for_each(THINPROFILES_ARMOR_VEC.begin(),
+                      THINPROFILES_ARMOR_VEC.end(),
+                      setupThinProfile);
+    }
+
+
+    void ItemProfileWarehouse::Setup_UniqueItems()
+    {
         for (int i(1); i < item::unique_type::Count; ++i)
         {
             auto const NEXT_UNIQUE_ENUM{ static_cast<item::unique_type::Enum>(i) };
@@ -159,11 +183,11 @@ namespace item
                                     NEXT_ELEMENT_TYPE);
 
                         p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
-                                                              false,
-                                                              NEXT_MATERIAL_PRIMARY,
-                                                              item::material::Nothing);
+                                  false,
+                                  NEXT_MATERIAL_PRIMARY,
+                                  item::material::Nothing);
 
-                        vec_.push_back(p);
+                        profiles_.push_back(p);
                         didAddProfile = true;
                     }
                     else
@@ -183,11 +207,11 @@ namespace item
                                         NEXT_ELEMENT_TYPE);
 
                             p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
-                                                                  false,
-                                                                  NEXT_MATERIAL_PRIMARY,
-                                                                  NEXT_MATERIAL_SECONDARY);
+                                      false,
+                                      NEXT_MATERIAL_PRIMARY,
+                                      NEXT_MATERIAL_SECONDARY);
 
-                            vec_.push_back(p);
+                            profiles_.push_back(p);
                             didAddProfile = true;
                         }
                     }
@@ -199,176 +223,312 @@ namespace item
                     << item::unique_type::ToString(NEXT_UNIQUE_ENUM));
             }
         }
+    }
 
-        //items from misc types
+
+    void ItemProfileWarehouse::Setup_MiscItems()
+    {
+        for (int i(1); i < misc_type::Count; ++i)
         {
-            for (int i(1); i < misc_type::Count; ++i)
-            {
-                auto const NEXT_MISC_ENUM{ static_cast<misc_type::Enum>(i) };
+            auto const NEXT_MISC_ENUM{ static_cast<misc_type::Enum>(i) };
 
-                if (misc_type::IsStandaloneItem(NEXT_MISC_ENUM))
-                {
-                    SetupProfilesForMiscType(NEXT_MISC_ENUM);
-                }
+            if (misc_type::IsStandaloneItem(NEXT_MISC_ENUM))
+            {
+                SetupProfilesForMiscType(NEXT_MISC_ENUM);
             }
         }
+    }
 
-        //items from named equipment
+
+    void ItemProfileWarehouse::Setup_NamedEquipment()
+    {
+        for (int i(1); i < named_type::Count; ++i)
         {
-            for (int i(1); i < named_type::Count; ++i)
+            auto const NEXT_NAMED_ENUM{ static_cast<named_type::Enum>(i) };
+
+            auto const NEXT_NAMED_THINPROFILES_VEC{
+                ThinProfiles(NEXT_NAMED_ENUM) };
+
+            for (auto const & NEXT_NAMED_THINPROFILE : NEXT_NAMED_THINPROFILES_VEC)
             {
-                auto const NEXT_NAMED_ENUM{ static_cast<named_type::Enum>(i) };
-
-                auto const NEXT_NAMED_THINPROFILES_VEC{
-                    ThinProfiles(NEXT_NAMED_ENUM) };
-
-                for (auto const & NEXT_NAMED_THINPROFILE : NEXT_NAMED_THINPROFILES_VEC)
-                {
-                    SetupFromThinProfile(NEXT_NAMED_THINPROFILE,
-                                         NEXT_NAMED_ENUM,
-                                         set_type::NotASet);
-                }
+                SetupFromThinProfile(NEXT_NAMED_THINPROFILE,
+                                     NEXT_NAMED_ENUM,
+                                     set_type::NotASet);
             }
         }
+    }
 
-        //items from set equipment
+
+    void ItemProfileWarehouse::Setup_SetEquipment()
+    {
+        for (int i(1); i < set_type::Count; ++i)
         {
-            for (int i(1); i < set_type::Count; ++i)
+            auto const NEXT_SET_ENUM{ static_cast<set_type::Enum>(i) };
+
+            auto const NEXT_SET_THINPROFILES_VEC{
+                ThinProfiles(NEXT_SET_ENUM) };
+
+            for (auto const & NEXT_SET_THINPROFILE : NEXT_SET_THINPROFILES_VEC)
             {
-                auto const NEXT_SET_ENUM{ static_cast<set_type::Enum>(i) };
-
-                auto const NEXT_SET_THINPROFILES_VEC{
-                    ThinProfiles(NEXT_SET_ENUM) };
-
-                for (auto const & NEXT_SET_THINPROFILE : NEXT_SET_THINPROFILES_VEC)
-                {
-                    SetupFromThinProfile(NEXT_SET_THINPROFILE,
-                                         named_type::NotNamed,
-                                         NEXT_SET_ENUM);
-                }
+                SetupFromThinProfile(NEXT_SET_THINPROFILE,
+                                     named_type::NotNamed,
+                                     NEXT_SET_ENUM);
             }
         }
+    }
 
-        //summoning items
+
+    void ItemProfileWarehouse::Setup_SummoningItems()
+    {
+        auto const MATERIALS_VEC{ material::CorePrimaryNoPearl() };
+
+        using namespace creature;
+        for (int raceIndex(0); raceIndex < race::Count; ++raceIndex)
         {
-            auto const MATERIALS_VEC{ material::CorePrimaryNoPearl() };
+            auto const RACE_ENUM{ static_cast<race::Enum>(raceIndex) };
 
-            using namespace creature;
-            for (int raceIndex(0); raceIndex < race::Count; ++raceIndex)
+            auto const ROLES_VEC{ race::Roles(RACE_ENUM) };
+
+            for (auto const ROLE_ENUM : ROLES_VEC)
             {
-                auto const RACE_ENUM{ static_cast<race::Enum>(raceIndex) };
-
-                auto const ROLES_VEC{ race::Roles(RACE_ENUM) };
-
-                for (auto const ROLE_ENUM : ROLES_VEC)
+                auto const ORIGINS_VEC{ race::OriginTypes(RACE_ENUM, ROLE_ENUM) };
+                for (auto const ORIGIN_ENUM : ORIGINS_VEC)
                 {
-                    auto const ORIGINS_VEC{ race::OriginTypes(RACE_ENUM, ROLE_ENUM) };
-                    for (auto const ORIGIN_ENUM : ORIGINS_VEC)
+                    if (ORIGIN_ENUM == origin_type::Statue)
                     {
-                        if (ORIGIN_ENUM == origin_type::Statue)
+                        for (auto const NEXT_MATERIAL : MATERIALS_VEC)
                         {
-                            for (auto const NEXT_MATERIAL : MATERIALS_VEC)
-                            {
-                                ItemProfile p;
-
-                                p.SetMisc(misc_type::Summoning_Statue,
-                                          false,
-                                          NEXT_MATERIAL,
-                                          material::Nothing,
-                                          set_type::NotASet);
-
-                                p.SetSummoningAndAdjustScore(
-                                    SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
-
-                                vec_.push_back(p);
-                            }
-                        }
-                        else
-                        {
-                            auto const MISC_TYPE{ [ORIGIN_ENUM]()
-                                {
-                                    if (ORIGIN_ENUM == origin_type::Egg)
-                                    {
-                                        return misc_type::Egg;
-                                    }
-                                    else if (ORIGIN_ENUM == origin_type::Embryo)
-                                    {
-                                        return misc_type::Embryo;
-                                    }
-                                    else
-                                    {
-                                        return misc_type::Seeds;
-                                    }
-                                }() };
-
-                            auto const MATERIAL{ [ORIGIN_ENUM]()
-                                {
-                                    if (ORIGIN_ENUM == origin_type::Seeds)
-                                    {
-                                        return material::Plant;
-                                    }
-                                    else
-                                    {
-                                        return material::Flesh;
-                                    }
-                                }() };
-
                             ItemProfile p;
 
-                            p.SetMisc(MISC_TYPE,
+                            p.SetMisc(misc_type::Summoning_Statue,
                                       false,
-                                      MATERIAL,
+                                      NEXT_MATERIAL,
                                       material::Nothing,
                                       set_type::NotASet);
 
                             p.SetSummoningAndAdjustScore(
-                                SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM) );
+                                SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
 
-                            vec_.push_back(p);
+                            profiles_.push_back(p);
                         }
+                    }
+                    else
+                    {
+                        auto const MISC_TYPE{ [ORIGIN_ENUM]()
+                        {
+                            if (ORIGIN_ENUM == origin_type::Egg)
+                            {
+                                return misc_type::Egg;
+                            }
+                            else if (ORIGIN_ENUM == origin_type::Embryo)
+                            {
+                                return misc_type::Embryo;
+                            }
+                            else
+                            {
+                                return misc_type::Seeds;
+                            }
+                        }() };
+
+                        auto const MATERIAL{ [ORIGIN_ENUM]()
+                        {
+                            if (ORIGIN_ENUM == origin_type::Seeds)
+                            {
+                                return material::Plant;
+                            }
+                            else
+                            {
+                                return material::Flesh;
+                            }
+                        }() };
+
+                        ItemProfile p;
+
+                        p.SetMisc(MISC_TYPE,
+                                  false,
+                                  MATERIAL,
+                                  material::Nothing,
+                                  set_type::NotASet);
+
+                        p.SetSummoningAndAdjustScore(
+                            SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
+
+                        profiles_.push_back(p);
                     }
                 }
             }
         }
+    }
 
-        auto const RAW_COUNT{ vec_.size() };
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << RAW_COUNT << " raw items.");
 
-        //okay...I can't find the bug in this ItemProfileWarehouse code that is creating duplicates
-        //so I'll just remove them here.  There are ~834,000 items before this erase and ~523,000
-        //after.  -zTn 2017-8-10
-        std::sort(vec_.begin(), vec_.end());
-        vec_.erase(std::unique(vec_.begin(), vec_.end()), vec_.end());
-
-        auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - vec_.size() };
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << DUPLICATE_PROFILE_COUNT
-            << " duplicate profiles.");
-
-        //okay...I can't find the bug that allows items with the same material as pri and sec,
-        //so I'll just remove them here.
-        vec_.erase(std::remove_if(vec_.begin(), vec_.end(),
-            [](const ItemProfile & P)
-            {
-                return (P.MaterialPrimary() == P.MaterialSecondary());
-            }), vec_.end());
-
-        vec_.shrink_to_fit();
-
-        auto const DUPLICATE_MATERIALS_COUNT{ RAW_COUNT - DUPLICATE_PROFILE_COUNT - vec_.size() };
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << DUPLICATE_MATERIALS_COUNT
-            << " duplicate material profiles.");
-
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " << vec_.size()
-            << " final profiles, with a vector_capacity=" << vec_.capacity() << ".");
-
-        std::sort(vec_.begin(),
-                  vec_.end(),
-                  [](const auto & A, const auto & B)
-                    {
-                        return A.TreasureScore() < B.TreasureScore();
-                    });
+    void ItemProfileWarehouse::Setup_EliminateDuplicates()
+    {
+        auto const RAW_COUNT{ profiles_.size() };
         
-        //LogStatistics();
+        //I can't find the bug in this code that is creating duplicates,
+        //so I'll just remove those duplicates here.  -zTn 2017-8-10
+        std::sort(profiles_.begin(), profiles_.end());
+        profiles_.erase(std::unique(profiles_.begin(), profiles_.end()), profiles_.end());
+
+        auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - profiles_.size() };
+        
+        profiles_.shrink_to_fit();
+
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " 
+            << RAW_COUNT << " raw profiles, "
+            << DUPLICATE_PROFILE_COUNT << " duplicate profiles, "
+            << profiles_.size() << " final profiles, with a vector capacity that is "
+            << ((profiles_.size() == profiles_.capacity()) ? "shrunk" : "NOT-shurnk")
+            << ".");
+    }
+
+
+    void ItemProfileWarehouse::Setup_LogStatistics()
+    {
+        struct ItemSet
+        {
+            ItemSet(std::string NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
+                :
+                name(std::move(NAME)),
+                division(DIVISION_SIZE),
+                profiles(),
+                scores(),
+                divCountsScore(static_cast<std::size_t>((PROFILES[PROFILES.size() - 1].TreasureScore() / DIVISION_SIZE) + 1), 0),
+                sum(0)
+            {}
+
+            std::string name;
+            int division;
+            std::vector<ItemProfile> profiles;
+            std::vector<int> scores;
+            std::vector<int> divCountsScore;
+            long sum;
+
+            void Add(const ItemProfile & P)
+            {
+                profiles.push_back(P);
+                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore() / division)];
+                sum += P.TreasureScore();
+                scores.push_back(P.TreasureScore());
+            }
+
+            void Log() const
+            {
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                auto const MEAN{ static_cast<int>(sum / static_cast<long>(scores.size())) };
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\"\tcount=" << profiles.size()
+                    << ", min=" << scores[0]
+                    << ", mean=" << MEAN
+                    << ", median=" << scores[scores.size() / 2]
+                    << ", max=" << scores[scores.size() - 1]
+                    << ", std_dev=" << misc::Vector::StandardDeviation(scores, scores.size(), MEAN));
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
+                {
+                    M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                        << "\" Treasure Score Division [" << d * division
+                        << "-" << (d + 1) * division
+                        << "]\t\t =" << divCountsScore[static_cast<std::size_t>(d)]);
+                }
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+
+                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
+                {
+                    auto const DIV_SCORE_START{ d * division };
+
+                    auto const FIRST_WITH_SCORE_ITER{ std::find_if(profiles.begin(),
+                        profiles.end(),
+                        [DIV_SCORE_START](const auto & P)
+                    {
+                        return P.TreasureScore() >= DIV_SCORE_START;
+                    }) };
+
+                    int i{ 0 };
+                    auto iter{ FIRST_WITH_SCORE_ITER };
+                    for (; iter != profiles.end() && i < 10; ++iter, ++i)
+                    {
+                        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                            << "\" Sample: " << iter->TreasureScore()
+                            << "\t" << iter->ToString());
+                    }
+                }
+
+                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
+                    << "\" **********************************");
+            }
+        };
+
+        ItemSet treasureScoreSet("TreasureScore", 500, profiles_);
+        ItemSet equipmentSet("Equipment", 200, profiles_);
+        ItemSet standardEquipmentSet("StandardEquipment", 200, profiles_);
+        ItemSet uniqueSet("Unique", 500, profiles_);
+        ItemSet setSet("Set", 500, profiles_);
+        ItemSet namedSet("Named", 500, profiles_);
+        ItemSet elementalSet("Elemental", 500, profiles_);
+
+        for (auto const & PROFILE : profiles_)
+        {
+            treasureScoreSet.Add(PROFILE);
+
+            if (PROFILE.IsEquipment())
+            {
+                equipmentSet.Add(PROFILE);
+
+                if (PROFILE.IsStandard())
+                {
+                    standardEquipmentSet.Add(PROFILE);
+                }
+            }
+
+            if ((PROFILE.IsUnique() == true) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == false))
+            {
+                uniqueSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == true) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == false))
+            {
+                setSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == true) &&
+                (PROFILE.IsElemental() == false))
+            {
+                namedSet.Add(PROFILE);
+            }
+
+            if ((PROFILE.IsUnique() == false) &&
+                (PROFILE.IsSet() == false) &&
+                (PROFILE.IsNamed() == false) &&
+                (PROFILE.IsElemental() == true))
+            {
+                elementalSet.Add(PROFILE);
+            }
+        }
+
+        treasureScoreSet.Log();
+        equipmentSet.Log();
+        standardEquipmentSet.Log();
+        uniqueSet.Log();
+        setSet.Log();
+        namedSet.Log();
+        elementalSet.Log();
     }
 
 
@@ -471,6 +631,11 @@ namespace item
         const material::Enum         MATERIAL_SEC,
         const armor::base_type::Enum BASE_TYPE)
     {
+        if (MATERIAL_PRI == MATERIAL_SEC)
+        {
+            return;
+        }
+
         if ((THIN_PROFILE.MiscType() != misc_type::NotMisc) &&
             (THIN_PROFILE.MiscType() != misc_type::Count))
         {
@@ -480,7 +645,7 @@ namespace item
                                MATERIAL_PRI,
                                MATERIAL_SEC,
                                SET_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
             {
@@ -490,7 +655,7 @@ namespace item
                                         MATERIAL_PRI,
                                         MATERIAL_SEC,
                                         SET_TYPE);
-                vec_.push_back(fatProfilePixie);
+                profiles_.push_back(fatProfilePixie);
             }
 
             return;
@@ -505,7 +670,7 @@ namespace item
                                    NAMED_TYPE,
                                    SET_TYPE,
                                    ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -519,7 +684,7 @@ namespace item
                                 SET_TYPE,
                                 ELEMENT_TYPE,
                                 false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBoots(BASE_TYPE,
@@ -529,7 +694,7 @@ namespace item
                                      SET_TYPE,
                                      ELEMENT_TYPE,
                                      true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -543,7 +708,7 @@ namespace item
                                  SET_TYPE,
                                  ELEMENT_TYPE,
                                  false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBracer(BASE_TYPE,
@@ -553,7 +718,7 @@ namespace item
                                       SET_TYPE,
                                       ELEMENT_TYPE,
                                       true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -567,7 +732,7 @@ namespace item
                                     SET_TYPE,
                                     ELEMENT_TYPE,
                                     false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetGauntlets(BASE_TYPE,
@@ -577,7 +742,7 @@ namespace item
                                          SET_TYPE,
                                          ELEMENT_TYPE,
                                          true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -591,7 +756,7 @@ namespace item
                                 SET_TYPE,
                                 ELEMENT_TYPE,
                                 false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetPants(BASE_TYPE,
@@ -601,7 +766,7 @@ namespace item
                                      SET_TYPE,
                                      ELEMENT_TYPE,
                                      true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -615,7 +780,7 @@ namespace item
                                 SET_TYPE,
                                 ELEMENT_TYPE,
                                 false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetShirt(BASE_TYPE,
@@ -625,7 +790,7 @@ namespace item
                                      SET_TYPE,
                                      ELEMENT_TYPE,
                                      true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -638,7 +803,7 @@ namespace item
                                  NAMED_TYPE,
                                  SET_TYPE,
                                  ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -652,7 +817,7 @@ namespace item
                                 SET_TYPE,
                                 ELEMENT_TYPE,
                                 false);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetCover(THIN_PROFILE.CoverType(),
@@ -662,7 +827,7 @@ namespace item
                                      SET_TYPE,
                                      ELEMENT_TYPE,
                                      true);
-            vec_.push_back(fatProfilePixie);
+            profiles_.push_back(fatProfilePixie);
             return;
         }
 
@@ -675,7 +840,7 @@ namespace item
                                NAMED_TYPE,
                                SET_TYPE,
                                ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -688,7 +853,7 @@ namespace item
                                 NAMED_TYPE,
                                 SET_TYPE,
                                 ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -701,7 +866,7 @@ namespace item
                               NAMED_TYPE,
                               SET_TYPE,
                               ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -714,7 +879,7 @@ namespace item
                                NAMED_TYPE,
                                SET_TYPE,
                                ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -727,7 +892,7 @@ namespace item
                                NAMED_TYPE,
                                SET_TYPE,
                                ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -740,7 +905,7 @@ namespace item
                                      NAMED_TYPE,
                                      SET_TYPE,
                                      ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -753,7 +918,7 @@ namespace item
                                       NAMED_TYPE,
                                       SET_TYPE,
                                       ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -771,7 +936,7 @@ namespace item
                                     SET_TYPE,
                                     ELEMENT_TYPE,
                                     false);
-                vec_.push_back(fatProfile);
+                profiles_.push_back(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetKnife(NEXT_SIZE_ENUM,
@@ -781,7 +946,7 @@ namespace item
                                          SET_TYPE,
                                          ELEMENT_TYPE,
                                          true);
-                vec_.push_back(fatProfilePixie);
+                profiles_.push_back(fatProfilePixie);
             }
             return;
         }
@@ -800,7 +965,7 @@ namespace item
                                      SET_TYPE,
                                      ELEMENT_TYPE,
                                      false);
-                vec_.push_back(fatProfile);
+                profiles_.push_back(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetDagger(NEXT_SIZE_ENUM,
@@ -810,7 +975,7 @@ namespace item
                                           SET_TYPE,
                                           ELEMENT_TYPE,
                                           true);
-                vec_.push_back(fatProfilePixie);
+                profiles_.push_back(fatProfilePixie);
             }
             return;
         }
@@ -823,7 +988,7 @@ namespace item
                                 NAMED_TYPE,
                                 SET_TYPE,
                                 ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -835,7 +1000,7 @@ namespace item
                                        NAMED_TYPE,
                                        SET_TYPE,
                                        ELEMENT_TYPE);
-            vec_.push_back(fatProfile);
+            profiles_.push_back(fatProfile);
             return;
         }
 
@@ -1130,7 +1295,7 @@ namespace item
             "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any "
             << " primary materials for misc_type=" << item::misc_type::ToString(E));
 
-        auto const COUNT{ vec_.size() };
+        auto const COUNT{ profiles_.size() };
 
         for (auto const NEXT_MATERIAL_PRIMARY : MATERIALS.first)
         {
@@ -1138,13 +1303,13 @@ namespace item
             {
                 ItemProfile p;
                 p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
-                vec_.push_back(p);
+                profiles_.push_back(p);
 
                 if (misc_type::HasPixieVersion(E))
                 {
                     ItemProfile pPixie;
                     pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
-                    vec_.push_back(pPixie);
+                    profiles_.push_back(pPixie);
                 }
             }
             else
@@ -1158,19 +1323,19 @@ namespace item
 
                     ItemProfile p;
                     p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                    vec_.push_back(p);
+                    profiles_.push_back(p);
 
                     if (misc_type::HasPixieVersion(E))
                     {
                         ItemProfile pPixie;
                         pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                        vec_.push_back(pPixie);
+                        profiles_.push_back(pPixie);
                     }
                 }
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((vec_.size() != COUNT),
+        M_ASSERT_OR_LOGANDTHROW_SS((profiles_.size() != COUNT),
             "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any"
             << " valid material combinations for misc_type=" << item::misc_type::ToString(E));
     }
@@ -1940,6 +2105,7 @@ namespace item
             case item::named_type::Gladiator:
             {
                 ItemProfileVec_t v;
+                v.reserve(10);
 
                 {
                     ItemProfile thinProfile;
@@ -2006,20 +2172,17 @@ namespace item
 
             case item::named_type::Soldiers:
             {
-                item::ItemProfileVec_t v;
+                item::ItemProfileVec_t thinProfiles{ ThinProfilesWeaponsAll() };
 
-                auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
                 auto const THINPROFILES_ARMOR_VEC{ ThinProfilesArmor(false) };
 
-                std::copy(THINPROFILES_WEAPONS_VEC.begin(),
-                          THINPROFILES_WEAPONS_VEC.end(),
-                          std::back_inserter(v));
-                
+                thinProfiles.reserve(thinProfiles.size() + THINPROFILES_ARMOR_VEC.size());
+
                 std::copy(THINPROFILES_ARMOR_VEC.begin(),
                           THINPROFILES_ARMOR_VEC.end(),
-                          std::back_inserter(v));
+                          std::back_inserter(thinProfiles));
 
-                return v;
+                return thinProfiles;
             }
 
             case item::named_type::Wardens:
@@ -2839,155 +3002,6 @@ namespace item
                 return {};
             }
         }
-    }
-
-
-    void ItemProfileWarehouse::LogStatistics()
-    {
-        struct ItemSet
-        {
-            ItemSet(std::string NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
-                :
-                name(std::move(NAME)),
-                division(DIVISION_SIZE),
-                profiles(),
-                scores(),
-                divCountsScore(static_cast<std::size_t>((PROFILES[PROFILES.size() - 1].TreasureScore() / DIVISION_SIZE) + 1), 0),
-                sum(0)
-            {}
-
-            std::string name;
-            int division;
-            std::vector<ItemProfile> profiles;
-            std::vector<int> scores;
-            std::vector<int> divCountsScore;
-            long sum;
-
-            void Add(const ItemProfile & P)
-            {
-                profiles.push_back(P);
-                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore() / division)];
-                sum += P.TreasureScore();
-                scores.push_back(P.TreasureScore());
-            }
-
-            void Log() const
-            {
-                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                    << "\" **********************************");
-
-                auto const MEAN{ static_cast<int>(sum / static_cast<long>(scores.size())) };
-
-                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                    << "\"\tcount=" << profiles.size()
-                    << ", min=" << scores[0]
-                    << ", mean=" << MEAN
-                    << ", median=" << scores[scores.size() / 2]
-                    << ", max=" << scores[scores.size() - 1]
-                    << ", std_dev=" << misc::Vector::StandardDeviation(scores, scores.size(), MEAN));
-
-                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                    << "\" **********************************");
-
-                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
-                {
-                    M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                        << "\" Treasure Score Division [" << d * division
-                        << "-" << (d + 1) * division
-                        << "]\t\t =" << divCountsScore[static_cast<std::size_t>(d)]);
-                }
-
-                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                    << "\" **********************************");
-
-                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
-                {
-                    auto const DIV_SCORE_START{ d * division };
-
-                    auto const FIRST_WITH_SCORE_ITER{ std::find_if(profiles.begin(),
-                        profiles.end(),
-                        [DIV_SCORE_START](const auto & P)
-                    {
-                        return P.TreasureScore() >= DIV_SCORE_START;
-                    }) };
-
-                    int i{ 0 };
-                    auto iter{ FIRST_WITH_SCORE_ITER };
-                    for (; iter != profiles.end() && i < 10; ++iter, ++i)
-                    {
-                        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                            << "\" Sample: " << iter->TreasureScore()
-                            << "\t" << iter->ToString());
-                    }
-                }
-
-                M_HP_LOG_DBG("ItemProfileWarehouse::Setup() ItemSet \"" << name
-                    << "\" **********************************");
-            }
-        };
-
-        ItemSet treasureScoreSet("TreasureScore", 500, vec_);
-        ItemSet equipmentSet("Equipment", 200, vec_);
-        ItemSet standardEquipmentSet("StandardEquipment", 200, vec_);
-        ItemSet uniqueSet("Unique", 500, vec_);
-        ItemSet setSet("Set", 500, vec_);
-        ItemSet namedSet("Named", 500, vec_);
-        ItemSet elementalSet("Elemental", 500, vec_);
-
-        for (auto const & PROFILE : vec_)
-        {
-            treasureScoreSet.Add(PROFILE);
-
-            if (PROFILE.IsEquipment())
-            {
-                equipmentSet.Add(PROFILE);
-
-                if (PROFILE.IsStandard())
-                {
-                    standardEquipmentSet.Add(PROFILE);
-                }
-            }
-
-            if ((PROFILE.IsUnique() == true) &&
-                (PROFILE.IsSet() == false) &&
-                (PROFILE.IsNamed() == false) &&
-                (PROFILE.IsElemental() == false))
-            {
-                uniqueSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) &&
-                (PROFILE.IsSet() == true) &&
-                (PROFILE.IsNamed() == false) &&
-                (PROFILE.IsElemental() == false))
-            {
-                setSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) &&
-                (PROFILE.IsSet() == false) &&
-                (PROFILE.IsNamed() == true) &&
-                (PROFILE.IsElemental() == false))
-            {
-                namedSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) &&
-                (PROFILE.IsSet() == false) &&
-                (PROFILE.IsNamed() == false) &&
-                (PROFILE.IsElemental() == true))
-            {
-                elementalSet.Add(PROFILE);
-            }
-        }
-
-        treasureScoreSet.Log();
-        equipmentSet.Log();
-        standardEquipmentSet.Log();
-        uniqueSet.Log();
-        setSet.Log();
-        namedSet.Log();
-        elementalSet.Log();
     }
 
 }

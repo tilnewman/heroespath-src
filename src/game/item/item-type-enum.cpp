@@ -917,17 +917,17 @@ namespace item
             case RascalMask:                { return MaterialVecPair_t({ material::Wood }, material::CoreSecondary()); }
             case RattlesnakeTail:           { return MaterialVecPair_t({ material::Flesh }, {}); }
             case RavenClaw:                 { return MaterialVecPair_t({ material::Flesh }, {}); }
-            case RazorFingerclaw:           { return MaterialVecPair_t({ material::Steel }, material::CoreJewel()); }
+            case RazorFingerclaw:           { return MaterialVecPair_t({ material::Steel }, material::CoreJewel(true)); }
             case ReaperScythe:              { return MaterialVecPair_t({ material::Wood }, { material::Steel }); }
             case RegalCaptainsFlag:         { return MaterialVecPair_t({ material::Cloth }, {}); }
             case RequiemRegister:           { return MaterialVecPair_t({ material::Paper }, {}); }
             case RoyalScoutSpyglass:        { return MaterialVecPair_t({ material::Steel }, { material::Glass }); }
-            case SaintCameoPin:             { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreJewel()); }
+            case SaintCameoPin:             { return MaterialVecPair_t({ material::CorePrimary() }, material::CoreJewel(true)); }
             case SaintsJournal:             { return MaterialVecPair_t({ material::Paper }, {}); }
             case SanguineRelic:             { return MaterialVecPair_t({ material::CorePrimary() }, {}); }
-            case ScorpionStingerFingerclaw: { return MaterialVecPair_t({ material::Steel }, material::CoreJewel()); }
+            case ScorpionStingerFingerclaw: { return MaterialVecPair_t({ material::Steel }, material::CoreJewel(true)); }
             case ScoundrelSack:             { return MaterialVecPair_t({ material::Cloth }, {}); }
-            case SepultureDecoration:       { return MaterialVecPair_t({ material::Wood }, material::CoreJewel()); }
+            case SepultureDecoration:       { return MaterialVecPair_t({ material::Wood }, material::CoreJewel(true)); }
             case ShadeCloak:                { return MaterialVecPair_t({ material::Cloth }, {}); }
             case ShamanRainmaker:           { return MaterialVecPair_t({ material::Wood }, {}); }
             case SharkToothNecklace:        { return MaterialVecPair_t({ material::Tooth }, {}); }
@@ -958,7 +958,7 @@ namespace item
             case WarTrumpet:                { return MaterialVecPair_t({ material::CoreMetal() }, {}); }
             case WeaselTotem:               { return MaterialVecPair_t({ material::Wood }, {}); }
             case WolfenFur:                 { return MaterialVecPair_t({ material::Fur }, {}); }
-            case WraithTalisman:            { return MaterialVecPair_t({ material::Wood }, material::CoreJewel()); }
+            case WraithTalisman:            { return MaterialVecPair_t({ material::Wood }, material::CoreJewel(true)); }
             case NotUnique:
             case Count:
             default:                        { return MaterialVecPair_t({}, {}); }
@@ -2384,36 +2384,57 @@ namespace item
     }
 
 
-    const std::vector<material::Enum> material::CoreMetal()
+    const std::vector<material::Enum> material::CoreMetal(const bool WILL_INCLUDE_NOTHING)
     {
-        return { material::Tin,
-                 material::Bronze,
-                 material::Iron,
-                 material::Steel,
-                 material::Silver,
-                 material::Gold,
-                 material::Platinum };
+        std::vector<material::Enum> materials{ material::Tin,
+                                               material::Bronze,
+                                               material::Iron,
+                                               material::Steel,
+                                               material::Silver,
+                                               material::Gold,
+                                               material::Platinum };
+
+        if (WILL_INCLUDE_NOTHING)
+        {
+            materials.push_back(material::Nothing);
+        }
+
+        return materials;
     }
 
 
-    const std::vector<material::Enum> material::CoreJewel()
+    const std::vector<material::Enum> material::CoreJewel(const bool WILL_INCLUDE_NOTHING)
     {
-        return { material::Jade,
-                 material::Amethyst,
-                 material::Emerald,
-                 material::Ruby,
-                 material::Lazuli,
-                 material::Sapphire,
-                 material::Diamond };
+        std::vector<material::Enum> materials{ material::Jade,
+                                               material::Amethyst,
+                                               material::Emerald,
+                                               material::Ruby,
+                                               material::Lazuli,
+                                               material::Sapphire,
+                                               material::Diamond };
+
+        if (WILL_INCLUDE_NOTHING)
+        {
+            materials.push_back(material::Nothing);
+        }
+
+        return materials;
     }
 
 
-    const std::vector<material::Enum> material::CoreMisc()
+    const std::vector<material::Enum> material::CoreMisc(const bool WILL_INCLUDE_NOTHING)
     {
-        return { material::Bone,
-                 material::Stone,
-                 material::Obsidian,
-                 material::Pearl };
+        std::vector<material::Enum> materials{ material::Bone,
+                                               material::Stone,
+                                               material::Obsidian,
+                                               material::Pearl };
+
+        if (WILL_INCLUDE_NOTHING)
+        {
+            materials.push_back(material::Nothing);
+        }
+
+        return materials;
     }
 
 
@@ -2453,7 +2474,7 @@ namespace item
     }
 
 
-    const std::vector<material::Enum> material::CoreSecondary()
+    const std::vector<material::Enum> material::CoreSecondary(const bool WILL_INCLUDE_NOTHING)
     {
         auto const CORE_JEWEL_VEC{ CoreJewel() };
 
@@ -2467,7 +2488,11 @@ namespace item
         v.push_back(material::Silver);
         v.push_back(material::Gold);
         v.push_back(material::Platinum);
-        v.push_back(material::Nothing);
+
+        if (WILL_INCLUDE_NOTHING)
+        {
+            v.push_back(material::Nothing);
+        }
 
         return v;
     }

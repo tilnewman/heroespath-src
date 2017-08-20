@@ -44,6 +44,11 @@ namespace item
 {
 
     //A collection of details about an item that uniquely idenify an item.
+    //A "Thin" Profile is an incomplete profile used as a placeholder for a
+    //"Fat" Profile.  A "Fat" Profile is a complete profile that is used as
+    //a placeholder for an actual Item.  See ItemProfileWarehouse.  That is
+    //the only place where thin profiles are used, and where the complete vec
+    //of Fat Profiles are permanently stored as placeholders for actual items.
     class ItemProfile
     {
     public:

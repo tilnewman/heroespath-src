@@ -44,7 +44,7 @@ namespace item
     using BaseMaterialVecPairVec_t = std::vector<BaseMaterialVecPair_t>;
 
 
-    //Responsible for storing an ItemProfile for each possible item in the game
+    //Responsible for storing an ItemProfile for each possible item in the game.
     class ItemProfileWarehouse
     {
         //prevent copy construction
@@ -64,8 +64,17 @@ namespace item
         static void Release();
 
         void Setup();
+        
+        void Setup_StandardEquipmen();
+        void Setup_UniqueItems();
+        void Setup_MiscItems();
+        void Setup_NamedEquipment();
+        void Setup_SetEquipment();
+        void Setup_SummoningItems();
+        void Setup_EliminateDuplicates();
+        void Setup_LogStatistics();
 
-        inline const ItemProfileVec_t & Get() const { return vec_; }
+        inline const ItemProfileVec_t & Get() const { return profiles_; }
 
         static int Score(const stats::TraitSet &);
 
@@ -156,11 +165,9 @@ namespace item
         static const item::ItemProfileVec_t ThinProfiles(const item::named_type::Enum);
         static const item::ItemProfileVec_t ThinProfiles(const item::set_type::Enum);
 
-        void LogStatistics();
-
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
-        ItemProfileVec_t vec_;
+        ItemProfileVec_t profiles_;
     };
 
 }
