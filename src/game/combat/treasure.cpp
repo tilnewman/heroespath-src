@@ -41,6 +41,8 @@
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
+#include <algorithm>
+
 
 namespace game
 {

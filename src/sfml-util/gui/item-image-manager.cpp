@@ -895,8 +895,8 @@ namespace gui
 
     const std::vector<std::string> ItemImageManager::GetImageFilenames(
         const game::item::misc_type::Enum ITEM_ENUM,
-        const bool                        IS_BONE,
         const bool                        IS_JEWELED,
+        const bool                        IS_BONE,
         const game::creature::race::Enum  RACE_ENUM,
         const game::creature::role::Enum  ROLE_ENUM) const
     {

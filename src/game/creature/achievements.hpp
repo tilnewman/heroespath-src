@@ -58,8 +58,9 @@ namespace creature
     class Achievements
     {
     public:
-        Achievements(const std::string &          OWNING_CREATURE_NAME = "",
-                     const creature::role::Enum & OWNING_CREATURE_ROLE = creature::role::Count);
+        explicit Achievements(
+            const std::string &          OWNING_CREATURE_NAME = "",
+            const creature::role::Enum & OWNING_CREATURE_ROLE = creature::role::Count);
 
         //these functions will throw on invalid enum or if a valid enum was not found in the map
         const Achievement & Get(const AchievementType::Enum E) const;

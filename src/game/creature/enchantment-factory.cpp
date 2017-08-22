@@ -1600,7 +1600,7 @@ namespace creature
         if (E == item::misc_type::Spider_Eggs)
         {
             return new Enchantment(EnchantmentType::WhenUsed,
-                                   {},
+                                   stats::TraitSet(),
                                    UseInfo(10, Phase::Combat));
         }
         else if ((E == item::misc_type::LockPicks) &&
@@ -1695,7 +1695,7 @@ namespace creature
                                        std::make_pair(stats::Traits::MagicResist, 16),
                                        std::make_pair(stats::Traits::PoisonOnAll, 33) }) );
         }
-        else if (E == item::misc_type::Petrified_Snake)
+        else if (E == item::misc_type::Mummy_Hand)
         {
             return new Enchantment(static_cast<EnchantmentType::Enum>(
                                                EnchantmentType::WhenEquipped |

@@ -1739,7 +1739,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     "Already viewing spells.");
             }
         }
-        else if (ViewType::Spells != view_)
+        else
         {
             auto const ROLE_ENUM{ creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)

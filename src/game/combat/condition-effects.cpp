@@ -32,6 +32,8 @@
 #include "game/creature/creature.hpp"
 #include "game/creature/condition.hpp"
 
+#include <algorithm>
+
 
 namespace game
 {

@@ -33,6 +33,7 @@
 
 #include <sstream>
 #include <exception>
+#include <algorithm>
 
 
 namespace game

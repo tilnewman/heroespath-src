@@ -37,6 +37,18 @@ namespace game
 namespace item
 {
 
+    TreasureInfo::TreasureInfo(const stats::Trait_t COIN,
+                               const stats::Trait_t GEM,
+                               const stats::Trait_t MAGIC,
+                               const stats::Trait_t RELIGIOUS)
+    :
+        coin_     (COIN),
+        gem_      (GEM),
+        magic_    (MAGIC),
+        religious_(RELIGIOUS)
+    {}
+
+
     const std::string TreasureInfo::ToString(const bool WILL_WRAP) const
     {
         std::ostringstream ss;

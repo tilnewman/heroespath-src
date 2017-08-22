@@ -43,6 +43,7 @@
 #include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
+#include <algorithm>
 #include <exception>
 
 
@@ -110,8 +111,8 @@ namespace item
         static auto hasTestedMakingItems_NamedEquipment{ false };
         if (false == hasTestedMakingItems_NamedEquipment)
         {
-            auto NAMED_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                                 allItemProfilesVec.end(),
+            auto NAMED_TYPE_END_ITER{ std::partition(allItemProfilesVec.begin(),
+                                                     allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
@@ -119,10 +120,10 @@ namespace item
                             (P.NamedType() != item::named_type::NotNamed));
                 }) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((NAMED_TYPE_ITER != allItemProfilesVec.end()),
+            M_ASSERT_OR_LOGANDTHROW_SS((NAMED_TYPE_END_ITER != allItemProfilesVec.begin()),
                 "game::item::ItemFactory::Test() found no named_type ItemProfiles.");
 
-            for (auto iter{ NAMED_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
+            for (auto iter{ allItemProfilesVec.begin() }; iter != NAMED_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make(*iter) };
                 TestItem("named_type", itemPtr, *iter);
@@ -132,7 +133,7 @@ namespace item
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() All named_type items passed testing.");
 
-            allItemProfilesVec.erase(NAMED_TYPE_ITER, allItemProfilesVec.end());
+            allItemProfilesVec.erase(allItemProfilesVec.begin(), NAMED_TYPE_END_ITER);
             hasTestedMakingItems_NamedEquipment = true;
             return false;
         }
@@ -140,8 +141,8 @@ namespace item
         static auto hasTestedMakingItems_Unique{ false };
         if (false == hasTestedMakingItems_Unique)
         {
-            auto UNIQUE_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                                  allItemProfilesVec.end(),
+            auto UNIQUE_TYPE_END_ITER{ std::partition(allItemProfilesVec.begin(),
+                                                      allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
@@ -149,10 +150,10 @@ namespace item
                             (P.UniqueType() != item::unique_type::NotUnique));
                 }) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((UNIQUE_TYPE_ITER != allItemProfilesVec.end()),
+            M_ASSERT_OR_LOGANDTHROW_SS((UNIQUE_TYPE_END_ITER != allItemProfilesVec.begin()),
                 "game::item::ItemFactory::Test() found no unique_type ItemProfiles.");
 
-            for (auto iter{ UNIQUE_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
+            for (auto iter{ allItemProfilesVec.end() }; iter != UNIQUE_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make(*iter) };
                 TestItem("unique_type", itemPtr, * iter);
@@ -162,7 +163,7 @@ namespace item
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() All unique_type items passed testing.");
 
-            allItemProfilesVec.erase(UNIQUE_TYPE_ITER, allItemProfilesVec.end());
+            allItemProfilesVec.erase(allItemProfilesVec.begin(), UNIQUE_TYPE_END_ITER);
             hasTestedMakingItems_Unique = true;
             return false;
         }
@@ -170,8 +171,8 @@ namespace item
         static auto hasTestedMakingItems_Set{ false };
         if (false == hasTestedMakingItems_Set)
         {
-            auto SET_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                               allItemProfilesVec.end(),
+            auto SET_TYPE_END_ITER{ std::partition(allItemProfilesVec.begin(),
+                                                   allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
@@ -179,10 +180,10 @@ namespace item
                             (P.SetType() != item::set_type::NotASet));
                 }) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((SET_TYPE_ITER != allItemProfilesVec.end()),
+            M_ASSERT_OR_LOGANDTHROW_SS((SET_TYPE_END_ITER != allItemProfilesVec.begin()),
                 "game::item::ItemFactory::Test() found no unique_type ItemProfiles.");
 
-            for (auto iter{ SET_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
+            for (auto iter{ allItemProfilesVec.begin() }; iter != SET_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make(*iter) };
                 TestItem("set_type", itemPtr, * iter);
@@ -192,7 +193,7 @@ namespace item
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() All set_type items passed testing.");
 
-            allItemProfilesVec.erase(SET_TYPE_ITER, allItemProfilesVec.end());
+            allItemProfilesVec.erase(allItemProfilesVec.begin(), SET_TYPE_END_ITER);
             hasTestedMakingItems_Set = true;
             return false;
         }
@@ -200,8 +201,8 @@ namespace item
         static auto hasTestedMakingItems_Misc{ false };
         if (false == hasTestedMakingItems_Misc)
         {
-            auto MISC_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                                allItemProfilesVec.end(),
+            auto MISC_TYPE_END_ITER{ std::partition(allItemProfilesVec.begin(),
+                                                    allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
@@ -209,10 +210,10 @@ namespace item
                             (P.MiscType() != item::misc_type::NotMisc));
                 }) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((MISC_TYPE_ITER != allItemProfilesVec.end()),
+            M_ASSERT_OR_LOGANDTHROW_SS((MISC_TYPE_END_ITER != allItemProfilesVec.begin()),
                 "game::item::ItemFactory::Test() found no misc_type ItemProfiles.");
 
-            for (auto iter{ MISC_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
+            for (auto iter{ allItemProfilesVec.begin() }; iter != MISC_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make( * iter) };
                 TestItem("misc_type", itemPtr, * iter);
@@ -222,7 +223,7 @@ namespace item
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() All standalone misc_type items passed testing.");
 
-            allItemProfilesVec.erase(MISC_TYPE_ITER, allItemProfilesVec.end());
+            allItemProfilesVec.erase(allItemProfilesVec.begin(), MISC_TYPE_END_ITER);
             hasTestedMakingItems_Misc = true;
             return false;
         }
@@ -230,18 +231,18 @@ namespace item
         static auto hasTestedMakingItems_ElementEquipment{ false };
         if (false == hasTestedMakingItems_ElementEquipment)
         {
-            auto ELEMENT_TYPE_ITER{ std::remove_if(allItemProfilesVec.begin(),
-                                                   allItemProfilesVec.end(),
+            auto ELEMENT_TYPE_END_ITER{ std::partition(allItemProfilesVec.begin(),
+                                                       allItemProfilesVec.end(),
                 []
                 (const ItemProfile & P)
                 {
                     return (P.ElementType() != item::element_type::None);
                 }) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((ELEMENT_TYPE_ITER != allItemProfilesVec.end()),
+            M_ASSERT_OR_LOGANDTHROW_SS((allItemProfilesVec.begin() != ELEMENT_TYPE_END_ITER),
                 "game::item::ItemFactory::Test() found no element_type ItemProfiles.");
 
-            for (auto iter{ ELEMENT_TYPE_ITER }; iter != allItemProfilesVec.end(); ++iter)
+            for (auto iter{ allItemProfilesVec.begin() }; iter != ELEMENT_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make( * iter) };
 
@@ -259,7 +260,7 @@ namespace item
                 std::string("game::item::ItemFactory::Test() All remaining element_type ")
                 + "equipment items passed testing.");
 
-            allItemProfilesVec.erase(ELEMENT_TYPE_ITER, allItemProfilesVec.end());
+            allItemProfilesVec.erase(allItemProfilesVec.begin(), ELEMENT_TYPE_END_ITER);
             hasTestedMakingItems_ElementEquipment = true;
             return false;
         }

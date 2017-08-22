@@ -31,6 +31,7 @@
 #include "trait.hpp"
 #include "misc/boost-serialize-includes.hpp"
 
+#include <string>
 #include <vector>
 
 
@@ -42,7 +43,7 @@ namespace stats
     class TraitSet
     {
     public:
-        TraitSet(const TraitValueVec_t & TRAITS_VEC = {});
+        explicit TraitSet(const TraitValueVec_t & TRAITS_VEC = TraitValueVec_t());
 
         Trait & Get(const Traits::Enum E);
         const Trait & GetCopy(const Traits::Enum E) const;

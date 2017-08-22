@@ -53,8 +53,10 @@
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
 
-#include <exception>
+#include <string>
 #include <sstream>
+#include <exception>
+#include <algorithm>
 
 
 namespace game

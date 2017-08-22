@@ -133,9 +133,9 @@ namespace creature
     class SummonInfo
     {
     public:
-        SummonInfo(const origin_type::Enum ORIGIN    = origin_type::Count,
-                   const race::Enum        RACE      = creature::race::Count,
-                   const role::Enum        ROLE      = creature::role::Count)
+        explicit SummonInfo(const origin_type::Enum ORIGIN    = origin_type::Count,
+                            const race::Enum        RACE      = creature::race::Count,
+                            const role::Enum        ROLE      = creature::role::Count)
         :
             origin_ (ORIGIN),
             race_   (RACE),

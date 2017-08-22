@@ -45,6 +45,8 @@
 
 #include <boost/algorithm/algorithm.hpp>
 
+#include <algorithm>
+
 
 namespace game
 {

@@ -225,8 +225,8 @@ namespace stage
             {
                 auto const SPEED1{ 0 };
                 auto const SPEED2{ 500 };
-                auto const SPEED3{ 1'000 };
-                auto const SPEED4{ 3'000 };
+                auto const SPEED3{ 1000 };
+                auto const SPEED4{ 3000 };
                 if (sleepMilliseconds_ == SPEED1)
                 {
                     sleepMilliseconds_ = SPEED2;
@@ -990,17 +990,18 @@ namespace stage
                         STATS,
                         10,
                         rankIndex,
-                        static_cast<stats::Trait_t>(rankIndex * 10'000) );
+                        static_cast<stats::Trait_t>(rankIndex * 10000) );
 
-                    non_player::ownership::InventoryFactory::Instance()->
-                        PopulateCreatureInventory(characterUPtr.get());
+                    non_player::ownership::InventoryFactory::Instance()->PopulateCreatureInventory(
+                        characterUPtr.get());
 
                     characterUPtr->SetCurrentWeaponsToBest();
                 }
 
                 std::ostringstream ss;
-                ss << " InventoryFactory Tested " << RANK_MAX << " ranks with race="
-                    << RACE_STR << " role=" << ROLE_STR;
+                ss << "InventoryFactory Tested " << RANK_MAX
+                    << " ranks with race=" << RACE_STR
+                    << " role=" << ROLE_STR;
 
                 LoopManager::Instance()->TestingStrAppend(ss.str());
 

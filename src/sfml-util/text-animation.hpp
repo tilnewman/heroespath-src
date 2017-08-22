@@ -30,6 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
 
+#include <string>
 #include <vector>
 #include <memory>
 

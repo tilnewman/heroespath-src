@@ -32,6 +32,7 @@
 
 #include "misc/assertlogandthrow.hpp"
 
+#include <string>
 #include <memory>
 #include <vector>
 #include <sstream>

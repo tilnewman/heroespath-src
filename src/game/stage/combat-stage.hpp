@@ -50,10 +50,11 @@
 
 #include "misc/handy-types.hpp"
 
+#include <set>
 #include <memory>
 #include <vector>
 #include <string>
-#include <set>
+#include <utility>
 
 
 //forward declarations
@@ -217,7 +218,7 @@ namespace stage
         };
 
     public:
-        CombatStage(const bool WILL_ADVANCE_TURN);
+        explicit CombatStage(const bool WILL_ADVANCE_TURN);
         virtual ~CombatStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }

@@ -38,6 +38,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include <vector>
+
 
 namespace sfml_util
 {

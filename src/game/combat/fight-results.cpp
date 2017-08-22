@@ -38,6 +38,7 @@
 
 #include "misc/vectors.hpp"
 
+#include <string>
 #include <sstream>
 #include <exception>
 #include <algorithm>

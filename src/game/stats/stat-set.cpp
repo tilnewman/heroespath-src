@@ -29,6 +29,7 @@
 //
 #include "stat-set.hpp"
 
+#include <string>
 #include <sstream>
 #include <exception>
 

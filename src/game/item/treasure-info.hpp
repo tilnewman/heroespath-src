@@ -42,31 +42,25 @@ namespace item
     class TreasureInfo
     {
     public:
-        constexpr TreasureInfo(const stats::Trait_t COIN      = 0,
-                               const stats::Trait_t GEM       = 0,
-                               const stats::Trait_t MAGIC     = 0,
-                               const stats::Trait_t RELIGIOUS = 0)
-        :
-            coin_     (COIN),
-            gem_      (GEM),
-            magic_    (MAGIC),
-            religious_(RELIGIOUS)
-        {}
+        explicit TreasureInfo(const stats::Trait_t COIN      = 0,
+                              const stats::Trait_t GEM       = 0,
+                              const stats::Trait_t MAGIC     = 0,
+                              const stats::Trait_t RELIGIOUS = 0);
 
-        inline constexpr stats::Trait_t Coin() const        { return coin_; }
-        inline constexpr stats::Trait_t Gem() const         { return gem_; }
-        inline constexpr stats::Trait_t Magic() const       { return magic_; }
-        inline constexpr stats::Trait_t Religious() const   { return religious_; }
+        inline stats::Trait_t Coin() const              { return coin_; }
+        inline stats::Trait_t Gem() const               { return gem_; }
+        inline stats::Trait_t Magic() const             { return magic_; }
+        inline stats::Trait_t Religious() const         { return religious_; }
 
-        inline void Coin(const stats::Trait_t X)            { coin_ = X; }
-        inline void Gem(const stats::Trait_t X)             { gem_ = X; }
-        inline void Magic(const stats::Trait_t X)           { magic_ = X; }
-        inline void Religious(const stats::Trait_t X)       { religious_ = X; }
+        inline void Coin(const stats::Trait_t X)        { coin_ = X; }
+        inline void Gem(const stats::Trait_t X)         { gem_ = X; }
+        inline void Magic(const stats::Trait_t X)       { magic_ = X; }
+        inline void Religious(const stats::Trait_t X)   { religious_ = X; }
 
-        inline stats::Trait_t AdjustCoin(const stats::Trait_t X)      { return coin_ += X; }
-        inline stats::Trait_t AdjustGem(const stats::Trait_t X)       { return gem_ += X; }
-        inline stats::Trait_t AdjustMagic(const stats::Trait_t X)     { return magic_ += X; }
-        inline stats::Trait_t AdjustReligious(const stats::Trait_t X) { return religious_ += X; }
+        inline stats::Trait_t AdjustCoin(const stats::Trait_t X)        { return coin_ += X; }
+        inline stats::Trait_t AdjustGem(const stats::Trait_t X)         { return gem_ += X; }
+        inline stats::Trait_t AdjustMagic(const stats::Trait_t X)       { return magic_ += X; }
+        inline stats::Trait_t AdjustReligious(const stats::Trait_t X)   { return religious_ += X; }
         
         TreasureInfo & operator=(const TreasureInfo &);
         TreasureInfo & operator+=(const TreasureInfo &);

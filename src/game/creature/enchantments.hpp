@@ -32,6 +32,8 @@
 
 #include "misc/boost-serialize-includes.hpp"
 
+#include <string>
+
 
 namespace game
 {

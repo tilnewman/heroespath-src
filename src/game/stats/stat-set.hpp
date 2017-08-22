@@ -31,6 +31,7 @@
 #include "game/stats/trait-enum.hpp"
 
 #include <tuple>
+#include <string>
 
 
 namespace game

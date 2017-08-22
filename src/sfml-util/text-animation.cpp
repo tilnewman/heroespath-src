@@ -35,6 +35,7 @@
 
 #include "misc/random.hpp"
 
+#include <string>
 #include <algorithm>
 
 

@@ -22,6 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_ITEM_ITEMFACTORY_HPP_INCLUDED
+#define GAME_ITEM_ITEMFACTORY_HPP_INCLUDED
 //
 // item-factory.hpp
 //
@@ -75,3 +77,5 @@ namespace item
 
 }
 }
+
+#endif //GAME_ITEM_ITEMFACTORY_HPP_INCLUDED

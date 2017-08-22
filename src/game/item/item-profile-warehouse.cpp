@@ -39,7 +39,9 @@
 #include "misc/vectors.hpp"
 #include "misc/assertlogandthrow.hpp"
 
+#include <string>
 #include <sstream>
+#include <algorithm>
 #include <exception>
 
 
@@ -104,7 +106,7 @@ namespace item
         profiles_.clear();
 
         //As of 2017-8-17 there were 849299 raw item profiles created before reductions.
-        profiles_.reserve(1'000'000);
+        profiles_.reserve(1000000);
 
         Setup_StandardEquipmen();
         Setup_UniqueItems();
@@ -124,7 +126,7 @@ namespace item
                         return A.TreasureScore() < B.TreasureScore();
                     });
 
-        //Setup_LogStatistics();
+        Setup_LogStatistics();
     }
 
 
@@ -387,9 +389,9 @@ namespace item
     {
         struct ItemSet
         {
-            ItemSet(std::string NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
+            ItemSet(const std::string & NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
                 :
-                name(std::move(NAME)),
+                name(NAME),
                 division(DIVISION_SIZE),
                 profiles(),
                 scores(),

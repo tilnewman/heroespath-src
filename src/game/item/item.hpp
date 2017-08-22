@@ -31,7 +31,6 @@
 #include "misc/boost-serialize-includes.hpp"
 
 #include "game/stats/types.hpp"
-#include "game/stats/types.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
 #include "game/item/armor-info.hpp"

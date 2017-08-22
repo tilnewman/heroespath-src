@@ -30,6 +30,7 @@
 #include "hit-info.hpp"
 #include "creature-effect.hpp"
 
+#include <string>
 #include <vector>
 #include <utility>
 

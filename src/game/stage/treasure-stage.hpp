@@ -38,6 +38,7 @@
 #include "misc/handy-types.hpp"
 
 #include <memory>
+#include <string>
 
 
 namespace sfml_util

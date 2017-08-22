@@ -35,7 +35,6 @@
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/traits-set.hpp"
 #include "game/stats/types.hpp"
-#include "game/stats/types.hpp"
 #include "game/spell/spell-enum.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
@@ -58,10 +57,11 @@ namespace creature
     class UseInfo
     {
     public:
-        UseInfo(const int                   COUNT               = 0,//negative means infinite
-                const Phase::Enum           PHASE_RESTRICT      = Phase::NotAPhase,
-                const spell::Spells::Enum   SPELL               = spell::Spells::Count,
-                const CondEnumVec_t &       CONDS_REMOVED_VEC   = {})
+        explicit UseInfo(
+            const int                   COUNT               = 0,//negative means infinite
+            const Phase::Enum           PHASE_RESTRICT      = Phase::NotAPhase,
+            const spell::Spells::Enum   SPELL               = spell::Spells::Count,
+            const CondEnumVec_t &       CONDS_REMOVED_VEC   = CondEnumVec_t())
         :
             countOrig_      (COUNT),
             countRemain_    (COUNT),
@@ -106,7 +106,7 @@ namespace creature
     {
     public:
         Enchantment(const EnchantmentType::Enum TYPE      = EnchantmentType::None,
-                    const stats::TraitSet &     TRAIT_SET = {},
+                    const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
                     const UseInfo &             USE_INFO  = UseInfo());
 
         virtual ~Enchantment();

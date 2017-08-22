@@ -29,7 +29,6 @@
 //  Code that loads detailed armor data from the GameDataFile.
 //
 #include "game/stats/types.hpp"
-#include "game/stats/types.hpp"
 #include "game/non-player/ownership-profile.hpp"
 
 #include <memory>
