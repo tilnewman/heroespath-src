@@ -151,7 +151,8 @@ namespace creature
         if (itemPtr->MiscType() != item::misc_type::NotMisc)
         {
             auto const MADE_ECHANTMENT_PTR{ MakeFromMiscType(itemPtr->MiscType(),
-                                                             itemPtr->MaterialPrimary()) };
+                                                             itemPtr->MaterialPrimary(),
+                                                             itemPtr->MaterialSecondary()) };
 
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
@@ -202,7 +203,8 @@ namespace creature
 
 
     int EnchantmentFactory::TreasureScore(const item::misc_type::Enum E,
-                                          const item::material::Enum  MATERIAL_PRIMARY) const
+                                          const item::material::Enum  MATERIAL_PRIMARY,
+                                          const item::material::Enum  MATERIAL_SECONDARY) const
     {
         if ((E == item::misc_type::NotMisc) ||
             (E == item::misc_type::Count))
@@ -210,7 +212,7 @@ namespace creature
             return 0;
         }
 
-        auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY) };
+        auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
         return SCORE;
@@ -1595,13 +1597,28 @@ namespace creature
 
     Enchantment * EnchantmentFactory::MakeFromMiscType(
         const item::misc_type::Enum E,
-        const item::material::Enum  MATERIAL_PRIMARY) const
+        const item::material::Enum  MATERIAL_PRIMARY,
+        const item::material::Enum  MATERIAL_SECONDARY) const
     {
         if (E == item::misc_type::Spider_Eggs)
         {
             return new Enchantment(EnchantmentType::WhenUsed,
                                    stats::TraitSet(),
                                    UseInfo(10, Phase::Combat));
+        }
+        else if ((item::misc_type::IsBlessed(E)) &&
+                 (MATERIAL_SECONDARY != item::material::Count) &&
+                 (MATERIAL_SECONDARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_SECONDARY) };
+            return new Enchantment_MiscBlessed(MAT_BONUS);
+        }
+        else if ((item::misc_type::IsCursed(E)) &&
+                 (MATERIAL_SECONDARY != item::material::Count) &&
+                 (MATERIAL_SECONDARY != item::material::Nothing))
+        {
+            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_SECONDARY) };
+            return new Enchantment_MiscCursed(MAT_BONUS);
         }
         else if ((E == item::misc_type::LockPicks) &&
                  (MATERIAL_PRIMARY != item::material::Count) &&

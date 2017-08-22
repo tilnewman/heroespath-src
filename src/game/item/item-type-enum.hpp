@@ -349,7 +349,8 @@ namespace item
             Pin_Mask,
             Pipe_And_Tabor,
             Potion,
-            Puppet,
+            Puppet_Blessed,
+            Puppet_Cursed,
             Rabbit_Foot,
             Rainmaker,
             Rat_Juju,
@@ -407,6 +408,8 @@ namespace item
         static bool IsStandaloneItem(const Enum);
         static bool HasPixieVersion(const Enum);
         static float ReligiousRatio(const Enum);
+        static bool IsBlessed(const Enum);
+        static bool IsCursed(const Enum);
     };
 
 

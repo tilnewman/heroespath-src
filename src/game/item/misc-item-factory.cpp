@@ -40,8 +40,9 @@
 #include "game/item/armor-details.hpp"
 #include "game/creature/enchantment-factory.hpp"
 
-#include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <sstream>
 #include <exception>
@@ -105,46 +106,47 @@ namespace misc
 
     ItemPtr_t MiscItemFactory::Make(const ItemProfile & PROFILE)
     {
-        if (PROFILE.MiscType() == misc_type::Amulet)            { return Make_Amulet(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Armband)           { return Make_Armband(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Veil)              { return Make_Veil(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Balm_Pot)          { return Make_BalmPot(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Braid)             { return Make_Braid(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Bust)              { return Make_Bust(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Cape)              { return Make_Cape(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Devil_Horn)        { return Make_DevilHorn(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Doll_Blessed)      { return Make_DollBlessed(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Doll_Cursed)       { return Make_DollCursed(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Dried_Head)        { return Make_DriedHead(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::DrumLute)          { return Make_DrumLute(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Egg)               { return Make_Egg(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Embryo)            { return Make_Embryo(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Figurine_Blessed)  { return Make_FigurineBlessed(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Figurine_Cursed)   { return Make_FigurineCursed(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Finger)            { return Make_Finger(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Fingerclaw)        { return Make_Fingerclaw(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Goblet)            { return Make_Goblet(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Hurdy_Gurdy)       { return Make_HurdyGurdy(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Icicle)            { return Make_Icicle(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Litch_Hand)        { return Make_Litchhand(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::LockPicks)         { return Make_LockPicks(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Lyre)              { return Make_Lyre(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Mummy_Hand)        { return Make_MummyHand(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Orb)               { return Make_Orb(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Petrified_Snake)   { return Make_PetrifiedSnake(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Pipe_And_Tabor)    { return Make_PipeAndTabor(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Puppet)            { return Make_Puppet(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Recorder)          { return Make_Recorder(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Ring)              { return Make_Ring(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Scepter)           { return Make_Scepter(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Seeds)             { return Make_Seeds(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Shard)             { return Make_Shard(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Spider_Eggs)       { return Make_SpiderEggs(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Staff)             { return Make_Staff(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Summoning_Statue)  { return Make_SummoningStatue(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Unicorn_Horn)      { return Make_UnicornHorn(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Viol)              { return Make_Viol(PROFILE); }
-        if (PROFILE.MiscType() == misc_type::Wand)              { return Make_Wand(PROFILE); }
+        auto const MISC_ENUM{ PROFILE.MiscType() };
+
+        if (MISC_ENUM == misc_type::Amulet)            { return Make_Amulet(PROFILE); }
+        if (MISC_ENUM == misc_type::Armband)           { return Make_Armband(PROFILE); }
+        if (MISC_ENUM == misc_type::Veil)              { return Make_Veil(PROFILE); }
+        if (MISC_ENUM == misc_type::Balm_Pot)          { return Make_BalmPot(PROFILE); }
+        if (MISC_ENUM == misc_type::Braid)             { return Make_Braid(PROFILE); }
+        if (MISC_ENUM == misc_type::Cape)              { return Make_Cape(PROFILE); }
+        if (MISC_ENUM == misc_type::Devil_Horn)        { return Make_DevilHorn(PROFILE); }
+        if (MISC_ENUM == misc_type::Doll)              { return Make_Doll(PROFILE); }
+        if (MISC_ENUM == misc_type::DrumLute)          { return Make_DrumLute(PROFILE); }
+        if (MISC_ENUM == misc_type::Egg)               { return Make_Egg(PROFILE); }
+        if (MISC_ENUM == misc_type::Embryo)            { return Make_Embryo(PROFILE); }
+        if (MISC_ENUM == misc_type::Finger)            { return Make_Finger(PROFILE); }
+        if (MISC_ENUM == misc_type::Fingerclaw)        { return Make_Fingerclaw(PROFILE); }
+        if (MISC_ENUM == misc_type::Goblet)            { return Make_Goblet(PROFILE); }
+        if (MISC_ENUM == misc_type::Hurdy_Gurdy)       { return Make_HurdyGurdy(PROFILE); }
+        if (MISC_ENUM == misc_type::Icicle)            { return Make_Icicle(PROFILE); }
+        if (MISC_ENUM == misc_type::Litch_Hand)        { return Make_Litchhand(PROFILE); }
+        if (MISC_ENUM == misc_type::LockPicks)         { return Make_LockPicks(PROFILE); }
+        if (MISC_ENUM == misc_type::Lyre)              { return Make_Lyre(PROFILE); }
+        if (MISC_ENUM == misc_type::Mummy_Hand)        { return Make_MummyHand(PROFILE); }
+        if (MISC_ENUM == misc_type::Orb)               { return Make_Orb(PROFILE); }
+        if (MISC_ENUM == misc_type::Petrified_Snake)   { return Make_PetrifiedSnake(PROFILE); }
+        if (MISC_ENUM == misc_type::Pipe_And_Tabor)    { return Make_PipeAndTabor(PROFILE); }
+        if (MISC_ENUM == misc_type::Recorder)          { return Make_Recorder(PROFILE); }
+        if (MISC_ENUM == misc_type::Ring)              { return Make_Ring(PROFILE); }
+        if (MISC_ENUM == misc_type::Scepter)           { return Make_Scepter(PROFILE); }
+        if (MISC_ENUM == misc_type::Seeds)             { return Make_Seeds(PROFILE); }
+        if (MISC_ENUM == misc_type::Shard)             { return Make_Shard(PROFILE); }
+        if (MISC_ENUM == misc_type::Spider_Eggs)       { return Make_SpiderEggs(PROFILE); }
+        if (MISC_ENUM == misc_type::Staff)             { return Make_Staff(PROFILE); }
+        if (MISC_ENUM == misc_type::Summoning_Statue)  { return Make_SummoningStatue(PROFILE); }
+        if (MISC_ENUM == misc_type::Unicorn_Horn)      { return Make_UnicornHorn(PROFILE); }
+        if (MISC_ENUM == misc_type::Viol)              { return Make_Viol(PROFILE); }
+        if (MISC_ENUM == misc_type::Wand)              { return Make_Wand(PROFILE); }
+
+        if (misc_type::IsBlessed(MISC_ENUM) || misc_type::IsCursed(MISC_ENUM))
+        {
+            return Make_MiscBlessedOrCursed(PROFILE);
+        }
 
         M_HP_LOG_ERR("game::item::misc::MiscItemFactory::Make(profile=[" << PROFILE.ToString()
             << "]) was unable to make an item with that profile.");
@@ -174,12 +176,6 @@ namespace misc
     ItemPtr_t MiscItemFactory::Make_Braid(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 16);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_Bust(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, 231, 188);
     }
 
 
@@ -263,19 +259,7 @@ namespace misc
     }
 
 
-    ItemPtr_t MiscItemFactory::Make_DollBlessed(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_DollCursed(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_DriedHead(const ItemProfile & PROFILE)
+    ItemPtr_t MiscItemFactory::Make_Doll(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
     }
@@ -299,18 +283,6 @@ namespace misc
     ItemPtr_t MiscItemFactory::Make_Embryo(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 41);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_FigurineBlessed(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_FigurineCursed(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
     }
 
 
@@ -383,12 +355,6 @@ namespace misc
     ItemPtr_t MiscItemFactory::Make_PipeAndTabor(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 127);
-    }
-
-
-    ItemPtr_t MiscItemFactory::Make_Puppet(const ItemProfile & PROFILE)
-    {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 38);
     }
 
 
@@ -517,6 +483,96 @@ namespace misc
     ItemPtr_t MiscItemFactory::Make_Wand(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, PROFILE.TreasureScore(), 30);
+    }
+
+
+    ItemPtr_t MiscItemFactory::Make_MiscBlessedOrCursed(const ItemProfile & PROFILE)
+    {
+        auto const MISC_ENUM{ PROFILE.MiscType() };
+        auto const IS_BLESSED{ misc_type::IsBlessed(MISC_ENUM) };
+
+        auto const MATERIAL_PRI{ PROFILE.MaterialPrimary() };
+        auto const MATERIAL_SEC{ PROFILE.MaterialSecondary() };
+
+        stats::Trait_t price(PROFILE.TreasureScore());
+        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
+
+        stats::Trait_t weight{ [MISC_ENUM]()
+            {
+                if (MISC_ENUM == misc_type::Bust)
+                {
+                    return 200;
+                }
+                else if (MISC_ENUM == misc_type::Dried_Head)
+                {
+                    return 65;
+                }
+                else
+                {
+                    return 38;
+                }
+            }() };
+
+        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
+        
+        std::ostringstream ssName;
+        ssName << ((IS_BLESSED) ? "Blessed" : "Cursed")
+            << " "
+            << [MISC_ENUM]()
+                {
+                    if ((MISC_ENUM == misc_type::Doll_Blessed) ||
+                        (MISC_ENUM == misc_type::Doll_Cursed))
+                    {
+                        return ((::misc::random::Bool()) ? "Doll" : "Effigy");
+                    }
+                    else if ((MISC_ENUM == misc_type::Figurine_Blessed) ||
+                             (MISC_ENUM == misc_type::Figurine_Cursed))
+                    {
+                        return ((::misc::random::Bool()) ? "Figurine": "Statuette");
+                    }
+                    else if ((MISC_ENUM == misc_type::Puppet_Blessed) ||
+                             (MISC_ENUM == misc_type::Puppet_Cursed))
+                    {
+                        return ((::misc::random::Bool()) ? "Puppet" : "Marionette");
+                    }
+                    else if (MISC_ENUM == misc_type::Bust)
+                    {
+                        return "Bust";
+                    }
+                    else
+                    {
+                        return "Dried Head";
+                    }
+                }();
+
+        std::ostringstream ssDesc;
+        ssDesc << "A " << boost::algorithm::to_lower_copy(ssName.str())
+            << " made of " << material::ToString(MATERIAL_PRI);
+
+        if ((MATERIAL_PRI != MATERIAL_SEC) && (MATERIAL_SEC != material::Nothing))
+        {
+            ssDesc << " with " << material::ToString(MATERIAL_SEC) << " eyes";
+        }
+
+        ssDesc << ".";
+
+        auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
+            ssName.str(),
+            ssDesc.str(),
+            static_cast<category::Enum>(category::Equippable | category::Wearable),
+            misc_type::Ring,
+            weapon_type::NotAWeapon,
+            armor_type::NotArmor,
+            MATERIAL_PRI,
+            MATERIAL_SEC,
+            "",
+            price,
+            weight) ) };
+
+        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
+             GetImageFilename(itemPtr));
+
+        return itemPtr;
     }
 
 

@@ -366,6 +366,74 @@ namespace creature
         }
     };
 
+
+    class Enchantment_MiscBlessed : public Enchantment
+    {
+    public:
+        explicit Enchantment_MiscBlessed(const int USE_COUNT)
+        :
+            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
+                                                           EnchantmentType::WhenHeld),
+                        stats::TraitSet( { std::make_pair(stats::Traits::Encounter, 3),
+                                           std::make_pair(stats::Traits::BlessEffect, 3) } ),
+                        UseInfo(USE_COUNT,
+                                static_cast<Phase::Enum>(Phase::Combat |
+                                                         Phase::Inventory |
+                                                         Phase::Exploring)))
+        {}
+
+        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        {
+            return "Used when casting or playing a Bless.";
+        }
+
+        virtual void UseEffect(const CreaturePtr_t) {}
+        inline virtual int TreasureScore() const { return 250; }
+        virtual ~Enchantment_MiscBlessed() {}
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & boost::serialization::base_object<Enchantment>(*this);
+        }
+    };
+
+
+    class Enchantment_MiscCursed : public Enchantment
+    {
+    public:
+        explicit Enchantment_MiscCursed(const int USE_COUNT)
+        :
+            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
+                                                           EnchantmentType::WhenHeld),
+                        stats::TraitSet( { std::make_pair(stats::Traits::Luck, -3),
+                                           std::make_pair(stats::Traits::CurseEffect, 3) } ),
+                        UseInfo(USE_COUNT,
+                                static_cast<Phase::Enum>(Phase::Combat |
+                                                         Phase::Inventory |
+                                                         Phase::Exploring)))
+        {}
+
+        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        {
+            return "Used when casting or playing a Curse.";
+        }
+
+        virtual void UseEffect(const CreaturePtr_t) {}
+        inline virtual int TreasureScore() const { return 250; }
+        virtual ~Enchantment_MiscCursed() {}
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & boost::serialization::base_object<Enchantment>(*this);
+        }
+    };
+
 }
 }
 

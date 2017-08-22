@@ -1295,6 +1295,12 @@ namespace gui
                 }
                 return filenames;
             }
+            case misc_type::Puppet_Blessed:
+            case misc_type::Puppet_Cursed:
+            {
+                filenames.push_back("puppet" + FILE_EXT_STR_);
+                return filenames;
+            }
             case misc_type::Ankh_Necklace:
             case misc_type::Armband:
             case misc_type::Beard:
@@ -1371,7 +1377,6 @@ namespace gui
             case misc_type::Pin_Key:
             case misc_type::Pin_Mask:
 	        case misc_type::Pipe_And_Tabor:
-            case misc_type::Puppet:
             case misc_type::Rabbit_Foot:
 	        case misc_type::Rainmaker:
 	        case misc_type::Rat_Juju:

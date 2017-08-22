@@ -208,6 +208,586 @@ namespace item
     }
 
 
+    const std::string misc_type::ToString(const misc_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotMisc:               { return "NotMisc"; }
+            case Amulet:                { return "Amulet"; }
+            case Ankh_Necklace:         { return "Ankh_Necklace"; }
+            case Armband:               { return "Armband"; }
+            case Bag:                   { return "Bag"; }
+            case Balm_Pot:              { return "Balm_Pot"; }
+            case Beard:                 { return "Beard"; }
+            case Bell:                  { return "Bell"; }
+            case Bird_Claw:             { return "Bird_Claw"; }
+            case Bone:                  { return "Bone"; }
+            case Bone_Whistle:          { return "Bone_Whistle"; }
+            case Book:                  { return "Book"; }
+            case Bracelet_Crown:        { return "Bracelet_Crown"; }
+            case Bracelet_Feather:      { return "Bracelet_Feather"; }
+            case Bracelet_Fist:         { return "Bracelet_Fist"; }
+            case Bracelet_Hourglass:    { return "Bracelet_Hourglass"; }
+            case Bracelet_Key:          { return "Bracelet_Key"; }
+            case Bracelet_Mask:         { return "Bracelet_Mask"; }
+            case Braid:                 { return "Braid"; }
+            case Brooch_Crown:          { return "Brooch_Crown"; }
+            case Brooch_Feather:        { return "Brooch_Feather"; }
+            case Brooch_Fist:           { return "Brooch_Fist"; }
+            case Brooch_Hourglass:      { return "Brooch_Hourglass"; }
+            case Brooch_Key:            { return "Brooch_Key"; }
+            case Brooch_Mask:           { return "Brooch_Mask"; }
+            case Bust:                  { return "Bust"; }
+            case Cameo:                 { return "Cameo"; }
+            case Cape:                  { return "Cape"; }
+            case Cat:                   { return "Cat"; }
+            case Chains:                { return "Chains"; }
+            case Charm_Crown:           { return "Charm_Crown"; }
+            case Charm_Feather:         { return "Charm_Feather"; }
+            case Charm_Fist:            { return "Charm_Fist"; }
+            case Charm_Hourglass:       { return "Charm_Hourglass"; }
+            case Charm_Key:             { return "Charm_Key"; }
+            case Charm_Mask:            { return "Charm_Mask"; }
+            case Chest:                 { return "Chest"; }
+            case Chimes:                { return "Chimes"; }
+            case Cloak:                 { return "Cloak"; }
+            case Conch:                 { return "Conch"; }
+            case Crown:                 { return "Crown"; }
+            case Crumhorn:              { return "Crumhorn"; }
+            case Devil_Horn:            { return "Devil_Horn"; }
+            case Doll:                  { return "Doll"; }
+            case Doll_Blessed:          { return "Doll_Blessed"; }
+            case Doll_Cursed:           { return "Doll_Cursed"; }
+            case Dried_Head:            { return "Dried_Head"; }
+            case Drink:                 { return "Drink"; }
+            case DrumLute:              { return "DrumLute"; }
+            case Egg:                   { return "Egg"; }
+            case Embryo:                { return "Embryo"; }
+            case Eye:                   { return "Eye"; }
+            case Feather:               { return "Feather"; }
+            case Figurine_Blessed:      { return "Figurine_Blessed"; }
+            case Figurine_Cursed:       { return "Figurine_Cursed"; }
+            case Finger:                { return "Finger"; }
+            case Fingerclaw:            { return "Fingerclaw"; }
+            case Flag:                  { return "Flag"; }
+            case Frog:                  { return "Frog"; }
+            case Gecko:                 { return "Gecko"; }
+            case Ghost_Sheet:           { return "Ghost_Sheet"; }
+            case Gizzard:               { return "Gizzard"; }
+            case Goblet:                { return "Goblet"; }
+            case Gong:                  { return "Gong"; }
+            case Grave_Ornament:        { return "Grave_Ornament"; }
+            case Handbag:               { return "Handbag"; }
+            case Hanky:                 { return "Hanky"; }
+            case Herbs:                 { return "Herbs"; }
+            case Headdress:             { return "Headdress"; }
+            case Hide:                  { return "Hide"; }
+            case Hourglass:             { return "Hourglass"; }
+            case Horn:                  { return "Horn"; }
+            case Horseshoe:             { return "Horseshoe"; }
+            case Hurdy_Gurdy:           { return "Hurdy_Gurdy"; }
+            case Icicle:                { return "Icicle"; }
+            case Iguana:                { return "Iguana"; }
+            case Imp_Tail:              { return "Imp_Tail"; }
+            case Key:                   { return "Key"; }
+            case Lantern:               { return "Lantern"; }
+            case Leaf:                  { return "Leaf"; }
+            case Legtie:                { return "Legtie"; }
+            case Litch_Hand:            { return "Litch_Hand"; }
+            case Lizard:                { return "Lizard"; }
+            case Lockbox:               { return "Lockbox"; }
+            case LockPicks:             { return "LockPicks"; }
+            case Lyre:                  { return "Lyre"; }
+            case Magnifying_Glass:      { return "Magnifying_Glass"; }
+            case Mask:                  { return "Mask"; }
+            case Medallion:             { return "Medallion"; }
+            case Mirror:                { return "Mirror"; }
+            case Mummy_Hand:            { return "Mummy_Hand"; }
+            case Necklace:              { return "Necklace"; }
+            case Noose:                 { return "Noose"; }
+            case Nose:                  { return "Nose"; }
+            case Orb:                   { return "Orb"; }
+            case Paw:                   { return "Paw"; }
+            case Pendant:               { return "Pendant"; }
+            case Petrified_Snake:       { return "Petrified_Snake"; }
+            case Pin_Crown:             { return "Pin_Crown"; }
+            case Pin_Feather:           { return "Pin_Feather"; }
+            case Pin_Fist:              { return "Pin_Fist"; }
+            case Pin_Hourglass:         { return "Pin_Hourglass"; }
+            case Pin_Key:               { return "Pin_Key"; }
+            case Pin_Mask:              { return "Pin_Mask"; }
+            case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
+            case Potion:                { return "Potion"; }
+            case Puppet_Blessed:        { return "Puppet_Blessed"; }
+            case Puppet_Cursed:         { return "Puppet_Cursed"; }
+            case Rabbit_Foot:           { return "Rabbit_Foot"; }
+            case Rainmaker:             { return "Rainmaker"; }
+            case Rat_Juju:              { return "Rat_Juju"; }
+            case Rattlesnake_Tail:      { return "Rattlesnake_Tail"; }
+            case Recorder:              { return "Recorder"; }
+            case Relic:                 { return "Relic"; }
+            case Ring:                  { return "Ring"; }
+            case Robe:                  { return "Robe"; }
+            case Salamander:            { return "Salamander"; }
+            case Salve:                 { return "Salve"; }
+            case Scale:                 { return "Scale"; }
+            case Scepter:               { return "Scepter"; }
+            case Scroll:                { return "Scroll"; }
+            case Scythe:                { return "Scythe"; }
+            case Seeds:                 { return "Seeds"; }
+            case Shard:                 { return "Shard"; }
+            case Shark_Tooth_Necklace:  { return "Shark_Tooth_Necklace"; }
+            case Shroud:                { return "Shroud"; }
+            case Signet_Crown:          { return "Signet_Crown"; }
+            case Signet_Feather:        { return "Signet_Feather"; }
+            case Signet_Fist:           { return "Signet_Fist"; }
+            case Signet_Hourglass:      { return "Signet_Hourglass"; }
+            case Signet_Key:            { return "Signet_Key"; }
+            case Signet_Mask:           { return "Signet_Mask"; }
+            case Skink:                 { return "Skink"; }
+            case Skull:                 { return "Skull"; }
+            case Spider_Eggs:           { return "Spider_Eggs"; }
+            case Spyglass:              { return "Spyglass"; }
+            case Staff:                 { return "Staff"; }
+            case Summoning_Statue:      { return "Summoning_Statue"; }
+            case Talisman:              { return "Talisman"; }
+            case Tome:                  { return "Tome"; }
+            case Tongue:                { return "Tongue"; }
+            case Tooth:                 { return "Tooth"; }
+            case Tooth_Necklace:        { return "Tooth_Necklace"; }
+            case Torch:                 { return "Torch"; }
+            case Troll_Figure:          { return "Troll_Figure"; }
+            case Trophy:                { return "Trophy"; }
+            case Tuning_Fork:           { return "Tuning_Fork"; }
+            case Turtle_Shell:          { return "Turtle_Shell"; }
+            case Unicorn_Horn:          { return "Unicorn_Horn"; }
+            case Veil:                  { return "Veil"; }
+            case Viol:                  { return "Viol"; }
+            case Wand:                  { return "Wand"; }
+            case Warhorse_Marionette:   { return "Warhorse_Marionette"; }
+            case Weasel_Totem:          { return "Weasel_Totem"; }
+            case Wolfen_Fur:            { return "Wolfen_Fur"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::misc_type::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+    const std::string misc_type::Name(const misc_type::Enum E)
+    {
+        switch (E)
+        {
+            case NotMisc:
+            case Ankh_Necklace:         { return "Ankh Necklace"; }
+            case Balm_Pot:              { return "Pot of Balm"; }
+            case Bird_Claw:             { return "Raven Claw"; }
+            case Bone_Whistle:          { return "Dragon Bone Whistle"; }
+            case Bracelet_Crown:        { return "Crown Bracelet"; }
+            case Bracelet_Feather:      { return "Feather Bracelet"; }
+            case Bracelet_Fist:         { return "Fist Bracelet"; }
+            case Bracelet_Hourglass:    { return "Hourglass Bracelet"; }
+            case Bracelet_Key:          { return "Key Bracelet"; }
+            case Bracelet_Mask:         { return "Mask Bracelet"; }
+            case Brooch_Crown:          { return "Crown Brooch"; }
+            case Brooch_Feather:        { return "Feather Brooch"; }
+            case Brooch_Fist:           { return "Fist Brooch"; }
+            case Brooch_Hourglass:      { return "Hourglass Brooch"; }
+            case Brooch_Key:            { return "Key Brooch"; }
+            case Brooch_Mask:           { return "Mask Brooch"; }
+            case Charm_Crown:           { return "Crown Charm"; }
+            case Charm_Feather:         { return "Feather Charm"; }
+            case Charm_Fist:            { return "Fist Charm"; }
+            case Charm_Hourglass:       { return "Hourglass Charm"; }
+            case Charm_Key:             { return "Key Charm"; }
+            case Charm_Mask:            { return "Mask Charm"; }
+            case Devil_Horn:            { return "Devil Horn"; }
+            case Doll_Blessed:          { return "Doll"; }
+            case Doll_Cursed:           { return "Doll"; }
+            case Dried_Head:            { return "Dried Head"; }
+            case Figurine_Blessed:      { return "Figurine"; }
+            case Figurine_Cursed:       { return "Figurine"; }
+            case Ghost_Sheet:           { return "Ghost Sheet"; }
+            case Grave_Ornament:        { return "Grave Ornament"; }
+            case Hurdy_Gurdy:           { return "Hurdy-Gurdy"; }
+            case Imp_Tail:              { return "Imp Tail"; }
+            case Litch_Hand:            { return "Litch Hand"; }
+            case Magnifying_Glass:      { return "Magnifying Glass"; }
+            case Petrified_Snake:       { return "Petrified Snake"; }
+            case Pin_Crown:             { return "Crown Pin"; }
+            case Pin_Feather:           { return "Feather Pin"; }
+            case Pin_Fist:              { return "Fist Pin"; }
+            case Pin_Hourglass:         { return "Hourglass Pin"; }
+            case Pin_Key:               { return "Key Pin"; }
+            case Pin_Mask:              { return "Mask Pin"; }
+            case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
+            case Puppet_Blessed:        { return "Puppet Blessed"; }
+            case Puppet_Cursed:         { return "Puppet Cursed"; }
+            case Rabbit_Foot:           { return "Rabbit Foot"; }
+            case Rat_Juju:              { return "Rat Juju"; }
+            case Rattlesnake_Tail:      { return "Rattlesnake Tail"; }
+            case Shark_Tooth_Necklace:  { return "Shark Tooth Necklace"; }
+            case Signet_Crown:          { return "Crown Signet"; }
+            case Signet_Feather:        { return "Feather Signet"; }
+            case Signet_Fist:           { return "Fist Signet"; }
+            case Signet_Hourglass:      { return "Hourglass Signet"; }
+            case Signet_Key:            { return "Key Signet"; }
+            case Signet_Mask:           { return "Mask Signet"; }
+            case Spider_Eggs:           { return "Spider Eggs"; }
+            case Summoning_Statue:      { return "Summoning Statue"; }
+            case Tooth_Necklace:        { return "Vampire Tooth Necklace"; }
+            case Troll_Figure:          { return "Troll Figure"; }
+            case Tuning_Fork:           { return "Tuning Fork"; }
+            case Turtle_Shell:          { return "Turtle Shell"; }
+            case Unicorn_Horn:          { return "Unicorn Horn"; }
+            case Warhorse_Marionette:   { return "Warhorse Marionette"; }
+            case Weasel_Totem:          { return "Weasel Totem"; }
+            case Wolfen_Fur:            { return "Wolfen Fur"; }
+            case Amulet:
+            case Armband:
+            case Bag:
+            case Beard:
+            case Bell:
+            case Bone:
+            case Book:
+            case Braid:
+            case Bust:
+            case Cameo:
+            case Cape:
+            case Cat:
+            case Chains:
+            case Chest:
+            case Chimes:
+            case Cloak:
+            case Conch:
+            case Crown:
+            case Crumhorn:
+            case Doll:
+            case Drink:
+            case DrumLute:
+            case Embryo:
+            case Egg:
+            case Eye:
+            case Feather:
+            case Finger:
+            case Fingerclaw:
+            case Flag:
+            case Frog:
+            case Gecko:
+            case Gizzard:
+            case Goblet:
+            case Gong:
+            case Handbag:
+            case Hanky:
+            case Headdress:
+            case Herbs:
+            case Hide:
+            case Horn:
+            case Horseshoe:
+            case Hourglass:
+            case Icicle:
+            case Iguana:
+            case Key:
+            case Lantern:
+            case Leaf:
+            case Legtie:
+            case Lizard:
+            case Lockbox:
+            case LockPicks:
+            case Lyre:
+            case Mask:
+            case Medallion:
+            case Mirror:
+            case Mummy_Hand:
+            case Necklace:
+            case Noose:
+            case Nose:
+            case Orb:
+            case Paw:
+            case Pendant:
+            case Potion:
+            case Rainmaker:
+            case Recorder:
+            case Relic:
+            case Ring:
+            case Robe:
+            case Salamander:
+            case Salve:
+            case Scale:
+            case Scepter:
+            case Scroll:
+            case Scythe:
+            case Seeds:
+            case Skink:
+            case Skull:
+            case Shard:
+            case Shroud:
+            case Spyglass:
+            case Staff:
+            case Talisman:
+            case Torch:
+            case Tome:
+            case Tongue:
+            case Tooth:
+            case Trophy:
+            case Veil:
+            case Viol:
+            case Wand: { return misc_type::ToString(E); }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::item::misc_type::Name(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    bool misc_type::IsMusicalInstrument(const misc_type::Enum E)
+    {
+        return ((E == DrumLute) ||
+                (E == Crumhorn) ||
+                (E == Hurdy_Gurdy) ||
+                (E == Lyre) ||
+                (E == Pipe_And_Tabor) ||
+                (E == Recorder) ||
+                (E == Viol));
+    }
+
+
+    const MaterialVecPair_t misc_type::Materials(const misc_type::Enum E)
+    {
+        if (E == misc_type::LockPicks)
+        {
+            MaterialVec_t v{ material::CoreMetal() };
+            material::AppendCoreJewel(v);
+            v.push_back(material::Bone);
+            v.push_back(material::Obsidian);
+            return MaterialVecPair_t(v, {});
+        }
+        else if ((E == misc_type::Spider_Eggs) ||
+                 (E == misc_type::Litch_Hand) ||
+                 (E == misc_type::Egg) ||
+                 (E == misc_type::Embryo) ||
+                 (E == misc_type::Petrified_Snake))
+        {
+            return MaterialVecPair_t({ material::Flesh }, {});
+        }
+        else if ((E == misc_type::Wand) ||
+                 (E == misc_type::Staff))
+        {
+            MaterialVec_t v{ material::Wood, material::Glass };
+            material::AppendCorePrimaryNoPearl(v);
+            return MaterialVecPair_t(v, material::CoreSecondary());
+        }
+        else if (E == misc_type::Braid)
+        {
+            return MaterialVecPair_t({ material::Hair }, {});
+        }
+        else if (E == misc_type::DrumLute)
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+        }
+        else if (E == misc_type::Figurine_Blessed)
+        {
+            return MaterialVecPair_t({ material::Wood,
+                                       material::Glass }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Figurine_Cursed)
+        {
+            return MaterialVecPair_t({ material::Stone,
+                                       material::Bone,
+                                       material::Obsidian }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Doll_Blessed)
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Doll_Cursed)
+        {
+            return MaterialVecPair_t({ material::Bone }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Bust)
+        {
+            return MaterialVecPair_t({ material::Stone }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Puppet_Blessed)
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Puppet_Cursed)
+        {
+            return MaterialVecPair_t({ material::Bone }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Dried_Head)
+        {
+            return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary(false));
+        }
+        else if (E == misc_type::Goblet)
+        {
+            return MaterialVecPair_t({ material::Tin,
+                                       material::Bronze,
+                                       material::Silver,
+                                       material::Gold }, material::CoreSecondary());
+        }
+        else if (E == misc_type::Balm_Pot)
+        {
+            return MaterialVecPair_t({ material::Bronze,
+                                       material::Silver,
+                                       material::Gold }, {});
+        }
+        else if (E == misc_type::Seeds)
+        {
+            return MaterialVecPair_t({ material::Plant }, {});
+        }
+        else if (E == misc_type::Mummy_Hand)
+        {
+            return MaterialVecPair_t({ material::Flesh }, { material::Cloth });
+        }
+        else if (E == misc_type::Shard)
+        {
+            return MaterialVecPair_t(material::CoreJewel(), {});
+        }
+        else if (E == misc_type::Orb)
+        {
+            return MaterialVecPair_t(material::CoreJewel(), { material::Wood });
+        }
+        else if (E == misc_type::Scepter)
+        {
+            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
+        }
+        else if (E == misc_type::Icicle)
+        {
+            return MaterialVecPair_t({ material::Glass }, {});
+        }
+        else if (E == misc_type::Finger)
+        {
+            return MaterialVecPair_t({ material::Stone }, {});
+        }
+        else if (E == misc_type::Unicorn_Horn)
+        {
+            return MaterialVecPair_t({ material::Horn }, {});
+        }
+        else if (E == misc_type::Devil_Horn)
+        {
+            return MaterialVecPair_t({ material::Horn }, {});
+        }
+        else if ((E == misc_type::Recorder) ||
+                 (E == misc_type::Viol) ||
+                 (E == misc_type::Pipe_And_Tabor) ||
+                 (E == misc_type::Lyre) ||
+                 (E == misc_type::Hurdy_Gurdy))
+        {
+            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
+        }
+        else if (E == misc_type::Ring)
+        {
+            return MaterialVecPair_t(material::CorePrimary(), material::CoreSecondary());
+        }
+        else if (E == misc_type::Summoning_Statue)
+        {
+            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
+        }
+        else
+        {
+            return MaterialVecPair_t({}, {});
+        }
+    }
+
+
+    bool misc_type::IsStandaloneItem(const misc_type::Enum E)
+    {
+        //Note:  Keep in sync with:
+        //          MiscItemFactory::Make()
+        //          misc_type::Materials()
+        //          ItemProfile::SetMisc()
+        return ((E == misc_type::LockPicks) ||
+                (E == misc_type::Spider_Eggs) ||
+                (E == misc_type::Wand) ||
+                (E == misc_type::DrumLute) ||
+                (E == misc_type::Figurine_Blessed) ||
+                (E == misc_type::Figurine_Cursed) ||
+                (E == misc_type::Doll_Blessed) ||
+                (E == misc_type::Doll_Cursed) ||
+                (E == misc_type::Bust) ||
+                (E == misc_type::Puppet_Blessed) ||
+                (E == misc_type::Puppet_Cursed) ||
+                (E == misc_type::Dried_Head) ||
+                (E == misc_type::Goblet) ||
+                (E == misc_type::Balm_Pot) ||
+                (E == misc_type::Egg) ||
+                (E == misc_type::Embryo) ||
+                (E == misc_type::Seeds) ||
+                (E == misc_type::Petrified_Snake) ||
+                (E == misc_type::Mummy_Hand) ||
+                (E == misc_type::Shard) ||
+                (E == misc_type::Orb) ||
+                (E == misc_type::Scepter) ||
+                (E == misc_type::Icicle) ||
+                (E == misc_type::Finger) ||
+                (E == misc_type::Unicorn_Horn) ||
+                (E == misc_type::Devil_Horn) ||
+                (E == misc_type::Recorder) ||
+                (E == misc_type::Viol) ||
+                (E == misc_type::Pipe_And_Tabor) ||
+                (E == misc_type::Hurdy_Gurdy) ||
+                (E == misc_type::Lyre) ||
+                (E == misc_type::Staff) ||
+                (E == misc_type::Ring));
+    }
+
+
+    bool misc_type::HasPixieVersion(const misc_type::Enum E)
+    {
+        return ((E == misc_type::Bell) ||
+                (E == misc_type::Cape) ||
+                (E == misc_type::Cloak) ||
+                (E == misc_type::Crown) ||
+                (E == misc_type::Crumhorn) ||
+                (E == misc_type::DrumLute) ||
+                (E == misc_type::LockPicks) ||
+                (E == misc_type::Lyre) ||
+                (E == misc_type::Pipe_And_Tabor) ||
+                (E == misc_type::Recorder) ||
+                (E == misc_type::Robe) ||
+                (E == misc_type::Viol));
+    }
+
+
+    float misc_type::ReligiousRatio(const misc_type::Enum E)
+    {
+        if (E == misc_type::Figurine_Blessed)   { return 0.9f; }
+        if (E == misc_type::Figurine_Cursed)    { return 0.9f; }
+        if (E == misc_type::Doll_Blessed)       { return 0.9f; }
+        if (E == misc_type::Doll_Cursed)        { return 0.9f; }
+        if (E == misc_type::Bust)               { return 0.6f; }
+        if (E == misc_type::Dried_Head)         { return 0.75f; }
+        return 0.0f;
+    }
+
+
+    bool misc_type::IsBlessed(const misc_type::Enum E)
+    {
+        return ((E == misc_type::Doll_Blessed) ||
+                (E == misc_type::Figurine_Blessed) ||
+                (E == misc_type::Puppet_Blessed) ||
+                (E == misc_type::Bust));
+    }
+
+
+    bool misc_type::IsCursed(const misc_type::Enum E)
+    {
+        return ((E == misc_type::Doll_Cursed) ||
+                (E == misc_type::Figurine_Cursed) ||
+                (E == misc_type::Puppet_Cursed) ||
+                (E == misc_type::Dried_Head));
+    }
+
+
     const std::string set_type::ToString(const set_type::Enum E)
     {
         switch (E)
@@ -1241,343 +1821,6 @@ namespace item
     }
 
 
-    const std::string misc_type::ToString(const misc_type::Enum E)
-    {
-        switch (E)
-        {
-            case NotMisc:               { return "NotMisc"; }
-            case Amulet:                { return "Amulet"; }
-            case Ankh_Necklace:         { return "Ankh_Necklace"; }
-            case Armband:               { return "Armband"; }
-            case Bag:                   { return "Bag"; }
-            case Balm_Pot:              { return "Balm_Pot"; }
-            case Beard:                 { return "Beard"; }
-            case Bell:                  { return "Bell"; }
-            case Bird_Claw:             { return "Bird_Claw"; }
-            case Bone:                  { return "Bone"; }
-            case Bone_Whistle:          { return "Bone_Whistle"; }
-            case Book:                  { return "Book"; }
-            case Bracelet_Crown:        { return "Bracelet_Crown"; }
-            case Bracelet_Feather:      { return "Bracelet_Feather"; }
-            case Bracelet_Fist:         { return "Bracelet_Fist"; }
-            case Bracelet_Hourglass:    { return "Bracelet_Hourglass"; }
-            case Bracelet_Key:          { return "Bracelet_Key"; }
-            case Bracelet_Mask:         { return "Bracelet_Mask"; }
-            case Braid:                 { return "Braid"; }
-            case Brooch_Crown:          { return "Brooch_Crown"; }
-            case Brooch_Feather:        { return "Brooch_Feather"; }
-            case Brooch_Fist:           { return "Brooch_Fist"; }
-            case Brooch_Hourglass:      { return "Brooch_Hourglass"; }
-            case Brooch_Key:            { return "Brooch_Key"; }
-            case Brooch_Mask:           { return "Brooch_Mask"; }
-            case Bust:                  { return "Bust"; }
-            case Cameo:                 { return "Cameo"; }
-            case Cape:                  { return "Cape"; }
-            case Cat:                   { return "Cat"; }
-            case Chains:                { return "Chains"; }
-            case Charm_Crown:           { return "Charm_Crown"; }
-            case Charm_Feather:         { return "Charm_Feather"; }
-            case Charm_Fist:            { return "Charm_Fist"; }
-            case Charm_Hourglass:       { return "Charm_Hourglass"; }
-            case Charm_Key:             { return "Charm_Key"; }
-            case Charm_Mask:            { return "Charm_Mask"; }
-            case Chest:                 { return "Chest"; }
-            case Chimes:                { return "Chimes"; }
-            case Cloak:                 { return "Cloak"; }
-            case Conch:                 { return "Conch"; }
-            case Crown:                 { return "Crown"; }
-            case Crumhorn:              { return "Crumhorn"; }
-            case Devil_Horn:            { return "Devil_Horn"; }
-            case Doll:                  { return "Doll"; }
-            case Doll_Blessed:          { return "Doll_Blessed"; }
-            case Doll_Cursed:           { return "Doll_Cursed"; }
-            case Dried_Head:            { return "Dried_Head"; }
-            case Drink:                 { return "Drink"; }
-            case DrumLute:              { return "DrumLute"; }
-            case Egg:                   { return "Egg"; }
-            case Embryo:                { return "Embryo"; }
-            case Eye:                   { return "Eye"; }
-            case Feather:               { return "Feather"; }
-            case Figurine_Blessed:      { return "Figurine_Blessed"; }
-            case Figurine_Cursed:       { return "Figurine_Cursed"; }
-            case Finger:                { return "Finger"; }
-            case Fingerclaw:            { return "Fingerclaw"; }
-            case Flag:                  { return "Flag"; }
-            case Frog:                  { return "Frog"; }
-            case Gecko:                 { return "Gecko"; }
-            case Ghost_Sheet:           { return "Ghost_Sheet"; }
-            case Gizzard:               { return "Gizzard"; }
-            case Goblet:                { return "Goblet"; }
-            case Gong:                  { return "Gong"; }
-            case Grave_Ornament:        { return "Grave_Ornament"; }
-            case Handbag:               { return "Handbag"; }
-            case Hanky:                 { return "Hanky"; }
-            case Herbs:                 { return "Herbs"; }
-            case Headdress:             { return "Headdress"; }
-            case Hide:                  { return "Hide"; }
-            case Hourglass:             { return "Hourglass"; }
-            case Horn:                  { return "Horn"; }
-            case Horseshoe:             { return "Horseshoe"; }
-            case Hurdy_Gurdy:           { return "Hurdy_Gurdy"; }
-            case Icicle:                { return "Icicle"; }
-            case Iguana:                { return "Iguana"; }
-            case Imp_Tail:              { return "Imp_Tail"; }
-            case Key:                   { return "Key"; }
-            case Lantern:               { return "Lantern"; }
-            case Leaf:                  { return "Leaf"; }
-            case Legtie:                { return "Legtie"; }
-            case Litch_Hand:            { return "Litch_Hand"; }
-            case Lizard:                { return "Lizard"; }
-            case Lockbox:               { return "Lockbox"; }
-            case LockPicks:             { return "LockPicks"; }
-            case Lyre:                  { return "Lyre"; }
-            case Magnifying_Glass:      { return "Magnifying_Glass"; }
-            case Mask:                  { return "Mask"; }
-            case Medallion:             { return "Medallion"; }
-            case Mirror:                { return "Mirror"; }
-            case Mummy_Hand:            { return "Mummy_Hand"; }
-            case Necklace:              { return "Necklace"; }
-            case Noose:                 { return "Noose"; }
-            case Nose:                  { return "Nose"; }
-            case Orb:                   { return "Orb"; }
-            case Paw:                   { return "Paw"; }
-            case Pendant:               { return "Pendant"; }
-            case Petrified_Snake:       { return "Petrified_Snake"; }
-            case Pin_Crown:             { return "Pin_Crown"; }
-            case Pin_Feather:           { return "Pin_Feather"; }
-            case Pin_Fist:              { return "Pin_Fist"; }
-            case Pin_Hourglass:         { return "Pin_Hourglass"; }
-            case Pin_Key:               { return "Pin_Key"; }
-            case Pin_Mask:              { return "Pin_Mask"; }
-            case Pipe_And_Tabor:        { return "Pipe_And_Tabor"; }
-            case Potion:                { return "Potion"; }
-            case Puppet:                { return "Puppet"; }
-            case Rabbit_Foot:           { return "Rabbit_Foot"; }
-            case Rainmaker:             { return "Rainmaker"; }
-            case Rat_Juju:              { return "Rat_Juju"; }
-            case Rattlesnake_Tail:      { return "Rattlesnake_Tail"; }
-            case Recorder:              { return "Recorder"; }
-            case Relic:                 { return "Relic"; }
-            case Ring:                  { return "Ring"; }
-            case Robe:                  { return "Robe"; }
-            case Salamander:            { return "Salamander"; }
-            case Salve:                 { return "Salve"; }
-            case Scale:                 { return "Scale"; }
-            case Scepter:               { return "Scepter"; }
-            case Scroll:                { return "Scroll"; }
-            case Scythe:                { return "Scythe"; }
-            case Seeds:                 { return "Seeds"; }
-            case Shard:                 { return "Shard"; }
-            case Shark_Tooth_Necklace:  { return "Shark_Tooth_Necklace"; }
-            case Shroud:                { return "Shroud"; }
-            case Signet_Crown:          { return "Signet_Crown"; }
-            case Signet_Feather:        { return "Signet_Feather"; }
-            case Signet_Fist:           { return "Signet_Fist"; }
-            case Signet_Hourglass:      { return "Signet_Hourglass"; }
-            case Signet_Key:            { return "Signet_Key"; }
-            case Signet_Mask:           { return "Signet_Mask"; }
-            case Skink:                 { return "Skink"; }
-            case Skull:                 { return "Skull"; }
-            case Spider_Eggs:           { return "Spider_Eggs"; }
-            case Spyglass:              { return "Spyglass"; }
-            case Staff:                 { return "Staff"; }
-            case Summoning_Statue:      { return "Summoning_Statue"; }
-            case Talisman:              { return "Talisman"; }
-            case Tome:                  { return "Tome"; }
-            case Tongue:                { return "Tongue"; }
-            case Tooth:                 { return "Tooth"; }
-            case Tooth_Necklace:        { return "Tooth_Necklace"; }
-            case Torch:                 { return "Torch"; }
-            case Troll_Figure:          { return "Troll_Figure"; }
-            case Trophy:                { return "Trophy"; }
-            case Tuning_Fork:           { return "Tuning_Fork"; }
-            case Turtle_Shell:          { return "Turtle_Shell"; }
-            case Unicorn_Horn:          { return "Unicorn_Horn"; }
-            case Veil:                  { return "Veil"; }
-            case Viol:                  { return "Viol"; }
-            case Wand:                  { return "Wand"; }
-            case Warhorse_Marionette:   { return "Warhorse_Marionette"; }
-            case Weasel_Totem:          { return "Weasel_Totem"; }
-            case Wolfen_Fur:            { return "Wolfen_Fur"; }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "game::item::misc_type::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-    const std::string misc_type::Name(const misc_type::Enum E)
-    {
-        switch (E)
-        {
-            case NotMisc:
-            case Ankh_Necklace:         { return "Ankh Necklace"; }
-            case Balm_Pot:              { return "Pot of Balm"; }
-            case Bird_Claw:             { return "Raven Claw"; }
-            case Bone_Whistle:          { return "Dragon Bone Whistle"; }
-            case Bracelet_Crown:        { return "Crown Bracelet"; }
-            case Bracelet_Feather:      { return "Feather Bracelet"; }
-            case Bracelet_Fist:         { return "Fist Bracelet"; }
-            case Bracelet_Hourglass:    { return "Hourglass Bracelet"; }
-            case Bracelet_Key:          { return "Key Bracelet"; }
-            case Bracelet_Mask:         { return "Mask Bracelet"; }
-            case Brooch_Crown:          { return "Crown Brooch"; }
-            case Brooch_Feather:        { return "Feather Brooch"; }
-            case Brooch_Fist:           { return "Fist Brooch"; }
-            case Brooch_Hourglass:      { return "Hourglass Brooch"; }
-            case Brooch_Key:            { return "Key Brooch"; }
-            case Brooch_Mask:           { return "Mask Brooch"; }
-            case Charm_Crown:           { return "Crown Charm"; }
-            case Charm_Feather:         { return "Feather Charm"; }
-            case Charm_Fist:            { return "Fist Charm"; }
-            case Charm_Hourglass:       { return "Hourglass Charm"; }
-            case Charm_Key:             { return "Key Charm"; }
-            case Charm_Mask:            { return "Mask Charm"; }
-            case Devil_Horn:            { return "Devil Horn"; }
-            case Doll_Blessed:          { return "Doll"; }
-            case Doll_Cursed:           { return "Doll"; }
-            case Dried_Head:            { return "Dried Head"; }
-            case Figurine_Blessed:      { return "Figurine"; }
-            case Figurine_Cursed:       { return "Figurine"; }
-            case Ghost_Sheet:           { return "Ghost Sheet"; }
-            case Grave_Ornament:        { return "Grave Ornament"; }
-            case Hurdy_Gurdy:           { return "Hurdy-Gurdy"; }
-            case Imp_Tail:              { return "Imp Tail"; }
-            case Litch_Hand:            { return "Litch Hand"; }
-            case Magnifying_Glass:      { return "Magnifying Glass"; }
-            case Petrified_Snake:       { return "Petrified Snake"; }
-            case Pin_Crown:             { return "Crown Pin"; }
-            case Pin_Feather:           { return "Feather Pin"; }
-            case Pin_Fist:              { return "Fist Pin"; }
-            case Pin_Hourglass:         { return "Hourglass Pin"; }
-            case Pin_Key:               { return "Key Pin"; }
-            case Pin_Mask:              { return "Mask Pin"; }
-            case Pipe_And_Tabor:        { return "Pipe and Tabor"; }
-            case Rabbit_Foot:           { return "Rabbit Foot"; }
-            case Rat_Juju:              { return "Rat Juju"; }
-            case Rattlesnake_Tail:      { return "Rattlesnake Tail"; }
-            case Shark_Tooth_Necklace:  { return "Shark Tooth Necklace"; }
-            case Signet_Crown:          { return "Crown Signet"; }
-            case Signet_Feather:        { return "Feather Signet"; }
-            case Signet_Fist:           { return "Fist Signet"; }
-            case Signet_Hourglass:      { return "Hourglass Signet"; }
-            case Signet_Key:            { return "Key Signet"; }
-            case Signet_Mask:           { return "Mask Signet"; }
-            case Spider_Eggs:           { return "Spider Eggs"; }
-            case Summoning_Statue:      { return "Summoning Statue"; }
-            case Tooth_Necklace:        { return "Vampire Tooth Necklace"; }
-            case Troll_Figure:          { return "Troll Figure"; }
-            case Tuning_Fork:           { return "Tuning Fork"; }
-            case Turtle_Shell:          { return "Turtle Shell"; }
-            case Unicorn_Horn:          { return "Unicorn Horn"; }
-            case Warhorse_Marionette:   { return "Warhorse Marionette"; }
-            case Weasel_Totem:          { return "Weasel Totem"; }
-            case Wolfen_Fur:            { return "Wolfen Fur"; }
-            case Amulet:
-            case Armband:
-            case Bag:
-            case Beard:
-            case Bell:
-            case Bone:
-            case Book:
-            case Braid:
-            case Bust:
-            case Cameo:
-            case Cape:
-            case Cat:
-            case Chains:
-            case Chest:
-            case Chimes:
-            case Cloak:
-            case Conch:
-            case Crown:
-            case Crumhorn:
-            case Doll:
-            case Drink:
-            case DrumLute:
-            case Embryo:
-            case Egg:
-            case Eye:
-            case Feather:
-            case Finger:
-            case Fingerclaw:
-            case Flag:
-            case Frog:
-            case Gecko:
-            case Gizzard:
-            case Goblet:
-            case Gong:
-            case Handbag:
-            case Hanky:
-            case Headdress:
-            case Herbs:
-            case Hide:
-            case Horn:
-            case Horseshoe:
-            case Hourglass:
-            case Icicle:
-            case Iguana:
-            case Key:
-            case Lantern:
-            case Leaf:
-            case Legtie:
-            case Lizard:
-            case Lockbox:
-            case LockPicks:
-            case Lyre:
-            case Mask:
-            case Medallion:
-            case Mirror:
-            case Mummy_Hand:
-            case Necklace:
-            case Noose:
-            case Nose:
-            case Orb:
-            case Paw:
-            case Pendant:
-            case Potion:
-            case Puppet:
-            case Rainmaker:
-            case Recorder:
-            case Relic:
-            case Ring:
-            case Robe:
-            case Salamander:
-            case Salve:
-            case Scale:
-            case Scepter:
-            case Scroll:
-            case Scythe:
-            case Seeds:
-            case Skink:
-            case Skull:
-            case Shard:
-            case Shroud:
-            case Spyglass:
-            case Staff:
-            case Talisman:
-            case Torch:
-            case Tome:
-            case Tongue:
-            case Tooth:
-            case Trophy:
-            case Veil:
-            case Viol:
-            case Wand: { return misc_type::ToString(E); }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "game::item::misc_type::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-
     const std::string named_type::ToString(const named_type::Enum E)
     {
         switch (E)
@@ -1799,236 +2042,6 @@ namespace item
         {
             return MaterialVecPair_t({}, {});
         }
-    }
-
-
-    bool misc_type::HasPixieVersion(const misc_type::Enum E)
-    {
-        return ((E == misc_type::Bell) ||
-                (E == misc_type::Cape) ||
-                (E == misc_type::Cloak) ||
-                (E == misc_type::Crown) ||
-                (E == misc_type::Crumhorn) ||
-                (E == misc_type::DrumLute) ||
-                (E == misc_type::LockPicks) ||
-                (E == misc_type::Lyre) ||
-                (E == misc_type::Pipe_And_Tabor) ||
-                (E == misc_type::Recorder) ||
-                (E == misc_type::Robe) ||
-                (E == misc_type::Viol));
-    }
-
-
-    bool misc_type::IsMusicalInstrument(const misc_type::Enum E)
-    {
-        return ((E == DrumLute) ||
-                (E == Crumhorn) ||
-                (E == Hurdy_Gurdy) ||
-                (E == Lyre) ||
-                (E == Pipe_And_Tabor) ||
-                (E == Recorder) ||
-                (E == Viol));
-    }
-
-
-    const MaterialVecPair_t misc_type::Materials(const misc_type::Enum E)
-    {
-        if (E == misc_type::LockPicks)
-        {
-            MaterialVec_t v{ material::CoreMetal() };
-            material::AppendCoreJewel(v);
-            v.push_back(material::Bone);
-            v.push_back(material::Obsidian);
-            return MaterialVecPair_t(v, {});
-        }
-        else if ((E == misc_type::Spider_Eggs) ||
-                 (E == misc_type::Litch_Hand) ||
-                 (E == misc_type::Egg) ||
-                 (E == misc_type::Embryo) ||
-                 (E == misc_type::Petrified_Snake))
-        {
-            return MaterialVecPair_t({ material::Flesh }, {});
-        }
-        else if ((E == misc_type::Wand) ||
-                 (E == misc_type::Staff))
-        {
-            MaterialVec_t v{ material::Wood, material::Glass };
-            material::AppendCorePrimaryNoPearl(v);
-            return MaterialVecPair_t(v, material::CoreSecondary());
-        }
-        else if (E == misc_type::Braid)
-        {
-            return MaterialVecPair_t({ material::Hair }, {});
-        }
-        else if (E == misc_type::DrumLute)
-        {
-            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Figurine_Blessed)
-        {
-            return MaterialVecPair_t({ material::Stone,
-                                       material::Wood,
-                                       material::Glass }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Figurine_Cursed)
-        {
-            return MaterialVecPair_t({ material::Stone,
-                                       material::Wood,
-                                       material::Bone,
-                                       material::Obsidian }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Doll_Blessed)
-        {
-            return MaterialVecPair_t({ material::Stone,
-                                       material::Wood,
-                                       material::Glass }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Doll_Cursed)
-        {
-            return MaterialVecPair_t({ material::Stone,
-                                       material::Wood,
-                                       material::Bone,
-                                       material::Obsidian }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Bust)
-        {
-            return MaterialVecPair_t({ material::Stone,
-                                       material::Wood,
-                                       material::Bone,
-                                       material::Obsidian,
-                                       material::Glass }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Puppet)
-        {
-            return MaterialVecPair_t({ material::Wood,
-                                       material::Cloth }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Dried_Head)
-        {
-            return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Goblet)
-        {
-            return MaterialVecPair_t({ material::Tin,
-                                       material::Bronze,
-                                       material::Silver,
-                                       material::Gold }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Balm_Pot)
-        {
-            return MaterialVecPair_t({ material::Bronze,
-                                       material::Silver,
-                                       material::Gold }, {});
-        }
-        else if (E == misc_type::Seeds)
-        {
-            return MaterialVecPair_t({ material::Plant }, {});
-        }
-        else if (E == misc_type::Mummy_Hand)
-        {
-            return MaterialVecPair_t({ material::Flesh }, { material::Cloth });
-        }
-        else if (E == misc_type::Shard)
-        {
-            return MaterialVecPair_t(material::CoreJewel(), {});
-        }
-        else if (E == misc_type::Orb)
-        {
-            return MaterialVecPair_t(material::CoreJewel(), { material::Wood });
-        }
-        else if (E == misc_type::Scepter)
-        {
-            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
-        }
-        else if (E == misc_type::Icicle)
-        {
-            return MaterialVecPair_t({ material::Glass }, {});
-        }
-        else if (E == misc_type::Finger)
-        {
-            return MaterialVecPair_t({ material::Stone }, {});
-        }
-        else if (E == misc_type::Unicorn_Horn)
-        {
-            return MaterialVecPair_t({ material::Horn }, {});
-        }
-        else if (E == misc_type::Devil_Horn)
-        {
-            return MaterialVecPair_t({ material::Horn }, {});
-        }
-        else if ((E == misc_type::Recorder) ||
-                 (E == misc_type::Viol) ||
-                 (E == misc_type::Pipe_And_Tabor) ||
-                 (E == misc_type::Lyre) ||
-                 (E == misc_type::Hurdy_Gurdy))
-        {
-            return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
-        }
-        else if (E == misc_type::Ring)
-        {
-            return MaterialVecPair_t(material::CorePrimary(), material::CoreSecondary());
-        }
-        else if (E == misc_type::Summoning_Statue)
-        {
-            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
-        }
-        else
-        {
-            return MaterialVecPair_t({}, {});
-        }
-    }
-
-
-    bool misc_type::IsStandaloneItem(const misc_type::Enum E)
-    {
-        //Note:  Keep in sync with:
-        //          MiscItemFactory::Make()
-        //          misc_type::Materials()
-        //          ItemProfile::SetMisc()
-        return ((E == misc_type::LockPicks) ||
-                (E == misc_type::Spider_Eggs) ||
-                (E == misc_type::Wand) ||
-                (E == misc_type::DrumLute) ||
-                (E == misc_type::Figurine_Blessed) ||
-                (E == misc_type::Figurine_Cursed) ||
-                (E == misc_type::Doll_Blessed) ||
-                (E == misc_type::Doll_Cursed) ||
-                (E == misc_type::Bust) ||
-                (E == misc_type::Puppet) ||
-                (E == misc_type::Dried_Head) ||
-                (E == misc_type::Goblet) ||
-                (E == misc_type::Balm_Pot) ||
-                (E == misc_type::Egg) ||
-                (E == misc_type::Embryo) ||
-                (E == misc_type::Seeds) ||
-                (E == misc_type::Petrified_Snake) ||
-                (E == misc_type::Mummy_Hand) ||
-                (E == misc_type::Shard) ||
-                (E == misc_type::Orb) ||
-                (E == misc_type::Scepter) ||
-                (E == misc_type::Icicle) ||
-                (E == misc_type::Finger) ||
-                (E == misc_type::Unicorn_Horn) ||
-                (E == misc_type::Devil_Horn) ||
-                (E == misc_type::Recorder) ||
-                (E == misc_type::Viol) ||
-                (E == misc_type::Pipe_And_Tabor) ||
-                (E == misc_type::Hurdy_Gurdy) ||
-                (E == misc_type::Lyre) ||
-                (E == misc_type::Staff) ||
-                (E == misc_type::Ring));
-    }
-
-
-    float misc_type::ReligiousRatio(const misc_type::Enum E)
-    {
-        if (E == misc_type::Figurine_Blessed)   { return 0.9f; }
-        if (E == misc_type::Figurine_Cursed)    { return 0.9f; }
-        if (E == misc_type::Doll_Blessed)       { return 0.9f; }
-        if (E == misc_type::Doll_Cursed)        { return 0.9f; }
-        if (E == misc_type::Bust)               { return 0.6f; }
-        if (E == misc_type::Dried_Head)         { return 0.75f; }
-        return 0.0f;
     }
 
 

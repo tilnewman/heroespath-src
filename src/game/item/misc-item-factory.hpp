@@ -73,17 +73,12 @@ namespace misc
         static ItemPtr_t Make_Armband(const ItemProfile &);
         static ItemPtr_t Make_BalmPot(const ItemProfile &);
         static ItemPtr_t Make_Braid(const ItemProfile &);
-        static ItemPtr_t Make_Bust(const ItemProfile &);
         static ItemPtr_t Make_Cape(const ItemProfile &);
         static ItemPtr_t Make_DevilHorn(const ItemProfile &);
-        static ItemPtr_t Make_DollBlessed(const ItemProfile &);
-        static ItemPtr_t Make_DollCursed(const ItemProfile &);
-        static ItemPtr_t Make_DriedHead(const ItemProfile &);
+        static ItemPtr_t Make_Doll(const ItemProfile &);
         static ItemPtr_t Make_DrumLute(const ItemProfile &);
         static ItemPtr_t Make_Egg(const ItemProfile &);
         static ItemPtr_t Make_Embryo(const ItemProfile &);
-        static ItemPtr_t Make_FigurineBlessed(const ItemProfile &);
-        static ItemPtr_t Make_FigurineCursed(const ItemProfile &);
         static ItemPtr_t Make_Finger(const ItemProfile &);
         static ItemPtr_t Make_Fingerclaw(const ItemProfile &);
         static ItemPtr_t Make_Goblet(const ItemProfile &);
@@ -96,7 +91,6 @@ namespace misc
         static ItemPtr_t Make_Orb(const ItemProfile &);
         static ItemPtr_t Make_PetrifiedSnake(const ItemProfile &);
         static ItemPtr_t Make_PipeAndTabor(const ItemProfile &);
-        static ItemPtr_t Make_Puppet(const ItemProfile &);
         static ItemPtr_t Make_Recorder(const ItemProfile &);
         static ItemPtr_t Make_Ring(const ItemProfile &);
         static ItemPtr_t Make_Scepter(const ItemProfile &);
@@ -109,6 +103,8 @@ namespace misc
         static ItemPtr_t Make_Veil(const ItemProfile &);
         static ItemPtr_t Make_Viol(const ItemProfile &);
         static ItemPtr_t Make_Wand(const ItemProfile &);
+
+        static ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
 
         //to support the older InventoryFactory
         static ItemPtr_t Make_Ring(const material::Enum, const material::Enum);

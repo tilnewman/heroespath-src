@@ -139,19 +139,19 @@ namespace item
         if (category_ != 0)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "category="
-                << item::category::ToString(category_, true);
+                << category::ToString(category_, true);
         }
 
         if (armor_ != 0)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "armor_type="
-                << item::armor_type::ToString(armor_, true);
+                << armor_type::ToString(armor_, true);
         }
 
         if (weapon_ != 0)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "weapon_type="
-                << item::weapon_type::ToString(weapon_, true);
+                << weapon_type::ToString(weapon_, true);
         }
 
         if ((unique_ != unique_type::NotUnique) && (unique_ != unique_type::Count))
@@ -178,7 +178,7 @@ namespace item
                 << named_type::ToString(named_);
         }
 
-        if (element_ != item::element_type::None)
+        if (element_ != element_type::None)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "element_type="
                 << element_type::ToString(element_);
@@ -440,24 +440,24 @@ namespace item
             category_ = static_cast<category::Enum>(category_ | category::Useable);
             score_ += 100;
         }
-        else if ((E == item::misc_type::Wand) ||
-                 (E == item::misc_type::Petrified_Snake) ||
-                 (E == item::misc_type::Mummy_Hand) ||
-                 (E == item::misc_type::Shard) ||
-                 (E == item::misc_type::Orb) ||
-                 (E == item::misc_type::Scepter) ||
-                 (E == item::misc_type::Icicle) ||
-                 (E == item::misc_type::Finger) ||
-                 (E == item::misc_type::Unicorn_Horn) ||
-                 (E == item::misc_type::Devil_Horn) ||
-                 (E == item::misc_type::Staff))
+        else if ((E == misc_type::Wand) ||
+                 (E == misc_type::Petrified_Snake) ||
+                 (E == misc_type::Mummy_Hand) ||
+                 (E == misc_type::Shard) ||
+                 (E == misc_type::Orb) ||
+                 (E == misc_type::Scepter) ||
+                 (E == misc_type::Icicle) ||
+                 (E == misc_type::Finger) ||
+                 (E == misc_type::Unicorn_Horn) ||
+                 (E == misc_type::Devil_Horn) ||
+                 (E == misc_type::Staff))
         {
             category_ = static_cast<category::Enum>(category_ |
                                                     category::AllowsCasting |
                                                     category::Equippable);
             score_ += 100;
 
-            if (E == item::misc_type::Staff)
+            if (E == misc_type::Staff)
             {
                 isStaff_ = true;
 
@@ -470,45 +470,49 @@ namespace item
                                                          weapon_type::Melee);
             }
         }
-        else if ((E == item::misc_type::DrumLute) ||
-                 (E == item::misc_type::Lyre) ||
-                 (E == item::misc_type::Hurdy_Gurdy) ||
-                 (E == item::misc_type::Pipe_And_Tabor) ||
-                 (E == item::misc_type::Viol) ||
-                 (E == item::misc_type::Recorder))
+        else if ((E == misc_type::DrumLute) ||
+                 (E == misc_type::Lyre) ||
+                 (E == misc_type::Hurdy_Gurdy) ||
+                 (E == misc_type::Pipe_And_Tabor) ||
+                 (E == misc_type::Viol) ||
+                 (E == misc_type::Recorder))
         {
             category_ = static_cast<category::Enum>(category_ | category::Equippable);
             role_ = creature::role::Bard;
             score_ += 100;
         }
-        else if ((E == item::misc_type::Bust) ||
-                 (E == item::misc_type::Figurine_Blessed) ||
-                 (E == item::misc_type::Doll_Blessed))
+        else if ((E == misc_type::Bust) ||
+                 (E == misc_type::Figurine_Blessed) ||
+                 (E == misc_type::Doll_Blessed) ||
+                 (E == misc_type::Puppet_Blessed))
         {
             category_ = static_cast<category::Enum>(category_ | category::Blessed);
             score_ += 50;
+            score_ += creature::EnchantmentFactory::Instance()->TreasureScore(E,
+                                                                              MATERIAL_PRIMARY,
+                                                                              MATERIAL_SECONDARY);
         }
-        else if ((E == item::misc_type::Figurine_Cursed) ||
-                 (E == item::misc_type::Doll_Cursed))
+        else if ((E == misc_type::Dried_Head) ||
+                 (E == misc_type::Figurine_Cursed) ||
+                 (E == misc_type::Doll_Cursed) ||
+                 (E == misc_type::Puppet_Cursed))
         {
             category_ = static_cast<category::Enum>(category_ | category::Cursed);
             score_ += 50;
+            score_ += creature::EnchantmentFactory::Instance()->TreasureScore(E,
+                                                                              MATERIAL_PRIMARY,
+                                                                              MATERIAL_SECONDARY);
         }
-        else if ((E == item::misc_type::Puppet) ||
-                 (E == item::misc_type::Dried_Head))
-        {
-            score_ += 50;
-        }
-        else if ((E == item::misc_type::Goblet) ||
-                 (E == item::misc_type::Balm_Pot) ||
-                 (E == item::misc_type::Egg) ||
-                 (E == item::misc_type::Embryo) ||
-                 (E == item::misc_type::Seeds))
+        else if ((E == misc_type::Goblet) ||
+                 (E == misc_type::Balm_Pot) ||
+                 (E == misc_type::Egg) ||
+                 (E == misc_type::Embryo) ||
+                 (E == misc_type::Seeds))
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
             score_ += 150;
         }
-        else if (E == item::misc_type::Ring)
+        else if (E == misc_type::Ring)
         {
             category_ = static_cast<category::Enum>(category_ |
                                                     category::Equippable |
@@ -532,7 +536,7 @@ namespace item
                                                 category::Wearable |
                                                 category::OneHanded);
 
-        armor_ = item::armor_type::Sheild;
+        armor_ = armor_type::Sheild;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
@@ -560,7 +564,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Helm;
+        armor_ = armor_type::Helm;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
@@ -589,7 +593,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Covering;
+        armor_ = armor_type::Covering;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -623,7 +627,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Aventail;
+        armor_ = armor_type::Aventail;
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
@@ -653,7 +657,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Bracer;
+        armor_ = armor_type::Bracer;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -688,7 +692,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Shirt;
+        armor_ = armor_type::Shirt;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -723,7 +727,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Boots;
+        armor_ = armor_type::Boots;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -758,7 +762,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Pants;
+        armor_ = armor_type::Pants;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -793,7 +797,7 @@ namespace item
                                                 category::Equippable |
                                                 category::Wearable);
 
-        armor_ = item::armor_type::Gauntlets;
+        armor_ = armor_type::Gauntlets;
 
         SetHelper(MATERIAL_PRIMARY,
                   MATERIAL_SECONDARY,
@@ -821,7 +825,7 @@ namespace item
                                const element_type::Enum       ELEMENT_TYPE)
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         sword_ = E;
 
@@ -868,7 +872,7 @@ namespace item
                              const set_type::Enum         SET_TYPE,
                              const element_type::Enum     ELEMENT_TYPE)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         axe_ = E;
 
@@ -914,7 +918,7 @@ namespace item
                               const set_type::Enum          SET_TYPE,
                               const element_type::Enum      ELEMENT_TYPE)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         club_ = E;
 
@@ -957,7 +961,7 @@ namespace item
                               const set_type::Enum          SET_TYPE,
                               const element_type::Enum      ELEMENT_TYPE)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         whip_ = E;
 
@@ -1001,7 +1005,7 @@ namespace item
                                     const element_type::Enum            ELEMENT_TYPE)
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         proj_ = E;
 
@@ -1040,7 +1044,7 @@ namespace item
                                       const element_type::Enum             ELEMENT_TYPE)
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         bstaff_ = E;
 
@@ -1220,15 +1224,15 @@ namespace item
     }
 
 
-    int ItemProfile::ScoreHelper(const item::material::Enum     MATERIAL_PRI,
-                                 const item::material::Enum     MATERIAL_SEC,
-                                 const item::named_type::Enum   NAMED_TYPE,
-                                 const item::set_type::Enum     SET_TYPE,
-                                 const item::element_type::Enum ELEMENT_TYPE,
+    int ItemProfile::ScoreHelper(const material::Enum     MATERIAL_PRI,
+                                 const material::Enum     MATERIAL_SEC,
+                                 const named_type::Enum   NAMED_TYPE,
+                                 const set_type::Enum     SET_TYPE,
+                                 const element_type::Enum ELEMENT_TYPE,
                                  const bool                     IS_WEAPON) const
     {
-        if ((MATERIAL_PRI == item::material::Nothing) ||
-            (MATERIAL_PRI == item::material::Count))
+        if ((MATERIAL_PRI == material::Nothing) ||
+            (MATERIAL_PRI == material::Count))
         {
             return 0;
         }
