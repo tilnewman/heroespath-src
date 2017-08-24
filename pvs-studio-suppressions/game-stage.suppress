@@ -927,4 +927,36 @@
     <CodeCurrent>665306643</CodeCurrent>
     <CodeNext>1505184071</CodeNext>
   </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>1084060290</CodePrev>
+    <CodeCurrent>1963517476</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>2669479418</CodePrev>
+    <CodeCurrent>625014154</CodeCurrent>
+    <CodeNext>3746571424</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>3294574865</CodePrev>
+    <CodeCurrent>625014154</CodeCurrent>
+    <CodeNext>3606554162</CodeNext>
+  </game-stage>
+  <game-stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ditionNames(_) &lt;&lt; "\n".</Message>
+    <CodePrev>3956583011</CodePrev>
+    <CodeCurrent>1602460081</CodeCurrent>
+    <CodeNext>2439</CodeNext>
+  </game-stage>
 </NewDataSet>

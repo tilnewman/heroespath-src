@@ -799,4 +799,636 @@
     <CodeCurrent>1282091839</CodeCurrent>
     <CodeNext>125</CodeNext>
   </game-creature>
+  <game-creature>
+    <FileName>creature.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'ITEM_PTR-&gt;Armor_Info()' expression repeatedly.</Message>
+    <CodePrev>94999558</CodePrev>
+    <CodeCurrent>3327534146</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>body-type.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ther, _, _, _, _, true, t...</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3498489337</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)),.</Message>
+    <CodePrev>1603137626</CodePrev>
+    <CodeCurrent>4197635455</CodeCurrent>
+    <CodeNext>1390366981</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1202685872</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>2442309471</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1675800415</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1210623749</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>678002129</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS * _)) }) ) };.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1465427717</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS / _)),.</Message>
+    <CodePrev>1229341179</CodePrev>
+    <CodeCurrent>3268885182</CodeCurrent>
+    <CodeNext>1261022971</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Charm, _ + MAT_BONUS),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1633652264</CodeCurrent>
+    <CodeNext>2996497289</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...dReligious, _),.</Message>
+    <CodePrev>1821921623</CodePrev>
+    <CodeCurrent>2555579250</CodeCurrent>
+    <CodeNext>3380948152</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...MAT_BONUS / _)) }) );.</Message>
+    <CodePrev>3094318993</CodePrev>
+    <CodeCurrent>3154998302</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...aits::Luck, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>3058444430</CodeCurrent>
+    <CodeNext>1821919439</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Speed, _),.</Message>
+    <CodePrev>3058444430</CodePrev>
+    <CodeCurrent>1821919439</CodeCurrent>
+    <CodeNext>1690475357</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Backstab, _),.</Message>
+    <CodePrev>1821919431</CodePrev>
+    <CodeCurrent>1690475333</CodeCurrent>
+    <CodeNext>1277781731</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:FindMagic, _) }) );.</Message>
+    <CodePrev>1690475341</CodePrev>
+    <CodeCurrent>1277781507</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...telligence, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1278035784</CodeCurrent>
+    <CodeNext>3058445326</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...aits::Mana, _),.</Message>
+    <CodePrev>1278035784</CodePrev>
+    <CodeCurrent>3058445326</CodeCurrent>
+    <CodeNext>3380993568</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:MagicCast, _),.</Message>
+    <CodePrev>3058445318</CodePrev>
+    <CodeCurrent>3380993592</CodeCurrent>
+    <CodeNext>639070453</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicEffect, _),.</Message>
+    <CodePrev>3380993592</CodePrev>
+    <CodeCurrent>639070453</CodeCurrent>
+    <CodeNext>639063669</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>639070453</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>1629143559</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...adowDamage, _) }) );.</Message>
+    <CodePrev>639063669</CodePrev>
+    <CodeCurrent>1629143559</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Charm, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1821923263</CodeCurrent>
+    <CodeNext>3058445326</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...aits::Mana, _),.</Message>
+    <CodePrev>1821923263</CodePrev>
+    <CodeCurrent>3058445326</CodeCurrent>
+    <CodeNext>3380993568</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>639070453</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>1629222535</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...adowResist, _) }) );.</Message>
+    <CodePrev>639063669</CodePrev>
+    <CodeCurrent>1629222535</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Charm, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1821923263</CodeCurrent>
+    <CodeNext>1278035784</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...telligence, _),.</Message>
+    <CodePrev>1821923263</CodePrev>
+    <CodeCurrent>1278035784</CodeCurrent>
+    <CodeNext>3058445326</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Strength, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1690460933</CodeCurrent>
+    <CodeNext>1821919443</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Speed, _),.</Message>
+    <CodePrev>1690460941</CodePrev>
+    <CodeCurrent>1821919439</CodeCurrent>
+    <CodeNext>1690497309</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _) }) );.</Message>
+    <CodePrev>639064365</CodePrev>
+    <CodeCurrent>817541612</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::HitPower, _),.</Message>
+    <CodePrev>1821919435</CodePrev>
+    <CodeCurrent>1690497285</CodeCurrent>
+    <CodeNext>639064365</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...seOnDamage, _),.</Message>
+    <CodePrev>1278188672</CodePrev>
+    <CodeCurrent>2556403154</CodeCurrent>
+    <CodeNext>1629143751</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Strength, _),.</Message>
+    <CodePrev>1690472773</CodePrev>
+    <CodeCurrent>1690460933</CodeCurrent>
+    <CodeNext>1821919439</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Speed, _),.</Message>
+    <CodePrev>1690460933</CodePrev>
+    <CodeCurrent>1821919439</CodeCurrent>
+    <CodeNext>639063649</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>3643838968</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>817548268</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...itCritical, _) }) );.</Message>
+    <CodePrev>639063669</CodePrev>
+    <CodeCurrent>817548268</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Strength, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1690460933</CodeCurrent>
+    <CodeNext>1690472809</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...telligence, _),.</Message>
+    <CodePrev>1821919443</CodePrev>
+    <CodeCurrent>1278035784</CodeCurrent>
+    <CodeNext>1277850260</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Accuracy, _),.</Message>
+    <CodePrev>1690460929</CodePrev>
+    <CodeCurrent>1690472821</CodeCurrent>
+    <CodeNext>1821919439</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Speed, _),.</Message>
+    <CodePrev>1690472821</CodePrev>
+    <CodeCurrent>1821919439</CodeCurrent>
+    <CodeNext>1278035788</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _) }) );.</Message>
+    <CodePrev>1277850284</CodePrev>
+    <CodeCurrent>817541612</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...itCritical, _),.</Message>
+    <CodePrev>1278188688</CodePrev>
+    <CodeCurrent>639064373</CodeCurrent>
+    <CodeNext>639076878</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...itCritical, _),.</Message>
+    <CodePrev>639063661</CodePrev>
+    <CodeCurrent>639064373</CodeCurrent>
+    <CodeNext>639077038</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>3643838924</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>639064381</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::HitPower, _) }) );.</Message>
+    <CodePrev>639064381</CodePrev>
+    <CodeCurrent>639076974</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _) }) );.</Message>
+    <CodePrev>2555700602</CodePrev>
+    <CodeCurrent>817541612</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...itCritical, _),.</Message>
+    <CodePrev>2556403162</CodePrev>
+    <CodeCurrent>639064373</CodeCurrent>
+    <CodeNext>2556377258</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Encounter, _),.</Message>
+    <CodePrev>2556377238</CodePrev>
+    <CodeCurrent>3380952408</CodeCurrent>
+    <CodeNext>638844910</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Surprise, _) }) );.</Message>
+    <CodePrev>3380952408</CodePrev>
+    <CodeCurrent>638844910</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...lessEffect, _),.</Message>
+    <CodePrev>639035249</CodePrev>
+    <CodeCurrent>638951669</CodeCurrent>
+    <CodeNext>1277394600</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Accuracy, _),.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>1690472821</CodeCurrent>
+    <CodeNext>639035237</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...rmorRating, _),.</Message>
+    <CodePrev>1690472821</CodePrev>
+    <CodeCurrent>639035237</CodeCurrent>
+    <CodeNext>1277903244</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...its::Charm, _),.</Message>
+    <CodePrev>3380936680</CodePrev>
+    <CodeCurrent>1821923263</CodeCurrent>
+    <CodeNext>1278035784</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...telligence, _),.</Message>
+    <CodePrev>1821923263</CodePrev>
+    <CodeCurrent>1278035784</CodeCurrent>
+    <CodeNext>1278188672</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>1278188684</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>2554789190</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...rmorRating, _) }) );.</Message>
+    <CodePrev>5845411</CodePrev>
+    <CodeCurrent>817314156</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...rmorRating, _) }) );.</Message>
+    <CodePrev>1690472773</CodePrev>
+    <CodeCurrent>817314156</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...agicResist, _),.</Message>
+    <CodePrev>1278070440</CodePrev>
+    <CodeCurrent>639063669</CodeCurrent>
+    <CodeNext>639077038</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...itCritical, _),.</Message>
+    <CodePrev>2556403170</CodePrev>
+    <CodeCurrent>639064373</CodeCurrent>
+    <CodeNext>1277571139</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Backstab, _),.</Message>
+    <CodePrev>1821921659</CodePrev>
+    <CodeCurrent>1690475333</CodeCurrent>
+    <CodeNext>1632192268</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>enchantment-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:FindMagic, _),.</Message>
+    <CodePrev>1632192268</CodePrev>
+    <CodeCurrent>3380948104</CodeCurrent>
+    <CodeNext>3380968419</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _...</Message>
+    <CodePrev>2070583571</CodePrev>
+    <CodeCurrent>544120020</CodeCurrent>
+    <CodeNext>1197671896</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _...</Message>
+    <CodePrev>800412884</CodePrev>
+    <CodeCurrent>1466832345</CodeCurrent>
+    <CodeNext>1902974421</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _...</Message>
+    <CodePrev>2271919079</CodePrev>
+    <CodeCurrent>2473493266</CodeCurrent>
+    <CodeNext>754691047</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _...</Message>
+    <CodePrev>3316990226</CodePrev>
+    <CodeCurrent>2875914431</CodeCurrent>
+    <CodeNext>4016250837</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _;...</Message>
+    <CodePrev>3509899616</CodePrev>
+    <CodeCurrent>1605882950</CodeCurrent>
+    <CodeNext>2473466946</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _...</Message>
+    <CodePrev>1605882950</CodePrev>
+    <CodeCurrent>2473466946</CodeCurrent>
+    <CodeNext>1936316227</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _;...</Message>
+    <CodePrev>2800989377</CodePrev>
+    <CodeCurrent>146265159</CodeCurrent>
+    <CodeNext>1698026575</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _;...</Message>
+    <CodePrev>3501546376</CodePrev>
+    <CodeCurrent>1983336800</CodeCurrent>
+    <CodeNext>2981437255</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>race-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ min += _; max += _;...</Message>
+    <CodePrev>2981437255</CodePrev>
+    <CodeCurrent>1203193857</CodeCurrent>
+    <CodeNext>766857568</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...edStanding, _, _, Tit...</Message>
+    <CodePrev>1031066718</CodePrev>
+    <CodeCurrent>3879228425</CodeCurrent>
+    <CodeNext>2704824836</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...et(_, _, _, _, _, _)) );.</Message>
+    <CodePrev>2704825404</CodePrev>
+    <CodeCurrent>3356774667</CodeCurrent>
+    <CodeNext>2550098657</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...dgedFlying, _, _, Title...</Message>
+    <CodePrev>2278264796</CodePrev>
+    <CodeCurrent>584131063</CodeCurrent>
+    <CodeNext>1503263424</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...et(_, _, _, _, _, _)) );.</Message>
+    <CodePrev>584085595</CodePrev>
+    <CodeCurrent>584174381</CodeCurrent>
+    <CodeNext>1168365317</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...emiesFaced, _, _, Role...</Message>
+    <CodePrev>48219060</CodePrev>
+    <CodeCurrent>1600886142</CodeCurrent>
+    <CodeNext>1515527466</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ts::StatSet(_, _, _, _,...</Message>
+    <CodePrev>1600886142</CodePrev>
+    <CodeCurrent>1515527466</CodeCurrent>
+    <CodeNext>1733934533</CodeNext>
+  </game-creature>
+  <game-creature>
+    <FileName>title-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...nsInFlight, _, _, Role...</Message>
+    <CodePrev>1444848107</CodePrev>
+    <CodeCurrent>2164050858</CodeCurrent>
+    <CodeNext>2913101929</CodeNext>
+  </game-creature>
 </NewDataSet>

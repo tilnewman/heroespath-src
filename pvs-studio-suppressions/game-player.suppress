@@ -111,4 +111,12 @@
     <CodeCurrent>612424549</CodeCurrent>
     <CodeNext>0</CodeNext>
   </game-player>
+  <game-player>
+    <FileName>initial.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...::Charm)) / _ };.</Message>
+    <CodePrev>3954517775</CodePrev>
+    <CodeCurrent>3325356048</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </game-player>
 </NewDataSet>

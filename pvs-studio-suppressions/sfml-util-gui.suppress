@@ -447,4 +447,12 @@
     <CodeCurrent>4037394415</CodeCurrent>
     <CodeNext>123</CodeNext>
   </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>item-image-manager.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...i(_); i &lt;= _; ++i).</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>160974463</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util-gui>
 </NewDataSet>
