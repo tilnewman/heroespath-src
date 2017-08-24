@@ -58,7 +58,7 @@ namespace stats
         M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "game::stats::TraitSet::Get("
             << E << ")_InvalidValueError");
 
-        return traitVec_[E];
+        return traitVec_[static_cast<std::size_t>(E)];
     }
 
 
@@ -67,7 +67,7 @@ namespace stats
         M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "game::stats::TraitSet::GetCopy("
             << E << ")_InvalidValueError");
 
-        return traitVec_[E];
+        return traitVec_[static_cast<std::size_t>(E)];
     }
 
 

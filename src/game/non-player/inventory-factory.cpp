@@ -679,7 +679,7 @@ namespace ownership
 
                 itemsPtrVecPair.first.push_back(item::weapon::WeaponFactory::Instance()->
                     Make_Projectile(PROJECTILE_TYPE,
-                                    CITER->second.RandomMaterialPri(),
+                                    CITER->second.RandomMaterialPri(), //-V783
                                     CITER->second.RandomMaterialSec()));
 
                 break;
@@ -728,7 +728,7 @@ namespace ownership
                 itemsPtrVecPair.first.push_back(
                     item::weapon::WeaponFactory::Instance()->Make_Whip(
                         WHIP_TYPE, 
-                        CITER->second.RandomMaterialPri(),
+                        CITER->second.RandomMaterialPri(), //-V783
                         CITER->second.RandomMaterialSec()));
 
                 break;

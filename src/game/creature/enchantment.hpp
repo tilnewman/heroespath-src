@@ -105,9 +105,10 @@ namespace creature
     class Enchantment
     {
     public:
-        Enchantment(const EnchantmentType::Enum TYPE      = EnchantmentType::None,
-                    const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
-                    const UseInfo &             USE_INFO  = UseInfo());
+        explicit Enchantment(
+            const EnchantmentType::Enum TYPE      = EnchantmentType::None,
+            const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
+            const UseInfo &             USE_INFO  = UseInfo());
 
         virtual ~Enchantment();
 

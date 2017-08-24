@@ -44,12 +44,12 @@ namespace stats
     class StatSet
     {
     public:
-        StatSet(const stats::Trait_t STR = 0,
-                const stats::Trait_t ACC = 0,
-                const stats::Trait_t CHA = 0,
-                const stats::Trait_t LCK = 0,
-                const stats::Trait_t SPD = 0,
-                const stats::Trait_t INT = 0);
+        explicit StatSet(const stats::Trait_t STR = 0,
+                         const stats::Trait_t ACC = 0,
+                         const stats::Trait_t CHA = 0,
+                         const stats::Trait_t LCK = 0,
+                         const stats::Trait_t SPD = 0,
+                         const stats::Trait_t INT = 0);
 
         inline stats::Trait_t Str() const { return str_; }
         inline stats::Trait_t Acc() const { return acc_; }

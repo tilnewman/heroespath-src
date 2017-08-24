@@ -54,8 +54,8 @@ namespace stats
     class Trait
     {
     public:
-        Trait(const Traits::Enum TYPE   = Traits::Count,
-              const stats::Trait_t      NORMAL = 0);
+        explicit Trait(const Traits::Enum   TYPE   = Traits::Count,
+                       const stats::Trait_t NORMAL = 0);
 
         inline Traits::Enum Which() const           { return type_; }
         inline const std::string Name() const       { return Traits::Name(type_); }
@@ -79,8 +79,8 @@ namespace stats
         inline void SetCurrentToNormal()                    { current_ = normal_; }
 
         //the given Trait's current value is used to modify
-        inline void NormalAdj(const Trait RS)               { normal_ += RS.current_; }
-        inline void CurrentAdj(const Trait RS)              { current_ += RS.current_; }
+        inline void NormalAdj(const Trait & RS)             { normal_ += RS.current_; }
+        inline void CurrentAdj(const Trait & RS)            { current_ += RS.current_; }
 
         const std::string ToString(const bool WILL_PREPEND_PLUS = true) const;
 

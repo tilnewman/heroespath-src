@@ -100,7 +100,7 @@ namespace creature
                           const item::material::Enum) const;
 
     private:
-        item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
+        item::ItemPtr_t StoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
 
         std::vector<Enchantment *> MakeFromUniqueType(const item::unique_type::Enum,
                                                       const item::material::Enum) const;

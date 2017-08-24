@@ -2142,7 +2142,9 @@ namespace stage
         if (HELD_DOWN_STAT != stats::Traits::Count)
         {
             sfml_util::SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
-            fixedStatsSVec_[HELD_DOWN_STAT]->SetPosY(GetStatPosTop(HELD_DOWN_STAT));
+
+            fixedStatsSVec_[static_cast<std::size_t>(HELD_DOWN_STAT)]->
+                SetPosY(GetStatPosTop(HELD_DOWN_STAT));
         }
 
         dragStartY_ = -1.0f;//anything less than zero here will work

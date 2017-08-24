@@ -1611,25 +1611,25 @@ namespace item
 
     int ItemProfileWarehouse::ScoreAventail(item::armor::base_type::Enum E)
     {
-        return 35 + Score(E);
+        return 34 + Score(E);
     }
 
 
     int ItemProfileWarehouse::ScoreBracer(item::armor::base_type::Enum E)
     {
-        return 35 + Score(E);
+        return 36 + Score(E);
     }
 
 
     int ItemProfileWarehouse::ScoreShirt(item::armor::base_type::Enum E)
     {
-        return 45 + Score(E);
+        return 44 + Score(E);
     }
 
 
     int ItemProfileWarehouse::ScoreBoots(item::armor::base_type::Enum E)
     {
-        return 45 + Score(E);
+        return 46 + Score(E);
     }
 
 

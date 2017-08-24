@@ -106,7 +106,7 @@ namespace creature
 
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
-                MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
+                StoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
             }
         }
 
@@ -118,7 +118,7 @@ namespace creature
 
             for(auto const NEXT_ENCHANTMENT_PTR : MADE_ECHANTMENT_PTR_VEC)
             {
-                MakeStoreAttachReturn(itemPtr, NEXT_ENCHANTMENT_PTR);
+                StoreAttachReturn(itemPtr, NEXT_ENCHANTMENT_PTR);
             }
 
             return itemPtr;
@@ -135,7 +135,7 @@ namespace creature
 
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
-                return MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
+                return StoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
             }
         }
 
@@ -144,7 +144,7 @@ namespace creature
             auto const MADE_ECHANTMENT_PTR{ MakeFromSetType(itemPtr->SetType()) };
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
-                return MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
+                return StoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
             }
         }
 
@@ -156,7 +156,7 @@ namespace creature
 
             if (MADE_ECHANTMENT_PTR != nullptr)
             {
-                return MakeStoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
+                return StoreAttachReturn(itemPtr, MADE_ECHANTMENT_PTR);
             }
         }
 
@@ -174,9 +174,9 @@ namespace creature
             "game::creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr/details version)"
             << " was given a null itemPtr.");
 
-        return MakeStoreAttachReturn(itemPtr, new Enchantment(TYPE,
-                                                              TRAIT_SET,
-                                                              USE_INFO));
+        return StoreAttachReturn(itemPtr, new Enchantment(TYPE,
+                                                          TRAIT_SET,
+                                                          USE_INFO));
     }
 
 
@@ -213,6 +213,14 @@ namespace creature
         }
 
         auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
+            "game::creature::EnchantmentFactory::TreasureScore("
+            << "misc_type=" << item::misc_type::ToString(E)
+            << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
+            << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
+            << ") MakeFromMiscType() returned a nullptr.");
+        
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
         return SCORE;
@@ -228,7 +236,18 @@ namespace creature
         }
 
         auto const INDV_ENCHANTMENT_PTR{ MakeFromSetType(E) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS((INDV_ENCHANTMENT_PTR != nullptr),
+            "game::creature::EnchantmentFactory::TreasureScore("
+            << "set_type=" << item::set_type::ToString(E)
+            << ") MakeFromSetType() returned a nullptr.");
+
         auto const COMP_ENCHANTMENT_PTR{ MakeFromSetCompleteType(E) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS((COMP_ENCHANTMENT_PTR != nullptr),
+            "game::creature::EnchantmentFactory::TreasureScore("
+            << "set_type=" << item::set_type::ToString(E)
+            << ") MakeFromSetCompleteType() returned a nullptr.");
 
         auto const SCORE{ INDV_ENCHANTMENT_PTR->TreasureScore() +
                           COMP_ENCHANTMENT_PTR->TreasureScore() };
@@ -257,6 +276,14 @@ namespace creature
                                                       IS_WEAPON,
                                                       IS_ARMOR) };
 
+        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
+            "game::creature::EnchantmentFactory::TreasureScore("
+            << "named_type=" << item::named_type::ToString(NAMED_ENUM)
+            << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
+            << ", is_weapon=" << std::boolalpha << IS_WEAPON
+            << ", is_armor=" << std::boolalpha << IS_ARMOR
+            << ") MakeFromNamedType() returned a nullptr.");
+
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
 
         delete ENCHANTMENT_PTR;
@@ -276,6 +303,14 @@ namespace creature
         }
 
         auto const ENCHANTMENT_PTR{ MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
+            "game::creature::EnchantmentFactory::TreasureScore("
+            << "element_type=" << item::element_type::ToString(E)
+            << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
+            << ", is_weapon=" << std::boolalpha << IS_WEAPON
+            << ") MakeFromElementType() returned a nullptr.");
+
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
 
@@ -284,16 +319,16 @@ namespace creature
     }
 
 
-    item::ItemPtr_t EnchantmentFactory::MakeStoreAttachReturn(
+    item::ItemPtr_t EnchantmentFactory::StoreAttachReturn(
         item::ItemPtr_t     itemPtr,
         Enchantment * const enchantmentPtr) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((itemPtr != nullptr),
-            "game::creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr/enchPtr version)"
+            "game::creature::EnchantmentFactory::StoreAttachReturn(itemPtr/enchPtr version)"
             << " was given a null itemPtr.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((enchantmentPtr != nullptr),
-            "game::creature::EnchantmentFactory::MakeStoreAttachReturn(item=" << itemPtr->Name()
+            "game::creature::EnchantmentFactory::StoreAttachReturn(item=" << itemPtr->Name()
             << ") was given a null enchantmentPtr.");
 
         itemPtr->EnchantmentAdd( EnchantmentWarehouse::Instance()->Store(enchantmentPtr) );
