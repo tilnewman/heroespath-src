@@ -380,20 +380,20 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->IsBodypart() == false),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-            << "\", profile=[" << ITEM_PROFILE.ToString()
-            << "]) created a bodypart item but there should be no bodypart items.");
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") created a bodypart item but there should be no bodypart items.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->IsBroken() == false),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-            << "\", profile=[" << ITEM_PROFILE.ToString()
-            << "]) created a broken item.");
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") created a broken item.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->Category() != category::None),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-            << "\", profile=[" << ITEM_PROFILE.ToString()
-            << "]) created an item with no/empty category.");
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") created an item with no/empty category.");
 
         if (((ITEM_PTR->SetType() != set_type::Count) &&
              (ITEM_PTR->SetType() != set_type::NotASet)) &&
@@ -411,14 +411,14 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->ImageFilename().empty() == false),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-            << "\", profile=[" << ITEM_PROFILE.ToString()
-            << "]) created an item with no/empty image filename.");
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") created an item with no/empty image filename.");
 
         M_ASSERT_OR_LOGANDTHROW_SS((element_type::IsValid(ITEM_PTR->ElementType())),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-            << "\", profile=[" << ITEM_PROFILE.ToString()
-            << "]) created an item with an invalid element_type.");
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") created an item with an invalid element_type.");
     }
 
 

@@ -72,7 +72,8 @@ namespace item
         void Setup_SetEquipment();
         void Setup_SummoningItems();
         void Setup_EliminateDuplicates();
-        void Setup_LogStatistics();
+        void Setup_LogAndThrowOnInvalid() const;
+        void Setup_LogStatistics() const;
 
         inline const ItemProfileVec_t & Get() const { return profiles_; }
 

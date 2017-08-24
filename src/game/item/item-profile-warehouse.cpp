@@ -116,7 +116,8 @@ namespace item
         Setup_SummoningItems();
 
         Setup_EliminateDuplicates();
-        
+        Setup_LogAndThrowOnInvalid();
+
         //Sorting by treasure score will help speed up later uses of profiles_
         // during gameplay, and is required before Setup_LogStatistics().
         std::sort(profiles_.begin(),
@@ -126,7 +127,10 @@ namespace item
                         return A.TreasureScore() < B.TreasureScore();
                     });
 
-        Setup_LogStatistics();
+        //This line adds lots of verbose details about item profiles to the log,
+        //which are not normally needed during a typical run of the game,
+        //so this line will normally be commented out.
+        //Setup_LogStatistics();
     }
 
 
@@ -385,7 +389,30 @@ namespace item
     }
 
 
-    void ItemProfileWarehouse::Setup_LogStatistics()
+    void ItemProfileWarehouse::Setup_LogAndThrowOnInvalid() const
+    {
+        auto didFindInvalid{ false };
+
+        for (auto const & PROFILE : profiles_)
+        {
+            if (PROFILE.IsValid() == false)
+            {
+                didFindInvalid = true;
+
+                M_HP_LOG_DBG("ItemProfileWarehouse found invalid profiles during Setup():  \""
+                    << PROFILE.ToMemberStrings().InvalidString()
+                    << "\", profile=" << PROFILE.ToString());
+            }
+        }
+
+        if (didFindInvalid)
+        {
+            throw std::runtime_error("ItemProfileWarehouse found invalid profiles during Setup().");
+        }
+    }
+
+
+    void ItemProfileWarehouse::Setup_LogStatistics() const
     {
         struct ItemSet
         {
@@ -591,7 +618,7 @@ namespace item
         const named_type::Enum    NAMED_TYPE,
         const set_type::Enum      SET_TYPE)
     {
-        auto const ELEMENT_TYPE{ [&]()
+        auto const ELEMENT_TYPES{ [&]()
             {
                 if ((NAMED_TYPE != named_type::NotNamed) &&
                     (NAMED_TYPE != named_type::Count))
@@ -612,7 +639,7 @@ namespace item
                 }
             }() };
 
-        auto elementCombinationsVec{ element_type::Combinations(ELEMENT_TYPE) };
+        auto elementCombinationsVec{ element_type::Combinations(ELEMENT_TYPES) };
         elementCombinationsVec.push_back(element_type::None);
 
         SetupFromThinProfile(THIN_PROFILE,

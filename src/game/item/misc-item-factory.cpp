@@ -148,8 +148,8 @@ namespace misc
             return Make_MiscBlessedOrCursed(PROFILE);
         }
 
-        M_HP_LOG_ERR("game::item::misc::MiscItemFactory::Make(profile=[" << PROFILE.ToString()
-            << "]) was unable to make an item with that profile.");
+        M_HP_LOG_ERR("game::item::misc::MiscItemFactory::Make(profile=" << PROFILE.ToString()
+            << ") was unable to make an item with that profile.");
 
         return nullptr;
     }

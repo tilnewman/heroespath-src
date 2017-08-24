@@ -31,7 +31,10 @@
 #include "game/item/item-type-enum.hpp"
 #include "game/item/armor-types.hpp"
 #include "game/item/weapon-types.hpp"
+
 #include "sfml-util/size-enum.hpp"
+
+#include "misc/handy-types.hpp"
 
 #include <tuple>
 #include <string>
@@ -42,6 +45,30 @@ namespace game
 {
 namespace item
 {
+
+    struct MemberStrings
+    {
+        MemberStrings(const ::misc::StrVec_t & NORMAL_STRINGS,
+                      const ::misc::StrVec_t & WEAPON_STRINGS,
+                      const ::misc::StrVec_t & ARMOR_STRINGS)
+        :
+            normalStrings(NORMAL_STRINGS),
+            weaponStrings(WEAPON_STRINGS),
+            armorStrings(ARMOR_STRINGS)
+        {}
+
+        const std::string InvalidString() const;
+
+        inline bool IsValid() const { return InvalidString().empty(); }
+        
+        const std::string ToString() const;
+
+    private:
+        ::misc::StrVec_t normalStrings;
+        ::misc::StrVec_t weaponStrings;
+        ::misc::StrVec_t armorStrings;
+    };
+
 
     //A collection of details about an item that uniquely idenify an item.
     //A "Thin" Profile is an incomplete profile used as a placeholder for a
@@ -186,7 +213,11 @@ namespace item
             return (IsStandard() && IsEquipment());
         }
 
-        const std::string ToString() const;
+        const MemberStrings ToMemberStrings() const;
+
+        inline const std::string ToString() const { return ToMemberStrings().ToString(); }
+
+        inline bool IsValid() const { return ToMemberStrings().IsValid(); }
 
         void SetUnique(const unique_type::Enum,
                        const material::Enum MATERIAL_PRIMARY   = material::Nothing,

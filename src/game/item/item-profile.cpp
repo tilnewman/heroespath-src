@@ -32,6 +32,8 @@
 #include "game/creature/enchantment-factory.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 
+#include "misc/boost-string-includes.hpp"
+
 #include <sstream>
 
 
@@ -39,6 +41,93 @@ namespace game
 {
 namespace item
 {
+
+    const std::string MemberStrings::InvalidString() const
+    {
+        if (normalStrings.empty())
+        {
+            return "no normal info";
+        }
+
+        if (weaponStrings.size() > 1)
+        {
+            return "multiple base weapon types";
+        }
+
+        if (armorStrings.size() > 1)
+        {
+            return "multiple base armor types";
+        }
+
+        if (std::find_if(normalStrings.begin(),
+                         normalStrings.end(),
+                            [](const auto & S)
+                            {
+                                return boost::algorithm::contains(S, "category");
+                            }) == normalStrings.end())
+        {
+            return "no category";
+        }
+
+        auto const HAS_WEAPONTYPE{ (std::find_if(normalStrings.begin(),
+                                                 normalStrings.end(),
+                                                 [](const auto & S)
+            {
+                return boost::algorithm::contains(S, "weapon_type");
+            }) != normalStrings.end()) };
+
+        auto const HAS_ARMORTYPE{ (std::find_if(normalStrings.begin(),
+                                                normalStrings.end(),
+                                                [](const auto & S)
+            {
+                return boost::algorithm::contains(S, "armor_type");
+            }) != normalStrings.end()) };
+
+        if (HAS_WEAPONTYPE && HAS_ARMORTYPE)
+        {
+            return "is both weapon and armor";
+        }
+
+        if (HAS_WEAPONTYPE && weaponStrings.empty())
+        {
+            return "weapon type with no specific weapon set";
+        }
+
+        if (HAS_ARMORTYPE && armorStrings.empty())
+        {
+            return "armor type with no specific armor set";
+        }
+
+        if (HAS_WEAPONTYPE && (armorStrings.empty() == false))
+        {
+            return "weapon type with specific armor set";
+        }
+        
+        if (HAS_ARMORTYPE && (weaponStrings.empty() == false))
+        {
+            return "armor type with specifc weapon set";
+        }
+
+        return "";
+    }
+
+
+    const std::string MemberStrings::ToString() const
+    {
+        std::ostringstream ss;
+
+        auto streamToSS = [& ss](const auto & ARG)
+            {
+                ss << ((ss.str().empty()) ? "" : ", ") << ARG;
+            };
+
+        std::for_each(normalStrings.begin(), normalStrings.end(), streamToSS);
+        std::for_each(weaponStrings.begin(), weaponStrings.end(), streamToSS);
+        std::for_each(armorStrings.begin(), armorStrings.end(), streamToSS);
+
+        return "[" + ss.str() + "]";
+    }
+
 
     ItemProfile::ItemProfile()
     :
@@ -127,223 +216,218 @@ namespace item
     }
 
 
-    const std::string ItemProfile::ToString() const
+    const MemberStrings ItemProfile::ToMemberStrings() const
     {
-        std::ostringstream ss;
+        ::misc::StrVec_t normalStrings;
+        ::misc::StrVec_t weaponStrings;
+        ::misc::StrVec_t armorStrings;
 
         if (baseName_.empty() == false)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "base_name=" << baseName_;
+            normalStrings.push_back("base_name=" + baseName_);
         }
 
         if (category_ != 0)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "category="
-                << category::ToString(category_, true);
+            normalStrings.push_back("category=" + category::ToString(category_, true));
         }
 
         if (armor_ != 0)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "armor_type="
-                << armor_type::ToString(armor_, true);
+            normalStrings.push_back("armor_type=" + armor_type::ToString(armor_, true));
         }
 
         if (weapon_ != 0)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "weapon_type="
-                << weapon_type::ToString(weapon_, true);
+            normalStrings.push_back("weapon_type=" + weapon_type::ToString(weapon_, true));
         }
 
         if ((unique_ != unique_type::NotUnique) && (unique_ != unique_type::Count))
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "unique_type="
-                << unique_type::ToString(unique_);
+            normalStrings.push_back("unique_type=" + unique_type::ToString(unique_));
         }
 
         if ((misc_ != misc_type::NotMisc) && (misc_ != misc_type::Count))
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "misc_type="
-                << misc_type::ToString(misc_);
+            normalStrings.push_back("misc_type=" + misc_type::ToString(misc_));
         }
 
         if ((set_ != set_type::NotASet) && (set_ != set_type::Count))
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "set_type="
-                << set_type::ToString(set_);
+            normalStrings.push_back("set_type=" + set_type::ToString(set_));
         }
 
         if ((named_ != named_type::NotNamed) && (named_ != named_type::Count))
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "named_type="
-                << named_type::ToString(named_);
+            normalStrings.push_back("named_type=" + named_type::ToString(named_));
         }
 
         if (element_ != element_type::None)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "element_type="
-                << element_type::ToString(element_);
+            normalStrings.push_back("element_type=" + element_type::ToString(element_));
         }
 
         if (isPixie_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Pixie)";
+            normalStrings.push_back("(Pixie)");
         }
 
         if (shield_ != armor::shield_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "shield_type="
-                << armor::shield_type::ToString(shield_);
+            armorStrings.push_back("shield_type=" + armor::shield_type::ToString(shield_));
         }
 
         if (helm_ != armor::helm_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "helm_type="
-                << armor::helm_type::ToString(helm_);
+            armorStrings.push_back("helm_type=" + armor::helm_type::ToString(helm_));
         }
 
         if (base_ != armor::base_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "base_type="
-                << armor::base_type::ToString(base_);
+            normalStrings.push_back("base_type=" + armor::base_type::ToString(base_));
         }
 
         if (cover_ != armor::cover_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "cover_type="
-                << armor::cover_type::ToString(cover_);
+            armorStrings.push_back("cover_type=" + armor::cover_type::ToString(cover_));
         }
 
         if (isAventail_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Aventail)";
+            armorStrings.push_back("(Aventail)");
         }
 
         if (isBracer_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Bracer)";
+            armorStrings.push_back("(Bracer)");
         }
 
         if (isShirt_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Shirt)";
+            armorStrings.push_back("(Shirt)");
         }
 
         if (isBoots_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Boots)";
+            armorStrings.push_back("(Boots)");
         }
 
         if (isPants_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Pants)";
+            armorStrings.push_back("(Pants)");
         }
 
         if (isGauntlets_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Gauntlets)";
+            armorStrings.push_back("(Gauntlets)");
         }
 
         if (sword_ != weapon::sword_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "sword_type="
-                << weapon::sword_type::ToString(sword_);
+            weaponStrings.push_back("sword_type=" + weapon::sword_type::ToString(sword_));
         }
 
         if (axe_ != weapon::axe_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "axe_type="
-                << weapon::axe_type::ToString(axe_);
+            weaponStrings.push_back("axe_type=" + weapon::axe_type::ToString(axe_));
         }
 
         if (club_ != weapon::club_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "club_type="
-                << weapon::club_type::ToString(club_);
+            weaponStrings.push_back("club_type=" + weapon::club_type::ToString(club_));
         }
 
         if (whip_ != weapon::whip_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "whip_type="
-                << weapon::whip_type::ToString(whip_);
+            weaponStrings.push_back("whip_type=" + weapon::whip_type::ToString(whip_));
         }
 
         if (proj_ != weapon::projectile_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "proj_type="
-                << weapon::projectile_type::ToString(proj_);
+            weaponStrings.push_back("proj_type=" + weapon::projectile_type::ToString(proj_));
         }
 
         if (bstaff_ != weapon::bladedstaff_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "bstaff_type="
-                << weapon::bladedstaff_type::ToString(bstaff_);
+            weaponStrings.push_back("bstaff_type=" +
+                weapon::bladedstaff_type::ToString(bstaff_));
         }
 
         if (isKnife_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Knife)";
+            weaponStrings.push_back("(Knife)");
         }
 
         if (isDagger_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Dagger)";
+            weaponStrings.push_back("(Dagger)");
         }
 
         if (isStaff_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(Staff)";
+            weaponStrings.push_back("(Staff)");
         }
 
         if (isQStaff_)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "(QuarterStaff)";
+            weaponStrings.push_back("(QuarterStaff)");
         }
 
         if (size_ != sfml_util::Size::Medium)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "size="
-                << sfml_util::Size::ToString(size_);
+            normalStrings.push_back("size=" + sfml_util::Size::ToString(size_));
         }
 
         if (((matPri_ == material::Nothing) && (matSec_ == material::Nothing)) == false)
         {
+            std::ostringstream ss;
+            
             ss << ((ss.str().empty()) ? "" : ", ") << "mat="
                 << ((matPri_ == material::Count) ? "(count)" : material::ToString(matPri_))
                 << ","
                 << ((matSec_ == material::Count) ? "(count)" : material::ToString(matSec_));
+
+            normalStrings.push_back(ss.str());
         }
 
         if (armorType_ != armor::base_type::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "armorTypeRestricted="
-                << armor::base_type::ToString(armorType_);
+            normalStrings.push_back("armor_type_restriction=" +
+                armor::base_type::ToString(armorType_));
         }
 
         if (role_ != creature::role::Count)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "role_restriction="
-                << creature::role::ToString(role_);
+            normalStrings.push_back("role_restriction=" + creature::role::ToString(role_));
         }
 
         if (score_ != 0)
         {
-            ss << ((ss.str().empty()) ? "" : ", ") << "score=" << score_;
+            std::ostringstream ss;
+            ss << "score=" << score_;
+            normalStrings.push_back(ss.str());
         }
 
         if (summonInfo_.OriginType() != creature::origin_type::Count)
         {
+            std::ostringstream ss;
+
             ss << ((ss.str().empty()) ? "" : ", ")
                 << creature::origin_type::ToString(summonInfo_.OriginType())
                 << " summoning a "
                 << creature::race::RaceRoleName(summonInfo_.Race(), summonInfo_.Role());
+
+            normalStrings.push_back(ss.str());
         }
 
         if (religious_ > 0.0f)
         {
+            std::ostringstream ss;
             ss << ((ss.str().empty()) ? "" : ", ") << "religious_ratio=" << religious_;
+            normalStrings.push_back(ss.str());
         }
 
-        return ss.str();
+        return MemberStrings(normalStrings, weaponStrings, armorStrings);
     }
 
 
