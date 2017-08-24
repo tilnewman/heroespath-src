@@ -345,13 +345,20 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", ITEM_PTR=nullptr, profile=" << ITEM_PROFILE.ToString()
-            << ") given a null ITEM_PTR");
+            << ") given a null ITEM_PTR.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PROFILE.IsValid()),
+            "game::item::ItemFactory::TestItem(which_test="
+            << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
+            << "\", profile=" << ITEM_PROFILE.ToString()
+            << ") tried to make an item with an invalid profile: \""
+            << ITEM_PROFILE.ToMemberStrings().InvalidString() << "\"");
 
         M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->MaterialPrimary() != ITEM_PTR->MaterialSecondary()),
             "game::item::ItemFactory::TestItem(which_test="
             << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
             << "\", profile=" << ITEM_PROFILE.ToString()
-            << ") given a null ITEM_PTR");
+            << ") made an item with duplicate materials.");
 
         if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->IsArmor()))
         {

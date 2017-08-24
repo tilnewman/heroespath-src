@@ -49,6 +49,37 @@ namespace item
             return "no normal info";
         }
 
+        auto const MATERIAL_STRING_ITER{ std::find_if(normalStrings.begin(),
+                                                      normalStrings.end(),
+                            [](const auto & S)
+                            {
+                                return boost::algorithm::contains(S, "mat=");
+                            }) };
+
+        if (MATERIAL_STRING_ITER == normalStrings.end())
+        {
+            return "missing materials";
+        }
+
+        auto const MATERIAL_STRINGS{ boost::algorithm::erase_all_copy(
+            * MATERIAL_STRING_ITER, "mat=") };
+
+        auto const COMMA_POS{ MATERIAL_STRINGS.find(",") };
+
+        auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(COMMA_POS) };
+        
+        if ((MATERIAL_STRING_PRI == "Nothing") || (MATERIAL_STRING_PRI == "(count)"))
+        {
+            return "primary material is Nothing or Count";
+        }
+
+        auto const MATERIAL_STRING_SEC{ MATERIAL_STRINGS.substr(COMMA_POS + 1) };
+
+        if (MATERIAL_STRING_PRI == MATERIAL_STRING_SEC)
+        {
+            return "primary and secondary materials are the same";
+        }
+
         if (weaponStrings.size() > 1)
         {
             return "multiple base weapon types";
@@ -378,7 +409,6 @@ namespace item
             normalStrings.push_back("size=" + sfml_util::Size::ToString(size_));
         }
 
-        if (((matPri_ == material::Nothing) && (matSec_ == material::Nothing)) == false)
         {
             std::ostringstream ss;
             
