@@ -172,12 +172,16 @@ namespace stage
                               * sfml_util::FontManager::Instance()->Font_Default1(),
                               sfml_util::FontManager::Instance()->Size_Normal());
 
+            //The extra +10 is added because testText's height is only an estimation.
             auto const TEXT_HEIGHT{ testText.getGlobalBounds().height + 10.0f };
 
-            auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0 + TEXT_HEIGHT };
+            //The + 256 is to make room for the images, so text is not drawn over them.
+            auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
+
+            //The extra * 2 is added because without it, the text at the bottom is cut off.
             auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
 
-            StrSizePairVec_t::reverse_iterator rItr(testingBlurbsVec_.rbegin());
+            StrSizePairVec_t::reverse_iterator rItr{ testingBlurbsVec_.rbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
                 std::ostringstream ss;

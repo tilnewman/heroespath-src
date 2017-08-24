@@ -103,8 +103,19 @@ namespace item
 
     bool ItemFactory::Test()
     {
-        LoopManager::Instance()->TestingStrAppend(
-            "game::item::ItemFactory::Test() Testing Started");
+        static auto didPostInitial{ false };
+        if (false == didPostInitial)
+        {
+            didPostInitial = true;
+
+            LoopManager::Instance()->TestingStrAppend(
+                "game::item::ItemFactory::Test() Starting Tests...");
+
+            LoopManager::Instance()->TestingStrAppend(
+                "game::item::ItemFactory::Test() Starting Named Equipment Tests.  Please wait...");
+
+            return false;
+        }
 
         static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->Get() };
 
@@ -131,7 +142,8 @@ namespace item
             }
 
             LoopManager::Instance()->TestingStrAppend(
-                "game::item::ItemFactory::Test() All named_type items passed testing.");
+                std::string("game::item::ItemFactory::Test() All named_type tests PASSED.")
+                + "  Starting Unique Item Tests.  Please wait...");
 
             allItemProfilesVec.erase(allItemProfilesVec.begin(), NAMED_TYPE_END_ITER);
             hasTestedMakingItems_NamedEquipment = true;
@@ -161,7 +173,8 @@ namespace item
             }
 
             LoopManager::Instance()->TestingStrAppend(
-                "game::item::ItemFactory::Test() All unique_type items passed testing.");
+                std::string("game::item::ItemFactory::Test() All unique_type tests PASSED.")
+                    + "  Starting Set Item Tests.  Please wait...");
 
             allItemProfilesVec.erase(allItemProfilesVec.begin(), UNIQUE_TYPE_END_ITER);
             hasTestedMakingItems_Unique = true;
@@ -191,7 +204,8 @@ namespace item
             }
 
             LoopManager::Instance()->TestingStrAppend(
-                "game::item::ItemFactory::Test() All set_type items passed testing.");
+                std::string("game::item::ItemFactory::Test() All set_type tests PASSED.")
+                    + "  Starting Misc Item Tests.  Please wait...");
 
             allItemProfilesVec.erase(allItemProfilesVec.begin(), SET_TYPE_END_ITER);
             hasTestedMakingItems_Set = true;
@@ -221,7 +235,8 @@ namespace item
             }
 
             LoopManager::Instance()->TestingStrAppend(
-                "game::item::ItemFactory::Test() All standalone misc_type items passed testing.");
+                std::string("game::item::ItemFactory::Test() All stand-alone misc_type ")
+                    + "tests PASSED.  Starting Equipment with Element Type Tests. Please wait...");
 
             allItemProfilesVec.erase(allItemProfilesVec.begin(), MISC_TYPE_END_ITER);
             hasTestedMakingItems_Misc = true;
@@ -258,7 +273,7 @@ namespace item
 
             LoopManager::Instance()->TestingStrAppend(
                 std::string("game::item::ItemFactory::Test() All remaining element_type ")
-                + "equipment items passed testing.");
+                + "equipment tests PASSED.  Starting Standard Equipment Tests.  Please wait...");
 
             allItemProfilesVec.erase(allItemProfilesVec.begin(), ELEMENT_TYPE_END_ITER);
             hasTestedMakingItems_ElementEquipment = true;
@@ -297,8 +312,8 @@ namespace item
             }
 
             LoopManager::Instance()->TestingStrAppend(
-                std::string("game::item::ItemFactory::Test() All remaining standard equipment ")
-                + "items passed testing.");
+                std::string("game::item::ItemFactory::Test() All Standard Equipment ")
+                + " (All Remaining Profiles) Tests PASSED.");
 
             allItemProfilesVec.clear();
             hasTestedMakingItems_StandardEquipment = true;
@@ -308,8 +323,16 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS((allItemProfilesVec.empty()),
             "game::item::ItemFactory::Test() failed to extract all from allItemProfilesVec.");
 
-        LoopManager::Instance()->TestingStrAppend(
-            "game::item::ItemFactory::Test() Testing Complete:  ALL TESTS PASSED");
+        static auto didPostFinal{ false };
+        if (false == didPostFinal)
+        {
+            didPostFinal = true;
+
+            LoopManager::Instance()->TestingStrAppend(
+                "game::item::ItemFactory::Test() Testing Complete:  ALL TESTS PASSED");
+        
+            return false;
+        }
 
         return true;
     }
