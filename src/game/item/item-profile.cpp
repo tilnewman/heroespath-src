@@ -66,7 +66,7 @@ namespace item
 
         auto const COMMA_POS{ MATERIAL_STRINGS.find(",") };
 
-        auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(COMMA_POS) };
+        auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(0, COMMA_POS) };
         
         if ((MATERIAL_STRING_PRI == "Nothing") || (MATERIAL_STRING_PRI == "(count)"))
         {

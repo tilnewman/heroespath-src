@@ -165,7 +165,7 @@ namespace item
             M_ASSERT_OR_LOGANDTHROW_SS((UNIQUE_TYPE_END_ITER != allItemProfilesVec.begin()),
                 "game::item::ItemFactory::Test() found no unique_type ItemProfiles.");
 
-            for (auto iter{ allItemProfilesVec.end() }; iter != UNIQUE_TYPE_END_ITER; ++iter)
+            for (auto iter{ allItemProfilesVec.begin() }; iter != UNIQUE_TYPE_END_ITER; ++iter)
             {
                 auto itemPtr{ Instance()->Make(*iter) };
                 TestItem("unique_type", itemPtr, * iter);

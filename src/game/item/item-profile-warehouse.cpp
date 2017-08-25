@@ -371,8 +371,6 @@ namespace item
     {
         auto const RAW_COUNT{ profiles_.size() };
         
-        //I can't find the bug in this code that is creating duplicates,
-        //so I'll just remove those duplicates here.  -zTn 2017-8-10
         std::sort(profiles_.begin(), profiles_.end());
         profiles_.erase(std::unique(profiles_.begin(), profiles_.end()), profiles_.end());
 
@@ -385,7 +383,7 @@ namespace item
             << DUPLICATE_PROFILE_COUNT << " duplicate profiles, "
             << profiles_.size() << " final profiles, with a vector capacity that is "
             << ((profiles_.size() == profiles_.capacity()) ? "shrunk" : "NOT-shurnk")
-            << ".");
+            << " to fit.");
     }
 
 
