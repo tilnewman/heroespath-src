@@ -138,9 +138,9 @@ namespace item
     {
         auto setupThinProfile = [this](const auto & THIN_PROFILE)
             {
-                SetupFromThinProfile(THIN_PROFILE,
-                                     named_type::NotNamed,
-                                     set_type::NotASet);
+                this->SetupFromThinProfile(THIN_PROFILE,
+                                           named_type::NotNamed,
+                                           set_type::NotASet);
             };
 
         auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
