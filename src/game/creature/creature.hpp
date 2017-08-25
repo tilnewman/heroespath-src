@@ -499,7 +499,6 @@ namespace creature
         BodyType            bodyType_;
         race::Enum          race_;
         role::Enum          role_;
-        stats::StatSet      stats_;
         SerialNumber_t      serialNumber_;
         CondEnumVec_t       conditionsVec_;
         TitleEnumVec_t      titlesVec_;
@@ -576,6 +575,10 @@ namespace creature
             ar & lastSpellCastNum_;
             ar & songsVec_;
             ar & lastSongPlayedNum_;
+            ar & healthCurrent_;
+            ar & healthNormal_;
+            ar & rank_;
+            ar & experience_;
             ar & actualSet_;
             ar & bonusSet_;
         }

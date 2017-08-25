@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 
 namespace game

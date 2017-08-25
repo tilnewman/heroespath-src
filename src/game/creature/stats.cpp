@@ -351,9 +351,9 @@ namespace creature
 
     stats::Trait_t Stats::LuckBonus(const CreaturePtr_t CREATURE_PTR)
     {
-        return misc::random::Int(static_cast<int>(static_cast<float>(
-            CREATURE_PTR->TraitWorking(stats::Traits::Luck) /
-                GameDataFile::Instance()->GetCopyFloat("heroespath-fight-stats-luck-adj-ratio"))));
+        return misc::random::Int( static_cast<int>(static_cast<float>(
+            CREATURE_PTR->TraitWorking(stats::Traits::Luck)) /
+                GameDataFile::Instance()->GetCopyFloat("heroespath-fight-stats-luck-adj-ratio")) );
     }
 
 
