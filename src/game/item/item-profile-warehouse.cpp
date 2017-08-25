@@ -136,7 +136,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_StandardEquipmen()
     {
-        auto setupThinProfile = [&](const auto & THIN_PROFILE)
+        auto setupThinProfile = [this](const auto & THIN_PROFILE)
             {
                 SetupFromThinProfile(THIN_PROFILE,
                                      named_type::NotNamed,

@@ -1166,9 +1166,14 @@ namespace item
                                                 category::Equippable |
                                                 category::TwoHanded);
 
-        auto const BLADDED_TYPE{ ((E == bladedstaff_type::Spear) ? 0 : weapon_type::Bladed) };
-        auto const POINTED_TYPE{ ((E == bladedstaff_type::Scythe) ? 0 : weapon_type::Pointed) };
-        auto const SPEAR_TYPE{ ((E == bladedstaff_type::Spear) ? weapon_type::Spear : 0) };
+        auto const BLADDED_TYPE{ ((E == bladedstaff_type::Spear) ?
+            weapon_type::NotAWeapon : weapon_type::Bladed) };
+
+        auto const POINTED_TYPE{ ((E == bladedstaff_type::Scythe) ?
+            weapon_type::NotAWeapon : weapon_type::Pointed) };
+
+        auto const SPEAR_TYPE{ ((E == bladedstaff_type::Spear) ?
+            weapon_type::Spear : weapon_type::NotAWeapon) };
 
         weapon_ = static_cast<weapon_type::Enum>(BLADDED_TYPE |
                                                  weapon_type::BladedStaff |
