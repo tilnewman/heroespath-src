@@ -62,12 +62,12 @@ namespace sfml_util
         soundEffectsSetVec_     (),
         combatIntroMusicInfoVec_(),
         songsVec_               (),
-        soundEffectsToPlayVec_  (),
-        soundEffectsVec_        ()
+        sfxToPlayPairsVec_  (),
+        sfxVec_        ()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
-        soundEffectsVec_.resize(static_cast<std::size_t>(sound_effect::Count));
+        sfxVec_.resize(static_cast<std::size_t>(sound_effect::Count));
         soundEffectsSetVec_.resize(static_cast<std::size_t>(SfxSet::Count));
     }
 
@@ -642,7 +642,7 @@ namespace sfml_util
     {
         effectsVolume_ = V;
 
-        for (auto & nextSoundEffectData : soundEffectsVec_)
+        for (auto & nextSoundEffectData : sfxVec_)
         {
             nextSoundEffectData.sound.setVolume(effectsVolume_);
         }
@@ -652,7 +652,7 @@ namespace sfml_util
     void SoundManager::SoundEffectPlay(const sound_effect::Enum E,
                                        const float              PRE_DELAY_SEC)
     {
-        soundEffectsToPlayVec_.push_back( std::make_pair(E, PRE_DELAY_SEC) );
+        sfxToPlayPairsVec_.push_back( std::make_pair(E, PRE_DELAY_SEC) );
     }
 
 
@@ -986,57 +986,60 @@ namespace sfml_util
 
     void SoundManager::SoundEffectsUpdate(const float ELAPSED_TIME_SEC)
     {
-        for (auto & nextSfxDelayPair : soundEffectsToPlayVec_)
+        for (auto & nextSfxDelayPair : sfxToPlayPairsVec_)
         {
             nextSfxDelayPair.second -= ELAPSED_TIME_SEC;
 
             if (nextSfxDelayPair.second < 0.0f)
             {
-                SoundEffectData & sfxData{ soundEffectsVec_[nextSfxDelayPair.first] };
-                if (sfxData.sound.getStatus() == sf::SoundSource::Playing)
+                auto & sfx{ sfxVec_[nextSfxDelayPair.first] };
+                if (sfx.sound.getStatus() == sf::SoundSource::Playing)
                 {
-                    //This restarts play from the beginning
-                    sfxData.sound.play();
+                    //This restarts play from the beginning, which is the
+                    //desired behavior if an sfx is played before a previous
+                    //play of that same sfx has not finished.
+                    sfx.sound.play();
                 }
                 else
                 {
-                    LoadSound(nextSfxDelayPair.first, sfxData);
-                    sfxData.sound.setVolume(SoundEffectVolume());
-                    sfxData.sound.play();
+                    LoadSound(nextSfxDelayPair.first, sfx);
+                    sfx.sound.setVolume(SoundEffectVolume());
+                    sfx.sound.play();
                 }
             }
         }
 
-        soundEffectsToPlayVec_.erase(
-            std::remove_if( soundEffectsToPlayVec_.begin(), soundEffectsToPlayVec_.end(),
-                []
-                (const std::pair<sound_effect::Enum, float> & PAIR)
-                { return (PAIR.second < 0.0f); }),
-            soundEffectsToPlayVec_.end() );
+        sfxToPlayPairsVec_.erase(
+            std::remove_if( sfxToPlayPairsVec_.begin(),
+                            sfxToPlayPairsVec_.end(),
+                            [](const auto & PAIR)
+                            {
+                                return (PAIR.second < 0.0f);
+                            }),
+            sfxToPlayPairsVec_.end() );
     }
 
 
     void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
     {
         //eliminate buffers for sound effects that are done playing
-        for (auto & nextSoundEffectData : soundEffectsVec_)
+        for (auto & sfx : sfxVec_)
         {
             if (WILL_STOP_PLAYING_SFX &&
-                (nextSoundEffectData.sound.getStatus() == sf::SoundSource::Playing))
+                (sfx.sound.getStatus() == sf::SoundSource::Playing))
             {
-                nextSoundEffectData.sound.stop();
+                sfx.sound.stop();
             }
 
-            if (nextSoundEffectData.sound.getStatus() == sf::SoundSource::Stopped)
+            if (sfx.sound.getStatus() == sf::SoundSource::Stopped)
             {
-                nextSoundEffectData.buffer = sf::SoundBuffer();
-                nextSoundEffectData.sound.setBuffer(nextSoundEffectData.buffer);
+                sfx = SoundEffectData();
             }
         }
 
         if (WILL_STOP_PLAYING_SFX)
         {
-            soundEffectsToPlayVec_.clear();
+            sfxToPlayPairsVec_.clear();
         }
     }
 

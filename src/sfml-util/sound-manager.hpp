@@ -57,7 +57,11 @@ namespace sfml_util
         :
             sound(SOUND),
             buffer(BUFFER)
-        {}
+        {
+            sound.setBuffer(buffer);
+            sound.stop();
+            sound.setVolume(100.0f);
+        }
 
         sf::Sound sound;
         sf::SoundBuffer buffer;
@@ -197,8 +201,8 @@ namespace sfml_util
         SoundEffectsSetVec_t soundEffectsSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
         SongsVec_t songsVec_;
-        SoundEffectDelayVec_t soundEffectsToPlayVec_;
-        SoundEffectDataVec_t soundEffectsVec_;
+        SoundEffectDelayVec_t sfxToPlayPairsVec_;
+        SoundEffectDataVec_t sfxVec_;
     };
 
 }
