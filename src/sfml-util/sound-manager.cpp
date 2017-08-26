@@ -642,9 +642,12 @@ namespace sfml_util
     {
         effectsVolume_ = V;
 
-        for (auto & nextSoundEffectData : sfxVec_)
+        for (auto & sfx : sfxVec_)
         {
-            nextSoundEffectData.sound.setVolume(effectsVolume_);
+            if (sfx.is_loaded)
+            {
+                sfx.sound.setVolume(effectsVolume_);
+            }
         }
     }
 
@@ -993,7 +996,9 @@ namespace sfml_util
             if (nextSfxDelayPair.second < 0.0f)
             {
                 auto & sfx{ sfxVec_[nextSfxDelayPair.first] };
-                if (sfx.sound.getStatus() == sf::SoundSource::Playing)
+
+                if (sfx.is_loaded &&
+                    (sfx.sound.getStatus() == sf::SoundSource::Playing))
                 {
                     //This restarts play from the beginning, which is the
                     //desired behavior if an sfx is played before a previous
@@ -1026,6 +1031,7 @@ namespace sfml_util
         for (auto & sfx : sfxVec_)
         {
             if (WILL_STOP_PLAYING_SFX &&
+                sfx.is_loaded &&
                 (sfx.sound.getStatus() == sf::SoundSource::Playing))
             {
                 sfx.sound.stop();
@@ -1073,6 +1079,7 @@ namespace sfml_util
             << " for more information.");
 
         soundEffectData.sound.setBuffer(soundEffectData.buffer);
+        soundEffectData.is_loaded = true;
     }
 
 }

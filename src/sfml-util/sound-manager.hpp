@@ -55,14 +55,14 @@ namespace sfml_util
         explicit SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
                                  const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
         :
+            is_loaded(false),
             sound(SOUND),
             buffer(BUFFER)
         {
             sound.setBuffer(buffer);
-            sound.stop();
-            sound.setVolume(100.0f);
         }
 
+        bool is_loaded;
         sf::Sound sound;
         sf::SoundBuffer buffer;
     };
