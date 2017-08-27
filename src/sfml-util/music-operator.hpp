@@ -96,8 +96,8 @@ namespace sfml_util
         inline float FadingOutMult() const          { return fadeOutMult_; }
         inline void FadingOutMult(const float F)    { fadeOutMult_ = F; }
 
-        inline bool KillAfterFadeOut() const        { return killAfterFadeOut_; }
-        inline void KillAfterFadeOut(const bool B)  { killAfterFadeOut_ = B; }
+        inline bool WillKillAfterFadeOut() const        { return killAfterFadeOut_; }
+        inline void WillKillAfterFadeOut(const bool B)  { killAfterFadeOut_ = B; }
 
         inline float Volume() const                 { return musicSPtr_->getVolume(); }
         inline void Volume(const float F)           { musicSPtr_->setVolume(F); }

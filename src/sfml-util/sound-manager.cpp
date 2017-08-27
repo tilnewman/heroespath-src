@@ -62,8 +62,8 @@ namespace sfml_util
         soundEffectsSetVec_     (),
         combatIntroMusicInfoVec_(),
         songsVec_               (),
-        sfxToPlayPairsVec_  (),
-        sfxVec_        ()
+        sfxToPlayPairsVec_      (),
+        sfxVec_                 ()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
@@ -463,22 +463,22 @@ namespace sfml_util
                                                   const float            VOLUME,
                                                   const bool             WILL_LOOP)
     {
-        //use the global volume if the invalid volume is specified
+        //use the global volume if an invalid volume is specified
         const float VOLUME_TO_USE((VOLUME < 0.0f) ? musicVolume_ : VOLUME);
 
-        MusicSetSPtr_t musicSetSPtr(new MusicSet(WHICH_VEC,
-                                    WILL_RANDOMIZE,
-                                    WILL_START_AT_RANDOM,
-                                    FADE_MULT,
-                                    VOLUME_TO_USE,
-                                    WILL_LOOP));
+        //Create the MusicSet object here, before we know if it is needed, because its
+        //constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
+        auto musicSetSPtr{ std::make_shared<MusicSet>(WHICH_VEC,
+                                                      WILL_RANDOMIZE,
+                                                      WILL_START_AT_RANDOM,
+                                                      FADE_MULT,
+                                                      VOLUME_TO_USE,
+                                                      WILL_LOOP) };
 
-        //After construction, the musicSetSPtr currently playing member is
-        //already set to what should play first.
         const music::Enum WHICH_MUSIC_TO_START_PLAYING(musicSetSPtr->CurrentlyPlaying());
 
-        //if there is only one song in the list, and it is already playing,
-        //then simply set the volume to whatever is specified
+        //if there is only one song in the vector, and it is the music that should start,
+        //and it is already playing, then simply set the volume to whatever is specified
         if (WHICH_VEC.size() == 1)
         {
             for (auto & nextSongsObj : songsVec_)
@@ -489,7 +489,7 @@ namespace sfml_util
                     if (nextSongsObj.operator_sptr.get() != nullptr)
                     {
                         nextSongsObj.operator_sptr->VolumeFadeTo(VOLUME_TO_USE, FADE_MULT);
-                        nextSongsObj.operator_sptr->KillAfterFadeOut(false);
+                        nextSongsObj.operator_sptr->WillKillAfterFadeOut(false);
                         return nextSongsObj.set_sptr;
                     }
                 }
@@ -497,12 +497,12 @@ namespace sfml_util
         }
 
         MusicSPtr_t musicSPtr;
-        const MusicInfo MUSIC_INFO(MusicInfoAcquire(WHICH_MUSIC_TO_START_PLAYING, musicSPtr));
+        auto const MUSIC_INFO{ MusicInfoAcquire(WHICH_MUSIC_TO_START_PLAYING, musicSPtr) };
 
         MusicOperatorSPtr_t musicOperatorSPtr;
         MusicOperatorStart(musicOperatorSPtr, MUSIC_INFO, musicSPtr, FADE_MULT, VOLUME_TO_USE);
 
-        songsVec_.push_back(Songs(musicSetSPtr, musicOperatorSPtr));
+        songsVec_.push_back( Songs(musicSetSPtr, musicOperatorSPtr) );
 
         return musicSetSPtr;
     }

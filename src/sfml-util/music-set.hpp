@@ -26,7 +26,7 @@
 #define SFMLUTIL_MUSICSET_INCLUDED
 //
 // music-set.hpp
-//  A class that defines a set of music that is played on after the other.
+//  A class that keeps a set of songs and presents an interface to interact with them.
 //
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/music-operator.hpp"
@@ -34,14 +34,15 @@
 #include <memory>
 #include <vector>
 #include <tuple>
+#include <algorithm>
 
 
 namespace sfml_util
 {
 
-    //Everything needed to describe a list of songs, and in which order to play them.
-    //If there is more than one song, then a song will never repeat.
-    //After construction, the currently playing member is already set to what should play first.
+    //Everything needed to keep and interact with a list of songs, and the order they are played.
+    //If there is more than one song, then a song will never be repeated back-to-back.
+    //During construction, the currentlyPlaying_ member is set to what should play first.
     class MusicSet
     {
     public:
@@ -57,7 +58,7 @@ namespace sfml_util
                           const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
                           const bool             WILL_LOOP            = true);
 
-        inline std::size_t Count() const                  { return whichVec_.size(); }
+        inline std::size_t Count() const             { return whichVec_.size(); }
         inline bool IsSingleSong() const             { return (whichVec_.size() == 1); }
 
         inline bool WillLoop() const                 { return willLoop_; }
@@ -72,13 +73,15 @@ namespace sfml_util
         inline float FadeInMult() const              { return fadeInMult_; }
         inline float Volume() const                  { return volume_; }
 
-        //returns the next song to play  (result of NextToPlay())
+        //Returns the next song that will play, put another way, the result of PickNextSong().
         music::Enum Advance();
 
-        //if there is more than one song then songs never repeat
         music::Enum PickNextSong();
 
-        bool Contains(const music::Enum);
+        inline bool Contains(const music::Enum E)
+        {
+            return (std::find(whichVec_.begin(), whichVec_.end(), E) != whichVec_.end());
+        }
 
         friend bool operator==(const MusicSet & L, const MusicSet & R);
 
@@ -97,6 +100,7 @@ namespace sfml_util
 
 
     bool operator==(const MusicSet & L, const MusicSet & R);
+
 
     inline bool operator!=(const MusicSet & L, const MusicSet & R)
     {

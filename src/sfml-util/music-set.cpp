@@ -66,9 +66,10 @@ namespace sfml_util
         volume_            (VOLUME),
         willLoop_          (WILL_LOOP)
     {
-        const bool ORIG_RANDOM_SETTING(willRandomize_);
+        auto const ORIG_RANDOM_SETTING{ willRandomize_ };
         willRandomize_ = WILL_START_AT_RANDOM;
-        const bool ORIG_LOOP_SETTING(willLoop_);
+
+        auto const ORIG_LOOP_SETTING{ willLoop_ };
         willLoop_ = true;
 
         currentlyPlaying_ = PickNextSong();
@@ -80,111 +81,83 @@ namespace sfml_util
 
     music::Enum MusicSet::Advance()
     {
-        const music::Enum ORIG_CURRENT(currentlyPlaying_);
+        auto const PREV_PLAYING{ currentlyPlaying_ };
         currentlyPlaying_ = PickNextSong();
-        previouslyPlaying_ = ORIG_CURRENT;
+        previouslyPlaying_ = PREV_PLAYING;
         return currentlyPlaying_;
     }
 
 
     music::Enum MusicSet::PickNextSong()
     {
-        if (false == willLoop_)
-        {
-            return music::None;
-        }
-
         if (whichVec_.size() == 1)
         {
-            return whichVec_[0];
+            if (willLoop_)
+            {
+                return whichVec_[0];
+            }
+            else
+            {
+                return music::None;
+            }
+        }
+        
+        if (willRandomize_)
+        {
+            MusicEnumVec_t possibleSongs;
+
+            std::copy_if(whichVec_.begin(),
+                         whichVec_.end(),
+                         std::back_inserter(possibleSongs),
+                         [&](const auto & ENUM)
+                {
+                    return (currentlyPlaying_ != ENUM);
+                });
+
+            return misc::Vector::SelectRandom(possibleSongs);
         }
         else
         {
-            if (willRandomize_)
-            {
-                //populate a vector of songs that does not include the currently
-                //(or just finished) playing
-                MusicEnumVec_t possibleVec;
-                for (auto const & NEXT_MUSIC_ENUM : whichVec_)
-                {
-                    if (NEXT_MUSIC_ENUM != currentlyPlaying_)
-                    {
-                        possibleVec.push_back(NEXT_MUSIC_ENUM);
-                    }
-                }
+            auto currentlyPlayingIter{ std::find(whichVec_.begin(),
+                                                 whichVec_.end(),
+                                                 currentlyPlaying_) };
 
-                //pick next song at random
-                const std::size_t NUM_POSSIBLE_SONGS(possibleVec.size());
-                if (NUM_POSSIBLE_SONGS == 1)
+            if (++currentlyPlayingIter == whichVec_.end())
+            {
+                if (willLoop_)
                 {
-                    return possibleVec[0];
+                    return * whichVec_.begin();
                 }
                 else
                 {
-                    return possibleVec[static_cast<std::size_t>(misc::random::Int(0,
-                        static_cast<int>(NUM_POSSIBLE_SONGS) - 1))];
+                    return music::None;
                 }
             }
             else
             {
-                //pick the next song in order given at time of construction
-                const std::size_t NUM_SONGS(whichVec_.size());
-                for (std::size_t i(0); i < NUM_SONGS; ++i)
-                {
-                    if (whichVec_[i] == currentlyPlaying_)
-                    {
-                        if ((NUM_SONGS - 1) == i)
-                        {
-                            return whichVec_[0];
-                        }
-                        else
-                        {
-                            return whichVec_[i + 1];
-                        }
-                    }
-                }
-
-                //should never get here...
-                return whichVec_[0];
+                return * currentlyPlayingIter;
             }
         }
-    }
-
-
-    bool MusicSet::Contains(const music::Enum ENUM_TO_FIND)
-    {
-        for (auto const & NEXT_MUSIC_ENUM : whichVec_)
-        {
-            if (NEXT_MUSIC_ENUM == ENUM_TO_FIND)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
     bool operator==(const MusicSet & L, const MusicSet & R)
     {
-        if (misc::Vector::OrderlessCompareEqual(L.whichVec_, R.whichVec_) == false)
-        {
-            return false;
-        }
-        else
-        {
-            return (std::tie(L.currentlyPlaying_,
-                             L.previouslyPlaying_,
-                             L.willRandomize_,
-                             L.fadeInMult_,
-                             L.volume_)
-                ==
-                std::tie(R.currentlyPlaying_,
-                         R.previouslyPlaying_,
-                         R.willRandomize_,
-                         R.fadeInMult_,
-                         R.volume_));
-        }
+        //The whichVec_ member is ordered, so it can be compared in the usual way.
+
+        return (std::tie(L.whichVec_,
+                         L.currentlyPlaying_,
+                         L.previouslyPlaying_,
+                         L.willRandomize_,
+                         L.fadeInMult_,
+                         L.volume_)
+            ==
+            std::tie(R.whichVec_,
+                     R.currentlyPlaying_,
+                     R.previouslyPlaying_,
+                     R.willRandomize_,
+                     R.fadeInMult_,
+                     R.volume_));
     }
 
 }

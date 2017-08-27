@@ -147,7 +147,9 @@ namespace sfml_util
                 return music_update_status::FadedIn;
             }
             else
+            {
                 return music_update_status::FadingIn;
+            }
         }
         else if (fadeOutMult_ < 0.0f)
         {
@@ -164,19 +166,29 @@ namespace sfml_util
                 fadeOutMult_ = 0.0f;
 
                 //did we just fade out completely?
-                if (killAfterFadeOut_ && ((NEW_VOL < 0.0f) || misc::IsRealClose(targetVolume_, 0.0f)))
+                if (killAfterFadeOut_ && ((NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_)))
+                {
                     return music_update_status::FadedOutKill;
+                }
                 else
+                {
                     return music_update_status::FadedOut;
+                }
             }
             else
+            {
                 return music_update_status::FadingOut;
+            }
         }
 
         if (musicSPtr_->getStatus() == sf::Music::Playing)
+        {
             return music_update_status::Playing;
+        }
         else
+        {
             return music_update_status::Stopped;
+        }
     }
 
 
