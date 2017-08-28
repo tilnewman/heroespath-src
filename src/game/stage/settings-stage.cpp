@@ -320,16 +320,20 @@ namespace stage
                 musicInfoLabelTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("MusicInfoLabel", MUSICINFO_LABEL_TEXTINFO, MUSICINFO_TEXT_REGION) );
                 EntityAdd(musicInfoLabelTextRegionUPtr_.get());
 
-                const sfml_util::MusicOperatorSLst_t MUSIC_OPERAOTR_SLIST(sfml_util::SoundManager::Instance()->MusicOperators());
+                auto const MUSIC_INFO_VEC{ sfml_util::SoundManager::Instance()->MusicInfoSet() };
                 std::ostringstream ss;
-                for (auto const & NEXT_MUSIC_OPERATOR_SPTR : MUSIC_OPERAOTR_SLIST)
+                for (auto const & MUSIC_INFO : MUSIC_INFO_VEC)
                 {
-                    auto const MUSIC_INFO{ NEXT_MUSIC_OPERATOR_SPTR->Info() };
                     ss << "\"" << MUSIC_INFO.SongName()
                        << "\"\nby " << MUSIC_INFO.ArtistName()
                        << "\nLicense: " << MUSIC_INFO.LicenseTitle()
                        << "\nDuration: " << MUSIC_INFO.Duration().ToString()
                        << "\n\n";
+                }
+
+                if (ss.str().empty())
+                {
+                    ss << " ";
                 }
 
                 const sfml_util::gui::TextInfo MUSICINFO_TEXTINFO(ss.str(),
