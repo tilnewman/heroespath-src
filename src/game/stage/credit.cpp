@@ -91,7 +91,7 @@ namespace stage
               mediaType_,
               mediaPathKey_,
               1.0f,
-              sfml_util::Animations::Count,
+              ANIM_ENUM,
               ANIM_SCALE,
               ANIM_FRAME_TIME_SEC);
     }
@@ -227,9 +227,24 @@ namespace stage
             sfml_util::Justified::Center);
 
         //if there is a lot of text (multi-lined), reduce the size to look better
-        textInfoContent.charSize -= static_cast<unsigned int>(sfml_util::MapByRes(3, 20)) *
-            static_cast<unsigned int>(std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n'));
-        
+        auto const NUM_NEWLINES{ static_cast<int>(std::count(CONTENT_TEXT.begin(),
+                                                             CONTENT_TEXT.end(),
+                                                             '\n')) };
+
+        if (NUM_NEWLINES > 1)
+        {
+            auto const FONT_SIZE_REDUCTION{ static_cast<unsigned int>(2 * NUM_NEWLINES) };
+
+            if (textInfoContent.charSize > FONT_SIZE_REDUCTION)
+            {
+                textInfoContent.charSize -= FONT_SIZE_REDUCTION;
+            }
+            else
+            {
+                textInfoContent.charSize = 1;
+            }
+        }
+
         contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("CreditContent",
                                                                         textInfoContent,
                                                                         trackingRect);
