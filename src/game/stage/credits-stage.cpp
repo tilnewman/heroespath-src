@@ -60,8 +60,8 @@ namespace stage
         CREDIT_BOX_WIDTH_     (sfml_util::MapByRes(1000.0f, 1500.0f)),
         SCREEN_WIDTH_         (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_        (sfml_util::Display::Instance()->GetWinHeight()),
-        CREDITBOX_POS_LEFT_   ((sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (CREDIT_BOX_WIDTH_ * 0.5f)),
-        BG_MUSIC_SET_SPTR_    (sfml_util::SoundManager::Instance()->MusicStart({ sfml_util::music::Credits1, sfml_util::music::Credits2 })),
+        CREDITBOX_POS_LEFT_   ((sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
+                                (CREDIT_BOX_WIDTH_ * 0.5f)),
         creditBoxPosTop_      (0.0f),
         creditBoxHeight_      (0.0f),
         totalHeight_          (0.0f),
@@ -73,12 +73,17 @@ namespace stage
         creditSVec_           (),
         scrollSpeed_          (DEFAULT_SCROLL_SPEED_),
         isKeyHeldDown_        (false)
-    {}
+    {
+        sfml_util::SoundManager::Instance()->MusicStart({ sfml_util::music::Credits1,
+                                                          sfml_util::music::Credits2 },
+                                                        false,
+                                                        true);
+    }
 
 
     CreditsStage::~CreditsStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStop(BG_MUSIC_SET_SPTR_);
+        sfml_util::SoundManager::Instance()->MusicStop();
         ClearAllEntities();
     }
 
@@ -344,7 +349,9 @@ namespace stage
         //move down to initial positions
         const float MOVE_AMOUNT(creditBoxHeight_ + 40);
         for (auto & nextCreditSPtr : creditSVec_)
+        {
             nextCreditSPtr->Move(0.0f, MOVE_AMOUNT);
+        }
     }
 
 

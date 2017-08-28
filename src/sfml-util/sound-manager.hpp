@@ -33,6 +33,7 @@
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/music-set.hpp"
+#include "sfml-util/songs.hpp"
 #include "sfml-util/sound-effects-set.hpp"
 #include "sfml-util/sfx-set-enum.hpp"
 
@@ -50,6 +51,7 @@ namespace sfml_util
     using SoundEffectDelayVec_t = std::vector<SoundEffectDelayPair>;
 
 
+    //Responsible for storing all sfml objects relating to a single sound effect.
     struct SoundEffectData
     {
         explicit SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
@@ -68,33 +70,6 @@ namespace sfml_util
     };
 
     using SoundEffectDataVec_t = std::vector<SoundEffectData>;
-
-
-    //simple wrapper responsible for everything needed to describe and operate a set of song(s)
-    struct Songs
-    {
-        explicit  Songs(const MusicSetSPtr_t &      SET_SPTR      = MusicSetSPtr_t(),
-                        const MusicOperatorSPtr_t & OPERATOR_SPTR = MusicOperatorSPtr_t())
-        :
-            set_sptr(SET_SPTR),
-            operator_sptr(OPERATOR_SPTR)
-        {}
-
-        MusicSetSPtr_t set_sptr;
-        MusicOperatorSPtr_t operator_sptr;
-    };
-
-    using SongsVec_t = std::vector<Songs>;
-
-    inline bool operator==(const Songs & L, const Songs & R)
-    {
-        return std::tie(L.set_sptr, L.operator_sptr) == std::tie(R.set_sptr, R.operator_sptr);
-    }
-
-    inline bool operator!=(const Songs & L, const Songs & R)
-    {
-        return ! (L == R);
-    }
 
 
     //A class that loads, stores, and distributes sounds
@@ -125,24 +100,24 @@ namespace sfml_util
         void LoadSoundSets();
 
         //throws range_error on invalid enum input.
-        const MusicSetSPtr_t MusicStart(const music::Enum WHICH,
-                                        const float       FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
-                                        const float       VOLUME    = MusicOperator::VOLUME_USE_GLOBAL_);
+        void MusicStart(const music::Enum WHICH,
+                        const float       FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
+                        const float       VOLUME    = MusicOperator::VOLUME_USE_GLOBAL_);
 
-        const MusicSetSPtr_t MusicStart(const MusicEnumVec_t & WHICH_VEC,
-                                        const bool             WILL_RANDOMIZE       = true,
-                                        const bool             WILL_START_AT_RANDOM = true,
-                                        const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
-                                        const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
-                                        const bool             WILL_LOOP            = true);
+        void MusicStart(const MusicEnumVec_t & WHICH_VEC,
+                        const bool             WILL_RANDOMIZE       = true,
+                        const bool             WILL_START_AT_RANDOM = true,
+                        const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
+                        const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
+                        const bool             WILL_LOOP            = true);
 
-        void MusicStop(const music::Enum WHICH, const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
+        void MusicStop(const music::Enum WHICH     = sfml_util::music::All,
+                       const float       FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
-        void MusicStop(const MusicSetSPtr_t & MUSIC_SET_SPTR, const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
+        void MusicStop(const MusicEnumVec_t MUSIC_ENUMS,
+                       const float          FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
-        MusicOperatorSPtr_t MusicOperator(const music::Enum);
-
-        MusicOperatorSLst_t MusicOperators();
+        const MusicInfoVec_t MusicInfoSet() const;
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -154,6 +129,8 @@ namespace sfml_util
         //
         inline float SoundEffectVolume() const  { return effectsVolume_; }
         void SoundEffectVolumeSet(const float V);
+
+        void MusicVolumeFadeToCurrent(const music::Enum);
 
         inline const SoundEffectsSet & GetSfxSet(const SfxSet::Enum E) const
         {
@@ -180,16 +157,17 @@ namespace sfml_util
 
         const MusicInfo MusicInfoAcquire(const music::Enum WHICH, MusicSPtr_t & musicSPtr);
 
-        void MusicOperatorStart(MusicOperatorSPtr_t & musicOperatorSPtr,
-                                const MusicInfo &     MUSIC_INFO,
-                                const MusicSPtr_t &   MUSIC_SPTR,
-                                const float           FADE_MULT,
-                                const float           VOLUME);
+        MusicOperatorSPtr_t MakeAndStartMusicOperator(const MusicInfo &   MUSIC_INFO,
+                                                      const MusicSPtr_t & MUSIC_SPTR,
+                                                      const float         FADE_MULT,
+                                                      const float         VOLUME) const;
 
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         void LoadSound(const sound_effect::Enum,
                        SoundEffectData &) const;
+
+        MusicOperatorSPtr_t GetMusicOperator(const music::Enum);
 
     private:
         static std::string soundsDirectoryPath_;
@@ -200,7 +178,7 @@ namespace sfml_util
         float effectsVolume_;
         SoundEffectsSetVec_t soundEffectsSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
-        SongsVec_t songsVec_;
+        SongsSVec_t songsSVec_;
         SoundEffectDelayVec_t sfxToPlayPairsVec_;
         SoundEffectDataVec_t sfxVec_;
     };

@@ -157,7 +157,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Animations::ToString(" << E << ")_InvalidValueError.";
+                ss << "sfml_util::Animations::IsMultiTexture(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -200,7 +200,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Animations::ToString(" << E << ")_InvalidValueError.";
+                ss << "sfml_util::Animations::SizePair(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

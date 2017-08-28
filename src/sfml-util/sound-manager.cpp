@@ -61,7 +61,7 @@ namespace sfml_util
         effectsVolume_          (0.0f),
         soundEffectsSetVec_     (),
         combatIntroMusicInfoVec_(),
-        songsVec_               (),
+        songsSVec_              (),
         sfxToPlayPairsVec_      (),
         sfxVec_                 ()
     {
@@ -443,105 +443,107 @@ namespace sfml_util
     }
 
 
-    const MusicSetSPtr_t SoundManager::MusicStart(const music::Enum WHICH,
-                                                  const float       FADE_MULT,
-                                                  const float       VOLUME)
+    void SoundManager::MusicStart(const music::Enum WHICH,
+                                  const float       FADE_MULT,
+                                  const float       VOLUME)
     {
-        return MusicStart(MusicEnumVec_t(1, WHICH),
-                          false,
-                          false,
-                          FADE_MULT,
-                          VOLUME,
-                          music::IsLooped(WHICH));
+        MusicStart(MusicEnumVec_t(1, WHICH),
+                   false,
+                   false,
+                   FADE_MULT,
+                   VOLUME,
+                   music::IsLooped(WHICH));
     }
 
 
-    const MusicSetSPtr_t SoundManager::MusicStart(const MusicEnumVec_t & WHICH_VEC,
-                                                  const bool             WILL_RANDOMIZE,
-                                                  const bool             WILL_START_AT_RANDOM,
-                                                  const float            FADE_MULT,
-                                                  const float            VOLUME,
-                                                  const bool             WILL_LOOP)
+    void SoundManager::MusicStart(const MusicEnumVec_t & WHICH_VEC,
+                                  const bool             WILL_RANDOMIZE,
+                                  const bool             WILL_START_AT_RANDOM,
+                                  const float            FADE_MULT,
+                                  const float            VOLUME,
+                                  const bool             WILL_LOOP)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((WHICH_VEC.empty() == false),
+            "SoundManager::MusicStart(vector version) given an empty vector.");
+
         //use the global volume if an invalid volume is specified
         const float VOLUME_TO_USE((VOLUME < 0.0f) ? musicVolume_ : VOLUME);
 
         //Create the MusicSet object here, before we know if it is needed, because its
         //constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
-        auto musicSetSPtr{ std::make_shared<MusicSet>(WHICH_VEC,
-                                                      WILL_RANDOMIZE,
-                                                      WILL_START_AT_RANDOM,
-                                                      FADE_MULT,
-                                                      VOLUME_TO_USE,
-                                                      WILL_LOOP) };
+        MusicSet musicSet(WHICH_VEC,
+                          WILL_RANDOMIZE,
+                          WILL_START_AT_RANDOM,
+                          FADE_MULT,
+                          VOLUME_TO_USE,
+                          WILL_LOOP);
 
-        const music::Enum WHICH_MUSIC_TO_START_PLAYING(musicSetSPtr->CurrentlyPlaying());
+        const music::Enum WHICH_MUSIC_TO_START_PLAYING(musicSet.CurrentlyPlaying());
 
         //if there is only one song in the vector, and it is the music that should start,
         //and it is already playing, then simply set the volume to whatever is specified
         if (WHICH_VEC.size() == 1)
         {
-            for (auto & nextSongsObj : songsVec_)
+            for (auto & songsSPtr : songsSVec_)
             {
-                if ((nextSongsObj.set_sptr.get() != nullptr) &&
-                    (nextSongsObj.set_sptr->CurrentlyPlaying() == WHICH_MUSIC_TO_START_PLAYING))
+                if ((songsSPtr.get() != nullptr) && (songsSPtr->op_sptr.get() != nullptr))
                 {
-                    if (nextSongsObj.operator_sptr.get() != nullptr)
+                    if ((songsSPtr->set.CurrentlyPlaying() == WHICH_MUSIC_TO_START_PLAYING))
                     {
-                        nextSongsObj.operator_sptr->VolumeFadeTo(VOLUME_TO_USE, FADE_MULT);
-                        nextSongsObj.operator_sptr->WillKillAfterFadeOut(false);
-                        return nextSongsObj.set_sptr;
+                        songsSPtr->op_sptr->VolumeFadeTo(VOLUME_TO_USE, FADE_MULT);
+                        songsSPtr->op_sptr->WillKillAfterFadeOut(false);
+                        return;
                     }
                 }
             }
         }
-
+        
         MusicSPtr_t musicSPtr;
         auto const MUSIC_INFO{ MusicInfoAcquire(WHICH_MUSIC_TO_START_PLAYING, musicSPtr) };
 
-        MusicOperatorSPtr_t musicOperatorSPtr;
-        MusicOperatorStart(musicOperatorSPtr, MUSIC_INFO, musicSPtr, FADE_MULT, VOLUME_TO_USE);
+        auto songsSPtr{ std::make_shared<Songs>(musicSet,
+            MakeAndStartMusicOperator(MUSIC_INFO, musicSPtr, FADE_MULT, VOLUME_TO_USE)) };
 
-        songsVec_.push_back( Songs(musicSetSPtr, musicOperatorSPtr) );
-
-        return musicSetSPtr;
+        songsSVec_.push_back(songsSPtr);
     }
 
 
     void SoundManager::MusicStop(const music::Enum WHICH, const float FADE_MULT)
     {
-        for (auto & nextSongsObj : songsVec_)
+        for (auto & songsSPtr : songsSVec_)
         {
-            if ((nextSongsObj.operator_sptr.get() != nullptr) &&
-                ((nextSongsObj.operator_sptr->Info().Which() == WHICH) || (WHICH == music::All)))
+            if (songsSPtr.get() != nullptr)
             {
-                nextSongsObj.operator_sptr->VolumeFadeOut(FADE_MULT, true);
+                if ((songsSPtr->op_sptr.get() != nullptr) &&
+                    ((songsSPtr->op_sptr->Info().Which() == WHICH) || (WHICH == music::All)))
+                {
+                    songsSPtr->op_sptr->VolumeFadeOut(FADE_MULT, true);
+                }
             }
         }
     }
 
 
-    void SoundManager::MusicStop(const MusicSetSPtr_t & MUSIC_SET_SPTR, const float FADE_MULT)
+    void SoundManager::MusicStop(const MusicEnumVec_t MUSIC_ENUMS, const float FADE_MULT)
     {
-        for (auto & nextSongsObj : songsVec_)
+        for (auto const MUSIC_ENUM : MUSIC_ENUMS)
         {
-            if ((nextSongsObj.set_sptr == MUSIC_SET_SPTR) &&
-                (nextSongsObj.operator_sptr.get() != nullptr))
-            {
-                nextSongsObj.operator_sptr->VolumeFadeOut(FADE_MULT, true);
-            }
+            MusicStop(MUSIC_ENUM, FADE_MULT);
         }
     }
 
 
-    MusicOperatorSPtr_t SoundManager::MusicOperator(const music::Enum WHICH)
+    MusicOperatorSPtr_t SoundManager::GetMusicOperator(const music::Enum WHICH)
     {
-        for (auto const & NEXT_SONGS_OBJ : songsVec_)
+        for (auto const & SONGS_SPTR : songsSVec_)
         {
-            if ((NEXT_SONGS_OBJ.operator_sptr.get() != nullptr) &&
-                (NEXT_SONGS_OBJ.operator_sptr->Info().Which() == WHICH))
+            if (SONGS_SPTR.get() != nullptr)
             {
-                return NEXT_SONGS_OBJ.operator_sptr;
+                if ((SONGS_SPTR->op_sptr.get() != nullptr) &&
+                    (SONGS_SPTR->op_sptr->Info().Which() == WHICH))
+                {
+                    return SONGS_SPTR->op_sptr;
+                }
             }
         }
 
@@ -549,75 +551,76 @@ namespace sfml_util
     }
 
 
-    MusicOperatorSLst_t SoundManager::MusicOperators()
+    const MusicInfoVec_t SoundManager::MusicInfoSet() const
     {
-        MusicOperatorSLst_t musicOperatorsList;
+        MusicInfoVec_t musicInfos;
 
-        for (auto const & NEXT_SONGS_OBJ : songsVec_)
+        for (auto const & SONGS_SPTR : songsSVec_)
         {
-            if (NEXT_SONGS_OBJ.operator_sptr.get() != nullptr)
+            if ((SONGS_SPTR.get() != nullptr) && (SONGS_SPTR->op_sptr.get() != nullptr))
             {
-                musicOperatorsList.push_back(NEXT_SONGS_OBJ.operator_sptr);
+                musicInfos.push_back(SONGS_SPTR->op_sptr->Info());
             }
         }
 
-        return musicOperatorsList;
+        return musicInfos;
     }
 
 
     void SoundManager::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        SongsVec_t songsToRemove;
+        SongsSVec_t songsToRemove;
 
-        for (auto & nextSongsObj : songsVec_)
+        for (auto & songsSPtr : songsSVec_)
         {
-            if (nextSongsObj.operator_sptr.get() != nullptr)
+            if ((songsSPtr.get() != nullptr) && (songsSPtr->op_sptr.get() != nullptr))
             {
                 const music_update_status::Enum UPDATE_STATUS(
-                    nextSongsObj.operator_sptr->UpdateTime(ELAPSED_TIME_SECONDS));
+                    songsSPtr->op_sptr->UpdateTime(ELAPSED_TIME_SECONDS));
 
                 if (UPDATE_STATUS == music_update_status::FadedOutKill)
                 {
-                    songsToRemove.push_back(nextSongsObj);
+                    songsToRemove.push_back(songsSPtr);
                 }
                 else if (UPDATE_STATUS == music_update_status::Stopped)
                 {
-                    if (nextSongsObj.set_sptr->WillLoop() == false)
+                    if (songsSPtr->set.WillLoop() == false)
                     {
-                        songsToRemove.push_back(nextSongsObj);
+                        songsToRemove.push_back(songsSPtr);
                     }
                     else
                     {
-                        const music::Enum WHICH_MUSIC_TO_PLAY_NEXT(
-                            nextSongsObj.set_sptr->Advance());
+                        const music::Enum WHICH_MUSIC_TO_PLAY_NEXT(songsSPtr->set.Advance());
+
+                        songsSPtr->op_sptr.reset();
 
                         MusicSPtr_t musicSPtr;
-                        const MusicInfo MUSIC_INFO(MusicInfoAcquire(WHICH_MUSIC_TO_PLAY_NEXT,
-                                                                    musicSPtr));
+                        auto const MUSIC_INFO{
+                            MusicInfoAcquire(WHICH_MUSIC_TO_PLAY_NEXT, musicSPtr) };
 
                         //use the global volume if the invalid volume is specified
-                        const float VOLUME_TO_USE((nextSongsObj.set_sptr->Volume() < 0.0f) ?
-                            musicVolume_ : nextSongsObj.set_sptr->Volume());
+                        const float VOLUME_TO_USE((songsSPtr->set.Volume() < 0.0f) ?
+                            musicVolume_ : songsSPtr->set.Volume());
 
-                        MusicOperatorSPtr_t musicOperatorSPtr;
-                        MusicOperatorStart(musicOperatorSPtr,
-                                           MUSIC_INFO,
-                                           musicSPtr,
-                                           nextSongsObj.set_sptr->FadeInMult(),
-                                           VOLUME_TO_USE);
-
-                        nextSongsObj.operator_sptr = musicOperatorSPtr;
+                        songsSPtr->op_sptr = MakeAndStartMusicOperator(MUSIC_INFO,
+                                                                       musicSPtr,
+                                                                       songsSPtr->set.FadeInMult(),
+                                                                       VOLUME_TO_USE);
                     }
                 }
             }
         }
 
-        for (auto const & NEXT_SONGS_OBJ_TO_REMOVE_SPTR : songsToRemove)
+        if (songsToRemove.empty() == false)
         {
-            songsVec_.erase(std::remove(songsVec_.begin(),
-                                        songsVec_.end(),
-                                        NEXT_SONGS_OBJ_TO_REMOVE_SPTR),
-                            songsVec_.end());
+            songsSVec_.erase(std::remove_if(songsSVec_.begin(),
+                                            songsSVec_.end(),
+                                            [&songsToRemove](const auto & SPTR)
+                                            {
+                                                return (std::find(songsToRemove.begin(),
+                                                                  songsToRemove.end(),
+                                                                  SPTR) != songsToRemove.end());
+                                            }), songsSVec_.end());
         }
 
         SoundEffectsUpdate(ELAPSED_TIME_SECONDS);
@@ -628,11 +631,11 @@ namespace sfml_util
     {
         musicVolume_ = NEW_VOLUME;
 
-        for (auto & nextSongsObj : songsVec_)
+        for (auto & songsSPtr : songsSVec_)
         {
-            if (nextSongsObj.operator_sptr.get() != nullptr)
+            if ((songsSPtr.get() != nullptr) && (songsSPtr->op_sptr.get() != nullptr))
             {
-                nextSongsObj.operator_sptr->Volume(NEW_VOLUME);
+                songsSPtr->op_sptr->Volume(NEW_VOLUME);
             }
         }
     }
@@ -647,6 +650,33 @@ namespace sfml_util
             if (sfx.is_loaded)
             {
                 sfx.sound.setVolume(effectsVolume_);
+            }
+        }
+    }
+
+
+    void SoundManager::MusicVolumeFadeToCurrent(const music::Enum MUSIC_ENUM)
+    {
+        auto musicOperatorSPtr{ GetMusicOperator(MUSIC_ENUM) };
+
+        if (musicOperatorSPtr.get() != nullptr)
+        {
+            const float CURRENT_VOLUME(musicOperatorSPtr->Volume());
+            const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
+
+            if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
+            {
+                if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
+                {
+                    musicOperatorSPtr->VolumeFadeOut();
+                }
+                else
+                {
+                    musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME,
+                        ((CURRENT_VOLUME < INTENDED_VOLUME) ?
+                            sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ :
+                            sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                }
             }
         }
     }
@@ -755,6 +785,7 @@ namespace sfml_util
                                                    MusicSPtr_t &     musicSPtr)
     {
         MusicInfo musicInfo(WHICH);
+        musicInfo.AutoSetup();
 
         if (WHICH == music::CombatIntro)
         {
@@ -769,19 +800,20 @@ namespace sfml_util
     }
 
 
-    void SoundManager::MusicOperatorStart(MusicOperatorSPtr_t & musicOperatorSPtr,
-                                          const MusicInfo &     MUSIC_INFO,
-                                          const MusicSPtr_t &   MUSIC_SPTR,
-                                          const float           FADE_MULT,
-                                          const float           VOLUME)
+    MusicOperatorSPtr_t SoundManager::MakeAndStartMusicOperator(const MusicInfo &   MUSIC_INFO,
+                                                                const MusicSPtr_t & MUSIC_SPTR,
+                                                                const float         FADE_MULT,
+                                                                const float         VOLUME) const
     {
-        musicOperatorSPtr.reset(new sfml_util::MusicOperator(MUSIC_INFO,
-                                                             MUSIC_SPTR,
-                                                             FADE_MULT,
-                                                             VOLUME));
+        auto musicOperatorSPtr{ std::make_shared<sfml_util::MusicOperator>(MUSIC_INFO,
+                                                                           MUSIC_SPTR,
+                                                                           FADE_MULT,
+                                                                           VOLUME) };
         musicOperatorSPtr->Volume(0.0f);
         musicOperatorSPtr->VolumeFadeTo(VOLUME, FADE_MULT);
         musicOperatorSPtr->Play();
+
+        return musicOperatorSPtr;
     }
 
 

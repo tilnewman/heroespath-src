@@ -62,28 +62,7 @@ namespace stage
     {
         //If the theme music volume was changed just because this was the
         //Intro Stage, then set it back again once leaving the Intro Stage.
-        auto musicOperatorSPtr(sfml_util::SoundManager::Instance()->MusicOperator(
-            sfml_util::music::Theme));
-
-        if (musicOperatorSPtr.get() != nullptr)
-        {
-            const float CURRENT_VOLUME(musicOperatorSPtr->Volume());
-            const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
-            if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
-            {
-                if (misc::IsRealClose(INTENDED_VOLUME, 0.0f))
-                {
-                    musicOperatorSPtr->VolumeFadeOut();
-                }
-                else
-                {
-                    musicOperatorSPtr->VolumeFadeTo(INTENDED_VOLUME,
-                        ((CURRENT_VOLUME < INTENDED_VOLUME) ?
-                            sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ :
-                                sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
-                }
-            }
-        }
+        sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
 
         ClearAllEntities();
     }

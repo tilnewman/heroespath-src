@@ -46,12 +46,12 @@ namespace sfml_util
     class MusicSet
     {
     public:
-        explicit MusicSet(const music::Enum WHICH_SINGLE_MUSIC,
-                          const bool        WILL_LOOP,
+        explicit MusicSet(const music::Enum WHICH_MUSIC_ENUM   = music::None,
+                          const bool        WILL_LOOP          = false,
                           const float       FADE_MULT          = MusicOperator::FADE_MULT_DEFAULT_IN_,
                           const float       VOLUME             = MusicOperator::VOLUME_USE_GLOBAL_);
 
-        explicit MusicSet(const MusicEnumVec_t & MUSIC_SET_VEC,
+        explicit MusicSet(const MusicEnumVec_t & MUSIC_ENUM_VEC,
                           const bool             WILL_RANDOMIZE       = true,
                           const bool             WILL_START_AT_RANDOM = true,
                           const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
@@ -95,8 +95,7 @@ namespace sfml_util
         bool           willLoop_;
     };
 
-    using MusicSetSPtr_t = std::shared_ptr<MusicSet>;
-    using MusicSetSVec_t = std::vector<MusicSetSPtr_t>;
+    using MusicSetVec_t = std::vector<MusicSet>;
 
 
     bool operator==(const MusicSet & L, const MusicSet & R);

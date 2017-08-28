@@ -42,16 +42,14 @@ namespace sfml_util
     class MusicInfo
     {
     public:
-        explicit MusicInfo(const music::Enum WHICH_MUSIC);
-
-        explicit MusicInfo(const music::Enum       WHICH_MUSIC,
-                           const bool              IS_LOOPED,
-                           const std::string &     ARTIST_NAME,
-                           const std::string &     SONG_NAME,
-                           const std::string &     LICENSE_TITLE,
-                           const std::string &     FILE_NAME,
-                           const std::string &     DIR_NAME,
-                           const sfml_util::Time & DURATION = sfml_util::Time());
+        explicit MusicInfo(const music::Enum       WHICH_MUSIC      = music::None,
+                           const bool              IS_LOOPED        = false,
+                           const std::string &     ARTIST_NAME      = "",
+                           const std::string &     SONG_NAME        = "",
+                           const std::string &     LICENSE_TITLE    = "",
+                           const std::string &     FILE_NAME        = "",
+                           const std::string &     DIR_NAME         = "",
+                           const sfml_util::Time & DURATION         = sfml_util::Time());
 
         inline music::Enum Which() const                { return which_; }
         inline bool IsLooped() const                    { return isLooped_; }
@@ -64,6 +62,8 @@ namespace sfml_util
 
         inline const sfml_util::Time Duration() const { return duration_; }
         inline void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
+
+        void AutoSetup();
 
         friend bool operator==(const MusicInfo & L, const MusicInfo & R);
 

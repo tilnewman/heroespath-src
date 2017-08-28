@@ -33,19 +33,6 @@
 namespace sfml_util
 {
 
-    MusicInfo::MusicInfo(const music::Enum WHICH)
-    :
-        which_       (WHICH),
-        isLooped_    (music::IsLooped(WHICH)),
-        artistName_  (music::ArtistName(WHICH)),
-        songName_    (music::SongName(WHICH)),
-        licenseTitle_(music::LicenseTitle(WHICH)),
-        filename_    (music::Filename(WHICH)),
-        dirName_     (music::Directory(WHICH)),
-        duration_    ()
-    {}
-
-
     MusicInfo::MusicInfo(const music::Enum   WHICH,
                          const bool          IS_LOOPED,
                          const std::string & ARTIST_NAME,
@@ -64,6 +51,24 @@ namespace sfml_util
         dirName_     (DIR_NAME),
         duration_    (DURATION)
     {}
+
+
+    void MusicInfo::AutoSetup()
+    {
+        if ((which_ != music::Count) &&
+            (which_ != music::All) &&
+            (which_ != music::None))
+        {
+            isLooped_ = music::IsLooped(which_);
+            artistName_ = music::ArtistName(which_);
+            songName_ = music::SongName(which_);
+            licenseTitle_ = music::LicenseTitle(which_);
+            filename_ = music::Filename(which_);
+            dirName_ = music::Directory(which_);
+            //duration_ not set intentionally, see setter in header,
+            //and see it's only use in MusicOperator's constructor.
+        }
+    }
 
 
     bool operator==(const MusicInfo & L, const MusicInfo & R)

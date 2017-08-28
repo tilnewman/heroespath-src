@@ -29,11 +29,12 @@
 //
 #include "music-operator.hpp"
 
-#include "misc/real.hpp"
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include "game/log-macros.hpp"
+
+#include "misc/real.hpp"
 
 #include <exception>
 #include <sstream>
@@ -91,7 +92,9 @@ namespace sfml_util
     MusicOperator::~MusicOperator()
     {
         if (musicSPtr_.get() != nullptr)
+        {
             musicSPtr_->stop();
+        }
     }
 
 

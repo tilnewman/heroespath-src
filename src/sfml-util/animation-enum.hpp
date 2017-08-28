@@ -39,7 +39,7 @@ namespace sfml_util
     {
         enum Enum
         {
-            Burst,
+            Burst = 0,
             CandleFlame,
             DualCharge,
             DualSwirl,

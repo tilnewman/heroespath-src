@@ -31,19 +31,20 @@
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 
 namespace sfml_util
 {
 
-    MusicSet::MusicSet(const music::Enum WHICH_SINGLE_MUSIC,
+    MusicSet::MusicSet(const music::Enum WHICH_MUSIC_ENUM,
                        const bool        WILL_LOOP,
                        const float       FADE_MULT,
                        const float       VOLUME)
     :
-        whichVec_          (1, WHICH_SINGLE_MUSIC),
-        currentlyPlaying_  (WHICH_SINGLE_MUSIC),
-        previouslyPlaying_ (WHICH_SINGLE_MUSIC),
+        whichVec_          (1, WHICH_MUSIC_ENUM),
+        currentlyPlaying_  (WHICH_MUSIC_ENUM),
+        previouslyPlaying_ (WHICH_MUSIC_ENUM),
         willRandomize_     (false),
         fadeInMult_        (FADE_MULT),
         volume_            (VOLUME),
@@ -51,14 +52,14 @@ namespace sfml_util
     {}
 
 
-    MusicSet::MusicSet(const MusicEnumVec_t & MUSIC_SET_VEC,
+    MusicSet::MusicSet(const MusicEnumVec_t & MUSIC_ENUM_VEC,
                        const bool             WILL_RANDOMIZE,
                        const bool             WILL_START_AT_RANDOM,
                        const float            FADE_MULT,
                        const float            VOLUME,
                        const bool             WILL_LOOP)
     :
-        whichVec_          (MUSIC_SET_VEC),
+        whichVec_          (MUSIC_ENUM_VEC),
         currentlyPlaying_  (music::None),
         previouslyPlaying_ (music::None),
         willRandomize_     (WILL_RANDOMIZE),
@@ -66,6 +67,9 @@ namespace sfml_util
         volume_            (VOLUME),
         willLoop_          (WILL_LOOP)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS((whichVec_.empty() == false),
+            "sfml_util::MusicSet::Constructor(vector version) was given an empty vector.");
+
         auto const ORIG_RANDOM_SETTING{ willRandomize_ };
         willRandomize_ = WILL_START_AT_RANDOM;
 
@@ -73,7 +77,7 @@ namespace sfml_util
         willLoop_ = true;
 
         currentlyPlaying_ = PickNextSong();
-
+        
         willRandomize_ = ORIG_RANDOM_SETTING;
         willLoop_ = ORIG_LOOP_SETTING;
     }
@@ -104,15 +108,11 @@ namespace sfml_util
         
         if (willRandomize_)
         {
-            MusicEnumVec_t possibleSongs;
+            MusicEnumVec_t possibleSongs{ whichVec_ };
 
-            std::copy_if(whichVec_.begin(),
-                         whichVec_.end(),
-                         std::back_inserter(possibleSongs),
-                         [&](const auto & ENUM)
-                {
-                    return (currentlyPlaying_ != ENUM);
-                });
+            whichVec_.erase(std::remove(whichVec_.begin(),
+                                        whichVec_.end(),
+                                        currentlyPlaying_), whichVec_.end());
 
             return misc::Vector::SelectRandom(possibleSongs);
         }
