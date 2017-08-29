@@ -353,7 +353,7 @@ namespace sfml_util
         static const std::string Directory(const sound_effect::Enum);
     };
 
-    using SoundEffectEnumVec_t = std::vector<sound_effect::Enum>;
+    using SfxEnumVec_t = std::vector<sound_effect::Enum>;
 
 }
 #endif //SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED

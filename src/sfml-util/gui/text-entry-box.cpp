@@ -181,7 +181,7 @@ namespace gui
     {
         if ((KE.code != sf::Keyboard::LShift) && (KE.code != sf::Keyboard::RShift))
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
         }
 
         return true;

@@ -36,7 +36,7 @@
 namespace sfml_util
 {
 
-    const std::string SfxSet::ToString(const SfxSet::Enum E)
+    const std::string sound_effect_set::ToString(const sound_effect_set::Enum E)
     {
         switch (E)
         {
@@ -76,7 +76,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::SfxSet::ToString(" << E << ")_InvalidValueError.";
+                ss << "sfml_util::sound_effect_set::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

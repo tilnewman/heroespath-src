@@ -47,21 +47,30 @@
 namespace sfml_util
 {
 
-    using SoundEffectDelayPair = std::pair<sound_effect::Enum, float>;
-    using SoundEffectDelayVec_t = std::vector<SoundEffectDelayPair>;
+    using SfxDelayPair_t = std::pair<sound_effect::Enum, float>;
+    using SfxDelayVec_t = std::vector<SfxDelayPair_t>;
 
 
     //Responsible for storing all sfml objects relating to a single sound effect.
-    struct SoundEffectData
+    struct SfxWrapper
     {
-        explicit SoundEffectData(const sf::Sound &       SOUND  = sf::Sound(),
-                                 const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
+        explicit SfxWrapper(
+            const sf::Sound &       SOUND  = sf::Sound(),
+            const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
         :
             is_loaded(false),
             sound(SOUND),
             buffer(BUFFER)
+        {}
+
+        ~SfxWrapper()
         {
-            sound.setBuffer(buffer);
+            if (is_loaded)
+            {
+                sound.stop();
+                sound.resetBuffer();
+                is_loaded = false;
+            }
         }
 
         bool is_loaded;
@@ -69,7 +78,7 @@ namespace sfml_util
         sf::SoundBuffer buffer;
     };
 
-    using SoundEffectDataVec_t = std::vector<SoundEffectData>;
+    using SfxWrapperVec_t = std::vector<SfxWrapper>;
 
 
     //A class that loads, stores, and distributes sounds
@@ -95,7 +104,7 @@ namespace sfml_util
                                        const std::string & MUSIC_DIR_PATH);
 
         bool Test();
-        bool TestSoundEffectsSet(SoundEffectsSet &, const std::size_t INDEX);
+        bool TestSfxSet(SfxSet &, const std::size_t INDEX);
 
         void LoadSoundSets();
 
@@ -132,10 +141,7 @@ namespace sfml_util
 
         void MusicVolumeFadeToCurrent(const music::Enum);
 
-        inline const SoundEffectsSet & GetSfxSet(const SfxSet::Enum E) const
-        {
-            return soundEffectsSetVec_[static_cast<std::size_t>(E)];
-        }
+        const SfxSet & Getsound_effect_set(const sound_effect_set::Enum) const;
 
         void SoundEffectPlay(const sound_effect::Enum SFX_ENUM,
                              const float              PRE_DELAY_SEC = 0.0f);
@@ -157,12 +163,17 @@ namespace sfml_util
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         void LoadSound(const sound_effect::Enum,
-                       SoundEffectData &) const;
+                       SfxWrapper &) const;
 
-        bool IsSongsObjValid(const SongsSPtr_t & SONGS_SPTR) const
+        inline bool IsSongsObjValid(const SongsSPtr_t & SONGS_SPTR) const
         {
             return ((SONGS_SPTR.get() != nullptr) &&
                     (SONGS_SPTR->op_sptr.get() != nullptr));
+        }
+
+        inline bool IsSfxDelayPairReadyToPlay(const SfxDelayPair_t & SDP) const
+        {
+            return (SDP.second < 0.0f);
         }
 
     private:
@@ -172,11 +183,11 @@ namespace sfml_util
         //
         float musicVolume_;
         float effectsVolume_;
-        SoundEffectsSetVec_t soundEffectsSetVec_;
+        SfxSetVec_t sfxSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
         SongsSVec_t songsSVec_;
-        SoundEffectDelayVec_t sfxToPlayPairsVec_;
-        SoundEffectDataVec_t sfxVec_;
+        SfxDelayVec_t sfxToPlayPairsVec_;
+        SfxWrapperVec_t sfxVec_;
     };
 
 }

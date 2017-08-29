@@ -367,7 +367,7 @@ namespace gui
         {
             if ((false == IsInvalid(i)) && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) && (downInWhichRegion_ == i)))
             {
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 currentSelections_[i] = ! currentSelections_[i];
                 checkBoxSVec_[i]->SetIsInFirstState( ! checkBoxSVec_[i]->IsInFirstState());
                 return true;
@@ -410,7 +410,7 @@ namespace gui
                 (currentSelections_[i] == false))
             {
                 if (checkBoxSVec_[i]->GetMouseState() != MouseState::Over)
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
 
                 checkBoxSVec_[i]->SetMouseState(MouseState::Over);
                 wereAnyStatesChanged = true;

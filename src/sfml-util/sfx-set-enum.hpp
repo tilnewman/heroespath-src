@@ -33,7 +33,7 @@
 namespace sfml_util
 {
 
-    struct SfxSet
+    struct sound_effect_set
     {
         enum Enum
         {

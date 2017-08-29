@@ -406,7 +406,7 @@ namespace gui
 
         if (willPlaySfx_)
         {
-            SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
         }
 
         std::size_t indexCounter(0);
@@ -419,7 +419,7 @@ namespace gui
 
                 if (willPlaySfx_ && WILL_PLAY_SOUNDEFFECT)
                 {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
                 }
 
                 selectedSPtr_ = *itr;
@@ -513,8 +513,8 @@ namespace gui
                     {
                         if (willPlaySfx_)
                         {
-                            SoundManager::Instance()->GetSfxSet(
-                                sfml_util::SfxSet::Switch).PlayRandom();
+                            SoundManager::Instance()->Getsound_effect_set(
+                                sfml_util::sound_effect_set::Switch).PlayRandom();
                         }
 
                         selectedSPtr_ = NEXT_ENTITY_SPTR;
@@ -554,7 +554,7 @@ namespace gui
         {
             if (willPlaySfx_)
             {
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -567,7 +567,7 @@ namespace gui
 
             if (willPlaySfx_ && WILL_RETURN_TRUE)
             {
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -579,7 +579,7 @@ namespace gui
 
             if (willPlaySfx_ && WILL_RETURN_TRUE)
             {
-                SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Switch).PlayRandom();
+                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);

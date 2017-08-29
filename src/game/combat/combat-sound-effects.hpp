@@ -80,7 +80,7 @@ namespace combat
         void PlayDeath(const creature::CreaturePtr_t) const;
 
     private:
-        void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SoundEffectEnumVec_t &) const;
+        void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
     };
 
 }

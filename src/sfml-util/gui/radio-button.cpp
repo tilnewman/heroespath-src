@@ -448,7 +448,7 @@ namespace gui
             {
                 if ((ORIGINAL_SELECTION != i) && (false == IsInvalid(i)))
                 {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::Thock).PlayRandom();
+                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                     currentSelection_ = i;
                     buttonSVec_[i]->SetIsInFirstState(false);
                     wasButtonClicked = true;
@@ -652,7 +652,7 @@ namespace gui
             {
                 if (buttonSVec_[i]->GetMouseState() != MouseState::Over)
                 {
-                    SoundManager::Instance()->GetSfxSet(sfml_util::SfxSet::TickOn).PlayRandom();
+                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
                 }
 
                 buttonSVec_[i]->SetMouseState(MouseState::Over);

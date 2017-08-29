@@ -326,6 +326,14 @@ namespace stage
             LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
 
+        static auto hasTestingCompleted_SoundManager{ false };
+        if (false == hasTestingCompleted_SoundManager)
+        {
+            hasTestingCompleted_SoundManager =
+                sfml_util::SoundManager::Instance()->Test();
+            return;
+        }
+
         static auto hasTestingCompleted_GameDataFile{ false };
         if (false == hasTestingCompleted_GameDataFile)
         {
@@ -474,14 +482,6 @@ namespace stage
         if (false == hasTestingCompleted_Animations)
         {
             hasTestingCompleted_Animations = TestAnimations();
-            return;
-        }
-
-        static auto hasTestingCompleted_SoundManager{ false };
-        if (false == hasTestingCompleted_SoundManager)
-        {
-            hasTestingCompleted_SoundManager =
-                sfml_util::SoundManager::Instance()->Test();
             return;
         }
 

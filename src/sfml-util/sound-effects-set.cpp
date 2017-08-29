@@ -37,40 +37,79 @@
 namespace sfml_util
 {
 
-    SoundEffectsSet::SoundEffectsSet(const SoundEffectEnumVec_t & ENUM_VEC)
+    SfxSet::SfxSet(const SfxEnumVec_t & ENUM_VEC)
     :
-        enumVec_(ENUM_VEC)
-    {}
-
-
-    SoundEffectsSet::SoundEffectsSet(const sound_effect::Enum FIRST_SOUND_EFFECT_ENUM,
-                                     const sound_effect::Enum LAST_SOUND_EFFECT_ENUM)
-    :
-        enumVec_()
+        sfxEnums_(ENUM_VEC)
     {
-        auto const FIRST{ static_cast<int>(FIRST_SOUND_EFFECT_ENUM) };
-        auto const LAST { static_cast<int>(LAST_SOUND_EFFECT_ENUM) };
-        enumVec_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
-
-        for (int i(FIRST); i <= LAST; ++i)
-            enumVec_.push_back( static_cast<sound_effect::Enum>(i) );
-
-        M_ASSERT_OR_LOGANDTHROW_SS((enumVec_.empty() == false), "sfml_util::SoundEffectsSet::Constructor(enum, enum) was given an equal enums.");
+        //no error checking of empty vector here because that is the default case
     }
 
 
-    void SoundEffectsSet::Play(const sound_effect::Enum E) const
+    SfxSet::SfxSet(const sound_effect::Enum ENUM)
+    :
+        sfxEnums_(1, ENUM)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((ENUM != sound_effect::None) && (ENUM != sound_effect::Count)),
+            "SfxSet::Constructor(enum=" << ENUM << ") enum was invalid.");
+    }
+
+
+    SfxSet::SfxSet(const sound_effect::Enum FIRST_ENUM,
+                     const sound_effect::Enum LAST_ENUM)
+    :
+        sfxEnums_()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((FIRST_ENUM != sound_effect::None) && (FIRST_ENUM != sound_effect::Count)),
+            "SfxSet::Constructor(first=" << FIRST_ENUM << ", last=" << LAST_ENUM
+                << ") first was invalid.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((LAST_ENUM != sound_effect::None) && (LAST_ENUM != sound_effect::Count)),
+            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
+                << ", last=" << LAST_ENUM << ") last was invalid.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FIRST_ENUM != LAST_ENUM),
+            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
+                << ", last=" << sound_effect::ToString(LAST_ENUM)
+                << ") first and last were the same.");
+
+        auto const FIRST{ static_cast<int>(FIRST_ENUM) };
+        auto const LAST { static_cast<int>(LAST_ENUM) };
+        sfxEnums_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
+
+        for (int i(FIRST); i <= LAST; ++i)
+        {
+            sfxEnums_.push_back(static_cast<sound_effect::Enum>(i));
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (sfxEnums_.empty() == false),
+            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
+                << ", last=" << sound_effect::ToString(LAST_ENUM)
+                << ") resulted in an empty sfxEnums_ vector.");
+    }
+
+
+    void SfxSet::Play(const sound_effect::Enum E) const
+    {
+        if (sfxEnums_.empty())
+        {
+            return;
+        }
+
         if (E == sound_effect::Random)
         {
             PlayRandom();
         }
         else
         {
-            const std::size_t NUM_SOUNDS(enumVec_.size());
+            const std::size_t NUM_SOUNDS(sfxEnums_.size());
             for (std::size_t i(0); i < NUM_SOUNDS; ++i)
             {
-                if (E == enumVec_[i])
+                if (E == sfxEnums_[i])
                 {
                     PlayAt(i);
                     return;
@@ -78,28 +117,36 @@ namespace sfml_util
             }
 
             std::ostringstream ssErr;
-            ssErr << "sfml_util::SoundEffectsSet::Play(" << sound_effect::ToString(E) << ") did not find that sound effect amoung the static sounds.";
+            ssErr << "sfml_util::SfxSet::Play(" << sound_effect::ToString(E)
+                << ") did not find that sound effect amoung the static sounds.";
             throw std::range_error(ssErr.str());
         }
     }
 
 
-    void SoundEffectsSet::PlayAt(const std::size_t INDEX) const
+    void SfxSet::PlayAt(const std::size_t INDEX) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < enumVec_.size()), "sfml_util::SoundEffectsSet::PlayAt(" << INDEX << ") was given an index out of range.");
-        SoundManager::Instance()->SoundEffectPlay(enumVec_[INDEX]);
+        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sfxEnums_.size()),
+            "sfml_util::SfxSet::PlayAt(" << INDEX << ") was given an index out of range.");
+
+        SoundManager::Instance()->SoundEffectPlay(sfxEnums_[INDEX]);
     }
 
 
-    void SoundEffectsSet::PlayRandom() const
+    void SfxSet::PlayRandom() const
     {
-        if (enumVec_.size() == 1)
+        if (sfxEnums_.empty())
+        {
+            return;
+        }
+        else if (sfxEnums_.size() == 1)
         {
             PlayAt(0);
         }
         else
         {
-            PlayAt(static_cast<std::size_t>(misc::random::Int(static_cast<int>(enumVec_.size()) - 1)));
+            PlayAt(static_cast<std::size_t>(
+                misc::random::Int(static_cast<int>(sfxEnums_.size()) - 1)));
         }
     }
 

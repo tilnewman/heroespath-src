@@ -38,13 +38,15 @@ namespace sfml_util
 {
 
     //Wraps a set of sound effects for easy playing of a random selection
-    class SoundEffectsSet
+    class SfxSet
     {
     public:
-        explicit SoundEffectsSet(const SoundEffectEnumVec_t & ENUM_VEC = SoundEffectEnumVec_t());
+        explicit SfxSet(const SfxEnumVec_t & ENUM_VEC = SfxEnumVec_t());
 
-        SoundEffectsSet(const sound_effect::Enum FIRST_SOUND_EFFECT_ENUM,
-                        const sound_effect::Enum LAST_SOUND_EFFECT_ENUM);
+        explicit SfxSet(const sound_effect::Enum);
+
+        SfxSet(const sound_effect::Enum FIRST_ENUM,
+                const sound_effect::Enum LAST_ENUM);
 
         //throws runtime_error if given is not in the set
         void Play(const sound_effect::Enum) const;
@@ -54,15 +56,15 @@ namespace sfml_util
 
         void PlayRandom() const;
 
-        inline std::size_t Size() const { return enumVec_.size(); }
+        inline std::size_t Size() const { return sfxEnums_.size(); }
 
-        inline bool IsValid() const { return ! enumVec_.empty(); }
+        inline bool IsValid() const { return ! sfxEnums_.empty(); }
 
     private:
-        SoundEffectEnumVec_t enumVec_;
+        SfxEnumVec_t sfxEnums_;
     };
 
-    using SoundEffectsSetVec_t = std::vector<SoundEffectsSet>;
+    using SfxSetVec_t = std::vector<SfxSet>;
 
 }
 #endif //SFMLUTIL_SOUNDEFFECTSSET_INCLUDED
