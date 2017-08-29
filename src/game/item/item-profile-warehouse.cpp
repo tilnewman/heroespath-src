@@ -559,6 +559,17 @@ namespace item
     }
 
 
+    const ItemProfileVec_t & ItemProfileWarehouse::Get()
+    {
+        if (profiles_.empty())
+        {
+            Setup();
+        }
+
+        return profiles_;
+    }
+
+
     int ItemProfileWarehouse::Score(const stats::TraitSet & TRAIT_SET)
     {
         using namespace stats;

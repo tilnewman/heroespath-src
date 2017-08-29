@@ -220,7 +220,6 @@ int main(int argc, char * argv[])
             game::combat::strategy::ChanceFactory::Instance()->Initialize();
             sfml_util::gui::PopupManager::Instance()->LoadAssets();
             game::item::ArmorRatings::Instance()->Setup();
-            game::item::ItemProfileWarehouse::Instance()->Setup();
 
             //create the game loop manager and run the game
             game::LoopManager::Acquire();
