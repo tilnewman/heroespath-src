@@ -42,14 +42,17 @@ namespace sfml_util
                      const std::string & PATH_STR,
                      const bool          WILL_SMOOTH = true);
 
+
     std::size_t LoadAllTexturesInDir(
         std::vector<sf::Texture> & textureVec,
         const std::string &        DIR_STR,
         const bool                 WILL_SMOOTH = true);
 
+
     void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
-    void OpenMusicSPtr(MusicSPtr_t & musicSPtr, const std::string & PATH_STR);
+
+    MusicSPtr_t LoadMusic(const std::string & PATH_STR);
 
 }
 #endif //SFMLUTIL_LOADERS_INCLUDED

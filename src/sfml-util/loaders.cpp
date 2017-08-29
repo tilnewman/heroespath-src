@@ -150,27 +150,26 @@ namespace sfml_util
     }
 
 
-    void OpenMusicSPtr(MusicSPtr_t & musicSPtr, const std::string & PATH_STR)
+    MusicSPtr_t LoadMusic(const std::string & PATH_STR)
     {
         namespace bfs = boost::filesystem;
 
         const bfs::path   PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
         const std::string PATH_OBJ_STR(PATH_OBJ.string());
 
-        //check if the path even exists
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ),
             "LoadMusicSPtr(\"" << PATH_OBJ_STR << "\") failed because that file does not exist.");
 
-        //ignore directories, etc.
         M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ),
             "LoadMusic(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file.");
 
-        musicSPtr.reset( new sf::Music );
+        auto musicSPtr{ std::make_shared<sf::Music>() };
 
-        //verify open success
         M_ASSERT_OR_LOGANDTHROW_SS(musicSPtr->openFromFile(PATH_OBJ_STR.c_str()),
             "LoadMusic(\"" << PATH_OBJ_STR << "\"), sf::Music::OpenFromFile() returned false.  "
             << "See console output for more information.");
+
+        return musicSPtr;
     }
 
 }

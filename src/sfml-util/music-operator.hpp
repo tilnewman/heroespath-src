@@ -43,9 +43,6 @@ namespace sf
 namespace sfml_util
 {
 
-    using MusicSPtr_t = std::shared_ptr<sf::Music>;
-
-
     struct music_update_status
     {
         enum Enum
@@ -65,7 +62,10 @@ namespace sfml_util
 
 
     //Responsible for storing sf::Muisc objects, information about them,
-    //and for presenting an interface to controll them.
+    //and for presenting an interface to controll them.  The primary feature
+    //added by MusicOperator is fading, which is easy to control with the
+    //interface provided.  Set the FadeMult param to FADE_MULT_IMMEDIATE_
+    //of any negative float if you want the fade to be instant.
     class MusicOperator
     {
     public:
@@ -107,7 +107,6 @@ namespace sfml_util
         void VolumeFadeToGlobal(const float FADE_MULT = FADE_MULT_IMMEDIATE_);
         void VolumeFadeOut(const float FADE_MULT = FADE_MULT_DEFAULT_OUT_, const bool WILL_KILL_AFTER = true);
 
-        //returns true if this MusicOperator object should be removed from the list and destroyed
         music_update_status::Enum UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         friend bool operator==(const MusicOperator & L, const MusicOperator & R);

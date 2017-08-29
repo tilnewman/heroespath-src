@@ -143,31 +143,27 @@ namespace sfml_util
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);
 
     private:
-        void OpenMusic(const std::string & MUSIC_FILE_NAME,
-                       const std::string & MUSIC_DIR_NAME,
-                       MusicSPtr_t &       musicSPtr) const;
+        MusicSPtr_t OpenMusic(const std::string & MUSIC_FILE_NAME,
+                              const std::string & MUSIC_DIR_NAME) const;
 
         void CacheMusicInfo_CombatIntro();
 
-        void MusicAcquire_CombatIntro(MusicInfo &, MusicSPtr_t &);
-
-        void MusicAcquire_CombatIntro(MusicInfo &, MusicSPtr_t &, const std::size_t INDEX);
-
         inline std::size_t CombatMusicCount() const { return combatIntroMusicInfoVec_.size(); }
 
-        const MusicInfo MusicInfoAcquire(const music::Enum WHICH, MusicSPtr_t & musicSPtr);
-
-        MusicOperatorSPtr_t MakeAndStartMusicOperator(const MusicInfo &   MUSIC_INFO,
-                                                      const MusicSPtr_t & MUSIC_SPTR,
-                                                      const float         FADE_MULT,
-                                                      const float         VOLUME) const;
+        MusicOperatorSPtr_t MakeAndStartMusicOperator(const music::Enum MUSIC_ENUM,
+                                                      const float       FADE_MULT,
+                                                      const float       VOLUME) const;
 
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         void LoadSound(const sound_effect::Enum,
                        SoundEffectData &) const;
 
-        MusicOperatorSPtr_t GetMusicOperator(const music::Enum);
+        bool IsSongsObjValid(const SongsSPtr_t & SONGS_SPTR) const
+        {
+            return ((SONGS_SPTR.get() != nullptr) &&
+                    (SONGS_SPTR->op_sptr.get() != nullptr));
+        }
 
     private:
         static std::string soundsDirectoryPath_;
