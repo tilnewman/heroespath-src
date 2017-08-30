@@ -37,11 +37,11 @@ namespace sfml_util
 
     SfxWrapper::SfxWrapper(
         const sound_effect::Enum ENUM,
-        SoundUPtr_t              SOUND_UPTR,
+        SoundUPtr_t              soundUPtr,
         SoundBufferUPtr_t        BUFFER_UPTR)
     :
         which_      (ENUM),
-        soundUPtr_  (std::move(SOUND_UPTR)),
+        soundUPtr_  (std::move(soundUPtr)),
         bufferUPtr_ (std::move(BUFFER_UPTR))
     {
         if (IsValid())

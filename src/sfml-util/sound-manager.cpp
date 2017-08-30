@@ -581,7 +581,7 @@ namespace sfml_util
     }
 
 
-    MusicSPtr_t SoundManager::OpenMusic(const std::string & MUSIC_FILE_NAME,
+    MusicUPtr_t SoundManager::OpenMusic(const std::string & MUSIC_FILE_NAME,
                                         const std::string & MUSIC_DIR_NAME) const
     {
         namespace bfs = boost::filesystem;
@@ -657,7 +657,7 @@ namespace sfml_util
                                                                 const float       FADE_MULT,
                                                                 const float       VOLUME) const
     {
-        MusicSPtr_t musicSPtr;
+        MusicUPtr_t musicUPtr;
         MusicInfo musicInfo(MUSIC_ENUM);
         
         if (musicInfo.Which() == music::CombatIntro)
@@ -667,16 +667,16 @@ namespace sfml_util
 
             musicInfo = combatIntroMusicInfoVec_[INDEX];
 
-            musicSPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
+            musicUPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
         }
         else
         {
             musicInfo.AutoSetup();
-            musicSPtr = OpenMusic(musicInfo.Filename(), musicInfo.DirName());
+            musicUPtr = OpenMusic(musicInfo.Filename(), musicInfo.DirName());
         }
 
         auto musicOperatorSPtr{ std::make_shared<sfml_util::MusicOperator>(
-            musicInfo, musicSPtr, FADE_MULT, VOLUME) };
+            musicInfo, std::move(musicUPtr), FADE_MULT, VOLUME) };
 
         musicOperatorSPtr->Volume(0.0f);
         musicOperatorSPtr->VolumeFadeTo(VOLUME, FADE_MULT);

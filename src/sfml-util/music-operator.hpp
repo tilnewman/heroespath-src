@@ -68,23 +68,40 @@ namespace sfml_util
     //of any negative float if you want the fade to be instant.
     class MusicOperator
     {
+        MusicOperator(const MusicOperator &) =delete;
+        MusicOperator & operator=(const MusicOperator &) =delete;
+
     public:
-        explicit MusicOperator(const MusicInfo &   MUSIC_INFO    = MusicInfo(),
-                               const MusicSPtr_t & MUSIC_SPTR    = MusicSPtr_t(),
-                               const float         FADE_IN_MULT  = FADE_MULT_IMMEDIATE_,
-                               const float         TARGET_VOLUME = VOLUME_USE_GLOBAL_);
+        explicit MusicOperator(const MusicInfo & MUSIC_INFO    = MusicInfo(),
+                               MusicUPtr_t       musicUPtr     = MusicUPtr_t(),
+                               const float       FADE_IN_MULT  = FADE_MULT_IMMEDIATE_,
+                               const float       TARGET_VOLUME = VOLUME_USE_GLOBAL_);
 
         virtual ~MusicOperator();
 
+        MusicOperator(MusicOperator &&);
+
+        MusicOperator & operator=(MusicOperator &&);
+
+        bool IsValid() const;
+
         inline const MusicInfo Info() const         { return info_; }
 
-        inline void Play()                          { musicSPtr_->play(); }
-        inline void Pause()                         { musicSPtr_->pause(); }
-        inline void Stop()                          { musicSPtr_->stop(); }
-        inline sf::Music::Status Status() const     { return musicSPtr_->getStatus(); }
+        inline void Play()                          { if (IsValid()) musicUPtr_->play(); }
+        inline void Pause()                         { if (IsValid()) musicUPtr_->pause(); }
+        inline void Stop()                          { if (IsValid()) musicUPtr_->stop(); }
 
-        inline bool IsLooped() const                { return musicSPtr_->getLoop(); }
-        inline void IsLooped(const bool B)          { musicSPtr_->setLoop(B); }
+        inline sf::Music::Status Status() const
+        {
+            return ((IsValid()) ? musicUPtr_->getStatus() : sf::Music::Status::Stopped);
+        }
+
+        inline bool IsLooped() const
+        {
+            return ((IsValid()) ? musicUPtr_->getLoop() : false);
+        }
+
+        inline void IsLooped(const bool B)          { if (IsValid()) musicUPtr_->setLoop(B); }
 
         inline bool IsFadingIn() const              { return (fadeInMult_ > 0.0f); }
         inline bool IsFadingOut() const             { return (fadeOutMult_ > 0.0f); }
@@ -98,11 +115,14 @@ namespace sfml_util
         inline bool WillKillAfterFadeOut() const        { return killAfterFadeOut_; }
         inline void WillKillAfterFadeOut(const bool B)  { killAfterFadeOut_ = B; }
 
-        inline float Volume() const                 { return musicSPtr_->getVolume(); }
+        inline float Volume() const
+        {
+            return ((IsValid()) ? musicUPtr_->getVolume() : 0.0f);
+        }
         
         inline void Volume(const float F)
         {
-            musicSPtr_->setVolume((F < 0.0f) ? 0.0f : ((F > 100.0f) ? 100.0f : F));
+            if (IsValid()) musicUPtr_->setVolume((F < 0.0f) ? 0.0f : ((F > 100.0f) ? 100.0f : F));
         }
 
         inline float VolumeTarget() const           { return targetVolume_; }
@@ -113,21 +133,22 @@ namespace sfml_util
         void VolumeFadeOut(const float FADE_MULT = FADE_MULT_DEFAULT_OUT_, const bool WILL_KILL_AFTER = true);
 
         music_update_status::Enum UpdateTime(const float ELAPSED_TIME_SECONDS);
-
+        
         friend bool operator==(const MusicOperator & L, const MusicOperator & R);
-
+        
     public:
         static const float VOLUME_USE_GLOBAL_;
         static const float FADE_MULT_IMMEDIATE_;
         static const float FADE_MULT_DEFAULT_IN_;
         static const float FADE_MULT_DEFAULT_OUT_;
+
     private:
-        MusicInfo info_;
-        float     targetVolume_;
-        float     fadeInMult_;
-        float     fadeOutMult_;
-        bool      killAfterFadeOut_;
-        sfml_util::MusicSPtr_t musicSPtr_;
+        MusicInfo   info_;
+        float       targetVolume_;
+        float       fadeInMult_;
+        float       fadeOutMult_;
+        bool        killAfterFadeOut_;
+        MusicUPtr_t musicUPtr_;
     };
 
 

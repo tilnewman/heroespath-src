@@ -52,7 +52,7 @@ namespace sfml_util
     void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
 
-    MusicSPtr_t LoadMusic(const std::string & PATH_STR);
+    MusicUPtr_t LoadMusic(const std::string & PATH_STR);
 
 }
 #endif //SFMLUTIL_LOADERS_INCLUDED

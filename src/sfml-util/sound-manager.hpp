@@ -120,7 +120,7 @@ namespace sfml_util
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);
 
     private:
-        MusicSPtr_t OpenMusic(const std::string & MUSIC_FILE_NAME,
+        MusicUPtr_t OpenMusic(const std::string & MUSIC_FILE_NAME,
                               const std::string & MUSIC_DIR_NAME) const;
 
         void CacheMusicInfo_CombatIntro();

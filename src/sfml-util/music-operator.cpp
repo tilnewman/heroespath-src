@@ -72,47 +72,89 @@ namespace sfml_util
     const float MusicOperator::FADE_MULT_DEFAULT_OUT_(30.0f);
 
 
-    MusicOperator::MusicOperator(const MusicInfo &              MUSIC_INFO,
-                                 const sfml_util::MusicSPtr_t & MUSIC_SPTR,
-                                 const float                    FADE_IN_MULT,
-                                 const float                    TARGET_VOLUME)
+    MusicOperator::MusicOperator(const MusicInfo & MUSIC_INFO,
+                                 MusicUPtr_t       MUSIC_UPTR,
+                                 const float       FADE_IN_MULT,
+                                 const float       TARGET_VOLUME)
     :
         info_            (MUSIC_INFO),
         targetVolume_    (TARGET_VOLUME),
         fadeInMult_      (FADE_IN_MULT),
         fadeOutMult_     (0.0f),
         killAfterFadeOut_(false),
-        musicSPtr_       (MUSIC_SPTR)
+        musicUPtr_       (std::move(MUSIC_UPTR))
     {
-        info_.Duration(sfml_util::Time(musicSPtr_->getDuration()));
-        musicSPtr_->setLoop(MUSIC_INFO.IsLooped());
+        if (IsValid())
+        {
+            info_.Duration(sfml_util::Time(musicUPtr_->getDuration()));
+            musicUPtr_->setLoop(MUSIC_INFO.IsLooped());
+        }
+    }
+
+
+    MusicOperator::MusicOperator(MusicOperator && MO)
+    :
+        info_            (MO.info_),
+        targetVolume_    (MO.targetVolume_),
+        fadeInMult_      (MO.fadeInMult_),
+        fadeOutMult_     (MO.fadeOutMult_),
+        killAfterFadeOut_(MO.killAfterFadeOut_),
+        musicUPtr_       (std::move(MO.musicUPtr_))
+    {}
+
+
+    MusicOperator & MusicOperator::operator=(MusicOperator && MO)
+    {
+        if (& MO != this)
+        {
+            info_               = MO.info_;
+            targetVolume_       = MO.targetVolume_;
+            fadeInMult_         = MO.fadeInMult_;
+            fadeOutMult_        = MO.fadeOutMult_;
+            killAfterFadeOut_   = MO.killAfterFadeOut_;
+            musicUPtr_          = std::move(MO.musicUPtr_);
+        }
+
+        return * this;
+    }
+
+
+    bool MusicOperator::IsValid() const
+    {
+        return ((info_.Which() != music::Count) &&
+                (info_.Which() != music::All) &&
+                (info_.Which() != music::None) &&
+                (musicUPtr_.get() != nullptr));
     }
 
 
     MusicOperator::~MusicOperator()
     {
-        if (musicSPtr_.get() != nullptr)
+        if (musicUPtr_.get() != nullptr)
         {
-            musicSPtr_->stop();
+            musicUPtr_->stop();
         }
     }
 
 
     void MusicOperator::VolumeFadeTo(const float TARGET_VOL, const float FADE_MULT)
     {
-        targetVolume_ = TARGET_VOL;
-        const float VOLUME_CURR(musicSPtr_->getVolume());
+        if (IsValid())
+        {
+            targetVolume_ = TARGET_VOL;
+            const float VOLUME_CURR(musicUPtr_->getVolume());
 
-        if (VOLUME_CURR < targetVolume_)
-        {
-            fadeOutMult_ = 0.0f;
-            fadeInMult_ = FADE_MULT;
-        }
-        else
-        {
-            fadeOutMult_ = FADE_MULT;
-            fadeInMult_ = 0.0f;
-            killAfterFadeOut_ = false;
+            if (VOLUME_CURR < targetVolume_)
+            {
+                fadeOutMult_ = 0.0f;
+                fadeInMult_ = FADE_MULT;
+            }
+            else
+            {
+                fadeOutMult_ = FADE_MULT;
+                fadeInMult_ = 0.0f;
+                killAfterFadeOut_ = false;
+            }
         }
     }
 
@@ -134,6 +176,11 @@ namespace sfml_util
 
     music_update_status::Enum MusicOperator::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        if (IsValid() == false)
+        {
+            return music_update_status::Stopped;
+        }
+
         if (fadeInMult_ < 0.0f)
         {
             Volume(targetVolume_);
@@ -142,7 +189,7 @@ namespace sfml_util
         }
         else if (fadeInMult_ > 0.0f)
         {
-            const float NEW_VOL(musicSPtr_->getVolume() + (ELAPSED_TIME_SECONDS * fadeInMult_));
+            const float NEW_VOL(musicUPtr_->getVolume() + (ELAPSED_TIME_SECONDS * fadeInMult_));
             Volume(NEW_VOL);
             if (NEW_VOL > targetVolume_)
             {
@@ -162,7 +209,7 @@ namespace sfml_util
         }
         else if (fadeOutMult_ > 0.0f)
         {
-            const float NEW_VOL(musicSPtr_->getVolume() - (ELAPSED_TIME_SECONDS * fadeOutMult_));
+            const float NEW_VOL(musicUPtr_->getVolume() - (ELAPSED_TIME_SECONDS * fadeOutMult_));
             Volume(NEW_VOL);
             if (NEW_VOL < targetVolume_)
             {
@@ -185,7 +232,7 @@ namespace sfml_util
             }
         }
 
-        if (musicSPtr_->getStatus() == sf::Music::Playing)
+        if (musicUPtr_->getStatus() == sf::Music::Playing)
         {
             return music_update_status::Playing;
         }
@@ -203,14 +250,14 @@ namespace sfml_util
                          L.fadeInMult_,
                          L.fadeOutMult_,
                          L.killAfterFadeOut_,
-                         L.musicSPtr_)
-            ==
-            std::tie(R.info_,
-                     R.targetVolume_,
-                     R.fadeInMult_,
-                     R.fadeOutMult_,
-                     R.killAfterFadeOut_,
-                     R.musicSPtr_));
+                         L.musicUPtr_)
+                ==
+                std::tie(R.info_,
+                         R.targetVolume_,
+                         R.fadeInMult_,
+                         R.fadeOutMult_,
+                         R.killAfterFadeOut_,
+                         R.musicUPtr_));
     }
 
 }
