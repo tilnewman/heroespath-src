@@ -87,11 +87,11 @@ namespace sfml_util
             return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f);
         }
 
-        inline void Volume(const float NEW_VOL)
+        inline void Volume(const float V)
         {
             if (IsValid())
             {
-                soundUPtr_->setVolume(NEW_VOL);
+                soundUPtr_->setVolume(((V < 0.0f) ? 0.0f : ((V > 100.0f) ? 100.0f : V)));
             }
         }
 

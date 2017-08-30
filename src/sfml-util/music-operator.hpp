@@ -99,7 +99,12 @@ namespace sfml_util
         inline void WillKillAfterFadeOut(const bool B)  { killAfterFadeOut_ = B; }
 
         inline float Volume() const                 { return musicSPtr_->getVolume(); }
-        inline void Volume(const float F)           { musicSPtr_->setVolume(F); }
+        
+        inline void Volume(const float F)
+        {
+            musicSPtr_->setVolume((F < 0.0f) ? 0.0f : ((F > 100.0f) ? 100.0f : F));
+        }
+
         inline float VolumeTarget() const           { return targetVolume_; }
         inline void VolumeTarget(const float F)     { targetVolume_ = F; }
 

@@ -136,14 +136,14 @@ namespace sfml_util
     {
         if (fadeInMult_ < 0.0f)
         {
-            musicSPtr_->setVolume(targetVolume_);
+            Volume(targetVolume_);
             fadeInMult_ = 0.0f;
             return music_update_status::FadedIn;
         }
         else if (fadeInMult_ > 0.0f)
         {
             const float NEW_VOL(musicSPtr_->getVolume() + (ELAPSED_TIME_SECONDS * fadeInMult_));
-            musicSPtr_->setVolume(NEW_VOL);
+            Volume(NEW_VOL);
             if (NEW_VOL > targetVolume_)
             {
                 fadeInMult_ = 0.0f;
@@ -156,14 +156,14 @@ namespace sfml_util
         }
         else if (fadeOutMult_ < 0.0f)
         {
-            musicSPtr_->setVolume(targetVolume_);
+            Volume(targetVolume_);
             fadeOutMult_ = 0.0f;
             return music_update_status::FadedOut;
         }
         else if (fadeOutMult_ > 0.0f)
         {
             const float NEW_VOL(musicSPtr_->getVolume() - (ELAPSED_TIME_SECONDS * fadeOutMult_));
-            musicSPtr_->setVolume(NEW_VOL);
+            Volume(NEW_VOL);
             if (NEW_VOL < targetVolume_)
             {
                 fadeOutMult_ = 0.0f;

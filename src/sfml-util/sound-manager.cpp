@@ -68,7 +68,7 @@ namespace sfml_util
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
         sfxWrapperVec_.resize(static_cast<std::size_t>(sound_effect::Count));
-        sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count), SfxSet());
+        sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count));
     }
 
 
