@@ -127,19 +127,13 @@ namespace sfml_util
 
         inline std::size_t CombatMusicCount() const { return combatIntroMusicInfoVec_.size(); }
 
-        MusicOperatorSPtr_t MakeAndStartMusicOperator(const music::Enum MUSIC_ENUM,
-                                                      const float       FADE_MULT,
-                                                      const float       VOLUME) const;
+        MusicOperator MakeAndStartMusicOperator(const music::Enum MUSIC_ENUM,
+                                                const float       FADE_MULT,
+                                                const float       VOLUME) const;
 
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         SoundBufferUPtr_t LoadSfxBuffer(const sound_effect::Enum) const;
-
-        inline bool IsSongsObjValid(const SongsSPtr_t & SONGS_SPTR) const
-        {
-            return ((SONGS_SPTR.get() != nullptr) &&
-                    (SONGS_SPTR->op_sptr.get() != nullptr));
-        }
 
         inline bool IsSfxDelayPairReadyToPlay(const SfxDelayPair_t & SDP) const
         {
@@ -155,7 +149,7 @@ namespace sfml_util
         float effectsVolume_;
         SfxSetVec_t sfxSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
-        SongsSVec_t songsSVec_;
+        SongSetVec_t songSetVec_;
         SfxDelayVec_t sfxToPlayPairsVec_;
         SfxWrapperVec_t sfxWrapperVec_;
     };

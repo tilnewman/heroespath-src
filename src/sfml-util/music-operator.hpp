@@ -152,9 +152,6 @@ namespace sfml_util
     };
 
 
-    using MusicOperatorSPtr_t = std::shared_ptr<MusicOperator>;
-
-
     bool operator==(const MusicOperator & L, const MusicOperator & R);
 
 

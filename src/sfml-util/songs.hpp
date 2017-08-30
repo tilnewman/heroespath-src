@@ -28,38 +28,40 @@
 // songs.hpp
 //
 #include "sfml-util/music-set.hpp"
+#include "sfml-util/music-operator.hpp"
 
 #include <memory>
+#include <vector>
 
 
 namespace sfml_util
 {
 
-    class MusicOperator;
-    using MusicOperatorSPtr_t = std::shared_ptr<MusicOperator>;
-
-
     //Responsible for wrapping a set of songs as an enum vector and a single sf::Music instance.
-    struct Songs
+    struct SongSet
     {
-        explicit Songs(const MusicSet &            SET     = MusicSet(),
-                       const MusicOperatorSPtr_t & OP_SPTR = MusicOperatorSPtr_t());
+        explicit SongSet(const MusicSet & SET = MusicSet(),
+                         MusicOperator    OP  = MusicOperator());
 
-        friend bool operator==(const Songs & L, const Songs & R);
+        friend bool operator==(const SongSet & L, const SongSet & R);
+
+        inline bool IsValid() const { return (op.IsValid() && set.IsValid()); }
 
         MusicSet set;
-        MusicOperatorSPtr_t op_sptr;
+        MusicOperator op;
     };
 
-    bool operator==(const Songs & L, const Songs & R);
 
-    inline bool operator!=(const Songs & L, const Songs & R)
+    bool operator==(const SongSet & L, const SongSet & R);
+
+
+    inline bool operator!=(const SongSet & L, const SongSet & R)
     {
         return ! (L == R);
     }
 
-    using SongsSPtr_t = std::shared_ptr<Songs>;
-    using SongsSVec_t = std::vector<SongsSPtr_t>;
+
+    using SongSetVec_t = std::vector<SongSet>;
 
 }
 

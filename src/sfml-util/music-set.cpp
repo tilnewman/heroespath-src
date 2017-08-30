@@ -83,6 +83,15 @@ namespace sfml_util
     }
 
 
+    bool MusicSet::IsValid() const
+    {
+        return ((whichVec_.empty() == false) &&
+                (Contains(music::None) == false) &&
+                (Contains(music::All) == false) &&
+                (Contains(music::Count) == false));
+    }
+
+
     music::Enum MusicSet::Advance()
     {
         auto const PREV_PLAYING{ currentlyPlaying_ };

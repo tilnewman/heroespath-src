@@ -38,17 +38,17 @@
 namespace sfml_util
 {
 
-    Songs::Songs(const MusicSet &            SET,
-                 const MusicOperatorSPtr_t & OP_SPTR)
+    SongSet::SongSet(const MusicSet &      SET,
+                     MusicOperator OP)
     :
-        set    (SET),
-        op_sptr(OP_SPTR)
+        set(SET),
+        op (std::move(OP))
     {}
 
 
-    bool operator==(const Songs & L, const Songs & R)
+    bool operator==(const SongSet & L, const SongSet & R)
     {
-        return std::tie(L.set, L.op_sptr) == std::tie(R.set, R.op_sptr);
+        return std::tie(L.set, L.op) == std::tie(R.set, R.op);
     }
 
 }

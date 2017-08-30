@@ -58,6 +58,8 @@ namespace sfml_util
                           const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
                           const bool             WILL_LOOP            = true);
 
+        bool IsValid() const;
+
         inline std::size_t Count() const             { return whichVec_.size(); }
         inline bool IsSingleSong() const             { return (whichVec_.size() == 1); }
 
@@ -78,9 +80,9 @@ namespace sfml_util
 
         music::Enum PickNextSong();
 
-        inline bool Contains(const music::Enum E)
+        inline bool Contains(const music::Enum E) const
         {
-            return (std::find(whichVec_.begin(), whichVec_.end(), E) != whichVec_.end());
+            return std::find(whichVec_.begin(), whichVec_.end(), E) != whichVec_.end();
         }
 
         friend bool operator==(const MusicSet & L, const MusicSet & R);
