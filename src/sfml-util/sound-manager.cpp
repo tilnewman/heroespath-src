@@ -63,11 +63,11 @@ namespace sfml_util
         combatIntroMusicInfoVec_(),
         songsSVec_              (),
         sfxToPlayPairsVec_      (),
-        sfxVec_                 ()
+        sfxWrapperVec_          ()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
-        sfxVec_.resize(static_cast<std::size_t>(sound_effect::Count), SfxWrapper());
+        sfxWrapperVec_.resize(static_cast<std::size_t>(sound_effect::Count));
         sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count), SfxSet());
     }
 
@@ -459,7 +459,6 @@ namespace sfml_util
 
     void SoundManager::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        //SongsSVec_t songsToRemove;
         auto willCleanup{ false };
         
         for (auto & songsSPtr : songsSVec_)
@@ -473,7 +472,6 @@ namespace sfml_util
                     songsSPtr->op_sptr->Stop();
                     songsSPtr->op_sptr.reset();
                     songsSPtr.reset();
-                    //songsToRemove.push_back(songsSPtr);
                     willCleanup = true;
                 }
                 else if (UPDATE_STATUS == music_update_status::Stopped)
@@ -492,7 +490,6 @@ namespace sfml_util
                     else
                     {
                         songsSPtr.reset();
-                        //songsToRemove.push_back(songsSPtr);
                         willCleanup = true;
                         
                     }
@@ -500,12 +497,12 @@ namespace sfml_util
             }
         }
 
-        //if (willCleanup)//(songsToRemove.empty() == false)
-        /*{
+        if (willCleanup)
+        {
             songsSVec_.erase(std::remove(songsSVec_.begin(),
                                          songsSVec_.end(),
                                          SongsSPtr_t()), songsSVec_.end());
-        }*/
+        }
 
         SoundEffectsUpdate(ELAPSED_TIME_SECONDS);
     }
@@ -529,12 +526,10 @@ namespace sfml_util
     {
         effectsVolume_ = V;
 
-        for (auto & sfx : sfxVec_)
+        for (auto & sfxWrapper : sfxWrapperVec_)
         {
-            if (sfx.is_loaded)
-            {
-                sfx.sound.setVolume(effectsVolume_);
-            }
+            //the Volume() function pre-checks if IsValid(), so this is safe
+            sfxWrapper.Volume(effectsVolume_);
         }
     }
 
@@ -868,19 +863,24 @@ namespace sfml_util
             {
                 willCleanup = true;
 
-                auto & sfx{ sfxVec_[sfxDelayPair.first] };
+                auto const SFX_ENUM{ sfxDelayPair.first };
+                auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
 
-                if (false == sfx.is_loaded)
+                if (sfxWrapper.IsValid() == false)
                 {
-                    LoadSound(sfxDelayPair.first, sfx);
-                    sfx.sound.setVolume(SoundEffectVolume());
+                    sfxWrapper = SfxWrapper(
+                        SFX_ENUM,
+                        std::make_unique<sf::Sound>(),
+                        LoadSfxBuffer(SFX_ENUM) );
+
+                    sfxWrapper.Volume( SoundEffectVolume() );
                 }
 
                 //This restarts play from the beginning, which is the
                 //desired behavior even if it was already playing,
                 //because I decided that repeated plays of the same
                 //sfx will restart if not allowed to finish.
-                sfx.sound.play();
+                sfxWrapper.Play();
             }
         }
 
@@ -892,7 +892,7 @@ namespace sfml_util
                     sfxToPlayPairsVec_.end(),
                     [this](const auto & SFX_DELAY_PAIR)
                     {
-                        return IsSfxDelayPairReadyToPlay(SFX_DELAY_PAIR);
+                        return this->IsSfxDelayPairReadyToPlay(SFX_DELAY_PAIR);
                     }),
                 sfxToPlayPairsVec_.end() );
         }
@@ -902,20 +902,18 @@ namespace sfml_util
     void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
     {
         //eliminate buffers for sound effects that are done playing
-        for (auto & sfx : sfxVec_)
+        for (auto & sfxWrapper : sfxWrapperVec_)
         {
-            if (sfx.is_loaded)
+            if (sfxWrapper.IsValid())
             {
-                if (WILL_STOP_PLAYING_SFX &&
-                    (sfx.sound.getStatus() == sf::SoundSource::Playing))
+                if (WILL_STOP_PLAYING_SFX)
                 {
-                    sfx.sound.stop();
+                    sfxWrapper.Stop();
                 }
 
-                if (sfx.sound.getStatus() != sf::SoundSource::Playing)
+                if (sfxWrapper.Status() != sf::SoundSource::Playing)
                 {
-                    sfx.sound.resetBuffer();
-                    sfx = SfxWrapper();
+                    sfxWrapper.Reset();
                 }
             }
         }
@@ -927,8 +925,7 @@ namespace sfml_util
     }
 
 
-    void SoundManager::LoadSound(const sound_effect::Enum ENUM,
-                                 SfxWrapper &        soundEffectData) const
+    SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
         namespace bfs = boost::filesystem;
 
@@ -948,16 +945,16 @@ namespace sfml_util
             << "), attempting path=\"" << PATH_OBJ.string()
             << "\", failed because that is not a regular file.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(soundEffectData.buffer.loadFromFile(PATH_OBJ.string().c_str()),
+        auto bufferUPtr{ std::make_unique<sf::SoundBuffer>() };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(bufferUPtr->loadFromFile(PATH_OBJ.string().c_str()),
             "sfml_util::SoundManager::LoadSound("
             << sound_effect::ToString(ENUM)
             << "), attempting path=\"" << PATH_OBJ.string()
             << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
             << " for more information.");
 
-        soundEffectData.sound.stop();
-        soundEffectData.sound.setBuffer(soundEffectData.buffer);
-        soundEffectData.is_loaded = true;
+        return bufferUPtr;
     }
 
 }

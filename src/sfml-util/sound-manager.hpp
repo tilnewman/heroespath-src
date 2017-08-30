@@ -36,6 +36,7 @@
 #include "sfml-util/songs.hpp"
 #include "sfml-util/sound-effects-set.hpp"
 #include "sfml-util/sfx-set-enum.hpp"
+#include "sfml-util/sfx-wrapper.hpp"
 
 #include <memory>
 #include <string>
@@ -49,36 +50,6 @@ namespace sfml_util
 
     using SfxDelayPair_t = std::pair<sound_effect::Enum, float>;
     using SfxDelayVec_t = std::vector<SfxDelayPair_t>;
-
-
-    //Responsible for storing all sfml objects relating to a single sound effect.
-    struct SfxWrapper
-    {
-        explicit SfxWrapper(
-            const sf::Sound &       SOUND  = sf::Sound(),
-            const sf::SoundBuffer & BUFFER = sf::SoundBuffer())
-        :
-            is_loaded(false),
-            sound(SOUND),
-            buffer(BUFFER)
-        {}
-
-        ~SfxWrapper()
-        {
-            if (is_loaded)
-            {
-                sound.stop();
-                sound.resetBuffer();
-                is_loaded = false;
-            }
-        }
-
-        bool is_loaded;
-        sf::Sound sound;
-        sf::SoundBuffer buffer;
-    };
-
-    using SfxWrapperVec_t = std::vector<SfxWrapper>;
 
 
     //A class that loads, stores, and distributes sounds
@@ -162,8 +133,7 @@ namespace sfml_util
 
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
-        void LoadSound(const sound_effect::Enum,
-                       SfxWrapper &) const;
+        SoundBufferUPtr_t LoadSfxBuffer(const sound_effect::Enum) const;
 
         inline bool IsSongsObjValid(const SongsSPtr_t & SONGS_SPTR) const
         {
@@ -187,7 +157,7 @@ namespace sfml_util
         MusicInfoVec_t combatIntroMusicInfoVec_;
         SongsSVec_t songsSVec_;
         SfxDelayVec_t sfxToPlayPairsVec_;
-        SfxWrapperVec_t sfxVec_;
+        SfxWrapperVec_t sfxWrapperVec_;
     };
 
 }
