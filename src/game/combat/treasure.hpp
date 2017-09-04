@@ -89,6 +89,10 @@ namespace combat
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 
         static double TreasureScoreToWeight(const int);
+
+        static void RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t &);
+
+        static const item::ItemProfile ItemToSetItemProfile(const item::ItemPtr_t);
     };
 
 }

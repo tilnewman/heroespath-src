@@ -35,8 +35,10 @@
 #include "game/item/item-profile-warehouse.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/creature/creature.hpp"
+#include "game/creature/algorithms.hpp"
 #include "game/non-player/character.hpp"
 #include "game/non-player/ownership-profile.hpp"
+
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -168,7 +170,10 @@ namespace combat
                                       const bool           IS_RELIGIOUS,
                                       ItemCache &          items_OutParam)
     {
+        //This 'amount' variable works both as an amount of treasure still to be acquired and
+        //as a measure of how rare items can possibly be
         auto amount{ TREASURE_SCORE };
+
         auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
 
         //Some items are 0% religious, and need to be removed if selecting a religious item.
@@ -184,6 +189,8 @@ namespace combat
         }
         
         RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+
+        RemoveSetItemsAlreadyOwned(profiles);
 
         while (profiles.empty() == false)
         {
@@ -262,6 +269,76 @@ namespace combat
     double TreasureFactory::TreasureScoreToWeight(const int TREASURE_SCORE)
     {
         return 1.0 / (static_cast<double>(TREASURE_SCORE) * 0.1);
+    }
+
+
+    void TreasureFactory::RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t & profiles)
+    {
+        item::ItemProfileVec_t setItemsOwnedProfiles;
+
+        //populate setItemsOwnedProfiles with thin profiles of equipped and unequipped items
+        auto const CREATURE_PVEC{ game::creature::Algorithms::Players(false, true) };
+        for (auto const CREATURE_PTR : CREATURE_PVEC)
+        {
+            auto const UNEQUIPPED_ITEM_PTRS{ CREATURE_PTR->Inventory().Items() };
+
+            for (auto const UNEQUIPPED_ITEM_PTR : UNEQUIPPED_ITEM_PTRS)
+            {
+                auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(UNEQUIPPED_ITEM_PTR) };
+                if (SET_ITEM_PROFILE.IsSet())
+                {
+                    setItemsOwnedProfiles.push_back(SET_ITEM_PROFILE);
+                }
+            }
+
+            auto const EQUIPPED_ITEM_PTRS{ CREATURE_PTR->Inventory().ItemsEquipped() };
+
+            for (auto const EQUIPPED_ITEM_PTR : EQUIPPED_ITEM_PTRS)
+            {
+                auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(EQUIPPED_ITEM_PTR) };
+                if (SET_ITEM_PROFILE.IsSet())
+                {
+                    setItemsOwnedProfiles.push_back(SET_ITEM_PROFILE);
+                }
+            }
+        }
+
+        //eliminate profiles that match the any in setItemsOwnedProfiles
+        for(auto const & PROFILE : setItemsOwnedProfiles)
+        {
+            profiles.erase(std::remove_if(
+                profiles.begin(),
+                profiles.end(),
+                [&PROFILE](const auto & P)
+                {
+                    return ((PROFILE.SetType() == P.SetType()) &&
+                            (PROFILE.WeaponType() == P.WeaponType()) &&
+                            (PROFILE.ArmorType() == P.ArmorType()) &&
+                            (PROFILE.MiscType() == P.MiscType()));
+                }), profiles.end());
+        }
+    }
+
+
+    const item::ItemProfile TreasureFactory::ItemToSetItemProfile(const item::ItemPtr_t ITEM_PTR)
+    {
+        if ((ITEM_PTR->SetType() == item::set_type::Count) ||
+            (ITEM_PTR->SetType() == item::set_type::NotASet))
+        {
+            return item::ItemProfile();
+        }
+        else
+        {
+            return item::ItemProfile(
+                "",
+                ITEM_PTR->Category(),
+                ITEM_PTR->ArmorType(),
+                ITEM_PTR->WeaponType(),
+                item::unique_type::NotUnique,
+                ITEM_PTR->MiscType(),
+                ITEM_PTR->SetType(),
+                item::named_type::NotNamed);
+        }
     }
 
 }
