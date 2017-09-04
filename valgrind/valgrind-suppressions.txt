@@ -38,6 +38,13 @@
    ...
 }
 {
+   MesaBug7_JumpDependsOnUninit_glGetIntegerV()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.13.0.0.42936
+   fun:glGetIntegerv
+   ...
+}
+{
    SFMLBug1_JumpDependsOnUninit_sf::Texture::create()
    Memcheck:Cond
    fun:_ZN2sf7Texture6createEjj
@@ -73,4 +80,116 @@
    fun:_ZSt11make_uniqueIN2sf12RenderWindowEIRKNS0_9VideoModeERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKjRNS0_15ContextSettingsEEENSt9_MakeUniqIT_E15__single_objectEDpOT0_
    fun:_ZN9sfml_util7Display16OpenRenderWindowERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEjj
 }
+{
+   SFMLBug5_ConditionalDependsOnUninit_alSourcei()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourcei
+   ...
+}
+{
+   SFMLBug6_ConditionalDependsOnUninit_alSourcef()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourcef
+   ...
+}
+{
+   SFMLBug7_ConditionalDependsOnUninit_loadFromFile()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   obj:/usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.3.2
+   fun:_ZN2sf7Texture12loadFromFileERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKNS_4RectIiEE
+   ...
+}
+{
+   SFMLBug8_ConditionalDependsOnUninit_alGetSourcei()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alGetSourcei
+   ...
+}
+{
+   SFMLBug9_ConditionalDependsOnUninit_getStatus()
+   Memcheck:Cond
+   fun:_ZNK2sf11SoundSource9getStatusEv
+   ...
+}
+{
+   SFMLBug10_ConditionalDependsOnUninit_alGetSourcef()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alGetSourcef
+   ...
+}
+{
+   SFMLBug11_ConditionalDependsOnUninit_alDeleteSources()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alDeleteSources
+   ...
+}
+{
+   LibOpenALBug1_ConditionalDependsOnUninit_
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourcePlayv
+   ...
+}
+{
+   LibOpenALBug2_ConditionalDependsOnUninit_alSourceQueueBuffers()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourceQueueBuffers
+   ...
+}
+{
+   LibOpenALBug3_ConditionalDependsOnUninit_alSourceStopv()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourceStopv
+   ...
+}
+{
+   LibOpenALBug4_ConditionalDependsOnUninit_alSourcePlayv()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSourcePlayv
+   ...
+}
+{
+   LibOpenALBug5_ConditionalDependsOnUninit_alSource3f()
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libopenal.so.1.16.0
+   fun:alSource3f
+   ...
+}
+{
+   glxLeak1_XGetWindowProperty()
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:XGetWindowProperty
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.13.0.0.42936
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.13.0.0.42936
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0.13.0.0.42936
+   fun:glXCreateContext
+   ...
+}
+{
+   pThread_PossibleLeak1_pthread_create()
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:allocate_dtv
+   fun:_dl_allocate_tls
+   fun:allocate_stack
+   fun:pthread_create@@GLIBC_2.2.5
+   ...
+}
+
 
