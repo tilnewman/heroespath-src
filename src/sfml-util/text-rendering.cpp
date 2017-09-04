@@ -45,7 +45,7 @@ namespace sfml_util
 namespace text_render
 {
 
-    const float Constants::SIDEBAR_HORIZ_OFFSET_{ 15.0f };
+    const float Constants::SLIDERBAR_HORIZ_OFFSET_{ 18.0f };
 
 
     gui::SliderBarPtr_t RenderToArea(const std::string &   NAME,
@@ -98,11 +98,11 @@ namespace text_render
                 (REGION.height > 0.0f) &&
                 WILL_ALLOW_SCROLLBAR)
             {
-                //if the text still won't fit vertically, add the side bar, re-calculate,
-                //and then configure the sidebar.
+                //if the text still won't fit vertically, add the sliderbar, re-calculate,
+                //and then configure the sliderbar.
                 sliderbarPtr = new gui::SliderBar(
                     std::string(NAME).append("Vertical"),
-                    (REGION.left + REGION.width) - Constants::SIDEBAR_HORIZ_OFFSET_,
+                    (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
                     REGION.top + 5.0f,
                     REGION.height - 10.0f,
                     gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),
@@ -110,11 +110,15 @@ namespace text_render
                     0.0f);
 
                 //re-render the text with the reduced horiz space to make room for the sliderbar
+                auto const NEW_WIDTH{ ((REGION.width - MARGINS.left) - MARGINS.right) -
+                    (Constants::SLIDERBAR_HORIZ_OFFSET_ * 2.0f) };
+
                 renderedText.Reset();
-                text_render::Render(renderedText,
-                                    smallerTextInfo,
-                                    (REGION.width - MARGINS.left) - MARGINS.right,
-                                    MARGINS);
+                text_render::Render(
+                    renderedText,
+                    smallerTextInfo,
+                    NEW_WIDTH,
+                    MARGINS);
             }
         }
 
@@ -145,7 +149,7 @@ namespace text_render
             //if the text won't fit vertically, add the sliderbar
             sliderbarPtr = new gui::SliderBar(
                 std::string(NAME).append("Vertical"),
-                (REGION.left + REGION.width) - Constants::SIDEBAR_HORIZ_OFFSET_,
+                (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
                 REGION.top + 5.0f,
                 REGION.height - 10.0f,
                 gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),

@@ -50,7 +50,7 @@ namespace text_render
 
     struct Constants
     {
-        static const float SIDEBAR_HORIZ_OFFSET_;
+        static const float SLIDERBAR_HORIZ_OFFSET_;
     };
 
 
