@@ -482,7 +482,7 @@ namespace misc
 
     ItemPtr_t MiscItemFactory::Make_Wand(const ItemProfile & PROFILE)
     {
-        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 30);
+        return Make_Helper(PROFILE, PROFILE.TreasureScore(), 8);
     }
 
 

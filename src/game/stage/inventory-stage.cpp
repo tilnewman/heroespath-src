@@ -235,6 +235,8 @@ namespace stage
         currentPhase_              (CURRENT_PHASE),
         hasTakenActionSpellOrSong_ (false)
     {
+        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory, false, true);
+
         const std::size_t NUM_CHARACTERS(characterViewMap_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
@@ -245,6 +247,7 @@ namespace stage
 
     InventoryStage::~InventoryStage()
     {
+        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
         ClearAllEntities();
     }
 

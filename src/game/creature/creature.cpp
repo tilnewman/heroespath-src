@@ -553,11 +553,12 @@ namespace creature
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
-            EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, true);
+            EnchantmentsApplyOrRemoveByType(
+                ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, true);
         }
         else
         {
-            M_HP_LOG("game::creature::ItemAdd(creature_name=\"" << Name() << "\", item_name=\""
+            M_HP_LOG_ERR("game::creature::ItemAdd(creature_name=\"" << Name() << "\", item_name=\""
                 << ITEM_PTR->Name() << "\") item add failed:  \"" << IS_ALLOWED_STR << "\".");
         }
 
@@ -578,8 +579,8 @@ namespace creature
             ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
         {
             std::ostringstream ss;
-            ss << "item is " << (inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry()
-                << " too heavy";
+            ss << "item weighs " << ITEM_PTR->Weight() << " which is "
+                << (inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry() << " too heavy";
             return ss.str();
         }
 
@@ -1505,7 +1506,7 @@ namespace creature
         }
         else if (race::Pixie == race_)
         {
-            base = 10;
+            base = 1000;
         }
         else if (race::Human != race_)
         {
@@ -1519,7 +1520,7 @@ namespace creature
         }
         else if (race::Pixie == race_)
         {
-            multiplier = 100;
+            multiplier = 250;
         }
         else if (race::Human != race_)
         {
@@ -1533,7 +1534,7 @@ namespace creature
         }
         else if (race::Pixie == race_)
         {
-            divisor = 50;
+            divisor = 5;
         }
         else if (race::Human != race_)
         {

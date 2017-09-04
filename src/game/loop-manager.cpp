@@ -451,7 +451,7 @@ namespace game
                              INVENTORY_CREATURE_PTR,
                              CURRENT_PHASE),
                          sfml_util::music::None,
-                         sfml_util::music::None);
+                         sfml_util::music::Inventory);
     }
 
 

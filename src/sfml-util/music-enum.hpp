@@ -46,8 +46,8 @@ namespace sfml_util
             Fire2,
             CombatIntro,
             PartyCreation,
-            Credits1,
-            Credits2,
+            Credits,
+            Inventory,
             Count,
             None,
             All

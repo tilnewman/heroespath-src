@@ -74,16 +74,13 @@ namespace stage
         scrollSpeed_          (DEFAULT_SCROLL_SPEED_),
         isKeyHeldDown_        (false)
     {
-        sfml_util::SoundManager::Instance()->MusicStart(
-            { sfml_util::music::Credits1, sfml_util::music::Credits2 }, false, true);
+        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits, false, true);
     }
 
 
     CreditsStage::~CreditsStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStop(
-            { sfml_util::music::Credits1, sfml_util::music::Credits2 });
-
+        sfml_util::SoundManager::Instance()->MusicStop(sfml_util::music::Credits);
         ClearAllEntities();
     }
 

@@ -46,8 +46,8 @@ namespace sfml_util
             case Fire2:         { return "fire-2"; }
             case CombatIntro:   { return "combatintro"; }
             case PartyCreation: { return "party-creation-background"; }
-            case Credits1:      { return "credits-1"; }
-            case Credits2:      { return "credits-2"; }
+            case Credits:       { return "credits"; }
+            case Inventory:     { return "inventory"; }
             case All:           { return "All"; }
             case Count:
             default:
@@ -78,8 +78,8 @@ namespace sfml_util
             case Fire2:         { return "fire"; }
             case CombatIntro:   { return "combat-intro"; }
             case PartyCreation: { return "party-creation"; }
-            case Credits1:
-            case Credits2:      { return "credits"; }
+            case Credits:       { return "credits"; }
+            case Inventory:     { return "inventory"; }
             case All:
             case None:
             {
@@ -106,10 +106,10 @@ namespace sfml_util
             case Wind:
             case Fire1:
             case PartyCreation:
-            case Fire2:       { return true; }
-            case Credits1:
-            case Credits2:
-            case CombatIntro: { return false; }
+            case Fire2:       
+            case Credits:
+            case Inventory:     { return true; }
+            case CombatIntro:   { return false; }
             case All:
             case None:
             {
@@ -137,8 +137,8 @@ namespace sfml_util
             case Fire1:
             case Fire2:         { return "(unknown)"; }
             case CombatIntro:   { return "(various)"; }
-            case Credits2:      { return "Janne Hanhisuanto"; }
-            case Credits1:
+            case Credits:
+            case Inventory:     { return "Janne Hanhisuanto"; }
             case PartyCreation: { return "Marcelo Fernandez"; }
             case All:
             case None:
@@ -167,8 +167,8 @@ namespace sfml_util
             case Fire1:
             case Fire2:         { return "CC0 1.0"; }
             case CombatIntro:   { return "(various)"; }
-            case Credits2:      { return "CC-BY-SA 3.0"; }
-            case Credits1:
+            case Credits:
+            case Inventory:     { return "CC-BY-SA 3.0"; }
             case PartyCreation: { return "CC-BY 4.0"; }
             case All:
             case None:
@@ -198,8 +198,8 @@ namespace sfml_util
             case Fire2:         { return "Campfire2"; }
             case CombatIntro:   { return "(various)"; }
             case PartyCreation: { return "Intro of Dragons"; }
-            case Credits1:      { return "PYC"; }
-            case Credits2:      { return "Radakan Menu"; }
+            case Credits:       { return "Radakan Menu"; }
+            case Inventory:     { return "PYC"; } 
             case All:
             case None:
             {

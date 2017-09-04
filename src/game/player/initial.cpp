@@ -377,10 +377,6 @@ namespace player
 
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
-
-            //TODO TEMP REMOVE -this line was only added so that mutli-creature
-            //targeting spells could be tested
-            characterPtrC->SpellAdd(spell::Spells::PoisonCloud);
             return;
         }
 

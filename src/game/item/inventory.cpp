@@ -298,11 +298,15 @@ namespace item
 
         auto const FOUND_CITER( std::find(itemsPVec_.begin(), itemsPVec_.end(), ITEM_PTR) );
 
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_CITER != itemsPVec_.end()),
-            "Inventory::ItemRemove(\"" << ITEM_PTR->Name()
-            << "\") did not find the item in the unequipped inventory.");
-
-        itemsPVec_.erase(FOUND_CITER);
+        if (FOUND_CITER == itemsPVec_.end())
+        {
+            M_HP_LOG_ERR("Inventory::ItemRemove(\"" << ITEM_PTR->Name()
+                << "\") did not find the item in the unequipped inventory.");
+        }
+        else
+        {
+            itemsPVec_.erase(FOUND_CITER);
+        }
     }
 
 
