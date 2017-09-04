@@ -483,11 +483,17 @@ namespace sfml_util
             }
         }
 
-        //...and to exit the app on escape keypresses
+        //...and to exit the app on F1 keypresses
         if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::F1))
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            game::LoopManager::Instance()->Goto_Exit();
+        }
+        if ((EVENT.key.code == sf::Keyboard::Escape)
+            && (game::LoopManager::Instance()->GetState() == game::LoopState::Test))
+        {
+            M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED WHILE TESTING.  Bail.");
             game::LoopManager::Instance()->Goto_Exit();
         }
         else
