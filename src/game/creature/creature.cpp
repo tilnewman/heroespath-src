@@ -47,6 +47,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 
 #include <algorithm>
 
@@ -1569,6 +1570,12 @@ namespace creature
 
             bonusSet_.Get(NEXT_TRAIT_ENUM).CurrentSet(traitPercent);
         }
+    }
+
+
+    bool Creature::TraitBonusTest(const stats::Traits::Enum E) const
+    {
+        return (::misc::random::Int(100) < bonusSet_.GetCopy(E).Current());
     }
 
 

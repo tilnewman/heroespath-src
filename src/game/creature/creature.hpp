@@ -459,6 +459,8 @@ namespace creature
             return bonusSet_.GetCopy(E).Current();
         }
 
+        bool TraitBonusTest(const stats::Traits::Enum) const;
+
         inline float TraitBonusActualAsRatio(const stats::Traits::Enum E) const
         {
             return static_cast<float>(bonusSet_.GetCopy(E).Current()) / 100.0f;

@@ -562,16 +562,21 @@ namespace spell
         }
         else
         {
-            if (creature::Stats::Versus(castingCreaturePtr,
-                                        stats::Traits::Intelligence,
-                                        creatureCastUponPtr,
-                                        stats::Traits::Count,
-                                        0,
-                                        0,
-                                        true,
-                                        true,
-                                        true,
-                                        true))
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(castingCreaturePtr,
+                stats::Traits::Intelligence,
+                creatureCastUponPtr,
+                stats::Traits::Count,
+                0,
+                0,
+                true,
+                true,
+                true,
+                true) };
+
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                castingCreaturePtr->TraitBonusTest(stats::Traits::MagicCast) };
+
+            if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
                 condsAddedVec.push_back(creature::Conditions::Poisoned);

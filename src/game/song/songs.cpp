@@ -62,11 +62,17 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Test(creaturePlayingPtr,
-                                      { stats::Traits::Intelligence, stats::Traits::Charm},
-                                      0.5f,
-                                      true,
-                                      true))
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
+                creaturePlayingPtr,
+                { stats::Traits::Intelligence, stats::Traits::Charm },
+                0.5f,
+                true,
+                true) };
+
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
+
+            if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
                 condsAddedVec.push_back(creature::Conditions::Bold);
@@ -226,16 +232,22 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Versus(creaturePlayingPtr,
-                                        { stats::Traits::Intelligence, stats::Traits::Charm },
-                                        creatureListeningPtr,
-                                        {},
-                                        0,
-                                        0,
-                                        true,
-                                        true,
-                                        true,
-                                        true))
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
+                creaturePlayingPtr,
+                { stats::Traits::Intelligence, stats::Traits::Charm },
+                creatureListeningPtr,
+                {},
+                0,
+                0,
+                true,
+                true,
+                true,
+                true) };
+
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
+
+            if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
                 condsAddedVec.push_back(creature::Conditions::Tripped);
@@ -284,16 +296,22 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Versus(creaturePlayingPtr,
-                                        { stats::Traits::Intelligence, stats::Traits::Charm},
-                                        creatureListeningPtr,
-                                        {},
-                                        0,
-                                        0,
-                                        true,
-                                        true,
-                                        true,
-                                        true))
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
+                creaturePlayingPtr,
+                { stats::Traits::Intelligence, stats::Traits::Charm },
+                creatureListeningPtr,
+                {},
+                0,
+                0,
+                true,
+                true,
+                true,
+                true) };
+
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
+
+            if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
                 condsAddedVec.push_back(creature::Conditions::Panic);
@@ -343,11 +361,17 @@ namespace song
         }
         else
         {
-            if (creature::Stats::Test(creaturePlayingPtr,
-                                      { stats::Traits::Intelligence, stats::Traits::Charm},
-                                      0.5f,
-                                      true,
-                                      true))
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
+                creaturePlayingPtr,
+                { stats::Traits::Intelligence, stats::Traits::Charm },
+                0.5f,
+                true,
+                true) };
+
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
+
+            if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepNatural);
                 condsAddedVec.push_back(creature::Conditions::AsleepNatural);
