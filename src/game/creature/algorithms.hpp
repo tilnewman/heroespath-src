@@ -53,6 +53,44 @@ namespace creature
     {
         static const CreaturePVec_t MakeIntoVector(const CreaturePtr_t);
 
+        enum PlayerOpt : unsigned
+        {
+            None             = 0,
+            Living           = 1 << 0,
+            Runaway          = 1 << 1,
+            LivingAndRunaway = Living | Runaway,
+        };
+
+        enum class TypeOpt
+        {
+            Player,
+            NonPlayer
+        };
+
+        static std::size_t Players(
+            CreaturePVec_t & pVec_OutParam,
+            const PlayerOpt  OPTIONS = PlayerOpt::None);
+
+        static const CreaturePVec_t Players(
+            const PlayerOpt OPTIONS = PlayerOpt::None);
+
+        static std::size_t NonPlayers(
+            CreaturePVec_t & pVec_OutParam,
+            const PlayerOpt  OPTIONS = PlayerOpt::None);
+
+        static const CreaturePVec_t NonPlayers(
+            const PlayerOpt OPTIONS = PlayerOpt::None);
+
+        static std::size_t PlayersByType(
+            CreaturePVec_t & pVec_OutParam,
+            const TypeOpt    TYPE_OPTION,
+            const PlayerOpt  PLAYER_OPTIONS = PlayerOpt::None);
+
+        static const CreaturePVec_t PlayersByType(
+            const TypeOpt    TYPE_OPTION,
+            const PlayerOpt  OPTIONS = PlayerOpt::None);
+
+        /*
         static std::size_t Players(CreaturePVec_t & pVec_OutParam,
                                    const bool       LIVING_ONLY      = false,
                                    const bool       INCLUDE_RUNAWAYS = false);
@@ -74,7 +112,7 @@ namespace creature
 
         static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS,
                                                   const bool LIVING_ONLY       = false,
-                                                  const bool INCLUDE_RUNAWAYS  = false);
+                                                  const bool INCLUDE_RUNAWAYS  = false);*/
 
         static const std::string Names(const CreaturePVec_t &,
                                        const bool             WILL_WRAP              = false,

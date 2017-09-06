@@ -45,23 +45,20 @@ namespace creature
 
     float Stats::Ratio(const CreaturePtr_t       CREATURE_PTR,
                        const stats::Traits::Enum TRAIT_ENUM,
-                       const bool                WILL_INCLUDE_LUCK,
-                       const bool                WILL_INCLUDE_RACEROLE_BONUS,
-                       const stats::Trait_t      TRAIT_BONUS)
+                       const stats::Trait_t      TRAIT_BONUS,
+                       const With                OPTIONS)
     {
         return Ratio(CREATURE_PTR,
                      stats::TraitsVec_t(1, TRAIT_ENUM),
-                     WILL_INCLUDE_LUCK,
-                     WILL_INCLUDE_RACEROLE_BONUS,
-                     TRAIT_BONUS);
+                     TRAIT_BONUS,
+                     OPTIONS);
     }
 
 
     float Stats::Ratio(const CreaturePtr_t        CREATURE_PTR,
                        const stats::TraitsVec_t & TRAIT_ENUM_VEC,
-                       const bool                 WILL_INCLUDE_LUCK,
-                       const bool                 WILL_INCLUDE_RACEROLE_BONUS,
-                       const stats::Trait_t       TRAIT_BONUS)
+                       const stats::Trait_t       TRAIT_BONUS,
+                       const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Ratio() called with a null CREATURE_PTR.");
@@ -78,12 +75,12 @@ namespace creature
             auto const NEXT_TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             randSum += NEXT_TRAIT_WORKING;
 
-            if (WILL_INCLUDE_LUCK)
+            if (OPTIONS & With::Luck)
             {
                 randSum += LuckBonus(CREATURE_PTR);
             }
 
-            if (WILL_INCLUDE_RACEROLE_BONUS)
+            if (OPTIONS & With::RaceRoleBonus)
             {
                 randSum += RollBonusByRace(NEXT_TRAIT_WORKING,
                                            NEXT_TRAIT_ENUM,
@@ -106,23 +103,20 @@ namespace creature
     }
 
 
-    stats::Trait_t Stats::Roll(const CreaturePtr_t      CREATURE_PTR,
-                              const stats::Traits::Enum TRAIT_ENUM,
-                              const bool               WILL_INCLUDE_LUCK,
-                              const bool               WILL_INCLUDE_RACEROLE_BONUS)
+    stats::Trait_t Stats::Roll(const CreaturePtr_t       CREATURE_PTR,
+                               const stats::Traits::Enum TRAIT_ENUM,
+                               const With                OPTIONS)
     {
         return Roll(CREATURE_PTR,
                     stats::TraitsVec_t (1, TRAIT_ENUM),
-                    WILL_INCLUDE_LUCK,
-                    WILL_INCLUDE_RACEROLE_BONUS);
+                    OPTIONS);
     }
 
 
     stats::Trait_t Stats::Roll(
         const CreaturePtr_t        CREATURE_PTR,
         const stats::TraitsVec_t & TRAIT_ENUM_VEC,
-        const bool                 WILL_INCLUDE_LUCK,
-        const bool                 WILL_INCLUDE_RACEROLE_BONUS)
+        const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Roll() called with a null CREATURE_PTR.");
@@ -137,8 +131,7 @@ namespace creature
 
             auto const RATIO{ Ratio(CREATURE_PTR,
                                     TRAIT_ENUM_VEC,
-                                    WILL_INCLUDE_LUCK,
-                                    WILL_INCLUDE_RACEROLE_BONUS) };
+                                    OPTIONS) };
 
             randSum += (CURRENT * RATIO);
         }
@@ -150,22 +143,19 @@ namespace creature
     bool Stats::Test(const CreaturePtr_t       CREATURE_PTR,
                      const stats::Traits::Enum TRAIT_ENUM,
                      const float               RANK_BONUS_RATIO,
-                     const bool                WILL_INCLUDE_LUCK,
-                     const bool                WILL_INCLUDE_RACEROLE_BONUS)
+                     const With                OPTIONS)
     {
         return Test(CREATURE_PTR,
                     stats::TraitsVec_t(1, TRAIT_ENUM),
                     RANK_BONUS_RATIO,
-                    WILL_INCLUDE_LUCK,
-                    WILL_INCLUDE_RACEROLE_BONUS);
+                    OPTIONS);
     }
 
 
     bool Stats::Test(const CreaturePtr_t        CREATURE_PTR,
                      const stats::TraitsVec_t & TRAIT_ENUM_VEC,
                      const float                RANK_BONUS_RATIO,
-                     const bool                 WILL_INCLUDE_LUCK,
-                     const bool                 WILL_INCLUDE_RACEROLE_BONUS)
+                     const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Test() called with a null CREATURE_PTR.");
@@ -179,12 +169,12 @@ namespace creature
             auto const TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             rollBaseSum += TRAIT_WORKING;
 
-            if (WILL_INCLUDE_LUCK)
+            if (OPTIONS & With::Luck)
             {
                 rollBaseSum += LuckBonus(CREATURE_PTR);
             }
 
-            if (WILL_INCLUDE_RACEROLE_BONUS)
+            if (OPTIONS & With::RaceRoleBonus)
             {
                 rollBaseSum += RollBonusByRace(TRAIT_WORKING,
                                                NEXT_TRAIT_ENUM,
@@ -211,10 +201,7 @@ namespace creature
                        const stats::Traits::Enum DEFENDER_TRAIT_PARAM,
                        const stats::Trait_t      CHALLENGER_BONUS_PER,
                        const stats::Trait_t      DEFENDER_BONUS_PER,
-                       const bool                WILL_INCLUDE_RACEROLE_BONUS,
-                       const bool                WILL_INCLUDE_RANK,
-                       const bool                WILL_INCLUDE_PLAYER_LUCK,
-                       const bool                ALLOW_PLAYER_NATURAL_WINS)
+                       const With                OPTIONS)
     {
         auto const DEFENDER_TRAIT{ ((DEFENDER_TRAIT_PARAM == stats::Traits::Count) ?
             CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
@@ -225,10 +212,7 @@ namespace creature
                       stats::TraitsVec_t(1, DEFENDER_TRAIT),
                       CHALLENGER_BONUS_PER,
                       DEFENDER_BONUS_PER,
-                      WILL_INCLUDE_RACEROLE_BONUS,
-                      WILL_INCLUDE_RANK,
-                      WILL_INCLUDE_PLAYER_LUCK,
-                      ALLOW_PLAYER_NATURAL_WINS);
+                      OPTIONS);
     }
 
 
@@ -238,10 +222,7 @@ namespace creature
                        const stats::TraitsVec_t & DEFENDER_TRAIT_VEC_PARAM,
                        const stats::Trait_t       CHALLENGER_BONUS_PER,
                        const stats::Trait_t       DEFENDER_BONUS_PER,
-                       const bool                 WILL_INCLUDE_RACEROLE_BONUS,
-                       const bool                 WILL_INCLUDE_RANK,
-                       const bool                 WILL_INCLUDE_PLAYER_LUCK,
-                       const bool                 ALLOW_PLAYER_NATURAL_WINS)
+                       const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CHALLENGER_PTR != nullptr),
             "game::creature::Stats::Versus() called with a null CHALLENGER_PTR.");
@@ -255,27 +236,43 @@ namespace creature
         stats::Trait_t chaRandSum{ 0 };
         stats::Trait_t chaNormalSum{ 0 };
 
+        auto const CHALLENGER_ROLL_OPTIONS{ [CHALLENGER_PTR, OPTIONS]()
+            {
+                With rollOptions{ With::None };
+                
+                if (OPTIONS & With::RaceRoleBonus)
+                {
+                    rollOptions = static_cast<With>(rollOptions | With::RaceRoleBonus);
+                }
+
+                if (CHALLENGER_PTR->IsPlayerCharacter() && (OPTIONS & With::Luck))
+                {
+                    rollOptions = static_cast<With>(rollOptions | With::Luck);
+                }
+
+                return rollOptions;
+            }() };
+            
         for (auto const NEXT_TRAIT_ENUM : CHALLENGER_TRAIT_VEC)
         {
             chaRandSum += Roll(
                 CHALLENGER_PTR,
                 NEXT_TRAIT_ENUM,
-                (CHALLENGER_PTR->IsPlayerCharacter() && WILL_INCLUDE_PLAYER_LUCK),
-                WILL_INCLUDE_RACEROLE_BONUS);
+                CHALLENGER_ROLL_OPTIONS);
 
             chaRandSum += CHALLENGER_BONUS_PER;
             chaNormalSum += CHALLENGER_PTR->TraitNormal(NEXT_TRAIT_ENUM);
         }
 
-        //check for player natural success (challenger)
-        if (ALLOW_PLAYER_NATURAL_WINS &&
+        //check for player natural success (if the challenger is a player)
+        if ((OPTIONS & With::PlayerNaturalWins) &&
             CHALLENGER_PTR->IsPlayerCharacter() &&
             (chaRandSum >= chaNormalSum))
         {
             return true;
         }
 
-        auto const CHALLENGER_ROLL{ chaRandSum + ((WILL_INCLUDE_RANK) ?
+        auto const CHALLENGER_ROLL{ chaRandSum + ((OPTIONS & With::RankBonus) ?
             static_cast<stats::Trait_t>(CHALLENGER_PTR->Rank()) : 0 ) };
 
         auto const DEFENDER_TRAIT_VEC{ ((DEFENDER_TRAIT_VEC_PARAM.empty()) ?
@@ -284,27 +281,43 @@ namespace creature
         stats::Trait_t defRandSum{ 0 };
         stats::Trait_t defNormalSum{ 0 };
 
+        auto const DEFENDER_ROLL_OPTIONS{ [DEFENDER_PTR, OPTIONS]()
+        {
+            With rollOptions{ With::None };
+
+            if (OPTIONS & With::RaceRoleBonus)
+            {
+                rollOptions = static_cast<With>(rollOptions | With::RaceRoleBonus);
+            }
+
+            if (DEFENDER_PTR->IsPlayerCharacter() && (OPTIONS & With::Luck))
+            {
+                rollOptions = static_cast<With>(rollOptions | With::Luck);
+            }
+
+            return rollOptions;
+        }() };
+
         for (auto const NEXT_TRAIT_ENUM : DEFENDER_TRAIT_VEC)
         {
             defRandSum += Roll(
                 DEFENDER_PTR,
                 NEXT_TRAIT_ENUM,
-                (DEFENDER_PTR->IsPlayerCharacter() && WILL_INCLUDE_PLAYER_LUCK),
-                WILL_INCLUDE_RACEROLE_BONUS);
+                DEFENDER_ROLL_OPTIONS);
 
             defRandSum += DEFENDER_BONUS_PER;
             defNormalSum += DEFENDER_PTR->TraitNormal(NEXT_TRAIT_ENUM);
         }
 
-        //check for player natural success (defender)
-        if (ALLOW_PLAYER_NATURAL_WINS &&
+        //check for player natural success (if the defender is a player)
+        if ((OPTIONS & With::PlayerNaturalWins) &&
             DEFENDER_PTR->IsPlayerCharacter() &&
             (defRandSum >= defNormalSum))
         {
             return true;
         }
 
-        auto const DEFENDER_ROLL{ defRandSum + ((WILL_INCLUDE_RANK) ?
+        auto const DEFENDER_ROLL{ defRandSum + ((OPTIONS & With::RankBonus) ?
             static_cast<stats::Trait_t>(DEFENDER_PTR->Rank()) : 0 ) };
 
         //handle roll tie
@@ -509,16 +522,14 @@ namespace creature
         const stats::Traits::Enum TRAIT_ENUM,
         const int                 RAND_SPREAD,
         const float               RANK_BONUS_MULT,
-        const bool                WILL_INCLUDE_LUCK,
-        const bool                WILL_INCLUDE_RACEROLE_BONUS,
-        const stats::Trait_t      TRAIT_BONUS)
+        const stats::Trait_t      TRAIT_BONUS,
+        const With                OPTIONS)
     {
         auto const RAND_RATIO{ Ratio(
             CREATURE_PTR,
             TRAIT_ENUM,
-            WILL_INCLUDE_LUCK,
-            WILL_INCLUDE_RACEROLE_BONUS,
-            TRAIT_BONUS) };
+            TRAIT_BONUS,
+            OPTIONS) };
 
         auto const TRAIT_BONUS_RATIO{ static_cast<float>(TRAIT_BONUS) / 100.0f };
 

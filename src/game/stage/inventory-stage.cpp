@@ -3581,7 +3581,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {
-            HandleCast_Step2_PerformSpell(creature::Algorithms::Players(false));
+            HandleCast_Step2_PerformSpell(creature::Algorithms::Players());
         }
         else
         {
@@ -3807,8 +3807,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
             auto const TARGETS_PVEC{ ((SONG_PTR->Target() == TargetType::AllCompanions) ?
-                creature::Algorithms::Players(false) :
-                creature::Algorithms::NonPlayers(true)) };
+                creature::Algorithms::Players() :
+                creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
             fightResult_ = combat::FightClub::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);

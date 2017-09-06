@@ -165,7 +165,13 @@ namespace condition
             return;
         }
 
-        if (creature::Stats::Test(creaturePtr, stats::Traits::Strength, 0.0f, true, true))
+        if (creature::Stats::Test(
+                creaturePtr,
+                stats::Traits::Strength,
+                0.0f,
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus)))
         {
             creaturePtr->ConditionRemove(Conditions::Pounced);
 
@@ -228,7 +234,13 @@ namespace condition
                                  combat::HitInfoVec_t & hitInfoVec,
                                  bool &) const
     {
-        if (creature::Stats::Test(creaturePtr, stats::Traits::Strength, 0.0f, true, true) &&
+        if (creature::Stats::Test(
+                creaturePtr,
+                stats::Traits::Strength,
+                0.0f,
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus)) &&
             (misc::random::Int(9) == 0))
         {
             creature::CondEnumVec_t condsRemoved;

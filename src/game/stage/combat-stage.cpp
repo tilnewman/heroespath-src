@@ -2860,8 +2860,8 @@ namespace stage
 
             auto creaturesListeningPVec{
                 ((songBeingPlayedPtr_->Target() == TargetType::AllCompanions) ?
-                    creature::Algorithms::Players(true) :
-                        creature::Algorithms::NonPlayers(true)) };
+                    creature::Algorithms::Players(creature::Algorithms::Living) :
+                        creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesListeningPVec);
             turnActionInfo_ = combat::TurnActionInfo(songBeingPlayedPtr_, creaturesListeningPVec);
@@ -2923,11 +2923,12 @@ namespace stage
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {
-            HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players(false));
+            HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players());
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllOpponents)
         {
-            HandleCast_Step3_PerformOnTargets(creature::Algorithms::NonPlayers(true));
+            HandleCast_Step3_PerformOnTargets(
+                creature::Algorithms::NonPlayers(creature::Algorithms::Living));
         }
         else
         {
@@ -3245,7 +3246,13 @@ namespace stage
         else
         {
             //run away works if flying, and if not flying it is a test of speed
-            if ((creature::Stats::Test(turnCreaturePtr_, stats::Traits::Speed, 0.0f, true, true)) ||
+            if ((creature::Stats::Test(
+                    turnCreaturePtr_,
+                    stats::Traits::Speed,
+                    0.0f,
+                    static_cast<creature::Stats::With>(
+                        creature::Stats::With::Luck |
+                        creature::Stats::With::RaceRoleBonus))) ||
                 (combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying()))
             {
                 SetUserActionAllowed(false);
@@ -3881,7 +3888,7 @@ namespace stage
                 combatSoundEffects_.PlayRoar(turnCreaturePtr_);
 
                 creature::CreaturePVec_t creaturesToShakePVec{
-                    creature::Algorithms::NonPlayers(true) };
+                    creature::Algorithms::NonPlayers(creature::Algorithms::Living) };
 
                 creaturesToShakePVec.push_back(turnCreaturePtr_);
 
@@ -4276,7 +4283,8 @@ namespace stage
         if (IS_DETECTING_WIN == false)
         {
             auto const ALL_LIVING_PVEC{
-                creature::Algorithms::PlayersByType(true, false, true) };
+                creature::Algorithms::PlayersByType(
+                    creature::Algorithms::TypeOpt::Player, creature::Algorithms::Runaway) };
 
             auto didAnyPlayersRunAway{ false };
             auto areAllNonRunawaysIncapacitated{ true };
@@ -4305,7 +4313,9 @@ namespace stage
 
         //detect all incapacitated cases
         auto const ALL_LIVING_PVEC{
-            creature::Algorithms::PlayersByType( ! IS_DETECTING_WIN, false, false) };
+            creature::Algorithms::PlayersByType(((IS_DETECTING_WIN) ?
+                creature::Algorithms::TypeOpt::NonPlayer :
+                creature::Algorithms::TypeOpt::Player)) };
 
         auto areAllIncapacitated{ true };
         for (auto const NEXT_LIVING_PTR : ALL_LIVING_PVEC)

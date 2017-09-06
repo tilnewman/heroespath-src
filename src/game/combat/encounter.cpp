@@ -416,6 +416,7 @@ namespace combat
         {
             //enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
+
             turnInfo.SetStrategyInfo( strategy::ChanceFactory::Instance()->Get(
                 NEXT_CHAR_PTR->Race(), NEXT_CHAR_PTR->Role()).Make() );
 
@@ -432,8 +433,12 @@ namespace combat
     void Encounter::SortAndSetTurnCreature()
     {
         creature::CreaturePVec_t allLivingCreaturesPVec;
-        misc::Vector::Append(creature::Algorithms::Players(true), allLivingCreaturesPVec);
-        misc::Vector::Append(creature::Algorithms::NonPlayers(true), allLivingCreaturesPVec);
+
+        misc::Vector::Append(creature::Algorithms::Players(
+            creature::Algorithms::Living), allLivingCreaturesPVec);
+        
+        misc::Vector::Append(creature::Algorithms::NonPlayers(
+            creature::Algorithms::Living), allLivingCreaturesPVec);
 
         if (turnOverPVec_.size() >= allLivingCreaturesPVec.size())
         {

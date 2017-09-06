@@ -66,8 +66,9 @@ namespace song
                 creaturePlayingPtr,
                 { stats::Traits::Intelligence, stats::Traits::Charm },
                 0.5f,
-                true,
-                true) };
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus)) };
 
             auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
                 creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
@@ -111,8 +112,7 @@ namespace song
         auto const RATIO_FROM_STATS{ creature::Stats::Ratio(
             creaturePlayingPtr,
             { stats::Traits::Intelligence, stats::Traits::Charm },
-            true,
-            true) };
+            (creature::Stats::Luck | creature::Stats::RaceRoleBonus)) };
 
         auto const RATIO_FROM_TRAIT_BONUS{
             static_cast<float>(creaturePlayingPtr->TraitBonusCurrent(stats::Traits::MagicEffect) /
@@ -244,10 +244,11 @@ namespace song
                 {},
                 0,
                 0,
-                true,
-                true,
-                true,
-                true) };
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus |
+                    creature::Stats::With::RankBonus |
+                    creature::Stats::With::PlayerNaturalWins)) };
 
             auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
                 creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
@@ -308,10 +309,11 @@ namespace song
                 {},
                 0,
                 0,
-                true,
-                true,
-                true,
-                true) };
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus |
+                    creature::Stats::With::RankBonus |
+                    creature::Stats::With::PlayerNaturalWins)) };
 
             auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
                 creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };
@@ -370,8 +372,9 @@ namespace song
                 creaturePlayingPtr,
                 { stats::Traits::Intelligence, stats::Traits::Charm },
                 0.5f,
-                true,
-                true) };
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus)) };
 
             auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
                 creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast) };

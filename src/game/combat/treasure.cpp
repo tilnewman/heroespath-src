@@ -277,7 +277,9 @@ namespace combat
         item::ItemProfileVec_t setItemsOwnedProfiles;
 
         //populate setItemsOwnedProfiles with thin profiles of equipped and unequipped items
-        auto const CREATURE_PVEC{ game::creature::Algorithms::Players(false, true) };
+        auto const CREATURE_PVEC{ game::creature::Algorithms::Players(
+            creature::Algorithms::Runaway) };
+
         for (auto const CREATURE_PTR : CREATURE_PVEC)
         {
             auto const UNEQUIPPED_ITEM_PTRS{ CREATURE_PTR->Inventory().Items() };

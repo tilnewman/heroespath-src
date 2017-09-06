@@ -559,15 +559,16 @@ namespace combat
         //so determine if the attack hit or miss based on luck.
         if (false == hasHitBeenDetermined)
         {
-            auto const ATTACKER_LUCK_RAND{ creature::Stats::Roll(creatureAttackingPtrC,
-                                                                 stats::Traits::Luck,
-                                                                 false,
-                                                                 true) };
+            auto const ATTACKER_LUCK_RAND{ creature::Stats::Roll(
+                creatureAttackingPtrC,
+                stats::Traits::Luck,
+                creature::Stats::RaceRoleBonus) };
 
-            auto const DEFENDER_LUCK_RAND{ creature::Stats::Roll(creatureDefendingPtrC,
-                                                                 stats::Traits::Luck,
-                                                                 false,
-                                                                 true) };
+            auto const DEFENDER_LUCK_RAND{ creature::Stats::Roll(
+                creatureDefendingPtrC,
+                stats::Traits::Luck,
+                creature::Stats::RaceRoleBonus) };
+
             if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
                 //In this case, attaker and defender tied on luck rolls,
@@ -708,8 +709,9 @@ namespace combat
         auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Strength() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
         {
-            auto const RAND_STR_STAT{ creature::Stats::Roll(creatureAttackingPtrC,
-                                                            stats::Traits::Strength) };
+            auto const RAND_STR_STAT{ creature::Stats::Roll(
+                creatureAttackingPtrC,
+                stats::Traits::Strength) };
 
             auto const STR_BONUS_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
@@ -729,11 +731,13 @@ namespace combat
             DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
 
         //there is a rare chance of a power hit for players
-        auto const STRENGTH_TEST{ creature::Stats::Test(creatureAttackingPtrC,
-                                                        stats::Traits::Strength,
-                                                        0.25f,
-                                                        true,
-                                                        true) };
+        auto const STRENGTH_TEST{ creature::Stats::Test(
+            creatureAttackingPtrC,
+            stats::Traits::Strength,
+            0.25f,
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus)) };
 
         auto const POWER_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-power-chance-ratio") };
@@ -744,17 +748,21 @@ namespace combat
                                (misc::random::Float(1.0f) < POWER_HIT_CHANCE_RATIO));
 
         //there is a rare chance of a critical hit for players and non-players
-        auto const ACCURACY_TEST{ creature::Stats::Test(creatureAttackingPtrC,
-                                                        stats::Traits::Accuracy,
-                                                        0.25f,
-                                                        true,
-                                                        true) };
+        auto const ACCURACY_TEST{ creature::Stats::Test(
+            creatureAttackingPtrC,
+            stats::Traits::Accuracy,
+            0.25f,
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus)) };
 
-        auto const LUCK_TEST{ creature::Stats::Test(creatureAttackingPtrC,
-                                                    stats::Traits::Luck,
-                                                    0.25f,
-                                                    true,
-                                                    true) };
+        auto const LUCK_TEST{ creature::Stats::Test(
+            creatureAttackingPtrC,
+            stats::Traits::Luck,
+            0.25f,
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus)) };
 
         auto const CRITICAL_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };
@@ -1196,10 +1204,11 @@ namespace combat
             { stats::Traits::Speed },
             0,
             0,
-            true,
-            true,
-            true,
-            true) };
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus |
+                creature::Stats::With::RankBonus |
+                creature::Stats::With::PlayerNaturalWins)) };
 
         auto const DID_SUCCEED{ (DID_ROLL_SUCCEED ||
             creatureDefendingPtrC->HasCondition(Conditions::Tripped) ||
@@ -1342,16 +1351,18 @@ namespace combat
 
             const stats::Trait_t DISATANCE_BONUS{ nextBlockingDisatnce * 2 };
 
-            if (creature::Stats::Versus(creatureRoaringPtrC,
-                                        stats::Traits::Strength,
-                                        NEXT_DEFEND_CREATURE_PTR,
-                                        stats::Traits::Intelligence,
-                                        0,
-                                        DISATANCE_BONUS,
-                                        true,
-                                        true,
-                                        true,
-                                        true))
+            if (creature::Stats::Versus(
+                creatureRoaringPtrC,
+                stats::Traits::Strength,
+                NEXT_DEFEND_CREATURE_PTR,
+                stats::Traits::Intelligence,
+                0,
+                DISATANCE_BONUS,
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus |
+                    creature::Stats::With::RankBonus |
+                    creature::Stats::With::PlayerNaturalWins)))
             {
                 //no TurnInfo settings need to be made for roar
 

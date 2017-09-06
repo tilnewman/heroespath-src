@@ -57,22 +57,21 @@ namespace creature
 
 
     std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam,
-                                    const bool       LIVING_ONLY,
-                                    const bool       INCLUDE_RUNAWAYS)
+                                    const PlayerOpt  OPTIONS)
     {
         auto const PLAYERS_PVEC{ Game::Instance()->State().Party().Characters() };
 
         std::size_t count{ 0 };
         for (auto const NEXT_PLAYER_PTR : PLAYERS_PVEC)
         {
-            if ((LIVING_ONLY == false) || NEXT_PLAYER_PTR->IsAlive())
+            if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_PLAYER_PTR->IsAlive())
             {
                 pVec_OutParam.push_back(NEXT_PLAYER_PTR);
                 ++count;
             }
         }
 
-        if ((INCLUDE_RUNAWAYS == false) && (pVec_OutParam.empty() == false))
+        if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
             auto const & RUNAWAY_PLAYERS_PVEC{
                 combat::Encounter::Instance()->RunawayPlayersVec() };
@@ -89,18 +88,16 @@ namespace creature
     }
 
 
-    const CreaturePVec_t Algorithms::Players(const bool LIVING_ONLY,
-                                             const bool INCLUDE_RUNAWAYS)
+    const CreaturePVec_t Algorithms::Players(const PlayerOpt OPTIONS)
     {
         CreaturePVec_t tempPVec;
-        Players(tempPVec, LIVING_ONLY, INCLUDE_RUNAWAYS);
+        Players(tempPVec, OPTIONS);
         return tempPVec;
     }
 
 
     std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam,
-                                       const bool       LIVING_ONLY,
-                                       const bool       INCLUDE_RUNAWAYS)
+                                       const PlayerOpt  OPTIONS)
     {
         auto const NONPLAYERS_PVEC{
             combat::Encounter::Instance()->LivingNonPlayerParty().Characters() };
@@ -108,14 +105,14 @@ namespace creature
         std::size_t count{ 0 };
         for (auto const NEXT_NONPLAYER_PTR : NONPLAYERS_PVEC)
         {
-            if ((LIVING_ONLY == false) || NEXT_NONPLAYER_PTR->IsAlive())
+            if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_NONPLAYER_PTR->IsAlive())
             {
                 pVec_OutParam.push_back(NEXT_NONPLAYER_PTR);
                 ++count;
             }
         }
 
-        if (LIVING_ONLY == false)
+        if ((OPTIONS & PlayerOpt::Living) == false)
         {
             auto const DEAD_NONPLAYERS_PVEC(combat::Encounter::Instance()->
                 DeadNonPlayerParty().Characters());
@@ -127,7 +124,7 @@ namespace creature
             }
         }
 
-        if ((INCLUDE_RUNAWAYS == false) && (pVec_OutParam.empty() == false))
+        if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
             auto const RUNAWAY_NONPLAYERS_PVEC{
                 combat::Encounter::Instance()->RunawayNonPlayerParty().Characters() };
@@ -144,42 +141,41 @@ namespace creature
     }
 
 
-    const CreaturePVec_t Algorithms::NonPlayers(const bool LIVING_ONLY,
-                                                const bool INCLUDE_RUNAWAYS)
+    const CreaturePVec_t Algorithms::NonPlayers(const PlayerOpt OPTIONS)
     {
         CreaturePVec_t tempPVec;
-        NonPlayers(tempPVec, LIVING_ONLY, INCLUDE_RUNAWAYS);
+        NonPlayers(tempPVec, OPTIONS);
         return tempPVec;
     }
 
 
-    std::size_t Algorithms::PlayersByType(CreaturePVec_t & pVec_OutParam,
-                                          const bool       WILL_FIND_PLAYERS,
-                                          const bool       LIVING_ONLY,
-                                          const bool       INCLUDE_RUNAWAYS)
+    std::size_t Algorithms::PlayersByType(
+        CreaturePVec_t & pVec_OutParam,
+        const TypeOpt    TYPE_OPTION,
+        const PlayerOpt  PLAYER_OPTIONS)
     {
-        if (WILL_FIND_PLAYERS)
+        if (TYPE_OPTION == TypeOpt::Player)
         {
-            return Players(pVec_OutParam, LIVING_ONLY, INCLUDE_RUNAWAYS);
+            return Players(pVec_OutParam, PLAYER_OPTIONS);
         }
         else
         {
-            return NonPlayers(pVec_OutParam, LIVING_ONLY, INCLUDE_RUNAWAYS);
+            return NonPlayers(pVec_OutParam, PLAYER_OPTIONS);
         }
     }
 
 
-    const CreaturePVec_t Algorithms::PlayersByType(const bool WILL_FIND_PLAYERS,
-                                                   const bool LIVING_ONLY,
-                                                   const bool INCLUDE_RUNAWAYS)
+    const CreaturePVec_t Algorithms::PlayersByType(
+        const TypeOpt    TYPE_OPTION,
+        const PlayerOpt  PLAYER_OPTIONS)
     {
-        if (WILL_FIND_PLAYERS)
+        if (TYPE_OPTION == TypeOpt::Player)
         {
-            return Players(LIVING_ONLY, INCLUDE_RUNAWAYS);
+            return Players(PLAYER_OPTIONS);
         }
         else
         {
-            return NonPlayers(LIVING_ONLY, INCLUDE_RUNAWAYS);
+            return NonPlayers(PLAYER_OPTIONS);
         }
     }
 

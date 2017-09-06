@@ -80,7 +80,9 @@ namespace combat
         //find out if any possible targets (players) are holding projectile weapons
         auto const ARE_ANY_HOLDING_PROJECTILE_WEAPONS{ []()
             {
-                auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+                auto const ALL_LIVING_PLAYERS_PVEC{
+                    creature::Algorithms::Players(creature::Algorithms::Living) };
+
                 for (auto const NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
                 {
                     if (NEXT_LIVING_PLAYER_PTR->IsHoldingProjectileWeapon())
@@ -94,7 +96,9 @@ namespace combat
         //find out if any possible targets (players) are flying
         auto const ARE_ANY_FLYING{ []()
             {
-                auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+                auto const ALL_LIVING_PLAYERS_PVEC{
+                    creature::Algorithms::Players(creature::Algorithms::Living) };
+
                 for (auto const NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
                 {
                     if (Encounter::Instance()->GetTurnInfoCopy(
@@ -362,7 +366,8 @@ namespace combat
                 CREATURE_DECIDING_CPTRC, SELECT_TARGETS_PVEC));
         }
 
-        auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+        auto const ALL_LIVING_PLAYERS_PVEC{
+            creature::Algorithms::Players(creature::Algorithms::Living) };
 
         M_ASSERT_OR_LOGANDTHROW_SS((ALL_LIVING_PLAYERS_PVEC.empty() == false),
             "game::combat::TurnDecider::FindMostDesiredTarget("
@@ -415,7 +420,8 @@ namespace combat
             return {};
         }
 
-        auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+        auto const ALL_LIVING_PLAYERS_PVEC{
+            creature::Algorithms::Players(creature::Algorithms::Living) };
 
         auto const SELECTABLE_PLAYERS_PVEC{ ((TURN_INFO.GetIsFlying()) ?
             ALL_LIVING_PLAYERS_PVEC :
@@ -872,7 +878,7 @@ namespace combat
                 {
                     auto const FELLOWS_WITH_LOWEST_HEALTH_PVEC{
                         creature::Algorithms::FindLowestHealthRatio(
-                            creature::Algorithms::NonPlayers(true)) };
+                            creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
                     //heal fellow if one is injured enough
                     if (FELLOWS_WITH_LOWEST_HEALTH_PVEC.at(0)->HealthRatio() < 0.25f)
@@ -1072,7 +1078,7 @@ namespace combat
         auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR{
             misc::Vector::SelectRandom(
                 creature::Algorithms::FindLowestHealthRatio(
-                    creature::Algorithms::NonPlayers(true))) };
+                    creature::Algorithms::NonPlayers(creature::Algorithms::Living))) };
 
         auto const CAN_CAST_HEAL_SPELLS{
             (RAND_FELLOW_WITH_LOWEST_HEALTH_PTR->HealthRatio() < 1.0f) };
@@ -1149,12 +1155,18 @@ namespace combat
         if (spellPtr->Target() == TargetType::AllCompanions)
         {
             targetedCreaturesPVec = creature::Algorithms::PlayersByType(
-                CREATURE_DECIDING_CPTRC->IsPlayerCharacter(), true);
+                ((CREATURE_DECIDING_CPTRC->IsPlayerCharacter()) ?
+                    creature::Algorithms::TypeOpt::Player :
+                    creature::Algorithms::TypeOpt::NonPlayer),
+                creature::Algorithms::Living);
         }
         else if (spellPtr->Target() == TargetType::AllOpponents)
         {
             targetedCreaturesPVec = creature::Algorithms::PlayersByType(
-                CREATURE_DECIDING_CPTRC->IsPlayerCharacter(), true);
+                ((CREATURE_DECIDING_CPTRC->IsPlayerCharacter()) ?
+                    creature::Algorithms::TypeOpt::NonPlayer :
+                    creature::Algorithms::TypeOpt::Player),
+                creature::Algorithms::Living);
         }
         else if ((spellPtr->Target() == TargetType::SingleCompanion) ||
                  (spellPtr->Target() == TargetType::SingleOpponent))
@@ -1258,7 +1270,8 @@ namespace combat
         const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
         CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
     {
-        auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(true) };
+        auto const ALL_LIVING_PLAYERS_PVEC{
+            creature::Algorithms::Players(creature::Algorithms::Living) };
 
         if (ALL_LIVING_PLAYERS_PVEC.empty())
         {

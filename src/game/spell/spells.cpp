@@ -86,8 +86,10 @@ namespace spell
             stats::Traits::Intelligence,
             8,
             0.5f,
-            true,
-            true) };
+            0,
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus)) };
 
         auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
 
@@ -145,9 +147,10 @@ namespace spell
             stats::Traits::Charm,
             8,
             0.5f,
-            true,
-            true,
-            castingCreaturePtr->TraitBonusCurrent(stats::Traits::MagicEffect)) };
+            castingCreaturePtr->TraitBonusCurrent(stats::Traits::MagicEffect),
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::Luck |
+                creature::Stats::With::RaceRoleBonus)) };
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
 
@@ -567,10 +570,11 @@ namespace spell
                 stats::Traits::Count,
                 0,
                 0,
-                true,
-                true,
-                true,
-                true) };
+                static_cast<creature::Stats::With>(
+                    creature::Stats::With::Luck |
+                    creature::Stats::With::RaceRoleBonus |
+                    creature::Stats::With::RankBonus |
+                    creature::Stats::With::PlayerNaturalWins)) };
 
             auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
                 castingCreaturePtr->TraitBonusTest(stats::Traits::MagicCast) };

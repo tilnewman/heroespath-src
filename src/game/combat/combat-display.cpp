@@ -733,8 +733,13 @@ namespace combat
             << std::boolalpha << WILL_FIND_PLAYERS
             << ") was given a CREATURE_CPTRC that was null.");
 
-        return FindClosestLiving(CREATURE_CPTRC, creature::Algorithms::PlayersByType(
-            WILL_FIND_PLAYERS, true));
+        return FindClosestLiving(
+            CREATURE_CPTRC,
+            creature::Algorithms::PlayersByType(
+                ((WILL_FIND_PLAYERS) ?
+                    creature::Algorithms::TypeOpt::Player :
+                    creature::Algorithms::TypeOpt::NonPlayer),
+                creature::Algorithms::Living));
     }
 
 
@@ -816,7 +821,12 @@ namespace combat
         if (CREATURE_CPTRC->IsHoldingProjectileWeapon() ||
             (IS_FLYING))
         {
-            return creature::Algorithms::PlayersByType(pVec_OutParam, WILL_FIND_PLAYERS, true);
+            return creature::Algorithms::PlayersByType(
+                pVec_OutParam,
+                ((WILL_FIND_PLAYERS) ?
+                    creature::Algorithms::TypeOpt::Player :
+                    creature::Algorithms::TypeOpt::NonPlayer),
+                creature::Algorithms::Living);
         }
         else
         {
@@ -1564,7 +1574,10 @@ namespace combat
         std::size_t count{ 0 };
 
         auto const OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
-            (CREATURE_ROARING_PTR->IsPlayerCharacter() == false), true) };
+            ((CREATURE_ROARING_PTR->IsPlayerCharacter()) ?
+                creature::Algorithms::TypeOpt::NonPlayer :
+                creature::Algorithms::TypeOpt::Player),
+            creature::Algorithms::Living) };
 
         for (auto const NEXT_OPPONENT_CREATURE_PTR : OPPONENT_CREATURES_PVEC)
         {
