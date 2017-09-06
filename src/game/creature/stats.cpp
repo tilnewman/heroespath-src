@@ -46,19 +46,22 @@ namespace creature
     float Stats::Ratio(const CreaturePtr_t       CREATURE_PTR,
                        const stats::Traits::Enum TRAIT_ENUM,
                        const bool                WILL_INCLUDE_LUCK,
-                       const bool                WILL_INCLUDE_RACEROLE_BONUS)
+                       const bool                WILL_INCLUDE_RACEROLE_BONUS,
+                       const stats::Trait_t      TRAIT_BONUS)
     {
         return Ratio(CREATURE_PTR,
                      stats::TraitsVec_t(1, TRAIT_ENUM),
                      WILL_INCLUDE_LUCK,
-                     WILL_INCLUDE_RACEROLE_BONUS);
+                     WILL_INCLUDE_RACEROLE_BONUS,
+                     TRAIT_BONUS);
     }
 
 
     float Stats::Ratio(const CreaturePtr_t        CREATURE_PTR,
                        const stats::TraitsVec_t & TRAIT_ENUM_VEC,
                        const bool                 WILL_INCLUDE_LUCK,
-                       const bool                 WILL_INCLUDE_RACEROLE_BONUS)
+                       const bool                 WILL_INCLUDE_RACEROLE_BONUS,
+                       const stats::Trait_t       TRAIT_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Ratio() called with a null CREATURE_PTR.");
@@ -97,7 +100,9 @@ namespace creature
             randSum = normalSum;
         }
 
-        return static_cast<float>(randSum) / static_cast<float>(normalSum);
+        auto const TRAIT_BONUS_RATIO{ static_cast<float>(TRAIT_BONUS) / 100.0f };
+
+        return (static_cast<float>(randSum) / static_cast<float>(normalSum)) + TRAIT_BONUS_RATIO;
     }
 
 
@@ -113,10 +118,11 @@ namespace creature
     }
 
 
-    stats::Trait_t Stats::Roll(const CreaturePtr_t       CREATURE_PTR,
-                              const stats::TraitsVec_t & TRAIT_ENUM_VEC,
-                              const bool                 WILL_INCLUDE_LUCK,
-                              const bool                 WILL_INCLUDE_RACEROLE_BONUS)
+    stats::Trait_t Stats::Roll(
+        const CreaturePtr_t        CREATURE_PTR,
+        const stats::TraitsVec_t & TRAIT_ENUM_VEC,
+        const bool                 WILL_INCLUDE_LUCK,
+        const bool                 WILL_INCLUDE_RACEROLE_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
             "game::creature::Stats::Roll() called with a null CREATURE_PTR.");
@@ -498,26 +504,26 @@ namespace creature
     }
 
 
-    int Stats::RandomRatioWithFloorAndRankBonus(
+    int Stats::RandomRatio(
         const CreaturePtr_t       CREATURE_PTR,
         const stats::Traits::Enum TRAIT_ENUM,
         const int                 RAND_SPREAD,
-        const int                 FLOOR_DIVISOR,
         const float               RANK_BONUS_MULT,
         const bool                WILL_INCLUDE_LUCK,
-        const bool                WILL_INCLUDE_RACEROLE_BONUS)
+        const bool                WILL_INCLUDE_RACEROLE_BONUS,
+        const stats::Trait_t      TRAIT_BONUS)
     {
-        auto const RATIO{ Ratio(CREATURE_PTR,
-                                TRAIT_ENUM,
-                                WILL_INCLUDE_LUCK,
-                                WILL_INCLUDE_RACEROLE_BONUS) };
+        auto const RAND_RATIO{ Ratio(
+            CREATURE_PTR,
+            TRAIT_ENUM,
+            WILL_INCLUDE_LUCK,
+            WILL_INCLUDE_RACEROLE_BONUS,
+            TRAIT_BONUS) };
 
-        int x{ static_cast<int>((static_cast<float>(RAND_SPREAD) * RATIO)) };
+        auto const TRAIT_BONUS_RATIO{ static_cast<float>(TRAIT_BONUS) / 100.0f };
 
-        if (FLOOR_DIVISOR > 0)
-        {
-            x += (CREATURE_PTR->TraitWorking(TRAIT_ENUM) / FLOOR_DIVISOR);
-        }
+        auto x{ static_cast<int>(
+            static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
         x += static_cast<int>(static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_MULT);
 

@@ -108,13 +108,18 @@ namespace song
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        auto const RATIO{ creature::Stats::Ratio(
+        auto const RATIO_FROM_STATS{ creature::Stats::Ratio(
             creaturePlayingPtr,
             { stats::Traits::Intelligence, stats::Traits::Charm },
             true,
             true) };
 
-        auto const MANA_GAIN_ORIG{ static_cast<stats::Trait_t>(10.0f * RATIO) };
+        auto const RATIO_FROM_TRAIT_BONUS{
+            static_cast<float>(creaturePlayingPtr->TraitBonusCurrent(stats::Traits::MagicEffect) /
+                100.0f) };
+
+        auto const MANA_GAIN_ORIG{
+            static_cast<stats::Trait_t>(10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS)) };
 
         auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
 

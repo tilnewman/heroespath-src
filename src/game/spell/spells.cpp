@@ -81,11 +81,10 @@ namespace spell
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
+        auto const DAMAGE_ABS_ORIG{ creature::Stats::RandomRatio(
             castingCreaturePtr,
             stats::Traits::Intelligence,
             8,
-            0,
             0.5f,
             true,
             true) };
@@ -141,14 +140,14 @@ namespace spell
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
     {
-        auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatioWithFloorAndRankBonus(
+        auto const HEALTH_GAIN_ORIG{ creature::Stats::RandomRatio(
             castingCreaturePtr,
             stats::Traits::Charm,
             8,
-            0,
             0.5f,
             true,
-            true) };
+            true,
+            castingCreaturePtr->TraitBonusCurrent(stats::Traits::MagicEffect)) };
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
 

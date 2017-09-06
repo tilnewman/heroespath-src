@@ -49,13 +49,15 @@ namespace creature
             const CreaturePtr_t       CREATURE_PTR,
             const stats::Traits::Enum TRAIT_ENUM,
             const bool                WILL_INCLUDE_LUCK            = false,
-            const bool                WILL_INCLUDE_RACEROLE_BONUS  = false);
+            const bool                WILL_INCLUDE_RACEROLE_BONUS  = false,
+            const stats::Trait_t      TRAIT_BONUS                  = 0);
 
         static float Ratio(
             const CreaturePtr_t        CREATURE_PTR,
             const stats::TraitsVec_t & TRAIT_ENUM_VEC,
             const bool                 WILL_INCLUDE_LUCK            = false,
-            const bool                 WILL_INCLUDE_RACEROLE_BONUS  = false);
+            const bool                 WILL_INCLUDE_RACEROLE_BONUS  = false,
+            const stats::Trait_t       TRAIT_BONUS                  = 0);
 
         static stats::Trait_t Roll(
             const CreaturePtr_t       CREATURE_PTR,
@@ -109,14 +111,14 @@ namespace creature
             const bool                 WILL_INCLUDE_PLAYER_LUCK     = false,
             const bool                 ALLOW_PLAYER_NATURAL_WINS    = false);
 
-        static int RandomRatioWithFloorAndRankBonus(
+        static int RandomRatio(
             const CreaturePtr_t       CREATURE_PTR,
             const stats::Traits::Enum TRAIT_ENUM,
             const int                 RAND_SPREAD,
-            const int                 FLOOR_DIVISOR               = 0,//zero means 'no floor'
-            const float               RANK_BONUS_MULT             = 0.0f,//zero means 'no rank bonus'
+            const float               RANK_BONUS_MULT             = 0.0f,
             const bool                WILL_INCLUDE_LUCK           = false,
-            const bool                WILL_INCLUDE_RACEROLE_BONUS = false);
+            const bool                WILL_INCLUDE_RACEROLE_BONUS = false,
+            const stats::Trait_t      TRAIT_BONUS                 = 0);
 
     private:
         static stats::Trait_t LuckBonus(const CreaturePtr_t CREATURE_PTR);
