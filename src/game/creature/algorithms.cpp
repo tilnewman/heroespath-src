@@ -38,7 +38,6 @@
 #include "game/state/game-state.hpp"
 
 #include "misc/random.hpp"
-#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <algorithm>

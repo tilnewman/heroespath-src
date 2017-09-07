@@ -273,7 +273,10 @@ namespace stage
         auto const BEASTMASTERS_PVEC( creature::Algorithms::FindByRole(
             PLAYERS_PVEC, creature::role::Beastmaster) );
 
-        misc::Vector::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
+        misc::Vector::Append(
+            BEASTMASTERS_PVEC,
+            pixiesAndBeastmastersPVec,
+            misc::Vector::SortOpt::SortAndUnique);
 
         if (pixiesAndBeastmastersPVec.empty() == false)
         {
