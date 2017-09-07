@@ -184,48 +184,52 @@ namespace stage
 
         if (showNewGamePopup1_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(NEWGAME_POPUP_NAME1_,
-                                                                                                              std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
-                                                                                                              sfml_util::PopupButtons::Continue,
-                                                                                                              sfml_util::PopupImage::Large,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::None) );
+            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                NEWGAME_POPUP_NAME1_,
+                std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
+                sfml_util::PopupButtons::Continue,
+                sfml_util::PopupImage::Large,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::None) );
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup1_ = false;
         }
         else if (showNewGamePopup2_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(NEWGAME_POPUP_NAME2_,
-                                                                                                              ComposeNewGamePopupText2(),
-                                                                                                              sfml_util::PopupButtons::Continue,
-                                                                                                              sfml_util::PopupImage::Large,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::None) );
+            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                NEWGAME_POPUP_NAME2_,
+                ComposeNewGamePopupText2(),
+                sfml_util::PopupButtons::Continue,
+                sfml_util::PopupImage::Large,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::None) );
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup2_ = false;
         }
         else if (showNewGamePopup3_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(NEWGAME_POPUP_NAME3_,
-                                                                                                              ComposeNewGamePopupText3(),
-                                                                                                              sfml_util::PopupButtons::Continue,
-                                                                                                              sfml_util::PopupImage::Large,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::None) );
+            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                NEWGAME_POPUP_NAME3_,
+                ComposeNewGamePopupText3(),
+                sfml_util::PopupButtons::Continue,
+                sfml_util::PopupImage::Large,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::None) );
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup3_ = false;
         }
         else if (showNewGamePopup4_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(NEWGAME_POPUP_NAME4_,
-                                                                                                              ComposeNewGamePopupText4(),
-                                                                                                              sfml_util::PopupButtons::Continue,
-                                                                                                              sfml_util::PopupImage::Large,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::None) );
+            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                NEWGAME_POPUP_NAME4_,
+                ComposeNewGamePopupText4(),
+                sfml_util::PopupButtons::Continue,
+                sfml_util::PopupImage::Large,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::None) );
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup4_ = false;
@@ -247,21 +251,34 @@ namespace stage
         ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text2");
 
         auto const PLAYERS_PVEC( creature::Algorithms::Players() );
-        auto humansAndGnomesPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Human) );
-        auto const GNOMES_PVEC( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Gnome) );
+
+        auto humansAndGnomesPVec( creature::Algorithms::FindByRace(
+            PLAYERS_PVEC, creature::race::Human) );
+
+        auto const GNOMES_PVEC( creature::Algorithms::FindByRace(
+            PLAYERS_PVEC, creature::race::Gnome) );
+
         misc::Vector::Append(GNOMES_PVEC, humansAndGnomesPVec);
 
         if (humansAndGnomesPVec.empty() == false)
+        {
             ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
+        }
 
         ss << ".\n\n" << GameDataFile::Instance()->GetCopyStr("heroespath-intro-text3");
 
-        auto pixiesAndBeastmastersPVec( creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie) );
-        auto const BEASTMASTERS_PVEC( creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Beastmaster) );
+        auto pixiesAndBeastmastersPVec( creature::Algorithms::FindByRace(
+            PLAYERS_PVEC, creature::race::Pixie) );
+
+        auto const BEASTMASTERS_PVEC( creature::Algorithms::FindByRole(
+            PLAYERS_PVEC, creature::role::Beastmaster) );
+
         misc::Vector::Append(BEASTMASTERS_PVEC, pixiesAndBeastmastersPVec, true);
 
         if (pixiesAndBeastmastersPVec.empty() == false)
+        {
             ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
+        }
 
         ss << " " << GameDataFile::Instance()->GetCopyStr("heroespath-intro-text4");
         return ss.str();
@@ -273,7 +290,9 @@ namespace stage
         auto charToUsePtr = creature::CreaturePtr_t{nullptr};
         auto const PLAYERS_PVEC(creature::Algorithms::Players());
 
-        auto const NOTBEASTS_PVEC(creature::Algorithms::FindByBeast(PLAYERS_PVEC, false));
+        auto const NOTBEASTS_PVEC(creature::Algorithms::FindByIsBeast(
+            PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet));
+
         auto const KNIGHT_PVEC(creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Knight));
 
         if (KNIGHT_PVEC.empty() == false)
@@ -350,8 +369,8 @@ namespace stage
             << GameDataFile::Instance()->GetCopyStr("heroespath-intro-text7") << " "
             << creature::sex::HimHerIt(charToUsePtr->Sex(), false) << ", but ";
 
-        auto const BEAST_PVEC(creature::Algorithms::FindByBeast(PLAYERS_PVEC));
-        auto const NONLOAD_NONBEAST_PVEC( misc::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) );
+        auto const BEAST_PVEC{ creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
+        auto const NONLOAD_NONBEAST_PVEC{ misc::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {

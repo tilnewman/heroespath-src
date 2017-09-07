@@ -50,7 +50,9 @@ namespace misc
                            const bool             WILL_UNIQUE = false)
         {
             if (A_VEC.empty())
+            {
                 return;
+            }
 
             std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_Vec));
 
@@ -105,10 +107,14 @@ namespace misc
                                             const std::vector<T> & TO_EXCLUDE_VEC)
         {
             if (ORIG_VEC.empty())
+            {
                 return std::vector<T>();
+            }
 
             if (TO_EXCLUDE_VEC.empty())
+            {
                 return ORIG_VEC;
+            }
 
             std::vector<T> finalVec;
 
@@ -118,8 +124,12 @@ namespace misc
                          [& TO_EXCLUDE_VEC] (T NEXT_FROM_ORIG)
                          {
                              for(auto const NEXT_TO_EXCLUDE : TO_EXCLUDE_VEC)
+                             {
                                  if (NEXT_FROM_ORIG == NEXT_TO_EXCLUDE)
+                                 {
                                      return false;
+                                 }
+                             }
 
                              return true;
                          });
@@ -160,25 +170,28 @@ namespace misc
             }
         }
 
+        enum JoinOpt : unsigned
+        {
+            None     = 0,
+            Wrap     = 1 << 0,
+            And      = 1 << 1,
+            Ellipsis = 1 << 2
+        };
 
         template<typename T>
         static const std::string Join(
             const std::vector<T> & VEC,
-            const bool             WILL_WRAP     = false,
-            const bool             WILL_AND      = false,
-            const std::size_t      MAX_COUNT     = 0,
-            const bool             WILL_ELLIPSIS = false,
+            const std::size_t      MAX_COUNT = 0,
+            const JoinOpt          OPTIONS   = JoinOpt::None,
             const std::string(*TO_STRING_FUNC)(const T) =
-                []
-                (const T x) -> const std::string
+                [](const T x) -> const std::string
                 {
                     std::ostringstream ss;
                     ss << x;
                     return ss.str();
                 },
             bool(*ONLY_IF_FUNC)(const T) =
-                []
-                (const T) -> bool
+                [](const T) -> bool
                 {
                     return true;
                 })
@@ -217,7 +230,7 @@ namespace misc
                     ss << ", ";
                 }
 
-                if (WILL_AND &&
+                if ((OPTIONS & JoinOpt::And) &&
                     (TO_JOIN_ELEMENT_COUNT > 2) &&
                     (i >= 2) &&
                     ((TO_JOIN_ELEMENT_COUNT - 1) == i))
@@ -227,7 +240,7 @@ namespace misc
 
                 ss << TO_STRING_FUNC(toJoinVec[i]);
 
-                if (WILL_ELLIPSIS &&
+                if ((OPTIONS & JoinOpt::Ellipsis) &&
                     (TO_JOIN_ELEMENT_COUNT < VEC_ELEMENT_COUNT) &&
                     ((TO_JOIN_ELEMENT_COUNT - 1) == i))
                 {
@@ -235,7 +248,7 @@ namespace misc
                 }
             }
 
-            if (WILL_WRAP && (ss.str().empty() == false))
+            if ((OPTIONS & JoinOpt::Wrap) && (ss.str().empty() == false))
             {
                 return "(" + ss.str() + ")";
             }

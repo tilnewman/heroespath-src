@@ -841,7 +841,8 @@ namespace combat
                 }() };
 
             auto const NOTFLYING_ALLAROUND_CREATURES_PVEC{
-                creature::Algorithms::FindByFlying(ALLAROUND_CREATURES_PVEC, false) };
+                creature::Algorithms::FindByIsFlying(
+                    ALLAROUND_CREATURES_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
             auto const REACHABLE_CREATURES_PVEC{ ((IS_FLYING) ?
                 ALLAROUND_CREATURES_PVEC :
@@ -1161,7 +1162,7 @@ namespace combat
 
             if ((NEXT_COMBATNODE_PTR->GetBlockingPos() == BLOCKING_POS_NEW) &&
                 (NEXT_CREATURE_PTR->IsPlayerCharacter() != CREATURE_CPTRC->IsPlayerCharacter()) &&
-                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(true) == false) &&
+                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false) &&
                 (Encounter::Instance()->GetTurnInfoCopy(NEXT_CREATURE_PTR).GetTurnActionInfo().
                     Action() == TurnAction::Block))
             {
@@ -1552,7 +1553,7 @@ namespace combat
         {
             auto const NEXT_CREATURE_PTR{ NEXT_COMBAT_NODE_PTR->Creature() };
             if ((NEXT_COMBAT_NODE_PTR->GetBlockingPos() == BLOCKING_POS) &&
-                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(true) == false) &&
+                (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false) &&
                 (Encounter::Instance()->GetTurnInfoCopy(
                     NEXT_CREATURE_PTR).GetIsFlying() == false) &&
                 (NEXT_CREATURE_PTR->IsPlayerCharacter() ==

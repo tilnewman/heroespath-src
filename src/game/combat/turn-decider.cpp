@@ -336,7 +336,8 @@ namespace combat
             if (IS_FLYING == false)
             {
                 auto const REFINED_NOTFLYING_TARGETS_PVEC{
-                    creature::Algorithms::FindByFlying(REFINED_TARGETS_PVEC, false) };
+                    creature::Algorithms::FindByIsFlying(
+                        REFINED_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
                 if (REFINED_NOTFLYING_TARGETS_PVEC.empty() == false)
                 {
@@ -352,8 +353,8 @@ namespace combat
         {
             if (IS_FLYING == false)
             {
-                auto const SELECT_NOTFLYING_TARGETS_PVEC{ creature::Algorithms::FindByFlying(
-                    SELECT_TARGETS_PVEC, false) };
+                auto const SELECT_NOTFLYING_TARGETS_PVEC{ creature::Algorithms::FindByIsFlying(
+                    SELECT_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
                 if (SELECT_NOTFLYING_TARGETS_PVEC.empty() == false)
                 {
@@ -377,7 +378,7 @@ namespace combat
         //prefer players still a threat...
         auto const ALL_LIVING_THREAT_PLAYERS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                ALL_LIVING_PLAYERS_PVEC, false) };
+                ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CondSingleOpt::DoesNotHave) };
         
         //...but accept those 'not a threat' if no other choice
         auto const AVAILABLE_TARGETS_PRE_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
@@ -391,7 +392,8 @@ namespace combat
         //prefer those reachable considering flying...
         auto const REACHABLE_AVAILABLE_TARGETS_PVEC{ ((IS_FLYING) ?
             availableTargetsPVec :
-            creature::Algorithms::FindByFlying(availableTargetsPVec, false)) };
+            creature::Algorithms::FindByIsFlying(
+                availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         //...but accept those 'not reachable' if no other choice
         auto const POSSIBLE_TARGETS_PVEC{ ((REACHABLE_AVAILABLE_TARGETS_PVEC.empty()) ?
@@ -425,7 +427,8 @@ namespace combat
 
         auto const SELECTABLE_PLAYERS_PVEC{ ((TURN_INFO.GetIsFlying()) ?
             ALL_LIVING_PLAYERS_PVEC :
-            creature::Algorithms::FindByFlying(ALL_LIVING_PLAYERS_PVEC, false)) };
+            creature::Algorithms::FindByIsFlying(
+                ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (SELECTABLE_PLAYERS_PVEC.empty())
         {
@@ -437,123 +440,125 @@ namespace combat
         //add target selections by race
         if (SELECT_TYPE_ENUM & strategy::SelectType::Dragon)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC,
-                creature::race::Dragon), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRace(
+                SELECTABLE_PLAYERS_PVEC, creature::race::Dragon), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Gnome)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC,
-                creature::race::Gnome), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRace(
+                SELECTABLE_PLAYERS_PVEC, creature::race::Gnome), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Human)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC,
-                creature::race::Human), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRace(
+                SELECTABLE_PLAYERS_PVEC, creature::race::Human), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Pixie)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC,
-                creature::race::Pixie), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRace(
+                SELECTABLE_PLAYERS_PVEC, creature::race::Pixie), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Wolfen)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRace(SELECTABLE_PLAYERS_PVEC,
-                creature::race::Wolfen), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRace(
+                SELECTABLE_PLAYERS_PVEC, creature::race::Wolfen), selectedPlayersPVec);
         }
 
         //add target selections by role
         if (SELECT_TYPE_ENUM & strategy::SelectType::Archer)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Archer), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Archer), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Bard)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Bard), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Bard), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Beastmaster)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Beastmaster), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Beastmaster), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Cleric)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Cleric), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Cleric), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::FireBrand)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Firebrand), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Firebrand), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Knight)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Knight), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Knight), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Sorcerer)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Sorcerer), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Sorcerer), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Sylavin)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Sylavin), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Sylavin), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Theif)
         {
-            misc::Vector::Append(creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC,
-                creature::role::Thief), selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByRole(
+                SELECTABLE_PLAYERS_PVEC, creature::role::Thief), selectedPlayersPVec);
         }
 
         //add target selections by misc types
         if (SELECT_TYPE_ENUM & strategy::SelectType::Beast)
         {
-            misc::Vector::Append(creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC),
-                selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByIsBeast(
+                SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::NotBeast)
         {
-            misc::Vector::Append(creature::Algorithms::FindByBeast(SELECTABLE_PLAYERS_PVEC, false),
+            misc::Vector::Append(creature::Algorithms::FindByIsBeast(
+                    SELECTABLE_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet),
                 selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::CanFly)
         {
-            misc::Vector::Append(creature::Algorithms::FindByCanFly(SELECTABLE_PLAYERS_PVEC),
-                selectedPlayersPVec);
+            misc::Vector::Append(creature::Algorithms::FindByCanFly(
+                SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::CantFly)
         {
             misc::Vector::Append(creature::Algorithms::FindByCanFly(
-                SELECTABLE_PLAYERS_PVEC, false), selectedPlayersPVec);
+                    SELECTABLE_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet),
+                selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Caster)
         {
-            misc::Vector::Append(creature::Algorithms::FindBySpellCaster(
+            misc::Vector::Append(creature::Algorithms::FindByCanCast(
                 SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
         }
 
         if (SELECT_TYPE_ENUM & strategy::SelectType::Projectile)
         {
-            misc::Vector::Append(creature::Algorithms::FindByProjectileWeapons(
+            misc::Vector::Append(creature::Algorithms::FindByIsHoldingProjWeapon(
                 SELECTABLE_PLAYERS_PVEC), selectedPlayersPVec);
         }
 
@@ -566,7 +571,7 @@ namespace combat
         }
 
         return creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-            selectedPlayersPVec, false);
+            selectedPlayersPVec, creature::Algorithms::CondSingleOpt::DoesNotHave);
     }
 
 
@@ -623,7 +628,7 @@ namespace combat
             {
                 auto const CANT_ACT_BUT_NOT_PERM_PVEC{
                     creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                        cantTakeActionPVec, false) };
+                        cantTakeActionPVec, creature::Algorithms::CondSingleOpt::DoesNotHave) };
 
                 if (CANT_ACT_BUT_NOT_PERM_PVEC.empty() == false)
                 {
@@ -1135,10 +1140,8 @@ namespace combat
         {
             auto const SPELL_TYPES_STR{ misc::Vector::Join<EffectType::Enum>(
                 SPELL_EFFECTTYPES_VEC,
-                false,
-                false,
                 0,
-                false,
+                misc::Vector::JoinOpt::None,
                 & EffectType::ToString) };
 
             std::ostringstream ssErr;
@@ -1281,7 +1284,9 @@ namespace combat
         //prefer players still a threat...
         auto ALL_LIVING_THREAT_PLAYERS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                ALL_LIVING_PLAYERS_PVEC, false, true) };
+                ALL_LIVING_PLAYERS_PVEC,
+                creature::Algorithms::CondSingleOpt::DoesNotHave,
+                creature::UnconOpt::Include) };
 
         //...but accept those 'not a threat' if no other choice
         auto const AVAILABLE_TARGETS_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
@@ -1291,7 +1296,8 @@ namespace combat
         //must be reachable given flying or not
         auto const REACHABLE_AVAILABLE_TARGETS_PVEC{ ((CREATURE_DECIDING_TURN_INFO.GetIsFlying()) ?
             AVAILABLE_TARGETS_PVEC :
-            creature::Algorithms::FindByFlying(AVAILABLE_TARGETS_PVEC, false)) };
+            creature::Algorithms::FindByIsFlying(
+                AVAILABLE_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (REACHABLE_AVAILABLE_TARGETS_PVEC.empty())
         {
@@ -1351,16 +1357,19 @@ namespace combat
                 combat::strategy::RefineType::Murderer))
         {
             //If a murderer and some available targets are unconscious, then only target those
-            pVec_OutParam = creature::Algorithms::FindByCondition(pVec_OutParam,
-                creature::Conditions::Unconscious);
+            pVec_OutParam = creature::Algorithms::FindByHasCondition(
+                pVec_OutParam, creature::Conditions::Unconscious);
         }
         else if (ARE_ANY_TARGETS_UNCONSCIOUS &&
                  (misc::random::Float(1.0f) < GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-chance-enemies-ignore-unconscious")))
         {
             //most of the time, don't consider unconscious targets
-            pVec_OutParam = creature::Algorithms::FindByCondition(pVec_OutParam,
-                creature::Conditions::Unconscious, true, false);
+            pVec_OutParam = creature::Algorithms::FindByHasCondition(
+                pVec_OutParam,
+                creature::Conditions::Unconscious,
+                creature::Algorithms::CondAllOpt::HasAll,
+                creature::Algorithms::CondSingleOpt::DoesNotHave);
         }
     }
 

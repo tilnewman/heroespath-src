@@ -103,6 +103,13 @@ namespace creature
     using UniqueTraits_t = std::tuple<std::string, role::Enum, sfml_util::DateTime, SerialNumber_t>;
 
 
+    enum class UnconOpt
+    {
+        Include,
+        Exclude
+    };
+
+
     //base class for all creatures
     class Creature
     {
@@ -297,7 +304,8 @@ namespace creature
 
         bool HasCondition(const Conditions::Enum) const;
         bool HasConditionNotAThreatTemp() const;
-        bool HasConditionNotAThreatPerm(const bool WILL_INCLUDE_UNCONSCIOUS = false) const;
+
+        bool HasConditionNotAThreatPerm(const UnconOpt UNCON_OPTION = UnconOpt::Exclude) const;
 
         std::size_t GetWorstConditionSeverity() const;
 

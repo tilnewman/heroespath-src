@@ -27,9 +27,9 @@
 //
 // algorithms.hpp
 //
-#include "game/creature/race-enum.hpp"
-#include "game/creature/role-enum.hpp"
-#include "game/creature/condition-enum.hpp"
+#include "game/creature/creature.hpp"
+
+#include "misc/vectors.hpp"
 
 #include <string>
 #include <vector>
@@ -39,15 +39,6 @@ namespace game
 {
 namespace creature
 {
-
-    //forward declarations
-    class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreaturePtrC_t  = Creature * const;
-    using CreatureCPtr_t  = const Creature *;
-    using CreatureCPtrC_t = const Creature * const;
-    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
-
 
     struct Algorithms
     {
@@ -59,12 +50,6 @@ namespace creature
             Living           = 1 << 0,
             Runaway          = 1 << 1,
             LivingAndRunaway = Living | Runaway,
-        };
-
-        enum class TypeOpt
-        {
-            Player,
-            NonPlayer
         };
 
         static std::size_t Players(
@@ -81,6 +66,12 @@ namespace creature
         static const CreaturePVec_t NonPlayers(
             const PlayerOpt OPTIONS = PlayerOpt::None);
 
+        enum class TypeOpt
+        {
+            Player,
+            NonPlayer
+        };
+
         static std::size_t PlayersByType(
             CreaturePVec_t & pVec_OutParam,
             const TypeOpt    TYPE_OPTION,
@@ -90,38 +81,27 @@ namespace creature
             const TypeOpt    TYPE_OPTION,
             const PlayerOpt  OPTIONS = PlayerOpt::None);
 
-        /*
-        static std::size_t Players(CreaturePVec_t & pVec_OutParam,
-                                   const bool       LIVING_ONLY      = false,
-                                   const bool       INCLUDE_RUNAWAYS = false);
+        enum class NamesOpt
+        {
+            NameOnly,
+            WithRaceAndRole
+        };
 
-        static const CreaturePVec_t Players(const bool LIVING_ONLY      = false,
-                                            const bool INCLUDE_RUNAWAYS = false);
+        static const std::string Names(
+            const CreaturePVec_t &,
+            const std::size_t           MAX_COUNT    = 0,
+            const misc::Vector::JoinOpt JOIN_OPTIONS = misc::Vector::JoinOpt::None,
+            const NamesOpt              OPTIONS      = NamesOpt::NameOnly);
 
-        static std::size_t NonPlayers(CreaturePVec_t & pVec_OutParam,
-                                      const bool       LIVING_ONLY      = false,
-                                      const bool       INCLUDE_RUNAWAYS = false);
+        enum class CriteriaOpt
+        {
+            Meets,
+            DoesNotMeet
+        };
 
-        static const CreaturePVec_t NonPlayers(const bool LIVING_ONLY      = false,
-                                               const bool INCLUDE_RUNAWAYS = false);
-
-        static std::size_t PlayersByType(CreaturePVec_t & pVec_OutParam,
-                                         const bool       WILL_FIND_PLAYERS,
-                                         const bool       LIVING_ONLY       = false,
-                                         const bool       INCLUDE_RUNAWAYS  = false);
-
-        static const CreaturePVec_t PlayersByType(const bool WILL_FIND_PLAYERS,
-                                                  const bool LIVING_ONLY       = false,
-                                                  const bool INCLUDE_RUNAWAYS  = false);*/
-
-        static const std::string Names(const CreaturePVec_t &,
-                                       const bool             WILL_WRAP              = false,
-                                       const bool             WILL_APPEND_AND        = false,
-                                       const bool             WILL_ADD_RACE_AND_ROLE = false,
-                                       const std::size_t      MAX_COUNT              = 0,
-                                       const bool             WILL_ELLIPSIS          = false);
-
-        static const CreaturePVec_t FindByAlive(const CreaturePVec_t &, const bool WILL_FIND_ALIVE = true);
+        static const CreaturePVec_t FindByAlive(
+            const CreaturePVec_t &,
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static void SortByLowestHealthNormal(CreaturePVec_t &);
         static const CreaturePVec_t FindLowestHealthNormal(const CreaturePVec_t &);
@@ -132,60 +112,72 @@ namespace creature
         static void SortByLowestHealthRatio(CreaturePVec_t &);
         static const CreaturePVec_t FindLowestHealthRatio(const CreaturePVec_t &);
 
+        enum class CondSingleOpt
+        {
+            Has,
+            DoesNotHave
+        };
+
         static const CreaturePVec_t FindByConditionMeaningNotAThreatPermenantly(
             const CreaturePVec_t &,
-            const bool HAS_CONDITION = true,
-            const bool WILL_INCLUDE_UNCONSCIOUS = false);
+            const CondSingleOpt      CONDITION_OPTION   = CondSingleOpt::Has,
+            const creature::UnconOpt UNCONSCIOUS_OPTION = UnconOpt::Exclude);
 
         static const CreaturePVec_t FindByConditionMeaningNotAThreatTemporarily(
             const CreaturePVec_t &,
-            const bool HAS_CONDITION = true);
+            const CondSingleOpt CONDITION_OPTION = CondSingleOpt::Has);
 
         static const CreaturePVec_t FindByRace(
             const CreaturePVec_t &,
             const race::Enum,
-            const bool IS_GIVEN_RACE = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByRole(
             const CreaturePVec_t &,
             const role::Enum,
-            const bool IS_GIVEN_ROLE = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
-        static const CreaturePVec_t FindBySpellCaster(
+        static const CreaturePVec_t FindByCanCast(
             const CreaturePVec_t &,
-            const bool CAN_CAST = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
-        static const CreaturePVec_t FindByBeast(
+        static const CreaturePVec_t FindByIsBeast(
             const CreaturePVec_t &,
-            const bool IS_BEAST = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
-        static const CreaturePVec_t FindByProjectileWeapons(
+        static const CreaturePVec_t FindByIsHoldingProjWeapon(
             const CreaturePVec_t &,
-            const bool IS_HOLDING_PROJ_WEAPON = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByCanFly(
             const CreaturePVec_t &,
-            const bool CAN_FLY = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
-        static const CreaturePVec_t FindByFlying(
+        static const CreaturePVec_t FindByIsFlying(
             const CreaturePVec_t &,
-            const bool IS_FLYING = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByCanTakeAction(
             const CreaturePVec_t &,
-            const bool CAN_TAKE_ACTION = true);
+            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
-        static const CreaturePVec_t FindByCondition(
+        enum class CondAllOpt
+        {
+            HasAll,
+            DoesNotHaveAll
+        };
+
+        static const CreaturePVec_t FindByHasCondition(
             const CreaturePVec_t &,
             const Conditions::Enum,
-            const bool HAS_ALL = true,
-            const bool HAS_CONDITION = true);
-
-        static const CreaturePVec_t FindByCondition(
+            const CondAllOpt    COND_ALL_OPTION    = CondAllOpt::HasAll,
+            const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
+        
+        static const CreaturePVec_t FindByHasConditions(
             const CreaturePVec_t &,
             const CondEnumVec_t &,
-            const bool HAS_ALL = true,
-            const bool HAS_CONDITION = true);
+            const CondAllOpt    COND_ALL_OPTION    = CondAllOpt::HasAll,
+            const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
     };
 
 }

@@ -29,12 +29,9 @@
 //
 #include "algorithms.hpp"
 
-#include "misc/random.hpp"
-#include "misc/vectors.hpp"
-
 #include "game/item/item.hpp"
 
-#include <string>
+#include "misc/random.hpp"
 
 
 namespace game
@@ -42,146 +39,152 @@ namespace game
 namespace item
 {
 
-    const std::string Algorithms::Names(const ItemPVec_t & ITEM_PVEC,
-                                        const bool         WILL_WRAP,
-                                        const bool         WILL_APPEND_AND,
-                                        const std::size_t  MAX_COUNT,
-                                        const bool         WILL_ELLIPSIS)
+    const std::string Algorithms::Names(
+        const ItemPVec_t &          ITEM_PVEC,
+        const std::size_t           MAX_COUNT,
+        const misc::Vector::JoinOpt OPTIONS)
     {
-        return misc::Vector::Join<ItemPtr_t>(ITEM_PVEC,
-                                             WILL_WRAP,
-                                             WILL_APPEND_AND,
-                                             MAX_COUNT,
-                                             WILL_ELLIPSIS,
-                                             []
-                                             (const ItemPtr_t PTR) -> const std::string
-                                             {
-                                                 return PTR->Name();
-                                             });
+        return misc::Vector::Join<ItemPtr_t>(
+            ITEM_PVEC,
+            MAX_COUNT,
+            OPTIONS,
+            [](const ItemPtr_t PTR) -> const std::string
+            {
+                return PTR->Name();
+            });
     }
 
 
-    const ItemPVec_t Algorithms::FindByCategory(const ItemPVec_t &   ITEM_PVEC,
-                                                const category::Enum CATEGORY_TYPE,
-                                                const bool           IS_MATCH)
+    const ItemPVec_t Algorithms::FindByCategory(
+        const ItemPVec_t &   ITEM_PVEC,
+        const category::Enum CATEGORY_TYPE,
+        const MatchOpt       MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
         if (ITEM_PVEC.empty() == false)
         {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [CATEGORY_TYPE, IS_MATCH]
-                         (const ItemPtr_t PTR)
-                         {
-                             return ((PTR->IsCategoryType(CATEGORY_TYPE)) == IS_MATCH);
-                         });
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [CATEGORY_TYPE, MATCH_OPTION]
+                (const ItemPtr_t PTR)
+                {
+                    return PTR->IsCategoryType(CATEGORY_TYPE) == (MATCH_OPTION == MatchOpt::Equal);
+                });
         }
 
         return resultSVec;
     }
 
 
-    const ItemPVec_t Algorithms::FindByWeaponType(const ItemPVec_t &      ITEM_PVEC,
-                                                  const weapon_type::Enum WEAPON_TYPE,
-                                                  const bool              IS_MATCH)
+    const ItemPVec_t Algorithms::FindByWeaponType(
+        const ItemPVec_t &      ITEM_PVEC,
+        const weapon_type::Enum WEAPON_TYPE,
+        const MatchOpt          MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
         if (ITEM_PVEC.empty() == false)
         {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [WEAPON_TYPE, IS_MATCH]
-                         (const ItemPtr_t PTR)
-                         {
-                            return ((PTR->IsWeaponType(WEAPON_TYPE)) == IS_MATCH);
-                         });
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [WEAPON_TYPE, MATCH_OPTION](const ItemPtr_t PTR)
+                {
+                   return (PTR->IsWeaponType(WEAPON_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                });
         }
         return resultSVec;
     }
 
 
-    const ItemPVec_t Algorithms::FindByArmorType(const ItemPVec_t &     ITEM_PVEC,
-                                                 const armor_type::Enum ARMOR_TYPE,
-                                                 const bool             IS_MATCH)
+    const ItemPVec_t Algorithms::FindByArmorType(
+        const ItemPVec_t &     ITEM_PVEC,
+        const armor_type::Enum ARMOR_TYPE,
+        const MatchOpt         MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
         if (ITEM_PVEC.empty() == false)
         {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [ARMOR_TYPE, IS_MATCH]
-                         (const ItemPtr_t PTR)
-                         {
-                            return ((PTR->IsArmorType(ARMOR_TYPE)) == IS_MATCH);
-                         });
-        }
-
-        return resultSVec;
-    }
-
-
-    const ItemPVec_t Algorithms::FindByMiscType(const ItemPVec_t &    ITEM_PVEC,
-                                                const misc_type::Enum MISC_TYPE,
-                                                const bool            IS_MATCH)
-    {
-        ItemPVec_t resultSVec;
-
-        if (ITEM_PVEC.empty() == false)
-        {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [MISC_TYPE, IS_MATCH]
-                         (const ItemPtr_t PTR)
-                         {
-                            return ((PTR->IsMiscType(MISC_TYPE)) == IS_MATCH);
-                         });
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [ARMOR_TYPE, MATCH_OPTION](const ItemPtr_t PTR)
+                {
+                   return (PTR->IsArmorType(ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                });
         }
 
         return resultSVec;
     }
 
 
-    const ItemPVec_t Algorithms::FindByPixie(const ItemPVec_t & ITEM_PVEC, const bool IS_MATCH)
+    const ItemPVec_t Algorithms::FindByMiscType(
+        const ItemPVec_t &    ITEM_PVEC,
+        const misc_type::Enum MISC_TYPE,
+        const MatchOpt        MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
         if (ITEM_PVEC.empty() == false)
         {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [IS_MATCH]
-                         (const ItemPtr_t PTR)
-                         {
-                            return (PTR->IsPixie() == IS_MATCH);
-                         });
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [MISC_TYPE, MATCH_OPTION](const ItemPtr_t PTR)
+                {
+                   return (PTR->IsMiscType(MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                });
         }
 
         return resultSVec;
     }
 
 
-    const ItemPVec_t Algorithms::FindByBroken(const ItemPVec_t & ITEM_PVEC, const bool WILL_KEEP_BROKEN)
+    const ItemPVec_t Algorithms::FindByPixie(
+        const ItemPVec_t & ITEM_PVEC,
+        const MatchOpt     MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
         if (ITEM_PVEC.empty() == false)
         {
-            std::copy_if(ITEM_PVEC.begin(),
-                         ITEM_PVEC.end(),
-                         back_inserter(resultSVec),
-                         [WILL_KEEP_BROKEN]
-                         (const ItemPtr_t PTR)
-                         {
-                            return (PTR->IsBroken() == WILL_KEEP_BROKEN);
-                         });
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [MATCH_OPTION](const ItemPtr_t PTR)
+                {
+                   return (PTR->IsPixie() == (MATCH_OPTION == MatchOpt::Equal));
+                });
+        }
+
+        return resultSVec;
+    }
+
+
+    const ItemPVec_t Algorithms::FindByBroken(
+        const ItemPVec_t & ITEM_PVEC,
+        const BrokenOpt    BROKEN_OPTION)
+    {
+        ItemPVec_t resultSVec;
+
+        if (ITEM_PVEC.empty() == false)
+        {
+            std::copy_if(
+                ITEM_PVEC.begin(),
+                ITEM_PVEC.end(),
+                back_inserter(resultSVec),
+                [BROKEN_OPTION](const ItemPtr_t PTR)
+                {
+                   return (PTR->IsBroken() == (BROKEN_OPTION == BrokenOpt::Keep));
+                });
         }
 
         return resultSVec;

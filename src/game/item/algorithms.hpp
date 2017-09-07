@@ -32,6 +32,8 @@
 //
 #include "game/item/item-type-enum.hpp"
 
+#include "misc/vectors.hpp"
+
 #include <memory>
 #include <vector>
 #include <string>
@@ -50,33 +52,50 @@ namespace item
 
     struct Algorithms
     {
-        static const std::string Names(const ItemPVec_t &,
-                                       const bool         WILL_WRAP       = false,
-                                       const bool         WILL_APPEND_AND = false,
-                                       const std::size_t  MAX_COUNT       = 0,
-                                       const bool         WILL_ELLIPSIS   = false);
+        static const std::string Names(
+            const ItemPVec_t &,
+            const std::size_t           MAX_COUNT = 0,
+            const misc::Vector::JoinOpt OPTIONS   = misc::Vector::JoinOpt::None);
 
-        static const ItemPVec_t FindByCategory(const ItemPVec_t &   itemSVec,
-                                               const category::Enum CATEGORY_TYPE,
-                                               const bool           IS_MATCH = true);
+        enum class MatchOpt
+        {
+            Equal,
+            NotEqual
+        };
 
-        static const ItemPVec_t FindByWeaponType(const ItemPVec_t &      itemSVec,
-                                                 const weapon_type::Enum WEAPON_TYPE,
-                                                 const bool              IS_MATCH = true);
+        static const ItemPVec_t FindByCategory(
+            const ItemPVec_t &   itemSVec,
+            const category::Enum CATEGORY_TYPE,
+            const MatchOpt       MATCH_OPTION = MatchOpt::Equal);
 
-        static const ItemPVec_t FindByArmorType(const ItemPVec_t &     itemSVec,
-                                                const armor_type::Enum ARMOR_TYPE,
-                                                const bool             IS_MATCH = true);
+        static const ItemPVec_t FindByWeaponType(
+            const ItemPVec_t &      itemSVec,
+            const weapon_type::Enum WEAPON_TYPE,
+            const MatchOpt          MATCH_OPTION = MatchOpt::Equal);
 
-        static const ItemPVec_t FindByMiscType(const ItemPVec_t &    itemSVec,
-                                               const misc_type::Enum MISC_TYPE,
-                                               const bool            IS_MATCH = true);
+        static const ItemPVec_t FindByArmorType(
+            const ItemPVec_t &     itemSVec,
+            const armor_type::Enum ARMOR_TYPE,
+            const MatchOpt         MATCH_OPTION = MatchOpt::Equal);
 
-        static const ItemPVec_t FindByPixie(const ItemPVec_t & itemSVec,
-                                            const bool         IS_MATCH = true);
+        static const ItemPVec_t FindByMiscType(
+            const ItemPVec_t &    itemSVec,
+            const misc_type::Enum MISC_TYPE,
+            const MatchOpt        MATCH_OPTION = MatchOpt::Equal);
 
-        static const ItemPVec_t FindByBroken(const ItemPVec_t & ITEM_SVEC,
-                                             const bool         WILL_KEEP_BROKEN);
+        static const ItemPVec_t FindByPixie(
+            const ItemPVec_t & itemSVec,
+            const MatchOpt     MATCH_OPTION = MatchOpt::Equal);
+
+        enum class BrokenOpt
+        {
+            Keep,
+            Discard
+        };
+
+        static const ItemPVec_t FindByBroken(
+            const ItemPVec_t & ITEM_SVEC,
+            const BrokenOpt    KEEP_BROKEN_OPTION);
     };
 
 }

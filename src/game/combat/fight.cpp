@@ -915,15 +915,11 @@ namespace combat
             std::ostringstream ssErr;
             ssErr << "game::combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
                   << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
-                  << ", creatures_cast_upon=\"" << misc::Vector::Join<creature::CreaturePtr_t>(
+                  << ", creatures_cast_upon=\"" << creature::Algorithms::Names(
                       creaturesCastUponPVec,
-                      false,
-                      false,
                       0,
-                      false,
-                      []
-                      (const creature::CreaturePtr_t CPTR) -> const std::string
-                      { return CPTR->NameAndRaceAndRole(); })
+                      misc::Vector::JoinOpt::None,
+                      creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
@@ -1063,15 +1059,11 @@ namespace combat
             std::ostringstream ssErr;
             ssErr << "game::combat::FightClub::PlaySong(song=" << SONG_CPTR->Name()
                   << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
-                  << ", creatures_listening=\"" << misc::Vector::Join<creature::CreaturePtr_t>(
+                  << ", creatures_listening=\"" << creature::Algorithms::Names(
                       creaturesListeningPVec,
-                      false,
-                      false,
                       0,
-                      false,
-                      []
-                      (const creature::CreaturePtr_t CPTR) -> const std::string
-                      { return CPTR->NameAndRaceAndRole(); })
+                      misc::Vector::JoinOpt::None,
+                      creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") song target_type=" << TargetType::ToString(SONG_CPTR->Target())
                   << " but there were " << creaturesListeningPVec.size()
                   << " creatures listening.  There should have been only 1.";
@@ -1427,7 +1419,9 @@ namespace combat
         //skip creatures who are not a threat
         auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
-                LIVE_ATTBLE_LOWH_NP_CRTS_PVEC, false, true) };
+                LIVE_ATTBLE_LOWH_NP_CRTS_PVEC,
+                creature::Algorithms::CondSingleOpt::DoesNotHave,
+                creature::UnconOpt::Include) };
 
         //attack those that are temporarily disabled first
         auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC{

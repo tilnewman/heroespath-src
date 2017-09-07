@@ -441,11 +441,11 @@ namespace creature
     }
 
 
-    bool Creature::HasConditionNotAThreatPerm(const bool WILL_INCLUDE_UNCONSCIOUS) const
+    bool Creature::HasConditionNotAThreatPerm(const UnconOpt UNCON_OPTION) const
     {
         return (HasCondition(Conditions::Dead) ||
                 HasCondition(Conditions::Stone) ||
-                (WILL_INCLUDE_UNCONSCIOUS && HasCondition(Conditions::Unconscious)));
+                ((UNCON_OPTION == UnconOpt::Include) && HasCondition(Conditions::Unconscious)));
     }
 
 
@@ -491,13 +491,12 @@ namespace creature
     const std::string Creature::ConditionNames(const std::size_t MAX_TO_LIST,
                                                const size_t      MIN_SEVERITY)
     {
-        return creature::condition::Algorithms::Names(conditionsVec_,
-                                                      false,
-                                                      false,
-                                                      MAX_TO_LIST,
-                                                      true,
-                                                      MIN_SEVERITY,
-                                                      true);
+        return creature::condition::Algorithms::Names(
+            conditionsVec_,
+            MAX_TO_LIST,
+            MIN_SEVERITY,
+            condition::Algorithms::SortOpt::Descending,
+            misc::Vector::JoinOpt::Ellipsis);
     }
 
 
@@ -684,12 +683,12 @@ namespace creature
                 item::Algorithms::FindByCategory(
                     item::Algorithms::FindByCategory(
                         inventory_.ItemsEquipped(), item::category::TwoHanded),
-                    item::category::BodyPart, false) };
+                    item::category::BodyPart, item::Algorithms::MatchOpt::NotEqual) };
 
             if (NONBODYPART_TWOHANDED_WEAPONS_SVEC.empty() == false)
             {
                 resultSS << "Can't equip multiple two-handed items. ("
-                    << item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC, false, false)
+                    << item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC)
                     << " is already equipped)" << SEP;
             }
         }
@@ -751,8 +750,8 @@ namespace creature
             }
 
             if ((ARMOR_TYPE & item::armor_type::Aventail) &&
-                (item::Algorithms::FindByArmorType(inventory_.ItemsEquipped(),
-                    item::armor_type::Helm).empty()))
+                (item::Algorithms::FindByArmorType(
+                    inventory_.ItemsEquipped(), item::armor_type::Helm).empty()))
             {
                 resultSS << "Can't wear an aventail without first wearing a helm." << SEP;
             }
@@ -1656,7 +1655,8 @@ namespace creature
             }
         }
 
-        ssNonBPWeaponsPVec = item::Algorithms::FindByBroken(ssNonBPWeaponsPVec, false);
+        ssNonBPWeaponsPVec = item::Algorithms::FindByBroken(
+            ssNonBPWeaponsPVec, item::Algorithms::BrokenOpt::Discard);
 
         if (ssNonBPWeaponsPVec.empty() == false)
         {
@@ -1668,8 +1668,8 @@ namespace creature
         {
             const item::ItemPVec_t NOT_BROKEN_WANDS_PVEC{
                 item::Algorithms::FindByBroken(
-                    item::Algorithms::FindByMiscType(EQUIPPED_ITEMS_PVEC,
-                                                     item::misc_type::Wand), false) };
+                    item::Algorithms::FindByMiscType(EQUIPPED_ITEMS_PVEC, item::misc_type::Wand),
+                    item::Algorithms::BrokenOpt::Discard) };
 
             if (NOT_BROKEN_WANDS_PVEC.empty() == false)
             {

@@ -33,8 +33,6 @@
 #include "game/creature/condition.hpp"
 #include "game/creature/condition-warehouse.hpp"
 
-#include "misc/vectors.hpp"
-
 #include <sstream>
 #include <algorithm>
 
@@ -46,73 +44,83 @@ namespace creature
 namespace condition
 {
 
-    const std::string Algorithms::Names(const CondEnumVec_t & CONDITIONS_VEC,
-                                        const bool            WILL_WRAP,
-                                        const bool            WILL_AND,
-                                        const std::size_t     MAX_COUNT,
-                                        const bool            WILL_ELLIPSIS,
-                                        const std::size_t     MIN_SEVERITY,
-                                        const bool            WILL_SORT_DESCENDING)
-
+    const std::string Algorithms::Names(
+        const CondEnumVec_t &       CONDITIONS_VEC,
+        const std::size_t           MAX_COUNT,
+        const std::size_t           MIN_SEVERITY,
+        const SortOpt               SORT_OPTION,
+        const misc::Vector::JoinOpt JOIN_OPTIONS)
     {
         auto tempVec{ CONDITIONS_VEC };
         RemoveByMinSeverity(tempVec, MIN_SEVERITY);
-
-        if (WILL_SORT_DESCENDING)
-        {
-            SortBySeverity(tempVec, true);
-        }
-
-        return misc::Vector::Join<Conditions::Enum>(tempVec,
-                                                     WILL_WRAP,
-                                                     WILL_AND,
-                                                     MAX_COUNT,
-                                                     WILL_ELLIPSIS,
-                                                     [](const Conditions::Enum E) -> const std::string { return Conditions::Name(E); });
+        SortBySeverity(tempVec, SORT_OPTION);
+        
+        return misc::Vector::Join<Conditions::Enum>(
+            tempVec,
+            MAX_COUNT,
+            JOIN_OPTIONS,
+            [](const Conditions::Enum E) -> const std::string
+            {
+                return Conditions::Name(E);
+            });
     }
 
 
-    void Algorithms::SortBySeverity(CondEnumVec_t & conditionsVec,
-                                    const bool           SORT_DESCENDING)
+    void Algorithms::SortBySeverity(
+        CondEnumVec_t & conditionsVec,
+        const SortOpt   SORT_OPTION)
     {
         if (conditionsVec.size() > 1)
         {
-            std::sort(conditionsVec.begin(),
-                      conditionsVec.end(),
-                      [SORT_DESCENDING]
-                      (const Conditions::Enum A, const Conditions::Enum B)
-                      { if (SORT_DESCENDING) return (condition::Severity::Get(A) > condition::Severity::Get(B)); else return (condition::Severity::Get(A) < condition::Severity::Get(B)); });
+            std::sort(
+                conditionsVec.begin(),
+                conditionsVec.end(),
+                [SORT_OPTION](const Conditions::Enum A, const Conditions::Enum B)
+                {
+                    if (SORT_OPTION == SortOpt::Ascending)
+                    {
+                        return (condition::Severity::Get(A) < condition::Severity::Get(B));
+                    }
+                    else
+                    {
+                        return (condition::Severity::Get(A) > condition::Severity::Get(B));
+                    }
+                });
         }
     }
 
 
-    const CondEnumVec_t Algorithms::SortBySeverityCopy(const CondEnumVec_t & CONDITIONS_VEC,
-                                                            const bool                 SORT_DESCENDING)
+    const CondEnumVec_t Algorithms::SortBySeverityCopy(
+        const CondEnumVec_t & CONDITIONS_VEC,
+        const SortOpt         SORT_OPTION)
     {
         auto sortedConditionsVec{ CONDITIONS_VEC };
-        SortBySeverity(sortedConditionsVec, SORT_DESCENDING);
+        SortBySeverity(sortedConditionsVec, SORT_OPTION);
         return sortedConditionsVec;
     }
 
 
-    void Algorithms::RemoveByMinSeverity(CondEnumVec_t & conditionsVec,
-                                         const std::size_t    MIN_SEVERITY)
+    void Algorithms::RemoveByMinSeverity(
+        CondEnumVec_t &   conditionsVec,
+        const std::size_t MIN_SEVERITY)
     {
         if (conditionsVec.empty() == false)
         {
-            conditionsVec.erase(std::remove_if(conditionsVec.begin(),
-                                               conditionsVec.end(),
-                                               [=](const Conditions::Enum E)
-                                                {
-                                                    return ((MIN_SEVERITY != 0) && (condition::Severity::Get(E) <= MIN_SEVERITY));
-                                                }),
-                                conditionsVec.end());
+            conditionsVec.erase(std::remove_if(
+                conditionsVec.begin(),
+                conditionsVec.end(),
+                [=](const Conditions::Enum E)
+                {
+                    return ((MIN_SEVERITY != 0) && (condition::Severity::Get(E) <= MIN_SEVERITY));
+                }),
+                conditionsVec.end());
         }
     }
 
 
-    const CondEnumVec_t Algorithms::RemoveByMinSeverityCopy(const CondEnumVec_t & CONDITIONS_VEC,
-                                                                 const std::size_t          MIN_SEVERITY)
+    const CondEnumVec_t Algorithms::RemoveByMinSeverityCopy(
+        const CondEnumVec_t & CONDITIONS_VEC,
+        const std::size_t     MIN_SEVERITY)
     {
         auto tempVec{ CONDITIONS_VEC };
         RemoveByMinSeverity(tempVec, MIN_SEVERITY);

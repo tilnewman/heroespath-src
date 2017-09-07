@@ -88,7 +88,8 @@ namespace creature
             if (CONDS_REMOVED_VEC.empty())
             {
                 ss << SepIfNotEmpty(ss.str()) << "removes the conditions: "
-                    << creature::condition::Algorithms::Names(CONDS_REMOVED_VEC, false, true);
+                    << creature::condition::Algorithms::Names(
+                        CONDS_REMOVED_VEC, misc::Vector::JoinOpt::And);
             }
         }
 

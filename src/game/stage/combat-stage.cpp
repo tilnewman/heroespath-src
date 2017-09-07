@@ -4294,7 +4294,7 @@ namespace stage
                 {
                     didAnyPlayersRunAway = true;
                 }
-                else if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(true) == false)
+                else if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false)
                 {
                     areAllNonRunawaysIncapacitated = false;
                 }
@@ -4320,7 +4320,7 @@ namespace stage
         auto areAllIncapacitated{ true };
         for (auto const NEXT_LIVING_PTR : ALL_LIVING_PVEC)
         {
-            if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(true) == false)
+            if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false)
             {
                 areAllIncapacitated = false;
             }
