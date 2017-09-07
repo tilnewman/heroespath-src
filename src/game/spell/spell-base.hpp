@@ -67,8 +67,8 @@ namespace spell
         Spell(const Spells::Enum     WHICH,
               const EffectType::Enum EFFECT_TYPE,
               const Phase::Enum      VALID_PHASES,
-              const stats::Trait_t    MANA_COST,
-              const stats::Trait_t    RANK,
+              const stats::Trait_t   MANA_COST,
+              const stats::Trait_t   RANK,
               const TargetType::Enum TARGET_TYPE,
               const std::string &    VERB_THIRD_PERSON,
               const std::string &    VERB_PAST_TENSE);
@@ -87,12 +87,12 @@ namespace spell
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
-        inline Spells::Enum Which() const           { return which_; }
+        inline Spells::Enum Which() const       { return which_; }
         inline EffectType::Enum Effect() const  { return effectType_; }
-        inline Phase::Enum ValidPhases() const      { return validPhases_; }
-        inline stats::Trait_t ManaCost() const       { return manaCost_; }
-        inline stats::Trait_t Rank() const           { return rank_; }
-        inline TargetType::Enum Target() const      { return targetType_; }
+        inline Phase::Enum ValidPhases() const  { return validPhases_; }
+        inline stats::Trait_t ManaCost() const  { return manaCost_; }
+        inline stats::Trait_t Rank() const      { return rank_; }
+        inline TargetType::Enum Target() const  { return targetType_; }
 
         //Allows the spell to change the target creature.
         //Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.
@@ -118,10 +118,10 @@ namespace spell
 
     protected:
         Spells::Enum     which_;
-        stats::Trait_t    rank_;
+        stats::Trait_t   rank_;
         EffectType::Enum effectType_;
         Phase::Enum      validPhases_;
-        stats::Trait_t    manaCost_;
+        stats::Trait_t   manaCost_;
         TargetType::Enum targetType_;
         std::string      verbThirdPerson_;
         std::string      verbPastTense_;

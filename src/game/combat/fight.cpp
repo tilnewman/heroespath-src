@@ -58,8 +58,8 @@ namespace combat
 {
 
     stats::Trait_t FightClub::IsValuetHigherThanRatioOfStat(const stats::Trait_t STAT_VALUE,
-                                                           const stats::Trait_t STAT_MAX,
-                                                           const float         RATIO)
+                                                            const stats::Trait_t STAT_MAX,
+                                                            const float          RATIO)
     {
         return (STAT_VALUE >= static_cast<stats::Trait_t>(static_cast<float>(STAT_MAX) * RATIO));
     }
@@ -1212,7 +1212,7 @@ namespace combat
 
         if (DID_SUCCEED)
         {
-            //TODO pouncing should do some damage
+            //TODO should pouncing do some damage?
             healthAdj = 0;
 
             HitInfoVec_t hitInfoVec;
