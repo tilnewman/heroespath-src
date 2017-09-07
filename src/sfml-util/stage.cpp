@@ -43,6 +43,7 @@
 
 #include <sstream>
 #include <exception>
+#include <algorithm>
 
 
 namespace sfml_util
@@ -122,10 +123,13 @@ namespace sfml_util
 
     void Stage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        for (auto entityPtr : entityPVec_)
-        {
-            entityPtr->UpdateTime(ELAPSED_TIME_SECONDS);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [ELAPSED_TIME_SECONDS](auto entityPtr)
+            {
+                entityPtr->UpdateTime(ELAPSED_TIME_SECONDS);
+            });
     }
 
 
@@ -134,10 +138,13 @@ namespace sfml_util
         isMouseHeldDownAndMoving_ = (isMouseHeldDown_ &&
             (sfml_util::Distance(mouseDownPosV_, MOUSE_POS_V) > MOUSE_DRAG_MIN_DISTANCE_));
 
-        for (auto entityPtr : entityPVec_)
-        {
-            entityPtr->UpdateMousePos(MOUSE_POS_V);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [&MOUSE_POS_V](auto entityPtr)
+            {
+                entityPtr->UpdateMousePos(MOUSE_POS_V);
+            });
     }
 
 
@@ -146,10 +153,13 @@ namespace sfml_util
         isMouseHeldDown_ = true;
         mouseDownPosV_ = MOUSE_POS_V;
 
-        for (auto entityPtr : entityPVec_)
-        {
-            entityPtr->MouseDown(MOUSE_POS_V);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [&MOUSE_POS_V](auto entityPtr)
+            {
+                entityPtr->MouseDown(MOUSE_POS_V);
+            });
     }
 
 
@@ -160,19 +170,22 @@ namespace sfml_util
 
         bool foundFocus(false);
 
-        for (auto entityPtr : entityPVec_)
-        {
-            if (entityPtr->MouseUp(MOUSE_POS_V))
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [&](auto entityPtr)
             {
-                //can only find one entity with focus
-                if ((entityPtr->WillAcceptFocus()) && (false == foundFocus))
+                if (entityPtr->MouseUp(MOUSE_POS_V))
                 {
-                    foundFocus = true;
-                    entityPtr->SetHasFocus(true);
-                    entityWithFocusPtr_ = entityPtr;
+                    //can only find one entity with focus
+                    if ((entityPtr->WillAcceptFocus()) && (false == foundFocus))
+                    {
+                        foundFocus = true;
+                        entityPtr->SetHasFocus(true);
+                        entityWithFocusPtr_ = entityPtr;
+                    }
                 }
-            }
-        }
+            });
 
         return entityWithFocusPtr_;
     }
@@ -180,10 +193,13 @@ namespace sfml_util
 
     void Stage::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
     {
-        for (auto entityPtr : entityPVec_)
-        {
-            entityPtr->UpdateMouseWheel(MOUSE_POS_V, MOUSEWHEEL_DELTA);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [&MOUSE_POS_V, MOUSEWHEEL_DELTA](auto entityPtr)
+            {
+                entityPtr->UpdateMouseWheel(MOUSE_POS_V, MOUSEWHEEL_DELTA);
+            });
     }
 
 
@@ -203,10 +219,13 @@ namespace sfml_util
     {
         entityWithFocusPtr_ = nullptr;
 
-        for (auto entityPtr : entityPVec_)
-        {
-            entityPtr->SetHasFocus(false);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [](auto entityPtr)
+            {
+                entityPtr->SetHasFocus(false);
+            });
     }
 
 
@@ -217,10 +236,10 @@ namespace sfml_util
 
         bool foundEntityWithFocus(false);
 
-        for(auto entityPtr : entityPVec_)
+        for(auto nextEntityPtrInMemberVec : entityPVec_)
         {
-            //only need to confirm that ENTITY_SPTR is in entityPVec_
-            if (ENTITY_PTR == entityPtr)
+            //only need to confirm that ENTITY_PTR is in entityPVec_
+            if (ENTITY_PTR == nextEntityPtrInMemberVec)
             {
                 entityWithFocusPtr_ = ENTITY_PTR;
                 foundEntityWithFocus = true;
@@ -234,10 +253,13 @@ namespace sfml_util
 
     void Stage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        for (auto const NEXT_ENTITY_PTR: entityPVec_)
-        {
-            NEXT_ENTITY_PTR->draw(target, STATES);
-        }
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [&target,&STATES](const auto ENTITY_PTR)
+            {
+                ENTITY_PTR->draw(target, STATES);
+            });
 
         DrawHoverText(target, STATES);
     }
@@ -248,16 +270,19 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS((ENTITY_PTR != nullptr),
             "sfml_util::Stage::EntityAdd() was given a null ENTITY_PTR.");
 
-        for (auto const NEXT_ENTITY_PTR : entityPVec_)
-        {
-            if (NEXT_ENTITY_PTR == ENTITY_PTR)
+        std::for_each(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            [ENTITY_PTR](const auto NEXT_ENTITY_PTR_IN_MEMBER_VEC)
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Stage::EntityAdd(\"" << ENTITY_PTR->GetEntityName()
-                    << "\") tried to add but it was already in the entityPVec_.";
-                throw std::runtime_error(ss.str());
-            }
-        }
+                if (NEXT_ENTITY_PTR_IN_MEMBER_VEC == ENTITY_PTR)
+                {
+                    std::ostringstream ss;
+                    ss << "sfml_util::Stage::EntityAdd(\"" << ENTITY_PTR->GetEntityName()
+                        << "\") tried to add but it was already in the entityPVec_.";
+                    throw std::runtime_error(ss.str());
+                }
+            });
 
         entityPVec_.push_back(ENTITY_PTR);
     }
@@ -265,24 +290,21 @@ namespace sfml_util
 
     bool Stage::EntityRemove(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
+        auto const ORIG_NUM_ENTITYS(entityPVec_.size());
+
+        entityPVec_.erase(std::remove(
+            entityPVec_.begin(),
+            entityPVec_.end(),
+            ENTITY_PTR), entityPVec_.end());
+
         if (entityWithFocusPtr_ == ENTITY_PTR)
         {
             entityWithFocusPtr_ = nullptr;
-
-            entityPVec_.erase(std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR),
-                entityPVec_.end());
-
             return true;
         }
         else
         {
-            auto const ORIG_NUM_ENTITYS(entityPVec_.size());
-
-            entityPVec_.erase(std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR),
-                entityPVec_.end());
-
-            const std::size_t NEW_NUM_ENTITYS(entityPVec_.size());
-            return ! (ORIG_NUM_ENTITYS == NEW_NUM_ENTITYS);
+            return ! (ORIG_NUM_ENTITYS == entityPVec_.size());
         }
     }
 
