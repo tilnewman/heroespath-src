@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
 }
 
 
-BOOST_AUTO_TEST_CASE(Vector_Append_AppendCornerCases)
+BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
 {
     ts::IntVec_t a;
     ts::IntVec_t b;
@@ -198,4 +198,66 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendCornerCases)
         "append zero to empty vec, with SortAndUnique, a=" << ts::vectorToString(a)
         << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
         << ", result=" << ts::vectorToString(b));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
+{
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t AB_NOSORT_EXPECTED = { 1, 1, 2, 3, 4, 5, 6, 6 };
+    auto const AB_NOSORT_RESULT{ misc::Vector::AndCopy(A, B) };
+
+    BOOST_CHECK_MESSAGE((AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
+        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(AB_NOSORT_RESULT)
+        << ", expected=" << ts::vectorToString(AB_NOSORT_EXPECTED));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
+{
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t AB_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
+
+    auto const AB_SORTANDUNIQUE_RESULT{ misc::Vector::AndCopy(
+        A,
+        B,
+        misc::Vector::SortOpt::SortAndUnique) };
+
+    BOOST_CHECK_MESSAGE((AB_SORTANDUNIQUE_RESULT == AB_SORTANDUNIQUE_EXPECTED),
+        "add 1,1,2,3 + 4,5,6,6 SortAndUnique result="
+        << ts::vectorToString(AB_SORTANDUNIQUE_RESULT)
+        << ", expected=" << ts::vectorToString(AB_SORTANDUNIQUE_EXPECTED));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
+{
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t BA_NOSORT_EXPECTED = { 4, 5, 6, 6, 1, 1, 2, 3 };
+    auto const BA_NOSORT_RESULT{ misc::Vector::AndCopy(B, A) };
+
+    BOOST_CHECK_MESSAGE((BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
+        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(BA_NOSORT_RESULT)
+        << ", expected=" << ts::vectorToString(BA_NOSORT_EXPECTED));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
+{
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t BA_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
+
+    auto const BA_SORTANDUNIQUE_RESULT{ misc::Vector::AndCopy(
+        B,
+        A,
+        misc::Vector::SortOpt::SortAndUnique) };
+
+    BOOST_CHECK_MESSAGE((BA_SORTANDUNIQUE_RESULT == BA_SORTANDUNIQUE_EXPECTED),
+        "add 4,5,6,6 + 1,1,2,3 SortAndUnique result="
+        << ts::vectorToString(BA_SORTANDUNIQUE_RESULT)
+        << ", expected=" << ts::vectorToString(BA_SORTANDUNIQUE_EXPECTED));
 }
