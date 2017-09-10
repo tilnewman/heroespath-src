@@ -42,6 +42,11 @@ namespace test_stuff
     const IntVec_t TEST_COUNTS =
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 19, 20, 21 };
 
+    struct Constants
+    {
+        static const int RANDOM_RETRY_COUNT = 1000;
+    };
+
     template <typename T>
     const std::string vectorToString(const std::vector<T> & VEC)
     {

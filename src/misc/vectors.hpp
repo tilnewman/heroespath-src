@@ -307,11 +307,6 @@ namespace misc
         static bool OrderlessCompareLess(const std::vector<T> & A,
                                          const std::vector<T> & B)
         {
-            if (A.size() != B.size())
-            {
-                return A.size() < B.size();
-            }
-
             auto a{ A };
             auto b{ B };
 

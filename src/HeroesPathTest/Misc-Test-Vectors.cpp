@@ -261,3 +261,243 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
         << ts::vectorToString(BA_SORTANDUNIQUE_RESULT)
         << ", expected=" << ts::vectorToString(BA_SORTANDUNIQUE_EXPECTED));
 }
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptyEmpty)
+{
+    const ts::IntVec_t EMPTY;
+    auto const EMPTYEMPTY_RESULT{ misc::Vector::Exclude(EMPTY, EMPTY) };
+
+    BOOST_CHECK_MESSAGE((EMPTYEMPTY_RESULT == EMPTY),
+        "two empty vecs, result=" << ts::vectorToString(EMPTYEMPTY_RESULT)
+        << ", expected empty");
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_SomethingEmpty)
+{
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
+    auto const AEMPTY_RESULT{ misc::Vector::Exclude(A, EMPTY) };
+
+    BOOST_CHECK_MESSAGE((AEMPTY_RESULT == A),
+        "A exclude empty, result=" << ts::vectorToString(AEMPTY_RESULT)
+        << ", expected=" << ts::vectorToString(A));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptySomething)
+{
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
+
+    auto const EMPTYA_RESULT{ misc::Vector::Exclude(EMPTY, A) };
+
+    BOOST_CHECK_MESSAGE((EMPTYA_RESULT == EMPTY),
+        "empty exclude A, result=" << ts::vectorToString(EMPTYA_RESULT)
+        << ", expected=" << ts::vectorToString(EMPTY));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
+{
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
+
+    auto const DUPLICATE_RESULT{ misc::Vector::Exclude(A, A) };
+
+    BOOST_CHECK_MESSAGE((DUPLICATE_RESULT == EMPTY),
+        "duplicate exclude, result=" << ts::vectorToString(DUPLICATE_RESULT)
+        << ", expected=" << ts::vectorToString(EMPTY));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Single)
+{
+    const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
+    const int B{ 2 };
+    const ts::IntVec_t EXPECTED = { 1, 3, 3, 3 };
+    auto const SINGLE_RESULT{ misc::Vector::Exclude(A, B) };
+
+    BOOST_CHECK_MESSAGE((SINGLE_RESULT == EXPECTED),
+        "1,2,2,3,3,3 exclude 2, result=" << ts::vectorToString(SINGLE_RESULT)
+        << ", expected=" << ts::vectorToString(EXPECTED));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
+{
+    const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
+    const ts::IntVec_t B = { 1, 1, 3 };
+    const ts::IntVec_t EXPECTED = { 2, 2 };
+    auto const MUTLIPLE_RESULT{ misc::Vector::Exclude(A, B) };
+
+    BOOST_CHECK_MESSAGE((MUTLIPLE_RESULT == EXPECTED),
+        "1,2,2,3,3,3 exclude 1,1,3, result=" << ts::vectorToString(MUTLIPLE_RESULT)
+        << ", expected=" << ts::vectorToString(EXPECTED));
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_ShuffleVec_Empty)
+{
+    ts::IntVec_t a;
+    auto const EMPTY_RESULT{ misc::Vector::ShuffleVec(a) };
+
+    BOOST_CHECK_MESSAGE((EMPTY_RESULT == false),
+        "shuffle empty, result=" << std::boolalpha << EMPTY_RESULT);
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_ShuffleVec_Single)
+{
+    ts::IntVec_t a = { 1 };
+    auto const SINGLE_RESULT{ misc::Vector::ShuffleVec(a) };
+
+    BOOST_CHECK_MESSAGE((SINGLE_RESULT == false),
+        "shuffle single, result=" << std::boolalpha << SINGLE_RESULT);
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
+{
+    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    {
+        const ts::IntVec_t A = { 1 };
+        auto const SINGLE_RESULT{ misc::Vector::SelectRandom(A) };
+
+        BOOST_CHECK_MESSAGE((SINGLE_RESULT == 1),
+            "SelectRandom single, result=" << SINGLE_RESULT);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
+{
+    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    {
+        const ts::IntVec_t A = { 1, 1, 1 };
+        auto const DUPLICATE_RESULT{ misc::Vector::SelectRandom(A) };
+
+        BOOST_CHECK_MESSAGE((DUPLICATE_RESULT == 1),
+            "SelectRandom duplicates, result=" << DUPLICATE_RESULT);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
+{
+    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    {
+        const ts::IntVec_t A = { 1, 2, 3 };
+        auto const MULT_RESULT{ misc::Vector::SelectRandom(A) };
+
+        BOOST_CHECK_MESSAGE((MULT_RESULT == 1) || (MULT_RESULT == 2) || (MULT_RESULT == 3),
+            "SelectRandom mutliple, result=" << MULT_RESULT);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Join_Empty)
+{
+    const ts::IntVec_t EMPTY;
+    for (auto const VALUE : ts::TEST_COUNTS)
+    {
+        auto const SIZET_VALUE{ static_cast<std::size_t>(VALUE) };
+
+        auto const EMPTY_RESULT_1{ misc::Vector::Join(EMPTY, SIZET_VALUE) };
+
+        BOOST_CHECK_MESSAGE((EMPTY_RESULT_1 == ""),
+            "Join(empty, " << VALUE << ") result=\"" << EMPTY_RESULT_1 << "\"");
+
+
+        auto const EMPTY_RESULT_2{ misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::Wrap) };
+
+        BOOST_CHECK_MESSAGE((EMPTY_RESULT_2 == ""),
+            "Join(empty, " << VALUE << ", Wrap) result=\"" << EMPTY_RESULT_2 << "\"");
+
+
+        auto const EMPTY_RESULT_3{ misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::And) };
+
+        BOOST_CHECK_MESSAGE((EMPTY_RESULT_3 == ""),
+            "Join(empty, " << VALUE << ", And) result=\"" << EMPTY_RESULT_3 << "\"");
+
+
+        auto const EMPTY_RESULT_4{ misc::Vector::Join(
+            EMPTY,
+            SIZET_VALUE,
+            misc::Vector::Ellipsis) };
+
+        BOOST_CHECK_MESSAGE((EMPTY_RESULT_4 == ""),
+            "Join(empty, " << VALUE << ", Ellipsis) result=\"" << EMPTY_RESULT_4 << "\"");
+
+
+        auto const EMPTY_RESULT_5{ misc::Vector::Join(
+            EMPTY,
+            SIZET_VALUE,
+            static_cast<misc::Vector::JoinOpt>(
+                misc::Vector::Wrap |
+                misc::Vector::And |
+                misc::Vector::Ellipsis)) };
+
+        BOOST_CHECK_MESSAGE((EMPTY_RESULT_5 == ""),
+            "Join(empty, " << VALUE << ", Wrap/And/Ellipsis) result=\"" << EMPTY_RESULT_5 << "\"");
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Join_123)
+{
+    const ts::IntVec_t A = { 1, 2, 3};
+
+    BOOST_CHECK(misc::Vector::Join(A, 0) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 9) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 3) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2) == "1, 2");
+    BOOST_CHECK(misc::Vector::Join(A, 1) == "1");
+
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::Wrap) == "(1, 2, 3)");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::Wrap) == "(1, 2)");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::Wrap) == "(1)");
+
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::And) == "1, 2, and 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::And) == "1, 2");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::And) == "1");
+
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::Ellipsis) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::Ellipsis) == "1, 2...");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::Ellipsis) == "1...");
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_Empty)
+{
+    const ts::IntVec_t EMPTY;
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(EMPTY, EMPTY));
+
+    const ts::IntVec_t A = { 1, 2, 3 };
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(EMPTY, A) == false);
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, EMPTY) == false);
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_123)
+{
+    const ts::IntVec_t A = { 1, 2, 3 };
+    const ts::IntVec_t B = { 1, 3, 2 };
+    const ts::IntVec_t C = { 2, 1, 3 };
+    const ts::IntVec_t D = { 2, 3, 1 };
+    const ts::IntVec_t E = { 3, 1, 2 };
+    const ts::IntVec_t F = { 3, 2, 1 };
+
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, A));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, B));
+
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, B));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, A));
+
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, C));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(C, D));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(D, E));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(E, F));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(F, A));
+}
