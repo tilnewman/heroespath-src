@@ -7,6 +7,7 @@ set(CUSTOM_BUILD_FLAGS "")
 set(CUSTOM_LINK_FLAGS "")
 
 option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
+option(TEST_BUILD "Only tests are built" OFF)
 
 if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
@@ -99,7 +100,7 @@ set(CUSTOM_PROJECT_BOOST_VER "1.58.0")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
 set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
-FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem random serialization)
+FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem random serialization unit_test_framework)
 message(STATUS "Using boost version: " ${Boost_VERSION})
 
 include_directories(${include_directories} . ${Boost_INCLUDE_DIRS})
@@ -109,5 +110,11 @@ add_subdirectory(configbase)
 add_subdirectory(logbase)
 add_subdirectory(stringutil)
 add_subdirectory(sfml-util)
-add_subdirectory(HeroesPath)
 add_subdirectory(game)
+
+if (TEST_BUILD) 
+	add_subdirectory(HeroesPathTest)
+else()
+	add_subdirectory(HeroesPath)
+endif()
+

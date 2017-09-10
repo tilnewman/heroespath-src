@@ -1,4 +1,4 @@
-project("HeroesPath")
+project("HeroesPathTest")
 
 set(TARGET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -31,22 +31,34 @@ link_directories(   ${link_directories}
                     ${SFML_LIBRARY_DIRS} )
 
 file(GLOB source_files *.?pp)
-add_executable(${PROJECT_NAME} ${source_files})
 
-target_link_libraries(  ${PROJECT_NAME}
-                        Misc
-                        ConfigBase
-                        LogBase
-                        sfml-util
-                        sfml-util-gui
-                        Game
-                        Game-Stage
-                        Game-Stats
-                        Game-Creature
-                        Game-Player
-                        Game-NonPlayer
-                        Game-Location
-                        Game-State
-                        Game-Combat
-                        ${Boost_LIBRARIES}
-                        ${SFML_LIBRARIES})
+enable_testing()
+
+foreach(testSrc ${source_files})
+        get_filename_component(testName ${testSrc} NAME_WE)
+
+        add_executable(${testName} ${testSrc})
+
+        target_link_libraries(  ${testName}
+	                        Misc
+        	                ConfigBase
+                	        LogBase
+                        	sfml-util
+                        	sfml-util-gui
+                        	Game
+                        	Game-Stage
+                        	Game-Stats
+                        	Game-Creature
+                        	Game-Player
+                        	Game-NonPlayer
+                        	Game-Location
+                        	Game-State
+                        	Game-Combat
+                        	${Boost_LIBRARIES}
+                        	${SFML_LIBRARIES})
+
+        add_test(NAME ${testName} 
+                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                 COMMAND ${testName} )
+
+endforeach(testSrc)
