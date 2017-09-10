@@ -7,7 +7,6 @@ set(CUSTOM_BUILD_FLAGS "")
 set(CUSTOM_LINK_FLAGS "")
 
 option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
-option(TEST_BUILD "Only tests are built" OFF)
 
 if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
@@ -111,10 +110,5 @@ add_subdirectory(logbase)
 add_subdirectory(stringutil)
 add_subdirectory(sfml-util)
 add_subdirectory(game)
-
-if (TEST_BUILD) 
-	add_subdirectory(HeroesPathTest)
-else()
-	add_subdirectory(HeroesPath)
-endif()
-
+add_subdirectory(HeroesPath)
+add_subdirectory(HeroesPathTest)

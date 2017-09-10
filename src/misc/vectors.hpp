@@ -51,7 +51,7 @@ namespace misc
         };
 
 
-        //appends A into B, stable unless WILL_UNIQUE
+        //appends A into B, stable unless WILL_UNIQUE, doesn't SortAndUnique if b_vec unchanged
         template<typename T>
         static void Append(
             const std::vector<T> & A_VEC,

@@ -30,11 +30,11 @@ include_directories(${include_directories}
 link_directories(   ${link_directories}
                     ${SFML_LIBRARY_DIRS} )
 
-file(GLOB source_files *.?pp)
+file(GLOB impl_files *.cpp)
 
 enable_testing()
 
-foreach(testSrc ${source_files})
+foreach(testSrc ${impl_files})
         get_filename_component(testName ${testSrc} NAME_WE)
 
         add_executable(${testName} ${testSrc})
