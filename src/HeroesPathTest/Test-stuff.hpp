@@ -40,7 +40,7 @@ namespace test_stuff
     using IntVec_t = std::vector<int>;
 
     const IntVec_t TEST_COUNTS =
-    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 19, 20, 21, 22 };
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 19, 20, 21 };
 
     template <typename T>
     const std::string vectorToString(const std::vector<T> & VEC)

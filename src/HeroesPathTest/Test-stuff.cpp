@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             countingValues.push_back(i);
         }
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             if (i == 0)
             {
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.push_back(i);
             countingValuesWithDuplicate.push_back(i);
@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             countingValues.push_back(i);
         }
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             if (VALUE == 0)
             {
@@ -244,7 +244,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i < VALUE; ++i)
+        for (int i{ 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.push_back(i);
             countingValuesWithDuplicate.push_back(i);

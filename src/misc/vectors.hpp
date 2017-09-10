@@ -51,51 +51,39 @@ namespace misc
         };
 
 
-        //appends A into B, stable unless WILL_UNIQUE, doesn't SortAndUnique if b_vec unchanged
+        //appends A into B, stable unless WILL_UNIQUE
         template<typename T>
         static void Append(
             const std::vector<T> & A_VEC,
             std::vector<T> &       b_vec,
             const SortOpt          SORT_OPTION = SortOpt::None)
         {
-            if (A_VEC.empty() == false)
+            std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_vec));
+            
+            if (SORT_OPTION == SortOpt::SortAndUnique)
             {
-                b_vec.reserve(b_vec.size() + A_VEC.size());
-                std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_vec));
-
-                if (SORT_OPTION == SortOpt::SortAndUnique)
-                {
-                    std::sort(b_vec.begin(), b_vec.end());
-                    b_vec.erase(std::unique(b_vec.begin(), b_vec.end()), b_vec.end());
-                }
+                std::sort(b_vec.begin(), b_vec.end());
+                b_vec.erase(std::unique(b_vec.begin(), b_vec.end()), b_vec.end());
             }
         }
 
 
         template<typename T>
-        static std::vector<T> And(const std::vector<T> & A_VEC,
-                                  const std::vector<T> & B_VEC,
-                                  const SortOpt          SORT_OPTION = SortOpt::None)
+        static std::vector<T> AndCopy(
+            const std::vector<T> & A_VEC,
+            const std::vector<T> & B_VEC,
+            const SortOpt          SORT_OPTION = SortOpt::None)
         {
             std::vector<T> finalVec{ A_VEC };
-            finalVec.reserve(A_VEC.size() + B_VEC.size());
-            std::copy(B_VEC.begin(), B_VEC.end(), back_inserter(finalVec));
-            
-            if ((finalVec.empty() == false) && (SORT_OPTION == SortOpt::SortAndUnique))
-            {
-                std::sort(finalVec.begin(), finalVec.end());
-                finalVec.erase(std::unique(finalVec.begin(),
-                                           finalVec.end()),
-                                           finalVec.end());
-            }
-
+            Append(B_VEC, finalVec, SORT_OPTION);
             return finalVec;
         }
 
 
         template<typename T>
-        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC,
-                                            const T                toExclude)
+        static const std::vector<T> Exclude(
+            const std::vector<T> & ORIG_VEC,
+            const T toExclude)
         {
             std::vector<T> v{ toExclude };
             return Exclude(ORIG_VEC, v);
@@ -103,8 +91,9 @@ namespace misc
 
 
         template<typename T>
-        static const std::vector<T> Exclude(const std::vector<T> & ORIG,
-                                            const std::vector<T> & EXCLUDED)
+        static const std::vector<T> Exclude(
+            const std::vector<T> & ORIG,
+            const std::vector<T> & EXCLUDED)
         {
             if (EXCLUDED.empty())
             {

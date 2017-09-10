@@ -32,6 +32,8 @@
 
 #include "misc/vectors.hpp"
 
+#include <algorithm>
+
 
 namespace ts = test_stuff;
 
@@ -48,14 +50,13 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)
 
         BOOST_CHECK_MESSAGE(singleValue == SINGLE_VALUE_BEFORE,
             "single value vec before=" << ts::vectorToString(SINGLE_VALUE_BEFORE)
-            << "single value vec after=" << ts::vectorToString(singleValue));
-
+            << ", single value vec after=" << ts::vectorToString(singleValue));
 
         misc::Vector::Append(EMPTY, singleValue, misc::Vector::SortOpt::SortAndUnique);
 
         BOOST_CHECK_MESSAGE(singleValue == SINGLE_VALUE_BEFORE,
             "single value vec before=" << ts::vectorToString(SINGLE_VALUE_BEFORE)
-            << "single value vec after=" << ts::vectorToString(singleValue));
+            << ", single value vec after=" << ts::vectorToString(singleValue));
     }
 }
 
@@ -72,13 +73,129 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
 
         BOOST_CHECK_MESSAGE(multipleValues == MULTIPLE_VALUES_BEFORE,
             "mutliple values vec before=" << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
-            << "multiple values vec after=" << ts::vectorToString(multipleValues));
-
+            << ", multiple values vec after=" << ts::vectorToString(multipleValues));
 
         misc::Vector::Append(EMPTY, multipleValues, misc::Vector::SortOpt::SortAndUnique);
 
-        BOOST_CHECK_MESSAGE(multipleValues == MULTIPLE_VALUES_BEFORE,
+        ts::IntVec_t sortedAndUniqued{ multipleValues };
+
+        std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
+
+        sortedAndUniqued.erase(std::unique(
+            sortedAndUniqued.begin(),
+            sortedAndUniqued.end()), sortedAndUniqued.end());
+
+        BOOST_CHECK_MESSAGE(multipleValues == sortedAndUniqued,
             "multiple values vec before=" << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
-            << "multiple values vec after=" << ts::vectorToString(multipleValues));
+            << ", multiple values vec after=" << ts::vectorToString(multipleValues)
+            << ", sortedAndUnique vec=" << ts::vectorToString(sortedAndUniqued));
     }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
+{
+    const ts::IntVec_t EMPTY;
+
+    for (auto const VALUE : ts::TEST_COUNTS)
+    {
+        ts::IntVec_t reverseDuplicatedCountingValues;
+        for (int i{ VALUE }; i >= 0; --i)
+        {
+            reverseDuplicatedCountingValues.push_back(i);
+            reverseDuplicatedCountingValues.push_back(i);
+        }
+
+        const ts::IntVec_t REV_DUP_COUNT_VALUES_BEFORE{ reverseDuplicatedCountingValues };
+
+        misc::Vector::Append(EMPTY, reverseDuplicatedCountingValues, misc::Vector::SortOpt::None);
+
+        BOOST_CHECK_MESSAGE(reverseDuplicatedCountingValues == REV_DUP_COUNT_VALUES_BEFORE,
+            "(no sorting) reverse duplicated counting values vec before="
+            << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
+            << ", reverse duplicated coutning values vec after="
+            << ts::vectorToString(reverseDuplicatedCountingValues));
+
+        ts::IntVec_t sortedAndUniqued{ reverseDuplicatedCountingValues };
+
+        std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
+        
+        sortedAndUniqued.erase( std::unique(
+            sortedAndUniqued.begin(),
+            sortedAndUniqued.end()), sortedAndUniqued.end());
+
+        misc::Vector::Append(
+            EMPTY,
+            reverseDuplicatedCountingValues,
+            misc::Vector::SortOpt::SortAndUnique);
+
+        BOOST_CHECK_MESSAGE(reverseDuplicatedCountingValues == sortedAndUniqued,
+            "(with sort and unique) reverse duplicated counting values vec before="
+            << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
+            << ", reverse duplicated coutning values vec after="
+            << ts::vectorToString(reverseDuplicatedCountingValues)
+            << ", sortedAndUniqued vec=" << ts::vectorToString(sortedAndUniqued));
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(Vector_Append_AppendCornerCases)
+{
+    ts::IntVec_t a;
+    ts::IntVec_t b;
+
+    auto const A_BEFORE_EMPTY_APPEND{ a };
+    auto const B_BEFORE_EMPTY_APPEND{ b };
+
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
+
+    BOOST_CHECK_MESSAGE(a == A_BEFORE_EMPTY_APPEND,
+        "append two empty vecs, a should remain unchanged, "
+        << "a_before=" << ts::vectorToString(A_BEFORE_EMPTY_APPEND)
+        << ", a_after=" << ts::vectorToString(a));
+
+    BOOST_CHECK_MESSAGE(b == B_BEFORE_EMPTY_APPEND,
+        "append two empty vecs, a=" << ts::vectorToString(a)
+        << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+        << ", result=" << ts::vectorToString(b));
+
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::SortAndUnique);
+
+    BOOST_CHECK_MESSAGE(a == A_BEFORE_EMPTY_APPEND,
+        "append two empty vecs with SortAndUnique, a should remain unchanged, "
+        << "a_before=" << ts::vectorToString(A_BEFORE_EMPTY_APPEND)
+        << ", a_after=" << ts::vectorToString(a));
+
+    BOOST_CHECK_MESSAGE(b == B_BEFORE_EMPTY_APPEND,
+        "append two empty vecs with SortAndUnique, a=" << ts::vectorToString(a)
+        << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+        << ", result=" << ts::vectorToString(b));
+
+    a.push_back(0);
+
+    auto const SINGLE_ZERO{ a };
+
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
+
+    BOOST_CHECK_MESSAGE(a == SINGLE_ZERO,
+        "append zero to empty vec, a should remain unchanged, "
+        << "a_before=" << ts::vectorToString(SINGLE_ZERO)
+        << ", a_after=" << ts::vectorToString(a));
+
+    BOOST_CHECK_MESSAGE(b == SINGLE_ZERO,
+        "append zero to empty vec, a=" << ts::vectorToString(a)
+        << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+        << ", result=" << ts::vectorToString(b));
+
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::SortAndUnique);
+
+    BOOST_CHECK_MESSAGE(a == SINGLE_ZERO,
+        "append zero to empty vec with SortAndUnique, a should remain unchanged, "
+        << "a_before=" << ts::vectorToString(SINGLE_ZERO)
+        << ", a_after=" << ts::vectorToString(a));
+
+    BOOST_CHECK_MESSAGE(b == SINGLE_ZERO,
+        "append zero to empty vec, with SortAndUnique, a=" << ts::vectorToString(a)
+        << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+        << ", result=" << ts::vectorToString(b));
 }
