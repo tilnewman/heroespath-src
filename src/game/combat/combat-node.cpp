@@ -85,15 +85,19 @@ namespace combat
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_ (-90.0f);
     
 
-    CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR,
-                           const sfml_util::FontPtr_t    FONT_PTR,
-                           const unsigned int            FONT_CHAR_SIZE)
+    CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
     :
         GuiEntity             (std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).
                                 append("\""), sf::FloatRect()),
 
-        nameTextObj_          (CREATURE_PTR->Name(), * FONT_PTR, FONT_CHAR_SIZE),
-        condTextObj_          ("", * FONT_PTR, FONT_CHAR_SIZE),
+        nameTextObj_          (CREATURE_PTR->Name(),
+                               * creature::NameInfo::Instance()->DefaultFont(),
+                               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels()),
+
+        condTextObj_          ("",
+                               * creature::NameInfo::Instance()->DefaultFont(),
+                               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels()),
+
         blockingPos_          (0),
         healthLineColor_      (),//this initializer doesn't matter, see constructor body below
         healthLineColorRed_   (),// "

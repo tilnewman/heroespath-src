@@ -54,9 +54,7 @@ namespace combat
         CombatNode & operator=(const CombatNode &) =delete;
 
     public:
-        CombatNode(const creature::CreaturePtr_t CREATURE_PTR,
-                   const sfml_util::FontPtr_t    FONT_PTR,
-                   const unsigned int            FONT_CHAR_SIZE);
+        explicit CombatNode(const creature::CreaturePtr_t CREATURE_PTR);
 
         virtual ~CombatNode();
 

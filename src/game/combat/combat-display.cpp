@@ -117,9 +117,9 @@ namespace combat
             sfml_util::gui::CreatureImageManager::DimmensionMax() *
                 POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)),
 
-        NAME_CHAR_SIZE_ORIG_             (sfml_util::FontManager::Instance()->Size_Smallish()),
-        SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
+        NAME_CHAR_SIZE_ORIG_       (sfml_util::FontManager::Instance()->Size_CombatCreatureLabels()),
+        SCREEN_WIDTH_              (sfml_util::Display::Instance()->GetWinWidth()),
+        SCREEN_HEIGHT_             (sfml_util::Display::Instance()->GetWinHeight()),
         nameCharSizeCurr_          (NAME_CHAR_SIZE_ORIG_),
         battlefieldRect_           (),
         boxUPtr_                   (),
@@ -166,10 +166,7 @@ namespace combat
         for (auto const NEXT_CHARACTER_PTR : PLAYER_CHAR_PVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
-                std::make_shared<combat::CombatNode>(
-                    NEXT_CHARACTER_PTR,
-                    creature::NameInfo::Instance()->DefaultFont(),
-                    nameCharSizeCurr_) );
+                std::make_shared<combat::CombatNode>(NEXT_CHARACTER_PTR) );
 
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();
@@ -181,10 +178,7 @@ namespace combat
         for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURES_PVEC)
         {
             const combat::CombatNodeSPtr_t COMBAT_NODE_SPTR(
-                std::make_shared<combat::CombatNode>(
-                    NEXT_CREATURE_PTR,
-                    creature::NameInfo::Instance()->DefaultFont(),
-                    nameCharSizeCurr_) );
+                std::make_shared<combat::CombatNode>(NEXT_CREATURE_PTR) );
 
             EntityAdd(COMBAT_NODE_SPTR.get());
             combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR] = COMBAT_NODE_SPTR.get();

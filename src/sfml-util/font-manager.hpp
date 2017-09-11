@@ -97,6 +97,7 @@ namespace sfml_util
         unsigned int Size_Smallish() const;
         unsigned int Size_Small() const;
         unsigned int Size_Tiny() const;
+        unsigned int Size_CombatCreatureLabels() const { return Size_Smallish(); }
 
         inline const std::string NumbersDefault1FamilyName() { return Font_NumbersDefault1()->getInfo().family; }
 
