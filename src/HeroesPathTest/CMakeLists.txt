@@ -58,7 +58,7 @@ foreach(testSrc ${impl_files})
                         	${SFML_LIBRARIES})
 
         add_test(NAME ${testName} 
-                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                 WORKING_DIRECTORY ${TARGET_BINARY_DIR}
                  COMMAND ${testName} )
 
 endforeach(testSrc)
