@@ -80,7 +80,6 @@
 #include "misc/random.hpp"
 #include "misc/platform.hpp"
 
-#include <cstdlib>
 #include <iostream>
 #include <exception>
 
@@ -88,17 +87,16 @@
 namespace game
 {
 
-    int StartupShutdown::StartupRunShutdown(
+    bool StartupShutdown::Setup(
         const std::string & APPLICATION_NAME,
         const int ARGC,
         char * argv[])
     {
-        //initialize the log first so that everything has the chance to log
-        game::Logger::Acquire();
-        
-        auto wasExceptionThrown{ false };
         try
         {
+            //initialize the log first so that everything has the chance to log
+            game::Logger::Acquire();
+
             ParseCommandLineArguments(ARGC, argv);
             DetectLogAndCheckPlatform();
 
@@ -109,60 +107,57 @@ namespace game
 
             SetupDisplay(APPLICATION_NAME);
             SetManagerClassResourcePaths();
-            WarehousesFill();
             SingletonsAcquireAndInitialize();
-
-            game::LoopManager::Acquire();
-
-            try
-            {
-                game::LoopManager::Instance()->Execute();
-            }
-            catch (const std::exception & E)
-            {
-                M_LOG( * game::Logger::Instance(),
-                    "Application threw std::exception \"" << E.what() << "\"");
-
-                wasExceptionThrown = true;
-            }
-            catch (...)
-            {
-                M_LOG( * game::Logger::Instance(),
-                    "Application threw an unknown (non-std) exception.");
-
-                wasExceptionThrown = true;
-            }
-
-            game::SettingsFile::Instance()->AcquireAndSave();
-
-            game::LoopManager::Release();
-            
-            //close the display window before free'ing resources
-            if (sfml_util::Display::Instance()->GetWindow()->isOpen())
-            {
-                sfml_util::Display::Instance()->GetWindow()->close();
-            }
-
-            SingletonsRelease();
-            WarehousesEmpty();
+            WarehousesFill();
+            return true;
         }
         catch (const std::exception & E)
         {
             M_LOG( * game::Logger::Instance(),
-                "Appication Framework threw std::exception \"" << E.what() << "\"");
-
-            wasExceptionThrown = true;
+                "Appication Setup Framework threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
             M_LOG( * game::Logger::Instance(),
-                "Appication Framework threw unknown (non-std) exception." << std::endl);
-
-            wasExceptionThrown = true;
+                "Appication Setup Framework threw unknown (non-std) exception.");
         }
 
+        return false;
+    }
+
+    
+    void StartupShutdown::Run()
+    {
+        try
+        {
+            game::LoopManager::Instance()->Execute();
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG( * game::Logger::Instance(),
+                "Application threw std::exception \"" << E.what() << "\"");
+        }
+        catch (...)
+        {
+            M_LOG( * game::Logger::Instance(),
+                "Application threw an unknown (non-std) exception.");
+        }
+    }
+
+
+    void StartupShutdown::Teardown()
+    {
+        game::SettingsFile::Instance()->AcquireAndSave();
+        
+        //close the display window before free'ing resources
+        if (sfml_util::Display::Instance()->GetWindow()->isOpen())
+        {
+            sfml_util::Display::Instance()->GetWindow()->close();
+        }
+
+        WarehousesEmpty();
+        SingletonsRelease();
         game::Logger::Release();
-        return ((wasExceptionThrown) ? EXIT_FAILURE : EXIT_SUCCESS);
     }
 
 
@@ -316,12 +311,14 @@ namespace game
         sfml_util::gui::PopupManager::Instance()->LoadAssets();
         game::item::ArmorRatings::Instance()->Setup();
 
-        //LoopManager intentionally not included here
+        //LoopManager must be last
+        game::LoopManager::Acquire();
     }
 
 
     void StartupShutdown::SingletonsRelease()
     {
+        game::LoopManager::Release();
         game::SettingsFile::Release();
         game::item::ItemFactory::Release();
         game::item::ItemProfileWarehouse::Release();
@@ -357,8 +354,6 @@ namespace game
         sfml_util::Display::Release();
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
-
-        //LoopManager intentionally not included here
     }
 
 }

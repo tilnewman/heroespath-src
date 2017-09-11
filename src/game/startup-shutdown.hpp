@@ -36,10 +36,14 @@ namespace game
     //responsible for starting and stopping the application
     struct StartupShutdown
     {   
-        static int StartupRunShutdown(
+        static bool Setup(
             const std::string & APPLICATION_NAME,
             int ARGC,
             char * argv[]);
+
+        static void Run();
+
+        static void Teardown();
 
     private:
         static void ParseCommandLineArguments(const int ARGC, char * argv[]);

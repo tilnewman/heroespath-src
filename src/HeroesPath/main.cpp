@@ -30,8 +30,16 @@
 //
 #include "game/startup-shutdown.hpp"
 
+#include <cstdlib>
+
 
 int main(int argc, char * argv[])
 {
-    return game::StartupShutdown::StartupRunShutdown("Heroes' Path", argc, argv);
+    if (game::StartupShutdown::Setup("Heroes' Path", argc, argv))
+    {
+        game::StartupShutdown::Run();
+    }
+
+    game::StartupShutdown::Teardown();
+    return EXIT_SUCCESS;
 }
