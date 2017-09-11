@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,14 +22,36 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef GAME_STARTUPSHUTDOWN_HPP_INCLUDED
+#define GAME_STARTUPSHUTDOWN_HPP_INCLUDED
 //
-// main.cpp
-//  Test SFML rendering to develop some gui classes.
+// startup-shutdown.hpp
 //
-#include "game/startup-shutdown.hpp"
+#include <string>
 
 
-int main(int argc, char * argv[])
+namespace game
 {
-    return game::StartupShutdown::StartupRunShutdown("Heroes' Path", argc, argv);
+
+    //responsible for starting and stopping the application
+    struct StartupShutdown
+    {   
+        static int StartupRunShutdown(
+            const std::string & APPLICATION_NAME,
+            int ARGC,
+            char * argv[]);
+
+    private:
+        static void ParseCommandLineArguments(const int ARGC, char * argv[]);
+        static void DetectLogAndCheckPlatform();
+        static void SetupDisplay(const std::string & APPLICATION_NAME);
+        static void SetManagerClassResourcePaths();
+        static void WarehousesFill();
+        static void WarehousesEmpty();
+        static void SingletonsAcquireAndInitialize();
+        static void SingletonsRelease();
+    };
+
 }
+
+#endif //GAME_STARTUPSHUTDOWN_HPP_INCLUDED
