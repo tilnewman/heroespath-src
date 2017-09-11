@@ -98,7 +98,7 @@ namespace combat
     //Manages the combat tree and provides functions to ease common operations
     class CombatTree
     {
-        //typedefs
+        //types
     public:
         using Id_t    = std::size_t;
         using IdVec_t = std::vector<Id_t>;
@@ -130,16 +130,25 @@ namespace combat
         //reuses IDs that were preveiously removed
         Id_t NextAvailableId() const;
 
-        //these functions throw logic_error if the vertex does not exist
+        //throws std::invalid_argument if ID does not exist
         CombatNodePtr_t GetNode(const Id_t ID) const;
+
+        //throws std::invalid_argument if ID does not exist
         CombatNodeSPtr_t GetNodeSPtr(const Id_t ID) const;
 
+        //returns nullptr if creature does not exist
         CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
+
+        //returns nullptr if creature does not exist
         CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
 
+        //throws std::invalid_argument if ID does not exist
         void SetNode(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR);
 
+        //throws std::invalid_argument if CombatNode does not exist
         Id_t GetNodeId(const CombatNodePtr_t) const;
+
+        //throws std::invalid_argument if creature does not exist
         Id_t GetNodeId(creature::CreatureCPtrC_t) const;
 
         std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
@@ -158,11 +167,11 @@ namespace combat
         //returns the id number of the vertex added
         Id_t AddVertex(const CombatNodeSPtr_t & NODE_SPTR);
 
-        //throws logic error if the vertex already existed
+        //throws std::invalid_argument if the vertex already existed
         void AddVertex(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         //returns a vector of vertex IDs that were left without edges
-        //throws logic_error if ID is not an existing vertex
+        //throws std::invalid_argument if ID is not an existing vertex
         void RemoveVertex(const Id_t ID,
                           const bool WILL_REMOVE_DANGLING_EDGES = false);
 
@@ -172,7 +181,7 @@ namespace combat
 
         const std::string EdgesString(const bool WILL_WRAP = true) const;
 
-        //throws logic_error if edge already exists, or if the Verticies do not exist
+        //throws std::invalid_argument if edge already exists, or if the Verticies do not exist
         void AddEdge(const Id_t           ID1,
                      const Id_t           ID2,
                      const EdgeType::Enum E);
@@ -180,7 +189,7 @@ namespace combat
         //order independant matching
         //returns a vector of vertex IDs that were left without edges
         //if DRY_RUN == true, then no edges will be removed
-        //throws logic_error if the edge does not exist
+        //throws std::invalid_argument if the edge does not exist
         const IdVec_t RemoveEdge(const Id_t   ID1,
                                  const Id_t   ID2,
                                  const bool   IS_DRY_RUN = false);
@@ -193,10 +202,10 @@ namespace combat
                            const Id_t           ID2,
                            const EdgeType::Enum TYPE = EdgeType::All) const;
 
-        //throws logic_error if the edge does not exist
+        //throws std::invalid_argument if the edge does not exist
         EdgeType::Enum GetEdgeType(const Id_t ID1, const Id_t ID2) const;
 
-        //throws logic_error if the edge does not exist
+        //throws std::invalid_argument if the edge does not exist
         void SetEdgeType(const Id_t ID1, const Id_t ID2, const EdgeType::Enum);
 
         //returns false if no IDs were added to the output vector
@@ -217,7 +226,7 @@ namespace combat
 
         const std::string ToString() const;
 
-        //WILL_BREAK_PRE_EXISTING only breaks edges of type CONNECTION_TYPE
+        //only breaks pre-existing edges of type CONNECTION_TYPE
         void ConnectAllAtPosition(const int            POS,
                                   const EdgeType::Enum CONNECTION_TYPE);
 

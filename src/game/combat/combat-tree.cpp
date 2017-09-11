@@ -99,7 +99,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "CombatTree::GetNode(id=" << ID << ") -but that vertex does not exist.";
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -115,7 +115,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "CombatTree::GetNodeSPtr(id=" << ID << ") -but that vertex does not exist.";
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -159,10 +159,11 @@ namespace combat
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::SetNode(id=" << ID << ", node=" << NODE_SPTR->ToString()
+        ss << "CombatTree::SetNode(id=" << ID << ", node="
+            << ((NODE_SPTR.get() == nullptr) ? "nullptr" : NODE_SPTR->ToString())
             << ") -but that vertex does not exist.";
 
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -177,10 +178,11 @@ namespace combat
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(COMBATNODE_PTR=" << COMBATNODE_PTR
+        ss << "CombatTree::GetNodeId(COMBATNODE_PTR="
+            << ((COMBATNODE_PTR == nullptr) ? "nullptr": COMBATNODE_PTR->ToString())
             << ") -but that combat node ptr was not found.";
 
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -195,10 +197,11 @@ namespace combat
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(CREATURE_CPTRC=" << CREATURE_CPTRC->Name()
+        ss << "CombatTree::GetNodeId(CREATURE_CPTRC="
+            << ((CREATURE_CPTRC == nullptr) ? "(nullptr)" : CREATURE_CPTRC->Name())
             << ") -but that creature sptr was not found";
 
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -311,10 +314,11 @@ namespace combat
         if (DoesVertexExist(ID))
         {
             std::ostringstream ss;
-            ss << "CombatTree::AddVertex(id=" << ID << ", node=" << NODE_SPTR->ToString()
+            ss << "CombatTree::AddVertex(id=" << ID << ", node="
+                << ((NODE_SPTR.get() == nullptr) ? "nullptr" : NODE_SPTR->ToString())
                 << ") -but that ID already exists.";
 
-            throw std::logic_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
         else
         {
@@ -341,7 +345,7 @@ namespace combat
                 << std::boolalpha << WILL_REMOVE_DANGLING_EDGES
                 << ") -but that vertex does not exist.";
 
-            throw std::range_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
         else
         {
@@ -455,13 +459,22 @@ namespace combat
                              const Id_t           ID2,
                              const EdgeType::Enum TYPE)
     {
+        if (ID1 == ID2)
+        {
+            std::ostringstream ss;
+            ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2 << ", type="
+                << EdgeType::ToString(TYPE) << ") -but the two IDs are the same.";
+
+            throw std::invalid_argument(ss.str());
+        }
+
         if (DoesEdgeExist(ID1, ID2))
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2 << ", type="
                 << EdgeType::ToString(TYPE) << ") -but that edge already exists.";
 
-            throw std::logic_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
 
         if (false == DoesVertexExist(ID1))
@@ -471,7 +484,7 @@ namespace combat
                 << EdgeType::ToString(TYPE) << ") -but that edge ID1==" << ID1
                 << " does not exist.";
 
-            throw std::logic_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
 
         if (false == DoesVertexExist(ID2))
@@ -481,7 +494,7 @@ namespace combat
                 << EdgeType::ToString(TYPE) << ") -but that edge ID2==" << ID2
                 << " does not exist.";
 
-            throw std::logic_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
 
         edgeList_.push_back( std::make_tuple(ID1, ID2, TYPE) );
@@ -492,13 +505,22 @@ namespace combat
                                                      const Id_t ID2,
                                                      const bool IS_DRY_RUN)
     {
+        if (ID1 == ID2)
+        {
+            std::ostringstream ss;
+            ss << "CombatTree::RemoveEdge(id1=" << ID1 << ", id2=" << ID2 << ", dry_run="
+                << std::boolalpha << IS_DRY_RUN << ") but the two IDs were the same.";
+
+            throw std::invalid_argument(ss.str());
+        }
+
         if (false == DoesEdgeExist(ID1, ID2))
         {
             std::ostringstream ss;
             ss << "CombatTree::RemoveEdge(id1=" << ID1 << ", id2=" << ID2 << ", dry_run="
                 << std::boolalpha << IS_DRY_RUN << ") called when that edge does not exist.";
 
-            throw std::logic_error(ss.str());
+            throw std::invalid_argument(ss.str());
         }
 
         const EdgeType::Enum TYPE(GetEdgeType(ID1, ID2));
@@ -584,7 +606,7 @@ namespace combat
         ss << "CombatTree::GetEdgeType(id1=" << ID1 << ", id2=" << ID2
             << ") -but that edge does not exist.";
 
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 
@@ -604,7 +626,7 @@ namespace combat
         ss << "CombatTree::SetEdgeType(id1=" << ID1 << ", id2=" << ID2 << ", type="
             << EdgeType::ToString(TYPE) << ") -but that edge does not exist.";
 
-        throw std::logic_error(ss.str());
+        throw std::invalid_argument(ss.str());
     }
 
 

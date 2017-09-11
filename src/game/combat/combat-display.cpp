@@ -1402,7 +1402,7 @@ namespace combat
             SetBlockingPosOfType(true, creature::role::Beastmaster, position);
             combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
 
-            //place thieves/bards are next in the blocking order
+            //place thieves/bards next in the blocking order
             position -= 1;
             SetBlockingPosOfType(true, creature::role::Thief, position);
             SetBlockingPosOfType(true, creature::role::Bard, position);
@@ -1483,6 +1483,8 @@ namespace combat
         position += 1;
         SetBlockingPosOfType(false, creature::role::Warlord, position);
         combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+
+        //TODO need to handle all roles, or have a catch-all for any remaining
     }
 
 
@@ -1671,7 +1673,9 @@ namespace combat
             CombatNodePtr_t nextCombatNodePtr(combatTree_.GetNode(NEXT_NODE_ID));
 
             if (nextCombatNodePtr->Creature()->IsPlayerCharacter() == IS_PLAYER)
+            {
                 nextCombatNodePtr->SetBlockingPos(BLOCKING_POS);
+            }
         }
     }
 
