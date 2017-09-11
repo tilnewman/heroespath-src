@@ -52,6 +52,8 @@
 #include "game/player/party.hpp"
 #include "game/player/initial.hpp"
 #include "game/player/character.hpp"
+#include "game/player/character-warehouse.hpp"
+#include "game/player/fake-party.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
 #include "game/state/game-state.hpp"
@@ -72,7 +74,6 @@
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/creature/stats.hpp"
-#include "game/player/character-warehouse.hpp"
 #include "game/item/item.hpp"
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
@@ -1048,266 +1049,18 @@ namespace stage
 
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
-        std::string errMsgIgnored{ "" };
-        player::PartyPtr_t partyPtr{ new player::Party() };
-
-        const int STAT_BASE_HIGH{18};
-        const int STAT_BASE_MED{9};
-        const int STAT_BASE_LOW{5};
-        const int STAT_RAND{6};
-        /*
-        {
-            const stats::StatSet KNIGHT_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
-
-            const std::string KNIGHT_NAME( boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "K") );
-
-            auto knightPtr{ new player::Character(KNIGHT_NAME,
-                                      creature::sex::Male,
-                                      creature::BodyType::Make_Humanoid(),
-                                      creature::Race(creature::race::Human),
-                                      creature::Role(creature::role::Knight),
-                                      KNIGHT_STATS) };
-
-            player::Initial::Setup(knightPtr);
-            partyPtr->Add(knightPtr, errMsgIgnored);
-        }
-        */
-        {
-            const stats::StatSet FIREBRAND_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "F"));
-
-            auto firebrandPtr{  new player::Character(FIREBRAND_NAME,
-                                                      creature::sex::Male,
-                                                      creature::BodyType::Make_Dragon(),
-                                                      creature::race::Dragon,
-                                                      creature::role::Firebrand,
-                                                      FIREBRAND_STATS) };
-
-            player::Initial::Setup(firebrandPtr);
-            partyPtr->Add(firebrandPtr, errMsgIgnored);
-        }
-        /*
-        {
-            const stats::StatSet ARCHER_STATS(15 + misc::random::Int(6),
-                                              15 + misc::random::Int(10),
-                                              5  + misc::random::Int(6),
-                                              10 + misc::random::Int(6),
-                                              10 + misc::random::Int(8),
-                                              5  + misc::random::Int(6));
-
-            const std::string ARCHER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "A"));
-
-            auto archerPtr{ new player::Character(ARCHER_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Humanoid(),
-                                                  creature::Race(creature::race::Human),
-                                                  creature::Role(creature::role::Archer),
-                                                  ARCHER_STATS) };
-
-            player::Initial::Setup(archerPtr);
-            partyPtr->Add(archerPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet WOLFEN_STATS(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + 4 + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_MED  + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
-
-            const std::string WOLFEN_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "W"));
-
-            auto wolfenPtr{ new player::Character(WOLFEN_NAME,
-                                      creature::sex::Female,
-                                      creature::BodyType::Make_Wolfen(),
-                                      creature::Race(creature::race::Wolfen),
-                                      creature::Role(creature::role::Wolfen),
-                                      WOLFEN_STATS) };
-
-            player::Initial::Setup(wolfenPtr);
-            partyPtr->Add(wolfenPtr, errMsgIgnored);
-        }
-        */
-        {
-            const stats::StatSet BARD_STATS(STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_LOW + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND));
-
-            const std::string BARD_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "B"));
-
-            auto bardPtr{ new player::Character(BARD_NAME,
-                                                creature::sex::Male,
-                                                creature::BodyType::Make_Humanoid(),
-                                                creature::race::Human,
-                                                creature::role::Bard,
-                                                BARD_STATS) };
-
-            player::Initial::Setup(bardPtr);
-            partyPtr->Add(bardPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet BEASTMASTER_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "G"));
-
-            auto bmPtr{ new player::Character(BEASTMASTER_NAME,
-                                              creature::sex::Male,
-                                              creature::BodyType::Make_Humanoid(),
-                                              creature::race::Human,
-                                              creature::role::Beastmaster,
-                                              BEASTMASTER_STATS) };
-
-            player::Initial::Setup(bmPtr);
-            partyPtr->Add(bmPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet THEIF_STATS(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND));
-
-            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "T"));
-
-            auto thiefPtr{ new player::Character(THEIF_NAME,
-                                                 creature::sex::Male,
-                                                 creature::BodyType::Make_Humanoid(),
-                                                 creature::race::Gnome,
-                                                 creature::role::Thief,
-                                                 THEIF_STATS) };
-
-            player::Initial::Setup(thiefPtr);
-            partyPtr->Add(thiefPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND),
-                                              STAT_BASE_MED +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND));
-
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "C"));
-
-            auto clericPtr{ new player::Character(CLERIC_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Pixie(),
-                                                  creature::race::Pixie,
-                                                  creature::role::Cleric,
-                                                  CLERIC_STATS) };
-
-            player::Initial::Setup(clericPtr);
-            partyPtr->Add(clericPtr, errMsgIgnored);
-        }
-        /*
-        {
-            const stats::StatSet SORCERER_STATS(
-                1             +       misc::random::Int(STAT_RAND),
-                STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-                STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-                STAT_BASE_MED +       misc::random::Int(STAT_RAND),
-                STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
-                STAT_BASE_HIGH + 4 +  misc::random::Int(STAT_RAND));
-
-            const std::string SORCERER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "S"));
-
-            auto sorcererPtr{ new player::Character(SORCERER_NAME,
-                                                    creature::sex::Male,
-                                                    creature::BodyType::Make_Pixie(),
-                                                    creature::Race(creature::race::Pixie),
-                                                    creature::Role(creature::role::Sorcerer),
-                                                    SORCERER_STATS) };
-
-            player::Initial::Setup(sorcererPtr);
-            partyPtr->Add(sorcererPtr, errMsgIgnored);
-        }
-        */
-        {
-            const stats::StatSet SYLAVIN_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "S"));
-
-            auto sylavinPtr{ new player::Character(SYLAVIN_NAME,
-                                                   creature::sex::Male,
-                                                   creature::BodyType::Make_Dragon(),
-                                                   creature::race::Dragon,
-                                                   creature::role::Sylavin,
-                                                   SYLAVIN_STATS) };
-
-            player::Initial::Setup(sylavinPtr);
-            partyPtr->Add(sylavinPtr, errMsgIgnored);
-        }
-
+        
+        
         if (restoreInfo_.HasRestored())
         {
             preTurnPhase_ = PreTurnPhase::End;
         }
         else
         {
-            //TODO TEMP -change back to ::Start when inventory testing is over
-            preTurnPhase_ = PreTurnPhase::End;
+            preTurnPhase_ = PreTurnPhase::Start;
 
             //TEMP TODO REMOVE create new game and player party object
-            state::GameStateFactory::Instance()->NewGame(partyPtr);
+            state::GameStateFactory::Instance()->NewGame( player::FakeParty::Make() );
 
             combat::Encounter::Instance()->BeginCombatTasks();
         }
