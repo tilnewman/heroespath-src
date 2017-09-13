@@ -44,12 +44,11 @@ namespace misc
 
 
     template<typename T>
-    inline bool IsRealOne(const T X) { return IsRealClose(X, 1.0f); }
+    inline bool IsRealOne(const T X) { return IsRealClose(X, static_cast<T>(1)); }
 
 
     template<typename T>
-    inline bool IsRealZero(const T X) { return IsRealClose(X, 0.0f); }
-
+    inline bool IsRealZero(const T X) { return IsRealClose(X, static_cast<T>(0)); }
 }
 
 #endif //MISC_REALUTILS_HPP_INCLUDED
