@@ -74,8 +74,8 @@ namespace sliders
         inline T GetSpd() const       { return spd_; }
         inline bool GetIsDone() const { return (false == willContinue_); }
 
-        void Reset( const T SPEED       = static_cast<T>(1),
-                    const T INITIAL_VAL = static_cast<T>(0))
+        void Reset( const T SPEED       = 1.0,
+                    const T INITIAL_VAL = 0.0)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED, static_cast<T>(0))),
                 "ZeroSliderOnce::Reset() given speed of zero.");
@@ -137,12 +137,12 @@ namespace sliders
     class SliderOnce
     {
     public:
-        explicit SliderOnce(const Value_t BEGIN = static_cast<Value_t>(0),
-                            const Value_t END   = static_cast<Value_t>(1),
-                            const Math_t  SPEED = static_cast<Math_t>(1))
+        explicit SliderOnce(const Value_t BEGIN = 0,
+                            const Value_t END   = 1,
+                            const Math_t  SPEED = 1.0)
         :
             begin_ (0), //ignore these initializers because of Reset() below.
-            diff_  (0),
+            diff_  (0.0),
             slider_()
         {
             Reset(BEGIN, END, SPEED);
@@ -163,9 +163,9 @@ namespace sliders
         }
         
         
-        void Reset( const Value_t BEGIN = Value_t(0),
-                    const Value_t END   = Value_t(1),
-                    const Math_t  SPEED = Math_t (1))
+        void Reset( const Value_t BEGIN = 0,
+                    const Value_t END   = 1,
+                    const Math_t  SPEED = 1.0)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED, Math_t(0))),
                 "SliderOnce::Reset() given speed of zero.");
@@ -207,10 +207,10 @@ namespace sliders
     {
     public:
         //This constructor uses a random initial target.
-        explicit Slider2(const Value_t THE_MIN     = static_cast<Value_t>(0),
-                         const Value_t THE_MAX     = static_cast<Value_t>(1),
-                         const Speed_t SPEED       = static_cast<Speed_t>(1),
-                         const Value_t INITIAL_VAL = static_cast<Value_t>(0))
+        explicit Slider2(const Value_t THE_MIN     = 0,
+                         const Value_t THE_MAX     = 1,
+                         const Speed_t SPEED       = 1.0,
+                         const Value_t INITIAL_VAL = 0)
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor which sets these.
             max_         (THE_MAX),
@@ -314,12 +314,12 @@ namespace sliders
         }
 
         //This constructor allows setting the initial target.
-        Drifter(const Value_t   THE_MIN,
-                const Value_t   THE_MAX,
-                const Speed_t   SPEED_MIN,
-                const Speed_t   SPEED_MAX,
-                const Value_t   INITIAL_VAL,
-                const Value_t   INITIAL_TARGET)
+        Drifter(const Value_t THE_MIN,
+                const Value_t THE_MAX,
+                const Speed_t SPEED_MIN,
+                const Speed_t SPEED_MAX,
+                const Value_t INITIAL_VAL,
+                const Value_t INITIAL_TARGET)
         :
         min_         (THE_MIN),//Note the call to Reset() in the constructor
         max_         (THE_MAX),
