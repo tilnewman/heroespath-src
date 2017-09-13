@@ -60,7 +60,8 @@ namespace game
         popupSelection_   (0),
         prevState_        (LoopState::None),
         prevSettingsState_(LoopState::None),
-        stateBeforeFade_  (LoopState::None)
+        stateBeforeFade_  (LoopState::None),
+        exitSuccess_      (true)
     {
         M_HP_LOG_DBG("Singleton Construction: LoopManager");
 
@@ -525,7 +526,7 @@ namespace game
     }
 
 
-    void LoopManager::Execute()
+    bool LoopManager::Execute()
     {
         while (false == cmdQueue_.IsEmpty())
         {
@@ -544,6 +545,8 @@ namespace game
                 M_HP_LOG("LoopManager changed from \"" << LoopState::ToString(prevState_) << "\" to \"" << LoopState::ToString(state_) << "\"");
             }
         }
+
+        return exitSuccess_;
     }
 
 

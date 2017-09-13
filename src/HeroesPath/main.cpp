@@ -35,11 +35,13 @@
 
 int main(int argc, char * argv[])
 {
+    int exitCode{ EXIT_FAILURE };
     if (game::StartupShutdown::Setup("Heroes' Path", argc, argv))
     {
-        game::StartupShutdown::Run();
+        exitCode = game::StartupShutdown::Run();
     }
 
-    game::StartupShutdown::Teardown();
-    return EXIT_SUCCESS;
+    exitCode = game::StartupShutdown::Teardown();
+
+    return exitCode;
 }

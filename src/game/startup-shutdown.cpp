@@ -80,6 +80,7 @@
 #include "misc/random.hpp"
 #include "misc/platform.hpp"
 
+#include <cstdlib>
 #include <iostream>
 #include <exception>
 
@@ -126,11 +127,18 @@ namespace game
     }
 
     
-    void StartupShutdown::Run()
+    int StartupShutdown::Run()
     {
         try
         {
-            game::LoopManager::Instance()->Execute();
+            if (game::LoopManager::Instance()->Execute())
+            {
+                return EXIT_SUCCESS;
+            }
+            else
+            {
+                return EXIT_FAILURE;
+            }
         }
         catch (const std::exception & E)
         {
@@ -142,22 +150,100 @@ namespace game
             M_LOG( * game::Logger::Instance(),
                 "Application threw an unknown (non-std) exception.");
         }
+
+        return EXIT_FAILURE;
     }
 
 
-    void StartupShutdown::Teardown()
+    int StartupShutdown::Teardown()
     {
-        game::SettingsFile::Instance()->AcquireAndSave();
-        
-        //close the display window before free'ing resources
-        if (sfml_util::Display::Instance()->GetWindow()->isOpen())
+        int exitCode{ EXIT_SUCCESS };
+
+        try
         {
-            sfml_util::Display::Instance()->GetWindow()->close();
+            game::SettingsFile::Instance()->AcquireAndSave();
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG( * game::Logger::Instance(),
+               "game::SettingsFile::AcquireAndSave() threw std::exception \"" << E.what() << "\"");
+
+            exitCode = EXIT_FAILURE;
+        }
+        catch (...)
+        {
+            M_LOG( * game::Logger::Instance(),
+                "game::SettingsFile::AcquireAndSave() threw an unknown (non-std) exception.");
+
+            exitCode = EXIT_FAILURE;
         }
 
-        WarehousesEmpty();
-        SingletonsRelease();
+        try
+        {
+            //close the display window before free'ing resources
+            if (sfml_util::Display::Instance()->GetWindow()->isOpen())
+            {
+                sfml_util::Display::Instance()->GetWindow()->close();
+            }
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG(*game::Logger::Instance(),
+                "sfml_util::Display::GetWindow()->close() threw std::exception \""
+                << E.what() << "\"");
+
+            exitCode = EXIT_FAILURE;
+        }
+        catch (...)
+        {
+            M_LOG(*game::Logger::Instance(),
+                "sfml_util::Display::GetWindow()->close() threw an unknown (non-std) exception.");
+
+            exitCode = EXIT_FAILURE;
+        }
+
+        try
+        {
+            WarehousesEmpty();
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG(*game::Logger::Instance(),
+                "game::StartupShutdown::WarehousesEmpty() threw std::exception \""
+                << E.what() << "\"");
+
+            exitCode = EXIT_FAILURE;
+        }
+        catch (...)
+        {
+            M_LOG(*game::Logger::Instance(),
+                "game::StartupShutdown::WarehousesEmpty() threw an unknown (non-std) exception.");
+
+            exitCode = EXIT_FAILURE;
+        }
+
+        try
+        {
+            SingletonsRelease();
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG(*game::Logger::Instance(),
+                "game::StartupShutdown::SingletonsRelease() threw std::exception \""
+                << E.what() << "\"");
+
+            exitCode = EXIT_FAILURE;
+        }
+        catch (...)
+        {
+            M_LOG(*game::Logger::Instance(),
+               "game::StartupShutdown::SingletonsRelease() threw an unknown (non-std) exception.");
+
+            exitCode = EXIT_FAILURE;
+        }
+
         game::Logger::Release();
+        return exitCode;
     }
 
 

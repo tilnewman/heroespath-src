@@ -76,9 +76,6 @@ namespace appbase
             //verify the file exists
             if (false == bfs::exists(PATH))
             {
-                std::ostringstream ss;
-                ss << "Config file not found for loading: \"" << PATH.string() << "\"";
-                HandleLoadSaveError( ss.str() );
                 return false;
             }
 
@@ -88,7 +85,7 @@ namespace appbase
             if ((false == fileStream.good()) || (false == fileStream.is_open()))
             {
                 std::ostringstream ss;
-                ss << "Config file could not be opened for loading: \"" << PATH.string() << "\"";
+                ss << "Config file could not be opened during load atempt: \"" << PATH.string() << "\"";
                 HandleLoadSaveError( ss.str() );
                 return false;
             }

@@ -444,7 +444,6 @@ namespace sfml_util
         }
 
         //allow screenshots even if keystrokes are ignored
-        //take screenshot if F12 is pressed
         if (EVENT.key.code == sf::Keyboard::F12)
         {
             takeScreenshot_ = true;
@@ -488,6 +487,7 @@ namespace sfml_util
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            game::LoopManager::Instance()->SetExitSuccess(false);
             game::LoopManager::Instance()->Goto_Exit();
         }
         if ((EVENT.key.code == sf::Keyboard::Escape)

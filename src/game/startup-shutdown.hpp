@@ -41,9 +41,9 @@ namespace game
             int ARGC,
             char * argv[]);
 
-        static void Run();
+        static int Run();
 
-        static void Teardown();
+        static int Teardown();
 
     private:
         static void ParseCommandLineArguments(const int ARGC, char * argv[]);

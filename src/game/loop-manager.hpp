@@ -92,7 +92,7 @@ namespace game
 
         Phase::Enum GetPhase() const;
 
-        void Execute();
+        bool Execute();
 
         void PopupWaitBegin(callback::IPopupHandler_t * const HANDLER_PTR,
                             const PopupInfo &                 POPUP_INFO_SPTR);
@@ -169,6 +169,8 @@ namespace game
             currentLoopSPtr_->TestingImageSet(T);
         }
 
+        inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
+
     protected:
         void TransitionTo_Intro();
 
@@ -218,6 +220,7 @@ namespace game
         LoopState::Enum           prevState_;
         LoopState::Enum           prevSettingsState_;
         LoopState::Enum           stateBeforeFade_;
+        bool                      exitSuccess_;
     };
 
 }
