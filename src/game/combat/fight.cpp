@@ -263,7 +263,7 @@ namespace combat
 
     void FightClub::AddConditionsBasedOnDamage(
         creature::CreaturePtrC_t  creatureDefendingPtrC,
-        const stats::Trait_t     DAMAGE_ABS,
+        const stats::Trait_t      DAMAGE_ABS,
         creature::CondEnumVec_t & condsAddedVecParam,
         creature::CondEnumVec_t & condsRemovedVecParam,
         HitInfoVec_t &            hitInfoVec)

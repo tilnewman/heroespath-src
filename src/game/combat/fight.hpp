@@ -73,7 +73,7 @@ namespace combat
         static stats::Trait_t IsValuetHigherThanRatioOfStat(
             const stats::Trait_t STAT_VALUE,
             const stats::Trait_t STAT_MAX,
-            const float         RATIO);
+            const float          RATIO);
 
         static const FightResult Fight(
             creature::CreaturePtrC_t creatureAttackingPtrC,
@@ -84,14 +84,14 @@ namespace combat
         static void HandleDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
             HitInfoVec_t &            hitInfoVec,
-            const stats::Trait_t     HEALTH_ADJ,
+            const stats::Trait_t      HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             const bool                CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
-            const stats::Trait_t     DAMAGE_ABS,
+            const stats::Trait_t      DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);
@@ -118,7 +118,7 @@ namespace combat
             const creature::CreaturePVec_t & creaturesDefendingPVec);
 
         static const FightResult PlaySong(
-            const song::SongPtr_t           SONG_CPTR,
+            const song::SongPtr_t            SONG_CPTR,
             creature::CreaturePtrC_t         creaturePlayingPtrC,
             const creature::CreaturePVec_t & creaturesListeningPVec);
 
