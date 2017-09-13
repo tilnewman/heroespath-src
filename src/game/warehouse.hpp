@@ -60,6 +60,7 @@ namespace game
             uPtrVec_()
         {}
 
+        inline std::size_t Size() const { return uPtrVec_.size(); }
 
         //returns the pointer given for caller ease of use only
         T * Store(T * ptr_to_store, const std::string & NAME)
@@ -103,8 +104,7 @@ namespace game
             return ptr_to_store;
         }
 
-
-        void Free(T * ptr_to_free, const std::string & NAME)
+        void Free(T * & ptr_to_free, const std::string & NAME)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((ptr_to_free != nullptr),
                 "game::Warehouse::Free(name=\"" << NAME << "\") given a nullptr.");
@@ -122,7 +122,6 @@ namespace game
             M_HP_LOG_ERR("game::Warehouse::Free((" << ptr_to_free
                 << "), name=\"" << NAME << "\") not found.");
         }
-
 
     private:
         std::vector< std::unique_ptr<T> > uPtrVec_;
