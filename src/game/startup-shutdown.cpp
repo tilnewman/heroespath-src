@@ -135,10 +135,6 @@ namespace game
             {
                 return EXIT_SUCCESS;
             }
-            else
-            {
-                return EXIT_FAILURE;
-            }
         }
         catch (const std::exception & E)
         {
