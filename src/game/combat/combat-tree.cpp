@@ -820,7 +820,7 @@ namespace combat
 
     int CombatTree::GetBlockingDistanceMax() const
     {
-        return std::abs(GetBlockingPosMin()) + std::abs(GetBlockingPosMax());
+        return std::abs(GetBlockingPosMin()) - std::abs(GetBlockingPosMax());
     }
 
 
