@@ -24,7 +24,7 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Vectors"
 
 #include <boost/test/unit_test.hpp>
 

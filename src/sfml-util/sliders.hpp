@@ -54,7 +54,7 @@ namespace sliders
     //Slides a number from 0.0 to 1.0 at the speed and starting point given.
     //Call the Update(time_delta) function periodically to get the changing current value.
     //T must be signed and real. (i.e. float, double, etc.)
-    //Ensure (INITIAL_VAL >= 0.0 && INITIAL_VAL <= 1.0).
+    //Ensure INITIAL_VAL [0, 1]
     template<typename T>
     class ZeroSliderOnce
     {
@@ -77,18 +77,21 @@ namespace sliders
         void Reset( const T SPEED       = 1.0,
                     const T INITIAL_VAL = 0.0)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED, static_cast<T>(0))),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "ZeroSliderOnce::Reset() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                ((INITIAL_VAL >= static_cast<T>(0)) && (INITIAL_VAL <= static_cast<T>(1))),
+                (misc::IsRealZero(INITIAL_VAL) ||
+                 misc::IsRealOne(INITIAL_VAL) ||
+                 (INITIAL_VAL > static_cast<T>(0)) && (INITIAL_VAL < static_cast<T>(1))),
                 "ZeroSliderOnce::Reset() given initial value of " << INITIAL_VAL
                 << ", which is not within [0,1].");
-
+        
             age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL_VAL));
             spd_ = SPEED;
             val_ = static_cast<T>(0);
             willContinue_ = true;
+            Update(static_cast<T>(0));
         }
 
         T Update(const T ADJUSTMENT)
@@ -104,6 +107,7 @@ namespace sliders
                 }
                 else
                 {
+                    val_ = static_cast<T>(1);
                     willContinue_ = false;
                 }
             }
@@ -198,7 +202,7 @@ namespace sliders
     };
 
 
-    //Slides a value between THE_MIN and THE_MAX at the given speed.
+    //Slides a value back and forth between THE_MIN and THE_MAX at the given speed.
     //Ensure (INITIAL_VAL >= THE_MIN && INITIAL_VAL <= THE_MAX).
     //Ensure THE_MIN < THE_MAX.
     //Speed_t must be signed and real. (i.e. float, double, etc.)
@@ -233,11 +237,14 @@ namespace sliders
                    const Value_t INITIAL_VAL,
                    const Value_t TARGET)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= THE_MIN) && (INITIAL_VAL <= THE_MAX)),
+            /*M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc::IsRealClose(INITIAL_VAL, THE_MIN) ||
+                 misc::IsRealClose(INITIAL_VAL, THE_MAX) ||
+                 (INITIAL_VAL > THE_MIN) && (INITIAL_VAL < THE_MAX)),
                 "Slider2::Reset() given initial value of " << INITIAL_VAL
                 << ", which is not within the min and max given: ["
                 << THE_MIN << "," << THE_MAX << "].");
-
+                */
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider2::Reset() was given a min="
                 << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
