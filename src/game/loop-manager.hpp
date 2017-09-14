@@ -30,7 +30,6 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/loop-cmd.hpp"
-#include "sfml-util/cmd-queue.hpp"
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
@@ -39,6 +38,7 @@
 #include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
 
+#include <queue>
 #include <string>
 
 
@@ -171,7 +171,7 @@ namespace game
 
         inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
 
-    protected:
+    private:
         void TransitionTo_Intro();
 
         void TransitionTo_Popup(callback::IPopupHandler_t * const HANDLER_PTR,
@@ -208,12 +208,14 @@ namespace game
             const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
             const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
 
+        void CommandQueueClear();
+
     private:
         static std::unique_ptr<LoopManager> instanceUPtr_;
         static std::string startupStage_;
         //
         LoopState::Enum           state_;
-        sfml_util::CommandQueue   cmdQueue_;
+        std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
         sfml_util::ILoopSPtr_t    currentLoopSPtr_;
         sfml_util::Response::Enum popupResponse_;
         std::size_t               popupSelection_;
