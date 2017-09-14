@@ -120,13 +120,13 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
 }
 
 
-BOOST_AUTO_TEST_CASE(Sliders_Slider2_DefaultConstruction)
+BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
 {
     auto const BEGIN{ 123.123 };
     auto const END{ 456.456 };
     auto const SPEED{ 1.0 };
 
-    sliders::Slider2<double> slider(BEGIN, END, SPEED, BEGIN);
+    sliders::Slider<double> slider(BEGIN, END, SPEED, BEGIN);
 
     BOOST_CHECK(IsRealClose(slider.GetMin(), BEGIN));
     BOOST_CHECK(IsRealClose(slider.GetMax(), END));
@@ -139,13 +139,13 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider2_DefaultConstruction)
 }
 
 
-BOOST_AUTO_TEST_CASE(Sliders_Slider2_Updates)
+BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
 {
     auto const BEGIN{ 123.123 };
     auto const END{ 456.456 };
     auto const SPEED{ 1.0 };
 
-    sliders::Slider2<double> slider(BEGIN, END, SPEED, BEGIN);
+    sliders::Slider<double> slider(BEGIN, END, SPEED, BEGIN);
 
     auto const ITERATIONS{ 1000 };
     for (int i(0); i<ITERATIONS; ++i)

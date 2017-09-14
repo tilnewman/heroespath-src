@@ -335,9 +335,9 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //
         sfml_util::gui::TextRegionUPtr_t              sbInsTextRegionUPtr_;
-        sfml_util::sliders::Slider2<sf::Uint8, float> sbInsTextSlider_;
+        sfml_util::sliders::Slider<sf::Uint8, float>  sbInsTextSlider_;
         sfml_util::gui::TextRegionUPtr_t              nInsTextRegionUPtr_;
-        sfml_util::sliders::Slider2<sf::Uint8, float> nInsTextSlider_;
+        sfml_util::sliders::Slider<sf::Uint8, float>  nInsTextSlider_;
         //
         BottomSymbol bottomSymbol_;
         //

@@ -207,11 +207,11 @@ namespace sliders
     //Ensure THE_MIN < THE_MAX.
     //Speed_t must be signed and real. (i.e. float, double, etc.)
     template<typename Value_t, typename Speed_t = double>
-    class Slider2
+    class Slider
     {
     public:
         //This constructor uses a random initial target.
-        explicit Slider2(const Value_t THE_MIN     = 0,
+        explicit Slider(const Value_t THE_MIN     = 0,
                          const Value_t THE_MAX     = 1,
                          const Speed_t SPEED       = 1.0,
                          const Value_t INITIAL_VAL = 0)
@@ -223,7 +223,7 @@ namespace sliders
             slider_      ()
         {
             M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(speed_, Speed_t(0))),
-                "Slider2::Constructor given SPEED of zero.");
+                "Slider::Constructor given SPEED of zero.");
 
             Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX);
         }
@@ -237,15 +237,7 @@ namespace sliders
                    const Value_t INITIAL_VAL,
                    const Value_t TARGET)
         {
-            /*M_ASSERT_OR_LOGANDTHROW_SS(
-                (misc::IsRealClose(INITIAL_VAL, THE_MIN) ||
-                 misc::IsRealClose(INITIAL_VAL, THE_MAX) ||
-                 (INITIAL_VAL > THE_MIN) && (INITIAL_VAL < THE_MAX)),
-                "Slider2::Reset() given initial value of " << INITIAL_VAL
-                << ", which is not within the min and max given: ["
-                << THE_MIN << "," << THE_MAX << "].");
-                */
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider2::Reset() was given a min="
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider::Reset() was given a min="
                 << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
             min_ = THE_MIN;
