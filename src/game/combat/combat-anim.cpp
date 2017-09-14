@@ -57,13 +57,13 @@ namespace game
 namespace combat
 {
 
-    const float ShakeAnimInfo::PAUSE_DURATION_SEC(1.0f);
-    const float ShakeAnimInfo::SHAKE_DURATION_SEC(0.65f);
+    const float ShakeAnimInfo::PAUSE_DURATION_SEC{ 1.0f };
+    const float ShakeAnimInfo::SHAKE_DURATION_SEC{ 0.65f };
 
 
     ShakeAnimInfo::ShakeAnimInfo()
     :
-        slider(),
+        slider(0.0f, 1.0f, 50.0f),
 
         //anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f),
@@ -80,9 +80,9 @@ namespace combat
 
         slider.Reset(0.0f,
                      SHAKE_DISTANCE,
-                     SLIDER_SPEED,
                      (SHAKE_DISTANCE * 0.5f),
-                     misc::random::Bool());
+                     SHAKE_DISTANCE,
+                     SLIDER_SPEED);
 
         //anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;

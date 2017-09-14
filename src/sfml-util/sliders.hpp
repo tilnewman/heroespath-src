@@ -212,9 +212,9 @@ namespace sliders
     public:
         //This constructor uses a random initial target.
         explicit Slider(const Value_t THE_MIN     = 0,
-                         const Value_t THE_MAX     = 1,
-                         const Speed_t SPEED       = 1.0,
-                         const Value_t INITIAL_VAL = 0)
+                        const Value_t THE_MAX     = 1,
+                        const Speed_t SPEED       = 1.0,
+                        const Value_t INITIAL_VAL = 0)
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor which sets these.
             max_         (THE_MAX),
@@ -235,13 +235,19 @@ namespace sliders
         void Reset(const Value_t THE_MIN,
                    const Value_t THE_MAX,
                    const Value_t INITIAL_VAL,
-                   const Value_t TARGET)
+                   const Value_t TARGET,
+                   const Value_t SPEED = 0)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider::Reset() was given a min="
                 << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
             min_ = THE_MIN;
             max_ = THE_MAX;
+
+            if (misc::IsRealZero(SPEED) == false)
+            {
+                speed_ = SPEED;
+            }
 
             if (INITIAL_VAL < TARGET)
             {

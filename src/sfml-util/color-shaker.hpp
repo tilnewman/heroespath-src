@@ -27,7 +27,7 @@
 //
 // color-shaker.cpp
 //
-#include "sfml-util/shaker.hpp"
+#include "sfml-util/sliders.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -46,15 +46,16 @@ namespace sfml_util
 
         const sf::Color Update(const float ELAPSED_TIME_SECONDS);
 
+        void Reset();
+
         inline void Start()                     { isShaking_ = true; }
         inline void Stop()                      { isShaking_ = false; }
-        inline void Reset()                     { colorCurr_ = colorOrig_; shaker_.Reset(0.0f, 1.0f, shaker_.Speed()); }
-        inline float Speed() const              { return shaker_.Speed(); }
+        inline float Speed() const              { return static_cast<float>(slider_.GetSpd()); }
         inline bool IsShaking() const           { return isShaking_; }
         inline const sf::Color Current() const  { return colorCurr_; }
 
     private:
-        sfml_util::Shaker<float> shaker_;
+        sliders::Slider<float> slider_;
         sf::Color colorOrig_;
         sf::Color colorAlt_;
         sf::Color colorCurr_;

@@ -30,7 +30,6 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/shaker.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 

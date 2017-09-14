@@ -28,7 +28,6 @@
 // combat-anim.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/shaker.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/animation-enum.hpp"
 
@@ -109,9 +108,9 @@ namespace combat
         static const float PAUSE_DURATION_SEC;
         static const float SHAKE_DURATION_SEC;
 
-        sfml_util::Shaker<float> slider;
-        float                    pause_duration_timer_sec;
-        float                    shake_duration_timer_sec;
+        sfml_util::sliders::Slider<float> slider;
+        float pause_duration_timer_sec;
+        float shake_duration_timer_sec;
 
         void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
     };

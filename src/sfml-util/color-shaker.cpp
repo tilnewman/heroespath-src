@@ -38,7 +38,7 @@ namespace sfml_util
                              const float       SPEED,
                              const bool        WILL_START)
     :
-        shaker_   (0.0f, 1.0f, SPEED),
+        slider_   (0.0f, 1.0f, SPEED, 0.0f),
         colorOrig_(COLOR_ORIG),
         colorAlt_ (COLOR_ALT),
         colorCurr_(COLOR_ORIG),
@@ -54,16 +54,31 @@ namespace sfml_util
     {
         if (isShaking_)
         {
-            const float NEW_RATIO(shaker_.Update(ELAPSED_TIME_SECONDS));
+            const float NEW_RATIO{ slider_.Update(ELAPSED_TIME_SECONDS) };
 
             colorCurr_ = colorOrig_;
-            colorCurr_.r = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.r) + static_cast<int>(NEW_RATIO * redDiff_));
-            colorCurr_.g = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.g) + static_cast<int>(NEW_RATIO * greenDiff_));
-            colorCurr_.b = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.b) + static_cast<int>(NEW_RATIO * blueDiff_));
-            colorCurr_.a = static_cast<sf::Uint8>(static_cast<int>(colorCurr_.a) + static_cast<int>(NEW_RATIO * alphaDiff_));
+
+            colorCurr_.r = static_cast<sf::Uint8>(
+                static_cast<int>(colorCurr_.r) + static_cast<int>(NEW_RATIO * redDiff_));
+
+            colorCurr_.g = static_cast<sf::Uint8>(
+                static_cast<int>(colorCurr_.g) + static_cast<int>(NEW_RATIO * greenDiff_));
+
+            colorCurr_.b = static_cast<sf::Uint8>(
+                static_cast<int>(colorCurr_.b) + static_cast<int>(NEW_RATIO * blueDiff_));
+
+            colorCurr_.a = static_cast<sf::Uint8>(
+                static_cast<int>(colorCurr_.a) + static_cast<int>(NEW_RATIO * alphaDiff_));
         }
 
         return colorCurr_;
+    }
+
+
+    void ColorShaker::Reset()
+    {
+        colorCurr_ = colorOrig_;
+        slider_.Reset(0.0f, 1.0f, Speed(), 1.0f);
     }
 
 }
