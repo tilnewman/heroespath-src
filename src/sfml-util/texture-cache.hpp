@@ -65,9 +65,11 @@ namespace sfml_util
         std::size_t AddByPath(const std::string & PATH_TO_TEXTURE_STR,
                               const bool          WILL_SMOOTH = true);
 
+        //not recursive
         const misc::SizetVec_t AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY,
                                                       const bool          WILL_SMOOTH = true);
 
+        //not recursive
         const misc::SizetVec_t AddAllInDirectoryByPath(const std::string & DIR_PATH_PARAM_STR,
                                                        const bool          WILL_SMOOTH = true);
 

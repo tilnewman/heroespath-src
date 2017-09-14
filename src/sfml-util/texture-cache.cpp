@@ -39,6 +39,7 @@
 #include <boost/filesystem.hpp>
 
 #include <vector>
+#include <algorithm>
 
 
 namespace sfml_util
@@ -103,8 +104,8 @@ namespace sfml_util
     std::size_t TextureCache::AddByKey(const std::string & GAMEDATAFILE_KEY_STR,
                                        const bool          WILL_SMOOTH)
     {
-        return AddByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR),
-            WILL_SMOOTH);
+        return AddByPath(
+            game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), WILL_SMOOTH);
     }
 
 
@@ -187,7 +188,9 @@ namespace sfml_util
 
             const std::vector<std::string> INVALID_TEXT_VEC = { ".txt",
                                                                 ".DS_Store",
-                                                                "sample.gif" };
+                                                                "sample.gif",
+                                                                ".html",
+                                                                ".htm"};
 
             auto const NEXT_PATH_STR{ dirItr->path().string() };
 
@@ -238,7 +241,10 @@ namespace sfml_util
             "sfml_util::TextureCache::RemoveByPath(\"" << PATH_TO_TEXTURE_STR
             << ") failed because strToVecMap_ entry was an empty vec.");
 
-        RemoveByIndexVec(FOUND_ITER->second);
+        //make a copy of the vector because RemoveByIndexVec() may delete FOUND_ITER
+        auto const VEC_COPY{ FOUND_ITER->second };
+
+        RemoveByIndexVec(VEC_COPY);
     }
 
 
@@ -280,10 +286,9 @@ namespace sfml_util
 
     void TextureCache::RemoveAll()
     {
-        auto const NUM_TEXTURES{ cacheUVec_.size() };
-        for (std::size_t i(0); i < NUM_TEXTURES; ++i)
+        for(auto & u_ptr : cacheUVec_)
         {
-            cacheUVec_[i].reset();
+            u_ptr.reset();
         }
 
         strToVecMap_.clear();
@@ -335,7 +340,16 @@ namespace sfml_util
             cacheUVec_[INDEX] = std::make_unique<sf::Texture>();
         }
 
-        sfml_util::LoadTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
+        try
+        {
+            sfml_util::LoadTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
+        }
+        catch (...)
+        {
+            cacheUVec_[INDEX].reset();
+            throw;
+        }
+
         return INDEX;
     }
 
