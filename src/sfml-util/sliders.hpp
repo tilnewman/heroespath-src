@@ -171,7 +171,7 @@ namespace sliders
                     const Value_t END   = 1,
                     const Math_t  SPEED = 1.0)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED, Math_t(0))),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "SliderOnce::Reset() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS((BEGIN <= END),
@@ -222,7 +222,7 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(speed_, Speed_t(0))),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
                 "Slider::Constructor given SPEED of zero.");
 
             Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX);
@@ -236,7 +236,7 @@ namespace sliders
                    const Value_t THE_MAX,
                    const Value_t INITIAL_VAL,
                    const Value_t TARGET,
-                   const Value_t SPEED = 0)
+                   const Speed_t SPEED = 0)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider::Reset() was given a min="
                 << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
@@ -278,7 +278,7 @@ namespace sliders
             
             if (slider_.GetIsDone())
             {
-                Reset(min_, max_, newCurrentVal, ((isIncreasing_) ? min_ : max_));
+                Reset(min_, max_, newCurrentVal, ((isIncreasing_) ? min_ : max_), speed_);
             }
 
             return newCurrentVal;
