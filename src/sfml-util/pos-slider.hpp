@@ -39,7 +39,8 @@ namespace sliders
 
     //Presents a simple interface for controlling a position that starts at a given FROM and then
     //moves toward a TO position.  Calling Update() periodically with the time elapsed advances
-    //the position.  ChangeDirection() does not change the position, only swaps FROM and TO.
+    //the position.  ChangeDirection() does not change the current position, it sets FROM to the
+    //current position and sets TO to either the original FROM or TO.
     class PosSlider
     {
     public:
