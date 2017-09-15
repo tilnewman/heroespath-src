@@ -39,13 +39,15 @@ namespace sliders
                          const sf::Vector2f & TO_POS_V,
                          const float          SLIDER_SPEED)
     :
-        origFromPosV_    (FROM_POS_V),
-        fromPosV_        (FROM_POS_V),
-        toPosV_          (TO_POS_V),
-        isFinishedMoving_(true),//will not start moving immediately
-        movingDir_       (sfml_util::Moving::Still),
-        slider_          (SLIDER_SPEED)
+        origFromPosV_(), //see Constructor's call to Setup() for actual default values
+        origToPosV_  (),
+        fromPosV_    (),
+        toPosV_      (),
+        direction_   (sfml_util::Moving::Count),
+        isMoving_    (false),
+        slider_      ()
     {
+        //will not start moving immediately
         Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);
     }
 
@@ -54,46 +56,46 @@ namespace sliders
                           const sf::Vector2f & TO_POS_V,
                           const float          SLIDER_SPEED)
     {
+        origFromPosV_ = FROM_POS_V;
+        origToPosV_ = TO_POS_V;
         fromPosV_ = FROM_POS_V;
         toPosV_ = TO_POS_V;
-        origFromPosV_ = FROM_POS_V;
         slider_.Reset(SLIDER_SPEED);
-        ResetSlidersAndStopMoving();
+        direction_ = Moving::Toward;
+        isMoving_ = false;
     }
 
 
-    void PosSlider::Reset()
+    void PosSlider::ChangeDirection()
     {
-        ResetSlidersAndStopMoving();
-    }
-
-
-    void PosSlider::StartMovingToward()
-    {
-        fromPosV_ = Position();
-        ResetSlidersAndStartMoving(Moving::Toward);
-    }
-
-
-    void PosSlider::StartMovingAway()
-    {
-        toPosV_ = origFromPosV_;
-        fromPosV_ = Position();
-        ResetSlidersAndStartMoving(Moving::Away);
+        if (direction_ == Moving::Toward)
+        {
+            fromPosV_ = Position();
+            toPosV_ = origFromPosV_;
+            slider_.Reset(slider_.GetSpd());
+            direction_ = Moving::Away;
+        }
+        else if (direction_ == Moving::Away)
+        {
+            fromPosV_ = Position();
+            toPosV_ = origToPosV_;
+            slider_.Reset(slider_.GetSpd());
+            direction_ = Moving::Toward;
+        }
     }
 
 
     bool PosSlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (isFinishedMoving_)
+        if (isMoving_)
         {
-            return false;
+            slider_.Update(ELAPSED_TIME_SECONDS);
+            isMoving_ = ! slider_.GetIsDone();
+            return true;
         }
         else
         {
-            slider_.Update(ELAPSED_TIME_SECONDS);
-            isFinishedMoving_ = slider_.GetIsDone();
-            return true;
+            return false;
         }
     }
 
@@ -104,21 +106,6 @@ namespace sliders
         auto const POS_LEFT{ fromPosV_.x + ((toPosV_.x - fromPosV_.x) * PROGRESS_RATIO) };
         auto const POS_TOP{ fromPosV_.y + ((toPosV_.y - fromPosV_.y) * PROGRESS_RATIO) };
         return sf::Vector2f(POS_LEFT, POS_TOP);
-    }
-
-
-    void PosSlider::ResetSlidersAndStartMoving(const sfml_util::Moving::Enum MOVING_DIR)
-    {
-        slider_.Reset(slider_.GetSpd());
-        movingDir_ = MOVING_DIR;
-        isFinishedMoving_ = false;
-    }
-
-
-    void PosSlider::ResetSlidersAndStopMoving()
-    {
-        ResetSlidersAndStartMoving(Moving::Still);
-        isFinishedMoving_ = true;
     }
 
 }

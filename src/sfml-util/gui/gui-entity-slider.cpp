@@ -64,17 +64,6 @@ namespace gui
     }
 
 
-    void GuiEntitySlider::Reset()
-    {
-        if (guiEntityPtr_ != nullptr)
-        {
-            guiEntityPtr_->SetEntityPos(origFromPosV_);
-        }
-
-        PosSlider::Reset();
-    }
-
-
     bool GuiEntitySlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         const bool RESULT(PosSlider::UpdateTime(ELAPSED_TIME_SECONDS));

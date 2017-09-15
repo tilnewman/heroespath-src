@@ -37,8 +37,9 @@ namespace sfml_util
 namespace sliders
 {
 
-    //Responsible for presenting a simple interface for controlling a position that
-    //moves back and forth between two points, a From and To.
+    //Presents a simple interface for controlling a position that starts at a given FROM and then
+    //moves toward a TO position.  Calling Update() periodically with the time elapsed advances
+    //the position.  ChangeDirection() does not change the position, only swaps FROM and TO.
     class PosSlider
     {
     public:
@@ -54,33 +55,34 @@ namespace sliders
             const sf::Vector2f & TO_POS_V,
             const float          SLIDER_SPEED);
 
-        virtual void Reset();
-        virtual void StartMovingToward();
-        virtual void StartMovingAway();
+        void ChangeDirection();
 
-        //returns false if IsFinishedMoving()
+        //returns true if the position was changed 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         const sf::Vector2f Position() const;
 
-        inline float                    ProgressRatio() const    { return slider_.GetCur(); }
-        inline bool                     IsFinishedMoving() const { return isFinishedMoving_; }
-        inline sfml_util::Moving::Enum  Moving() const           { return movingDir_; }
-        inline const sf::Vector2f       To() const               { return toPosV_; }
-        inline const sf::Vector2f       From() const             { return fromPosV_; }
-        inline float                    Speed() const            { return slider_.GetSpd(); }
-        inline void                     Speed(const float S)     { slider_.Reset(S, slider_.GetCur()); }
+        inline float                    ProgressRatio() const   { return slider_.GetCur(); }
+        inline sfml_util::Moving::Enum  Direction() const       { return direction_; }
+        inline const sf::Vector2f       To() const              { return toPosV_; }
+        inline const sf::Vector2f       From() const            { return fromPosV_; }
+        inline float                    Speed() const           { return slider_.GetSpd(); }
+        inline bool                     IsMoving() const        { return isMoving_; }
+        inline void                     Start()                 { isMoving_ = true; }
+        inline void                     Stop()                  { isMoving_ = false; }
 
-    private:
-        void ResetSlidersAndStartMoving(const sfml_util::Moving::Enum);
-        void ResetSlidersAndStopMoving();
+        inline void Speed(const float S)
+        {
+            slider_.Reset(S, slider_.GetCur());
+        }
 
     protected:
         sf::Vector2f origFromPosV_;
+        sf::Vector2f origToPosV_;
         sf::Vector2f fromPosV_;
         sf::Vector2f toPosV_;
-        bool isFinishedMoving_;
-        sfml_util::Moving::Enum movingDir_;
+        sfml_util::Moving::Enum direction_;
+        bool isMoving_;
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
     };
 

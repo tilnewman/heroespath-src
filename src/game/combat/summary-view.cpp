@@ -135,7 +135,8 @@ namespace combat
         if (combatNodePtr_ != nullptr)
         {
             geSlider_.Speed(SLIDER_SPEED_ * 2.0f);
-            geSlider_.StartMovingAway();
+            geSlider_.ChangeDirection();
+            geSlider_.Start();
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
@@ -157,7 +158,7 @@ namespace combat
 
         combatNodePtr_ = combatNodePtr;
         geSlider_.Setup(combatNodePtr, combatNodePtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
-        geSlider_.StartMovingToward();
+        geSlider_.Start();
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
         movingDir_ = sfml_util::Moving::Toward;
