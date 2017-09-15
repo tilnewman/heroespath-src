@@ -44,7 +44,11 @@ namespace sfml_util
         };
 
         static const std::string ToString(const Moving::Enum);
-        inline static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
+
+        inline static bool IsMoving(const Moving::Enum E)
+        {
+            return ((E == Toward) || (E == Away));
+        }
     };
 
 }

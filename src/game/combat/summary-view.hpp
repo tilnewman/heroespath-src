@@ -112,7 +112,7 @@ namespace combat
         void SetupAndStartTransition(CombatNodePtr_t       combatNodePtr,
                                      const sf::FloatRect & COMABT_REGION);
 
-        inline float GetTransitionStatus() const                { return slider_.CurrentAverage(); }
+        inline float GetTransitionStatus() const                { return geSlider_.ProgressRatio(); }
 
         inline bool IsTransitionToComplete() const              { return isTransToComplete_; }
         inline bool IsTransitionBackComplete() const            { return isTransBackComplete_; }
@@ -125,7 +125,11 @@ namespace combat
         inline bool WillPreventNextTransition() const           { return preventNextTrans_; }
         inline void WillPreventNextTransition(const bool B)     { preventNextTrans_ = B; }
 
-        inline void ReleaseCombatNodePointer()                  { combatNodePtr_ = nullptr; slider_.ReleasePointer(); }
+        inline void ReleaseCombatNodePointer()
+        {
+            combatNodePtr_ = nullptr;
+            geSlider_.ReleasePointer();
+        }
     public:
         static const float BACKGROUND_COLOR_ALPHA_;
         static const float SLIDER_SPEED_;
@@ -149,7 +153,7 @@ namespace combat
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t armorTextRegionUPtr_;
-        sfml_util::gui::GuiEntitySlider  slider_;
+        sfml_util::gui::GuiEntitySlider  geSlider_;
         bool                             preventNextTrans_;
     };
 

@@ -115,7 +115,7 @@ namespace combat
         descTextRegionUPtr_  (),
         condTextRegionUPtr_  (),
         armorTextRegionUPtr_ (),
-        slider_              (),
+        geSlider_            (),
         preventNextTrans_    (false)
     {}
 
@@ -134,8 +134,8 @@ namespace combat
 
         if (combatNodePtr_ != nullptr)
         {
-            slider_.Speed(SLIDER_SPEED_ * 2.0f);
-            slider_.StartMovingAway();
+            geSlider_.Speed(SLIDER_SPEED_ * 2.0f);
+            geSlider_.StartMovingAway();
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
@@ -156,8 +156,8 @@ namespace combat
         }
 
         combatNodePtr_ = combatNodePtr;
-        slider_.Setup(combatNodePtr, combatNodePtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
-        slider_.StartMovingToward();
+        geSlider_.Setup(combatNodePtr, combatNodePtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
+        geSlider_.StartMovingToward();
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
         movingDir_ = sfml_util::Moving::Toward;
@@ -261,9 +261,14 @@ namespace combat
     {
         if (sfml_util::Moving::Away == movingDir_)
         {
-            if (slider_.UpdateTime(ELAPSED_TIME_SECONDS))
+            if (geSlider_.UpdateTime(ELAPSED_TIME_SECONDS))
             {
-                BackgroundColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * (1.0f - slider_.CurrentAverage()))));
+                BackgroundColor( sf::Color(
+                    0,
+                    0,
+                    0,
+                    static_cast<sf::Uint8>(
+                        BACKGROUND_COLOR_ALPHA_ * (1.0f - geSlider_.ProgressRatio()))) );
             }
             else
             {
@@ -272,9 +277,14 @@ namespace combat
         }
         else if (sfml_util::Moving::Toward == movingDir_)
         {
-            if (slider_.UpdateTime(ELAPSED_TIME_SECONDS))
+            if (geSlider_.UpdateTime(ELAPSED_TIME_SECONDS))
             {
-                BackgroundColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * slider_.CurrentAverage())));
+                BackgroundColor( sf::Color(
+                    0,
+                    0, 
+                    0,
+                    static_cast<sf::Uint8>(
+                        BACKGROUND_COLOR_ALPHA_ * geSlider_.ProgressRatio())) );
             }
             else
             {

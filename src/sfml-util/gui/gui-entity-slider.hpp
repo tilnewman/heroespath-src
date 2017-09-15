@@ -60,7 +60,7 @@ namespace gui
                    const sf::Vector2f & TO_POS_V      = sf::Vector2f(0.0f, 0.0f),
                    const float          SLIDER_SPEED  = 1.0f);
 
-        virtual void Reset(const bool WILL_RESET_POSITION);
+        virtual void Reset();
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 

@@ -37,7 +37,7 @@
 namespace sfml_util
 {
 
-    //Enapsulates everything about a screen resolution except for the bits-per-pixel
+    //Enapsulates everything about a screen resolution
     struct Resolution
     {
         explicit Resolution(const unsigned int  WIDTH          = 0,

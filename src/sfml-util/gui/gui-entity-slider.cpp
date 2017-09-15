@@ -64,12 +64,14 @@ namespace gui
     }
 
 
-    void GuiEntitySlider::Reset(const bool WILL_RESET_POSITION)
+    void GuiEntitySlider::Reset()
     {
-        if (WILL_RESET_POSITION && (guiEntityPtr_ != nullptr))
-            guiEntityPtr_->SetEntityPos(homePosV_);
+        if (guiEntityPtr_ != nullptr)
+        {
+            guiEntityPtr_->SetEntityPos(origFromPosV_);
+        }
 
-        PosSlider::Reset(WILL_RESET_POSITION);
+        PosSlider::Reset();
     }
 
 
@@ -78,7 +80,9 @@ namespace gui
         const bool RESULT(PosSlider::UpdateTime(ELAPSED_TIME_SECONDS));
 
         if (RESULT && (guiEntityPtr_ != nullptr))
-            guiEntityPtr_->SetEntityPos(posV_);
+        {
+            guiEntityPtr_->SetEntityPos(Position());
+        }
 
         return RESULT;
     }
