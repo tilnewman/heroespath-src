@@ -360,7 +360,9 @@ BOOST_AUTO_TEST_CASE(Vector_ShuffleVec_Single)
 
 BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
 {
-    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    ts::Constants constants;
+
+    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1 };
         auto const SINGLE_RESULT{ misc::Vector::SelectRandom(A) };
@@ -373,7 +375,9 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
 
 BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
 {
-    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    ts::Constants constants;
+
+    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 1, 1 };
         auto const DUPLICATE_RESULT{ misc::Vector::SelectRandom(A) };
@@ -386,7 +390,9 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
 
 BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
 {
-    for (int i{ 0 }; i < ts::Constants::RANDOM_RETRY_COUNT; ++i)
+    ts::Constants constants;
+
+    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 2, 3 };
         auto const MULT_RESULT{ misc::Vector::SelectRandom(A) };

@@ -37,19 +37,22 @@ namespace sfml_util
 namespace sliders
 {
 
-    //responsible for moving a position back and forth between two points
+    //Responsible for presenting a simple interface for controlling a position that
+    //moves back and forth between two points, a From and To.
     class PosSlider
     {
     public:
-        explicit PosSlider(const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
-                           const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
-                           const float          SLIDER_SPEED = 1.0f);
+        explicit PosSlider(
+            const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
+            const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
+            const float          SLIDER_SPEED = 1.0f);
 
-        virtual ~PosSlider();
+        virtual ~PosSlider() {}
 
-        void Setup(const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
-                   const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
-                   const float          SLIDER_SPEED = 1.0f);
+        void Setup(
+            const sf::Vector2f & FROM_POS_V,
+            const sf::Vector2f & TO_POS_V,
+            const float          SLIDER_SPEED);
 
         virtual void Reset();
         virtual void StartMovingToward();

@@ -44,7 +44,19 @@ namespace test_stuff
 
     struct Constants
     {
-        static const int RANDOM_RETRY_COUNT = 1000;
+        Constants(
+            const int    RANDOM_RETRY_COUNT_PARAM     = 1000,
+            const double CLOSE_ENOUGH_EPSILON_PARAM   = 0.000001,
+            const float  CLOSE_ENOUGH_EPSILON_F_PARAM = 0.000001f)
+        :
+            RANDOM_RETRY_COUNT(RANDOM_RETRY_COUNT_PARAM),
+            CLOSE_ENOUGH_EPSILON(CLOSE_ENOUGH_EPSILON_PARAM),
+            CLOSE_ENOUGH_EPSILON_F(CLOSE_ENOUGH_EPSILON_F_PARAM)
+        {}
+
+        const int    RANDOM_RETRY_COUNT;
+        const double CLOSE_ENOUGH_EPSILON;
+        const float  CLOSE_ENOUGH_EPSILON_F;
     };
 
     template <typename T>
