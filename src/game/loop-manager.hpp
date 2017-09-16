@@ -100,25 +100,7 @@ namespace game
         void PopupWaitEnd(const sfml_util::Response::Enum RESPONSE,
                           const std::size_t SELECTION = 0);
 
-        void Goto_Intro();
-        void Goto_Credits();
-        void Goto_Exit();
-        void Goto_MainMenu();
-        void Goto_Settings();
-        void Goto_Previous(const bool WILL_ADVANCE_TURN = false);
-        void Goto_CharacterCreation();
-        void Goto_PartyCreation();
-        void Goto_Inn();
-        void Goto_Camp();
-        void Goto_LoadGameMenu();
-        void Goto_Combat(const bool WILL_ADVANCE_TURN);
-        void Goto_Test();
-        void Goto_Treasure();
-        void Goto_Adventure();
-
-        void Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
-                            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                            const Phase::Enum             CURRENT_PHASE);
+        void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             sfml_util::IStage * const         currentStagePtr_,
@@ -172,13 +154,6 @@ namespace game
 
         inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
 
-    private:
-        void TransitionTo_Intro();
-
-        void TransitionTo_Popup(callback::IPopupHandler_t * const HANDLER_PTR,
-                                const PopupInfo &                 POPUP_INFO);
-
-        void TransitionFrom_Popup();
         void TransitionTo_Exit();
         void TransitionTo_Credits();
         void TransitionTo_MainMenu();
@@ -194,9 +169,17 @@ namespace game
         void TransitionTo_Adventure();
 
         void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
-                                    const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                                    const Phase::Enum             CURRENT_PHASE);
+            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+            const Phase::Enum             CURRENT_PHASE);
 
+    private:
+        void TransitionTo_Intro();
+
+        void TransitionTo_Popup(callback::IPopupHandler_t * const HANDLER_PTR,
+                                const PopupInfo &                 POPUP_INFO);
+
+        void TransitionFrom_Popup();
+        
         void TransitionTo(const LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
         void TransitionHelper(

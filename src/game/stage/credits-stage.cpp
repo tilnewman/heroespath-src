@@ -417,7 +417,7 @@ namespace stage
         else
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-            LoopManager::Instance()->Goto_MainMenu();
+            LoopManager::Instance()->TransitionTo_MainMenu();
         }
 
         return true;

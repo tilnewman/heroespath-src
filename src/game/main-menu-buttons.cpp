@@ -65,7 +65,7 @@ namespace main_menu_buttons
 
     void CreateCharactersButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_CharacterCreation();
+        LoopManager::Instance()->TransitionTo_CharacterCreation();
     }
 
 
@@ -144,7 +144,7 @@ namespace main_menu_buttons
 
     void SettingsButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_Settings();
+        LoopManager::Instance()->TransitionTo_Settings();
     }
 
 
@@ -171,7 +171,7 @@ namespace main_menu_buttons
 
     void CreditsButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_Credits();
+        LoopManager::Instance()->TransitionTo_Credits();
     }
 
 
@@ -198,7 +198,7 @@ namespace main_menu_buttons
 
     void ExitButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_Exit();
+        LoopManager::Instance()->TransitionTo_Exit();
     }
 
 
@@ -226,7 +226,7 @@ namespace main_menu_buttons
 
     void BackButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_Previous();
+        LoopManager::Instance()->TransitionTo_Previous();
     }
 
 
@@ -253,7 +253,7 @@ namespace main_menu_buttons
 
     void DeleteButton::OnClick(const sf::Vector2f &)
     {
-        LoopManager::Instance()->Goto_Previous();
+        LoopManager::Instance()->TransitionTo_Previous();
     }
 
 }

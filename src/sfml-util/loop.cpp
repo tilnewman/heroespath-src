@@ -488,13 +488,13 @@ namespace sfml_util
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             game::LoopManager::Instance()->SetExitSuccess(false);
-            game::LoopManager::Instance()->Goto_Exit();
+            game::LoopManager::Instance()->TransitionTo_Exit();
         }
         if ((EVENT.key.code == sf::Keyboard::Escape)
             && (game::LoopManager::Instance()->GetState() == game::LoopState::Test))
         {
             M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED WHILE TESTING.  Bail.");
-            game::LoopManager::Instance()->Goto_Exit();
+            game::LoopManager::Instance()->TransitionTo_Exit();
         }
         else
         {

@@ -492,7 +492,7 @@ namespace stage
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-            LoopManager::Instance()->Goto_Previous();
+            LoopManager::Instance()->TransitionTo_Previous();
             return true;
         }
         else

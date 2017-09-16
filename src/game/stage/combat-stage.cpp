@@ -371,7 +371,7 @@ namespace stage
         if (PACKAGE.PTR_ == settingsButtonSPtr_.get())
         {
             restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-            game::LoopManager::Instance()->Goto_Settings();
+            game::LoopManager::Instance()->TransitionTo_Settings();
             return true;
         }
 
@@ -468,17 +468,17 @@ namespace stage
         {
             //TODO If popup response is YES, then goto the loot stage, and if NO,
             //     then goto the adventure stage.
-            game::LoopManager::Instance()->Goto_Credits();
+            game::LoopManager::Instance()->TransitionTo_Credits();
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_LOSE_)
         {
             //TODO if popup response is YES, then load last saved game
-            game::LoopManager::Instance()->Goto_Credits();
+            game::LoopManager::Instance()->TransitionTo_Credits();
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COMBATOVER_RAN_)
         {
             //TODO go directly back to adventure stage
-            game::LoopManager::Instance()->Goto_Credits();
+            game::LoopManager::Instance()->TransitionTo_Credits();
         }
 
         return false;
@@ -1615,7 +1615,7 @@ namespace stage
                 clickTimerSec_ = -1.0f;//any negative value will work here
 
                 restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_,
+                game::LoopManager::Instance()->TransitionTo_Inventory(turnCreaturePtr_,
                                                               creatureAtPosPtr,
                                                               Phase::Combat);
                 return GUI_ENTITY_WITH_FOCUS;
@@ -1800,7 +1800,7 @@ namespace stage
                     if (turnCreaturePtr_->IsPlayerCharacter())
                     {
                         restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-                        game::LoopManager::Instance()->Goto_Inventory(turnCreaturePtr_,
+                        game::LoopManager::Instance()->TransitionTo_Inventory(turnCreaturePtr_,
                                                                       turnCreaturePtr_,
                                                                       Phase::Combat);
                     }

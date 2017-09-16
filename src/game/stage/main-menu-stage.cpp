@@ -84,7 +84,7 @@ namespace stage
 
         if (PACKAGE.PTR_ == resumeButtonSPtr_.get())
         {
-            LoopManager::Instance()->Goto_LoadGameMenu();
+            LoopManager::Instance()->TransitionTo_LoadGameMenu();
             return true;
         }
 
@@ -174,7 +174,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
 
-            LoopManager::Instance()->Goto_CharacterCreation();
+            LoopManager::Instance()->TransitionTo_CharacterCreation();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
@@ -184,7 +184,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
 
-            LoopManager::Instance()->Goto_Settings();
+            LoopManager::Instance()->TransitionTo_Settings();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
@@ -194,7 +194,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
 
-            LoopManager::Instance()->Goto_Credits();
+            LoopManager::Instance()->TransitionTo_Credits();
             return true;
         }
         else if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
@@ -205,7 +205,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
 
-            LoopManager::Instance()->Goto_Exit();
+            LoopManager::Instance()->TransitionTo_Exit();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::R)
@@ -217,7 +217,7 @@ namespace stage
                 sfml_util::SoundManager::Instance()->Getsound_effect_set(
                     sfml_util::sound_effect_set::Switch).PlayRandom();
 
-                LoopManager::Instance()->Goto_LoadGameMenu();
+                LoopManager::Instance()->TransitionTo_LoadGameMenu();
                 return true;
             }
         }

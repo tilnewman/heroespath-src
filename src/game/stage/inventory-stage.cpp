@@ -1919,7 +1919,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     bool InventoryStage::HandleBack()
     {
-        game::LoopManager::Instance()->Goto_Previous(hasTakenActionSpellOrSong_);
+        game::LoopManager::Instance()->TransitionTo_Previous(hasTakenActionSpellOrSong_);
         return true;
     }
 

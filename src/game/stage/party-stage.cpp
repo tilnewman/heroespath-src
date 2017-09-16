@@ -213,7 +213,7 @@ namespace stage
 
     bool PartyStage::HandleCallback_BackButton()
     {
-        game::LoopManager::Instance()->Goto_CharacterCreation();
+        game::LoopManager::Instance()->TransitionTo_CharacterCreation();
         return true;
     }
 
@@ -701,7 +701,7 @@ namespace stage
         //to the Camp Stage anyway.
         //partyListBoxSPtr_->Clear();
 
-        LoopManager::Instance()->Goto_Camp();
+        LoopManager::Instance()->TransitionTo_Camp();
     }
 
 

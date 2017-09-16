@@ -98,7 +98,7 @@ namespace stage
     {
         if (PACKAGE.PTR_ == backButtonSPtr_.get())
         {
-            LoopManager::Instance()->Goto_MainMenu();
+            LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
         }
 
@@ -330,7 +330,7 @@ namespace stage
         {
             backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-            LoopManager::Instance()->Goto_MainMenu();
+            LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
         }
         else

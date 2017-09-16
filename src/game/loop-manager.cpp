@@ -587,86 +587,7 @@ namespace game
     }
 
 
-    void LoopManager::Goto_Intro()
-    {
-        TransitionTo_Intro();
-    }
-
-    void LoopManager::Goto_Credits()
-    {
-        TransitionTo_Credits();
-    }
-
-    void LoopManager::Goto_Exit()
-    {
-        TransitionTo_Exit();
-    }
-
-    void LoopManager::Goto_MainMenu()
-    {
-        TransitionTo_MainMenu();
-    }
-
-    void LoopManager::Goto_Settings()
-    {
-        TransitionTo_Settings();
-    }
-
-    void LoopManager::Goto_CharacterCreation()
-    {
-        TransitionTo_CharacterCreation();
-    }
-
-    void LoopManager::Goto_PartyCreation()
-    {
-        TransitionTo_PartyCreation();
-    }
-
-    void LoopManager::Goto_Inn()
-    {
-        TransitionTo_Inn();
-    }
-
-    void LoopManager::Goto_Camp()
-    {
-        TransitionTo_Camp();
-    }
-
-    void LoopManager::Goto_LoadGameMenu()
-    {
-        TransitionTo_LoadGameMenu();
-    }
-
-    void LoopManager::Goto_Combat(const bool WILL_ADVANCE_TURN)
-    {
-        TransitionTo_Combat(WILL_ADVANCE_TURN);
-    }
-
-    void LoopManager::Goto_Test()
-    {
-        TransitionTo_Test();
-    }
-
-    void LoopManager::Goto_Treasure()
-    {
-        TransitionTo_Treasure();
-    }
-
-    void LoopManager::Goto_Adventure()
-    {
-        TransitionTo_Adventure();
-    }
-
-    void LoopManager::Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
-                                     const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                                     const Phase::Enum             CURRENT_PHASE)
-    {
-        TransitionTo_Inventory(TURN_CREATURE_PTR,
-                               INVENTORY_CREATURE_PTR,
-                               CURRENT_PHASE);
-    }
-
-    void LoopManager::Goto_Previous(const bool WILL_ADVANCE_TURN)
+    void LoopManager::TransitionTo_Previous(const bool WILL_ADVANCE_TURN)
     {
         currentLoopSPtr_->Exit();
 
@@ -704,21 +625,21 @@ namespace game
     {
         switch (STATE)
         {
-            case LoopState::Settings:           { Goto_Settings(); break; }
-            case LoopState::MainMenu:           { Goto_MainMenu(); break; }
-            case LoopState::Intro:              { Goto_Intro(); break; }
-            case LoopState::Exit:               { Goto_Exit(); break; }
-            case LoopState::Credits:            { Goto_Credits(); break; }
-            case LoopState::PartyCreation:      { Goto_PartyCreation(); break; }
-            case LoopState::Camp:               { Goto_Camp(); break; }
-            case LoopState::LoadGameMenu:       { Goto_LoadGameMenu(); break; }
-            case LoopState::CharacterCreation:  { Goto_CharacterCreation(); break; }
-            case LoopState::Inn:                { Goto_Inn(); break; }
-            case LoopState::Combat:             { Goto_Combat(WILL_ADVANCE_TURN); break; }
-            case LoopState::Test:               { Goto_Test(); break; }
-            case LoopState::Treasure:           { Goto_Treasure(); break; }
+            case LoopState::Settings:           { TransitionTo_Settings(); break; }
+            case LoopState::MainMenu:           { TransitionTo_MainMenu(); break; }
+            case LoopState::Intro:              { TransitionTo_Intro(); break; }
+            case LoopState::Exit:               { TransitionTo_Exit(); break; }
+            case LoopState::Credits:            { TransitionTo_Credits(); break; }
+            case LoopState::PartyCreation:      { TransitionTo_PartyCreation(); break; }
+            case LoopState::Camp:               { TransitionTo_Camp(); break; }
+            case LoopState::LoadGameMenu:       { TransitionTo_LoadGameMenu(); break; }
+            case LoopState::CharacterCreation:  { TransitionTo_CharacterCreation(); break; }
+            case LoopState::Inn:                { TransitionTo_Inn(); break; }
+            case LoopState::Combat:             { TransitionTo_Combat(WILL_ADVANCE_TURN); break; }
+            case LoopState::Test:               { TransitionTo_Test(); break; }
+            case LoopState::Treasure:           { TransitionTo_Treasure(); break; }
             case LoopState::Inventory:
-            case LoopState::Adventure:          { Goto_Adventure(); break; }
+            case LoopState::Adventure:          { TransitionTo_Adventure(); break; }
             case LoopState::None:
             case LoopState::Popup:
             case LoopState::Query:
@@ -728,7 +649,7 @@ namespace game
                 M_HP_LOG("ERROR:  LoopManager::TransitionTo() called when STATE is "
                     << LoopState::ToString(STATE) << ".  Going to Main Menu...");
 
-                Goto_MainMenu();
+                TransitionTo_MainMenu();
                 break;
             }
         }

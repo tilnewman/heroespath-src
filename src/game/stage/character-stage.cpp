@@ -585,7 +585,7 @@ namespace stage
             return true;
         }
         else
-            LoopManager::Instance()->Goto_MainMenu();
+            LoopManager::Instance()->TransitionTo_MainMenu();
 
         return true;
     }
@@ -643,7 +643,7 @@ namespace stage
             return true;
         }
         else
-            LoopManager::Instance()->Goto_PartyCreation();
+            LoopManager::Instance()->TransitionTo_PartyCreation();
 
         return true;
     }
