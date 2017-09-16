@@ -127,7 +127,7 @@ namespace combat
         void IncrementTurn();
         void BeginCombatTasks();
         void EndCombatTasks();
-        void BeginTreasureStageTasks();
+        TreasureImage::Enum BeginTreasureStageTasks();
         void EndTreasureStageTasks();
 
         void HandleRunawayPlayer(const creature::CreaturePtr_t);

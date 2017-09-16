@@ -91,7 +91,6 @@ namespace stage
         void SetupTreasureImage(const combat::TreasureImage::Enum);
         const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
-        combat::TreasureImage::Enum GetInitialTreasureImageFromEnemyParty() const;
         
     private:
         //PhaseType   phase_;
@@ -103,6 +102,7 @@ namespace stage
         sf::Sprite  treasureSprite_;
         sf::Texture coinsTexture_;
         sf::Sprite  coinsSprite_;
+        combat::TreasureImage::Enum treasureImageType_;
         sfml_util::gui::TextRegionUPtr_t blurbTextRegionUPtr_;
     };
 

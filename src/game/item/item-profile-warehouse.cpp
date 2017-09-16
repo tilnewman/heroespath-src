@@ -379,11 +379,11 @@ namespace item
         profiles_.shrink_to_fit();
 
         M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " 
-            << RAW_COUNT << " raw profiles, "
-            << DUPLICATE_PROFILE_COUNT << " duplicate profiles, "
-            << profiles_.size() << " final profiles, with a vector capacity that is "
-            << ((profiles_.size() == profiles_.capacity()) ? "shrunk" : "NOT-shurnk")
-            << " to fit.");
+            << RAW_COUNT << " raw, "
+            << DUPLICATE_PROFILE_COUNT << " duplicate, and "
+            << profiles_.size() << " final profiles, with a vector that is "
+            << ((profiles_.size() == profiles_.capacity()) ? "" : "NOT ")
+            << "shrunk to fit.");
     }
 
 

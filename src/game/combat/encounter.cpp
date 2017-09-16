@@ -292,7 +292,7 @@ namespace combat
     }
 
 
-    void Encounter::BeginTreasureStageTasks()
+    TreasureImage::Enum Encounter::BeginTreasureStageTasks()
     {
         //At the end of this function:
         //  - All (non-bodypart) item pointers in deadNonPlayerPartyUPtr_ will be moved
@@ -329,7 +329,7 @@ namespace combat
         }
 
         //create cached treasure
-        TreasureFactory::Make(deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsCached_);
+        return TreasureFactory::Make(deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsCached_);
     }
 
 

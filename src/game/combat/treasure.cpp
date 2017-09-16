@@ -72,11 +72,13 @@ namespace combat
     }
 
 
-    TreasureImage::Enum TreasureFactory::Make(const non_player::CharacterPVec_t & CHARACTER_PVEC,
-                                              ItemCache &                         items_OutParam)
+    TreasureImage::Enum TreasureFactory::Make(
+        const non_player::CharacterPVec_t & CHARACTER_PVEC,
+        ItemCache &                         items_OutParam)
     {
         auto areAllDeadEnemiesNonCarriers{ true };
 
+        stats::Trait_t coinSum{ 0 };
         for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
             auto const OWNERSHIP_COMPLEXITY{
@@ -93,6 +95,8 @@ namespace combat
 
             auto const TREASURE_INFO{ MakeRandTreasureInfo(CHARACTER_PVEC) };
 
+            coinSum += TREASURE_INFO.Coin();
+
             items_OutParam.coins = TREASURE_INFO.Coin();
             items_OutParam.gems = TREASURE_INFO.Gem();
 
@@ -106,7 +110,11 @@ namespace combat
         }
         else
         {
-            return TreasureImage::LockboxClosed;
+            const stats::Trait_t LOCKBOX_COIN_SUM_MAX{
+                GameDataFile::Instance()->GetCopyInt("heroespath-treasure-lockbox-coin-max") };
+
+            return ((coinSum > LOCKBOX_COIN_SUM_MAX) ?
+                TreasureImage::ChestClosed : TreasureImage::LockboxClosed);
         }
     }
 

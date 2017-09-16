@@ -72,19 +72,23 @@ namespace combat
         //Decides what treasure the given creatures have and adds it
         //to items_OutParam.  It is assumed, but not required, that
         //items_OutParam is empty when Make is called.
-        static TreasureImage::Enum Make(const non_player::CharacterPVec_t & CHARACTER_PVEC,
-                                        ItemCache &                         items_OutParam);
+        static TreasureImage::Enum Make(
+            const non_player::CharacterPVec_t & CHARACTER_PVEC,
+            ItemCache &                         items_OutParam);
 
     private:
-        static const item::TreasureInfo MakeRandTreasureInfo(const non_player::CharacterPVec_t &);
+        static const item::TreasureInfo MakeRandTreasureInfo(
+            const non_player::CharacterPVec_t &);
 
-        static void SelectItems(const stats::Trait_t TREASURE_SCORE,
-                                const bool           IS_RELIGIOUS,
-                                ItemCache &          items_OutParam);
+        static void SelectItems(
+            const stats::Trait_t TREASURE_SCORE,
+            const bool           IS_RELIGIOUS,
+            ItemCache &          items_OutParam);
 
-        static void RemoveTreasureScoresHigherThan(const stats::Trait_t,
-                                                   item::ItemProfileVec_t &,
-                                                   const bool IS_RELIGIOUS);
+        static void RemoveTreasureScoresHigherThan(
+            const stats::Trait_t,
+            item::ItemProfileVec_t &,
+            const bool IS_RELIGIOUS);
 
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 

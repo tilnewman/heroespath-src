@@ -43,9 +43,7 @@
 
 //TODO TEMP REMOVE -once done testing
 #include "game/player/party.hpp"
-#include "game/player/character.hpp"
-#include "game/creature/name-info.hpp"
-#include "game/player/initial.hpp"
+#include "game/player/fake-party.hpp"
 #include "game/state/game-state.hpp"
 #include "game/state/game-state-factory.hpp"
 
@@ -76,6 +74,7 @@ namespace stage
         treasureSprite_     (),
         coinsTexture_       (),
         coinsSprite_        (),
+        treasureImageType_  (combat::TreasureImage::Count),
         blurbTextRegionUPtr_()
     {}
 
@@ -107,169 +106,21 @@ namespace stage
 
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
-        std::string errMsgIgnored{ "" };
-        player::PartyPtr_t partyPtr{ new player::Party() };
-        const int STAT_BASE_HIGH{18};
-        const int STAT_BASE_MED{9};
-        const int STAT_BASE_LOW{5};
-        const int STAT_RAND{6};
-        {
-            const stats::StatSet FIREBRAND_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                 STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "F"));
-
-            auto firebrandPtr{  new player::Character(FIREBRAND_NAME,
-                                                      creature::sex::Male,
-                                                      creature::BodyType::Make_Dragon(),
-                                                      creature::race::Dragon,
-                                                      creature::role::Firebrand,
-                                                      FIREBRAND_STATS) };
-
-            player::Initial::Setup(firebrandPtr);
-            partyPtr->Add(firebrandPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet BARD_STATS(STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_LOW + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND),
-                                            STAT_BASE_MED + misc::random::Int(STAT_RAND));
-
-            const std::string BARD_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "B"));
-
-            auto bardPtr{ new player::Character(BARD_NAME,
-                                                creature::sex::Male,
-                                                creature::BodyType::Make_Humanoid(),
-                                                creature::race::Human,
-                                                creature::role::Bard,
-                                                BARD_STATS) };
-
-            player::Initial::Setup(bardPtr);
-            partyPtr->Add(bardPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet BEASTMASTER_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                                   STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "G"));
-
-            auto bmPtr{ new player::Character(BEASTMASTER_NAME,
-                                              creature::sex::Male,
-                                              creature::BodyType::Make_Humanoid(),
-                                              creature::race::Human,
-                                              creature::role::Beastmaster,
-                                              BEASTMASTER_STATS) };
-
-            player::Initial::Setup(bmPtr);
-            partyPtr->Add(bmPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet THEIF_STATS(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND),
-                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-                                             STAT_BASE_LOW  +     misc::random::Int(STAT_RAND));
-
-            const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "T"));
-
-            auto thiefPtr{ new player::Character(THEIF_NAME,
-                                                 creature::sex::Male,
-                                                 creature::BodyType::Make_Humanoid(),
-                                                 creature::race::Gnome,
-                                                 creature::role::Thief,
-                                                 THEIF_STATS) };
-
-            player::Initial::Setup(thiefPtr);
-            partyPtr->Add(thiefPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet CLERIC_STATS(1             +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND),
-                                              STAT_BASE_MED +       misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
-                                              STAT_BASE_HIGH +      misc::random::Int(STAT_RAND));
-
-            const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "C"));
-
-            auto clericPtr{ new player::Character(CLERIC_NAME,
-                                                  creature::sex::Female,
-                                                  creature::BodyType::Make_Pixie(),
-                                                  creature::race::Pixie,
-                                                  creature::role::Cleric,
-                                                  CLERIC_STATS) };
-
-            player::Initial::Setup(clericPtr);
-            partyPtr->Add(clericPtr, errMsgIgnored);
-        }
-
-        {
-            const stats::StatSet SYLAVIN_STATS(STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-                                               STAT_BASE_MED  + misc::random::Int(STAT_RAND));
-
-            const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(
-                creature::NameInfo::Instance()->LargestName(),
-                creature::NameInfo::Instance()->LargestLetterString(),
-                "S"));
-
-            auto sylavinPtr{ new player::Character(SYLAVIN_NAME,
-                                                   creature::sex::Male,
-                                                   creature::BodyType::Make_Dragon(),
-                                                   creature::race::Dragon,
-                                                   creature::role::Sylavin,
-                                                   SYLAVIN_STATS) };
-
-            player::Initial::Setup(sylavinPtr);
-            partyPtr->Add(sylavinPtr, errMsgIgnored);
-        }
-        state::GameStateFactory::Instance()->NewGame(partyPtr);
+        state::GameStateFactory::Instance()->NewGame(game::player::FakeParty::Make());
 
         //TODO TEMP REMOVE -once finished testing
         //create a fake collection of dead creatures, using the predetermined initial encounter
         combat::Encounter::Instance()->BeginCombatTasks();
-
+        //
         auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
         for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
         {
             combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
         }
-
+        //
         combat::Encounter::Instance()->EndCombatTasks();
-        combat::Encounter::Instance()->BeginTreasureStageTasks();
+
+        treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
 
         //corpse image
         {
@@ -304,6 +155,7 @@ namespace stage
             corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
         }
 
+        /*
         //coins image
         sfml_util::LoadTexture(coinsTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-coins"));
@@ -318,9 +170,10 @@ namespace stage
         coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
 
         coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
+        */
 
         //set initial treasure image
-        SetupTreasureImage(GetInitialTreasureImageFromEnemyParty());
+        SetupTreasureImage(treasureImageType_);
 
         //TODO setup initial popup text, either
         // - all enemies ran away so there is no looting or treasure
@@ -577,21 +430,6 @@ namespace stage
                 throw std::range_error(ss.str());
             }
         }
-    }
-
-
-    combat::TreasureImage::Enum TreasureStage::GetInitialTreasureImageFromEnemyParty() const
-    {
-        //TODO
-        /*auto const DEAD_ENEMY_CHARACTERS_PVEC{
-            combat::Encounter::Instance()->DeadNonPlayerParty().Characters() };
-
-        for (auto const NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
-        {
-
-        }*/
-
-        return combat::TreasureImage::LockboxOpen;
     }
 
 }
