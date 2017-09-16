@@ -37,7 +37,7 @@
 
 namespace game
 {
-namespace combat
+namespace item
 {
 
     const std::string TreasureImage::ToString(const TreasureImage::Enum E)

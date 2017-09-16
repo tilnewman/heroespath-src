@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_TREASURE_HPP_INCLUDED
-#define GAME_COMBAT_TREASURE_HPP_INCLUDED
+#ifndef GAME_ITEM_TREASURE_HPP_INCLUDED
+#define GAME_ITEM_TREASURE_HPP_INCLUDED
 //
 // treasure.hpp
 //  Functions that determine what treasure a defeated enemy party has.
@@ -31,40 +31,28 @@
 #include "game/stats/types.hpp"
 #include "game/item/treasure-info.hpp"
 #include "game/item/item-profile.hpp"
-#include "game/combat/treasure-image-enum.hpp"
+#include "game/item/treasure-image-enum.hpp"
 
 #include <vector>
 
 
 namespace game
 {
-namespace item
-{
-    class Item;
-    using ItemPtr_t = Item *;
-    using ItemPVec_t = std::vector<ItemPtr_t>;
-}
 namespace non_player
 {
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
 }
-namespace combat
+namespace item
 {
 
-    //Handy container of items used by Encounter to store treasure
-    //both on enemy creatures and cached in the chest/lockbox.
-    struct ItemCache
-    {
-        ItemCache();
+    struct ItemCache;
 
-        stats::Trait_t coins {0};
-        stats::Trait_t gems {0};
-        item::ItemPVec_t items_pvec;
 
-        stats::Trait_t Weight() const;
-    };
+    class Item;
+    using ItemPtr_t = Item *;
+    using ItemPVec_t = std::vector<ItemPtr_t>;
 
 
     struct TreasureFactory
@@ -102,4 +90,4 @@ namespace combat
 }
 }
 
-#endif //GAME_COMBAT_TREASURE_HPP_INCLUDED
+#endif //GAME_ITEM_TREASURE_HPP_INCLUDED

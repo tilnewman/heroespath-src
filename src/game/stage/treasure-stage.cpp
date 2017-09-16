@@ -71,7 +71,7 @@ namespace stage
     :
         Stage               ("Treasure"),
         setupCountdown_     (100),
-        phase_              (PhaseType::PreSetupDelay),
+        phase_              (Phase::PreSetupDelay),
         bgTexture_          (),
         bgSprite_           (),
         corpseTexture_      (),
@@ -80,14 +80,19 @@ namespace stage
         treasureSprite_     (),
         coinsTexture_       (),
         coinsSprite_        (),
-        treasureImageType_  (combat::TreasureImage::Count),
-        blurbTextRegionUPtr_()
+        treasureImageType_  (item::TreasureImage::Count),
+        blurbTextRegionUPtr_(),
+        itemCacheHeld_      (),
+        itemCacheLockbox_ (),
+        state_              (State::AllRanAway)
     {}
 
 
     TreasureStage::~TreasureStage()
     {
-        combat::Encounter::Instance()->EndTreasureStageTasks();
+        combat::Encounter::Instance()->EndTreasureStageTasks(
+            itemCacheHeld_, itemCacheLockbox_);
+
         ClearAllEntities();
     }
 
@@ -149,11 +154,11 @@ namespace stage
     }
 
 
-    void TreasureStage::SetupTreasureImage(const combat::TreasureImage::Enum E)
+    void TreasureStage::SetupTreasureImage(const item::TreasureImage::Enum E)
     {
         //treasure image
         sfml_util::LoadTexture(treasureTexture_,
-            GameDataFile::Instance()->GetMediaPath(combat::TreasureImage::ToKey(E)));
+            GameDataFile::Instance()->GetMediaPath(item::TreasureImage::ToKey(E)));
 
         treasureSprite_.setTexture(treasureTexture_);
 
@@ -186,8 +191,8 @@ namespace stage
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
 
         //coins image
-        if ((E == combat::TreasureImage::ChestOpen) ||
-            (E == combat::TreasureImage::LockboxOpen))
+        if ((E == item::TreasureImage::ChestOpen) ||
+            (E == item::TreasureImage::LockboxOpen))
         {
             auto const COINS_LEFT{ TREASURE_IMAGE_LEFT +
                 (treasureSprite_.getGlobalBounds().width * 0.80f) };
@@ -391,7 +396,7 @@ namespace stage
 
     void TreasureStage::SetupAfterDelay()
     {
-        phase_ = PhaseType::InitialSetup;
+        phase_ = Phase::InitialSetup;
 
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
@@ -410,69 +415,102 @@ namespace stage
         combat::Encounter::Instance()->EndCombatTasks();
 
         treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
+        itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
+        itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
 
-        //corpse image
-        {
-            sfml_util::LoadTexture(corpseTexture_,
-                GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
+        SetupCorpseImage();
+        SetupTreasureImage(treasureImageType_);
+        DetermineTreasureAvailableState();
 
-            corpseSprite_.setTexture(corpseTexture_);
+        
+    }
 
-            auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-            auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
-            auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
-            auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
-
-            auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
-                corpseSprite_.getLocalBounds().width };
-
-            corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-            if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
-            {
-                auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
-                    corpseSprite_.getLocalBounds().height };
-
-                corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
-            }
-
-            auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
-                (corpseSprite_.getGlobalBounds().width * 0.5f) };
-
-            auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
-                corpseSprite_.getGlobalBounds().height) };
-
-            corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
-            corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
-        }
-
-        /*
-        //coins image
+    void TreasureStage::SetupCoinsImage()
+    {
         sfml_util::LoadTexture(coinsTexture_,
-        GameDataFile::Instance()->GetMediaPath("media-images-coins"));
+            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
 
         coinsSprite_.setTexture(coinsTexture_);
 
+        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
+        
         auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
 
         auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
-        2.0f };
+            2.0f };
 
         coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
 
         coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
-        */
+    }
 
-        //set initial treasure image
-        SetupTreasureImage(treasureImageType_);
 
-        //TODO setup initial popup text, either
-        // - all enemies ran away so there is no looting or treasure
-        // - x bodies lay dead before you on the battlefield, loot their bodies for equipment?
-        // - x bodies lay dead before you on the battlefield, but they were animals so they
-        //     have no equipment or treasure to loot.  Press a key to continue adventuring.
+    void TreasureStage::DetermineTreasureAvailableState()
+    {
+        auto const DID_ALL_ENEMIES_RUN_AWAY{
+            combat::Encounter::Instance()->DidAllEnemiesRunAway() };
 
+        if (DID_ALL_ENEMIES_RUN_AWAY)
+        {
+            state_ = State::AllRanAway;
+        }
+        else
+        {
+            if ((itemCacheHeld_.Empty() == false) && (itemCacheLockbox_.Empty() == false))
+            {
+                state_ = State::NoTreasure;
+            }
+            else if ((itemCacheHeld_.Empty() == false) && itemCacheLockbox_.Empty())
+            {
+                state_ = State::WornOnly;
+            }
+            else if (itemCacheHeld_.Empty() && (itemCacheLockbox_.Empty() == false))
+            {
+                state_ = State::LockboxOnly;
+            }
+            else
+            {
+                state_ = State::WornAndLockbox;
+            }
+        }
+    }
+
+
+    void TreasureStage::SetupCorpseImage()
+    {
+        sfml_util::LoadTexture(corpseTexture_,
+            GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
+
+        corpseSprite_.setTexture(corpseTexture_);
+
+        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
+        auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
+
+        auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
+        auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
+
+        auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
+            corpseSprite_.getLocalBounds().width };
+
+        corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+
+        if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
+        {
+            auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
+                corpseSprite_.getLocalBounds().height };
+
+            corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
+        }
+
+        auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
+            (corpseSprite_.getGlobalBounds().width * 0.5f) };
+
+        auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
+            corpseSprite_.getGlobalBounds().height) };
+
+        corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
+        corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
     }
 
 }

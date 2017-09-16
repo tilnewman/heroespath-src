@@ -33,12 +33,12 @@
 #include "game/item/item.hpp"
 #include "game/item/item-factory.hpp"
 #include "game/item/item-profile-warehouse.hpp"
+#include "game/item/item-cache.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/non-player/character.hpp"
 #include "game/non-player/ownership-profile.hpp"
-
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -48,29 +48,8 @@
 
 namespace game
 {
-namespace combat
+namespace item
 {
-
-    ItemCache::ItemCache()
-    :
-        coins        (0),
-        gems         (0),
-        items_pvec   ()
-    {}
-
-
-    game::stats::Trait_t ItemCache::Weight() const
-    {
-        game::stats::Trait_t sum{ 0 };
-
-        for (auto const NEXT_ITEM_PTR : items_pvec)
-        {
-            sum += NEXT_ITEM_PTR->Weight();
-        }
-
-        return sum;
-    }
-
 
     TreasureImage::Enum TreasureFactory::Make(
         const non_player::CharacterPVec_t & CHARACTER_PVEC,
@@ -138,7 +117,7 @@ namespace combat
             static_cast<float>(tInfoSum.Coin()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
-        auto const COIN{ COIN_BASE + misc::random::Int(COIN_RAND_BASE) };
+        auto const COIN{ COIN_BASE + ::misc::random::Int(COIN_RAND_BASE) };
 
         auto const GEM_BASE{ static_cast<stats::Trait_t>(
             static_cast<float>(tInfoSum.Gem()) *
@@ -148,7 +127,7 @@ namespace combat
             static_cast<float>(tInfoSum.Gem()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
-        auto const GEM{ GEM_BASE + misc::random::Int(GEM_RAND_BASE) };
+        auto const GEM{ GEM_BASE + ::misc::random::Int(GEM_RAND_BASE) };
 
         auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
             static_cast<float>(tInfoSum.Magic()) *
@@ -158,7 +137,7 @@ namespace combat
             static_cast<float>(tInfoSum.Magic()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
-        auto const MAGIC{ MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE) };
+        auto const MAGIC{ MAGIC_BASE + ::misc::random::Int(MAGIC_RAND_BASE) };
 
         auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
             static_cast<float>(tInfoSum.Religious()) *
@@ -168,7 +147,7 @@ namespace combat
             static_cast<float>(tInfoSum.Religious()) *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
-        auto const RELIGIOUS{ RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE) };
+        auto const RELIGIOUS{ RELIGIOUS_BASE + ::misc::random::Int(RELIGIOUS_RAND_BASE) };
 
         return item::TreasureInfo(COIN, GEM, MAGIC, RELIGIOUS);
     }
@@ -258,7 +237,7 @@ namespace combat
             weightSum += TreasureScoreToWeight(NEXT_PROFILE.TreasureScore());
         }
 
-        auto const RAND{ misc::random::Double(weightSum) };
+        auto const RAND{ ::misc::random::Double(weightSum) };
 
         double runningWeight{ 0.0 };
         for (std::size_t i(0); i<profiles.size(); ++i)

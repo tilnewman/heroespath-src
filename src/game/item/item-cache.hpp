@@ -22,36 +22,52 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED
-#define GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED
+#ifndef GAME_ITEM_ITEMCACHE_HPP_INCLUDED
+#define GAME_ITEM_ITEMCACHE_HPP_INCLUDED
 //
-// treasure-image-enum.hpp
+// item-cache.hpp
 //
-#include <string>
+#include "game/stats/trait.hpp"
+
+#include <vector>
 
 
 namespace game
 {
-namespace combat
+namespace item
 {
 
-    struct TreasureImage
-    {
-        enum Enum
-        {
-            BonePile = 0,
-            ChestClosed,
-            ChestOpen,
-            LockboxClosed,
-            LockboxOpen,
-            Count
-        };
+    class Item;
+    using ItemPtr_t = Item *;
+    using ItemPVec_t = std::vector<ItemPtr_t>;
 
-        static const std::string ToString(const TreasureImage::Enum);
-        static const std::string ToKey(const TreasureImage::Enum);
+
+    //Handy container of items used by Encounter to store treasure
+    //both on enemy creatures and cached in the chest/lockbox.
+    struct ItemCache
+    {
+        ItemCache();
+
+        stats::Trait_t coins{ 0 };
+        stats::Trait_t gems{ 0 };
+        item::ItemPVec_t items_pvec;
+
+        //coins and gems weigh nothing
+        stats::Trait_t Weight() const;
+
+        inline bool Empty() const
+        {
+            return ((0 == coins) && (0 == gems) && items_pvec.empty());
+        }
+
+        inline bool ItemsOnly() const
+        {
+            return ((0 == coins) && (0 == gems) && (items_pvec.empty() == false));
+        }
     };
 
 }
 }
 
-#endif //GAME_COMBAT_TREASUREIMAGEENUM_HPP_INCLUDED
+
+#endif //GAME_ITEM_ITEMCACHE_HPP_INCLUDED

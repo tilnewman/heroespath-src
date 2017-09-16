@@ -30,7 +30,8 @@
 //
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/turn-info.hpp"
-#include "game/combat/treasure.hpp"
+#include "game/item/item-cache.hpp"
+#include "game/item/treasure-image-enum.hpp"
 
 #include <memory>
 #include <vector>
@@ -127,11 +128,20 @@ namespace combat
         void IncrementTurn();
         void BeginCombatTasks();
         void EndCombatTasks();
-        TreasureImage::Enum BeginTreasureStageTasks();
-        void EndTreasureStageTasks();
+
+        item::TreasureImage::Enum BeginTreasureStageTasks();
+        
+        void EndTreasureStageTasks(
+            const item::ItemCache & ITEM_CACHE_WORN,
+            const item::ItemCache & ITEM_CACHE_OWNED);
 
         void HandleRunawayPlayer(const creature::CreaturePtr_t);
         void HandleRunawayNonPlayer(const creature::CreaturePtr_t);
+
+        item::ItemCache TakeDeadNonPlayerItemsHeldCache();
+        item::ItemCache TakeDeadNonPlayerItemsLockboxCache();
+
+        bool DidAllEnemiesRunAway() const;
 
     private:
         void GenerateFirstEncounter();
@@ -166,10 +176,10 @@ namespace combat
         creature::CreaturePtr_t  turnCreaturePtr_;
 
         //contains all items the dead enemies were wearing or holding when killed
-        ItemCache deadNonPlayerItemsHeld_;
+        item::ItemCache deadNonPlayerItemsHeld_;
 
         //conatins all the items the dead enemies were holding in the chest/lockbox
-        ItemCache deadNonPlayerItemsCached_;
+        item::ItemCache deadNonPlayerItemsLockbox_;
     };
 
 }

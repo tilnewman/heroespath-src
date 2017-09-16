@@ -45,6 +45,7 @@
 #include "game/creature/algorithms.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-warehouse.hpp"
+#include "game/item/treasure.hpp"
 
 #include "misc/vectors.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -75,7 +76,7 @@ namespace combat
         turnInfoMap_              (),
         turnCreaturePtr_          (),
         deadNonPlayerItemsHeld_   (),
-        deadNonPlayerItemsCached_ ()
+        deadNonPlayerItemsLockbox_ ()
     {
         M_HP_LOG_DBG("Singleton Construction: Encounter");
         FreeThenResetLivingNonPlayerParty();
@@ -292,14 +293,14 @@ namespace combat
     }
 
 
-    TreasureImage::Enum Encounter::BeginTreasureStageTasks()
+    item::TreasureImage::Enum Encounter::BeginTreasureStageTasks()
     {
         //At the end of this function:
         //  - All (non-bodypart) item pointers in deadNonPlayerPartyUPtr_ will be moved
         //    to deadNonPlayerItemsHeld_.
         //
         //  - All generated item pointers for the treasure owned by deadNonPlayerPartyUPtr_
-        //    will be in deadNonPlayerItemsCached_.
+        //    will be in deadNonPlayerItemsLockbox_.
         //
 
         //move non-bodypart item pointers into deadNonPlayerItemsHeld_
@@ -329,16 +330,22 @@ namespace combat
         }
 
         //create cached treasure
-        return TreasureFactory::Make(deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsCached_);
+        return item::TreasureFactory::Make(
+            deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsLockbox_);
     }
 
 
-    void Encounter::EndTreasureStageTasks()
+    void Encounter::EndTreasureStageTasks(
+        const item::ItemCache & ITEM_CACHE_WORN,
+        const item::ItemCache & ITEM_CACHE_OWNED)
     {
+        deadNonPlayerItemsHeld_ = ITEM_CACHE_WORN;
+        deadNonPlayerItemsLockbox_ = ITEM_CACHE_OWNED;
+
         //At the end of this function:
-        //  - All item pointers in deadNonPlayerItemsHeld_ and deadNonPlayerItemsCached_
+        //  - All item pointers in deadNonPlayerItemsHeld_ and deadNonPlayerItemsLockbox_
         //    will be free'd by the ItemWarehouse.
-        //  - Everything in deadNonPlayerItemsHeld_ and deadNonPlayerItemsCached_ will be
+        //  - Everything in deadNonPlayerItemsHeld_ and deadNonPlayerItemsLockbox_ will be
         //    zero'd.
         //  - deadNonPlayerPartyUPtr_ will be empty and all it's held pointers free'd.
         //
@@ -352,14 +359,14 @@ namespace combat
         deadNonPlayerItemsHeld_.coins = 0;
         deadNonPlayerItemsHeld_.gems = 0;
 
-        for (auto nextItemPtr : deadNonPlayerItemsCached_.items_pvec)
+        for (auto nextItemPtr : deadNonPlayerItemsLockbox_.items_pvec)
         {
             item::ItemWarehouse::Instance()->Free(nextItemPtr);
         }
 
-        deadNonPlayerItemsCached_.items_pvec.clear();
-        deadNonPlayerItemsCached_.coins = 0;
-        deadNonPlayerItemsCached_.gems = 0;
+        deadNonPlayerItemsLockbox_.items_pvec.clear();
+        deadNonPlayerItemsLockbox_.coins = 0;
+        deadNonPlayerItemsLockbox_.gems = 0;
 
         FreeThenResetDeadNonPlayerParty();
     }
@@ -501,6 +508,29 @@ namespace combat
         }
 
         nonPlayerPartyUPtr = std::make_unique<non_player::Party>();
+    }
+
+
+    item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
+    {
+        item::ItemCache copy{ deadNonPlayerItemsHeld_ };
+        deadNonPlayerItemsHeld_ = item::ItemCache();
+        return copy;
+    }
+
+
+    item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
+    {
+        item::ItemCache copy{ deadNonPlayerItemsLockbox_ };
+        deadNonPlayerItemsLockbox_ = item::ItemCache();
+        return copy;
+    }
+
+
+    bool Encounter::DidAllEnemiesRunAway() const
+    {
+        return ((runawayNonPlayerPartyUPtr_->Characters().empty() == false) &&
+                deadNonPlayerPartyUPtr_->Characters().empty());
     }
 
 }

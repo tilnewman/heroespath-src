@@ -33,7 +33,8 @@
 
 #include "game/i-popup-callback.hpp"
 #include "game/creature/race-enum.hpp"
-#include "game/combat/treasure-image-enum.hpp"
+#include "game/item/treasure-image-enum.hpp"
+#include "game/item/item-cache.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -66,7 +67,16 @@ namespace stage
         //prevent copy assignment
         TreasureStage & operator=(const TreasureStage &) =delete;
 
-        enum PhaseType
+        enum State
+        {
+            AllRanAway,
+            NoTreasure,
+            WornOnly,
+            LockboxOnly,
+            WornAndLockbox
+        };
+
+        enum Phase
         {
             PreSetupDelay = 0,
             InitialSetup,
@@ -90,21 +100,23 @@ namespace stage
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const game::callback::PopupResponse &);
 
-
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
     private:
-        void SetupTreasureImage(const combat::TreasureImage::Enum);
+        void SetupTreasureImage(const item::TreasureImage::Enum);
         const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
-        
+        void SetupCoinsImage();
+        void DetermineTreasureAvailableState();
+        void SetupCorpseImage();
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
     private:
         int setupCountdown_;
-        PhaseType   phase_;
+        Phase phase_;
         sf::Texture bgTexture_;
         sf::Sprite  bgSprite_;
         sf::Texture corpseTexture_;
@@ -113,8 +125,11 @@ namespace stage
         sf::Sprite  treasureSprite_;
         sf::Texture coinsTexture_;
         sf::Sprite  coinsSprite_;
-        combat::TreasureImage::Enum treasureImageType_;
+        item::TreasureImage::Enum treasureImageType_;
         sfml_util::gui::TextRegionUPtr_t blurbTextRegionUPtr_;
+        item::ItemCache itemCacheHeld_;
+        item::ItemCache itemCacheLockbox_;
+        State state_;
     };
 
 }
