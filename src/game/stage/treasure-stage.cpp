@@ -421,8 +421,6 @@ namespace stage
         SetupCorpseImage();
         SetupTreasureImage(treasureImageType_);
         DetermineTreasureAvailableState();
-
-        
     }
 
 

@@ -434,6 +434,21 @@ namespace game
     }
 
 
+    void LoopManager::TransitionTo_Adventure()
+    {
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Adventure,
+            std::make_shared<game::stage::LoopCmd_AddStage_Adventure>(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::None);
+    }
+
+
     void LoopManager::TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                                              const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
                                              const Phase::Enum             CURRENT_PHASE)
@@ -637,6 +652,11 @@ namespace game
         TransitionTo_Treasure();
     }
 
+    void LoopManager::Goto_Adventure()
+    {
+        TransitionTo_Adventure();
+    }
+
     void LoopManager::Goto_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                                      const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
                                      const Phase::Enum             CURRENT_PHASE)
@@ -698,7 +718,7 @@ namespace game
             case LoopState::Test:               { Goto_Test(); break; }
             case LoopState::Treasure:           { Goto_Treasure(); break; }
             case LoopState::Inventory:
-            case LoopState::Adventure:
+            case LoopState::Adventure:          { Goto_Adventure(); break; }
             case LoopState::None:
             case LoopState::Popup:
             case LoopState::Query:

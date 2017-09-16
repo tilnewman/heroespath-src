@@ -48,7 +48,7 @@ namespace game
             case LoadGameMenu:      { return "LoadGameMenu"; }
             case CharacterCreation: { return "CharacterCreation"; }
             case PartyCreation:     { return "PartyCreation"; }
-            case Adventure:         { return "AdventureScreen"; }
+            case Adventure:         { return "Adventure"; }
             case Combat:            { return "Combat"; }
             case Camp:              { return "Camp"; }
             case Inn:               { return "Inn"; }
