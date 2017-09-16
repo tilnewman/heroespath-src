@@ -522,6 +522,22 @@ namespace gui
     }
 
 
+    const game::PopupInfo PopupManager::CreateItemProfilePleaseWaitPopupInfo(
+        const std::string & POPUP_NAME) const
+    {
+        return game::PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                "Please Wait",
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Normal()),
+            sfml_util::PopupButtons::None,
+            sfml_util::PopupImage::Banner,
+            1.0f,
+            game::Popup::ItemProfilePleaseWait);
+    }
+
+
     void PopupManager::Texture(const PopupImage::Enum PI, sf::Texture & texture) const
     {
         switch (PI)

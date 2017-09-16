@@ -482,7 +482,7 @@ namespace game
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(currentLoopSPtr_, true) );
         }
 
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(currentLoopSPtr_, true) );
+        //cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(currentLoopSPtr_, true) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(currentLoopSPtr_, NEW_STATE) );
 
@@ -511,7 +511,7 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(currentLoopSPtr_) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>(currentLoopSPtr_) );
 
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(currentLoopSPtr_, false) );
+        //cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(currentLoopSPtr_, false) );
 
         if (WILL_RESTORE_MOUSE)
         {

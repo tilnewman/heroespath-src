@@ -51,6 +51,7 @@ namespace game
             case MusicSheet:                    { return "MusicSheet"; }
             case CombatOver:                    { return "CombatOver"; }
             case SystemError:                   { return "SystemError"; }
+            case ItemProfilePleaseWait:         { return "ItemProfilePleaseWait"; }
             case Count:
             default:
             {

@@ -75,6 +75,8 @@ namespace item
         void Setup_LogAndThrowOnInvalid() const;
         void Setup_LogStatistics() const;
 
+        inline std::size_t Count() const { return profiles_.size(); }
+
         const ItemProfileVec_t & Get();
 
         static int Score(const stats::TraitSet &);

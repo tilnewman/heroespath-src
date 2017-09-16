@@ -156,6 +156,8 @@ namespace sfml_util
 
         bool HandleSelect();
 
+        void ItemProfileSetup();
+
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
         static const float MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
@@ -282,6 +284,9 @@ namespace sfml_util
         sf::Sprite combatBgSprite_;
         gui::TextRegionUPtr_t titleUPtr_;
         gui::TextRegionUPtr_t descUPtr_;
+
+        //members supporting ItemProfilePleaseWait
+        int drawCountdown_;
     };
 
     using PopupStagePtr_t = PopupStage *;

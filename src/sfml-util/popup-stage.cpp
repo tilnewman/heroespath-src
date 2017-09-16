@@ -57,6 +57,7 @@
 #include "game/spell/spell-base.hpp"
 #include "game/song/song.hpp"
 #include "game/game-data-file.hpp"
+#include "game/item/item-profile-warehouse.hpp"
 
 #include "misc/random.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -69,26 +70,17 @@
 namespace sfml_util
 {
 
-    const float     PopupStage::IMAGE_SLIDER_SPEED_{ 4.0f };
-
     //any negative number will work here
-    const int       PopupStage::NUMBER_SELECT_INVALID_{ -1 };
-
-    const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_{ 2.0f };
-
-    const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.85f };
-
-    const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_{ 0.9f };
-
-    const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_{ 6.0f };
-
-    const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_{ 192 };
-
-    const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_{ 32 };
-
-    const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_{ sf::Color(127, 32, 32) };
-
-    const float     PopupStage::SPELL_WARNING_DURATION_SEC_{ 2.0f };
+    const int       PopupStage::NUMBER_SELECT_INVALID_                      { -1 };
+    const float     PopupStage::IMAGE_SLIDER_SPEED_                         { 4.0f };
+    const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_               { 2.0f };
+    const float     PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_     { 0.85f };
+    const float     PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_    { 0.9f };
+    const float     PopupStage::SPELLBOOK_COLOR_FADE_SPEED_                 { 6.0f };
+    const sf::Uint8 PopupStage::SPELLBOOK_IMAGE_ALPHA_                      { 192 };
+    const sf::Uint8 PopupStage::ACCENT_IMAGE_ALPHA_                         { 32 };
+    const sf::Color PopupStage::SPELL_UNABLE_TEXT_COLOR_                { sf::Color(127, 32, 32) };
+    const float     PopupStage::SPELL_WARNING_DURATION_SEC_                 { 2.0f };
 
 
     PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO,
@@ -203,7 +195,8 @@ namespace sfml_util
         combatBgTexture_           (),
         combatBgSprite_            (),
         titleUPtr_                 (),
-        descUPtr_                  ()
+        descUPtr_                  (),
+        drawCountdown_             (3)
     {
         backgroundSprite_.setTexture(backgroundTexture_);
     }
@@ -1532,6 +1525,17 @@ namespace sfml_util
 
     void PopupStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
+        if (POPUP_INFO_.Type() == game::Popup::ItemProfilePleaseWait)
+        {
+            if (drawCountdown_ > 0)
+            {
+                if (0 == --drawCountdown_)
+                {
+                    ItemProfileSetup();
+                }
+            }
+        }
+
         if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
         {
             target.draw(box_, STATES);
@@ -3096,6 +3100,17 @@ namespace sfml_util
 
             return true;
         }
+    }
+
+
+    void PopupStage::ItemProfileSetup()
+    {
+        if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
+        {
+            game::item::ItemProfileWarehouse::Instance()->Setup();
+        }
+
+        game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
     }
 
 }

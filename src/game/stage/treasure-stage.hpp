@@ -57,7 +57,8 @@ namespace stage
     //A Stage class that allows starting the game
     class TreasureStage
     :
-        public sfml_util::Stage
+        public sfml_util::Stage,
+        public game::callback::IPopupHandler_t
     {
         //prevent copy construction
         TreasureStage(const TreasureStage &) =delete;
@@ -67,7 +68,9 @@ namespace stage
 
         enum PhaseType
         {
-            InitialSetup = 0,
+            PreSetupDelay = 0,
+            InitialSetup,
+            InitialImagesFadeIn,
             AwardExperience,
             AwardTitles,
             WaitWithoutTreasure,
@@ -84,6 +87,10 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
+        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual bool HandleCallback(const game::callback::PopupResponse &);
+
+
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
@@ -91,9 +98,13 @@ namespace stage
         void SetupTreasureImage(const combat::TreasureImage::Enum);
         const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
+        void SetupAfterDelay();
         
     private:
-        //PhaseType   phase_;
+        static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
+    private:
+        int setupCountdown_;
+        PhaseType   phase_;
         sf::Texture bgTexture_;
         sf::Sprite  bgSprite_;
         sf::Texture corpseTexture_;

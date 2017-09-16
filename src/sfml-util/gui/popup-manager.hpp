@@ -243,6 +243,9 @@ namespace gui
             const std::string & TECH_ERROR_MSG,
             const std::string & TITLE_MSG = "") const;
 
+        const game::PopupInfo CreateItemProfilePleaseWaitPopupInfo(
+            const std::string & POPUP_NAME) const;
+
         //throws range error upon unknown enum value
         void Texture(const PopupImage::Enum, sf::Texture &) const;
 

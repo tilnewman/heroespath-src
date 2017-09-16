@@ -40,6 +40,7 @@
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/item/item-profile-warehouse.hpp"
 
 //TODO TEMP REMOVE -once done testing
 #include "game/player/party.hpp"
@@ -62,10 +63,15 @@ namespace game
 namespace stage
 {
 
+    const std::string TreasureStage::POPUP_NAME_ITEMPROFILE_PLEASEWAIT_{
+        "PopupName_ItemProfilePleaseWait" };
+
+
     TreasureStage::TreasureStage()
     :
         Stage               ("Treasure"),
-        //phase_              (PhaseType::InitialSetup),
+        setupCountdown_     (100),
+        phase_              (PhaseType::PreSetupDelay),
         bgTexture_          (),
         bgSprite_           (),
         corpseTexture_      (),
@@ -83,6 +89,18 @@ namespace stage
     {
         combat::Encounter::Instance()->EndTreasureStageTasks();
         ClearAllEntities();
+    }
+
+
+    bool TreasureStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
+    {
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEMPROFILE_PLEASEWAIT_)
+        {
+            SetupAfterDelay();
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -104,87 +122,25 @@ namespace stage
             bgSprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         }
 
-        //TEMP TODO REMOVE -once done testing
-        //create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(game::player::FakeParty::Make());
-
-        //TODO TEMP REMOVE -once finished testing
-        //create a fake collection of dead creatures, using the predetermined initial encounter
-        combat::Encounter::Instance()->BeginCombatTasks();
-        //
-        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
-        for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
-        {
-            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
-        }
-        //
-        combat::Encounter::Instance()->EndCombatTasks();
-
-        treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
-
-        //corpse image
-        {
-            sfml_util::LoadTexture(corpseTexture_,
-                GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
-
-            corpseSprite_.setTexture(corpseTexture_);
-
-            auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
-            auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
-
-            auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
-                corpseSprite_.getLocalBounds().width };
-
-            corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-            if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
-            {
-                auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
-                    corpseSprite_.getLocalBounds().height };
-
-                corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
-            }
-
-            auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
-                (corpseSprite_.getGlobalBounds().width * 0.5f) };
-
-            auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
-                corpseSprite_.getGlobalBounds().height) };
-
-            corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
-            corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
-        }
-
-        /*
-        //coins image
-        sfml_util::LoadTexture(coinsTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
-
-        coinsSprite_.setTexture(coinsTexture_);
-
-        auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
-
-        auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
-            2.0f };
-
-        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
-
-        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
-        */
-
-        //set initial treasure image
-        SetupTreasureImage(treasureImageType_);
-
-        //TODO setup initial popup text, either
-        // - all enemies ran away so there is no looting or treasure
-        // - x bodies lay dead before you on the battlefield, loot their bodies for equipment?
-        // - x bodies lay dead before you on the battlefield, but they were animals so they
-        //     have no equipment or treasure to loot.  Press a key to continue adventuring.
+        //see SetupAfterDelay()
     }
 
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
+        if (setupCountdown_ > 0)
+        {
+            if (0 == --setupCountdown_)
+            {
+                if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
+                {
+                    LoopManager::Instance()->PopupWaitBegin(this,
+                        sfml_util::gui::PopupManager::Instance()->
+                        CreateItemProfilePleaseWaitPopupInfo(POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
+                }
+            }
+        }
+
         target.draw(bgSprite_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
@@ -430,6 +386,93 @@ namespace stage
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    void TreasureStage::SetupAfterDelay()
+    {
+        phase_ = PhaseType::InitialSetup;
+
+        //TEMP TODO REMOVE -once done testing
+        //create a party of characters to work with during testing
+        state::GameStateFactory::Instance()->NewGame(game::player::FakeParty::Make());
+
+        //TODO TEMP REMOVE -once finished testing
+        //create a fake collection of dead creatures, using the predetermined initial encounter
+        combat::Encounter::Instance()->BeginCombatTasks();
+        //
+        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
+        for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
+        {
+            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
+        }
+        //
+        combat::Encounter::Instance()->EndCombatTasks();
+
+        treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
+
+        //corpse image
+        {
+            sfml_util::LoadTexture(corpseTexture_,
+                GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
+
+            corpseSprite_.setTexture(corpseTexture_);
+
+            auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
+            auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
+
+            auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
+            auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
+
+            auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
+                corpseSprite_.getLocalBounds().width };
+
+            corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+
+            if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
+            {
+                auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
+                    corpseSprite_.getLocalBounds().height };
+
+                corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
+            }
+
+            auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
+                (corpseSprite_.getGlobalBounds().width * 0.5f) };
+
+            auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
+                corpseSprite_.getGlobalBounds().height) };
+
+            corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
+            corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
+        }
+
+        /*
+        //coins image
+        sfml_util::LoadTexture(coinsTexture_,
+        GameDataFile::Instance()->GetMediaPath("media-images-coins"));
+
+        coinsSprite_.setTexture(coinsTexture_);
+
+        auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
+
+        auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
+        2.0f };
+
+        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
+
+        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
+        */
+
+        //set initial treasure image
+        SetupTreasureImage(treasureImageType_);
+
+        //TODO setup initial popup text, either
+        // - all enemies ran away so there is no looting or treasure
+        // - x bodies lay dead before you on the battlefield, loot their bodies for equipment?
+        // - x bodies lay dead before you on the battlefield, but they were animals so they
+        //     have no equipment or treasure to loot.  Press a key to continue adventuring.
+
     }
 
 }

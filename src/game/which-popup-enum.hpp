@@ -50,6 +50,7 @@ namespace game
             MusicSheet,
             CombatOver,
             SystemError,
+            ItemProfilePleaseWait,
             Count
         };
 
