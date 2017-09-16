@@ -34,6 +34,7 @@
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/response-enum.hpp"
+#include "sfml-util/loop.hpp"
 
 #include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -119,37 +120,37 @@ namespace game
 
         inline void AddStage(sfml_util::IStagePtr_t stagePtr)
         {
-            currentLoopSPtr_->AddStage(stagePtr);
+            loop_.AddStage(stagePtr);
         }
 
         inline bool IsFading() const
         {
-            return currentLoopSPtr_->IsFading();
+            return loop_.IsFading();
         }
 
         inline bool GetIgnoreMouse() const
         {
-            return currentLoopSPtr_->GetIgnoreMouse();
+            return loop_.GetIgnoreMouse();
         }
 
         inline void SetIgnoreMouse(const bool B)
         {
-            currentLoopSPtr_->SetIgnoreMouse(B);
+            loop_.SetIgnoreMouse(B);
         }
 
         inline void TestingStrAppend(const std::string & S)
         {
-            currentLoopSPtr_->TestingStrAppend(S);
+            loop_.TestingStrAppend(S);
         }
 
         inline void TestingStrIncrement(const std::string & S)
         {
-            currentLoopSPtr_->TestingStrIncrement(S);
+            loop_.TestingStrIncrement(S);
         }
 
         inline void TestingImageSet(const sf::Texture & T)
         {
-            currentLoopSPtr_->TestingImageSet(T);
+            loop_.TestingImageSet(T);
         }
 
         inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
@@ -171,6 +172,11 @@ namespace game
         void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const Phase::Enum             CURRENT_PHASE);
+
+        inline sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *)
+        {
+            return loop_;
+        }
 
     private:
         void TransitionTo_Intro();
@@ -201,7 +207,7 @@ namespace game
         //
         LoopState::Enum           state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
-        sfml_util::ILoopSPtr_t    currentLoopSPtr_;
+        sfml_util::Loop           loop_;
         sfml_util::Response::Enum popupResponse_;
         std::size_t               popupSelection_;
         LoopState::Enum           prevState_;

@@ -29,7 +29,7 @@
 //  Code that encapsulates a command that performs some action on a Loop object.
 //
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/iloop.hpp"
+#include "sfml-util/loop.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sound-manager.hpp"
 
@@ -73,7 +73,7 @@ namespace sfml_util
         LoopCmd & operator=(const LoopCmd &) =delete;
 
     public:
-        LoopCmd(const std::string & NAME, ILoopSPtr_t & iLoopSPtr);
+        LoopCmd(const std::string & NAME);
         virtual ~LoopCmd();
 
         virtual const std::string GetName() const { return NAME_; }
@@ -82,7 +82,6 @@ namespace sfml_util
 
     protected:
         const std::string NAME_;
-        ILoopSPtr_t iLoopSPtr_;
     };
 
 
@@ -91,18 +90,15 @@ namespace sfml_util
     class LoopCmd_Execute : public LoopCmd
     {
     public:
-        explicit LoopCmd_Execute(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_Execute()
         :
-            LoopCmd("Execute", iLoopSPtr)
+            LoopCmd("Execute")
         {}
 
         virtual ~LoopCmd_Execute()
         {}
 
-        virtual bool Execute()
-        {
-            return iLoopSPtr_->Execute();
-        }
+        virtual bool Execute();
     };
 
 
@@ -111,20 +107,16 @@ namespace sfml_util
     class LoopCmd_StateChange : public LoopCmd
     {
     public:
-        LoopCmd_StateChange(ILoopSPtr_t & iLoopSPtr, const game::LoopState::Enum STATE_NUM)
+        LoopCmd_StateChange(const game::LoopState::Enum STATE_NUM)
         :
-            LoopCmd("LoopStateChange", iLoopSPtr),
+            LoopCmd("LoopStateChange"),
             STATE_ (STATE_NUM)
         {}
 
         virtual ~LoopCmd_StateChange()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetState(STATE_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -143,20 +135,16 @@ namespace sfml_util
     class LoopCmd_SetMouseVisibility : public LoopCmd
     {
     public:
-        LoopCmd_SetMouseVisibility(ILoopSPtr_t & iLoopSPtr, const bool IS_VISIBLE)
+        LoopCmd_SetMouseVisibility(const bool IS_VISIBLE)
         :
-            LoopCmd    ("SetMouseVisibility", iLoopSPtr),
+            LoopCmd    ("SetMouseVisibility"),
             IS_VISIBLE_(IS_VISIBLE)
         {}
 
         virtual ~LoopCmd_SetMouseVisibility()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetMouseVisibility(IS_VISIBLE_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -175,12 +163,12 @@ namespace sfml_util
     class LoopCmd_StartMusic : public LoopCmd
     {
     public:
-        LoopCmd_StartMusic(ILoopSPtr_t &     iLoopSPtr,
-                           const music::Enum MUSIC_TO_START,
-                           const float       SPEED_MULT     = MusicOperator::FADE_MULT_DEFAULT_IN_,
-                           const float       TARGET_VOLUME  = MusicOperator::VOLUME_USE_GLOBAL_)
+        LoopCmd_StartMusic(
+            const music::Enum MUSIC_TO_START,
+            const float       SPEED_MULT     = MusicOperator::FADE_MULT_DEFAULT_IN_,
+            const float       TARGET_VOLUME  = MusicOperator::VOLUME_USE_GLOBAL_)
         :
-            LoopCmd        ("StartMusic", iLoopSPtr),
+            LoopCmd        ("StartMusic"),
             MUSIC_TO_START_(MUSIC_TO_START),
             TARGET_VOLUME_ (TARGET_VOLUME),
             SPEED_MULT_    (SPEED_MULT)
@@ -191,7 +179,9 @@ namespace sfml_util
 
         virtual bool Execute()
         {
-            sfml_util::SoundManager::Instance()->MusicStart(MUSIC_TO_START_, SPEED_MULT_, TARGET_VOLUME_);
+            sfml_util::SoundManager::Instance()->MusicStart(
+                MUSIC_TO_START_, SPEED_MULT_, TARGET_VOLUME_);
+
             return true;
         }
 
@@ -218,11 +208,10 @@ namespace sfml_util
     class LoopCmd_StopMusic : public LoopCmd
     {
     public:
-        LoopCmd_StopMusic(ILoopSPtr_t &       iLoopSPtr,
-                          const music::Enum   MUSIC_TO_STOP,
-                          const float         SPEED_MULT    = MusicOperator::FADE_MULT_DEFAULT_OUT_)
+        LoopCmd_StopMusic(const music::Enum   MUSIC_TO_STOP,
+                          const float         SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_)
         :
-            LoopCmd       ("StopMusic", iLoopSPtr),
+            LoopCmd       ("StopMusic"),
             MUSIC_TO_STOP_(MUSIC_TO_STOP),
             SPEED_MULT_   (SPEED_MULT)
         {}
@@ -257,19 +246,15 @@ namespace sfml_util
     class LoopCmd_AddStage_Default : public LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage_Default(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_AddStage_Default()
         :
-            LoopCmd("AddStageDefault", iLoopSPtr)
+            LoopCmd("AddStageDefault")
         {}
 
         virtual ~LoopCmd_AddStage_Default()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->AddStage( new Stage("Default") );
-            return true;
-        }
+        virtual bool Execute();
     };
 
 
@@ -278,20 +263,16 @@ namespace sfml_util
     class LoopCmd_SetHoldTime : public LoopCmd
     {
     public:
-        LoopCmd_SetHoldTime(ILoopSPtr_t & iLoopSPtr, const float SECONDS)
+        LoopCmd_SetHoldTime(const float SECONDS)
         :
-            LoopCmd("SetHoldTime", iLoopSPtr),
+            LoopCmd("SetHoldTime"),
             TIME_  (SECONDS)
         {}
 
         virtual ~LoopCmd_SetHoldTime()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetHoldTime(TIME_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -310,19 +291,15 @@ namespace sfml_util
     class LoopCmd_RemoveAllStages : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveAllStages(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_RemoveAllStages()
         :
-            LoopCmd("RemoveAllStages", iLoopSPtr)
+            LoopCmd("RemoveAllStages")
         {}
 
         virtual ~LoopCmd_RemoveAllStages()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->FreeAllStages();
-            return true;
-        }
+        virtual bool Execute();
     };
 
 
@@ -331,19 +308,15 @@ namespace sfml_util
     class LoopCmd_ExitAfterFade : public LoopCmd
     {
     public:
-        explicit LoopCmd_ExitAfterFade(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_ExitAfterFade()
         :
-            LoopCmd("ExitAfterFade", iLoopSPtr)
+            LoopCmd("ExitAfterFade")
         {}
 
         virtual ~LoopCmd_ExitAfterFade()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetWillExitAfterFade(true);
-            return true;
-        }
+        virtual bool Execute();
     };
 
 
@@ -352,12 +325,12 @@ namespace sfml_util
     class LoopCmd_FadeIn : public LoopCmd
     {
     public:
-        explicit LoopCmd_FadeIn(ILoopSPtr_t &     iLoopSPtr,
-                                const sf::Color & FADE_FROM_COLOR = sf::Color::Black,
-                                const float       SPEED_MULT      = 200.0f,
-                                const bool        WILL_HOLD_FADE  = false )
+        explicit LoopCmd_FadeIn(
+            const sf::Color & FADE_FROM_COLOR = sf::Color::Black,
+            const float       SPEED_MULT      = 200.0f,
+            const bool        WILL_HOLD_FADE  = false )
         :
-            LoopCmd         (std::string("FadeIn"), iLoopSPtr),
+            LoopCmd         (std::string("FadeIn")),
             SPEED_MULT_     (SPEED_MULT),
             FADE_FROM_COLOR_(FADE_FROM_COLOR),
             WILL_HOLD_FADE_ (WILL_HOLD_FADE)
@@ -366,11 +339,7 @@ namespace sfml_util
         virtual ~LoopCmd_FadeIn()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->FadeIn(FADE_FROM_COLOR_, SPEED_MULT_, WILL_HOLD_FADE_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -394,12 +363,12 @@ namespace sfml_util
     class LoopCmd_FadeOut : public LoopCmd
     {
     public:
-        explicit LoopCmd_FadeOut(ILoopSPtr_t &     iLoopSPtr,
-                                 const sf::Color & FADE_TO_COLOR  = sf::Color::Black,
-                                 const float       SPEED_MULT     = 300.0f,
-                                 const bool        WILL_HOLD_FADE = false)
+        explicit LoopCmd_FadeOut(
+            const sf::Color & FADE_TO_COLOR  = sf::Color::Black,
+            const float       SPEED_MULT     = 300.0f,
+            const bool        WILL_HOLD_FADE = false)
         :
-            LoopCmd        (std::string("FadeOut"), iLoopSPtr),
+            LoopCmd        (std::string("FadeOut")),
             SPEED_MULT_    (SPEED_MULT),
             FADE_TO_COLOR_ (FADE_TO_COLOR),
             WILL_HOLD_FADE_(WILL_HOLD_FADE)
@@ -408,11 +377,7 @@ namespace sfml_util
         virtual ~LoopCmd_FadeOut()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->FadeOut(FADE_TO_COLOR_, SPEED_MULT_, WILL_HOLD_FADE_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -436,20 +401,16 @@ namespace sfml_util
     class LoopCmd_ExitAfterKeypress : public LoopCmd
     {
     public:
-        LoopCmd_ExitAfterKeypress(ILoopSPtr_t & iLoopSPtr, const bool WILL_EXIT_ON_KEYSTROKE)
+        LoopCmd_ExitAfterKeypress(const bool WILL_EXIT_ON_KEYSTROKE)
         :
-            LoopCmd("ExitOnKeypress", iLoopSPtr),
+            LoopCmd("ExitOnKeypress"),
             WILL_EXIT_ON_KEYSTROKE_(WILL_EXIT_ON_KEYSTROKE)
         {}
 
         virtual ~LoopCmd_ExitAfterKeypress()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetWillExitOnKeypress(WILL_EXIT_ON_KEYSTROKE_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -469,20 +430,16 @@ namespace sfml_util
     class LoopCmd_ExitAfterMouseclick : public LoopCmd
     {
     public:
-        LoopCmd_ExitAfterMouseclick(ILoopSPtr_t & iLoopSPtr, const bool WILL_EXIT_ON_MOUSECLICK)
+        LoopCmd_ExitAfterMouseclick(const bool WILL_EXIT_ON_MOUSECLICK)
         :
-            LoopCmd("ExitOnMouseclick", iLoopSPtr),
+            LoopCmd("ExitOnMouseclick"),
             WILL_EXIT_ON_MOUSECLICK_(WILL_EXIT_ON_MOUSECLICK)
         {}
 
         virtual ~LoopCmd_ExitAfterMouseclick()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetWillExitOnMouseclick(WILL_EXIT_ON_MOUSECLICK_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {
@@ -502,19 +459,15 @@ namespace sfml_util
     class LoopCmd_RemoveFocus : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveFocus(ILoopSPtr_t & iLoopSPtr)
+        explicit LoopCmd_RemoveFocus()
         :
-            LoopCmd("RemoveFocus", iLoopSPtr)
+            LoopCmd("RemoveFocus")
         {}
 
         virtual ~LoopCmd_RemoveFocus()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->RemoveFocus();
-            return true;
-        }
+        virtual bool Execute();
     };
 
 
@@ -523,20 +476,17 @@ namespace sfml_util
     class LoopCmd_IgnoreMouse : public LoopCmd
     {
     public:
-        LoopCmd_IgnoreMouse(ILoopSPtr_t & iLoopSPtr, const bool WILL_IGNORE_MOUSE)
+        LoopCmd_IgnoreMouse(const bool WILL_IGNORE_MOUSE)
         :
-            LoopCmd("IgnoreMouse", iLoopSPtr),
+            LoopCmd("IgnoreMouse"),
             WILL_IGNORE_MOUSE_(WILL_IGNORE_MOUSE)
         {}
 
         virtual ~LoopCmd_IgnoreMouse()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetIgnoreMouse(WILL_IGNORE_MOUSE_);
-            return true;
-        }
+        virtual bool Execute();
+
     private:
         const bool WILL_IGNORE_MOUSE_;
     };
@@ -546,20 +496,17 @@ namespace sfml_util
     class LoopCmd_IgnoreKeystrokes : public LoopCmd
     {
     public:
-        LoopCmd_IgnoreKeystrokes(ILoopSPtr_t & iLoopSPtr, const bool WILL_IGNORE_KEYSTROKES)
+        LoopCmd_IgnoreKeystrokes(const bool WILL_IGNORE_KEYSTROKES)
             :
-            LoopCmd("IgnoreKeystrokes", iLoopSPtr),
+            LoopCmd("IgnoreKeystrokes"),
             WILL_IGNORE_KEYSTROKES_(WILL_IGNORE_KEYSTROKES)
         {}
 
         virtual ~LoopCmd_IgnoreKeystrokes()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->SetIgnoreKeystrokes(WILL_IGNORE_KEYSTROKES_);
-            return true;
-        }
+        virtual bool Execute();
+
     private:
         const bool WILL_IGNORE_KEYSTROKES_;
     };
@@ -569,20 +516,16 @@ namespace sfml_util
     class LoopCmd_FakeMouseClick : public LoopCmd
     {
     public:
-        LoopCmd_FakeMouseClick(ILoopSPtr_t & iLoopSPtr, const sf::Vector2f & MOUSE_POS_V)
+        LoopCmd_FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
             :
-            LoopCmd("FakeMouseClick", iLoopSPtr),
+            LoopCmd("FakeMouseClick"),
             MOUSE_CLICK_POS_(MOUSE_POS_V)
         {}
 
         virtual ~LoopCmd_FakeMouseClick()
         {}
 
-        virtual bool Execute()
-        {
-            iLoopSPtr_->FakeMouseClick(MOUSE_CLICK_POS_);
-            return true;
-        }
+        virtual bool Execute();
 
         virtual const std::string GetName() const
         {

@@ -29,10 +29,12 @@
 //  Code to manage an event/draw loop.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/iloop.hpp"
 #include "sfml-util/fade.hpp"
+#include "sfml-util/gui/gui-entity.hpp"
 
 #include "game/loop-state-enum.hpp"
+#include "game/i-popup-callback.hpp"
+#include "game/popup-info.hpp"
 
 #include <memory>
 #include <string>
@@ -50,7 +52,7 @@ namespace sfml_util
 
 
     //A type that manages an event/draw loop
-    class Loop : public ILoop
+    class Loop
     {
         //prevent copy construction
         Loop(const Loop &) =delete;

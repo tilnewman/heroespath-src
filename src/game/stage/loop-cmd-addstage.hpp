@@ -48,6 +48,8 @@
 
 #include "misc/assertlogandthrow.hpp"
 
+#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+
 #include <memory>
 
 
@@ -65,9 +67,10 @@ namespace stage
     class LoopCmd_AddStage : public sfml_util::LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage(sfml_util::ILoopSPtr_t & loopSPtr)
+        explicit LoopCmd_AddStage()
         :
-            LoopCmd("AddStage", loopSPtr)
+            LoopCmd(std::string("AddStage_").
+                append(boost::typeindex::type_id<StageType_t>().pretty_name()))
         {}
 
         virtual ~LoopCmd_AddStage() {}
@@ -76,7 +79,7 @@ namespace stage
         {
             auto stagePtr(new StageType_t());
             stagePtr->Setup();
-            iLoopSPtr_->AddStage(stagePtr);
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(stagePtr);
             return true;
         }
     };
@@ -88,9 +91,9 @@ namespace stage
         LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
 
     public:
-        LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr, const bool WILL_ADVANCE_TURN)
+        LoopCmd_AddStage_Combat(const bool WILL_ADVANCE_TURN)
         :
-            LoopCmd("AddStage_Combat", loopSPtr),
+            LoopCmd("AddStage_Combat"),
             willAdvanceTurn_(WILL_ADVANCE_TURN)
         {}
 
@@ -100,7 +103,7 @@ namespace stage
         {
             auto stagePtr(new stage::CombatStage(willAdvanceTurn_));
             stagePtr->Setup();
-            iLoopSPtr_->AddStage(stagePtr);
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(stagePtr);
             return true;
         }
 
@@ -120,12 +123,11 @@ namespace stage
 
     public:
         LoopCmd_AddStage_Inventory(
-            sfml_util::ILoopSPtr_t &      loopSPtr,
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const Phase::Enum             CURRENT_PHASE)
         :
-            LoopCmd("AddStage_Inventory", loopSPtr),
+            LoopCmd("AddStage_Inventory"),
             turnCreaturePtr(TURN_CREATURE_PTR),
             inventoryCreaturePtr(INVENTORY_CREATURE_PTR),
             currentPhase_(CURRENT_PHASE)
@@ -148,7 +150,7 @@ namespace stage
                 currentPhase_));
 
             inventoryStagePtr->Setup();
-            iLoopSPtr_->AddStage(inventoryStagePtr);
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(inventoryStagePtr);
             return true;
         }
 

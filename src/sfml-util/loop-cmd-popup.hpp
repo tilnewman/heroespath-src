@@ -36,17 +36,11 @@
 namespace sfml_util
 {
 
-    //forward declaration
-    class ILoop;
-    using ILoopSPtr_t = std::shared_ptr<ILoop>;
-
-
     //A class that adds a popup to a Loop object
     class LoopCmd_AddStage_Popup : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Popup(sfml_util::ILoopSPtr_t & iLoopSPtr,
-                               const game::PopupInfo &  POPUP_INFO);
+        LoopCmd_AddStage_Popup(const game::PopupInfo &  POPUP_INFO);
 
         virtual ~LoopCmd_AddStage_Popup();
 
@@ -63,7 +57,7 @@ namespace sfml_util
     class LoopCmd_RemoveStage_Popup : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveStage_Popup(sfml_util::ILoopSPtr_t & iLoopSPtr);
+        explicit LoopCmd_RemoveStage_Popup();
         virtual ~LoopCmd_RemoveStage_Popup();
         virtual bool Execute();
     };
