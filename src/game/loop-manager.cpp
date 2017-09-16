@@ -55,7 +55,7 @@ namespace game
     :
         state_            (LoopState::None),
         cmdQueue_         (),
-        currentLoopSPtr_  ( new sfml_util::Loop("LoopManagerDefault") ),
+        currentLoopSPtr_  ( std::make_shared<sfml_util::Loop>("DefaultLoop") ),
         popupResponse_    (sfml_util::Response::None),
         popupSelection_   (0),
         prevState_        (LoopState::None),
@@ -110,7 +110,7 @@ namespace game
     void LoopManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::LoopManager::Release() found instanceUPtr that was null.");
+            "LoopManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -173,16 +173,17 @@ namespace game
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
             targetVolumeToUse = VOLUME_IF_INTRO_OR_CAMP_STAGE;
 
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StartMusic>(currentLoopSPtr_,
-                                                                                    sfml_util::music::Theme,
-                                                                                    sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
-                                                                                    targetVolumeToUse) );
+        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StartMusic>(
+            currentLoopSPtr_,
+            sfml_util::music::Theme,
+            sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
+            targetVolumeToUse) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_SetHoldTime>(currentLoopSPtr_, 2.0f) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>(currentLoopSPtr_) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_RemoveAllStages>(currentLoopSPtr_) );
-        cmdQueue_.push( std::make_shared<stage::LoopCmd_AddStage_Intro>(currentLoopSPtr_) );
+        cmdQueue_.push( std::make_shared< stage::LoopCmd_AddStage<stage::IntroStage> >(currentLoopSPtr_) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterFade>(currentLoopSPtr_) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(currentLoopSPtr_, sf::Color::Black, 50.0f) );
@@ -253,14 +254,15 @@ namespace game
 
     void LoopManager::TransitionTo_Credits()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         false,//WILL_RESTORE_MOUSE
-                         false,//WILL_FINAL_EXECUTE
-                         LoopState::Credits,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Credits>(currentLoopSPtr_),
-                         sfml_util::music::All);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            false,//WILL_RESTORE_MOUSE
+            false,//WILL_FINAL_EXECUTE
+            LoopState::Credits,
+            std::make_shared< stage::LoopCmd_AddStage<stage::CreditsStage> >(currentLoopSPtr_),
+            sfml_util::music::All);
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(currentLoopSPtr_, false) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(currentLoopSPtr_, true) );
@@ -271,15 +273,16 @@ namespace game
 
     void LoopManager::TransitionTo_MainMenu()
     {
-        TransitionHelper(false,//WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::MainMenu,
-                         std::make_shared<game::stage::LoopCmd_AddStage_MainMenu>(currentLoopSPtr_),
-                         sfml_util::music::Wind,
-                         sfml_util::music::Theme);
+        TransitionHelper(
+            false,//WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::MainMenu,
+            std::make_shared< stage::LoopCmd_AddStage<stage::MainMenuStage> >(currentLoopSPtr_),
+            sfml_util::music::Wind,
+            sfml_util::music::Theme);
     }
 
 
@@ -287,15 +290,16 @@ namespace game
     {
         prevSettingsState_ = state_;
 
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Settings,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Settings>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::Theme);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Settings,
+            std::make_shared< stage::LoopCmd_AddStage<stage::SettingsStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::Theme);
 
         TransitionTo_MainMenu();//um...why is this here?  zTn 2017-2-22
     }
@@ -303,29 +307,31 @@ namespace game
 
     void LoopManager::TransitionTo_CharacterCreation()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true,//WILL_FINAL_EXECUTE
-                         LoopState::CharacterCreation,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Character_Creation>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::Wind);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true,//WILL_FINAL_EXECUTE
+            LoopState::CharacterCreation,
+            std::make_shared< stage::LoopCmd_AddStage<stage::CharacterStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::Wind);
     }
 
 
     void LoopManager::TransitionTo_PartyCreation()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         false,//WILL_FINAL_EXECUTE
-                         LoopState::PartyCreation,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Party_Creation>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::PartyCreation);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            false,//WILL_FINAL_EXECUTE
+            LoopState::PartyCreation,
+            std::make_shared< stage::LoopCmd_AddStage<stage::PartyStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::PartyCreation);
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FakeMouseClick>(
             currentLoopSPtr_,
@@ -337,27 +343,29 @@ namespace game
 
     void LoopManager::TransitionTo_Inn()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Inn,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Inn>(currentLoopSPtr_) );
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Inn,
+            std::make_shared< stage::LoopCmd_AddStage<stage::InnStage> >(currentLoopSPtr_) );
     }
 
 
     void LoopManager::TransitionTo_Camp()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         false,//WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         false,//WILL_FINAL_EXECUTE
-                         LoopState::Camp,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Camp>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::None);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            false,//WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            false,//WILL_FINAL_EXECUTE
+            LoopState::Camp,
+            std::make_shared< stage::LoopCmd_AddStage<stage::CampStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::None);
 
         //establish the theme music volume
         const float VOLUME_IF_INTRO_OR_CAMP_STAGE(25.0f);
@@ -380,57 +388,60 @@ namespace game
 
     void LoopManager::TransitionTo_LoadGameMenu()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::LoadGameMenu,
-                         std::make_shared<game::stage::LoopCmd_AddStage_LoadGameMenu>(
-                             currentLoopSPtr_) );
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::LoadGameMenu,
+            std::make_shared< stage::LoopCmd_AddStage<stage::LoadGameStage> >(currentLoopSPtr_) );
     }
 
 
     void LoopManager::TransitionTo_Combat(const bool WILL_ADVANCE_TURN)
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Combat,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Combat>(currentLoopSPtr_,
-                                                                                WILL_ADVANCE_TURN),
-                         sfml_util::music::All,
-                         sfml_util::music::None);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Combat,
+            std::make_shared<stage::LoopCmd_AddStage_Combat>(
+                currentLoopSPtr_, WILL_ADVANCE_TURN),
+            sfml_util::music::All,
+            sfml_util::music::None);
     }
 
 
     void LoopManager::TransitionTo_Test()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Test,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Test>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::None);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Test,
+            std::make_shared< stage::LoopCmd_AddStage<stage::TestingStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::None);
     }
 
 
     void LoopManager::TransitionTo_Treasure()
     {
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Treasure,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Treasure>(currentLoopSPtr_),
-                         sfml_util::music::All,
-                         sfml_util::music::None);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Treasure,
+            std::make_shared < stage::LoopCmd_AddStage< stage::TreasureStage> >(currentLoopSPtr_),
+            sfml_util::music::All,
+            sfml_util::music::None);
     }
 
 
@@ -443,7 +454,7 @@ namespace game
             true, //WILL_RESTORE_MOUSE
             true, //WILL_FINAL_EXECUTE
             LoopState::Adventure,
-            std::make_shared<game::stage::LoopCmd_AddStage_Adventure>(currentLoopSPtr_),
+            std::make_shared< stage::LoopCmd_AddStage<stage::AdventureStage> >(currentLoopSPtr_),
             sfml_util::music::All,
             sfml_util::music::None);
     }
@@ -455,31 +466,33 @@ namespace game
     {
         prevSettingsState_ = state_;
 
-        TransitionHelper(true, //WILL_CLEAR_QUEUE
-                         true, //WILL_EXIT_LOOP
-                         true, //WILL_IGNORE_MOUSE
-                         true, //WILL_RESTORE_MOUSE
-                         true, //WILL_FINAL_EXECUTE
-                         LoopState::Inventory,
-                         std::make_shared<game::stage::LoopCmd_AddStage_Inventory>(
-                             currentLoopSPtr_,
-                             TURN_CREATURE_PTR,
-                             INVENTORY_CREATURE_PTR,
-                             CURRENT_PHASE),
-                         sfml_util::music::None,
-                         sfml_util::music::Inventory);
+        TransitionHelper(
+            true, //WILL_CLEAR_QUEUE
+            true, //WILL_EXIT_LOOP
+            true, //WILL_IGNORE_MOUSE
+            true, //WILL_RESTORE_MOUSE
+            true, //WILL_FINAL_EXECUTE
+            LoopState::Inventory,
+            std::make_shared<stage::LoopCmd_AddStage_Inventory>(
+                currentLoopSPtr_,
+                TURN_CREATURE_PTR,
+                INVENTORY_CREATURE_PTR,
+                CURRENT_PHASE),
+            sfml_util::music::None,
+            sfml_util::music::Inventory);
     }
 
 
-    void LoopManager::TransitionHelper(const bool                        WILL_CLEAR_QUEUE,
-                                       const bool                        WILL_EXIT_LOOP,
-                                       const bool                        WILL_IGNORE_MOUSE,
-                                       const bool                        WILL_RESTORE_MOUSE,
-                                       const bool                        WILL_FINAL_EXECUTE,
-                                       const LoopState::Enum             NEW_STATE,
-                                       const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
-                                       const sfml_util::music::Enum      MUSIC_TO_STOP,
-                                       const sfml_util::music::Enum      MUSIC_TO_START)
+    void LoopManager::TransitionHelper(
+        const bool                        WILL_CLEAR_QUEUE,
+        const bool                        WILL_EXIT_LOOP,
+        const bool                        WILL_IGNORE_MOUSE,
+        const bool                        WILL_RESTORE_MOUSE,
+        const bool                        WILL_FINAL_EXECUTE,
+        const LoopState::Enum             NEW_STATE,
+        const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+        const sfml_util::music::Enum      MUSIC_TO_STOP,
+        const sfml_util::music::Enum      MUSIC_TO_START)
     {
         if (WILL_CLEAR_QUEUE)
         {
@@ -563,8 +576,9 @@ namespace game
     }
 
 
-    void LoopManager::PopupWaitBegin(callback::IPopupHandler_t * const HANDLER_PTR,
-                                     const PopupInfo &                 POPUP_INFO)
+    void LoopManager::PopupWaitBegin(
+        callback::IPopupHandler_t * const HANDLER_PTR,
+        const PopupInfo &                 POPUP_INFO)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((HANDLER_PTR != nullptr), "LoopManager::PopupWaitBegin(" << POPUP_INFO.ToStringShort(false) << ") given a NULL POPUP_INFO->CallbackHandlerPtr() pointer.");
         M_HP_LOG("LoopManager::PopupWaitBegin(handler=\"" << HANDLER_PTR->HandlerName() << "\", " << POPUP_INFO.ToStringShort(false) << ") while in state=" << LoopState::ToString(prevState_) << ".");
@@ -574,7 +588,8 @@ namespace game
     }
 
 
-    void LoopManager::PopupWaitEnd(const sfml_util::Response::Enum RESPONSE, const std::size_t SELECTION)
+    void LoopManager::PopupWaitEnd(
+        const sfml_util::Response::Enum RESPONSE, const std::size_t SELECTION)
     {
         popupResponse_ = RESPONSE;
         popupSelection_ = SELECTION;
@@ -621,7 +636,8 @@ namespace game
     }
 
 
-    void LoopManager::TransitionTo(const LoopState::Enum STATE, const bool WILL_ADVANCE_TURN)
+    void LoopManager::TransitionTo(
+        const LoopState::Enum STATE, const bool WILL_ADVANCE_TURN)
     {
         switch (STATE)
         {
@@ -658,7 +674,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         sfml_util::IStage * const               currentStagePtr_,
-        game::callback::IPopupHandler_t * const HANDLER_PTR,
+        callback::IPopupHandler_t * const HANDLER_PTR,
         const sfml_util::Resolution &           NEW_RES,
         const unsigned                          ANTIALIAS_LEVEL)
     {
@@ -670,7 +686,7 @@ namespace game
             currentStagePtr_->HandleResolutionChange();
         }
 
-        game::Popup::Enum whichPopup(game::Popup::ResolutionChange);
+        Popup::Enum whichPopup(Popup::ResolutionChange);
 
         sfml_util::gui::TextInfo textInfo("Keep this setting?",
                                           sfml_util::FontManager::Instance()->Font_Default1(),
@@ -703,13 +719,13 @@ namespace game
             case sfml_util::DisplayChangeResult::Count:
             default:
             {
-                whichPopup = game::Popup::Generic;
+                whichPopup = Popup::Generic;
                 textInfo.text = "Unable to set that video mode.";
                 break;
             }
         }
 
-        const game::PopupInfo POPUP_INFO("ResolutionChange",
+        const PopupInfo POPUP_INFO("ResolutionChange",
                                                textInfo,
                                                sfml_util::PopupButtons::YesNo,
                                                sfml_util::PopupImage::Banner,

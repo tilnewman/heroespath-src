@@ -31,6 +31,22 @@
 #include "sfml-util/loop-cmd.hpp"
 
 #include "game/phase-enum.hpp"
+#include "game/stage/adventure-stage.hpp"
+#include "game/stage/treasure-stage.hpp"
+#include "game/stage/camp-stage.hpp"
+#include "game/stage/settings-stage.hpp"
+#include "game/stage/party-stage.hpp"
+#include "game/stage/main-menu-stage.hpp"
+#include "game/stage/load-game-menu-stage.hpp"
+#include "game/stage/intro-stage.hpp"
+#include "game/stage/inn-stage.hpp"
+#include "game/stage/credits-stage.hpp"
+#include "game/stage/character-stage.hpp"
+#include "game/stage/combat-stage.hpp"
+#include "game/stage/testing-stage.hpp"
+#include "game/stage/inventory-stage.hpp"
+
+#include "misc/assertlogandthrow.hpp"
 
 #include <memory>
 
@@ -45,186 +61,142 @@ namespace creature
 namespace stage
 {
 
-    class LoopCmd_AddStage_Adventure : public sfml_util::LoopCmd
+    template<typename StageType_t>
+    class LoopCmd_AddStage : public sfml_util::LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage_Adventure(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Adventure();
-        virtual bool Execute();
+        explicit LoopCmd_AddStage(sfml_util::ILoopSPtr_t & loopSPtr)
+        :
+            LoopCmd("AddStage", loopSPtr)
+        {}
+
+        virtual ~LoopCmd_AddStage() {}
+
+        virtual bool Execute()
+        {
+            auto stagePtr(new StageType_t());
+            stagePtr->Setup();
+            iLoopSPtr_->AddStage(stagePtr);
+            return true;
+        }
     };
-
-    using LoopCmd_AddStage_AdentureSPtr_t = std::shared_ptr<LoopCmd_AddStage_Adventure>;
-
-
-    class LoopCmd_AddStage_Treasure : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Treasure(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Treasure();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_TreasureSPtr_t = std::shared_ptr<LoopCmd_AddStage_Treasure>;
-
-
-    class LoopCmd_AddStage_Camp : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Camp(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Camp();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_CampSPtr_t = std::shared_ptr<LoopCmd_AddStage_Camp>;
-
-
-
-    class LoopCmd_AddStage_Settings : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Settings(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Settings();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_SettingsSPtr_t = std::shared_ptr<LoopCmd_AddStage_Settings>;
-
-
-
-    class LoopCmd_AddStage_Party_Creation : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Party_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Party_Creation();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_Party_CreationSPtr_t =
-        std::shared_ptr<LoopCmd_AddStage_Party_Creation>;
-
-
-
-    class LoopCmd_AddStage_MainMenu : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_MainMenu(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_MainMenu();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_MainMenuSPtr_t = std::shared_ptr<LoopCmd_AddStage_MainMenu>;
-
-
-
-    class LoopCmd_AddStage_LoadGameMenu : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_LoadGameMenu(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_LoadGameMenu();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_LoadGameMenuSPtr_t =
-        std::shared_ptr<LoopCmd_AddStage_LoadGameMenu>;
-
-
-
-    class LoopCmd_AddStage_Intro : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Intro(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Intro();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_IntroSPtr_t = std::shared_ptr<LoopCmd_AddStage_Intro>;
-
-
-
-    class LoopCmd_AddStage_Inn : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Inn(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Inn();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_InnSPtr_t = std::shared_ptr<LoopCmd_AddStage_Inn>;
-
-
-
-    class LoopCmd_AddStage_Credits : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Credits(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Credits();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_CreditsSPtr_t = std::shared_ptr<LoopCmd_AddStage_Credits>;
-
-
-
-    class LoopCmd_AddStage_Character_Creation : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Character_Creation(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Character_Creation();
-        virtual bool Execute();
-    };
-
-    using LoopCmd_AddStage_Character_CreationSPtr_t =
-        std::shared_ptr<LoopCmd_AddStage_Character_Creation>;
-
 
 
     class LoopCmd_AddStage_Combat : public sfml_util::LoopCmd
     {
-    public:
-        explicit LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr,
-                                         const bool               WILL_ADVANCE_TURN);
+        LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &) = delete;
+        LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
 
-        virtual ~LoopCmd_AddStage_Combat();
-        virtual bool Execute();
+    public:
+        LoopCmd_AddStage_Combat(sfml_util::ILoopSPtr_t & loopSPtr, const bool WILL_ADVANCE_TURN)
+        :
+            LoopCmd("AddStage_Combat", loopSPtr),
+            willAdvanceTurn_(WILL_ADVANCE_TURN)
+        {}
+
+        virtual ~LoopCmd_AddStage_Combat() {}
+
+        virtual bool Execute()
+        {
+            auto stagePtr(new stage::CombatStage(willAdvanceTurn_));
+            stagePtr->Setup();
+            iLoopSPtr_->AddStage(stagePtr);
+            return true;
+        }
 
     private:
-        const bool WILL_ADVANCE_TURN_;
+        bool willAdvanceTurn_;
     };
 
-    using LoopCmd_AddStage_CombatSPtr_t = std::shared_ptr<LoopCmd_AddStage_Combat>;
+
+    using LoopCmd_AddStage_CombatSPtr_t =
+        std::shared_ptr<LoopCmd_AddStage_Combat>;
 
 
     class LoopCmd_AddStage_Inventory : public sfml_util::LoopCmd
     {
-        LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) =delete;
-        LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) =delete;
+        LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) = delete;
+        LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) = delete;
 
     public:
-        explicit LoopCmd_AddStage_Inventory(sfml_util::ILoopSPtr_t &      loopSPtr,
-                                            const creature::CreaturePtr_t TURN_CREATURE_PTR,
-                                            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                                            const Phase::Enum             CURRENT_PHASE);
+        LoopCmd_AddStage_Inventory(
+            sfml_util::ILoopSPtr_t &      loopSPtr,
+            const creature::CreaturePtr_t TURN_CREATURE_PTR,
+            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+            const Phase::Enum             CURRENT_PHASE)
+        :
+            LoopCmd("AddStage_Inventory", loopSPtr),
+            turnCreaturePtr(TURN_CREATURE_PTR),
+            inventoryCreaturePtr(INVENTORY_CREATURE_PTR),
+            currentPhase_(CURRENT_PHASE)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS((turnCreaturePtr != nullptr),
+                "game::stage::LoopCmd_AddStage_Inventory() was given a nullptr TURN_CREATURE_PTR.");
 
-        virtual ~LoopCmd_AddStage_Inventory();
-        virtual bool Execute();
+            M_ASSERT_OR_LOGANDTHROW_SS((inventoryCreaturePtr != nullptr),
+                "game::stage::LoopCmd_AddStage_Inventory() was given a nullptr "
+                << "INVENTORY_CREATURE_PTR.");
+        }
+
+        virtual ~LoopCmd_AddStage_Inventory() {}
+
+        virtual bool Execute()
+        {
+            auto inventoryStagePtr( new InventoryStage(
+                turnCreaturePtr,
+                inventoryCreaturePtr,
+                currentPhase_));
+
+            inventoryStagePtr->Setup();
+            iLoopSPtr_->AddStage(inventoryStagePtr);
+            return true;
+        }
+
     private:
-        const creature::CreaturePtr_t TURN_CREATURE_PTR_;
-        const creature::CreaturePtr_t INVENTORY_CREATURE_PTR_;
-        const Phase::Enum CURRENT_PHASE_;
+        creature::CreaturePtr_t turnCreaturePtr;
+        creature::CreaturePtr_t inventoryCreaturePtr;
+        Phase::Enum currentPhase_;
     };
 
-    using LoopCmd_AddStage_InventorySPtr_t = std::shared_ptr<LoopCmd_AddStage_Inventory>;
 
+    using LoopCmd_AddStage_InventorySPtr_t =
+        std::shared_ptr<LoopCmd_AddStage_Inventory>;
 
-    class LoopCmd_AddStage_Test : public sfml_util::LoopCmd
-    {
-    public:
-        explicit LoopCmd_AddStage_Test(sfml_util::ILoopSPtr_t & loopSPtr);
-        virtual ~LoopCmd_AddStage_Test();
-        virtual bool Execute();
-    };
+    using LoopCmd_AddStage_AdentureSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<AdventureStage> >;
 
-    using LoopCmd_AddStage_TestSPtr_t = std::shared_ptr<LoopCmd_AddStage_Test>;
+    using LoopCmd_AddStage_TreasureSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<TreasureStage> >;
+
+    using LoopCmd_AddStage_CampSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<CampStage> >;
+
+    using LoopCmd_AddStage_SettingsSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<SettingsStage> >;
+
+    using LoopCmd_AddStage_Party_CreationSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<PartyStage> >;
+
+    using LoopCmd_AddStage_MainMenuSPtr_t =
+        std::shared_ptr < LoopCmd_AddStage<MainMenuStage> > ;
+
+    using LoopCmd_AddStage_LoadGameMenuSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<LoadGameStage> >;
+
+    using LoopCmd_AddStage_IntroSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<IntroStage> >;
+
+    using LoopCmd_AddStage_InnSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<InnStage> >;
+
+    using LoopCmd_AddStage_CreditsSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<CreditsStage> >;
+
+    using LoopCmd_AddStage_Character_CreationSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<CharacterStage> >;
+
+    using LoopCmd_AddStage_TestSPtr_t =
+        std::shared_ptr< LoopCmd_AddStage<TestingStage> >;
 
 }
 }
