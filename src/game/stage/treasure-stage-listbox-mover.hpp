@@ -73,9 +73,11 @@ namespace TreasureStage
             const sf::Vector2f & TARGET_ONSCREEN_POS_V,
             const sf::Vector2f & TARGET_OFFSCREEN_POS_V);
 
+        ~ListboxMover();
+
         inline bool IsSourceMoving() const { return sourceSlider_.IsMoving(); }
         inline bool IsTargetMoving() const { return targetSlider_.IsMoving(); }
-        inline bool IsEitherMoving() const { IsSourceMoving() || IsTargetMoving(); }
+        inline bool IsEitherMoving() const { return IsSourceMoving() || IsTargetMoving(); }
 
         inline SourceType SourceType() const { return sourceType_; }
         inline std::size_t TargetNumber() const { return targetNumber_; }

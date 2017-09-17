@@ -70,6 +70,10 @@ namespace TreasureStage
     }
 
 
+    ListboxMover::~ListboxMover()
+    {}
+
+
     TreasureStage::SourceType ListboxMover::SourceChange()
     {
         sourceSlider_.ChangeDirection();
@@ -82,6 +86,8 @@ namespace TreasureStage
         {
             sourceType_ = SourceType::Worn;
         }
+
+        return sourceType_;
     }
 
 
@@ -93,6 +99,7 @@ namespace TreasureStage
         }
 
         TargetChange();
+        return targetNumber_;
     }
 
 
@@ -108,6 +115,7 @@ namespace TreasureStage
         }
 
         TargetChange();
+        return targetNumber_;
     }
 
 
