@@ -71,6 +71,8 @@ namespace sfml_util
 
         virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+
     protected:
         //Must call Setup() before these functions or else they will return zero.
         inline float ButtonTextHeight() const { return buttonTextHeight_; }

@@ -151,6 +151,105 @@ namespace sfml_util
     }
 
 
+    void PopupStageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
+        {
+            target.draw(box_, STATES);
+            target.draw(gradient_, STATES);
+        }
+        else
+        {
+            target.draw(backgroundSprite_, STATES);
+        }
+
+        if (POPUP_INFO_.WillAddRandImage())
+        {
+            target.draw(accentSprite1_, STATES);
+        }
+
+        textRegionUPtr_->draw(target, STATES);
+    }
+
+
+    bool PopupStageBase::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        if (POPUP_INFO_.Buttons() & Response::Continue)
+        {
+            if ((KEY_EVENT.code == sf::Keyboard::C) ||
+                (KEY_EVENT.code == sf::Keyboard::Space) ||
+                (KEY_EVENT.code == sf::Keyboard::Return) ||
+                (KEY_EVENT.code == sf::Keyboard::Escape))
+            {
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+                return true;
+            }
+        }
+
+        if (POPUP_INFO_.Buttons() & Response::Okay)
+        {
+            if ((KEY_EVENT.code == sf::Keyboard::Space) ||
+                (KEY_EVENT.code == sf::Keyboard::O) ||
+                (KEY_EVENT.code == sf::Keyboard::Return) ||
+                (KEY_EVENT.code == sf::Keyboard::Escape))
+            {
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
+                return true;
+            }
+        }
+
+        if ((POPUP_INFO_.Buttons() & Response::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
+        {
+            SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
+            game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
+            return true;
+        }
+
+        if ((POPUP_INFO_.Buttons() & Response::No) &&
+            ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
+        {
+            SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
+            game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+            return true;
+        }
+
+        if (POPUP_INFO_.Buttons() & Response::Cancel)
+        {
+            if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
+                ((KEY_EVENT.code == sf::Keyboard::C) &&
+                ((POPUP_INFO_.Type() != game::Popup::ContentSelectionWithItem) &&
+                    (POPUP_INFO_.Type() != game::Popup::ContentSelectionWithoutItem))) ||
+                ((KEY_EVENT.code == sf::Keyboard::Return) &&
+                    (POPUP_INFO_.Buttons() == sfml_util::PopupButtons::Cancel)))
+            {
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
+                game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
+                return true;
+            }
+        }
+
+        if ((POPUP_INFO_.Buttons() & Response::Select) &&
+            (KEY_EVENT.code == sf::Keyboard::Return))
+        {
+            return HandleSelect();
+        }
+
+        return Stage::KeyRelease(KEY_EVENT);
+    }
+
+
     bool PopupStageBase::HandleSelect()
     {
         if (selection_ < 0)
@@ -429,27 +528,6 @@ namespace sfml_util
 
             EntityAdd(sliderbarUPtr_.get());
         }
-    }
-
-
-    void PopupStageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
-    {
-        if (POPUP_INFO_.Image() == sfml_util::PopupImage::Custom)
-        {
-            target.draw(box_, STATES);
-            target.draw(gradient_, STATES);
-        }
-        else
-        {
-            target.draw(backgroundSprite_, STATES);
-        }
-
-        if (POPUP_INFO_.WillAddRandImage())
-        {
-            target.draw(accentSprite1_, STATES);
-        }
-
-        textRegionUPtr_->draw(target, STATES);
     }
 
 }
