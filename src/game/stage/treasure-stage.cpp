@@ -83,8 +83,8 @@ namespace stage
         treasureImageType_  (item::TreasureImage::Count),
         blurbTextRegionUPtr_(),
         itemCacheHeld_      (),
-        itemCacheLockbox_ (),
-        state_              (State::AllRanAway)
+        itemCacheLockbox_   (),
+        treasureAvailable_  (item::TreasureAvailable::AllRanAway)
     {}
 
 
@@ -451,25 +451,25 @@ namespace stage
 
         if (DID_ALL_ENEMIES_RUN_AWAY)
         {
-            state_ = State::AllRanAway;
+            treasureAvailable_ = item::TreasureAvailable::AllRanAway;
         }
         else
         {
             if ((itemCacheHeld_.Empty() == false) && (itemCacheLockbox_.Empty() == false))
             {
-                state_ = State::NoTreasure;
+                treasureAvailable_ = item::TreasureAvailable::NoTreasure;
             }
             else if ((itemCacheHeld_.Empty() == false) && itemCacheLockbox_.Empty())
             {
-                state_ = State::WornOnly;
+                treasureAvailable_ = item::TreasureAvailable::WornOnly;
             }
             else if (itemCacheHeld_.Empty() && (itemCacheLockbox_.Empty() == false))
             {
-                state_ = State::LockboxOnly;
+                treasureAvailable_ = item::TreasureAvailable::LockboxOnly;
             }
             else
             {
-                state_ = State::WornAndLockbox;
+                treasureAvailable_ = item::TreasureAvailable::WornAndLockbox;
             }
         }
     }

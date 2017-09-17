@@ -35,6 +35,7 @@
 #include "game/creature/race-enum.hpp"
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/item-cache.hpp"
+#include "game/item/treasure-available-enum.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -66,15 +67,6 @@ namespace stage
 
         //prevent copy assignment
         TreasureStage & operator=(const TreasureStage &) =delete;
-
-        enum State
-        {
-            AllRanAway,
-            NoTreasure,
-            WornOnly,
-            LockboxOnly,
-            WornAndLockbox
-        };
 
         enum Phase
         {
@@ -130,7 +122,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t blurbTextRegionUPtr_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
-        State state_;
+        item::TreasureAvailable::Enum treasureAvailable_;
     };
 
 }
