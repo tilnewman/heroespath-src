@@ -28,22 +28,15 @@
 // popup-stage.hpp
 //  This class encapsulates a popup window stage on screen.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-window.hpp"
-#include "sfml-util/stage.hpp"
+#include "sfml-util/popup-stage-base.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/gradient.hpp"
-#include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/color-shaker.hpp"
-#include "sfml-util/gui/text-button.hpp"
-#include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
-
-#include "game/popup-info.hpp"
 
 #include <memory>
 #include <queue>
@@ -81,13 +74,10 @@ namespace sfml_util
     //A base class for all Popup Window Stages
     class PopupStage
     :
-        public Stage,
-        public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
-        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::ITextButtonCallbackHandler_t
+        public PopupStageBase,
+        public gui::callback::ITextEntryBoxCallbackHandler_t,
+        public gui::callback::IListBoxCallbackHandler
     {
-
         //prevent copy construction
         PopupStage(const PopupStage &) =delete;
 
@@ -113,18 +103,22 @@ namespace sfml_util
 
         virtual ~PopupStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &);
+        inline virtual const std::string HandlerName() const override
+        {
+            return PopupStageBase::HandlerName();
+        }
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual bool KeyRelease(const sf::Event::KeyEvent &);
+        virtual bool HandleCallback(const gui::callback::SliderBarCallbackPackage_t &) override;
+        using PopupStageBase::HandleCallback;
+        bool HandleCallback(const gui::callback::TextEntryBoxCallbackPackage_t &) override;
+        bool HandleCallback(const gui::callback::ListBoxEventPackage &) override;
+        
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        inline virtual std::size_t CurrentSelection() const { return imageIndex_; }
+        inline std::size_t CurrentSelection() const { return imageIndex_; }
 
     private:
         void SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED);
@@ -154,50 +148,25 @@ namespace sfml_util
 
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
 
-        bool HandleSelect();
-
         void ItemProfileSetup();
 
     public:
         static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
         static const float MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
 
-    protected:
+    private:
         static const float     IMAGE_SLIDER_SPEED_;
         static const int       NUMBER_SELECT_INVALID_;
         static const float     BEFORE_FADE_STARTS_DELAY_SEC_;
         static const float     SPELLBOOK_COLOR_FADE_SPEED_;
         static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
-        static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
         static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
         static const float     SPELL_WARNING_DURATION_SEC_;
         //
-        const game::PopupInfo  POPUP_INFO_;
-        sf::Sprite             backgroundSprite_;
-        sf::Texture            backgroundTexture_;
-        const sf::FloatRect    INNER_REGION_;
-        gui::TextRegionUPtr_t  textRegionUPtr_;
-        sf::FloatRect          textRegion_;
         float                  elapsedTimeCounter_;
         std::size_t            secondCounter_;
-        gui::box::Box          box_;
-        GradientRect           gradient_;
-        sf::Sprite             accentSprite1_;
-        sf::Texture            accentTexture1_;
-        sf::Sprite             accentSprite2_;
-        sf::Texture            accentTexture2_;
-        int                    selection_;
-        //
-        gui::TextButtonUPtr_t  buttonSelectUPtr_;
-        gui::TextButtonUPtr_t  buttonYesUPtr_;
-        gui::TextButtonUPtr_t  buttonNoUPtr_;
-        gui::TextButtonUPtr_t  buttonCancelUPtr_;
-        gui::TextButtonUPtr_t  buttonContinueUPtr_;
-        gui::TextButtonUPtr_t  buttonOkayUPtr_;
-
+        
         //members supporting the image select sliderbar
-        gui::SliderBarUPtr_t sliderbarUPtr_;
-        float sliderbarPosTop_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
         sf::Texture textureCurr_;

@@ -114,6 +114,7 @@ namespace stage
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
+
     private:
         int setupCountdown_;
         Phase phase_;
