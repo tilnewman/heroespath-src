@@ -73,8 +73,6 @@ namespace TreasureStage
             const sf::Vector2f & TARGET_ONSCREEN_POS_V,
             const sf::Vector2f & TARGET_OFFSCREEN_POS_V);
 
-        ~ListboxMover();
-
         inline bool IsSourceMoving() const { return sourceSlider_.IsMoving(); }
         inline bool IsTargetMoving() const { return targetSlider_.IsMoving(); }
         inline bool IsEitherMoving() const { return IsSourceMoving() || IsTargetMoving(); }
@@ -88,8 +86,8 @@ namespace TreasureStage
 
         //These functions return true if the listbox has just finished
         //moving offscreen and its contents need to be updated.
-        virtual bool UpdateTimeSource(const float ELAPSED_TIME_SECONDS);
-        virtual bool UpdateTimeTarget(const float ELAPSED_TIME_SECONDS);
+        bool UpdateTimeSource(const float ELAPSED_TIME_SECONDS);
+        bool UpdateTimeTarget(const float ELAPSED_TIME_SECONDS);
 
     private:
         void TargetChange();

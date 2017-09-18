@@ -70,10 +70,6 @@ namespace TreasureStage
     }
 
 
-    ListboxMover::~ListboxMover()
-    {}
-
-
     TreasureStage::SourceType ListboxMover::SourceChange()
     {
         sourceSlider_.ChangeDirection();
