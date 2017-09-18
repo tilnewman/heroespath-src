@@ -82,7 +82,7 @@ namespace combat
     const float     CombatNode::WING_IMAGE_SCALE_        (0.65f);
     const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_ (0.333f);
     const float     CombatNode::WING_IMAGE_ANIM_SPEED_   (8.0f);
-    const float     CombatNode::WING_IMAGE_ROTATION_MAX_ (-90.0f);
+    const float     CombatNode::WING_IMAGE_ROTATION_MAX_ (90.0f);
     
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
@@ -116,7 +116,7 @@ namespace combat
         wingTextureUPtr_      (),
         wingSprite_           (),
         isFlying_             (false),
-        wingFlapSlider_       (WING_IMAGE_ANIM_SPEED_),
+        wingFlapSlider_       (0.0f, WING_IMAGE_ROTATION_MAX_, WING_IMAGE_ANIM_SPEED_, 0.0f),
         imagePosV_            (0.0f, 0.0f),
         imagePosOffsetV_      (0.0f, 0.0f),
         willShowSelectAnim_   (false),
@@ -407,7 +407,12 @@ namespace combat
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
 
-            wingFlapSlider_.Reset(WING_IMAGE_ANIM_SPEED_);
+            wingFlapSlider_.Reset(
+                0.0f,
+                WING_IMAGE_ROTATION_MAX_,
+                0.0f,
+                WING_IMAGE_ROTATION_MAX_,
+                WING_IMAGE_ANIM_SPEED_);
         }
         else
         {
@@ -424,13 +429,11 @@ namespace combat
         {
             if (creaturePtr_->IsPlayerCharacter())
             {
-                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ *
-                    wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
+                wingSprite_.setRotation(wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
             }
             else
             {
-                wingSprite_.setRotation(WING_IMAGE_ROTATION_MAX_ *
-                    wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
+                wingSprite_.setRotation(wingFlapSlider_.Update(ELAPSED_TIME_SECONDS));
             }
         }
 

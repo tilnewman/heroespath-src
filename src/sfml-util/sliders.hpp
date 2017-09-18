@@ -210,7 +210,6 @@ namespace sliders
     class Slider
     {
     public:
-        //This constructor uses a random initial target.
         explicit Slider(const Value_t THE_MIN     = 0,
                         const Value_t THE_MAX     = 1,
                         const Speed_t SPEED       = 1.0,
@@ -225,7 +224,7 @@ namespace sliders
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
                 "Slider::Constructor given SPEED of zero.");
 
-            Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX);
+            Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX, SPEED);
         }
 
         inline Value_t GetMin() const { return min_; }
