@@ -617,7 +617,7 @@ namespace misc
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Equippable),
+            static_cast<category::Enum>(category::Equippable | category::AllowsCasting),
             misc_type::Wand,
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
