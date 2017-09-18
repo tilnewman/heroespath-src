@@ -4032,7 +4032,10 @@ namespace stage
 
     bool CombatStage::DetectWinOrLose(const bool IS_DETECTING_WIN)
     {
-        //detect runaway case
+        //Don't bother checking for the case where all enemies ran away,
+        //because they cannot run away yet.
+
+        //detect player runaway case
         if (IS_DETECTING_WIN == false)
         {
             auto const ALL_LIVING_PVEC{

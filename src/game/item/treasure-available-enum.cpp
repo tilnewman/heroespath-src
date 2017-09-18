@@ -42,7 +42,6 @@ namespace item
     {
         switch (E)
         {
-            case AllRanAway:        { return "AllRanAway"; }
             case NoTreasure:        { return "NoTreasure"; }
             case WornOnly:          { return "WornOnly"; }
             case LockboxOnly:       { return "LockboxOnly"; }

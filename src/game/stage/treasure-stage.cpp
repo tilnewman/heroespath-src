@@ -63,14 +63,27 @@ namespace game
 namespace stage
 {
 
+    //all of these names must be unique
     const std::string TreasureStage::POPUP_NAME_ITEMPROFILE_PLEASEWAIT_{
         "PopupName_ItemProfilePleaseWait" };
+
+    const std::string TreasureStage::POPUP_NAME_ALL_ENEMIES_RAN_{
+        "PopupName_AllEnemiesRan" };
+
+    const std::string TreasureStage::POPUP_NAME_WORN_ONLY_{
+        "PopupName_WornOnly" };
+
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_ONLY_{
+        "PopupName_LockboxOnly" };
+
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_WORD_{
+        "PopupName_LockboxAndWorn" };
 
 
     TreasureStage::TreasureStage()
     :
         Stage               ("Treasure"),
-        setupCountdown_     (100),
+        setupCountdown_     (0),
         phase_              (Phase::PreSetupDelay),
         bgTexture_          (),
         bgSprite_           (),
@@ -84,7 +97,7 @@ namespace stage
         blurbTextRegionUPtr_(),
         itemCacheHeld_      (),
         itemCacheLockbox_   (),
-        treasureAvailable_  (item::TreasureAvailable::AllRanAway)
+        treasureAvailable_  (item::TreasureAvailable::Count)
     {}
 
 
@@ -127,22 +140,31 @@ namespace stage
             bgSprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         }
 
-        //see SetupAfterDelay()
+        if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
+        {
+            //This 20 was found by experiment to be a good number of draw frames to allow the
+            //background image to fade in a little bit before displaying the 'Please Wait' popup.
+            setupCountdown_ = 40;
+        }
+        else
+        {
+            setupCountdown_ = 0;
+            SetupAfterDelay();
+        }
     }
 
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
+        //If the ItemProfileWarehouse needs to be setup, then wait for the background
+        //to fade in a little before displaying the 'Please Wait' popup.
         if (setupCountdown_ > 0)
         {
             if (0 == --setupCountdown_)
             {
-                if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
-                {
-                    LoopManager::Instance()->PopupWaitBegin(this,
-                        sfml_util::gui::PopupManager::Instance()->
-                        CreateItemProfilePleaseWaitPopupInfo(POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
-                }
+                LoopManager::Instance()->PopupWaitBegin(this,
+                    sfml_util::gui::PopupManager::Instance()->
+                    CreateItemProfilePleaseWaitPopupInfo(POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
             }
         }
 
@@ -420,7 +442,8 @@ namespace stage
 
         SetupCorpseImage();
         SetupTreasureImage(treasureImageType_);
-        DetermineTreasureAvailableState();
+        treasureAvailable_ = DetermineTreasureAvailableState();
+        PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
 
@@ -444,33 +467,23 @@ namespace stage
     }
 
 
-    void TreasureStage::DetermineTreasureAvailableState()
+    item::TreasureAvailable::Enum TreasureStage::DetermineTreasureAvailableState()
     {
-        auto const DID_ALL_ENEMIES_RUN_AWAY{
-            combat::Encounter::Instance()->DidAllEnemiesRunAway() };
-
-        if (DID_ALL_ENEMIES_RUN_AWAY)
+        if ((itemCacheHeld_.Empty() == false) && (itemCacheLockbox_.Empty() == false))
         {
-            treasureAvailable_ = item::TreasureAvailable::AllRanAway;
+            return item::TreasureAvailable::NoTreasure;
+        }
+        else if ((itemCacheHeld_.Empty() == false) && itemCacheLockbox_.Empty())
+        {
+            return item::TreasureAvailable::WornOnly;
+        }
+        else if (itemCacheHeld_.Empty() && (itemCacheLockbox_.Empty() == false))
+        {
+            return item::TreasureAvailable::LockboxOnly;
         }
         else
         {
-            if ((itemCacheHeld_.Empty() == false) && (itemCacheLockbox_.Empty() == false))
-            {
-                treasureAvailable_ = item::TreasureAvailable::NoTreasure;
-            }
-            else if ((itemCacheHeld_.Empty() == false) && itemCacheLockbox_.Empty())
-            {
-                treasureAvailable_ = item::TreasureAvailable::WornOnly;
-            }
-            else if (itemCacheHeld_.Empty() && (itemCacheLockbox_.Empty() == false))
-            {
-                treasureAvailable_ = item::TreasureAvailable::LockboxOnly;
-            }
-            else
-            {
-                treasureAvailable_ = item::TreasureAvailable::WornAndLockbox;
-            }
+            return item::TreasureAvailable::WornAndLockbox;
         }
     }
 
@@ -509,6 +522,87 @@ namespace stage
 
         corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
         corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
+    }
+
+
+    void TreasureStage::PromptUserBasedonTreasureAvailability(
+        const item::TreasureAvailable::Enum TREASURE_AVAILABLE,
+        const item::TreasureImage::Enum TREASURE_IMAGE)
+    {
+        switch (TREASURE_AVAILABLE)
+        {
+            case item::TreasureAvailable::NoTreasure:
+            {
+                std::ostringstream ss;
+                ss << "Your enemies have no possessions worn or carried in a lockbox.  "
+                    << "Click Continue to return to the Adventure screen.";
+
+                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_ALL_ENEMIES_RAN_,
+                    ss.str(),
+                    sfml_util::PopupButtons::Continue,
+                    sfml_util::PopupImage::Regular) };
+
+                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                break;
+            }
+            case item::TreasureAvailable::WornOnly:
+            {
+                std::ostringstream ss;
+                ss << "Your enemies have possessions worn but they carried no lockbox.  "
+                    << "Click Continue to pick through what they left behind.";
+
+                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_WORN_ONLY_,
+                    ss.str(),
+                    sfml_util::PopupButtons::Continue,
+                    sfml_util::PopupImage::Regular) };
+
+                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                break;
+            }
+            case item::TreasureAvailable::LockboxOnly:
+            {
+                std::ostringstream ss;
+                ss << "Your enemies have no possessions on them, but they carried a "
+                    << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
+                    << ".  Attempt to pick the lock?";
+
+                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_LOCKBOX_ONLY_,
+                    ss.str(),
+                    sfml_util::PopupButtons::YesNo,
+                    sfml_util::PopupImage::Regular) };
+
+                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                break;
+            }
+            case item::TreasureAvailable::WornAndLockbox:
+            {
+                std::ostringstream ss;
+                ss << "Your enemies have possessions on them and they also carried a "
+                    << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
+                    << ".  Attempt to pick the lock?";
+
+                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_LOCKBOX_AND_WORD_,
+                    ss.str(),
+                    sfml_util::PopupButtons::YesNo,
+                    sfml_util::PopupImage::Regular) };
+
+                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                break;
+            }
+            case item::TreasureAvailable::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::stage::TreasureStage::PromptUserBasedonTreasureAvailability("
+                    << treasureAvailable_ << ")_InvalidValueError.";
+
+                throw std::range_error(ss.str());
+            }
+        }
     }
 
 }

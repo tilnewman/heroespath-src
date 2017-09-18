@@ -39,8 +39,7 @@ namespace item
     {
         enum Enum
         {
-            AllRanAway = 0,
-            NoTreasure,
+            NoTreasure = 0,
             WornOnly,
             LockboxOnly,
             WornAndLockbox,

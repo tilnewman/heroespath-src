@@ -608,8 +608,8 @@ namespace sfml_util
             return;
         }
 
-        const sfml_util::Response::Enum POPUP_RESPONSE_ENUM(game::LoopManager::Instance()->GetPopupResponse());
-        const std::size_t POPUP_SELECTION(game::LoopManager::Instance()->GetPopupSelection());
+        auto const POPUP_RESPONSE_ENUM{ game::LoopManager::Instance()->GetPopupResponse() };
+        auto const POPUP_SELECTION{ game::LoopManager::Instance()->GetPopupSelection() };
 
         if (POPUP_RESPONSE_ENUM != sfml_util::Response::None)
         {
@@ -618,9 +618,13 @@ namespace sfml_util
                             << "\" with selection=" << POPUP_SELECTION << " to popup "
                             << popupInfo_.ToStringShort(true) << ".");
 
-            const game::callback::PopupResponse POPUP_RESPONSE_OBJ(popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
+            const game::callback::PopupResponse POPUP_RESPONSE_OBJ(
+                popupInfo_,
+                POPUP_RESPONSE_ENUM,
+                POPUP_SELECTION);
 
-            const bool WILL_RESET_CALLBACKHANDLER( popupCallbackPtr_->HandleCallback(POPUP_RESPONSE_OBJ) );
+            auto const WILL_RESET_CALLBACKHANDLER{
+                popupCallbackPtr_->HandleCallback(POPUP_RESPONSE_OBJ) };
 
             game::LoopManager::Instance()->ClearPopupResponse();
 

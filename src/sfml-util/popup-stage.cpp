@@ -2754,11 +2754,7 @@ namespace sfml_util
 
     void PopupStage::ItemProfileSetup()
     {
-        if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
-        {
-            game::item::ItemProfileWarehouse::Instance()->Setup();
-        }
-
+        game::item::ItemProfileWarehouse::Instance()->Setup();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
     }
 

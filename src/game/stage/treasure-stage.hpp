@@ -101,11 +101,18 @@ namespace stage
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
         void SetupCoinsImage();
-        void DetermineTreasureAvailableState();
+        item::TreasureAvailable::Enum DetermineTreasureAvailableState();
         void SetupCorpseImage();
+
+        void PromptUserBasedonTreasureAvailability(
+            const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
+        static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
+        static const std::string POPUP_NAME_WORN_ONLY_;
+        static const std::string POPUP_NAME_LOCKBOX_ONLY_;
+        static const std::string POPUP_NAME_LOCKBOX_AND_WORD_;
 
     private:
         int setupCountdown_;
