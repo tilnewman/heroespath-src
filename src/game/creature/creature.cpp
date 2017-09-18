@@ -1257,7 +1257,9 @@ namespace creature
 
         if (inventory_.CountItemOfCategory(item::category::AllowsCasting) == 0)
         {
-            return RESPONSE_PREFIX + " has no wand or other casting item" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX +
+                game::creature::sex::HeSheIt(sex_, false) +
+                " has no wand or other casting item" + RESPONSE_POSTFIX;
         }
 
         return "";
