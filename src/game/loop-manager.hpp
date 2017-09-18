@@ -30,11 +30,13 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/loop-cmd.hpp"
+#include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/response-enum.hpp"
 #include "sfml-util/loop.hpp"
+#include "sfml-util/popup-stage.hpp"
 
 #include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -95,11 +97,26 @@ namespace game
 
         bool Execute();
 
-        void PopupWaitBegin(callback::IPopupHandler_t * const HANDLER_PTR,
-                            const PopupInfo &                 POPUP_INFO_SPTR);
+        template<typename PopupType_t>
+        void PopupWaitBeginSpecific(
+            callback::IPopupHandler_t * const HANDLER_PTR,
+            const PopupInfo & POPUP_INFO)
+        {
+            popupResponse_ = sfml_util::Response::None;
+            popupSelection_ = 0;
+            TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
+        }
 
-        void PopupWaitEnd(const sfml_util::Response::Enum RESPONSE,
-                          const std::size_t SELECTION = 0);
+        inline void PopupWaitBegin(
+            callback::IPopupHandler_t * const HANDLER_PTR,
+            const PopupInfo & POPUP_INFO)
+        {
+            PopupWaitBeginSpecific<sfml_util::PopupStage>(HANDLER_PTR, POPUP_INFO);
+        }
+
+        void PopupWaitEnd(
+            const sfml_util::Response::Enum RESPONSE,
+            const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
@@ -181,11 +198,35 @@ namespace game
     private:
         void TransitionTo_Intro();
 
-        void TransitionTo_Popup(callback::IPopupHandler_t * const HANDLER_PTR,
-                                const PopupInfo &                 POPUP_INFO);
+        template<typename PopupType_t>
+        void TransitionTo_Popup(
+            callback::IPopupHandler_t * const HANDLER_PTR,
+            const PopupInfo &                 POPUP_INFO)
+        {
+            CommandQueueClear();
+            loop_.Exit();
+
+            loop_.AssignPopupCallbackHandlerInfo(HANDLER_PTR, POPUP_INFO);
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
+
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Popup));
+
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
+                sfml_util::gui::PopupManager::Color_Fade(),
+                sfml_util::gui::PopupManager::SpeedMult_Fade(),
+                true));
+
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+            
+            cmdQueue_.push(std::make_shared<
+                sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t> >(loop_, POPUP_INFO));
+
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        }
 
         void TransitionFrom_Popup();
-        
+
         void TransitionTo(const LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
         void TransitionHelper(

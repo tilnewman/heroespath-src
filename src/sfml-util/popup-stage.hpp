@@ -257,7 +257,5 @@ namespace sfml_util
         int drawCountdown_;
     };
 
-    using PopupStagePtr_t = PopupStage *;
-
 }
 #endif //SFMLUTIL_POPUPSTAGE_INCLUDED

@@ -202,23 +202,6 @@ namespace game
         TransitionTo_MainMenu();
     }
 
-    void LoopManager::TransitionTo_Popup(callback::IPopupHandler_t * const HANDLER_PTR,
-                                         const PopupInfo &                 POPUP_INFO)
-    {
-        CommandQueueClear();
-        loop_.Exit();
-
-        loop_.AssignPopupCallbackHandlerInfo(HANDLER_PTR, POPUP_INFO);
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false) );
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false) );
-
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Popup) );
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeOut>(sfml_util::gui::PopupManager::Color_Fade(), sfml_util::gui::PopupManager::SpeedMult_Fade(), true) );
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_AddStage_Popup>(POPUP_INFO) );
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
-    }
-
 
     void LoopManager::TransitionFrom_Popup()
     {
@@ -563,23 +546,13 @@ namespace game
             {
                 prevState_ = state_;
                 state_ = CURRENT_STATE;
-                M_HP_LOG("LoopManager changed from \"" << LoopState::ToString(prevState_) << "\" to \"" << LoopState::ToString(state_) << "\"");
+
+                M_HP_LOG("LoopManager changed from \"" << LoopState::ToString(prevState_)
+                    << "\" to \"" << LoopState::ToString(state_) << "\"");
             }
         }
 
         return exitSuccess_;
-    }
-
-
-    void LoopManager::PopupWaitBegin(
-        callback::IPopupHandler_t * const HANDLER_PTR,
-        const PopupInfo &                 POPUP_INFO)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((HANDLER_PTR != nullptr), "LoopManager::PopupWaitBegin(" << POPUP_INFO.ToStringShort(false) << ") given a NULL POPUP_INFO->CallbackHandlerPtr() pointer.");
-        M_HP_LOG("LoopManager::PopupWaitBegin(handler=\"" << HANDLER_PTR->HandlerName() << "\", " << POPUP_INFO.ToStringShort(false) << ") while in state=" << LoopState::ToString(prevState_) << ".");
-        popupResponse_ = sfml_util::Response::None;
-        popupSelection_ = 0;
-        TransitionTo_Popup(HANDLER_PTR, POPUP_INFO);
     }
 
 

@@ -40,26 +40,6 @@
 namespace sfml_util
 {
 
-    LoopCmd_AddStage_Popup::LoopCmd_AddStage_Popup(const game::PopupInfo & POPUP_INFO)
-    :
-        LoopCmd    ("AddStage_Popup"),
-        POPUP_INFO_(POPUP_INFO)
-    {}
-
-
-    LoopCmd_AddStage_Popup::~LoopCmd_AddStage_Popup()
-    {}
-
-
-    bool LoopCmd_AddStage_Popup::Execute()
-    {
-        auto popupStagePtr( new PopupStage(POPUP_INFO_) );
-        popupStagePtr->Setup();
-        game::LoopManager::Instance()->CommandLoopAccess(this).SetPopup(popupStagePtr);
-        return true;
-    }
-
-
     LoopCmd_RemoveStage_Popup::LoopCmd_RemoveStage_Popup()
     :
         LoopCmd("RemoveStage_Popup")

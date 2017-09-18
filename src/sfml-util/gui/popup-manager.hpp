@@ -59,9 +59,6 @@ namespace creature
 
 namespace sfml_util
 {
-    class PopupStage;
-    using PopupStagePtr_t = PopupStage *;
-
 namespace gui
 {
 

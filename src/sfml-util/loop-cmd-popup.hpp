@@ -36,21 +36,33 @@
 namespace sfml_util
 {
 
-    //A class that adds a popup to a Loop object
-    class LoopCmd_AddStage_Popup : public LoopCmd
+    template<typename PopupType_t>
+    class LoopCmd_AddStage_Popup_Specific : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Popup(const game::PopupInfo & POPUP_INFO);
+        LoopCmd_AddStage_Popup_Specific(
+            sfml_util::Loop & loop,
+            const game::PopupInfo & POPUP_INFO)
+        :
+            LoopCmd("AddStage_Popup_Specific"),
+            loop_(loop),
+            popupInfo_(POPUP_INFO)
+        {}
 
-        virtual ~LoopCmd_AddStage_Popup();
+        virtual ~LoopCmd_AddStage_Popup_Specific() {}
 
-        virtual bool Execute();
+        virtual bool Execute()
+        {
+            auto popupStagePtr(new PopupType_t(popupInfo_));
+            popupStagePtr->Setup();
+            loop_.SetPopup(popupStagePtr);
+            return true;
+        }
 
     private:
-        const game::PopupInfo POPUP_INFO_;
+        sfml_util::Loop & loop_;
+        game::PopupInfo popupInfo_;
     };
-
-    using LoopCmd_AddStage_PopupSPtr_t = std::shared_ptr<LoopCmd_AddStage_Popup>;
 
 
     //A class that removes a popup from a Loop object
@@ -61,8 +73,6 @@ namespace sfml_util
         virtual ~LoopCmd_RemoveStage_Popup();
         virtual bool Execute();
     };
-
-    using LoopCmd_RemoveStage_PopupSPtr_t = std::shared_ptr<LoopCmd_RemoveStage_Popup>;
 
 }
 #endif //SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
