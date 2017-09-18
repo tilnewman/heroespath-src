@@ -443,24 +443,15 @@ namespace creature
             actualSet_.Get(E).CurrentSet(NEW_VALUE);
         }
 
-        inline stats::Trait_t TraitWorking(const stats::Traits::Enum E) const
-        {
-            auto const ACTUAL{ TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E)) };
-            return (ACTUAL < 0.0f) ? 0 : static_cast<stats::Trait_t>(ACTUAL);
-        }
+        stats::Trait_t TraitWorking(const stats::Traits::Enum E) const;
 
         inline stats::Trait_t TraitBonusNormal(const stats::Traits::Enum E) const
         {
             return bonusSet_.GetCopy(E).Normal();
         }
 
-        inline stats::Trait_t TraitBonusNormalAdj(
-            const stats::Traits::Enum E, const stats::Trait_t ADJ)
-        {
-            auto const NEW_NORMAL{ bonusSet_.Get(E).NormalAdj(ADJ) };
-            ReCalculateTraitBonuses();
-            return NEW_NORMAL;
-        }
+        stats::Trait_t TraitBonusNormalAdj(
+            const stats::Traits::Enum E, const stats::Trait_t ADJ);
 
         inline stats::Trait_t TraitBonusCurrent(const stats::Traits::Enum E) const
         {

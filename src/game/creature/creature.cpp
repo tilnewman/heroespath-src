@@ -1572,6 +1572,24 @@ namespace creature
     }
 
 
+    stats::Trait_t Creature::TraitWorking(const stats::Traits::Enum E) const
+    {
+        auto const ACTUAL{ static_cast<float>(TraitCurrent(E)) +
+            (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
+
+        return (ACTUAL < 0.0f) ? 0 : static_cast<stats::Trait_t>(ACTUAL);
+    }
+
+
+    stats::Trait_t Creature::TraitBonusNormalAdj(
+        const stats::Traits::Enum E, const stats::Trait_t ADJ)
+    {
+        auto const NEW_NORMAL{ bonusSet_.Get(E).NormalAdj(ADJ) };
+        ReCalculateTraitBonuses();
+        return NEW_NORMAL;
+    }
+
+
     bool Creature::TraitBonusTest(const stats::Traits::Enum E) const
     {
         return (::misc::random::Int(100) < bonusSet_.GetCopy(E).Current());
