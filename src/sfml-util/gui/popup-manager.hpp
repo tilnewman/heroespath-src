@@ -97,7 +97,9 @@ namespace gui
 
         bool Test();
 
-        void LoadAssets();
+        //throws range error on invalid PopupImage::Enum
+        const std::string BackgroundImagePath(
+            const sfml_util::PopupImage::Enum IMAGE) const;
 
         //colors
         static inline sf::Color Color_Fade() { return sf::Color(0, 0, 0, 127); }
@@ -246,20 +248,12 @@ namespace gui
         const game::PopupInfo CreateItemProfilePleaseWaitPopupInfo(
             const std::string & POPUP_NAME) const;
 
-        //throws range error upon unknown enum value
-        void Texture(const PopupImage::Enum, sf::Texture &) const;
-
-        PopupStagePtr_t CreatePopupStage(const game::PopupInfo &);
-
         void LoadRandomAccentImage(sf::Texture &) const;
 
-    private:
-        void LoadPopup(const std::string & POPUP_FILE_NAME,
-                       sf::Texture &       texture) const;
-
-        float GetScaleForImage(const PopupImage::Enum E) const;
-
         void LoadAccentImagePaths();
+
+    private:
+        float GetScaleForImage(const PopupImage::Enum E) const;
 
     private:
         static std::string windowTextureDirectoryPath_;
@@ -268,14 +262,6 @@ namespace gui
         static std::unique_ptr<PopupManager> instanceUPtr_;
         //
         const float BACKGROUND_IMAGE_SCALE_DEFAULT_;
-        //
-        sf::Texture popupBannerTexture_;
-        sf::Texture popupRegularTexture_;
-        sf::Texture popupRegularSidebarTexture_;
-        sf::Texture popupLargeTexture_;
-        sf::Texture popupLargeSidebarTextue_;
-        sf::Texture popupSpellbookTexture_;
-        sf::Texture popupMusicSheetTexture_;
         //
         PathVec_t accentPathsVec_;
     };

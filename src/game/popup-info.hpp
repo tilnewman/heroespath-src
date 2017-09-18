@@ -163,6 +163,11 @@ namespace creature
         const std::string ToStringShort(const bool WILL_WRAP = true) const;
         const std::string ToStringFull(const bool WILL_WRAP = true) const;
 
+        inline void SetBoxInfo(const sfml_util::gui::box::Info & NEW_BOX_INFO)
+        {
+            boxInfo_ = NEW_BOX_INFO;
+        }
+
     public:
         static const float IMAGE_FADE_SPEED_DEFAULT_;
 

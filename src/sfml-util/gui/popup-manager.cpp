@@ -67,15 +67,8 @@ namespace gui
 
     PopupManager::PopupManager()
     :
-        BACKGROUND_IMAGE_SCALE_DEFAULT_(sfml_util::MapByRes(0.05f, 6.666f)),
-        popupBannerTexture_            (),
-        popupRegularTexture_           (),
-        popupRegularSidebarTexture_    (),
-        popupLargeTexture_             (),
-        popupLargeSidebarTextue_       (),
-        popupSpellbookTexture_         (),
-        popupMusicSheetTexture_        (),
-        accentPathsVec_                ()
+        BACKGROUND_IMAGE_SCALE_DEFAULT_(sfml_util::MapByRes(0.05f, 6.666f)),//found by experiment
+        accentPathsVec_()
     {
         M_HP_LOG_DBG("Singleton Construction: PopupManager");
         fontColor_ = sfml_util::FontManager::Color_GrayDarker();
@@ -139,76 +132,45 @@ namespace gui
                 "sfml_util::gui::PopupManager::Test() Starting Tests...");
         }
 
+        //TODO
+
         game::LoopManager::Instance()->TestingStrAppend(
             "sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
+
         return true;
     }
 
-    void PopupManager::LoadAssets()
+
+    const std::string PopupManager::BackgroundImagePath(
+        const sfml_util::PopupImage::Enum IMAGE) const
     {
-        LoadPopup("paper-banner.png", popupBannerTexture_);
-        LoadPopup("paper-regular.png", popupRegularTexture_);
-        LoadPopup("paper-regular-bar.png", popupRegularSidebarTexture_);
-        LoadPopup("paper-large.png", popupLargeTexture_);
-        LoadPopup("paper-large-bar.png", popupLargeSidebarTextue_);
-        LoadPopup("spellbook.png", popupSpellbookTexture_);
-        LoadPopup("music-sheet.png", popupMusicSheetTexture_);
-
-        LoadAccentImagePaths();
-    }
-
-
-    void PopupManager::LoadPopup(const std::string & WINDOW_FILE_NAME,
-                                 sf::Texture &       texture) const
-    {
-        namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(windowTextureDirectoryPath_) /
-            bfs::path(WINDOW_FILE_NAME)));
-
-        sfml_util::LoadTexture(texture, PATH_OBJ.string());
-    }
-
-
-    const sf::IntRect PopupManager::Rect(const PopupImage::Enum PI, const float SCALE) const
-    {
-        switch (PI)
+        std::string filename{ "" };
+        switch (IMAGE)
         {
-            case PopupImage::Banner:
-            {
-                return sfml_util::ScaleRectCopy(Rect_Banner(), SCALE);
-            }
-
-            case PopupImage::Regular:
-            {
-                return sfml_util::ScaleRectCopy(Rect_Regular(), SCALE);
-            }
-
-            case PopupImage::RegularSidebar:
-            {
-                return sfml_util::ScaleRectCopy(Rect_RegularSidebar(), SCALE);
-            }
-
-            case PopupImage::Large:
-            {
-                return sfml_util::ScaleRectCopy(Rect_Large(), SCALE);
-            }
-
-            case PopupImage::LargeSidebar:
-            {
-                return sfml_util::ScaleRectCopy(Rect_LargeSidebar(), SCALE);
-            }
-
-            case PopupImage::Spellbook:
-            case PopupImage::MusicSheet:
+            case PopupImage::Banner:         { filename = "paper-banner.png"; break; }
+            case PopupImage::Regular:        { filename = "paper-regular.png"; break; }
+            case PopupImage::RegularSidebar: { filename = "paper-regular-bar.png"; break; }
+            case PopupImage::Large:          { filename = "paper-large.png"; break; }
+            case PopupImage::LargeSidebar:   { filename = "paper-large-bar.png"; break; }
+            case PopupImage::Spellbook:      { filename = "spellbook.png"; break; }
+            case PopupImage::MusicSheet:     { filename = "music-sheet.png"; break; }
             case PopupImage::Custom:
             case PopupImage::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "PopupManager::Rect(" << PI << ")_InvalidValueError.";
+                ss << "sfml_util::PopupManager::BackgroundImagePath("
+                    << IMAGE << ")_InvalidValueError.";
+
                 throw std::range_error(ss.str());
             }
         }
+
+        namespace bfs = boost::filesystem;
+        auto const PATH{ bfs::system_complete(bfs::path(windowTextureDirectoryPath_) /
+            bfs::path(filename)) };
+
+        return PATH.string();
     }
 
 
@@ -538,167 +500,6 @@ namespace gui
     }
 
 
-    void PopupManager::Texture(const PopupImage::Enum PI, sf::Texture & texture) const
-    {
-        switch (PI)
-        {
-            case PopupImage::Banner:         { texture = popupBannerTexture_; break; }
-            case PopupImage::Regular:        { texture = popupRegularTexture_; break; }
-            case PopupImage::RegularSidebar: { texture = popupRegularSidebarTexture_; break; }
-            case PopupImage::Large:          { texture = popupLargeTexture_; break; }
-            case PopupImage::LargeSidebar:   { texture = popupLargeSidebarTextue_; break; }
-            case PopupImage::Spellbook:      { texture = popupSpellbookTexture_; break; }
-            case PopupImage::MusicSheet:     { texture = popupMusicSheetTexture_; break; }
-            case PopupImage::Custom:
-            case PopupImage::Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "PopupManager::Texture(" << PI << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-
-    PopupStagePtr_t PopupManager::CreatePopupStage(const game::PopupInfo & POPUP_INFO)
-    {
-        if (POPUP_INFO.Image() == sfml_util::PopupImage::Custom)
-        {
-            //establish popup window region
-            const float SCREEN_WIDTH(sfml_util::Display::Instance()->GetWinWidth());
-            const float SCREEN_HEIGHT(sfml_util::Display::Instance()->GetWinHeight());
-            const float POPUP_WIDTH(SCREEN_WIDTH * POPUP_INFO.SizeX());
-            const float POPUP_HEIGHT(SCREEN_HEIGHT * POPUP_INFO.SizeY());
-
-            const sf::FloatRect REGION((SCREEN_WIDTH * 0.5f) - (POPUP_WIDTH * 0.5f),
-                                       (SCREEN_HEIGHT * 0.5f) - (POPUP_HEIGHT * 0.5f),
-                                       POPUP_WIDTH,
-                                       POPUP_HEIGHT);
-
-            //re-construct the info objects based on the REGION
-            sfml_util::gui::box::Info newBoxInfo(POPUP_INFO.BoxInfo());
-            newBoxInfo.SetBoxAndBackgroundRegion(REGION);
-
-            const game::PopupInfo NEW_POPUP_INFO(POPUP_INFO.Name(),
-                                                 POPUP_INFO.TextInfo(),
-                                                 POPUP_INFO.Buttons(),
-                                                 newBoxInfo,
-                                                 POPUP_INFO.SizeX(),
-                                                 POPUP_INFO.SizeY(),
-                                                 POPUP_INFO.Type(),
-                                                 POPUP_INFO.SoundEffect(),
-                                                 POPUP_INFO.ButtonColor(),
-                                                 POPUP_INFO.WillAddRandImage());
-
-            //establish inner rect
-            const float PAD(20.0f);
-            sf::FloatRect innerRegion(REGION);
-            innerRegion.left   = PAD;
-            innerRegion.width -= PAD;
-            innerRegion.top    = PAD;
-            innerRegion.top   -= PAD;
-
-            auto popupStagePtr( new PopupStage(NEW_POPUP_INFO,
-                                               REGION,
-                                               innerRegion) );
-            popupStagePtr->Setup();
-            return popupStagePtr;
-        }
-        else if (POPUP_INFO.Image() == sfml_util::PopupImage::Spellbook)
-        {
-            sf::Texture backgroundTexture;
-            Texture(POPUP_INFO.Image(), backgroundTexture);
-
-            //define the outer limits of the stage
-            auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() *
-                PopupStage::SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_ };
-
-            auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) *
-                SPELLBOOK_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
-
-            sf::FloatRect rect;
-            rect.left = ((sfml_util::Display::Instance()->GetWinWidth() -
-                SPELLBOOK_WIDTH) * 0.5f);
-
-            rect.top = ((sfml_util::Display::Instance()->GetWinHeight() -
-                SPELLBOOK_HEIGHT) * 0.5f);
-
-            rect.width = SPELLBOOK_WIDTH;
-            rect.height = SPELLBOOK_HEIGHT;
-
-            auto const INNER_RECT{ rect };
-
-            auto popupStagePtr( new PopupStage(POPUP_INFO,
-                                               rect,
-                                               INNER_RECT,
-                                               backgroundTexture) );
-            popupStagePtr->Setup();
-            return popupStagePtr;
-        }
-        else if (POPUP_INFO.Image() == sfml_util::PopupImage::MusicSheet)
-        {
-            sf::Texture backgroundTexture;
-            Texture(POPUP_INFO.Image(), backgroundTexture);
-
-            //define the outer limits of the stage
-            auto const MUSICSHEET_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() *
-                PopupStage::MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_ };
-
-            auto const MUSICSHEET_HEIGHT{ (static_cast<float>(backgroundTexture.getSize().y) *
-                MUSICSHEET_WIDTH) / static_cast<float>(backgroundTexture.getSize().x) };
-
-            sf::FloatRect rect;
-            rect.left = (sfml_util::Display::Instance()->GetWinWidth() -
-                MUSICSHEET_WIDTH) * 0.5f;
-
-            rect.top = (sfml_util::Display::Instance()->GetWinHeight() -
-                MUSICSHEET_HEIGHT) * 0.5f;
-
-            rect.width =  MUSICSHEET_WIDTH;
-            rect.height = MUSICSHEET_HEIGHT;
-
-            auto const INNER_RECT{ rect };
-
-            auto popupStagePtr( new PopupStage(POPUP_INFO,
-                                               rect,
-                                               INNER_RECT,
-                                               backgroundTexture) );
-            popupStagePtr->Setup();
-            return popupStagePtr;
-        }
-        else
-        {
-            sf::Texture backgroundTexture;
-            Texture(POPUP_INFO.Image(), backgroundTexture);
-
-            //define the outer limits of the stage
-            const float TEXTURE_WIDTH (static_cast<float>(backgroundTexture.getSize().x));
-            const float TEXTURE_HEIGHT(static_cast<float>(backgroundTexture.getSize().y));
-
-            sf::FloatRect rect;
-            rect.left = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
-                (TEXTURE_WIDTH * 0.5f);
-
-            rect.top = (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) -
-                (TEXTURE_HEIGHT * 0.5f);
-
-            rect.width = TEXTURE_WIDTH;
-            rect.height = TEXTURE_HEIGHT;
-
-            const sf::FloatRect INNER_RECT(sfml_util::ConvertRect<int, float>(Rect(POPUP_INFO.Image(),
-                POPUP_INFO.ImageScale())));
-
-            auto popupStagePtr( new PopupStage(POPUP_INFO,
-                                               rect,
-                                               INNER_RECT,
-                                               backgroundTexture) );
-            popupStagePtr->Setup();
-            return popupStagePtr;
-        }
-    }
-
-
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
         sfml_util::LoadTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(
@@ -707,19 +508,6 @@ namespace gui
         if (misc::random::Bool())
         {
             sfml_util::FlipHoriz(texture);
-        }
-    }
-
-
-    float PopupManager::GetScaleForImage(const PopupImage::Enum E) const
-    {
-        if (E == PopupImage::Banner)
-        {
-            return sfml_util::MapByRes(1.0f, 3.0f);
-        }
-        else
-        {
-            return BACKGROUND_IMAGE_SCALE_DEFAULT_;
         }
     }
 
@@ -748,6 +536,19 @@ namespace gui
             {
                 accentPathsVec_.push_back(itr->path());
             }
+        }
+    }
+
+
+    float PopupManager::GetScaleForImage(const PopupImage::Enum E) const
+    {
+        if (E == PopupImage::Banner)
+        {
+            return sfml_util::MapByRes(1.0f, 3.0f);
+        }
+        else
+        {
+            return BACKGROUND_IMAGE_SCALE_DEFAULT_;
         }
     }
 

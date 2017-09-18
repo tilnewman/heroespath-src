@@ -40,7 +40,7 @@ namespace sfml_util
     class LoopCmd_AddStage_Popup : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Popup(const game::PopupInfo &  POPUP_INFO);
+        LoopCmd_AddStage_Popup(const game::PopupInfo & POPUP_INFO);
 
         virtual ~LoopCmd_AddStage_Popup();
 

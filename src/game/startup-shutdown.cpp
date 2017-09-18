@@ -390,7 +390,7 @@ namespace game
         //       file.
         sfml_util::SoundManager::Instance()->LoadSoundSets();
         game::combat::strategy::ChanceFactory::Instance()->Initialize();
-        sfml_util::gui::PopupManager::Instance()->LoadAssets();
+        sfml_util::gui::PopupManager::Instance()->LoadAccentImagePaths();
         game::item::ArmorRatings::Instance()->Setup();
 
         //LoopManager must be last

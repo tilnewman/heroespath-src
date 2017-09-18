@@ -507,6 +507,7 @@ namespace player
     void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
     {
         auto const ROLE_ENUM{ characterPtrC->Role() };
+
         if ((ROLE_ENUM == creature::role::Sorcerer) ||
             (ROLE_ENUM == creature::role::Cleric))
         {

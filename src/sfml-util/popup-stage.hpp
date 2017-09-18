@@ -96,10 +96,7 @@ namespace sfml_util
         };
 
     public:
-        PopupStage(const game::PopupInfo & POPUP_INFO,
-                   const sf::FloatRect &   REGION,
-                   const sf::FloatRect &   INNER_REGION,
-                   const sf::Texture &     BG_TEXTURE = sf::Texture());
+        explicit PopupStage(const game::PopupInfo & POPUP_INFO);
 
         virtual ~PopupStage();
 
@@ -150,11 +147,13 @@ namespace sfml_util
 
         void ItemProfileSetup();
 
-    public:
-        static const float SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
-        static const float MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
+        virtual void SetupOuterAndInnerRegion() override;
+
+        void SetupFullscreenRegionsAndBackgroundImage(const sf::FloatRect &);
 
     private:
+        static const float     SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
+        static const float     MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
         static const float     IMAGE_SLIDER_SPEED_;
         static const int       NUMBER_SELECT_INVALID_;
         static const float     BEFORE_FADE_STARTS_DELAY_SEC_;

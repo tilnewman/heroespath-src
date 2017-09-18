@@ -53,7 +53,8 @@ namespace sfml_util
 
     bool LoopCmd_AddStage_Popup::Execute()
     {
-        auto popupStagePtr( sfml_util::gui::PopupManager::Instance()->CreatePopupStage(POPUP_INFO_) );
+        auto popupStagePtr( new PopupStage(POPUP_INFO_) );
+        popupStagePtr->Setup();
         game::LoopManager::Instance()->CommandLoopAccess(this).SetPopup(popupStagePtr);
         return true;
     }

@@ -55,11 +55,7 @@ namespace sfml_util
         PopupStageBase & operator=(const PopupStageBase &) =delete;
 
     public:
-        PopupStageBase(
-            const game::PopupInfo & POPUP_INFO,
-            const sf::FloatRect & REGION,
-            const sf::FloatRect & INNER_REGION,
-            const sf::Texture & BG_TEXTURE = sf::Texture());
+        explicit PopupStageBase(const game::PopupInfo & POPUP_INFO);
 
         virtual ~PopupStageBase();
 
@@ -79,7 +75,10 @@ namespace sfml_util
         
         bool HandleSelect();
 
+        virtual void SetupOuterAndInnerRegion();
+
     private:
+        void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();
         void SetupButtons();
         void SetupTextRegion();
@@ -88,12 +87,16 @@ namespace sfml_util
         void SetupAccentSprite();
         void SetupSliderbar();
 
+        const sf::IntRect BackgroundImageRect(
+            const sfml_util::PopupImage::Enum PI,
+            const float SCALE) const;
+
     private:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
 
     protected:
-        const game::PopupInfo POPUP_INFO_;
-        const sf::FloatRect INNER_REGION_;
+        game::PopupInfo popupInfo_;
+        sf::FloatRect innerRegion_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
         gui::TextRegionUPtr_t textRegionUPtr_;
