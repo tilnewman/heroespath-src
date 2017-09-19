@@ -31,7 +31,7 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
 #include "game/game-data-file.hpp"
@@ -110,7 +110,7 @@ namespace stage
     }
 
 
-    bool TreasureStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
+    bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEMPROFILE_PLEASEWAIT_)
         {
@@ -163,7 +163,7 @@ namespace stage
             if (0 == --setupCountdown_)
             {
                 LoopManager::Instance()->PopupWaitBegin(this,
-                    sfml_util::gui::PopupManager::Instance()->
+                    popup::PopupManager::Instance()->
                     CreateItemProfilePleaseWaitPopupInfo(POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
             }
         }
@@ -537,11 +537,11 @@ namespace stage
                 ss << "Your enemies have no possessions worn or carried in a lockbox.  "
                     << "Click Continue to return to the Adventure screen.";
 
-                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_ALL_ENEMIES_RAN_,
                     ss.str(),
-                    sfml_util::PopupButtons::Continue,
-                    sfml_util::PopupImage::Regular) };
+                    popup::PopupButtons::Continue,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -552,11 +552,11 @@ namespace stage
                 ss << "Your enemies have possessions worn but they carried no lockbox.  "
                     << "Click Continue to pick through what they left behind.";
 
-                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_WORN_ONLY_,
                     ss.str(),
-                    sfml_util::PopupButtons::Continue,
-                    sfml_util::PopupImage::Regular) };
+                    popup::PopupButtons::Continue,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -568,11 +568,11 @@ namespace stage
                     << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
                     << ".  Attempt to pick the lock?";
 
-                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_LOCKBOX_ONLY_,
                     ss.str(),
-                    sfml_util::PopupButtons::YesNo,
-                    sfml_util::PopupImage::Regular) };
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -584,11 +584,11 @@ namespace stage
                     << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
                     << ".  Attempt to pick the lock?";
 
-                auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_LOCKBOX_AND_WORD_,
                     ss.str(),
-                    sfml_util::PopupButtons::YesNo,
-                    sfml_util::PopupImage::Regular) };
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;

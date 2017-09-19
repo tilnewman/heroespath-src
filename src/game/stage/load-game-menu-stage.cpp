@@ -35,7 +35,7 @@
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
 

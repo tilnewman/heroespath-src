@@ -22,29 +22,40 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_IPOOPUPCALLBACK_INCLUDED
-#define SFMLUTIL_IPOOPUPCALLBACK_INCLUDED
+#ifndef POPUP_WHICHPOPUPENUM_INCLUDED
+#define POPUP_WHICHPOPUPENUM_INCLUDED
 //
-// i-popup-callback.hpp
-//  Interface for all objects that can handle popup button responses.
+// which-popup-enum.hpp
+//  An enum identifying specific popup windows.
 //
-#include "sfml-util/i-callback-handler.hpp"
-
-#include "game/popup-response.hpp"
-
 #include <string>
 
 
-namespace game
-{
-namespace callback
+namespace popup
 {
 
-    //Returns true if Loop's popup callback handler pointer should be reset to null.
-    //This means you must return false if one popup will replace another.
-    using IPopupHandler_t = sfml_util::callback::ICallbackHandler<PopupResponse, bool>;
+    struct Popup
+    {
+        enum Enum
+        {
+            Generic = 0,
+            ResolutionChange,
+            ImageSelection,
+            ImageFade,
+            ContentSelectionWithItem,
+            ContentSelectionWithoutItem,
+            CharacterSelection,
+            NumberSelection,
+            Spellbook,
+            MusicSheet,
+            CombatOver,
+            SystemError,
+            ItemProfilePleaseWait,
+            Count
+        };
+
+        static const std::string ToString(const Popup::Enum E);
+    };
 
 }
-}
-
-#endif //SFMLUTIL_IPOOPUPCALLBACK_INCLUDED
+#endif //POPUP_WHICHPOPUPENUM_INCLUDED

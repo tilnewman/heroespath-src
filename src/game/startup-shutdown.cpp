@@ -39,7 +39,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/texture-cache.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
@@ -296,7 +296,7 @@ namespace game
         sfml_util::FontManager::SetFontsDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"));
 
-        sfml_util::gui::PopupManager::SetTexturesDirectoryPaths(
+        popup::PopupManager::SetTexturesDirectoryPaths(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-images-accents-dir"));
 
@@ -359,7 +359,7 @@ namespace game
         game::item::misc::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
-        sfml_util::gui::PopupManager::Acquire();
+        popup::PopupManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
         sfml_util::gui::CreatureImageManager::Acquire();
@@ -390,7 +390,7 @@ namespace game
         //       file.
         sfml_util::SoundManager::Instance()->LoadSoundSets();
         game::combat::strategy::ChanceFactory::Instance()->Initialize();
-        sfml_util::gui::PopupManager::Instance()->LoadAccentImagePaths();
+        popup::PopupManager::Instance()->LoadAccentImagePaths();
         game::item::ArmorRatings::Instance()->Setup();
 
         //LoopManager must be last
@@ -423,7 +423,7 @@ namespace game
         sfml_util::gui::ItemImageManager::Release();
         sfml_util::gui::GuiElements::Release();
         sfml_util::FontManager::Release();
-        sfml_util::gui::PopupManager::Release();
+        popup::PopupManager::Release();
         sfml_util::SoundManager::Release();
         game::GameDataFile::Release();
         game::item::misc::MiscItemFactory::Release();

@@ -41,7 +41,7 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/radio-button.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/box.hpp"
@@ -274,10 +274,10 @@ namespace stage
     }
 
 
-    bool CharacterStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
+    bool CharacterStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CREATECONFIRM_) &&
-            (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response())))
+            (popup::Response::IsAffirmative(POPUP_RESPONSE.Response())))
         {
             const std::string           NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
             const creature::sex::Enum   SEX_ENUM(static_cast<creature::sex::Enum>(sexRadioButtonSPtr_->GetSelectedNumber() + 1));
@@ -333,7 +333,7 @@ namespace stage
             sss  << " saved.";
 
             LoopManager::Instance()->PopupWaitBegin(
-                this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                this, popup::PopupManager::Instance()->CreatePopupInfo(
                     "Test After", sss.str()));
 
             ResetForNewCharacterCreation();
@@ -341,7 +341,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
         {
-            if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            if (popup::Response::IsAffirmative(POPUP_RESPONSE.Response()))
             {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::MainMenu);
             }
@@ -350,7 +350,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
         {
-            if (sfml_util::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            if (popup::Response::IsAffirmative(POPUP_RESPONSE.Response()))
             {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::PartyCreation);
             }
@@ -360,7 +360,7 @@ namespace stage
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_1_)
         {
             LoopManager::Instance()->PopupWaitBegin(this,
-                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                    popup::PopupManager::Instance()->CreatePopupInfo(
                                                         POPUP_NAME_HELP_2_,
                                                         std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
                                                             "\n\n\nPet Set:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
@@ -369,14 +369,14 @@ namespace stage
                                                             "\n\n\n" +
                                                             "Note that one of your characters must have the role of Beastmaster " +
                                                             "if you want a Dragon or Wolfen in your party.",
-                                                        sfml_util::PopupButtons::Continue,
-                                                        sfml_util::PopupImage::Large));
+                                                        popup::PopupButtons::Continue,
+                                                        popup::PopupImage::Large));
             return false;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_2_)
         {
             LoopManager::Instance()->PopupWaitBegin(this,
-                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                    popup::PopupManager::Instance()->CreatePopupInfo(
                                                         POPUP_NAME_HELP_3_,
                                                         std::string("To make a character, first select the Race and Role.  Use the text descriptions ") +
                                                             "to guide you.  Then hold down the space bar to summon a random set of attributes.  " +
@@ -386,12 +386,12 @@ namespace stage
                                                             "again to randomly summon more.\n\nFinally, give your character a name and then click " +
                                                             "the Save button.  Once you have created all the characters you need, click the Next " +
                                                             "button.  You can always return and make more characters.",
-                                                        sfml_util::PopupButtons::Okay,
-                                                        sfml_util::PopupImage::Large));
+                                                        popup::PopupButtons::Okay,
+                                                        popup::PopupImage::Large));
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_IMAGE_SELECTION_) &&
-                 (POPUP_RESPONSE.Response() != sfml_util::Response::Cancel))
+                 (POPUP_RESPONSE.Response() != popup::Response::Cancel))
         {
             selectedImageIndex_ = POPUP_RESPONSE.Selection();
 
@@ -435,10 +435,10 @@ namespace stage
                << "   Speed="        << statSetFinal.Spd() << "\n"
                << "   Intelligence=" << statSetFinal.Int() << "\n";
 
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CREATECONFIRM_,
+            LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CREATECONFIRM_,
                                                                                                                     ss.str(),
-                                                                                                                    sfml_util::PopupButtons::YesNo,
-                                                                                                                    sfml_util::PopupImage::Large,
+                                                                                                                    popup::PopupButtons::YesNo,
+                                                                                                                    popup::PopupImage::Large,
                                                                                                                     sfml_util::Justified::Center,
                                                                                                                     sfml_util::sound_effect::PromptQuestion));
             return false;
@@ -498,12 +498,13 @@ namespace stage
 
             ss << ".  All attributes must have a value before your character can be created.  Hold down the spacebar until all attributes have values.";
 
-            const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_MISSINGATTRIBS_,
-                                                                                                 ss.str(),
-                                                                                                 sfml_util::PopupButtons::Okay,
-                                                                                                 sfml_util::PopupImage::RegularSidebar,
-                                                                                                 sfml_util::Justified::Left,
-                                                                                                 sfml_util::sound_effect::PromptQuestion));
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_MISSINGATTRIBS_,
+                ss.str(),
+                popup::PopupButtons::Okay,
+                popup::PopupImage::RegularSidebar,
+                sfml_util::Justified::Left,
+                sfml_util::sound_effect::PromptQuestion) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
 
@@ -514,10 +515,10 @@ namespace stage
         const std::string CHARACTER_NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
         if (CHARACTER_NAME.empty())
         {
-            LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NONAMEERROR_,
+            LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NONAMEERROR_,
                                                                                                                     "The name box is empty.  You must name your character to continue.",
-                                                                                                                    sfml_util::PopupButtons::Okay,
-                                                                                                                    sfml_util::PopupImage::Banner,
+                                                                                                                    popup::PopupButtons::Okay,
+                                                                                                                    popup::PopupImage::Banner,
                                                                                                                     sfml_util::Justified::Center,
                                                                                                                     sfml_util::sound_effect::PromptQuestion));
             return false;
@@ -543,7 +544,7 @@ namespace stage
 
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
-        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+        LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
             CreatePopupInfo(POPUP_NAME_IMAGE_SELECTION_,
                             ss.str(),
                             characterTextureVec,
@@ -575,10 +576,10 @@ namespace stage
             ss << "to be lost.  Are you sure?";
 
             LoopManager::Instance()->PopupWaitBegin(this,
-                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
+                                                    popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
                                                                                                               ss.str(),
-                                                                                                              sfml_util::PopupButtons::YesNo,
-                                                                                                              sfml_util::PopupImage::Banner,
+                                                                                                              popup::PopupButtons::YesNo,
+                                                                                                              popup::PopupImage::Banner,
                                                                                                               sfml_util::Justified::Center,
                                                                                                               sfml_util::sound_effect::PromptWarn));
 
@@ -594,7 +595,7 @@ namespace stage
     bool CharacterStage::HandleCallback_HelpButton()
     {
         LoopManager::Instance()->PopupWaitBegin(this,
-                                                sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                                                popup::PopupManager::Instance()->CreatePopupInfo(
                                                     POPUP_NAME_HELP_1_,
                                                     std::string("You play Heroes' Path with a group of six characters called a party.  ") +
                                                         "This is where you create those characters one at a time. " +
@@ -605,8 +606,8 @@ namespace stage
                                                         "\n\n" +
                                                         "If you are new to the game, there are four recommended sets of " +
                                                         "Roles that are known to be effective and fun to play.  Click continue below to see them listed.",
-                                                    sfml_util::PopupButtons::Continue,
-                                                    sfml_util::PopupImage::Regular));
+                                                    popup::PopupButtons::Continue,
+                                                    popup::PopupImage::Regular));
         return true;
     }
 
@@ -633,10 +634,10 @@ namespace stage
             ss << "to be lost.  Are you sure?";
 
             LoopManager::Instance()->PopupWaitBegin(this,
-                                                    sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
+                                                    popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                                                                                                               ss.str(),
-                                                                                                              sfml_util::PopupButtons::YesNo,
-                                                                                                              sfml_util::PopupImage::Banner,
+                                                                                                              popup::PopupButtons::YesNo,
+                                                                                                              popup::PopupImage::Banner,
                                                                                                               sfml_util::Justified::Center,
                                                                                                               sfml_util::sound_effect::PromptWarn));
 

@@ -39,12 +39,13 @@
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation-base.hpp"
-#include "sfml-util/popup-stage-spellbook.hpp"
-#include "sfml-util/popup-stage-musicsheet.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
+
+#include "popup/popup-stage-spellbook.hpp"
+#include "popup/popup-stage-musicsheet.hpp"
+#include "popup/popup-manager.hpp"
 
 #include "game/game.hpp"
 #include "game/phase-enum.hpp"
@@ -406,7 +407,7 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
+    bool CombatStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ACHIEVEMENT_)
         {
@@ -414,7 +415,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
         {
-            if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
+            if (POPUP_RESPONSE.Response() == popup::Response::Select)
             {
                 const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
 
@@ -442,7 +443,7 @@ namespace stage
         }
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
         {
-            if (POPUP_RESPONSE.Response() == sfml_util::Response::Select)
+            if (POPUP_RESPONSE.Response() == popup::Response::Select)
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
@@ -2582,13 +2583,13 @@ namespace stage
             SetTurnActionPhase(TurnActionPhase::PlaySong);
 
             auto const POPUP_INFO{
-                sfml_util::gui::PopupManager::Instance()->CreateMusicPopupInfo(
+                popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_,
                     turnCreaturePtr_,
                     turnCreaturePtr_->LastSongPlayedNum()) };
 
             LoopManager::Instance()->
-                PopupWaitBeginSpecific<sfml_util::PopupStageMusicSheet>(this, POPUP_INFO);
+                PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(this, POPUP_INFO);
 
             return true;
         }
@@ -2657,13 +2658,13 @@ namespace stage
             SetTurnActionPhase(TurnActionPhase::Cast);
 
             auto const POPUP_INFO{
-                sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_,
                     turnCreaturePtr_,
                     turnCreaturePtr_->LastSpellCastNum()) };
 
             LoopManager::Instance()->
-                PopupWaitBeginSpecific<sfml_util::PopupStageSpellbook>(this, POPUP_INFO);
+                PopupWaitBeginSpecific<popup::PopupStageSpellbook>(this, POPUP_INFO);
 
             return true;
         }
@@ -3216,16 +3217,16 @@ namespace stage
     {
         std::ostringstream ss;
         ss << "\n" << ((WILL_PREPEND_NEWLINE) ? "\n" : "") << PROMPT;
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             "CombatStage'sQuickPopup",
             ss.str(),
-            sfml_util::PopupButtons::Okay,
-            sfml_util::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             ((IS_SOUNDEFFECT_NORMAL) ?
                 sfml_util::sound_effect::PromptGeneric : sfml_util::sound_effect::PromptWarn),
-            Popup::Generic,
-            sfml_util::FontManager::Instance()->Size_Normal()));
+            popup::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Normal()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
     }
@@ -4066,7 +4067,7 @@ namespace stage
             if (didAnyPlayersRunAway && areAllNonRunawaysIncapacitated)
             {
                 game::LoopManager::Instance()->PopupWaitBegin(this,
-                    sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                    popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                         POPUP_NAME_COMBATOVER_RAN_, combat::CombatEnd::Ran));
 
                 EndOfCombatCleanup();
@@ -4092,7 +4093,7 @@ namespace stage
         if (areAllIncapacitated)
         {
             game::LoopManager::Instance()->PopupWaitBegin(this,
-                sfml_util::gui::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                 ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
                     ((IS_DETECTING_WIN) ? combat::CombatEnd::Win : combat::CombatEnd::Lose)));
 
@@ -4117,7 +4118,7 @@ namespace stage
                                        const std::string & TECH_ERROR_MSG,
                                        const std::string & TITLE_MSG)
     {
-        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+        LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
             CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
                 TECH_ERROR_MSG, TITLE_MSG));
     }
@@ -4322,7 +4323,7 @@ namespace stage
                     TITLE_PAIR.second.second->Which());
             }
 
-            auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->
                 CreateImageFadePopupInfo(POPUP_NAME_ACHIEVEMENT_,
                                             TITLE_PAIR.first,
                                             TITLE_PAIR.second.first,

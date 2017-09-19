@@ -22,15 +22,15 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_RESPONSE_ENUM_HPP_INCLUDED
-#define SFMLUTIL_RESPONSE_ENUM_HPP_INCLUDED
+#ifndef POPUP_POPUPRESPONSEENUM_HPP_INCLUDED
+#define POPUP_POPUPRESPONSEENUM_HPP_INCLUDED
 //
-// response-enum.hpp
+// popup-response-enum.hpp
 //
 #include <string>
 
 
-namespace sfml_util
+namespace popup
 {
 
     struct Response
@@ -54,4 +54,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_RESPONSE_ENUM_HPP_INCLUDED
+#endif //POPUP_POPUPRESPONSEENUM_HPP_INCLUDED

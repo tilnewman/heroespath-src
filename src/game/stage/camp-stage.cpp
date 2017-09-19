@@ -36,7 +36,7 @@
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 
 #include "game/game.hpp"
 #include "game/game-data-file.hpp"
@@ -44,7 +44,7 @@
 #include "game/state/game-state-factory.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/algorithms.hpp"
-#include "game/popup-info.hpp"
+#include "popup/popup-info.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/player/character.hpp"
@@ -99,7 +99,7 @@ namespace stage
     }
 
 
-    bool CampStage::HandleCallback(const game::callback::PopupResponse & PACKAGE)
+    bool CampStage::HandleCallback(const popup::PopupResponse & PACKAGE)
     {
         if (PACKAGE.Info().Name() == NEWGAME_POPUP_NAME1_)
         {
@@ -184,52 +184,52 @@ namespace stage
 
         if (showNewGamePopup1_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWGAME_POPUP_NAME1_,
                 std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
-                sfml_util::PopupButtons::Continue,
-                sfml_util::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) );
+                sfml_util::sound_effect::None) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup1_ = false;
         }
         else if (showNewGamePopup2_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWGAME_POPUP_NAME2_,
                 ComposeNewGamePopupText2(),
-                sfml_util::PopupButtons::Continue,
-                sfml_util::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) );
+                sfml_util::sound_effect::None) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup2_ = false;
         }
         else if (showNewGamePopup3_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWGAME_POPUP_NAME3_,
                 ComposeNewGamePopupText3(),
-                sfml_util::PopupButtons::Continue,
-                sfml_util::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) );
+                sfml_util::sound_effect::None) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup3_ = false;
         }
         else if (showNewGamePopup4_)
         {
-            const game::PopupInfo POPUP_INFO( sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWGAME_POPUP_NAME4_,
                 ComposeNewGamePopupText4(),
-                sfml_util::PopupButtons::Continue,
-                sfml_util::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) );
+                sfml_util::sound_effect::None) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             showNewGamePopup4_ = false;

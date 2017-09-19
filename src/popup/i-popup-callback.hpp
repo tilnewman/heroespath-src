@@ -22,45 +22,26 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPRESPONSE_INCLUDED
-#define SFMLUTIL_POPUPRESPONSE_INCLUDED
+#ifndef POPUP_IPOOPUPCALLBACK_INCLUDED
+#define POPUP_IPOOPUPCALLBACK_INCLUDED
 //
-// popup-response.hpp
-//  Encapsulates everything about a popup window's result with a response from the user
+// i-popup-callback.hpp
+//  Interface for all objects that can handle popup button responses.
 //
-#include "sfml-util/response-enum.hpp"
+#include "sfml-util/i-callback-handler.hpp"
 
-#include "game/popup-info.hpp"
+#include "popup/popup-response.hpp"
+
+#include <string>
 
 
-namespace game
+namespace popup
 {
-namespace callback
-{
 
-    //encapsulates everything about a popup window's response
-    class PopupResponse
-    {
-    public:
-        PopupResponse(const game::PopupInfo &   POPUP_INFO,
-                      const sfml_util::Response::Enum RESPONSE,
-                      const std::size_t               SELECTION)
-        :
-            info_     (POPUP_INFO),
-            response_ (RESPONSE),
-            selection_(SELECTION)
-        {}
-
-        inline const PopupInfo Info() const                 { return info_; }
-        inline sfml_util::Response::Enum Response() const   { return response_; }
-        inline std::size_t Selection() const                { return selection_; }
-
-    private:
-        PopupInfo info_;
-        sfml_util::Response::Enum response_;
-        std::size_t selection_;
-    };
+    //Returns true if Loop's popup callback handler pointer should be reset to null.
+    //This means you must return false if one popup will replace another.
+    using IPopupHandler_t = sfml_util::callback::ICallbackHandler<PopupResponse, bool>;
 
 }
-}
-#endif //SFMLUTIL_POPUPRESPONSE_INCLUDED
+
+#endif //POPUP_IPOOPUPCALLBACK_INCLUDED

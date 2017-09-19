@@ -34,9 +34,11 @@
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/response-enum.hpp"
 #include "sfml-util/loop.hpp"
-#include "sfml-util/popup-stage.hpp"
+
+#include "popup/popup-info.hpp"
+#include "popup/popup-stage.hpp"
+#include "popup/popup-response-enum.hpp"
 
 #include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -54,8 +56,6 @@ namespace game
         class Creature;
         using CreaturePtr_t = Creature *;
     }
-
-    class PopupInfo;
 
 
     //Singleton class that keeps track of the game state
@@ -84,12 +84,12 @@ namespace game
 
         inline LoopState::Enum GetState() const                     { return state_; }
         inline LoopState::Enum GetPrevState() const                 { return prevState_; }
-        inline sfml_util::Response::Enum GetPopupResponse() const   { return popupResponse_; }
+        inline popup::Response::Enum GetPopupResponse() const   { return popupResponse_; }
         inline std::size_t GetPopupSelection() const                { return popupSelection_; }
 
         inline void ClearPopupResponse()
         {
-            popupResponse_ = sfml_util::Response::None;
+            popupResponse_ = popup::Response::None;
             popupSelection_ = 0;
         }
 
@@ -99,30 +99,30 @@ namespace game
 
         template<typename PopupType_t>
         void PopupWaitBeginSpecific(
-            callback::IPopupHandler_t * const HANDLER_PTR,
-            const PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
-            popupResponse_ = sfml_util::Response::None;
+            popupResponse_ = popup::Response::None;
             popupSelection_ = 0;
             TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
         }
 
         inline void PopupWaitBegin(
-            callback::IPopupHandler_t * const HANDLER_PTR,
-            const PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
-            PopupWaitBeginSpecific<sfml_util::PopupStage>(HANDLER_PTR, POPUP_INFO);
+            PopupWaitBeginSpecific<popup::PopupStage>(HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
-            const sfml_util::Response::Enum RESPONSE,
+            const popup::Response::Enum RESPONSE,
             const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             sfml_util::IStage * const         currentStagePtr_,
-            callback::IPopupHandler_t * const HANDLER_PTR,
+            popup::IPopupHandler_t * const HANDLER_PTR,
             const sfml_util::Resolution &     NEW_RES,
             const unsigned                    ANTIALIAS_LEVEL);
 
@@ -200,8 +200,8 @@ namespace game
 
         template<typename PopupType_t>
         void TransitionTo_Popup(
-            callback::IPopupHandler_t * const HANDLER_PTR,
-            const PopupInfo &                 POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();
@@ -213,8 +213,8 @@ namespace game
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Popup));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
-                sfml_util::gui::PopupManager::Color_Fade(),
-                sfml_util::gui::PopupManager::SpeedMult_Fade(),
+                popup::PopupManager::Color_Fade(),
+                popup::PopupManager::SpeedMult_Fade(),
                 true));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
@@ -249,7 +249,7 @@ namespace game
         LoopState::Enum           state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
         sfml_util::Loop           loop_;
-        sfml_util::Response::Enum popupResponse_;
+        popup::Response::Enum popupResponse_;
         std::size_t               popupSelection_;
         LoopState::Enum           prevState_;
         LoopState::Enum           prevSettingsState_;

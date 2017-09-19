@@ -35,7 +35,7 @@
 
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-buttons.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/main-menu-title.hpp"
 
 #include <memory>
@@ -60,7 +60,7 @@ namespace stage
     class CampStage
     :
         public sfml_util::Stage,
-        public game::callback::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         //prevent copy construction
         CampStage(const CampStage &) =delete;
@@ -73,7 +73,7 @@ namespace stage
         virtual ~CampStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);

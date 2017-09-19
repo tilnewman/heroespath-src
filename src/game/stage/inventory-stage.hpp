@@ -37,7 +37,7 @@
 
 #include "game/main-menu-title.hpp"
 #include "game/horiz-symbol.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/combat/fight-results.hpp"
 #include "game/combat/combat-text.hpp"
 #include "game/phase-enum.hpp"
@@ -103,7 +103,7 @@ namespace stage
     class InventoryStage
     :
         public sfml_util::Stage,
-        public game::callback::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
@@ -153,7 +153,7 @@ namespace stage
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
         virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);

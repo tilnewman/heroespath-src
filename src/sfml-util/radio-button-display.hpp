@@ -32,7 +32,7 @@
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -44,7 +44,7 @@ namespace gui_demo
     //Represents a RadioButtonSet that changes the display
     class RadioButtonSet_DisplayChange
     :
-        public game::callback::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::RadioButtonSet
     {
         //prevent copy construction
@@ -63,7 +63,7 @@ namespace gui_demo
 
         inline virtual const std::string HandlerName() const { return GetEntityName(); }
 
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
     protected:
         //if not found, resolutionVec_.size() is returned

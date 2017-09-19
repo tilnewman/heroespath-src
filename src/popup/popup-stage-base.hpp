@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPSTAGEBASE_HPP_INCLUDED
-#define SFMLUTIL_POPUPSTAGEBASE_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGEBASE_HPP_INCLUDED
+#define POPUP_POPUPSTAGEBASE_HPP_INCLUDED
 //
 // popup-stage-base.hpp
 //
@@ -35,18 +35,18 @@
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
-#include "game/popup-info.hpp"
+#include "popup/popup-info.hpp"
 
 
-namespace sfml_util
+namespace popup
 {
 
     //Responsible for encapsulating all state and operations common to popup windows.
     class PopupStageBase
     :
-        public Stage,
-        public gui::callback::ISliderBarCallbackHandler_t,
-        public gui::callback::ITextButtonCallbackHandler_t
+        public sfml_util::Stage,
+        public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
+        public sfml_util::gui::callback::ITextButtonCallbackHandler_t
     {
         //prevent copy construction
         PopupStageBase(const PopupStageBase &) =delete;
@@ -55,13 +55,13 @@ namespace sfml_util
         PopupStageBase & operator=(const PopupStageBase &) =delete;
 
     public:
-        explicit PopupStageBase(const game::PopupInfo & POPUP_INFO);
+        explicit PopupStageBase(const PopupInfo & POPUP_INFO);
 
         virtual ~PopupStageBase();
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
-        virtual bool HandleCallback(const gui::callback::SliderBarCallbackPackage_t &) override;
-        virtual bool HandleCallback(const gui::callback::TextButtonCallbackPackage_t &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
 
         virtual void Setup() override;
 
@@ -91,26 +91,26 @@ namespace sfml_util
         void SetupRedXImage();
 
         const sf::IntRect BackgroundImageRect(
-            const sfml_util::PopupImage::Enum PI,
+            const PopupImage::Enum PI,
             const float SCALE) const;
 
     private:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
 
     protected:
-        game::PopupInfo popupInfo_;
+        PopupInfo popupInfo_;
         sf::FloatRect innerRegion_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
-        gui::TextRegionUPtr_t textRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect textRegion_;
-        gui::TextButtonUPtr_t buttonSelectUPtr_;
-        gui::TextButtonUPtr_t buttonYesUPtr_;
-        gui::TextButtonUPtr_t buttonNoUPtr_;
-        gui::TextButtonUPtr_t buttonCancelUPtr_;
-        gui::TextButtonUPtr_t buttonContinueUPtr_;
-        gui::TextButtonUPtr_t buttonOkayUPtr_;
-        gui::SliderBarUPtr_t sliderbarUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonSelectUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonYesUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonNoUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonCancelUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonContinueUPtr_;
+        sfml_util::gui::TextButtonUPtr_t buttonOkayUPtr_;
+        sfml_util::gui::SliderBarUPtr_t sliderbarUPtr_;
         sf::Texture accentTexture1_;
         sf::Sprite accentSprite1_;
         sf::Texture accentTexture2_;
@@ -121,8 +121,8 @@ namespace sfml_util
         bool willShowXImage_;
 
     private:
-        gui::box::Box box_;
-        GradientRect gradient_;
+        sfml_util::gui::box::Box box_;
+        sfml_util::GradientRect gradient_;
         float buttonTextHeight_;
         float buttonVertPos_;
         sf::Texture xSymbolTexture_;
@@ -130,4 +130,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_POPUPSTAGEBASE_HPP_INCLUDED
+#endif //POPUP_POPUPSTAGEBASE_HPP_INCLUDED

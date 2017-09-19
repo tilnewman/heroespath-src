@@ -31,7 +31,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/creature/race-enum.hpp"
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/item-cache.hpp"
@@ -60,7 +60,7 @@ namespace stage
     class TreasureStage
     :
         public sfml_util::Stage,
-        public game::callback::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         //prevent copy construction
         TreasureStage(const TreasureStage &) =delete;
@@ -90,7 +90,7 @@ namespace stage
         virtual ~TreasureStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);

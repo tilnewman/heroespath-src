@@ -46,7 +46,7 @@
 #include "game/stage/character-stage-anim-num.hpp"
 #include "game/creature/race-stats.hpp"
 #include "game/creature/role-stats.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
 
@@ -155,7 +155,7 @@ namespace stage
     :
         public sfml_util::Stage,
         public sfml_util::callback::IRadioButtonSetCallbackHandler_t,
-        public game::callback::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
@@ -172,7 +172,7 @@ namespace stage
         //required by callback handler
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
         virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
 

@@ -25,38 +25,60 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// which-popup-enum.cpp
+// popup-response-enum.cpp
 //
-#include "which-popup-enum.hpp"
+#include "popup-response-enum.hpp"
+
 #include <exception>
 #include <sstream>
 
 
-namespace game
+namespace popup
 {
 
-    const std::string Popup::ToString(const Popup::Enum E)
+    const std::string Response::ToString(const Response::Enum E)
     {
         switch (E)
         {
-            case Generic:                       { return "Generic"; }
-            case ResolutionChange:              { return "ResolutionChange"; }
-            case ImageSelection:                { return "ImageSelection"; }
-            case ImageFade:                     { return "ImageFade"; }
-            case ContentSelectionWithItem:      { return "ContentSelectionWithItem"; }
-            case ContentSelectionWithoutItem:   { return "ContentSelectionWithoutItem"; }
-            case CharacterSelection:            { return "CharacterSelection"; }
-            case NumberSelection:               { return "NumberSelection"; }
-            case Spellbook:                     { return "Spellbook"; }
-            case MusicSheet:                    { return "MusicSheet"; }
-            case CombatOver:                    { return "CombatOver"; }
-            case SystemError:                   { return "SystemError"; }
-            case ItemProfilePleaseWait:         { return "ItemProfilePleaseWait"; }
-            case Count:
+            case Okay:     { return "Okay";     }
+            case Continue: { return "Continue"; }
+            case Yes:      { return "Yes";      }
+            case No:       { return "No";       }
+            case Cancel:   { return "Cancel";   }
+            case Select:   { return "Select";   }
+            case Error:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::Popup::ToString(" << E << ")_InvalidValueError.";
+                ss << "popup::Response::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    bool Response::IsValid(const Response::Enum E)
+    {
+        const unsigned MAX(None | Okay | Continue | Yes | No | Cancel | Select);
+        return (static_cast<unsigned>(E) <= MAX);
+    }
+
+
+    bool Response::IsAffirmative(const Response::Enum E)
+    {
+        switch (E)
+        {
+            case Okay:
+            case Continue:
+            case Yes:
+            case Select:    { return true;  }
+            case No:
+            case Cancel:    { return false; }
+            case Error:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "popup::Response::IsAffirmative(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

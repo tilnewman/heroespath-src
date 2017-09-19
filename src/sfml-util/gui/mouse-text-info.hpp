@@ -31,15 +31,13 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
+#include "popup/popup-info.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>
 
 
-namespace game
-{
-    class PopupInfo;
-}
 namespace sfml_util
 {
 namespace gui
@@ -69,7 +67,9 @@ namespace gui
                       const sf::Color &   COLOR_OVER = sf::Color::White);
 
         //MouseTextInfo generating helper functions
-        static const MouseTextInfo Make_PopupButtonSet(const std::string & NAME, const game::PopupInfo &);
+        static const MouseTextInfo Make_PopupButtonSet(
+            const std::string & NAME,
+            const popup::PopupInfo &);
 
         TextInfo up;
         TextInfo down;
@@ -92,4 +92,5 @@ namespace gui
 
 }
 }
+
 #endif //SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED

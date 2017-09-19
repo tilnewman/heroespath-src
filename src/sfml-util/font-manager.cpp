@@ -108,8 +108,49 @@ namespace sfml_util
 
     void FontManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::FontManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::FontManager::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
+    }
+
+
+    const sf::Color FontManager::Color_PopupButtonUp(const popup::PopupButtonColor::Enum C)
+    {
+        if (C == popup::PopupButtonColor::Dark)
+        {
+            return sf::Color(0, 0, 0, 70);
+        }
+        else
+        {
+            return sf::Color(255, 255, 255, 127);
+        }
+    }
+
+
+    const sf::Color FontManager::Color_PopupButtonDown(const popup::PopupButtonColor::Enum C)
+    {
+        if (C == popup::PopupButtonColor::Dark)
+        {
+            return sf::Color(0, 0, 0, 255);
+        }
+        else
+        {
+            return sf::Color::White;
+        }
+    }
+    
+    
+    const sf::Color FontManager::Color_PopupButtonOver(const popup::PopupButtonColor::Enum C)
+    {
+        if (C == popup::PopupButtonColor::Dark)
+        {
+            return sf::Color(0, 0, 0, 150);
+        }
+        else
+        {
+            return sf::Color(255, 255, 255, 200);
+        }
     }
 
 

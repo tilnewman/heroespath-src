@@ -22,19 +22,20 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPSTAGE_INCLUDED
-#define SFMLUTIL_POPUPSTAGE_INCLUDED
+#ifndef POPUP_POPUPSTAGE_HPP_INCLUDED
+#define POPUP_POPUPSTAGE_HPP_INCLUDED
 //
 // popup-stage.hpp
 //  This class encapsulates a popup window stage on screen.
 //
-#include "sfml-util/popup-stage-base.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/background-info.hpp"
+
+#include "popup/popup-stage-base.hpp"
 
 #include <memory>
 #include <queue>
@@ -45,19 +46,19 @@
 
 namespace sfml_util
 {
-
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-
-
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+}
+}
+namespace popup
+{
     //A base class for all Popup Window Stages
     class PopupStage
     :
         public PopupStageBase,
-        public gui::callback::ITextEntryBoxCallbackHandler_t
+        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
         //prevent copy construction
         PopupStage(const PopupStage &) =delete;
@@ -66,7 +67,7 @@ namespace sfml_util
         PopupStage & operator=(const PopupStage &) =delete;
 
     public:
-        explicit PopupStage(const game::PopupInfo & POPUP_INFO);
+        explicit PopupStage(const PopupInfo & POPUP_INFO);
 
         virtual ~PopupStage();
 
@@ -75,9 +76,9 @@ namespace sfml_util
             return PopupStageBase::HandlerName();
         }
 
-        virtual bool HandleCallback(const gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
         using PopupStageBase::HandleCallback;
-        bool HandleCallback(const gui::callback::TextEntryBoxCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
         
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -111,7 +112,7 @@ namespace sfml_util
         static const float BEFORE_FADE_STARTS_DELAY_SEC_;
         
         //members that support multiple popups
-        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         
         //members that support the resoution change popup
         float elapsedTimeCounter_;
@@ -124,8 +125,8 @@ namespace sfml_util
         sf::Texture texturePrev_;
 
         //number selection members
-        gui::TextRegionUPtr_t infoTextRegionUPtr_;
-        gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
+        sfml_util::gui::TextRegionUPtr_t infoTextRegionUPtr_;
+        sfml_util::gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
 
         //members needed to animate image select
         bool                  isImageProcAllowed_;
@@ -136,8 +137,8 @@ namespace sfml_util
         bool                  areImagesMoving_;
         bool                  areImagesMovingLeft_;
         sf::FloatRect         imagesRect_;
-        gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
-        gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
         std::size_t           imageIndex_;
         std::size_t           imageIndexLastSoundOn_;
         std::size_t           imageIndexLastSoundOff_;
@@ -147,7 +148,7 @@ namespace sfml_util
         float                 imageCurrTravelDist_;
         float                 imagePrevTravelDist_;
         std::queue<std::size_t> imageMoveQueue_;
-        sliders::ZeroSliderOnce<float> imageSlider_;
+        sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         float                 imagePosTop_;
 
         //members used to fade two images
@@ -159,12 +160,12 @@ namespace sfml_util
         //members supporting CombatOver
         sf::Texture combatBgTexture_;
         sf::Sprite combatBgSprite_;
-        gui::TextRegionUPtr_t titleUPtr_;
-        gui::TextRegionUPtr_t descUPtr_;
+        sfml_util::gui::TextRegionUPtr_t titleUPtr_;
+        sfml_util::gui::TextRegionUPtr_t descUPtr_;
 
         //members supporting ItemProfilePleaseWait
         int drawCountdown_;
     };
 
 }
-#endif //SFMLUTIL_POPUPSTAGE_INCLUDED
+#endif //POPUP_POPUPSTAGE_HPP_INCLUDED

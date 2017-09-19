@@ -40,8 +40,9 @@
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
+
+#include "popup/popup-manager.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
@@ -428,7 +429,7 @@ namespace stage
         if (false == hasTestingCompleted_PopupManager)
         {
             hasTestingCompleted_PopupManager =
-                sfml_util::gui::PopupManager::Instance()->Test();
+                popup::PopupManager::Instance()->Test();
             return;
         }
 

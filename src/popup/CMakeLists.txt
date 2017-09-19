@@ -1,4 +1,4 @@
-project("Game")
+project("Popup")
 
 if(WIN32)
     set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
@@ -19,18 +19,5 @@ target_link_libraries(${PROJECT_NAME}
 		      sfml-util-gui
                       StringUtil
                       Misc
-		      Popup
                       ${SFML_LIBRARIES}
 		      ${Boost_LIBRARIES})
-
-add_subdirectory(stats)
-add_subdirectory(creature)
-add_subdirectory(item)
-add_subdirectory(player)
-add_subdirectory(non-player)
-add_subdirectory(location)
-add_subdirectory(state)
-add_subdirectory(stage)
-add_subdirectory(combat)
-add_subdirectory(spell)
-add_subdirectory(song)

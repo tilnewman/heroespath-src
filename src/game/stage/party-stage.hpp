@@ -36,7 +36,7 @@
 #include "sfml-util/sliders.hpp"
 
 #include "game/main-menu-buttons.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/ouroboros.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
@@ -73,7 +73,7 @@ namespace stage
         public sfml_util::Stage,
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
-        public game::callback::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         //prevent copy construction
         PartyStage(const PartyStage &) =delete;
@@ -88,7 +88,7 @@ namespace stage
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
         virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
         //
         virtual bool HandleCallback_BackButton();
         virtual bool HandleCallback_StartButton();

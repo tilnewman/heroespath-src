@@ -41,7 +41,7 @@
 
 #include "game/main-menu-buttons.hpp"
 #include "game/horiz-symbol.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "game/main-menu-title.hpp"
 
 #include <memory>
@@ -57,7 +57,7 @@ namespace stage
     class SettingsStage
     :
         public sfml_util::Stage,
-        public game::callback::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
         //prevent copy construction
@@ -73,7 +73,7 @@ namespace stage
         //required by callback handler
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const game::callback::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);

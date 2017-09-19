@@ -31,7 +31,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/resolution.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 
 #include <memory>
 #include <string>

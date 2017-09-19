@@ -22,19 +22,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPMANAGER_INCLUDED
-#define SFMLUTIL_POPUPMANAGER_INCLUDED
+#ifndef POPUP_POPUPMANAGER_HPP_INCLUDED
+#define POPUP_POPUPMANAGER_HPP_INCLUDED
 //
 // popup-manager.hpp
 //  Code to load and store popup window textures.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/popup-enums.hpp"
+#include "popup/popup-enums.hpp"
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-#include "game/i-popup-callback.hpp"
-#include "game/popup-info.hpp"
+#include "popup/i-popup-callback.hpp"
+#include "popup/popup-info.hpp"
 #include "game/combat/combat-over-enum.hpp"
 
 #include <boost/filesystem.hpp>
@@ -61,12 +61,15 @@ namespace sfml_util
 {
 namespace gui
 {
+namespace box
+{
+    class Info;
+}
+}
+}
 
-    namespace box
-    {
-        class Info;
-    }
-
+namespace popup
+{
 
     using PathVec_t = std::vector<boost::filesystem::path>;
 
@@ -95,8 +98,7 @@ namespace gui
         bool Test();
 
         //throws range error on invalid PopupImage::Enum
-        const std::string BackgroundImagePath(
-            const sfml_util::PopupImage::Enum IMAGE) const;
+        const std::string BackgroundImagePath(const PopupImage::Enum IMAGE) const;
 
         //colors
         static inline sf::Color Color_Fade() { return sf::Color(0, 0, 0, 127); }
@@ -156,61 +158,65 @@ namespace gui
 
         //TextInfo creation helper functions
         const sfml_util::gui::TextInfo TextInfoDefault(
-            const std::string &              TEXT,
-            const sfml_util::Justified::Enum JUSTIFIED = Justified::Center,
-            const unsigned int               FONT_SIZE = 
-                FontManager::Instance()->Size_Large()) const;
+            const std::string & TEXT,
+            const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
+            const unsigned int FONT_SIZE = 
+                sfml_util::FontManager::Instance()->Size_Large()) const;
 
         //create popup window info objects
         //use this function to make popup windows with the typical paper image backgrounds
-        const game::PopupInfo CreatePopupInfo(
-            const std::string &           POPUP_NAME,
-            const std::string &           PROMPT_TEXT,
-            const PopupButtons::Enum      BUTTONS      = PopupButtons::Okay,
-            const PopupImage::Enum        IMAGE        = PopupImage::Banner,
-            const Justified::Enum         JUSTIFIED    = Justified::Center,
-            const sound_effect::Enum      SOUND_EFFECT = sound_effect::PromptGeneric,
-            const game::Popup::Enum WHICH_POPUP  = game::Popup::Generic,
-            const unsigned int            FONT_SIZE    = FontManager::Instance()->Size_Normal()) const;
+        const PopupInfo CreatePopupInfo(
+            const std::string &                 POPUP_NAME,
+            const std::string &                 PROMPT_TEXT,
+            const PopupButtons::Enum            BUTTONS      = PopupButtons::Okay,
+            const PopupImage::Enum              IMAGE        = PopupImage::Banner,
+            const sfml_util::Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+            const Popup::Enum                   WHICH_POPUP  = Popup::Generic,
+            const unsigned int                  FONT_SIZE    =
+                sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to create popup windows with a simple box and custom background color
-        const game::PopupInfo CreatePopupInfo(
-            const std::string &      POPUP_NAME,
-            const std::string &      PROMPT_TEXT,
-            const sf::Color &        TEXT_COLOR,
-            const gui::box::Info &   BOX_INFO,
-            const PopupButtons::Enum BUTTONS      = sfml_util::PopupButtons::Okay,
-            const Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
-            const sound_effect::Enum SOUND_EFFECT = sound_effect::PromptGeneric,
-            const unsigned int       FONT_SIZE    = FontManager::Instance()->Size_Smallish()) const;
+        const PopupInfo CreatePopupInfo(
+            const std::string &                 POPUP_NAME,
+            const std::string &                 PROMPT_TEXT,
+            const sf::Color &                   TEXT_COLOR,
+            const sfml_util::gui::box::Info &   BOX_INFO,
+            const PopupButtons::Enum            BUTTONS      = PopupButtons::Okay,
+            const sfml_util::Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+            const unsigned int                  FONT_SIZE    =
+                sfml_util::FontManager::Instance()->Size_Smallish()) const;
 
         //use this function to create image select popup windows
-        const game::PopupInfo CreatePopupInfo(
-            const std::string &              POPUP_NAME,
-            const std::string &              PROMPT_TEXT,
-            const sfml_util::TextureVec_t &  TEXTURE_VEC,
-            const bool                       ARE_IMAGES_CREATURES,
-            const sound_effect::Enum         SOUND_EFFECT = sound_effect::PromptGeneric,
-            const unsigned int               FONT_SIZE    = FontManager::Instance()->Size_Normal()) const;
+        const PopupInfo CreatePopupInfo(
+            const std::string &                 POPUP_NAME,
+            const std::string &                 PROMPT_TEXT,
+            const sfml_util::TextureVec_t &     TEXTURE_VEC,
+            const bool                          ARE_IMAGES_CREATURES,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+            const unsigned int                  FONT_SIZE    =
+                sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to create the number selection popup window
-        const game::PopupInfo CreatePopupInfo(
+        const PopupInfo CreatePopupInfo(
             const std::string & POPUP_NAME,
             const std::string & PROMPT_TEXT,
             const std::size_t   THE_MIN,
             const std::size_t   THE_MAX,
-            const unsigned int  FONT_SIZE = FontManager::Instance()->Size_Normal()) const;
+            const unsigned int  FONT_SIZE =
+                sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to make character selection popup windows
-        const game::PopupInfo CreatePopupInfo(
+        const PopupInfo CreatePopupInfo(
             const std::string &              POPUP_NAME,
             const std::string &              PROMPT_TEXT,
             const std::vector<std::string> & INVALID_TEXT_VEC,
             const unsigned int               FONT_SIZE =
-                FontManager::Instance()->Size_Large()) const;
+                sfml_util::FontManager::Instance()->Size_Large()) const;
 
         //use this function to make image fade/transition popup windows
-        const game::PopupInfo CreateImageFadePopupInfo(
+        const PopupInfo CreateImageFadePopupInfo(
             const std::string &                 POPUP_NAME,
             const game::creature::CreaturePtr_t CREATURE_PTR,
             const game::creature::TitlePtr_t    FROM_TITLE_PTR,
@@ -219,30 +225,30 @@ namespace gui
             const sf::Texture * const           TO_IMAGE_PTR) const;
 
         //use this function to make the spellbook popup window
-        const game::PopupInfo CreateSpellbookPopupInfo(
+        const PopupInfo CreateSpellbookPopupInfo(
             const std::string &                 POPUP_NAME,
             const game::creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION) const;
 
         //use this function to make the music sheet popup window
-        const game::PopupInfo CreateMusicPopupInfo(
+        const PopupInfo CreateMusicPopupInfo(
             const std::string &                 POPUP_NAME,
             const game::creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION) const;
 
         //use this function to make the CombatOver popup window
-        const game::PopupInfo CreateCombatOverPopupInfo(
+        const PopupInfo CreateCombatOverPopupInfo(
             const std::string &                 POPUP_NAME,
             const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
 
         //use this function t make the system error popup window
-        const game::PopupInfo CreateSystemErrorPopupInfo(
+        const PopupInfo CreateSystemErrorPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & GENERAL_ERROR_MSG,
             const std::string & TECH_ERROR_MSG,
             const std::string & TITLE_MSG = "") const;
 
-        const game::PopupInfo CreateItemProfilePleaseWaitPopupInfo(
+        const PopupInfo CreateItemProfilePleaseWaitPopupInfo(
             const std::string & POPUP_NAME) const;
 
         void LoadRandomAccentImage(sf::Texture &) const;
@@ -264,5 +270,5 @@ namespace gui
     };
 
 }
-}
-#endif //SFMLUTIL_POPUPMANAGER_INCLUDED
+
+#endif //POPUP_POPUPMANAGER_HPP_INCLUDED

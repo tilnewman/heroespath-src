@@ -37,7 +37,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 
 #include "misc/vectors.hpp"
 
@@ -133,8 +133,8 @@ namespace sfml_util
     }
 
 
-    void Loop::AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
-                                              const game::PopupInfo &                 POPUP_INFO)
+    void Loop::AssignPopupCallbackHandlerInfo(popup::IPopupHandler_t * const HANDLER_PTR,
+                                              const popup::PopupInfo &                 POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
         popupCallbackPtr_ = HANDLER_PTR;
@@ -611,14 +611,14 @@ namespace sfml_util
         auto const POPUP_RESPONSE_ENUM{ game::LoopManager::Instance()->GetPopupResponse() };
         auto const POPUP_SELECTION{ game::LoopManager::Instance()->GetPopupSelection() };
 
-        if (POPUP_RESPONSE_ENUM != sfml_util::Response::None)
+        if (POPUP_RESPONSE_ENUM != popup::Response::None)
         {
             M_HP_LOG(NAME_ << "::ProcessPopupCallback() found response=\""
-                            << sfml_util::Response::ToString(POPUP_RESPONSE_ENUM)
+                            << popup::Response::ToString(POPUP_RESPONSE_ENUM)
                             << "\" with selection=" << POPUP_SELECTION << " to popup "
                             << popupInfo_.ToStringShort(true) << ".");
 
-            const game::callback::PopupResponse POPUP_RESPONSE_OBJ(
+            const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_,
                 POPUP_RESPONSE_ENUM,
                 POPUP_SELECTION);

@@ -36,7 +36,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 
@@ -180,13 +180,13 @@ namespace stage
     }
 
 
-    bool PartyStage::HandleCallback(const game::callback::PopupResponse & PACKAGE)
+    bool PartyStage::HandleCallback(const popup::PopupResponse & PACKAGE)
     {
         ResetMouseOverPopupState();
         willShowMouseOverPopup_ = true;
 
         if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) &&
-            (PACKAGE.Response() == sfml_util::Response::Yes))
+            (PACKAGE.Response() == popup::Response::Yes))
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
@@ -224,12 +224,13 @@ namespace stage
         {
             std::ostringstream ss;
             ss << "There are " << partyListBoxSPtr_->GetCount() << " characters in your party.  You need exactly " << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
-            const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
-                                                                                                 ss.str(),
-                                                                                                 sfml_util::PopupButtons::Okay,
-                                                                                                 sfml_util::PopupImage::Banner,
-                                                                                                 sfml_util::Justified::Center,
-                                                                                                 sfml_util::sound_effect::PromptQuestion));
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
+                ss.str(),
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Banner,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::PromptQuestion) };
 
             LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
             return false;
@@ -274,13 +275,13 @@ namespace stage
                     << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
                     << " have a Beastmaster.";
 
-                const PopupInfo POP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+                auto const POP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                     ss.str(),
-                    sfml_util::PopupButtons::Okay,
-                    sfml_util::PopupImage::RegularSidebar,
+                    popup::PopupButtons::Okay,
+                    popup::PopupImage::RegularSidebar,
                     sfml_util::Justified::Left,
-                    sfml_util::sound_effect::PromptWarn));
+                    sfml_util::sound_effect::PromptWarn) };
 
                 LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
                 return false;
@@ -303,13 +304,13 @@ namespace stage
 
         std::ostringstream ss;
         ss << "Delete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_DELETE_CONFIRM_,
             ss.str(),
-            sfml_util::PopupButtons::YesNo,
-            sfml_util::PopupImage::Banner,
+            popup::PopupButtons::YesNo,
+            popup::PopupImage::Banner,
             sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptWarn));
+            sfml_util::sound_effect::PromptWarn) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         return true;

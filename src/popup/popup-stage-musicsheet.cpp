@@ -33,7 +33,7 @@
 #include "game/creature/creature.hpp"
 #include "game/loop-manager.hpp"
 
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -45,7 +45,7 @@
 #include <algorithm>
 
 
-namespace sfml_util
+namespace popup
 {
 
     const float     PopupStageMusicSheet::BACKGROUND_WIDTH_RATIO_           { 0.9f };
@@ -55,7 +55,7 @@ namespace sfml_util
     const float     PopupStageMusicSheet::WARNING_DURATION_SEC_             { 2.0f };
 
 
-    PopupStageMusicSheet::PopupStageMusicSheet(const game::PopupInfo & POPUP_INFO)
+    PopupStageMusicSheet::PopupStageMusicSheet(const PopupInfo & POPUP_INFO)
     :
         PopupStageBase(POPUP_INFO),
         currentSongPtr_(nullptr),
@@ -259,7 +259,7 @@ namespace sfml_util
         if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
             (KEY_EVENT.code == sf::Keyboard::Space))
         {
-            SoundManager::Instance()->Getsound_effect_set(
+            sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
@@ -301,7 +301,7 @@ namespace sfml_util
     void PopupStageMusicSheet::SetupRegions()
     {
         auto const LEFT_SIDE_RECT_RAW { sfml_util::ConvertRect<int, float>(
-            sfml_util::gui::PopupManager::Rect_MusicSheet_LeftSide()) };
+            PopupManager::Rect_MusicSheet_LeftSide()) };
 
         auto const SCALE(innerRegion_.width /
             static_cast<float>(backgroundTexture_.getSize().x));
@@ -312,7 +312,7 @@ namespace sfml_util
         pageRectLeft_.height = LEFT_SIDE_RECT_RAW.height * SCALE;
 
         auto const RIGHT_SIDE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            sfml_util::gui::PopupManager::Rect_MusicSheet_RightSide()) };
+            PopupManager::Rect_MusicSheet_RightSide()) };
 
         pageRectRight_.left = innerRegion_.left + (RIGHT_SIDE_RECT_RAW.left * SCALE);
         pageRectRight_.top = innerRegion_.top + (RIGHT_SIDE_RECT_RAW.top * SCALE);
@@ -323,7 +323,7 @@ namespace sfml_util
 
     void PopupStageMusicSheet::SetupLeftAccentImage()
     {
-        sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+        PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
         auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
@@ -359,7 +359,7 @@ namespace sfml_util
 
     void PopupStageMusicSheet::SetupRightAccentImage()
     {
-        sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+        PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
         auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
@@ -454,7 +454,7 @@ namespace sfml_util
             0.0f,
             0.0f };
 
-        charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "MusicSheetPopupWindowDetails",
             DETAILS_TEXTINFO,
             DETAILS_TEXT_RECT);
@@ -478,7 +478,7 @@ namespace sfml_util
             0.0f,
             0.0f };
 
-        listBoxLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "MusicSheetPopupWindowSongListLabel",
             LISTBOX_LABEL_TEXTINFO,
             LISTBOX_LABEL_TEXTRECT);
@@ -517,7 +517,7 @@ namespace sfml_util
         {
             listBoxItemTextInfo_.text = NEXT_SONG_PTR->Name();
 
-            auto const LISTBOXITEM_SPTR( std::make_shared<gui::ListBoxItem>(
+            auto const LISTBOXITEM_SPTR( std::make_shared<sfml_util::gui::ListBoxItem>(
                 NEXT_SONG_PTR->Name() + "_MusicListBoxEntry",
                 listBoxItemTextInfo_,
                 NEXT_SONG_PTR,
@@ -526,7 +526,7 @@ namespace sfml_util
             listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
         }
 
-        listBoxSPtr_ = std::make_shared<gui::ListBox>(
+        listBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
             "PopupStage'sMusicListBox",
             LISTBOX_RECT,
             listBoxItemsSList,
@@ -566,7 +566,7 @@ namespace sfml_util
 
         if (songTitleTextRegionUPtr_.get() == nullptr)
         {
-            songTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            songTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicSheetPopupWindowSongTitle",
                 SONG_TITLE_TEXTINFO,
                 SONG_TITLE_TEXTRECT);
@@ -632,7 +632,7 @@ namespace sfml_util
 
         if (songDetailsTextUPtr_.get() == nullptr)
         {
-            songDetailsTextUPtr_ = std::make_unique<gui::TextRegion>(
+            songDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicsheetPopupWindowSongDetails",
                 SONG_DETAILS_TEXTINFO,
                 SONG_DETAILS_TEXTRECT);
@@ -702,12 +702,13 @@ namespace sfml_util
         auto const SONG_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
 
-        const sf::FloatRect SONG_UNABLE_TEXTRECT{ SONG_UNABLE_TEXTRECT_LEFT,
-                                                   SONG_UNABLE_TEXTRECT_TOP,
-                                                   SONG_UNABLE_TEXTRECT_WIDTH,
-                                                   SONG_UNABLE_TEXTRECT_HEIGHT };
+        const sf::FloatRect SONG_UNABLE_TEXTRECT{
+            SONG_UNABLE_TEXTRECT_LEFT,
+            SONG_UNABLE_TEXTRECT_TOP,
+            SONG_UNABLE_TEXTRECT_WIDTH,
+            SONG_UNABLE_TEXTRECT_HEIGHT };
 
-        songUnableTextUPtr_ = std::make_unique<gui::TextRegion>(
+        songUnableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "MusicsheetPopupWindowSongUnableToCast",
             SONG_UNABLE_TEXTINFO,
             SONG_UNABLE_TEXTRECT);
@@ -749,7 +750,7 @@ namespace sfml_util
 
         if (songDescTextUPtr_.get() == nullptr)
         {
-            songDescTextUPtr_ = std::make_unique<gui::TextRegion>(
+            songDescTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SongnbookPopupWindowSongDescription",
                 SONG_DESC_TEXTINFO,
                 SONG_DESC_TEXTRECT);
@@ -804,11 +805,13 @@ namespace sfml_util
         {
             if (currentSongPtr_->Type() == game::song::SongType::Drum)
             {
-                SoundManager::Instance()->Getsound_effect_set(sound_effect_set::DrumBlip).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::DrumBlip).PlayRandom();
             }
             else if (currentSongPtr_->Type() == game::song::SongType::Guitar)
             {
-                SoundManager::Instance()->Getsound_effect_set(sound_effect_set::GuitarStrum).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::GuitarStrum).PlayRandom();
             }
         }
     }
@@ -869,11 +872,13 @@ namespace sfml_util
             {
                 if (currentSongPtr_->Type() == game::song::SongType::Drum)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sound_effect_set::DrumBlip).PlayRandom();
+                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                        sfml_util::sound_effect_set::DrumBlip).PlayRandom();
                 }
                 else if (currentSongPtr_->Type() == game::song::SongType::Guitar)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sound_effect_set::GuitarStrum).PlayRandom();
+                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                        sfml_util::sound_effect_set::GuitarStrum).PlayRandom();
                 }
             }
 
@@ -884,8 +889,8 @@ namespace sfml_util
         }
         else
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Prompt).Play(
-                sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                sfml_util::sound_effect_set::Prompt).Play(sfml_util::sound_effect::PromptWarn);
 
             if (FadeState::Waiting == fadeState_)
             {

@@ -22,16 +22,17 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUP_ENUMS_HPP_INCLUDE
-#define SFMLUTIL_POPUP_ENUMS_HPP_INCLUDE
+#ifndef POPUP_POPUPENUMS_HPP_INCLUDE
+#define POPUP_POPUPENUMS_HPP_INCLUDE
 //
 // popup-enums.hpp
 //
-#include "response-enum.hpp"
+#include "popup/popup-response-enum.hpp"
+
 #include <string>
 
 
-namespace sfml_util
+namespace popup
 {
 
     struct PopupButtons
@@ -88,4 +89,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_POPUP_ENUMS_HPP_INCLUDE
+#endif //POPUP_POPUPENUMS_HPP_INCLUDE

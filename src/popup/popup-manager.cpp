@@ -32,7 +32,6 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/popup-stage.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
@@ -40,6 +39,8 @@
 #include "game/loop-manager.hpp"
 #include "game/creature/title.hpp"
 #include "game/creature/creature.hpp"
+
+#include "popup/popup-stage.hpp"
 
 #include "misc/random.hpp"
 
@@ -51,15 +52,14 @@
 #include <memory>
 
 
-namespace sfml_util
-{
-namespace gui
+
+namespace popup
 {
 
     std::string PopupManager::windowTextureDirectoryPath_    { "" };
     std::string PopupManager::accentTextureDirectoryPath_    { "" };
 
-    //set to match FontManager::Color_GrayDarker() before being set in the constructor
+    //set to match sfml_util::FontManager::Color_GrayDarker() before being set in the constructor
     sf::Color   PopupManager::fontColor_                     { sf::Color(64, 64, 64, 255) };
 
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_{ nullptr };
@@ -109,7 +109,7 @@ namespace gui
     void PopupManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "sfml_util::gui::PopupManager::Release() found instanceUPtr that was null.");
+            "popup::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
@@ -129,7 +129,7 @@ namespace gui
         {
             hasInitialPrompt = true;
             game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::gui::PopupManager::Test() Starting Tests...");
+                "popup::PopupManager::Test() Starting Tests...");
         }
 
         //TODO
@@ -142,7 +142,7 @@ namespace gui
 
 
     const std::string PopupManager::BackgroundImagePath(
-        const sfml_util::PopupImage::Enum IMAGE) const
+        const PopupImage::Enum IMAGE) const
     {
         std::string filename{ "" };
         switch (IMAGE)
@@ -187,16 +187,17 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &           POPUP_NAME,
-                                                        const std::string &           PROMPT_TEXT,
-                                                        const PopupButtons::Enum      BUTTONS,
-                                                        const PopupImage::Enum        IMAGE,
-                                                        const Justified::Enum         JUSTIFIED,
-                                                        const sound_effect::Enum      SOUND_EFFECT,
-                                                        const game::Popup::Enum WHICH_POPUP,
-                                                        const unsigned int            FONT_SIZE) const
+    const PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &                 POPUP_NAME,
+        const std::string &                 PROMPT_TEXT,
+        const PopupButtons::Enum            BUTTONS,
+        const PopupImage::Enum              IMAGE,
+        const sfml_util::Justified::Enum    JUSTIFIED,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const Popup::Enum                   WHICH_POPUP,
+        const unsigned int                  FONT_SIZE) const
     {
-        return game::PopupInfo(POPUP_NAME,
+        return PopupInfo(POPUP_NAME,
                                TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
                                BUTTONS,
                                IMAGE,
@@ -206,87 +207,94 @@ namespace gui
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string &      POPUP_NAME,
-                                                        const std::string &      PROMPT_TEXT,
-                                                        const sf::Color &        TEXT_COLOR,
-                                                        const gui::box::Info &   BOX_INFO,
-                                                        const PopupButtons::Enum BUTTONS,
-                                                        const Justified::Enum    JUSTIFIED,
-                                                        const sound_effect::Enum SOUND_EFFECT,
-                                                        const unsigned int       FONT_SIZE) const
+    const PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &                 POPUP_NAME,
+        const std::string &                 PROMPT_TEXT,
+        const sf::Color &                   TEXT_COLOR,
+        const sfml_util::gui::box::Info &   BOX_INFO,
+        const PopupButtons::Enum            BUTTONS,
+        const sfml_util::Justified::Enum    JUSTIFIED,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const unsigned int                  FONT_SIZE) const
     {
         sfml_util::gui::TextInfo ti(TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE));
         ti.color = TEXT_COLOR;
-        return game::PopupInfo(POPUP_NAME,
-                               ti,
-                               BUTTONS,
-                               BOX_INFO,
-                               0.25f,
-                               0.5f,
-                               game::Popup::Generic,
-                               SOUND_EFFECT);
+
+        return PopupInfo(
+            POPUP_NAME,
+            ti,
+            BUTTONS,
+            BOX_INFO,
+            0.25f,
+            0.5f,
+            Popup::Generic,
+            SOUND_EFFECT);
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(
-        const std::string &             POPUP_NAME,
-        const std::string &             PROMPT_TEXT,
-        const sfml_util::TextureVec_t & TEXTURE_VEC,
-        const bool                      ARE_IMAGES_CREATURES,
-        const sound_effect::Enum        SOUND_EFFECT,
-        const unsigned int              FONT_SIZE) const
+    const PopupInfo PopupManager::CreatePopupInfo(
+        const std::string &                 POPUP_NAME,
+        const std::string &                 PROMPT_TEXT,
+        const sfml_util::TextureVec_t &     TEXTURE_VEC,
+        const bool                          ARE_IMAGES_CREATURES,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const unsigned int                  FONT_SIZE) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
-                               TEXTURE_VEC,
-                               ARE_IMAGES_CREATURES,
-                               BACKGROUND_IMAGE_SCALE_DEFAULT_,
-                               SOUND_EFFECT);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            TEXTURE_VEC,
+            ARE_IMAGES_CREATURES,
+            BACKGROUND_IMAGE_SCALE_DEFAULT_,
+            SOUND_EFFECT);
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(const std::string & POPUP_NAME,
-                                                        const std::string & PROMPT_TEXT,
-                                                        const std::size_t   THE_MIN,
-                                                        const std::size_t   THE_MAX,
-                                                        const unsigned int  FONT_SIZE) const
+    const PopupInfo PopupManager::CreatePopupInfo(
+        const std::string & POPUP_NAME,
+        const std::string & PROMPT_TEXT,
+        const std::size_t   THE_MIN,
+        const std::size_t   THE_MAX,
+        const unsigned int  FONT_SIZE) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT, Justified::Center, FONT_SIZE),
-                               THE_MIN,
-                               THE_MAX,
-                               BACKGROUND_IMAGE_SCALE_DEFAULT_);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            THE_MIN,
+            THE_MAX,
+            BACKGROUND_IMAGE_SCALE_DEFAULT_);
     }
 
 
-    const game::PopupInfo PopupManager::CreatePopupInfo(
+    const PopupInfo PopupManager::CreatePopupInfo(
         const std::string &              POPUP_NAME,
         const std::string &              PROMPT_TEXT,
         const std::vector<std::string> & INVALID_TEXT_VEC,
         const unsigned int               FONT_SIZE) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT,
-                                               sfml_util::Justified::Center,
-                                               FONT_SIZE),
-                               sfml_util::PopupButtons::SelectCancel,
-                               sfml_util::PopupImage::Large,
-                               GetScaleForImage(PopupImage::Large),
-                               game::Popup::CharacterSelection,
-                               sfml_util::sound_effect::PromptQuestion,
-                               sfml_util::PopupButtonColor::Dark,
-                               true,
-                               std::vector<std::size_t>(),
-                               TextureVec_t(),
-                               INVALID_TEXT_VEC,
-                               0.0f,
-                               nullptr,
-                               0,
-                               true);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT,
+                            sfml_util::Justified::Center,
+                            FONT_SIZE),
+            PopupButtons::SelectCancel,
+            PopupImage::Large,
+            GetScaleForImage(PopupImage::Large),
+            Popup::CharacterSelection,
+            sfml_util::sound_effect::PromptQuestion,
+            PopupButtonColor::Dark,
+            true,
+            std::vector<std::size_t>(),
+            sfml_util::TextureVec_t(),
+            INVALID_TEXT_VEC,
+            0.0f,
+            nullptr,
+            0,
+            true);
     }
 
 
-    const game::PopupInfo PopupManager::CreateImageFadePopupInfo(
+    const PopupInfo PopupManager::CreateImageFadePopupInfo(
         const std::string &                 POPUP_NAME,
         const game::creature::CreaturePtr_t CREATURE_PTR,
         const game::creature::TitlePtr_t    FROM_TITLE_PTR,
@@ -295,7 +303,7 @@ namespace gui
         const sf::Texture * const           TO_IMAGE_PTR) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TO_IMAGE_PTR != nullptr),
-            "sfml_util::gui::PopupManager::CreateImageFadePopupInfo(\""
+            "popup::PopupManager::CreateImageFadePopupInfo(\""
             << POPUP_NAME << "\")  TO_IMAGE_PTR was null.");
 
         std::ostringstream titleSS;
@@ -350,97 +358,105 @@ namespace gui
 
         textureVec.push_back( * TO_IMAGE_PTR);
 
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(" ",
-                                               sfml_util::Justified::Center,
-                                               FontManager::Instance()->Size_Normal()),
-                               sfml_util::PopupButtons::Okay,
-                               PopupImage::Large,
-                               sfml_util::MapByRes(1.5f, 4.5f),
-                               game::Popup::ImageFade,
-                               sfml_util::sound_effect::Achievement,
-                               sfml_util::PopupButtonColor::Dark,
-                               true,
-                               std::vector<std::size_t>(),
-                               textureVec,
-                               std::vector<std::string>(),
-                               100.0f,
-                               CREATURE_PTR,
-                               0,
-                               false,
-                               titleSS.str(),
-                               descSS.str(),
-                               FROM_TITLE_PTR,
-                               TO_TITLE_PTR);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                " ",
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Normal()),
+            PopupButtons::Okay,
+            PopupImage::Large,
+            sfml_util::MapByRes(1.5f, 4.5f),
+            Popup::ImageFade,
+            sfml_util::sound_effect::Achievement,
+            PopupButtonColor::Dark,
+            true,
+            std::vector<std::size_t>(),
+            textureVec,
+            std::vector<std::string>(),
+            100.0f,
+            CREATURE_PTR,
+            0,
+            false,
+            titleSS.str(),
+            descSS.str(),
+            FROM_TITLE_PTR,
+            TO_TITLE_PTR);
     }
 
 
-    const game::PopupInfo PopupManager::CreateSpellbookPopupInfo(
+    const PopupInfo PopupManager::CreateSpellbookPopupInfo(
         const std::string &                 POPUP_NAME,
         const game::creature::CreaturePtr_t CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(" ",
-                                               sfml_util::Justified::Center,
-                                               sfml_util::FontManager::Instance()->Size_Large()),
-                               sfml_util::PopupButtons::None,
-                               PopupImage::Spellbook,
-                               1.0f,
-                               game::Popup::Spellbook,
-                               sfml_util::sound_effect::None,
-                               sfml_util::PopupButtonColor::Dark,
-                               false,
-                               std::vector<std::size_t>(),
-                               sfml_util::TextureVec_t(),
-                               std::vector<std::string>(),
-                               game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
-                               CREATURE_CPTR,
-                               INITIAL_SELECTION);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                " ",
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Large()),
+            PopupButtons::None,
+            PopupImage::Spellbook,
+            1.0f,
+            Popup::Spellbook,
+            sfml_util::sound_effect::None,
+            PopupButtonColor::Dark,
+            false,
+            std::vector<std::size_t>(),
+            sfml_util::TextureVec_t(),
+            std::vector<std::string>(),
+            PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+            CREATURE_CPTR,
+            INITIAL_SELECTION);
     }
 
 
-    const game::PopupInfo PopupManager::CreateMusicPopupInfo(
+    const PopupInfo PopupManager::CreateMusicPopupInfo(
         const std::string &                 POPUP_NAME,
         const game::creature::CreaturePtr_t CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(" ",
-                                               sfml_util::Justified::Center,
-                                               sfml_util::FontManager::Instance()->Size_Large()),
-                               sfml_util::PopupButtons::None,
-                               PopupImage::MusicSheet,
-                               1.0f,
-                               game::Popup::MusicSheet,
-                               sfml_util::sound_effect::None,
-                               sfml_util::PopupButtonColor::Dark,
-                               false,
-                               std::vector<std::size_t>(),
-                               sfml_util::TextureVec_t(),
-                               std::vector<std::string>(),
-                               game::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
-                               CREATURE_CPTR,
-                               INITIAL_SELECTION);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                " ",
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Large()),
+            PopupButtons::None,
+            PopupImage::MusicSheet,
+            1.0f,
+            Popup::MusicSheet,
+            sfml_util::sound_effect::None,
+            PopupButtonColor::Dark,
+            false,
+            std::vector<std::size_t>(),
+            sfml_util::TextureVec_t(),
+            std::vector<std::string>(),
+            PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+            CREATURE_CPTR,
+            INITIAL_SELECTION);
     }
 
 
-    const game::PopupInfo PopupManager::CreateCombatOverPopupInfo(
+    const PopupInfo PopupManager::CreateCombatOverPopupInfo(
         const std::string &                 POPUP_NAME,
         const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
     {
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(" ",
-                                               sfml_util::Justified::Center,
-                                               sfml_util::FontManager::Instance()->Size_Large()),
-                               sfml_util::MapByRes(1.0f, 5.0f),
-                               ((HOW_COMBAT_ENDED == game::combat::CombatEnd::Ran) ?
-                                   PopupButtons::Continue : PopupButtons::YesNo),
-                               HOW_COMBAT_ENDED);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                " ",
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Large()),
+            sfml_util::MapByRes(1.0f, 5.0f),
+            ((HOW_COMBAT_ENDED == game::combat::CombatEnd::Ran) ?
+                PopupButtons::Continue : PopupButtons::YesNo),
+            HOW_COMBAT_ENDED);
     }
 
 
-    const game::PopupInfo PopupManager::CreateSystemErrorPopupInfo(
+    const PopupInfo PopupManager::CreateSystemErrorPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & GENERAL_ERROR_MSG,
         const std::string & TECH_ERROR_MSG,
@@ -469,34 +485,35 @@ namespace gui
             ss << TECH_ERROR_MSG;
         }
 
-        return game::PopupInfo(POPUP_NAME,
-                               TextInfoDefault(
-                                   ss.str(),
-                                   sfml_util::Justified::Center,
-                                   sfml_util::FontManager::Instance()->Size_Smallish()),
-                               sfml_util::PopupButtons::Continue,
-                               sfml_util::PopupImage::Regular,
-                               GetScaleForImage(PopupImage::Regular),
-                               game::Popup::SystemError,
-                               sfml_util::sound_effect::PromptWarn,
-                               sfml_util::PopupButtonColor::Dark,
-                               false);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(
+                ss.str(),
+                sfml_util::Justified::Center,
+                sfml_util::FontManager::Instance()->Size_Smallish()),
+            PopupButtons::Continue,
+            PopupImage::Regular,
+            GetScaleForImage(PopupImage::Regular),
+            Popup::SystemError,
+            sfml_util::sound_effect::PromptWarn,
+            PopupButtonColor::Dark,
+            false);
     }
 
 
-    const game::PopupInfo PopupManager::CreateItemProfilePleaseWaitPopupInfo(
+    const PopupInfo PopupManager::CreateItemProfilePleaseWaitPopupInfo(
         const std::string & POPUP_NAME) const
     {
-        return game::PopupInfo(
+        return PopupInfo(
             POPUP_NAME,
             TextInfoDefault(
                 "Please Wait",
                 sfml_util::Justified::Center,
                 sfml_util::FontManager::Instance()->Size_Normal()),
-            sfml_util::PopupButtons::None,
-            sfml_util::PopupImage::Banner,
+            PopupButtons::None,
+            PopupImage::Banner,
             1.0f,
-            game::Popup::ItemProfilePleaseWait);
+            Popup::ItemProfilePleaseWait);
     }
 
 
@@ -519,7 +536,7 @@ namespace gui
         const bfs::path   DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
 
         M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)),
-            "sfml_util::gui::PopupManager::LoadAssets() accents dir path not found \""
+            "popup::PopupManager::LoadAssets() accents dir path not found \""
             << DIR_OBJ.string() << "\".");
 
         M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)),
@@ -553,4 +570,4 @@ namespace gui
     }
 
 }
-}
+

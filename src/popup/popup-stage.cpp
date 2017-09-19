@@ -37,7 +37,6 @@
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -58,6 +57,8 @@
 #include "game/game-data-file.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 
+#include "popup/popup-manager.hpp"
+
 #include "misc/random.hpp"
 #include "misc/boost-string-includes.hpp"
 
@@ -66,7 +67,7 @@
 #include <algorithm>
 
 
-namespace sfml_util
+namespace popup
 {
 
     const int       PopupStage::NUMBER_SELECT_INVALID_          { -1 };//any negative
@@ -74,7 +75,7 @@ namespace sfml_util
     const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_   { 2.0f };
     
 
-    PopupStage::PopupStage(const game::PopupInfo & POPUP_INFO)
+    PopupStage::PopupStage(const PopupInfo & POPUP_INFO)
     :
         PopupStageBase              (POPUP_INFO),
         charDetailsTextRegionUPtr_  (),
@@ -124,12 +125,12 @@ namespace sfml_util
     bool PopupStage::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((popupInfo_.Type() == game::Popup::ImageSelection) ||
-            (popupInfo_.Type() == game::Popup::CharacterSelection))
+        if ((popupInfo_.Type() == Popup::ImageSelection) ||
+            (popupInfo_.Type() == Popup::CharacterSelection))
         {
             if (isImageProcAllowed_)
             {
-                auto const COUNT{ ((popupInfo_.Type() == game::Popup::CharacterSelection) ?
+                auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
                     game::Game::Instance()->State().Party().Characters().size() :
                     popupInfo_.ImagesCount()) };
 
@@ -148,7 +149,7 @@ namespace sfml_util
 
             return true;
         }
-        else if ((popupInfo_.Type() == game::Popup::NumberSelection))
+        else if ((popupInfo_.Type() == Popup::NumberSelection))
         {
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
 
@@ -187,7 +188,7 @@ namespace sfml_util
     bool PopupStage::HandleCallback(
         const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &)
     {
-        if (popupInfo_.Type() == game::Popup::NumberSelection)
+        if (popupInfo_.Type() == Popup::NumberSelection)
         {
             const int NUM(GetSelectNumber());
             selection_ = NUM;
@@ -210,27 +211,27 @@ namespace sfml_util
     {
         PopupStageBase::Setup();
         
-        if (popupInfo_.Type() == game::Popup::NumberSelection)
+        if (popupInfo_.Type() == Popup::NumberSelection)
         {
             SetupNumberSelectionPopup();
         }
-        if (popupInfo_.Type() == game::Popup::CharacterSelection)
+        if (popupInfo_.Type() == Popup::CharacterSelection)
         {
             SetupCharacterSelectionPopup();
         }
-        else if (popupInfo_.Type() == game::Popup::ImageSelection)
+        else if (popupInfo_.Type() == Popup::ImageSelection)
         {
             SetupImageSelectionPopup();
         }
-        else if (popupInfo_.Type() == game::Popup::ImageFade)
+        else if (popupInfo_.Type() == Popup::ImageFade)
         {
             SetupImageFadePopup();
         }
-        else if (popupInfo_.Type() == game::Popup::CombatOver)
+        else if (popupInfo_.Type() == Popup::CombatOver)
         {
             SetupCombatOverPopup();
         }
-        else if (popupInfo_.Type() == game::Popup::SystemError)
+        else if (popupInfo_.Type() == Popup::SystemError)
         {
             SetupSystemErrorPopup();
         }
@@ -241,7 +242,7 @@ namespace sfml_util
     {
         PopupStageBase::Draw(target, STATES);
 
-        if (popupInfo_.Type() == game::Popup::ItemProfilePleaseWait)
+        if (popupInfo_.Type() == Popup::ItemProfilePleaseWait)
         {
             if (drawCountdown_ > 0)
             {
@@ -252,8 +253,8 @@ namespace sfml_util
             }
         }
 
-        if ((popupInfo_.Type() == game::Popup::ImageSelection) ||
-            (popupInfo_.Type() == game::Popup::CharacterSelection))
+        if ((popupInfo_.Type() == Popup::ImageSelection) ||
+            (popupInfo_.Type() == Popup::CharacterSelection))
         {
             target.draw(imageSpriteCurr_, STATES);
 
@@ -267,7 +268,7 @@ namespace sfml_util
                 imageNumTextRegionUPtr_->draw(target, STATES);
             }
         }
-        else if (popupInfo_.Type() == game::Popup::ImageFade)
+        else if (popupInfo_.Type() == Popup::ImageFade)
         {
             if (popupInfo_.Images().size() > 1)
             {
@@ -278,19 +279,19 @@ namespace sfml_util
             target.draw( * titleUPtr_, STATES);
             target.draw( * descUPtr_, STATES);
         }
-        else if (popupInfo_.Type() == game::Popup::CombatOver)
+        else if (popupInfo_.Type() == Popup::CombatOver)
         {
             target.draw(combatBgSprite_, STATES);
             target.draw( * titleUPtr_, STATES);
             target.draw( * descUPtr_, STATES);
         }
-        else if (popupInfo_.Type() == game::Popup::SystemError)
+        else if (popupInfo_.Type() == Popup::SystemError)
         {
             //The SystemError popup uses CombatOver popup's texture and sprite.
             target.draw(combatBgSprite_, STATES);
         }
 
-        if (popupInfo_.Type() == game::Popup::CharacterSelection)
+        if (popupInfo_.Type() == Popup::CharacterSelection)
         {
             charDetailsTextRegionUPtr_->draw(target, STATES);
         }
@@ -303,7 +304,7 @@ namespace sfml_util
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        if ((popupInfo_.Type() == game::Popup::ResolutionChange) &&
+        if ((popupInfo_.Type() == Popup::ResolutionChange) &&
             (secondCounter_ > 0))
         {
             elapsedTimeCounter_ += ELAPSED_TIME_SECONDS;
@@ -326,7 +327,7 @@ namespace sfml_util
                 }
                 else
                 {
-                    game::LoopManager::Instance()->PopupWaitEnd(sfml_util::Response::No);
+                    game::LoopManager::Instance()->PopupWaitEnd(Response::No);
                 }
             }
         }
@@ -342,7 +343,7 @@ namespace sfml_util
 
                 if (false == areImagesMoving_)
                 {
-                    if (popupInfo_.Type() == game::Popup::CharacterSelection)
+                    if (popupInfo_.Type() == Popup::CharacterSelection)
                     {
                         SetupCharacterSelectDetailText(false);
                         SetupCharacterSelectionRejectImage(false);
@@ -384,7 +385,7 @@ namespace sfml_util
                 imageMoveQueue_.pop();
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
 
-                if (popupInfo_.Type() == game::Popup::CharacterSelection)
+                if (popupInfo_.Type() == Popup::CharacterSelection)
                 {
                     SetupCharacterSelectDetailText(true);
                     SetupCharacterSelectionRejectImage(true);
@@ -429,7 +430,7 @@ namespace sfml_util
             }
         }
 
-        if (popupInfo_.Type() == game::Popup::ImageFade)
+        if (popupInfo_.Type() == Popup::ImageFade)
         {
             if (beforeFadeTimerSec_ < BEFORE_FADE_STARTS_DELAY_SEC_)
             {
@@ -460,56 +461,62 @@ namespace sfml_util
 
     bool PopupStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (popupInfo_.Type() == game::Popup::ImageFade)
+        if (popupInfo_.Type() == Popup::ImageFade)
         {
             beforeFadeTimerSec_ = BEFORE_FADE_STARTS_DELAY_SEC_;
             fadeAlpha_ = 256.0f;//anything greater than 255.0f will work here
         }
 
-        if ((popupInfo_.Type() == game::Popup::ContentSelectionWithItem) ||
-            (popupInfo_.Type() == game::Popup::ContentSelectionWithoutItem))
+        if ((popupInfo_.Type() == Popup::ContentSelectionWithItem) ||
+            (popupInfo_.Type() == Popup::ContentSelectionWithoutItem))
         {
             if ((KEY_EVENT.code == sf::Keyboard::I) &&
-                (popupInfo_.Type() == game::Popup::ContentSelectionWithItem))
+                (popupInfo_.Type() == Popup::ContentSelectionWithItem))
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select,
-                                                            game::PopupInfo::ContentNum_Item());
+                game::LoopManager::Instance()->PopupWaitEnd(
+                    Response::Select, PopupInfo::ContentNum_Item());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::C)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select,
-                                                            game::PopupInfo::ContentNum_Coins());
+                game::LoopManager::Instance()->PopupWaitEnd(
+                    Response::Select, PopupInfo::ContentNum_Coins());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::G)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select,
-                                                            game::PopupInfo::ContentNum_Gems());
+                game::LoopManager::Instance()->PopupWaitEnd(
+                    Response::Select, PopupInfo::ContentNum_Gems());
                 return true;
             }
             else if (KEY_EVENT.code == sf::Keyboard::M)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select,
-                    game::PopupInfo::ContentNum_MeteorShards());
+                game::LoopManager::Instance()->PopupWaitEnd(
+                    Response::Select, PopupInfo::ContentNum_MeteorShards());
+
                 return true;
             }
         }
 
-        if ((popupInfo_.Type() == game::Popup::NumberSelection) &&
+        if ((popupInfo_.Type() == Popup::NumberSelection) &&
             ((KEY_EVENT.code == sf::Keyboard::S) || (KEY_EVENT.code == sf::Keyboard::Return)))
         {
             if (ProcessSelectNumber())
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                    sfml_util::sound_effect_set::Thock).PlayRandom();
 
                 game::LoopManager::Instance()->PopupWaitEnd(
                     Response::Select, static_cast<std::size_t>(GetSelectNumber()));
@@ -522,13 +529,13 @@ namespace sfml_util
             }
         }
 
-        if (((popupInfo_.Type() == game::Popup::ImageSelection) ||
-            (popupInfo_.Type() == game::Popup::CharacterSelection)) &&
+        if (((popupInfo_.Type() == Popup::ImageSelection) ||
+            (popupInfo_.Type() == Popup::CharacterSelection)) &&
             ((KEY_EVENT.code == sf::Keyboard::Left) ||
              (KEY_EVENT.code == sf::Keyboard::Right) ||
              ((KEY_EVENT.code >= sf::Keyboard::Num1) && (KEY_EVENT.code <= sf::Keyboard::Num9))))
         {
-            auto const COUNT{ ((popupInfo_.Type() == game::Popup::CharacterSelection) ?
+            auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
                 game::Game::Instance()->State().Party().Characters().size() :
                 popupInfo_.ImagesCount()) };
 
@@ -635,11 +642,11 @@ namespace sfml_util
             }
         }
 
-        if (popupInfo_.Type() == game::Popup::CharacterSelection)
+        if (popupInfo_.Type() == Popup::CharacterSelection)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Num1) && (popupInfo_.IsNumberValid(0)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
@@ -647,7 +654,7 @@ namespace sfml_util
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (popupInfo_.IsNumberValid(1)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
@@ -655,7 +662,7 @@ namespace sfml_util
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (popupInfo_.IsNumberValid(2)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
@@ -663,7 +670,7 @@ namespace sfml_util
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (popupInfo_.IsNumberValid(3)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
@@ -671,7 +678,7 @@ namespace sfml_util
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (popupInfo_.IsNumberValid(4)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
                 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
@@ -679,7 +686,7 @@ namespace sfml_util
             }
             else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (popupInfo_.IsNumberValid(5)))
             {
-                SoundManager::Instance()->
+                sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
@@ -690,7 +697,7 @@ namespace sfml_util
         if ((popupInfo_.Buttons() & Response::Select) &&
             (KEY_EVENT.code == sf::Keyboard::S))
         {
-            if (popupInfo_.Type() == game::Popup::CharacterSelection)
+            if (popupInfo_.Type() == Popup::CharacterSelection)
             {
                 auto const TEXT{ popupInfo_.TextVec()[imageIndex_] };
                 if (TEXT.empty())
@@ -717,7 +724,7 @@ namespace sfml_util
             return;
         }
 
-        auto const COUNT{ ((popupInfo_.Type() == game::Popup::CharacterSelection) ?
+        auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
             game::Game::Instance()->State().Party().Characters().size() :
             popupInfo_.ImagesCount()) };
 
@@ -735,11 +742,13 @@ namespace sfml_util
 
             std::ostringstream ss;
             ss << imageIndex_ + 1 << "/" << COUNT;
-            const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
-                                                     FontManager::Instance()->Font_Typical(),
-                                                     FontManager::Instance()->Size_Smallish(),
-                                                     gui::PopupManager::Color_Font(),
-                                                     Justified::Center);
+            const sfml_util::gui::TextInfo TEXT_INFO(
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_Typical(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                PopupManager::Color_Font(),
+                sfml_util::Justified::Center);
+
             sf::FloatRect imageCountTextRect(textRegion_);
             imageCountTextRect.height = 0.0f;
             imageNumTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -751,7 +760,7 @@ namespace sfml_util
             texturePrev_ = textureCurr_;
             imageSpritePrev_.setTexture(texturePrev_, true);
 
-            if (popupInfo_.Type() == game::Popup::CharacterSelection)
+            if (popupInfo_.Type() == Popup::CharacterSelection)
             {
                 auto const CREATURE_PTR{
                     game::Game::Instance()->State().Party().GetAtOrderPos(imageIndex_) };
@@ -831,9 +840,9 @@ namespace sfml_util
 
         const sfml_util::gui::TextInfo INFO_TEXT_INFO(
             TEXT_TO_USE,
-            FontManager::Instance()->Font_Default1(),
-            FontManager::Instance()->Size_Small(),
-            gui::PopupManager::Color_Font(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            PopupManager::Color_Font(),
             sfml_util::Justified::Center);
 
         EntityRemove(infoTextRegionUPtr_.get());
@@ -1019,10 +1028,10 @@ namespace sfml_util
     void PopupStage::SetupNumberSelectionPopup()
     {
         const sfml_util::gui::TextInfo INFO_TEXT_INFO(" ",
-            FontManager::Instance()->Font_Default1(),
-            FontManager::Instance()->Size_Small(),
-            gui::PopupManager::Color_Font(),
-            Justified::Center);
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            PopupManager::Color_Font(),
+            sfml_util::Justified::Center);
 
         infoTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
@@ -1050,10 +1059,10 @@ namespace sfml_util
         minNumSS << popupInfo_.NumberSelMin();
 
         const sfml_util::gui::TextInfo TEXTENTRY_TEXT_INFO(minNumSS.str(),
-            FontManager::Instance()->Font_Default1(),
-            FontManager::Instance()->Size_Large(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Large(),
             sf::Color::White,
-            Justified::Left);
+            sfml_util::Justified::Left);
 
         const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO{
             sfml_util::gui::GuiElements::Instance()->GetTextureWood(),
@@ -1067,7 +1076,7 @@ namespace sfml_util
         textEntryBoxSPtr_.reset(new sfml_util::gui::TextEntryBox("PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
-            FontManager::Color_Light(),
+            sfml_util::FontManager::Color_Light(),
             TEXTENTRY_BOX_INFO,
             this));
 
@@ -1166,10 +1175,10 @@ namespace sfml_util
         if (popupInfo_.ImagesCount() == 1)
         {
             const sfml_util::gui::TextInfo TEXT_INFO("(there is only one image)",
-                FontManager::Instance()->Font_Default1(),
-                FontManager::Instance()->Size_Small(),
-                gui::PopupManager::Color_Font(),
-                Justified::Center);
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                PopupManager::Color_Font(),
+                sfml_util::Justified::Center);
 
             sf::FloatRect region(textRegion_);
             region.top = sliderbarPosTop_;
@@ -1200,7 +1209,7 @@ namespace sfml_util
         auto titleRegion{ textRegion_ };
         titleRegion.height = 0.0f;
 
-        titleUPtr_ = std::make_unique<gui::TextRegion>("ImageFadePopupTitle",
+        titleUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("ImageFadePopupTitle",
             TITLE_TEXTINFO,
             titleRegion);
 
@@ -1214,7 +1223,7 @@ namespace sfml_util
         auto descRegion{ textRegion_ };
         descRegion.height = 0.0f;
 
-        descUPtr_ = std::make_unique<gui::TextRegion>("ImageFadePopupDesc",
+        descUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("ImageFadePopupDesc",
             DESC_TEXTINFO,
             descRegion);
 
@@ -1360,7 +1369,7 @@ namespace sfml_util
             sf::Text::Bold,
             sfml_util::Justified::Center);
 
-        titleUPtr_ = std::make_unique<gui::TextRegion>(
+        titleUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatOverPopupTitle",
             COMBAT_TITLE_TEXTINFO,
             sf::FloatRect());
@@ -1423,7 +1432,7 @@ namespace sfml_util
                 (titleUPtr_->GetEntityRegion().height +
                     (sfml_util::MapByRes(20.0f, 60.0f) * 2.0f)));
 
-        descUPtr_ = std::make_unique<gui::TextRegion>(
+        descUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatOverPopupDesc",
             COMBAT_DESC_TEXTINFO,
             COMBAT_DESC_RECT);

@@ -31,13 +31,13 @@
 
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
 #include "game/stage/loop-cmd-addstage.hpp"
 #include "game/creature/creature.hpp"
-#include "game/popup-info.hpp"
+#include "popup/popup-info.hpp"
 #include "game/stage/loop-cmd-addstage.hpp"
 
 #include "misc/assertlogandthrow.hpp"
@@ -57,7 +57,7 @@ namespace game
         state_            (LoopState::None),
         cmdQueue_         (),
         loop_             ("DefaultLoop"),
-        popupResponse_    (sfml_util::Response::None),
+        popupResponse_    (popup::Response::None),
         popupSelection_   (0),
         prevState_        (LoopState::None),
         prevSettingsState_(LoopState::None),
@@ -210,8 +210,8 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_RemoveStage_Popup>() );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(
-            sfml_util::gui::PopupManager::Color_Fade(),
-            sfml_util::gui::PopupManager::SpeedMult_Fade()) );
+            popup::PopupManager::Color_Fade(),
+            popup::PopupManager::SpeedMult_Fade()) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
     }
 
@@ -557,7 +557,7 @@ namespace game
 
 
     void LoopManager::PopupWaitEnd(
-        const sfml_util::Response::Enum RESPONSE, const std::size_t SELECTION)
+        const popup::Response::Enum RESPONSE, const std::size_t SELECTION)
     {
         popupResponse_ = RESPONSE;
         popupSelection_ = SELECTION;
@@ -635,7 +635,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         sfml_util::IStage * const               currentStagePtr_,
-        callback::IPopupHandler_t * const HANDLER_PTR,
+        popup::IPopupHandler_t * const HANDLER_PTR,
         const sfml_util::Resolution &           NEW_RES,
         const unsigned                          ANTIALIAS_LEVEL)
     {
@@ -647,7 +647,7 @@ namespace game
             currentStagePtr_->HandleResolutionChange();
         }
 
-        Popup::Enum whichPopup(Popup::ResolutionChange);
+        popup::Popup::Enum whichPopup(popup::Popup::ResolutionChange);
 
         sfml_util::gui::TextInfo textInfo("Keep this setting?",
                                           sfml_util::FontManager::Instance()->Font_Default1(),
@@ -680,17 +680,17 @@ namespace game
             case sfml_util::DisplayChangeResult::Count:
             default:
             {
-                whichPopup = Popup::Generic;
+                whichPopup = popup::Popup::Generic;
                 textInfo.text = "Unable to set that video mode.";
                 break;
             }
         }
 
-        const PopupInfo POPUP_INFO(
+        const popup::PopupInfo POPUP_INFO(
             "ResolutionChange",
             textInfo,
-            sfml_util::PopupButtons::YesNo,
-            sfml_util::PopupImage::Banner,
+            popup::PopupButtons::YesNo,
+            popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
             whichPopup,
             sfml_util::sound_effect::PromptQuestion);

@@ -33,7 +33,7 @@
 #include "game/creature/creature.hpp"
 #include "game/loop-manager.hpp"
 
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -45,7 +45,7 @@
 #include <algorithm>
 
 
-namespace sfml_util
+namespace popup
 {
 
     const float     PopupStageSpellbook::BACKGROUND_WIDTH_RATIO_    { 0.85f };
@@ -55,7 +55,7 @@ namespace sfml_util
     const float     PopupStageSpellbook::WARNING_DURATION_SEC_      { 2.0f };
 
 
-    PopupStageSpellbook::PopupStageSpellbook(const game::PopupInfo & POPUP_INFO)
+    PopupStageSpellbook::PopupStageSpellbook(const popup::PopupInfo & POPUP_INFO)
     :
         PopupStageBase(POPUP_INFO),
         playerTexture_(),
@@ -257,7 +257,7 @@ namespace sfml_util
         if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
             (KEY_EVENT.code == sf::Keyboard::Space))
         {
-            SoundManager::Instance()->Getsound_effect_set(
+            sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
@@ -300,7 +300,7 @@ namespace sfml_util
     {
         auto const LEFT_PAGE_RECT_RAW{
             sfml_util::ConvertRect<int, float>(
-                sfml_util::gui::PopupManager::Rect_Spellbook_PageLeft()) };
+                popup::PopupManager::Rect_Spellbook_PageLeft()) };
 
         auto const SCALE{
             innerRegion_.width / static_cast<float>(backgroundTexture_.getSize().x) };
@@ -311,7 +311,7 @@ namespace sfml_util
         pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
 
         auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            sfml_util::gui::PopupManager::Rect_Spellbook_PageRight()) };
+            popup::PopupManager::Rect_Spellbook_PageRight()) };
 
         pageRectRight_.left = innerRegion_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
         pageRectRight_.top = innerRegion_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
@@ -322,7 +322,7 @@ namespace sfml_util
 
     void PopupStageSpellbook::SetupLeftAccentImage()
     {
-        sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
         auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
@@ -350,7 +350,7 @@ namespace sfml_util
 
     void PopupStageSpellbook::SetupRightAccentImage()
     {
-        sfml_util::gui::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
         auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
@@ -441,7 +441,7 @@ namespace sfml_util
             0.0f,
             0.0f };
 
-        charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SpellnbookPopupWindowDetails",
             DETAILS_TEXTINFO,
             DETAILS_TEXT_RECT);
@@ -464,7 +464,7 @@ namespace sfml_util
             0.0f,
             0.0f };
 
-        listBoxLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SpellnbookPopupWindowSpellListLabel",
             LISTBOX_LABEL_TEXTINFO,
             LISTBOX_LABEL_TEXTRECT);
@@ -523,7 +523,7 @@ namespace sfml_util
         for (auto const NEXT_SPELL_PTR : SPELL_PVEC)
         {
             listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
-            auto const LISTBOXITEM_SPTR( std::make_shared<gui::ListBoxItem>(
+            auto const LISTBOXITEM_SPTR( std::make_shared<sfml_util::gui::ListBoxItem>(
                 NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
                 listBoxItemTextInfo_,
                 NEXT_SPELL_PTR,
@@ -532,7 +532,7 @@ namespace sfml_util
             listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
         }
 
-        listBoxSPtr_ = std::make_shared<gui::ListBox>(
+        listBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
             "PopupStage'sSpellListBox",
             LISTBOX_RECT,
             listBoxItemsSList,
@@ -567,7 +567,7 @@ namespace sfml_util
 
         colorSlider_.Reset(COLOR_FADE_SPEED_);
 
-        SoundManager::Instance()->SoundEffectPlay(sound_effect::Magic1);
+        sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::Magic1);
     }
 
 
@@ -617,7 +617,7 @@ namespace sfml_util
 
         if (spellTitleTextRegionUPtr_.get() == nullptr)
         {
-            spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            spellTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellTitle",
                 SPELL_TITLE_TEXTINFO,
                 SPELL_TITLE_TEXTRECT);
@@ -685,7 +685,7 @@ namespace sfml_util
 
         if (spellDetailsTextUPtr_.get() == nullptr)
         {
-            spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>(
+            spellDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDetails",
                 SPELL_DETAILS_TEXTINFO,
                 SPELL_DETAILS_TEXTRECT);
@@ -761,7 +761,7 @@ namespace sfml_util
             SPELL_UNABLE_TEXTRECT_WIDTH,
             SPELL_UNABLE_TEXTRECT_HEIGHT };
 
-        unableTextUPtr_ = std::make_unique<gui::TextRegion>(
+        unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SpellnbookPopupWindowSpellUnableToCast",
             SPELL_UNABLE_TEXTINFO,
             SPELL_UNABLE_TEXTRECT);
@@ -805,7 +805,7 @@ namespace sfml_util
 
         if (spellDescTextUPtr_.get() == nullptr)
         {
-            spellDescTextUPtr_ = std::make_unique<gui::TextRegion>(
+            spellDescTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDescription",
                 SPELL_DESC_TEXTINFO,
                 SPELL_DESC_TEXTRECT);
@@ -842,7 +842,8 @@ namespace sfml_util
     {
         if (CanCastSpell(listBoxSPtr_->GetSelected()->SPELL_CPTRC))
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::SpellSelect).PlayRandom();
+            sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                sfml_util::sound_effect_set::SpellSelect).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 Response::Select, listBoxSPtr_->GetSelectedIndex());
@@ -851,8 +852,8 @@ namespace sfml_util
         }
         else
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Prompt).Play(
-                sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->Getsound_effect_set(
+                sfml_util::sound_effect_set::Prompt).Play(sfml_util::sound_effect::PromptWarn);
 
             if (FadeState::Waiting == fadeState_)
             {

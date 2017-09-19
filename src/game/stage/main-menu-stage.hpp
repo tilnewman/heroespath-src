@@ -37,7 +37,7 @@
 #include "game/horiz-symbol.hpp"
 #include "game/ouroboros.hpp"
 #include "game/main-menu-buttons.hpp"
-#include "game/i-popup-callback.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
 
 #include <memory>

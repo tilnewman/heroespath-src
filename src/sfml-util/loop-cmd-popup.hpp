@@ -42,7 +42,7 @@ namespace sfml_util
     public:
         LoopCmd_AddStage_Popup_Specific(
             sfml_util::Loop & loop,
-            const game::PopupInfo & POPUP_INFO)
+            const popup::PopupInfo & POPUP_INFO)
         :
             LoopCmd("AddStage_Popup_Specific"),
             loop_(loop),
@@ -61,7 +61,7 @@ namespace sfml_util
 
     private:
         sfml_util::Loop & loop_;
-        game::PopupInfo popupInfo_;
+        popup::PopupInfo popupInfo_;
     };
 
 

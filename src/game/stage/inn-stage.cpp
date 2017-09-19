@@ -37,7 +37,7 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/popup-manager.hpp"
+#include "popup/popup-manager.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/game-data-file.hpp"

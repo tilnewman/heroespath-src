@@ -33,7 +33,7 @@
 #include <exception>
 
 
-namespace sfml_util
+namespace popup
 {
 
     const std::string PopupButtons::ToString(const PopupButtons::Enum E)
@@ -51,7 +51,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupButtons::ToString(" << E << ")_InvalidValueError.";
+                ss << "popup::PopupButtons::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -120,7 +120,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupImage::ToString(" << E << ")_InvalidValueError.";
+                ss << "popup::PopupImage::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

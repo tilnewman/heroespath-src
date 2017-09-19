@@ -33,8 +33,9 @@
 #include "sfml-util/gui/gui-entity.hpp"
 
 #include "game/loop-state-enum.hpp"
-#include "game/i-popup-callback.hpp"
-#include "game/popup-info.hpp"
+
+#include "popup/i-popup-callback.hpp"
+#include "popup/popup-info.hpp"
 
 #include <memory>
 #include <string>
@@ -106,8 +107,9 @@ namespace sfml_util
         inline virtual bool GetIgnoreKeystrokes() const                 { return willIgnoreKeystrokes_; }
         inline virtual void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
 
-        virtual void AssignPopupCallbackHandlerInfo(game::callback::IPopupHandler_t * const HANDLER_PTR,
-                                                    const game::PopupInfo &                 POPUP_INFO);
+        virtual void AssignPopupCallbackHandlerInfo(
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO);
 
         virtual void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -161,14 +163,14 @@ namespace sfml_util
         gui::IGuiEntityPtr_t  entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        game::PopupInfo       popupInfo_;
+        popup::PopupInfo       popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;
         sf::Vector2f          mousePosV_;
         bool                  isMouseHovering_;
         bool                  takeScreenshot_;
-        game::callback::IPopupHandler_t * popupCallbackPtr_;
+        popup::IPopupHandler_t * popupCallbackPtr_;
         game::LoopState::Enum state_;
         std::vector<float>    frameRateVec_;
         std::size_t           frameRateSampleCount_;

@@ -36,8 +36,8 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/song-animation.hpp"
-#include "sfml-util/popup-stage-spellbook.hpp"
-#include "sfml-util/popup-stage-musicsheet.hpp"
+#include "popup/popup-stage-spellbook.hpp"
+#include "popup/popup-stage-musicsheet.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -374,7 +374,7 @@ namespace stage
     }
 
 
-    bool InventoryStage::HandleCallback(const game::callback::PopupResponse & POPUP_RESPONSE)
+    bool InventoryStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         isWaitingOnPopup_ = false;
 
@@ -387,7 +387,7 @@ namespace stage
             return HandleCast_Step3_DisplayResults();
         }
         else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
-                  (POPUP_RESPONSE.Response() == sfml_util::Response::Yes))
+                  (POPUP_RESPONSE.Response() == popup::Response::Yes))
         {
             if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
             {
@@ -408,9 +408,9 @@ namespace stage
             SetupDescBox(false);
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_GIVE_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::Response::Select))
         {
-            if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Item())
+            if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Item())
             {
                 if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                 {
@@ -440,7 +440,7 @@ namespace stage
                     return false;
                 }
             }
-            else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Coins())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
                 if (creaturePtr_->Inventory().Coins() == 0)
                 {
@@ -462,7 +462,7 @@ namespace stage
                 contentType_ = ContentType::Coins;
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Gems())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Gems())
             {
                 if (creaturePtr_->Inventory().Gems() == 0)
                 {
@@ -483,7 +483,7 @@ namespace stage
                 contentType_ = ContentType::Gems;
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_MeteorShards())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (creaturePtr_->Inventory().MeteorShards() == 0)
                 {
@@ -506,7 +506,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::Response::Select))
         {
             creatureToGiveToPtr_ =
                 Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
@@ -630,7 +630,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_NUMBER_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select) &&
+                 (POPUP_RESPONSE.Response() == popup::Response::Select) &&
                  (creatureToGiveToPtr_ != nullptr))
         {
             switch (contentType_)
@@ -659,9 +659,9 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CONTENTSELECTION_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::Response::Select))
         {
-            if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Coins())
+            if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -674,7 +674,7 @@ namespace stage
 
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_Gems())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Gems())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -687,7 +687,7 @@ namespace stage
 
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == PopupInfo::ContentNum_MeteorShards())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -702,7 +702,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::Response::Select))
         {
             const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
@@ -719,7 +719,7 @@ namespace stage
             return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_) &&
-                 (POPUP_RESPONSE.Response() == sfml_util::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::Response::Select))
         {
             const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
@@ -1950,10 +1950,12 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     std::ostringstream ss;
                     ss << "Cannot equip the " << IITEM_PTR->Name() << " because: " << EQUIP_RESULT;
 
-                    const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo("InventoryStage'sEquipItemFailedPopup",
-                                                                                                         ss.str(),
-                                                                                                         sfml_util::PopupButtons::Okay,
-                                                                                                         sfml_util::PopupImage::Regular));
+                    auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                        "InventoryStage'sEquipItemFailedPopup",
+                        ss.str(),
+                        popup::PopupButtons::Okay,
+                        popup::PopupImage::Regular) };
+
                     LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                     isWaitingOnPopup_ = true;
                 }
@@ -1997,16 +1999,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         actionType_ = ActionType::Give;
 
-        const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_GIVE_,
             std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor").
                 append("Shards\n\n...or (Escape) to Cancel"),
-            sfml_util::PopupButtons::Cancel,
-            sfml_util::PopupImage::Large,
+            popup::PopupButtons::Cancel,
+            popup::PopupImage::Large,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptGeneric,
-            Popup::ContentSelectionWithItem,
-            sfml_util::FontManager::Instance()->Size_Largeish()));
+            popup::Popup::ContentSelectionWithItem,
+            sfml_util::FontManager::Instance()->Size_Largeish()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         isWaitingOnPopup_ = true;
@@ -2054,14 +2056,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
                 actionType_ = ActionType::Drop;
 
-                const PopupInfo POPUP_INFO(sfml_util::gui::PopupManager::Instance()->
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->
                     CreatePopupInfo(
                         POPUP_NAME_DROPCONFIRM_,
                         "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
-                        sfml_util::PopupButtons::YesNo,
-                        sfml_util::PopupImage::Regular,
+                        popup::PopupButtons::YesNo,
+                        popup::PopupImage::Regular,
                         sfml_util::Justified::Center,
-                        sfml_util::sound_effect::PromptQuestion));
+                        sfml_util::sound_effect::PromptQuestion) };
 
                 LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 isWaitingOnPopup_ = true;
@@ -2726,7 +2728,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        auto const POPUP_INFO{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_CHAR_SELECT_,
             PROMPT_TEXT,
             invalidTextVec,
@@ -2740,16 +2742,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     void InventoryStage::PopupRejectionWindow(const std::string & REJECTION_PROMPT_TEXT,
                                               const bool WILL_USE_REGULAR_SIZE_POPUP)
     {
-        const PopupInfo POPUPINFO_NOITEM(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
             REJECTION_PROMPT_TEXT,
-            sfml_util::PopupButtons::Cancel,
+            popup::PopupButtons::Cancel,
             ((WILL_USE_REGULAR_SIZE_POPUP) ?
-                sfml_util::PopupImage::Regular : sfml_util::PopupImage::Banner),
+                popup::PopupImage::Regular : popup::PopupImage::Banner),
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
-            game::Popup::Generic,
-            sfml_util::FontManager::Instance()->Size_Largeish()));
+            popup::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Largeish()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
@@ -2759,11 +2761,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX)
     {
-        const PopupInfo POPUP_INFO_NUMBER_SELECT(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NUMBER_SELECT_,
-                                                                                                           PROMPT_TEXT,
-                                                                                                           1,
-                                                                                                           NUMBER_MAX,
-                                                                                                           sfml_util::FontManager::Instance()->Size_Largeish()));
+        auto const POPUP_INFO_NUMBER_SELECT{ popup::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_NUMBER_SELECT_,
+            PROMPT_TEXT,
+            1,
+            NUMBER_MAX,
+            sfml_util::FontManager::Instance()->Size_Largeish()) };
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_NUMBER_SELECT);
         isWaitingOnPopup_ = true;
     }
@@ -2771,14 +2775,18 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::PopupDoneWindow(const std::string & PROMPT_TEXT, const bool WILL_PLAY_SOUNDEFFECT)
     {
-        const PopupInfo POPUP_INFO_DONE(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo("InventoryStage'sPopupDone",
-                                                                                                  PROMPT_TEXT,
-                                                                                                  sfml_util::PopupButtons::Okay,
-                                                                                                  sfml_util::PopupImage::Regular,
-                                                                                                  sfml_util::Justified::Center,
-                                                                                                  ((WILL_PLAY_SOUNDEFFECT) ? sfml_util::sound_effect::PromptGeneric : sfml_util::sound_effect::None),
-                                                                                                  Popup::Generic,
-                                                                                                  sfml_util::FontManager::Instance()->Size_Largeish()));
+        auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
+            "InventoryStage'sPopupDone",
+            PROMPT_TEXT,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            ((WILL_PLAY_SOUNDEFFECT) ?
+                sfml_util::sound_effect::PromptGeneric :
+                sfml_util::sound_effect::None),
+            popup::Popup::Generic,
+            sfml_util::FontManager::Instance()->Size_Largeish()) };
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_DONE);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
@@ -2789,14 +2797,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         std::ostringstream ss;
         ss << PROMPT_TEXT << "\n\n(C)oins\n(G)ems\n(M)eteor Shards";
-        const PopupInfo POPUP_INFO_DONE(sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CONTENTSELECTION_,
-                                                                                                  ss.str(),
-                                                                                                  sfml_util::PopupButtons::Cancel,
-                                                                                                  sfml_util::PopupImage::Regular,
-                                                                                                  sfml_util::Justified::Center,
-                                                                                                  sfml_util::sound_effect::PromptGeneric,
-                                                                                                  game::Popup::ContentSelectionWithoutItem,
-                                                                                                  sfml_util::FontManager::Instance()->Size_Normal()));
+        auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_CONTENTSELECTION_,
+            ss.str(),
+            popup::PopupButtons::Cancel,
+            popup::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::PromptGeneric,
+            popup::Popup::ContentSelectionWithoutItem,
+            sfml_util::FontManager::Instance()->Size_Normal()) };
+
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_DONE);
         isWaitingOnPopup_ = true;
     }
@@ -3651,14 +3661,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SPELL_RESULT_,
             ACTION_TEXT,
-            sfml_util::PopupButtons::Okay,
-            sfml_util::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
-            game::Popup::Generic,
+            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
@@ -3750,13 +3760,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             if (CAN_CAST_STR.empty())
             {
                 auto const POPUP_INFO{
-                    sfml_util::gui::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                    popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                         POPUP_NAME_SPELLBOOK_,
                         creaturePtr_,
                         creaturePtr_->LastSpellCastNum()) };
 
                 LoopManager::Instance()->
-                    PopupWaitBeginSpecific<sfml_util::PopupStageSpellbook>(this, POPUP_INFO);
+                    PopupWaitBeginSpecific<popup::PopupStageSpellbook>(this, POPUP_INFO);
             }
             else
             {
@@ -3769,13 +3779,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             if (CAN_PLAY_STR.empty())
             {
                 auto const POPUP_INFO{
-                    sfml_util::gui::PopupManager::Instance()->CreateMusicPopupInfo(
+                    popup::PopupManager::Instance()->CreateMusicPopupInfo(
                         POPUP_NAME_MUSICSHEET_,
                         creaturePtr_,
                         creaturePtr_->LastSongPlayedNum()) };
 
                 LoopManager::Instance()->
-                    PopupWaitBeginSpecific<sfml_util::PopupStageMusicSheet>(this, POPUP_INFO);
+                    PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(this, POPUP_INFO);
             }
             else
             {
@@ -3864,14 +3874,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                                                                 hitInfoIndex_,
                                                                 isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ sfml_util::gui::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SONG_RESULT_,
             ACTION_TEXT,
-            sfml_util::PopupButtons::Okay,
-            sfml_util::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
-            game::Popup::Generic,
+            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
@@ -3900,7 +3910,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                                           const std::string & TECH_ERROR_MSG,
                                           const std::string & TITLE_MSG)
     {
-        LoopManager::Instance()->PopupWaitBegin(this, sfml_util::gui::PopupManager::Instance()->
+        LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
                 CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
                     TECH_ERROR_MSG, TITLE_MSG));
     }

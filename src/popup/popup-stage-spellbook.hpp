@@ -22,14 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPSTAGESPELLBOOK_HPP_INCLUDED
-#define SFMLUTIL_POPUPSTAGESPELLBOOK_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED
+#define POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED
 //
 // popup-stage-spellbook.hpp
 //
-#include "sfml-util/popup-stage-base.hpp"
+#include "popup/popup-stage-base.hpp"
 
-#include "game/popup-info.hpp"
+#include "popup/popup-info.hpp"
 
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/list-box.hpp"
@@ -47,13 +47,13 @@ namespace spell
     using SpellPtrC_t = Spell * const;
 }
 }
-namespace sfml_util
+namespace popup
 {
 
     class PopupStageSpellbook
     :
         public PopupStageBase,
-        public gui::callback::IListBoxCallbackHandler
+        public sfml_util::gui::callback::IListBoxCallbackHandler
     {
         //prevent copy construction
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
@@ -73,7 +73,7 @@ namespace sfml_util
         };
 
     public:
-        explicit PopupStageSpellbook(const game::PopupInfo &);
+        explicit PopupStageSpellbook(const PopupInfo &);
 
         virtual ~PopupStageSpellbook();
 
@@ -83,7 +83,7 @@ namespace sfml_util
         }
 
         using PopupStageBase::HandleCallback;
-        bool HandleCallback(const gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -121,22 +121,22 @@ namespace sfml_util
         sf::Sprite              playerSprite_;
         sf::FloatRect           pageRectLeft_;
         sf::FloatRect           pageRectRight_;
-        gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
-        gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
-        gui::ListBoxSPtr_t      listBoxSPtr_;
+        sfml_util::gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
+        sfml_util::gui::ListBoxSPtr_t      listBoxSPtr_;
         const sf::Color         LISTBOX_IMAGE_COLOR_;
         const sf::Color         LISTBOX_LINE_COLOR_;
         const sf::Color         LISTBOX_COLOR_FG_;
         const sf::Color         LISTBOX_COLOR_BG_;
-        const gui::ColorSet     LISTBOX_COLORSET_;
-        gui::BackgroundInfo     LISTBOX_BG_INFO_;
-        gui::TextInfo           listBoxItemTextInfo_;
+        const sfml_util::gui::ColorSet     LISTBOX_COLORSET_;
+        sfml_util::gui::BackgroundInfo     LISTBOX_BG_INFO_;
+        sfml_util::gui::TextInfo           listBoxItemTextInfo_;
         sf::Texture             spellTexture_;
         sf::Sprite              spellSprite_;
-        gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
-        gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
-        gui::TextRegionUPtr_t   unableTextUPtr_;
-        gui::TextRegionUPtr_t   spellDescTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t   unableTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t   spellDescTextUPtr_;
         game::spell::SpellPtr_t currentSpellPtr_;
         sf::Color               imageColorCurrent_;
         sf::Color               imageColorBegin_;
@@ -146,10 +146,10 @@ namespace sfml_util
         sf::Color               textColorEnd_;
         bool                    unableTextWillShow_;
         float                   warningTimerSec_;
-        ColorShaker             warnColorShaker_;
-        sliders::ZeroSliderOnce<float> colorSlider_;
+        sfml_util::ColorShaker             warnColorShaker_;
+        sfml_util::sliders::ZeroSliderOnce<float> colorSlider_;
     };
 
 }
 
-#endif //SFMLUTIL_POPUPSTAGESPELLBOOK_HPP_INCLUDED
+#endif //POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED

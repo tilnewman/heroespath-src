@@ -29,7 +29,7 @@
 //  Font specific gui code.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/popup-enums.hpp"
+#include "popup/popup-enums.hpp"
 
 #include <memory>
 #include <string>
@@ -83,9 +83,9 @@ namespace sfml_util
         static inline const sf::Color Color_Light()         { return sf::Color(220, 220, 220, 255); }
         static inline const sf::Color Color_LightGold()     { return sf::Color(255, 248, 220, 255); }
         //
-        static inline const sf::Color Color_PopupButtonUp(const PopupButtonColor::Enum C)   { if (C == PopupButtonColor::Dark) return sf::Color(0, 0, 0, 70);  else return sf::Color(255, 255, 255, 127); }
-        static inline const sf::Color Color_PopupButtonDown(const PopupButtonColor::Enum C) { if (C == PopupButtonColor::Dark) return sf::Color(0, 0, 0, 255); else return sf::Color::White; }
-        static inline const sf::Color Color_PopupButtonOver(const PopupButtonColor::Enum C) { if (C == PopupButtonColor::Dark) return sf::Color(0, 0, 0, 150); else return sf::Color(255, 255, 255, 200); }
+        static const sf::Color Color_PopupButtonUp(const popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonDown(const popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonOver(const popup::PopupButtonColor::Enum);
         //
         static inline sf::Uint8 ColorValue_Highlight()      { return 55; }
 

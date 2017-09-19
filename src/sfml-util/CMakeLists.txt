@@ -18,6 +18,7 @@ target_link_libraries(${PROJECT_NAME}
 				${Boost_LIBRARIES}
 				Game
 				Game-Song
-				Misc)
+				Misc
+				Popup)
 
 add_subdirectory(gui)

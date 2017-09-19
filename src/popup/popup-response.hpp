@@ -22,40 +22,42 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_WHICHPOPUPENUM_INCLUDED
-#define GAME_WHICHPOPUPENUM_INCLUDED
+#ifndef POPUP_POPUPRESPONSE_HPP_INCLUDED
+#define POPUP_POPUPRESPONSE_HPP_INCLUDED
 //
-// which-popup-enum.hpp
-//  An enum identifying specific popup windows.
+// popup-response.hpp
+//  Encapsulates everything about a popup window's result with a response from the user
 //
-#include <string>
+#include "popup/popup-response-enum.hpp"
+#include "popup/popup-info.hpp"
 
 
-namespace game
+namespace popup
 {
 
-    struct Popup
+    //encapsulates everything about a popup window's response
+    class PopupResponse
     {
-        enum Enum
-        {
-            Generic = 0,
-            ResolutionChange,
-            ImageSelection,
-            ImageFade,
-            ContentSelectionWithItem,
-            ContentSelectionWithoutItem,
-            CharacterSelection,
-            NumberSelection,
-            Spellbook,
-            MusicSheet,
-            CombatOver,
-            SystemError,
-            ItemProfilePleaseWait,
-            Count
-        };
+    public:
+        PopupResponse(const PopupInfo &     POPUP_INFO,
+                      const Response::Enum  RESPONSE,
+                      const std::size_t     SELECTION)
+        :
+            info_     (POPUP_INFO),
+            response_ (RESPONSE),
+            selection_(SELECTION)
+        {}
 
-        static const std::string ToString(const Popup::Enum E);
+        inline const PopupInfo Info() const     { return info_; }
+        inline Response::Enum Response() const  { return response_; }
+        inline std::size_t Selection() const    { return selection_; }
+
+    private:
+        PopupInfo info_;
+        Response::Enum response_;
+        std::size_t selection_;
     };
 
 }
-#endif //GAME_WHICHPOPUPENUM_INCLUDED
+
+#endif //POPUP_POPUPRESPONSE_HPP_INCLUDED

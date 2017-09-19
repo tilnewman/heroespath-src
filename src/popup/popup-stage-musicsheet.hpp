@@ -22,14 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
-#define SFMLUTIL_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#define POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
 //
 // popup-stage-musicsheet.hpp
 //
-#include "sfml-util/popup-stage-base.hpp"
-
-#include "game/popup-info.hpp"
+#include "popup/popup-stage-base.hpp"
+#include "popup/popup-info.hpp"
 
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/list-box.hpp"
@@ -47,14 +46,14 @@ namespace song
     using SongPtrC_t = Song * const;
 }
 }
-namespace sfml_util
+namespace popup
 {
 
     //Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
         :
         public PopupStageBase,
-        public gui::callback::IListBoxCallbackHandler
+        public sfml_util::gui::callback::IListBoxCallbackHandler
     {
         //prevent copy construction
         PopupStageMusicSheet(const PopupStageMusicSheet &) =delete;
@@ -74,7 +73,7 @@ namespace sfml_util
         };
 
     public:
-        explicit PopupStageMusicSheet(const game::PopupInfo &);
+        explicit PopupStageMusicSheet(const popup::PopupInfo &);
         virtual ~PopupStageMusicSheet();
 
         inline virtual const std::string HandlerName() const override
@@ -82,7 +81,7 @@ namespace sfml_util
             return PopupStageBase::HandlerName();
         }
 
-        bool HandleCallback(const gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
         
         using PopupStageBase::HandleCallback;
 
@@ -119,9 +118,9 @@ namespace sfml_util
         static const float WARNING_DURATION_SEC_;
 
         game::song::SongPtr_t currentSongPtr_;
-        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        gui::ListBoxSPtr_t listBoxSPtr_;
+        sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
+        sfml_util::gui::ListBoxSPtr_t listBoxSPtr_;
         FadeState fadeState_;
         sf::Texture playerTexture_;
         sf::Sprite playerSprite_;
@@ -133,25 +132,25 @@ namespace sfml_util
         sf::Color textColorCurrent_;
         sf::Color textColorBegin_;
         sf::Color textColorEnd_;
-        sliders::ZeroSliderOnce<float> colorSlider_;
-        gui::TextRegionUPtr_t songTitleTextRegionUPtr_;
-        gui::TextRegionUPtr_t songDetailsTextUPtr_;
-        gui::TextRegionUPtr_t songUnableTextUPtr_;
-        gui::TextRegionUPtr_t songDescTextUPtr_;
+        sfml_util::sliders::ZeroSliderOnce<float> colorSlider_;
+        sfml_util::gui::TextRegionUPtr_t songTitleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t songDetailsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t songUnableTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t songDescTextUPtr_;
         sf::Texture songTexture_;
         sf::Sprite songSprite_;
         bool willShowUnableText_;
         float warningTimerSec_;
-        ColorShaker warnColorShaker_;
+        sfml_util::ColorShaker warnColorShaker_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
         const sf::Color LISTBOX_COLOR_BG_;
-        const gui::ColorSet LISTBOX_COLORSET_;
-        gui::BackgroundInfo LISTBOX_BG_INFO_;
-        gui::TextInfo listBoxItemTextInfo_;
+        const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
+        sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
+        sfml_util::gui::TextInfo listBoxItemTextInfo_;
     };
 
 }
 
-#endif //SFMLUTIL_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#endif //POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED

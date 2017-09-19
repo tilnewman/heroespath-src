@@ -25,59 +25,39 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// response-enum.cpp
+// which-popup-enum.cpp
 //
-#include "response-enum.hpp"
+#include "which-popup-enum.hpp"
+
 #include <exception>
 #include <sstream>
 
 
-namespace sfml_util
+namespace popup
 {
 
-    const std::string Response::ToString(const Response::Enum E)
+    const std::string Popup::ToString(const Popup::Enum E)
     {
         switch (E)
         {
-            case Okay:     { return "Okay";     }
-            case Continue: { return "Continue"; }
-            case Yes:      { return "Yes";      }
-            case No:       { return "No";       }
-            case Cancel:   { return "Cancel";   }
-            case Select:   { return "Select";   }
-            case Error:
+            case Generic:                       { return "Generic"; }
+            case ResolutionChange:              { return "ResolutionChange"; }
+            case ImageSelection:                { return "ImageSelection"; }
+            case ImageFade:                     { return "ImageFade"; }
+            case ContentSelectionWithItem:      { return "ContentSelectionWithItem"; }
+            case ContentSelectionWithoutItem:   { return "ContentSelectionWithoutItem"; }
+            case CharacterSelection:            { return "CharacterSelection"; }
+            case NumberSelection:               { return "NumberSelection"; }
+            case Spellbook:                     { return "Spellbook"; }
+            case MusicSheet:                    { return "MusicSheet"; }
+            case CombatOver:                    { return "CombatOver"; }
+            case SystemError:                   { return "SystemError"; }
+            case ItemProfilePleaseWait:         { return "ItemProfilePleaseWait"; }
+            case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Response::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-
-    bool Response::IsValid(const Response::Enum E)
-    {
-        const unsigned MAX(None | Okay | Continue | Yes | No | Cancel | Select);
-        return (static_cast<unsigned>(E) <= MAX);
-    }
-
-
-    bool Response::IsAffirmative(const Response::Enum E)
-    {
-        switch (E)
-        {
-            case Okay:
-            case Continue:
-            case Yes:
-            case Select:    { return true;  }
-            case No:
-            case Cancel:    { return false; }
-            case Error:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::Response::IsAffirmative(" << E << ")_InvalidValueError.";
+                ss << "popup::Popup::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
