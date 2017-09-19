@@ -35,8 +35,6 @@
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 
 #include <memory>
 #include <queue>
@@ -45,22 +43,6 @@
 #include <utility>
 
 
-//forward declarations
-namespace game
-{
-namespace spell
-{
-    class Spell;
-    using SpellPtr_t = Spell *;
-    using SpellPtrC_t = Spell * const;
-}
-namespace song
-{
-    class Song;
-    using SongPtr_t = Song *;
-    using SongPtrC_t = Song * const;
-}
-}
 namespace sfml_util
 {
 
@@ -75,25 +57,13 @@ namespace sfml_util
     class PopupStage
     :
         public PopupStageBase,
-        public gui::callback::ITextEntryBoxCallbackHandler_t,
-        public gui::callback::IListBoxCallbackHandler
+        public gui::callback::ITextEntryBoxCallbackHandler_t
     {
         //prevent copy construction
         PopupStage(const PopupStage &) =delete;
 
         //prevent copy assignment
         PopupStage & operator=(const PopupStage &) =delete;
-
-        //defines what is happening on the spellbook popup
-        enum class FadeState
-        {
-            Initial = 0,
-            Waiting,
-            FadingOut,
-            FadingIn,
-            Warning,
-            Count
-        };
 
     public:
         explicit PopupStage(const game::PopupInfo & POPUP_INFO);
@@ -108,7 +78,6 @@ namespace sfml_util
         virtual bool HandleCallback(const gui::callback::SliderBarCallbackPackage_t &) override;
         using PopupStageBase::HandleCallback;
         bool HandleCallback(const gui::callback::TextEntryBoxCallbackPackage_t &) override;
-        bool HandleCallback(const gui::callback::ListBoxEventPackage &) override;
         
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -125,51 +94,28 @@ namespace sfml_util
         //returns true of the select number is valid
         bool ProcessSelectNumber();
 
-        void SetupMusicSheetPageRightText(const game::song::SongPtrC_t);
-        void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
-        
-        void SetupSpellbookPageRightForFadeIn();
-        void SetSpellbookPageRightColors();
-
-        bool DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t) const;
-        bool CanPlaySongInPhase(const game::song::SongPtrC_t) const;
-        bool CanPlaySong(const game::song::SongPtrC_t) const;
-        bool HandleSongPlay();
-        
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
-
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
-
         void ItemProfileSetup();
-
-        virtual void SetupOuterAndInnerRegion() override;
 
         void SetupNumberSelectionPopup();
         void SetupCharacterSelectionPopup();
         void SetupImageSelectionPopup();
         void SetupImageFadePopup();
-        void SetupMusicSheetPopup();
         void SetupCombatOverPopup();
         void SetupSystemErrorPopup();
 
     private:
-        static const float     MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
-        static const float     IMAGE_SLIDER_SPEED_;
-        static const int       NUMBER_SELECT_INVALID_;
-        static const float     BEFORE_FADE_STARTS_DELAY_SEC_;
-        static const float     SPELLBOOK_COLOR_FADE_SPEED_;
-        static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
-        static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
-        static const float     SPELL_WARNING_DURATION_SEC_;
-
+        static const float IMAGE_SLIDER_SPEED_;
+        static const int NUMBER_SELECT_INVALID_;
+        static const float BEFORE_FADE_STARTS_DELAY_SEC_;
+        
         //members that support multiple popups
-        gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
-        gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
-        gui::ListBoxSPtr_t      listBoxSPtr_;
-
+        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        
         //members that support the resoution change popup
-        float                  elapsedTimeCounter_;
-        std::size_t            secondCounter_;
+        float elapsedTimeCounter_;
+        std::size_t secondCounter_;
         
         //members supporting the image select sliderbar
         bool willSliderbarUpdate_;
@@ -178,7 +124,7 @@ namespace sfml_util
         sf::Texture texturePrev_;
 
         //number selection members
-        gui::TextRegionUPtr_t   infoTextRegionUPtr_;
+        gui::TextRegionUPtr_t infoTextRegionUPtr_;
         gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
 
         //members needed to animate image select
@@ -209,40 +155,6 @@ namespace sfml_util
         //POPUP_INFO_.Images() holds the two sf::Textures of the two fading images
         float beforeFadeTimerSec_;
         float fadeAlpha_;
-
-        //members supporting the music sheet popupp
-        FadeState fadeState_;
-        sf::Texture playerTexture_;
-        sf::Sprite playerSprite_;
-        sf::FloatRect pageRectLeft_;
-        sf::FloatRect pageRectRight_;
-        sf::Color spellColorImageCurrent_;
-        sf::Color spellColorImageStart_;
-        sf::Color spellColorImageEnd_;
-        sf::Color spellColorTextCurrent_;
-        sf::Color spellColorTextStart_;
-        sf::Color spellColorTextEnd_;
-        sliders::ZeroSliderOnce<float> spellColorSlider_;
-        gui::TextRegionUPtr_t spellTitleTextRegionUPtr_;
-        gui::TextRegionUPtr_t spellDetailsTextUPtr_;
-        gui::TextRegionUPtr_t spellUnableTextUPtr_;
-        gui::TextRegionUPtr_t spellDescTextUPtr_;
-        sf::Texture spellTexture_;
-        sf::Sprite spellSprite_;
-        bool spellUnableTextWillShow_;
-        float spellWarningTimerSec_;
-        ColorShaker spellWarnColorShaker_;
-        const sf::Color LISTBOX_IMAGE_COLOR_;
-        const sf::Color LISTBOX_LINE_COLOR_;
-        const sf::Color LISTBOX_COLOR_FG_;
-        const sf::Color LISTBOX_COLOR_BG_;
-        const gui::ColorSet LISTBOX_COLORSET_;
-        gui::BackgroundInfo LISTBOX_BG_INFO_;
-        gui::TextInfo listBoxItemTextInfo_;
-
-        //members supporting song selection
-        //Note:  Many spell members are re-used
-        game::song::SongPtr_t songCurrentPtr_;
 
         //members supporting CombatOver
         sf::Texture combatBgTexture_;

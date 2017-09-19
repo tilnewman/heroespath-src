@@ -264,8 +264,8 @@ namespace sfml_util
             return true;
         }
         else if ((FadeState::Waiting == fadeState_) &&
-                    ((KEY_EVENT.code == sf::Keyboard::Return) ||
-                    (KEY_EVENT.code == sf::Keyboard::C)))
+                 ((KEY_EVENT.code == sf::Keyboard::Return) ||
+                  (KEY_EVENT.code == sf::Keyboard::C)))
         {
             return HandleSpellCast();
         }

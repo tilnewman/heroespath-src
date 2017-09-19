@@ -40,6 +40,7 @@
 #include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/popup-stage-spellbook.hpp"
+#include "sfml-util/popup-stage-musicsheet.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
@@ -2586,7 +2587,9 @@ namespace stage
                     turnCreaturePtr_,
                     turnCreaturePtr_->LastSongPlayedNum()) };
 
-            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            LoopManager::Instance()->
+                PopupWaitBeginSpecific<sfml_util::PopupStageMusicSheet>(this, POPUP_INFO);
+
             return true;
         }
     }

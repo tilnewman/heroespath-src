@@ -698,7 +698,7 @@ namespace sfml_util
             case PopupImage::MusicSheet:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupStageBase::SetupBackgroundImageRect("
+                ss << "sfml_util::PopupStageBase::BackgroundImageRect("
                     << PI << ") was given Spellbook or MusicSheet, which are fullscreen"
                     << " popups and have no rects to setup.";
 
@@ -709,7 +709,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupStageBase::SetupBackgroundImageRect("
+                ss << "sfml_util::PopupStageBase::BackgroundImageRect("
                     << PI << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
