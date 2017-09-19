@@ -94,23 +94,31 @@ namespace sfml_util
         virtual void SetupOuterAndInnerRegion() override;
 
     private:
-        void SetupMusicSheetPageRightText(const game::song::SongPtrC_t);
-        void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
-        void SetupSpellbookPageRightForFadeIn();
-        void SetSpellbookPageRightColors();
+        void SetupRegions();
+        void SetupLeftAccentImage();
+        void SetupRightAccentImage();
+        void SetupPlayerImage();
+        void SetupPlayerDetailsText();
+        void SetupListboxLabelText();
+        void SetupListbox();
+
+        void SetupPageRightText(const game::song::SongPtrC_t);
+        void MovePageRightColors(const float ELAPSED_TIME_SECONDS);
+        void SetupPageRightForFadeIn();
+        void SetPageRightColors();
         bool DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t) const;
         bool CanPlaySongInPhase(const game::song::SongPtrC_t) const;
         bool CanPlaySong(const game::song::SongPtrC_t) const;
         bool HandleSongPlay();
 
     private:
-        static const float MUSICSHEET_POPUP_BACKGROUND_WIDTH_RATIO_;
-        static const float SPELLBOOK_COLOR_FADE_SPEED_;
-        static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
-        static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
-        static const float SPELL_WARNING_DURATION_SEC_;
+        static const float BACKGROUND_WIDTH_RATIO_;
+        static const float COLOR_FADE_SPEED_;
+        static const sf::Color UNABLE_TEXT_COLOR_;
+        static const sf::Uint8 IMAGE_ALPHA_;
+        static const float WARNING_DURATION_SEC_;
 
-        game::song::SongPtr_t songCurrentPtr_;
+        game::song::SongPtr_t currentSongPtr_;
         gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
         gui::ListBoxSPtr_t listBoxSPtr_;
@@ -119,22 +127,22 @@ namespace sfml_util
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
-        sf::Color spellColorImageCurrent_;
-        sf::Color spellColorImageStart_;
-        sf::Color spellColorImageEnd_;
-        sf::Color spellColorTextCurrent_;
-        sf::Color spellColorTextStart_;
-        sf::Color spellColorTextEnd_;
-        sliders::ZeroSliderOnce<float> spellColorSlider_;
-        gui::TextRegionUPtr_t spellTitleTextRegionUPtr_;
-        gui::TextRegionUPtr_t spellDetailsTextUPtr_;
-        gui::TextRegionUPtr_t spellUnableTextUPtr_;
-        gui::TextRegionUPtr_t spellDescTextUPtr_;
-        sf::Texture spellTexture_;
-        sf::Sprite spellSprite_;
-        bool spellUnableTextWillShow_;
-        float spellWarningTimerSec_;
-        ColorShaker spellWarnColorShaker_;
+        sf::Color imageColorCurrent_;
+        sf::Color imageColorBegin_;
+        sf::Color imageColorEnd_;
+        sf::Color textColorCurrent_;
+        sf::Color textColorBegin_;
+        sf::Color textColorEnd_;
+        sliders::ZeroSliderOnce<float> colorSlider_;
+        gui::TextRegionUPtr_t songTitleTextRegionUPtr_;
+        gui::TextRegionUPtr_t songDetailsTextUPtr_;
+        gui::TextRegionUPtr_t songUnableTextUPtr_;
+        gui::TextRegionUPtr_t songDescTextUPtr_;
+        sf::Texture songTexture_;
+        sf::Sprite songSprite_;
+        bool willShowUnableText_;
+        float warningTimerSec_;
+        ColorShaker warnColorShaker_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;

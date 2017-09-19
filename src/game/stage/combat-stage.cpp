@@ -2568,8 +2568,8 @@ namespace stage
 
     bool CombatStage::HandleSong_Step1_ValidatePlayAndSelectSong()
     {
-        auto const MOUSEOVER_STR( combat::Text::MouseOverTextPlayStr(turnCreaturePtr_,
-                                                                     combatDisplayStagePtr_) );
+        auto const MOUSEOVER_STR( combat::Text::MouseOverTextPlayStr(
+            turnCreaturePtr_, combatDisplayStagePtr_) );
 
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
         {
