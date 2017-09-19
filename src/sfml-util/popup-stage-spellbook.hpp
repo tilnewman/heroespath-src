@@ -92,25 +92,30 @@ namespace sfml_util
         
         virtual void SetupOuterAndInnerRegion() override;
 
-        inline std::size_t CurrentSelection() const { return imageIndex_; }
+        void SetupRegions();
+        void SetupLeftAccentImage();
+        void SetupRightAccentImage();
+        void SetupPlayerImage();
+        void SetupPlayerDetailsText();
+        void SetupSpellListboxLabel();
+        void SetupSpellListbox();
 
-        void SetSpellbookPageRightColors();
-        void SetupSpellbookPageRightForFadeIn();
-        void MoveSpellbookPageRightColors(const float ELAPSED_TIME_SECONDS);
-        void SetupSpellbookPageRightText(const game::spell::SpellPtrC_t);
+        void SetPageRightColors();
+        void SetupPageRightForFadeIn();
+        void AdjustPageRightColors(const float ELAPSED_TIME_SECONDS);
+        void SetupPageRightText(const game::spell::SpellPtrC_t);
         bool DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t) const;
         bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
         bool CanCastSpell(const game::spell::SpellPtrC_t) const;
         bool HandleSpellCast();
 
     private:
-        static const float     SPELLBOOK_POPUP_BACKGROUND_WIDTH_RATIO_;
-        static const float     SPELLBOOK_COLOR_FADE_SPEED_;
-        static const sf::Uint8 SPELLBOOK_IMAGE_ALPHA_;
-        static const sf::Color SPELL_UNABLE_TEXT_COLOR_;
-        static const float     SPELL_WARNING_DURATION_SEC_;
+        static const float     BACKGROUND_WIDTH_RATIO_;
+        static const float     COLOR_FADE_SPEED_;
+        static const sf::Uint8 SPELL_IMAGE_ALPHA_;
+        static const sf::Color UNABLE_TEXT_COLOR_;
+        static const float     WARNING_DURATION_SEC_;
 
-        std::size_t             imageIndex_;
         FadeState               fadeState_;
         sf::Texture             playerTexture_;
         sf::Sprite              playerSprite_;
@@ -130,19 +135,19 @@ namespace sfml_util
         sf::Sprite              spellSprite_;
         gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
         gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
-        gui::TextRegionUPtr_t   spellUnableTextUPtr_;
+        gui::TextRegionUPtr_t   unableTextUPtr_;
         gui::TextRegionUPtr_t   spellDescTextUPtr_;
-        game::spell::SpellPtr_t spellCurrentPtr_;
-        sf::Color               spellColorImageCurrent_;
-        sf::Color               spellColorImageStart_;
-        sf::Color               spellColorImageEnd_;
-        sf::Color               spellColorTextCurrent_;
-        sf::Color               spellColorTextStart_;
-        sf::Color               spellColorTextEnd_;
-        bool                    spellUnableTextWillShow_;
-        float                   spellWarningTimerSec_;
-        ColorShaker             spellWarnColorShaker_;
-        sliders::ZeroSliderOnce<float> spellColorSlider_;
+        game::spell::SpellPtr_t currentSpellPtr_;
+        sf::Color               imageColorCurrent_;
+        sf::Color               imageColorBegin_;
+        sf::Color               imageColorEnd_;
+        sf::Color               textColorCurrent_;
+        sf::Color               textColorBegin_;
+        sf::Color               textColorEnd_;
+        bool                    unableTextWillShow_;
+        float                   warningTimerSec_;
+        ColorShaker             warnColorShaker_;
+        sliders::ZeroSliderOnce<float> colorSlider_;
     };
 
 }
