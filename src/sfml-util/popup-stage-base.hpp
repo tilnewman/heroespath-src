@@ -77,6 +77,8 @@ namespace sfml_util
 
         virtual void SetupOuterAndInnerRegion();
 
+        void SetupFullscreenRegionsAndBackgroundImage(const sf::FloatRect &);
+
     private:
         void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();
@@ -86,6 +88,7 @@ namespace sfml_util
         void SetupGradient();
         void SetupAccentSprite();
         void SetupSliderbar();
+        void SetupRedXImage();
 
         const sf::IntRect BackgroundImageRect(
             const sfml_util::PopupImage::Enum PI,
@@ -114,11 +117,15 @@ namespace sfml_util
         sf::Sprite accentSprite2_;
         float sliderbarPosTop_;
         int selection_;
+        sf::Sprite xSymbolSprite_;
+        bool willShowXImage_;
+
     private:
         gui::box::Box box_;
         GradientRect gradient_;
         float buttonTextHeight_;
         float buttonVertPos_;
+        sf::Texture xSymbolTexture_;
     };
 
 }

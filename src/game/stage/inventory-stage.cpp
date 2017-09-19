@@ -36,6 +36,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/song-animation.hpp"
+#include "sfml-util/popup-stage-spellbook.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -3753,7 +3754,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                         creaturePtr_,
                         creaturePtr_->LastSpellCastNum()) };
 
-                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                LoopManager::Instance()->
+                    PopupWaitBeginSpecific<sfml_util::PopupStageSpellbook>(this, POPUP_INFO);
             }
             else
             {

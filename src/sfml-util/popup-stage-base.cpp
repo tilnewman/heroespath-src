@@ -31,6 +31,7 @@
 
 #include "game/loop-manager.hpp"
 #include "game/creature/name-info.hpp"
+#include "game/game-data-file.hpp"
 
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/popup-manager.hpp"
@@ -68,15 +69,20 @@ namespace sfml_util
         accentSprite2_(),
         sliderbarPosTop_(0.0f),
         selection_(-1),//any negative value will work here
+        xSymbolSprite_(),
+        willShowXImage_(false),
         box_("PopupWindow's", gui::box::Info()),
         gradient_(),
         buttonTextHeight_(0.0f),
-        buttonVertPos_(0.0f)
+        buttonVertPos_(0.0f),
+        xSymbolTexture_()
     {}
 
 
     PopupStageBase::~PopupStageBase()
-    {}
+    {
+        ClearAllEntities();
+    }
 
 
     bool PopupStageBase::HandleCallback(
@@ -148,6 +154,7 @@ namespace sfml_util
         SetupGradient();
         SetupAccentSprite();
         SetupSliderbar();
+        SetupRedXImage();
     }
 
 
@@ -169,6 +176,11 @@ namespace sfml_util
         }
 
         textRegionUPtr_->draw(target, STATES);
+
+        if (willShowXImage_)
+        {
+            target.draw(xSymbolSprite_, STATES);
+        }
     }
 
 
@@ -358,6 +370,19 @@ namespace sfml_util
             BACKGROUND_POS_TOP,
             BACKGROUND_WIDTH,
             BACKGROUND_HEIGHT));
+    }
+
+
+    void PopupStageBase::SetupFullscreenRegionsAndBackgroundImage(
+        const sf::FloatRect & REGION)
+    {
+        StageRegionSet(REGION);
+        innerRegion_ = REGION;
+
+        auto const SCALE{
+            REGION.width / static_cast<float>(backgroundTexture_.getSize().x) };
+
+        backgroundSprite_.setScale(SCALE, SCALE);
     }
 
 
@@ -553,7 +578,6 @@ namespace sfml_util
         gradient_.Setup(
             GRADIENT_RECT,
             GradientInfo(sf::Color::Black, 0, Side::Top, sf::Color(0, 0, 0, 20)));
-
     }
 
 
@@ -619,6 +643,18 @@ namespace sfml_util
 
             EntityAdd(sliderbarUPtr_.get());
         }
+    }
+
+
+    void PopupStageBase::SetupRedXImage()
+    {
+        sfml_util::LoadTexture(xSymbolTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
+
+        xSymbolSprite_.setTexture(xSymbolTexture_);
+
+        //this color found by experiment to look good on all popups
+        xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
     }
 
 
