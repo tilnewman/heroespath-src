@@ -68,19 +68,15 @@ namespace sfml_util
         LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190)),
         LISTBOX_LINE_COLOR_(sfml_util::FontManager::Color_GrayDark()),
         LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_),
-
-        LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() -
-            sf::Color(100, 100, 100, 220)),
-
+        LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220)),
         LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
         LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_),
-
-        listBoxItemTextInfo_(" ",
+        listBoxItemTextInfo_(
+            " ",
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left),
-
         spellTexture_(),
         spellSprite_(),
         spellTitleTextRegionUPtr_(),
@@ -585,18 +581,14 @@ namespace sfml_util
         auto const IMAGE_ALPHA_NEW{ static_cast<sf::Uint8>(IMAGE_ALPHA_DIFF * RATIO_COMPLETE) };
         imageColorCurrent_.a = IMAGE_ALPHA_NEW;
 
+        imageColorCurrent_.r = imageColorCurrent_.g = imageColorCurrent_.b = 255;
+
         auto const TEXT_ALPHA_DIFF{
             static_cast<float>(textColorEnd_.a - textColorBegin_.a) };
 
         auto const TEXT_ALPHA_NEW{ static_cast<sf::Uint8>(TEXT_ALPHA_DIFF * RATIO_COMPLETE) };
         textColorCurrent_.a = TEXT_ALPHA_NEW;
 
-        //Note: rgb values are all the same between imageColorCurrent_ and
-        //      spellColorImageTarget_ and are always full/white.
-        imageColorCurrent_.r = imageColorCurrent_.g = imageColorCurrent_.b = 255;
-
-        //Note: rgb values are all the same between textColorCurrent_ and
-        //      spellColorTextTarget_ and are always black.
         textColorCurrent_.r = textColorCurrent_.g = textColorCurrent_.b = 0;
     }
 
