@@ -36,8 +36,6 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/song-animation.hpp"
-#include "popup/popup-stage-spellbook.hpp"
-#include "popup/popup-stage-musicsheet.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -45,6 +43,10 @@
 #include "sfml-util/gui/title-image-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/box.hpp"
+
+#include "popup/popup-stage-spellbook.hpp"
+#include "popup/popup-stage-musicsheet.hpp"
+#include "popup/popup-stage-char-select.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/game.hpp"
@@ -2056,14 +2058,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
                 actionType_ = ActionType::Drop;
 
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->
-                    CreatePopupInfo(
-                        POPUP_NAME_DROPCONFIRM_,
-                        "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
-                        popup::PopupButtons::YesNo,
-                        popup::PopupImage::Regular,
-                        sfml_util::Justified::Center,
-                        sfml_util::sound_effect::PromptQuestion) };
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_DROPCONFIRM_,
+                    "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Regular,
+                    sfml_util::Justified::Center,
+                    sfml_util::sound_effect::PromptQuestion) };
 
                 LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 isWaitingOnPopup_ = true;
@@ -2728,26 +2729,28 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_,
             PROMPT_TEXT,
             invalidTextVec,
             sfml_util::FontManager::Instance()->Size_Smallish()) };
 
-        LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
+            this, POPUP_INFO);
+
         isWaitingOnPopup_ = true;
     }
 
 
-    void InventoryStage::PopupRejectionWindow(const std::string & REJECTION_PROMPT_TEXT,
-                                              const bool WILL_USE_REGULAR_SIZE_POPUP)
+    void InventoryStage::PopupRejectionWindow(
+        const std::string & REJECTION_PROMPT_TEXT,
+        const bool WILL_USE_REGULAR_SIZE_POPUP)
     {
         auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
             REJECTION_PROMPT_TEXT,
             popup::PopupButtons::Cancel,
-            ((WILL_USE_REGULAR_SIZE_POPUP) ?
-                popup::PopupImage::Regular : popup::PopupImage::Banner),
+            ((WILL_USE_REGULAR_SIZE_POPUP) ? popup::PopupImage::Regular : popup::PopupImage::Banner),
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
             popup::Popup::Generic,

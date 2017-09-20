@@ -71,14 +71,12 @@ namespace popup
 {
 
     const int       PopupStage::NUMBER_SELECT_INVALID_          { -1 };//any negative
-    const float     PopupStage::IMAGE_SLIDER_SPEED_             { 4.0f };
     const float     PopupStage::BEFORE_FADE_STARTS_DELAY_SEC_   { 2.0f };
     
 
     PopupStage::PopupStage(const PopupInfo & POPUP_INFO)
     :
         PopupStageBase              (POPUP_INFO),
-        charDetailsTextRegionUPtr_  (),
         elapsedTimeCounter_         (0.0f),
         secondCounter_              (10),
         willSliderbarUpdate_        (true),
@@ -87,27 +85,8 @@ namespace popup
         texturePrev_                (),
         infoTextRegionUPtr_         (),
         textEntryBoxSPtr_           (),
-        isImageProcAllowed_         (false),
-        isInitialAnimation_         (true),
-        willShowImageCount_         (false),
         imageSpriteCurr_            (),
         imageSpritePrev_            (),
-        areImagesMoving_            (false),
-        areImagesMovingLeft_        (false),
-        imagesRect_                 (),
-        imageWrnTextRegionUPtr_     (),
-        imageNumTextRegionUPtr_     (),
-        imageIndex_                 (0),
-        imageIndexLastSoundOn_      (0),
-        imageIndexLastSoundOff_     (0),
-        imageCurrTargetScale_       (1.0f),
-        imagePrevStartScale_        (1.0f),
-        imagePrevStartPosX_         (0.0f),
-        imageCurrTravelDist_        (0.0f),
-        imagePrevTravelDist_        (0.0f),
-        imageMoveQueue_             (),
-        imageSlider_                (IMAGE_SLIDER_SPEED_),
-        imagePosTop_                (0.0f),
         beforeFadeTimerSec_         (0.0f),
         fadeAlpha_                  (0.0f),
         combatBgTexture_            (),
@@ -125,31 +104,7 @@ namespace popup
     bool PopupStage::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((popupInfo_.Type() == Popup::ImageSelection) ||
-            (popupInfo_.Type() == Popup::CharacterSelection))
-        {
-            if (isImageProcAllowed_)
-            {
-                auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
-                    game::Game::Instance()->State().Party().Characters().size() :
-                    popupInfo_.ImagesCount()) };
-
-                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f / static_cast<float>(COUNT));
-
-                std::size_t index(static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() /
-                    SINGLE_IMAGE_SLIDER_WIDTH_RATIO));
-
-                if (index >= COUNT)
-                {
-                    index = COUNT - 1;
-                }
-
-                imageMoveQueue_.push(index);
-            }
-
-            return true;
-        }
-        else if ((popupInfo_.Type() == Popup::NumberSelection))
+        if ((popupInfo_.Type() == Popup::NumberSelection))
         {
             const float CURR_RATIO(PACKAGE.PTR_->GetCurrentValue());
 
@@ -179,6 +134,8 @@ namespace popup
                 willTextBoxUpdate_ = true;
                 SetupInfoText("");
             }
+
+            return true;
         }
 
         return false;
@@ -215,14 +172,6 @@ namespace popup
         {
             SetupNumberSelectionPopup();
         }
-        if (popupInfo_.Type() == Popup::CharacterSelection)
-        {
-            SetupCharacterSelectionPopup();
-        }
-        else if (popupInfo_.Type() == Popup::ImageSelection)
-        {
-            SetupImageSelectionPopup();
-        }
         else if (popupInfo_.Type() == Popup::ImageFade)
         {
             SetupImageFadePopup();
@@ -253,22 +202,7 @@ namespace popup
             }
         }
 
-        if ((popupInfo_.Type() == Popup::ImageSelection) ||
-            (popupInfo_.Type() == Popup::CharacterSelection))
-        {
-            target.draw(imageSpriteCurr_, STATES);
-
-            if (areImagesMoving_ && (false == isInitialAnimation_))
-            {
-                target.draw(imageSpritePrev_, STATES);
-            }
-
-            if (willShowImageCount_ && (imageNumTextRegionUPtr_.get() != nullptr))
-            {
-                imageNumTextRegionUPtr_->draw(target, STATES);
-            }
-        }
-        else if (popupInfo_.Type() == Popup::ImageFade)
+        if (popupInfo_.Type() == Popup::ImageFade)
         {
             if (popupInfo_.Images().size() > 1)
             {
@@ -289,11 +223,6 @@ namespace popup
         {
             //The SystemError popup uses CombatOver popup's texture and sprite.
             target.draw(combatBgSprite_, STATES);
-        }
-
-        if (popupInfo_.Type() == Popup::CharacterSelection)
-        {
-            charDetailsTextRegionUPtr_->draw(target, STATES);
         }
 
         Stage::Draw(target, STATES);
@@ -329,104 +258,6 @@ namespace popup
                 {
                     game::LoopManager::Instance()->PopupWaitEnd(Response::No);
                 }
-            }
-        }
-
-        if (areImagesMoving_ || (imageMoveQueue_.empty() == false))
-        {
-            float currRatio(0.0f);
-
-            if (areImagesMoving_)
-            {
-                currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
-                areImagesMoving_ = ! imageSlider_.GetIsDone();
-
-                if (false == areImagesMoving_)
-                {
-                    if (popupInfo_.Type() == Popup::CharacterSelection)
-                    {
-                        SetupCharacterSelectDetailText(false);
-                        SetupCharacterSelectionRejectImage(false);
-                    }
-
-                    willShowImageCount_ = true;
-
-                    if (imageIndexLastSoundOff_ != imageIndex_)
-                    {
-                        sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::TickOff).PlayRandom();
-                    }
-
-                    imageIndexLastSoundOff_ = imageIndex_;
-                }
-
-                if (isInitialAnimation_)
-                {
-                    isInitialAnimation_ = areImagesMoving_;
-                }
-            }
-
-            if ((false == areImagesMoving_) && (imageMoveQueue_.empty() == false))
-            {
-                areImagesMoving_ = true;
-                willShowImageCount_ = false;
-
-                if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
-                {
-                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                        sfml_util::sound_effect_set::TickOn).PlayRandom();
-                }
-
-                imageIndexLastSoundOn_ = imageMoveQueue_.front();
-
-                SetupSelectImage(imageMoveQueue_.front(),
-                    IMAGE_SLIDER_SPEED_ + ((static_cast<float>(imageMoveQueue_.size()) * 0.25f)));
-
-                imageMoveQueue_.pop();
-                currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
-
-                if (popupInfo_.Type() == Popup::CharacterSelection)
-                {
-                    SetupCharacterSelectDetailText(true);
-                    SetupCharacterSelectionRejectImage(true);
-                }
-            }
-
-            const float CURR_SCALE(imageCurrTargetScale_ * currRatio);
-            imageSpriteCurr_.setScale(CURR_SCALE, CURR_SCALE);
-
-            const float PREV_SCALE(imagePrevStartScale_ * (1.0f - currRatio));
-            imageSpritePrev_.setScale(PREV_SCALE, PREV_SCALE);
-
-            const float CURR_POS_TOP(imagePosTop_ -
-                (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
-
-            const float PREV_POS_TOP(imagePosTop_ -
-                (imageSpritePrev_.getGlobalBounds().height * 0.5f));
-
-            if (willShowImageCount_)
-            {
-                imageNumTextRegionUPtr_->SetEntityPos(imageNumTextRegionUPtr_->GetEntityPos().x,
-                    CURR_POS_TOP - imageNumTextRegionUPtr_->GetEntityRegion().height);
-            }
-
-            if (areImagesMovingLeft_)
-            {
-                const float CURR_POS_LEFT((imagesRect_.left + imagesRect_.width) -
-                    (currRatio * imageCurrTravelDist_));
-
-                imageSpriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
-
-                const float PREV_POS_LEFT(imagePrevStartPosX_ - (currRatio * imagePrevTravelDist_));
-                imageSpritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
-            }
-            else
-            {
-                const float CURR_POS_LEFT(imagesRect_.left + (currRatio * imageCurrTravelDist_));
-                imageSpriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
-
-                const float PREV_POS_LEFT(imagePrevStartPosX_ + (currRatio * imagePrevTravelDist_));
-                imageSpritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
             }
         }
 
@@ -529,308 +360,13 @@ namespace popup
             }
         }
 
-        if (((popupInfo_.Type() == Popup::ImageSelection) ||
-            (popupInfo_.Type() == Popup::CharacterSelection)) &&
-            ((KEY_EVENT.code == sf::Keyboard::Left) ||
-             (KEY_EVENT.code == sf::Keyboard::Right) ||
-             ((KEY_EVENT.code >= sf::Keyboard::Num1) && (KEY_EVENT.code <= sf::Keyboard::Num9))))
-        {
-            auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
-                game::Game::Instance()->State().Party().Characters().size() :
-                popupInfo_.ImagesCount()) };
-
-            if ((KEY_EVENT.code >= sf::Keyboard::Num1) && (KEY_EVENT.code <= sf::Keyboard::Num9))
-            {
-                std::size_t targetIndex{ 0 };
-                if      (KEY_EVENT.code == sf::Keyboard::Num2) targetIndex = 1;
-                else if (KEY_EVENT.code == sf::Keyboard::Num3) targetIndex = 2;
-                else if (KEY_EVENT.code == sf::Keyboard::Num4) targetIndex = 3;
-                else if (KEY_EVENT.code == sf::Keyboard::Num5) targetIndex = 4;
-                else if (KEY_EVENT.code == sf::Keyboard::Num6) targetIndex = 5;
-                else if (KEY_EVENT.code == sf::Keyboard::Num7) targetIndex = 6;
-                else if (KEY_EVENT.code == sf::Keyboard::Num8) targetIndex = 7;
-                else if (KEY_EVENT.code == sf::Keyboard::Num9) targetIndex = 8;
-
-                if ((imageIndex_ == targetIndex) ||
-                    (targetIndex > (COUNT - 1)))
-                {
-                    return false;
-                }
-
-                const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
-                    static_cast<float>(COUNT));
-
-                isImageProcAllowed_ = false;
-                sliderbarUPtr_->SetCurrentValue(static_cast<float>(targetIndex) *
-                    SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
-                isImageProcAllowed_ = true;
-
-                std::size_t i{ imageIndex_ };
-                while(true)
-                {
-                    if (targetIndex < imageIndex_)
-                    {
-                        imageMoveQueue_.push(--i);
-                    }
-                    else
-                    {
-                        imageMoveQueue_.push(++i);
-                    }
-
-                    if (i == targetIndex)
-                    {
-                        break;
-                    }
-                }
-
-                return true;
-            }
-            else if (KEY_EVENT.code == sf::Keyboard::Left)
-            {
-                if (imageIndex_ > 0)
-                {
-                    const std::size_t NEW_INDEX(imageIndex_ - 1);
-
-                    const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
-                        static_cast<float>(COUNT));
-
-                    isImageProcAllowed_ = false;
-                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NEW_INDEX) *
-                        SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
-                    isImageProcAllowed_ = true;
-
-                    imageMoveQueue_.push(NEW_INDEX);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (KEY_EVENT.code == sf::Keyboard::Right)
-            {
-                if (imageIndex_ < (COUNT - 1))
-                {
-                    const std::size_t NEW_INDEX(imageIndex_ + 1);
-
-                    const float SINGLE_IMAGE_SLIDER_WIDTH_RATIO(1.0f /
-                        static_cast<float>(COUNT));
-
-                    isImageProcAllowed_ = false;
-                    sliderbarUPtr_->SetCurrentValue(static_cast<float>(NEW_INDEX) *
-                        SINGLE_IMAGE_SLIDER_WIDTH_RATIO);
-                    isImageProcAllowed_ = true;
-
-                    //if already at the end, then make sure the sliderbar is
-                    //all the way to the right
-                    if (NEW_INDEX >= (COUNT - 1))
-                    {
-                        //prevent processing and adding to the imageMoveQueue_ or calling
-                        //SetupSelectImage() when setting the sliderbar value here.
-                        isImageProcAllowed_ = false;
-                        sliderbarUPtr_->SetCurrentValue(1.0f);
-                        isImageProcAllowed_ = true;
-                    }
-
-                    imageMoveQueue_.push(NEW_INDEX);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        if (popupInfo_.Type() == Popup::CharacterSelection)
-        {
-            if ((KEY_EVENT.code == sf::Keyboard::Num1) && (popupInfo_.IsNumberValid(0)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-                
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 0);
-                return true;
-            }
-            else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (popupInfo_.IsNumberValid(1)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-                
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 1);
-                return true;
-            }
-            else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (popupInfo_.IsNumberValid(2)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-                
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 2);
-                return true;
-            }
-            else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (popupInfo_.IsNumberValid(3)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-                
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 3);
-                return true;
-            }
-            else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (popupInfo_.IsNumberValid(4)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-                
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 4);
-                return true;
-            }
-            else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (popupInfo_.IsNumberValid(5)))
-            {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Select, 5);
-                return true;
-            }
-        }
-
-        if ((popupInfo_.Buttons() & Response::Select) &&
+        if ((popupInfo_.Buttons() & PopupButtons::Select) &&
             (KEY_EVENT.code == sf::Keyboard::S))
         {
-            if (popupInfo_.Type() == Popup::CharacterSelection)
-            {
-                auto const TEXT{ popupInfo_.TextVec()[imageIndex_] };
-                if (TEXT.empty())
-                {
-                    selection_ = static_cast<int>(imageIndex_);
-                }
-                else
-                {
-                    selection_ = -1;//any negative value will work here
-                }
-            }
-
             return HandleSelect();
         }
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
-    }
-
-
-    void PopupStage::SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED)
-    {
-        if (false == isImageProcAllowed_)
-        {
-            return;
-        }
-
-        auto const COUNT{ ((popupInfo_.Type() == Popup::CharacterSelection) ?
-            game::Game::Instance()->State().Party().Characters().size() :
-            popupInfo_.ImagesCount()) };
-
-        std::size_t newIndex(NEW_IMAGE_INDEX);
-        if (newIndex >= COUNT)
-        {
-            newIndex = COUNT - 1;
-        }
-
-        if ((imageIndex_ != newIndex) || isInitialAnimation_)
-        {
-            areImagesMovingLeft_ = (imageIndex_ < newIndex);
-            imageIndex_ = newIndex;
-            selection_ = static_cast<int>(imageIndex_);
-
-            std::ostringstream ss;
-            ss << imageIndex_ + 1 << "/" << COUNT;
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::FontManager::Instance()->Font_Typical(),
-                sfml_util::FontManager::Instance()->Size_Smallish(),
-                PopupManager::Color_Font(),
-                sfml_util::Justified::Center);
-
-            sf::FloatRect imageCountTextRect(textRegion_);
-            imageCountTextRect.height = 0.0f;
-            imageNumTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "PopupStage'sSelectNumber", TEXT_INFO, imageCountTextRect);
-
-            imageSlider_.Reset(SLIDER_SPEED);
-
-            imageSpritePrev_ = imageSpriteCurr_;
-            texturePrev_ = textureCurr_;
-            imageSpritePrev_.setTexture(texturePrev_, true);
-
-            if (popupInfo_.Type() == Popup::CharacterSelection)
-            {
-                auto const CREATURE_PTR{
-                    game::Game::Instance()->State().Party().GetAtOrderPos(imageIndex_) };
-
-                sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                    textureCurr_,
-                    CREATURE_PTR->ImageFilename(),
-                    true);
-            }
-            else
-            {
-                textureCurr_ = popupInfo_.ImagesAt(imageIndex_);
-            }
-
-            if (popupInfo_.AreImagesCreatures())
-            {
-                sfml_util::Invert(textureCurr_);
-                sfml_util::Mask(textureCurr_, sf::Color::White);
-            }
-
-            imageSpriteCurr_.setTexture(textureCurr_, true);
-            imageSpriteCurr_.setScale(1.0f, 1.0f);
-
-            auto const POS_LEFT{ textRegion_.left +
-                ((areImagesMovingLeft_) ? textRegion_.width : 0.0f) };
-
-            auto const POS_TOP{ imagePosTop_ };
-
-            imageSpriteCurr_.setPosition(POS_LEFT, POS_TOP);
-
-            //establish target scale of new image
-            const float RESIZE_RATIO(0.8f);
-            const float SPRITE_TARGET_WIDTH(imagesRect_.width * RESIZE_RATIO);
-            const float SPRITE_TARGET_HEIGHT(imagesRect_.height * RESIZE_RATIO);
-            const float SCALE_HORIZ(SPRITE_TARGET_WIDTH / imageSpriteCurr_.getGlobalBounds().width);
-            const float SCALE_VERT(SPRITE_TARGET_HEIGHT / imageSpriteCurr_.getGlobalBounds().height);
-            imageCurrTargetScale_ = std::min(SCALE_HORIZ, SCALE_VERT);
-            imageSpriteCurr_.setScale(0.0f, 0.0f);
-
-            imagePrevStartScale_ = imageSpritePrev_.getScale().x;
-            imagePrevStartPosX_ = imageSpritePrev_.getPosition().x;
-
-            //establish the distance selectSpriteCurr, the new index sprite, will travel
-            {
-                sf::Sprite s(imageSpriteCurr_);
-                s.setScale(imageCurrTargetScale_, imageCurrTargetScale_);
-                const float POS_LEFT_CENTERED((textRegion_.left + (textRegion_.width * 0.5f)) -
-                    (s.getGlobalBounds().width * 0.5f));
-
-                if (areImagesMovingLeft_)
-                {
-                    imageCurrTravelDist_ = (textRegion_.left + textRegion_.width) - POS_LEFT_CENTERED;
-                }
-                else
-                {
-                    imageCurrTravelDist_ = POS_LEFT_CENTERED - textRegion_.left;
-                }
-            }
-
-            //establish the distance selectSpritePrev, the old index sprite, will travel
-            if (areImagesMovingLeft_)
-            {
-                imagePrevTravelDist_ = imageSpritePrev_.getGlobalBounds().left - imagesRect_.left;
-            }
-            else
-            {
-                imagePrevTravelDist_ = (imagesRect_.left + imagesRect_.width) -
-                    imageSpritePrev_.getGlobalBounds().left;
-            }
-        }
     }
 
 
@@ -950,74 +486,6 @@ namespace popup
     }
 
 
-    void PopupStage::SetupCharacterSelectDetailText(const bool WILL_ERASE)
-    {
-        if (WILL_ERASE)
-        {
-            charDetailsTextRegionUPtr_->SetText(" ");
-            return;
-        }
-
-        auto const CREATURE_PTR{
-            game::Game::Instance()->State().Party().GetAtOrderPos(imageIndex_) };
-
-        std::ostringstream ss;
-        ss << CREATURE_PTR->Name() << "\n"
-           << CREATURE_PTR->RaceName();
-
-        if (CREATURE_PTR->IsBeast())
-        {
-            if (CREATURE_PTR->Race() != game::creature::race::Wolfen)
-            {
-                ss << ", " << CREATURE_PTR->RoleName();
-            }
-            ss << " " << CREATURE_PTR->RankClassName() << "\n";
-        }
-        else
-        {
-            ss << " " << CREATURE_PTR->RankClassName() << " "
-                << CREATURE_PTR->RoleName() << "\n";
-        }
-
-        ss << "Health:  " << CREATURE_PTR->HealthCurrent() << "/"
-           << CREATURE_PTR->HealthNormal() << "\n"
-           << "Condition:  " << CREATURE_PTR->ConditionNames(3) << "\n";
-
-        charDetailsTextRegionUPtr_->SetText(ss.str());
-    }
-
-
-    void PopupStage::SetupCharacterSelectionRejectImage(const bool WILL_ERASE)
-    {
-        if (imageIndex_ < popupInfo_.TextVec().size())
-        {
-            auto const TEXT{ popupInfo_.TextVec()[imageIndex_] };
-
-            if (TEXT.empty())
-            {
-                selection_ = static_cast<int>(imageIndex_);
-            }
-            else
-            {
-                selection_ = -1;//any negative value will work here
-            }
-
-            if (TEXT.empty() || WILL_ERASE)
-            {
-                willShowXImage_ = false;
-                SetupCharacterSelectDetailText(false);
-                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::Black);
-            }
-            else
-            {
-                willShowXImage_ = true;
-                charDetailsTextRegionUPtr_->SetText(TEXT);
-                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color(100, 32, 32));
-            }
-        }
-    }
-
-
     void PopupStage::ItemProfileSetup()
     {
         game::item::ItemProfileWarehouse::Instance()->Setup();
@@ -1086,112 +554,6 @@ namespace popup
         RemoveFocus();
         SetFocus(textEntryBoxSPtr_.get());
         textEntryBoxSPtr_->SetHasFocus(true);    
-    }
-
-
-    void PopupStage::SetupCharacterSelectionPopup()
-    {
-        imagesRect_ = textRegion_;
-
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y +
-            sfml_util::MapByRes(70.0f, 120.0f);
-
-        imagesRect_.height = 300.0f;
-
-        imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
-
-        auto const SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
-        xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
-
-        auto const X_SYM_POS_TOP{ (imagesRect_.top + (imagesRect_.height * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
-
-        auto const X_SYM_POS_LEFT{ (imagesRect_.left + (imagesRect_.width * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
-
-        xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
-
-        sf::FloatRect charDetailsTextRegion(textRegion_);
-
-        charDetailsTextRegion.top = imagesRect_.top + imagesRect_.height;
-
-        charDetailsTextRegion.height = 0.0f;
-
-        auto charDetailsTextInfo{ popupInfo_.TextInfo() };
-        charDetailsTextInfo.text = " ";
-
-        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupWindow's_CharacterSelection_DetailsText",
-            charDetailsTextInfo,
-            charDetailsTextRegion);
-
-        //sliderbar setup
-        const float SLIDERBAR_LENGTH(textRegion_.width * 0.5f);
-        const float SLIDERBAR_POS_LEFT(textRegion_.left +
-            ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
-
-        sliderbarPosTop_ = charDetailsTextRegionUPtr_->GetEntityRegion().top +
-            charDetailsTextRegionUPtr_->GetEntityRegion().height + 100.0f;
-
-        if (sliderbarUPtr_.get() != nullptr)
-        {
-            EntityRemove(sliderbarUPtr_.get());
-        }
-
-        sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
-            "PopupStage's",
-            SLIDERBAR_POS_LEFT,
-            sliderbarPosTop_,
-            SLIDERBAR_LENGTH,
-            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            this);
-
-        EntityAdd(sliderbarUPtr_.get());
-
-        isImageProcAllowed_ =
-            (game::Game::Instance()->State().Party().Characters().size() != 0);
-
-        imageMoveQueue_.push(0);
-    }
-
-
-    void PopupStage::SetupImageSelectionPopup()
-    {
-        imagesRect_ = textRegion_;
-
-        //added is a pad so the text does not touch the images
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y +
-            sfml_util::MapByRes(70.0f, 200.0f);
-
-        imagesRect_.height =
-            (sliderbarPosTop_ - (ButtonTextHeight() * 2.0f)) - imagesRect_.top;
-
-        imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
-
-        isImageProcAllowed_ = (popupInfo_.ImagesCount() != 0);
-
-        imageMoveQueue_.push(0);
-
-        if (popupInfo_.ImagesCount() == 1)
-        {
-            const sfml_util::gui::TextInfo TEXT_INFO("(there is only one image)",
-                sfml_util::FontManager::Instance()->Font_Default1(),
-                sfml_util::FontManager::Instance()->Size_Small(),
-                PopupManager::Color_Font(),
-                sfml_util::Justified::Center);
-
-            sf::FloatRect region(textRegion_);
-            region.top = sliderbarPosTop_;
-            region.height = 0.0f;
-            imageWrnTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "PopupStage'sImageSelectionion", TEXT_INFO, region);
-
-            EntityAdd(imageWrnTextRegionUPtr_.get());
-            if (sliderbarUPtr_.get() != nullptr)
-            {
-                EntityRemove(sliderbarUPtr_.get());
-            }
-        }
     }
 
 

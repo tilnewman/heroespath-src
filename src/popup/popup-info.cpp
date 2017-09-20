@@ -180,7 +180,7 @@ namespace popup
                          const bool                              ARE_IMAGES_CREATURES,
                          const float                             IMAGE_SCALE,
                          const sfml_util::sound_effect::Enum     SOUND_EFFECT,
-                         const PopupButtonColor::Enum BUTTON_COLOR)
+                         const PopupButtonColor::Enum            BUTTON_COLOR)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),

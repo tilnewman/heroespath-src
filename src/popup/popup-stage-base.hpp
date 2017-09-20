@@ -56,12 +56,15 @@ namespace popup
 
     public:
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
-
         virtual ~PopupStageBase();
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
-        virtual bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
+
+        virtual bool HandleCallback(
+            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+
+        virtual bool HandleCallback(
+            const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
 
         virtual void Setup() override;
 
@@ -72,7 +75,6 @@ namespace popup
         virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     protected:
-        //Must call Setup() before these functions or else they will return zero.
         inline float ButtonTextHeight() const { return buttonTextHeight_; }
         
         bool HandleSelect();

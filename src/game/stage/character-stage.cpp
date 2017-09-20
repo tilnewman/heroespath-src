@@ -41,10 +41,12 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/radio-button.hpp"
-#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/box.hpp"
+
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-image-select.hpp"
 
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
@@ -359,35 +361,39 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_1_)
         {
-            LoopManager::Instance()->PopupWaitBegin(this,
-                                                    popup::PopupManager::Instance()->CreatePopupInfo(
-                                                        POPUP_NAME_HELP_2_,
-                                                        std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
-                                                            "\n\n\nPet Set:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
-                                                            "\n\n\nWing Set:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric" +
-                                                            "\n\n\nHowler Set:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric" +
-                                                            "\n\n\n" +
-                                                            "Note that one of your characters must have the role of Beastmaster " +
-                                                            "if you want a Dragon or Wolfen in your party.",
-                                                        popup::PopupButtons::Continue,
-                                                        popup::PopupImage::Large));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_HELP_2_,
+                    std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
+                        "\n\n\nPet Set:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
+                        "\n\n\nWing Set:\n\nBeastmaster\nFirebrand Dragon\nSylavin Dragon\nSorcerer or Bard\nThief\nCleric" +
+                        "\n\n\nHowler Set:\n\nBeastmaster\nWolfen\nWolfen\nWolfen\nThief\nCleric" +
+                        "\n\n\n" +
+                        "Note that one of your characters must have the role of Beastmaster " +
+                        "if you want a Dragon or Wolfen in your party.",
+                    popup::PopupButtons::Continue,
+                    popup::PopupImage::Large));
+
             return false;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_2_)
         {
-            LoopManager::Instance()->PopupWaitBegin(this,
-                                                    popup::PopupManager::Instance()->CreatePopupInfo(
-                                                        POPUP_NAME_HELP_3_,
-                                                        std::string("To make a character, first select the Race and Role.  Use the text descriptions ") +
-                                                            "to guide you.  Then hold down the space bar to summon a random set of attributes.  " +
-                                                            "\n\nDrag the attributes up and down to customize them for the character you are crafting.  " +
-                                                            "Use the attribute description text on the right side of the screen to guide you.  " +
-                                                            "If you don't like the attribute values you have, simply hold down the space bar " +
-                                                            "again to randomly summon more.\n\nFinally, give your character a name and then click " +
-                                                            "the Save button.  Once you have created all the characters you need, click the Next " +
-                                                            "button.  You can always return and make more characters.",
-                                                        popup::PopupButtons::Okay,
-                                                        popup::PopupImage::Large));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_HELP_3_,
+                    std::string("To make a character, first select the Race and Role.  Use the text descriptions ") +
+                        "to guide you.  Then hold down the space bar to summon a random set of attributes.  " +
+                        "\n\nDrag the attributes up and down to customize them for the character you are crafting.  " +
+                        "Use the attribute description text on the right side of the screen to guide you.  " +
+                        "If you don't like the attribute values you have, simply hold down the space bar " +
+                        "again to randomly summon more.\n\nFinally, give your character a name and then click " +
+                        "the Save button.  Once you have created all the characters you need, click the Next " +
+                        "button.  You can always return and make more characters.",
+                    popup::PopupButtons::Okay,
+                    popup::PopupImage::Large));
+
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_IMAGE_SELECTION_) &&
@@ -435,12 +441,16 @@ namespace stage
                << "   Speed="        << statSetFinal.Spd() << "\n"
                << "   Intelligence=" << statSetFinal.Int() << "\n";
 
-            LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_CREATECONFIRM_,
-                                                                                                                    ss.str(),
-                                                                                                                    popup::PopupButtons::YesNo,
-                                                                                                                    popup::PopupImage::Large,
-                                                                                                                    sfml_util::Justified::Center,
-                                                                                                                    sfml_util::sound_effect::PromptQuestion));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_CREATECONFIRM_,
+                    ss.str(),
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Large,
+                    sfml_util::Justified::Center,
+                    sfml_util::sound_effect::PromptQuestion));
+
             return false;
         }
 
@@ -515,12 +525,16 @@ namespace stage
         const std::string CHARACTER_NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
         if (CHARACTER_NAME.empty())
         {
-            LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NONAMEERROR_,
-                                                                                                                    "The name box is empty.  You must name your character to continue.",
-                                                                                                                    popup::PopupButtons::Okay,
-                                                                                                                    popup::PopupImage::Banner,
-                                                                                                                    sfml_util::Justified::Center,
-                                                                                                                    sfml_util::sound_effect::PromptQuestion));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_NONAMEERROR_,
+                    "The name box is empty.  You must name your character to continue.",
+                    popup::PopupButtons::Okay,
+                    popup::PopupImage::Banner,
+                    sfml_util::Justified::Center,
+                    sfml_util::sound_effect::PromptQuestion));
+
             return false;
         }
 
@@ -544,11 +558,15 @@ namespace stage
 
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
-        LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
-            CreatePopupInfo(POPUP_NAME_IMAGE_SELECTION_,
-                            ss.str(),
-                            characterTextureVec,
-                            true));
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
+            POPUP_NAME_IMAGE_SELECTION_,
+            ss.str(),
+            characterTextureVec,
+            true) };
+
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
+            this, POPUP_INFO);
 
         return true;
     }
@@ -575,13 +593,15 @@ namespace stage
 
             ss << "to be lost.  Are you sure?";
 
-            LoopManager::Instance()->PopupWaitBegin(this,
-                                                    popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
-                                                                                                              ss.str(),
-                                                                                                              popup::PopupButtons::YesNo,
-                                                                                                              popup::PopupImage::Banner,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::PromptWarn));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
+                    ss.str(),
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Banner,
+                    sfml_util::Justified::Center,
+                    sfml_util::sound_effect::PromptWarn));
 
             return true;
         }
@@ -594,20 +614,22 @@ namespace stage
 
     bool CharacterStage::HandleCallback_HelpButton()
     {
-        LoopManager::Instance()->PopupWaitBegin(this,
-                                                popup::PopupManager::Instance()->CreatePopupInfo(
-                                                    POPUP_NAME_HELP_1_,
-                                                    std::string("You play Heroes' Path with a group of six characters called a party.  ") +
-                                                        "This is where you create those characters one at a time. " +
-                                                        "The first thing to do is decide what Roles you want those characters to have.  " +
-                                                        "Role is simply a character's occupation, or type.  You should choose the " +
-                                                        "combination of Roles in your party carefully, so they work well together as " +
-                                                        "a team." +
-                                                        "\n\n" +
-                                                        "If you are new to the game, there are four recommended sets of " +
-                                                        "Roles that are known to be effective and fun to play.  Click continue below to see them listed.",
-                                                    popup::PopupButtons::Continue,
-                                                    popup::PopupImage::Regular));
+        LoopManager::Instance()->PopupWaitBegin(
+            this,
+            popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_HELP_1_,
+                std::string("You play Heroes' Path with a group of six characters called a party.  ") +
+                    "This is where you create those characters one at a time. " +
+                    "The first thing to do is decide what Roles you want those characters to have.  " +
+                    "Role is simply a character's occupation, or type.  You should choose the " +
+                    "combination of Roles in your party carefully, so they work well together as " +
+                    "a team." +
+                    "\n\n" +
+                    "If you are new to the game, there are four recommended sets of " +
+                    "Roles that are known to be effective and fun to play.  Click continue below to see them listed.",
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular));
+
         return true;
     }
 
@@ -633,13 +655,15 @@ namespace stage
 
             ss << "to be lost.  Are you sure?";
 
-            LoopManager::Instance()->PopupWaitBegin(this,
-                                                    popup::PopupManager::Instance()->CreatePopupInfo(POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
-                                                                                                              ss.str(),
-                                                                                                              popup::PopupButtons::YesNo,
-                                                                                                              popup::PopupImage::Banner,
-                                                                                                              sfml_util::Justified::Center,
-                                                                                                              sfml_util::sound_effect::PromptWarn));
+            LoopManager::Instance()->PopupWaitBegin(
+                this,
+                popup::PopupManager::Instance()->CreatePopupInfo(
+                    POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
+                    ss.str(),
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Banner,
+                    sfml_util::Justified::Center,
+                    sfml_util::sound_effect::PromptWarn));
 
             return true;
         }
@@ -656,23 +680,47 @@ namespace stage
 
         std::vector<role::Enum> temp;
         if (WHICH_RACE == creature::race::Dragon)
-            temp = { role::Archer, role::Bard, role::Beastmaster, role::Cleric, role::Knight, role::Sorcerer, role::Thief };
+        {
+            temp = { role::Archer,
+                     role::Bard,
+                     role::Beastmaster,
+                     role::Cleric,
+                     role::Knight,
+                     role::Sorcerer,
+                     role::Thief };
+        }
         else
         {
             if (WHICH_RACE == creature::race::Pixie)
+            {
                 temp = { role::Sylavin, role::Firebrand, role::Knight, role::Archer };
+            }
             else
             {
                 if (WHICH_RACE == creature::race::Wolfen)
-                    temp = { role::Archer, role::Bard, role::Beastmaster, role::Sylavin, role::Cleric, role::Firebrand, role::Knight, role::Sorcerer, role::Thief };
+                {
+                    temp = { role::Archer,
+                             role::Bard,
+                             role::Beastmaster,
+                             role::Sylavin,
+                             role::Cleric,
+                             role::Firebrand,
+                             role::Knight,
+                             role::Sorcerer,
+                             role::Thief };
+                }
                 else
+                {
                     temp = { role::Sylavin, role::Firebrand };
+                }
             }
         }
 
         misc::SizetVec_t invalidSelectionsVec;
         for (auto const NEXT_ENUM : temp)
-            invalidSelectionsVec.push_back( static_cast<std::size_t>(NEXT_ENUM) );
+        {
+            invalidSelectionsVec.push_back(static_cast<std::size_t>(NEXT_ENUM));
+        }
 
         roleRadioButtonSPtr_->SetInvalidSelections(invalidSelectionsVec);
     }

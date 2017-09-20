@@ -189,7 +189,7 @@ namespace popup
                 sfml_util::FontManager::Instance()->Size_Smallish()) const;
 
         //use this function to create image select popup windows
-        const PopupInfo CreatePopupInfo(
+        const PopupInfo CreateImageSelectionPopupInfo(
             const std::string &                 POPUP_NAME,
             const std::string &                 PROMPT_TEXT,
             const sfml_util::TextureVec_t &     TEXTURE_VEC,
@@ -208,7 +208,7 @@ namespace popup
                 sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to make character selection popup windows
-        const PopupInfo CreatePopupInfo(
+        const PopupInfo CreateCharacterSelectPopupInfo(
             const std::string &              POPUP_NAME,
             const std::string &              PROMPT_TEXT,
             const std::vector<std::string> & INVALID_TEXT_VEC,

@@ -232,7 +232,7 @@ namespace popup
     }
 
 
-    const PopupInfo PopupManager::CreatePopupInfo(
+    const PopupInfo PopupManager::CreateImageSelectionPopupInfo(
         const std::string &                 POPUP_NAME,
         const std::string &                 PROMPT_TEXT,
         const sfml_util::TextureVec_t &     TEXTURE_VEC,
@@ -266,7 +266,7 @@ namespace popup
     }
 
 
-    const PopupInfo PopupManager::CreatePopupInfo(
+    const PopupInfo PopupManager::CreateCharacterSelectPopupInfo(
         const std::string &              POPUP_NAME,
         const std::string &              PROMPT_TEXT,
         const std::vector<std::string> & INVALID_TEXT_VEC,

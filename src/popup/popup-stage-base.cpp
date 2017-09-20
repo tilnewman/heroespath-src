@@ -427,7 +427,6 @@ namespace popup
 
         buttonVertPos_ = (StageRegionTop() + innerRegion_.top + innerRegion_.height) -
             BUTTON_HEIGHT;
-
     }
 
 
