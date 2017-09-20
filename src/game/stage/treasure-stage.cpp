@@ -31,8 +31,10 @@
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
+
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-item-profile-wait.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
@@ -162,9 +164,10 @@ namespace stage
         {
             if (0 == --setupCountdown_)
             {
-                LoopManager::Instance()->PopupWaitBegin(this,
-                    popup::PopupManager::Instance()->
-                    CreateItemProfilePleaseWaitPopupInfo(POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
+                LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageItemProfileWait>(
+                    this,
+                    popup::PopupManager::Instance()->CreateItemProfilePleaseWaitPopupInfo(
+                        POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
             }
         }
 

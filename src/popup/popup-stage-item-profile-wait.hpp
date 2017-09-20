@@ -22,51 +22,36 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGE_HPP_INCLUDED
-#define POPUP_POPUPSTAGE_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
+#define POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
 //
-// popup-stage.hpp
-//  This class encapsulates a popup window stage on screen.
+// popup-stage-item-profile-wait.hpp
 //
-#include "sfml-util/gui/text-region.hpp"
-
 #include "popup/popup-stage-base.hpp"
-
-#include <memory>
-#include <string>
 
 
 namespace popup
 {
-    //A base class for all Popup Window Stages
-    class PopupStage : public PopupStageBase
+
+    //Responsible for implementing the System Error Popup Stage.
+    class PopupStageItemProfileWait : public PopupStageBase
     {
         //prevent copy construction
-        PopupStage(const PopupStage &) =delete;
+        PopupStageItemProfileWait(const PopupStageItemProfileWait &) =delete;
 
         //prevent copy assignment
-        PopupStage & operator=(const PopupStage &) =delete;
+        PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &) =delete;
 
     public:
-        explicit PopupStage(const PopupInfo & POPUP_INFO);
-        virtual ~PopupStage();
+        explicit PopupStageItemProfileWait(const PopupInfo &);
+        virtual ~PopupStageItemProfileWait();
 
-        using PopupStageBase::HandleCallback;
-
-        inline virtual const std::string HandlerName() const override
-        {
-            return PopupStageBase::HandlerName();
-        }
-        
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
-        //members that support the resoution change popup
-        float elapsedTimeCounter_;
-        std::size_t secondCounter_;
+        int drawCountdown_;
     };
 
 }
-#endif //POPUP_POPUPSTAGE_HPP_INCLUDED
+
+#endif //POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED

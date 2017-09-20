@@ -29,8 +29,6 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/gui/text-region.hpp"
-
 
 namespace popup
 {

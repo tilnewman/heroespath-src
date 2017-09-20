@@ -75,8 +75,7 @@ namespace popup
     :
         PopupStageBase     (POPUP_INFO),
         elapsedTimeCounter_(0.0f),
-        secondCounter_     (10),
-        drawCountdown_     (3)
+        secondCounter_     (10)
     {}
 
 
@@ -84,27 +83,9 @@ namespace popup
     {}
 
 
-    void PopupStage::Setup()
-    {
-        PopupStageBase::Setup();
-    }
-
-
     void PopupStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-
-        if (popupInfo_.Type() == Popup::ItemProfilePleaseWait)
-        {
-            if (drawCountdown_ > 0)
-            {
-                if (0 == --drawCountdown_)
-                {
-                    ItemProfileSetup();
-                }
-            }
-        }
-
         Stage::Draw(target, STATES);
     }
 
@@ -195,13 +176,6 @@ namespace popup
         }
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
-    }
-
-
-    void PopupStage::ItemProfileSetup()
-    {
-        game::item::ItemProfileWarehouse::Instance()->Setup();
-        game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
     }
 
 }
