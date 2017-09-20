@@ -47,6 +47,8 @@
 #include "popup/popup-stage-musicsheet.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-fade.hpp"
+#include "popup/popup-stage-combat-over.hpp"
+#include "popup/popup-stage-system-error.hpp"
 
 #include "game/game.hpp"
 #include "game/phase-enum.hpp"
@@ -4067,9 +4069,11 @@ namespace stage
 
             if (didAnyPlayersRunAway && areAllNonRunawaysIncapacitated)
             {
-                game::LoopManager::Instance()->PopupWaitBegin(this,
+                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+                    this,
                     popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
-                        POPUP_NAME_COMBATOVER_RAN_, combat::CombatEnd::Ran));
+                        POPUP_NAME_COMBATOVER_RAN_,
+                        combat::CombatEnd::Ran));
 
                 EndOfCombatCleanup();
                 return true;
@@ -4093,9 +4097,10 @@ namespace stage
 
         if (areAllIncapacitated)
         {
-            game::LoopManager::Instance()->PopupWaitBegin(this,
+            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+                this,
                 popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
-                ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
+                    ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
                     ((IS_DETECTING_WIN) ? combat::CombatEnd::Win : combat::CombatEnd::Lose)));
 
             EndOfCombatCleanup();
@@ -4119,9 +4124,13 @@ namespace stage
                                        const std::string & TECH_ERROR_MSG,
                                        const std::string & TITLE_MSG)
     {
-        LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
-            CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
-                TECH_ERROR_MSG, TITLE_MSG));
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSystemError>(
+            this,
+            popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
+                "Stage'sSystemErrorPopupName",
+                GENERAL_ERROR_MSG,
+                TECH_ERROR_MSG,
+                TITLE_MSG));
     }
 
 

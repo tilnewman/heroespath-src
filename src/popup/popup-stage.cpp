@@ -71,18 +71,12 @@
 namespace popup
 {
 
-    
-
     PopupStage::PopupStage(const PopupInfo & POPUP_INFO)
     :
-        PopupStageBase              (POPUP_INFO),
-        elapsedTimeCounter_         (0.0f),
-        secondCounter_              (10),
-        combatBgTexture_            (),
-        combatBgSprite_             (),
-        titleUPtr_                  (),
-        descUPtr_                   (),
-        drawCountdown_              (3)
+        PopupStageBase     (POPUP_INFO),
+        elapsedTimeCounter_(0.0f),
+        secondCounter_     (10),
+        drawCountdown_     (3)
     {}
 
 
@@ -93,15 +87,6 @@ namespace popup
     void PopupStage::Setup()
     {
         PopupStageBase::Setup();
-        
-        if (popupInfo_.Type() == Popup::CombatOver)
-        {
-            SetupCombatOverPopup();
-        }
-        else if (popupInfo_.Type() == Popup::SystemError)
-        {
-            SetupSystemErrorPopup();
-        }
     }
 
 
@@ -118,18 +103,6 @@ namespace popup
                     ItemProfileSetup();
                 }
             }
-        }
-
-        if (popupInfo_.Type() == Popup::CombatOver)
-        {
-            target.draw(combatBgSprite_, STATES);
-            target.draw( * titleUPtr_, STATES);
-            target.draw( * descUPtr_, STATES);
-        }
-        else if (popupInfo_.Type() == Popup::SystemError)
-        {
-            //The SystemError popup uses CombatOver popup's texture and sprite.
-            target.draw(combatBgSprite_, STATES);
         }
 
         Stage::Draw(target, STATES);
@@ -229,195 +202,6 @@ namespace popup
     {
         game::item::ItemProfileWarehouse::Instance()->Setup();
         game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
-    }
-
-
-    void PopupStage::SetupCombatOverPopup()
-    {   
-        switch (popupInfo_.HowCombatEnded())
-        {
-            case game::combat::CombatEnd::Win:
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::CombatWin).PlayRandom();
-
-                sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-combat-crossswords"));
-
-                break;
-            }
-
-            case game::combat::CombatEnd::Lose:
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::CombatLose).PlayRandom();
-
-                sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-combat-crossbones"));
-
-                break;
-            }
-
-            case game::combat::CombatEnd::Ran:
-            case game::combat::CombatEnd::Count:
-            default:
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::CombatLose).PlayRandom();
-
-                sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-combat-run"));
-
-                break;
-            }
-        }
-
-        sfml_util::Invert(combatBgTexture_);
-        sfml_util::Mask(combatBgTexture_, sf::Color::White);
-        combatBgSprite_.setTexture(combatBgTexture_, true);
-        combatBgSprite_.setColor( sf::Color(255, 255, 255, 32) );
-
-        auto const HORIZ_RESCALE{ textRegion_.width /
-            static_cast<float>(combatBgTexture_.getSize().x) };
-
-        combatBgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
-
-        if (combatBgSprite_.getGlobalBounds().height > textRegion_.height)
-        {
-            auto VERT_RESCALE{ textRegion_.height /
-                static_cast<float>(combatBgTexture_.getSize().y) };
-
-            combatBgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
-        }
-
-        auto const BG_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
-            (combatBgSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const BG_POS_TOP{ (textRegion_.top + (textRegion_.height * 0.5f)) -
-            (combatBgSprite_.getGlobalBounds().height * 0.5f) };
-
-        combatBgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
-
-        auto const TITLE_TEXT{ [&]()
-            {
-                switch (popupInfo_.HowCombatEnded())
-                {
-                    case game::combat::CombatEnd::Win:  { return "Victory!";}
-                    case game::combat::CombatEnd::Lose: { return "Death Strikes!"; }
-                    case game::combat::CombatEnd::Ran:
-                    case game::combat::CombatEnd::Count:
-                    default:                            { return "Defeat!"; }
-                }
-            }() };
-
-        const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
-            TITLE_TEXT,
-            sfml_util::FontManager::Instance()->Font_BigFlavor1(),
-            sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sf::BlendAlpha,
-            sf::Text::Bold,
-            sfml_util::Justified::Center);
-
-        titleUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CombatOverPopupTitle",
-            COMBAT_TITLE_TEXTINFO,
-            sf::FloatRect());
-
-        auto const TITLE_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
-            (titleUPtr_->GetEntityRegion().width * 0.5f) };
-
-        auto const TITLE_POS_TOP{ textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
-
-        titleUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
-
-        auto const DESC_TEXT{ [&]()
-            {
-                std::ostringstream descSS;
-                switch (popupInfo_.HowCombatEnded())
-                {
-                    case game::combat::CombatEnd::Win:
-                    {
-                        descSS << "Congratulations, your party has beaten all enemies on the "
-                            << "field of battle and emerged victorious.\n\nWill you search "
-                            << "for loot?";
-                        break;
-                    }
-                    case game::combat::CombatEnd::Lose:
-                    {
-                        descSS << "The dangers of Etan have claimed another party of "
-                            << "adventurers.  All of your characters have been "
-                            << "incapacitated or killed, but all is not lost.  Your "
-                            << "saved games remain and can be loaded at any time.\n\n"
-                            << "Click YES to restart from your last save, or click NO "
-                            << "to quit.";
-                        break;
-                    }
-                    case game::combat::CombatEnd::Ran:
-                    case game::combat::CombatEnd::Count:
-                    default:
-                    {
-                        descSS << "You have run from battle, and as a consequence, "
-                                << "you will earn no experience and loot no treasure.";
-                        break;
-                    }
-                }
-                return descSS.str();
-            }() };
-
-        const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
-            DESC_TEXT,
-            sfml_util::FontManager::Instance()->Font_Default1(),
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Center);
-
-        const sf::FloatRect COMBAT_DESC_RECT(
-            textRegion_.left,
-            titleUPtr_->GetEntityRegion().top +
-                titleUPtr_->GetEntityRegion().height +
-                sfml_util::MapByRes(20.0f, 60.0f),
-            textRegion_.width,
-            textRegion_.height -
-                (titleUPtr_->GetEntityRegion().height +
-                    (sfml_util::MapByRes(20.0f, 60.0f) * 2.0f)));
-
-        descUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CombatOverPopupDesc",
-            COMBAT_DESC_TEXTINFO,
-            COMBAT_DESC_RECT);
-    }
-
-
-    void PopupStage::SetupSystemErrorPopup()
-    {
-        sfml_util::LoadTexture(combatBgTexture_, game::GameDataFile::Instance()->
-                    GetMediaPath("media-images-misc-error"));
-
-        sfml_util::Mask(combatBgTexture_, sf::Color::White);
-        combatBgSprite_.setTexture(combatBgTexture_, true);
-        combatBgSprite_.setColor( sf::Color(255, 255, 255, 32) );
-
-        auto const HORIZ_RESCALE{ textRegion_.width /
-            static_cast<float>(combatBgTexture_.getSize().x) };
-
-        combatBgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
-
-        if (combatBgSprite_.getGlobalBounds().height > textRegion_.height)
-        {
-            auto VERT_RESCALE{ textRegion_.height /
-                static_cast<float>(combatBgTexture_.getSize().y) };
-
-            combatBgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
-        }
-
-        auto const BG_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f)) -
-            (combatBgSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const BG_POS_TOP{ (textRegion_.top + (textRegion_.height * 0.5f)) -
-            (combatBgSprite_.getGlobalBounds().height * 0.5f) };
-
-        combatBgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
     }
 
 }
