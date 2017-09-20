@@ -114,7 +114,7 @@ namespace popup
 
         EntityAdd(sliderbarUPtr_.get());
 
-        isImageProcAllowed_ =
+        isChangingImageAllowed_ =
             (game::Game::Instance()->State().Party().Characters().size() != 0);
 
         imageMoveQueue_.push(0);

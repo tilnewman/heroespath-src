@@ -43,13 +43,13 @@ namespace popup
     PopupStageImageSelect::PopupStageImageSelect(const PopupInfo & POPUP_INFO)
     :
         PopupStageBase(POPUP_INFO),
-        isImageProcAllowed_(false),
-        isInitialAnimation_(true),
+        isChangingImageAllowed_(false),
+        isInitialAnimComplete_(false),
         willShowImageCount_(false),
         textureCurr_(),
         texturePrev_(),
-        imageSpriteCurr_(),
-        imageSpritePrev_(),
+        spriteCurr_(),
+        spritePrev_(),
         areImagesMoving_(false),
         areImagesMovingLeft_(false),
         imagesRect_(),
@@ -58,11 +58,11 @@ namespace popup
         imageIndex_(0),
         imageIndexLastSoundOn_(0),
         imageIndexLastSoundOff_(0),
-        imageCurrTargetScale_(1.0f),
-        imagePrevStartScale_(1.0f),
-        imagePrevStartPosX_(0.0f),
-        imageCurrTravelDist_(0.0f),
-        imagePrevTravelDist_(0.0f),
+        targetScaleCurr_(1.0f),
+        startScalePrev_(1.0f),
+        startPosXPrev_(0.0f),
+        travelDistCurr_(0.0f),
+        travelDistPrev_(0.0f),
         imageMoveQueue_(),
         imageSlider_(IMAGE_SLIDER_SPEED_),
         imagePosTop_(0.0f)
@@ -76,7 +76,7 @@ namespace popup
     bool PopupStageImageSelect::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t &)
     {
-        if (isImageProcAllowed_)
+        if (isChangingImageAllowed_)
         {
             auto const COUNT_MAX{ CountMax() };
             auto index{ static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() * COUNT_MAX) };
@@ -108,7 +108,7 @@ namespace popup
 
         imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
-        isImageProcAllowed_ = (popupInfo_.ImagesCount() != 0);
+        isChangingImageAllowed_ = (popupInfo_.ImagesCount() != 0);
 
         imageMoveQueue_.push(0);
 
@@ -139,11 +139,11 @@ namespace popup
     {
         PopupStageBase::Draw(target, STATES);
 
-        target.draw(imageSpriteCurr_, STATES);
+        target.draw(spriteCurr_, STATES);
 
-        if (areImagesMoving_ && (false == isInitialAnimation_))
+        if (areImagesMoving_ && (isInitialAnimComplete_))
         {
-            target.draw(imageSpritePrev_, STATES);
+            target.draw(spritePrev_, STATES);
         }
 
         if (willShowImageCount_ && (imageNumTextRegionUPtr_.get() != nullptr))
@@ -182,9 +182,9 @@ namespace popup
                     imageIndexLastSoundOff_ = imageIndex_;
                 }
 
-                if (isInitialAnimation_)
+                if (false == isInitialAnimComplete_)
                 {
-                    isInitialAnimation_ = areImagesMoving_;
+                    isInitialAnimComplete_ = ! areImagesMoving_;
                 }
             }
 
@@ -211,17 +211,17 @@ namespace popup
                 SetupContent(true);
             }
 
-            const float CURR_SCALE(imageCurrTargetScale_ * currRatio);
-            imageSpriteCurr_.setScale(CURR_SCALE, CURR_SCALE);
+            auto const CURR_SCALE{ targetScaleCurr_ * currRatio };
+            spriteCurr_.setScale(CURR_SCALE, CURR_SCALE);
 
-            const float PREV_SCALE(imagePrevStartScale_ * (1.0f - currRatio));
-            imageSpritePrev_.setScale(PREV_SCALE, PREV_SCALE);
+            auto const PREV_SCALE{ startScalePrev_ * (1.0f - currRatio) };
+            spritePrev_.setScale(PREV_SCALE, PREV_SCALE);
 
-            const float CURR_POS_TOP(imagePosTop_ -
-                (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
+            auto const CURR_POS_TOP{
+                imagePosTop_ - (spriteCurr_.getGlobalBounds().height * 0.5f) };
 
-            const float PREV_POS_TOP(imagePosTop_ -
-                (imageSpritePrev_.getGlobalBounds().height * 0.5f));
+            auto const PREV_POS_TOP{
+                imagePosTop_ - (spritePrev_.getGlobalBounds().height * 0.5f) };
 
             if (willShowImageCount_)
             {
@@ -231,21 +231,21 @@ namespace popup
 
             if (areImagesMovingLeft_)
             {
-                const float CURR_POS_LEFT((imagesRect_.left + imagesRect_.width) -
-                    (currRatio * imageCurrTravelDist_));
+                auto const CURR_POS_LEFT{ (imagesRect_.left + imagesRect_.width) -
+                    (currRatio * travelDistCurr_) };
 
-                imageSpriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
+                spriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
 
-                const float PREV_POS_LEFT(imagePrevStartPosX_ - (currRatio * imagePrevTravelDist_));
-                imageSpritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
+                auto const PREV_POS_LEFT{ startPosXPrev_ - (currRatio * travelDistPrev_) };
+                spritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
             }
             else
             {
-                const float CURR_POS_LEFT(imagesRect_.left + (currRatio * imageCurrTravelDist_));
-                imageSpriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
+                auto const CURR_POS_LEFT{ imagesRect_.left + (currRatio * travelDistCurr_) };
+                spriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
 
-                const float PREV_POS_LEFT(imagePrevStartPosX_ + (currRatio * imagePrevTravelDist_));
-                imageSpritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
+                auto const PREV_POS_LEFT{ startPosXPrev_ + (currRatio * travelDistPrev_) };
+                spritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
             }
         }
     }
@@ -284,33 +284,96 @@ namespace popup
 
 
     void PopupStageImageSelect::SetupSelectImage(
-        const std::size_t NEW_IMAGE_INDEX,
+        const std::size_t NEW_IMAGE_INDEX_PARAM,
         const float SLIDER_SPEED)
     {
-        if (false == isImageProcAllowed_)
+        if (false == isChangingImageAllowed_)
         {
             return;
         }
 
-        auto const COUNT_MAX{ CountMax() };
+        auto const NEW_IMAGE_INDEX_TO_USE{ [&]()
+            {
+                auto const COUNT_MAX{ CountMax() };
+               
+                if (NEW_IMAGE_INDEX_PARAM >= COUNT_MAX)
+                {
+                    return COUNT_MAX - 1;
+                }
+                else
+                {
+                    return NEW_IMAGE_INDEX_PARAM;
+                }
+            }() };
 
-        std::size_t newIndex(NEW_IMAGE_INDEX);
-        if (newIndex >= COUNT_MAX)
+        if ((NEW_IMAGE_INDEX_TO_USE != imageIndex_) || (isInitialAnimComplete_ == false))
         {
-            newIndex = COUNT_MAX - 1;
-        }
+            imageSlider_.Reset(SLIDER_SPEED);
 
-        if ((imageIndex_ == newIndex) && (isInitialAnimation_ == false))
-        {
-            return;
-        }
+            SetupSelectImage_SetupNewImageIndex(NEW_IMAGE_INDEX_TO_USE);
+            SetupSelectImage_SetupImageResources();
+            SetupSelectImage_SetupNumberText(imageIndex_);
 
-        areImagesMovingLeft_ = (imageIndex_ < newIndex);
-        imageIndex_ = newIndex;
+            startScalePrev_ = spritePrev_.getScale().x;
+            startPosXPrev_ = spritePrev_.getPosition().x;
+
+            travelDistCurr_ = SetupSelectImage_CalcTravelDistanceCurrent();
+            travelDistPrev_ = SetupSelectImage_CalcTravelDistancePrev();
+        }
+    }
+
+
+    void PopupStageImageSelect::SetupSelectImage_SetupNewImageIndex(const std::size_t IMAGE_INDEX_NEW)
+    {
+        areImagesMovingLeft_ = (imageIndex_ < IMAGE_INDEX_NEW);
+        imageIndex_ = IMAGE_INDEX_NEW;
         selection_ = static_cast<int>(imageIndex_);
+    }
 
+
+    void PopupStageImageSelect::SetupSelectImage_SetupImageResources()
+    {
+        spritePrev_ = spriteCurr_;
+        texturePrev_ = textureCurr_;
+        spritePrev_.setTexture(texturePrev_, true);
+
+        SetCurrentTexture(imageIndex_);
+
+        if (popupInfo_.AreImagesCreatures())
+        {
+            sfml_util::Invert(textureCurr_);
+            sfml_util::Mask(textureCurr_, sf::Color::White);
+        }
+
+        spriteCurr_.setTexture(textureCurr_, true);
+        spriteCurr_.setScale(1.0f, 1.0f);
+
+        auto const POS_LEFT{
+            textRegion_.left + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f) };
+
+        auto const POS_TOP{ imagePosTop_ };
+
+        spriteCurr_.setPosition(POS_LEFT, POS_TOP);
+
+        auto const RESIZE_RATIO{ 0.8f };
+        auto const SPRITE_TARGET_WIDTH{ imagesRect_.width * RESIZE_RATIO };
+        auto const SPRITE_TARGET_HEIGHT{ imagesRect_.height * RESIZE_RATIO };
+
+        auto const SCALE_HORIZ{
+            SPRITE_TARGET_WIDTH / spriteCurr_.getGlobalBounds().width };
+
+        auto const SCALE_VERT{
+            SPRITE_TARGET_HEIGHT / spriteCurr_.getGlobalBounds().height };
+
+        targetScaleCurr_ = std::min(SCALE_HORIZ, SCALE_VERT);
+        spriteCurr_.setScale(0.0f, 0.0f);
+    }
+
+
+    void PopupStageImageSelect::SetupSelectImage_SetupNumberText(const std::size_t IMAGE_INDEX)
+    {
         std::ostringstream ss;
-        ss << imageIndex_ + 1 << "/" << COUNT_MAX;
+        ss << IMAGE_INDEX + 1 << "/" << CountMax();
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
@@ -324,76 +387,38 @@ namespace popup
 
         imageNumTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "PopupStage'sSelectNumber", TEXT_INFO, imageCountTextRect);
+    }
 
-        imageSlider_.Reset(SLIDER_SPEED);
 
-        imageSpritePrev_ = imageSpriteCurr_;
-        texturePrev_ = textureCurr_;
-        imageSpritePrev_.setTexture(texturePrev_, true);
+    float PopupStageImageSelect::SetupSelectImage_CalcTravelDistanceCurrent()
+    {
+        sf::Sprite tempSprite(spriteCurr_);
+        tempSprite.setScale(targetScaleCurr_, targetScaleCurr_);
 
-        SetCurrentTexture(imageIndex_);
+        auto const POS_LEFT_CENTERED{
+            (textRegion_.left + (textRegion_.width * 0.5f)) -
+            (tempSprite.getGlobalBounds().width * 0.5f) };
 
-        if (popupInfo_.AreImagesCreatures())
-        {
-            sfml_util::Invert(textureCurr_);
-            sfml_util::Mask(textureCurr_, sf::Color::White);
-        }
-
-        imageSpriteCurr_.setTexture(textureCurr_, true);
-        imageSpriteCurr_.setScale(1.0f, 1.0f);
-
-        auto const POS_LEFT{
-            textRegion_.left + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f) };
-
-        auto const POS_TOP{ imagePosTop_ };
-
-        imageSpriteCurr_.setPosition(POS_LEFT, POS_TOP);
-
-        //establish target scale of new image
-        auto const RESIZE_RATIO{ 0.8f };
-        auto const SPRITE_TARGET_WIDTH{ imagesRect_.width * RESIZE_RATIO };
-        auto const SPRITE_TARGET_HEIGHT{ imagesRect_.height * RESIZE_RATIO };
-
-        auto const SCALE_HORIZ{
-            SPRITE_TARGET_WIDTH / imageSpriteCurr_.getGlobalBounds().width };
-
-        auto const SCALE_VERT{
-            SPRITE_TARGET_HEIGHT / imageSpriteCurr_.getGlobalBounds().height };
-
-        imageCurrTargetScale_ = std::min(SCALE_HORIZ, SCALE_VERT);
-        imageSpriteCurr_.setScale(0.0f, 0.0f);
-
-        imagePrevStartScale_ = imageSpritePrev_.getScale().x;
-        imagePrevStartPosX_ = imageSpritePrev_.getPosition().x;
-
-        //establish the distance selectSpriteCurr, the new index sprite, will travel
-        {
-            sf::Sprite s(imageSpriteCurr_);
-            s.setScale(imageCurrTargetScale_, imageCurrTargetScale_);
-
-            auto const POS_LEFT_CENTERED{
-                (textRegion_.left + (textRegion_.width * 0.5f)) -
-                (s.getGlobalBounds().width * 0.5f) };
-
-            if (areImagesMovingLeft_)
-            {
-                imageCurrTravelDist_ = (textRegion_.left + textRegion_.width) - POS_LEFT_CENTERED;
-            }
-            else
-            {
-                imageCurrTravelDist_ = POS_LEFT_CENTERED - textRegion_.left;
-            }
-        }
-
-        //establish the distance selectSpritePrev, the old index sprite, will travel
         if (areImagesMovingLeft_)
         {
-            imagePrevTravelDist_ = imageSpritePrev_.getGlobalBounds().left - imagesRect_.left;
+            return (textRegion_.left + textRegion_.width) - POS_LEFT_CENTERED;
         }
         else
         {
-            imagePrevTravelDist_ = (imagesRect_.left + imagesRect_.width) -
-                imageSpritePrev_.getGlobalBounds().left;
+            return POS_LEFT_CENTERED - textRegion_.left;
+        }
+    }
+
+
+    float PopupStageImageSelect::SetupSelectImage_CalcTravelDistancePrev()
+    {
+        if (areImagesMovingLeft_)
+        {
+            return spritePrev_.getGlobalBounds().left - imagesRect_.left;
+        }
+        else
+        {
+            return (imagesRect_.left + imagesRect_.width) - spritePrev_.getGlobalBounds().left;
         }
     }
 
@@ -432,9 +457,9 @@ namespace popup
             return false;
         }
 
-        isImageProcAllowed_ = false;
+        isChangingImageAllowed_ = false;
         sliderbarUPtr_->SetCurrentValue(static_cast<float>(targetIndex) * ONE_OVER_COUNT);
-        isImageProcAllowed_ = true;
+        isChangingImageAllowed_ = true;
 
         std::size_t i{ imageIndex_ };
         while (true)
@@ -463,12 +488,12 @@ namespace popup
         if (imageIndex_ > 0)
         {
             auto const NEW_INDEX{ imageIndex_ - 1 };
-            isImageProcAllowed_ = false;
+            isChangingImageAllowed_ = false;
 
             sliderbarUPtr_->SetCurrentValue(
                 static_cast<float>(NEW_INDEX) / static_cast<float>(CountMax()) );
 
-            isImageProcAllowed_ = true;
+            isChangingImageAllowed_ = true;
             imageMoveQueue_.push(NEW_INDEX);
             return true;
         }
@@ -487,12 +512,12 @@ namespace popup
         {
             auto const NEW_INDEX{ imageIndex_ + 1 };
 
-            isImageProcAllowed_ = false;
+            isChangingImageAllowed_ = false;
 
             sliderbarUPtr_->SetCurrentValue(
                 static_cast<float>(NEW_INDEX) / static_cast<float>(COUNT_MAX));
 
-            isImageProcAllowed_ = true;
+            isChangingImageAllowed_ = true;
 
             //if already at the end, then make sure the sliderbar is
             //all the way to the right
@@ -500,9 +525,9 @@ namespace popup
             {
                 //prevent processing and adding to the imageMoveQueue_ or calling
                 //SetupSelectImage() when setting the sliderbar value here.
-                isImageProcAllowed_ = false;
+                isChangingImageAllowed_ = false;
                 sliderbarUPtr_->SetCurrentValue(1.0f);
-                isImageProcAllowed_ = true;
+                isChangingImageAllowed_ = true;
             }
 
             imageMoveQueue_.push(NEW_INDEX);

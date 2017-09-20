@@ -66,6 +66,11 @@ namespace popup
         
     private:
         void SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED);
+        void SetupSelectImage_SetupNewImageIndex(const std::size_t NEW_IMAGE_INDEX);
+        void SetupSelectImage_SetupImageResources();
+        void SetupSelectImage_SetupNumberText(const std::size_t IMAGE_INDEX);
+        float SetupSelectImage_CalcTravelDistanceCurrent();
+        float SetupSelectImage_CalcTravelDistancePrev();
 
         virtual std::size_t CountMax() const;
         inline virtual void SetupContent(const bool) {}
@@ -80,13 +85,13 @@ namespace popup
     protected:
         static const float IMAGE_SLIDER_SPEED_;
 
-        bool isImageProcAllowed_;
-        bool isInitialAnimation_;
+        bool isChangingImageAllowed_;
+        bool isInitialAnimComplete_;
         bool willShowImageCount_;
         sf::Texture textureCurr_;
         sf::Texture texturePrev_;
-        sf::Sprite imageSpriteCurr_;
-        sf::Sprite imageSpritePrev_;
+        sf::Sprite spriteCurr_;
+        sf::Sprite spritePrev_;
         bool areImagesMoving_;
         bool areImagesMovingLeft_;
         sf::FloatRect imagesRect_;
@@ -95,11 +100,11 @@ namespace popup
         std::size_t imageIndex_;
         std::size_t imageIndexLastSoundOn_;
         std::size_t imageIndexLastSoundOff_;
-        float imageCurrTargetScale_;
-        float imagePrevStartScale_;
-        float imagePrevStartPosX_;
-        float imageCurrTravelDist_;
-        float imagePrevTravelDist_;
+        float targetScaleCurr_;
+        float startScalePrev_;
+        float startPosXPrev_;
+        float travelDistCurr_;
+        float travelDistPrev_;
         std::queue<std::size_t> imageMoveQueue_;
         sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         float imagePosTop_;
