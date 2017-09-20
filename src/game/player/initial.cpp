@@ -517,7 +517,8 @@ namespace player
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA{ 1 };
+            auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence) +
+                characterPtrC->TraitNormal(stats::Traits::Charm)) / 4 };
 
             characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
             characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
