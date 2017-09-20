@@ -58,12 +58,12 @@ namespace popup
 
         sf::Texture textureCurr_;
         sf::Texture texturePrev_;
-        sf::Sprite imageSpriteCurr_;
-        sf::Sprite imageSpritePrev_;
+        sf::Sprite spriteCurr_;
+        sf::Sprite spritePrev_;
         float beforeFadeTimerSec_;
         float fadeAlpha_;
-        sfml_util::gui::TextRegionUPtr_t titleUPtr_;
-        sfml_util::gui::TextRegionUPtr_t descUPtr_;
+        sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 
 }

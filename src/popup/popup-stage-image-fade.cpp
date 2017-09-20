@@ -43,12 +43,12 @@ namespace popup
         PopupStageBase(POPUP_INFO),
         textureCurr_(),
         texturePrev_(),
-        imageSpriteCurr_(),
-        imageSpritePrev_(),
+        spriteCurr_(),
+        spritePrev_(),
         beforeFadeTimerSec_(0.0f),
         fadeAlpha_(0.0f),
-        titleUPtr_(),
-        descUPtr_()
+        titleTextRegionUPtr_(),
+        descTextRegionUPtr_()
     {}
 
 
@@ -72,7 +72,7 @@ namespace popup
         auto titleRegion{ textRegion_ };
         titleRegion.height = 0.0f;
 
-        titleUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ImageFadePopupTitle",
             TITLE_TEXTINFO,
             titleRegion);
@@ -87,15 +87,15 @@ namespace popup
         auto descRegion{ textRegion_ };
         descRegion.height = 0.0f;
 
-        descUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ImageFadePopupDesc",
             DESC_TEXTINFO,
             descRegion);
 
-        descRegion = descUPtr_->GetEntityRegion();
+        descRegion = descTextRegionUPtr_->GetEntityRegion();
 
-        descUPtr_->SetEntityPos(
-            descUPtr_->GetEntityPos().x,
+        descTextRegionUPtr_->SetEntityPos(
+            descTextRegionUPtr_->GetEntityPos().x,
             (textRegion_.top + textRegion_.height) - descRegion.height);
 
         auto const IMAGE_PAD{ sfml_util::MapByRes(15.0f, 35.0f) };
@@ -104,7 +104,7 @@ namespace popup
             textRegionUPtr_->GetEntityRegion().top +
             textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD };
 
-        auto const FREE_SPACE_VERT{ descUPtr_->GetEntityPos().y - (IMAGE_TOP + IMAGE_PAD) };
+        auto const FREE_SPACE_VERT{ descTextRegionUPtr_->GetEntityPos().y - (IMAGE_TOP + IMAGE_PAD) };
         auto const FREE_SPACE_HORIZ{ textRegion_.width };
         auto const IMAGE_MAX_DIMM{ sfml_util::MapByRes(256.0f, 768.0f) };
         auto const IMAGE_WIDTH{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
@@ -112,40 +112,40 @@ namespace popup
 
         if (popupInfo_.ImagesCount() == 1)
         {
-            imageSpriteCurr_.setTexture(popupInfo_.ImagesAt(0), true);
+            spriteCurr_.setTexture(popupInfo_.ImagesAt(0), true);
         }
         else
         {
-            imageSpritePrev_.setTexture(popupInfo_.ImagesAt(0), true);
-            imageSpriteCurr_.setTexture(popupInfo_.ImagesAt(1), true);
+            spritePrev_.setTexture(popupInfo_.ImagesAt(0), true);
+            spriteCurr_.setTexture(popupInfo_.ImagesAt(1), true);
         }
 
         //scale the image to fit in the free space
         //assume popupInfo_.ImagesAt(0) and popupInfo_.ImagesAt(1) are the same size
-        imageSpritePrev_.setScale(1.0f, 1.0f);
-        imageSpriteCurr_.setScale(1.0f, 1.0f);
-        auto SCALE_VERT{ IMAGE_HEIGHT / imageSpriteCurr_.getGlobalBounds().height };
-        imageSpritePrev_.setScale(SCALE_VERT, SCALE_VERT);
-        imageSpriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
+        spritePrev_.setScale(1.0f, 1.0f);
+        spriteCurr_.setScale(1.0f, 1.0f);
+        auto SCALE_VERT{ IMAGE_HEIGHT / spriteCurr_.getGlobalBounds().height };
+        spritePrev_.setScale(SCALE_VERT, SCALE_VERT);
+        spriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
 
-        if (imageSpriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
+        if (spriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
         {
-            auto const SCALE_HORIZ{ IMAGE_WIDTH / imageSpriteCurr_.getGlobalBounds().width };
-            imageSpritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-            imageSpriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            auto const SCALE_HORIZ{ IMAGE_WIDTH / spriteCurr_.getGlobalBounds().width };
+            spritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
+            spriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
         }
 
-        imageSpritePrev_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
-            (imageSpritePrev_.getGlobalBounds().width * 0.5f),
+        spritePrev_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
+            (spritePrev_.getGlobalBounds().width * 0.5f),
             (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) -
-            (imageSpritePrev_.getGlobalBounds().height * 0.5f));
+            (spritePrev_.getGlobalBounds().height * 0.5f));
 
-        imageSpriteCurr_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
-            (imageSpriteCurr_.getGlobalBounds().width * 0.5f),
+        spriteCurr_.setPosition((textRegion_.left + (textRegion_.width * 0.5f)) -
+            (spriteCurr_.getGlobalBounds().width * 0.5f),
             (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) -
-            (imageSpriteCurr_.getGlobalBounds().height * 0.5f));
+            (spriteCurr_.getGlobalBounds().height * 0.5f));
 
-        imageSpriteCurr_.setColor(sf::Color(255, 255, 255, 0));
+        spriteCurr_.setColor(sf::Color(255, 255, 255, 0));
     }
 
 
@@ -155,12 +155,12 @@ namespace popup
 
         if (popupInfo_.Images().size() > 1)
         {
-            target.draw(imageSpritePrev_, STATES);
+            target.draw(spritePrev_, STATES);
         }
 
-        target.draw(imageSpriteCurr_, STATES);
-        target.draw( * titleUPtr_, STATES);
-        target.draw( * descUPtr_, STATES);
+        target.draw(spriteCurr_, STATES);
+        target.draw( * titleTextRegionUPtr_, STATES);
+        target.draw( * descTextRegionUPtr_, STATES);
 
         Stage::Draw(target, STATES);
     }
@@ -185,12 +185,12 @@ namespace popup
                     fadeAlpha_ = 255.0f;
                 }
 
-                imageSpriteCurr_.setColor(
+                spriteCurr_.setColor(
                     sf::Color(255, 255, 255, static_cast<sf::Uint8>(fadeAlpha_)));
             }
             else
             {
-                imageSpriteCurr_.setColor(sf::Color::White);
+                spriteCurr_.setColor(sf::Color::White);
             }
         }
     }
