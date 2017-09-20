@@ -67,6 +67,8 @@ namespace popup
 
         virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
+        void DrawRedX(sf::RenderTarget &, const sf::RenderStates &);
+
         virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     protected:

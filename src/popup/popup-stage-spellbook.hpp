@@ -36,6 +36,7 @@
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/color-slider.hpp"
 
 
 namespace game
@@ -100,9 +101,7 @@ namespace popup
         void SetupSpellListboxLabel();
         void SetupSpellListbox();
 
-        void SetPageRightColors();
-        void SetupPageRightForFadeIn();
-        void AdjustPageRightColors(const float ELAPSED_TIME_SECONDS);
+        void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
         void SetupPageRightText(const game::spell::SpellPtrC_t);
         bool DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t) const;
         bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
@@ -116,7 +115,6 @@ namespace popup
         static const sf::Color UNABLE_TEXT_COLOR_;
         static const float     WARNING_DURATION_SEC_;
 
-        FadeState               fadeState_;
         sf::Texture             playerTexture_;
         sf::Sprite              playerSprite_;
         sf::FloatRect           pageRectLeft_;
@@ -138,16 +136,9 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t   unableTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t   spellDescTextUPtr_;
         game::spell::SpellPtr_t currentSpellPtr_;
-        sf::Color               imageColorCurrent_;
-        sf::Color               imageColorBegin_;
-        sf::Color               imageColorEnd_;
-        sf::Color               textColorCurrent_;
-        sf::Color               textColorBegin_;
-        sf::Color               textColorEnd_;
-        bool                    unableTextWillShow_;
-        float                   warningTimerSec_;
-        sfml_util::ColorShaker             warnColorShaker_;
-        sfml_util::sliders::ZeroSliderOnce<float> colorSlider_;
+        sfml_util::ColorShaker  warnColorShaker_;
+        sfml_util::ColorSlider imageColorSlider_;
+        sfml_util::ColorSlider textColorSlider_;
     };
 
 }

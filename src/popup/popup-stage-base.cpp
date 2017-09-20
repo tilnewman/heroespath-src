@@ -187,7 +187,11 @@ namespace popup
         }
 
         textRegionUPtr_->draw(target, STATES);
+    }
 
+
+    void PopupStageBase::DrawRedX(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
         if (willShowXImage_)
         {
             target.draw(xSymbolSprite_, STATES);

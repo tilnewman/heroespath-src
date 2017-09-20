@@ -44,6 +44,8 @@ namespace sliders
     class PosSlider
     {
     public:
+        PosSlider();
+
         explicit PosSlider(
             const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
             const sf::Vector2f & TO_POS_V     = sf::Vector2f(),

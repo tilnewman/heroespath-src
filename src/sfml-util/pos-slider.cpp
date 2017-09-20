@@ -35,9 +35,22 @@ namespace sfml_util
 namespace sliders
 {
 
-    PosSlider::PosSlider(const sf::Vector2f & FROM_POS_V,
-                         const sf::Vector2f & TO_POS_V,
-                         const float          SLIDER_SPEED)
+    PosSlider::PosSlider()
+    :
+        origFromPosV_(0.0f, 0.0f),
+        origToPosV_(0.0f, 0.0f),
+        fromPosV_(0.0f, 0.0f),
+        toPosV_(0.0f, 0.0f),
+        direction_(sfml_util::Moving::Count),
+        isMoving_(false),
+        slider_()
+    {}
+
+
+    PosSlider::PosSlider(
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float          SLIDER_SPEED)
     :
         origFromPosV_(), //see Constructor's call to Setup() for actual default values
         origToPosV_  (),
