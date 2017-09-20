@@ -254,10 +254,9 @@ namespace popup
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                 ((KEY_EVENT.code == sf::Keyboard::C) &&
-                ((popupInfo_.Type() != Popup::ContentSelectionWithItem) &&
-                    (popupInfo_.Type() != Popup::ContentSelectionWithoutItem))) ||
+                 WillPressingCKeyClosePopup()) ||
                 ((KEY_EVENT.code == sf::Keyboard::Return) &&
-                    (popupInfo_.Buttons() == PopupButtons::Cancel)))
+                 (popupInfo_.Buttons() == PopupButtons::Cancel)))
             {
                 sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();

@@ -519,6 +519,33 @@ namespace popup
     }
 
 
+    const PopupInfo PopupManager::CreateInventoryPromptPopupInfo(
+        const std::string &                 POPUP_NAME,
+        const std::string &                 PROMPT_TEXT,
+        const PopupButtons::Enum            BUTTONS,
+        const PopupImage::Enum              IMAGE,
+        const sfml_util::Justified::Enum    JUSTIFIED,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const bool                          WILL_INCLUDE_ITEMS,
+        const unsigned int                  FONT_SIZE) const
+    {
+        PopupInfo popupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
+            BUTTONS,
+            IMAGE,
+            GetScaleForImage(IMAGE),
+            ((WILL_INCLUDE_ITEMS) ?
+                popup::Popup::ContentSelectionWithItem :
+                popup::Popup::ContentSelectionWithoutItem),
+            SOUND_EFFECT);
+
+        popupInfo.SetDoesIncludeItems(WILL_INCLUDE_ITEMS);
+
+        return popupInfo;
+    }
+
+
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
         sfml_util::LoadTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(

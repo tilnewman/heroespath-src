@@ -48,6 +48,7 @@
 #include "popup/popup-stage-musicsheet.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-num-select.hpp"
+#include "popup/popup-stage-inventory-prompt.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/game.hpp"
@@ -2002,7 +2003,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         actionType_ = ActionType::Give;
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_GIVE_,
             std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor").
                 append("Shards\n\n...or (Escape) to Cancel"),
@@ -2010,10 +2011,12 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             popup::PopupImage::Large,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptGeneric,
-            popup::Popup::ContentSelectionWithItem,
+            true,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-        LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageInventoryPrompt>(
+            this, POPUP_INFO);
+
         isWaitingOnPopup_ = true;
         return true;
     }
@@ -2808,17 +2811,20 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         std::ostringstream ss;
         ss << PROMPT_TEXT << "\n\n(C)oins\n(G)ems\n(M)eteor Shards";
-        auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_CONTENTSELECTION_,
             ss.str(),
             popup::PopupButtons::Cancel,
             popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptGeneric,
-            popup::Popup::ContentSelectionWithoutItem,
+            false,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_DONE);
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageInventoryPrompt>(
+            this, POPUP_INFO);
+
         isWaitingOnPopup_ = true;
     }
 

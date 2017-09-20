@@ -29,39 +29,8 @@
 //
 #include "popup-stage.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/margins.hpp"
-#include "sfml-util/sound-manager.hpp"
-#include "sfml-util/text-rendering.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/gradient.hpp"
-#include "sfml-util/gui/color-set.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/gui/mouse-text-info.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
-
-#include "game/game.hpp"
-#include "game/stats/trait-enum.hpp"
-#include "game/state/game-state.hpp"
-#include "game/player/party.hpp"
 #include "game/loop-manager.hpp"
-#include "game/log-macros.hpp"
-#include "game/creature/name-info.hpp"
-#include "game/creature/creature.hpp"
-#include "game/creature/race-enum.hpp"
-#include "game/creature/role-enum.hpp"
-#include "game/song/song.hpp"
-#include "game/game-data-file.hpp"
-#include "game/item/item-profile-warehouse.hpp"
-
 #include "popup/popup-manager.hpp"
-
-#include "misc/random.hpp"
-#include "misc/boost-string-includes.hpp"
 
 #include <sstream>
 #include <random>
@@ -126,55 +95,6 @@ namespace popup
 
     bool PopupStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if ((popupInfo_.Type() == Popup::ContentSelectionWithItem) ||
-            (popupInfo_.Type() == Popup::ContentSelectionWithoutItem))
-        {
-            if ((KEY_EVENT.code == sf::Keyboard::I) &&
-                (popupInfo_.Type() == Popup::ContentSelectionWithItem))
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::Thock).PlayRandom();
-
-                game::LoopManager::Instance()->PopupWaitEnd(
-                    Response::Select, PopupInfo::ContentNum_Item());
-                return true;
-            }
-            else if (KEY_EVENT.code == sf::Keyboard::C)
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::Thock).PlayRandom();
-
-                game::LoopManager::Instance()->PopupWaitEnd(
-                    Response::Select, PopupInfo::ContentNum_Coins());
-                return true;
-            }
-            else if (KEY_EVENT.code == sf::Keyboard::G)
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::Thock).PlayRandom();
-
-                game::LoopManager::Instance()->PopupWaitEnd(
-                    Response::Select, PopupInfo::ContentNum_Gems());
-                return true;
-            }
-            else if (KEY_EVENT.code == sf::Keyboard::M)
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::Thock).PlayRandom();
-
-                game::LoopManager::Instance()->PopupWaitEnd(
-                    Response::Select, PopupInfo::ContentNum_MeteorShards());
-
-                return true;
-            }
-        }
-
-        if ((popupInfo_.Buttons() & PopupButtons::Select) &&
-            (KEY_EVENT.code == sf::Keyboard::S))
-        {
-            return HandleSelect();
-        }
-
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 

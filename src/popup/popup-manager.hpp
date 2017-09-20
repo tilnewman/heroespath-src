@@ -29,12 +29,13 @@
 //  Code to load and store popup window textures.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "popup/popup-enums.hpp"
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
+#include "popup/popup-enums.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-info.hpp"
+
 #include "game/combat/combat-over-enum.hpp"
 
 #include <boost/filesystem.hpp>
@@ -247,6 +248,17 @@ namespace popup
             const std::string & GENERAL_ERROR_MSG,
             const std::string & TECH_ERROR_MSG,
             const std::string & TITLE_MSG = "") const;
+
+        const PopupInfo CreateInventoryPromptPopupInfo(
+            const std::string &                 POPUP_NAME,
+            const std::string &                 PROMPT_TEXT,
+            const PopupButtons::Enum            BUTTONS = PopupButtons::Okay,
+            const PopupImage::Enum              IMAGE = PopupImage::Banner,
+            const sfml_util::Justified::Enum    JUSTIFIED = sfml_util::Justified::Center,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+            const bool                          WILL_INCLUDE_ITEMS = false,
+            const unsigned int                  FONT_SIZE =
+                sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         const PopupInfo CreateItemProfilePleaseWaitPopupInfo(
             const std::string & POPUP_NAME) const;

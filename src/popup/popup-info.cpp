@@ -93,7 +93,8 @@ namespace popup
         titleFromPtr_    (FROM_TITLE_PTR),
         titleToPtr_      (TO_TITLE_PTR),
         titleText_       (TITLE_TEXT),
-        descText_        (DESC_TEXT)
+        descText_        (DESC_TEXT),
+        willIncludeItems_(false)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
             "popup::PopupInfo(type=" << Popup::ToString(TYPE) << ", buttons="
@@ -170,7 +171,8 @@ namespace popup
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
-        descText_        ("")
+        descText_        (""),
+        willIncludeItems_(false)
     {}
 
 
@@ -207,7 +209,8 @@ namespace popup
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
-        descText_        ("")
+        descText_        (""),
+        willIncludeItems_(false)
     {}
 
 
@@ -242,7 +245,8 @@ namespace popup
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
-        descText_        ("")
+        descText_        (""),
+        willIncludeItems_(false)
     {}
 
 
@@ -277,7 +281,8 @@ namespace popup
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
-        descText_        ("")
+        descText_        (""),
+        willIncludeItems_(false)
     {}
 
 
@@ -316,7 +321,8 @@ namespace popup
         titleFromPtr_    (PI.titleFromPtr_),
         titleToPtr_      (PI.titleToPtr_),
         titleText_       (PI.titleText_),
-        descText_        (PI.descText_)
+        descText_        (PI.descText_),
+        willIncludeItems_(PI.willIncludeItems_)
     {}
 
 
@@ -354,6 +360,7 @@ namespace popup
             titleToPtr_       = PI.titleToPtr_;
             titleText_        = PI.titleText_;
             descText_         = PI.descText_;
+            willIncludeItems_ = PI.willIncludeItems_;
         }
 
         return * this;

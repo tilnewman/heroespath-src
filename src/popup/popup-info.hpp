@@ -30,12 +30,13 @@
 //  window except for drawing details such as position etc.
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "popup/popup-enums.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/box.hpp"
 
+#include "popup/popup-enums.hpp"
 #include "popup/which-popup-enum.hpp"
+
 #include "game/combat/combat-over-enum.hpp"
 
 #include <string>
@@ -148,6 +149,7 @@ namespace popup
         inline game::creature::TitlePtr_t        TitleToPtr() const         { return titleToPtr_; }
         inline const std::string                 TitleText() const          { return titleText_; }
         inline const std::string                 DescText() const           { return descText_; }
+        inline bool                              WillIncludeItems() const   { return willIncludeItems_; }
 
         inline const sf::Texture & ImagesAt(const std::size_t I) const
         {
@@ -167,6 +169,11 @@ namespace popup
         inline void SetBoxInfo(const sfml_util::gui::box::Info & NEW_BOX_INFO)
         {
             boxInfo_ = NEW_BOX_INFO;
+        }
+
+        inline void SetDoesIncludeItems(const bool WILL_INCLUDE_ITEMS)
+        {
+            willIncludeItems_ = WILL_INCLUDE_ITEMS;
         }
 
     public:
@@ -201,6 +208,7 @@ namespace popup
         game::creature::TitlePtr_t        titleToPtr_;
         std::string                       titleText_;
         std::string                       descText_;
+        bool                              willIncludeItems_;
     };
 
 

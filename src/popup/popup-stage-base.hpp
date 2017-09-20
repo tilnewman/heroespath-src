@@ -98,6 +98,8 @@ namespace popup
             const PopupImage::Enum PI,
             const float SCALE) const;
 
+        virtual inline bool WillPressingCKeyClosePopup() const { return false; }
+
     private:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
 
