@@ -35,6 +35,7 @@
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/color-slider.hpp"
 
 
 namespace game
@@ -60,17 +61,6 @@ namespace popup
 
         //prevent copy assignment
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) =delete;
-
-        //defines what is happening on the spellbook popup
-        enum class FadeState
-        {
-            Initial = 0,
-            Waiting,
-            FadingOut,
-            FadingIn,
-            Warning,
-            Count
-        };
 
     public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
@@ -102,9 +92,7 @@ namespace popup
         void SetupListbox();
 
         void SetupPageRightText(const game::song::SongPtrC_t);
-        void MovePageRightColors(const float ELAPSED_TIME_SECONDS);
-        void SetupPageRightForFadeIn();
-        void SetPageRightColors();
+        void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
         bool DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t) const;
         bool CanPlaySongInPhase(const game::song::SongPtrC_t) const;
         bool CanPlaySong(const game::song::SongPtrC_t) const;
@@ -121,26 +109,16 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
         sfml_util::gui::ListBoxSPtr_t listBoxSPtr_;
-        FadeState fadeState_;
         sf::Texture playerTexture_;
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
-        sf::Color imageColorCurrent_;
-        sf::Color imageColorBegin_;
-        sf::Color imageColorEnd_;
-        sf::Color textColorCurrent_;
-        sf::Color textColorBegin_;
-        sf::Color textColorEnd_;
-        sfml_util::sliders::ZeroSliderOnce<float> colorSlider_;
-        sfml_util::gui::TextRegionUPtr_t songTitleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t songDetailsTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t songUnableTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t songDescTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t detailsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t unableTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t descTextUPtr_;
         sf::Texture songTexture_;
         sf::Sprite songSprite_;
-        bool willShowUnableText_;
-        float warningTimerSec_;
         sfml_util::ColorShaker warnColorShaker_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
@@ -149,6 +127,8 @@ namespace popup
         const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
         sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
         sfml_util::gui::TextInfo listBoxItemTextInfo_;
+        sfml_util::ColorSlider imageColorSlider_;
+        sfml_util::ColorSlider textColorSlider_;
     };
 
 }

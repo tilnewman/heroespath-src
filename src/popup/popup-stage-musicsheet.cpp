@@ -56,32 +56,23 @@ namespace popup
 
 
     PopupStageMusicSheet::PopupStageMusicSheet(const PopupInfo & POPUP_INFO)
-    :
+        :
         PopupStageBase(POPUP_INFO),
         currentSongPtr_(nullptr),
         charDetailsTextRegionUPtr_(),
         listBoxLabelTextRegionUPtr_(),
         listBoxSPtr_(),
-        fadeState_(FadeState::Initial),
         playerTexture_(),
         playerSprite_(),
         pageRectLeft_(),
         pageRectRight_(),
-        imageColorCurrent_(sf::Color::Transparent),
-        imageColorBegin_(sf::Color::Transparent),
-        imageColorEnd_(sf::Color::Transparent),
-        textColorCurrent_(sf::Color::Transparent),
-        textColorBegin_(sf::Color::Transparent),
-        textColorEnd_(sf::Color::Transparent),
-        songTitleTextRegionUPtr_(),
-        songDetailsTextUPtr_(),
-        songUnableTextUPtr_(),
-        songDescTextUPtr_(),
+        titleTextRegionUPtr_(),
+        detailsTextUPtr_(),
+        unableTextUPtr_(),
+        descTextUPtr_(),
         songTexture_(),
         songSprite_(),
-        willShowUnableText_(false),
-        warningTimerSec_(0.0f),
-        warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 60.0f),
+        warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f),
         LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190)),
         LISTBOX_LINE_COLOR_(sfml_util::FontManager::Color_GrayDark()),
         LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_),
@@ -96,7 +87,10 @@ namespace popup
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left)
+            sfml_util::Justified::Left),
+
+        imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_),
+        textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
     {}
 
 
@@ -117,8 +111,7 @@ namespace popup
             (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
             (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            if ((FadeState::Initial != fadeState_) &&
-                (PACKAGE.package.PTR_->GetSelected() != nullptr) &&
+            if ((PACKAGE.package.PTR_->GetSelected() != nullptr) &&
                 (currentSongPtr_ != PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC))
             {
                 if (currentSongPtr_ != PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC)
@@ -126,14 +119,12 @@ namespace popup
                     currentSongPtr_ = PACKAGE.package.PTR_->GetSelected()->SONG_CPTRC;
                 }
 
-                if (FadeState::FadingOut != fadeState_)
+                if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
-                    imageColorBegin_  = imageColorCurrent_;
-                    textColorBegin_  = textColorCurrent_;
-                    imageColorEnd_ = sf::Color(255, 255, 255, 0);
-                    textColorEnd_ = sf::Color(0, 0, 0, 0);
-                    fadeState_ = FadeState::FadingOut;
-                    colorSlider_.Reset(COLOR_FADE_SPEED_);
+                    imageColorSlider_.ChangeDirection();
+                    imageColorSlider_.Start();
+                    textColorSlider_.ChangeDirection();
+                    textColorSlider_.Start();
                 }
 
                 return true;
@@ -179,7 +170,7 @@ namespace popup
 
         //setup initial values for songbook page right text and colors
         currentSongPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
-        SetupPageRightForFadeIn();
+        SetupPageRightText(currentSongPtr_);
     }
 
 
@@ -193,17 +184,19 @@ namespace popup
         target.draw(songSprite_, STATES);
         charDetailsTextRegionUPtr_->draw(target, STATES);
         listBoxLabelTextRegionUPtr_->draw(target, STATES);
-        songTitleTextRegionUPtr_->draw(target, STATES);
-        songDetailsTextUPtr_->draw(target, STATES);
+        titleTextRegionUPtr_->draw(target, STATES);
+        detailsTextUPtr_->draw(target, STATES);
 
-        if (willShowUnableText_)
+        if (willShowXImage_)
         {
-            songUnableTextUPtr_->draw(target, STATES);
+            unableTextUPtr_->draw(target, STATES);
         }
 
-        songDescTextUPtr_->draw(target, STATES);
+        descTextUPtr_->draw(target, STATES);
 
         Stage::Draw(target, STATES);
+
+        PopupStageBase::DrawRedX(target, STATES);
     }
 
 
@@ -211,45 +204,28 @@ namespace popup
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        if (FadeState::Initial == fadeState_)
-        {
-            currentSongPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
-            SetupPageRightForFadeIn();
-        }
-        else if (FadeState::FadingIn == fadeState_)
-        {
-            MovePageRightColors(ELAPSED_TIME_SECONDS);
-            SetPageRightColors();
+        textColorSlider_.UpdateTime(ELAPSED_TIME_SECONDS);
+        imageColorSlider_.UpdateTime(ELAPSED_TIME_SECONDS);
 
-            if (colorSlider_.GetIsDone())
-            {
-                fadeState_ = FadeState::Waiting;
-                colorSlider_.Reset(COLOR_FADE_SPEED_);
-            }
-        }
-        else if (FadeState::FadingOut == fadeState_)
-        {
-            MovePageRightColors(ELAPSED_TIME_SECONDS);
-            SetPageRightColors();
+        SetPageRightColors(imageColorSlider_.Current(), textColorSlider_.Current());
 
-            if (colorSlider_.GetIsDone())
-            {
-                SetupPageRightText(currentSongPtr_);
-                SetupPageRightForFadeIn();
-            }
-        }
-        else if (FadeState::Warning == fadeState_)
+        if ((imageColorSlider_.IsMoving() == false) &&
+            (imageColorSlider_.Direction() == sfml_util::Moving::Away))
         {
-            songUnableTextUPtr_->SetEntityColorFgBoth(
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                sfml_util::sound_effect::Magic1);
+
+            SetupPageRightText(currentSongPtr_);
+            imageColorSlider_.ChangeDirection();
+            imageColorSlider_.Start();
+            textColorSlider_.ChangeDirection();
+            textColorSlider_.Start();
+        }
+
+        if (willShowXImage_)
+        {
+            unableTextUPtr_->SetEntityColorFgBoth(
                 warnColorShaker_.Update(ELAPSED_TIME_SECONDS));
-
-            warningTimerSec_ += ELAPSED_TIME_SECONDS;
-            if (warningTimerSec_ > WARNING_DURATION_SEC_)
-            {
-                songUnableTextUPtr_->SetEntityColorFgBoth(UNABLE_TEXT_COLOR_);
-                warningTimerSec_ = 0.0f;
-                fadeState_ = FadeState::Waiting;
-            }
         }
     }
 
@@ -265,9 +241,8 @@ namespace popup
             game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
             return true;
         }
-        else if ((FadeState::Waiting == fadeState_) &&
-                 ((KEY_EVENT.code == sf::Keyboard::Return) ||
-                  (KEY_EVENT.code == sf::Keyboard::C)))
+        else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
+                  (KEY_EVENT.code == sf::Keyboard::C))
         {
             return HandleSongPlay();
         }
@@ -564,16 +539,16 @@ namespace popup
                                                  pageRectRight_.width,
                                                  0.0f };
 
-        if (songTitleTextRegionUPtr_.get() == nullptr)
+        if (titleTextRegionUPtr_.get() == nullptr)
         {
-            songTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicSheetPopupWindowSongTitle",
                 SONG_TITLE_TEXTINFO,
                 SONG_TITLE_TEXTRECT);
         }
         else
         {
-            songTitleTextRegionUPtr_->SetText(SONG_CPTRC->Name());
+            titleTextRegionUPtr_->SetText(SONG_CPTRC->Name());
         }
 
         //setup song image
@@ -583,11 +558,11 @@ namespace popup
         songSprite_.setTexture(songTexture_);
         auto const SONG_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         songSprite_.setScale(SONG_IMAGE_SCALE, SONG_IMAGE_SCALE);
-        songSprite_.setColor(imageColorCurrent_);
+        songSprite_.setColor(imageColorSlider_.Current());
 
         songSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) -
             (songSprite_.getGlobalBounds().width * 0.5f),
-                songTitleTextRegionUPtr_->GetEntityRegion().top + songTitleTextRegionUPtr_->
+                titleTextRegionUPtr_->GetEntityRegion().top + titleTextRegionUPtr_->
                     GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
 
         auto const SYM_SCALE{ sfml_util::MapByRes(0.75f, 3.75f) };
@@ -630,27 +605,25 @@ namespace popup
                                                    SONGDETAILS_TEXTRECT_WIDTH,
                                                    SONGDETAILS_TEXTRECT_HEIGHT };
 
-        if (songDetailsTextUPtr_.get() == nullptr)
+        if (detailsTextUPtr_.get() == nullptr)
         {
-            songDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            detailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicsheetPopupWindowSongDetails",
                 SONG_DETAILS_TEXTINFO,
                 SONG_DETAILS_TEXTRECT);
         }
         else
         {
-            songDetailsTextUPtr_->SetText(ss.str());
+            detailsTextUPtr_->SetText(ss.str());
         }
 
         //setup song 'unable to cast' text
         willShowXImage_ = false;
         ss.str(" ");
-        willShowUnableText_ = false;
         if (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) == false)
         {
             willShowXImage_ = true;
             ss << "Insufficient Mana";
-            willShowUnableText_ = true;
         }
         else if (CanPlaySongInPhase(SONG_CPTRC) == false)
         {
@@ -679,8 +652,6 @@ namespace popup
                 ss << "Only during "
                     << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << ".";
             }
-
-            willShowUnableText_ = true;
         }
 
         const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(
@@ -696,8 +667,8 @@ namespace popup
 
         auto const SONG_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
 
-        auto const SONG_UNABLE_TEXTRECT_TOP    { songDetailsTextUPtr_->GetEntityRegion().top +
-            songDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+        auto const SONG_UNABLE_TEXTRECT_TOP    { detailsTextUPtr_->GetEntityRegion().top +
+            detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
 
         auto const SONG_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
         auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
@@ -708,7 +679,7 @@ namespace popup
             SONG_UNABLE_TEXTRECT_WIDTH,
             SONG_UNABLE_TEXTRECT_HEIGHT };
 
-        songUnableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "MusicsheetPopupWindowSongUnableToCast",
             SONG_UNABLE_TEXTINFO,
             SONG_UNABLE_TEXTRECT);
@@ -727,15 +698,15 @@ namespace popup
         auto const SONG_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
         auto const SONG_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
         auto songDescTextRectTop{ 0.0f };
-        if (willShowUnableText_)
+        if (willShowXImage_)
         {
-            songDescTextRectTop = songUnableTextUPtr_->GetEntityRegion().top +
-                songUnableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            songDescTextRectTop = unableTextUPtr_->GetEntityRegion().top +
+                unableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
         else
         {
-            songDescTextRectTop = songDetailsTextUPtr_->GetEntityRegion().top +
-                songDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            songDescTextRectTop = detailsTextUPtr_->GetEntityRegion().top +
+                detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
         auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width -
             (SONG_DESC_HORIZ_MARGIN * 2.0f) };
@@ -748,98 +719,49 @@ namespace popup
                                                 SONG_DESC_TEXTRECT_WIDTH,
                                                 SONG_DESC_TEXTRECT_HEIGHT };
 
-        if (songDescTextUPtr_.get() == nullptr)
+        if (descTextUPtr_.get() == nullptr)
         {
-            songDescTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            descTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SongnbookPopupWindowSongDescription",
                 SONG_DESC_TEXTINFO,
                 SONG_DESC_TEXTRECT);
         }
         else
         {
-            songDescTextUPtr_->Setup(SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, this);
+            descTextUPtr_->Setup(SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, this);
         }
     }
 
 
-    void PopupStageMusicSheet::MovePageRightColors(const float ELAPSED_TIME_SECONDS)
+    void PopupStageMusicSheet::SetPageRightColors(
+        const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR)
     {
-        auto const RATIO_COMPLETE{ colorSlider_.Update(ELAPSED_TIME_SECONDS) };
-
-        auto const IMAGE_ALPHA_DIFF{
-            static_cast<float>(imageColorEnd_.a - imageColorBegin_.a) };
-
-        auto const IMAGE_ALPHA_NEW{ static_cast<sf::Uint8>(IMAGE_ALPHA_DIFF * RATIO_COMPLETE) };
-        imageColorCurrent_.a = IMAGE_ALPHA_NEW;
-
-        imageColorCurrent_.r = imageColorCurrent_.g = imageColorCurrent_.b = 255;
-
-        auto const TEXT_ALPHA_DIFF{
-            static_cast<float>(textColorEnd_.a - textColorBegin_.a) };
-
-        auto const TEXT_ALPHA_NEW{ static_cast<sf::Uint8>(TEXT_ALPHA_DIFF * RATIO_COMPLETE) };
-        textColorCurrent_.a = TEXT_ALPHA_NEW;
-        
-        textColorCurrent_.r = textColorCurrent_.g = textColorCurrent_.b = 0;
-    }
-
-
-    void PopupStageMusicSheet::SetupPageRightForFadeIn()
-    {
-        SetupPageRightText(currentSongPtr_);
-        
-        imageColorBegin_ = sf::Color::Transparent;
-        imageColorCurrent_ = sf::Color::Transparent;
-        textColorBegin_ = sf::Color::Transparent;
-        textColorCurrent_ = sf::Color::Transparent;
-        SetPageRightColors();
-
-        imageColorEnd_ = sf::Color(255, 255, 255, IMAGE_ALPHA_);
-        textColorEnd_ = sf::Color(0, 0, 0, 255);
-
-        fadeState_ = FadeState::FadingIn;
-
-        colorSlider_.Reset(COLOR_FADE_SPEED_);
-
-        if (currentSongPtr_ != nullptr)
-        {
-            if (currentSongPtr_->Type() == game::song::SongType::Drum)
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::DrumBlip).PlayRandom();
-            }
-            else if (currentSongPtr_->Type() == game::song::SongType::Guitar)
-            {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::GuitarStrum).PlayRandom();
-            }
-        }
-    }
-
-
-    void PopupStageMusicSheet::SetPageRightColors()
-    {
-        songSprite_.setColor(imageColorCurrent_);
+        songSprite_.setColor(IMAGE_COLOR);
 
         const sfml_util::gui::ColorSet TEXT_COLOR_SET(
-            textColorCurrent_,
-            textColorCurrent_,
-            textColorCurrent_,
-            textColorCurrent_);
+            TEXT_COLOR,
+            TEXT_COLOR,
+            TEXT_COLOR,
+            TEXT_COLOR);
 
-        songTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
-        songDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
-        songDescTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
+        titleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
+        detailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
+        descTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
 
         auto unableTextColor{ UNABLE_TEXT_COLOR_ };
-        unableTextColor.a = textColorCurrent_.a;
-        const sfml_util::gui::ColorSet TUNABLE_EXT_COLOR_SET(
+        unableTextColor.a = TEXT_COLOR.a;
+
+        const sfml_util::gui::ColorSet UNABLE_EXT_COLOR_SET(
             unableTextColor,
             unableTextColor,
             unableTextColor,
             unableTextColor);
 
-        songUnableTextUPtr_->SetEntityColors(TUNABLE_EXT_COLOR_SET);
+        unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
+
+        auto redXColor{ sf::Color::Red };
+        redXColor.a = IMAGE_COLOR.a;
+        xSymbolSprite_.setColor(redXColor);
     }
 
 
@@ -892,11 +814,8 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Prompt).Play(sfml_util::sound_effect::PromptWarn);
 
-            if (FadeState::Waiting == fadeState_)
-            {
-                fadeState_ = FadeState::Warning;
-                warningTimerSec_ = 0.0f;
-            }
+            willShowXImage_ = true;
+
             return false;
         }
     }

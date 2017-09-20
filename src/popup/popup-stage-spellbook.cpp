@@ -470,6 +470,10 @@ namespace popup
             unableTextColor);
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
+
+        auto redXColor{ sf::Color::Red };
+        redXColor.a = IMAGE_COLOR.a;
+        xSymbolSprite_.setColor(redXColor);
     }
 
 
