@@ -46,6 +46,7 @@
 #include "popup/popup-stage-spellbook.hpp"
 #include "popup/popup-stage-musicsheet.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-stage-image-fade.hpp"
 
 #include "game/game.hpp"
 #include "game/phase-enum.hpp"
@@ -4304,34 +4305,37 @@ namespace stage
             //here is where the Title actually changes the creature
             TITLE_PAIR.second.second->Change(TITLE_PAIR.first);
 
-            creatureTitleVec_.erase( std::remove(creatureTitleVec_.begin(),
-                                                 creatureTitleVec_.end(),
-                                                 TITLE_PAIR),
-                                        creatureTitleVec_.end() );
+            creatureTitleVec_.erase(
+                std::remove(
+                    creatureTitleVec_.begin(),
+                    creatureTitleVec_.end(),
+                    TITLE_PAIR),
+                creatureTitleVec_.end() );
 
             sf::Texture fromTexture;
             if (TITLE_PAIR.second.first != nullptr)
             {
-                sfml_util::gui::TitleImageManager::Instance()->Get(fromTexture,
-                    TITLE_PAIR.second.first->Which());
+                sfml_util::gui::TitleImageManager::Instance()->Get(
+                    fromTexture, TITLE_PAIR.second.first->Which());
             }
 
             sf::Texture toTexture;
             if (TITLE_PAIR.second.second != nullptr)
             {
-                sfml_util::gui::TitleImageManager::Instance()->Get(toTexture,
-                    TITLE_PAIR.second.second->Which());
+                sfml_util::gui::TitleImageManager::Instance()->Get(
+                    toTexture, TITLE_PAIR.second.second->Which());
             }
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->
-                CreateImageFadePopupInfo(POPUP_NAME_ACHIEVEMENT_,
-                                            TITLE_PAIR.first,
-                                            TITLE_PAIR.second.first,
-                                            TITLE_PAIR.second.second,
-                                            & fromTexture,
-                                            & toTexture) };
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
+                POPUP_NAME_ACHIEVEMENT_,
+                TITLE_PAIR.first,
+                TITLE_PAIR.second.first,
+                TITLE_PAIR.second.second,
+                & fromTexture,
+                & toTexture) };
 
-            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
+                this, POPUP_INFO);
 
             //return false because a popup will follow a popup
             return false;

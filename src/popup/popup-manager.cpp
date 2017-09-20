@@ -179,11 +179,12 @@ namespace popup
         const sfml_util::Justified::Enum JUSTIFIED,
         const unsigned int               FONT_SIZE) const
     {
-        return sfml_util::gui::TextInfo(TEXT,
-                                        sfml_util::FontManager::Instance()->Font_Default2(),
-                                        FONT_SIZE,
-                                        fontColor_,
-                                        JUSTIFIED);
+        return sfml_util::gui::TextInfo(
+            TEXT,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            FONT_SIZE,
+            fontColor_,
+            JUSTIFIED);
     }
 
 
@@ -197,17 +198,18 @@ namespace popup
         const Popup::Enum                   WHICH_POPUP,
         const unsigned int                  FONT_SIZE) const
     {
-        return PopupInfo(POPUP_NAME,
-                               TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
-                               BUTTONS,
-                               IMAGE,
-                               GetScaleForImage(IMAGE),
-                               WHICH_POPUP,
-                               SOUND_EFFECT);
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
+            BUTTONS,
+            IMAGE,
+            GetScaleForImage(IMAGE),
+            WHICH_POPUP,
+            SOUND_EFFECT);
     }
 
 
-    const PopupInfo PopupManager::CreatePopupInfo(
+    const PopupInfo PopupManager::CreateBoxedPopupInfo(
         const std::string &                 POPUP_NAME,
         const std::string &                 PROMPT_TEXT,
         const sf::Color &                   TEXT_COLOR,
@@ -250,7 +252,7 @@ namespace popup
     }
 
 
-    const PopupInfo PopupManager::CreatePopupInfo(
+    const PopupInfo PopupManager::CreateNumberSelectionPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
         const std::size_t   THE_MIN,

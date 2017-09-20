@@ -22,34 +22,36 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGE_HPP_INCLUDED
-#define POPUP_POPUPSTAGE_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED
+#define POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED
 //
-// popup-stage.hpp
-//  This class encapsulates a popup window stage on screen.
+// popup-stage-num-select.hpp
 //
-#include "sfml-util/gui/text-region.hpp"
-
 #include "popup/popup-stage-base.hpp"
 
-#include <memory>
-#include <string>
+#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/gui/text-entry-box.hpp"
 
 
 namespace popup
 {
-    //A base class for all Popup Window Stages
-    class PopupStage : public PopupStageBase
+
+    //Responsible for implementing the Number Selection Popup Stage.
+    class PopupStageNumberSelect
+    :
+        public PopupStageBase,
+        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
         //prevent copy construction
-        PopupStage(const PopupStage &) =delete;
+        PopupStageNumberSelect(const PopupStageNumberSelect &) =delete;
 
         //prevent copy assignment
-        PopupStage & operator=(const PopupStage &) =delete;
+        PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) =delete;
 
     public:
-        explicit PopupStage(const PopupInfo & POPUP_INFO);
-        virtual ~PopupStage();
+        explicit PopupStageNumberSelect(const PopupInfo & POPUP_INFO);
+        virtual ~PopupStageNumberSelect();
 
         using PopupStageBase::HandleCallback;
 
@@ -57,31 +59,31 @@ namespace popup
         {
             return PopupStageBase::HandlerName();
         }
-        
+
+        virtual bool HandleCallback(
+            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
+
         virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
         virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        void ItemProfileSetup();
-        void SetupCombatOverPopup();
-        void SetupSystemErrorPopup();
+        void SetupInfoText(const std::string &);
+        int GetSelectNumber() const;
+        bool ProcessSelectNumber();
 
     private:
-        //members that support the resoution change popup
-        float elapsedTimeCounter_;
-        std::size_t secondCounter_;
-        
-        //members supporting CombatOver
-        sf::Texture combatBgTexture_;
-        sf::Sprite combatBgSprite_;
-        sfml_util::gui::TextRegionUPtr_t titleUPtr_;
-        sfml_util::gui::TextRegionUPtr_t descUPtr_;
+        static const int NUMBER_SELECT_INVALID_;
 
-        //members supporting ItemProfilePleaseWait
-        int drawCountdown_;
+        sfml_util::gui::TextRegionUPtr_t msgTextRegionUPtr_;
+        sfml_util::gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
+        bool willSliderbarUpdate_;
+        bool willTextBoxUpdate_;
     };
 
 }
-#endif //POPUP_POPUPSTAGE_HPP_INCLUDED
+
+#endif //POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED

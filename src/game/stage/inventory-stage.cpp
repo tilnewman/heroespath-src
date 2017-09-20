@@ -47,6 +47,7 @@
 #include "popup/popup-stage-spellbook.hpp"
 #include "popup/popup-stage-musicsheet.hpp"
 #include "popup/popup-stage-char-select.hpp"
+#include "popup/popup-stage-num-select.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/game.hpp"
@@ -2762,21 +2763,28 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     }
 
 
-    void InventoryStage::PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX)
+    void InventoryStage::PopupNumberSelectWindow(
+        const std::string & PROMPT_TEXT,
+        const std::size_t NUMBER_MAX)
     {
-        auto const POPUP_INFO_NUMBER_SELECT{ popup::PopupManager::Instance()->CreatePopupInfo(
-            POPUP_NAME_NUMBER_SELECT_,
-            PROMPT_TEXT,
-            1,
-            NUMBER_MAX,
-            sfml_util::FontManager::Instance()->Size_Largeish()) };
+        auto const POPUP_INFO_NUMBER_SELECT{ popup::PopupManager::Instance()->
+            CreateNumberSelectionPopupInfo(
+                POPUP_NAME_NUMBER_SELECT_,
+                PROMPT_TEXT,
+                1,
+                NUMBER_MAX,
+                sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-        LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_NUMBER_SELECT);
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageNumberSelect>(
+            this, POPUP_INFO_NUMBER_SELECT);
+
         isWaitingOnPopup_ = true;
     }
 
 
-    void InventoryStage::PopupDoneWindow(const std::string & PROMPT_TEXT, const bool WILL_PLAY_SOUNDEFFECT)
+    void InventoryStage::PopupDoneWindow(
+        const std::string & PROMPT_TEXT,
+        const bool WILL_PLAY_SOUNDEFFECT)
     {
         auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupDone",

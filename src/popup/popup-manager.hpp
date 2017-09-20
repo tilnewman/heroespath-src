@@ -177,7 +177,7 @@ namespace popup
                 sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to create popup windows with a simple box and custom background color
-        const PopupInfo CreatePopupInfo(
+        const PopupInfo CreateBoxedPopupInfo(
             const std::string &                 POPUP_NAME,
             const std::string &                 PROMPT_TEXT,
             const sf::Color &                   TEXT_COLOR,
@@ -199,7 +199,7 @@ namespace popup
                 sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to create the number selection popup window
-        const PopupInfo CreatePopupInfo(
+        const PopupInfo CreateNumberSelectionPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & PROMPT_TEXT,
             const std::size_t   THE_MIN,
