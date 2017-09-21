@@ -74,6 +74,7 @@ namespace popup
         void SetupInfoText(const std::string &);
         int GetSelectNumber() const;
         bool ProcessSelectNumber();
+        virtual void SetupSliderbar() override;
 
     private:
         static const int NUMBER_SELECT_INVALID_;

@@ -82,6 +82,8 @@ namespace popup
         bool KeyReleaseHandleLeft();
         bool KeyReleaseHandeRight();
 
+        virtual void SetupSliderbar() override;
+
     protected:
         static const float IMAGE_SLIDER_SPEED_;
 

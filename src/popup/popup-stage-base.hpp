@@ -83,6 +83,8 @@ namespace popup
 
         void SetupFullscreenRegionsAndBackgroundImage(const sf::FloatRect &);
 
+        virtual void SetupSliderbar();
+
     private:
         void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();
@@ -91,7 +93,6 @@ namespace popup
         void SetupText();
         void SetupGradient();
         void SetupAccentSprite();
-        void SetupSliderbar();
         void SetupRedXImage();
 
         const sf::IntRect BackgroundImageRect(

@@ -539,4 +539,25 @@ namespace popup
         }
     }
 
+
+    void PopupStageImageSelect::SetupSliderbar()
+    {
+        PopupStageBase::SetupSliderbar();
+
+        auto const SLIDERBAR_LENGTH{ textRegion_.width * 0.75f };//found by experiment
+
+        auto const SLIDERBAR_POS_LEFT{
+            textRegion_.left + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
+
+        sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
+            "PopupStage's",
+            SLIDERBAR_POS_LEFT,
+            sliderbarPosTop_,
+            SLIDERBAR_LENGTH,
+            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
+            this);
+
+        EntityAdd(sliderbarUPtr_.get());
+    }
+
 }
