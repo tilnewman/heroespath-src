@@ -240,11 +240,7 @@ namespace game
     void LoopManager::TransitionTo_Credits()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            false,//WILL_RESTORE_MOUSE
-            false,//WILL_FINAL_EXECUTE
+            static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseIgnore),
             LoopState::Credits,
             std::make_shared< stage::LoopCmd_AddStage<stage::CreditsStage> >(),
             sfml_util::music::All);
@@ -259,11 +255,10 @@ namespace game
     void LoopManager::TransitionTo_MainMenu()
     {
         TransitionHelper(
-            false,//WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            static_cast<TransOpt>(
+                TransOpt::MouseIgnore |
+                TransOpt::MouseRestore |
+                TransOpt::FinalExecute),
             LoopState::MainMenu,
             std::make_shared< stage::LoopCmd_AddStage<stage::MainMenuStage> >(),
             sfml_util::music::Wind,
@@ -276,11 +271,7 @@ namespace game
         prevSettingsState_ = state_;
 
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Settings,
             std::make_shared< stage::LoopCmd_AddStage<stage::SettingsStage> >(),
             sfml_util::music::All,
@@ -293,11 +284,7 @@ namespace game
     void LoopManager::TransitionTo_CharacterCreation()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true,//WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::CharacterCreation,
             std::make_shared< stage::LoopCmd_AddStage<stage::CharacterStage> >(),
             sfml_util::music::All,
@@ -308,11 +295,10 @@ namespace game
     void LoopManager::TransitionTo_PartyCreation()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            false,//WILL_FINAL_EXECUTE
+            static_cast<TransOpt>(
+                TransOpt::ClearQueue |
+                TransOpt::MouseIgnore |
+                TransOpt::MouseRestore),
             LoopState::PartyCreation,
             std::make_shared< stage::LoopCmd_AddStage<stage::PartyStage> >(),
             sfml_util::music::All,
@@ -328,11 +314,7 @@ namespace game
     void LoopManager::TransitionTo_Inn()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Inn,
             std::make_shared< stage::LoopCmd_AddStage<stage::InnStage> >() );
     }
@@ -341,11 +323,7 @@ namespace game
     void LoopManager::TransitionTo_Camp()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            false,//WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            false,//WILL_FINAL_EXECUTE
+            static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseRestore),
             LoopState::Camp,
             std::make_shared< stage::LoopCmd_AddStage<stage::CampStage> >(),
             sfml_util::music::All,
@@ -372,11 +350,7 @@ namespace game
     void LoopManager::TransitionTo_LoadGameMenu()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::LoadGameMenu,
             std::make_shared< stage::LoopCmd_AddStage<stage::LoadGameStage> >() );
     }
@@ -385,11 +359,7 @@ namespace game
     void LoopManager::TransitionTo_Combat(const bool WILL_ADVANCE_TURN)
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Combat,
             std::make_shared<stage::LoopCmd_AddStage_Combat>(WILL_ADVANCE_TURN),
             sfml_util::music::All,
@@ -400,11 +370,7 @@ namespace game
     void LoopManager::TransitionTo_Test()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Test,
             std::make_shared< stage::LoopCmd_AddStage<stage::TestingStage> >(),
             sfml_util::music::All,
@@ -415,11 +381,7 @@ namespace game
     void LoopManager::TransitionTo_Treasure()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Treasure,
             std::make_shared < stage::LoopCmd_AddStage< stage::TreasureStage> >(),
             sfml_util::music::All,
@@ -430,11 +392,7 @@ namespace game
     void LoopManager::TransitionTo_Adventure()
     {
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Adventure,
             std::make_shared< stage::LoopCmd_AddStage<stage::AdventureStage> >(),
             sfml_util::music::All,
@@ -449,11 +407,7 @@ namespace game
         prevSettingsState_ = state_;
 
         TransitionHelper(
-            true, //WILL_CLEAR_QUEUE
-            true, //WILL_EXIT_LOOP
-            true, //WILL_IGNORE_MOUSE
-            true, //WILL_RESTORE_MOUSE
-            true, //WILL_FINAL_EXECUTE
+            TransOpt::All,
             LoopState::Inventory,
             std::make_shared<stage::LoopCmd_AddStage_Inventory>(
                 TURN_CREATURE_PTR,
@@ -465,27 +419,20 @@ namespace game
 
 
     void LoopManager::TransitionHelper(
-        const bool                        WILL_CLEAR_QUEUE,
-        const bool                        WILL_EXIT_LOOP,
-        const bool                        WILL_IGNORE_MOUSE,
-        const bool                        WILL_RESTORE_MOUSE,
-        const bool                        WILL_FINAL_EXECUTE,
+        const TransOpt                    OPTIONS,
         const LoopState::Enum             NEW_STATE,
         const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
         const sfml_util::music::Enum      MUSIC_TO_STOP,
         const sfml_util::music::Enum      MUSIC_TO_START)
     {
-        if (WILL_CLEAR_QUEUE)
+        if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::ClearQueue))
         {
             CommandQueueClear();
         }
 
-        if (WILL_EXIT_LOOP)
-        {
-            loop_.Exit();
-        }
-
-        if (WILL_IGNORE_MOUSE)
+        loop_.Exit();
+        
+        if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::MouseIgnore))
         {
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(false) );
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(true) );
@@ -522,13 +469,13 @@ namespace game
 
         //cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(false) );
 
-        if (WILL_RESTORE_MOUSE)
+        if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::MouseRestore))
         {
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(false) );
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(true) );
         }
 
-        if (WILL_FINAL_EXECUTE)
+        if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::FinalExecute))
         {
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
         }

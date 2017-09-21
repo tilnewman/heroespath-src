@@ -229,12 +229,18 @@ namespace game
 
         void TransitionTo(const LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
+        enum TransOpt : unsigned
+        {
+            None         = 0,
+            ClearQueue   = 1 << 0,
+            MouseIgnore  = 1 << 1,
+            MouseRestore = 1 << 2,
+            FinalExecute = 1 << 3,
+            All          = ClearQueue | MouseIgnore | MouseRestore | FinalExecute
+        };
+
         void TransitionHelper(
-            const bool                        WILL_CLEAR_QUEUE,
-            const bool                        WILL_EXIT_LOOP,
-            const bool                        WILL_IGNORE_MOUSE,
-            const bool                        WILL_RESTORE_MOUSE,
-            const bool                        WILL_FINAL_EXECUTE,
+            const TransOpt                    OPTIONS,
             const LoopState::Enum             NEW_STATE,
             const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
             const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
