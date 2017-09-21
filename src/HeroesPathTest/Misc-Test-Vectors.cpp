@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
         ts::IntVec_t sortedAndUniqued{ reverseDuplicatedCountingValues };
 
         std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
-        
+
         sortedAndUniqued.erase( std::unique(
             sortedAndUniqued.begin(),
             sortedAndUniqued.end()), sortedAndUniqued.end());

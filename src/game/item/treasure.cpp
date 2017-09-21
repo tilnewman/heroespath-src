@@ -174,7 +174,7 @@ namespace item
                     return (PROFILE.TreasureScore(true) == 0);
                 }), profiles.end());
         }
-        
+
         RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
 
         RemoveSetItemsAlreadyOwned(profiles);
@@ -182,7 +182,7 @@ namespace item
         while (profiles.empty() == false)
         {
             auto const NEXT_ITEM_TO_ADD_PROFILE{ profiles[SelectRandomWeighted(profiles)] };
-            
+
             profiles.erase(std::remove(profiles.begin(),
                                        profiles.end(),
                                        NEXT_ITEM_TO_ADD_PROFILE), profiles.end());

@@ -63,7 +63,7 @@ namespace popup
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
-        
+
     private:
         void SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED);
         void SetupSelectImage_SetupNewImageIndex(const std::size_t NEW_IMAGE_INDEX);

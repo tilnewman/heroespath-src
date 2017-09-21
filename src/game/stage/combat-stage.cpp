@@ -1055,8 +1055,8 @@ namespace stage
 
         //TODO TEMP REMOVE
         //fake player characters until loading games starts working
-        
-        
+
+
         if (restoreInfo_.HasRestored())
         {
             preTurnPhase_ = PreTurnPhase::End;

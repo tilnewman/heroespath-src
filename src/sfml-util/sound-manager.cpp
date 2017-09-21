@@ -410,7 +410,7 @@ namespace sfml_util
                 }
             }
         }
-        
+
         songSetVec_.push_back( SongSet(
             musicSet,
             MakeAndStartMusicOperator(WHICH_MUSIC_TO_START_PLAYING, FADE_MULT, VOLUME_TO_USE)) );
@@ -458,7 +458,7 @@ namespace sfml_util
     void SoundManager::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         auto willCleanup{ false };
-        
+
         for (auto & songSet : songSetVec_)
         {
             if (songSet.IsValid())
@@ -474,7 +474,7 @@ namespace sfml_util
                 else if (UPDATE_STATUS == music_update_status::Stopped)
                 {
                     songSet.op.Stop();
-                    
+
                     if (songSet.set.WillLoop())
                     {
                         const float VOLUME_TO_USE((songSet.set.Volume() < 0.0f) ?
@@ -565,7 +565,7 @@ namespace sfml_util
     const SfxSet & SoundManager::Getsound_effect_set(const sound_effect_set::Enum E) const
     {
         auto const INDEX{ static_cast<std::size_t>(E) };
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sfxSetVec_.size()),
             "SoundManager::Getsound_effect_set(enum=" << E << ", index=" << INDEX
                 << ") index was out of range with sfxSetVec_.size()=" << sfxSetVec_.size());
@@ -663,7 +663,7 @@ namespace sfml_util
     {
         MusicUPtr_t musicUPtr;
         MusicInfo musicInfo(MUSIC_ENUM);
-        
+
         if (musicInfo.Which() == music::CombatIntro)
         {
             auto const INDEX{ static_cast<std::size_t>(
@@ -722,7 +722,7 @@ namespace sfml_util
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "SoundManager SFX Test \"" + ENUM_STR + "\"");
-                
+
                 SoundEffectPlay(ENUM);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 ++sfxIndex;
@@ -787,7 +787,7 @@ namespace sfml_util
             {
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "SoundManager SfxSet SFX Tests finished.  All Passed.");
-                
+
                 hasStaticSFXPromptedEnd = true;
                 ClearSoundEffectsCache();
             }

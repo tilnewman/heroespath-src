@@ -295,7 +295,7 @@ namespace popup
         numberMax_       (PI.numberMax_),
         numberInvalidVec_(PI.numberInvalidVec_),
         imageFadeSpeed_  (PI.imageFadeSpeed_),
-        
+
         //The creature object is not managed by this class,
         //so it is safe to copy here.
         creatureCPtr_    (PI.creatureCPtr_),

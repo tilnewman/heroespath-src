@@ -114,7 +114,7 @@ namespace popup
                 {
                     currentSpellPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
                 }
-                
+
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
                     imageColorSlider_.ChangeDirection();
@@ -242,7 +242,7 @@ namespace popup
         {
             return HandleSpellCast();
         }
-    
+
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 
@@ -356,9 +356,9 @@ namespace popup
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);
-        
+
         playerSprite_.setTexture(playerTexture_ );
-        
+
         auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
 
         playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);

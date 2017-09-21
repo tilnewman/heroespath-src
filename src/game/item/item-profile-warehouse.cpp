@@ -144,7 +144,7 @@ namespace item
             };
 
         auto const THINPROFILES_WEAPONS_VEC{ ThinProfilesWeaponsAll() };
-        
+
         std::for_each(THINPROFILES_WEAPONS_VEC.begin(),
                       THINPROFILES_WEAPONS_VEC.end(),
                       setupThinProfile);
@@ -370,15 +370,15 @@ namespace item
     void ItemProfileWarehouse::Setup_EliminateDuplicates()
     {
         auto const RAW_COUNT{ profiles_.size() };
-        
+
         std::sort(profiles_.begin(), profiles_.end());
         profiles_.erase(std::unique(profiles_.begin(), profiles_.end()), profiles_.end());
 
         auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - profiles_.size() };
-        
+
         profiles_.shrink_to_fit();
 
-        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in " 
+        M_HP_LOG_DBG("ItemProfileWarehouse::Setup() resulted in "
             << RAW_COUNT << " raw, "
             << DUPLICATE_PROFILE_COUNT << " duplicate, and "
             << profiles_.size() << " final profiles, with a vector that is "
@@ -2231,7 +2231,7 @@ namespace item
                 {
                     nextThinProfileArmor.SetArmorTypeRestriction(armor::base_type::Plain);
                 }
-                
+
                 v.erase(std::remove_if(v.begin(), v.end(),
                     []
                     (const ItemProfile & P)

@@ -64,7 +64,7 @@ namespace item
         static void Release();
 
         void Setup();
-        
+
         void Setup_StandardEquipmen();
         void Setup_UniqueItems();
         void Setup_MiscItems();

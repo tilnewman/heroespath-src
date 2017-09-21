@@ -139,8 +139,8 @@ namespace sfml_util
             return sf::Color::White;
         }
     }
-    
-    
+
+
     const sf::Color FontManager::Color_PopupButtonOver(const popup::PopupButtonColor::Enum C)
     {
         if (C == popup::PopupButtonColor::Dark)

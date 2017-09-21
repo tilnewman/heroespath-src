@@ -458,7 +458,7 @@ namespace popup
         const std::string & TITLE_MSG) const
     {
         std::ostringstream ss;
-        
+
         if (TITLE_MSG.empty())
         {
             ss << "Congradulations, you have discovered a BUG!";

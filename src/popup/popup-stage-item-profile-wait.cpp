@@ -59,7 +59,7 @@ namespace popup
                 game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
             }
         }
-    
+
         Stage::Draw(target, STATES);
     }
 

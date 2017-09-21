@@ -61,7 +61,7 @@ namespace item
         inline stats::Trait_t AdjustGem(const stats::Trait_t X)         { return gem_ += X; }
         inline stats::Trait_t AdjustMagic(const stats::Trait_t X)       { return magic_ += X; }
         inline stats::Trait_t AdjustReligious(const stats::Trait_t X)   { return religious_ += X; }
-        
+
         TreasureInfo & operator=(const TreasureInfo &);
         TreasureInfo & operator+=(const TreasureInfo &);
         TreasureInfo & operator-=(const TreasureInfo &);

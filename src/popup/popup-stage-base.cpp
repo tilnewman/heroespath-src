@@ -104,7 +104,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
-            
+
             game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
             return true;
         }
@@ -112,7 +112,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
-            
+
             game::LoopManager::Instance()->PopupWaitEnd(Response::No);
             return true;
         }
@@ -120,7 +120,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
-            
+
             game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
             return true;
         }
@@ -128,7 +128,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
-            
+
             game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
             return true;
         }
@@ -136,7 +136,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
-            
+
             game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
             return true;
         }
@@ -151,7 +151,7 @@ namespace popup
 
         SetupBackgroundImage();
         SetupOuterAndInnerRegion();
-        
+
         //darken the box gold bars a bit
         box_.SetEntityColors( sfml_util::gui::ColorSet(sf::Color(200,200,200)) );
 
@@ -282,7 +282,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->SoundEffectPlay(
                 sfml_util::sound_effect::PromptWarn);
-            
+
             return false;
         }
         else
@@ -372,7 +372,7 @@ namespace popup
         auto const BACKGROUND_WIDTH{ backgroundSprite_.getGlobalBounds().width };
 
         auto const BACKGROUND_HEIGHT{ backgroundSprite_.getGlobalBounds().height };
-            
+
         auto const BACKGROUND_POS_LEFT{
             (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
                 (BACKGROUND_WIDTH * 0.5f) };
@@ -413,9 +413,9 @@ namespace popup
             TEMP_MOUSE_TEXT_INFO.up.charSize };
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
-    
+
         auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN{ sfml_util::MapByRes(30.0f, 90.0f) };
-        
+
         auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN_EXTRA_FOR_CUSTOM{
             (popupInfo_.Image() == PopupImage::Custom) ? 25.0f : 0.0f };
 

@@ -375,7 +375,7 @@ namespace popup
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);
-        
+
         playerSprite_.setTexture(playerTexture_);
         auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
         playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
@@ -459,7 +459,7 @@ namespace popup
             LISTBOX_LABEL_TEXTRECT);
     }
 
-    
+
     void PopupStageMusicSheet::SetupListbox()
     {
         auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };

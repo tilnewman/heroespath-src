@@ -67,7 +67,7 @@ namespace item
         auto const COMMA_POS{ MATERIAL_STRINGS.find(",") };
 
         auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(0, COMMA_POS) };
-        
+
         if ((MATERIAL_STRING_PRI == "Nothing") || (MATERIAL_STRING_PRI == "(count)"))
         {
             return "primary material is Nothing or Count";
@@ -133,7 +133,7 @@ namespace item
         {
             return "weapon type with specific armor set";
         }
-        
+
         if (HAS_ARMORTYPE && (weaponStrings.empty() == false))
         {
             return "armor type with specifc weapon set";
@@ -411,7 +411,7 @@ namespace item
 
         {
             std::ostringstream ss;
-            
+
             ss << ((ss.str().empty()) ? "" : ", ") << "mat="
                 << ((matPri_ == material::Count) ? "(count)" : material::ToString(matPri_))
                 << ","

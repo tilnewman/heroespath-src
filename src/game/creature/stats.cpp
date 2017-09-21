@@ -239,7 +239,7 @@ namespace creature
         auto const CHALLENGER_ROLL_OPTIONS{ [CHALLENGER_PTR, OPTIONS]()
             {
                 With rollOptions{ With::None };
-                
+
                 if (OPTIONS & With::RaceRoleBonus)
                 {
                     rollOptions = static_cast<With>(rollOptions | With::RaceRoleBonus);
@@ -252,7 +252,7 @@ namespace creature
 
                 return rollOptions;
             }() };
-            
+
         for (auto const NEXT_TRAIT_ENUM : CHALLENGER_TRAIT_VEC)
         {
             chaRandSum += Roll(

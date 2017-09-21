@@ -220,7 +220,7 @@ namespace creature
             << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
             << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
             << ") MakeFromMiscType() returned a nullptr.");
-        
+
         auto const SCORE{ ENCHANTMENT_PTR->TreasureScore() };
         delete ENCHANTMENT_PTR;
         return SCORE;

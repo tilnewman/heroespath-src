@@ -81,7 +81,7 @@ namespace sfml_util
                 soundUPtr_->stop();
             }
         }
-        
+
         inline float Volume() const
         {
             return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f);

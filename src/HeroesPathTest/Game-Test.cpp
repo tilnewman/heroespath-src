@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(Warehouse_Construction)
 BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
 {
     CountedWarehouse warehouse;
-    
+
     auto ptr1{ new Counted() };
     BOOST_CHECK(Counted::refCount() == 1);
 
@@ -93,10 +93,10 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
 
     auto ptr2{ new Counted() };
     BOOST_CHECK(Counted::refCount() == 2);
-    
+
     warehouse.free(ptr2);
     BOOST_CHECK(ptr2 != nullptr);
-    
+
     BOOST_CHECK(warehouse.store(ptr2) == ptr2);
     BOOST_CHECK(Counted::refCount() == 2);
     BOOST_CHECK(warehouse.size() == 2);
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
 
     BOOST_CHECK_MESSAGE(warehouse.size() == 2,
         "The warehouse slot should be set to nullptr but it should remain.");
-    
+
     auto ptr3{ new Counted() };
     BOOST_CHECK(Counted::refCount() == 2);
 

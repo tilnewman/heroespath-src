@@ -218,7 +218,7 @@ namespace game
                 true));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
-            
+
             cmdQueue_.push(std::make_shared<
                 sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t> >(loop_, POPUP_INFO));
 

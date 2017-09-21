@@ -218,7 +218,7 @@ namespace popup
         target.draw(bgSprite_, STATES);
         target.draw( * titleTextRegionUPtr_, STATES);
         target.draw( * descTextRegionUPtr_, STATES);
-        
+
         Stage::Draw(target, STATES);
     }
 

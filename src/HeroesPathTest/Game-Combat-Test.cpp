@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.DoesVertexExist(0) == false);
 
     BOOST_CHECK(combatTree.DoesEdgeExist(0, 1) == false);
-    
+
     BOOST_CHECK_THROW(combatTree.GetEdgeType(0, 1), std::invalid_argument);
 
     BOOST_CHECK_THROW(combatTree.SetEdgeType(

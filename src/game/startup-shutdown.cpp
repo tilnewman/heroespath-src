@@ -126,7 +126,7 @@ namespace game
         return false;
     }
 
-    
+
     int StartupShutdown::Run()
     {
         try

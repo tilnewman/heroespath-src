@@ -697,7 +697,7 @@ namespace game
             popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
             sfml_util::sound_effect::PromptQuestion);
-        
+
         if (isPopupTypeResolutionChange)
         {
             PopupWaitBeginSpecific<popup::PopupStageResChange>(HANDLER_PTR, POPUP_INFO);
@@ -706,7 +706,7 @@ namespace game
         {
             PopupWaitBegin(HANDLER_PTR, POPUP_INFO);
         }
-        
+
         return CHANGE_RESULT;
     }
 

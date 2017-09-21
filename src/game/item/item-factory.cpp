@@ -330,7 +330,7 @@ namespace item
 
             LoopManager::Instance()->TestingStrAppend(
                 "game::item::ItemFactory::Test() Testing Complete:  ALL TESTS PASSED");
-        
+
             return false;
         }
 

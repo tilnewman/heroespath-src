@@ -295,7 +295,7 @@ namespace popup
         auto const NEW_IMAGE_INDEX_TO_USE{ [&]()
             {
                 auto const COUNT_MAX{ CountMax() };
-               
+
                 if (NEW_IMAGE_INDEX_PARAM >= COUNT_MAX)
                 {
                     return COUNT_MAX - 1;
@@ -507,7 +507,7 @@ namespace popup
     bool PopupStageImageSelect::KeyReleaseHandeRight()
     {
         auto const COUNT_MAX{ CountMax() };
-        
+
         if (imageIndex_ < (COUNT_MAX - 1))
         {
             auto const NEW_INDEX{ imageIndex_ + 1 };

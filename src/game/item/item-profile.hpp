@@ -60,7 +60,7 @@ namespace item
         const std::string InvalidString() const;
 
         inline bool IsValid() const { return InvalidString().empty(); }
-        
+
         const std::string ToString() const;
 
     private:
@@ -169,7 +169,7 @@ namespace item
         {
             return (armor_ != armor_type::NotArmor);
         }
-        
+
         inline bool IsEquipment() const
         {
             return (IsWeapon() || IsArmor());

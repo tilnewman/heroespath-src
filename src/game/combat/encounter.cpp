@@ -443,7 +443,7 @@ namespace combat
 
         misc::Vector::Append(creature::Algorithms::Players(
             creature::Algorithms::Living), allLivingCreaturesPVec);
-        
+
         misc::Vector::Append(creature::Algorithms::NonPlayers(
             creature::Algorithms::Living), allLivingCreaturesPVec);
 

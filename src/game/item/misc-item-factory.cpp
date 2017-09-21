@@ -514,7 +514,7 @@ namespace misc
             }() };
 
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-        
+
         std::ostringstream ssName;
         ssName << ((IS_BLESSED) ? "Blessed" : "Cursed")
             << " "

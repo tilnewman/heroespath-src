@@ -40,7 +40,7 @@ namespace sfml_util
 {
 
     using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
-    
+
 
     //stores textures in a single location and makes them available by index
     class TextureCache
