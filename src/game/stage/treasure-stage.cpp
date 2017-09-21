@@ -35,9 +35,12 @@
 
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-item-profile-wait.hpp"
+#include "popup/popup-stage-char-select.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "game/game.hpp"
+#include "game/state/game-state.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
@@ -78,8 +81,11 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_LOCKBOX_ONLY_{
         "PopupName_LockboxOnly" };
 
-    const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_WORD_{
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_HELD_{
         "PopupName_LockboxAndWorn" };
+
+    const std::string TreasureStage::POPUP_NAME_CHAR_SELECT_{
+        "PopupName_CharacterSelect" };
 
 
     TreasureStage::TreasureStage()
@@ -118,6 +124,60 @@ namespace stage
         {
             SetupAfterDelay();
             return false;
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ALL_ENEMIES_RAN_)
+        {
+            game::LoopManager::Instance()->TransitionTo_Adventure();
+            return false;
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_WORN_ONLY_)
+        {
+            SetupStageForTreasureCollection();
+            return true;
+        }
+
+        if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_) ||
+            (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_))
+        {
+            if (POPUP_RESPONSE.Response() == popup::Response::Yes)
+            {
+                PromptPlayerWhichCharacterWillPickLock();
+                return false;
+            }
+            else
+            {
+                SetupStageForTreasureCollection();
+                return true;
+            }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_)
+        {
+            if (POPUP_RESPONSE.Response() == popup::Response::Select)
+            {
+                PromptPlayerWithLockPickPopup(POPUP_RESPONSE.Selection());
+                return false;
+            }
+            else
+            {
+                if (item::TreasureAvailable::LockboxOnly == treasureAvailable_)
+                {
+                    //Since the player is choosing to skip the lockbox and there is no
+                    //held treasure, then simply return to the Adventure Stage.
+                    game::LoopManager::Instance()->TransitionTo_Adventure();
+                    return false;
+                }
+                else if (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_)
+                {
+                    //Since the player is choosing to skip the lockbox,
+                    //then prevent from searching the lockbox.
+                    treasureAvailable_ = item::TreasureAvailable::HeldOnly;
+                    SetupStageForTreasureCollection();
+                    return true;
+                }
+            }
         }
 
         return true;
@@ -555,7 +615,7 @@ namespace stage
             {
                 std::ostringstream ss;
                 ss << "\nYour enemies are wearing possessions but they carried no lockbox.  "
-                    << "Click Continue to pick through what they left behind.";
+                    << "Click Continue to search what they left behind.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_WORN_ONLY_,
@@ -590,7 +650,7 @@ namespace stage
                     << ".  Attempt to pick the lock?";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                    POPUP_NAME_LOCKBOX_AND_WORD_,
+                    POPUP_NAME_LOCKBOX_AND_HELD_,
                     ss.str(),
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular) };
@@ -608,6 +668,53 @@ namespace stage
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    void TreasureStage::PromptPlayerWhichCharacterWillPickLock()
+    {
+        const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+
+        std::vector<std::string> invalidTextVec;
+        invalidTextVec.resize(NUM_CHARACTERS);
+
+        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
+            auto const CREATURE_PTR{ Game::Instance()->State().Party().GetAtOrderPos(i) };
+            if (CREATURE_PTR->IsBeast())
+            {
+                invalidTextVec[i] = "Beasts cannot pick locks";
+            }
+            else if (CREATURE_PTR->CanTakeAction() == false)
+            {
+                std::ostringstream ss;
+
+                ss << creature::sex::HeSheIt(CREATURE_PTR->Sex(), true)
+                    << " is " << CREATURE_PTR->CanTakeActionStr(false) << ".";
+
+                invalidTextVec[i] = ss.str();
+            }
+            else
+            {
+                invalidTextVec[i].clear();
+            }
+        }
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+            POPUP_NAME_CHAR_SELECT_,
+            "Who will attempt to pick the lock?",
+            invalidTextVec,
+            sfml_util::FontManager::Instance()->Size_Smallish()) };
+
+        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
+            this, POPUP_INFO);
+    }
+
+
+    void TreasureStage::PromptPlayerWithLockPickPopup(
+        const std::size_t )
+    {
+        //TODO
     }
 
 }
