@@ -108,13 +108,6 @@ namespace popup
             << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text <<
             "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
-        if ((Popup::Spellbook == type_) && (creatureCPtr_ == nullptr))
-        {
-            throw std::runtime_error(
-                std::string("popup::PopupInfo(type=Spellbook) constructor found spellbook").append(
-                    " popup with a creaturePtr that was null.") );
-        }
-
         if ((imageFadeSpeed_ > 0.0f) && (textureVec_.empty()))
         {
             std::ostringstream ss;

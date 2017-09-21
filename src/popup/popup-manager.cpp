@@ -40,7 +40,7 @@
 #include "game/creature/title.hpp"
 #include "game/creature/creature.hpp"
 
-#include "popup/popup-stage.hpp"
+#include "popup/popup-stage-generic.hpp"
 
 #include "misc/random.hpp"
 

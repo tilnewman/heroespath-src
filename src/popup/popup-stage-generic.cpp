@@ -25,32 +25,25 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// popup-stage.cpp
+// popup-stage-generic.cpp
 //
-#include "popup-stage.hpp"
-
-#include "game/loop-manager.hpp"
-#include "popup/popup-manager.hpp"
-
-#include <sstream>
-#include <random>
-#include <algorithm>
+#include "popup-stage-generic.hpp"
 
 
 namespace popup
 {
 
-    PopupStage::PopupStage(const PopupInfo & POPUP_INFO)
+    PopupStageGeneric::PopupStageGeneric(const PopupInfo & POPUP_INFO)
     :
         PopupStageBase(POPUP_INFO)
     {}
 
 
-    PopupStage::~PopupStage()
+    PopupStageGeneric::~PopupStageGeneric()
     {}
 
 
-    void PopupStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageGeneric::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);

@@ -214,6 +214,7 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(
             popup::PopupManager::Color_Fade(),
             popup::PopupManager::SpeedMult_Fade()) );
+
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
     }
 

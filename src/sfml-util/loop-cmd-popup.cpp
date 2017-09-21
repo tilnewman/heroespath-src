@@ -30,7 +30,7 @@
 #include "loop-cmd-popup.hpp"
 
 #include "sfml-util/display.hpp"
-#include "popup/popup-stage.hpp"
+#include "popup/popup-stage-generic.hpp"
 #include "popup/popup-manager.hpp"
 
 #include "popup/i-popup-callback.hpp"

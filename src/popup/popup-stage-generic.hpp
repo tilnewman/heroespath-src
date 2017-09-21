@@ -22,34 +22,31 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGE_HPP_INCLUDED
-#define POPUP_POPUPSTAGE_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED
+#define POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED
 //
-// popup-stage.hpp
+// popup-stage-generic.hpp
 //  This class encapsulates a popup window stage on screen.
 //
-#include "sfml-util/gui/text-region.hpp"
-
 #include "popup/popup-stage-base.hpp"
 
-#include <memory>
 #include <string>
 
 
 namespace popup
 {
-    //A base class for all Popup Window Stages
-    class PopupStage : public PopupStageBase
+    //Responsible for implementing a generic popup window stage.
+    class PopupStageGeneric : public PopupStageBase
     {
         //prevent copy construction
-        PopupStage(const PopupStage &) =delete;
+        PopupStageGeneric(const PopupStageGeneric &) =delete;
 
         //prevent copy assignment
-        PopupStage & operator=(const PopupStage &) =delete;
+        PopupStageGeneric & operator=(const PopupStageGeneric &) =delete;
 
     public:
-        explicit PopupStage(const PopupInfo & POPUP_INFO);
-        virtual ~PopupStage();
+        explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
+        virtual ~PopupStageGeneric();
 
         inline virtual const std::string HandlerName() const override
         {
@@ -60,4 +57,5 @@ namespace popup
     };
 
 }
-#endif //POPUP_POPUPSTAGE_HPP_INCLUDED
+
+#endif //POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED

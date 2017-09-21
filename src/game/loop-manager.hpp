@@ -37,7 +37,7 @@
 #include "sfml-util/loop.hpp"
 
 #include "popup/popup-info.hpp"
-#include "popup/popup-stage.hpp"
+#include "popup/popup-stage-generic.hpp"
 #include "popup/popup-response-enum.hpp"
 
 #include "game/loop-state-enum.hpp"
@@ -111,7 +111,7 @@ namespace game
             popup::IPopupHandler_t * const HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
-            PopupWaitBeginSpecific<popup::PopupStage>(HANDLER_PTR, POPUP_INFO);
+            PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
