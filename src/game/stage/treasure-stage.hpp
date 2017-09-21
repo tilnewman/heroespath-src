@@ -101,7 +101,9 @@ namespace stage
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
         void SetupCoinsImage();
-        item::TreasureAvailable::Enum DetermineTreasureAvailableState();
+        item::TreasureAvailable::Enum DetermineTreasureAvailableState(
+            const item::ItemCache & CACHE_HELD,
+            const item::ItemCache & CACHE_LOCKBOX);
         void SetupCorpseImage();
 
         void PromptUserBasedonTreasureAvailability(

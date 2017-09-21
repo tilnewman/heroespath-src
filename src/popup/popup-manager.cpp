@@ -501,7 +501,7 @@ namespace popup
         return PopupInfo(
             POPUP_NAME,
             TextInfoDefault(
-                "Please Wait",
+                "\nPlease Wait",
                 sfml_util::Justified::Center,
                 sfml_util::FontManager::Instance()->Size_Normal()),
             PopupButtons::None);

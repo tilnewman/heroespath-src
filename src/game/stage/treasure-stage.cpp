@@ -73,7 +73,7 @@ namespace stage
         "PopupName_AllEnemiesRan" };
 
     const std::string TreasureStage::POPUP_NAME_WORN_ONLY_{
-        "PopupName_WornOnly" };
+        "PopupName_HeldOnly" };
 
     const std::string TreasureStage::POPUP_NAME_LOCKBOX_ONLY_{
         "PopupName_LockboxOnly" };
@@ -445,7 +445,7 @@ namespace stage
 
         SetupCorpseImage();
         SetupTreasureImage(treasureImageType_);
-        treasureAvailable_ = DetermineTreasureAvailableState();
+        treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
@@ -470,23 +470,25 @@ namespace stage
     }
 
 
-    item::TreasureAvailable::Enum TreasureStage::DetermineTreasureAvailableState()
+    item::TreasureAvailable::Enum TreasureStage::DetermineTreasureAvailableState(
+        const item::ItemCache & CACHE_HELD,
+        const item::ItemCache & CACHE_LOCKBOX)
     {
-        if ((itemCacheHeld_.Empty() == false) && (itemCacheLockbox_.Empty() == false))
+        if (CACHE_HELD.Empty() && CACHE_LOCKBOX.Empty())
         {
             return item::TreasureAvailable::NoTreasure;
         }
-        else if ((itemCacheHeld_.Empty() == false) && itemCacheLockbox_.Empty())
+        else if ((CACHE_HELD.Empty() == false) && CACHE_LOCKBOX.Empty())
         {
-            return item::TreasureAvailable::WornOnly;
+            return item::TreasureAvailable::HeldOnly;
         }
-        else if (itemCacheHeld_.Empty() && (itemCacheLockbox_.Empty() == false))
+        else if (CACHE_HELD.Empty() && (CACHE_LOCKBOX.Empty() == false))
         {
             return item::TreasureAvailable::LockboxOnly;
         }
         else
         {
-            return item::TreasureAvailable::WornAndLockbox;
+            return item::TreasureAvailable::HeldAndLockbox;
         }
     }
 
@@ -537,7 +539,7 @@ namespace stage
             case item::TreasureAvailable::NoTreasure:
             {
                 std::ostringstream ss;
-                ss << "Your enemies have no possessions worn or carried in a lockbox.  "
+                ss << "\nYour enemies are wearing no possessions and they carried no lockbox.  "
                     << "Click Continue to return to the Adventure screen.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -549,10 +551,10 @@ namespace stage
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
             }
-            case item::TreasureAvailable::WornOnly:
+            case item::TreasureAvailable::HeldOnly:
             {
                 std::ostringstream ss;
-                ss << "Your enemies have possessions worn but they carried no lockbox.  "
+                ss << "\nYour enemies are wearing possessions but they carried no lockbox.  "
                     << "Click Continue to pick through what they left behind.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -567,7 +569,7 @@ namespace stage
             case item::TreasureAvailable::LockboxOnly:
             {
                 std::ostringstream ss;
-                ss << "Your enemies have no possessions on them, but they carried a "
+                ss << "\nYour enemies are wearing no possessions but they carried a "
                     << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
                     << ".  Attempt to pick the lock?";
 
@@ -580,10 +582,10 @@ namespace stage
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
             }
-            case item::TreasureAvailable::WornAndLockbox:
+            case item::TreasureAvailable::HeldAndLockbox:
             {
                 std::ostringstream ss;
-                ss << "Your enemies have possessions on them and they also carried a "
+                ss << "\nYour enemies are wearing possessions and they also carried a "
                     << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
                     << ".  Attempt to pick the lock?";
 

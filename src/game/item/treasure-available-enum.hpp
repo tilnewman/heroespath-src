@@ -40,9 +40,9 @@ namespace item
         enum Enum
         {
             NoTreasure = 0,
-            WornOnly,
+            HeldOnly,
             LockboxOnly,
-            WornAndLockbox,
+            HeldAndLockbox,
             Count
         };
 

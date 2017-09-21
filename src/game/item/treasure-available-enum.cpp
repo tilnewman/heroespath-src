@@ -43,9 +43,9 @@ namespace item
         switch (E)
         {
             case NoTreasure:        { return "NoTreasure"; }
-            case WornOnly:          { return "WornOnly"; }
+            case HeldOnly:          { return "HeldOnly"; }
             case LockboxOnly:       { return "LockboxOnly"; }
-            case WornAndLockbox:    { return "WornAndLockbox"; }
+            case HeldAndLockbox:    { return "HeldAndLockbox"; }
             case Count:
             default:
             {
