@@ -25,35 +25,68 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// popup-stage.cpp
+// popup-stage-res-chang.cpp
 //
-#include "popup-stage.hpp"
+#include "popup-stage-res-change.hpp"
 
 #include "game/loop-manager.hpp"
-#include "popup/popup-manager.hpp"
-
-#include <sstream>
-#include <random>
-#include <algorithm>
 
 
 namespace popup
 {
 
-    PopupStage::PopupStage(const PopupInfo & POPUP_INFO)
+    PopupStageResChange::PopupStageResChange(const PopupInfo & POPUP_INFO)
     :
-        PopupStageBase(POPUP_INFO)
+        PopupStageBase(POPUP_INFO),
+        elapsedTimeCounter_(0.0f),
+        secondCounter_(10)
     {}
 
 
-    PopupStage::~PopupStage()
+    PopupStageResChange::~PopupStageResChange()
     {}
 
 
-    void PopupStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageResChange::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
+    }
+
+
+    void PopupStageResChange::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+
+        if (secondCounter_ > 0)
+        {
+            elapsedTimeCounter_ += ELAPSED_TIME_SECONDS;
+
+            if (elapsedTimeCounter_ > 1.0f)
+            {
+                elapsedTimeCounter_ = 0.0f;
+                --secondCounter_;
+
+                if (secondCounter_ > 0)
+                {
+                    sfml_util::gui::TextInfo textInfo(popupInfo_.TextInfo());
+                    
+                    std::ostringstream ss;
+                    ss << textInfo.text << "\n" << secondCounter_;
+                    
+                    textInfo.text = ss.str();
+
+                    textRegionUPtr_->Setup(
+                        textInfo,
+                        textRegion_,
+                        this);
+                }
+                else
+                {
+                    game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+                }
+            }
+        }
     }
 
 }

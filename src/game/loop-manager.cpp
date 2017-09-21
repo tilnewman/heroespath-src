@@ -31,7 +31,9 @@
 
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
+
 #include "popup/popup-manager.hpp"
+#include "popup/popup-stage-res-change.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
@@ -635,27 +637,28 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         sfml_util::IStage * const               currentStagePtr_,
-        popup::IPopupHandler_t * const HANDLER_PTR,
+        popup::IPopupHandler_t * const          HANDLER_PTR,
         const sfml_util::Resolution &           NEW_RES,
         const unsigned                          ANTIALIAS_LEVEL)
     {
-        const sfml_util::DisplayChangeResult::Enum RESULT(sfml_util::Display::ChangeVideoMode(
-            NEW_RES, ANTIALIAS_LEVEL));
+        auto const CHANGE_RESULT{
+            sfml_util::Display::ChangeVideoMode(NEW_RES, ANTIALIAS_LEVEL) };
 
         if (currentStagePtr_ != nullptr)
         {
             currentStagePtr_->HandleResolutionChange();
         }
 
-        popup::Popup::Enum whichPopup(popup::Popup::ResolutionChange);
+        auto isPopupTypeResolutionChange{ true };
 
-        sfml_util::gui::TextInfo textInfo("Keep this setting?",
-                                          sfml_util::FontManager::Instance()->Font_Default1(),
-                                          sfml_util::FontManager::Instance()->Size_Normal(),
-                                          sf::Color::Black,
-                                          sfml_util::Justified::Center);
+        sfml_util::gui::TextInfo textInfo(
+            "Keep this setting?",
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sf::Color::Black,
+            sfml_util::Justified::Center);
 
-        switch (RESULT)
+        switch (CHANGE_RESULT)
         {
             case sfml_util::DisplayChangeResult::Success:
             {
@@ -680,24 +683,31 @@ namespace game
             case sfml_util::DisplayChangeResult::Count:
             default:
             {
-                whichPopup = popup::Popup::Generic;
+                isPopupTypeResolutionChange = false;
                 textInfo.text = "Unable to set that video mode.";
                 break;
             }
         }
 
         const popup::PopupInfo POPUP_INFO(
-            "ResolutionChange",
+            "ResolutionChangePopup",
             textInfo,
             popup::PopupButtons::YesNo,
             popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
-            whichPopup,
+            popup::Popup::Generic,
             sfml_util::sound_effect::PromptQuestion);
-
-        PopupWaitBegin(HANDLER_PTR, POPUP_INFO);
-
-        return RESULT;
+        
+        if (isPopupTypeResolutionChange)
+        {
+            PopupWaitBeginSpecific<popup::PopupStageResChange>(HANDLER_PTR, POPUP_INFO);
+        }
+        else
+        {
+            PopupWaitBegin(HANDLER_PTR, POPUP_INFO);
+        }
+        
+        return CHANGE_RESULT;
     }
 
 

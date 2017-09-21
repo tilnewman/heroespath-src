@@ -22,42 +22,38 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGE_HPP_INCLUDED
-#define POPUP_POPUPSTAGE_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
+#define POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
 //
-// popup-stage.hpp
-//  This class encapsulates a popup window stage on screen.
+// popup-stage-res-change.hpp
 //
-#include "sfml-util/gui/text-region.hpp"
-
 #include "popup/popup-stage-base.hpp"
-
-#include <memory>
-#include <string>
 
 
 namespace popup
 {
-    //A base class for all Popup Window Stages
-    class PopupStage : public PopupStageBase
+
+    //Responsible for implementing the System Error Popup Stage.
+    class PopupStageResChange : public PopupStageBase
     {
         //prevent copy construction
-        PopupStage(const PopupStage &) =delete;
+        PopupStageResChange(const PopupStageResChange &) = delete;
 
         //prevent copy assignment
-        PopupStage & operator=(const PopupStage &) =delete;
+        PopupStageResChange & operator=(const PopupStageResChange &) = delete;
 
     public:
-        explicit PopupStage(const PopupInfo & POPUP_INFO);
-        virtual ~PopupStage();
+        explicit PopupStageResChange(const PopupInfo &);
+        virtual ~PopupStageResChange();
 
-        inline virtual const std::string HandlerName() const override
-        {
-            return PopupStageBase::HandlerName();
-        }
-        
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+
+    private:
+        float elapsedTimeCounter_;
+        std::size_t secondCounter_;
     };
 
 }
-#endif //POPUP_POPUPSTAGE_HPP_INCLUDED
+
+#endif //POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
