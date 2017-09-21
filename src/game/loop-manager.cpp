@@ -243,7 +243,8 @@ namespace game
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseIgnore),
             LoopState::Credits,
             std::make_shared< stage::LoopCmd_AddStage<stage::CreditsStage> >(),
-            sfml_util::music::All);
+            sfml_util::music::All,
+            sfml_util::music::Credits);
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(false) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(true) );
