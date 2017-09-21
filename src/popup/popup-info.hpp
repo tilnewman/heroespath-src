@@ -35,7 +35,6 @@
 #include "sfml-util/gui/box.hpp"
 
 #include "popup/popup-enums.hpp"
-#include "popup/which-popup-enum.hpp"
 
 #include "game/combat/combat-over-enum.hpp"
 
@@ -66,7 +65,6 @@ namespace popup
                   const PopupButtons::Enum                BUTTONS              = PopupButtons::Okay,
                   const PopupImage::Enum                  IMAGE                = PopupImage::Banner,
                   const float                             IMAGE_SCALE          = 1.0f,
-                  const Popup::Enum                       TYPE                 = Popup::Generic,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT         = sfml_util::sound_effect::PromptGeneric,
                   const PopupButtonColor::Enum            BUTTON_COLOR         = PopupButtonColor::Dark,
                   const bool                              WILL_ADD_RAND_IMAGE  = true,
@@ -89,7 +87,6 @@ namespace popup
                   const sfml_util::gui::box::Info &       BOX_INFO,
                   const float                             MAX_SIZE_RATIO_X    = 0.25f,
                   const float                             MAX_SIZE_RATIO_Y    = 0.5f,
-                  const Popup::Enum                       TYPE                = Popup::Generic,
                   const sfml_util::sound_effect::Enum     SOUND_EFFECT        = sfml_util::sound_effect::PromptGeneric,
                   const PopupButtonColor::Enum            BUTTON_COLOR        = PopupButtonColor::Light,
                   const bool                              WILL_ADD_RAND_IMAGE = true);
@@ -126,7 +123,6 @@ namespace popup
         inline PopupButtons::Enum                Buttons() const            { return buttons_; }
         inline PopupImage::Enum                  Image() const              { return image_; }
         inline const sfml_util::gui::TextInfo    TextInfo() const           { return textInfo_; }
-        inline Popup::Enum                       Type() const               { return type_; }
         inline sfml_util::sound_effect::Enum     SoundEffect() const        { return soundEffect_; }
         inline const sfml_util::gui::box::Info   BoxInfo() const            { return boxInfo_; }
         inline float                             SizeX() const              { return ratioX_; }
@@ -186,7 +182,6 @@ namespace popup
         sfml_util::gui::TextInfo          textInfo_;
         PopupButtons::Enum                buttons_;
         PopupImage::Enum                  image_;
-        Popup::Enum                       type_;
         sfml_util::sound_effect::Enum     soundEffect_;
         sfml_util::gui::box::Info         boxInfo_;
         float                             ratioX_;

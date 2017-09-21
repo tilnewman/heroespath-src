@@ -195,7 +195,6 @@ namespace popup
         const PopupImage::Enum              IMAGE,
         const sfml_util::Justified::Enum    JUSTIFIED,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
-        const Popup::Enum                   WHICH_POPUP,
         const unsigned int                  FONT_SIZE) const
     {
         return PopupInfo(
@@ -204,7 +203,6 @@ namespace popup
             BUTTONS,
             IMAGE,
             GetScaleForImage(IMAGE),
-            WHICH_POPUP,
             SOUND_EFFECT);
     }
 
@@ -229,7 +227,6 @@ namespace popup
             BOX_INFO,
             0.25f,
             0.5f,
-            Popup::Generic,
             SOUND_EFFECT);
     }
 
@@ -282,7 +279,6 @@ namespace popup
             PopupButtons::SelectCancel,
             PopupImage::Large,
             GetScaleForImage(PopupImage::Large),
-            Popup::CharacterSelection,
             sfml_util::sound_effect::PromptQuestion,
             PopupButtonColor::Dark,
             true,
@@ -369,7 +365,6 @@ namespace popup
             PopupButtons::Okay,
             PopupImage::Large,
             sfml_util::MapByRes(1.5f, 4.5f),
-            Popup::ImageFade,
             sfml_util::sound_effect::Achievement,
             PopupButtonColor::Dark,
             true,
@@ -401,7 +396,6 @@ namespace popup
             PopupButtons::None,
             PopupImage::Spellbook,
             1.0f,
-            Popup::Spellbook,
             sfml_util::sound_effect::None,
             PopupButtonColor::Dark,
             false,
@@ -428,7 +422,6 @@ namespace popup
             PopupButtons::None,
             PopupImage::MusicSheet,
             1.0f,
-            Popup::MusicSheet,
             sfml_util::sound_effect::None,
             PopupButtonColor::Dark,
             false,
@@ -496,7 +489,6 @@ namespace popup
             PopupButtons::Continue,
             PopupImage::Regular,
             GetScaleForImage(PopupImage::Regular),
-            Popup::SystemError,
             sfml_util::sound_effect::PromptWarn,
             PopupButtonColor::Dark,
             false);
@@ -512,10 +504,7 @@ namespace popup
                 "Please Wait",
                 sfml_util::Justified::Center,
                 sfml_util::FontManager::Instance()->Size_Normal()),
-            PopupButtons::None,
-            PopupImage::Banner,
-            1.0f,
-            Popup::ItemProfilePleaseWait);
+            PopupButtons::None);
     }
 
 
@@ -535,9 +524,6 @@ namespace popup
             BUTTONS,
             IMAGE,
             GetScaleForImage(IMAGE),
-            ((WILL_INCLUDE_ITEMS) ?
-                popup::Popup::ContentSelectionWithItem :
-                popup::Popup::ContentSelectionWithoutItem),
             SOUND_EFFECT);
 
         popupInfo.SetDoesIncludeItems(WILL_INCLUDE_ITEMS);

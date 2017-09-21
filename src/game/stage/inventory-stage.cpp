@@ -2757,7 +2757,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             ((WILL_USE_REGULAR_SIZE_POPUP) ? popup::PopupImage::Regular : popup::PopupImage::Banner),
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
-            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
@@ -2798,7 +2797,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             ((WILL_PLAY_SOUNDEFFECT) ?
                 sfml_util::sound_effect::PromptGeneric :
                 sfml_util::sound_effect::None),
-            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_DONE);
@@ -3685,7 +3683,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
-            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
@@ -3898,7 +3895,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
-            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };

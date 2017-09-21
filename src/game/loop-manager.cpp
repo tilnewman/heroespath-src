@@ -696,7 +696,6 @@ namespace game
             popup::PopupButtons::YesNo,
             popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
-            popup::Popup::Generic,
             sfml_util::sound_effect::PromptQuestion);
         
         if (isPopupTypeResolutionChange)

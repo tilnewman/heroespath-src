@@ -3228,7 +3228,6 @@ namespace stage
             sfml_util::Justified::Center,
             ((IS_SOUNDEFFECT_NORMAL) ?
                 sfml_util::sound_effect::PromptGeneric : sfml_util::sound_effect::PromptWarn),
-            popup::Popup::Generic,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
         LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);

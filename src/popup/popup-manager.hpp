@@ -173,7 +173,6 @@ namespace popup
             const PopupImage::Enum              IMAGE        = PopupImage::Banner,
             const sfml_util::Justified::Enum    JUSTIFIED    = sfml_util::Justified::Center,
             const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
-            const Popup::Enum                   WHICH_POPUP  = Popup::Generic,
             const unsigned int                  FONT_SIZE    =
                 sfml_util::FontManager::Instance()->Size_Normal()) const;
 
