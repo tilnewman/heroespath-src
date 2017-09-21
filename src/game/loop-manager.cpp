@@ -382,7 +382,10 @@ namespace game
     void LoopManager::TransitionTo_Treasure()
     {
         TransitionHelper(
-            TransOpt::All,
+            static_cast<TransOpt>(
+                TransOpt::ClearQueue |
+                TransOpt::FinalExecute |
+                TransOpt::MouseRestore),
             LoopState::Treasure,
             std::make_shared < stage::LoopCmd_AddStage< stage::TreasureStage> >(),
             sfml_util::music::All,
