@@ -39,10 +39,7 @@ namespace popup
     //Responsible for implementing the Image Fade Popup Stage.
     class PopupStageCombatOver : public PopupStageBase
     {
-        //prevent copy construction
         PopupStageCombatOver(const PopupStageCombatOver &) =delete;
-
-        //prevent copy assignment
         PopupStageCombatOver & operator=(const PopupStageCombatOver &) =delete;
 
     public:

@@ -36,10 +36,7 @@ namespace popup
     //Responsible for implementing the System Error Popup Stage.
     class PopupStageInventoryPrompt : public PopupStageBase
     {
-        //prevent copy construction
         PopupStageInventoryPrompt(const PopupStageInventoryPrompt &) =delete;
-
-        //prevent copy assignment
         PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &) =delete;
 
     public:

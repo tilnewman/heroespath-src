@@ -38,10 +38,7 @@ namespace popup
     //Responsible for implementing a generic popup window stage.
     class PopupStageGeneric : public PopupStageBase
     {
-        //prevent copy construction
         PopupStageGeneric(const PopupStageGeneric &) =delete;
-
-        //prevent copy assignment
         PopupStageGeneric & operator=(const PopupStageGeneric &) =delete;
 
     public:

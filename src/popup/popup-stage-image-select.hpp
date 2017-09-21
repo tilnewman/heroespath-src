@@ -43,10 +43,7 @@ namespace popup
     //Responsible for implementing the Image Select Popup Stage.
     class PopupStageImageSelect : public PopupStageBase
     {
-        //prevent copy construction
         PopupStageImageSelect(const PopupStageImageSelect &);
-
-        //prevent copy assignment
         PopupStageImageSelect & operator=(const PopupStageImageSelect &);
 
     public:

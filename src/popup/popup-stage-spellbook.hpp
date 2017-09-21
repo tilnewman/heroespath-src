@@ -56,10 +56,7 @@ namespace popup
         public PopupStageBase,
         public sfml_util::gui::callback::IListBoxCallbackHandler
     {
-        //prevent copy construction
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
-
-        //prevent copy assignment
         PopupStageSpellbook & operator=(const PopupStageSpellbook &) = delete;
 
         //defines what is happening on the spellbook popup

@@ -36,10 +36,7 @@ namespace popup
     //Responsible for implementing the System Error Popup Stage.
     class PopupStageSystemError : public PopupStageBase
     {
-        //prevent copy construction
         PopupStageSystemError(const PopupStageSystemError &) =delete;
-
-        //prevent copy assignment
         PopupStageSystemError & operator=(const PopupStageSystemError &) =delete;
 
     public:

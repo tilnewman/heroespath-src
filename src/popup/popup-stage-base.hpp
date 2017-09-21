@@ -48,10 +48,7 @@ namespace popup
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::ITextButtonCallbackHandler_t
     {
-        //prevent copy construction
         PopupStageBase(const PopupStageBase &) =delete;
-
-        //prevent copy assignment
         PopupStageBase & operator=(const PopupStageBase &) =delete;
 
     public:

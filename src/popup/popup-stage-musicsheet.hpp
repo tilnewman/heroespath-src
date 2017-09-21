@@ -56,10 +56,7 @@ namespace popup
         public PopupStageBase,
         public sfml_util::gui::callback::IListBoxCallbackHandler
     {
-        //prevent copy construction
         PopupStageMusicSheet(const PopupStageMusicSheet &) =delete;
-
-        //prevent copy assignment
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) =delete;
 
     public:

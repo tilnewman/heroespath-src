@@ -41,10 +41,7 @@ namespace popup
     //Responsible for implementing the Character Select Popup Stage.
     class PopupStageCharacterSelect : public PopupStageImageSelect
     {
-        //prevent copy construction
         PopupStageCharacterSelect(const PopupStageCharacterSelect &);
-
-        //prevent copy assignment
         PopupStageCharacterSelect & operator=(const PopupStageCharacterSelect &);
 
     public:
