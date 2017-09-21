@@ -133,17 +133,19 @@ namespace sfml_util
     }
 
 
-    void Stage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void Stage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
+        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+
         isMouseHeldDownAndMoving_ = (isMouseHeldDown_ &&
-            (sfml_util::Distance(mouseDownPosV_, MOUSE_POS_V) > MOUSE_DRAG_MIN_DISTANCE_));
+            (sfml_util::Distance(mouseDownPosV_, NEW_MOUSE_POS_F) > MOUSE_DRAG_MIN_DISTANCE_));
 
         std::for_each(
             entityPVec_.begin(),
             entityPVec_.end(),
-            [&MOUSE_POS_V](auto entityPtr)
+            [&NEW_MOUSE_POS_F](auto entityPtr)
             {
-                entityPtr->UpdateMousePos(MOUSE_POS_V);
+                entityPtr->UpdateMousePos(NEW_MOUSE_POS_F);
             });
     }
 

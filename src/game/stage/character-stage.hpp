@@ -93,7 +93,12 @@ namespace stage
 
         virtual ~MenuButton() {}
         virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
-        virtual void SetOwningCharacterStage(CharacterStage * const stagePtr) { stagePtr_ = stagePtr; }
+
+        virtual void SetOwningCharacterStage(CharacterStage * const stagePtr)
+        {
+            stagePtr_ = stagePtr;
+        }
+
     protected:
         virtual void OnClick(const sf::Vector2f &);
         CharacterStage * stagePtr_;
@@ -112,7 +117,8 @@ namespace stage
         :
             value(VAL),
             stat(STAT),
-            text_region_sptr( std::make_shared<sfml_util::gui::TextRegion>(std::string(NAME).append("StatModText")) )
+            text_region_sptr(std::make_shared<sfml_util::gui::TextRegion>(
+                std::string(NAME).append("StatModText")) )
         {
             const sf::Int8 COLOR_BASE(100);
             sf::Color color(COLOR_BASE, 255, COLOR_BASE);
@@ -123,11 +129,12 @@ namespace stage
             std::ostringstream ss;
             ss << NAME << ((VAL > 0) ? "+" : "") << VAL;
 
-            const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
-                                                     sfml_util::FontManager::Instance()->Font_Default2(),
-                                                     sfml_util::FontManager::Instance()->Size_Small(),
-                                                     color,
-                                                     sfml_util::Justified::Left);
+            const sfml_util::gui::TextInfo TEXT_INFO(
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->Size_Small(),
+                color,
+                sfml_util::Justified::Left);
 
             const sf::FloatRect RECT(POS_LEFT, POS_TOP, 0.0f, 0.0f);
             text_region_sptr->Setup(TEXT_INFO, RECT);
@@ -219,7 +226,7 @@ namespace stage
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
 
         bool AreAnyAnimNumStillMoving() const;
         bool AreAnyStatsIgnored() const;

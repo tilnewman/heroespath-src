@@ -366,17 +366,19 @@ namespace combat
     }
 
 
-    void CombatDisplay::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void CombatDisplay::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
-        Stage::UpdateMousePos(MOUSE_POS_V);
+        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+
+        Stage::UpdateMousePos(NEW_MOUSE_POS);
 
         if (isScrollAllowed_ && isMouseHeldDownInBF_)
         {
-            MoveBattlefieldVert((prevMousePos_.y - MOUSE_POS_V.y) * BATTLEFIELD_DRAG_SPEED_);
-            MoveBattlefieldHoriz((prevMousePos_.x - MOUSE_POS_V.x) * BATTLEFIELD_DRAG_SPEED_);
+            MoveBattlefieldVert((prevMousePos_.y - NEW_MOUSE_POS_F.y) * BATTLEFIELD_DRAG_SPEED_);
+            MoveBattlefieldHoriz((prevMousePos_.x - NEW_MOUSE_POS_F.x) * BATTLEFIELD_DRAG_SPEED_);
         }
 
-        prevMousePos_ = MOUSE_POS_V;
+        prevMousePos_ = NEW_MOUSE_POS_F;
     }
 
 

@@ -1654,11 +1654,12 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     }
 
 
-    void InventoryStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void InventoryStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
+        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
         hasMouseMoved_ = true;
-        HandleDetailViewMouseInterrupt(MOUSE_POS_V);
-        Stage::UpdateMousePos(MOUSE_POS_V);
+        HandleDetailViewMouseInterrupt(NEW_MOUSE_POS_F);
+        Stage::UpdateMousePos(NEW_MOUSE_POS);
     }
 
 

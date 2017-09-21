@@ -664,11 +664,12 @@ namespace stage
     }
 
 
-    void PartyStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void PartyStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS_V)
     {
-        mouseOverPosV_ = MOUSE_POS_V;
+        auto const NEW_MOUSE_POS_VF{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS_V) };
+        mouseOverPosV_ = NEW_MOUSE_POS_VF;
         ResetMouseOverPopupState();
-        Stage::UpdateMousePos(MOUSE_POS_V);
+        Stage::UpdateMousePos(NEW_MOUSE_POS_V);
     }
 
 

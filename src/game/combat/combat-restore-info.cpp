@@ -133,7 +133,7 @@ namespace combat
         combat::CombatNodePVec_t combatNodesPVec;
         combatDisplayPtrC->GetCombatNodes(combatNodesPVec);
 
-        for (auto const NEXT_CREATUREPOS_PAIR : creatureBlockingPosMap_)
+        for (auto const & NEXT_CREATUREPOS_PAIR : creatureBlockingPosMap_)
         {
             for (auto const nextCombatNodePtrC : combatNodesPVec)
             {

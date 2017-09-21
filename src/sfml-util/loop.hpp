@@ -121,16 +121,31 @@ namespace sfml_util
 
     protected:
         virtual void LogFrameRate();
-        virtual bool ProcessOneSecondTasks();
-        virtual void ProcessMouseHover();
+
+        virtual bool ProcessOneSecondTasks(
+            const sf::Vector2i & NEW_MOUSE_POS,
+            bool HAS_MOUSE_MOVED);
+        
+        virtual void ProcessMouseHover(
+            const sf::Vector2i & NEW_MOUSE_POS,
+            bool HAS_MOUSE_MOVED);
+
         virtual void ProcessFader();
         virtual void ProcessPopup();
-        virtual void ProcessEvents();
+
+        virtual void ProcessEvents(
+            const sf::Vector2i & NEW_MOUSE_POS,
+            bool HAS_MOUSE_MOVED);
+        
         virtual void ProcessKeyStrokes(const sf::Event & EVENT);
-        virtual void ProcessMouseMove();
+        virtual void ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS);
         virtual void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
         virtual void ProcessMouseButtonLeftReleased(const sf::Vector2f &);
-        virtual void ProcessMouseWheelRoll(const sf::Event & EVENT);
+
+        virtual void ProcessMouseWheelRoll(
+            const sf::Event & EVENT,
+            const sf::Vector2i & NEW_MOUSE_POS);
+        
         virtual void ProcessPopupCallback();
         virtual void ProcessTimeUpdate();
         virtual void ProcessDrawing();
@@ -163,11 +178,10 @@ namespace sfml_util
         gui::IGuiEntityPtr_t  entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        popup::PopupInfo       popupInfo_;
+        popup::PopupInfo      popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;
-        sf::Vector2f          mousePosV_;
         bool                  isMouseHovering_;
         bool                  takeScreenshot_;
         popup::IPopupHandler_t * popupCallbackPtr_;

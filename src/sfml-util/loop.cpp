@@ -79,7 +79,6 @@ namespace sfml_util
         hasFadeStarted_      (false),
         prevEventType_       (sf::Event::EventType::Count),
         prevKeyPressed_      (sf::Keyboard::Key::Unknown),
-        mousePosV_           (),
         isMouseHovering_     (false),
         takeScreenshot_      (false),
         popupCallbackPtr_    (),
@@ -238,8 +237,17 @@ namespace sfml_util
             }
 
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
-            const float STANDARD_DEVIATION(misc::Vector::StandardDeviation(frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE));
-            M_HP_LOG("Frame rate min=" << min << ", max=" << max << ", count=" << frameRateSampleCount_ - 1 << ", avg=" << AVERAGE_FRAMERATE << ", std_dev=" << STANDARD_DEVIATION << ":  ");
+
+            const float STANDARD_DEVIATION{ misc::Vector::StandardDeviation(
+                frameRateVec_,
+                frameRateSampleCount_,
+                AVERAGE_FRAMERATE) };
+
+            M_HP_LOG("Frame rate min=" << min
+                << ", max=" << max
+                << ", count=" << frameRateSampleCount_ - 1
+                << ", avg=" << AVERAGE_FRAMERATE
+                << ", std_dev=" << STANDARD_DEVIATION << ":  ");
         }
         else
         {
@@ -250,12 +258,16 @@ namespace sfml_util
     }
 
 
-    bool Loop::ProcessOneSecondTasks()
+    bool Loop::ProcessOneSecondTasks(
+        const sf::Vector2i & NEW_MOUSE_POS,
+        const bool HAS_MOUSE_MOVED)
     {
         auto willProcessOneSecondTasks{ false };
 
         if (false == continueFading_)
+        {
             oneSecondTimerSec_ += elapsedTimeSec_;
+        }
 
         if (oneSecondTimerSec_ > 1.0f)
         {
@@ -265,28 +277,26 @@ namespace sfml_util
 
             LogFrameRate();
 
-            //process mouse-over hovering feature
-            const sf::Vector2f MOUSE_POS_NEW_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
-            if ((false == continueFading_) && (MOUSE_POS_NEW_V == mousePosV_) && (isMouseHovering_ == false))
+            if ((false == continueFading_) &&
+                (HAS_MOUSE_MOVED == false) &&
+                (isMouseHovering_ == false))
             {
                 isMouseHovering_ = true;
+
+                auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
 
                 //popup stages process exclusively when present
                 if (nullptr == popupStagePtr_)
                 {
                     for (auto & nextStagePtr : stagePVec_)
                     {
-                        nextStagePtr->SetMouseHover(MOUSE_POS_NEW_V, true);
+                        nextStagePtr->SetMouseHover(NEW_MOUSE_POS_F, true);
                     }
                 }
                 else
                 {
-                    popupStagePtr_->SetMouseHover(MOUSE_POS_NEW_V, true);
+                    popupStagePtr_->SetMouseHover(NEW_MOUSE_POS_F, true);
                 }
-            }
-            else
-            {
-                mousePosV_ = MOUSE_POS_NEW_V;
             }
         }
 
@@ -294,29 +304,27 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessMouseHover()
+    void Loop::ProcessMouseHover(
+        const sf::Vector2i & NEW_MOUSE_POS,
+        bool HAS_MOUSE_MOVED)
     {
-        if (isMouseHovering_)
+        if (isMouseHovering_ && HAS_MOUSE_MOVED)
         {
-            const sf::Vector2f MOUSE_POS_NEW_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
+            isMouseHovering_ = false;
 
-            if (MOUSE_POS_NEW_V != mousePosV_)
+            auto const MOUSE_POS_NEW_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+
+            //popup stages process exclusively when present
+            if (nullptr == popupStagePtr_)
             {
-                isMouseHovering_ = false;
-                mousePosV_ = MOUSE_POS_NEW_V;
-
-                //popup stages process exclusively when present
-                if (nullptr == popupStagePtr_)
+                for (auto & nextStagePtr : stagePVec_)
                 {
-                    for (auto & nextStagePtr : stagePVec_)
-                    {
-                        nextStagePtr->SetMouseHover(MOUSE_POS_NEW_V, false);
-                    }
+                    nextStagePtr->SetMouseHover(MOUSE_POS_NEW_F, false);
                 }
-                else
-                {
-                    popupStagePtr_->SetMouseHover(MOUSE_POS_NEW_V, false);
-                }
+            }
+            else
+            {
+                popupStagePtr_->SetMouseHover(MOUSE_POS_NEW_F, false);
             }
         }
     }
@@ -371,10 +379,17 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessEvents()
+    void Loop::ProcessEvents(
+        const sf::Vector2i & NEW_MOUSE_POS,
+        bool HAS_MOUSE_MOVED)
     {
+        if ((false == willIgnoreMouse_) && HAS_MOUSE_MOVED)
+        {
+            ProcessMouseMove(NEW_MOUSE_POS);
+        }
+
         sf::Event e;
-        while ((winPtr_->pollEvent(e)) && (false == willExit_))
+        if (winPtr_->pollEvent(e))
         {
             //unexpected window close exit condition
             if (e.type == sf::Event::Closed)
@@ -389,17 +404,14 @@ namespace sfml_util
                 ProcessKeyStrokes(e);
             }
 
-            if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseMoved))
-            {
-                ProcessMouseMove();
-            }
-
             if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseButtonPressed))
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
-                    ProcessMouseButtonLeftPressed(MOUSE_POS_V);
+                    auto const NEW_MOUSE_POS_F{
+                        sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+
+                    ProcessMouseButtonLeftPressed(NEW_MOUSE_POS_F);
                 }
                 else
                 {
@@ -411,8 +423,10 @@ namespace sfml_util
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
-                    ProcessMouseButtonLeftReleased(MOUSE_POS_V);
+                    auto const NEW_MOUSE_POS_F{
+                        sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+
+                    ProcessMouseButtonLeftReleased(NEW_MOUSE_POS_F);
                 }
                 else
                 {
@@ -422,7 +436,7 @@ namespace sfml_util
 
             if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseWheelMoved))
             {
-                ProcessMouseWheelRoll(e);
+                ProcessMouseWheelRoll(e, NEW_MOUSE_POS);
             }
         }
     }
@@ -508,20 +522,18 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessMouseMove()
+    void Loop::ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS)
     {
-        const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
-
         if (nullptr == popupStagePtr_)
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                nextStagePtr->UpdateMousePos(MOUSE_POS_V);
+                nextStagePtr->UpdateMousePos(NEW_MOUSE_POS);
             }
         }
         else
         {
-            popupStagePtr_->UpdateMousePos(MOUSE_POS_V);
+            popupStagePtr_->UpdateMousePos(NEW_MOUSE_POS);
         }
     }
 
@@ -583,20 +595,22 @@ namespace sfml_util
     }
 
 
-    void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT)
+    void Loop::ProcessMouseWheelRoll(
+        const sf::Event & EVENT,
+        const sf::Vector2i & NEW_MOUSE_POS)
     {
-        const sf::Vector2f MOUSE_POS_V(sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_)));
+        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
 
         if (nullptr == popupStagePtr_)
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                nextStagePtr->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+                nextStagePtr->UpdateMouseWheel(NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
             }
         }
         else
         {
-            popupStagePtr_->UpdateMouseWheel(MOUSE_POS_V, EVENT.mouseWheelScroll.delta);
+            popupStagePtr_->UpdateMouseWheel(NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
         }
     }
 
@@ -764,12 +778,12 @@ namespace sfml_util
 
     bool Loop::Execute()
     {
-        //reset exit variables
+        //reset loop variables
         willExit_ = false;
         fatalExitEvent_ = false;
-        mousePosV_ = sfml_util::ConvertVector<int, float>(sf::Mouse::getPosition( * winPtr_ ));
         auto soundManagerPtr{ sfml_util::SoundManager::Instance() };
-        frameRateVec_.resize(1024);
+        frameRateVec_.resize(4096);
+        sf::Vector2i prevMousePos{ sf::Mouse::getPosition( * winPtr_) };
 
         //consume pre-events
         ConsumeEvents();
@@ -777,14 +791,17 @@ namespace sfml_util
         clock_.restart();
         while (winPtr_->isOpen() && (false == willExit_))
         {
+            auto const NEW_MOUSE_POS{ sf::Mouse::getPosition( * winPtr_) };
+            auto const HAS_MOUSE_MOVED{ NEW_MOUSE_POS != prevMousePos };
+
             winPtr_->clear(sf::Color::Black);
             ProcessFramerate();
             soundManagerPtr->UpdateTime(elapsedTimeSec_);
             PerformNextTest();
-            ProcessMouseHover();
-            ProcessOneSecondTasks();
+            ProcessMouseHover(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
+            ProcessOneSecondTasks(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
             ProcessHoldTime();
-            ProcessEvents();
+            ProcessEvents(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
             ProcessTimeUpdate();
             ProcessDrawing();
             ProcessFader();
@@ -792,6 +809,11 @@ namespace sfml_util
             ProcessPopupCallback();
             winPtr_->display();
             ProcessScreenshot();
+
+            if (HAS_MOUSE_MOVED)
+            {
+                prevMousePos = NEW_MOUSE_POS;
+            }
         }
 
         ConsumeEvents();

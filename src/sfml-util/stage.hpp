@@ -94,7 +94,7 @@ namespace sfml_util
         inline virtual float StageRegionHeight() const                  { return stageRegion_.height; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        virtual void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual void UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
 

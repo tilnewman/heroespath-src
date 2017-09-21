@@ -2247,10 +2247,11 @@ namespace stage
     }
 
 
-    void CharacterStage::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void CharacterStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS_V)
     {
-        Stage::UpdateMousePos(MOUSE_POS_V);
-        HandleAttributeDragging(MOUSE_POS_V);
+        Stage::UpdateMousePos(NEW_MOUSE_POS_V);
+        auto const NEW_MOUSE_POS_VF{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS_V) };
+        HandleAttributeDragging(NEW_MOUSE_POS_VF);
     }
 
 

@@ -102,7 +102,7 @@ namespace stage
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
 
         virtual void StartNewGame();
 

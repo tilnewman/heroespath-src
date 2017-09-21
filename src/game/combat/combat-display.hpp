@@ -131,7 +131,7 @@ namespace combat
         //returns false if no nodes will be drawn
         bool UpdateWhichNodesWillDraw();
 
-        virtual void UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
