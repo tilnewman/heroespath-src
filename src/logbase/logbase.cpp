@@ -176,7 +176,7 @@ namespace logbase
             case LogPri::Default:   { return "DEF"; }
             case LogPri::Warn:      { return "WRN"; }
             case LogPri::Error:     { return "ERR"; }
-            case LogPri::Fatal:     { return "FTL"; }
+            case LogPri::Fatal:     { return "FAT"; }
             case LogPri::Count:     //intentional fall-through
             default:
             {
