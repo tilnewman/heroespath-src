@@ -143,6 +143,16 @@ namespace combat
 
         bool DidAllEnemiesRunAway() const;
 
+        inline creature::CreaturePtr_t LockPickCreaturePtr() const
+        {
+            return lockPickCreaturePtr_;
+        }
+
+        inline void LockPickCreaturePtr(const creature::CreaturePtr_t NEW_CREATURE_PTR)
+        {
+            lockPickCreaturePtr_ = NEW_CREATURE_PTR;
+        }
+
     private:
         void GenerateFirstEncounter();
         void PopulateTurnInfoMap();
@@ -163,7 +173,7 @@ namespace combat
         non_player::PartyUPtr_t deadNonPlayerPartyUPtr_;
         non_player::PartyUPtr_t runawayNonPlayerPartyUPtr_;
 
-        //copies of player character pointers are store temporarily in this vectors
+        //copies of player character pointers are store temporarily in this vector
         creature::CreaturePVec_t runawayPlayersVec_;
 
         std::size_t              roundCounter_;
@@ -180,6 +190,9 @@ namespace combat
 
         //conatins all the items the dead enemies were holding in the chest/lockbox
         item::ItemCache deadNonPlayerItemsLockbox_;
+
+        //this member always stores a copy, and is never responsible for lifetime
+        creature::CreaturePtr_t lockPickCreaturePtr_;
     };
 
 }

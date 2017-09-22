@@ -74,9 +74,10 @@ namespace combat
         turnOverPVec_             (),
         turnIndex_                (0),
         turnInfoMap_              (),
-        turnCreaturePtr_          (),
+        turnCreaturePtr_          (nullptr),
         deadNonPlayerItemsHeld_   (),
-        deadNonPlayerItemsLockbox_ ()
+        deadNonPlayerItemsLockbox_(),
+        lockPickCreaturePtr_      (nullptr)
     {
         M_HP_LOG_DBG("Singleton Construction: Encounter");
         FreeThenResetLivingNonPlayerParty();
