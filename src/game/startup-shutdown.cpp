@@ -114,12 +114,12 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                 "Appication Setup Framework threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                 "Appication Setup Framework threw unknown (non-std) exception.");
         }
 
@@ -138,12 +138,12 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                 "Application threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                 "Application threw an unknown (non-std) exception.");
         }
 
@@ -161,14 +161,14 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                "game::SettingsFile::AcquireAndSave() threw std::exception \"" << E.what() << "\"");
 
             exitCode = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG( * game::Logger::Instance(),
+            M_LOG_FAT( * game::Logger::Instance(),
                 "game::SettingsFile::AcquireAndSave() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
@@ -184,7 +184,7 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG_FAT(*game::Logger::Instance(),
                 "sfml_util::Display::GetWindow()->close() threw std::exception \""
                 << E.what() << "\"");
 
@@ -204,7 +204,7 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG_FAT(*game::Logger::Instance(),
                 "game::StartupShutdown::WarehousesEmpty() threw std::exception \""
                 << E.what() << "\"");
 
@@ -212,7 +212,7 @@ namespace game
         }
         catch (...)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG_FAT(*game::Logger::Instance(),
                 "game::StartupShutdown::WarehousesEmpty() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
@@ -224,7 +224,7 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG_FAT(*game::Logger::Instance(),
                 "game::StartupShutdown::SingletonsRelease() threw std::exception \""
                 << E.what() << "\"");
 
@@ -232,7 +232,7 @@ namespace game
         }
         catch (...)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG_FAT(*game::Logger::Instance(),
                "game::StartupShutdown::SingletonsRelease() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
