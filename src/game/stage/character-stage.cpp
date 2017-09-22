@@ -222,9 +222,9 @@ namespace stage
         nameTextEntryBoxSPtr_   (),
         attrDescTextRegionUPtr_ (),
         sbInsTextRegionUPtr_    (),
-        sbInsTextSlider_        (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
+        sbInsTextSlider_        (150, 255, 4.0f),
         nInsTextRegionUPtr_     (),
-        nInsTextSlider_         (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
+        nInsTextSlider_         (150, 255, 4.0f),
         bottomSymbol_           (),
         selectedImageIndex_     (0)
     {}

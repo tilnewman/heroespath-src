@@ -42,6 +42,10 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
+#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+
+#include <type_traits>
+
 
 namespace sfml_util
 {
@@ -68,6 +72,11 @@ namespace sliders
             val_(0),
             willContinue_(true)
         {
+            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<T>::value),
+                "sfml_util::sliders::ZeroSliderOnce<"
+                << boost::typeindex::type_id<T>().pretty_name()
+                << ">::Constructor() created, which is not a floating point type.");
+
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::ZeroSliderOnce::Constructor() given speed of zero.");
 
@@ -162,6 +171,12 @@ namespace sliders
             diff_  (0.0),
             slider_()
         {
+            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Math_t>::value),
+                "sfml_util::sliders::SliderOnce<Value_t="
+                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Math_t="
+                << boost::typeindex::type_id<Math_t>().pretty_name()
+                << ">::Constructor() created, but Math_t is not a floating point type.");
+
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::SliderOnce::Constructor() given speed of zero.");
 
@@ -188,7 +203,7 @@ namespace sliders
         void Reset(
             const Value_t THE_MIN = 0,
             const Value_t THE_MAX = 1,
-            const Math_t  SPEED = 1.0)
+            const Math_t  SPEED   = 1)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::SliderOnce::Reset() given speed of zero.");
@@ -232,7 +247,7 @@ namespace sliders
         explicit Slider(
             const Value_t THE_MIN = 0,
             const Value_t THE_MAX = 1,
-            const Speed_t SPEED   = 1.0,
+            const Speed_t SPEED   = 1,
             const Value_t INITIAL = 0)
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor which sets these.
@@ -241,15 +256,11 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                ((misc::IsRealClose(INITIAL, THE_MIN)) || (INITIAL > THE_MIN)),
-                "sfml_util::sliders::Slider::Constructor given INITIAL=" << INITIAL
-                << " which is not equal or greater than THE_MIN of " << THE_MIN);
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (misc::IsRealClose(INITIAL, THE_MAX) || (INITIAL < THE_MAX)),
-                "sfml_util::sliders::Slider::Constructor given INITIAL=" << INITIAL
-                << " which is not less than or equal to THE_MAX=" << THE_MAX);
+            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Speed_t>::value),
+                "sfml_util::sliders::Slider<Value_t="
+                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Speed_t="
+                << boost::typeindex::type_id<Speed_t>().pretty_name()
+                << ">::Constructor() created, but Speed_t is not a floating point type.");
 
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
                 "sfml_util::sliders::Slider::Constructor given SPEED of zero.");
@@ -346,6 +357,12 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
+            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Speed_t>::value),
+                "sfml_util::sliders::Drifter<Value_t="
+                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Speed_t="
+                << boost::typeindex::type_id<Speed_t>().pretty_name()
+                << ">::Constructor() created, but Speed_t is not a floating point type.");
+
             Reset(THE_MIN, THE_MAX, SPEED_MIN, SPEED_MAX, RandRange(), RandRange());
         }
 
