@@ -194,8 +194,10 @@ namespace popup
             const std::string &                 PROMPT_TEXT,
             const sfml_util::TextureVec_t &     TEXTURE_VEC,
             const bool                          ARE_IMAGES_CREATURES,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
-            const unsigned int                  FONT_SIZE    =
+            const std::size_t                   INITIAL_SELECTION = 0,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT      =
+                sfml_util::sound_effect::PromptGeneric,
+            const unsigned int                  FONT_SIZE         =
                 sfml_util::FontManager::Instance()->Size_Normal()) const;
 
         //use this function to create the number selection popup window
@@ -211,9 +213,8 @@ namespace popup
         const PopupInfo CreateCharacterSelectPopupInfo(
             const std::string &              POPUP_NAME,
             const std::string &              PROMPT_TEXT,
-            const std::vector<std::string> & INVALID_TEXT_VEC,
-            const unsigned int               FONT_SIZE =
-                sfml_util::FontManager::Instance()->Size_Large()) const;
+            const std::vector<std::string> & INVALID_MSG_VEC,
+            const std::size_t                INITIAL_SELECTION = 0) const;
 
         //use this function to make image fade/transition popup windows
         const PopupInfo CreateImageFadePopupInfo(

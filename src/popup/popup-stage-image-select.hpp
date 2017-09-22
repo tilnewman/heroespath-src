@@ -82,6 +82,11 @@ namespace popup
         virtual void SetupSliderbar() override;
 
     protected:
+        void EnqueueImagesFromCurrentToTarget(
+            const std::size_t CURRENT_INDEX,
+            const std::size_t TARGET_INDEX);
+
+    protected:
         static const float IMAGE_SLIDER_SPEED_;
 
         bool isChangingImageAllowed_;

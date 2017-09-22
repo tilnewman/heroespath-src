@@ -118,6 +118,7 @@ namespace popup
             (game::Game::Instance()->State().Party().Characters().size() != 0);
 
         imageMoveQueue_.push(0);
+        EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
     }
 
 

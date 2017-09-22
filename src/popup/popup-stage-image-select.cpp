@@ -111,6 +111,7 @@ namespace popup
         isChangingImageAllowed_ = (popupInfo_.ImagesCount() != 0);
 
         imageMoveQueue_.push(0);
+        EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
 
         if (popupInfo_.ImagesCount() == 1)
         {
@@ -461,24 +462,7 @@ namespace popup
         sliderbarUPtr_->SetCurrentValue(static_cast<float>(targetIndex) * ONE_OVER_COUNT);
         isChangingImageAllowed_ = true;
 
-        std::size_t i{ imageIndex_ };
-        while (true)
-        {
-            if (targetIndex < imageIndex_)
-            {
-                imageMoveQueue_.push(--i);
-            }
-            else
-            {
-                imageMoveQueue_.push(++i);
-            }
-
-            if (i == targetIndex)
-            {
-                break;
-            }
-        }
-
+        EnqueueImagesFromCurrentToTarget(imageIndex_, targetIndex);
         return true;
     }
 
@@ -558,6 +542,26 @@ namespace popup
             this);
 
         EntityAdd(sliderbarUPtr_.get());
+    }
+
+
+    void PopupStageImageSelect::EnqueueImagesFromCurrentToTarget(
+        const std::size_t CURRENT_INDEX,
+        const std::size_t TARGET_INDEX)
+    {
+        std::size_t i{ CURRENT_INDEX };
+
+        do
+        {
+            if (TARGET_INDEX < CURRENT_INDEX)
+            {
+                imageMoveQueue_.push(--i);
+            }
+            else
+            {
+                imageMoveQueue_.push(++i);
+            }
+        } while (i != TARGET_INDEX);
     }
 
 }

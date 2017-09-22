@@ -236,6 +236,7 @@ namespace popup
         const std::string &                 PROMPT_TEXT,
         const sfml_util::TextureVec_t &     TEXTURE_VEC,
         const bool                          ARE_IMAGES_CREATURES,
+        const std::size_t                   INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const unsigned int                  FONT_SIZE) const
     {
@@ -244,7 +245,8 @@ namespace popup
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             TEXTURE_VEC,
             ARE_IMAGES_CREATURES,
-            BACKGROUND_IMAGE_SCALE_DEFAULT_,
+            INITIAL_SELECTION,
+            GetScaleForImage(popup::PopupImage::Large),
             SOUND_EFFECT);
     }
 
@@ -261,34 +263,28 @@ namespace popup
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             THE_MIN,
             THE_MAX,
-            BACKGROUND_IMAGE_SCALE_DEFAULT_);
+            GetScaleForImage(popup::PopupImage::Large));
     }
 
 
     const PopupInfo PopupManager::CreateCharacterSelectPopupInfo(
         const std::string &              POPUP_NAME,
         const std::string &              PROMPT_TEXT,
-        const std::vector<std::string> & INVALID_TEXT_VEC,
-        const unsigned int               FONT_SIZE) const
+        const std::vector<std::string> & INVALID_MSG_VEC,
+        const std::size_t                INITIAL_SELECTION) const
     {
-        return PopupInfo(
+        auto popupInfo{ CreateImageSelectionPopupInfo(
             POPUP_NAME,
-            TextInfoDefault(PROMPT_TEXT,
-                            sfml_util::Justified::Center,
-                            FONT_SIZE),
-            PopupButtons::SelectCancel,
-            PopupImage::Large,
-            GetScaleForImage(PopupImage::Large),
-            sfml_util::sound_effect::PromptQuestion,
-            PopupButtonColor::Dark,
-            true,
-            std::vector<std::size_t>(),
+            PROMPT_TEXT,
             sfml_util::TextureVec_t(),
-            INVALID_TEXT_VEC,
-            0.0f,
-            nullptr,
-            0,
-            true);
+            true,
+            INITIAL_SELECTION,
+            sfml_util::sound_effect::PromptGeneric,
+            sfml_util::FontManager::Instance()->Size_Smallish()) };
+
+        popupInfo.TextVec(INVALID_MSG_VEC);
+
+        return popupInfo;
     }
 
 

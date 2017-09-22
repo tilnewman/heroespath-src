@@ -96,8 +96,9 @@ namespace popup
                   const sfml_util::gui::TextInfo &        TEXT_INFO,
                   const sfml_util::TextureVec_t &         TEXTURE_VEC,
                   const bool                              ARE_IMAGES_CREATURES,
+                  const std::size_t                       INITIAL_SELECTION,
                   const float                             IMAGE_SCALE,
-                  const sfml_util::sound_effect::Enum     SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+                  const sfml_util::sound_effect::Enum     SOUND_EFFECT    = sfml_util::sound_effect::PromptGeneric,
                   const PopupButtonColor::Enum BUTTON_COLOR = PopupButtonColor::Dark);
 
         //use this constructor for number selection popups
@@ -170,6 +171,11 @@ namespace popup
         inline void SetDoesIncludeItems(const bool WILL_INCLUDE_ITEMS)
         {
             willIncludeItems_ = WILL_INCLUDE_ITEMS;
+        }
+
+        inline void TextVec(const std::vector<std::string> & NEW_TEXT_VEC)
+        {
+            textVec_ = NEW_TEXT_VEC;
         }
 
     public:

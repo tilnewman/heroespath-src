@@ -45,7 +45,7 @@
 namespace popup
 {
 
-    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_{ 32 };
+    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_{ 24 };
 
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)

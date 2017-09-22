@@ -2737,8 +2737,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_,
             PROMPT_TEXT,
-            invalidTextVec,
-            sfml_util::FontManager::Instance()->Size_Smallish()) };
+            invalidTextVec) };
 
         LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
             this, POPUP_INFO);

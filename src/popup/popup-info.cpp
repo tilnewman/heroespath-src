@@ -170,6 +170,7 @@ namespace popup
                          const sfml_util::gui::TextInfo &    TEXT_INFO,
                          const sfml_util::TextureVec_t &     TEXTURE_VEC,
                          const bool                          ARE_IMAGES_CREATURES,
+                         const std::size_t                   INITIAL_SELECTION,
                          const float                         IMAGE_SCALE,
                          const sfml_util::sound_effect::Enum SOUND_EFFECT,
                          const PopupButtonColor::Enum        BUTTON_COLOR)
@@ -183,7 +184,7 @@ namespace popup
         ratioX_          (1.0f),
         ratioY_          (1.0f),
         buttonColor_     (BUTTON_COLOR),
-        willAddRandImage_(false),
+        willAddRandImage_(true),
         imageScale_      (IMAGE_SCALE),
         textureVec_      (TEXTURE_VEC),
         numberMin_       (0),
@@ -191,7 +192,7 @@ namespace popup
         numberInvalidVec_(),
         imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
         creatureCPtr_    (nullptr),
-        initialSelection_(0),
+        initialSelection_(INITIAL_SELECTION),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (),
         howCombatEnded_  (game::combat::CombatEnd::Count),
@@ -200,7 +201,14 @@ namespace popup
         titleText_       (""),
         descText_        (""),
         willIncludeItems_(false)
-    {}
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((INITIAL_SELECTION < textureVec_.size()) ||
+            ((textureVec_.empty()) && areImgsCreatures_)),
+            "popup::PopupInfo::Constructor(image selection) INITIAL_SELECTION="
+            << INITIAL_SELECTION << " is NOT less than the texture_vec.size()"
+            << textureVec_.size());
+    }
 
 
     PopupInfo::PopupInfo(const std::string &              NAME,

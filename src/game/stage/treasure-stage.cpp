@@ -139,7 +139,7 @@ namespace stage
         }
 
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_) ||
-            (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_))
+            (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
             if (POPUP_RESPONSE.Response() == popup::Response::Yes)
             {
@@ -703,8 +703,7 @@ namespace stage
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_,
             "Who will attempt to pick the lock?",
-            invalidTextVec,
-            sfml_util::FontManager::Instance()->Size_Smallish()) };
+            invalidTextVec) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
             this, POPUP_INFO);
