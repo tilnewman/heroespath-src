@@ -87,6 +87,10 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_CHAR_SELECT_{
         "PopupName_CharacterSelect" };
 
+    const std::string TreasureStage::POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_{
+        "PopupName_NoCharactersCanAttemptToPickTheLock" };
+
+
 
     TreasureStage::TreasureStage()
     :
@@ -157,8 +161,21 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::Response::Select)
             {
-                PromptPlayerWithLockPickPopup(POPUP_RESPONSE.Selection());
-                return false;
+                auto const SELECTION{ POPUP_RESPONSE.Selection() };
+                
+                if (SELECTION < Game::Instance()->State().Party().Characters().size())
+                {
+                    game::combat::Encounter::Instance()->LockPickCreaturePtr(
+                        Game::Instance()->State().Party().GetAtOrderPos(SELECTION));
+
+                    PromptPlayerWithLockPickPopup(SELECTION);
+                    return false;
+                }
+                else
+                {
+                    SetupStageForTreasureCollectionWithoutLockbox();
+                    return true;
+                }
             }
             else
             {
@@ -173,11 +190,16 @@ namespace stage
                 {
                     //Since the player is choosing to skip the lockbox,
                     //then prevent from searching the lockbox.
-                    treasureAvailable_ = item::TreasureAvailable::HeldOnly;
-                    SetupStageForTreasureCollection();
+                    SetupStageForTreasureCollectionWithoutLockbox();
                     return true;
                 }
             }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_)
+        {
+            SetupStageForTreasureCollectionWithoutLockbox();
+            return true;
         }
 
         return true;
@@ -671,19 +693,95 @@ namespace stage
     }
 
 
+    void TreasureStage::SetupStageForTreasureCollection()
+    {
+        //TODO
+    }
+
+
+    void TreasureStage::SetupStageForTreasureCollectionWithoutLockbox()
+    {
+        treasureAvailable_ = item::TreasureAvailable::HeldOnly;
+        SetupStageForTreasureCollection();
+    }
+
+
     void TreasureStage::PromptPlayerWhichCharacterWillPickLock()
     {
-        const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+        auto const INVALID_MSGS{ MakeInvalidLockPickCharacterMessages() };
 
-        std::vector<std::string> invalidTextVec;
-        invalidTextVec.resize(NUM_CHARACTERS);
+        auto isThereAnyValidCharacterWhoCanAttemptToPickTheLock{ false };
+        for (auto const & INVALID_MSG : INVALID_MSGS)
+        {
+            if (INVALID_MSG.empty())
+            {
+                isThereAnyValidCharacterWhoCanAttemptToPickTheLock = true;
+                break;
+            }
+        }
+
+        if (isThereAnyValidCharacterWhoCanAttemptToPickTheLock)
+        {
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+                POPUP_NAME_CHAR_SELECT_,
+                "Who will attempt to pick the lock?",
+                INVALID_MSGS,
+                FindCharacterIndexWhoPrevAttemptedLockPicking()) };
+
+            game::LoopManager::Instance()->
+                PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(this, POPUP_INFO);
+        }
+        else
+        {
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_,
+                "There are no characters who can attempt to pick the lock!  They are all incapable or incapacitated",
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular) };
+
+            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        }
+    }
+
+
+    std::size_t TreasureStage::FindCharacterIndexWhoPrevAttemptedLockPicking() const
+    {
+        auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+
+        auto const PREV_LOCKPICK_CREATURE_PTR{
+            game::combat::Encounter::Instance()->LockPickCreaturePtr() };
+
+        if (PREV_LOCKPICK_CREATURE_PTR != nullptr)
+        {
+            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+            {
+                auto const CREATURE_PTR{ Game::Instance()->State().Party().GetAtOrderPos(i) };
+                if (CREATURE_PTR == PREV_LOCKPICK_CREATURE_PTR)
+                {
+                    return i;
+                }
+            }
+
+            game::combat::Encounter::Instance()->LockPickCreaturePtr(nullptr);
+        }
+
+        return 0;
+    }
+
+
+    const misc::StrVec_t TreasureStage::MakeInvalidLockPickCharacterMessages() const
+    {
+        auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+
+        misc::StrVec_t invalidMsgsVec;
+        invalidMsgsVec.resize(NUM_CHARACTERS);
 
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
             auto const CREATURE_PTR{ Game::Instance()->State().Party().GetAtOrderPos(i) };
             if (CREATURE_PTR->IsBeast())
             {
-                invalidTextVec[i] = "Beasts cannot pick locks";
+                invalidMsgsVec[i] = "Beasts cannot pick locks";
             }
             else if (CREATURE_PTR->CanTakeAction() == false)
             {
@@ -692,26 +790,20 @@ namespace stage
                 ss << creature::sex::HeSheIt(CREATURE_PTR->Sex(), true)
                     << " is " << CREATURE_PTR->CanTakeActionStr(false) << ".";
 
-                invalidTextVec[i] = ss.str();
+                invalidMsgsVec[i] = ss.str();
             }
             else
             {
-                invalidTextVec[i].clear();
+                invalidMsgsVec[i].clear();
             }
         }
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
-            POPUP_NAME_CHAR_SELECT_,
-            "Who will attempt to pick the lock?",
-            invalidTextVec) };
-
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
-            this, POPUP_INFO);
+        return invalidMsgsVec;
     }
 
 
     void TreasureStage::PromptPlayerWithLockPickPopup(
-        const std::size_t )
+        const std::size_t /*CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK*/)
     {
         //TODO
     }

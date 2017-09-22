@@ -111,12 +111,18 @@ namespace stage
         void PromptUserBasedonTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
-        void SetupStageForTreasureCollection() {}
+        void SetupStageForTreasureCollection();
+
+        void SetupStageForTreasureCollectionWithoutLockbox();
 
         void PromptPlayerWhichCharacterWillPickLock();
 
+        std::size_t FindCharacterIndexWhoPrevAttemptedLockPicking() const;
+
+        const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
+
         void PromptPlayerWithLockPickPopup(
-            const std::size_t PLAYER_PICKING_THE_LOCK);
+            const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK);
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
@@ -125,6 +131,7 @@ namespace stage
         static const std::string POPUP_NAME_LOCKBOX_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_AND_HELD_;
         static const std::string POPUP_NAME_CHAR_SELECT_;
+        static const std::string POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_;
 
     private:
         int setupCountdown_;
