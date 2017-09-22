@@ -1187,7 +1187,7 @@ namespace stage
                         creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), creatureSprite_.getPosition().y);
                     }
 
-                    if (imageSlider_.GetIsDone())
+                    if (imageSlider_.IsDone())
                     {
                         SetupCreatureImage();
                         creatureSprite_.setPosition(OUT_OF_SIGHT_POS_, creatureSprite_.getPosition().y);
@@ -1218,7 +1218,7 @@ namespace stage
                         }
                     }
 
-                    if (imageSlider_.GetIsDone())
+                    if (imageSlider_.IsDone())
                     {
                         isImageSliding_ = false;
                         isImageSlidingDone_ = true;
@@ -1242,7 +1242,7 @@ namespace stage
                         detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
                     }
 
-                    if (detailsSlider_.GetIsDone())
+                    if (detailsSlider_.IsDone())
                     {
                         UpdateImageDetailsPosition();
                         SetupCreatureDetails(true);
@@ -1264,7 +1264,7 @@ namespace stage
                         detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
                     }
 
-                    if (detailsSlider_.GetIsDone())
+                    if (detailsSlider_.IsDone())
                     {
                         isDetailsSliding_ = false;
                         isDetailsSlidingDone_ = true;
@@ -1291,7 +1291,7 @@ namespace stage
                         }
                     }
 
-                    if (centerSlider_.GetIsDone())
+                    if (centerSlider_.IsDone())
                     {
                         SetupCenterText();
                         centerTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
@@ -1315,7 +1315,7 @@ namespace stage
                         }
                     }
 
-                    if (centerSlider_.GetIsDone() || creaturePtr_->IsBeast())
+                    if (centerSlider_.IsDone() || creaturePtr_->IsBeast())
                     {
                         isCenterSliding_ = false;
                         isCenterSlidingDone_ = true;
@@ -1339,7 +1339,7 @@ namespace stage
                         statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
                     }
 
-                    if (statsSlider_.GetIsDone())
+                    if (statsSlider_.IsDone())
                     {
                         SetupCreatureStats();
                         statsTextRegionUPtr_->SetEntityPos(OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
@@ -1360,7 +1360,7 @@ namespace stage
                         statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
                     }
 
-                    if (statsSlider_.GetIsDone())
+                    if (statsSlider_.IsDone())
                     {
                         isStatsSliding_ = false;
                         isStatsSlidingDone_ = true;
@@ -1384,7 +1384,7 @@ namespace stage
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
                     }
 
-                    if (listBoxSlider_.GetIsDone())
+                    if (listBoxSlider_.IsDone())
                     {
                         SetupListBox();
                         equippedListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, equippedListBoxSPtr_->GetEntityPos().y);
@@ -1405,7 +1405,7 @@ namespace stage
                         equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
                     }
 
-                    if (listBoxSlider_.GetIsDone())
+                    if (listBoxSlider_.IsDone())
                     {
                         isListBoxSliding_ = false;
                         isListBoxSlidingDone_ = true;
@@ -1447,7 +1447,7 @@ namespace stage
                         }
                     }
 
-                    if (descBoxSlider_.GetIsDone())
+                    if (descBoxSlider_.IsDone())
                     {
                         SetupDescBox(true);
                         unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
@@ -1488,7 +1488,7 @@ namespace stage
                         }
                     }
 
-                    if (descBoxSlider_.GetIsDone())
+                    if (descBoxSlider_.IsDone())
                     {
                         isDescBoxSliding_ = false;
                         isDescBoxSlidingDone_ = true;
@@ -1546,7 +1546,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                 if (isDetailViewFadingIn_)
                 {
                     detailViewSliderRatio_ = detailViewSlider_.Update(ELAPSED_TIME_SECONDS);
-                    if (detailViewSlider_.GetIsDone())
+                    if (detailViewSlider_.IsDone())
                     {
                         if (isAchievementDisplaying_)
                         {
@@ -1577,7 +1577,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                 else if (isDetailViewFadingOut_)
                 {
                     detailViewSliderRatio_ = (1.0f - detailViewSlider_.Update(ELAPSED_TIME_SECONDS));
-                    if (detailViewSlider_.GetIsDone())
+                    if (detailViewSlider_.IsDone())
                     {
                         isDetailViewFadingIn_ = false;
                         isDetailViewDoneFading_ = false;
@@ -1591,7 +1591,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                 detailViewQuads_[2].color = NEW_COLOR;
                 detailViewQuads_[3].color = NEW_COLOR;
 
-                if ((detailViewSlider_.GetIsDone()) &&
+                if ((detailViewSlider_.IsDone()) &&
                     (false == isDetailViewFadingIn_) &&
                     (false == isDetailViewDoneFading_) &&
                     (false == isDetailViewFadingOut_))

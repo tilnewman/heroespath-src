@@ -166,7 +166,7 @@ namespace popup
             if (areImagesMoving_)
             {
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
-                areImagesMoving_ = ! imageSlider_.GetIsDone();
+                areImagesMoving_ = ! imageSlider_.IsDone();
 
                 if (false == areImagesMoving_)
                 {

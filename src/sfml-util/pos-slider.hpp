@@ -47,9 +47,9 @@ namespace sliders
         PosSlider();
 
         explicit PosSlider(
-            const sf::Vector2f & FROM_POS_V   = sf::Vector2f(),
-            const sf::Vector2f & TO_POS_V     = sf::Vector2f(),
-            const float          SLIDER_SPEED = 1.0f);
+            const sf::Vector2f & FROM_POS_V,
+            const sf::Vector2f & TO_POS_V,
+            const float          SLIDER_SPEED);
 
         virtual ~PosSlider() {}
 
@@ -65,18 +65,18 @@ namespace sliders
 
         const sf::Vector2f Position() const;
 
-        inline float                    ProgressRatio() const   { return slider_.GetCur(); }
+        inline float                    ProgressRatio() const   { return slider_.Current(); }
         inline sfml_util::Moving::Enum  Direction() const       { return direction_; }
         inline const sf::Vector2f       To() const              { return toPosV_; }
         inline const sf::Vector2f       From() const            { return fromPosV_; }
-        inline float                    Speed() const           { return slider_.GetSpd(); }
+        inline float                    Speed() const           { return slider_.Speed(); }
         inline bool                     IsMoving() const        { return isMoving_; }
         inline void                     Start()                 { isMoving_ = true; }
         inline void                     Stop()                  { isMoving_ = false; }
 
         inline void Speed(const float S)
         {
-            slider_.Reset(S, slider_.GetCur());
+            slider_.Reset(S, slider_.Current());
         }
 
     protected:

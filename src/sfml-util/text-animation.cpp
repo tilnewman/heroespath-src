@@ -124,7 +124,7 @@ namespace animation
         
         textRegionUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
 
-        isFinished_ = slider_.GetIsDone();
+        isFinished_ = slider_.IsDone();
     }
 
 

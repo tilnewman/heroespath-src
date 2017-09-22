@@ -116,7 +116,7 @@ namespace combat
         wingTextureUPtr_      (),
         wingSprite_           (),
         isFlying_             (false),
-        wingFlapSlider_       (0.0f, WING_IMAGE_ROTATION_MAX_, WING_IMAGE_ANIM_SPEED_, 0.0f),
+        wingFlapSlider_       (0.0f, WING_IMAGE_ROTATION_MAX_, WING_IMAGE_ANIM_SPEED_),
         imagePosV_            (0.0f, 0.0f),
         imagePosOffsetV_      (0.0f, 0.0f),
         willShowSelectAnim_   (false),
@@ -407,12 +407,7 @@ namespace combat
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
 
-            wingFlapSlider_.Reset(
-                0.0f,
-                WING_IMAGE_ROTATION_MAX_,
-                0.0f,
-                WING_IMAGE_ROTATION_MAX_,
-                WING_IMAGE_ANIM_SPEED_);
+            wingFlapSlider_.Reset(0.0f, WING_IMAGE_ROTATION_MAX_);
         }
         else
         {

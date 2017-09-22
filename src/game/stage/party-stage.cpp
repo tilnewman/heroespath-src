@@ -632,7 +632,7 @@ namespace stage
             const float SPRITE_POS_TOP (mouseOverPosV_.y - ((mouseOverPosV_.y - (MOUSE_OVER_POPUP_POS_TOP_  + ((mouseOverBoxHeight_ - mouseOverSprite_.getLocalBounds().height) * 0.5f))) * RATIO));
             mouseOverSprite_.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
 
-            if (mouseOverSlider_.GetIsDone())
+            if (mouseOverSlider_.IsDone())
             {
                 std::ostringstream ss;
                 ss << "\"" << mouseOverCharPtr_->Name() << "\"\n"

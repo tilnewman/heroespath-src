@@ -1267,7 +1267,7 @@ namespace stage
         if (TurnPhase::DeathAnim == turnPhase_)
         {
             combatAnimationUPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 SetTurnPhase(TurnPhase::RepositionAnim);
                 combatAnimationUPtr_->DeathAnimStop();
@@ -1280,7 +1280,7 @@ namespace stage
             (AnimPhase::Run == animPhase_))
         {
             combatAnimationUPtr_->RunAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 auto const CREATURE_PTR{ combatAnimationUPtr_->RunAnimStop() };
 
@@ -1301,7 +1301,7 @@ namespace stage
             (AnimPhase::ProjectileShoot == animPhase_))
         {
             combatAnimationUPtr_->ProjectileShootAnimUpdate( slider_.Update(ELAPSED_TIME_SEC) );
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 HandleApplyDamageTasks();
                 combatAnimationUPtr_->ProjectileShootAnimStop();
@@ -1317,7 +1317,7 @@ namespace stage
             (AnimPhase::Impact == animPhase_))
         {
             combatAnimationUPtr_->ImpactAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->ImpactAnimStop();
                 HandleApplyDamageTasks();
@@ -1383,7 +1383,7 @@ namespace stage
             (TurnActionPhase::Roar == turnActionPhase_))
         {
             slider_.Update(ELAPSED_TIME_SEC);
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->ShakeAnimStop(nullptr);
                 PerformRoarEffects();
@@ -1399,7 +1399,7 @@ namespace stage
             (AnimPhase::MoveToward == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->MeleeMoveTowardAnimStop();
                 SetAnimPhase(AnimPhase::PostMoveTowardPause);
@@ -1413,7 +1413,7 @@ namespace stage
             (AnimPhase::MoveBack == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveBackAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->MeleeMoveBackAnimStop();
                 SetAnimPhase(AnimPhase::FinalPause);
@@ -1431,7 +1431,7 @@ namespace stage
                 (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
 
             combatAnimationUPtr_->CenteringUpdate(SLIDER_POS);
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 StartTurn_Step2();
             }
@@ -1445,7 +1445,7 @@ namespace stage
                  (TurnActionPhase::Retreat == turnActionPhase_))) )
         {
             combatAnimationUPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->RepositionAnimStop();
                 SetTurnPhase(TurnPhase::PostTurnPause);
@@ -1487,7 +1487,7 @@ namespace stage
                 zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
             }
 
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
@@ -1517,7 +1517,7 @@ namespace stage
             }
 
             combatAnimationUPtr_->CenteringUpdate(sliderPosAdj);
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 combatAnimationUPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
@@ -1532,7 +1532,7 @@ namespace stage
             auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
             zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
                 StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut");

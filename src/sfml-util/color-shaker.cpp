@@ -38,7 +38,7 @@ namespace sfml_util
                              const float       SPEED,
                              const bool        WILL_START)
     :
-        slider_   (0.0f, 1.0f, SPEED, 0.0f),
+        slider_   (0.0f, 1.0f, SPEED),
         colorOrig_(COLOR_ORIG),
         colorAlt_ (COLOR_ALT),
         colorCurr_(COLOR_ORIG),
@@ -78,7 +78,7 @@ namespace sfml_util
     void ColorShaker::Reset()
     {
         colorCurr_ = colorOrig_;
-        slider_.Reset(0.0f, 1.0f, Speed(), 1.0f);
+        slider_.Reset(0.0f, 1.0f);
     }
 
 }

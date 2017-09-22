@@ -63,18 +63,18 @@ namespace sfml_util
 
         const sf::Color Current() const;
 
-        inline float                    ProgressRatio() const   { return slider_.GetCur(); }
+        inline float                    ProgressRatio() const   { return slider_.Current(); }
         inline sfml_util::Moving::Enum  Direction() const       { return direction_; }
         inline const sf::Color          To() const              { return toColor_; }
         inline const sf::Color          From() const            { return fromColor_; }
-        inline float                    Speed() const           { return slider_.GetSpd(); }
+        inline float                    Speed() const           { return slider_.Speed(); }
         inline bool                     IsMoving() const        { return isMoving_; }
         inline void                     Start()                 { isMoving_ = true; }
         inline void                     Stop()                  { isMoving_ = false; }
 
         inline void Speed(const float S)
         {
-            slider_.Reset(S, slider_.GetCur());
+            slider_.Reset(S, slider_.Current());
         }
 
     private:

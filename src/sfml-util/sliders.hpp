@@ -54,40 +54,52 @@ namespace sliders
     //Slides a number from 0.0 to 1.0 at the speed and starting point given.
     //Call the Update(time_delta) function periodically to get the changing current value.
     //T must be signed and real. (i.e. float, double, etc.)
-    //Ensure INITIAL_VAL [0, 1]
+    //Ensure INITIAL [0, 1]
     template<typename T>
     class ZeroSliderOnce
     {
     public:
-        explicit ZeroSliderOnce(const T SPEED       = 1.0,
-                                const T INITIAL_VAL = 0.0)
+        explicit ZeroSliderOnce(
+            const T SPEED   = 1.0,
+            const T INITIAL = 0.0)
         :
             age_(0),//ignore these initializers because of Reset()
             spd_(0),
             val_(0),
             willContinue_(true)
         {
-            Reset(SPEED, INITIAL_VAL);
-        }
-
-        inline T GetCur() const       { return val_; }
-        inline T GetSpd() const       { return spd_; }
-        inline bool GetIsDone() const { return (false == willContinue_); }
-
-        void Reset( const T SPEED       = 1.0,
-                    const T INITIAL_VAL = 0.0)
-        {
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
-                "ZeroSliderOnce::Reset() given speed of zero.");
+                "sfml_util::sliders::ZeroSliderOnce::Constructor() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (misc::IsRealZero(INITIAL_VAL) ||
-                 misc::IsRealOne(INITIAL_VAL) ||
-                 (INITIAL_VAL > static_cast<T>(0)) && (INITIAL_VAL < static_cast<T>(1))),
-                "ZeroSliderOnce::Reset() given initial value of " << INITIAL_VAL
-                << ", which is not within [0,1].");
+                (misc::IsRealZero(INITIAL) ||
+                    misc::IsRealOne(INITIAL) ||
+                    (INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))),
+                "sfml_util::sliders::ZeroSliderOnce::Constructor() given initial value of "
+                << INITIAL << ", which is not within [0,1].");
+
+            Reset(SPEED, INITIAL);
+        }
+
+        inline T Current() const    { return val_; }
+        inline T Speed() const      { return spd_; }
+        inline bool IsDone() const  { return (false == willContinue_); }
+
+        void Reset(
+            const T SPEED   = 1.0,
+            const T INITIAL = 0.0)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
+                "sfml_util::sliders::ZeroSliderOnce::Reset() given speed of zero.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc::IsRealZero(INITIAL) ||
+                 misc::IsRealOne(INITIAL) ||
+                 (INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))),
+                "sfml_util::sliders::ZeroSliderOnce::Reset() given initial value of "
+                << INITIAL << ", which is not within [0,1].");
         
-            age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL_VAL));
+            age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL));
             spd_ = SPEED;
             val_ = static_cast<T>(0);
             willContinue_ = true;
@@ -133,54 +145,61 @@ namespace sliders
         (boostmath::pi<T>() / static_cast<T>(2)) + boostmath::pi<T>());
 
 
-    //Slides a value from BEGIN to END at THE_SPEED given.
+    //Slides a value from THE_MIN to THE_MAX at THE_SPEED given.
     //Math_t must be signed and real. (i.e. float, double, etc.)
-    //Ensure BEGIN < END.
-    //Ensure (INITIAL_VAL >= BEGIN && INITIAL_VAL <= END).
+    //Ensure THE_MIN < THE_MAX.
+    //Ensure (INITIAL >= THE_MIN && INITIAL <= THE_MAX).
     template<typename Value_t, typename Math_t = double>
     class SliderOnce
     {
     public:
-        explicit SliderOnce(const Value_t BEGIN = 0,
-                            const Value_t END   = 1,
-                            const Math_t  SPEED = 1.0)
+        explicit SliderOnce(
+            const Value_t THE_MIN = 0,
+            const Value_t THE_MAX = 1,
+            const Math_t  SPEED   = 1.0)
         :
-            begin_ (0), //ignore these initializers because of Reset() below.
+            min_   (0), //ignore these initializers because of Reset() below
             diff_  (0.0),
             slider_()
         {
-            Reset(BEGIN, END, SPEED);
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
+                "sfml_util::sliders::SliderOnce::Constructor() given speed of zero.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
+                "sfml_util::sliders::SliderOnce::Constructor() was given THE_MIN="
+                << THE_MIN << " that is not less than the THE_MAX=" << THE_MAX << ".");
+
+            Reset(THE_MIN, THE_MAX, SPEED);
         }
 
         //The current value is not cached, so this is an expensive call.
         //Polling this function is not reccomended, instead use
         //Update(time_delta_since_last_call) periodically as time passes.
-        inline Value_t GetCur() const    { return ApplyRange(slider_.GetCur()); }
+        inline Value_t Current() const  { return ApplyRange(slider_.Current()); }
+        inline Math_t  Speed() const    { return slider_.Speed(); }
+        inline bool    IsDone() const   { return slider_.IsDone(); }
+        inline Value_t Min() const      { return min_; }
 
-        inline Math_t  GetSpd() const    { return slider_.GetSpd(); }
-        inline bool    GetIsDone() const { return slider_.GetIsDone(); }
-        inline Value_t GetBeg() const    { return begin_; }
-
-        inline Value_t GetEnd() const
+        inline Value_t Max() const
         {
-            return static_cast<Value_t>(begin_ + static_cast<Value_t>(diff_));
+            return static_cast<Value_t>(min_ + static_cast<Value_t>(diff_));
         }
         
-        
-        void Reset( const Value_t BEGIN = 0,
-                    const Value_t END   = 1,
-                    const Math_t  SPEED = 1.0)
+        void Reset(
+            const Value_t THE_MIN = 0,
+            const Value_t THE_MAX = 1,
+            const Math_t  SPEED = 1.0)
         {
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
-                "SliderOnce::Reset() given speed of zero.");
+                "sfml_util::sliders::SliderOnce::Reset() given speed of zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((BEGIN <= END),
-                "SliderOnce::Reset() was given a begin=" << BEGIN
-                << " that is not less than the end=" << END << ".");
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
+                "sfml_util::sliders::SliderOnce::Reset() was given THE_MIN=" << THE_MIN
+                << " that is not less than the THE_MAX=" << THE_MAX << ".");
 
-            begin_ = BEGIN;
-            diff_  = static_cast<Math_t>(END - BEGIN);
-            slider_.Reset(SPEED, Math_t(0));
+            min_ = THE_MIN;
+            diff_ = static_cast<Math_t>(THE_MAX - THE_MIN);
+            slider_.Reset(SPEED);
         }
 
         template<typename Adjust_t>
@@ -192,28 +211,29 @@ namespace sliders
     private:
         inline Value_t ApplyRange(const Math_t ORIG) const
         {
-            return static_cast<Value_t>(static_cast<Math_t>(begin_) + (ORIG * diff_));
+            return static_cast<Value_t>(static_cast<Math_t>(min_) + (ORIG * diff_));
         }
 
     private:
-        Value_t begin_;
-        Math_t  diff_;
+        Value_t min_;
+        Math_t diff_;
         ZeroSliderOnce<Math_t> slider_;
     };
 
 
     //Slides a value back and forth between THE_MIN and THE_MAX at the given speed.
-    //Ensure (INITIAL_VAL >= THE_MIN && INITIAL_VAL <= THE_MAX).
+    //Ensure (INITIAL >= THE_MIN && INITIAL <= THE_MAX).
     //Ensure THE_MIN < THE_MAX.
     //Speed_t must be signed and real. (i.e. float, double, etc.)
     template<typename Value_t, typename Speed_t = double>
     class Slider
     {
     public:
-        explicit Slider(const Value_t THE_MIN     = 0,
-                        const Value_t THE_MAX     = 1,
-                        const Speed_t SPEED       = 1.0,
-                        const Value_t INITIAL_VAL = 0)
+        explicit Slider(
+            const Value_t THE_MIN = 0,
+            const Value_t THE_MAX = 1,
+            const Speed_t SPEED   = 1.0,
+            const Value_t INITIAL = 0)
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor which sets these.
             max_         (THE_MAX),
@@ -221,23 +241,36 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
-                "Slider::Constructor given SPEED of zero.");
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((misc::IsRealClose(INITIAL, THE_MIN)) || (INITIAL > THE_MIN)),
+                "sfml_util::sliders::Slider::Constructor given INITIAL=" << INITIAL
+                << " which is not equal or greater than THE_MIN of " << THE_MIN);
 
-            Reset(THE_MIN, THE_MAX, INITIAL_VAL, THE_MAX, SPEED);
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc::IsRealClose(INITIAL, THE_MAX) || (INITIAL < THE_MAX)),
+                "sfml_util::sliders::Slider::Constructor given INITIAL=" << INITIAL
+                << " which is not less than or equal to THE_MAX=" << THE_MAX);
+
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
+                "sfml_util::sliders::Slider::Constructor given SPEED of zero.");
+
+            Reset(THE_MIN, THE_MAX, SPEED, INITIAL);
         }
 
-        inline Value_t GetMin() const { return min_; }
-        inline Value_t GetMax() const { return max_; }
-        inline Speed_t GetSpd() const { return speed_; }
+        inline Value_t Min() const { return min_; }
+        inline Value_t Max() const { return max_; }
+        inline Speed_t Speed() const { return speed_; }
 
-        void Reset(const Value_t THE_MIN,
-                   const Value_t THE_MAX,
-                   const Value_t INITIAL_VAL,
-                   const Value_t TARGET,
-                   const Speed_t SPEED = 0)
+        //SPEED==0 means the speed will not be reset/changed
+        //INITIAL==0 means the INITIAL will be THE_MIN
+        void Reset(
+            const Value_t THE_MIN,
+            const Value_t THE_MAX,
+            const Speed_t SPEED   = 0,
+            const Value_t INITIAL = 0)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "Slider::Reset() was given a min="
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
+                "sfml_util::sliders::Slider::Reset() was given a min="
                 << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
             min_ = THE_MIN;
@@ -248,16 +281,13 @@ namespace sliders
                 speed_ = SPEED;
             }
 
-            if (INITIAL_VAL < TARGET)
+            auto initialToUse{ INITIAL };
+            if (misc::IsRealZero(initialToUse))
             {
-                isIncreasing_ = true;
-                slider_.Reset(INITIAL_VAL, TARGET, speed_);
+                initialToUse = THE_MIN;
             }
-            else
-            {
-                isIncreasing_ = false;
-                slider_.Reset(TARGET, INITIAL_VAL, speed_);
-            }
+
+            slider_.Reset(initialToUse, THE_MAX, speed_);
         }
 
         template<typename Adjust_t>
@@ -272,12 +302,13 @@ namespace sliders
             else
             {
                 newCurrentVal = static_cast<Value_t>(
-                    slider_.GetEnd() - (slider_.Update(ADJUSTMENT) - slider_.GetBeg()));
+                    slider_.Max() - (slider_.Update(ADJUSTMENT) - slider_.Min()));
             }
             
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
-                Reset(min_, max_, newCurrentVal, ((isIncreasing_) ? min_ : max_), speed_);
+                isIncreasing_ = ! isIncreasing_;
+                Reset(min_, max_, speed_);
             }
 
             return newCurrentVal;
@@ -287,13 +318,13 @@ namespace sliders
         Value_t min_;
         Value_t max_;
         Speed_t speed_;
-        bool    isIncreasing_;
+        bool isIncreasing_;
         SliderOnce<Value_t, Speed_t> slider_;
     };
 
 
     //Drifts a value between THE_MIN and THE_MAX at a speed that varies.
-    //Ensure (INITIAL_VAL >= THE_MIN && INITIAL_VAL <= THE_MAX).
+    //Ensure (INITIAL >= THE_MIN && INITIAL <= THE_MAX).
     //Ensure THE_MIN < THE_MAX.
     //Ensure SPEED_MIN < SPEED_MAX.  (boost random functions will crash if both are equal!)
     //Speed_t must be signed and real. (i.e. float, double, etc.)
@@ -302,10 +333,11 @@ namespace sliders
     {
     public:
         //This constructor uses a random initial target.
-        Drifter(const Value_t THE_MIN,
-                const Value_t THE_MAX,
-                const Speed_t SPEED_MIN,
-                const Speed_t SPEED_MAX)
+        Drifter(
+            const Value_t THE_MIN,
+            const Value_t THE_MAX,
+            const Speed_t SPEED_MIN,
+            const Speed_t SPEED_MAX)
         :
             min_         (THE_MIN),//Note the call to Reset() in the constructor that sets these.
             max_         (THE_MAX),
@@ -318,12 +350,13 @@ namespace sliders
         }
 
         //This constructor allows setting the initial target.
-        Drifter(const Value_t THE_MIN,
-                const Value_t THE_MAX,
-                const Speed_t SPEED_MIN,
-                const Speed_t SPEED_MAX,
-                const Value_t INITIAL_VAL,
-                const Value_t INITIAL_TARGET)
+        Drifter(
+            const Value_t THE_MIN,
+            const Value_t THE_MAX,
+            const Speed_t SPEED_MIN,
+            const Speed_t SPEED_MAX,
+            const Value_t INITIAL,
+            const Value_t TARGET)
         :
         min_         (THE_MIN),//Note the call to Reset() in the constructor
         max_         (THE_MAX),
@@ -332,46 +365,58 @@ namespace sliders
         isIncreasing_(true),
         slider_      ()
     {
-        Reset(THE_MIN, THE_MAX, SPEED_MIN, SPEED_MAX, INITIAL_VAL, INITIAL_TARGET);
+        M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
+            "sfml_util::sliders::Drifter::Constructor() given speed_max of zero.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
+            "sfml_util::sliders::Drifter::Constructor() given initial value of "
+            << INITIAL << ", which is not within the min and max given: ["
+            << THE_MIN << "," << THE_MAX << "].");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
+            "sfml_util::sliders::Drifter::Constructor() was given a min="
+            << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
+
+        Reset(THE_MIN, THE_MAX, SPEED_MIN, SPEED_MAX, INITIAL, TARGET);
     }
 
-    inline Value_t GetMin() const { return min_; }
-    inline Value_t GetMax() const { return max_; }
-    inline Speed_t GetSpd() const { return slider_.GetSpd(); }
+    inline Value_t GetMin() const   { return min_; }
+    inline Value_t GetMax() const   { return max_; }
+    inline Speed_t Speed() const    { return slider_.Speed(); }
 
     void Reset( const Value_t THE_MIN,
                 const Value_t THE_MAX,
                 const Speed_t SPEED_MIN,
                 const Speed_t SPEED_MAX,
-                const Value_t INITIAL_VAL,
+                const Value_t INITIAL,
                 const Value_t TARGET)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
-            "Drifter::Reset() given speed_max of zero.");
+            "sfml_util::sliders::Drifter::Reset() given speed_max of zero.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL_VAL >= THE_MIN) && (INITIAL_VAL <= THE_MAX)),
-            "Drifter::Reset() given initial value of " << INITIAL_VAL
-            << ", which is not within the min and max given: ["
+        M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
+            "sfml_util::sliders::Drifter::Reset() given initial value of "
+            << INITIAL << ", which is not within the min and max given: ["
             << THE_MIN << "," << THE_MAX << "].");
 
         M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
-            "Drifter::Reset() was given a min=" << THE_MIN
-            << " that is not less than the max=" << THE_MAX << ".");
+            "sfml_util::sliders::Drifter::Reset() was given a min="
+            << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
 
         min_ = THE_MIN;
         max_ = THE_MAX;
         spdMin_ = SPEED_MIN;
         spdMax_ = SPEED_MAX;
 
-        if (INITIAL_VAL < TARGET)
+        if (INITIAL < TARGET)
         {
             isIncreasing_ = true;
-            slider_.Reset(INITIAL_VAL, TARGET, RandSpeed());
+            slider_.Reset(INITIAL, TARGET, RandSpeed());
         }
         else
         {
             isIncreasing_ = false;
-            slider_.Reset(TARGET, INITIAL_VAL, RandSpeed());
+            slider_.Reset(TARGET, INITIAL, RandSpeed());
         }
     }
 
@@ -386,10 +431,10 @@ namespace sliders
         }
         else
         {
-            newCurrentVal = slider_.GetEnd() - (slider_.Update(ADJUSTMENT) - slider_.GetBeg());
+            newCurrentVal = slider_.Max() - (slider_.Update(ADJUSTMENT) - slider_.Min());
         }
 
-        if (slider_.GetIsDone())
+        if (slider_.IsDone())
         {
             Reset(min_, max_, spdMin_, spdMax_, newCurrentVal, RandRange());
         }
@@ -413,7 +458,7 @@ namespace sliders
         Value_t max_;
         Speed_t spdMin_;
         Speed_t spdMax_;
-        bool    isIncreasing_;
+        bool isIncreasing_;
         SliderOnce<Value_t, Speed_t> slider_;
     };
 

@@ -117,7 +117,7 @@ namespace animation
         sprite_.setScale(SCALE, SCALE);
         
         //check if done animating
-        isFinished_ = slider_.GetIsDone();
+        isFinished_ = slider_.IsDone();
         return isFinished_;
     }
 

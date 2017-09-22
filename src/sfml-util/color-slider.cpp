@@ -82,14 +82,14 @@ namespace sfml_util
         {
             fromColor_ = Current();
             toColor_ = origFromColor_;
-            slider_.Reset(slider_.GetSpd());
+            slider_.Reset(slider_.Speed());
             direction_ = Moving::Away;
         }
         else if (direction_ == Moving::Away)
         {
             fromColor_ = Current();
             toColor_ = origToColor_;
-            slider_.Reset(slider_.GetSpd());
+            slider_.Reset(slider_.Speed());
             direction_ = Moving::Toward;
         }
     }
@@ -100,7 +100,7 @@ namespace sfml_util
         if (isMoving_)
         {
             slider_.Update(ELAPSED_TIME_SECONDS);
-            isMoving_ = ! slider_.GetIsDone();
+            isMoving_ = ! slider_.IsDone();
             return true;
         }
         else
@@ -112,7 +112,7 @@ namespace sfml_util
 
     const sf::Color ColorSlider::Current() const
     {
-        auto const RATIO{ slider_.GetCur() };
+        auto const RATIO{ slider_.Current() };
 
         auto const RED_DIFF{ static_cast<float>(toColor_.r - fromColor_.r) };
         auto const GREEN_DIFF{ static_cast<float>(toColor_.g - fromColor_.g) };

@@ -78,11 +78,7 @@ namespace combat
         auto const SHAKE_DISTANCE{
             CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
 
-        slider.Reset(0.0f,
-                     SHAKE_DISTANCE,
-                     (SHAKE_DISTANCE * 0.5f),
-                     SHAKE_DISTANCE,
-                     SLIDER_SPEED);
+        slider.Reset(0.0f, SHAKE_DISTANCE, SLIDER_SPEED, (SHAKE_DISTANCE * 0.5f));
 
         //anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;
@@ -248,7 +244,7 @@ namespace combat
         if (selectAnimCombatNodePtr_ != nullptr)
         {
             selectAnimCombatNodePtr_->SelectAnimUpdate( slider_.Update(ELAPSED_TIME_SECONDS) );
-            if (slider_.GetIsDone())
+            if (slider_.IsDone())
             {
                 SelectAnimStop();
             }

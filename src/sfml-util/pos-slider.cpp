@@ -41,7 +41,7 @@ namespace sliders
         origToPosV_(0.0f, 0.0f),
         fromPosV_(0.0f, 0.0f),
         toPosV_(0.0f, 0.0f),
-        direction_(sfml_util::Moving::Count),
+        direction_(sfml_util::Moving::Toward),
         isMoving_(false),
         slider_()
     {}
@@ -85,14 +85,14 @@ namespace sliders
         {
             fromPosV_ = Position();
             toPosV_ = origFromPosV_;
-            slider_.Reset(slider_.GetSpd());
+            slider_.Reset(slider_.Speed());
             direction_ = Moving::Away;
         }
         else if (direction_ == Moving::Away)
         {
             fromPosV_ = Position();
             toPosV_ = origToPosV_;
-            slider_.Reset(slider_.GetSpd());
+            slider_.Reset(slider_.Speed());
             direction_ = Moving::Toward;
         }
     }
@@ -103,7 +103,7 @@ namespace sliders
         if (isMoving_)
         {
             slider_.Update(ELAPSED_TIME_SECONDS);
-            isMoving_ = ! slider_.GetIsDone();
+            isMoving_ = ! slider_.IsDone();
             return true;
         }
         else
