@@ -63,96 +63,98 @@ namespace sfml_util
 
     public:
         explicit Loop(const std::string & NAME);
-        virtual ~Loop();
+        ~Loop();
 
-        inline virtual void Exit() { willExit_ = true; }
+        inline void Exit() { willExit_ = true; }
 
-        virtual void AddStage(IStagePtr_t);
-        virtual void FreeAllStages();
-        virtual void FreePopupStage();
+        void AddStage(IStagePtr_t);
+        void FreeAllStages();
+        void FreePopupStage();
 
         //returns false if the window closed or some other fatal event stopped the loop
-        virtual bool Execute();
+        bool Execute();
 
-        virtual void FadeOut(const sf::Color & FADE_TO_COLOR,
-                             const float       SPEED_MULT     = 200.0f,
-                             const bool        WILL_HOLD_FADE = false);
+        void FadeOut(
+            const sf::Color & FADE_TO_COLOR,
+            const float       SPEED_MULT     = 200.0f,
+            const bool        WILL_HOLD_FADE = false);
 
-        virtual void FadeIn(const sf::Color & FADE_FROM_COLOR,
-                            const float       SPEED_MULT     = 200.0f,
-                            const bool        WILL_HOLD_FADE = false);
+        void FadeIn(
+            const sf::Color & FADE_FROM_COLOR,
+            const float       SPEED_MULT     = 200.0f,
+            const bool        WILL_HOLD_FADE = false);
 
-        inline virtual void SetPopup(IStagePtr_t popupStagePtr)         { popupStagePtr_ = popupStagePtr; }
-        inline virtual void SetHoldTime(const float SECONDS)            { holdTimeCounter_ = 0.0f; holdTime_ = SECONDS; }
+        inline void SetPopup(IStagePtr_t popupStagePtr)         { popupStagePtr_ = popupStagePtr; }
+        inline void SetHoldTime(const float SECONDS)            { holdTimeCounter_ = 0.0f; holdTime_ = SECONDS; }
 
-        inline void SetWillExitAfterFade(const bool B)                  { willExitAfterFade_ = B; }
-        inline virtual void SetWillHoldFade(const bool NEW_VAL)         { willHoldFade_ = NEW_VAL; }
+        inline void SetWillExitAfterFade(const bool B)          { willExitAfterFade_ = B; }
+        inline void SetWillHoldFade(const bool NEW_VAL)         { willHoldFade_ = NEW_VAL; }
 
-        inline virtual void SetMouseVisibility(const bool IS_VISIBLE)   { winPtr_->setMouseCursorVisible(IS_VISIBLE); }
+        inline void SetMouseVisibility(const bool IS_VISIBLE)   { winPtr_->setMouseCursorVisible(IS_VISIBLE); }
 
-        inline virtual void SetState(const game::LoopState::Enum E)     { state_ = E; }
-        inline virtual game::LoopState::Enum  GetState() const          { return state_; }
+        inline void SetState(const game::LoopState::Enum E)     { state_ = E; }
+        inline game::LoopState::Enum  GetState() const          { return state_; }
 
-        virtual void ConsumeEvents();
+        void ConsumeEvents();
 
-        inline virtual void SetWillExitOnKeypress(const bool B)         { willExitOnKeypress_ = B; }
-        inline virtual void SetWillExitOnMouseclick(const bool B)       { willExitOnMouseclick_ = B; }
+        inline void SetWillExitOnKeypress(const bool B)         { willExitOnKeypress_ = B; }
+        inline void SetWillExitOnMouseclick(const bool B)       { willExitOnMouseclick_ = B; }
 
-        virtual void RemoveFocus();
-        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);//returns true if a stage was found owning the GuiEntity
+        void RemoveFocus();
+        bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);//returns true if a stage was found owning the GuiEntity
 
-        inline virtual bool GetIgnoreMouse() const                      { return willIgnoreMouse_; }
-        inline virtual void SetIgnoreMouse(const bool B)                { willIgnoreMouse_ = B; }
+        inline bool GetIgnoreMouse() const                      { return willIgnoreMouse_; }
+        inline void SetIgnoreMouse(const bool B)                { willIgnoreMouse_ = B; }
 
-        inline virtual bool GetIgnoreKeystrokes() const                 { return willIgnoreKeystrokes_; }
-        inline virtual void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
+        inline bool GetIgnoreKeystrokes() const                 { return willIgnoreKeystrokes_; }
+        inline void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
 
-        virtual void AssignPopupCallbackHandlerInfo(
+        void AssignPopupCallbackHandlerInfo(
             popup::IPopupHandler_t * const HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO);
 
-        virtual void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
+        void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
-        inline virtual bool IsFading() const { return continueFading_; }
+        inline bool IsFading() const { return continueFading_; }
 
-        virtual void TestingStrAppend(const std::string &);
-        virtual void TestingStrIncrement(const std::string &);
-        virtual void TestingImageSet(const sf::Texture &);
+        void TestingStrAppend(const std::string &);
+        void TestingStrIncrement(const std::string &);
+        void TestingImageSet(const sf::Texture &);
 
     protected:
-        virtual void LogFrameRate();
+        void LogFrameRate();
 
-        virtual bool ProcessOneSecondTasks(
+        bool ProcessOneSecondTasks(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
         
-        virtual void ProcessMouseHover(
+        void ProcessMouseHover(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
 
-        virtual void ProcessFader();
-        virtual void ProcessPopup();
+        void ProcessFader();
+        void ProcessPopup();
 
-        virtual void ProcessEvents(
+        void ProcessEvents(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
         
-        virtual void ProcessKeyStrokes(const sf::Event & EVENT);
-        virtual void ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS);
-        virtual void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
-        virtual void ProcessMouseButtonLeftReleased(const sf::Vector2f &);
+        void ProcessKeyStrokes(const sf::Event & EVENT);
+        void ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS);
+        void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
+        void ProcessMouseButtonLeftReleased(const sf::Vector2f &);
 
-        virtual void ProcessMouseWheelRoll(
+        void ProcessMouseWheelRoll(
             const sf::Event & EVENT,
             const sf::Vector2i & NEW_MOUSE_POS);
         
-        virtual void ProcessPopupCallback();
-        virtual void ProcessTimeUpdate();
-        virtual void ProcessDrawing();
-        virtual void PerformNextTest();
-        virtual void ProcessHoldTime();
-        virtual void ProcessScreenshot();
-        virtual void ProcessFramerate();
+        void ProcessPopupCallback();
+        void ProcessTimeUpdate();
+        void ProcessDrawing();
+        void PerformNextTest();
+        void ProcessHoldTime();
+        void ProcessScreenshot();
+        void ProcessFramerate();
 
     protected:
         static const float NO_HOLD_TIME_;
