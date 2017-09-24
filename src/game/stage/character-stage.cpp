@@ -279,7 +279,7 @@ namespace stage
     bool CharacterStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CREATECONFIRM_) &&
-            (popup::Response::IsAffirmative(POPUP_RESPONSE.Response())))
+            (popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response())))
         {
             const std::string           NAME(boost::algorithm::trim_copy(nameTextEntryBoxSPtr_->GetText()));
             const creature::sex::Enum   SEX_ENUM(static_cast<creature::sex::Enum>(sexRadioButtonSPtr_->GetSelectedNumber() + 1));
@@ -343,7 +343,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
         {
-            if (popup::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            if (popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
             {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::MainMenu);
             }
@@ -352,7 +352,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
         {
-            if (popup::Response::IsAffirmative(POPUP_RESPONSE.Response()))
+            if (popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
             {
                 LoopManager::Instance()->SetTransitionBeforeFade(LoopState::PartyCreation);
             }
@@ -397,7 +397,7 @@ namespace stage
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_IMAGE_SELECTION_) &&
-                 (POPUP_RESPONSE.Response() != popup::Response::Cancel))
+                 (POPUP_RESPONSE.Response() != popup::ResponseTypes::Cancel))
         {
             selectedImageIndex_ = POPUP_RESPONSE.Selection();
 

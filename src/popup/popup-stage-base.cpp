@@ -105,7 +105,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonNoUPtr_.get())
@@ -113,7 +113,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonCancelUPtr_.get())
@@ -121,7 +121,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonContinueUPtr_.get())
@@ -129,7 +129,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonOkayUPtr_.get())
@@ -137,7 +137,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
             return true;
         }
 
@@ -201,7 +201,7 @@ namespace popup
 
     bool PopupStageBase::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (popupInfo_.Buttons() & Response::Continue)
+        if (popupInfo_.Buttons() & ResponseTypes::Continue)
         {
             if ((KEY_EVENT.code == sf::Keyboard::C) ||
                 (KEY_EVENT.code == sf::Keyboard::Space) ||
@@ -211,12 +211,12 @@ namespace popup
                 sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
                 return true;
             }
         }
 
-        if (popupInfo_.Buttons() & Response::Okay)
+        if (popupInfo_.Buttons() & ResponseTypes::Okay)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Space) ||
                 (KEY_EVENT.code == sf::Keyboard::O) ||
@@ -226,31 +226,31 @@ namespace popup
                 sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Okay);
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
                 return true;
             }
         }
 
-        if ((popupInfo_.Buttons() & Response::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
+        if ((popupInfo_.Buttons() & ResponseTypes::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
             sfml_util::SoundManager::Instance()->
                 Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Yes);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
         }
 
-        if ((popupInfo_.Buttons() & Response::No) &&
+        if ((popupInfo_.Buttons() & ResponseTypes::No) &&
             ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
             sfml_util::SoundManager::Instance()->
                 Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
             return true;
         }
 
-        if (popupInfo_.Buttons() & Response::Cancel)
+        if (popupInfo_.Buttons() & ResponseTypes::Cancel)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                 ((KEY_EVENT.code == sf::Keyboard::C) &&
@@ -261,12 +261,12 @@ namespace popup
                 sfml_util::SoundManager::Instance()->
                     Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel);
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
                 return true;
             }
         }
 
-        if ((popupInfo_.Buttons() & Response::Select) &&
+        if ((popupInfo_.Buttons() & ResponseTypes::Select) &&
             (KEY_EVENT.code == sf::Keyboard::Return))
         {
             return HandleSelect();
@@ -291,7 +291,7 @@ namespace popup
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, static_cast<std::size_t>(selection_));
+                ResponseTypes::Select, static_cast<std::size_t>(selection_));
 
             return true;
         }
@@ -431,7 +431,7 @@ namespace popup
 
     void PopupStageBase::SetupButtons()
     {
-        if (popupInfo_.Buttons() & Response::Yes)
+        if (popupInfo_.Buttons() & ResponseTypes::Yes)
         {
             buttonYesUPtr_ = std::make_unique<sfml_util::gui::TextButton>(
                 "PopupStage'sYes",
@@ -443,7 +443,7 @@ namespace popup
             EntityAdd(buttonYesUPtr_.get());
         }
 
-        if (popupInfo_.Buttons() & Response::No)
+        if (popupInfo_.Buttons() & ResponseTypes::No)
         {
             buttonNoUPtr_ = std::make_unique<sfml_util::gui::TextButton>(
                 "PopupStage'sNo",
@@ -456,7 +456,7 @@ namespace popup
             EntityAdd(buttonNoUPtr_.get());
         }
 
-        if (popupInfo_.Buttons() & Response::Cancel)
+        if (popupInfo_.Buttons() & ResponseTypes::Cancel)
         {
             buttonCancelUPtr_ = std::make_unique<sfml_util::gui::TextButton>(
                 "PopupStage'sCancel",
@@ -469,7 +469,7 @@ namespace popup
             EntityAdd(buttonCancelUPtr_.get());
         }
 
-        if (popupInfo_.Buttons() & Response::Continue)
+        if (popupInfo_.Buttons() & ResponseTypes::Continue)
         {
             auto const MIDDLE{ StageRegionLeft() + innerRegion_.left +
                 (innerRegion_.width * 0.5f) };
@@ -494,7 +494,7 @@ namespace popup
             EntityAdd(buttonContinueUPtr_.get());
         }
 
-        if (popupInfo_.Buttons() & Response::Okay)
+        if (popupInfo_.Buttons() & ResponseTypes::Okay)
         {
             const float MIDDLE(StageRegionLeft() + innerRegion_.left +
                 (innerRegion_.width * 0.5f));
@@ -519,7 +519,7 @@ namespace popup
             EntityAdd(buttonOkayUPtr_.get());
         }
 
-        if (popupInfo_.Buttons() & Response::Select)
+        if (popupInfo_.Buttons() & ResponseTypes::Select)
         {
             const float MIDDLE(StageRegionLeft() + innerRegion_.left +
                 (innerRegion_.width * 0.5f));

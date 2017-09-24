@@ -39,22 +39,22 @@ namespace popup
     class PopupResponse
     {
     public:
-        PopupResponse(const PopupInfo &     POPUP_INFO,
-                      const Response::Enum  RESPONSE,
-                      const std::size_t     SELECTION)
+        PopupResponse(const PopupInfo & POPUP_INFO,
+                      const ResponseTypes::Enum RESPONSE,
+                      const std::size_t SELECTION)
         :
             info_     (POPUP_INFO),
             response_ (RESPONSE),
             selection_(SELECTION)
         {}
 
-        inline const PopupInfo Info() const     { return info_; }
-        inline Response::Enum Response() const  { return response_; }
-        inline std::size_t Selection() const    { return selection_; }
+        inline const PopupInfo Info() const             { return info_; }
+        inline ResponseTypes::Enum Response() const     { return response_; }
+        inline std::size_t Selection() const            { return selection_; }
 
     private:
         PopupInfo info_;
-        Response::Enum response_;
+        ResponseTypes::Enum response_;
         std::size_t selection_;
     };
 

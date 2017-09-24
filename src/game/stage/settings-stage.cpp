@@ -110,16 +110,16 @@ namespace stage
 
     bool SettingsStage::HandleCallback(const popup::PopupResponse & POPUP)
     {
-        M_HP_LOG(GetStageName() << " HandlePopupCallback(response=\"" << popup::Response::ToString(POPUP.Response()) << "\")");
+        M_HP_LOG(GetStageName() << " HandlePopupCallback(response=\"" << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
-        if (POPUP.Response() == popup::Response::No)
+        if (POPUP.Response() == popup::ResponseTypes::No)
         {
             M_HP_LOG(GetStageName() << " Stage.  User rejected the new antialias level.  Changing back to the previous.");
             game::LoopManager::Instance()->ChangeResolution(this, this, sfml_util::Display::Instance()->GetCurrentResolution(), prevAALevel_);
             HandleResolutionChange();
             return false;
         }
-        else if (POPUP.Response() == popup::Response::Okay)
+        else if (POPUP.Response() == popup::ResponseTypes::Okay)
         {
             //case where the antialiasing mode was not supported and need to revert back to original value
             switch (prevAALevel_)

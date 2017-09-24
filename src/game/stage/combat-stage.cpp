@@ -418,7 +418,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
         {
-            if (POPUP_RESPONSE.Response() == popup::Response::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
 
@@ -446,7 +446,7 @@ namespace stage
         }
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
         {
-            if (POPUP_RESPONSE.Response() == popup::Response::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),

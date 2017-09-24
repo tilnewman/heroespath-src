@@ -33,7 +33,7 @@
 namespace popup
 {
 
-    struct Response
+    struct ResponseTypes
     {
         enum Enum : unsigned int
         {
@@ -47,9 +47,9 @@ namespace popup
             Select   = 1 << 5
         };
 
-        static const std::string ToString(const Response::Enum E);
-        static bool IsValid(const Response::Enum E);
-        static bool IsAffirmative(const Response::Enum E);
+        static const std::string ToString(const ResponseTypes::Enum E);
+        static bool IsValid(const ResponseTypes::Enum E);
+        static bool IsAffirmative(const ResponseTypes::Enum E);
     };
 
 }

@@ -199,7 +199,7 @@ namespace popup
         sfml_util::SoundManager::Instance()->
             Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
 
-        game::LoopManager::Instance()->PopupWaitEnd(Response::Select, SELECTION);
+        game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Select, SELECTION);
     }
 
 

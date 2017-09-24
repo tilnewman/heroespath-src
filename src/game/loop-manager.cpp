@@ -58,7 +58,7 @@ namespace game
         state_            (LoopState::None),
         cmdQueue_         (),
         loop_             ("DefaultLoop"),
-        popupResponse_    (popup::Response::None),
+        popupResponse_    (popup::ResponseTypes::None),
         popupSelection_   (0),
         prevState_        (LoopState::None),
         prevSettingsState_(LoopState::None),
@@ -510,7 +510,7 @@ namespace game
 
 
     void LoopManager::PopupWaitEnd(
-        const popup::Response::Enum RESPONSE, const std::size_t SELECTION)
+        const popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION)
     {
         popupResponse_ = RESPONSE;
         popupSelection_ = SELECTION;

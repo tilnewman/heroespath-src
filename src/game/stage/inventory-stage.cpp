@@ -391,7 +391,7 @@ namespace stage
             return HandleCast_Step3_DisplayResults();
         }
         else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
-                  (POPUP_RESPONSE.Response() == popup::Response::Yes))
+                  (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes))
         {
             if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
             {
@@ -412,7 +412,7 @@ namespace stage
             SetupDescBox(false);
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_GIVE_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Item())
             {
@@ -510,7 +510,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             creatureToGiveToPtr_ =
                 Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
@@ -634,7 +634,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_NUMBER_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select) &&
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select) &&
                  (creatureToGiveToPtr_ != nullptr))
         {
             switch (contentType_)
@@ -663,7 +663,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CONTENTSELECTION_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
@@ -706,7 +706,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
@@ -723,7 +723,7 @@ namespace stage
             return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_) &&
-                 (POPUP_RESPONSE.Response() == popup::Response::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),

@@ -186,7 +186,7 @@ namespace stage
         willShowMouseOverPopup_ = true;
 
         if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) &&
-            (PACKAGE.Response() == popup::Response::Yes))
+            (PACKAGE.Response() == popup::ResponseTypes::Yes))
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 

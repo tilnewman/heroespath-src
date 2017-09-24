@@ -144,7 +144,7 @@ namespace stage
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_) ||
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (POPUP_RESPONSE.Response() == popup::Response::Yes)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes)
             {
                 PromptPlayerWhichCharacterWillPickLock();
                 return false;
@@ -158,7 +158,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_)
         {
-            if (POPUP_RESPONSE.Response() == popup::Response::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 auto const SELECTION{ POPUP_RESPONSE.Selection() };
 

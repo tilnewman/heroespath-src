@@ -83,7 +83,7 @@ namespace popup
                 }
                 else
                 {
-                    game::LoopManager::Instance()->PopupWaitEnd(Response::No);
+                    game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
                 }
             }
         }

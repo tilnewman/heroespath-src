@@ -81,12 +81,12 @@ namespace game
 
         inline LoopState::Enum GetState() const                     { return state_; }
         inline LoopState::Enum GetPrevState() const                 { return prevState_; }
-        inline popup::Response::Enum GetPopupResponse() const   { return popupResponse_; }
+        inline popup::ResponseTypes::Enum GetPopupResponse() const   { return popupResponse_; }
         inline std::size_t GetPopupSelection() const                { return popupSelection_; }
 
         inline void ClearPopupResponse()
         {
-            popupResponse_ = popup::Response::None;
+            popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
         }
 
@@ -99,7 +99,7 @@ namespace game
             popup::IPopupHandler_t * const HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
-            popupResponse_ = popup::Response::None;
+            popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
             TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
         }
@@ -112,7 +112,7 @@ namespace game
         }
 
         void PopupWaitEnd(
-            const popup::Response::Enum RESPONSE,
+            const popup::ResponseTypes::Enum RESPONSE,
             const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
@@ -252,7 +252,7 @@ namespace game
         LoopState::Enum           state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
         sfml_util::Loop           loop_;
-        popup::Response::Enum popupResponse_;
+        popup::ResponseTypes::Enum popupResponse_;
         std::size_t               popupSelection_;
         LoopState::Enum           prevState_;
         LoopState::Enum           prevSettingsState_;

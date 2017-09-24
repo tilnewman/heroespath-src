@@ -199,7 +199,7 @@ namespace popup
                     sfml_util::sound_effect_set::Thock).PlayRandom();
 
                 game::LoopManager::Instance()->PopupWaitEnd(
-                    Response::Select, static_cast<std::size_t>(GetSelectNumber()));
+                    ResponseTypes::Select, static_cast<std::size_t>(GetSelectNumber()));
 
                 return true;
             }

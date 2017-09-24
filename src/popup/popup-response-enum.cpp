@@ -36,7 +36,7 @@
 namespace popup
 {
 
-    const std::string Response::ToString(const Response::Enum E)
+    const std::string ResponseTypes::ToString(const ResponseTypes::Enum E)
     {
         switch (E)
         {
@@ -50,21 +50,21 @@ namespace popup
             default:
             {
                 std::ostringstream ss;
-                ss << "popup::Response::ToString(" << E << ")_InvalidValueError.";
+                ss << "popup::ResponseTypes::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    bool Response::IsValid(const Response::Enum E)
+    bool ResponseTypes::IsValid(const ResponseTypes::Enum E)
     {
         const unsigned MAX(None | Okay | Continue | Yes | No | Cancel | Select);
         return (static_cast<unsigned>(E) <= MAX);
     }
 
 
-    bool Response::IsAffirmative(const Response::Enum E)
+    bool ResponseTypes::IsAffirmative(const ResponseTypes::Enum E)
     {
         switch (E)
         {
@@ -78,7 +78,7 @@ namespace popup
             default:
             {
                 std::ostringstream ss;
-                ss << "popup::Response::IsAffirmative(" << E << ")_InvalidValueError.";
+                ss << "popup::ResponseTypes::IsAffirmative(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

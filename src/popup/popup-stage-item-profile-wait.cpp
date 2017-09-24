@@ -56,7 +56,7 @@ namespace popup
             if (0 == --drawCountdown_)
             {
                 game::item::ItemProfileWarehouse::Instance()->Setup();
-                game::LoopManager::Instance()->PopupWaitEnd(Response::Continue);
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
             }
         }
 

@@ -64,7 +64,7 @@ namespace popup
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, PopupInfo::ContentNum_Item());
+                ResponseTypes::Select, PopupInfo::ContentNum_Item());
 
             return true;
         }
@@ -74,7 +74,7 @@ namespace popup
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, PopupInfo::ContentNum_Coins());
+                ResponseTypes::Select, PopupInfo::ContentNum_Coins());
 
             return true;
         }
@@ -84,7 +84,7 @@ namespace popup
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, PopupInfo::ContentNum_Gems());
+                ResponseTypes::Select, PopupInfo::ContentNum_Gems());
 
             return true;
         }
@@ -94,7 +94,7 @@ namespace popup
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, PopupInfo::ContentNum_MeteorShards());
+                ResponseTypes::Select, PopupInfo::ContentNum_MeteorShards());
 
             return true;
         }

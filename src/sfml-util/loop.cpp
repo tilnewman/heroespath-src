@@ -625,10 +625,10 @@ namespace sfml_util
         auto const POPUP_RESPONSE_ENUM{ game::LoopManager::Instance()->GetPopupResponse() };
         auto const POPUP_SELECTION{ game::LoopManager::Instance()->GetPopupSelection() };
 
-        if (POPUP_RESPONSE_ENUM != popup::Response::None)
+        if (POPUP_RESPONSE_ENUM != popup::ResponseTypes::None)
         {
             M_HP_LOG(NAME_ << "::ProcessPopupCallback() found response=\""
-                            << popup::Response::ToString(POPUP_RESPONSE_ENUM)
+                            << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
                             << "\" with selection=" << POPUP_SELECTION << " to popup "
                             << popupInfo_.ToStringShort(true) << ".");
 

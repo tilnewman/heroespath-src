@@ -97,9 +97,9 @@ namespace gui_demo
 
     bool RadioButtonSet_DisplayChange::HandleCallback(const popup::PopupResponse & POPUP)
     {
-        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << popup::Response::ToString(POPUP.Response()) << "\")");
+        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
-        if (POPUP.Response() == popup::Response::No)
+        if (POPUP.Response() == popup::ResponseTypes::No)
         {
             M_HP_LOG(GetEntityName() << " User rejected the new resolution.  Changing back to the previous res.");
             game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
@@ -107,7 +107,7 @@ namespace gui_demo
 
         ChangeCurrentSelection(FindCurrentResolutionSelection());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback(" << popup::Response::ToString(POPUP.Response()) << ") was called when the ownerStagePtr_ was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback(" << popup::ResponseTypes::ToString(POPUP.Response()) << ") was called when the ownerStagePtr_ was null.");
         ownerStagePtr_->HandleResolutionChange();
 
         return true;

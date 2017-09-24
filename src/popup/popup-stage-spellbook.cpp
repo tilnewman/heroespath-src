@@ -234,7 +234,7 @@ namespace popup
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Thock).PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(Response::Cancel, 0);
+            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
             return true;
         }
         else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
@@ -779,7 +779,7 @@ namespace popup
                 sfml_util::sound_effect_set::SpellSelect).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                Response::Select, listBoxSPtr_->GetSelectedIndex());
+                ResponseTypes::Select, listBoxSPtr_->GetSelectedIndex());
 
             willShowXImage_ = false;
 

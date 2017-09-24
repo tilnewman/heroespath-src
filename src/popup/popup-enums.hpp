@@ -40,13 +40,13 @@ namespace popup
         enum Enum : unsigned
         {
             None         = 0,
-            Okay         = Response::Okay,
-            Select       = Response::Select,
-            Cancel       = Response::Cancel,
-            SelectCancel = Response::Select | Response::Cancel,
-            Continue     = Response::Continue,
-            YesNo        = Response::Yes | Response::No,
-            YesNoCancel  = Response::Yes | Response::No | Response::Cancel
+            Okay         = ResponseTypes::Okay,
+            Select       = ResponseTypes::Select,
+            Cancel       = ResponseTypes::Cancel,
+            SelectCancel = ResponseTypes::Select | ResponseTypes::Cancel,
+            Continue     = ResponseTypes::Continue,
+            YesNo        = ResponseTypes::Yes | ResponseTypes::No,
+            YesNoCancel  = ResponseTypes::Yes | ResponseTypes::No | ResponseTypes::Cancel
         };
 
         static const std::string ToString(const PopupButtons::Enum E);
