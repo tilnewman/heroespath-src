@@ -54,6 +54,7 @@ foreach(testSrc ${impl_files})
                         	Game-Location
                         	Game-State
                         	Game-Combat
+				Popup
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 

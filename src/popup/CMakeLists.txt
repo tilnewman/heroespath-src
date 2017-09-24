@@ -19,5 +19,7 @@ target_link_libraries(${PROJECT_NAME}
 		      sfml-util-gui
                       StringUtil
                       Misc
+		      Game
+		      Game-Combat
                       ${SFML_LIBRARIES}
 		      ${Boost_LIBRARIES})

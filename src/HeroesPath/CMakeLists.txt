@@ -48,5 +48,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         Game-Location
                         Game-State
                         Game-Combat
+			Popup
                         ${Boost_LIBRARIES}
                         ${SFML_LIBRARIES})
