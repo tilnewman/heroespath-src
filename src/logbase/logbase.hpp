@@ -113,7 +113,7 @@ namespace logbase
                          const LogPri::Enum  consoleEchoPri   = LogPri::Disabled);
 
         virtual ~LogBase();
-    
+
         virtual void Log(const std::string & MSG);
 
         virtual void Log(const std::string & FILE,

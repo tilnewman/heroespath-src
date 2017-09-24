@@ -82,7 +82,7 @@ namespace creature
         healthBonus_     (HEALTH_BONUS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TITLE != Titles::Count),
-            "game::creature::Title::Title(title_enum=role::Count" 
+            "game::creature::Title::Title(title_enum=role::Count"
             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
             << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
             << ") was given an invalid TITLE enum.");
@@ -108,7 +108,7 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((((ACHIEVEMENT_TYPE != AchievementType::None) &&
             (ACHIEVEMENT_COUNT == 0)) == false), "game::creature::Title::Title(title="
             << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
-            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS 
+            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
             << ") was given a valid AchievementType but the achievement count was zero.");
 
         //construct filename

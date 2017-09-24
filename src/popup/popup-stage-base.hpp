@@ -73,7 +73,7 @@ namespace popup
 
     protected:
         inline float ButtonTextHeight() const { return buttonTextHeight_; }
-        
+
         bool HandleSelect();
 
         virtual void SetupOuterAndInnerRegion();

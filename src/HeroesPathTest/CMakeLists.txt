@@ -57,7 +57,7 @@ foreach(testSrc ${impl_files})
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 
-        add_test(NAME ${testName} 
+        add_test(NAME ${testName}
                  WORKING_DIRECTORY ${TARGET_BINARY_DIR}
                  COMMAND ${testName} )
 

@@ -205,7 +205,7 @@ namespace gui
                             ++classIndex;
                             return false;
                         }
-                        
+
                     }
                     else
                     {

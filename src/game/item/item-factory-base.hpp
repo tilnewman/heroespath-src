@@ -89,7 +89,7 @@ namespace item
         static const std::string RandomCoatedAdjective();
 
         static const std::string RandomJeweledAdjective();
-        
+
         static const std::string RandomAdornedAdjective();
 
         static const std::string RandomChainNoun();

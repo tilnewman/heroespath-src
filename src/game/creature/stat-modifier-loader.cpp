@@ -53,7 +53,7 @@ namespace creature
                                          ',',
                                          true,
                                          true);
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((statValuesStrVec.size() == 6),
             "game::creature::StatModifierLoader::Load() was unable to extract exactly "
             << "six comma sep values from \"" << DATA_FILE_VALUE_STR

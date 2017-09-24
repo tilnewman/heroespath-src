@@ -45,7 +45,7 @@ namespace game
 
     //Responsible for wrapping common state and operations of traps.
     class Trap
-    {   
+    {
     public:
         Trap(
             const std::size_t PLAYER_COUNT_MIN,
@@ -65,9 +65,9 @@ namespace game
             const std::string & DES_POSTFIX);
 
         inline sfml_util::sound_effect::Enum SoundEffect() const    { return soundEffect_; }
-        
+
         const std::string Description(const std::string & CONTAINER_NAME) const;
-        
+
         stats::Trait_t RandomDamage() const;
 
         int Severity() const;

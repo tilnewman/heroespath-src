@@ -158,7 +158,7 @@ namespace popup
         const sfml_util::gui::TextInfo TextInfoDefault(
             const std::string & TEXT,
             const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
-            const unsigned int FONT_SIZE = 
+            const unsigned int FONT_SIZE =
                 sfml_util::FontManager::Instance()->Size_Large()) const;
 
         //create popup window info objects

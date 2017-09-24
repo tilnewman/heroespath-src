@@ -185,7 +185,7 @@ namespace ownership
         auto const BODY_WEAPON_ITEMS_PVEC( MakeItemSet_BodyWeapons(CHANCES.weapon,
                                                                    CHARACTER_PTR,
                                                                    HAS_TWOHANDED_WEAPON_EQUIPPED));
-        
+
         std::copy(BODY_WEAPON_ITEMS_PVEC.begin(),
                   BODY_WEAPON_ITEMS_PVEC.end(),
                   back_inserter(itemsPtrVecPair.first));
@@ -233,7 +233,7 @@ namespace ownership
             {
                 return (PTR->ArmorType() == item::armor_type::Helm);
             }) != itemsPtrVecPair.first.end() };
-    
+
         if (WILL_ADD_AVENTAIL && (CONTAINS_HELM == false))
         {
             RemoveArmorTypeFromVec(item::armor_type::Aventail, armorItemsPVecPair.first);
@@ -283,7 +283,7 @@ namespace ownership
                         CHARACTER_PTR->Body().HasHorns());
             }),
             armorItemsPVecPair.first.end());
-        
+
         //pants without legs
         armorItemsPVecPair.first.erase(std::remove_if(
             armorItemsPVecPair.first.begin(),
@@ -369,7 +369,7 @@ namespace ownership
         if (COVER_TYPE != item::armor::cover_type::Count)
         {
             auto ITER{ CHANCES.cover_map.find(COVER_TYPE) };
-            
+
             M_ASSERT_OR_LOGANDTHROW_SS((ITER != CHANCES.cover_map.end()),
                 "game::non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
                 << " find \"" << COVER_TYPE << "\".");
@@ -523,7 +523,7 @@ namespace ownership
                     if (CITER_MED != WEAPON_CHANCES.knife.size_map.end())
                     {
                         float chance{ CITER_MED->second };
-                        
+
                         if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
                         {
                             chance += CITER_SMALL->second;
@@ -605,7 +605,7 @@ namespace ownership
 
                 const chance::BladedStaffChanceMap_t::const_iterator CITER(
                     WEAPON_CHANCES.bladedstaff_map.find(BLADEDSTAFF_TYPE));
-                
+
                 M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.bladedstaff_map.end()),
                     "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
                     << "(creature_name=\"" << CHARACTER_PTR->Name()
@@ -639,7 +639,7 @@ namespace ownership
 
                 const chance::ClubChanceMap_t::const_iterator CITER(
                     WEAPON_CHANCES.club_map.find(CLUB_TYPE));
-                
+
                 M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.club_map.end()),
                     "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                     << "creature_name=\"" << CHARACTER_PTR->Name()
@@ -668,7 +668,7 @@ namespace ownership
 
                 const chance::ProjectileChanceMap_t::const_iterator CITER(
                     WEAPON_CHANCES.projectile_map.find(PROJECTILE_TYPE));
-                
+
                 M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.projectile_map.end()),
                     "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                     << "creature_name=\"" << CHARACTER_PTR->Name()
@@ -692,7 +692,7 @@ namespace ownership
 
                 const chance::SwordChanceMap_t::const_iterator CITER(
                     WEAPON_CHANCES.sword_map.find(SWORD_TYPE));
-                
+
                 M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.sword_map.end()),
                     "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                     << "creature_name=\"" << CHARACTER_PTR->Name()
@@ -716,7 +716,7 @@ namespace ownership
 
                 const chance::WhipChanceMap_t::const_iterator CITER(
                     WEAPON_CHANCES.whip_map.find(WHIP_TYPE));
-                
+
                 M_ASSERT_OR_LOGANDTHROW_SS((CITER != WEAPON_CHANCES.whip_map.end()),
                     "game::non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                     << "creature_name=\"" << CHARACTER_PTR->Name()
@@ -724,10 +724,10 @@ namespace ownership
                     << item::weapon_type::ToString(randomSelectedWeaponType, false)
                     << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
                     << "\" -but that weapon was not found in the original WEAPON_CHANCES object.");
-                
+
                 itemsPtrVecPair.first.push_back(
                     item::weapon::WeaponFactory::Instance()->Make_Whip(
-                        WHIP_TYPE, 
+                        WHIP_TYPE,
                         CITER->second.RandomMaterialPri(), //-V783
                         CITER->second.RandomMaterialSec()));
 

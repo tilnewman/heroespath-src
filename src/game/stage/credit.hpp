@@ -75,7 +75,7 @@ namespace stage
                const std::string &               TITLE_TEXT,
                const std::string &               CONTENT_TEXT,
                const sfml_util::Animations::Enum ANIM_ENUM,
-               const float                       ANIM_SCALE,   
+               const float                       ANIM_SCALE,
                const float                       ANIM_FRAME_TIME_SEC);
 
         //use to create general image credits

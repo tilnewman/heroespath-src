@@ -64,7 +64,7 @@ namespace stats
 
     private:
         TraitVec_t traitVec_;
-    
+
     private:
         friend class boost::serialization::access;
         template<typename Archive>

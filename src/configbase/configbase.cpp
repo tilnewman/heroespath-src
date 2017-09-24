@@ -353,7 +353,7 @@ namespace appbase
         namespace ba = boost::algorithm;
 
         auto const BOOL_STR{ ba::trim_copy(ba::to_lower_copy(S)) };
-        
+
         if ((BOOL_STR == "true") || (BOOL_STR == "yes") || (BOOL_STR == "1"))
         {
             result = true;

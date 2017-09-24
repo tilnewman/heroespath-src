@@ -117,7 +117,7 @@ namespace combat
 
         const stats::Trait_t GOBLIN_HEALTH(10 + misc::random::Int(10));
 
-        const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ? 
+        const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ?
             creature::sex::Male : creature::sex::Female);
 
         auto goblinGruntPtr( new non_player::Character(

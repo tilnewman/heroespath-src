@@ -60,7 +60,7 @@ namespace sliders
 
         void ChangeDirection();
 
-        //returns true if the position was changed 
+        //returns true if the position was changed
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         const sf::Vector2f Position() const;

@@ -54,7 +54,7 @@ namespace condition
         auto tempVec{ CONDITIONS_VEC };
         RemoveByMinSeverity(tempVec, MIN_SEVERITY);
         SortBySeverity(tempVec, SORT_OPTION);
-        
+
         return misc::Vector::Join<Conditions::Enum>(
             tempVec,
             MAX_COUNT,

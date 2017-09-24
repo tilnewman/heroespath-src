@@ -106,7 +106,7 @@ namespace sfml_util
             case Wind:
             case Fire1:
             case PartyCreation:
-            case Fire2:       
+            case Fire2:
             case Credits:
             case Inventory:     { return true; }
             case CombatIntro:   { return false; }
@@ -199,7 +199,7 @@ namespace sfml_util
             case CombatIntro:   { return "(various)"; }
             case PartyCreation: { return "Intro of Dragons"; }
             case Credits:       { return "Radakan Menu"; }
-            case Inventory:     { return "PYC"; } 
+            case Inventory:     { return "PYC"; }
             case All:
             case None:
             {

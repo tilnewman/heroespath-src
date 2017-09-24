@@ -308,7 +308,7 @@ namespace logbase
         }
 
         //open the file
-        //NOTE:  Since there are always multiple log files used in rotation, 
+        //NOTE:  Since there are always multiple log files used in rotation,
         //       there is no need to append.
         //       Everytime we switch to a new file, the entire file gets erased.
         //       (enforced by the std::ios::out flag)

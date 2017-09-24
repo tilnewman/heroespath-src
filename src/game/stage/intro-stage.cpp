@@ -72,7 +72,7 @@ namespace stage
     {
         sfml_util::LoadTexture(titleTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-title-intro"));
-        
+
         titleSprite_.setTexture(titleTexture_);
 
         const float SCALE(sfml_util::MapByRes(0.4f, 2.5f));

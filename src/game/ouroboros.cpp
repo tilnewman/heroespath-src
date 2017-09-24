@@ -54,7 +54,7 @@ namespace game
     {
         sfml_util::LoadTexture(texture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
-        
+
         if (WILL_INVERT == false)
         {
             sfml_util::Invert(texture_);

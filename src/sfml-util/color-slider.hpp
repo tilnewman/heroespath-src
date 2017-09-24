@@ -58,7 +58,7 @@ namespace sfml_util
 
         void ChangeDirection();
 
-        //returns true if the position was changed 
+        //returns true if the position was changed
         bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         const sf::Color Current() const;

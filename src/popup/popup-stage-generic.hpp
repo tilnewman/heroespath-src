@@ -49,7 +49,7 @@ namespace popup
         {
             return PopupStageBase::HandlerName();
         }
-        
+
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
 

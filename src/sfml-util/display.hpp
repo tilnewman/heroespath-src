@@ -52,7 +52,7 @@ namespace sfml_util
 
             //failed to set new video mode and SFML set the mode back to what it was automatically
             FailNoChange,
-            
+
             //failed to set new video mode and SFML set the mode to something completely different
             FailChange,
 

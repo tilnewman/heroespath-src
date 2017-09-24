@@ -66,7 +66,7 @@ namespace creature
         }
 
         ss  << ".  " << Conditions::Desc(type_);
-        
+
         auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {

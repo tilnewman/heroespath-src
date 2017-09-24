@@ -175,9 +175,9 @@ namespace gui
                             sf::FloatRect(0, 0, textWidthLimit_, 0));
 
         textureSPtr_ = text_render::RenderAndDraw( * renderedTextSPtr_ );
-        
+
         sprite_.setTexture(textureSPtr_->getTexture());
-        
+
         sprite_.setTextureRect( sf::IntRect(0,
                                             0,
                                             static_cast<int>(renderedTextSPtr_->longest_line),

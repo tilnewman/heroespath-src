@@ -454,7 +454,7 @@ namespace item
         {
             return false;
         }
-        
+
         return misc::Vector::OrderlessCompareEqual(L.equippedItemsPVec_, R.equippedItemsPVec_);
     }
 

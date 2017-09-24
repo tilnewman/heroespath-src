@@ -87,7 +87,7 @@ namespace popup
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
-        
+
         virtual void SetupOuterAndInnerRegion() override;
 
         void SetupRegions();

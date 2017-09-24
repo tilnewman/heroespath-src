@@ -192,7 +192,7 @@ namespace weapon
 
         weaponDetails.complexity = non_player::ownership::complexity_type::FromString(
             CleanStringField(fieldsVec[1], false) );
-        
+
         weaponDetails.price = StringFieldToInt("Price", fieldsVec[2]);
         weaponDetails.weight = static_cast<stats::Trait_t>(StringFieldToInt("Weight", fieldsVec[3]));
 

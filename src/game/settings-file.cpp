@@ -171,7 +171,7 @@ namespace game
             }
 
             const unsigned ERROR_VALUE(1024);
-            
+
             const unsigned SAVED_ANTIALIAS_LEVEL(static_cast<unsigned>(
                 GetWithDefaultInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)));
 

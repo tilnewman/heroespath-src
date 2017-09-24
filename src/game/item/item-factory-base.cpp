@@ -167,7 +167,7 @@ namespace item
                         ssDesc << RandomAdornedAdjective()
                             << " ";
                     }
-                    
+
                     ssDesc << EXTRA_NAME;
                 }
                 else
@@ -220,7 +220,7 @@ namespace item
             else if (material::IsLiquid(MATERIAL_SEC))
             {
                 ssDesc << " "
-                    << RandomCoatedPhrase() 
+                    << RandomCoatedPhrase()
                     << material::ToReadableString(MATERIAL_SEC);
             }
             else if (material::IsRigid(MATERIAL_SEC))

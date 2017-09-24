@@ -175,7 +175,7 @@ namespace popup
             HandleNumberKeySelection(5);
             return true;
         }
-        
+
         return false;
     }
 

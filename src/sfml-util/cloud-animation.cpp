@@ -70,12 +70,12 @@ namespace animation
         //set initial sprite values (initial rotation is random)
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
-        
+
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 
         sprite_.rotate(misc::random::Float(360.0f));
-        
+
         sprite_.setOrigin(0.0f, 0.0f);
 
         sprite_.setPosition(startPosV_);
@@ -90,13 +90,13 @@ namespace animation
         {
             return true;
         }
-        
+
         auto const SLIDER_POS{ (slider_.Update(ELAPSED_TIME_SEC) - 0.5f) * 2.0f };
 
         //set rotation (must preset position and scale prior to rotating...grumble)
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
-        
+
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 
@@ -115,7 +115,7 @@ namespace animation
         //set scale
         auto const SCALE{ startScale_  + ((endScale_ - startScale_) * SLIDER_POS) };
         sprite_.setScale(SCALE, SCALE);
-        
+
         //check if done animating
         isFinished_ = slider_.IsDone();
         return isFinished_;
@@ -185,7 +185,7 @@ namespace animation
         {
             emitTimerSec_ += ELAPSED_TIME_SEC;
         }
-        
+
         if ((false == isFinished_) && (emitTimerSec_ > emitTimerDurationSec_))
         {
             emitTimerSec_ = 0.0f;

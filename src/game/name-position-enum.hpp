@@ -85,7 +85,7 @@ namespace game
     inline bool operator==(const ContentAndNamePos & L, const ContentAndNamePos & R)
     {
         return std::tie(L.pre_, L.content_, L.post_, L.posEnum_)
-               == 
+               ==
                std::tie(R.pre_, R.content_, R.post_, R.posEnum_);
     }
 

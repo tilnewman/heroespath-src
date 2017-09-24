@@ -93,7 +93,7 @@ namespace player
                     switch(::misc::random::Int(2))
                     {
                         case 1:
-                        { 
+                        {
                             return weapon::WeaponFactory::Make_Sword(
                                 weapon::sword_type::Shortsword,
                                 material::Steel,
@@ -153,7 +153,7 @@ namespace player
                     switch(::misc::random::Int(2))
                     {
                         case 1:
-                        { 
+                        {
                             return weapon::WeaponFactory::Make_Sword(
                                 weapon::sword_type::Shortsword,
                                 material::Steel,

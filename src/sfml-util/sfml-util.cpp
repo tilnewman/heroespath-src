@@ -62,7 +62,7 @@ namespace sfml_util
         {
             width = REGION.height;
         }
-        
+
         auto const POS_LEFT{ (REGION.left + (REGION.width * 0.5f)) - (width * 0.5f) };
         auto const POS_TOP{ (REGION.top + (REGION.height * 0.5f)) - (height * 0.5f) };
 

@@ -100,7 +100,7 @@ namespace creature
 
                 ss << "game::creature::player::role::Enum::ToString(" << E
                     << ")_InvalidValueError.";
-                
+
                 throw std::range_error(ss.str());
             }
         }

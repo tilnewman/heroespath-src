@@ -77,7 +77,7 @@ namespace sfml_util
         willLoop_ = true;
 
         currentlyPlaying_ = PickNextSong();
-        
+
         willRandomize_ = ORIG_RANDOM_SETTING;
         willLoop_ = ORIG_LOOP_SETTING;
     }
@@ -114,7 +114,7 @@ namespace sfml_util
                 return music::None;
             }
         }
-        
+
         if (willRandomize_)
         {
             MusicEnumVec_t possibleSongs{ whichVec_ };

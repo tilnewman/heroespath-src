@@ -53,7 +53,7 @@ namespace animation
         sprite_     (TEXTURE),
         posV_       (POS_V),
         targetScale_(TARGET_SCALE),
-        
+
         //start half way so everything moves fast at first and then slows down
         slider_       (std::max(1.0f, SPEED))
     {
@@ -62,9 +62,9 @@ namespace animation
 
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
-        
+
         sprite_.setRotation(misc::random::Float(360.0f));
-        
+
         sprite_.setPosition(posV_);
         sprite_.setScale(0.0f, 0.0f);
 
@@ -88,7 +88,7 @@ namespace animation
                           sprite_.getLocalBounds().height * 0.5f);
         sprite_.rotate(misc::random::Float(0.5f, 3.0f));
 
-        
+
         auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
         //set scale
@@ -102,7 +102,7 @@ namespace animation
                           sprite_.getLocalBounds().height * 0.5f);
 
         sprite_.setPosition(posV_);
-        
+
         //check if done animating
         isFinished_ = slider_.IsDone();
         return isFinished_;
@@ -162,7 +162,7 @@ namespace animation
         {
             emitTimerSec_ += ELAPSED_TIME_SEC;
         }
-        
+
         if ((false == isFinished_) && (emitTimerSec_ > emitTimerDurationSec_))
         {
             emitTimerSec_ = 0.0f;

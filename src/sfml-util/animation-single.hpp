@@ -54,12 +54,12 @@ namespace sfml_util
         virtual ~AnimationSingleTexture();
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-        
+
         virtual void SetEntityPos(const sf::Vector2f & V);
         virtual void SetEntityPos(const float LEFT, const float TOP);
 
         virtual void SetEntityRegion(const sf::FloatRect & R);
-        
+
         inline virtual std::size_t FrameCount() const
         {
             return rects_.size();
@@ -69,7 +69,7 @@ namespace sfml_util
         {
             return origSizeV_;
         }
-        
+
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
         //returns true if frame count wrapped around back to zero

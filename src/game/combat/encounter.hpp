@@ -102,7 +102,7 @@ namespace combat
         {
             return turnCreaturePtr_;
         }
-        
+
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
         inline void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)
@@ -127,7 +127,7 @@ namespace combat
         void EndCombatTasks();
 
         item::TreasureImage::Enum BeginTreasureStageTasks();
-        
+
         void EndTreasureStageTasks(
             const item::ItemCache & ITEM_CACHE_WORN,
             const item::ItemCache & ITEM_CACHE_OWNED);
@@ -163,7 +163,7 @@ namespace combat
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
-        
+
         //Non-player character pointers are owned by these party objects.
         //Each non-player character pointer must only ever be in one of these vecs.
         non_player::PartyUPtr_t nonPlayerPartyUPtr_;

@@ -105,7 +105,7 @@ namespace item
         inline bool IsWeaponType(const weapon_type::Enum E) const   { return (weaponType_ & E); }
         inline bool IsArmorType(const armor_type::Enum E) const     { return (armorType_ & E); }
         inline bool IsMiscType(const misc_type::Enum E) const       { return (miscType_ & E); }
-        
+
         inline stats::Trait_t Price() const                         { return price_; }
         inline stats::Trait_t Weight() const                        { return weight_; }
 
@@ -211,7 +211,7 @@ namespace item
         inline void SetNamedType(const named_type::Enum E)          { namedType_ = E; }
         inline void SetMiscType(const misc_type::Enum E)            { miscType_ = E; }
         inline void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
-        
+
         inline void SetSummonInfo(const creature::SummonInfo & SI)  { summonInfo_ = SI; }
         inline const creature::SummonInfo & GetSummonInfo() const   { return summonInfo_; }
 

@@ -48,7 +48,7 @@ namespace popup
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        
+
     private:
         sf::Texture bgTexture_;
         sf::Sprite bgSprite_;

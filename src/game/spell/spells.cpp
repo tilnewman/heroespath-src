@@ -243,7 +243,7 @@ namespace spell
                 wereAnyCondsRemoved = true;
             }
         }
-        
+
         if (wereAnyCondsRemoved)
         {
             actionPhraseCNP = ActionPhrase();
@@ -450,7 +450,7 @@ namespace spell
                 wereAnyCondsRemoved = true;
             }
         }
-        
+
         if (wereAnyCondsRemoved)
         {
             actionPhraseCNP = ActionPhrase();

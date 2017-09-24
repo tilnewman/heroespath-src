@@ -102,7 +102,7 @@ namespace stage
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
             const item::ItemCache & CACHE_HELD,
             const item::ItemCache & CACHE_LOCKBOX);
-        
+
         void SetupCorpseImage();
 
         void PromptUserBasedonTreasureAvailability(

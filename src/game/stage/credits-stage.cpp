@@ -257,7 +257,7 @@ namespace stage
                                                         "Janne Hanhisuanto for Radakan\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was trimmed and normalized.",
                                                         "media-images-logos-sound",
                                                         sfml_util::MapByRes(1.0f, 2.0f)) );
-  
+
         creditSVec_.push_back( std::make_shared<Credit>(trackingRect,
                                                         "\"spell.ogg\"\n\"curse.ogg\"\n\"enchant.ogg\"\n\"freeze2.ogg\"\n\"heal.ogg\"\n\"magicfail.ogg\"\n\"water.ogg\"",
                                                         "These and other sound effects posted on OpenGameArt.org by p0ss\nUnder the Attribution-ShareAlike Unported 3.0 License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original sound effects were trimmed and normalized.",

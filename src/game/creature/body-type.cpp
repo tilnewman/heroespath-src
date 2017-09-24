@@ -396,7 +396,7 @@ namespace creature
 
         ss << "game::creature::BodyType::Make_FromRace(race=" << RACE << ", role=" << ROLE
             << ") -these values failed to create a BodyType.";
-        
+
         throw std::range_error(ss.str());
     }
 

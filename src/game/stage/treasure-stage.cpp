@@ -162,7 +162,7 @@ namespace stage
             if (POPUP_RESPONSE.Response() == popup::Response::Select)
             {
                 auto const SELECTION{ POPUP_RESPONSE.Selection() };
-                
+
                 if (SELECTION < Game::Instance()->State().Party().Characters().size())
                 {
                     game::combat::Encounter::Instance()->LockPickCreaturePtr(
@@ -711,7 +711,7 @@ namespace stage
         auto const INVALID_MSGS{ MakeInvalidLockPickCharacterMessages() };
 
         auto isThereAValidCharacterWhoCanAttemptToPickTheLock{ AreAnyStringsEmpty(INVALID_MSGS) };
-        
+
         if (isThereAValidCharacterWhoCanAttemptToPickTheLock)
         {
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(

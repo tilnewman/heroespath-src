@@ -85,31 +85,31 @@ namespace combat
 
         static const std::string MouseOverTextFightStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextCastStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextPlayStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextAdvanceStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextRetreatStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextBlockStr(
             creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextFlyStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextLandStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextRoarStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
-        
+
         static const std::string MouseOverTextPounceStr(
             const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 

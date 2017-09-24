@@ -861,7 +861,7 @@ namespace stage
 
             const sfml_util::gui::BackgroundInfo BG_INFO(sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
             const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
-            
+
             nameTextEntryBoxSPtr_ = std::make_shared<sfml_util::gui::TextEntryBox>(
                 "CharacterName",
                 REGION,
@@ -924,7 +924,7 @@ namespace stage
 
             sbInsTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (sbInsTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 100.0f,
                                                sexRadioButtonSPtr_->GetEntityRegion().top + sexRadioButtonSPtr_->GetEntityRegion().height + sfml_util::MapByRes(30.0f, 90.0f));
-            
+
             EntityAdd(sbInsTextRegionUPtr_.get());
         }
 
@@ -1054,7 +1054,7 @@ namespace stage
         if (TRAIT_ENUM == stats::Traits::Charm)        { return statsLine1PosTop_ + attribVertOffset1_ + (2 * attribVertOffset2_); }
         if (TRAIT_ENUM == stats::Traits::Luck)         { return statsLine1PosTop_ + attribVertOffset1_ + (3 * attribVertOffset2_); }
         if (TRAIT_ENUM == stats::Traits::Speed)        { return statsLine1PosTop_ + attribVertOffset1_ + (4 * attribVertOffset2_); }
-        
+
         return statsLine1PosTop_ + attribVertOffset1_ + (5 * attribVertOffset2_);
     }
 
@@ -1169,7 +1169,7 @@ namespace stage
 
         //see below, will add explicitly
         auto const STRENGTH_BASE_TEXT{ ss.str() };
-        
+
         //strength help text
         GetStatHelpText(stats::Traits::Strength, helpTextInfo);
         if (false == helpTextInfo.text.empty())
@@ -1231,7 +1231,7 @@ namespace stage
         //charm help text
         GetStatHelpText(stats::Traits::Charm, helpTextInfo);
         if (false == helpTextInfo.text.empty())
-        {   
+        {
             textRegionUVec.push_back( std::make_unique<sfml_util::gui::TextRegion>(
                 "ChaAttrDesc",
                 helpTextInfo,
@@ -2168,7 +2168,7 @@ namespace stage
         if (TRAIT_ENUM == stats::Traits::Luck)         { return statsLckPosTop_; }
         if (TRAIT_ENUM == stats::Traits::Speed)        { return statsSpdPosTop_; }
         if (TRAIT_ENUM == stats::Traits::Intelligence) { return statsIntPosTop_; }
-        
+
         return -1.0f;
     }
 

@@ -59,7 +59,7 @@ namespace creature
         {
             return Name(E);
         }
-        
+
         static dragon_class::Enum ClassFromRank(const stats::Trait_t);
     };
 

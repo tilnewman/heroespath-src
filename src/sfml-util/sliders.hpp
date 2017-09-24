@@ -107,7 +107,7 @@ namespace sliders
                  (INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))),
                 "sfml_util::sliders::ZeroSliderOnce::Reset() given initial value of "
                 << INITIAL << ", which is not within [0,1].");
-        
+
             age_ = (THREE_QTR_PI_ + (boostmath::pi<T>() * INITIAL));
             spd_ = SPEED;
             val_ = static_cast<T>(0);
@@ -199,7 +199,7 @@ namespace sliders
         {
             return static_cast<Value_t>(min_ + static_cast<Value_t>(diff_));
         }
-        
+
         void Reset(
             const Value_t THE_MIN = 0,
             const Value_t THE_MAX = 1,
@@ -315,7 +315,7 @@ namespace sliders
                 newCurrentVal = static_cast<Value_t>(
                     slider_.Max() - (slider_.Update(ADJUSTMENT) - slider_.Min()));
             }
-            
+
             if (slider_.IsDone())
             {
                 isIncreasing_ = ! isIncreasing_;

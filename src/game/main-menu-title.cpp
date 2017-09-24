@@ -75,7 +75,7 @@ namespace game
         if (TITLE_IMAGE_FILENAME.empty() == false)
         {
             willDrawTitle_ = true;
-            
+
             auto const TITLE_IMAGE_PATH{ GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") + TITLE_IMAGE_FILENAME };
 

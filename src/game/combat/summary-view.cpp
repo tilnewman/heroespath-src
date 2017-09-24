@@ -282,7 +282,7 @@ namespace combat
             {
                 BackgroundColor( sf::Color(
                     0,
-                    0, 
+                    0,
                     0,
                     static_cast<sf::Uint8>(
                         BACKGROUND_COLOR_ALPHA_ * geSlider_.ProgressRatio())) );
@@ -344,7 +344,7 @@ namespace combat
         healthSS << "Health: ";
         if (creaturePtr->IsPlayerCharacter())
         {
-            healthSS << creaturePtr->HealthCurrent() << "/" 
+            healthSS << creaturePtr->HealthCurrent() << "/"
                      << creaturePtr->HealthNormal();
         }
         else
@@ -428,7 +428,7 @@ namespace combat
                 rankTextRegionUPtr_->GetEntityRegion().top +
                 rankTextRegionUPtr_->GetEntityRegion().height +
                 BETWEEN_TEXT_SPACER);
-            
+
             armorTextRegionUPtr_->SetEntityPos(CREATURE_TEXT_POS_LEFT,
                 healthTextRegionUPtr_->GetEntityRegion().top +
                 healthTextRegionUPtr_->GetEntityRegion().height +
@@ -477,7 +477,7 @@ namespace combat
 
         float enemyDetailsDisplayExtentVert(0.0f);
 
-        //populate the enemy equipped item list with the following priority: 
+        //populate the enemy equipped item list with the following priority:
         //weapons first, then armor, then misc, then plain clothes
 
         //first weapons

@@ -694,7 +694,7 @@ namespace creature
         {
             v.push_back(origin_type::Egg);
         }
-        
+
         std::sort(v.begin(), v.end());
         v.erase(std::unique(v.begin(), v.end()), v.end());
         return v;
@@ -830,9 +830,9 @@ namespace creature
                                    (ROLE_ENUM == role::Tendrilus) ||
                                    (ROLE_ENUM == role::TwoHeaded) ||
                                    (ROLE_ENUM == role::Water)) };
-        
+
         std::ostringstream ss;
-        
+
         if (IS_ROLE_FIRST)
         {
             ss << role::Name(ROLE_ENUM);
@@ -883,7 +883,7 @@ namespace creature
 
                     break;
                 }
-                
+
                 case ThreeHeadedHound:
                 case Naga:
                 case Spider:

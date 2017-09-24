@@ -43,7 +43,7 @@ namespace sfml_util
 {
 namespace animation
 {
-    
+
     TextAnimation::TextAnimation(const std::string &   TEXT,
                                  const sf::FloatRect & REGION,
                                  const float           SPEED,
@@ -78,7 +78,7 @@ namespace animation
                                       sfml_util::Justified::Center);
 
         sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
-        
+
         textRegionUPtr_ = std::make_unique<gui::TextRegion>("TextAnimation's", TEXT_INFO, r);
 
         auto const TEXT_POS_LEFT{ START_POS_LEFT -
@@ -103,7 +103,7 @@ namespace animation
 
         auto const FONT_SIZE{ START_FONT_SIZE_ + static_cast<unsigned int>(
             static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_) * SLIDER_POS) };
-        
+
         const gui::TextInfo TEXT_INFO(
             TEXT_,
             sfml_util::FontManager::Instance()->Font_Default1(),
@@ -121,7 +121,7 @@ namespace animation
             (textRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
         auto const POS_TOP{ startPosV_.y + ((endPosV_.y - startPosV_.y) * 2.0f * SLIDER_POS) };
-        
+
         textRegionUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
 
         isFinished_ = slider_.IsDone();

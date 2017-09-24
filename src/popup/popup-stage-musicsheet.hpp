@@ -69,7 +69,7 @@ namespace popup
         }
 
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
-        
+
         using PopupStageBase::HandleCallback;
 
         virtual void Setup() override;

@@ -129,7 +129,7 @@ namespace strategy
                 }
 
                 auto const RAND{ misc::random::Float(0.0f, total) };
-                
+
                 auto subtotal{ 0.0f };
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                 {
@@ -180,7 +180,7 @@ namespace strategy
     bool operator<(const Chances & L, const Chances & R);
 
     bool operator==(const Chances & L, const Chances & R);
-    
+
     inline bool operator!=(const Chances & L, const Chances & R)
     {
         return ! (L == R);

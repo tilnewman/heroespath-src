@@ -59,7 +59,7 @@ namespace misc
             const SortOpt          SORT_OPTION = SortOpt::None)
         {
             std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_vec));
-            
+
             if (SORT_OPTION == SortOpt::SortAndUnique)
             {
                 std::sort(b_vec.begin(), b_vec.end());
@@ -312,7 +312,7 @@ namespace misc
 
             std::sort(a.begin(), a.end());
             std::sort(b.begin(), b.end());
-            
+
             return a < b;
         }
 

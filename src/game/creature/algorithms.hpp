@@ -172,7 +172,7 @@ namespace creature
             const Conditions::Enum,
             const CondAllOpt    COND_ALL_OPTION    = CondAllOpt::HasAll,
             const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
-        
+
         static const CreaturePVec_t FindByHasConditions(
             const CreaturePVec_t &,
             const CondEnumVec_t &,

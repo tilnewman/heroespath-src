@@ -142,7 +142,7 @@ namespace stage
         fireAnimUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width) - 85.0f,
             (SCREEN_HEIGHT_ - campfireSprite_.getGlobalBounds().height) - 175.0f);
-        
+
         EntityAdd(fireAnimUPtr_.get());
 
         //TEMP TODO REMOVE -make a party to test this stage with

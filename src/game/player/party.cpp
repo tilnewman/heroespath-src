@@ -129,7 +129,7 @@ namespace player
 
         const creature::UniqueTraits_t TRAITS(CREATURE_CPTRC->UniqueTraits());
 
-        for (CharacterPVec_t::iterator iter(charactersPVec_.begin()); 
+        for (CharacterPVec_t::iterator iter(charactersPVec_.begin());
             iter != charactersPVec_.end(); ++iter)
         {
             if (TRAITS == (*iter)->UniqueTraits())

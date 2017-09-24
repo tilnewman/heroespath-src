@@ -435,7 +435,7 @@ namespace game
         }
 
         loop_.Exit();
-        
+
         if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::MouseIgnore))
         {
             cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(false) );

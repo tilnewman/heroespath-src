@@ -243,7 +243,7 @@ namespace stringhelp
 
             ss << * i;
         }
-        
+
         return ss.str();
     }
 

@@ -74,9 +74,9 @@ namespace combat
         {
             return TurnActionInfo(TurnAction::Nothing);
         }
-        
+
         auto const TURN_INFO{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC) };
-        
+
         //find out if any possible targets (players) are holding projectile weapons
         auto const ARE_ANY_HOLDING_PROJECTILE_WEAPONS{ []()
             {
@@ -92,7 +92,7 @@ namespace combat
                 }
                 return false;
             }() };
-        
+
         //find out if any possible targets (players) are flying
         auto const ARE_ANY_FLYING{ []()
             {
@@ -109,7 +109,7 @@ namespace combat
                 }
                 return false;
             }() };
-        
+
         //If flying but no opponents are flying and no opponents are holding projectile weapons,
         //then this enemy has to land so that combat does not become deadlocked.
         if ((Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_CPTRC).GetIsFlying()) &&
@@ -127,7 +127,7 @@ namespace combat
                 return FLY_TURN_ACTION_INFO;
             }
         }
-        
+
         auto const LIVING_PLAYERS_IN_ATTACK_RANGE{ [&]()
             {
                 creature::CreaturePVec_t livingPlayersInAttackRangePVec;
@@ -190,7 +190,7 @@ namespace combat
         auto const CAN_ATTACK_MOST_DESIRED_TARGET_WITH{CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
                                                        CAN_ATTACK_ON_RANGE &&
                                                        CAN_ATTACK_ON_FLIGHT};
-        
+
         //decide if moving toward most desired target, which technically could mean Advancing or Retreating...
         auto const MOVE_TOWARD_TURN_ACTION_INFO{ DecideIfMovingTowardsMostDesiredTarget(
             TURN_INFO,
@@ -294,7 +294,7 @@ namespace combat
         //Okay, so we are reaching this end point in the logic tree much more
         //often than anticipated, so try and attack here if possible, ignoring
         //the most desired target.
-        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() && 
+        if (CREATURE_DECIDING_CPTRC->HasWeaponsHeld() &&
             (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() == false))
         {
             creature::CreaturePVec_t desiredTargetsInRangePVec{ LIVING_PLAYERS_IN_ATTACK_RANGE };
@@ -379,7 +379,7 @@ namespace combat
         auto const ALL_LIVING_THREAT_PLAYERS_PVEC{
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
                 ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CondSingleOpt::DoesNotHave) };
-        
+
         //...but accept those 'not a threat' if no other choice
         auto const AVAILABLE_TARGETS_PRE_PVEC{ ((ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ?
             ALL_LIVING_PLAYERS_PVEC :
@@ -916,7 +916,7 @@ namespace combat
         const bool                     CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
     {
         auto const ADV_TYPE{ TURN_INFO.GetStrategyInfo().Advance() };
-        
+
         if ((ADV_TYPE != strategy::AdvanceType::Cowardly) && (MOST_DESIRED_TARGET_DISTANCE != 0))
         {
             if (((ADV_TYPE == strategy::AdvanceType::None) &&(NUM_PLAYERS_IN_ATTACK_RANGE == 0)) ||
@@ -979,7 +979,7 @@ namespace combat
             auto const FLY_CHANCE{
                 ((CREATURE_DECIDING_CPTRC->CanFly() && (TURN_INFO.GetIsFlying() == false)) ?
                     ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()) : 0.0f) };
-            
+
             if (FLY_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
@@ -992,7 +992,7 @@ namespace combat
             auto const SKYPOUNCE_CHANCE{
                 ((TURN_INFO.GetIsFlying()) ?
                     ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyPounceFreq()) : 0.0f) };
-            
+
             if (SKYPOUNCE_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
@@ -1006,7 +1006,7 @@ namespace combat
             auto const LANDPOUNCE_CHANCE{
                 (((TURN_INFO.GetIsFlying() == false) && (PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0)) ?
                     ChanceFromFrequency(TURN_INFO.GetStrategyInfo().StandPounceFreq()) : 0.0f) };
-            
+
             if (LANDPOUNCE_CHANCE > 0.0f)
             {
                 auto const RAND{ misc::random::Float(1.0f) };
@@ -1319,7 +1319,7 @@ namespace combat
 
         auto const BLOCKING_DISTANCE_TO_TARGET{ COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
             CREATURE_DECIDING_CPTRC, TARGET_CREATURE_PTR) };
-        
+
         if ((BLOCKING_DISTANCE_TO_TARGET < 0) &&
             COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_CPTRC, true).empty())
         {
@@ -1331,14 +1331,14 @@ namespace combat
         {
             return TurnActionInfo(TurnAction::Retreat);
         }
-        
+
         return TurnActionInfo();
     }
 
     void TurnDecider::AdjustCreatueVecForMurderousIntent(
-        const TurnInfo &           CREATURE_DECIDING_TURN_INFO, 
+        const TurnInfo &           CREATURE_DECIDING_TURN_INFO,
         creature::CreaturePVec_t & pVec_OutParam)
-    {   
+    {
         //determine if any available targets are unconscious
         auto const ARE_ANY_TARGETS_UNCONSCIOUS{ [&]()
             {
@@ -1351,7 +1351,7 @@ namespace combat
                 }
                 return false;
             }() };
-        
+
         if (ARE_ANY_TARGETS_UNCONSCIOUS &&
             (CREATURE_DECIDING_TURN_INFO.GetStrategyInfo().Refine() &
                 combat::strategy::RefineType::Murderer))

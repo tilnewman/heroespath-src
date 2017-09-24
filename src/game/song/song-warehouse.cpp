@@ -85,7 +85,7 @@ namespace song
             M_ASSERT_OR_LOGANDTHROW_SS((songPtr != nullptr),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") Get() resulted in a nullptr being returned.");
-            
+
             M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Name().empty() == false),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in an empty Name().");

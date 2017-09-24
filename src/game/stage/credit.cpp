@@ -198,13 +198,13 @@ namespace stage
 
             auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) -
                 (HEIGHT * 0.5f) };
-            
+
             animUPtr_->SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT) );
 
             //account for height of animation
             trackingRect.top += animUPtr_->GetEntityRegion().height;
         }
-        
+
         const sfml_util::gui::TextInfo TEXT_INFO_TITLE(TITLE_TEXT,
                                                        TITLE_FONT_PTR,
                                                        TITLE_FONT_SIZE,

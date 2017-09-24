@@ -59,7 +59,7 @@ namespace state
 
     //Creates game states either new or from a previous save to disc.
     class GameStateFactory
-    {   
+    {
         GameStateFactory(const GameStateFactory &) =delete;
         GameStateFactory & operator=(const GameStateFactory &) =delete;
 
@@ -77,13 +77,13 @@ namespace state
 
         //Caller is responsible for the lifetime of the returned GameState objects.
         GameStatePSet_t LoadAllGames() const;
-        
+
         void SaveGame(const GameStatePtr_t) const;
 
         //Loaded Characters are not stored in player::CharacterWarehouse,
         //so the caller is responsible for the lifetime of the returned objects.
         player::CharacterPSet_t LoadAllCompanions() const;
-        
+
         void SaveCharacter(const player::CharacterPtr_t) const;
         bool DeleteCharacter(const player::CharacterPtr_t) const;
 

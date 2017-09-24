@@ -63,7 +63,7 @@ namespace text_render
 
         //calculate the text's vertical position, which is vertically centered,
         //then verify still within bounds
-        float vertPosToUse((REGION.top + (REGION.height * 0.5f)) - 
+        float vertPosToUse((REGION.top + (REGION.height * 0.5f)) -
             (renderedText.total_height * 0.5f));
 
         if (vertPosToUse < REGION.top)
@@ -329,7 +329,7 @@ namespace text_render
 
                 const float RIGHT_EDGE(sfText.getPosition().x +
                     sfText.getLocalBounds().width);
-                
+
                 if (longestLine < RIGHT_EDGE)
                 {
                     longestLine = RIGHT_EDGE;
@@ -535,7 +535,7 @@ namespace text_render
 
             for (; i < NUM_SNIPPETS; ++i)
             {
-                if (resultVec[resultVec.size() - 1].sf_text.getFont() == 
+                if (resultVec[resultVec.size() - 1].sf_text.getFont() ==
                     inputVec[i].sf_text.getFont())
                 {
                     resultVec[resultVec.size() - 1].text_info.text += inputVec[i].text_info.text;

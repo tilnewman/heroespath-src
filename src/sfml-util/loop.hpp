@@ -124,7 +124,7 @@ namespace sfml_util
         bool ProcessOneSecondTasks(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
-        
+
         void ProcessMouseHover(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
@@ -135,7 +135,7 @@ namespace sfml_util
         void ProcessEvents(
             const sf::Vector2i & NEW_MOUSE_POS,
             bool HAS_MOUSE_MOVED);
-        
+
         void ProcessKeyStrokes(const sf::Event & EVENT);
         void ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS);
         void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
@@ -144,7 +144,7 @@ namespace sfml_util
         void ProcessMouseWheelRoll(
             const sf::Event & EVENT,
             const sf::Vector2i & NEW_MOUSE_POS);
-        
+
         void ProcessPopupCallback();
         void ProcessTimeUpdate();
         void ProcessDrawing();

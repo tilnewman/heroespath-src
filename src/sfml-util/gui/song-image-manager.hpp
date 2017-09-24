@@ -75,7 +75,7 @@ namespace gui
     private:
         const std::string MakeFilename(const game::song::Songs::Enum) const;
         const boost::filesystem::path MakeFilepath(const game::song::Songs::Enum) const;
-    
+
     private:
         static std::unique_ptr<SongImageManager> instanceUPtr_;
         static std::string songImagesDirectory_;

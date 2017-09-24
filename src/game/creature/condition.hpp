@@ -79,7 +79,7 @@ namespace creature
         virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
                                    combat::HitInfoVec_t & hitInfoVec,
                                    bool &                 hasTurnBeenConsumed) const;
-        
+
         friend bool operator<(const Condition & L, const Condition & R);
         friend bool operator==(const Condition & L, const Condition & R);
 

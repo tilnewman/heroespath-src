@@ -758,7 +758,7 @@ namespace combat
                 }
             }
         }
-        
+
         //attach all verts at position with an edge of type CONNECTION_TYPE
         const Id_t NUM_VERTS_AT_POS(vertIDsAtPosVec.size());
         if (NUM_VERTS_AT_POS > 0)

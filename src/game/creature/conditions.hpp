@@ -57,7 +57,7 @@ namespace condition
         Bold() : Condition(
             Conditions::Bold,
             false,
-            stats::TraitSet( { 
+            stats::TraitSet( {
                 std::make_pair(stats::Traits::Strength, 25),
                 std::make_pair(stats::Traits::Accuracy, 25),
                 std::make_pair(stats::Traits::Charm, 25),
@@ -168,7 +168,7 @@ namespace condition
                 std::make_pair(stats::Traits::Accuracy, -66),
                 std::make_pair(stats::Traits::Speed, -66),
                 std::make_pair(stats::Traits::Intelligence, -50) } ) ) {}
-        
+
         virtual ~Dazed() {}
 
         virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
@@ -206,7 +206,7 @@ namespace condition
                 std::make_pair(stats::Traits::Charm, -9999),
                 std::make_pair(stats::Traits::Speed, -9999),
                 std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
-        
+
         virtual ~Stone() {}
     };
 
@@ -224,7 +224,7 @@ namespace condition
                 std::make_pair(stats::Traits::Luck, -9999),
                 std::make_pair(stats::Traits::Speed, -9999),
                 std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
-        
+
         virtual ~Dead() {}
     };
 
@@ -258,7 +258,7 @@ namespace condition
                 std::make_pair(stats::Traits::Strength, -9999),
                 std::make_pair(stats::Traits::Accuracy, -9999),
                 std::make_pair(stats::Traits::Speed, -9999) } ) ) {}
-        
+
         virtual ~AsleepMagical() {}
 
         virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
@@ -277,9 +277,9 @@ namespace condition
                 std::make_pair(stats::Traits::Strength, -25),
                 std::make_pair(stats::Traits::Charm, -50),
                 std::make_pair(stats::Traits::Speed, -25) } ) ) {}
-        
+
         virtual ~Poisoned() {}
-        
+
         virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
                                    combat::HitInfoVec_t & hitInfoVec,
                                    bool &                 hasTurnBeenConsumed) const;

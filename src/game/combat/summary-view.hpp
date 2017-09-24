@@ -78,7 +78,7 @@ namespace combat
     };
 
     using ItemWithTextVec_t = std::vector<ItemWithText>;
-    
+
 
     //the infomation that displays when the mouse cursor is held over an enemy
     class SummaryView

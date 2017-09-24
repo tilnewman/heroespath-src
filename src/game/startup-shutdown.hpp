@@ -35,7 +35,7 @@ namespace game
 
     //responsible for starting and stopping the application
     struct StartupShutdown
-    {   
+    {
         static bool Setup(
             const std::string & APPLICATION_NAME,
             int ARGC,

@@ -119,7 +119,7 @@ namespace sfml_util
         {
             return ((IsValid()) ? musicUPtr_->getVolume() : 0.0f);
         }
-        
+
         inline void Volume(const float F)
         {
             if (IsValid()) musicUPtr_->setVolume((F < 0.0f) ? 0.0f : ((F > 100.0f) ? 100.0f : F));
@@ -133,9 +133,9 @@ namespace sfml_util
         void VolumeFadeOut(const float FADE_MULT = FADE_MULT_DEFAULT_OUT_, const bool WILL_KILL_AFTER = true);
 
         music_update_status::Enum UpdateTime(const float ELAPSED_TIME_SECONDS);
-        
+
         friend bool operator==(const MusicOperator & L, const MusicOperator & R);
-        
+
     public:
         static const float VOLUME_USE_GLOBAL_;
         static const float FADE_MULT_IMMEDIATE_;

@@ -83,7 +83,7 @@ namespace combat
     const float     CombatNode::WING_IMAGE_HORIZ_OFFSET_ (0.333f);
     const float     CombatNode::WING_IMAGE_ANIM_SPEED_   (8.0f);
     const float     CombatNode::WING_IMAGE_ROTATION_MAX_ (90.0f);
-    
+
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
     :
@@ -634,7 +634,7 @@ namespace combat
             sfml_util::LoadTexture( * crossBonesTextureUPtr_,
                 GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
 
-            crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);    
+            crossBonesSprite_.setTexture( * crossBonesTextureUPtr_, true);
         }
 
         crossBonesSprite_.setScale(1.0f, 1.0f);
@@ -666,7 +666,7 @@ namespace combat
     {
         const float SCALE_VERT(entityRegion_.height / crossBonesSprite_.getLocalBounds().height);
         crossBonesSprite_.setScale(SCALE_VERT, SCALE_VERT);
-        
+
         if (crossBonesSprite_.getGlobalBounds().width > entityRegion_.width)
         {
             const float SCALE_HORIZ(entityRegion_.width /

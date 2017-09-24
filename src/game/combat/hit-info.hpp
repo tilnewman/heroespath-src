@@ -145,11 +145,11 @@ namespace combat
         inline song::SongPtr_t   SongPtr() const    { return songPtr_; }
         inline bool              IsSpell() const    { return (spellPtr_ != nullptr); }
         inline bool              IsWeapon() const   { return (weaponPtr_ != nullptr); }
-        
+
         inline creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
-        
+
         inline bool DidArmorAbsorb() const { return didArmorAbsorb_; }
-        
+
         inline const ContentAndNamePos ActionPhrase() const
         {
             return actionPhraseCNP_;
