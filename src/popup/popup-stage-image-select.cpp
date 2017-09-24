@@ -81,7 +81,8 @@ namespace popup
         if (isChangingImageAllowed_)
         {
             auto const COUNT_MAX{ CountMax() };
-            auto index{ static_cast<std::size_t>(sliderbarUPtr_->GetCurrentValue() * COUNT_MAX) };
+            auto index{ static_cast<std::size_t>(
+                sliderbarUPtr_->GetCurrentValue() * static_cast<float>(COUNT_MAX)) };
 
             if (index >= COUNT_MAX)
             {
