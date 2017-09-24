@@ -39,7 +39,6 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/texture-cache.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
@@ -47,6 +46,8 @@
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
+
+#include "popup/popup-manager.hpp"
 
 #include "game/loop-manager.hpp"
 #include "game/logger.hpp"
@@ -76,6 +77,7 @@
 #include "game/non-player/inventory-factory.hpp"
 #include "game/non-player/character-warehouse.hpp"
 #include "game/song/song-warehouse.hpp"
+#include "game/trap-warehouse.hpp"
 
 #include "misc/random.hpp"
 #include "misc/platform.hpp"
@@ -329,21 +331,23 @@ namespace game
 
     void StartupShutdown::WarehousesFill()
     {
+        sfml_util::FontManager::Fill();
         game::creature::title::Warehouse::Fill();
         game::creature::condition::Warehouse::Fill();
         game::spell::Warehouse::Fill();
         game::song::Warehouse::Fill();
-        sfml_util::FontManager::Fill();
+        game::trap::Warehouse::Fill();
     }
 
 
     void StartupShutdown::WarehousesEmpty()
     {
-        sfml_util::FontManager::Empty();
+        game::trap::Warehouse::Empty();
         game::song::Warehouse::Empty();
         game::spell::Warehouse::Empty();
         game::creature::condition::Warehouse::Empty();
         game::creature::title::Warehouse::Empty();
+        sfml_util::FontManager::Empty();
     }
 
 
