@@ -48,10 +48,7 @@ namespace creature
     //This class does not new the objects, but it does delete them.
     class EnchantmentWarehouse
     {
-        //prevent copy constructor
         EnchantmentWarehouse(const EnchantmentWarehouse &) =delete;
-
-        //prevent copy assignment
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) =delete;
 
         //prevent non-singleton construction
