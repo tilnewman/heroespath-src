@@ -121,6 +121,8 @@ namespace stage
 
         const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
 
+        bool AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const;
+
         void PromptPlayerWithLockPickPopup(
             const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK);
 

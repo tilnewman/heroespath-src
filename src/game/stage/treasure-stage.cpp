@@ -710,17 +710,9 @@ namespace stage
     {
         auto const INVALID_MSGS{ MakeInvalidLockPickCharacterMessages() };
 
-        auto isThereAnyValidCharacterWhoCanAttemptToPickTheLock{ false };
-        for (auto const & INVALID_MSG : INVALID_MSGS)
-        {
-            if (INVALID_MSG.empty())
-            {
-                isThereAnyValidCharacterWhoCanAttemptToPickTheLock = true;
-                break;
-            }
-        }
-
-        if (isThereAnyValidCharacterWhoCanAttemptToPickTheLock)
+        auto isThereAValidCharacterWhoCanAttemptToPickTheLock{ AreAnyStringsEmpty(INVALID_MSGS) };
+        
+        if (isThereAValidCharacterWhoCanAttemptToPickTheLock)
         {
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
                 POPUP_NAME_CHAR_SELECT_,
@@ -733,9 +725,13 @@ namespace stage
         }
         else
         {
+            auto const MSG{
+                std::string("There are no characters who can attempt to pick the lock!  ") +
+                    "They are all incapable or incapacitated" };
+
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_,
-                "There are no characters who can attempt to pick the lock!  They are all incapable or incapacitated",
+                MSG,
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
@@ -799,6 +795,20 @@ namespace stage
         }
 
         return invalidMsgsVec;
+    }
+
+
+    bool TreasureStage::AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const
+    {
+        for (auto const & INVALID_MSG : INVALID_MSGS)
+        {
+            if (INVALID_MSG.empty())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
