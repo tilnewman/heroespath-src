@@ -77,7 +77,7 @@ namespace TreasureStage
         inline bool IsTargetMoving() const { return targetSlider_.IsMoving(); }
         inline bool IsEitherMoving() const { return IsSourceMoving() || IsTargetMoving(); }
 
-        inline SourceType SourceType() const { return sourceType_; }
+        inline SourceType Source() const { return sourceType_; }
         inline std::size_t TargetNumber() const { return targetNumber_; }
 
         TreasureStage::SourceType SourceChange();
